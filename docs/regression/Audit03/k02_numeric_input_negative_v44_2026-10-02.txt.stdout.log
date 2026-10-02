@@ -1,0 +1,67 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_numeric_input_negative_v43.xlsm
+SOURCE_SHA256: 50758E395647D49253EF49F4ADF04FA34A4ABDAE45B269AA557A0E896532A7E9
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9e63d97fb287455c8422c0158ee7c436\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.numeric.Solver.Solver.MaxIterations.error
+FAIL: audit03.numeric.Solver.Solver.MaxIterations.reason
+FAIL: audit03.numeric.Solver.Solver.MaxIterations.error
+FAIL: audit03.numeric.Solver.Solver.MaxIterations.reason
+FAIL: audit03.numeric.Solver.Solver.ToleranceN.error
+FAIL: audit03.numeric.Solver.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Solver.Solver.ToleranceN.error
+FAIL: audit03.numeric.Solver.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Capacity.Capacity.MaxRetries.error
+FAIL: audit03.numeric.Capacity.Capacity.MaxRetries.reason
+FAIL: audit03.numeric.Capacity.Capacity.MaxRetries.error
+FAIL: audit03.numeric.Capacity.Capacity.MaxRetries.reason
+FAIL: audit03.numeric.Capacity.Capacity.MaxLambda.error
+FAIL: audit03.numeric.Capacity.Capacity.MaxLambda.reason
+FAIL: audit03.numeric.Capacity.Capacity.MaxLambda.error
+FAIL: audit03.numeric.Capacity.Capacity.MaxLambda.reason
+FAIL: audit03.numeric.Capacity.Solver.ToleranceN.error
+FAIL: audit03.numeric.Capacity.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Capacity.Solver.ToleranceN.error
+FAIL: audit03.numeric.Capacity.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Formation.Solver.MaxIterations.error
+FAIL: audit03.numeric.Formation.Solver.MaxIterations.reason
+FAIL: audit03.numeric.Formation.Solver.MaxIterations.error
+FAIL: audit03.numeric.Formation.Solver.MaxIterations.reason
+FAIL: audit03.numeric.Formation.Solver.ToleranceN.error
+FAIL: audit03.numeric.Formation.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Formation.Solver.ToleranceN.error
+FAIL: audit03.numeric.Formation.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Batch.Solver.MaxIterations..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MaxIterations..typed
+FAIL: audit03.numeric.Batch.Solver.MaxIterations..reason
+FAIL: audit03.numeric.Batch.Solver.MaxIterations..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.MaxIterations.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MaxIterations.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.MaxIterations.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.MaxIterations.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries..typed
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries..reason
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda..typed
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda..reason
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.ToleranceN..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.ToleranceN..typed
+FAIL: audit03.numeric.Batch.Solver.ToleranceN..reason
+FAIL: audit03.numeric.Batch.Solver.ToleranceN..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.ToleranceN.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.ToleranceN.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.ToleranceN.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.ToleranceN.TODO.noDirectSolve
+TOTAL_AUDIT03_NUMERIC_SETTINGS_INPUT: passed=82; failed=60
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

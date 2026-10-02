@@ -1,0 +1,10 @@
+Отчет уже существует и не разрешен для reuse: docs/regression/Audit03/broad_matrix_CircleSym_Light_off_v42_2026-10-02.t
+xt. Выберите новый Version; отрицательный/неполный лог сохраняется.
+At C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit03BroadLoadMatrix.ps1:54 c
+har:17
++ ...             throw "Отчет уже существует и не разрешен для reuse: $rel ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Отчет уже сущес...ог сохраняется.:String) [], RuntimeException
+    + FullyQualifiedErrorId : Отчет уже существует и не разрешен для reuse: docs/regression/Audit03/broad_matrix_Circl 
+   eSym_Light_off_v42_2026-10-02.txt. Выберите новый Version; отрицательный/неполный лог сохраняется.
+ 

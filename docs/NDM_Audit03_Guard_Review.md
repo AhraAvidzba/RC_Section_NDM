@@ -25,12 +25,13 @@
 
 ## Оставшиеся Контрпримеры И Контракты
 
-1. `GetDouble` вызывает `GetString`, поэтому явно пустой/TODO численный
-   параметр может получить default. Например этот маршрут виден в
-   `CSectionSolver.ApplySettings` для Solver.MaxIterations и Solver.ToleranceN.
-   Перед правкой нужен направленный runtime-контрпример на настоящих consumers
-   и точный required/optional контракт. Пустые optional диаметры арматуры
-   нельзя запретить общим изменением всех numeric getter-ов.
+1. Молчаливый default для явно пустых/TODO численных Solver/Capacity параметров
+   подтвержден: negative v44 82/60, затем полный per-key negative v45 394/296.
+   Strict чтение включено у четырех реальных consumers; прежний тест v44
+   после правки дал 142/0. Расширенный positive v45: 690/0, full Off/On:
+   9206/0 и 9207/0; окончательная приемка остальных F07 остается обязательной.
+   Optional пустые диаметры и отсутствующий optional API-key сохранены.
+   Неверные ожидания exploratory v43 не считаются production-дефектами.
 2. `CMaterialDiagram.InitializeFromArrays` получает готовые 1-based Double
    массивы из material provider; provider выделяет не менее pointCount точек.
    Вызов public API с незаданным/коротким массивом требует отдельно указанного

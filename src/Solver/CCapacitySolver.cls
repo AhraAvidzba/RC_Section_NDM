@@ -139,35 +139,36 @@ End Sub
 ' ------------------------------
 ' Настройки делятся на два уровня: внешний поиск несущей способности и
 ' внутренний CSectionSolver, который каждый раз ищет равновесие для lambda-точки.
+' Явно пустые численные настройки не заменяются сохраненными defaults.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
-    mInitialLambdaStep = settings.GetDouble("Capacity.InitialLambda", mInitialLambdaStep)
-    mMaxLambda = settings.GetDouble("Capacity.MaxLambda", mMaxLambda)
-    mLambdaTolerance = settings.GetDouble("Capacity.ToleranceLambda", mLambdaTolerance)
-    mStrainTolerance = settings.GetDouble("Capacity.ToleranceStrain", mStrainTolerance)
+    mInitialLambdaStep = settings.GetDouble("Capacity.InitialLambda", mInitialLambdaStep, False)
+    mMaxLambda = settings.GetDouble("Capacity.MaxLambda", mMaxLambda, False)
+    mLambdaTolerance = settings.GetDouble("Capacity.ToleranceLambda", mLambdaTolerance, False)
+    mStrainTolerance = settings.GetDouble("Capacity.ToleranceStrain", mStrainTolerance, False)
     If settings.HasKey("Capacity.SearchMethod") Then
         mSearchMethod = settings.GetRawString("Capacity.SearchMethod", vbNullString)
     Else
         mSearchMethod = "Bisection"
     End If
-    mMaxRetries = settings.GetLong("Capacity.MaxRetries", mMaxRetries)
-    mSolverBaseLoadSteps = settings.GetLong("Capacity.BaseLoadSteps", mSolverBaseLoadSteps)
-    mSolverMaxIterations = settings.GetLong("Capacity.SolverMaxIterations", mSolverMaxIterations)
-    mSolverToleranceN = settings.GetDouble("Solver.ToleranceN", mSolverToleranceN)
-    mSolverToleranceMx = settings.GetDouble("Solver.ToleranceMx", mSolverToleranceMx)
-    mSolverToleranceMy = settings.GetDouble("Solver.ToleranceMy", mSolverToleranceMy)
+    mMaxRetries = settings.GetLong("Capacity.MaxRetries", mMaxRetries, False)
+    mSolverBaseLoadSteps = settings.GetLong("Capacity.BaseLoadSteps", mSolverBaseLoadSteps, False)
+    mSolverMaxIterations = settings.GetLong("Capacity.SolverMaxIterations", mSolverMaxIterations, False)
+    mSolverToleranceN = settings.GetDouble("Solver.ToleranceN", mSolverToleranceN, False)
+    mSolverToleranceMx = settings.GetDouble("Solver.ToleranceMx", mSolverToleranceMx, False)
+    mSolverToleranceMy = settings.GetDouble("Solver.ToleranceMy", mSolverToleranceMy, False)
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
     Else
         mSolverMethod = "Newton"
     End If
     mSolverLineSearchEnabled = settings.GetBoolean("Solver.LineSearchEnabled", mSolverLineSearchEnabled)
-    mSolverDampingInitial = settings.GetDouble("Solver.DampingInitial", mSolverDampingInitial)
-    mSolverMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mSolverMinLineSearchAlpha)
-    mSolverMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mSolverMaxDeltaEpsilon0)
-    mSolverMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mSolverMaxDeltaKappa)
-    mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts)
-    mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm)
+    mSolverDampingInitial = settings.GetDouble("Solver.DampingInitial", mSolverDampingInitial, False)
+    mSolverMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mSolverMinLineSearchAlpha, False)
+    mSolverMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mSolverMaxDeltaEpsilon0, False)
+    mSolverMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mSolverMaxDeltaKappa, False)
+    mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts, False)
+    mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm, False)
     If Not units Is Nothing Then
         mSolverToleranceN = Abs(units.InputForceToInternal(mSolverToleranceN))
         mSolverToleranceMx = Abs(units.InputMomentMxToInternal(mSolverToleranceMx))

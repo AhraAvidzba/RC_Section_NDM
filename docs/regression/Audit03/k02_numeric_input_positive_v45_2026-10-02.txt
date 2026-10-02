@@ -1,0 +1,927 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_clean_v45.xlsm
+SOURCE_SHA256: B5A75C5523895EFB0B846E13966F03E70E605F62C550F339CE73CECB2FD5BEBF
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_160a5c15e3054377aeeef2b874ae452f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03NumericSettingsInputTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03NumericSettingsInputTests; 2026-10-02T07:09:03
+EXCEL_AFTER_SUITE: pid=10624; workingSet=150491136; privateBytes=109748224; cpu=4.21875
+OK: audit03.numeric.Solver.Solver.MaxIterations.error
+OK: audit03.numeric.Solver.Solver.MaxIterations.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxIterations|value=|error=-2147217194|reason=Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxIterations.error
+OK: audit03.numeric.Solver.Solver.MaxIterations.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxIterations|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxIterations.error
+OK: audit03.numeric.Solver.Solver.MaxIterations.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxIterations|value=abc|error=-2147217192|reason=Настройка Solver.MaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxIterations.error
+OK: audit03.numeric.Solver.Solver.MaxIterations.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxIterations|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxIterations содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.MaxIterations.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.LoadSteps.error
+OK: audit03.numeric.Solver.Solver.LoadSteps.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.LoadSteps|value=|error=-2147217194|reason=Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.LoadSteps.error
+OK: audit03.numeric.Solver.Solver.LoadSteps.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.LoadSteps|value=TODO|error=-2147217194|reason=Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.LoadSteps.error
+OK: audit03.numeric.Solver.Solver.LoadSteps.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.LoadSteps|value=abc|error=-2147217192|reason=Настройка Solver.LoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.LoadSteps.error
+OK: audit03.numeric.Solver.Solver.LoadSteps.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.LoadSteps|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.LoadSteps содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.LoadSteps.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.ToleranceN.error
+OK: audit03.numeric.Solver.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceN|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceN.error
+OK: audit03.numeric.Solver.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceN|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceN.error
+OK: audit03.numeric.Solver.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceN|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceN должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceN.error
+OK: audit03.numeric.Solver.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceN|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceN содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.ToleranceN.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.ToleranceMx.error
+OK: audit03.numeric.Solver.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceMx|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceMx.error
+OK: audit03.numeric.Solver.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceMx|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceMx.error
+OK: audit03.numeric.Solver.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceMx|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceMx должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceMx.error
+OK: audit03.numeric.Solver.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceMx|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceMx содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.ToleranceMx.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.ToleranceMy.error
+OK: audit03.numeric.Solver.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceMy|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceMy.error
+OK: audit03.numeric.Solver.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceMy|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceMy.error
+OK: audit03.numeric.Solver.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceMy|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceMy должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.ToleranceMy.error
+OK: audit03.numeric.Solver.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.ToleranceMy|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceMy содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.ToleranceMy.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.DampingInitial.error
+OK: audit03.numeric.Solver.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.DampingInitial|value=|error=-2147217194|reason=Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.DampingInitial.error
+OK: audit03.numeric.Solver.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.DampingInitial|value=TODO|error=-2147217194|reason=Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.DampingInitial.error
+OK: audit03.numeric.Solver.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.DampingInitial|value=abc|error=-2147217192|reason=Настройка Solver.DampingInitial должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.DampingInitial.error
+OK: audit03.numeric.Solver.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.DampingInitial|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.DampingInitial содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.DampingInitial.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MinLineSearchAlpha|value=|error=-2147217194|reason=Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MinLineSearchAlpha|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MinLineSearchAlpha|value=abc|error=-2147217192|reason=Настройка Solver.MinLineSearchAlpha должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MinLineSearchAlpha|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MinLineSearchAlpha содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.MinLineSearchAlpha.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxDeltaEpsilon0|value=|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxDeltaEpsilon0|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxDeltaEpsilon0|value=abc|error=-2147217192|reason=Настройка Solver.MaxDeltaEpsilon0 должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxDeltaEpsilon0|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxDeltaEpsilon0 содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxDeltaKappa|value=|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxDeltaKappa|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxDeltaKappa|value=abc|error=-2147217192|reason=Настройка Solver.MaxDeltaKappa должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.MaxDeltaKappa|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxDeltaKappa содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.MaxDeltaKappa.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.SecantMaxRestarts|value=|error=-2147217194|reason=Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.SecantMaxRestarts|value=TODO|error=-2147217194|reason=Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.SecantMaxRestarts|value=abc|error=-2147217192|reason=Настройка Solver.SecantMaxRestarts должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.SecantMaxRestarts|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.SecantMaxRestarts содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.SecantMaxRestarts.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.SecantMinStepNorm|value=|error=-2147217194|reason=Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.SecantMinStepNorm|value=TODO|error=-2147217194|reason=Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.SecantMinStepNorm|value=abc|error=-2147217192|reason=Настройка Solver.SecantMinStepNorm должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Solver|key=Solver.SecantMinStepNorm|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.SecantMinStepNorm содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Solver.Solver.SecantMinStepNorm.parsable
+OK: audit03.numeric.Solver.optionalAbsent
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.error
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.InitialLambda|value=|error=-2147217194|reason=Числовая настройка Capacity.InitialLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.error
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.InitialLambda|value=TODO|error=-2147217194|reason=Числовая настройка Capacity.InitialLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.error
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.InitialLambda|value=abc|error=-2147217192|reason=Настройка Capacity.InitialLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.error
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.InitialLambda|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.InitialLambda содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Capacity.InitialLambda.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.error
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.MaxLambda|value=|error=-2147217194|reason=Числовая настройка Capacity.MaxLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.error
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.MaxLambda|value=TODO|error=-2147217194|reason=Числовая настройка Capacity.MaxLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.error
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.MaxLambda|value=abc|error=-2147217192|reason=Настройка Capacity.MaxLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.error
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.MaxLambda|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.MaxLambda содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Capacity.MaxLambda.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.error
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.ToleranceLambda|value=|error=-2147217194|reason=Числовая настройка Capacity.ToleranceLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.error
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.ToleranceLambda|value=TODO|error=-2147217194|reason=Числовая настройка Capacity.ToleranceLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.error
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.ToleranceLambda|value=abc|error=-2147217192|reason=Настройка Capacity.ToleranceLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.error
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.ToleranceLambda|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.ToleranceLambda содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Capacity.ToleranceLambda.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.error
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.ToleranceStrain|value=|error=-2147217194|reason=Числовая настройка Capacity.ToleranceStrain не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.error
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.ToleranceStrain|value=TODO|error=-2147217194|reason=Числовая настройка Capacity.ToleranceStrain не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.error
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.ToleranceStrain|value=abc|error=-2147217192|reason=Настройка Capacity.ToleranceStrain должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.error
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.ToleranceStrain|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.ToleranceStrain содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Capacity.ToleranceStrain.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.error
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.MaxRetries|value=|error=-2147217194|reason=Числовая настройка Capacity.MaxRetries не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.error
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.MaxRetries|value=TODO|error=-2147217194|reason=Числовая настройка Capacity.MaxRetries не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.error
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.MaxRetries|value=abc|error=-2147217192|reason=Настройка Capacity.MaxRetries должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.error
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.MaxRetries|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.MaxRetries содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Capacity.MaxRetries.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.error
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.BaseLoadSteps|value=|error=-2147217194|reason=Числовая настройка Capacity.BaseLoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.error
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.BaseLoadSteps|value=TODO|error=-2147217194|reason=Числовая настройка Capacity.BaseLoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.error
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.BaseLoadSteps|value=abc|error=-2147217192|reason=Настройка Capacity.BaseLoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.error
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.BaseLoadSteps|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.BaseLoadSteps содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Capacity.BaseLoadSteps.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.error
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.SolverMaxIterations|value=|error=-2147217194|reason=Числовая настройка Capacity.SolverMaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.error
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.SolverMaxIterations|value=TODO|error=-2147217194|reason=Числовая настройка Capacity.SolverMaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.error
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.SolverMaxIterations|value=abc|error=-2147217192|reason=Настройка Capacity.SolverMaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.error
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.reason
+NUMERIC_INPUT: operation=Capacity|key=Capacity.SolverMaxIterations|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.SolverMaxIterations содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Capacity.SolverMaxIterations.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.ToleranceN.error
+OK: audit03.numeric.Capacity.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceN|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceN.error
+OK: audit03.numeric.Capacity.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceN|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceN.error
+OK: audit03.numeric.Capacity.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceN|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceN должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceN.error
+OK: audit03.numeric.Capacity.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceN|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceN содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.ToleranceN.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.error
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceMx|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.error
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceMx|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.error
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceMx|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceMx должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.error
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceMx|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceMx содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.ToleranceMx.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.error
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceMy|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.error
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceMy|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.error
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceMy|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceMy должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.error
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.ToleranceMy|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceMy содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.ToleranceMy.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.DampingInitial.error
+OK: audit03.numeric.Capacity.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.DampingInitial|value=|error=-2147217194|reason=Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.DampingInitial.error
+OK: audit03.numeric.Capacity.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.DampingInitial|value=TODO|error=-2147217194|reason=Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.DampingInitial.error
+OK: audit03.numeric.Capacity.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.DampingInitial|value=abc|error=-2147217192|reason=Настройка Solver.DampingInitial должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.DampingInitial.error
+OK: audit03.numeric.Capacity.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.DampingInitial|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.DampingInitial содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.DampingInitial.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MinLineSearchAlpha|value=|error=-2147217194|reason=Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MinLineSearchAlpha|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MinLineSearchAlpha|value=abc|error=-2147217192|reason=Настройка Solver.MinLineSearchAlpha должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MinLineSearchAlpha|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MinLineSearchAlpha содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MaxDeltaEpsilon0|value=|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MaxDeltaEpsilon0|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MaxDeltaEpsilon0|value=abc|error=-2147217192|reason=Настройка Solver.MaxDeltaEpsilon0 должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MaxDeltaEpsilon0|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxDeltaEpsilon0 содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MaxDeltaKappa|value=|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MaxDeltaKappa|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MaxDeltaKappa|value=abc|error=-2147217192|reason=Настройка Solver.MaxDeltaKappa должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.MaxDeltaKappa|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxDeltaKappa содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.MaxDeltaKappa.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.SecantMaxRestarts|value=|error=-2147217194|reason=Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.SecantMaxRestarts|value=TODO|error=-2147217194|reason=Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.SecantMaxRestarts|value=abc|error=-2147217192|reason=Настройка Solver.SecantMaxRestarts должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.SecantMaxRestarts|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.SecantMaxRestarts содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.SecantMaxRestarts.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.SecantMinStepNorm|value=|error=-2147217194|reason=Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.SecantMinStepNorm|value=TODO|error=-2147217194|reason=Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.SecantMinStepNorm|value=abc|error=-2147217192|reason=Настройка Solver.SecantMinStepNorm должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Capacity|key=Solver.SecantMinStepNorm|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.SecantMinStepNorm содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Capacity.Solver.SecantMinStepNorm.parsable
+OK: audit03.numeric.Capacity.optionalAbsent
+OK: audit03.numeric.Formation.Solver.MaxIterations.error
+OK: audit03.numeric.Formation.Solver.MaxIterations.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxIterations|value=|error=-2147217194|reason=Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxIterations.error
+OK: audit03.numeric.Formation.Solver.MaxIterations.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxIterations|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxIterations.error
+OK: audit03.numeric.Formation.Solver.MaxIterations.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxIterations|value=abc|error=-2147217192|reason=Настройка Solver.MaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxIterations.error
+OK: audit03.numeric.Formation.Solver.MaxIterations.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxIterations|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxIterations содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.MaxIterations.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.LoadSteps.error
+OK: audit03.numeric.Formation.Solver.LoadSteps.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.LoadSteps|value=|error=-2147217194|reason=Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.LoadSteps.error
+OK: audit03.numeric.Formation.Solver.LoadSteps.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.LoadSteps|value=TODO|error=-2147217194|reason=Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.LoadSteps.error
+OK: audit03.numeric.Formation.Solver.LoadSteps.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.LoadSteps|value=abc|error=-2147217192|reason=Настройка Solver.LoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.LoadSteps.error
+OK: audit03.numeric.Formation.Solver.LoadSteps.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.LoadSteps|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.LoadSteps содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.LoadSteps.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.ToleranceN.error
+OK: audit03.numeric.Formation.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceN|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceN.error
+OK: audit03.numeric.Formation.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceN|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceN.error
+OK: audit03.numeric.Formation.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceN|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceN должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceN.error
+OK: audit03.numeric.Formation.Solver.ToleranceN.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceN|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceN содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.ToleranceN.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.ToleranceMx.error
+OK: audit03.numeric.Formation.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceMx|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceMx.error
+OK: audit03.numeric.Formation.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceMx|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceMx.error
+OK: audit03.numeric.Formation.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceMx|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceMx должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceMx.error
+OK: audit03.numeric.Formation.Solver.ToleranceMx.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceMx|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceMx содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.ToleranceMx.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.ToleranceMy.error
+OK: audit03.numeric.Formation.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceMy|value=|error=-2147217194|reason=Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceMy.error
+OK: audit03.numeric.Formation.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceMy|value=TODO|error=-2147217194|reason=Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceMy.error
+OK: audit03.numeric.Formation.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceMy|value=abc|error=-2147217192|reason=Настройка Solver.ToleranceMy должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.ToleranceMy.error
+OK: audit03.numeric.Formation.Solver.ToleranceMy.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.ToleranceMy|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceMy содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.ToleranceMy.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.DampingInitial.error
+OK: audit03.numeric.Formation.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.DampingInitial|value=|error=-2147217194|reason=Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.DampingInitial.error
+OK: audit03.numeric.Formation.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.DampingInitial|value=TODO|error=-2147217194|reason=Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.DampingInitial.error
+OK: audit03.numeric.Formation.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.DampingInitial|value=abc|error=-2147217192|reason=Настройка Solver.DampingInitial должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.DampingInitial.error
+OK: audit03.numeric.Formation.Solver.DampingInitial.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.DampingInitial|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.DampingInitial содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.DampingInitial.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MinLineSearchAlpha|value=|error=-2147217194|reason=Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MinLineSearchAlpha|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MinLineSearchAlpha|value=abc|error=-2147217192|reason=Настройка Solver.MinLineSearchAlpha должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.error
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MinLineSearchAlpha|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MinLineSearchAlpha содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.MinLineSearchAlpha.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxDeltaEpsilon0|value=|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxDeltaEpsilon0|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxDeltaEpsilon0|value=abc|error=-2147217192|reason=Настройка Solver.MaxDeltaEpsilon0 должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.error
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxDeltaEpsilon0|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxDeltaEpsilon0 содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxDeltaKappa|value=|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxDeltaKappa|value=TODO|error=-2147217194|reason=Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxDeltaKappa|value=abc|error=-2147217192|reason=Настройка Solver.MaxDeltaKappa должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.error
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.MaxDeltaKappa|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxDeltaKappa содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.MaxDeltaKappa.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.SecantMaxRestarts|value=|error=-2147217194|reason=Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.SecantMaxRestarts|value=TODO|error=-2147217194|reason=Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.SecantMaxRestarts|value=abc|error=-2147217192|reason=Настройка Solver.SecantMaxRestarts должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.error
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.SecantMaxRestarts|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.SecantMaxRestarts содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.SecantMaxRestarts.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.SecantMinStepNorm|value=|error=-2147217194|reason=Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.SecantMinStepNorm|value=TODO|error=-2147217194|reason=Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.SecantMinStepNorm|value=abc|error=-2147217192|reason=Настройка Solver.SecantMinStepNorm должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.error
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.reason
+NUMERIC_INPUT: operation=Formation|key=Solver.SecantMinStepNorm|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.SecantMinStepNorm содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Formation.Solver.SecantMinStepNorm.parsable
+OK: audit03.numeric.Formation.optionalAbsent
+OK: audit03.numeric.optionalDiameterBlank; actual=0.; expected=0.
+OK: audit03.numeric.optionalKeyDefault; actual=17.; expected=17.
+OK: audit03.numeric.Batch.Solver.MaxIterations..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxIterations..typed
+OK: audit03.numeric.Batch.Solver.MaxIterations..reason
+OK: audit03.numeric.Batch.Solver.MaxIterations..noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxIterations..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxIterations|value=|status=InputErr|reason=НДС: Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxIterations.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxIterations.TODO.typed
+OK: audit03.numeric.Batch.Solver.MaxIterations.TODO.reason
+OK: audit03.numeric.Batch.Solver.MaxIterations.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxIterations.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxIterations|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.MaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxIterations.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxIterations.abc.typed
+OK: audit03.numeric.Batch.Solver.MaxIterations.abc.reason
+OK: audit03.numeric.Batch.Solver.MaxIterations.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxIterations.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxIterations|value=abc|status=InputErr|reason=НДС: Настройка Solver.MaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.MaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.MaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxIterations.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.MaxIterations.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.MaxIterations|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxIterations содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.LoadSteps..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.LoadSteps..typed
+OK: audit03.numeric.Batch.Solver.LoadSteps..reason
+OK: audit03.numeric.Batch.Solver.LoadSteps..noDirectSolve
+OK: audit03.numeric.Batch.Solver.LoadSteps..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.LoadSteps|value=|status=InputErr|reason=НДС: Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.LoadSteps.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.LoadSteps.TODO.typed
+OK: audit03.numeric.Batch.Solver.LoadSteps.TODO.reason
+OK: audit03.numeric.Batch.Solver.LoadSteps.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.LoadSteps.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.LoadSteps|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.LoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.LoadSteps.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.LoadSteps.abc.typed
+OK: audit03.numeric.Batch.Solver.LoadSteps.abc.reason
+OK: audit03.numeric.Batch.Solver.LoadSteps.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.LoadSteps.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.LoadSteps|value=abc|status=InputErr|reason=НДС: Настройка Solver.LoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.LoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.LoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.LoadSteps.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.LoadSteps.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.LoadSteps|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.LoadSteps содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.ToleranceN..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceN..typed
+OK: audit03.numeric.Batch.Solver.ToleranceN..reason
+OK: audit03.numeric.Batch.Solver.ToleranceN..noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceN..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceN|value=|status=InputErr|reason=НДС: Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceN.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceN.TODO.typed
+OK: audit03.numeric.Batch.Solver.ToleranceN.TODO.reason
+OK: audit03.numeric.Batch.Solver.ToleranceN.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceN.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceN|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.ToleranceN не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceN.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceN.abc.typed
+OK: audit03.numeric.Batch.Solver.ToleranceN.abc.reason
+OK: audit03.numeric.Batch.Solver.ToleranceN.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceN.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceN|value=abc|status=InputErr|reason=НДС: Настройка Solver.ToleranceN должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.ToleranceN должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.ToleranceN должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceN.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.ToleranceN.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.ToleranceN|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceN содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.ToleranceMx..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceMx..typed
+OK: audit03.numeric.Batch.Solver.ToleranceMx..reason
+OK: audit03.numeric.Batch.Solver.ToleranceMx..noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceMx..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceMx|value=|status=InputErr|reason=НДС: Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceMx.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceMx.TODO.typed
+OK: audit03.numeric.Batch.Solver.ToleranceMx.TODO.reason
+OK: audit03.numeric.Batch.Solver.ToleranceMx.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceMx.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceMx|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.ToleranceMx не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceMx.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceMx.abc.typed
+OK: audit03.numeric.Batch.Solver.ToleranceMx.abc.reason
+OK: audit03.numeric.Batch.Solver.ToleranceMx.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceMx.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceMx|value=abc|status=InputErr|reason=НДС: Настройка Solver.ToleranceMx должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.ToleranceMx должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.ToleranceMx должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceMx.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.ToleranceMx.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.ToleranceMx|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceMx содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.ToleranceMy..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceMy..typed
+OK: audit03.numeric.Batch.Solver.ToleranceMy..reason
+OK: audit03.numeric.Batch.Solver.ToleranceMy..noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceMy..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceMy|value=|status=InputErr|reason=НДС: Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceMy.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceMy.TODO.typed
+OK: audit03.numeric.Batch.Solver.ToleranceMy.TODO.reason
+OK: audit03.numeric.Batch.Solver.ToleranceMy.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceMy.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceMy|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.ToleranceMy не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceMy.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.ToleranceMy.abc.typed
+OK: audit03.numeric.Batch.Solver.ToleranceMy.abc.reason
+OK: audit03.numeric.Batch.Solver.ToleranceMy.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.ToleranceMy.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.ToleranceMy|value=abc|status=InputErr|reason=НДС: Настройка Solver.ToleranceMy должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.ToleranceMy должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.ToleranceMy должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.ToleranceMy.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.ToleranceMy.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.ToleranceMy|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.ToleranceMy содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.DampingInitial..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.DampingInitial..typed
+OK: audit03.numeric.Batch.Solver.DampingInitial..reason
+OK: audit03.numeric.Batch.Solver.DampingInitial..noDirectSolve
+OK: audit03.numeric.Batch.Solver.DampingInitial..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.DampingInitial|value=|status=InputErr|reason=НДС: Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.DampingInitial.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.DampingInitial.TODO.typed
+OK: audit03.numeric.Batch.Solver.DampingInitial.TODO.reason
+OK: audit03.numeric.Batch.Solver.DampingInitial.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.DampingInitial.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.DampingInitial|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.DampingInitial не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.DampingInitial.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.DampingInitial.abc.typed
+OK: audit03.numeric.Batch.Solver.DampingInitial.abc.reason
+OK: audit03.numeric.Batch.Solver.DampingInitial.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.DampingInitial.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.DampingInitial|value=abc|status=InputErr|reason=НДС: Настройка Solver.DampingInitial должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.DampingInitial должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.DampingInitial должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.DampingInitial.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.DampingInitial.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.DampingInitial|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.DampingInitial содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha..typed
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha..reason
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha..noDirectSolve
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MinLineSearchAlpha|value=|status=InputErr|reason=НДС: Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.typed
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.reason
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MinLineSearchAlpha|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.MinLineSearchAlpha не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.abc.typed
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.abc.reason
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MinLineSearchAlpha|value=abc|status=InputErr|reason=НДС: Настройка Solver.MinLineSearchAlpha должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.MinLineSearchAlpha должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.MinLineSearchAlpha должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.MinLineSearchAlpha.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.MinLineSearchAlpha|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MinLineSearchAlpha содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..typed
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..reason
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxDeltaEpsilon0|value=|status=InputErr|reason=НДС: Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.typed
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.reason
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxDeltaEpsilon0|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.MaxDeltaEpsilon0 не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.abc.typed
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.abc.reason
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxDeltaEpsilon0|value=abc|status=InputErr|reason=НДС: Настройка Solver.MaxDeltaEpsilon0 должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.MaxDeltaEpsilon0 должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.MaxDeltaEpsilon0 должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.MaxDeltaEpsilon0|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxDeltaEpsilon0 содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa..typed
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa..reason
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa..noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxDeltaKappa|value=|status=InputErr|reason=НДС: Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.typed
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.reason
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxDeltaKappa|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.MaxDeltaKappa не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.abc.typed
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.abc.reason
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.MaxDeltaKappa|value=abc|status=InputErr|reason=НДС: Настройка Solver.MaxDeltaKappa должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.MaxDeltaKappa должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.MaxDeltaKappa должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.MaxDeltaKappa.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.MaxDeltaKappa|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.MaxDeltaKappa содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts..typed
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts..reason
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts..noDirectSolve
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.SecantMaxRestarts|value=|status=InputErr|reason=НДС: Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.typed
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.reason
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.SecantMaxRestarts|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.SecantMaxRestarts не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.abc.typed
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.abc.reason
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.SecantMaxRestarts|value=abc|status=InputErr|reason=НДС: Настройка Solver.SecantMaxRestarts должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.SecantMaxRestarts должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.SecantMaxRestarts должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.SecantMaxRestarts.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.SecantMaxRestarts|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.SecantMaxRestarts содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm..status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm..typed
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm..reason
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm..noDirectSolve
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.SecantMinStepNorm|value=|status=InputErr|reason=НДС: Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.typed
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.reason
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.SecantMinStepNorm|value=TODO|status=InputErr|reason=НДС: Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Solver.SecantMinStepNorm не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.abc.typed
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.abc.reason
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.abc.noDirectSolve
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Solver.SecantMinStepNorm|value=abc|status=InputErr|reason=НДС: Настройка Solver.SecantMinStepNorm должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Solver.SecantMinStepNorm должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Solver.SecantMinStepNorm должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.Error 2042.readerError
+OK: audit03.numeric.Batch.Solver.SecantMinStepNorm.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Solver.SecantMinStepNorm|value=Error 2042|error=-2147217195|reason=На листе Config настройка Solver.SecantMinStepNorm содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Capacity.InitialLambda..status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.InitialLambda..typed
+OK: audit03.numeric.Batch.Capacity.InitialLambda..reason
+OK: audit03.numeric.Batch.Capacity.InitialLambda..noDirectSolve
+OK: audit03.numeric.Batch.Capacity.InitialLambda..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.InitialLambda|value=|status=InputErr|reason=НДС: Числовая настройка Capacity.InitialLambda не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.InitialLambda не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.InitialLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.InitialLambda.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.InitialLambda.TODO.typed
+OK: audit03.numeric.Batch.Capacity.InitialLambda.TODO.reason
+OK: audit03.numeric.Batch.Capacity.InitialLambda.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.InitialLambda.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.InitialLambda|value=TODO|status=InputErr|reason=НДС: Числовая настройка Capacity.InitialLambda не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.InitialLambda не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.InitialLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.InitialLambda.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.InitialLambda.abc.typed
+OK: audit03.numeric.Batch.Capacity.InitialLambda.abc.reason
+OK: audit03.numeric.Batch.Capacity.InitialLambda.abc.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.InitialLambda.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.InitialLambda|value=abc|status=InputErr|reason=НДС: Настройка Capacity.InitialLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Capacity.InitialLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Capacity.InitialLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.InitialLambda.Error 2042.readerError
+OK: audit03.numeric.Batch.Capacity.InitialLambda.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Capacity.InitialLambda|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.InitialLambda содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Capacity.MaxLambda..status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.MaxLambda..typed
+OK: audit03.numeric.Batch.Capacity.MaxLambda..reason
+OK: audit03.numeric.Batch.Capacity.MaxLambda..noDirectSolve
+OK: audit03.numeric.Batch.Capacity.MaxLambda..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.MaxLambda|value=|status=InputErr|reason=НДС: Числовая настройка Capacity.MaxLambda не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.MaxLambda не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.MaxLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.MaxLambda.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.MaxLambda.TODO.typed
+OK: audit03.numeric.Batch.Capacity.MaxLambda.TODO.reason
+OK: audit03.numeric.Batch.Capacity.MaxLambda.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.MaxLambda.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.MaxLambda|value=TODO|status=InputErr|reason=НДС: Числовая настройка Capacity.MaxLambda не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.MaxLambda не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.MaxLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.MaxLambda.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.MaxLambda.abc.typed
+OK: audit03.numeric.Batch.Capacity.MaxLambda.abc.reason
+OK: audit03.numeric.Batch.Capacity.MaxLambda.abc.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.MaxLambda.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.MaxLambda|value=abc|status=InputErr|reason=НДС: Настройка Capacity.MaxLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Capacity.MaxLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Capacity.MaxLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.MaxLambda.Error 2042.readerError
+OK: audit03.numeric.Batch.Capacity.MaxLambda.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Capacity.MaxLambda|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.MaxLambda содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda..status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda..typed
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda..reason
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda..noDirectSolve
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.ToleranceLambda|value=|status=InputErr|reason=НДС: Числовая настройка Capacity.ToleranceLambda не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.ToleranceLambda не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.ToleranceLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.typed
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.reason
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.ToleranceLambda|value=TODO|status=InputErr|reason=НДС: Числовая настройка Capacity.ToleranceLambda не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.ToleranceLambda не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.ToleranceLambda не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.abc.typed
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.abc.reason
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.abc.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.ToleranceLambda|value=abc|status=InputErr|reason=НДС: Настройка Capacity.ToleranceLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Capacity.ToleranceLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Capacity.ToleranceLambda должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.Error 2042.readerError
+OK: audit03.numeric.Batch.Capacity.ToleranceLambda.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Capacity.ToleranceLambda|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.ToleranceLambda содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain..status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain..typed
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain..reason
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain..noDirectSolve
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.ToleranceStrain|value=|status=InputErr|reason=НДС: Числовая настройка Capacity.ToleranceStrain не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.ToleranceStrain не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.ToleranceStrain не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.typed
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.reason
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.ToleranceStrain|value=TODO|status=InputErr|reason=НДС: Числовая настройка Capacity.ToleranceStrain не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.ToleranceStrain не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.ToleranceStrain не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.abc.typed
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.abc.reason
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.abc.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.ToleranceStrain|value=abc|status=InputErr|reason=НДС: Настройка Capacity.ToleranceStrain должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Capacity.ToleranceStrain должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Capacity.ToleranceStrain должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.Error 2042.readerError
+OK: audit03.numeric.Batch.Capacity.ToleranceStrain.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Capacity.ToleranceStrain|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.ToleranceStrain содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Capacity.MaxRetries..status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.MaxRetries..typed
+OK: audit03.numeric.Batch.Capacity.MaxRetries..reason
+OK: audit03.numeric.Batch.Capacity.MaxRetries..noDirectSolve
+OK: audit03.numeric.Batch.Capacity.MaxRetries..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.MaxRetries|value=|status=InputErr|reason=НДС: Числовая настройка Capacity.MaxRetries не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.MaxRetries не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.MaxRetries не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.MaxRetries.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.MaxRetries.TODO.typed
+OK: audit03.numeric.Batch.Capacity.MaxRetries.TODO.reason
+OK: audit03.numeric.Batch.Capacity.MaxRetries.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.MaxRetries.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.MaxRetries|value=TODO|status=InputErr|reason=НДС: Числовая настройка Capacity.MaxRetries не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.MaxRetries не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.MaxRetries не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.MaxRetries.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.MaxRetries.abc.typed
+OK: audit03.numeric.Batch.Capacity.MaxRetries.abc.reason
+OK: audit03.numeric.Batch.Capacity.MaxRetries.abc.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.MaxRetries.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.MaxRetries|value=abc|status=InputErr|reason=НДС: Настройка Capacity.MaxRetries должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Capacity.MaxRetries должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Capacity.MaxRetries должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.MaxRetries.Error 2042.readerError
+OK: audit03.numeric.Batch.Capacity.MaxRetries.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Capacity.MaxRetries|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.MaxRetries содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps..status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps..typed
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps..reason
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps..noDirectSolve
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.BaseLoadSteps|value=|status=InputErr|reason=НДС: Числовая настройка Capacity.BaseLoadSteps не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.BaseLoadSteps не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.BaseLoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.typed
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.reason
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.BaseLoadSteps|value=TODO|status=InputErr|reason=НДС: Числовая настройка Capacity.BaseLoadSteps не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.BaseLoadSteps не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.BaseLoadSteps не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.abc.typed
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.abc.reason
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.abc.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.BaseLoadSteps|value=abc|status=InputErr|reason=НДС: Настройка Capacity.BaseLoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Capacity.BaseLoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Capacity.BaseLoadSteps должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.Error 2042.readerError
+OK: audit03.numeric.Batch.Capacity.BaseLoadSteps.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Capacity.BaseLoadSteps|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.BaseLoadSteps содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations..status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations..typed
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations..reason
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations..noDirectSolve
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations..noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.SolverMaxIterations|value=|status=InputErr|reason=НДС: Числовая настройка Capacity.SolverMaxIterations не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.SolverMaxIterations не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.SolverMaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.typed
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.reason
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.SolverMaxIterations|value=TODO|status=InputErr|reason=НДС: Числовая настройка Capacity.SolverMaxIterations не задана. Заполните значение или формулу на листе Config.; Несущая: Числовая настройка Capacity.SolverMaxIterations не задана. Заполните значение или формулу на листе Config.; Устойчивость: Числовая настройка Capacity.SolverMaxIterations не задана. Заполните значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.abc.status; actual=InputErr
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.abc.typed
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.abc.reason
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.abc.noDirectSolve
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.abc.noCapacitySearch
+NUMERIC_INPUT: operation=Batch|key=Capacity.SolverMaxIterations|value=abc|status=InputErr|reason=НДС: Настройка Capacity.SolverMaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Несущая: Настройка Capacity.SolverMaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.; Устойчивость: Настройка Capacity.SolverMaxIterations должна быть числом, но сейчас прочитано: "abc". Проверьте значение или формулу на листе Config.
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.Error 2042.readerError
+OK: audit03.numeric.Batch.Capacity.SolverMaxIterations.Error 2042.readerReason
+NUMERIC_INPUT: operation=BatchReader|key=Capacity.SolverMaxIterations|value=Error 2042|error=-2147217195|reason=На листе Config настройка Capacity.SolverMaxIterations содержит ошибку Excel в колонке "значение". Проверьте формулу или замените ее числом/текстом.
+OK: audit03.numeric.Batch.restoredStatus
+OK: audit03.numeric.Batch.restoredSolve
+TOTAL_AUDIT03_NUMERIC_SETTINGS_INPUT: passed=690; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03NumericSettingsInputTests; 2026-10-02T07:09:04
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

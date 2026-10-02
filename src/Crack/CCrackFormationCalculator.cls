@@ -118,25 +118,26 @@ End Sub
 ' Загружает только те настройки, которые нужны расчету трещин и внутренним
 ' прямым solve. Все пользовательские единицы сразу переводятся во внутренние
 ' мм, Н, Н*мм и МПа; дальше класс работает как часть расчетного ядра.
+' Явно пустой численный Solver-параметр отклоняется как ошибка Config.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
 
     mCrackFormationPath = settings.GetString("SLS.Crack.InitiationLoadPath", mCrackFormationPath)
     mCrackFormationSolutionStrategy = settings.GetString("SLS.Crack.InitiationSolutionStrategy", mCrackFormationSolutionStrategy)
 
-    mSolverMaxIterations = settings.GetLong("Solver.MaxIterations", mSolverMaxIterations)
-    mSolverLoadSteps = settings.GetLong("Solver.LoadSteps", mSolverLoadSteps)
-    mSolverToleranceN = settings.GetDouble("Solver.ToleranceN", mSolverToleranceN)
-    mSolverToleranceMx = settings.GetDouble("Solver.ToleranceMx", mSolverToleranceMx)
-    mSolverToleranceMy = settings.GetDouble("Solver.ToleranceMy", mSolverToleranceMy)
+    mSolverMaxIterations = settings.GetLong("Solver.MaxIterations", mSolverMaxIterations, False)
+    mSolverLoadSteps = settings.GetLong("Solver.LoadSteps", mSolverLoadSteps, False)
+    mSolverToleranceN = settings.GetDouble("Solver.ToleranceN", mSolverToleranceN, False)
+    mSolverToleranceMx = settings.GetDouble("Solver.ToleranceMx", mSolverToleranceMx, False)
+    mSolverToleranceMy = settings.GetDouble("Solver.ToleranceMy", mSolverToleranceMy, False)
     mSolverLineSearchEnabled = settings.GetBoolean("Solver.LineSearchEnabled", mSolverLineSearchEnabled)
-    mSolverDampingInitial = settings.GetDouble("Solver.DampingInitial", mSolverDampingInitial)
-    mSolverMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mSolverMinLineSearchAlpha)
-    mSolverMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mSolverMaxDeltaEpsilon0)
-    mSolverMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mSolverMaxDeltaKappa)
+    mSolverDampingInitial = settings.GetDouble("Solver.DampingInitial", mSolverDampingInitial, False)
+    mSolverMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mSolverMinLineSearchAlpha, False)
+    mSolverMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mSolverMaxDeltaEpsilon0, False)
+    mSolverMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mSolverMaxDeltaKappa, False)
     If settings.HasKey("Solver.Method") Then mSolverMethod = settings.GetRawString("Solver.Method", mSolverMethod)
-    mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts)
-    mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm)
+    mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts, False)
+    mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm, False)
 
     If Not units Is Nothing Then
         mSolverToleranceN = Abs(units.InputForceToInternal(mSolverToleranceN))

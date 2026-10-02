@@ -875,10 +875,21 @@ Public Function GetRawString(ByVal key As String, Optional ByVal defaultValue As
     End If
 End Function
 
-' Возвращает настройку как Double, учитывая десятичный разделитель Excel.
-Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Double = 0#) As Double
+' Возвращает Double с учетом десятичного разделителя Excel. Для optional
+' параметров пустое значение допускается; allowBlankValue=False запрещает
+' скрытый default для явно заданной пустой/TODO ячейки, но не для отсутствующего key.
+Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Double = 0#, _
+        Optional ByVal allowBlankValue As Boolean = True) As Double
     Dim textValue As String
-    textValue = GetString(key, vbNullString)
+    If Not allowBlankValue And HasKey(key) Then
+        textValue = Trim$(GetRawString(key))
+        If Len(textValue) = 0 Or UCase$(textValue) = "TODO" Then
+            Err.Raise vbObjectError + 4310, "CSystemSettingsReader.GetDouble", _
+                "Числовая настройка " & key & " не задана. Заполните значение или формулу на листе Config."
+        End If
+    Else
+        textValue = GetString(key, vbNullString)
+    End If
     If Len(textValue) = 0 Then
         GetDouble = defaultValue
     Else
@@ -926,11 +937,12 @@ Public Function GetRequiredString(ByVal key As String) As String
     GetRequiredString = textValue
 End Function
 
-' Читает целочисленную настройку без округления дроби и без переполнения Long.
-' Допустимость знака и диапазона конкретного параметра проверяет его consumer.
-Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long = 0) As Long
+' Читает Long без округления дроби и переполнения. Контракт пустой ячейки
+' передается общему числовому reader-у; знак и инженерный диапазон проверяет consumer.
+Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long = 0, _
+        Optional ByVal allowBlankValue As Boolean = True) As Long
     Dim value As Double
-    value = GetDouble(key, CDbl(defaultValue))
+    value = GetDouble(key, CDbl(defaultValue), allowBlankValue)
     If value < -2147483648# Or value > 2147483647# Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
         "Настройка " & key & " должна быть целым числом в диапазоне Long; прочитанное значение выходит за этот диапазон."
     If value <> Fix(value) Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _

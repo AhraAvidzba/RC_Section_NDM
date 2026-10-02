@@ -114,26 +114,27 @@ End Sub
 ' ------------------------------
 ' Забирает численные параметры из CSystemSettingsReader. Если передан
 ' CUnitSystem, пользовательские допуски переводятся во внутренние единицы,
-' чтобы дальше solver работал только в одной системе.
+' чтобы дальше solver работал только в одной системе. Явно пустые численные
+' Solver-настройки являются ошибкой ввода, а не запросом на default.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
-    mMaxIterations = settings.GetLong("Solver.MaxIterations", mMaxIterations)
-    mLoadSteps = settings.GetLong("Solver.LoadSteps", mLoadSteps)
-    mToleranceN = settings.GetDouble("Solver.ToleranceN", mToleranceN)
-    mToleranceMx = settings.GetDouble("Solver.ToleranceMx", mToleranceMx)
-    mToleranceMy = settings.GetDouble("Solver.ToleranceMy", mToleranceMy)
+    mMaxIterations = settings.GetLong("Solver.MaxIterations", mMaxIterations, False)
+    mLoadSteps = settings.GetLong("Solver.LoadSteps", mLoadSteps, False)
+    mToleranceN = settings.GetDouble("Solver.ToleranceN", mToleranceN, False)
+    mToleranceMx = settings.GetDouble("Solver.ToleranceMx", mToleranceMx, False)
+    mToleranceMy = settings.GetDouble("Solver.ToleranceMy", mToleranceMy, False)
     mLineSearchEnabled = settings.GetBoolean("Solver.LineSearchEnabled", mLineSearchEnabled)
-    mDampingInitial = settings.GetDouble("Solver.DampingInitial", mDampingInitial)
-    mMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mMinLineSearchAlpha)
-    mMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mMaxDeltaEpsilon0)
-    mMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mMaxDeltaKappa)
+    mDampingInitial = settings.GetDouble("Solver.DampingInitial", mDampingInitial, False)
+    mMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mMinLineSearchAlpha, False)
+    mMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mMaxDeltaEpsilon0, False)
+    mMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mMaxDeltaKappa, False)
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
     Else
         mSolverMethod = "Newton"
     End If
-    mSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSecantMaxRestarts)
-    mSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSecantMinStepNorm)
+    mSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSecantMaxRestarts, False)
+    mSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSecantMinStepNorm, False)
     If Not units Is Nothing Then
         mToleranceN = Abs(units.InputForceToInternal(mToleranceN))
         mToleranceMx = Abs(units.InputMomentMxToInternal(mToleranceMx))

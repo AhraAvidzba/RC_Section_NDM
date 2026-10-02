@@ -37,6 +37,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03ReaderContract stats
     TestAudit03InputContracts stats
     TestAudit03ProfileInputContracts stats
+    TestAudit03NumericSettingsInputContracts stats
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -4509,9 +4510,10 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
     Dim settings As CSystemSettingsReader, profiles As CCalculationProfileCatalog
     Dim mesh As CFiberMeshBuilder, geometry As CGeometryRoundedRectangle
     Dim solver As CSectionSolver, registry As CSectionTypeRegistry
+    Dim capacity As CCapacitySolver, formation As CCrackFormationCalculator
     Dim flag As Boolean, integerValue As Long
     Select Case operation
-        Case "Settings", "Boolean", "Long", "Solver", "MeshRegistry"
+        Case "Settings", "Boolean", "Long", "Solver", "MeshRegistry", "Capacity", "Formation"
             Set settings = New CSystemSettingsReader
             settings.LoadFromRange source
             If operation = "Boolean" Then flag = settings.GetBoolean("Audit03.Test", True)
@@ -4519,6 +4521,14 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
             If operation = "Solver" Then
                 Set solver = New CSectionSolver
                 solver.ApplySettings settings
+            End If
+            If operation = "Capacity" Then
+                Set capacity = New CCapacitySolver
+                capacity.ApplySettings settings
+            End If
+            If operation = "Formation" Then
+                Set formation = New CCrackFormationCalculator
+                formation.ApplySettings settings
             End If
             If operation = "MeshRegistry" Then
                 Set registry = New CSectionTypeRegistry
@@ -4641,6 +4651,179 @@ Private Function Audit03ProfileFlag(ByVal profile As CCalculationProfile, ByVal 
         Case Else: Err.Raise vbObjectError + 4499, "Audit03ProfileFlag", "Неизвестный тестовый переключатель профиля."
     End Select
 End Function
+
+' ДЛЯ ТЕСТОВ: отдельный entrypoint для одинакового контрпримера до и после
+' исправления. Настройки передаются через настоящий Range и ApplySettings.
+Public Function RunAudit03NumericSettingsInputTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03NumericSettingsInputContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_NUMERIC_SETTINGS_INPUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03NumericSettingsInputTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: явная пустая/TODO численная настройка не должна возвращать
+' default. Отсутствующий optional key и пустой optional диаметр имеют другой
+' контракт; проверяем их отдельно без изменения пользовательского Config.
+Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats)
+    Dim sheet As Object, oldAlerts As Boolean, operationValue As Variant, keyValue As Variant
+    Dim key As String, operation As String, value As Variant, actualCode As Long
+    Dim description As String, expectedCode As Long, settings As CSystemSettingsReader
+    oldAlerts = Application.DisplayAlerts
+    On Error GoTo Failed
+    Set sheet = ThisWorkbook.Worksheets.Add
+    sheet.Name = "__Audit03NumericInput"
+    sheet.Range("A1").Value2 = "Key": sheet.Range("B1").Value2 = "Value": sheet.Range("C1").Value2 = "Unit"
+    For Each operationValue In Array("Solver", "Capacity", "Formation")
+        operation = CStr(operationValue)
+        For Each keyValue In Audit03NumericSettingsKeys(operation)
+            key = CStr(keyValue)
+            sheet.Range("A2").Value2 = key
+            For Each value In Array("", "TODO", "abc", CVErr(xlErrNA))
+                sheet.Range("B2").Value2 = value
+                If VarType(value) = vbError Then
+                    expectedCode = vbObjectError + 4309
+                ElseIf Len(CStr(value)) = 0 Or CStr(value) = "TODO" Then
+                    expectedCode = vbObjectError + 4310
+                Else
+                    expectedCode = vbObjectError + 4312
+                End If
+                description = vbNullString
+                actualCode = Audit03CaptureInputError(sheet.Range("A1:C2"), operation, description)
+                AssertTrue stats, "audit03.numeric." & operation & "." & key & ".error", actualCode = expectedCode
+                AssertTrue stats, "audit03.numeric." & operation & "." & key & ".reason", InStr(1, description, key, vbBinaryCompare) > 0
+                AppendLine stats, "NUMERIC_INPUT: operation=" & operation & "|key=" & key & _
+                    "|value=" & CStr(value) & "|error=" & CStr(actualCode) & "|reason=" & description
+            Next value
+            sheet.Range("B2").Value2 = 80#
+            actualCode = Audit03CaptureInputError(sheet.Range("A1:C2"), operation, description)
+            AssertTrue stats, "audit03.numeric." & operation & "." & key & ".parsable", actualCode = 0
+            sheet.Range("A2").Value2 = "Audit03.Unrelated"
+            actualCode = Audit03CaptureInputError(sheet.Range("A1:C2"), operation, description)
+            AssertTrue stats, "audit03.numeric." & operation & ".optionalAbsent", actualCode = 0
+        Next keyValue
+    Next operationValue
+    sheet.Range("A2").Value2 = "Rebar.Diameter2": sheet.Range("B2").Value2 = vbNullString
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromRange sheet.Range("A1:C2")
+    AssertClose stats, "audit03.numeric.optionalDiameterBlank", settings.GetDouble("Rebar.Diameter2"), 0#, 0#
+    AssertClose stats, "audit03.numeric.optionalKeyDefault", settings.GetDouble("Audit03.Absent", 17#), 17#, 0#
+    TestAudit03BatchNumericSettingsInput stats
+    GoTo CleanUp
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.numeric.runtime; " & CStr(Err.Number) & "; " & Err.Description
+CleanUp:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: полный список численных ключей каждого ApplySettings.
+' Общие Solver-поля и Capacity overrides проверяются по реальным маршрутам,
+' а не только прямым вызовом GetDouble. Инженерные диапазоны проверяются отдельно.
+Private Function Audit03NumericSettingsKeys(ByVal operation As String) As Variant
+    If operation = "Capacity" Then
+        Audit03NumericSettingsKeys = Array("Capacity.InitialLambda", "Capacity.MaxLambda", _
+            "Capacity.ToleranceLambda", "Capacity.ToleranceStrain", "Capacity.MaxRetries", _
+            "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", "Solver.ToleranceN", _
+            "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.DampingInitial", _
+            "Solver.MinLineSearchAlpha", "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
+            "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm")
+    ElseIf operation = "Batch" Then
+        Audit03NumericSettingsKeys = Array("Solver.MaxIterations", "Solver.LoadSteps", _
+            "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.DampingInitial", _
+            "Solver.MinLineSearchAlpha", "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
+            "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm", "Capacity.InitialLambda", _
+            "Capacity.MaxLambda", "Capacity.ToleranceLambda", "Capacity.ToleranceStrain", _
+            "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations")
+    Else
+        Audit03NumericSettingsKeys = Array("Solver.MaxIterations", "Solver.LoadSteps", _
+            "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.DampingInitial", _
+            "Solver.MinLineSearchAlpha", "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
+            "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm")
+    End If
+End Function
+
+' ДЛЯ ТЕСТОВ: Batch сохраняет ошибку ApplySettings, а не выбрасывает ее наружу.
+' Используем полный Config с обязательными параметрами устойчивости; проверяем
+' InputErr, отсутствие solve и возможность следующего запуска после восстановления.
+Private Sub TestAudit03BatchNumericSettingsInput(ByRef stats As TUiTestStats)
+    Dim target As Object, savedFormula As Variant, batch As CBatchSectionCalculator
+    Dim settings As CSystemSettingsReader, key As Variant, value As Variant, row As Long
+    Dim valueCell As Object
+    On Error GoTo Failed
+    Set target = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    savedFormula = target.Formula
+    Set batch = BuildUiBatch()
+    batch.AddCombination "NUMERIC_INPUT", 0#, 0#, 0#, "PR1", "Проверка ввода численных настроек"
+    For Each key In Audit03NumericSettingsKeys("Batch")
+        Set valueCell = Nothing
+        For row = 2 To target.Rows.Count
+            If CStr(target.Cells.Item(row, 1).Value2) = CStr(key) Then
+                Set valueCell = target.Cells.Item(row, 2)
+                Exit For
+            End If
+        Next row
+        If valueCell Is Nothing Then Err.Raise vbObjectError + 4499, _
+            "TestAudit03BatchNumericSettingsInput", "Не найден тестируемый ключ " & CStr(key)
+        For Each value In Array("", "TODO", "abc", CVErr(xlErrNA))
+            target.Formula = savedFormula
+            valueCell.Value2 = value
+            Audit03CheckBatchNumericInput stats, batch, CStr(key), value
+        Next value
+    Next key
+    target.Formula = savedFormula
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    batch.ApplySettings settings
+    batch.Execute
+    AssertTrue stats, "audit03.numeric.Batch.restoredStatus", batch.ResultAt(1).Status <> "InputErr"
+    AssertTrue stats, "audit03.numeric.Batch.restoredSolve", batch.ResultAt(1).DirectStateMeta.Calculated
+    GoTo CleanUp
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.numeric.Batch.runtime; " & CStr(Err.Number) & "; " & Err.Description
+CleanUp:
+    On Error Resume Next
+    If Not target Is Nothing Then target.Formula = savedFormula
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: различает раннюю ошибку Excel-ячейки у reader-а и сохраненный
+' отказ Batch. Ни один неверный численный ввод не должен запускать equilibrium.
+Private Sub Audit03CheckBatchNumericInput(ByRef stats As TUiTestStats, _
+        ByVal batch As CBatchSectionCalculator, ByVal key As String, ByVal value As Variant)
+    Dim settings As CSystemSettingsReader, result As CCombinationResult, prefix As String
+    Dim errorNumber As Long, description As String
+    prefix = "audit03.numeric.Batch." & key & "." & CStr(value)
+    On Error GoTo ReaderFailed
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    On Error GoTo Failed
+    batch.ApplySettings settings
+    batch.Execute
+    Set result = batch.ResultAt(1)
+    AssertTextEquals stats, prefix & ".status", result.Status, "InputErr"
+    AssertTrue stats, prefix & ".typed", result.OverallMeta.InternalStatus = rsInvalidInput
+    AssertTrue stats, prefix & ".reason", InStr(1, result.OverallMeta.ResultComment, key, vbBinaryCompare) > 0
+    AssertTrue stats, prefix & ".noDirectSolve", Not result.DirectStateMeta.Calculated
+    AssertTrue stats, prefix & ".noCapacitySearch", Not result.CapacityMeta.Calculated
+    AppendLine stats, "NUMERIC_INPUT: operation=Batch|key=" & key & "|value=" & CStr(value) & _
+        "|status=" & result.Status & "|reason=" & result.OverallMeta.ResultComment
+    Exit Sub
+ReaderFailed:
+    errorNumber = Err.Number: description = Err.Description
+    AssertTrue stats, prefix & ".readerError", VarType(value) = vbError And errorNumber = vbObjectError + 4309
+    AssertTrue stats, prefix & ".readerReason", InStr(1, description, key, vbBinaryCompare) > 0
+    AppendLine stats, "NUMERIC_INPUT: operation=BatchReader|key=" & key & "|value=" & CStr(value) & _
+        "|error=" & CStr(errorNumber) & "|reason=" & description
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: " & prefix & ".runtime; " & CStr(Err.Number) & "; " & Err.Description
+End Sub
 
 
 

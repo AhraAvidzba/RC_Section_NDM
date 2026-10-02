@@ -1,0 +1,303 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_numeric_input_negative_v43.xlsm
+SOURCE_SHA256: 2F48C12C6BB4C4D4B5765372AAF09ADFCD542C7FA41786499A4BF5F9DEA526C9
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_dee50a7f7388415883b769cdb5451e24\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.numeric.Solver.Solver.MaxIterations.error
+FAIL: audit03.numeric.Solver.Solver.MaxIterations.reason
+FAIL: audit03.numeric.Solver.Solver.MaxIterations.error
+FAIL: audit03.numeric.Solver.Solver.MaxIterations.reason
+FAIL: audit03.numeric.Solver.Solver.LoadSteps.error
+FAIL: audit03.numeric.Solver.Solver.LoadSteps.reason
+FAIL: audit03.numeric.Solver.Solver.LoadSteps.error
+FAIL: audit03.numeric.Solver.Solver.LoadSteps.reason
+FAIL: audit03.numeric.Solver.Solver.ToleranceN.error
+FAIL: audit03.numeric.Solver.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Solver.Solver.ToleranceN.error
+FAIL: audit03.numeric.Solver.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Solver.Solver.ToleranceMx.error
+FAIL: audit03.numeric.Solver.Solver.ToleranceMx.reason
+FAIL: audit03.numeric.Solver.Solver.ToleranceMx.error
+FAIL: audit03.numeric.Solver.Solver.ToleranceMx.reason
+FAIL: audit03.numeric.Solver.Solver.ToleranceMy.error
+FAIL: audit03.numeric.Solver.Solver.ToleranceMy.reason
+FAIL: audit03.numeric.Solver.Solver.ToleranceMy.error
+FAIL: audit03.numeric.Solver.Solver.ToleranceMy.reason
+FAIL: audit03.numeric.Solver.Solver.DampingInitial.error
+FAIL: audit03.numeric.Solver.Solver.DampingInitial.reason
+FAIL: audit03.numeric.Solver.Solver.DampingInitial.error
+FAIL: audit03.numeric.Solver.Solver.DampingInitial.reason
+FAIL: audit03.numeric.Solver.Solver.MinLineSearchAlpha.error
+FAIL: audit03.numeric.Solver.Solver.MinLineSearchAlpha.reason
+FAIL: audit03.numeric.Solver.Solver.MinLineSearchAlpha.error
+FAIL: audit03.numeric.Solver.Solver.MinLineSearchAlpha.reason
+FAIL: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.error
+FAIL: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.reason
+FAIL: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.error
+FAIL: audit03.numeric.Solver.Solver.MaxDeltaEpsilon0.reason
+FAIL: audit03.numeric.Solver.Solver.MaxDeltaKappa.error
+FAIL: audit03.numeric.Solver.Solver.MaxDeltaKappa.reason
+FAIL: audit03.numeric.Solver.Solver.MaxDeltaKappa.error
+FAIL: audit03.numeric.Solver.Solver.MaxDeltaKappa.reason
+FAIL: audit03.numeric.Solver.Solver.SecantMaxRestarts.error
+FAIL: audit03.numeric.Solver.Solver.SecantMaxRestarts.reason
+FAIL: audit03.numeric.Solver.Solver.SecantMaxRestarts.error
+FAIL: audit03.numeric.Solver.Solver.SecantMaxRestarts.reason
+FAIL: audit03.numeric.Solver.Solver.SecantMinStepNorm.error
+FAIL: audit03.numeric.Solver.Solver.SecantMinStepNorm.reason
+FAIL: audit03.numeric.Solver.Solver.SecantMinStepNorm.error
+FAIL: audit03.numeric.Solver.Solver.SecantMinStepNorm.reason
+FAIL: audit03.numeric.Capacity.Capacity.InitialLambda.error
+FAIL: audit03.numeric.Capacity.Capacity.InitialLambda.reason
+FAIL: audit03.numeric.Capacity.Capacity.InitialLambda.error
+FAIL: audit03.numeric.Capacity.Capacity.InitialLambda.reason
+FAIL: audit03.numeric.Capacity.Capacity.MaxLambda.error
+FAIL: audit03.numeric.Capacity.Capacity.MaxLambda.reason
+FAIL: audit03.numeric.Capacity.Capacity.MaxLambda.error
+FAIL: audit03.numeric.Capacity.Capacity.MaxLambda.reason
+FAIL: audit03.numeric.Capacity.Capacity.ToleranceLambda.error
+FAIL: audit03.numeric.Capacity.Capacity.ToleranceLambda.reason
+FAIL: audit03.numeric.Capacity.Capacity.ToleranceLambda.error
+FAIL: audit03.numeric.Capacity.Capacity.ToleranceLambda.reason
+FAIL: audit03.numeric.Capacity.Capacity.ToleranceStrain.error
+FAIL: audit03.numeric.Capacity.Capacity.ToleranceStrain.reason
+FAIL: audit03.numeric.Capacity.Capacity.ToleranceStrain.error
+FAIL: audit03.numeric.Capacity.Capacity.ToleranceStrain.reason
+FAIL: audit03.numeric.Capacity.Capacity.MaxRetries.error
+FAIL: audit03.numeric.Capacity.Capacity.MaxRetries.reason
+FAIL: audit03.numeric.Capacity.Capacity.MaxRetries.error
+FAIL: audit03.numeric.Capacity.Capacity.MaxRetries.reason
+FAIL: audit03.numeric.Capacity.Capacity.BaseLoadSteps.error
+FAIL: audit03.numeric.Capacity.Capacity.BaseLoadSteps.reason
+FAIL: audit03.numeric.Capacity.Capacity.BaseLoadSteps.error
+FAIL: audit03.numeric.Capacity.Capacity.BaseLoadSteps.reason
+FAIL: audit03.numeric.Capacity.Capacity.SolverMaxIterations.error
+FAIL: audit03.numeric.Capacity.Capacity.SolverMaxIterations.reason
+FAIL: audit03.numeric.Capacity.Capacity.SolverMaxIterations.error
+FAIL: audit03.numeric.Capacity.Capacity.SolverMaxIterations.reason
+FAIL: audit03.numeric.Capacity.Solver.ToleranceN.error
+FAIL: audit03.numeric.Capacity.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Capacity.Solver.ToleranceN.error
+FAIL: audit03.numeric.Capacity.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Capacity.Solver.ToleranceMx.error
+FAIL: audit03.numeric.Capacity.Solver.ToleranceMx.reason
+FAIL: audit03.numeric.Capacity.Solver.ToleranceMx.error
+FAIL: audit03.numeric.Capacity.Solver.ToleranceMx.reason
+FAIL: audit03.numeric.Capacity.Solver.ToleranceMy.error
+FAIL: audit03.numeric.Capacity.Solver.ToleranceMy.reason
+FAIL: audit03.numeric.Capacity.Solver.ToleranceMy.error
+FAIL: audit03.numeric.Capacity.Solver.ToleranceMy.reason
+FAIL: audit03.numeric.Capacity.Solver.DampingInitial.error
+FAIL: audit03.numeric.Capacity.Solver.DampingInitial.reason
+FAIL: audit03.numeric.Capacity.Solver.DampingInitial.error
+FAIL: audit03.numeric.Capacity.Solver.DampingInitial.reason
+FAIL: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.error
+FAIL: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.reason
+FAIL: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.error
+FAIL: audit03.numeric.Capacity.Solver.MinLineSearchAlpha.reason
+FAIL: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.error
+FAIL: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.reason
+FAIL: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.error
+FAIL: audit03.numeric.Capacity.Solver.MaxDeltaEpsilon0.reason
+FAIL: audit03.numeric.Capacity.Solver.MaxDeltaKappa.error
+FAIL: audit03.numeric.Capacity.Solver.MaxDeltaKappa.reason
+FAIL: audit03.numeric.Capacity.Solver.MaxDeltaKappa.error
+FAIL: audit03.numeric.Capacity.Solver.MaxDeltaKappa.reason
+FAIL: audit03.numeric.Capacity.Solver.SecantMaxRestarts.error
+FAIL: audit03.numeric.Capacity.Solver.SecantMaxRestarts.reason
+FAIL: audit03.numeric.Capacity.Solver.SecantMaxRestarts.error
+FAIL: audit03.numeric.Capacity.Solver.SecantMaxRestarts.reason
+FAIL: audit03.numeric.Capacity.Solver.SecantMinStepNorm.error
+FAIL: audit03.numeric.Capacity.Solver.SecantMinStepNorm.reason
+FAIL: audit03.numeric.Capacity.Solver.SecantMinStepNorm.error
+FAIL: audit03.numeric.Capacity.Solver.SecantMinStepNorm.reason
+FAIL: audit03.numeric.Formation.Solver.MaxIterations.error
+FAIL: audit03.numeric.Formation.Solver.MaxIterations.reason
+FAIL: audit03.numeric.Formation.Solver.MaxIterations.error
+FAIL: audit03.numeric.Formation.Solver.MaxIterations.reason
+FAIL: audit03.numeric.Formation.Solver.LoadSteps.error
+FAIL: audit03.numeric.Formation.Solver.LoadSteps.reason
+FAIL: audit03.numeric.Formation.Solver.LoadSteps.error
+FAIL: audit03.numeric.Formation.Solver.LoadSteps.reason
+FAIL: audit03.numeric.Formation.Solver.ToleranceN.error
+FAIL: audit03.numeric.Formation.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Formation.Solver.ToleranceN.error
+FAIL: audit03.numeric.Formation.Solver.ToleranceN.reason
+FAIL: audit03.numeric.Formation.Solver.ToleranceMx.error
+FAIL: audit03.numeric.Formation.Solver.ToleranceMx.reason
+FAIL: audit03.numeric.Formation.Solver.ToleranceMx.error
+FAIL: audit03.numeric.Formation.Solver.ToleranceMx.reason
+FAIL: audit03.numeric.Formation.Solver.ToleranceMy.error
+FAIL: audit03.numeric.Formation.Solver.ToleranceMy.reason
+FAIL: audit03.numeric.Formation.Solver.ToleranceMy.error
+FAIL: audit03.numeric.Formation.Solver.ToleranceMy.reason
+FAIL: audit03.numeric.Formation.Solver.DampingInitial.error
+FAIL: audit03.numeric.Formation.Solver.DampingInitial.reason
+FAIL: audit03.numeric.Formation.Solver.DampingInitial.error
+FAIL: audit03.numeric.Formation.Solver.DampingInitial.reason
+FAIL: audit03.numeric.Formation.Solver.MinLineSearchAlpha.error
+FAIL: audit03.numeric.Formation.Solver.MinLineSearchAlpha.reason
+FAIL: audit03.numeric.Formation.Solver.MinLineSearchAlpha.error
+FAIL: audit03.numeric.Formation.Solver.MinLineSearchAlpha.reason
+FAIL: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.error
+FAIL: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.reason
+FAIL: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.error
+FAIL: audit03.numeric.Formation.Solver.MaxDeltaEpsilon0.reason
+FAIL: audit03.numeric.Formation.Solver.MaxDeltaKappa.error
+FAIL: audit03.numeric.Formation.Solver.MaxDeltaKappa.reason
+FAIL: audit03.numeric.Formation.Solver.MaxDeltaKappa.error
+FAIL: audit03.numeric.Formation.Solver.MaxDeltaKappa.reason
+FAIL: audit03.numeric.Formation.Solver.SecantMaxRestarts.error
+FAIL: audit03.numeric.Formation.Solver.SecantMaxRestarts.reason
+FAIL: audit03.numeric.Formation.Solver.SecantMaxRestarts.error
+FAIL: audit03.numeric.Formation.Solver.SecantMaxRestarts.reason
+FAIL: audit03.numeric.Formation.Solver.SecantMinStepNorm.error
+FAIL: audit03.numeric.Formation.Solver.SecantMinStepNorm.reason
+FAIL: audit03.numeric.Formation.Solver.SecantMinStepNorm.error
+FAIL: audit03.numeric.Formation.Solver.SecantMinStepNorm.reason
+FAIL: audit03.numeric.Batch.Solver.MaxIterations..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MaxIterations..typed
+FAIL: audit03.numeric.Batch.Solver.MaxIterations..reason
+FAIL: audit03.numeric.Batch.Solver.MaxIterations..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.MaxIterations.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MaxIterations.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.MaxIterations.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.MaxIterations.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.LoadSteps..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.LoadSteps..typed
+FAIL: audit03.numeric.Batch.Solver.LoadSteps..reason
+FAIL: audit03.numeric.Batch.Solver.LoadSteps..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.LoadSteps.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.LoadSteps.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.LoadSteps.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.LoadSteps.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.ToleranceN..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.ToleranceN..typed
+FAIL: audit03.numeric.Batch.Solver.ToleranceN..reason
+FAIL: audit03.numeric.Batch.Solver.ToleranceN..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.ToleranceN.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.ToleranceN.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.ToleranceN.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.ToleranceN.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.ToleranceMx..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.ToleranceMx..typed
+FAIL: audit03.numeric.Batch.Solver.ToleranceMx..reason
+FAIL: audit03.numeric.Batch.Solver.ToleranceMx..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.ToleranceMx.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.ToleranceMx.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.ToleranceMx.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.ToleranceMx.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.ToleranceMy..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.ToleranceMy..typed
+FAIL: audit03.numeric.Batch.Solver.ToleranceMy..reason
+FAIL: audit03.numeric.Batch.Solver.ToleranceMy..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.ToleranceMy.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.ToleranceMy.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.ToleranceMy.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.ToleranceMy.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.DampingInitial..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.DampingInitial..typed
+FAIL: audit03.numeric.Batch.Solver.DampingInitial..reason
+FAIL: audit03.numeric.Batch.Solver.DampingInitial..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.DampingInitial.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.DampingInitial.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.DampingInitial.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.DampingInitial.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.MinLineSearchAlpha..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MinLineSearchAlpha..typed
+FAIL: audit03.numeric.Batch.Solver.MinLineSearchAlpha..reason
+FAIL: audit03.numeric.Batch.Solver.MinLineSearchAlpha..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.MinLineSearchAlpha.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..typed
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..reason
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaEpsilon0.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaKappa..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaKappa..typed
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaKappa..reason
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaKappa..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.MaxDeltaKappa.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.SecantMaxRestarts..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.SecantMaxRestarts..typed
+FAIL: audit03.numeric.Batch.Solver.SecantMaxRestarts..reason
+FAIL: audit03.numeric.Batch.Solver.SecantMaxRestarts..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.SecantMaxRestarts.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.SecantMinStepNorm..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.SecantMinStepNorm..typed
+FAIL: audit03.numeric.Batch.Solver.SecantMinStepNorm..reason
+FAIL: audit03.numeric.Batch.Solver.SecantMinStepNorm..noDirectSolve
+FAIL: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.typed
+FAIL: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.reason
+FAIL: audit03.numeric.Batch.Solver.SecantMinStepNorm.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.InitialLambda..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.InitialLambda..typed
+FAIL: audit03.numeric.Batch.Capacity.InitialLambda..reason
+FAIL: audit03.numeric.Batch.Capacity.InitialLambda..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.InitialLambda.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.InitialLambda.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.InitialLambda.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.InitialLambda.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda..typed
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda..reason
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.MaxLambda.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.ToleranceLambda..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.ToleranceLambda..typed
+FAIL: audit03.numeric.Batch.Capacity.ToleranceLambda..reason
+FAIL: audit03.numeric.Batch.Capacity.ToleranceLambda..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.ToleranceLambda.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.ToleranceStrain..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.ToleranceStrain..typed
+FAIL: audit03.numeric.Batch.Capacity.ToleranceStrain..reason
+FAIL: audit03.numeric.Batch.Capacity.ToleranceStrain..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.ToleranceStrain.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries..typed
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries..reason
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.MaxRetries.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.BaseLoadSteps..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.BaseLoadSteps..typed
+FAIL: audit03.numeric.Batch.Capacity.BaseLoadSteps..reason
+FAIL: audit03.numeric.Batch.Capacity.BaseLoadSteps..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.BaseLoadSteps.TODO.noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.SolverMaxIterations..status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.SolverMaxIterations..typed
+FAIL: audit03.numeric.Batch.Capacity.SolverMaxIterations..reason
+FAIL: audit03.numeric.Batch.Capacity.SolverMaxIterations..noDirectSolve
+FAIL: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.status; actual=OK; expected=InputErr
+FAIL: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.typed
+FAIL: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.reason
+FAIL: audit03.numeric.Batch.Capacity.SolverMaxIterations.TODO.noDirectSolve
+TOTAL_AUDIT03_NUMERIC_SETTINGS_INPUT: passed=394; failed=296
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True
