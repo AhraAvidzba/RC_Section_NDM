@@ -172,7 +172,50 @@
 0. Текущий исходник в `RC_Section_NDM_source_v48.xlsm`, SHA `650C8C68236B12A850320A560120932F90425D7B948A7E7D2A49ECCDA4713DBC`. Полные восемь suites v48: Off 9656/0, On 9657/0, оба watchdog завершены и source unchanged=True. Source contracts v48b: 101/101, failed=0; актуальный export SHA `40FB2684D8827AFE6FFF7CD546C1B2FE2CD7A95047E091E2A38291DB05DB109E`. Первый v48 contract обнаружил отставший export test-модуля; read-only экспорт из книги восстановил совпадение без изменения source SHA. Пользовательская output-книга не изменена.
    v45 матрица завершена: 52/52 runs, 18980 параметризованных путевых случаев. v46 повтор остановлен на четвертом run из-за четырех ошибок comment-oracle, не production; исправленный CircleSym/Stress/On v47: 10414/0, 240 cases, save/reopen/source gates успешны. Отрицательные логи сохранены. Полная матрица текущего v48 еще нужна.
    Новый directed extension gate: 4 формы x 48 известные равновесия = 192/192, 32 Off отказа и 8 нагрузок за технической возможностью; 2008/0 assertions. Реальный v47 Secant NumFail исправлен сохранением улучшенного failed retry-start в CStateSolutionRunner, без новой физики/допусков/repository-кэша. Подробности в `NDM_Audit03_Extended_Equilibrium_Review.md`.
-   Solver setting effects v47: 84/0; mutation Method v48b: 78/6 ожидаемых отказов на отдельной книге. Все 14 Solver keys имеют active evidence; остальной per-key Config не объявлен завершенным.
-1. Запустить полный 52-run повтор v48; проверить численные CSV и категории комментариев. Параллельно завершать file-only per-key Config/guard/comment review. L15 live sigma<=0, settings interactions и финальный self-audit еще обязательны.
+   Solver setting effects v47: 84/0; mutation Method v48b: 78/6 ожидаемых отказов на отдельной книге. Все 13 Solver keys имеют active evidence; четырнадцатая строка fixture была General.DiagramExtension, не Solver key. Per-key JSON/CSV v48 сохраняет 1065 адресов и 13 active-reviewed полей без blanket PASS; остальные контракты и negative unit-sign еще не завершены.
+1. Полный 52-run повтор v48 завершен: 18980 независимых путевых случаев, все failed=0; source unchanged=True. CSV `load_matrix_summary_v48_2026-10-02_*` содержит также исторические версии, поэтому для текущего v48 выбирать только его 52 runs. Checkpoint проверенного среза: `2597d293`. Согласованность вывода не доказывает, что каждый NumFail неизбежен.
+   Negative v49: unit-sign Solver effects 88/12 (четыре отрицательных допуска скрывались Abs после CUnitSystem); actual L15 73/12 (psi=1 верно, но ResultComment не объяснял неположительное среднее); RoundedTapered Newton 171/3, Newton8 171/3, Secant 173/2. Диагностика подтвердила rank-deficient tangent: активные стержни на одной линии, остальные на плато. Исправлены знак четырех параметров у всех четырех consumers, сброс кривизн самостоятельного осевого fallback и поздний старт через оценку усилий арматуры/обратную фактическую диаграмму. Физика, методы и допуски не изменены. v50 unit effects 100/0, L15 85/0; v51 тот же RoundedTapered Newton 177/0 (48 случаев, 16 независимо невозможных). SLS axialT0.95/1 физически допустимы при своих сопротивлениях; Strength выходит за физические пределы и остается FAIL.
+   Техническая точка +/-10 не является hard cap solver-а: EvaluateAtStrain за ней сохраняет последнее напряжение и нулевую касательную. Поэтому равновесие с отдельными крайними волокнами за +/-10 законно как вспомогательное FAIL, не физический OK. Новый ошибочный blanket endpoint assert v52 выявил именно это (CircleSym axialC100, два отказа oracle), не новый production-дефект; отрицательный лог сохранен. v53 проверяет физический FAIL таких состояний, а известные 192 плоскости по-прежнему должны находиться внутри технических точек.
+   Directed Stress v53 завершен: 26 runs (13 форм x Newton/Secant), семь отрицательных runs; кроме modest Secant/Imported отказов оставалась непроверенная невозможность RectL/Mixed100. Source v53 SHA `01F68B4CA3F1631FD1D5A09E2B2D0FDB5E2A75CFC78ABD452DB0F0EBD675E7B0`. Known-state v53: четыре runs по 502/0, все 192 известные равновесия найдены; full Off/On также завершены без failures. Это не закрывает новые направленные отрицательные примеры.
+   v54: стабилизированный active-set уточняет только новый inverse-steel-force старт, а не меняет старые попытки. ImportedFixture/Cracked/axialT1.05 стал сходиться; семь из десяти problem runs остаются отрицательными. v55 кандидат с весами Et*As ухудшил RoundedTapered/Newton/Cracked/axialT0.95, поэтому отменен вручную; v55 остается отрицательным доказательством и не принят. В v56 возвращены веса As, расширен независимый dual-certificate направлениями фактической failed-плоскости и добавлена раздельная диагностика холодных стартов Newton/Secant. Production статусы не назначаются по сертификату теста.
+   v56 завершен: семь отрицательных problem runs. Кандидат v57 размерно согласует Broyden по геометрическим плечам, без изменения strain-field/материалов/tolerances и без перехода Secant в Newton. Три прежних modest Secant случая проходят; остаются RectTwoLeft/Secant/Strength/T1.05, ImportedFixture/Newton/Cracked/T1 и RectL/Mixed100. Это пока directed evidence кандидата, не финальная numerical acceptance.
+   v58 невалиден: новый тест использовал отсутствующий MinDouble; compile error показан пользователем и подтвержден исходником. Серия остановлена, только ее parent/child runner и automation Excel закрыты; фактический пользовательский Excel с Давление.xlsx (PID 13684 на момент проверки) не тронут. Ни v58 directed, ни его full suites не засчитываются. В v59 MinDouble заменен простым If, короткий runtime gate успешно компилируется, но Imported/Newton остается отрицательным (218/1).
+   v59 точные границы замещения steel-concrete по общим деформациям дают независимый сертификат невозможности RectL/Mixed100 для обеих ролей: оба Newton/Secant directed runs 221/0. Прежняя независимая разность крайних напряжений была слишком консервативна. Production статусы по сертификату не назначаются. RectTwoLeft/Secant с 20 явно заданными рестартами проходит 225/0; default=2 не отменяется и не скрывается. Imported/Newton500 все еще 218/1, то есть простое увеличение итераций не устраняет rank-deficient старт.
+   v59 завершен: full Off 9672/0 и On 9678/0; source unchanged=True, SHA `3E0951B865373777537DA7CF4A6151DA4EF697256F39EDCA70D2F82C6AA3DAF7`. Эти gates принимают срез с размерно согласованным Secant, но не решают Imported/Newton. Поздний neutral-line старт v60 не устранил этот отказ: Imported/Newton 218/1. Unit-sign consumer тест v60/v60b остановлен watchdog на 30/120 секундах, причина пока не установлена, PASS не заявлен. В v61 добавлены test-only отметки Capacity/Formation/Batch и независимая диагностика масштабов neutral-line старта. Все прежние exec sessions завершены; новые COM проверки выполнять строго последовательно. Пользовательская output-книга не изменена. Все K/T/D/final pending остаются открытыми.
 2. Завершить F03/F04/F05/F06/F07 call-site acceptance (включая конечность Ultimate line-search), A03-A05 all-class/consumer/snapshot аудит и фактический Config census. Нагрузочный 27-LC matrix не заменяет полную L01-L17/shape/setting приемку, report и save/reopen.
 3. До завершения всех шести gates цель остается активной; новые ограничения/изменения после green suite записывать сюда.
+
+## Последний Проверенный Срез v66
+
+- Сессия 80149 полностью завершена, SERIES_FAILURES=0. Все 26 directed Stress
+  runs (13 форм x Newton/Secant, 1248 задач) прошли: 404 задачи с невозможным
+  равновесием имеют независимый stress certificate, 844 состояния найдены. Production
+  не назначает статус по сертификату теста. Четыре known-state runs по 502/0
+  повторили 192/192 известных состояний, 32 парных Off отказа и 8 технически
+  невозможных задач.
+- Все восемь suites v66: Off 9716/0, On 9722/0, source unchanged=True.
+  SHA книги `4B09D90316A1EF3443E098C7FEF49428C780384E5BE3158E7C090CDA0F60BA90`.
+  Imported/Newton найден обычным CStateProvider с late compression start;
+  RectTwoLeft/Secant проходит с default=2. Физика и допуски не менялись.
+- Unit-sign fixture v61 имела пропущенный обязательный аргумент AddCombination,
+  v62 не инициализировала CUnitSystem, v63 считала внешние search probes вместо
+  внутренних итераций solver-а. Эти ошибки теста устранены. Directed v64 44/0
+  включен в full v66. Negative v67 на unchanged production v48: 20/24,
+  подтверждены все четыре неверных параметра у Capacity, Formation и Batch.
+- Новый material Config test в существующем bas: 23 входа, 16 спецификаций,
+  active/inactive, неверный ввод и recovery. v67 имеет ошибку компиляции
+  из-за имени scale; этот run не принят. После переименования в metricScale
+  v68 directed 1442/0, все восемь suites Off 11158/0, On 11164/0.
+- Source v68 SHA `6A17F72B1EB21173CB9A4BC635C38DDA1AA0E63B457CE40891D142DD6A49EB9F`.
+  Source contracts 101/101, failed=0; export SHA
+  `FAAA000B9C9E74A3B980022A1FC0D4BA1D732574B80674BCC30AF841C818A8CB`.
+  Реестр v68 сохраняет 1065 адресов, 36 имеют active acceptance с незакрытым
+  полным диапазоном. Остальные 1029 не объявлены принятыми.
+- Пользовательская output-книга и Audit03 ТЗ не изменены. K/T/D/final остаются
+  открытыми. Новый код после v66 не считать принятым по историческому full gate.
+- Командные Excel-runner-ы запускать через Windows PowerShell 5.1, read-only
+  census и evidence merger через PowerShell 7. Пробный запуск watchdog из PS7
+  не прошел из-за оболочки/PSModulePath; расширение harness не принято и удалено.
+  Это не ошибка НДМ и не PASS. Все перечисленные VBA gates завершены в штатной
+  оболочке. Negative evidence merger отклоняет направленный green лог вместо
+  полного набора восьми suites; число 36 не подменяет все 1065 полей.

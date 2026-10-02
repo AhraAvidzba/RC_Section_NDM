@@ -1,0 +1,283 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v66.xlsm
+SOURCE_SHA256: 4B09D90316A1EF3443E098C7FEF49428C780384E5BE3158E7C090CDA0F60BA90
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c6d6c34b862d45b5911828e71d4458be\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03ExtendedStressFeasibilityTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03ExtendedStressFeasibilityTests; 2026-10-02T13:07:39
+EXCEL_AFTER_SUITE: pid=26940; workingSet=138633216; privateBytes=94593024; cpu=7.5
+EXCEL_AFTER_SUITE: pid=28428; workingSet=143867904; privateBytes=89882624; cpu=16.34375
+OK: audit03.axialGuess.1.-1.built
+OK: audit03.axialGuess.1.-1.kx; actual=0.; expected=0.
+OK: audit03.axialGuess.1.-1.ky; actual=0.; expected=0.
+OK: audit03.axialGuess.1.1.built
+OK: audit03.axialGuess.1.1.kx; actual=0.; expected=0.
+OK: audit03.axialGuess.1.1.ky; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC0.95.rN; actual=0.067089244956; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC0.95.rMx; actual=9.677174992859; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC0.95.rMy; actual=14.213814113289; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialC0.95|N=-1230738.51801795|Mx=8615169.62612567|My=-17593591.0823979|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.004549906471|kx=0.000048147664|ky=-0.000006203587|concreteMin=-0.009596734368|concreteMax=0.000437613254|steelMin=-0.008743875548|steelMax=-0.000415245566|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT0.95.rN; actual=-0.307113334886; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT0.95.rMx; actual=-82.559271117672; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT0.95.rMy; actual=53.225062871352; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialT0.95|N=208915.911463721|Mx=-1462411.38024605|My=2986484.18253661|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.027606485755|kx=-0.000153001497|ky=-0.000114931667|concreteMin=-0.002154417783|concreteMax=0.057256447637|steelMin=0.005332297159|steelMax=0.048781892777|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed0.95.rN; actual=0.000000000466; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed0.95.rMx; actual=0.000000081956; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed0.95.rMy; actual=0.000000044703; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed0.95|N=-1230738.51801795|Mx=45537325.1666643|My=-109058684.267747|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.010817241009|kx=0.000582054858|ky=-0.000339839768|concreteMin=-0.109998872786|concreteMax=0.087063996764|steelMin=-0.08640298635|steelMax=0.061519533139|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.rN; actual=-0.009515363956; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.rMx; actual=-0.551260678098; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.rMy; actual=-0.408767636865; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialC1|N=-1295514.22949258|Mx=9068599.60644807|My=-18519569.5604189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.006808390938|kx=0.000075925858|ky=-0.000007632566|concreteMin=-0.014457039597|concreteMax=0.000767288078|steelMin=-0.013219992605|steelMax=-0.000469758914|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.rN; actual=-0.000000000029; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.rMx; actual=-0.000000002328; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.rMy; actual=0.000000017695; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialT1|N=219911.485751286|Mx=-1539380.400259|My=3143667.56056485|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.036511798571|kx=-0.000180634671|ky=-0.000154839694|concreteMin=-0.002053388747|concreteMax=0.07461684207|steelMin=0.00841533009|steelMax=0.063127952639|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.rN; actual=0.013072791509; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.rMx; actual=-0.713791258633; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.rMy; actual=-1.687351629138; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1|N=-1295514.22949258|Mx=47934026.4912255|My=-114798615.018681|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.012466781764|kx=0.000637724711|ky=-0.000366597769|concreteMin=-0.120306434819|concreteMax=0.093896284005|steelMin=-0.094741970443|steelMax=0.06630362112|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.05.rN; actual=0.398334559752; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.05.rMx; actual=20.48260997422; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.05.rMy; actual=-6.01364544034; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialC1.05|N=-1360289.94096721|Mx=9522029.58677048|My=-19445548.0384398|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.009195692004|kx=0.00010109505|ky=-0.00001148208|concreteMin=-0.019569994566|concreteMax=0.001068838399|steelMin=-0.017856686623|steelMax=-0.000644469545|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.05.rN; actual=-0.70024585037; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.05.rMx; actual=-47.762151679024; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.05.rMy; actual=-114.23722415138; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialT1.05|N=230907.06003885|Mx=-1616349.42027195|My=3300850.93859309|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.045666176792|kx=-0.000202033073|ky=-0.000197940314|concreteMin=-0.002875713963|concreteMax=0.0925367492|steelMin=0.011915057509|steelMax=0.077524926668|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.05.rN; actual=0.041281559039; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.05.rMx; actual=2.013428419828; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.05.rMy; actual=2.125610843301; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1.05|N=-1360289.94096721|Mx=50330727.8157868|My=-120538545.769615|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.013679654658|kx=0.000692980329|ky=-0.000397667201|concreteMin=-0.130762986084|concreteMax=0.101792887792|steelMin=-0.103018324699|steelMax=0.071857196398|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC2.rN; actual=-0.000000002328; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC2.rMx; actual=-0.000000055879; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC2.rMy; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialC2|N=-2591028.45898516|Mx=18137199.2128962|My=-37039139.1208378|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.059582154549|kx=0.000304967284|ky=-0.000065763434|concreteMin=-0.09536373652|concreteMax=-0.024429290943|steelMin=-0.088633888539|steelMax=-0.031159138924|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT2.rN; actual=-0.000000000058; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT2.rMx; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT2.rMy; actual=0.000000001863; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialT2|N=439822.971502571|Mx=-3078760.800518|My=6287335.1211297|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.221956722028|kx=-0.000435555556|ky=-0.000738022592|concreteMin=0.049308092031|concreteMax=0.384282965664|steelMin=0.119944830582|steelMax=0.31691289378|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed2.rN; actual=-0.000000000466; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed2.rMx; actual=0.000000044703; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed2.rMy; actual=-0.000000178814; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed2|N=-2591028.45898516|Mx=95868052.9824511|My=-229597230.037362|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.044795459673|kx=0.001752278631|ky=-0.000909927351|concreteMin=-0.327072754433|concreteMax=0.232546387016|steelMin=-0.261713897842|steelMax=0.163423797193|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC10.rN; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC10.rMx; actual=-0.000000163913; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC10.rMy; actual=0.000000029802; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialC10|N=-12955142.2949258|Mx=90685996.0644807|My=-185195695.604189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.496976720749|kx=0.00152483642|ky=-0.000371918361|concreteMin=-0.682096588946|concreteMax=-0.315412504822|steelMin=-0.646285214918|steelMax=-0.351223878851|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT10.rN; actual=-0.000000000466; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT10.rMx; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT10.rMy; actual=0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialT10|N=2199114.85751286|Mx=-15393804.00259|My=31436675.6056485|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=1.709783610138|kx=-0.002177777778|ky=-0.00369011296|concreteMin=0.846540460157|concreteMax=2.521414828319|steelMin=1.199724152911|steelMax=2.184564468898|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed10.rN; actual=-0.185366326943; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed10.rMx; actual=-13.259665906429; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed10.rMy; actual=-16.057910442352; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed10|N=-12955142.2949258|Mx=479340264.912255|My=-1147986150.18681|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.325182077177|kx=0.010675780445|ky=-0.005046810028|concreteMin=-1.973339543522|concreteMax=1.288424253612|steelMin=-1.600068134523|steelMax=0.901454946475|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC100.rN; actual=0.000000074506; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC100.rMx; actual=0.000000357628; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC100.rMy; actual=0.000000953674; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC100.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialC100|N=-129551422.949258|Mx=906859960.644807|My=-1851956956.04189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-5.417665590495|kx=0.015248364199|ky=-0.00381616129|concreteMin=-7.282841178743|concreteMax=-3.588973660963|steelMin=-6.919862636682|steelMax=-3.951952203024|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT100.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT100.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialT100|N=21991148.5751286|Mx=-153938040.0259|My=314366756.056485|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.1085|kx=-0.000102569111|ky=-0.000159352676|concreteMin=0.070998207846|concreteMax=0.143709063938|steelMin=0.085834404967|steelMax=0.129642135147|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=1321651948.03943; upper=766558129.862866|reason=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed100.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed100.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed100|N=-129551422.949258|Mx=4793402649.12255|My=-11479861501.8681|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-34.032067973078|kx=3.280668576416|ky=-1.626864037473|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-56.131068045381; bx=-0.923879532511; by=0.382683432365; target=19712224593.0551; upper=19409962820.2672|reason=Равновесие не найдено: система Secant не решилась после перезапуска.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialC1000|N=-1295514229.49258|Mx=9068599606.44807|My=-18519569560.4189|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-55.037190876105|kx=0.140653988173|ky=-0.035450709508|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641.157; upper=114058835442.128|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialT1000|N=219911485.751286|Mx=-1539380400.259|My=3143667560.56485|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=185.853861013845|kx=-0.217777777778|ky=-0.369011295982|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=13216519480.3942; upper=766558129.862866|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1000|N=-1295514229.49258|Mx=47934026491.2255|My=-114798615018.681|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-1578456.8679676|kx=26633.9455761332|ky=-11173.4784070782|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641.157; upper=114058835442.128|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialC1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialC1000000|N=-1295514229492.58|Mx=9068599606448.07|My=-18519569560418.9|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-50700.9662733844|kx=270.723832448703|ky=-88.117157314233|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641157.; upper=114058835442.128|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.1.axialT1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.axialT1000000|N=219911485751.286|Mx=-1539380400259.|My=3143667560564.85|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.1145|kx=-0.000187088926|ky=-0.00014808757|concreteMin=0.077020461872|concreteMax=0.151911974098|steelMin=0.086553897701|steelMax=0.141030340242|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=13216519480394.3; upper=766558129.862866|reason=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.1.overloadMixed1000000|N=-1295514229492.58|Mx=47934026491225.5|My=-114798615018681.|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-529.3261393836|kx=8.059849648024|ky=-3.590871088006|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641157.; upper=114058835442.128|reason=Равновесие не найдено: система Secant не решилась после перезапуска.
+OK: audit03.axialGuess.3.-1.built
+OK: audit03.axialGuess.3.-1.kx; actual=0.; expected=0.
+OK: audit03.axialGuess.3.-1.ky; actual=0.; expected=0.
+OK: audit03.axialGuess.3.1.built
+OK: audit03.axialGuess.3.1.kx; actual=0.; expected=0.
+OK: audit03.axialGuess.3.1.ky; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC0.95.rN; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC0.95.rMx; actual=0.00000003539; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC0.95.rMy; actual=-0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialC0.95|N=-1230738.51801795|Mx=8615169.62612567|My=-17593591.0823979|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=-0.001080635521|kx=0.000002804638|ky=-0.000000645342|concreteMin=-0.001415545478|concreteMax=-0.000751895228|steelMin=-0.001351620271|steelMax=-0.000815820435|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT0.95.rN; actual=0.058312158566; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT0.95.rMx; actual=-5.694399717264; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT0.95.rMy; actual=6.643856372219; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialT0.95|N=208915.911463721|Mx=-1462411.38024605|My=2986484.18253661|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=0.003065507765|kx=-0.000003107498|ky=-0.00001565108|concreteMin=-0.000434920798|concreteMax=0.006393001023|steelMin=0.001361856737|steelMax=0.004619529724|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed0.95.rN; actual=-0.000000001164; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed0.95.rMx; actual=-0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed0.95.rMy; actual=0.000000089407; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed0.95|N=-1230738.51801795|Mx=45537325.1666643|My=-109058684.267747|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.005054945171|kx=0.000408507891|ky=-0.000256796331|concreteMin=-0.077299517214|concreteMax=0.066441865734|steelMin=-0.05982183666|steelMax=0.047256895556|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.rN; actual=-0.123008965747; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.rMx; actual=-13.810004495084; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.rMy; actual=19.245376575738; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialC1|N=-1295514.22949258|Mx=9068599.60644807|My=-18519569.5604189|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=-0.001137511193|kx=0.000002952246|ky=-0.000000679306|concreteMin=-0.001490047397|concreteMax=-0.000791469359|steelMin=-0.001422757828|steelMax=-0.000858758929|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.rN; actual=-0.020681752037; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.rMx; actual=-1.548407502705; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.rMy; actual=-1.965650213882; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialT1|N=219911.485751286|Mx=-1539380.400259|My=3143667.56056485|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=0.012769836509|kx=-0.000077880131|ky=-0.000053569846|concreteMin=-0.001668077811|concreteMax=0.027106796687|steelMin=0.001895358833|steelMax=0.023132170223|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.rN; actual=0.247277447255; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.rMx; actual=-19.442163363099; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.rMy; actual=-33.249265193939; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1|N=-1295514.22949258|Mx=47934026.4912255|My=-114798615.018681|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.006031496275|kx=0.000463013814|ky=-0.000289735107|concreteMin=-0.087724504747|concreteMax=0.074802031714|steelMin=-0.067981287194|steelMax=0.053148339193|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.05.rN; actual=-0.13320864737; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.05.rMx; actual=6.257210873067; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.05.rMy; actual=7.055765617639; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialC1.05|N=-1360289.94096721|Mx=9522029.58677048|My=-19445548.0384398|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=-0.001194961452|kx=0.000003118269|ky=-0.000000719363|concreteMin=-0.001567590433|concreteMax=-0.000829209804|steelMin=-0.001496423655|steelMax=-0.000900376581|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.05.rN; actual=-0.424914056901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.05.rMx; actual=-45.073248759843; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.05.rMy; actual=-21.267806861084; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialT1.05|N=230907.06003885|Mx=-1616349.42027195|My=3300850.93859309|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.02710162667|kx=-0.000148313037|ky=-0.000112522512|concreteMin=-0.001907677681|concreteMax=0.056013424628|steelMin=0.005405438878|steelMax=0.047722065143|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.05.rN; actual=0.003185448004; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.05.rMx; actual=-0.178272493184; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.05.rMy; actual=-0.35777439177; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1.05|N=-1360289.94096721|Mx=50330727.8157868|My=-120538545.769615|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.007475869234|kx=0.000518200105|ky=-0.000318482826|concreteMin=-0.098071959695|concreteMax=0.082106119455|steelMin=-0.076265791824|steelMax=0.058269261001|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC2.rN; actual=-0.000000001863; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC2.rMx; actual=-0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC2.rMy; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialC2|N=-2591028.45898516|Mx=18137199.2128962|My=-37039139.1208378|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.039394538117|kx=0.000310444434|ky=-0.000066430896|concreteMin=-0.075744722259|concreteMax=-0.003679453481|steelMin=-0.068919773673|steelMax=-0.010504402066|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT2.rN; actual=-0.000000000058; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT2.rMx; actual=-0.000000001863; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT2.rMy; actual=0.000000005588; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialT2|N=439822.971502571|Mx=-3078760.800518|My=6287335.1211297|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.201956722028|kx=-0.000435555556|ky=-0.000738022592|concreteMin=0.029308092031|concreteMax=0.364282965664|steelMin=0.099944830582|steelMax=0.29691289378|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed2.rN; actual=-0.000022201333; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed2.rMx; actual=-0.001695945859; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed2.rMy; actual=-0.002141803503; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed2|N=-2591028.45898516|Mx=95868052.9824511|My=-229597230.037362|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.035572377394|kx=0.001576261921|ky=-0.000857423464|concreteMin=-0.295101109062|concreteMax=0.219867498567|steelMin=-0.23435625277|steelMax=0.15501426976|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC10.rN; actual=0.000000003725; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC10.rMx; actual=-0.000000119209; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC10.rMy; actual=0.000000059605; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialC10|N=-12955142.2949258|Mx=90685996.0644807|My=-185195695.604189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.476976720749|kx=0.00152483642|ky=-0.000371918361|concreteMin=-0.662096588946|concreteMax=-0.295412504822|steelMin=-0.626285214918|steelMax=-0.331223878851|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT10.rN; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT10.rMx; actual=-0.000000003725; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT10.rMy; actual=0.000000029802; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialT10|N=2199114.85751286|Mx=-15393804.00259|My=31436675.6056485|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=1.689783610138|kx=-0.002177777778|ky=-0.00369011296|concreteMin=0.826540460157|concreteMax=2.501414828319|steelMin=1.179724152911|steelMax=2.164564468898|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed10.rN; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed10.rMx; actual=-0.000000596046; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed10.rMy; actual=0.000000715256; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed10|N=-12955142.2949258|Mx=479340264.912255|My=-1147986150.18681|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.310991263864|kx=0.010554351598|ky=-0.005024721601|concreteMin=-1.945491998013|concreteMax=1.289669835391|steelMin=-1.57469471046|steelMax=0.904674321096|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC100.rN; actual=0.000000074506; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC100.rMx; actual=0.000000834465; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC100.rMy; actual=0.000000476837; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC100.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialC100|N=-129551422.949258|Mx=906859960.644807|My=-1851956956.04189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-5.397665590495|kx=0.015248364199|ky=-0.00381616129|concreteMin=-7.262841178743|concreteMax=-3.568973660963|steelMin=-6.899862636682|steelMax=-3.931952203024|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT100.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT100.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialT100|N=21991148.5751286|Mx=-153938040.0259|My=314366756.056485|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.1085|kx=-0.000101938519|ky=-0.000161016859|concreteMin=0.070651232918|concreteMax=0.144044858201|steelMin=0.085725331219|steelMax=0.129735298797|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=1321651948.03943; upper=768068589.232054|reason=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed100.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed100.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed100|N=-129551422.949258|Mx=4793402649.12255|My=-11479861501.8681|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-29.236163680805|kx=2.991275723667|ky=-1.501539156881|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-56.131068045381; bx=-0.923879532511; by=0.382683432365; target=19712224593.0551; upper=19448584990.9233|reason=Равновесие не найдено: система Secant не решилась после перезапуска.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialC1000|N=-1295514229.49258|Mx=9068599606.44807|My=-18519569560.4189|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-55.879521020866|kx=0.114027842172|ky=-0.041364632865|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641.157; upper=114285822151.785|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialT1000|N=219911485.751286|Mx=-1539380400.259|My=3143667560.56485|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=185.833861013845|kx=-0.217777777778|ky=-0.369011295982|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=13216519480.3942; upper=768068589.232054|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1000|N=-1295514229.49258|Mx=47934026491.2255|My=-114798615018.681|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-1578127.63671091|kx=26628.3920513209|ky=-11171.1487371801|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641.157; upper=114285822151.785|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialC1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialC1000000|N=-1295514229492.58|Mx=9068599606448.07|My=-18519569560418.9|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-51996.651511636|kx=236.044537117413|ky=-79.330887212211|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641157.; upper=114285822151.785|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.3.axialT1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.axialT1000000|N=219911485751.286|Mx=-1539380400259.|My=3143667560564.85|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.10725|kx=-0.000097036115|ky=-0.000158632589|concreteMin=0.070050746299|concreteMax=0.142204907201|steelMin=0.085067039597|steelMax=0.127916384763|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=13216519480394.3; upper=768068589.232054|reason=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Secant.3.overloadMixed1000000|N=-1295514229492.58|Mx=47934026491225.5|My=-114798615018681.|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-1090.29668217123|kx=15.604754349019|ky=-7.513948329506|concreteMin=0.|concreteMax=0.|steelMin=0.|steelMax=0.|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641157.; upper=114285822151.785|reason=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extendedStress.RoundedTapered.actualInfeasibleCases
+TOTAL_AUDIT03_EXTENDED_STRESS: shape=RoundedTapered; variant=Secant; cases=48; certifiedFailures=16; passed=221; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03ExtendedStressFeasibilityTests; 2026-10-02T13:07:44
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

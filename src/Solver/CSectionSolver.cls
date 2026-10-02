@@ -136,10 +136,12 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSecantMaxRestarts, False)
     mSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSecantMinStepNorm, False)
     If Not units Is Nothing Then
-        mToleranceN = Abs(units.InputForceToInternal(mToleranceN))
-        mToleranceMx = Abs(units.InputMomentMxToInternal(mToleranceMx))
-        mToleranceMy = Abs(units.InputMomentMyToInternal(mToleranceMy))
-        mMaxDeltaKappa = Abs(units.InputCurvatureToInternal(mMaxDeltaKappa))
+        ' Знак нагрузки не относится к допуску; неверный отрицательный ввод
+        ' сохраняем для адресной проверки конфигурации до начала solve.
+        mToleranceN = Sgn(mToleranceN) * Abs(units.InputForceToInternal(mToleranceN))
+        mToleranceMx = Sgn(mToleranceMx) * Abs(units.InputMomentMxToInternal(mToleranceMx))
+        mToleranceMy = Sgn(mToleranceMy) * Abs(units.InputMomentMyToInternal(mToleranceMy))
+        mMaxDeltaKappa = Sgn(mMaxDeltaKappa) * Abs(units.InputCurvatureToInternal(mMaxDeltaKappa))
     End If
 End Sub
 
@@ -358,6 +360,8 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         ByVal stepIndex As Long, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
 
     Dim b(1 To 3, 1 To 3) As Double
+    Dim scaleKx As Double, scaleKy As Double ' Плечи для приведения кривизн к деформациям.
+    SecantCoordinateScales section, scaleKx, scaleKy
     EvaluateSecantResidual section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
         mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy
 
@@ -426,7 +430,7 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
                 EvaluateSecantResidual section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
                     mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy
                 If Not UpdateBroydenMatrix(b, mEpsilon0 - oldEps, mKappaX - oldKx, mKappaY - oldKy, _
-                        mResidualN - oldRN, mResidualMx - oldRMx, mResidualMy - oldRMy) Then
+                        mResidualN - oldRN, mResidualMx - oldRMx, mResidualMy - oldRMy, scaleKx, scaleKy) Then
                     If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
                             mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "обновление Broyden не выполнено") Then
                         SolveSecantLoadStep = False
@@ -559,13 +563,17 @@ Private Function SolveSecantCorrection(ByRef b() As Double, ByRef deltaEps As Do
 End Function
 
 ' Обновляет приближенную матрицу чувствительности по формуле Бройдена.
+' Поправка оценивается в координатах [epsilon0, scaleKx*kappaX, scaleKy*kappaY],
+' чтобы размерная кривизна не исчезала на фоне безразмерной epsilon0.
+' Матрица остается в исходных координатах; условие B*s = deltaR сохраняется.
 ' Если шаг слишком мал или новая матрица выглядит нечисловой, вызывающий код
 ' должен пересобрать матрицу с нуля.
 Private Function UpdateBroydenMatrix(ByRef b() As Double, ByVal s1 As Double, ByVal s2 As Double, _
-        ByVal s3 As Double, ByVal y1 As Double, ByVal y2 As Double, ByVal y3 As Double) As Boolean
+        ByVal s3 As Double, ByVal y1 As Double, ByVal y2 As Double, ByVal y3 As Double, _
+        ByVal scaleKx As Double, ByVal scaleKy As Double) As Boolean
 
     Dim denom As Double
-    denom = s1 * s1 + s2 * s2 + s3 * s3
+    denom = s1 * s1 + (s2 * scaleKx) * (s2 * scaleKx) + (s3 * scaleKy) * (s3 * scaleKy)
     If denom <= mSecantMinStepNorm * mSecantMinStepNorm Then Exit Function
 
     Dim bs1 As Double
@@ -589,13 +597,39 @@ Private Function UpdateBroydenMatrix(ByRef b() As Double, ByVal s1 As Double, By
     u(1) = u1: u(2) = u2: u(3) = u3
     For i = 1 To 3
         b(i, 1) = b(i, 1) + u(i) * s(1) / denom
-        b(i, 2) = b(i, 2) + u(i) * s(2) / denom
-        b(i, 3) = b(i, 3) + u(i) * s(3) / denom
+        b(i, 2) = b(i, 2) + u(i) * (s(2) * scaleKx) * scaleKx / denom
+        b(i, 3) = b(i, 3) + u(i) * (s(3) * scaleKy) * scaleKy / denom
     Next i
 
     mLastMatrixConditionEstimate = EstimateMatrixCondition(b)
     UpdateBroydenMatrix = IsFiniteNumber(mLastMatrixConditionEstimate)
 End Function
+
+' Определяет плечи по размаху расчетных точек, независимо от переноса начала
+' координат. Они нужны только для размерно согласованного обновления Secant,
+' не меняют поля деформаций, усилия и пользовательские допуски равновесия.
+Private Sub SecantCoordinateScales(ByVal section As CSectionModel, _
+        ByRef scaleKx As Double, ByRef scaleKy As Double)
+    Dim minX As Double, maxX As Double, minY As Double, maxY As Double
+    Dim x As Double, y As Double, area As Double, i As Long
+    section.ConcreteElementForSolver 1, x, y, area
+    minX = x: maxX = x: minY = y: maxY = y
+    For i = 1 To section.ConcreteCount + section.RebarCount
+        If i <= section.ConcreteCount Then
+            section.ConcreteElementForSolver i, x, y, area
+        Else
+            section.RebarElementForSolver i - section.ConcreteCount, x, y, area
+        End If
+        minX = MinDouble(minX, x): maxX = MaxDouble(maxX, x)
+        minY = MinDouble(minY, y): maxY = MaxDouble(maxY, y)
+    Next i
+    scaleKx = maxY / 2# - minY / 2#
+    scaleKy = maxX / 2# - minX / 2#
+    ' При нулевом плече соответствующая координата не имеет геометрического
+    ' масштаба; единичный вес оставляет вырождение на проверку линейной системы.
+    If scaleKx <= 0# Then scaleKx = 1#
+    If scaleKy <= 0# Then scaleKy = 1#
+End Sub
 
 ' Пересобирает Secant-матрицу после застоя, плохого line search или неудачного
 ' обновления Бройдена. Количество перезапусков ограничено настройкой solver-а.

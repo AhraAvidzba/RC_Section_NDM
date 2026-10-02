@@ -36,7 +36,7 @@ Option Explicit
 
 Private Const STATE_NEAR_ZERO As Double = 0.000000000001 ' Допуск для почти нулевой стартовой плоскости.
 Private Const EXTENSION_START_FACTOR As Double = 1.02 ' Небольшой заход за физический eps_ult для старта повторного solve в extension.
-Private Const EXTENSION_GUESS_ATTEMPTS As Long = 5 ' Количество независимых стартовых оценок для повторного StateSolution.
+Private Const EXTENSION_GUESS_ATTEMPTS As Long = 7 ' Количество независимых стартовых оценок для повторного StateSolution.
 Private Const EXTENSION_ACTIVE_SET_ITERATIONS As Long = 8 ' Сколько раз уточнять кусочно-линейный набор участков диаграмм.
 Private Const ACTIVE_SET_EPSILON_TOLERANCE As Double = 0.0000000001 ' Допуск стабилизации epsilon0 в active-set уточнении.
 Private Const ACTIVE_SET_KAPPA_TOLERANCE As Double = 0.000000000001 ' Допуск стабилизации кривизн в active-set уточнении.
@@ -119,6 +119,8 @@ Public Function ExtensionAttemptName(ByVal attemptIndex As Long) As String
         Case 3: ExtensionAttemptName = "равномерный сдвиг в продолжение диаграммы"
         Case 4: ExtensionAttemptName = "масштабированное несошедшееся состояние"
         Case 5: ExtensionAttemptName = "нулевое осевое приближение"
+        Case 6: ExtensionAttemptName = "деформации арматуры по оценке усилий"
+        Case 7: ExtensionAttemptName = "начало сжатой зоны бетона"
         Case Else: ExtensionAttemptName = "неизвестное приближение"
     End Select
 End Function
@@ -146,7 +148,70 @@ Public Function BuildAttemptForExtensionState(ByVal attemptIndex As Long, _
             BuildAttemptForExtensionState = TryBuildScaledFailedState(failedService, concreteMaterial, steelMaterial, eps0, kx, ky)
         Case 5
             BuildAttemptForExtensionState = TryBuildAxialZeroGuess(concreteMaterial, steelMaterial, targetN, eps0, kx, ky)
+        Case 6
+            BuildAttemptForExtensionState = TryBuildTensionForcePlane(section, concreteMaterial, steelMaterial, _
+                targetN, targetMx, targetMy, eps0, kx, ky)
+        Case 7
+            BuildAttemptForExtensionState = TryBuildConcreteCompressionStart(section, failedService, _
+                concreteMaterial, steelMaterial, targetN, targetMx, targetMy, eps0, kx, ky)
     End Select
+End Function
+
+' Строит поздний старт с активной сжатой зоной, когда растянутый бетон
+' выключен, а арматура на плато оставила недостаточно независимых плеч.
+' Масштабы меняют только пробную плоскость; глубина захода берется из
+' ближайшего к нулю сжатого узла фактической диаграммы, не из новой нормы.
+' Предпочтение имеет стабилизированная оценка существующего active-set.
+' Если она не получена, дается только старт с заметной сжатой зоной;
+' окончательное равновесие и физическую допустимость проверяют соседние слои.
+Private Function TryBuildConcreteCompressionStart(ByVal section As CSectionModel, _
+        ByVal failedService As CSectionSolver, ByVal concreteMaterial As CMaterialDiagram, _
+        ByVal steelMaterial As CMaterialDiagram, ByVal targetN As Double, _
+        ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
+    If section Is Nothing Then Exit Function
+    If failedService Is Nothing Then Exit Function
+    If concreteMaterial Is Nothing Then Exit Function
+    If steelMaterial Is Nothing Then Exit Function
+    If targetN <= 0# Or section.ConcreteCount <= 0 Then Exit Function
+    If concreteMaterial.GetTangentModulus(-STATE_NEAR_ZERO) <= 0# Then Exit Function
+    If concreteMaterial.GetStress(STATE_NEAR_ZERO) <> 0# Then Exit Function
+    Dim sourceKx As Double, sourceKy As Double
+    sourceKx = failedService.KappaX: sourceKy = failedService.KappaY
+    If Abs(sourceKx) + Abs(sourceKy) <= STATE_NEAR_ZERO Then Exit Function
+    Dim i As Long, minStrain As Double, compressionStep As Double
+    minStrain = PlaneStrain(failedService.Epsilon0, sourceKx, sourceKy, section.ConcreteX(1), section.ConcreteY(1))
+    For i = 2 To section.ConcreteCount
+        minStrain = MinDouble(minStrain, _
+            PlaneStrain(failedService.Epsilon0, sourceKx, sourceKy, section.ConcreteX(i), section.ConcreteY(i)))
+    Next i
+    If minStrain < 0# Then Exit Function
+    For i = concreteMaterial.PointCount To 1 Step -1
+        If concreteMaterial.PointStrain(i) < 0# Then
+            compressionStep = -concreteMaterial.PointStrain(i)
+            Exit For
+        End If
+    Next i
+    If compressionStep <= 0# Then Exit Function
+    Dim planeScale As Variant, compressionFraction As Variant, trialEps As Double
+    For Each planeScale In Array(1#, 2#, 4#, 8#)
+        For Each compressionFraction In Array(0.25, 0.5, 1#)
+            trialEps = (failedService.Epsilon0 - minStrain) * CDbl(planeScale) - _
+                compressionStep * CDbl(compressionFraction)
+            If TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+                    trialEps, sourceKx * CDbl(planeScale), sourceKy * CDbl(planeScale), _
+                    eps0, kx, ky, False, True) Then
+                TryBuildConcreteCompressionStart = True
+                Exit Function
+            End If
+        Next compressionFraction
+    Next planeScale
+    ' Старт на самом изломе около нуля снова может выключить бетон за один
+    ' шаг и оставить арматуру на одной активной линии. Это приближение дает
+    ' Newton/Secant конечную сжатую зону, не утверждая равновесие.
+    eps0 = (failedService.Epsilon0 - minStrain) * 4# + concreteMaterial.PhysicalCompressionStrain * 0.3
+    kx = sourceKx * 4#: ky = sourceKy * 4#
+    TryBuildConcreteCompressionStart = True
 End Function
 
 ' Использует последнюю плоскость несошедшегося solver-а как подсказку.
@@ -180,7 +245,8 @@ Private Function TryBuildFromTrialPlane(ByVal section As CSectionModel, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal trialEps0 As Double, ByVal trialKx As Double, ByVal trialKy As Double, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, _
-        Optional ByVal requireExtension As Boolean = True) As Boolean
+        Optional ByVal requireExtension As Boolean = True, _
+        Optional ByVal requireStable As Boolean = False) As Boolean
     Dim currentEps0 As Double
     Dim currentKx As Double
     Dim currentKy As Double
@@ -189,6 +255,7 @@ Private Function TryBuildFromTrialPlane(ByVal section As CSectionModel, _
     Dim nextKy As Double
     Dim iter As Long
     Dim solvedAtLeastOnce As Boolean
+    Dim stable As Boolean ' Прекратилась смена активных участков и плоскости.
 
     currentEps0 = trialEps0
     currentKx = trialKx
@@ -212,6 +279,7 @@ Private Function TryBuildFromTrialPlane(ByVal section As CSectionModel, _
         solvedAtLeastOnce = True
 
         If ExtensionPlaneClose(currentEps0, currentKx, currentKy, nextEps0, nextKx, nextKy) Then
+            stable = True
             Exit For
         End If
 
@@ -220,6 +288,7 @@ Private Function TryBuildFromTrialPlane(ByVal section As CSectionModel, _
         currentKy = nextKy
     Next iter
 
+    If requireStable And Not stable Then Exit Function
     If solvedAtLeastOnce Then
         If requireExtension Then
             TryBuildFromTrialPlane = CandidateUsesExtension(section, concreteMaterial, steelMaterial, eps0, kx, ky)
@@ -422,6 +491,88 @@ Private Function TryBuildAxialZeroGuess(ByVal concreteMaterial As CMaterialDiagr
         eps0 = concreteMaterial.PhysicalCompressionStrain * EXTENSION_START_FACTOR
         TryBuildAxialZeroGuess = True
     End If
+    If TryBuildAxialZeroGuess Then
+        ' Это самостоятельный осевой старт, а не плоскость предыдущей попытки.
+        kx = 0#
+        ky = 0#
+    End If
+End Function
+
+' Оценивает растянутую плоскость, когда часть стержней застыла на плато и
+' касательная потеряла ранг. Сначала линейное распределение усилий по арматуре
+' дает оценку напряжений, затем обратная фактическая диаграмма дает деформации.
+' По ним строится взвешенная по площадям плоскость; бетон намеренно не входит
+' в эту стартовую оценку, но обязательно входит в последующий полный solve.
+Private Function TryBuildTensionForcePlane(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, ByVal targetN As Double, _
+        ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
+    If targetN <= 0# Then Exit Function
+    If section.RebarCount < 3 Then Exit Function
+    If Not steelMaterial.HasTensionExtension Then Exit Function
+    Dim tangent As Double, intercept As Double
+    tangent = steelMaterial.GetTangentModulus(STATE_NEAR_ZERO)
+    If tangent <= 0# Then Exit Function
+    intercept = steelMaterial.GetStress(STATE_NEAR_ZERO) - tangent * STATE_NEAR_ZERO
+
+    Dim k11 As Double, k12 As Double, k13 As Double
+    Dim k21 As Double, k22 As Double, k23 As Double
+    Dim k31 As Double, k32 As Double, k33 As Double
+    Dim n0 As Double, mx0 As Double, my0 As Double, activeCount As Long, i As Long
+    For i = 1 To section.RebarCount
+        AccumulateLinearElement tangent, tangent * STATE_NEAR_ZERO + intercept, STATE_NEAR_ZERO, _
+            section.RebarArea(i), section.RebarX(i), section.RebarY(i), activeCount, _
+            k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
+    Next i
+    Dim elasticEps0 As Double, elasticKx As Double, elasticKy As Double
+    If Not SolveLinearizedSystem(activeCount, targetN, targetMx, targetMy, _
+            k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0, _
+            elasticEps0, elasticKx, elasticKy) Then Exit Function
+
+    k11 = 0#: k12 = 0#: k13 = 0#: k21 = 0#: k22 = 0#: k23 = 0#
+    k31 = 0#: k32 = 0#: k33 = 0#: n0 = 0#: mx0 = 0#: my0 = 0#: activeCount = 0
+    Dim estimatedStress As Double, estimatedStrain As Double
+    For i = 1 To section.RebarCount
+        estimatedStress = tangent * PlaneStrain(elasticEps0, elasticKx, elasticKy, _
+            section.RebarX(i), section.RebarY(i)) + intercept
+        If Not TryStrainForSteelStress(steelMaterial, estimatedStress, estimatedStrain) Then Exit Function
+        ' Площади задают веса аппроксимации деформаций; касательный модуль
+        ' здесь не используется, чтобы не подавлять мягкую extension-ветвь.
+        AccumulateLinearElement 1#, 0#, estimatedStrain, section.RebarArea(i), _
+            section.RebarX(i), section.RebarY(i), activeCount, _
+            k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
+    Next i
+    TryBuildTensionForcePlane = SolveLinearizedSystem(activeCount, 0#, 0#, 0#, _
+        k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0, eps0, kx, ky)
+    If Not TryBuildTensionForcePlane Then Exit Function
+    Dim refinedEps0 As Double, refinedKx As Double, refinedKy As Double
+    ' Уточнение по полной модели допускается только после стабилизации;
+    ' оборванный или циклический active-set не заменяет исходную оценку.
+    If TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+            eps0, kx, ky, refinedEps0, refinedKx, refinedKy, False, True) Then
+        eps0 = refinedEps0: kx = refinedKx: ky = refinedKy
+    End If
+End Function
+
+' Читает деформацию на существующем наклонном участке диаграммы стали.
+' Экстраполяции за технические точки нет; горизонтальное плато не делится
+' на нулевой наклон. При неоднозначном напряжении берется первый участок,
+' поскольку это только старт, а не утверждение о найденном физическом State.
+Private Function TryStrainForSteelStress(ByVal steelMaterial As CMaterialDiagram, _
+        ByVal stress As Double, ByRef strain As Double) As Boolean
+    Dim i As Long, stress1 As Double, stress2 As Double
+    For i = 1 To steelMaterial.PointCount - 1
+        stress1 = steelMaterial.PointStress(i)
+        stress2 = steelMaterial.PointStress(i + 1)
+        If stress2 > stress1 Then
+            If stress >= stress1 And stress <= stress2 Then
+                strain = steelMaterial.PointStrain(i) + (stress - stress1) / (stress2 - stress1) * _
+                    (steelMaterial.PointStrain(i + 1) - steelMaterial.PointStrain(i))
+                TryStrainForSteelStress = True
+                Exit Function
+            End If
+        End If
+    Next i
 End Function
 
 ' Создает пробную плоскость из несошедшегося solver-а: либо берет уже найденное

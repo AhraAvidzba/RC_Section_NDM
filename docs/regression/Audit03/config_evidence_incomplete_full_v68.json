@@ -1,0 +1,8 @@
+{
+  "PositiveReport": "docs/regression/Audit03/material_config_v68_2026-10-02.txt",
+  "PositiveGate": "TOTAL_AUDIT03_MATERIAL_CONFIG: passed=1442; failed=0",
+  "FullReports": [
+    "docs/regression/Audit03/material_config_v68_2026-10-02.txt"
+  ],
+  "Entries": []
+}

@@ -74,7 +74,7 @@ Solver/Capacity настроек в CSectionSolver, CCapacitySolver, Formation �
 ## Направленные Эффекты Solver v47
 
 `solver_effects_v47c_2026-10-02.txt`: 84/0 через реальный трехколоночный
-Range -> CSystemSettingsReader -> ApplySettings -> Solve. Четырнадцать ключей
+Range -> CSystemSettingsReader -> ApplySettings -> Solve. Тринадцать ключей
 Solver проверены отдельно: Method, MaxIterations, LoadSteps, три Tolerance,
 LineSearchEnabled, DampingInitial, MinLineSearchAlpha, два MaxDelta,
 SecantMaxRestarts и SecantMinStepNorm. Изменяются настоящие ступени, итерации,
@@ -95,3 +95,41 @@ iterations и реальное дробление шага; oracle теперь 
 Эта направленная приемка еще не переносится автоматически на все 1065 адресов:
 остальные consumers, material/geometry/presentation поля и interactions
 по-прежнему требуют своей трассировки и доказательств.
+
+Per-key evidence присоединено к полному поадресному census отдельным
+`Merge-Audit03ConfigEvidence.ps1`. Выходной JSON/CSV
+`config_behavior_registry_v48_2026-10-02` содержит те же 1065 адресов, из них
+13 имеют `ActiveBehaviorAccepted:FullRangeReviewNotComplete`. Для остальных
+1052 не добавляется искусственный PASS. `General.DiagramExtension` был
+четырнадцатой строкой численного fixture, но не четырнадцатым Solver key;
+его доказательства относятся к отдельной migration/On-Off группе.
+
+Фактические внутренние defaults и диапазоны этих 13 полей записаны
+по call-site CSectionSolver. Они отличаются от defaults новой книги, например
+LoadSteps=5 в чистом объекте и 1 в каталоге. Дополнительный negative v49
+`solver_effects_units_negative_v49_2026-10-02.txt` (88/12) подтвердил, что
+Abs после CUnitSystem скрывал отрицательные ToleranceN/Mx/My и MaxDeltaKappa.
+Исходный знак теперь сохраняется во всех четырех consumers до их валидации.
+Тот же направленный тест v50 (100/0) подтверждает реальный typed отказ без
+итераций через CSectionSolver.ApplySettings/Solve. Полные Off/On v53 также
+прошли. Runtime unit-sign маршруты остальных трех consumers проверены отдельно:
+`unit_sign_consumers_negative_v67_2026-10-02.txt` на неизменном production v48
+дает 20/24, а `unit_sign_consumers_v64_2026-10-02.txt` на исправленном коде 44/0.
+Capacity, Formation и Batch получают отрицательные ToleranceN/Mx/My и
+MaxDeltaKappa через фактический Config и CUnitSystem. Проверяются typed
+InvalidConfiguration, отсутствие внутренней итерации/retry/formation point,
+InputErr в Batch и содержательная причина. Полные Off/On v66 включают этот
+тест и дают 9716/0 и 9722/0. Тест восстанавливает все затронутые таблицы.
+
+Выполнен адресный тест 23 редактируемых параметров материалов во всех
+16 спецификациях ULS/SLS, TwoLine/ThreeLine бетона/арматуры и Ignore/UseDiagram.
+Он читает настоящие таблицы, проверяет ожидаемый активный эффект, неизменность
+неактивной диаграммы и другого материала, шесть неверных значений и recovery.
+Rb,mc2 проверяется через продольную проверку, а не через диаграмму. Directed
+`material_config_v68_2026-10-02.txt`: 1442/0. Full v68 Off 11158/0, On 11164/0.
+Положительные значения fixture различают сжатые/растянутые ветви и ULS/SLS;
+ошибочный v67 с зарезервированным именем scale не засчитывается. В актуальный
+JSON/CSV `config_behavior_registry_v68_2026-10-02` присоединены 36 полей из
+1065: 13 Solver и 23 material input. Остальные 1029 не получили PASS.
+Приемка активности не равна полному диапазонному покрытию: связанные границы,
+все downstream consumers и полная K01-K04 приемка по-прежнему открыты.

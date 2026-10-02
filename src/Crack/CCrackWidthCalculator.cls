@@ -388,7 +388,7 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
     If StrComp(mPsiMode, PSI_MODE_ALWAYS_CALC, vbTextCompare) = 0 Then
         If ResolveAutoPsiIfPossible(section, materialProvider, selected, _
                 "AlwaysCalc psi_s") Then
-            FinalizeWidth finalReason & " Psi_s рассчитан по состоянию сразу после образования трещины."
+            FinalizeWidth finalReason & AutomaticPsiComment()
         ElseIf mFormation.FallbackPsi1 Then
             mPsiS = 1#
             FinalizeWidth finalReason & " Psi_s оставлен равным 1, потому что выбранный путь не дает отдельной точки sigma_s,crc."
@@ -421,11 +421,23 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
 
     If Not ResolveAutoPsiIfPossible(section, materialProvider, selected, _
             "Auto psi_s") Then Exit Function
-    FinalizeWidth finalReason & " Psi_s уточнен автоматически после непрохождения первой проверки."
+    FinalizeWidth finalReason & AutomaticPsiComment()
     FinalizeWithPsiMode = mConverged
 End Function
 
 
+
+' Объясняет фактически примененный коэффициент после подготовки PostCrackState.
+' Неположительное среднее напряжение не является несходимостью и не уменьшает
+' раскрытие; текст результата должен явно объяснять принятие psi_s = 1.
+Private Function AutomaticPsiComment() As String
+    If mSigmaSCrc <= NEAR_ZERO_STRESS Then
+        AutomaticPsiComment = " Среднее напряжение sigma_s,crc по выбранным стержням неположительное или практически нулевое; " & _
+            "psi_s принят равным 1, уменьшение раскрытия не применяется."
+    Else
+        AutomaticPsiComment = " Psi_s рассчитан по состоянию сразу после образования трещины."
+    End If
+End Function
 
 ' Готовит и применяет автоматическое значение psi_s по sigma_s,crc.
 ' Метод не запускает solve и не достраивает PostCrackState: на этом этапе
@@ -448,7 +460,7 @@ Private Function ResolveAutoPsiIfPossible(ByVal section As CSectionModel, _
         CaptureSigmaSCrcIfAvailable section, materialProvider, selected
 
     If mSigmaSCrc <= NEAR_ZERO_STRESS Then
-        AppendDiagnostic contextText & ": sigma_s,crc не получен; psi_s оставлен равным 1."
+        AppendDiagnostic contextText & ": среднее sigma_s,crc неположительное или практически нулевое; psi_s оставлен равным 1."
         mPsiS = 1#
         ResolveAutoPsiIfPossible = True
         Exit Function

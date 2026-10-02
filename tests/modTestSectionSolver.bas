@@ -1376,6 +1376,7 @@ Private Sub TestAudit03SolverSettingEffects(ByRef stats As TSectionSolverTestSta
     AssertTrue stats, "audit03.effect.SecantOptions.inactiveInNewton", first.Converged And first.MatrixRestartCount = 0
     Audit03InvalidSolverSettingEffects stats, sheet, section, concrete, steel
     Audit03LineSearchSettingEffects stats, sheet, section, steel
+    Audit03NegativeUnsignedUnitSettings stats, sheet, section, concrete, steel
     GoTo Cleanup
 Failed:
     AssertTrue stats, "audit03.effect.runtime." & CStr(Err.Number) & "." & Err.Description, False
@@ -1391,7 +1392,8 @@ End Sub
 ' Значения внутренних допусков фиксированы; пользовательская книга не меняется.
 Private Function Audit03ConfiguredSolver(ByVal sheet As Worksheet, ByVal key As String, _
         ByVal value As Variant, Optional ByVal method As String = "Newton", _
-        Optional ByVal forceSmallSecantStep As Boolean = False) As CSectionSolver
+        Optional ByVal forceSmallSecantStep As Boolean = False, _
+        Optional ByVal units As CUnitSystem = Nothing) As CSectionSolver
     Dim data(1 To 15, 1 To 3) As Variant
     Dim keys As Variant, values As Variant, i As Long
     keys = Array("Solver.Method", "Solver.MaxIterations", "Solver.LoadSteps", _
@@ -1412,9 +1414,36 @@ Private Function Audit03ConfiguredSolver(ByVal sheet As Worksheet, ByVal key As 
     reader.LoadFromRange sheet.Range("A1:C15")
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
-    solver.ApplySettings reader
+    solver.ApplySettings reader, units
     Set Audit03ConfiguredSolver = solver
 End Function
+
+' ДЛЯ ТЕСТОВ: пользовательский знак силы не относится к знаку допуска.
+' Перевод tf/tf*m и кривизны не должен скрывать отрицательный численный ввод.
+' Проверяем отказ до итераций и последующий обычный solve с положительным вводом.
+Private Sub Audit03NegativeUnsignedUnitSettings(ByRef stats As TSectionSolverTestStats, _
+        ByVal sheet As Worksheet, ByVal section As CSectionModel, _
+        ByVal concrete As CLinearConcreteMaterial, ByVal steel As CLinearSteelMaterial)
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    units.InitializeDefaults
+    Dim key As Variant, solver As CSectionSolver
+    For Each key In Array("Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.MaxDeltaKappa")
+        Set solver = Audit03ConfiguredSolver(sheet, CStr(key), -1#, "Newton", False, units)
+        solver.Solve section, concrete, steel, -100000#, 0#, 0#
+        AssertTrue stats, "audit03.effect.units." & CStr(key) & ".negativeTyped", _
+            Not solver.Converged And solver.FailureCode = sfcInvalidConfiguration
+        AssertTrue stats, "audit03.effect.units." & CStr(key) & ".noIterations", solver.Iterations = 0
+        AssertTrue stats, "audit03.effect.units." & CStr(key) & ".reason", _
+            InStr(1, solver.StopReason, "Solver.", vbBinaryCompare) > 0
+        AppendLine stats, "SIGNED_SETTING: key=" & CStr(key) & "|raw=-1|converged=" & CStr(solver.Converged) & _
+            "|failureCode=" & CStr(solver.FailureCode) & "|iterations=" & CStr(solver.Iterations) & _
+            "|reason=" & solver.StopReason
+        Set solver = Audit03ConfiguredSolver(sheet, CStr(key), 1#, "Newton", False, units)
+        solver.Solve section, concrete, steel, -100000#, 0#, 0#
+        AssertTrue stats, "audit03.effect.units." & CStr(key) & ".positiveRecovery", solver.Converged
+    Next key
+End Sub
 
 ' Проверяет диапазоны на публичном ApplySettings -> Solve маршруте. Ошибочная
 ' конфигурация не должна начинать итерации или превращаться в NumFail.

@@ -170,10 +170,11 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts, False)
     mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm, False)
     If Not units Is Nothing Then
-        mSolverToleranceN = Abs(units.InputForceToInternal(mSolverToleranceN))
-        mSolverToleranceMx = Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
-        mSolverToleranceMy = Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
-        mSolverMaxDeltaKappa = Abs(units.InputCurvatureToInternal(mSolverMaxDeltaKappa))
+        ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
+        mSolverToleranceN = Sgn(mSolverToleranceN) * Abs(units.InputForceToInternal(mSolverToleranceN))
+        mSolverToleranceMx = Sgn(mSolverToleranceMx) * Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
+        mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
+        mSolverMaxDeltaKappa = Sgn(mSolverMaxDeltaKappa) * Abs(units.InputCurvatureToInternal(mSolverMaxDeltaKappa))
     End If
 End Sub
 

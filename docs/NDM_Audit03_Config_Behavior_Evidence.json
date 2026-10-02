@@ -1,0 +1,166 @@
+{
+  "Scope": "Reviewed directed evidence; not complete Config acceptance",
+  "PositiveReport": "docs/regression/Audit03/solver_effects_units_positive_v50_2026-10-02.txt",
+  "PositiveGate": "TOTAL_AUDIT03_SOLVER_EFFECTS: passed=100; failed=0",
+  "FullReports": [
+    "docs/regression/Audit03/full_no_v68_2026-10-02.txt",
+    "docs/regression/Audit03/full_yes_v68_2026-10-02.txt"
+  ],
+  "InputEvidence": "docs/regression/Audit03/k02_numeric_input_positive_v45_2026-10-02.txt",
+  "MutationReport": "docs/regression/Audit03/solver_method_mutation_v48b_2026-10-02.txt",
+  "Consumer": "CSystemSettingsReader -> CSectionSolver.ApplySettings -> Solve",
+  "TestId": "modTestSectionSolver.TestAudit03SolverSettingEffects",
+  "Entries": [
+    {
+      "Id": "Solver.Method",
+      "Type": "Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Newton if absent",
+      "ValidRange": "Newton / Secant",
+      "Activity": "All equilibrium solves",
+      "ExpectedEffect": "Newton calls tangent iteration; Secant uses independent secant branch",
+      "AssertionPrefix": "audit03.effect.Solver.Method.",
+      "RangeReview": "Unknown method rejected; unit-sign issue not applicable",
+      "MutationReviewed": true
+    },
+    {
+      "Id": "Solver.MaxIterations",
+      "Type": "Long",
+      "InternalUnits": "count",
+      "RuntimeDefault": 80,
+      "ValidRange": "integer > 0",
+      "Activity": "All equilibrium solves; Capacity has its own iteration override",
+      "ExpectedEffect": "1 stops before equilibrium; 4 completes linear task",
+      "AssertionPrefix": "audit03.effect.Solver.MaxIterations.",
+      "RangeReview": "0 rejected; noninteger/overflow reader evidence separate"
+    },
+    {
+      "Id": "Solver.LoadSteps",
+      "Type": "Long",
+      "InternalUnits": "count",
+      "RuntimeDefault": 5,
+      "ValidRange": "integer > 0",
+      "Activity": "All equilibrium solves; Capacity uses BaseLoadSteps",
+      "ExpectedEffect": "1 versus 4 completed stages and actual Newton call count",
+      "AssertionPrefix": "audit03.effect.Solver.LoadSteps.",
+      "RangeReview": "0 rejected; noninteger/overflow reader evidence separate"
+    },
+    {
+      "Id": "Solver.ToleranceN",
+      "Type": "Double",
+      "InternalUnits": "N",
+      "RuntimeDefault": "1 internal N before optional unit conversion",
+      "ValidRange": "> 0",
+      "Activity": "N residual acceptance",
+      "ExpectedEffect": "Loose tolerance accepts zero plane; strict tolerance solves N residual",
+      "AssertionPrefix": "audit03.effect.Solver.ToleranceN.",
+      "RangeReview": "Нулевое/отрицательное значение отклоняется до solve; CUnitSystem не скрывает знак. Negative v49 и v67, positive v50 и v64; все четыре consumers и full v68 проверены."
+    },
+    {
+      "Id": "Solver.ToleranceMx",
+      "Type": "Double",
+      "InternalUnits": "N*mm",
+      "RuntimeDefault": "1000 internal N*mm before optional unit conversion",
+      "ValidRange": "> 0",
+      "Activity": "Mx residual acceptance",
+      "ExpectedEffect": "Loose tolerance accepts zero plane; strict tolerance solves Mx residual",
+      "AssertionPrefix": "audit03.effect.Solver.ToleranceMx.",
+      "RangeReview": "Нулевое/отрицательное значение отклоняется до solve; CUnitSystem не скрывает знак. Negative v49 и v67, positive v50 и v64; все четыре consumers и full v68 проверены."
+    },
+    {
+      "Id": "Solver.ToleranceMy",
+      "Type": "Double",
+      "InternalUnits": "N*mm",
+      "RuntimeDefault": "1000 internal N*mm before optional unit conversion",
+      "ValidRange": "> 0",
+      "Activity": "My residual acceptance",
+      "ExpectedEffect": "Loose tolerance accepts zero plane; strict tolerance solves My residual",
+      "AssertionPrefix": "audit03.effect.Solver.ToleranceMy.",
+      "RangeReview": "Нулевое/отрицательное значение отклоняется до solve; CUnitSystem не скрывает знак. Negative v49 и v67, positive v50 и v64; все четыре consumers и full v68 проверены."
+    },
+    {
+      "Id": "Solver.LineSearchEnabled",
+      "Type": "Boolean",
+      "InternalUnits": "-",
+      "RuntimeDefault": true,
+      "ValidRange": "Yes/No and supported Boolean aliases",
+      "Activity": "Newton step acceptance",
+      "ExpectedEffect": "On splits a nonlinear step; Off accepts undivided steps",
+      "AssertionPrefix": "audit03.effect.Solver.LineSearchEnabled.",
+      "RangeReview": "Boolean malformed/blank/formula errors covered by input-contract suite"
+    },
+    {
+      "Id": "Solver.DampingInitial",
+      "Type": "Double",
+      "InternalUnits": "-",
+      "RuntimeDefault": 1,
+      "ValidRange": "0 < value <= 1",
+      "Activity": "Newton initial step multiplier",
+      "ExpectedEffect": "0.5 requires more iterations than 1 on a linear task",
+      "AssertionPrefix": "audit03.effect.Solver.DampingInitial.",
+      "RangeReview": "1.1 rejected; raw unit conversion not applicable"
+    },
+    {
+      "Id": "Solver.MinLineSearchAlpha",
+      "Type": "Double",
+      "InternalUnits": "-",
+      "RuntimeDefault": 0.03125,
+      "ValidRange": "0 < value <= DampingInitial",
+      "Activity": "Newton with LineSearchEnabled=Yes",
+      "ExpectedEffect": "1 prevents necessary step reduction; 0.03125 permits equilibrium",
+      "AssertionPrefix": "audit03.effect.Solver.MinLineSearchAlpha.",
+      "RangeReview": "1.1 rejected; coupled DampingInitial boundary checked by solver validation"
+    },
+    {
+      "Id": "Solver.MaxDeltaEpsilon0",
+      "Type": "Double",
+      "InternalUnits": "dimensionless",
+      "RuntimeDefault": 0.0005,
+      "ValidRange": "finite >= 0; 0 disables the increment limit",
+      "Activity": "Strain-plane increment control",
+      "ExpectedEffect": "Restricted increments increase work while preserving equilibrium",
+      "AssertionPrefix": "audit03.effect.Solver.MaxDeltaEpsilon0.",
+      "RangeReview": "negative rejected without a unit sign conversion"
+    },
+    {
+      "Id": "Solver.MaxDeltaKappa",
+      "Type": "Double",
+      "InternalUnits": "1/mm",
+      "RuntimeDefault": "0.00001 internal 1/mm before optional unit conversion",
+      "ValidRange": "finite >= 0; 0 disables the increment limit",
+      "Activity": "Curvature increment control",
+      "ExpectedEffect": "Restricted increments increase work while preserving Mx equilibrium",
+      "AssertionPrefix": "audit03.effect.Solver.MaxDeltaKappa.",
+      "RangeReview": "Нулевое/отрицательное значение отклоняется до solve; CUnitSystem не скрывает знак. Negative v49 и v67, positive v50 и v64; все четыре consumers и full v68 проверены."
+    },
+    {
+      "Id": "Solver.SecantMaxRestarts",
+      "Type": "Long",
+      "InternalUnits": "count",
+      "RuntimeDefault": 2,
+      "ValidRange": "integer >= 0",
+      "Activity": "Secant only; inactive in Newton",
+      "ExpectedEffect": "Actual restart counts 0 versus 3 when restart condition is forced",
+      "AssertionPrefix": "audit03.effect.Solver.SecantMaxRestarts.",
+      "RangeReview": "negative rejected; noninteger/overflow reader evidence separate"
+    },
+    {
+      "Id": "Solver.SecantMinStepNorm",
+      "Type": "Double",
+      "InternalUnits": "Технический порог: raw L1 внешнего шага; геометрически взвешенный L2 обновления Broyden",
+      "RuntimeDefault": 1e-12,
+      "ValidRange": "> 0",
+      "Activity": "Secant only; inactive in Newton",
+      "ExpectedEffect": "1e-12 converges; 1 forces small-step restarts and failure",
+      "AssertionPrefix": "audit03.effect.Solver.SecantMinStepNorm.",
+      "RangeReview": "0 rejected; inactive Newton tested explicitly"
+    }
+  ],
+  "AdditionalRangeEvidence": {
+    "NegativeSolver": "docs/regression/Audit03/solver_effects_units_negative_v49_2026-10-02.txt",
+    "PositiveSolver": "docs/regression/Audit03/solver_effects_units_positive_v50_2026-10-02.txt",
+    "NegativeConsumers": "docs/regression/Audit03/unit_sign_consumers_negative_v67_2026-10-02.txt",
+    "PositiveConsumers": "docs/regression/Audit03/unit_sign_consumers_v64_2026-10-02.txt",
+    "PositiveConsumerGate": "TOTAL_AUDIT03_UNIT_SIGN_CONSUMERS: passed=44; failed=0"
+  }
+}

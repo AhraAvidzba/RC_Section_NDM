@@ -310,10 +310,11 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         mStabilityElementLength = units.InputLengthToInternal(mStabilityElementLength)
         mStabilityAccidentalEccentricityUser1 = units.InputLengthToInternal(mStabilityAccidentalEccentricityUser1)
         mStabilityAccidentalEccentricityUser2 = units.InputLengthToInternal(mStabilityAccidentalEccentricityUser2)
-        mSolverToleranceN = Abs(units.InputForceToInternal(mSolverToleranceN))
-        mSolverToleranceMx = Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
-        mSolverToleranceMy = Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
-        mSolverMaxDeltaKappa = Abs(units.InputCurvatureToInternal(mSolverMaxDeltaKappa))
+        ' Отрицательный допуск остается ошибкой настройки и после перевода единиц.
+        mSolverToleranceN = Sgn(mSolverToleranceN) * Abs(units.InputForceToInternal(mSolverToleranceN))
+        mSolverToleranceMx = Sgn(mSolverToleranceMx) * Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
+        mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
+        mSolverMaxDeltaKappa = Sgn(mSolverMaxDeltaKappa) * Abs(units.InputCurvatureToInternal(mSolverMaxDeltaKappa))
         If zeroMomentSettingRead Then mZeroMomentPerDepth = units.InputMomentPerLengthToInternal(mZeroMomentPerDepth)
     End If
     ConfigureMomentZeroFilter

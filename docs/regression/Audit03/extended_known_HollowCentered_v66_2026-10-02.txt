@@ -1,0 +1,564 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v66.xlsm
+SOURCE_SHA256: 4B09D90316A1EF3443E098C7FEF49428C780384E5BE3158E7C090CDA0F60BA90
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ffbe01f606ed41cc866efc34c2edb33d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests; 2026-10-02T13:09:36
+EXCEL_AFTER_SUITE: pid=27856; workingSet=138039296; privateBytes=92635136; cpu=4.84375
+EXCEL_AFTER_SUITE: pid=28428; workingSet=144146432; privateBytes=89886720; cpu=16.421875
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.0.05.1|N=-10838422.1336424|Mx=-25510416.6666663|My=-21770324.4567112|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.05|concreteMax=-0.05|steelMin=-0.05|steelMax=-0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.rN; actual=-0.000000016764; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.rMx; actual=-0.000000182539; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.rMy; actual=-0.000000052154; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.0.05.1.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.0.05.2|N=502654.824574367|Mx=0.000000002721|My=23574511.2725378|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.05|concreteMax=0.05|steelMin=0.05|steelMax=0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.rMy; actual=0.000000011176; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.0.05.2.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.0.05.3|N=-3383910.95322388|Mx=803025751.000907|My=311175662.383821|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.049870954094|concreteMax=0.049490162894|steelMin=-0.038347826087|steelMax=0.037967034887|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.rN; actual=-0.000000000931; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.rMx; actual=0.000000357628; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.rMy; actual=-0.000000119209; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.0.05.3.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.0.5.1|N=-61348112.3186994|Mx=-147385416.666665|My=-66193544.1358987|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.5|concreteMax=-0.5|steelMin=-0.5|steelMax=-0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.rN; actual=0.000000409782; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.rMx; actual=0.000001341105; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.rMy; actual=-0.000000141561; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.offNoEquilibrium
+OK: audit03.extended.HollowCentered.Newton.1.0.5.1.offNumericalCause
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.0.5.2|N=1633628.17986669|Mx=0.000000013009|My=76617161.6357479|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.5|concreteMax=0.5|steelMin=0.5|steelMax=0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.rN; actual=0.000000000233; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.rMx; actual=-0.000000007392; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.rMy; actual=0.000000014901; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.offNoEquilibrium
+OK: audit03.extended.HollowCentered.Newton.1.0.5.2.offNumericalCause
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.0.5.3|N=-13079065.3887789|Mx=3301549931.93795|My=1358164202.03604|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.498709540935|concreteMax=0.49490162894|steelMin=-0.38347826087|steelMax=0.379670348875|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.rMx; actual=-0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.rMy; actual=0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.0.5.3.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.5.1|N=-566445014.169275|Mx=-1366135416.6667|My=-510425740.927774|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-5.|concreteMax=-5.|steelMin=-5.|steelMax=-5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.5.1.rN; actual=-0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.1.rMx; actual=-0.000013828278; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.1.rMy; actual=-0.000000119209; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.5.1.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.5.2|N=12943361.7327899|Mx=-0.000000077533|My=607043665.267849|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=5.|concreteMax=5.|steelMin=5.|steelMax=5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.2.rMx; actual=0.000000208849; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.5.2.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.5.3|N=-109881525.822717|Mx=28274211520.0829|My=11854379291.8384|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-4.987095409351|concreteMax=4.949016289401|steelMin=-3.834782608696|steelMax=3.796703488746|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.5.3.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.3.rMx; actual=-0.000030517578; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.3.rMy; actual=0.000001907349; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.5.3.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.9.5.1|N=-1071541916.01985|Mx=-2584885416.66664|My=-954657937.719648|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.5|concreteMax=-9.5|steelMin=-9.5|steelMax=-9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.rN; actual=-0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.rMx; actual=0.000025749207; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.rMy; actual=0.00000834465; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.9.5.1.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.9.5.2|N=24253095.2857132|Mx=0.000000223052|My=1137470168.89995|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=9.5|concreteMax=9.5|steelMin=9.5|steelMax=9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.9.5.2.displayFail
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.1.9.5.3|N=-206683986.256655|Mx=53246873108.2279|My=22350594381.6407|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.475481277766|concreteMax=9.403130949862|steelMin=-7.286086956522|steelMax=7.213736628618|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.rN; actual=0.000000089407; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.rMx; actual=-0.000038146973; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Newton.1.9.5.3.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.0.05.1|N=-13083297.2529782|Mx=-30927083.3333344|My=-23744689.7757861|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=-0.05|concreteMax=-0.05|steelMin=-0.05|steelMax=-0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.rN; actual=0.000000001863; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.rMx; actual=-0.000000268221; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.rMy; actual=0.000000022352; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.0.05.1.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.0.05.2|N=552920.307031804|Mx=0.000000000946|My=25931962.3997916|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.05|concreteMax=0.05|steelMin=0.05|steelMax=0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.rMx; actual=-0.000000007451; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.rMy; actual=-0.000000003725; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.0.05.2.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.0.05.3|N=-4431684.50230826|Mx=1017488909.91055|My=384463515.940837|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|concreteMin=-0.049870954094|concreteMax=0.049490162894|steelMin=-0.038347826087|steelMax=0.037967034887|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.rN; actual=0.000000001863; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.rMx; actual=0.000001072884; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.rMy; actual=0.000000178814; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.0.05.3.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.0.5.1|N=-63592987.4380358|Mx=-152802083.333337|My=-68167909.4549738|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.5|concreteMax=-0.5|steelMin=-0.5|steelMax=-0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.rN; actual=-0.000000037253; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.rMx; actual=-0.000000834465; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.rMy; actual=-0.000000059605; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.offNoEquilibrium
+OK: audit03.extended.HollowCentered.Newton.3.0.5.1.offNumericalCause
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.0.5.2|N=1683893.66232413|Mx=-0.000000014843|My=78974612.7630017|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.5|concreteMax=0.5|steelMin=0.5|steelMax=0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.rN; actual=-0.000000000233; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.rMx; actual=-0.000000037311; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.offNoEquilibrium
+OK: audit03.extended.HollowCentered.Newton.3.0.5.2.offNumericalCause
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.0.5.3|N=-14147335.3650925|Mx=3516799807.45315|My=1430879138.39734|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.498709540935|concreteMax=0.49490162894|steelMin=-0.38347826087|steelMax=0.379670348875|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.rN; actual=0.000000014901; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.rMx; actual=-0.000000953674; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.rMy; actual=-0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.0.5.3.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.5.1|N=-568689889.288607|Mx=-1371552083.3333|My=-512400106.246854|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-5.|concreteMax=-5.|steelMin=-5.|steelMax=-5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.5.1.rN; actual=0.000003695488; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.1.rMx; actual=-0.000008821487; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.1.rMy; actual=0.000000238419; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.5.1.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.5.2|N=12993627.2152474|Mx=-0.000000004889|My=609401116.395102|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=5.|concreteMax=5.|steelMin=5.|steelMax=5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.5.2.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.5.3|N=-110949795.799031|Mx=28489461395.5981|My=11927094228.1997|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-4.987095409351|concreteMax=4.949016289401|steelMin=-3.834782608696|steelMax=3.796703488746|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.5.3.rN; actual=0.000000014901; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.3.rMx; actual=-0.000019073486; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.3.rMy; actual=0.000003814697; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.5.3.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.9.5.1|N=-1073786791.13918|Mx=-2590302083.33339|My=-956632303.038722|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.5|concreteMax=-9.5|steelMin=-9.5|steelMax=-9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.rN; actual=0.000002861023; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.rMx; actual=-0.000076293945; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.rMy; actual=0.000001788139; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.9.5.1.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.9.5.2|N=24303360.7681706|Mx=-0.000000181142|My=1139827620.0272|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=9.5|concreteMax=9.5|steelMin=9.5|steelMax=9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.rN; actual=-0.000000003725; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.rMx; actual=-0.000000238419; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.rMy; actual=0.000000238419; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.9.5.2.displayFail
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Newton.3.9.5.3|N=-207752256.232969|Mx=53462122983.7431|My=22423309318.002|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.475481277766|concreteMax=9.403130949863|steelMin=-7.286086956522|steelMax=7.213736628618|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.rN; actual=0.000000178814; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.rMx; actual=-0.000030517578; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Newton.3.9.5.3.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.0.05.1|N=-10838422.1336424|Mx=-25510416.6666663|My=-21770324.4567112|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.05|concreteMax=-0.05|steelMin=-0.05|steelMax=-0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.rN; actual=-0.000000016764; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.rMx; actual=-0.000000182539; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.rMy; actual=-0.000000052154; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.0.05.1.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.0.05.2|N=502654.824574367|Mx=0.000000002721|My=23574511.2725378|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.05|concreteMax=0.05|steelMin=0.05|steelMax=0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.rMy; actual=0.000000011176; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.0.05.2.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.0.05.3|N=-3383910.95322388|Mx=803025751.000907|My=311175662.383821|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|concreteMin=-0.049870954094|concreteMax=0.049490162894|steelMin=-0.038347826087|steelMax=0.037967034887|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.rN; actual=0.000000002328; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.rMx; actual=0.000014901161; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.rMy; actual=-0.000013113022; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.0.05.3.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.0.5.1|N=-61348112.3186994|Mx=-147385416.666665|My=-66193544.1358987|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.5|concreteMax=-0.5|steelMin=-0.5|steelMax=-0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.rN; actual=0.000000409782; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.rMx; actual=0.000001341105; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.rMy; actual=-0.000000141561; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.offNoEquilibrium
+OK: audit03.extended.HollowCentered.Secant.1.0.5.1.offNumericalCause
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.0.5.2|N=1633628.17986669|Mx=0.000000013009|My=76617161.6357479|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.5|concreteMax=0.5|steelMin=0.5|steelMax=0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.rN; actual=0.000000000233; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.rMx; actual=-0.000000007392; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.rMy; actual=0.000000014901; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.offNoEquilibrium
+OK: audit03.extended.HollowCentered.Secant.1.0.5.2.offNumericalCause
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.0.5.3|N=-13079065.3887789|Mx=3301549931.93795|My=1358164202.03604|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.498709540935|concreteMax=0.49490162894|steelMin=-0.38347826087|steelMax=0.379670348875|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.rMx; actual=-0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.rMy; actual=0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.0.5.3.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.5.1|N=-566445014.169275|Mx=-1366135416.6667|My=-510425740.927774|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-5.|concreteMax=-5.|steelMin=-5.|steelMax=-5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.5.1.rN; actual=-0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.1.rMx; actual=-0.000013828278; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.1.rMy; actual=-0.000000119209; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.5.1.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.5.2|N=12943361.7327899|Mx=-0.000000077533|My=607043665.267849|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=5.|concreteMax=5.|steelMin=5.|steelMax=5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.2.rMx; actual=0.000000208849; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.5.2.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.5.3|N=-109881525.822717|Mx=28274211520.0829|My=11854379291.8384|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-4.987095409351|concreteMax=4.949016289401|steelMin=-3.834782608696|steelMax=3.796703488746|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.5.3.rN; actual=0.000000029802; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.3.rMx; actual=-0.000030517578; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.3.rMy; actual=0.000001907349; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.5.3.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.9.5.1|N=-1071541916.01985|Mx=-2584885416.66664|My=-954657937.719648|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.5|concreteMax=-9.5|steelMin=-9.5|steelMax=-9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.rN; actual=-0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.rMx; actual=0.000025749207; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.rMy; actual=0.00000834465; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.9.5.1.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.9.5.2|N=24253095.2857132|Mx=0.000000223052|My=1137470168.89995|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=9.5|concreteMax=9.5|steelMin=9.5|steelMax=9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.9.5.2.displayFail
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.1.9.5.3|N=-206683986.256655|Mx=53246873108.2279|My=22350594381.6407|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.475481277766|concreteMax=9.403130949862|steelMin=-7.286086956522|steelMax=7.213736628618|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.rN; actual=0.000000089407; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.rMx; actual=-0.000038146973; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Secant.1.9.5.3.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.0.05.1|N=-13083297.2529782|Mx=-30927083.3333344|My=-23744689.7757861|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=-0.05|concreteMax=-0.05|steelMin=-0.05|steelMax=-0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.rN; actual=0.000000001863; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.rMx; actual=-0.000000268221; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.rMy; actual=0.000000022352; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.0.05.1.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.0.05.2|N=552920.307031804|Mx=0.000000000946|My=25931962.3997916|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.05|concreteMax=0.05|steelMin=0.05|steelMax=0.05|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.rMx; actual=-0.000000007451; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.rMy; actual=-0.000000003725; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.0.05.2.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.0.05.3|N=-4431684.50230826|Mx=1017488909.91055|My=384463515.940837|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=1|concreteMin=-0.049870953885|concreteMax=0.049490161847|steelMin=-0.038347825687|steelMax=0.037967033649|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.rN; actual=-0.015524654649; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.rMx; actual=-9.400078296661; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.rMy; actual=7.931010365486; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.0.05.3.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.0.5.1|N=-63592987.4380358|Mx=-152802083.333337|My=-68167909.4549738|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.5|concreteMax=-0.5|steelMin=-0.5|steelMax=-0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.rN; actual=-0.000000037253; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.rMx; actual=-0.000000834465; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.rMy; actual=-0.000000059605; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.offNoEquilibrium
+OK: audit03.extended.HollowCentered.Secant.3.0.5.1.offNumericalCause
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.0.5.2|N=1683893.66232413|Mx=-0.000000014843|My=78974612.7630017|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=0.5|concreteMax=0.5|steelMin=0.5|steelMax=0.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.rN; actual=-0.000000000233; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.rMx; actual=-0.000000037311; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.offNoEquilibrium
+OK: audit03.extended.HollowCentered.Secant.3.0.5.2.offNumericalCause
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.0.5.3|N=-14147335.3650925|Mx=3516799807.45315|My=1430879138.39734|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-0.498709540935|concreteMax=0.49490162894|steelMin=-0.38347826087|steelMax=0.379670348875|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.rN; actual=0.000000014901; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.rMx; actual=-0.000000953674; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.rMy; actual=-0.000000476837; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.0.5.3.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.5.1|N=-568689889.288607|Mx=-1371552083.3333|My=-512400106.246854|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-5.|concreteMax=-5.|steelMin=-5.|steelMax=-5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.5.1.rN; actual=0.000003695488; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.1.rMx; actual=-0.000008821487; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.1.rMy; actual=0.000000238419; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.5.1.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.5.2|N=12993627.2152474|Mx=-0.000000004889|My=609401116.395102|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=5.|concreteMax=5.|steelMin=5.|steelMax=5.|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.5.2.rN; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.2.rMx; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.2.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.5.2.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.5.3|N=-110949795.799031|Mx=28489461395.5981|My=11927094228.1997|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-4.987095409351|concreteMax=4.949016289401|steelMin=-3.834782608696|steelMax=3.796703488746|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.5.3.rN; actual=0.000000014901; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.3.rMx; actual=-0.000019073486; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.3.rMy; actual=0.000003814697; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.5.3.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.9.5.1|N=-1073786791.13918|Mx=-2590302083.33339|My=-956632303.038722|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.5|concreteMax=-9.5|steelMin=-9.5|steelMax=-9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.rN; actual=0.000002861023; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.rMx; actual=-0.000076293945; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.rMy; actual=0.000001788139; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.9.5.1.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.9.5.2|N=24303360.7681706|Mx=-0.000000181142|My=1139827620.0272|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=4|concreteMin=9.5|concreteMax=9.5|steelMin=9.5|steelMax=9.5|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.rN; actual=-0.000000003725; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.rMx; actual=-0.000000238419; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.rMy; actual=0.000000238419; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.9.5.2.displayFail
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.technicalCompressionEndpoint; actual=-10.; expected=-10.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.technicalSteelEndpoint; actual=10.; expected=10.
+EXTENDED_OVERLOAD: audit03.extended.HollowCentered.Secant.3.9.5.3|N=-207752256.232969|Mx=53462122983.7431|My=22423309318.002|converged=True|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|extension=True|physical=False|solves=2|concreteMin=-9.475481277766|concreteMax=9.403130949863|steelMin=-7.286086956522|steelMax=7.213736628618|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.equilibrium
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.rN; actual=0.000000178814; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.rMx; actual=-0.000030517578; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.rMy; actual=0.; expected=0.
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.extensionUsed
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.insideTechnicalEndpoints
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.physicalFail
+OK: audit03.extended.HollowCentered.Secant.3.9.5.3.displayFail
+OK: audit03.extendedBeyond.HollowCentered.-1.noEquilibrium
+OK: audit03.extendedBeyond.HollowCentered.-1.numeric
+OK: audit03.extendedBeyond.HollowCentered.-1.reason
+OK: audit03.extendedBeyond.HollowCentered.1.noEquilibrium
+OK: audit03.extendedBeyond.HollowCentered.1.numeric
+OK: audit03.extendedBeyond.HollowCentered.1.reason
+TOTAL_AUDIT03_EXTENDED_OVERLOAD: shape=HollowCentered; knownStates=48; passed=502; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03ExtendedOverloadEquilibriumTests; 2026-10-02T13:09:39
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

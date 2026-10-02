@@ -1,0 +1,75 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v64.xlsm
+SOURCE_SHA256: 47E5B87B331167F341AEECA7095F3A8714DF6C17BB0AEB53B2A63556BFCF797F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_fb3762c46b7546a28385232eda9fb84b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03UnitSignConsumerTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03UnitSignConsumerTests; 2026-10-02T12:56:00
+EXCEL_AFTER_SUITE: pid=11648; workingSet=134832128; privateBytes=102584320; cpu=3.796875
+EXCEL_AFTER_SUITE: pid=28428; workingSet=126709760; privateBytes=77602816; cpu=6.84375
+RUN: Audit03 unit-sign consumers
+RUN: audit03.unitSign.Solver.ToleranceN.capacity
+OK: audit03.unitSign.Solver.ToleranceN.capacityTyped
+OK: audit03.unitSign.Solver.ToleranceN.capacityHasDiagnosticSolver
+OK: audit03.unitSign.Solver.ToleranceN.capacityNoIterations
+OK: audit03.unitSign.Solver.ToleranceN.capacityNoRetries
+OK: audit03.unitSign.Solver.ToleranceN.capacityReason
+RUN: audit03.unitSign.Solver.ToleranceN.formation
+OK: audit03.unitSign.Solver.ToleranceN.formationTyped
+OK: audit03.unitSign.Solver.ToleranceN.formationNoPoint
+OK: audit03.unitSign.Solver.ToleranceN.formationReason
+RUN: audit03.unitSign.Solver.ToleranceN.batch
+OK: audit03.unitSign.Solver.ToleranceN.batchTyped
+OK: audit03.unitSign.Solver.ToleranceN.batchExternal; actual=InputErr
+OK: audit03.unitSign.Solver.ToleranceN.batchReason
+UNIT_SIGN_CONSUMER: key=Solver.ToleranceN|capacity=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|formation=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|batch=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+RUN: audit03.unitSign.Solver.ToleranceMx.capacity
+OK: audit03.unitSign.Solver.ToleranceMx.capacityTyped
+OK: audit03.unitSign.Solver.ToleranceMx.capacityHasDiagnosticSolver
+OK: audit03.unitSign.Solver.ToleranceMx.capacityNoIterations
+OK: audit03.unitSign.Solver.ToleranceMx.capacityNoRetries
+OK: audit03.unitSign.Solver.ToleranceMx.capacityReason
+RUN: audit03.unitSign.Solver.ToleranceMx.formation
+OK: audit03.unitSign.Solver.ToleranceMx.formationTyped
+OK: audit03.unitSign.Solver.ToleranceMx.formationNoPoint
+OK: audit03.unitSign.Solver.ToleranceMx.formationReason
+RUN: audit03.unitSign.Solver.ToleranceMx.batch
+OK: audit03.unitSign.Solver.ToleranceMx.batchTyped
+OK: audit03.unitSign.Solver.ToleranceMx.batchExternal; actual=InputErr
+OK: audit03.unitSign.Solver.ToleranceMx.batchReason
+UNIT_SIGN_CONSUMER: key=Solver.ToleranceMx|capacity=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|formation=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|batch=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+RUN: audit03.unitSign.Solver.ToleranceMy.capacity
+OK: audit03.unitSign.Solver.ToleranceMy.capacityTyped
+OK: audit03.unitSign.Solver.ToleranceMy.capacityHasDiagnosticSolver
+OK: audit03.unitSign.Solver.ToleranceMy.capacityNoIterations
+OK: audit03.unitSign.Solver.ToleranceMy.capacityNoRetries
+OK: audit03.unitSign.Solver.ToleranceMy.capacityReason
+RUN: audit03.unitSign.Solver.ToleranceMy.formation
+OK: audit03.unitSign.Solver.ToleranceMy.formationTyped
+OK: audit03.unitSign.Solver.ToleranceMy.formationNoPoint
+OK: audit03.unitSign.Solver.ToleranceMy.formationReason
+RUN: audit03.unitSign.Solver.ToleranceMy.batch
+OK: audit03.unitSign.Solver.ToleranceMy.batchTyped
+OK: audit03.unitSign.Solver.ToleranceMy.batchExternal; actual=InputErr
+OK: audit03.unitSign.Solver.ToleranceMy.batchReason
+UNIT_SIGN_CONSUMER: key=Solver.ToleranceMy|capacity=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|formation=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|batch=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.capacity
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityTyped
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityHasDiagnosticSolver
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityNoIterations
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityNoRetries
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityReason
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.formation
+OK: audit03.unitSign.Solver.MaxDeltaKappa.formationTyped
+OK: audit03.unitSign.Solver.MaxDeltaKappa.formationNoPoint
+OK: audit03.unitSign.Solver.MaxDeltaKappa.formationReason
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.batch
+OK: audit03.unitSign.Solver.MaxDeltaKappa.batchTyped
+OK: audit03.unitSign.Solver.MaxDeltaKappa.batchExternal; actual=InputErr
+OK: audit03.unitSign.Solver.MaxDeltaKappa.batchReason
+UNIT_SIGN_CONSUMER: key=Solver.MaxDeltaKappa|capacity=Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.|formation=Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.|batch=Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.
+TOTAL_AUDIT03_UNIT_SIGN_CONSUMERS: passed=44; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03UnitSignConsumerTests; 2026-10-02T12:56:02
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

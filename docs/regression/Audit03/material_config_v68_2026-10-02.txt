@@ -1,0 +1,1617 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v68.xlsm
+SOURCE_SHA256: 6A17F72B1EB21173CB9A4BC635C38DDA1AA0E63B457CE40891D142DD6A49EB9F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_dfe4a6e9772c46ad8e9a3fe9b138dd7c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests =====
+SUITE_STARTED: modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests; 2026-10-02T13:27:27
+EXCEL_AFTER_SUITE: pid=27596; workingSet=148684800; privateBytes=102117376; cpu=5.765625
+EXCEL_AFTER_SUITE: pid=28428; workingSet=171909120; privateBytes=107831296; cpu=69.609375
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-17.05; expected=-17.05; absDiff=0.
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-17.05; expected=-17.05; absDiff=0.
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-17.05; expected=-17.05; absDiff=0.
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-17.05; expected=-17.05; absDiff=0.
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-17.05; expected=-17.05; absDiff=0.
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-17.05; expected=-17.05; absDiff=0.
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-17.05; expected=-17.05; absDiff=0.
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-17.05; expected=-17.05; absDiff=0.
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-22.; expected=-22.; absDiff=0.
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-22.; expected=-22.; absDiff=0.
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-22.; expected=-22.; absDiff=0.
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-22.; expected=-22.; absDiff=0.
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-22.; expected=-22.; absDiff=0.
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-22.; expected=-22.; absDiff=0.
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-22.; expected=-22.; absDiff=0.
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-22.; expected=-22.; absDiff=0.
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.0.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.R.ULS(I)|column=2|address=$I$27|before=15.5|after=17.05|specs=16
+OK: audit03.materialConfig.0.invalid.0
+OK: audit03.materialConfig.0.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=2|address=$I$27|value=0|error=-2147218313|reason=Concrete.Rb.ULS должен быть положительным.
+OK: audit03.materialConfig.0.invalid.-1
+OK: audit03.materialConfig.0.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=2|address=$I$27|value=-1|error=-2147218313|reason=Concrete.Rb.ULS должен быть положительным.
+OK: audit03.materialConfig.0.invalid.TODO
+OK: audit03.materialConfig.0.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=2|address=$I$27|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rb.ULS не задана.
+OK: audit03.materialConfig.0.invalid.
+OK: audit03.materialConfig.0.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=2|address=$I$27|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rb.ULS не задана.
+OK: audit03.materialConfig.0.invalid.Error 2015
+OK: audit03.materialConfig.0.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=2|address=$I$27|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rb.ULS должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.0.invalid.1e309
+OK: audit03.materialConfig.0.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=2|address=$I$27|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rb.ULS должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.0.recoveryConcrete
+OK: audit03.materialConfig.0.recoverySteel
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=1.21; expected=1.21; absDiff=0.
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=1.21; expected=1.21; absDiff=0.
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=1.21; expected=1.21; absDiff=0.
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=1.21; expected=1.21; absDiff=0.
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=1.8; expected=1.8; absDiff=0.
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=1.8; expected=1.8; absDiff=0.
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=1.8; expected=1.8; absDiff=0.
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=1.8; expected=1.8; absDiff=0.
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.1.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.R.ULS(I)|column=3|address=$J$27|before=1.1|after=1.21|specs=16
+OK: audit03.materialConfig.1.invalid.0
+OK: audit03.materialConfig.1.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=3|address=$J$27|value=0|error=-2147218312|reason=Concrete.Rbt.ULS должен быть положительным.
+OK: audit03.materialConfig.1.invalid.-1
+OK: audit03.materialConfig.1.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=3|address=$J$27|value=-1|error=-2147218312|reason=Concrete.Rbt.ULS должен быть положительным.
+OK: audit03.materialConfig.1.invalid.TODO
+OK: audit03.materialConfig.1.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=3|address=$J$27|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rbt.ULS не задана.
+OK: audit03.materialConfig.1.invalid.
+OK: audit03.materialConfig.1.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=3|address=$J$27|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rbt.ULS не задана.
+OK: audit03.materialConfig.1.invalid.Error 2015
+OK: audit03.materialConfig.1.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=3|address=$J$27|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rbt.ULS должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.1.invalid.1e309
+OK: audit03.materialConfig.1.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.R.ULS(I)|column=3|address=$J$27|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rbt.ULS должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.1.recoveryConcrete
+OK: audit03.materialConfig.1.recoverySteel
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-15.5; expected=-15.5; absDiff=0.
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-15.5; expected=-15.5; absDiff=0.
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-15.5; expected=-15.5; absDiff=0.
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-15.5; expected=-15.5; absDiff=0.
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-15.5; expected=-15.5; absDiff=0.
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-15.5; expected=-15.5; absDiff=0.
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-15.5; expected=-15.5; absDiff=0.
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-15.5; expected=-15.5; absDiff=0.
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-24.2; expected=-24.2; absDiff=0.
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-24.2; expected=-24.2; absDiff=0.
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-24.2; expected=-24.2; absDiff=0.
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-24.2; expected=-24.2; absDiff=0.
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-24.2; expected=-24.2; absDiff=0.
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-24.2; expected=-24.2; absDiff=0.
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-24.2; expected=-24.2; absDiff=0.
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-24.2; expected=-24.2; absDiff=0.
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.2.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.R.SLS(II)|column=2|address=$I$28|before=22.|after=24.2|specs=16
+OK: audit03.materialConfig.2.invalid.0
+OK: audit03.materialConfig.2.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=2|address=$I$28|value=0|error=-2147218311|reason=Concrete.Rb.SLS должен быть положительным.
+OK: audit03.materialConfig.2.invalid.-1
+OK: audit03.materialConfig.2.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=2|address=$I$28|value=-1|error=-2147218311|reason=Concrete.Rb.SLS должен быть положительным.
+OK: audit03.materialConfig.2.invalid.TODO
+OK: audit03.materialConfig.2.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=2|address=$I$28|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rb.SLS не задана.
+OK: audit03.materialConfig.2.invalid.
+OK: audit03.materialConfig.2.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=2|address=$I$28|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rb.SLS не задана.
+OK: audit03.materialConfig.2.invalid.Error 2015
+OK: audit03.materialConfig.2.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=2|address=$I$28|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rb.SLS должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.2.invalid.1e309
+OK: audit03.materialConfig.2.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=2|address=$I$28|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rb.SLS должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.2.recoveryConcrete
+OK: audit03.materialConfig.2.recoverySteel
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=1.1; expected=1.1; absDiff=0.
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=1.1; expected=1.1; absDiff=0.
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=1.1; expected=1.1; absDiff=0.
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=1.1; expected=1.1; absDiff=0.
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=1.98; expected=1.98; absDiff=0.
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=1.98; expected=1.98; absDiff=0.
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=1.98; expected=1.98; absDiff=0.
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=1.98; expected=1.98; absDiff=0.
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.3.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.R.SLS(II)|column=3|address=$J$28|before=1.8|after=1.98|specs=16
+OK: audit03.materialConfig.3.invalid.0
+OK: audit03.materialConfig.3.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=3|address=$J$28|value=0|error=-2147218310|reason=Concrete.Rbt.SLS должен быть положительным.
+OK: audit03.materialConfig.3.invalid.-1
+OK: audit03.materialConfig.3.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=3|address=$J$28|value=-1|error=-2147218310|reason=Concrete.Rbt.SLS должен быть положительным.
+OK: audit03.materialConfig.3.invalid.TODO
+OK: audit03.materialConfig.3.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=3|address=$J$28|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rbt.SLS не задана.
+OK: audit03.materialConfig.3.invalid.
+OK: audit03.materialConfig.3.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=3|address=$J$28|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rbt.SLS не задана.
+OK: audit03.materialConfig.3.invalid.Error 2015
+OK: audit03.materialConfig.3.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=3|address=$J$28|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rbt.SLS должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.3.invalid.1e309
+OK: audit03.materialConfig.3.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.R.SLS(II)|column=3|address=$J$28|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rbt.SLS должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.3.recoveryConcrete
+OK: audit03.materialConfig.3.recoverySteel
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.93399750934; expected=0.93399750934; absDiff=0.
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.4.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.Rb.mc2|column=2|address=$I$29|before=14.6|after=16.06|specs=16
+OK: audit03.materialConfig.4.invalid.0
+OK: audit03.materialConfig.4.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.Rb.mc2|column=2|address=$I$29|value=0|error=-2147218301|reason=Concrete.Rb.mc2 должен быть положительным.
+OK: audit03.materialConfig.4.invalid.-1
+OK: audit03.materialConfig.4.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.Rb.mc2|column=2|address=$I$29|value=-1|error=-2147218301|reason=Concrete.Rb.mc2 должен быть положительным.
+OK: audit03.materialConfig.4.invalid.TODO
+OK: audit03.materialConfig.4.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.Rb.mc2|column=2|address=$I$29|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rb.mc2 не задана.
+OK: audit03.materialConfig.4.invalid.
+OK: audit03.materialConfig.4.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.Rb.mc2|column=2|address=$I$29|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Rb.mc2 не задана.
+OK: audit03.materialConfig.4.invalid.Error 2015
+OK: audit03.materialConfig.4.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.Rb.mc2|column=2|address=$I$29|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rb.mc2 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.4.invalid.1e309
+OK: audit03.materialConfig.4.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.Rb.mc2|column=2|address=$I$29|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Rb.mc2 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.4.recoveryConcrete
+OK: audit03.materialConfig.4.recoverySteel
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=10333.3333333333; expected=10333.3333333333; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|Ignore|TwoLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=10333.3333333333; expected=10333.3333333333; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|Ignore|ThreeLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=10333.3333333333; expected=10333.3333333333; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|UseDiagram|TwoLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=10333.3333333333; expected=10333.3333333333; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.5.ULS(I)|TwoLine|UseDiagram|ThreeLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|Ignore|TwoLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|Ignore|ThreeLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|UseDiagram|TwoLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.5.ULS(I)|ThreeLine|UseDiagram|ThreeLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=14666.6666666667; expected=14666.6666666667; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|Ignore|TwoLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=14666.6666666667; expected=14666.6666666667; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|Ignore|ThreeLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=14666.6666666667; expected=14666.6666666667; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|UseDiagram|TwoLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=14666.6666666667; expected=14666.6666666667; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.5.SLS(II)|TwoLine|UseDiagram|ThreeLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|Ignore|TwoLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|Ignore|ThreeLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|UseDiagram|TwoLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=35750.; expected=35750.; absDiff=0.
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.5.SLS(II)|ThreeLine|UseDiagram|ThreeLine.referenceModulus; actual=35750.; expected=35750.; absDiff=0.
+MATERIAL_CONFIG_EFFECT: key=Concrete.E|column=2|address=$I$30|before=32500.|after=35750.|specs=16
+OK: audit03.materialConfig.5.invalid.0
+OK: audit03.materialConfig.5.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=2|address=$I$30|value=0|error=-2147218309|reason=Concrete.Eb должен быть положительным.
+OK: audit03.materialConfig.5.invalid.-1
+OK: audit03.materialConfig.5.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=2|address=$I$30|value=-1|error=-2147218309|reason=Concrete.Eb должен быть положительным.
+OK: audit03.materialConfig.5.invalid.TODO
+OK: audit03.materialConfig.5.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=2|address=$I$30|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Eb не задана.
+OK: audit03.materialConfig.5.invalid.
+OK: audit03.materialConfig.5.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=2|address=$I$30|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Eb не задана.
+OK: audit03.materialConfig.5.invalid.Error 2015
+OK: audit03.materialConfig.5.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=2|address=$I$30|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Eb должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.5.invalid.1e309
+OK: audit03.materialConfig.5.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=2|address=$I$30|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Eb должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.5.recoveryConcrete
+OK: audit03.materialConfig.5.recoverySteel
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=13750.; expected=13750.; absDiff=0.
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=13750.; expected=13750.; absDiff=0.
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=34100.; expected=34100.; absDiff=0.
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=34100.; expected=34100.; absDiff=0.
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=22500.; expected=22500.; absDiff=0.
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=22500.; expected=22500.; absDiff=0.
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=34100.; expected=34100.; absDiff=0.
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=34100.; expected=34100.; absDiff=0.
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.6.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.E|column=3|address=$J$30|before=31000.|after=34100.|specs=16
+OK: audit03.materialConfig.6.invalid.0
+OK: audit03.materialConfig.6.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=3|address=$J$30|value=0|error=-2147218308|reason=Concrete.Ebt должен быть положительным.
+OK: audit03.materialConfig.6.invalid.-1
+OK: audit03.materialConfig.6.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=3|address=$J$30|value=-1|error=-2147218308|reason=Concrete.Ebt должен быть положительным.
+OK: audit03.materialConfig.6.invalid.TODO
+OK: audit03.materialConfig.6.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=3|address=$J$30|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Ebt не задана.
+OK: audit03.materialConfig.6.invalid.
+OK: audit03.materialConfig.6.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=3|address=$J$30|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Ebt не задана.
+OK: audit03.materialConfig.6.invalid.Error 2015
+OK: audit03.materialConfig.6.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=3|address=$J$30|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Ebt должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.6.invalid.1e309
+OK: audit03.materialConfig.6.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.E|column=3|address=$J$30|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Ebt должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.6.recoveryConcrete
+OK: audit03.materialConfig.6.recoverySteel
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.00165; expected=-0.00165; absDiff=0.
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.00165; expected=-0.00165; absDiff=0.
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.00165; expected=-0.00165; absDiff=0.
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.00165; expected=-0.00165; absDiff=0.
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.002; expected=-0.002; absDiff=0.
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.002; expected=-0.002; absDiff=0.
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.002; expected=-0.002; absDiff=0.
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.002; expected=-0.002; absDiff=0.
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.00165; expected=-0.00165; absDiff=0.
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.00165; expected=-0.00165; absDiff=0.
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.00165; expected=-0.00165; absDiff=0.
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.00165; expected=-0.00165; absDiff=0.
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.002; expected=-0.002; absDiff=0.
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.002; expected=-0.002; absDiff=0.
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.002; expected=-0.002; absDiff=0.
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.002; expected=-0.002; absDiff=0.
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.7.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.TwoLine.Eb1Red|column=2|address=$I$31|before=0.0015|after=0.00165|specs=16
+OK: audit03.materialConfig.7.invalid.0
+OK: audit03.materialConfig.7.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=2|address=$I$31|value=0|error=-2147218307|reason=Concrete.Eb1Red должен быть положительным.
+OK: audit03.materialConfig.7.invalid.-1
+OK: audit03.materialConfig.7.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=2|address=$I$31|value=-1|error=-2147218307|reason=Concrete.Eb1Red должен быть положительным.
+OK: audit03.materialConfig.7.invalid.TODO
+OK: audit03.materialConfig.7.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=2|address=$I$31|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Eb1Red не задана.
+OK: audit03.materialConfig.7.invalid.
+OK: audit03.materialConfig.7.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=2|address=$I$31|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Eb1Red не задана.
+OK: audit03.materialConfig.7.invalid.Error 2015
+OK: audit03.materialConfig.7.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=2|address=$I$31|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Eb1Red должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.7.invalid.1e309
+OK: audit03.materialConfig.7.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=2|address=$I$31|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Eb1Red должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.7.recoveryConcrete
+OK: audit03.materialConfig.7.recoverySteel
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.000088; expected=0.000088; absDiff=0.
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.000088; expected=0.000088; absDiff=0.
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.0001; expected=0.0001; absDiff=0.
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.0001; expected=0.0001; absDiff=0.
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.000088; expected=0.000088; absDiff=0.
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.000088; expected=0.000088; absDiff=0.
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.0001; expected=0.0001; absDiff=0.
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.0001; expected=0.0001; absDiff=0.
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.8.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.TwoLine.Eb1Red|column=3|address=$J$31|before=0.00008|after=0.000088|specs=16
+OK: audit03.materialConfig.8.invalid.0
+OK: audit03.materialConfig.8.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=3|address=$J$31|value=0|error=-2147218306|reason=Concrete.Ebt1Red должен быть положительным.
+OK: audit03.materialConfig.8.invalid.-1
+OK: audit03.materialConfig.8.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=3|address=$J$31|value=-1|error=-2147218306|reason=Concrete.Ebt1Red должен быть положительным.
+OK: audit03.materialConfig.8.invalid.TODO
+OK: audit03.materialConfig.8.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=3|address=$J$31|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Ebt1Red не задана.
+OK: audit03.materialConfig.8.invalid.
+OK: audit03.materialConfig.8.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=3|address=$J$31|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Ebt1Red не задана.
+OK: audit03.materialConfig.8.invalid.Error 2015
+OK: audit03.materialConfig.8.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=3|address=$J$31|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Ebt1Red должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.8.invalid.1e309
+OK: audit03.materialConfig.8.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoLine.Eb1Red|column=3|address=$J$31|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Ebt1Red должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.8.recoveryConcrete
+OK: audit03.materialConfig.8.recoverySteel
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.0015; expected=-0.0015; absDiff=0.
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.0015; expected=-0.0015; absDiff=0.
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.0015; expected=-0.0015; absDiff=0.
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.0015; expected=-0.0015; absDiff=0.
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.0022; expected=-0.0022; absDiff=0.
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.0022; expected=-0.0022; absDiff=0.
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.0022; expected=-0.0022; absDiff=0.
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.0022; expected=-0.0022; absDiff=0.
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.0015; expected=-0.0015; absDiff=0.
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.0015; expected=-0.0015; absDiff=0.
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.0015; expected=-0.0015; absDiff=0.
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.0015; expected=-0.0015; absDiff=0.
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.0022; expected=-0.0022; absDiff=0.
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.0022; expected=-0.0022; absDiff=0.
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.0022; expected=-0.0022; absDiff=0.
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.0022; expected=-0.0022; absDiff=0.
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.9.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.ThreeLine.Eb0|column=2|address=$I$32|before=0.002|after=0.0022|specs=16
+OK: audit03.materialConfig.9.invalid.0
+OK: audit03.materialConfig.9.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=2|address=$I$32|value=0|error=-2147218305|reason=Concrete.Eb0 должен быть положительным.
+OK: audit03.materialConfig.9.invalid.-1
+OK: audit03.materialConfig.9.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=2|address=$I$32|value=-1|error=-2147218305|reason=Concrete.Eb0 должен быть положительным.
+OK: audit03.materialConfig.9.invalid.TODO
+OK: audit03.materialConfig.9.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=2|address=$I$32|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Eb0 не задана.
+OK: audit03.materialConfig.9.invalid.
+OK: audit03.materialConfig.9.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=2|address=$I$32|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Eb0 не задана.
+OK: audit03.materialConfig.9.invalid.Error 2015
+OK: audit03.materialConfig.9.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=2|address=$I$32|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Eb0 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.9.invalid.1e309
+OK: audit03.materialConfig.9.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=2|address=$I$32|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Eb0 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.9.recoveryConcrete
+OK: audit03.materialConfig.9.recoverySteel
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.00008; expected=0.00008; absDiff=0.
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.00008; expected=0.00008; absDiff=0.
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.00011; expected=0.00011; absDiff=0.
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.00011; expected=0.00011; absDiff=0.
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.00008; expected=0.00008; absDiff=0.
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.00008; expected=0.00008; absDiff=0.
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.00011; expected=0.00011; absDiff=0.
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.00011; expected=0.00011; absDiff=0.
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.10.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.ThreeLine.Eb0|column=3|address=$J$32|before=0.0001|after=0.00011|specs=16
+OK: audit03.materialConfig.10.invalid.0
+OK: audit03.materialConfig.10.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=3|address=$J$32|value=0|error=-2147218304|reason=Concrete.Ebt0 должен быть положительным.
+OK: audit03.materialConfig.10.invalid.-1
+OK: audit03.materialConfig.10.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=3|address=$J$32|value=-1|error=-2147218304|reason=Concrete.Ebt0 должен быть положительным.
+OK: audit03.materialConfig.10.invalid.TODO
+OK: audit03.materialConfig.10.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=3|address=$J$32|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Ebt0 не задана.
+OK: audit03.materialConfig.10.invalid.
+OK: audit03.materialConfig.10.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=3|address=$J$32|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Ebt0 не задана.
+OK: audit03.materialConfig.10.invalid.Error 2015
+OK: audit03.materialConfig.10.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=3|address=$J$32|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Ebt0 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.10.invalid.1e309
+OK: audit03.materialConfig.10.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.ThreeLine.Eb0|column=3|address=$J$32|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Ebt0 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.10.recoveryConcrete
+OK: audit03.materialConfig.10.recoverySteel
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.00385; expected=-0.00385; absDiff=0.
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.11.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.TwoThreeLine.Eb2|column=2|address=$I$33|before=0.0035|after=0.00385|specs=16
+OK: audit03.materialConfig.11.invalid.0
+OK: audit03.materialConfig.11.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=2|address=$I$33|value=0|error=-2147218303|reason=Concrete.Eb2 должен быть положительным.
+OK: audit03.materialConfig.11.invalid.-1
+OK: audit03.materialConfig.11.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=2|address=$I$33|value=-1|error=-2147218303|reason=Concrete.Eb2 должен быть положительным.
+OK: audit03.materialConfig.11.invalid.TODO
+OK: audit03.materialConfig.11.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=2|address=$I$33|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Eb2 не задана.
+OK: audit03.materialConfig.11.invalid.
+OK: audit03.materialConfig.11.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=2|address=$I$33|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Eb2 не задана.
+OK: audit03.materialConfig.11.invalid.Error 2015
+OK: audit03.materialConfig.11.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=2|address=$I$33|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Eb2 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.11.invalid.1e309
+OK: audit03.materialConfig.11.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=2|address=$I$33|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Eb2 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.11.recoveryConcrete
+OK: audit03.materialConfig.11.recoverySteel
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.000165; expected=0.000165; absDiff=0.
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.000165; expected=0.000165; absDiff=0.
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.000165; expected=0.000165; absDiff=0.
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.000165; expected=0.000165; absDiff=0.
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.000165; expected=0.000165; absDiff=0.
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.000165; expected=0.000165; absDiff=0.
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.; expected=0.; absDiff=0.
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.000165; expected=0.000165; absDiff=0.
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.000165; expected=0.000165; absDiff=0.
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.12.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Concrete.TwoThreeLine.Eb2|column=3|address=$J$33|before=0.00015|after=0.000165|specs=16
+OK: audit03.materialConfig.12.invalid.0
+OK: audit03.materialConfig.12.reason.0
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=3|address=$J$33|value=0|error=-2147218302|reason=Concrete.Ebt2 должен быть положительным.
+OK: audit03.materialConfig.12.invalid.-1
+OK: audit03.materialConfig.12.reason.-1
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=3|address=$J$33|value=-1|error=-2147218302|reason=Concrete.Ebt2 должен быть положительным.
+OK: audit03.materialConfig.12.invalid.TODO
+OK: audit03.materialConfig.12.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=3|address=$J$33|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Concrete.Ebt2 не задана.
+OK: audit03.materialConfig.12.invalid.
+OK: audit03.materialConfig.12.reason.
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=3|address=$J$33|value=|error=-2147217194|reason=Обязательная числовая настройка Concrete.Ebt2 не задана.
+OK: audit03.materialConfig.12.invalid.Error 2015
+OK: audit03.materialConfig.12.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=3|address=$J$33|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Concrete.Ebt2 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.12.invalid.1e309
+OK: audit03.materialConfig.12.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Concrete.TwoThreeLine.Eb2|column=3|address=$J$33|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Concrete.Ebt2 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.12.recoveryConcrete
+OK: audit03.materialConfig.12.recoverySteel
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=385.; expected=385.; absDiff=0.
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=423.5; expected=423.5; absDiff=0.
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=385.; expected=385.; absDiff=0.
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=423.5; expected=423.5; absDiff=0.
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=385.; expected=385.; absDiff=0.
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=423.5; expected=423.5; absDiff=0.
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=385.; expected=385.; absDiff=0.
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=423.5; expected=423.5; absDiff=0.
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=390.; expected=390.; absDiff=0.
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=429.; expected=429.; absDiff=0.
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=390.; expected=390.; absDiff=0.
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=429.; expected=429.; absDiff=0.
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=390.; expected=390.; absDiff=0.
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=429.; expected=429.; absDiff=0.
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=390.; expected=390.; absDiff=0.
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=429.; expected=429.; absDiff=0.
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.13.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Steel.R.ULS(I)|column=3|address=$J$19|before=350.|after=385.|specs=16
+OK: audit03.materialConfig.13.invalid.0
+OK: audit03.materialConfig.13.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=3|address=$J$19|value=0|error=-2147218303|reason=Steel.Rs.ULS должен быть положительным.
+OK: audit03.materialConfig.13.invalid.-1
+OK: audit03.materialConfig.13.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=3|address=$J$19|value=-1|error=-2147218303|reason=Steel.Rs.ULS должен быть положительным.
+OK: audit03.materialConfig.13.invalid.TODO
+OK: audit03.materialConfig.13.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=3|address=$J$19|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.Rs.ULS не задана.
+OK: audit03.materialConfig.13.invalid.
+OK: audit03.materialConfig.13.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=3|address=$J$19|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.Rs.ULS не задана.
+OK: audit03.materialConfig.13.invalid.Error 2015
+OK: audit03.materialConfig.13.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=3|address=$J$19|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.Rs.ULS должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.13.invalid.1e309
+OK: audit03.materialConfig.13.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=3|address=$J$19|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.Rs.ULS должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.13.recoveryConcrete
+OK: audit03.materialConfig.13.recoverySteel
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-374.; expected=-374.; absDiff=0.
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-411.4; expected=-411.4; absDiff=0.
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-374.; expected=-374.; absDiff=0.
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-411.4; expected=-411.4; absDiff=0.
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-374.; expected=-374.; absDiff=0.
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-411.4; expected=-411.4; absDiff=0.
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-374.; expected=-374.; absDiff=0.
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-411.4; expected=-411.4; absDiff=0.
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-380.; expected=-380.; absDiff=0.
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-418.; expected=-418.; absDiff=0.
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-380.; expected=-380.; absDiff=0.
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-418.; expected=-418.; absDiff=0.
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-380.; expected=-380.; absDiff=0.
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-418.; expected=-418.; absDiff=0.
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-380.; expected=-380.; absDiff=0.
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-418.; expected=-418.; absDiff=0.
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.14.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Steel.R.ULS(I)|column=2|address=$I$19|before=340.|after=374.|specs=16
+OK: audit03.materialConfig.14.invalid.0
+OK: audit03.materialConfig.14.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=2|address=$I$19|value=0|error=-2147218302|reason=Steel.Rsc.ULS должен быть положительным.
+OK: audit03.materialConfig.14.invalid.-1
+OK: audit03.materialConfig.14.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=2|address=$I$19|value=-1|error=-2147218302|reason=Steel.Rsc.ULS должен быть положительным.
+OK: audit03.materialConfig.14.invalid.TODO
+OK: audit03.materialConfig.14.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=2|address=$I$19|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.Rsc.ULS не задана.
+OK: audit03.materialConfig.14.invalid.
+OK: audit03.materialConfig.14.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=2|address=$I$19|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.Rsc.ULS не задана.
+OK: audit03.materialConfig.14.invalid.Error 2015
+OK: audit03.materialConfig.14.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=2|address=$I$19|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.Rsc.ULS должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.14.invalid.1e309
+OK: audit03.materialConfig.14.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.R.ULS(I)|column=2|address=$I$19|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.Rsc.ULS должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.14.recoveryConcrete
+OK: audit03.materialConfig.14.recoverySteel
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=350.; expected=350.; absDiff=0.
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=385.; expected=385.; absDiff=0.
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=350.; expected=350.; absDiff=0.
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=385.; expected=385.; absDiff=0.
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=350.; expected=350.; absDiff=0.
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=385.; expected=385.; absDiff=0.
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=350.; expected=350.; absDiff=0.
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=385.; expected=385.; absDiff=0.
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=429.; expected=429.; absDiff=0.
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=471.9; expected=471.9; absDiff=0.
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=429.; expected=429.; absDiff=0.
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=471.9; expected=471.9; absDiff=0.
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=429.; expected=429.; absDiff=0.
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=471.9; expected=471.9; absDiff=0.
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=429.; expected=429.; absDiff=0.
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=471.9; expected=471.9; absDiff=0.
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.15.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Steel.R.SLS(II)|column=3|address=$J$20|before=390.|after=429.|specs=16
+OK: audit03.materialConfig.15.invalid.0
+OK: audit03.materialConfig.15.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=3|address=$J$20|value=0|error=-2147218301|reason=Steel.Rs.SLS должен быть положительным.
+OK: audit03.materialConfig.15.invalid.-1
+OK: audit03.materialConfig.15.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=3|address=$J$20|value=-1|error=-2147218301|reason=Steel.Rs.SLS должен быть положительным.
+OK: audit03.materialConfig.15.invalid.TODO
+OK: audit03.materialConfig.15.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=3|address=$J$20|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.Rs.SLS не задана.
+OK: audit03.materialConfig.15.invalid.
+OK: audit03.materialConfig.15.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=3|address=$J$20|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.Rs.SLS не задана.
+OK: audit03.materialConfig.15.invalid.Error 2015
+OK: audit03.materialConfig.15.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=3|address=$J$20|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.Rs.SLS должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.15.invalid.1e309
+OK: audit03.materialConfig.15.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=3|address=$J$20|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.Rs.SLS должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.15.recoveryConcrete
+OK: audit03.materialConfig.15.recoverySteel
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-340.; expected=-340.; absDiff=0.
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-374.; expected=-374.; absDiff=0.
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-340.; expected=-340.; absDiff=0.
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-374.; expected=-374.; absDiff=0.
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-340.; expected=-340.; absDiff=0.
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-374.; expected=-374.; absDiff=0.
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-340.; expected=-340.; absDiff=0.
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-374.; expected=-374.; absDiff=0.
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-418.; expected=-418.; absDiff=0.
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-459.8; expected=-459.8; absDiff=0.
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-418.; expected=-418.; absDiff=0.
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-459.8; expected=-459.8; absDiff=0.
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-418.; expected=-418.; absDiff=0.
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-459.8; expected=-459.8; absDiff=0.
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-418.; expected=-418.; absDiff=0.
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-459.8; expected=-459.8; absDiff=0.
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.16.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Steel.R.SLS(II)|column=2|address=$I$20|before=380.|after=418.|specs=16
+OK: audit03.materialConfig.16.invalid.0
+OK: audit03.materialConfig.16.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=2|address=$I$20|value=0|error=-2147218300|reason=Steel.Rsc.SLS должен быть положительным.
+OK: audit03.materialConfig.16.invalid.-1
+OK: audit03.materialConfig.16.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=2|address=$I$20|value=-1|error=-2147218300|reason=Steel.Rsc.SLS должен быть положительным.
+OK: audit03.materialConfig.16.invalid.TODO
+OK: audit03.materialConfig.16.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=2|address=$I$20|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.Rsc.SLS не задана.
+OK: audit03.materialConfig.16.invalid.
+OK: audit03.materialConfig.16.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=2|address=$I$20|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.Rsc.SLS не задана.
+OK: audit03.materialConfig.16.invalid.Error 2015
+OK: audit03.materialConfig.16.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=2|address=$I$20|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.Rsc.SLS должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.16.invalid.1e309
+OK: audit03.materialConfig.16.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.R.SLS(II)|column=2|address=$I$20|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.Rsc.SLS должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.16.recoveryConcrete
+OK: audit03.materialConfig.16.recoverySteel
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=220000.; expected=220000.; absDiff=0.000000000029
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.17.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Steel.E|column=3|address=$J$21|before=200000.|after=220000.|specs=16
+OK: audit03.materialConfig.17.invalid.0
+OK: audit03.materialConfig.17.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=3|address=$J$21|value=0|error=-2147218299|reason=Steel.Es должен быть положительным.
+OK: audit03.materialConfig.17.invalid.-1
+OK: audit03.materialConfig.17.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=3|address=$J$21|value=-1|error=-2147218299|reason=Steel.Es должен быть положительным.
+OK: audit03.materialConfig.17.invalid.TODO
+OK: audit03.materialConfig.17.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=3|address=$J$21|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.Es не задана.
+OK: audit03.materialConfig.17.invalid.
+OK: audit03.materialConfig.17.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=3|address=$J$21|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.Es не задана.
+OK: audit03.materialConfig.17.invalid.Error 2015
+OK: audit03.materialConfig.17.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=3|address=$J$21|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.Es должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.17.invalid.1e309
+OK: audit03.materialConfig.17.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=3|address=$J$21|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.Es должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.17.recoveryConcrete
+OK: audit03.materialConfig.17.recoverySteel
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=209000.; expected=209000.; absDiff=0.000000000029
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.18.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Steel.E|column=2|address=$I$21|before=190000.|after=209000.|specs=16
+OK: audit03.materialConfig.18.invalid.0
+OK: audit03.materialConfig.18.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=2|address=$I$21|value=0|error=-2147218298|reason=Steel.Esc должен быть положительным.
+OK: audit03.materialConfig.18.invalid.-1
+OK: audit03.materialConfig.18.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=2|address=$I$21|value=-1|error=-2147218298|reason=Steel.Esc должен быть положительным.
+OK: audit03.materialConfig.18.invalid.TODO
+OK: audit03.materialConfig.18.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=2|address=$I$21|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.Esc не задана.
+OK: audit03.materialConfig.18.invalid.
+OK: audit03.materialConfig.18.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=2|address=$I$21|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.Esc не задана.
+OK: audit03.materialConfig.18.invalid.Error 2015
+OK: audit03.materialConfig.18.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=2|address=$I$21|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.Esc должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.18.invalid.1e309
+OK: audit03.materialConfig.18.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.E|column=2|address=$I$21|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.Esc должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.18.recoveryConcrete
+OK: audit03.materialConfig.18.recoverySteel
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.0275; expected=0.0275; absDiff=0.
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.015; expected=0.015; absDiff=0.
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.0275; expected=0.0275; absDiff=0.
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.015; expected=0.015; absDiff=0.
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.0275; expected=0.0275; absDiff=0.
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.015; expected=0.015; absDiff=0.
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.0275; expected=0.0275; absDiff=0.
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.015; expected=0.015; absDiff=0.
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.0275; expected=0.0275; absDiff=0.
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.015; expected=0.015; absDiff=0.
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.0275; expected=0.0275; absDiff=0.
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.015; expected=0.015; absDiff=0.
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.0275; expected=0.0275; absDiff=0.
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.015; expected=0.015; absDiff=0.
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.0275; expected=0.0275; absDiff=0.
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.015; expected=0.015; absDiff=0.
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.19.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Steel.TwoLine.Es2|column=3|address=$J$22|before=0.025|after=0.0275|specs=16
+OK: audit03.materialConfig.19.invalid.0
+OK: audit03.materialConfig.19.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=3|address=$J$22|value=0|error=-2147218297|reason=Steel.TwoLine.Es2 должен быть положительным.
+OK: audit03.materialConfig.19.invalid.-1
+OK: audit03.materialConfig.19.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=3|address=$J$22|value=-1|error=-2147218297|reason=Steel.TwoLine.Es2 должен быть положительным.
+OK: audit03.materialConfig.19.invalid.TODO
+OK: audit03.materialConfig.19.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=3|address=$J$22|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.TwoLine.Es2 не задана.
+OK: audit03.materialConfig.19.invalid.
+OK: audit03.materialConfig.19.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=3|address=$J$22|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.TwoLine.Es2 не задана.
+OK: audit03.materialConfig.19.invalid.Error 2015
+OK: audit03.materialConfig.19.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=3|address=$J$22|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.TwoLine.Es2 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.19.invalid.1e309
+OK: audit03.materialConfig.19.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=3|address=$J$22|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.TwoLine.Es2 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.19.recoveryConcrete
+OK: audit03.materialConfig.19.recoverySteel
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.0286; expected=-0.0286; absDiff=0.
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.016; expected=-0.016; absDiff=0.
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.0286; expected=-0.0286; absDiff=0.
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.016; expected=-0.016; absDiff=0.
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.ULS(I)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.0286; expected=-0.0286; absDiff=0.
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.016; expected=-0.016; absDiff=0.
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.0286; expected=-0.0286; absDiff=0.
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.016; expected=-0.016; absDiff=0.
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.ULS(I)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.0286; expected=-0.0286; absDiff=0.
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.016; expected=-0.016; absDiff=0.
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.0286; expected=-0.0286; absDiff=0.
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.016; expected=-0.016; absDiff=0.
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.SLS(II)|TwoLine|UseDiagram|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.0286; expected=-0.0286; absDiff=0.
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|Ignore|TwoLine.activeChanged
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.016; expected=-0.016; absDiff=0.
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|Ignore|ThreeLine.inactiveUnchanged
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.0286; expected=-0.0286; absDiff=0.
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|UseDiagram|TwoLine.activeChanged
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.016; expected=-0.016; absDiff=0.
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.20.SLS(II)|ThreeLine|UseDiagram|ThreeLine.inactiveUnchanged
+MATERIAL_CONFIG_EFFECT: key=Steel.TwoLine.Es2|column=2|address=$I$22|before=0.026|after=0.0286|specs=16
+OK: audit03.materialConfig.20.invalid.0
+OK: audit03.materialConfig.20.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=2|address=$I$22|value=0|error=-2147218296|reason=Steel.TwoLine.Esc2 должен быть положительным.
+OK: audit03.materialConfig.20.invalid.-1
+OK: audit03.materialConfig.20.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=2|address=$I$22|value=-1|error=-2147218296|reason=Steel.TwoLine.Esc2 должен быть положительным.
+OK: audit03.materialConfig.20.invalid.TODO
+OK: audit03.materialConfig.20.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=2|address=$I$22|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.TwoLine.Esc2 не задана.
+OK: audit03.materialConfig.20.invalid.
+OK: audit03.materialConfig.20.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=2|address=$I$22|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.TwoLine.Esc2 не задана.
+OK: audit03.materialConfig.20.invalid.Error 2015
+OK: audit03.materialConfig.20.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=2|address=$I$22|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.TwoLine.Esc2 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.20.invalid.1e309
+OK: audit03.materialConfig.20.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.TwoLine.Es2|column=2|address=$I$22|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.TwoLine.Esc2 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.20.recoveryConcrete
+OK: audit03.materialConfig.20.recoverySteel
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.0165; expected=0.0165; absDiff=0.
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.0165; expected=0.0165; absDiff=0.
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.0165; expected=0.0165; absDiff=0.
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.0165; expected=0.0165; absDiff=0.
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=0.0165; expected=0.0165; absDiff=0.
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=0.0165; expected=0.0165; absDiff=0.
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=0.0165; expected=0.0165; absDiff=0.
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=0.0165; expected=0.0165; absDiff=0.
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.21.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Steel.ThreeLine.Es2|column=3|address=$J$23|before=0.015|after=0.0165|specs=16
+OK: audit03.materialConfig.21.invalid.0
+OK: audit03.materialConfig.21.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=3|address=$J$23|value=0|error=-2147218295|reason=Steel.ThreeLine.Es2 должен быть положительным.
+OK: audit03.materialConfig.21.invalid.-1
+OK: audit03.materialConfig.21.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=3|address=$J$23|value=-1|error=-2147218295|reason=Steel.ThreeLine.Es2 должен быть положительным.
+OK: audit03.materialConfig.21.invalid.TODO
+OK: audit03.materialConfig.21.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=3|address=$J$23|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.ThreeLine.Es2 не задана.
+OK: audit03.materialConfig.21.invalid.
+OK: audit03.materialConfig.21.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=3|address=$J$23|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.ThreeLine.Es2 не задана.
+OK: audit03.materialConfig.21.invalid.Error 2015
+OK: audit03.materialConfig.21.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=3|address=$J$23|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.ThreeLine.Es2 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.21.invalid.1e309
+OK: audit03.materialConfig.21.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=3|address=$J$23|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.ThreeLine.Es2 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.21.recoveryConcrete
+OK: audit03.materialConfig.21.recoverySteel
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.026; expected=-0.026; absDiff=0.
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.0176; expected=-0.0176; absDiff=0.
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.026; expected=-0.026; absDiff=0.
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.0176; expected=-0.0176; absDiff=0.
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.ULS(I)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.026; expected=-0.026; absDiff=0.
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.0176; expected=-0.0176; absDiff=0.
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.026; expected=-0.026; absDiff=0.
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.0176; expected=-0.0176; absDiff=0.
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.ULS(I)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|Ignore|TwoLine.expectedEffect; actual=-0.026; expected=-0.026; absDiff=0.
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|Ignore|ThreeLine.expectedEffect; actual=-0.0176; expected=-0.0176; absDiff=0.
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|UseDiagram|TwoLine.expectedEffect; actual=-0.026; expected=-0.026; absDiff=0.
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.0176; expected=-0.0176; absDiff=0.
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.SLS(II)|TwoLine|UseDiagram|ThreeLine.activeChanged
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|Ignore|TwoLine.expectedEffect; actual=-0.026; expected=-0.026; absDiff=0.
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|Ignore|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|Ignore|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|Ignore|ThreeLine.expectedEffect; actual=-0.0176; expected=-0.0176; absDiff=0.
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|Ignore|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|Ignore|ThreeLine.activeChanged
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|UseDiagram|TwoLine.expectedEffect; actual=-0.026; expected=-0.026; absDiff=0.
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|UseDiagram|TwoLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|UseDiagram|TwoLine.inactiveUnchanged
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|UseDiagram|ThreeLine.expectedEffect; actual=-0.0176; expected=-0.0176; absDiff=0.
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|UseDiagram|ThreeLine.otherMaterialUnchanged
+OK: audit03.materialConfig.22.SLS(II)|ThreeLine|UseDiagram|ThreeLine.activeChanged
+MATERIAL_CONFIG_EFFECT: key=Steel.ThreeLine.Es2|column=2|address=$I$23|before=0.016|after=0.0176|specs=16
+OK: audit03.materialConfig.22.invalid.0
+OK: audit03.materialConfig.22.reason.0
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=2|address=$I$23|value=0|error=-2147218294|reason=Steel.ThreeLine.Esc2 должен быть положительным.
+OK: audit03.materialConfig.22.invalid.-1
+OK: audit03.materialConfig.22.reason.-1
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=2|address=$I$23|value=-1|error=-2147218294|reason=Steel.ThreeLine.Esc2 должен быть положительным.
+OK: audit03.materialConfig.22.invalid.TODO
+OK: audit03.materialConfig.22.reason.TODO
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=2|address=$I$23|value=TODO|error=-2147217194|reason=Обязательная числовая настройка Steel.ThreeLine.Esc2 не задана.
+OK: audit03.materialConfig.22.invalid.
+OK: audit03.materialConfig.22.reason.
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=2|address=$I$23|value=|error=-2147217194|reason=Обязательная числовая настройка Steel.ThreeLine.Esc2 не задана.
+OK: audit03.materialConfig.22.invalid.Error 2015
+OK: audit03.materialConfig.22.reason.Error 2015
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=2|address=$I$23|value=Error 2015|error=-2147217191|reason=Обязательная числовая настройка Steel.ThreeLine.Esc2 должна быть числом, но сейчас прочитано: "Error 2015". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.22.invalid.1e309
+OK: audit03.materialConfig.22.reason.1e309
+MATERIAL_CONFIG_INVALID: key=Steel.ThreeLine.Es2|column=2|address=$I$23|value=1e309|error=-2147217191|reason=Обязательная числовая настройка Steel.ThreeLine.Esc2 должна быть числом, но сейчас прочитано: "1e309". Проверьте значение или формулу на листе Config.
+OK: audit03.materialConfig.22.recoveryConcrete
+OK: audit03.materialConfig.22.recoverySteel
+TOTAL_AUDIT03_MATERIAL_CONFIG: passed=1442; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests; 2026-10-02T13:27:30
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -4538,6 +4538,8 @@ Private Function ActiveStabilityValue(ByVal firstValue As Double, ByVal secondVa
     End If
 End Function
 
+' ДЛЯ ТЕСТОВ: создает круг в заданном центре через штатный geometry-интерфейс.
+' Явное смещение нужно регрессиям переноса нагрузки и осей сечения.
 Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double) As ISectionGeometry
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
@@ -4545,6 +4547,8 @@ Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Doubl
     Set CircleGeometry = geom
 End Function
 
+' ДЛЯ ТЕСТОВ: прямоугольник без скруглений проходит через тот же генератор,
+' что и RoundedRectangle, чтобы фиксировать частный случай общего контура.
 Private Function RoundedRectangleGeometry(ByVal width As Double, ByVal height As Double) As ISectionGeometry
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
@@ -4552,6 +4556,8 @@ Private Function RoundedRectangleGeometry(ByVal width As Double, ByVal height As
     Set RoundedRectangleGeometry = geom
 End Function
 
+' ДЛЯ ТЕСТОВ: собирает два прямоугольника с общей левой гранью и без смещения.
+' Размеры заданы явно; функция не читает и не меняет Config.
 Private Function RectSetGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double) As ISectionGeometry
     Dim geom As CGeometryRectSet
     Set geom = New CGeometryRectSet
@@ -4559,6 +4565,8 @@ Private Function RectSetGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b
     Set RectSetGeometry = geom
 End Function
 
+' ДЛЯ ТЕСТОВ: создает один круговой ряд A400 с заданным осевым отступом.
+' Координаты совпадают с переданной геометрией, в том числе при переносе центра.
 Private Function CircleRebars(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double) As CRebarLayout
     Dim builder As CCircleRebarLayoutBuilder
@@ -4566,6 +4574,8 @@ Private Function CircleRebars(ByVal diameter As Double, ByVal centerX As Double,
     Set CircleRebars = builder.Build(diameter, centerX, centerY, axisDistance, barCount, barDiameter, "A400")
 End Function
 
+' ДЛЯ ТЕСТОВ: воспроизводит фиксированную многогранную раскладку RectSet.
+' Отступ и диаметр варьируются, числа стержней граней заданы самой fixture.
 Private Function RectSetRebars(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double) As CRebarLayout
     Dim builder As CRectSetRebarLayoutBuilder
@@ -5061,6 +5071,8 @@ Private Sub TestAudit02CanonicalResultsAndReset(ByRef stats As TBatchTestStats)
     AssertEquals stats, "audit02.canonical.clearStatus", result.Status, "N/A"
 End Sub
 
+' ДЛЯ ТЕСТОВ: четыре одинаковых угловых стержня задают симметричный oracle.
+' Штатный AddBar сохраняет проверку попадания каждого стержня в бетон.
 Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
@@ -5071,6 +5083,8 @@ Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout
     Set RectangleRebars = layout
 End Function
 
+' ДЛЯ ТЕСТОВ: явная двухлинейная сжатая диаграмма без растянутой ветви.
+' Используется только там, где не требуется выбор материала через профиль.
 Private Function ProvisionalConcrete() As CMaterialDiagram
     Dim concrete As CMaterialDiagram
     Set concrete = New CMaterialDiagram
@@ -5078,6 +5092,8 @@ Private Function ProvisionalConcrete() As CMaterialDiagram
     Set ProvisionalConcrete = concrete
 End Function
 
+' ДЛЯ ТЕСТОВ: создает фиксированные ULS/SLS параметры бетона и арматуры.
+' Extension задается явно, поэтому fixture не зависит от пользовательского Config.
 Private Function TestMaterialProvider(Optional ByVal diagramExtensionEnabled As Boolean = True) As CMaterialModelProvider
     Dim concreteParameters As CConcreteMaterialParameters
     Set concreteParameters = New CConcreteMaterialParameters
@@ -7108,4 +7124,359 @@ Private Sub Audit03BeyondExtensionEndpointCases(ByRef stats As TBatchTestStats, 
         AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".numeric", state.InternalStatus = rsNumericalFailure
         AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".reason", Len(state.ResultComment) > 0
     Next sign
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет реальные Stress нагрузки на расширенной диаграмме.
+' Для каждого численного отказа ищет независимый сертификат невозможности
+' равновесия по ограниченным напряжениям, а не сравнивает только осевую силу.
+Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As String, _
+        Optional ByVal solveVariant As String = "Newton") As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats, section As CSectionModel, materials As CMaterialModelProvider
+    Dim method As String, loadSteps As Long, maxIterations As Long, maxRestarts As Long
+    method = "Newton": loadSteps = 1: maxIterations = 80: maxRestarts = 2
+    Select Case solveVariant
+        Case "Newton"
+        Case "Newton4": loadSteps = 4
+        Case "Newton8": loadSteps = 8
+        Case "Newton20": loadSteps = 20
+        Case "Secant": method = "Secant"
+        Case "Secant20": method = "Secant": maxRestarts = 20
+        Case "Secant500": method = "Secant": maxIterations = 500: maxRestarts = 20
+        Case "Newton500": maxIterations = 500
+        Case Else: Err.Raise vbObjectError + 4498, "RunAudit03ExtendedStressFeasibilityTests", "Неизвестный диагностический вариант solve."
+    End Select
+    Set section = Audit03LoadMatrixSection(shapeName)
+    Set materials = TestMaterialProvider(True)
+    Dim loads As Collection, item As Variant, role As Variant, spec As CMaterialModelSpec
+    Set loads = Audit03NormalizedLoads(section, "Stress")
+    Dim referenceX As Double, referenceY As Double, cases As Long, certifiedFailures As Long
+    CalculateConcreteSectionCentroid section, referenceX, referenceY
+    For Each role In Array(cpStrength, cpCrackedNDS)
+        Set spec = Audit03OverloadSpec(CLng(role))
+        Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
+        Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
+        Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
+        Audit03AxialGuessIsolation stats, section, concrete, steel, CLng(role)
+        For Each item In loads
+            Dim load As CSectionLoadState
+            Set load = New CSectionLoadState
+            load.Initialize CDbl(item(1)), CDbl(item(2)), CDbl(item(3)), referenceX + 10#, referenceY - 7#
+            Dim request As CStateRequest, stateType As ESectionStateType
+            If CLng(role) = cpStrength Then stateType = sstStrengthState Else stateType = sstCrackedState
+            Set request = New CStateRequest
+            request.Initialize stateType, CLng(role), spec, load.N, load.InternalMx, load.InternalMy, True, True
+            Dim provider As CStateProvider, state As CSectionStateResult
+            Set provider = Audit03OverloadStateProvider(section, materials, method)
+            provider.LoadSteps = loadSteps
+            provider.MaxIterations = maxIterations
+            provider.SecantMaxRestarts = maxRestarts
+            Set state = provider.GetOrSolve(request)
+            cases = cases + 1
+            Dim prefix As String, certified As Boolean, certificate As String
+            prefix = "audit03.extendedStress." & shapeName & "." & solveVariant & "." & CStr(role) & "." & CStr(item(0))
+            certificate = vbNullString
+            AssertTrue stats, prefix & ".notInternalError", state.InternalStatus <> rsInternalError
+            If Not state.Converged Then
+                certified = Audit03ExtendedStressCertificate(section, concrete, steel, load, certificate, state)
+                AssertTrue stats, prefix & ".numericalCause", state.InternalStatus = rsNumericalFailure
+                AssertTrue stats, prefix & ".infeasibleCertificate", certified
+                If certified Then certifiedFailures = certifiedFailures + 1
+                If Not certified Then
+                    AppendLine stats, "EXTENDED_STRESS_UNEXPLAINED: " & prefix & vbCrLf & state.DiagnosticLog
+                    Audit03InspectStressFailure stats, section, concrete, steel, load, state, prefix
+                End If
+            Else
+                certified = False: certificate = vbNullString
+                AssertClose stats, prefix & ".rN", state.ResidualN, 0#, 1#
+                AssertClose stats, prefix & ".rMx", state.ResidualMx, 0#, 1000#
+                AssertClose stats, prefix & ".rMy", state.ResidualMy, 0#, 1000#
+                If state.MinConcreteStrain < -10# Or state.MaxConcreteStrain > 10# Or _
+                        state.MinSteelStrain < -10# Or state.MaxSteelStrain > 10# Then
+                    ' Крайняя точка ограничивает напряжение, но не является
+                    ' hard cap solver-а. Такое равновесие не бывает физическим OK.
+                    AssertTrue stats, prefix & ".beyondEndpointPhysicalFail", _
+                        Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
+                Else
+                    AssertTrue stats, prefix & ".insideTechnicalEndpoints", True
+                End If
+            End If
+            AppendLine stats, "EXTENDED_STRESS: " & prefix & "|N=" & FormatNumberInvariant(load.N) & _
+                "|Mx=" & FormatNumberInvariant(load.InternalMx) & "|My=" & FormatNumberInvariant(load.InternalMy) & _
+                "|converged=" & CStr(state.Converged) & "|status=" & ResultInternalStatusToText(state.InternalStatus) & _
+                "|extensionUsed=" & CStr(state.ExtensionUsed) & "|physical=" & CStr(state.WithinPhysicalRange) & _
+                "|eps0=" & FormatNumberInvariant(state.Epsilon0) & "|kx=" & FormatNumberInvariant(state.KappaX) & _
+                "|ky=" & FormatNumberInvariant(state.KappaY) & _
+                "|concreteMin=" & FormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & FormatNumberInvariant(state.MaxConcreteStrain) & _
+                "|steelMin=" & FormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & FormatNumberInvariant(state.MaxSteelStrain) & _
+                "|infeasibleCertified=" & CStr(certified) & "|certificate=" & certificate & "|reason=" & state.ResultComment
+        Next item
+    Next role
+    AssertTrue stats, "audit03.extendedStress." & shapeName & ".actualInfeasibleCases", certifiedFailures > 0
+    AppendLine stats, "TOTAL_AUDIT03_EXTENDED_STRESS: shape=" & shapeName & "; variant=" & solveVariant & "; cases=" & CStr(cases) & _
+        "; certifiedFailures=" & CStr(certifiedFailures) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ExtendedStressFeasibilityTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03ExtendedStressFeasibilityTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: самостоятельный осевой fallback не наследует кривизны от
+' предыдущего вызова builder-а. Проверяется публичный путь с обоими знаками N.
+Private Sub Audit03AxialGuessIsolation(ByRef stats As TBatchTestStats, _
+        ByVal section As CSectionModel, ByVal concrete As CMaterialDiagram, _
+        ByVal steel As CMaterialDiagram, ByVal role As Long)
+    Dim builder As CStateGuessBuilder, sign As Variant, eps0 As Double, kx As Double, ky As Double
+    Set builder = New CStateGuessBuilder
+    For Each sign In Array(-1#, 1#)
+        eps0 = 9#: kx = 5#: ky = -7#
+        AssertTrue stats, "audit03.axialGuess." & CStr(role) & "." & CStr(sign) & ".built", _
+            builder.BuildAttemptForExtensionState(5, section, Nothing, concrete, steel, CDbl(sign) * 100000#, _
+                0#, 0#, eps0, kx, ky)
+        AssertClose stats, "audit03.axialGuess." & CStr(role) & "." & CStr(sign) & ".kx", kx, 0#, 0#
+        AssertClose stats, "audit03.axialGuess." & CStr(role) & "." & CStr(sign) & ".ky", ky, 0#, 0#
+    Next sign
+End Sub
+
+' ДЛЯ ТЕСТОВ: сохраняет фактическую касательную и деформации стержней отказа.
+' Дополнительные холодные старты служат только диагностикой существующего
+' Newton; они не меняют результат проверяемого pipeline или его допуски.
+Private Sub Audit03InspectStressFailure(ByRef stats As TBatchTestStats, _
+        ByVal section As CSectionModel, ByVal concrete As CMaterialDiagram, _
+        ByVal steel As CMaterialDiagram, ByVal load As CSectionLoadState, _
+        ByVal state As CSectionStateResult, ByVal prefix As String)
+    Dim probe As CSectionSolver, i As Long, j As Long, strain As Double
+    Set probe = New CSectionSolver
+    probe.EvaluateStrainPlane section, concrete, steel, state.Epsilon0, state.KappaX, state.KappaY
+    AppendLine stats, "STRESS_FAILURE_PLANE: " & prefix & "|eps0=" & FormatNumberInvariant(state.Epsilon0) & _
+        "|kx=" & FormatNumberInvariant(state.KappaX) & "|ky=" & FormatNumberInvariant(state.KappaY)
+    For i = 1 To 3
+        Dim rowText As String
+        rowText = "STRESS_FAILURE_TANGENT: row=" & CStr(i)
+        For j = 1 To 3
+            rowText = rowText & "|" & FormatNumberInvariant(probe.Tangent(i, j))
+        Next j
+        AppendLine stats, rowText
+    Next i
+    For i = 1 To section.RebarCount
+        strain = state.Epsilon0 + state.KappaX * section.RebarY(i) + state.KappaY * section.RebarX(i)
+        AppendLine stats, "STRESS_FAILURE_REBAR: " & CStr(i) & "|x=" & FormatNumberInvariant(section.RebarX(i)) & _
+            "|y=" & FormatNumberInvariant(section.RebarY(i)) & "|A=" & FormatNumberInvariant(section.RebarArea(i)) & _
+            "|strain=" & FormatNumberInvariant(strain) & "|tangent=" & FormatNumberInvariant(steel.GetTangentModulus(strain))
+    Next i
+    Dim builder As CStateGuessBuilder, guessEps As Double, guessKx As Double, guessKy As Double
+    Set builder = New CStateGuessBuilder
+    For i = 1 To builder.ExtensionAttemptCount
+        If builder.BuildAttemptForExtensionState(i, section, probe, concrete, steel, _
+                load.N, load.InternalMx, load.InternalMy, guessEps, guessKx, guessKy) Then
+            Dim guessed As CSectionSolver
+            Set guessed = New CSectionSolver
+            guessed.EvaluateStrainPlane section, concrete, steel, guessEps, guessKx, guessKy
+            AppendLine stats, "STRESS_DIAGNOSTIC_GUESS: " & prefix & "|attempt=" & CStr(i) & _
+                "|eps0=" & FormatNumberInvariant(guessEps) & "|kx=" & FormatNumberInvariant(guessKx) & _
+                "|ky=" & FormatNumberInvariant(guessKy) & "|rN=" & FormatNumberInvariant(guessed.Nint - load.N) & _
+                "|rMx=" & FormatNumberInvariant(guessed.Mxint - load.InternalMx) & _
+                "|rMy=" & FormatNumberInvariant(guessed.Myint - load.InternalMy)
+            If i = 7 Then
+                ' ДЛЯ ТЕСТОВ: меняем только масштаб стартовой плоскости,
+                ' сохраняя положение нулевой линии. Ни один диагностический
+                ' solve не заменяет проверяемый результат provider-а.
+                Dim planeScale As Variant
+                For Each planeScale In Array(1#, 2#, 4#, 8#, 16#, 32#)
+                    Set guessed = New CSectionSolver
+                    guessed.LoadSteps = 1: guessed.MaxIterations = 80
+                    guessed.ToleranceN = 1#: guessed.ToleranceMx = 1000#: guessed.ToleranceMy = 1000#
+                    guessed.SetInitialState guessEps * CDbl(planeScale), guessKx * CDbl(planeScale), guessKy * CDbl(planeScale)
+                    guessed.Solve section, concrete, steel, load.N, load.InternalMx, load.InternalMy
+                    AppendLine stats, "STRESS_DIAGNOSTIC_NEUTRAL: " & prefix & "|scale=" & CStr(planeScale) & _
+                        "|converged=" & CStr(guessed.Converged) & "|eps0=" & FormatNumberInvariant(guessed.Epsilon0) & _
+                        "|kx=" & FormatNumberInvariant(guessed.KappaX) & "|ky=" & FormatNumberInvariant(guessed.KappaY) & _
+                        "|rN=" & FormatNumberInvariant(guessed.ResidualN) & "|rMx=" & FormatNumberInvariant(guessed.ResidualMx) & _
+                        "|rMy=" & FormatNumberInvariant(guessed.ResidualMy) & "|reason=" & guessed.StopReason
+                Next planeScale
+                Dim compressionMargin As Variant
+                For Each compressionMargin In Array(0.000001, 0.00001, 0.0001, 0.0005, 0.001)
+                    For Each planeScale In Array(1#, 2#, 4#, 8#)
+                        Set guessed = New CSectionSolver
+                        guessed.LoadSteps = 1: guessed.MaxIterations = 80
+                        guessed.ToleranceN = 1#: guessed.ToleranceMx = 1000#: guessed.ToleranceMy = 1000#
+                        guessed.SetInitialState guessEps * CDbl(planeScale) - CDbl(compressionMargin), _
+                            guessKx * CDbl(planeScale), guessKy * CDbl(planeScale)
+                        guessed.Solve section, concrete, steel, load.N, load.InternalMx, load.InternalMy
+                        AppendLine stats, "STRESS_DIAGNOSTIC_COMPRESSION: " & prefix & "|scale=" & CStr(planeScale) & _
+                            "|margin=" & CStr(compressionMargin) & "|converged=" & CStr(guessed.Converged) & _
+                            "|eps0=" & FormatNumberInvariant(guessed.Epsilon0) & "|kx=" & FormatNumberInvariant(guessed.KappaX) & _
+                            "|ky=" & FormatNumberInvariant(guessed.KappaY) & "|rN=" & FormatNumberInvariant(guessed.ResidualN) & _
+                            "|rMx=" & FormatNumberInvariant(guessed.ResidualMx) & "|rMy=" & FormatNumberInvariant(guessed.ResidualMy) & _
+                            "|reason=" & guessed.StopReason
+                    Next planeScale
+                Next compressionMargin
+            End If
+        End If
+    Next i
+    Dim initialStrain As Variant, diagnosticMethod As Variant
+    For Each diagnosticMethod In Array("Newton", "Secant")
+    For Each initialStrain In Array(0.0005, 0.001, 0.002, 0.005, 0.01, 0.015, 0.02, 0.0255, 0.03, 0.04, 0.05, 0.1, 0.5, -0.0255)
+        Set probe = New CSectionSolver
+        probe.SolverMethod = CStr(diagnosticMethod)
+        probe.LoadSteps = 1: probe.MaxIterations = 80
+        probe.ToleranceN = 1#: probe.ToleranceMx = 1000#: probe.ToleranceMy = 1000#
+        probe.SetInitialState CDbl(initialStrain), 0#, 0#
+        probe.Solve section, concrete, steel, load.N, load.InternalMx, load.InternalMy
+        AppendLine stats, "STRESS_DIAGNOSTIC_START: " & prefix & "|method=" & CStr(diagnosticMethod) & "|initial=" & CStr(initialStrain) & _
+            "|converged=" & CStr(probe.Converged) & "|eps0=" & FormatNumberInvariant(probe.Epsilon0) & _
+            "|kx=" & FormatNumberInvariant(probe.KappaX) & "|ky=" & FormatNumberInvariant(probe.KappaY) & _
+            "|rN=" & FormatNumberInvariant(probe.ResidualN) & "|rMx=" & FormatNumberInvariant(probe.ResidualMx) & _
+            "|rMy=" & FormatNumberInvariant(probe.ResidualMy) & "|reason=" & probe.StopReason
+    Next initialStrain
+    Next diagnosticMethod
+End Sub
+
+' ДЛЯ ТЕСТОВ: сумма независимых предельных вкладов является верхней оценкой
+' a*N + by*Mx + bx*My. Нарушение хотя бы одной такой оценки доказывает
+' невозможность равновесия даже без ограничения совместности деформаций.
+' Обратное неверно: отсутствие сертификата само по себе не доказывает сходимость.
+Private Function Audit03ExtendedStressCertificate(ByVal section As CSectionModel, _
+        ByVal concrete As CMaterialDiagram, ByVal steel As CMaterialDiagram, _
+        ByVal load As CSectionLoadState, ByRef certificate As String, _
+        Optional ByVal failedState As CSectionStateResult = Nothing) As Boolean
+    Dim concreteLow As Double, concreteHigh As Double, steelLow As Double, steelHigh As Double
+    Audit03StressBounds concrete, concreteLow, concreteHigh
+    Audit03StressBounds steel, steelLow, steelHigh
+    Dim rebarLow As Double, rebarHigh As Double
+    Audit03NetRebarStressBounds concrete, steel, rebarLow, rebarHigh
+    Dim centerX As Double, centerY As Double, radius As Double, i As Long
+    CalculateConcreteSectionCentroid section, centerX, centerY
+    For i = 1 To section.ConcreteCount
+        radius = MaxDouble(radius, Abs(section.ConcreteX(i) - centerX) + Abs(section.ConcreteY(i) - centerY))
+    Next i
+    For i = 1 To section.RebarCount
+        radius = MaxDouble(radius, Abs(section.RebarX(i) - centerX) + Abs(section.RebarY(i) - centerY))
+    Next i
+    Dim elements() As Double, total As Long, x As Double, y As Double, area As Double
+    total = section.ConcreteCount + section.RebarCount
+    ReDim elements(1 To total, 1 To 5)
+    For i = 1 To total
+        If i <= section.ConcreteCount Then
+            section.ConcreteElementForSolver i, x, y, area
+            elements(i, 4) = concreteLow: elements(i, 5) = concreteHigh
+        Else
+            section.RebarElementForSolver i - section.ConcreteCount, x, y, area
+            ' Оба материала в точке стержня имеют одну деформацию. Границы
+            ' разности берутся по объединению узлов реальных диаграмм.
+            elements(i, 4) = rebarLow: elements(i, 5) = rebarHigh
+        End If
+        elements(i, 1) = x: elements(i, 2) = y: elements(i, 3) = area
+    Next i
+    Dim angleIndex As Long, a As Double, bx As Double, by As Double, alphaValues As Variant
+    Dim candidate As Long, candidateCount As Long, upper As Double, target As Double, q As Double
+    alphaValues = Array(-2#, -1#, -0.5, -0.25, 0#, 0.25, 0.5, 1#, 2#)
+    For angleIndex = -1 To 17
+        bx = 0#: by = 0#
+        If angleIndex >= 16 Then
+            If failedState Is Nothing Then Exit For
+            Dim planeScale As Double, directionSign As Double
+            planeScale = MaxDouble(Abs(failedState.KappaX), Abs(failedState.KappaY))
+            If planeScale <= 0# Then Exit For
+            directionSign = 1#
+            If angleIndex = 17 Then directionSign = -1#
+            bx = directionSign * failedState.KappaY / planeScale
+            by = directionSign * failedState.KappaX / planeScale
+        ElseIf angleIndex >= 0 Then
+            bx = Sin(2# * GEOM_PI * angleIndex / 16#)
+            by = Cos(2# * GEOM_PI * angleIndex / 16#)
+        End If
+        candidateCount = 9
+        If angleIndex >= 0 Then candidateCount = candidateCount + total
+        If angleIndex >= 16 Then candidateCount = candidateCount + 1
+        For candidate = 1 To candidateCount
+            If candidate <= 9 Then
+                a = CDbl(alphaValues(candidate - 1)) * radius - bx * centerX - by * centerY
+            ElseIf angleIndex >= 16 And candidate = candidateCount Then
+                ' Плоскость отказа дает только направление независимой оценки.
+                ' Невозможность доказывается не отказом solver-а, а нарушением
+                ' верхней границы усилий фактических диаграмм в этом направлении.
+                a = directionSign * failedState.Epsilon0 / planeScale
+            Else
+                ' При фиксированном направлении граница support-функции
+                ' меняется на q=0 у элемента. Проверяем эти узлы, не только
+                ' грубую сетку смещений; сама оценка остается независимой.
+                a = -bx * elements(candidate - 9, 1) - by * elements(candidate - 9, 2)
+            End If
+            upper = 0#
+            For i = 1 To total
+                q = a + by * elements(i, 2) + bx * elements(i, 1)
+                upper = upper + elements(i, 3) * MaxDouble(q * elements(i, 4), q * elements(i, 5))
+            Next i
+            target = a * load.N + by * load.InternalMx + bx * load.InternalMy
+            If target > upper + MaxDouble(1000#, 0.0000000001 * Abs(upper)) Then
+                certificate = "a=" & FormatNumberInvariant(a) & "; bx=" & FormatNumberInvariant(bx) & _
+                    "; by=" & FormatNumberInvariant(by) & "; target=" & FormatNumberInvariant(target) & _
+                    "; upper=" & FormatNumberInvariant(upper)
+                Audit03ExtendedStressCertificate = True
+                Exit Function
+            End If
+        Next candidate
+    Next angleIndex
+    ' Грани трехмерной суммы независимых отрезков усилий имеют нормали,
+    ' ортогональные двум различным плечам [1,y,x]. Перебор таких направлений
+    ' закрывает пробелы угловой сетки, не предполагая найденное равновесие.
+    Dim j As Long, pairScale As Double, pairSign As Variant
+    For i = 1 To total - 1
+        For j = i + 1 To total
+            bx = elements(j, 2) - elements(i, 2)
+            by = elements(i, 1) - elements(j, 1)
+            pairScale = MaxDouble(Abs(bx), Abs(by))
+            If pairScale > 0# Then
+                bx = bx / pairScale: by = by / pairScale
+                a = -bx * elements(i, 1) - by * elements(i, 2)
+                For Each pairSign In Array(-1#, 1#)
+                    upper = 0#
+                    Dim k As Long
+                    For k = 1 To total
+                        q = CDbl(pairSign) * (a + by * elements(k, 2) + bx * elements(k, 1))
+                        upper = upper + elements(k, 3) * MaxDouble(q * elements(k, 4), q * elements(k, 5))
+                    Next k
+                    target = CDbl(pairSign) * (a * load.N + by * load.InternalMx + bx * load.InternalMy)
+                    If target > upper + MaxDouble(1000#, 0.0000000001 * Abs(upper)) Then
+                        certificate = "pair a=" & FormatNumberInvariant(CDbl(pairSign) * a) & _
+                            "; bx=" & FormatNumberInvariant(CDbl(pairSign) * bx) & _
+                            "; by=" & FormatNumberInvariant(CDbl(pairSign) * by) & _
+                            "; target=" & FormatNumberInvariant(target) & "; upper=" & FormatNumberInvariant(upper)
+                        Audit03ExtendedStressCertificate = True
+                        Exit Function
+                    End If
+                Next pairSign
+            End If
+        Next j
+    Next i
+End Function
+
+' ДЛЯ ТЕСТОВ: ограничивает реальное усилие замещения steel-concrete.
+' Разность двух кусочно-линейных функций достигает экстремума в узле хотя бы
+' одной из них; за крайними узлами обе функции сохраняют последнее напряжение.
+Private Sub Audit03NetRebarStressBounds(ByVal concrete As CMaterialDiagram, _
+        ByVal steel As CMaterialDiagram, ByRef lower As Double, ByRef upper As Double)
+    Dim diagram As Variant, i As Long, strain As Double, stress As Double
+    lower = steel.GetStress(0#) - concrete.GetStress(0#): upper = lower
+    For Each diagram In Array(concrete, steel)
+        For i = 1 To diagram.PointCount
+            strain = diagram.PointStrain(i)
+            stress = steel.GetStress(strain) - concrete.GetStress(strain)
+            If stress < lower Then lower = stress
+            upper = MaxDouble(upper, stress)
+        Next i
+    Next diagram
+End Sub
+
+' ДЛЯ ТЕСТОВ: конечные точки всех линейных сегментов ограничивают напряжение
+' всей диаграммы, включая постоянное значение за технической крайней точкой.
+' Это оценка фактической дискретной модели, не нормативная несущая способность.
+Private Sub Audit03StressBounds(ByVal diagram As CMaterialDiagram, ByRef lower As Double, ByRef upper As Double)
+    lower = diagram.PointStress(1): upper = lower
+    Dim i As Long
+    For i = 2 To diagram.PointCount
+        If diagram.PointStress(i) < lower Then lower = diagram.PointStress(i)
+        upper = MaxDouble(upper, diagram.PointStress(i))
+    Next i
 End Sub

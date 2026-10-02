@@ -37,6 +37,7 @@ Public Function RunMaterialDiagramTests() As String
     TestAudit02ExtensionBeyondTechnicalDefault stats
     TestAudit02ExtensionOverflowIsExplicit stats
     TestAudit03DiagramArrayInputs stats
+    TestAudit03MaterialConfigBehavior stats
 
     AppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -561,4 +562,267 @@ Private Function Audit03CaptureDiagramStress(ByVal diagram As CMaterialDiagram) 
     Exit Function
 ExpectedError:
     Audit03CaptureDiagramStress = Err.Number
+End Function
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: передача всех редактируемых параметров материалов из Config
+' ==========================================================================
+
+' Запускает адресную проверку отдельно от общей suite. Читает настоящие таблицы
+' книги; эталонные значения и ожидаемые эффекты не берутся из actual-диаграмм.
+Public Function RunAudit03MaterialConfigBehaviorTests() As String
+    Dim stats As TMaterialTestStats
+    TestAudit03MaterialConfigBehavior stats
+    AppendLine stats, "TOTAL_AUDIT03_MATERIAL_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03MaterialConfigBehaviorTests = stats.Report
+End Function
+
+' Меняет по одному из 23 входов и проверяет все 16 профильных спецификаций.
+' Неактивные параметры не меняют физическую диаграмму; отдельное Rb,mc2
+' проверяется в калькуляторе продольных трещин, а не в sigma-epsilon диаграмме.
+Private Sub TestAudit03MaterialConfigBehavior(ByRef stats As TMaterialTestStats)
+    Dim concreteRange As Object, steelRange As Object, unitRange As Object
+    Dim savedConcrete As Variant, savedSteel As Variant, savedUnits As Variant
+    Dim values As Variant, changedValues As Variant, rowKeys As Variant, columns As Variant
+    Dim i As Long, cell As Object, provider As CMaterialModelProvider, baseline As CMaterialModelProvider
+    Dim valueSet As Variant, concreteKind As Variant, steelKind As Variant, tension As Variant
+    Dim spec As CMaterialModelSpec, diagram As CMaterialDiagram, original As CMaterialDiagram
+    Dim otherDiagram As CMaterialDiagram, originalOther As CMaterialDiagram
+    Dim prefix As String, actual As Double, expected As Double, affected As Boolean, metricScale As Double
+    Dim invalid As Variant, errorCode As Long, description As String, unitRow As Long
+    Dim failureNumber As Long, failureDescription As String
+    On Error GoTo Failed
+    Set concreteRange = ThisWorkbook.Names("rngConcreteMaterialParameters").RefersToRange
+    Set steelRange = ThisWorkbook.Names("rngSteelMaterialParameters").RefersToRange
+    Set unitRange = ThisWorkbook.Names("rngUnitSettings").RefersToRange
+    savedConcrete = concreteRange.Formula
+    savedSteel = steelRange.Formula
+    savedUnits = unitRange.Formula
+    values = Array(15.5, 1.1, 22#, 1.8, 14.6, 32500#, 31000#, 0.0015, 0.00008, _
+        0.002, 0.0001, 0.0035, 0.00015, 350#, 340#, 390#, 380#, 200000#, 190000#, _
+        0.025, 0.026, 0.015, 0.016)
+    rowKeys = Array("Concrete.R.ULS(I)", "Concrete.R.ULS(I)", "Concrete.R.SLS(II)", _
+        "Concrete.R.SLS(II)", "Concrete.Rb.mc2", "Concrete.E", "Concrete.E", _
+        "Concrete.TwoLine.Eb1Red", "Concrete.TwoLine.Eb1Red", "Concrete.ThreeLine.Eb0", _
+        "Concrete.ThreeLine.Eb0", "Concrete.TwoThreeLine.Eb2", "Concrete.TwoThreeLine.Eb2", _
+        "Steel.R.ULS(I)", "Steel.R.ULS(I)", "Steel.R.SLS(II)", "Steel.R.SLS(II)", _
+        "Steel.E", "Steel.E", "Steel.TwoLine.Es2", "Steel.TwoLine.Es2", _
+        "Steel.ThreeLine.Es2", "Steel.ThreeLine.Es2")
+    columns = Array(2, 3, 2, 3, 2, 2, 3, 2, 3, 2, 3, 2, 3, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2)
+    For unitRow = 2 To unitRange.Rows.Count
+        If StrComp(CStr(unitRange.Cells(unitRow, 1).Value2), "Stress", vbTextCompare) = 0 Then Exit For
+    Next unitRow
+    If unitRow > unitRange.Rows.Count Then Err.Raise vbObjectError + 9901, , "В fixture нет строки Stress."
+    unitRange.Cells(unitRow, 2).Value2 = "MPa"
+    For i = 0 To UBound(values)
+        Set cell = Audit03MaterialConfigCell(concreteRange, steelRange, CStr(rowKeys(i)), CLng(columns(i)))
+        cell.Value2 = values(i)
+    Next i
+    Set baseline = Audit03MaterialConfigProvider()
+    For i = 0 To UBound(values)
+        Set cell = Audit03MaterialConfigCell(concreteRange, steelRange, CStr(rowKeys(i)), CLng(columns(i)))
+        changedValues = values
+        changedValues(i) = CDbl(values(i)) * 1.1
+        cell.Value2 = changedValues(i)
+        Set provider = Audit03MaterialConfigProvider()
+        For Each valueSet In Array("ULS(I)", "SLS(II)")
+            For Each concreteKind In Array("TwoLine", "ThreeLine")
+                For Each tension In Array("Ignore", "UseDiagram")
+                    For Each steelKind In Array("TwoLine", "ThreeLine")
+                        Set spec = New CMaterialModelSpec
+                        spec.Initialize CStr(valueSet), CStr(concreteKind), CStr(tension), CStr(steelKind)
+                        prefix = "audit03.materialConfig." & CStr(i) & "." & spec.SpecKey
+                        If i < 13 Then
+                            Set diagram = provider.ConcreteMaterialFromSpec(spec)
+                            Set original = baseline.ConcreteMaterialFromSpec(spec)
+                            Set otherDiagram = provider.SteelMaterialFromSpec(spec)
+                            Set originalOther = baseline.SteelMaterialFromSpec(spec)
+                        Else
+                            Set diagram = provider.SteelMaterialFromSpec(spec)
+                            Set original = baseline.SteelMaterialFromSpec(spec)
+                            Set otherDiagram = provider.ConcreteMaterialFromSpec(spec)
+                            Set originalOther = baseline.ConcreteMaterialFromSpec(spec)
+                        End If
+                        Audit03MaterialConfigMetric provider, diagram, i, changedValues, _
+                            CStr(valueSet), CStr(concreteKind), CStr(tension), CStr(steelKind), actual, expected, affected
+                        metricScale = Abs(expected)
+                        If metricScale < 1# Then metricScale = 1#
+                        AssertClose stats, prefix & ".expectedEffect", actual, expected, 0.000000001 * metricScale
+                        AssertTrue stats, prefix & ".otherMaterialUnchanged", _
+                            Audit03MaterialDiagramSignature(otherDiagram) = Audit03MaterialDiagramSignature(originalOther)
+                        If affected Then
+                            AssertTrue stats, prefix & ".activeChanged", _
+                                Audit03MaterialDiagramSignature(diagram) <> Audit03MaterialDiagramSignature(original)
+                        Else
+                            AssertTrue stats, prefix & ".inactiveUnchanged", _
+                                Audit03MaterialDiagramSignature(diagram) = Audit03MaterialDiagramSignature(original)
+                        End If
+                        If i = 5 Then AssertClose stats, prefix & ".referenceModulus", _
+                            provider.ConcreteElasticModulusFromSpec(spec), CDbl(changedValues(i)), 0.000000001
+                    Next steelKind
+                Next tension
+            Next concreteKind
+        Next valueSet
+        AppendLine stats, "MATERIAL_CONFIG_EFFECT: key=" & CStr(rowKeys(i)) & "|column=" & CStr(columns(i)) & _
+            "|address=" & cell.Address & "|before=" & FormatNumberInvariant(CDbl(values(i))) & _
+            "|after=" & FormatNumberInvariant(CDbl(changedValues(i))) & "|specs=16"
+        For Each invalid In Array(0#, -1#, "TODO", vbNullString, CVErr(xlErrValue), "1e309")
+            cell.Value2 = invalid
+            errorCode = Audit03MaterialConfigError(description)
+            AssertTrue stats, "audit03.materialConfig." & CStr(i) & ".invalid." & CStr(invalid), _
+                errorCode <> 0 And errorCode <> 6 And errorCode <> 13
+            AssertTrue stats, "audit03.materialConfig." & CStr(i) & ".reason." & CStr(invalid), Len(description) > 0
+            AppendLine stats, "MATERIAL_CONFIG_INVALID: key=" & CStr(rowKeys(i)) & "|column=" & CStr(columns(i)) & _
+                "|address=" & cell.Address & "|value=" & CStr(invalid) & "|error=" & CStr(errorCode) & "|reason=" & description
+        Next invalid
+        cell.Value2 = values(i)
+        Set provider = Audit03MaterialConfigProvider()
+        Set spec = New CMaterialModelSpec
+        spec.Initialize "ULS(I)", "ThreeLine", "UseDiagram", "ThreeLine"
+        AssertTrue stats, "audit03.materialConfig." & CStr(i) & ".recoveryConcrete", _
+            Audit03MaterialDiagramSignature(provider.ConcreteMaterialFromSpec(spec)) = _
+            Audit03MaterialDiagramSignature(baseline.ConcreteMaterialFromSpec(spec))
+        AssertTrue stats, "audit03.materialConfig." & CStr(i) & ".recoverySteel", _
+            Audit03MaterialDiagramSignature(provider.SteelMaterialFromSpec(spec)) = _
+            Audit03MaterialDiagramSignature(baseline.SteelMaterialFromSpec(spec))
+    Next i
+    GoTo Cleanup
+Failed:
+    failureNumber = Err.Number
+    failureDescription = Err.Description
+    AssertTrue stats, "audit03.materialConfig.runtime." & CStr(failureNumber) & "." & failureDescription, False
+Cleanup:
+    On Error Resume Next
+    If Not IsEmpty(savedConcrete) Then concreteRange.Formula = savedConcrete
+    If Not IsEmpty(savedSteel) Then steelRange.Formula = savedSteel
+    If Not IsEmpty(savedUnits) Then unitRange.Formula = savedUnits
+    On Error GoTo 0
+End Sub
+
+' Находит ввод по смысловой строке и стороне материала, а не по текущему адресу
+' Config. Отсутствующая строка является ошибкой fixture, не runtime-default.
+Private Function Audit03MaterialConfigCell(ByVal concreteRange As Object, ByVal steelRange As Object, _
+        ByVal rowKey As String, ByVal column As Long) As Object
+    Dim source As Object, row As Long
+    If Left$(rowKey, 9) = "Concrete." Then Set source = concreteRange Else Set source = steelRange
+    For row = 2 To source.Rows.Count
+        If StrComp(CStr(source.Cells(row, 1).Value2), rowKey, vbTextCompare) = 0 Then
+            Set Audit03MaterialConfigCell = source.Cells(row, column)
+            Exit Function
+        End If
+    Next row
+    Err.Raise vbObjectError + 9902, , "В fixture нет параметра " & rowKey & "."
+End Function
+
+' Выполняет обычный production-маршрут чтения всей книги и преобразования
+' единиц. InitializeFromParameters намеренно не используется в этой проверке.
+Private Function Audit03MaterialConfigProvider() As CMaterialModelProvider
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    Set provider = New CMaterialModelProvider
+    provider.Initialize settings, units
+    Set Audit03MaterialConfigProvider = provider
+End Function
+
+' Перехватывает только контролируемую попытку прочитать неверный материал.
+' Последующий recovery использует новый provider, чтобы не скрывать ошибку.
+Private Function Audit03MaterialConfigError(ByRef description As String) As Long
+    On Error GoTo ExpectedError
+    Dim provider As CMaterialModelProvider
+    description = vbNullString
+    Set provider = Audit03MaterialConfigProvider()
+    Exit Function
+ExpectedError:
+    Audit03MaterialConfigError = Err.Number
+    description = Err.Description
+End Function
+
+' Выбирает наблюдаемую величину, чувствительную к конкретному входу. Эталон
+' выводится из заданных чисел fixture; флаг affected относится только к самой
+' физической диаграмме, а не к справочному модулю или продольной проверке.
+Private Sub Audit03MaterialConfigMetric(ByVal provider As CMaterialModelProvider, ByVal diagram As CMaterialDiagram, _
+        ByVal index As Long, ByRef v As Variant, ByVal valueSet As String, ByVal concreteKind As String, _
+        ByVal tension As String, ByVal steelKind As String, ByRef actual As Double, _
+        ByRef expected As Double, ByRef affected As Boolean)
+    Dim rb As Double, rbt As Double, rs As Double, rsc As Double, three As Boolean, useTension As Boolean
+    Dim longitudinal As CLongitudinalCrackCalculator, result As CLongitudinalCrackResult
+    rb = CDbl(v(0)): rbt = CDbl(v(1)): rs = CDbl(v(13)): rsc = CDbl(v(14))
+    If valueSet = "SLS(II)" Then rb = CDbl(v(2)): rbt = CDbl(v(3)): rs = CDbl(v(15)): rsc = CDbl(v(16))
+    three = (concreteKind = "ThreeLine")
+    useTension = (tension = "UseDiagram")
+    affected = False
+    Select Case index
+        Case 0, 2
+            actual = diagram.GetStress(-0.003): expected = -rb
+            affected = ((index = 0) = (valueSet = "ULS(I)"))
+        Case 1, 3
+            actual = diagram.GetStress(0.00014): expected = 0#
+            If useTension Then expected = rbt
+            affected = useTension And ((index = 1) = (valueSet = "ULS(I)"))
+        Case 4
+            Set longitudinal = New CLongitudinalCrackCalculator
+            Set result = longitudinal.CalculateFromStress(15#, provider.ConcreteParameters.RbMc2)
+            actual = result.Utilization: expected = 15# / CDbl(v(4))
+            If result.Status <> "OK" Then Err.Raise vbObjectError + 9903, , "После увеличения Rb,mc2 проверка должна пройти."
+        Case 5
+            actual = diagram.GetTangentModulus(-0.0000000001)
+            expected = rb / CDbl(v(7)): affected = three
+            If three Then expected = CDbl(v(5))
+        Case 6
+            actual = diagram.GetTangentModulus(0.0000000001): expected = 0#
+            If useTension Then
+                expected = rbt / CDbl(v(8))
+                If three Then expected = CDbl(v(6))
+            End If
+            affected = three And useTension
+        Case 7, 9
+            actual = diagram.PointStrain(2): expected = -CDbl(v(7))
+            If three Then expected = -CDbl(v(9))
+            affected = ((index = 9) = three)
+        Case 8, 10
+            actual = 0#: expected = 0#
+            If useTension Then
+                actual = diagram.PointStrain(diagram.PointCount - 1): expected = CDbl(v(8))
+                If three Then expected = CDbl(v(10))
+            End If
+            affected = useTension And ((index = 10) = three)
+        Case 11
+            actual = diagram.PhysicalCompressionStrain: expected = -CDbl(v(11)): affected = True
+        Case 12
+            actual = diagram.PhysicalTensionStrain: expected = 0#: affected = useTension
+            If useTension Then expected = CDbl(v(12))
+        Case 13, 15
+            actual = diagram.GetStress(0.01): expected = rs
+            If steelKind = "ThreeLine" Then expected = 1.1 * rs
+            affected = ((index = 13) = (valueSet = "ULS(I)"))
+        Case 14, 16
+            actual = diagram.GetStress(-0.01): expected = -rsc
+            If steelKind = "ThreeLine" Then expected = -1.1 * rsc
+            affected = ((index = 14) = (valueSet = "ULS(I)"))
+        Case 17
+            actual = diagram.GetTangentModulus(0.0000000001): expected = CDbl(v(17)): affected = True
+        Case 18
+            actual = diagram.GetTangentModulus(-0.0000000001): expected = CDbl(v(18)): affected = True
+        Case 19, 21
+            actual = diagram.PhysicalTensionStrain: expected = CDbl(v(19))
+            If steelKind = "ThreeLine" Then expected = CDbl(v(21))
+            affected = ((index = 21) = (steelKind = "ThreeLine"))
+        Case 20, 22
+            actual = diagram.PhysicalCompressionStrain: expected = -CDbl(v(20))
+            If steelKind = "ThreeLine" Then expected = -CDbl(v(22))
+            affected = ((index = 22) = (steelKind = "ThreeLine"))
+    End Select
+End Sub
+
+' Точный снимок физических узлов для проверки неизменности неактивной ветви.
+' Не служит численным эталоном активного эффекта, который проверяется отдельно.
+Private Function Audit03MaterialDiagramSignature(ByVal diagram As CMaterialDiagram) As String
+    Dim i As Long, signature As String
+    For i = 1 To diagram.PointCount
+        signature = signature & CStr(diagram.PointStrain(i)) & ":" & CStr(diagram.PointStress(i)) & "|"
+    Next i
+    Audit03MaterialDiagramSignature = signature
 End Function

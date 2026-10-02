@@ -78,6 +78,7 @@ Private Sub TestConcreteTensionBranches(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.concrete.useTangent", concrete.GetTangentModulus(0.00002), 32500#, 0.000000001
 End Sub
 
+
 ' Проверяет формульный API Width: он получает только
 ' готовые числа и не зависит от State-объектов, статусов и выбора арматуры.
 Private Sub TestCrackWidthFormulaCalculatorPure(ByRef stats As TCrackTestStats)
@@ -1169,3 +1170,98 @@ Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
         Next scenario
     Next path
 End Sub
+
+' ДЛЯ ТЕСТОВ: ищет воспроизводимые случаи неположительного sigma_s,crc
+' на настоящих Formation/PostCrackState, а не на подставленных числах формулы.
+' Явные параметры и конечная сетка нагрузок не меняют пользовательский Config.
+Public Function RunAudit03SigmaSCrcBoundaryTests() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestAudit03SigmaSCrcBoundary stats
+    AppendLine stats, "TOTAL_AUDIT03_SIGMA_CRC_BOUNDARY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SigmaSCrcBoundaryTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03SigmaSCrcBoundaryTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: сначала находит допустимый CurrentCrackedState общим runner-ом.
+' Только затем Formation и Width проверяются в обоих режимах psi/усреднения;
+' физически непригодный текущий state не используется как вход формулы.
+Private Sub TestAudit03SigmaSCrcBoundary(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel
+    Set section = Audit03SigmaBoundarySection()
+    Dim provider As CMaterialModelProvider
+    Set provider = TestMaterialProvider()
+    Dim spec As CMaterialModelSpec
+    Set spec = TestCrackedStateSpec()
+    Dim nFactor As Variant, eccentricityFactor As Variant, psiMode As Variant, averagingMode As Variant
+    Dim nValue As Double, mxValue As Double, cases As Long, nonpositiveCases As Long
+    For Each nFactor In Array(0.1, 0.25, 0.4, 0.6, 0.75)
+        For Each eccentricityFactor In Array(1.25, 1.75, 2.5, 3.5)
+            nValue = -CDbl(nFactor) * 60000# * 22#
+            mxValue = -nValue * (200# / 6#) * CDbl(eccentricityFactor)
+            Dim runner As CStateSolutionRunner
+            Set runner = New CStateSolutionRunner
+            ConfigureTestStateRunner runner
+            runner.Solve section, provider.ConcreteMaterialForEquilibriumFromSpec(spec), _
+                provider.SteelMaterialForEquilibriumFromSpec(spec), nValue, mxValue, 0#, True
+            AppendLine stats, "SIGMA_CRC_CURRENT: N=" & FormatNumberInvariant(nValue) & _
+                "|Mx=" & FormatNumberInvariant(mxValue) & "|converged=" & CStr(runner.Converged) & _
+                "|physical=" & CStr(runner.WithinPhysicalRange) & "|reason=" & runner.StopReason
+            If runner.Converged And runner.WithinPhysicalRange Then
+                For Each psiMode In Array("AlwaysCalc", "Auto")
+                    For Each averagingMode In Array("AllSelected", "TensionOnly")
+                        Dim crack As CCrackWidthCalculator
+                        Set crack = CalculateCrack(runner.ResultSolver, section, nValue, mxValue, 0#, _
+                            CStr(psiMode), "Effective", allowable:=0.00000001, _
+                            sigmaSCrcAveragingMode:=CStr(averagingMode))
+                        cases = cases + 1
+                        Dim prefix As String
+                        prefix = "audit03.sigmaCrc.boundary." & CStr(cases)
+                        AppendLine stats, "SIGMA_CRC_BOUNDARY: " & prefix & "|N=" & FormatNumberInvariant(nValue) & _
+                            "|Mx=" & FormatNumberInvariant(mxValue) & "|psiMode=" & CStr(psiMode) & _
+                            "|averaging=" & CStr(averagingMode) & "|point=" & CStr(crack.FormationResult.HasLimitPoint) & _
+                            "|widthCalculated=" & CStr(crack.ResultMeta.Calculated) & "|sigmaS=" & FormatNumberInvariant(crack.SigmaS) & _
+                            "|sigmaSCrc=" & FormatNumberInvariant(crack.SigmaSCrc) & "|psi=" & FormatNumberInvariant(crack.PsiS) & _
+                            "|comment=" & crack.ResultMeta.ResultComment
+                        If crack.FormationResult.HasLimitPoint And crack.ResultMeta.Calculated Then
+                            AssertTrue stats, prefix & ".psiRange", crack.PsiS >= 0# And crack.PsiS <= 1#
+                            AssertTrue stats, prefix & ".widthNotNumerical", crack.ResultMeta.InternalStatus <> rsNumericalFailure
+                            If CStr(averagingMode) = "TensionOnly" Then _
+                                AssertTrue stats, prefix & ".tensionOnlyNonnegative", crack.SigmaSCrc >= 0#
+                            If crack.SigmaSCrc <= 0.000000001 Then
+                                nonpositiveCases = nonpositiveCases + 1
+                                AssertClose stats, prefix & ".nonpositivePsiOne", crack.PsiS, 1#, 0.000000000001
+                                AssertTrue stats, prefix & ".nonpositiveReason", _
+                                    InStr(1, crack.ResultMeta.ResultComment, "неполож", vbTextCompare) > 0
+                            End If
+                        End If
+                    Next averagingMode
+                Next psiMode
+            End If
+        Next eccentricityFactor
+    Next nFactor
+    AssertTrue stats, "audit03.sigmaCrc.boundary.actualPreparedNonpositive", nonpositiveCases > 0
+    AppendLine stats, "SIGMA_CRC_BOUNDARY_COUNTS: calculatedVariants=" & CStr(cases) & _
+        "|nonpositivePrepared=" & CStr(nonpositiveCases)
+End Sub
+
+' ДЛЯ ТЕСТОВ: стержни находятся глубже крайнего бетонного волокна.
+' При большом сжатии в момент образования трещины они могут быть сжатыми,
+' хотя в более позднем текущем НДС попадут в выбранную растянутую группу.
+Private Function Audit03SigmaBoundarySection() As CSectionModel
+    Dim geom As CGeometryRoundedRectangle
+    Set geom = New CGeometryRoundedRectangle
+    geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
+    Dim mesh As CFiberMeshBuilder
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 20#, 20#, 1
+    Dim rebars As CRebarLayout
+    Set rebars = New CRebarLayout
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", geom
+    Set Audit03SigmaBoundarySection = BuildGeneratedSectionModel(mesh, rebars)
+End Function

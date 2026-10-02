@@ -1,0 +1,119 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v50.xlsm
+SOURCE_SHA256: 0F29406CCAE990ACFA048CCFEA5498651A1D75849A997442F624E2520247E9E4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bff1777f15b14794934547f098dd5115\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03SolverSettingEffectTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03SolverSettingEffectTests; 2026-10-02T11:26:40
+EXCEL_AFTER_SUITE: pid=13684; workingSet=196292608; privateBytes=140091392; cpu=42.796875
+EXCEL_AFTER_SUITE: pid=14572; workingSet=147681280; privateBytes=112418816; cpu=2.890625
+OK: audit03.effect.Solver.LoadSteps.one
+OK: audit03.effect.Solver.LoadSteps.four
+OK: audit03.effect.Solver.LoadSteps.work
+OK: audit03.effect.Solver.MaxIterations.one
+OK: audit03.effect.Solver.MaxIterations.four
+OK: audit03.effect.Solver.ToleranceN.loose
+OK: audit03.effect.Solver.ToleranceN.strict
+OK: audit03.effect.Solver.ToleranceN.looseZero; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceN.strictN; actual=-100000.; expected=-100000.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceN.strictMx; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceN.strictMy; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceMx.loose
+OK: audit03.effect.Solver.ToleranceMx.strict
+OK: audit03.effect.Solver.ToleranceMx.looseZero; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceMx.strictN; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceMx.strictMx; actual=999999.999999999; expected=1000000.; absDiff=0.000000000582
+OK: audit03.effect.Solver.ToleranceMx.strictMy; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.effect.Solver.ToleranceMy.loose
+OK: audit03.effect.Solver.ToleranceMy.strict
+OK: audit03.effect.Solver.ToleranceMy.looseZero; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceMy.strictN; actual=-0.000000000002; expected=0.; absDiff=0.000000000002
+OK: audit03.effect.Solver.ToleranceMy.strictMx; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.effect.Solver.ToleranceMy.strictMy; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.effect.Solver.MaxDeltaEpsilon0.converged
+OK: audit03.effect.Solver.MaxDeltaEpsilon0.moreWork
+OK: audit03.effect.Solver.MaxDeltaEpsilon0.N; actual=-100000.; expected=-100000.; absDiff=0.
+OK: audit03.effect.Solver.MaxDeltaEpsilon0.Mx; actual=-0.000000000016; expected=0.; absDiff=0.000000000016
+OK: audit03.effect.Solver.MaxDeltaKappa.converged
+OK: audit03.effect.Solver.MaxDeltaKappa.moreWork
+OK: audit03.effect.Solver.MaxDeltaKappa.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.MaxDeltaKappa.Mx; actual=999999.999999999; expected=1000000.; absDiff=0.000000000582
+OK: audit03.effect.Solver.DampingInitial.converged
+OK: audit03.effect.Solver.DampingInitial.moreWork
+OK: audit03.effect.Solver.DampingInitial.N; actual=-99999.9992549419; expected=-100000.; absDiff=0.000745058074
+OK: audit03.effect.Solver.DampingInitial.Mx; actual=-0.000000000233; expected=0.; absDiff=0.000000000233
+OK: audit03.effect.Solver.Method.Newton
+OK: audit03.effect.Solver.Method.Secant
+OK: audit03.effect.Solver.SecantMinStepNorm.small
+OK: audit03.effect.Solver.SecantMinStepNorm.large
+OK: audit03.effect.Solver.SecantMaxRestarts.zero
+OK: audit03.effect.Solver.SecantMaxRestarts.three
+OK: audit03.effect.SecantOptions.inactiveInNewton
+OK: audit03.effect.invalid.Solver.Method
+OK: audit03.effect.invalid.noIterations.Solver.Method
+OK: audit03.effect.invalid.reason.Solver.Method
+OK: audit03.effect.invalid.Solver.MaxIterations
+OK: audit03.effect.invalid.noIterations.Solver.MaxIterations
+OK: audit03.effect.invalid.reason.Solver.MaxIterations
+OK: audit03.effect.invalid.Solver.LoadSteps
+OK: audit03.effect.invalid.noIterations.Solver.LoadSteps
+OK: audit03.effect.invalid.reason.Solver.LoadSteps
+OK: audit03.effect.invalid.Solver.ToleranceN
+OK: audit03.effect.invalid.noIterations.Solver.ToleranceN
+OK: audit03.effect.invalid.reason.Solver.ToleranceN
+OK: audit03.effect.invalid.Solver.ToleranceMx
+OK: audit03.effect.invalid.noIterations.Solver.ToleranceMx
+OK: audit03.effect.invalid.reason.Solver.ToleranceMx
+OK: audit03.effect.invalid.Solver.ToleranceMy
+OK: audit03.effect.invalid.noIterations.Solver.ToleranceMy
+OK: audit03.effect.invalid.reason.Solver.ToleranceMy
+OK: audit03.effect.invalid.Solver.DampingInitial
+OK: audit03.effect.invalid.noIterations.Solver.DampingInitial
+OK: audit03.effect.invalid.reason.Solver.DampingInitial
+OK: audit03.effect.invalid.Solver.MinLineSearchAlpha
+OK: audit03.effect.invalid.noIterations.Solver.MinLineSearchAlpha
+OK: audit03.effect.invalid.reason.Solver.MinLineSearchAlpha
+OK: audit03.effect.invalid.Solver.MaxDeltaEpsilon0
+OK: audit03.effect.invalid.noIterations.Solver.MaxDeltaEpsilon0
+OK: audit03.effect.invalid.reason.Solver.MaxDeltaEpsilon0
+OK: audit03.effect.invalid.Solver.MaxDeltaKappa
+OK: audit03.effect.invalid.noIterations.Solver.MaxDeltaKappa
+OK: audit03.effect.invalid.reason.Solver.MaxDeltaKappa
+OK: audit03.effect.invalid.Solver.SecantMaxRestarts
+OK: audit03.effect.invalid.noIterations.Solver.SecantMaxRestarts
+OK: audit03.effect.invalid.reason.Solver.SecantMaxRestarts
+OK: audit03.effect.invalid.Solver.SecantMinStepNorm
+OK: audit03.effect.invalid.noIterations.Solver.SecantMinStepNorm
+OK: audit03.effect.invalid.reason.Solver.SecantMinStepNorm
+OK: audit03.effect.Solver.LineSearchEnabled.off
+OK: audit03.effect.Solver.LineSearchEnabled.on
+OK: audit03.effect.Solver.LineSearchEnabled.offNoReduction
+OK: audit03.effect.Solver.LineSearchEnabled.onReduction
+SETTING_EFFECT: Solver.LineSearchEnabled|offIterations=3|onIterations=2|offEvaluations=6|onEvaluations=6
+OK: audit03.effect.Solver.MinLineSearchAlpha.one
+OK: audit03.effect.Solver.MinLineSearchAlpha.small
+OK: audit03.effect.units.Solver.ToleranceN.negativeTyped
+OK: audit03.effect.units.Solver.ToleranceN.noIterations
+OK: audit03.effect.units.Solver.ToleranceN.reason
+SIGNED_SETTING: key=Solver.ToleranceN|raw=-1|converged=False|failureCode=4|iterations=0|reason=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+OK: audit03.effect.units.Solver.ToleranceN.positiveRecovery
+OK: audit03.effect.units.Solver.ToleranceMx.negativeTyped
+OK: audit03.effect.units.Solver.ToleranceMx.noIterations
+OK: audit03.effect.units.Solver.ToleranceMx.reason
+SIGNED_SETTING: key=Solver.ToleranceMx|raw=-1|converged=False|failureCode=4|iterations=0|reason=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+OK: audit03.effect.units.Solver.ToleranceMx.positiveRecovery
+OK: audit03.effect.units.Solver.ToleranceMy.negativeTyped
+OK: audit03.effect.units.Solver.ToleranceMy.noIterations
+OK: audit03.effect.units.Solver.ToleranceMy.reason
+SIGNED_SETTING: key=Solver.ToleranceMy|raw=-1|converged=False|failureCode=4|iterations=0|reason=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+OK: audit03.effect.units.Solver.ToleranceMy.positiveRecovery
+OK: audit03.effect.units.Solver.MaxDeltaKappa.negativeTyped
+OK: audit03.effect.units.Solver.MaxDeltaKappa.noIterations
+OK: audit03.effect.units.Solver.MaxDeltaKappa.reason
+SIGNED_SETTING: key=Solver.MaxDeltaKappa|raw=-1|converged=False|failureCode=4|iterations=0|reason=Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.
+OK: audit03.effect.units.Solver.MaxDeltaKappa.positiveRecovery
+TOTAL_AUDIT03_SOLVER_EFFECTS: passed=100; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestSectionSolver.RunAudit03SolverSettingEffectTests; 2026-10-02T11:26:41
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

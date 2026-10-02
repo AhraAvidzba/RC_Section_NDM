@@ -1,0 +1,283 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_source_v66.xlsm
+SOURCE_SHA256: 4B09D90316A1EF3443E098C7FEF49428C780384E5BE3158E7C090CDA0F60BA90
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ae9d6330f92446169863cc96e640657f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03ExtendedStressFeasibilityTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03ExtendedStressFeasibilityTests; 2026-10-02T13:07:29
+EXCEL_AFTER_SUITE: pid=21020; workingSet=137900032; privateBytes=92545024; cpu=7.40625
+EXCEL_AFTER_SUITE: pid=28428; workingSet=143831040; privateBytes=89808896; cpu=16.34375
+OK: audit03.axialGuess.1.-1.built
+OK: audit03.axialGuess.1.-1.kx; actual=0.; expected=0.
+OK: audit03.axialGuess.1.-1.ky; actual=0.; expected=0.
+OK: audit03.axialGuess.1.1.built
+OK: audit03.axialGuess.1.1.kx; actual=0.; expected=0.
+OK: audit03.axialGuess.1.1.ky; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC0.95.rN; actual=-0.000000000233; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC0.95.rMx; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC0.95.rMy; actual=-0.000000003725; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialC0.95|N=-1230738.51801795|Mx=8615169.62612567|My=-17593591.0823979|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.004549904989|kx=0.000048147631|ky=-0.000006203598|concreteMin=-0.009596731651|concreteMax=0.000437613396|steelMin=-0.008743872646|steelMax=-0.000415245609|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT0.95.rN; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT0.95.rMx; actual=0.000000000931; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT0.95.rMy; actual=-0.000000000466; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialT0.95|N=208915.911463721|Mx=-1462411.38024605|My=2986484.18253661|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.02760668412|kx=-0.000152997243|ky=-0.000114934601|concreteMin=-0.002154275341|concreteMax=0.057256760295|steelMin=0.005332538926|steelMax=0.048782019688|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed0.95.rN; actual=0.000000000233; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed0.95.rMx; actual=-0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed0.95.rMy; actual=-0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed0.95|N=-1230738.51801795|Mx=45537325.1666643|My=-109058684.267747|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.010817241009|kx=0.000582054858|ky=-0.000339839768|concreteMin=-0.109998872786|concreteMax=0.087063996764|steelMin=-0.08640298635|steelMax=0.061519533139|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.rN; actual=0.000000000698; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.rMx; actual=0.00000003539; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.rMy; actual=0.000000003725; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialC1|N=-1295514.22949258|Mx=9068599.60644807|My=-18519569.5604189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.006808390802|kx=0.000075925859|ky=-0.000007632564|concreteMin=-0.014457039315|concreteMax=0.000767288082|steelMin=-0.013219992387|steelMax=-0.000469758846|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.rN; actual=-0.000000000029; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.rMx; actual=-0.000000002328; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.rMy; actual=0.000000017695; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialT1|N=219911.485751286|Mx=-1539380.400259|My=3143667.56056485|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.036511798571|kx=-0.000180634671|ky=-0.000154839694|concreteMin=-0.002053388747|concreteMax=0.07461684207|steelMin=0.00841533009|steelMax=0.063127952639|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.rN; actual=0.000000000698; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.rMx; actual=-0.000000052154; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.rMy; actual=-0.000000074506; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1|N=-1295514.22949258|Mx=47934026.4912255|My=-114798615.018681|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.012466782035|kx=0.000637724711|ky=-0.000366597766|concreteMin=-0.120306434727|concreteMax=0.093896283344|steelMin=-0.094741970483|steelMax=0.066303620642|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.05.rN; actual=0.000000000466; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.05.rMx; actual=0.000000003725; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.05.rMy; actual=-0.000000003725; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialC1.05|N=-1360289.94096721|Mx=9522029.58677048|My=-19445548.0384398|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.009195698347|kx=0.000101095035|ky=-0.000011482109|concreteMin=-0.019570003849|concreteMax=0.001068834716|steelMin=-0.017856694609|steelMax=-0.000644474524|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.05.rN; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.05.rMx; actual=-0.000000000931; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.05.rMy; actual=-0.000000001397; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialT1.05|N=230907.06003885|Mx=-1616349.42027195|My=3300850.93859309|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.045666249001|kx=-0.000202031046|ky=-0.000197940729|concreteMin=-0.002875678995|concreteMax=0.092536763274|steelMin=0.011915242864|steelMax=0.077524881771|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.05.rN; actual=0.000000001397; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.05.rMx; actual=0.000000067055; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.05.rMy; actual=0.000000089407; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1.05|N=-1360289.94096721|Mx=50330727.8157868|My=-120538545.769615|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.013679655124|kx=0.000692980323|ky=-0.000397667199|concreteMin=-0.130762985759|concreteMax=0.101792886562|steelMin=-0.103018324537|steelMax=0.071857195322|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC2.rN; actual=-0.000000002328; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC2.rMx; actual=-0.000000055879; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC2.rMy; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialC2|N=-2591028.45898516|Mx=18137199.2128962|My=-37039139.1208378|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.059582154549|kx=0.000304967284|ky=-0.000065763434|concreteMin=-0.09536373652|concreteMax=-0.024429290943|steelMin=-0.088633888539|steelMax=-0.031159138924|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT2.rN; actual=-0.000000000058; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT2.rMx; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT2.rMy; actual=0.000000001863; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialT2|N=439822.971502571|Mx=-3078760.800518|My=6287335.1211297|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.221956722028|kx=-0.000435555556|ky=-0.000738022592|concreteMin=0.049308092031|concreteMax=0.384282965664|steelMin=0.119944830582|steelMax=0.31691289378|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed2.rN; actual=0.000000000931; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed2.rMx; actual=0.000000029802; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed2.rMy; actual=-0.000000089407; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed2|N=-2591028.45898516|Mx=95868052.9824511|My=-229597230.037362|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.044795459673|kx=0.001752278631|ky=-0.000909927351|concreteMin=-0.327072754433|concreteMax=0.232546387016|steelMin=-0.261713897842|steelMax=0.163423797193|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC10.rN; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC10.rMx; actual=-0.000000163913; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC10.rMy; actual=0.000000029802; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialC10|N=-12955142.2949258|Mx=90685996.0644807|My=-185195695.604189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.496976720749|kx=0.00152483642|ky=-0.000371918361|concreteMin=-0.682096588946|concreteMax=-0.315412504822|steelMin=-0.646285214918|steelMax=-0.351223878851|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT10.rN; actual=-0.000000000466; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT10.rMx; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT10.rMy; actual=0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialT10|N=2199114.85751286|Mx=-15393804.00259|My=31436675.6056485|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=1.709783610138|kx=-0.002177777778|ky=-0.00369011296|concreteMin=0.846540460157|concreteMax=2.521414828319|steelMin=1.199724152911|steelMax=2.184564468898|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed10.rN; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed10.rMx; actual=0.000000059605; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed10.rMy; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed10|N=-12955142.2949258|Mx=479340264.912255|My=-1147986150.18681|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.325182074776|kx=0.010675780483|ky=-0.005046810039|concreteMin=-1.973339545992|concreteMax=1.288424260698|steelMin=-1.600068136008|steelMax=0.901454952655|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC100.rN; actual=0.000000074506; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC100.rMx; actual=0.000000357628; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC100.rMy; actual=0.000000953674; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC100.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialC100|N=-129551422.949258|Mx=906859960.644807|My=-1851956956.04189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-5.417665590495|kx=0.015248364199|ky=-0.00381616129|concreteMin=-7.282841178743|concreteMax=-3.588973660963|steelMin=-6.919862636682|steelMax=-3.951952203024|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT100.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT100.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialT100|N=21991148.5751286|Mx=-153938040.0259|My=314366756.056485|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.0655|kx=-0.000047285594|ky=-0.000080122585|concreteMin=0.04675659753|concreteMax=0.083122764316|steelMin=0.054425194841|steelMax=0.075808808962|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=1321651948.03943; upper=766558129.862866|reason=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed100.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed100.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed100|N=-129551422.949258|Mx=4793402649.12255|My=-11479861501.8681|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-34.032067973078|kx=3.280668576416|ky=-1.626864037473|concreteMin=-551.461482300486|concreteMax=473.46503107914|steelMin=-432.943727357571|steelMax=349.326278067402|infeasibleCertified=True|certificate=a=-56.131068045381; bx=-0.923879532511; by=0.382683432365; target=19712224593.0551; upper=19409962820.2672|reason=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialC1000|N=-1295514229.49258|Mx=9068599606.44807|My=-18519569560.4189|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-55.037190876105|kx=0.140653988173|ky=-0.035450709508|concreteMin=-72.277930214777|concreteMax=-38.135371066385|steelMin=-68.917218533894|steelMax=-41.496082747268|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641.157; upper=114058835442.128|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialT1000|N=219911485.751286|Mx=-1539380400.259|My=3143667560.56485|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.0655|kx=-0.000046883622|ky=-0.000079441467|concreteMin=0.046915934173|concreteMax=0.082972954157|steelMin=0.054519341157|steelMax=0.075721174339|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=13216519480.3942; upper=766558129.862866|reason=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1000|N=-1295514229.49258|Mx=47934026491.2255|My=-114798615018.681|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-1578456.8679676|kx=26633.9455761332|ky=-11173.4784070782|concreteMin=-5486012.04473316|concreteMax=2230117.40316662|steelMin=-4625872.23480403|steelMax=1362136.65831863|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641.157; upper=114058835442.128|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialC1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialC1000000|N=-1295514229492.58|Mx=9068599606448.07|My=-18519569560418.9|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-55087.6699911661|kx=140.63213149866|ky=-35.456286140674|concreteMin=-72327.3279237147|concreteMax=-38186.9849018658|steelMin=-68966.5823834554|steelMax=-41547.7304421251|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641157.; upper=114058835442.128|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.1.axialT1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.axialT1000000|N=219911485751.286|Mx=-1539380400259.|My=3143667560564.85|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.0655|kx=-0.000046839424|ky=-0.000079366576|concreteMin=0.046933453658|concreteMax=0.082956482134|steelMin=0.054529692793|steelMax=0.07571153868|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=13216519480394.3; upper=766558129.862866|reason=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.1.overloadMixed1000000|N=-1295514229492.58|Mx=47934026491225.5|My=-114798615018681.|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-0.043406029069|kx=0.000384878241|ky=-0.000185907051|concreteMin=-0.10339562763|concreteMax=0.015373679779|steelMin=-0.089739880317|steelMax=0.001150494422|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641157.; upper=114058835442.128|reason=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.axialGuess.3.-1.built
+OK: audit03.axialGuess.3.-1.kx; actual=0.; expected=0.
+OK: audit03.axialGuess.3.-1.ky; actual=0.; expected=0.
+OK: audit03.axialGuess.3.1.built
+OK: audit03.axialGuess.3.1.kx; actual=0.; expected=0.
+OK: audit03.axialGuess.3.1.ky; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC0.95.rN; actual=0.000000000233; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC0.95.rMx; actual=0.000000020489; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC0.95.rMy; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialC0.95|N=-1230738.51801795|Mx=8615169.62612567|My=-17593591.0823979|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=-0.001080635521|kx=0.000002804638|ky=-0.000000645342|concreteMin=-0.001415545478|concreteMax=-0.000751895228|steelMin=-0.001351620271|steelMax=-0.000815820435|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT0.95.rN; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT0.95.rMx; actual=0.000000000233; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT0.95.rMy; actual=0.00000000326; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialT0.95|N=208915.911463721|Mx=-1462411.38024605|My=2986484.18253661|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=0.003065506969|kx=-0.000003107486|ky=-0.000015651078|concreteMin=-0.000434920815|concreteMax=0.006392999561|steelMin=0.001361857065|steelMax=0.004619527824|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed0.95.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed0.95.rN; actual=-0.000000000233; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed0.95.rMx; actual=0.000000029802; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed0.95.rMy; actual=0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed0.95.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed0.95|N=-1230738.51801795|Mx=45537325.1666643|My=-109058684.267747|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.005054945171|kx=0.000408507891|ky=-0.000256796331|concreteMin=-0.077299517214|concreteMax=0.066441865734|steelMin=-0.05982183666|steelMax=0.047256895556|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.rN; actual=-0.000000000931; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.rMx; actual=0.000000011176; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.rMy; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialC1|N=-1295514.22949258|Mx=9068599.60644807|My=-18519569.5604189|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=-0.001137511074|kx=0.000002952251|ky=-0.000000679307|concreteMin=-0.001490047872|concreteMax=-0.000791468661|steelMin=-0.00142275818|steelMax=-0.000858758353|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.rN; actual=0.000000000029; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.rMx; actual=0.00000000163; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.rMy; actual=0.000000002794; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialT1|N=219911.485751286|Mx=-1539380.400259|My=3143667.56056485|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=0.012769838738|kx=-0.000077880143|ky=-0.000053569854|concreteMin=-0.001668077894|concreteMax=0.02710680122|steelMin=0.001895359333|steelMax=0.023132174096|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.rN; actual=-0.26167523209; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.rMx; actual=20.606924533844; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.rMy; actual=35.212243452668; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1|N=-1295514.22949258|Mx=47934026.4912255|My=-114798615.018681|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.006031519472|kx=0.000463013883|ky=-0.000289734907|concreteMin=-0.087724505075|concreteMax=0.074801983323|steelMin=-0.067981296783|steelMax=0.053148304302|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.05.rN; actual=0.000000001164; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.05.rMx; actual=-0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.05.rMy; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialC1.05|N=-1360289.94096721|Mx=9522029.58677048|My=-19445548.0384398|converged=True|status=rsSuccess|extensionUsed=False|physical=True|eps0=-0.001194961325|kx=0.000003118267|ky=-0.000000719364|concreteMin=-0.001567590188|concreteMax=-0.000829209799|steelMin=-0.00149642341|steelMax=-0.000900376577|infeasibleCertified=False|certificate=|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.05.rN; actual=-0.000000000058; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.05.rMx; actual=-0.000000002794; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.05.rMy; actual=-0.000000007916; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialT1.05|N=230907.06003885|Mx=-1616349.42027195|My=3300850.93859309|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.027101801163|kx=-0.000148310885|ky=-0.000112523811|concreteMin=-0.001907504843|concreteMax=0.056013628633|steelMin=0.005405652685|steelMax=0.0477221879|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.05.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.05.rN; actual=0.000000000466; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.05.rMx; actual=0.000000029802; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.05.rMy; actual=-0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.05.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1.05|N=-1360289.94096721|Mx=50330727.8157868|My=-120538545.769615|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.007475869939|kx=0.000518200106|ky=-0.000318482819|concreteMin=-0.098071959553|concreteMax=0.082106117837|steelMin=-0.076265791997|steelMax=0.058269259826|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC2.rN; actual=-0.000000001863; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC2.rMx; actual=-0.000000014901; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC2.rMy; actual=0.000000007451; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialC2|N=-2591028.45898516|Mx=18137199.2128962|My=-37039139.1208378|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.039394538117|kx=0.000310444434|ky=-0.000066430896|concreteMin=-0.075744722259|concreteMax=-0.003679453481|steelMin=-0.068919773673|steelMax=-0.010504402066|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT2.rN; actual=-0.000000000058; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT2.rMx; actual=-0.000000001863; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT2.rMy; actual=0.000000005588; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialT2|N=439822.971502571|Mx=-3078760.800518|My=6287335.1211297|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=0.201956722028|kx=-0.000435555556|ky=-0.000738022592|concreteMin=0.029308092031|concreteMax=0.364282965664|steelMin=0.099944830582|steelMax=0.29691289378|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed2.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed2.rN; actual=-0.000000001397; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed2.rMx; actual=0.000000089407; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed2.rMy; actual=0.000000208616; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed2.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed2|N=-2591028.45898516|Mx=95868052.9824511|My=-229597230.037362|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.035572377391|kx=0.001576261921|ky=-0.000857423464|concreteMin=-0.295101109066|concreteMax=0.219867498578|steelMin=-0.234356252773|steelMax=0.15501426977|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC10.rN; actual=0.000000003725; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC10.rMx; actual=-0.000000119209; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC10.rMy; actual=0.000000059605; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialC10|N=-12955142.2949258|Mx=90685996.0644807|My=-185195695.604189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.476976720749|kx=0.00152483642|ky=-0.000371918361|concreteMin=-0.662096588946|concreteMax=-0.295412504822|steelMin=-0.626285214918|steelMax=-0.331223878851|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT10.rN; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT10.rMx; actual=-0.000000003725; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT10.rMy; actual=0.000000029802; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialT10|N=2199114.85751286|Mx=-15393804.00259|My=31436675.6056485|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=1.689783610138|kx=-0.002177777778|ky=-0.00369011296|concreteMin=0.826540460157|concreteMax=2.501414828319|steelMin=1.179724152911|steelMax=2.164564468898|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed10.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed10.rN; actual=0.; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed10.rMx; actual=-0.000000596046; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed10.rMy; actual=0.000000715256; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed10.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed10|N=-12955142.2949258|Mx=479340264.912255|My=-1147986150.18681|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-0.310991263864|kx=0.010554351598|ky=-0.005024721601|concreteMin=-1.945491998013|concreteMax=1.289669835391|steelMin=-1.57469471046|steelMax=0.904674321096|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC100.rN; actual=0.000000074506; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC100.rMx; actual=0.000000834465; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC100.rMy; actual=0.000000476837; expected=0.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC100.insideTechnicalEndpoints
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialC100|N=-129551422.949258|Mx=906859960.644807|My=-1851956956.04189|converged=True|status=rsCheckFailed|extensionUsed=True|physical=False|eps0=-5.397665590495|kx=0.015248364199|ky=-0.00381616129|concreteMin=-7.262841178743|concreteMax=-3.568973660963|steelMin=-6.899862636682|steelMax=-3.931952203024|infeasibleCertified=False|certificate=|reason=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT100.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT100.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialT100|N=21991148.5751286|Mx=-153938040.0259|My=314366756.056485|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.105044494134|kx=-0.00009306305|ky=-0.000159744065|concreteMin=0.067706740256|concreteMax=0.140157073457|steelMin=0.083055078449|steelMax=0.125506708138|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=1321651948.03943; upper=768068589.232054|reason=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed100.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed100.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed100.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed100|N=-129551422.949258|Mx=4793402649.12255|My=-11479861501.8681|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-29.236163680805|kx=2.991275723667|ky=-1.501539156881|concreteMin=-503.642998338091|concreteMax=436.278496051783|steelMin=-394.667727699401|steelMax=321.840230841546|infeasibleCertified=True|certificate=a=-56.131068045381; bx=-0.923879532511; by=0.382683432365; target=19712224593.0551; upper=19448584990.9233|reason=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialC1000|N=-1295514229.49258|Mx=9068599606.44807|My=-18519569560.4189|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-55.016984218041|kx=0.140659912741|ky=-0.035452115761|concreteMin=-72.258437226793|concreteMax=-38.114464182442|steelMin=-68.897588351075|steelMax=-41.47531305816|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641.157; upper=114285822151.785|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialT1000|N=219911485.751286|Mx=-1539380400.259|My=3143667560.56485|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.10504489834|kx=-0.000092145857|ky=-0.000158203452|concreteMin=0.068067755601|concreteMax=0.139818474193|steelMin=0.083269029351|steelMax=0.125308294372|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=13216519480.3942; upper=768068589.232054|reason=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1000|N=-1295514229.49258|Mx=47934026491.2255|My=-114798615018.681|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-1578127.63671091|kx=26628.3920513209|ky=-11171.1487371801|concreteMin=-5484868.05833|concreteMax=2229652.51940251|steelMin=-4624907.59143924|steelMax=1361852.74981763|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641.157; upper=114285822151.785|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialC1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialC1000000|N=-1295514229492.58|Mx=9068599606448.07|My=-18519569560418.9|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-55087.649784508|kx=140.632137423228|ky=-35.456287546926|concreteMin=-72327.3084307267|concreteMax=-38186.9639949818|steelMin=-68966.5627532725|steelMax=-41547.709672436|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641157.; upper=114285822151.785|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.3.axialT1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.axialT1000000|N=219911485751.286|Mx=-1539380400259.|My=3143667560564.85|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=0.105044943087|kx=-0.000092045111|ky=-0.000158034219|concreteMin=0.068107412612|concreteMax=0.139781280189|steelMin=0.08329253133|steelMax=0.125286499806|infeasibleCertified=True|certificate=a=60.099268736431; bx=0.; by=0.; target=13216519480394.3; upper=768068589.232054|reason=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1000000.notInternalError
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1000000.numericalCause
+OK: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1000000.infeasibleCertificate
+EXTENDED_STRESS: audit03.extendedStress.RoundedTapered.Newton.3.overloadMixed1000000|N=-1295514229492.58|Mx=47934026491225.5|My=-114798615018681.|converged=False|status=rsNumericalFailure|extensionUsed=False|physical=False|eps0=-0.043173249002|kx=0.000382666805|ky=-0.000179829968|concreteMin=-0.102096251759|concreteMax=0.014501640555|steelMin=-0.088770234728|steelMax=0.00070450772|infeasibleCertified=True|certificate=a=-480.794149891445; bx=0.; by=0.; target=622875662641157.; upper=114285822151.785|reason=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extendedStress.RoundedTapered.actualInfeasibleCases
+TOTAL_AUDIT03_EXTENDED_STRESS: shape=RoundedTapered; variant=Newton; cases=48; certifiedFailures=16; passed=221; failed=0
+
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03ExtendedStressFeasibilityTests; 2026-10-02T13:07:34
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

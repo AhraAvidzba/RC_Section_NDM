@@ -38,6 +38,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03InputContracts stats
     TestAudit03ProfileInputContracts stats
     TestAudit03NumericSettingsInputContracts stats
+    TestAudit03UnitSignConsumers stats
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -2403,6 +2404,8 @@ Private Function PlotShapeBoundsContainAbsolutePoint(ByVal nameFragment As Strin
 Failed:
 End Function
 
+' ДЛЯ ТЕСТОВ: считает только Shapes схемы с префиксом NDMPlot_ на листе Расчет.
+' Объекты Chart и пользовательские фигуры не включаются в проверку очистки.
 Private Function CountWorksheetPlotShapes(ByVal nameFragment As String) As Long
     On Error GoTo Failed
     Dim sheet As Object
@@ -2527,6 +2530,8 @@ Failed:
     PlotSeriesCount = 0
 End Function
 
+' ДЛЯ ТЕСТОВ: считает строки сохраненной semantic-таблицы нужного типа.
+' Заголовок пропускается; тест проверяет данные Results, не текущий генератор.
 Private Function CountAnnotationType(ByRef annotationData As Variant, ByVal annotationType As String) As Long
     On Error GoTo Failed
     Dim rowIndex As Long
@@ -4819,6 +4824,121 @@ CleanUp:
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
     Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет сохранение отрицательного знака после реального
+' преобразования tf/tf*m/кривизны. Capacity, Formation и Batch проходят свои
+' API до solver-а; ошибка не доказывается только чтением settings/getter-а.
+Public Function RunAudit03UnitSignConsumerTests() As String
+    Dim stats As TUiTestStats
+    AppendLine stats, "RUN: Audit03 unit-sign consumers"
+    TestAudit03UnitSignConsumers stats
+    AppendLine stats, "TOTAL_AUDIT03_UNIT_SIGN_CONSUMERS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UnitSignConsumerTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: меняет четыре поля на контролируемой копии Config и гарантированно
+' восстанавливает формулы. Внутренний знак сжатия не делает отрицательный
+' допуск положительным; численные итерации с такой конфигурацией недопустимы.
+Private Sub TestAudit03UnitSignConsumers(ByRef stats As TUiTestStats)
+    Dim target As Object, savedFormula As Variant, settings As CSystemSettingsReader
+    Dim unitRange As Object, signRange As Object, savedUnits As Variant, savedSigns As Variant
+    Dim key As Variant, row As Long, valueCell As Object, units As CUnitSystem
+    Dim section As CSectionModel, materials As CMaterialModelProvider, i As Long
+    Dim policy As CResultStatusPolicy
+    On Error GoTo Failed
+    Set target = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    savedFormula = target.Formula
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    Set signRange = ThisWorkbook.Names.Item("rngSignConventionSettings").RefersToRange
+    savedUnits = unitRange.Formula: savedSigns = signRange.Formula
+    SetSystemSetting "Units.Force.Input", "tf"
+    SetSystemSetting "Units.Moment.Input", "tf*m"
+    SetSystemSetting "Units.Curvature.Input", "1/m"
+    SetSystemSetting "Sign.N.User", "Compression"
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    Set policy = New CResultStatusPolicy
+    Set materials = New CMaterialModelProvider
+    materials.Initialize settings
+    Set section = New CSectionModel
+    For i = 0 To 3
+        section.AddConcreteElement -50# + 100# * (i Mod 2), -50# + 100# * (i \ 2), 10000#
+        section.AddRebarElement -40# + 80# * (i Mod 2), -40# + 80# * (i \ 2), 20#, 314.159265358979, "A400"
+    Next i
+    Dim strengthSpec As CMaterialModelSpec, currentSpec As CMaterialModelSpec, formationSpec As CMaterialModelSpec
+    Set strengthSpec = New CMaterialModelSpec
+    strengthSpec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    Set currentSpec = New CMaterialModelSpec
+    currentSpec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
+    Set formationSpec = New CMaterialModelSpec
+    formationSpec.Initialize "SLS(II)", "ThreeLine", "UseDiagram", "TwoLine"
+    Dim concrete As Object, steel As Object, load As CSectionLoadState
+    Set concrete = materials.ConcreteMaterialFromSpec(strengthSpec)
+    Set steel = materials.SteelMaterialFromSpec(strengthSpec)
+    Set load = New CSectionLoadState
+    load.Initialize -100000#, 50000000#, 10000000#, 0#, 0#
+    For Each key In Array("Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.MaxDeltaKappa")
+        target.Formula = savedFormula
+        Set valueCell = Nothing
+        For row = 2 To target.Rows.Count
+            If CStr(target.Cells.Item(row, 1).Value2) = CStr(key) Then
+                Set valueCell = target.Cells.Item(row, 2)
+                Exit For
+            End If
+        Next row
+        If valueCell Is Nothing Then Err.Raise vbObjectError + 4499, "TestAudit03UnitSignConsumers", "Не найден ключ " & CStr(key)
+        valueCell.Value2 = -1#
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        Dim cap As CCapacitySolver, formation As CCrackFormationCalculator, formed As CCrackFormationResult
+        Dim batch As CBatchSectionCalculator, result As CCombinationResult, prefix As String
+        prefix = "audit03.unitSign." & CStr(key)
+        AppendLine stats, "RUN: " & prefix & ".capacity"
+        Set cap = New CCapacitySolver
+        cap.ApplySettings settings, units
+        cap.SolveByLoadPathMultiplier section, concrete, steel, 0#, load.N, 0#, load.InternalMx, 0#, load.InternalMy
+        AssertTrue stats, prefix & ".capacityTyped", cap.FailureCode = sfcInvalidConfiguration
+        AssertTrue stats, prefix & ".capacityHasDiagnosticSolver", Not cap.LastSolver Is Nothing
+        If Not cap.LastSolver Is Nothing Then
+            AssertTrue stats, prefix & ".capacityNoIterations", cap.LastSolver.Iterations = 0
+        End If
+        AssertTrue stats, prefix & ".capacityNoRetries", cap.RetryCount = 0
+        AssertTrue stats, prefix & ".capacityReason", Len(cap.StopReason) > 0
+        AppendLine stats, "RUN: " & prefix & ".formation"
+        Set formation = New CCrackFormationCalculator
+        formation.ApplySettings settings, units
+        formation.CrackFormationPath = "LambdaNMxy"
+        formation.CrackFormationSolutionStrategy = "LoadMultiplier"
+        Set formed = formation.CheckFormation(section, materials, currentSpec, formationSpec, _
+            load.N, load.InternalMx, load.InternalMy, load, 0#, 0#)
+        AssertTrue stats, prefix & ".formationTyped", formed.ResultMeta.InternalStatus = rsInvalidConfiguration
+        AssertTrue stats, prefix & ".formationNoPoint", Not formed.HasLimitPoint
+        AssertTrue stats, prefix & ".formationReason", Len(formed.ResultMeta.ResultComment) > 0
+        AppendLine stats, "RUN: " & prefix & ".batch"
+        Set batch = BuildUiBatch()
+        batch.ApplySettings settings, units
+        batch.AddCombination "UNIT_SIGN", load.N, load.InternalMx, load.InternalMy, "PR1", vbNullString
+        batch.Execute
+        Set result = batch.ResultAt(1)
+        AssertTrue stats, prefix & ".batchTyped", result.DirectStateMeta.InternalStatus = rsInvalidConfiguration
+        AssertTextEquals stats, prefix & ".batchExternal", policy.ExternalStatus(result.DirectStateMeta), "InputErr"
+        AssertTrue stats, prefix & ".batchReason", Len(result.DirectStateMeta.ResultComment) > 0
+        AppendLine stats, "UNIT_SIGN_CONSUMER: key=" & CStr(key) & "|capacity=" & cap.StopReason & _
+            "|formation=" & formed.ResultMeta.ResultComment & "|batch=" & result.DirectStateMeta.ResultComment
+    Next key
+    GoTo CleanUp
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.unitSign.runtime; " & CStr(Err.Number) & "; " & Err.Description
+CleanUp:
+    On Error Resume Next
+    If Not target Is Nothing Then target.Formula = savedFormula
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    If Not signRange Is Nothing Then signRange.Formula = savedSigns
     On Error GoTo 0
 End Sub
 
