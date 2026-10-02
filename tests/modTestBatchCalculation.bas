@@ -117,6 +117,8 @@ Public Function RunBatchCalculationTests() As String
     TestStabilityInvalidSettingsReportInputErr stats
     AppendLine stats, "RUN: TestStabilitySP35MixedBranchReportsMixed"
     TestStabilitySP35MixedBranchReportsMixed stats
+    AppendLine stats, "RUN: TestAudit03StabilityComments"
+    TestAudit03StabilityComments stats
     AppendLine stats, "RUN: TestStabilityCircleMxDoesNotCreateMy"
     TestStabilityCircleMxDoesNotCreateMy stats
     AppendLine stats, "RUN: TestStabilityAccidentalBothPlanes"
@@ -7625,3 +7627,80 @@ Private Function Audit03WorstExpectedReserve(ByVal result As CCombinationResult,
             End If
     End Select
 End Function
+
+' ДЛЯ ТЕСТОВ: проверяет комментарии устойчивости без запуска остальных стадий.
+' Отдельный entrypoint сохраняет одинаковый воспроизводящий тест до и после правки.
+Public Function RunAudit03StabilityCommentTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03StabilityComments stats
+    AppendLine stats, "TOTAL_AUDIT03_STABILITY_COMMENTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03StabilityCommentTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: четыре нормативные ветви, успешная/перегруженная сжатая нагрузка
+' и растяжение. Проверяет реальный calculator через batch, комментарии своего
+' subtree, сводку и writer. Машинные имена ветвей остаются отдельными данными.
+Private Sub TestAudit03StabilityComments(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim mode As Variant, settings As CSystemSettingsReader, batch As CBatchSectionCalculator
+    Dim result As CCombinationResult, writer As CBatchResultWriter, i As Long, prefix As String
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1": SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    For Each mode In Array("SP63", "SP35-table", "SP35-eta", "SP35-mixed")
+        SetSystemSetting "Stability.Code", IIf(CStr(mode) = "SP63", "SP63", "SP35")
+        SetSystemSetting "Stability.AccidentalEccentricityUser1", IIf(CStr(mode) = "SP35-eta", "200", "5")
+        SetSystemSetting "Stability.AccidentalEccentricityUser2", IIf(CStr(mode) = "SP35-table" Or CStr(mode) = "SP63", "5", "200")
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        Set batch = BuildBatchCalculator()
+        batch.ApplySettings settings
+        batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+        batch.AddCombination "STAB_OK", -120000#, 0#, 0#, "PR1", vbNullString
+        batch.AddCombination "STAB_FAIL", -1000000000#, 0#, 0#, "PR1", vbNullString
+        batch.AddCombination "STAB_TENSION", 120000#, 0#, 0#, "PR1", vbNullString
+        batch.Execute
+        Set writer = New CBatchResultWriter
+        writer.WriteSummary ThisWorkbook, batch
+        For i = 1 To batch.Count
+            Set result = batch.ResultAt(i)
+            prefix = "audit03.stabilityComments." & CStr(mode) & "." & CStr(i)
+            If i = 1 Then
+                AssertEquals stats, prefix & ".branch", result.StabilityResult.Branch, CStr(mode)
+                AssertEquals stats, prefix & ".status", result.StabilityResult.Status, "OK"
+            ElseIf i = 2 Then
+                AssertEquals stats, prefix & ".status", result.StabilityResult.Status, "FAIL"
+            Else
+                AssertEquals stats, prefix & ".status", result.StabilityResult.Status, "N/A"
+            End If
+            AssertTrue stats, prefix & ".commentPresent", Len(Trim$(result.StabilityMeta.ResultComment)) > 0
+            Audit03CheckMetaComment stats, prefix, result.StabilityMeta, result.OverallMeta
+            AssertEquals stats, prefix & ".writer", _
+                CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(i - 1, 1).Value2), result.StabilityMeta.ResultComment
+            AssertEquals stats, prefix & ".batchWriter", _
+                CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(11 + i, 2).Value2), result.OverallMeta.ResultComment
+            AppendLine stats, "STABILITY_COMMENT: " & prefix & "; " & result.StabilityMeta.ResultComment
+        Next i
+        AssertTrue stats, "audit03.stabilityComments." & CStr(mode) & ".noStateSolve", batch.SolverCallCount = 0
+    Next mode
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.stabilityComments.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+End Sub

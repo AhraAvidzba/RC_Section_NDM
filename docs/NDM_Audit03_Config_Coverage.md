@@ -197,3 +197,32 @@ Curvature не получают PASS сверх доказанного адап�
 и его наличие в обеих полных suites, а не только наличие unit-choice assertion.
 Merged followers не удалены из census. Чистая v73 форматная проверка: 1004/0,
 1003 ожидаемых адреса и source unchanged=True. Остальная K01-K04 приемка открыта.
+
+## INPUT Consumers И AutoCAD v77
+
+Новый сквозной INPUT тест выполняет обычный workbook-сценарий: четыре формы,
+три длины, пять напряжений, две кривизны, всего 120 вариантов по четыре LC.
+Независимое масштабирование исходных ячеек сохраняет физическую постановку;
+сравниваются геометрия, элементы, диаграммы, свойства и подробные численные
+значения/статусы/ResultComment. Directed v75: 1293/0, Results save/reopen=True.
+В части LC Width/PostCrackState неприменимы; это не 120 активных Width-задач.
+
+Первый v74 прогон дал 24 различия только почти нулевого Transformed.Ixy.
+Они находятся в пределах машинного округления относительно Ix/Iy. Только
+новый test-oracle для Ixy/Ixyc использует bound 8*2^-52*sqrt(Ix*Iy); исторические
+expected/tolerance и solver не меняются. Отрицательный лог сохранен.
+
+Full v77b Off/On: 14837/0 и 14843/0, source unchanged=True. Это позволяет
+присоединить active evidence для Units.Length.Input и Units.Stress.Input.
+Реестр v77 содержит 1065 прежних адресов, active-reviewed=66, fullAcceptance=False.
+Units.Curvature.Input проверен по valid/invalid выбору и equivalence, но clamp
+в этой серии не доказан как binding. Его active K02 gate остается открытым;
+отдельный тест эффекта Solver.MaxDeltaKappa не заменяет combined-unit маршрут.
+Units.Area.Input по-прежнему требует K03 решения об отсутствии workbook consumer.
+
+В 72 OUTPUT/sign вариантах реальный AutoCAD export reader возвращает
+геометрию в мм, площади в мм2 и локальные инерции в мм4; еще 72 assertions
+доказывают отсутствие повторного solve. Это не приемка фактической записи DWG.
+Справка в test/update книге объясняет фиксированный масштаб в Units и
+AutoCAD.Export.CombinationID. Input data/формулы/validation/format 761 полей
+сохранены, 141 ссылка корректна, область печати сохранена после help-update.

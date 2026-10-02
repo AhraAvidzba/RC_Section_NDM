@@ -1,0 +1,139 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_units_comments_help_v77.xlsm
+SOURCE_SHA256: 1281A3497A269B63D775D496BEEBE2F841FE377F9CED5D1E5BF004CE01FF0A1B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_69c7479d97924aa19736596f07700d17\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03StabilityCommentTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03StabilityCommentTests; 2026-10-02T17:01:23
+EXCEL_AFTER_SUITE: pid=16216; workingSet=140746752; privateBytes=94990336; cpu=4.25
+EXCEL_AFTER_SUITE: pid=22988; workingSet=127582208; privateBytes=80617472; cpu=6.4375
+OK: audit03.stabilityComments.SP63.1.branch
+OK: audit03.stabilityComments.SP63.1.status
+OK: audit03.stabilityComments.SP63.1.commentPresent
+META: audit03.stabilityComments.SP63.1|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.stabilityComments.SP63.1.russianReason
+OK: audit03.stabilityComments.SP63.1.readable
+OK: audit03.stabilityComments.SP63.1.noMachinePrefix
+OK: audit03.stabilityComments.SP63.1.writer
+OK: audit03.stabilityComments.SP63.1.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP63.1; Проверка устойчивости по СП 63 выполнена.
+OK: audit03.stabilityComments.SP63.2.status
+OK: audit03.stabilityComments.SP63.2.commentPresent
+META: audit03.stabilityComments.SP63.2|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=Проверка устойчивости не проходит в главной плоскости 2: запас = 2.76784170351278E-02; коэффициент увеличения момента eta = 0.
+OK: audit03.stabilityComments.SP63.2.reasonPresent
+OK: audit03.stabilityComments.SP63.2.russianReason
+OK: audit03.stabilityComments.SP63.2.readable
+OK: audit03.stabilityComments.SP63.2.noMachinePrefix
+OK: audit03.stabilityComments.SP63.2.ownSubtree
+OK: audit03.stabilityComments.SP63.2.writer
+OK: audit03.stabilityComments.SP63.2.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP63.2; Проверка устойчивости не проходит в главной плоскости 2: запас = 2.76784170351278E-02; коэффициент увеличения момента eta = 0.
+OK: audit03.stabilityComments.SP63.3.status
+OK: audit03.stabilityComments.SP63.3.commentPresent
+META: audit03.stabilityComments.SP63.3|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP63.3.russianReason
+OK: audit03.stabilityComments.SP63.3.readable
+OK: audit03.stabilityComments.SP63.3.noMachinePrefix
+OK: audit03.stabilityComments.SP63.3.writer
+OK: audit03.stabilityComments.SP63.3.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP63.3; Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP63.noStateSolve
+OK: audit03.stabilityComments.SP35-table.1.branch
+OK: audit03.stabilityComments.SP35-table.1.status
+OK: audit03.stabilityComments.SP35-table.1.commentPresent
+META: audit03.stabilityComments.SP35-table.1|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.stabilityComments.SP35-table.1.russianReason
+OK: audit03.stabilityComments.SP35-table.1.readable
+OK: audit03.stabilityComments.SP35-table.1.noMachinePrefix
+OK: audit03.stabilityComments.SP35-table.1.writer
+OK: audit03.stabilityComments.SP35-table.1.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-table.1; Проверка устойчивости по СП 35 выполнена.
+OK: audit03.stabilityComments.SP35-table.2.status
+OK: audit03.stabilityComments.SP35-table.2.commentPresent
+META: audit03.stabilityComments.SP35-table.2|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=Проверка устойчивости не проходит в главной плоскости 1: запас = 1.3154713227954E-03; коэффициент увеличения момента eta = 1; в главной плоскости 2: запас = 1.28328783004229E-03; коэффициент увеличения момента eta = 1.
+OK: audit03.stabilityComments.SP35-table.2.reasonPresent
+OK: audit03.stabilityComments.SP35-table.2.russianReason
+OK: audit03.stabilityComments.SP35-table.2.readable
+OK: audit03.stabilityComments.SP35-table.2.noMachinePrefix
+OK: audit03.stabilityComments.SP35-table.2.ownSubtree
+OK: audit03.stabilityComments.SP35-table.2.writer
+OK: audit03.stabilityComments.SP35-table.2.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-table.2; Проверка устойчивости не проходит в главной плоскости 1: запас = 1.3154713227954E-03; коэффициент увеличения момента eta = 1; в главной плоскости 2: запас = 1.28328783004229E-03; коэффициент увеличения момента eta = 1.
+OK: audit03.stabilityComments.SP35-table.3.status
+OK: audit03.stabilityComments.SP35-table.3.commentPresent
+META: audit03.stabilityComments.SP35-table.3|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-table.3.russianReason
+OK: audit03.stabilityComments.SP35-table.3.readable
+OK: audit03.stabilityComments.SP35-table.3.noMachinePrefix
+OK: audit03.stabilityComments.SP35-table.3.writer
+OK: audit03.stabilityComments.SP35-table.3.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-table.3; Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-table.noStateSolve
+OK: audit03.stabilityComments.SP35-eta.1.branch
+OK: audit03.stabilityComments.SP35-eta.1.status
+OK: audit03.stabilityComments.SP35-eta.1.commentPresent
+META: audit03.stabilityComments.SP35-eta.1|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.stabilityComments.SP35-eta.1.russianReason
+OK: audit03.stabilityComments.SP35-eta.1.readable
+OK: audit03.stabilityComments.SP35-eta.1.noMachinePrefix
+OK: audit03.stabilityComments.SP35-eta.1.writer
+OK: audit03.stabilityComments.SP35-eta.1.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-eta.1; Проверка устойчивости по СП 35 выполнена.
+OK: audit03.stabilityComments.SP35-eta.2.status
+OK: audit03.stabilityComments.SP35-eta.2.commentPresent
+META: audit03.stabilityComments.SP35-eta.2|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=Проверка устойчивости не проходит в главной плоскости 1: запас = 2.51010134594274E-02; коэффициент увеличения момента eta = 0; в главной плоскости 2: запас = 9.90555717554386E-03; коэффициент увеличения момента eta = 0.
+OK: audit03.stabilityComments.SP35-eta.2.reasonPresent
+OK: audit03.stabilityComments.SP35-eta.2.russianReason
+OK: audit03.stabilityComments.SP35-eta.2.readable
+OK: audit03.stabilityComments.SP35-eta.2.noMachinePrefix
+OK: audit03.stabilityComments.SP35-eta.2.ownSubtree
+OK: audit03.stabilityComments.SP35-eta.2.writer
+OK: audit03.stabilityComments.SP35-eta.2.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-eta.2; Проверка устойчивости не проходит в главной плоскости 1: запас = 2.51010134594274E-02; коэффициент увеличения момента eta = 0; в главной плоскости 2: запас = 9.90555717554386E-03; коэффициент увеличения момента eta = 0.
+OK: audit03.stabilityComments.SP35-eta.3.status
+OK: audit03.stabilityComments.SP35-eta.3.commentPresent
+META: audit03.stabilityComments.SP35-eta.3|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-eta.3.russianReason
+OK: audit03.stabilityComments.SP35-eta.3.readable
+OK: audit03.stabilityComments.SP35-eta.3.noMachinePrefix
+OK: audit03.stabilityComments.SP35-eta.3.writer
+OK: audit03.stabilityComments.SP35-eta.3.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-eta.3; Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-eta.noStateSolve
+OK: audit03.stabilityComments.SP35-mixed.1.branch
+OK: audit03.stabilityComments.SP35-mixed.1.status
+OK: audit03.stabilityComments.SP35-mixed.1.commentPresent
+META: audit03.stabilityComments.SP35-mixed.1|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.stabilityComments.SP35-mixed.1.russianReason
+OK: audit03.stabilityComments.SP35-mixed.1.readable
+OK: audit03.stabilityComments.SP35-mixed.1.noMachinePrefix
+OK: audit03.stabilityComments.SP35-mixed.1.writer
+OK: audit03.stabilityComments.SP35-mixed.1.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-mixed.1; Проверка устойчивости по СП 35 выполнена.
+OK: audit03.stabilityComments.SP35-mixed.2.status
+OK: audit03.stabilityComments.SP35-mixed.2.commentPresent
+META: audit03.stabilityComments.SP35-mixed.2|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=Проверка устойчивости не проходит в главной плоскости 1: запас = 1.3154713227954E-03; коэффициент увеличения момента eta = 1; в главной плоскости 2: запас = 9.90555717554386E-03; коэффициент увеличения момента eta = 0.
+OK: audit03.stabilityComments.SP35-mixed.2.reasonPresent
+OK: audit03.stabilityComments.SP35-mixed.2.russianReason
+OK: audit03.stabilityComments.SP35-mixed.2.readable
+OK: audit03.stabilityComments.SP35-mixed.2.noMachinePrefix
+OK: audit03.stabilityComments.SP35-mixed.2.ownSubtree
+OK: audit03.stabilityComments.SP35-mixed.2.writer
+OK: audit03.stabilityComments.SP35-mixed.2.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-mixed.2; Проверка устойчивости не проходит в главной плоскости 1: запас = 1.3154713227954E-03; коэффициент увеличения момента eta = 1; в главной плоскости 2: запас = 9.90555717554386E-03; коэффициент увеличения момента eta = 0.
+OK: audit03.stabilityComments.SP35-mixed.3.status
+OK: audit03.stabilityComments.SP35-mixed.3.commentPresent
+META: audit03.stabilityComments.SP35-mixed.3|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-mixed.3.russianReason
+OK: audit03.stabilityComments.SP35-mixed.3.readable
+OK: audit03.stabilityComments.SP35-mixed.3.noMachinePrefix
+OK: audit03.stabilityComments.SP35-mixed.3.writer
+OK: audit03.stabilityComments.SP35-mixed.3.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-mixed.3; Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-mixed.noStateSolve
+TOTAL_AUDIT03_STABILITY_COMMENTS: passed=100; failed=0
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03StabilityCommentTests; 2026-10-02T17:01:35
+RESULTS_SAVE_REOPEN: before=384B1E17BEABD17573D9E32C560E565F10EA154409DC3AA7872C4E14D90A1298; after=384B1E17BEABD17573D9E32C560E565F10EA154409DC3AA7872C4E14D90A1298; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_69c7479d97924aa19736596f07700d17\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

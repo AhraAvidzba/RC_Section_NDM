@@ -1,0 +1,16 @@
+{
+  "Before": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_ab95721a85e64600a0888e98283352ad\\RC_Section_NDM_saved.xlsm",
+  "After": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_69c7479d97924aa19736596f07700d17\\RC_Section_NDM_saved.xlsm",
+  "BeforeSHA": "84EC36874FC35E6E3965961DD647766A9614129C909C96DD6BCD548BB5DA1092",
+  "AfterSHA": "D5F998B2F8CEADD004769C60A2774DB5D476C82E0C9FF6E4382FC1774225D7F8",
+  "NumericCells": 86,
+  "Differences": [
+    {
+      "Cell": "A4",
+      "Before": "1.5625E-2",
+      "After": "3.90625E-2"
+    }
+  ],
+  "Failed": 1,
+  "Scope": "Exact stored numeric Results values of the final SP35-mixed three-LC writer snapshot; not all 12 prior cases"
+}

@@ -1,0 +1,47 @@
+{
+  "Scope": "Два активных INPUT-поля длины и напряжения: 4 формы x 3 длины x 5 напряжений x 2 кривизны, 120 вариантов по 4 LC. Кривизна участвует в equivalence, но ее clamp в этой серии не доказан как binding, поэтому INPUT Curvature не получает active PASS. Неприменимые Width/Post не выдаются за активные проверки. INPUT Area остается отдельным открытым K03 вопросом.",
+  "PositiveReport": "docs/regression/Audit03/unit_sign_choices_positive_v71_2026-10-02.txt",
+  "PositiveGate": "TOTAL_AUDIT03_UNIT_SIGN_CHOICES: passed=408; failed=0",
+  "SupplementaryReport": "docs/regression/Audit03/input_units_v75_2026-10-02.txt",
+  "SupplementaryGate": "TOTAL_AUDIT03_INPUT_UNIT_CONSUMERS: passed=1293; failed=0",
+  "SupplementaryAssertionPrefixes": [
+    "audit03.inputUnits.allCases",
+    "audit03.inputUnits.Circle.l2.s0.k0.geometry",
+    "audit03.inputUnits.Circle.l0.s4.k0.diagrams",
+    "audit03.inputUnits.Circle.l0.s0.k1.properties"
+  ],
+  "FullReports": [
+    "docs/regression/Audit03/config_units_comments_full_off_v77b_2026-10-02.txt",
+    "docs/regression/Audit03/config_units_comments_full_on_v77b_2026-10-02.txt"
+  ],
+  "Consumer": "Config -> CSystemSettingsReader/CUnitSystem -> geometry/material/solver/crack/stability -> real workbook scenario -> Results",
+  "TestId": "modTestWorkbookInterface.TestAudit03UnitSignChoices + TestAudit03InputUnitConsumers",
+  "Entries": [
+    {
+      "Id": "Units.Length.Input",
+      "CanonicalKey": "Units.Length.Input",
+      "Type": "Enum",
+      "InternalUnits": "мм",
+      "RuntimeDefault": "Обязательный key полной книги; автономный partial API имеет программный default mm.",
+      "ValidRange": "mm / cm / m",
+      "Activity": "Геометрия и размерные настройки читаются из пользовательских ячеек",
+      "ExpectedEffect": "Эквивалентные размеры, сетка, cover, allowable, offset и L дают одно физическое сечение и одинаковые активные результаты",
+      "AssertionPrefix": "audit03.unitChoice.Units.Length.Input.",
+      "BlankAndErrorContract": "Пустой/пробел/TODO/unknown/0/CVErr и поврежденная обязательная строка отклоняются адресно; recovery проверен.",
+      "RangeReview": "Все три enum в сквозной серии четырех форм. Числа/статусы/ResultComment и save/reopen проверены. Не blanket PASS остальных размерных настроек либо Config."
+    },
+    {
+      "Id": "Units.Stress.Input",
+      "CanonicalKey": "Units.Stress.Input",
+      "Type": "Enum",
+      "InternalUnits": "МПа",
+      "RuntimeDefault": "Обязательный key полной книги; автономный partial API имеет программный default MPa.",
+      "ValidRange": "MPa / Pa / kPa / kgf/cm2 / tf/m2",
+      "Activity": "Материальные сопротивления и Eb/Es из Config участвуют в реальном расчете",
+      "ExpectedEffect": "Независимое приведение чисел материалов дает одинаковые диаграммы, НДС и активные strength/crack/stability результаты",
+      "AssertionPrefix": "audit03.unitChoice.Units.Stress.Input.",
+      "BlankAndErrorContract": "Пустой/пробел/TODO/unknown/0/CVErr и поврежденная обязательная строка отклоняются адресно; recovery проверен.",
+      "RangeReview": "Все пять enum в сквозной серии. Для Ixy/Ixyc около нуля только новый test-oracle допускает 8*2^-52*sqrt(Ix*Iy); остальные сравнения и исторические solver tolerance не меняются."
+    }
+  ]
+}

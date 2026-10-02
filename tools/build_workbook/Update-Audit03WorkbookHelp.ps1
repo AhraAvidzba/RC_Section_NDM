@@ -19,6 +19,7 @@ if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) 
 }
 $fields = @(Import-Csv -LiteralPath (Join-Path $root $RegistryPath) | Where-Object Role -eq 'UserInput')
 if ($fields.Count -eq 0) { throw 'Реестр не содержит пользовательских полей.' }
+$printAreas = @(Get-WorkbookPrintAreas $bookPath)
 $lines = New-Object 'System.Collections.Generic.List[string]'
 $script:failed = 0
 $excel = $null
@@ -63,6 +64,16 @@ function Get-InputRecordsSignature([object[]]$Records) {
 function Assert-Help([string]$Name, [bool]$Passed, [string]$Detail) {
     if (-not $Passed) { $script:failed++ }
     $lines.Add("HELP|$Name|passed=$Passed|$Detail")
+}
+
+# Сравнивает область по номеру листа и формуле XML. Канонизация имени
+# Print_Area и удаление одинакового дубликата не меняют саму область печати.
+function Get-PrintAreaSignature([object[]]$Areas) {
+    $records = foreach ($area in $Areas) {
+        [xml]$node = $area.Xml
+        [string]$area.Sheet + '|' + $node.DocumentElement.InnerText
+    }
+    return (@($records | Sort-Object -Unique) -join "`n")
 }
 
 # Проверяет реальные объединения и единственный dropdown каждой общей
@@ -113,6 +124,8 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'worstCriterionInputContract' ($body.Contains('неизвестное значение этого критерия') -and $body.Contains('InputErr')) 'Invalid criterion cannot silently select another check'
     Assert-Help 'rectsetCommonSelectors' ($body.Contains('общие для двух сторон каждой грани H1, B1, H2 или B2')) 'One common selector, separate diameters'
     Assert-Help 'unitChoiceInputContract' ($body.Contains('Пустой выбор, TODO или неподдержанная единица являются ошибкой Config')) 'Explicit invalid units do not become defaults'
+    Assert-Help 'autoCADExportAlwaysMillimetres' ($body.Contains('Геометрия экспортируется в AutoCAD всегда в миллиметрах') -and $body.Contains('одна единица AutoCAD соответствует 1 мм')) 'AutoCAD export scale is fixed, not OUTPUT length'
+    Assert-Help 'autoCADExportUnitsException' ($body.Contains('экспорт в AutoCAD всегда выполняется в мм независимо от OUTPUT') -and $body.Contains('это не меняет единицы напряжений')) 'Units help distinguishes geometry scale and result labels'
     Assert-Help 'signsDoNotFlipStressOrStrain' ($body.Contains('Пользовательские знаки N/Mx/My не меняют знак Stress и Strain')) 'Material tension/compression and strain plane keep internal signs'
     $config = $Book.Worksheets.Item('Config')
     $count = 0
@@ -209,6 +222,11 @@ try {
         $excel.Quit()
         [Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel) | Out-Null
     }
+    Restore-WorkbookPrintAreas $bookPath $printAreas
+    $restoredPrintAreas = @(Get-WorkbookPrintAreas $bookPath)
+    $expectedPrintAreas = Get-PrintAreaSignature $printAreas
+    $actualPrintAreas = Get-PrintAreaSignature $restoredPrintAreas
+    Assert-Help 'printAreasPreserved' ($expectedPrintAreas -eq $actualPrintAreas) "count=$($restoredPrintAreas.Count)"
     $lines | Set-Content -LiteralPath (Join-Path $root $ReportPath) -Encoding UTF8
 }
 if ($script:failed -gt 0) { exit 1 }

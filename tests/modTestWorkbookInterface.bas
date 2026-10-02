@@ -41,6 +41,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03UnitSignConsumers stats
     TestAudit03UnitSignChoices stats
     TestAudit03UnitSignEquivalence stats
+    TestAudit03InputUnitConsumers stats
     TestAudit03RectSetSharedSelectors stats
     TestAudit03RectSetSharedSelectorLayout stats
     TestAudit03RectSetSharedSelectorEffects stats
@@ -5606,6 +5607,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
                 units.LoadFromSettings settings
                 snapshot.WriteResults ThisWorkbook, section, provider, batch, units
                 summary.WriteSummary ThisWorkbook, batch, units, section
+                Audit03AssertAutoCADMmGeometry stats, prefix, section
                 AssertTrue stats, prefix & ".outputDoesNotSolve", solveCount = batch.SolverCallCount
                 AssertTextEquals stats, prefix & ".outputForceUnit", ResultsPropertyValue("ALL", "Output.ForceUnit"), units.OutputForceUnit
                 AssertTextEquals stats, prefix & ".outputStressUnit", ResultsPropertyValue("ALL", "Output.StressUnit"), CStr(stressNames(caseIndex Mod 5))
@@ -5655,9 +5657,10 @@ Private Sub Audit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal prefix
         ByRef baseline As Variant, ByRef actual As Variant, ByVal kind As String, _
         ByVal lengthFactor As Double, ByVal areaFactor As Double, ByVal stressFactor As Double, _
         ByVal curvatureFactor As Double, ByVal forceFactor As Double, ByVal momentFactor As Double, _
-        ByVal signN As Double, ByVal signMx As Double, ByVal signMy As Double)
+        ByVal signN As Double, ByVal signMx As Double, ByVal signMy As Double, _
+        Optional ByVal compareInertiaRoundoff As Boolean = False)
     Dim row As Long, column As Long, factor As Double, parameter As String, tolerance As Double
-    Dim same As Boolean, detail As String, expected As Double, converted As Double
+    Dim same As Boolean, detail As String, expected As Double, converted As Double, absoluteLimit As Double
     same = (UBound(baseline, 1) = UBound(actual, 1) And UBound(baseline, 2) = UBound(actual, 2))
     If Not same Then detail = "размер таблицы" Else detail = vbNullString
     If same Then
@@ -5692,7 +5695,19 @@ Private Sub Audit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal prefix
                 End If
                 If IsNumeric(baseline(row, column)) And IsNumeric(actual(row, column)) Then
                     expected = CDbl(baseline(row, column)): converted = CDbl(actual(row, column)) * factor
-                    If Abs(converted - expected) > tolerance * (1# + Abs(expected)) Then same = False
+                    absoluteLimit = tolerance * (1# + Abs(expected))
+                    If compareInertiaRoundoff And column = 4 And kind = "Properties" Then
+                        If parameter = "Transformed.Ixy" Or parameter = "Transformed.Ixyc" Then
+                            Dim roundoffLimit As Double
+                            roundoffLimit = Audit03InertiaRoundoffLimit(baseline, parameter)
+                            If Abs(converted - expected) > absoluteLimit Then
+                                AppendLine stats, "INERTIA_ROUNDOFF: " & prefix & "; parameter=" & parameter & _
+                                    "; expected=" & CStr(expected) & "; actual=" & CStr(converted) & "; limit=" & CStr(roundoffLimit)
+                            End If
+                            If roundoffLimit > absoluteLimit Then absoluteLimit = roundoffLimit
+                        End If
+                    End If
+                    If Abs(converted - expected) > absoluteLimit Then same = False
                 ElseIf CStr(baseline(row, column)) <> CStr(actual(row, column)) Then
                     same = False
                 End If
@@ -5702,6 +5717,308 @@ Private Sub Audit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal prefix
                     Exit For
                 End If
 NextColumn:
+            Next column
+            If Not same Then Exit For
+        Next row
+    End If
+    AssertTrue stats, prefix & ".equivalent; " & detail, same
+End Sub
+
+' ДЛЯ ТЕСТОВ: около нулевого Ixy сравниваем round-trip округление относительно
+' sqrt(Ix*Iy), а не самого исчезающе малого Ixy. Восемь машинных epsilon
+' ограничивают только ошибку представления модулей; solver tolerance не меняется.
+' Исторический unit-sign тест не включает это дополнительное правило.
+Private Function Audit03InertiaRoundoffLimit(ByRef properties As Variant, ByVal parameter As String) As Double
+    Dim ix As Double, iy As Double, row As Long, suffix As String
+    If parameter = "Transformed.Ixyc" Then suffix = "c"
+    For row = 2 To UBound(properties, 1)
+        If CStr(properties(row, 3)) = "Transformed.Ix" & suffix Then ix = CDbl(properties(row, 4))
+        If CStr(properties(row, 3)) = "Transformed.Iy" & suffix Then iy = CDbl(properties(row, 4))
+    Next row
+    Audit03InertiaRoundoffLimit = 8# * (2# ^ -52#) * Sqr(Abs(ix)) * Sqr(Abs(iy))
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет реальный reader геометрии AutoCAD export при всех
+' OUTPUT единицах. Он обязан вернуть координаты/диаметры в мм, площади в мм2
+' и инерции в мм4 из сохраненных заголовков Results, не вызывая новый solve.
+Private Sub Audit03AssertAutoCADMmGeometry(ByRef stats As TUiTestStats, ByVal prefix As String, _
+        ByVal expected As CSectionModel)
+    Dim actual As CSectionModel, beforeSolves As Long, same As Boolean, i As Long, j As Long
+    Dim values As Variant, reference As Variant, detail As String
+    beforeSolves = SectionEquilibriumSolveCount()
+    Set actual = ReadSectionGeometryFromResults(ThisWorkbook)
+    same = (actual.ConcreteCount = expected.ConcreteCount And actual.RebarCount = expected.RebarCount)
+    If Not same Then detail = "число элементов"
+    If same Then
+        For i = 1 To expected.ConcreteCount + expected.RebarCount
+            If i <= expected.ConcreteCount Then
+                values = Array(actual.ConcreteX(i), actual.ConcreteY(i), actual.ConcreteArea(i), _
+                    actual.ConcreteWidth(i), actual.ConcreteHeight(i), actual.ConcreteRotation(i), _
+                    actual.ConcreteLocalIx(i), actual.ConcreteLocalIy(i), actual.ConcreteLocalIxy(i))
+                reference = Array(expected.ConcreteX(i), expected.ConcreteY(i), expected.ConcreteArea(i), _
+                    expected.ConcreteWidth(i), expected.ConcreteHeight(i), expected.ConcreteRotation(i), _
+                    expected.ConcreteLocalIx(i), expected.ConcreteLocalIy(i), expected.ConcreteLocalIxy(i))
+            Else
+                Dim bar As Long
+                bar = i - expected.ConcreteCount
+                values = Array(actual.RebarX(bar), actual.RebarY(bar), actual.RebarArea(bar), actual.RebarDiameter(bar))
+                reference = Array(expected.RebarX(bar), expected.RebarY(bar), expected.RebarArea(bar), expected.RebarDiameter(bar))
+            End If
+            For j = 0 To UBound(values)
+                If Abs(CDbl(values(j)) - CDbl(reference(j))) > 0.000000001 * (1# + Abs(CDbl(reference(j)))) Then
+                    same = False
+                    detail = "element=" & CStr(i) & "; field=" & CStr(j) & _
+                        "; expected=" & CStr(reference(j)) & "; actual=" & CStr(values(j))
+                    Exit For
+                End If
+            Next j
+            If Not same Then Exit For
+        Next i
+    End If
+    AssertTrue stats, prefix & ".autoCADGeometryMm; " & detail, same
+    AssertTrue stats, prefix & ".autoCADDoesNotSolve", SectionEquilibriumSolveCount() = beforeSolves
+End Sub
+
+' ДЛЯ ТЕСТОВ: отдельный сквозной gate INPUT длины, напряжения и кривизны.
+' Все сочетания единиц проходят обычный макрос расчета, а не ручной solver.
+Public Function RunAudit03InputUnitConsumerTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03InputUnitConsumers stats
+    AppendLine stats, "TOTAL_AUDIT03_INPUT_UNIT_CONSUMERS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03InputUnitConsumerTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: четыре формы и 30 эквивалентных систем INPUT для каждой.
+' Геометрия, материалы, допуски, crack width и устойчивость строятся из Config;
+' сравниваются численные снимки и все комментарии подробных output-блоков.
+' Измененные таблицы восстанавливаются даже после ошибки запуска.
+Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
+    Dim rangeNames As Variant, original As Collection, prepared As Collection, name As Variant
+    Dim target As Object, loads As Object, lengthNames As Variant, lengthFactors As Variant
+    Dim stressNames As Variant, stressFactors As Variant, shape As Variant
+    Dim lengthIndex As Long, stressIndex As Long, curvatureIndex As Long, i As Long, caseCount As Long
+    Dim baselineElements As Variant, baselineGeometry As Variant, baselineProperties As Variant
+    Dim baselineDiagrams As Variant, baselineStrength As Variant, baselineCrack As Variant, baselineStability As Variant
+    Dim actual As Variant, prefix As String, message As String, caseFailures As Long
+    On Error GoTo Failed
+    rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
+        "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", _
+        "rngSteelMaterialParameters", "rngCircleGeometry", "rngRectSetGeometry", _
+        "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+    Set original = New Collection
+    For Each name In rangeNames
+        original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
+    Next name
+    For Each name In Array("Length", "Area", "Force", "Moment", "Stress", "Curvature")
+        Select Case CStr(name)
+            Case "Length": message = "mm"
+            Case "Area": message = "mm2"
+            Case "Force": message = "N"
+            Case "Moment": message = "N*mm"
+            Case "Stress": message = "MPa"
+            Case "Curvature": message = "1/mm"
+        End Select
+        SetSystemSetting "Units." & CStr(name) & ".Input", message
+        SetSystemSetting "Units." & CStr(name) & ".Output", message
+    Next name
+    SetSystemSetting "Sign.N.User", "Tension"
+    SetSystemSetting "Sign.Mx.User", "+Y tension"
+    SetSystemSetting "Sign.My.User", "+X tension"
+    SetSystemSetting "Geometry.Source", "Generated"
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0.001"
+    SetSystemSetting "Load.ReferenceOffsetX", "10"
+    SetSystemSetting "Load.ReferenceOffsetY", "-7"
+    SetSystemSetting "Mesh.StepX", "50": SetSystemSetting "Mesh.StepY", "50"
+    SetSystemSetting "Mesh.BoundarySubdivisions", "1"
+    SetSystemSetting "Solver.ToleranceN", "0.1"
+    SetSystemSetting "Solver.ToleranceMx", "1": SetSystemSetting "Solver.ToleranceMy", "1"
+    SetSystemSetting "Solver.MaxDeltaKappa", "0.00005"
+    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+    SetSystemSetting "Capacity.SearchMethod", "Bisection"
+    SetSystemSetting "SLS.Crack.InitiationLoadPath", "Auto"
+    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    SetSystemSetting "SLS.Crack.Allowable", "0.3"
+    SetSystemSetting "Stability.ElementLength", "8000"
+    For Each name In Array("PR1", "PR2")
+        SetProfileSetting CStr(name), "Calculation.Strength.DirectState", IIf(CStr(name) = "PR1", "Yes", "No")
+        SetProfileSetting CStr(name), "Calculation.Strength.Capacity", IIf(CStr(name) = "PR1", "Yes", "No")
+        SetProfileSetting CStr(name), "Calculation.Crack.Width", IIf(CStr(name) = "PR2", "Yes", "No")
+        SetProfileSetting CStr(name), "Calculation.Stability.Enabled", "Yes"
+    Next name
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    ClearDataRows loads
+    For i = 0 To 3
+        loads.Cells(i + 2, 1).Value2 = "INPUT" & CStr(i + 1)
+        loads.Cells(i + 2, 2).Value2 = IIf((i Mod 2) = 0, -100000#, 30000#)
+        loads.Cells(i + 2, 3).Value2 = IIf((i Mod 2) = 0, 30000000#, -20000000#)
+        loads.Cells(i + 2, 4).Value2 = IIf((i Mod 2) = 0, -20000000#, 15000000#)
+        loads.Cells(i + 2, 5).Value2 = IIf(i < 2, "PR1", "PR2")
+        loads.Cells(i + 2, 6).Value2 = ChrW$(&H3BB) & "*NMxy"
+    Next i
+    Set prepared = New Collection
+    For Each name In rangeNames
+        prepared.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
+    Next name
+    lengthNames = Array("mm", "cm", "m"): lengthFactors = Array(1#, 10#, 1000#)
+    stressNames = Array("MPa", "Pa", "kPa", "kgf/cm2", "tf/m2")
+    stressFactors = Array(1#, 0.000001, 0.001, 0.0980665, 0.00980665)
+    For Each shape In Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+        For lengthIndex = 0 To 2
+            For stressIndex = 0 To 4
+                For curvatureIndex = 0 To 1
+                    For i = 0 To UBound(rangeNames)
+                        ThisWorkbook.Names.Item(CStr(rangeNames(i))).RefersToRange.Formula = prepared.Item(i + 1)
+                    Next i
+                    SetSystemSetting "Geometry.Type", CStr(shape)
+                    SetSystemSetting "Units.Length.Input", CStr(lengthNames(lengthIndex))
+                    SetSystemSetting "Units.Stress.Input", CStr(stressNames(stressIndex))
+                    SetSystemSetting "Units.Curvature.Input", IIf(curvatureIndex = 0, "1/mm", "1/m")
+                    Audit03RescaleInputTables CDbl(lengthFactors(lengthIndex)), CDbl(stressFactors(stressIndex))
+                    SetSystemSetting "Solver.MaxDeltaKappa", CStr(0.00005 / IIf(curvatureIndex = 0, 1#, 0.001))
+                    prefix = "audit03.inputUnits." & CStr(shape) & ".l" & CStr(lengthIndex) & _
+                        ".s" & CStr(stressIndex) & ".k" & CStr(curvatureIndex)
+                    AppendLine stats, "RUN: " & prefix
+                    caseFailures = stats.Failed
+                    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+                    AssertTrue stats, prefix & ".completed", Len(message) > 0
+                    AssertTrue stats, prefix & ".strengthState", ResultsPropertyExists("INPUT1", "State.StrengthState.Epsilon0")
+                    AssertTrue stats, prefix & ".capacityState", ResultsPropertyExists("INPUT1", "State.CapacityState.Epsilon0")
+                    AssertTrue stats, prefix & ".crackedState", ResultsPropertyExists("INPUT3", "State.CrackedState.Epsilon0")
+                    If lengthIndex = 0 And stressIndex = 0 And curvatureIndex = 0 Then
+                        baselineElements = ResultTable("rngNDMElementResults")
+                        baselineGeometry = ResultTable("rngNDMSectionGeometry")
+                        baselineProperties = ResultTable("rngNDMSectionProperties")
+                        baselineDiagrams = ResultTable("rngNDMMaterialDiagrams")
+                        baselineStrength = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Resize(4, 49).Value2
+                        baselineCrack = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 49).Value2
+                        baselineStability = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, 84).Value2
+                    Else
+                        actual = ResultTable("rngNDMElementResults")
+                        Audit03CompareUnitSnapshot stats, prefix & ".elements", baselineElements, actual, "Elements", 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#
+                        actual = ResultTable("rngNDMSectionGeometry")
+                        Audit03CompareUnitSnapshot stats, prefix & ".geometry", baselineGeometry, actual, "Geometry", 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#
+                        actual = ResultTable("rngNDMSectionProperties")
+                        Audit03CompareUnitSnapshot stats, prefix & ".properties", baselineProperties, actual, "Properties", 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#, True
+                        actual = ResultTable("rngNDMMaterialDiagrams")
+                        Audit03ComparePlainSnapshot stats, prefix & ".diagrams", baselineDiagrams, actual, 2
+                        actual = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Resize(4, 49).Value2
+                        Audit03ComparePlainSnapshot stats, prefix & ".strength", baselineStrength, actual, 1
+                        actual = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 49).Value2
+                        Audit03ComparePlainSnapshot stats, prefix & ".crack", baselineCrack, actual, 1
+                        actual = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, 84).Value2
+                        Audit03ComparePlainSnapshot stats, prefix & ".stability", baselineStability, actual, 1
+                    End If
+                    caseCount = caseCount + 1
+                    AppendLine stats, "INPUT_UNIT_CASE: " & prefix & "; newFailures=" & CStr(stats.Failed - caseFailures)
+                Next curvatureIndex
+            Next stressIndex
+        Next lengthIndex
+    Next shape
+    AssertTrue stats, "audit03.inputUnits.allCases", caseCount = 120
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.inputUnits.runtime; " & prefix & "; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not original Is Nothing Then
+        For i = 0 To original.Count - 1
+            ThisWorkbook.Names.Item(CStr(rangeNames(i))).RefersToRange.Formula = original.Item(i + 1)
+        Next i
+    End If
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: изменяет только размерные числовые поля согласно видимым
+' подтаблицам Config. Счетчики, enum, деформации, пустые диаметры и формулы
+' единиц не масштабируются. Коэффициенты независимы от CUnitSystem.
+Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stressFactor As Double)
+    Dim target As Object, name As Variant, row As Long, column As Variant, key As String
+    For Each name In Array("rngCircleGeometry", "rngSystemSettings")
+        Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        For row = 2 To target.Rows.Count
+            key = CStr(target.Cells(row, 1).Value2)
+            Select Case key
+                Case "Circle.Diameter", "Rebar.AxisDistance", "Rebar.Diameter", "Rebar.Diameter2", "Rebar.Diameter3", _
+                        "Mesh.StepX", "Mesh.StepY", "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", _
+                        "Stability.ElementLength", "Stability.AccidentalEccentricityUser1", _
+                        "Stability.AccidentalEccentricityUser2", "SLS.Crack.Allowable", "Plot.ResultLabelSpacing"
+                    Audit03DivideNumericInput target.Cells(row, 2), lengthFactor
+            End Select
+        Next row
+    Next name
+    ' Порог имеет размерность момент/длина: моментные INPUT единицы неизменны.
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", CStr(0.001 * lengthFactor)
+    Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
+    Audit03DivideNumericInput target.Cells(4, 2), lengthFactor
+    For column = 1 To 4: Audit03DivideNumericInput target.Cells(8, column), lengthFactor: Next column
+    For row = 11 To 18
+        For Each column In Array(2, 3, 5, 6): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
+    Next row
+    For row = 21 To 28
+        For Each column In Array(2, 5): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
+    Next row
+    Set target = ThisWorkbook.Names.Item("rngRoundedRectangleGeometry").RefersToRange
+    For column = 2 To 3: Audit03DivideNumericInput target.Cells(3, column), lengthFactor: Next column
+    For row = 8 To 10
+        For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), lengthFactor: Next column
+    Next row
+    For row = 13 To 16
+        For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), lengthFactor: Next column
+    Next row
+    For row = 19 To 22
+        For Each column In Array(2, 5): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
+    Next row
+    Set target = ThisWorkbook.Names.Item("rngHollowRectangleGeometry").RefersToRange
+    For row = 3 To 4: Audit03DivideNumericInput target.Cells(row, 2), lengthFactor: Next row
+    For column = 1 To 6: Audit03DivideNumericInput target.Cells(7, column), lengthFactor: Next column
+    For row = 11 To 18
+        For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), lengthFactor: Next column
+    Next row
+    For row = 21 To 28
+        For Each column In Array(2, 5): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
+    Next row
+    For Each name In Array("rngConcreteMaterialParameters", "rngSteelMaterialParameters")
+        Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        For row = 2 To target.Rows.Count
+            key = CStr(target.Cells(row, 1).Value2)
+            If InStr(key, ".R") > 0 Or key = "Concrete.E" Or key = "Steel.E" Then
+                For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), stressFactor: Next column
+            End If
+        Next row
+    Next name
+End Sub
+
+' ДЛЯ ТЕСТОВ: сохраняет пустой ввод и служебный прочерк; масштабирует число
+' в ячейке fixture, не вызывая production-преобразования и не меняя validation.
+Private Sub Audit03DivideNumericInput(ByVal cell As Object, ByVal factor As Double)
+    If IsNumeric(cell.Value2) And Len(CStr(cell.Value2)) > 0 Then cell.Value2 = CDbl(cell.Value2) / factor
+End Sub
+
+' ДЛЯ ТЕСТОВ: сравнивает фактические output-таблицы при одинаковых OUTPUT
+' единицах. Тексты и статусы должны совпадать точно; числа сравниваются с
+' относительной погрешностью округления 1e-9, без изменения solver tolerance.
+Private Sub Audit03ComparePlainSnapshot(ByRef stats As TUiTestStats, ByVal prefix As String, _
+        ByRef baseline As Variant, ByRef actual As Variant, ByVal firstColumn As Long)
+    Dim row As Long, column As Long, same As Boolean, detail As String
+    same = (UBound(baseline, 1) = UBound(actual, 1) And UBound(baseline, 2) = UBound(actual, 2))
+    If Not same Then detail = "размер таблицы"
+    If same Then
+        For row = 1 To UBound(baseline, 1)
+            For column = firstColumn To UBound(baseline, 2)
+                If IsNumeric(baseline(row, column)) And IsNumeric(actual(row, column)) Then
+                    same = Abs(CDbl(actual(row, column)) - CDbl(baseline(row, column))) <= _
+                        0.000000001 * (1# + Abs(CDbl(baseline(row, column))))
+                Else
+                    same = (CStr(baseline(row, column)) = CStr(actual(row, column)))
+                End If
+                If Not same Then
+                    detail = "row=" & CStr(row) & "; col=" & CStr(column) & _
+                        "; expected=" & CStr(baseline(row, column)) & "; actual=" & CStr(actual(row, column))
+                    Exit For
+                End If
             Next column
             If Not same Then Exit For
         Next row

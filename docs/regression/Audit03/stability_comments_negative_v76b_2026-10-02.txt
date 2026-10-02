@@ -1,0 +1,138 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_stability_comments_negative_v76b.xlsm
+SOURCE_SHA256: 9B90A803F428B223A392E084A9B00280D898B076F44FF508C6DD18A029FB15B1
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ab95721a85e64600a0888e98283352ad\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03StabilityCommentTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03StabilityCommentTests; 2026-10-02T16:56:14
+EXCEL_AFTER_SUITE: pid=22788; workingSet=140054528; privateBytes=95645696; cpu=4.453125
+OK: audit03.stabilityComments.SP63.1.branch
+OK: audit03.stabilityComments.SP63.1.status
+OK: audit03.stabilityComments.SP63.1.commentPresent
+META: audit03.stabilityComments.SP63.1|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=SP63
+FAIL: audit03.stabilityComments.SP63.1.russianReason
+OK: audit03.stabilityComments.SP63.1.readable
+OK: audit03.stabilityComments.SP63.1.noMachinePrefix
+OK: audit03.stabilityComments.SP63.1.writer
+OK: audit03.stabilityComments.SP63.1.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP63.1; SP63
+OK: audit03.stabilityComments.SP63.2.status
+OK: audit03.stabilityComments.SP63.2.commentPresent
+META: audit03.stabilityComments.SP63.2|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=SP63
+OK: audit03.stabilityComments.SP63.2.reasonPresent
+FAIL: audit03.stabilityComments.SP63.2.russianReason
+OK: audit03.stabilityComments.SP63.2.readable
+OK: audit03.stabilityComments.SP63.2.noMachinePrefix
+OK: audit03.stabilityComments.SP63.2.ownSubtree
+OK: audit03.stabilityComments.SP63.2.writer
+OK: audit03.stabilityComments.SP63.2.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP63.2; SP63
+OK: audit03.stabilityComments.SP63.3.status
+OK: audit03.stabilityComments.SP63.3.commentPresent
+META: audit03.stabilityComments.SP63.3|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP63.3.russianReason
+OK: audit03.stabilityComments.SP63.3.readable
+OK: audit03.stabilityComments.SP63.3.noMachinePrefix
+OK: audit03.stabilityComments.SP63.3.writer
+OK: audit03.stabilityComments.SP63.3.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP63.3; Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP63.noStateSolve
+OK: audit03.stabilityComments.SP35-table.1.branch
+OK: audit03.stabilityComments.SP35-table.1.status
+OK: audit03.stabilityComments.SP35-table.1.commentPresent
+META: audit03.stabilityComments.SP35-table.1|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=SP35-table
+FAIL: audit03.stabilityComments.SP35-table.1.russianReason
+OK: audit03.stabilityComments.SP35-table.1.readable
+OK: audit03.stabilityComments.SP35-table.1.noMachinePrefix
+OK: audit03.stabilityComments.SP35-table.1.writer
+OK: audit03.stabilityComments.SP35-table.1.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-table.1; SP35-table
+OK: audit03.stabilityComments.SP35-table.2.status
+OK: audit03.stabilityComments.SP35-table.2.commentPresent
+META: audit03.stabilityComments.SP35-table.2|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=SP35-table
+OK: audit03.stabilityComments.SP35-table.2.reasonPresent
+FAIL: audit03.stabilityComments.SP35-table.2.russianReason
+OK: audit03.stabilityComments.SP35-table.2.readable
+OK: audit03.stabilityComments.SP35-table.2.noMachinePrefix
+OK: audit03.stabilityComments.SP35-table.2.ownSubtree
+OK: audit03.stabilityComments.SP35-table.2.writer
+OK: audit03.stabilityComments.SP35-table.2.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-table.2; SP35-table
+OK: audit03.stabilityComments.SP35-table.3.status
+OK: audit03.stabilityComments.SP35-table.3.commentPresent
+META: audit03.stabilityComments.SP35-table.3|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-table.3.russianReason
+OK: audit03.stabilityComments.SP35-table.3.readable
+OK: audit03.stabilityComments.SP35-table.3.noMachinePrefix
+OK: audit03.stabilityComments.SP35-table.3.writer
+OK: audit03.stabilityComments.SP35-table.3.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-table.3; Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-table.noStateSolve
+OK: audit03.stabilityComments.SP35-eta.1.branch
+OK: audit03.stabilityComments.SP35-eta.1.status
+OK: audit03.stabilityComments.SP35-eta.1.commentPresent
+META: audit03.stabilityComments.SP35-eta.1|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=SP35-eta
+FAIL: audit03.stabilityComments.SP35-eta.1.russianReason
+OK: audit03.stabilityComments.SP35-eta.1.readable
+OK: audit03.stabilityComments.SP35-eta.1.noMachinePrefix
+OK: audit03.stabilityComments.SP35-eta.1.writer
+OK: audit03.stabilityComments.SP35-eta.1.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-eta.1; SP35-eta
+OK: audit03.stabilityComments.SP35-eta.2.status
+OK: audit03.stabilityComments.SP35-eta.2.commentPresent
+META: audit03.stabilityComments.SP35-eta.2|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=SP35-eta
+OK: audit03.stabilityComments.SP35-eta.2.reasonPresent
+FAIL: audit03.stabilityComments.SP35-eta.2.russianReason
+OK: audit03.stabilityComments.SP35-eta.2.readable
+OK: audit03.stabilityComments.SP35-eta.2.noMachinePrefix
+OK: audit03.stabilityComments.SP35-eta.2.ownSubtree
+OK: audit03.stabilityComments.SP35-eta.2.writer
+OK: audit03.stabilityComments.SP35-eta.2.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-eta.2; SP35-eta
+OK: audit03.stabilityComments.SP35-eta.3.status
+OK: audit03.stabilityComments.SP35-eta.3.commentPresent
+META: audit03.stabilityComments.SP35-eta.3|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-eta.3.russianReason
+OK: audit03.stabilityComments.SP35-eta.3.readable
+OK: audit03.stabilityComments.SP35-eta.3.noMachinePrefix
+OK: audit03.stabilityComments.SP35-eta.3.writer
+OK: audit03.stabilityComments.SP35-eta.3.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-eta.3; Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-eta.noStateSolve
+OK: audit03.stabilityComments.SP35-mixed.1.branch
+OK: audit03.stabilityComments.SP35-mixed.1.status
+OK: audit03.stabilityComments.SP35-mixed.1.commentPresent
+META: audit03.stabilityComments.SP35-mixed.1|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=SP35-mixed
+FAIL: audit03.stabilityComments.SP35-mixed.1.russianReason
+FAIL: audit03.stabilityComments.SP35-mixed.1.readable
+OK: audit03.stabilityComments.SP35-mixed.1.noMachinePrefix
+OK: audit03.stabilityComments.SP35-mixed.1.writer
+OK: audit03.stabilityComments.SP35-mixed.1.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-mixed.1; SP35-mixed
+OK: audit03.stabilityComments.SP35-mixed.2.status
+OK: audit03.stabilityComments.SP35-mixed.2.commentPresent
+META: audit03.stabilityComments.SP35-mixed.2|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=SP35-mixed
+OK: audit03.stabilityComments.SP35-mixed.2.reasonPresent
+FAIL: audit03.stabilityComments.SP35-mixed.2.russianReason
+FAIL: audit03.stabilityComments.SP35-mixed.2.readable
+OK: audit03.stabilityComments.SP35-mixed.2.noMachinePrefix
+OK: audit03.stabilityComments.SP35-mixed.2.ownSubtree
+OK: audit03.stabilityComments.SP35-mixed.2.writer
+OK: audit03.stabilityComments.SP35-mixed.2.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-mixed.2; SP35-mixed
+OK: audit03.stabilityComments.SP35-mixed.3.status
+OK: audit03.stabilityComments.SP35-mixed.3.commentPresent
+META: audit03.stabilityComments.SP35-mixed.3|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-mixed.3.russianReason
+OK: audit03.stabilityComments.SP35-mixed.3.readable
+OK: audit03.stabilityComments.SP35-mixed.3.noMachinePrefix
+OK: audit03.stabilityComments.SP35-mixed.3.writer
+OK: audit03.stabilityComments.SP35-mixed.3.batchWriter
+STABILITY_COMMENT: audit03.stabilityComments.SP35-mixed.3; Устойчивость не проверяется: в сочетании нет сжатия.
+OK: audit03.stabilityComments.SP35-mixed.noStateSolve
+TOTAL_AUDIT03_STABILITY_COMMENTS: passed=90; failed=10
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03StabilityCommentTests; 2026-10-02T16:56:17
+RESULTS_SAVE_REOPEN: before=8675F547E59CB4BAB457CAA78DE7D981E7E3CD364F0438EABBB17E4406CADEE1; after=8675F547E59CB4BAB457CAA78DE7D981E7E3CD364F0438EABBB17E4406CADEE1; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ab95721a85e64600a0888e98283352ad\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

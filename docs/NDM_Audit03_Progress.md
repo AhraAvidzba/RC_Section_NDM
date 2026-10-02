@@ -390,3 +390,103 @@
   material consumers, K03 Area.Input; остальные per-key и pairwise Config,
   D01/F07 semantic review и финальные benchmarks/output/self-audit.
   Audit03 остается активным, финальный отчет и общий DoD не заявлены.
+
+## Продолжение После Checkpoint cadcb986
+
+- Текущий принятый units/RectSet/formatting срез зафиксирован в `cadcb986`.
+  Tracked Git tree и index после проверки чистые; исторические registry
+  файлы сохранены побайтово. Baseline и пользовательская output-книга не менялись.
+- По запросу пользователя все подтвержденные отклонения оформления сразу
+  заносить в список выше. Новые единичные успешные тесты не подменяют полный
+  Audit03 DoD и не означают обновление занятой пользовательской книги.
+- Подготовлен сквозной `TestAudit03InputUnitConsumers`: 4 формы x 3 INPUT
+  длины x 5 INPUT напряжений x 2 INPUT кривизны = 120 вариантов, по 4 LC.
+  Запускается настоящий workbook-сценарий со strength direct/capacity,
+  formation/width/longitudinal и stability. Независимые коэффициенты
+  пересчитывают исходные размерные ячейки; сравниваются геометрия, named-state,
+  диаграммы и все значения/ResultComment трех подробных блоков.
+  Runtime пока не выполнен; новый тест не объявляется принятым.
+- K03 `Units.Area.Input`: подтверждены только adapter API и фиксированный
+  mm2 маршрут AutoCAD. Сквозной пользовательский потребитель площади не найден.
+  Не придумывать новую физику для активации этой настройки; решение об актуальном
+  интерфейсе, справке и migration предстоит в отдельной K03 проверке.
+- Первый input consumer прогон v74 завершен: 120 случаев, 1269/24,
+  source unchanged=True, Results save/reopen=True. Все 24 отказа относятся
+  только к Transformed.Ixy около нуля у Rounded/Hollow в kgf/cm2 и tf/m2.
+  Разность 1.5e-8..7.9e-8 мм4 возникает при round-trip модулей и составляет
+  машинное округление относительно Ix/Iy; НДС, диаграммы и подробные
+  strength/crack/stability числа, статусы и ResultComment совпали во всех случаях.
+  Лог сохранен как неуспешный, не переименовывается в PASS.
+  В новом тесте добавлен ограниченный roundoff oracle 8*2^-52*sqrt(Ix*Iy)
+  только для Ixy/Ixyc. Остальные сравнения и все исторические expected/tolerance,
+  solver settings и production source не меняются. При расхождении логируются
+  оба фактических значения и bound. Повторный runtime gate еще предстоит.
+- Уточнение пользователя: AutoCAD export всегда в мм независимо от OUTPUT
+  Excel. Реальный export reader уже восстанавливает мм/мм2/мм4 из сохраненных
+  заголовков Results. Добавлена проверка всех координат/габаритов/диаметров/
+  площадей/локальных инерций и отсутствия solve в 72 OUTPUT/sign вариантах;
+  runtime еще не объявляется выполненным. Фактическая запись DWG этим не заменяется.
+- INPUT consumer v75 завершен: 120 вариантов, 1293/0, source unchanged=True,
+  Results save/reopen=True. Это эквивалентность фактически активных стадий:
+  некоторые normal-width/PostCrackState ветви неприменимы (в частности последние
+  Hollow LC имеют NotCracked), а не 120 независимых активных Width-проверок.
+  Source SHA `8C6FC7F79386A3B6BB2DA04DC77F8B6768A8ED8B1CE5AD1EBE8EBD16D5D96741`.
+  Полный Off gate v75 еще выполняется; AutoCAD assertions пока не приняты.
+- В сохраненном Results v75 обнаружен сырой `SP35-eta` в комментарии успешной
+  устойчивости. `CStabilityCalculator.ResultMeta` возвращает пустой комментарий,
+  а `CStabilityResult.InitializeFromCalculator` подставляет машинный Branch.
+  Сразу включено в список исправлений пользовательского текста: calculator
+  должен формировать русскую причину собственного OK/FAIL, result сохранять ее
+  без подстановки Branch, writers не формировать объяснение. Требуется отдельный
+  negative/positive gate для СП 63 и eta/table/mixed СП 35, включая output-блоки.
+- Первый stability-comments запуск v76 отклонен до runtime: в новом test
+  пропущен обязательный comment аргумент трех AddCombination. Это ошибка
+  подготовки теста, не доказательство дефекта production; лог не перезаписывать.
+  Вызовы исправлены, воспроизводящий negative gate запускается заново как v76b.
+- Negative v76b: 90/10, 12 LC, source unchanged/Results reopen=True. После
+  правки calculator-а positive v77: 100/0, те же четыре ветви/LC, без State solve,
+  комментарии leaf/подробного блока/batch согласованы, Results reopen=True.
+- Actual help v77: правило экспорта геометрии в мм добавлено в Units и
+  AutoCAD.Export.CombinationID; два новых assertions успешны до/после reopen,
+  141 прямая ссылка корректна, все 761 input-поле сохранено, failed=0.
+- Общий Validate v77 выявил потерю области печати после help-update. Это
+  подтвержденное отклонение оформления сразу включено в список изменений.
+  Help updater должен сохранять/восстанавливать существующие Print_Area через
+  уже общий SettingsCatalog API, как Refresh-VbaModules, и проверять snapshot.
+  Первый Validate остается отрицательным, полный gate еще не запущен.
+- Help updater после исправления сохраняет область печати (count=1), все вводы
+  и прямые ссылки; повторный Validate успешен. Source contracts v77: 101/101,
+  failed=0, export SHA `066479801FCBE981520BA450BB3F77E090BD5E302D4935A43D3BB52B813C242E`.
+  Новый full v77 запуск не начал suites: runner отклонил VerifyResultsReopen
+  без явно выбранной одной macro. Это неверные аргументы запуска, не runtime
+  дефект; negative log сохраняется, полный повтор идет как v77b без этого флага.
+- OpenXML-чтение actual v77 справки подтвердило места текста: B655 под
+  заголовком "Единицы измерения" и B1380 в "AutoCAD.Export.CombinationID".
+  Geometry export возвращает мм, а OUTPUT-единицы расчетных подписей остаются
+  отдельным контрактом. Старый output и Audit03 ТЗ сохраняют исходные SHA.
+  Полная v75 Off серия: 14737/0, включая 72 geometry-mm и 72 no-solve assertions.
+  v77b full Off/On еще не объявлены завершенными.
+- Full Off v77b завершен: 14837/0, восемь suites, source unchanged=True.
+  On gate еще выполняется. Подготовленный INPUT evidence ограничен двумя
+  активными полями Length/Stress: их обрыв меняет геометрию/диаграммы.
+  Curvature INPUT входит во все 120 equivalence-вариантов и validation,
+  но заданный clamp 0.00005 не доказан как binding. Один успешный одинаковый
+  ответ не закрывает K02 этого поля; нужен отдельный binding-clamp маршрут.
+  Существующий active MaxDeltaKappa gate не подменяет такую combined-проверку.
+- Full On v77b завершен: 14843/0, восемь suites, source unchanged=True.
+  Оба full gate относятся к SHA v77
+  `01FFA526A60791E70EB1B5C5B252A14D83D7A548D9E079E3A9A16D1D6A9B2333`,
+  после help/Print_Area/Validate операций, а не к более раннему контейнеру.
+  INPUT evidence merge: 1065 адресов, 66 active-reviewed, fullAcceptance=False.
+  Дополнительные 85 numeric Results ячеек последнего mixed snapshot совпали;
+  A4 elapsed исключен явно, исходный mismatch JSON сохранен.
+- Post-update format v77: 1004/0, 1003 адреса, source unchanged=True, тот же
+  SHA 01FFA... . Все нужные COM/test sessions завершены; основной output
+  по-прежнему AAF5... и не заменен промежуточной книгой. Версионный экспорт
+  `VBA_All_Code_v77_2026-10-02.txt` сохранен отдельно, SHA 066479... .
+  Этот срез готов к scoped checkpoint; Audit03/Final Report/общий DoD не завершены.
+  Следующий объем: binding INPUT Curvature gate, K03 INPUT Area, остальные
+  per-key/pairwise и semantic D01/F07; затем финальные clean build, benchmarks,
+  сохранение пользовательских данных при output update и независимый self-audit.
+  После compaction читать этот хвост вместе с Git status/diff/log, baseline,
+  ТЗ и архитектурными MD; старый раздел "Как продолжить" не подменяет новые gates.

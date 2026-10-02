@@ -1,0 +1,1428 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_input_units_v74.xlsm
+SOURCE_SHA256: 0AB42C836CB43813FB1C654080ECB816618F26C23C6DC456FD6F12D106639784
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e263b1c0d0464f499c0bb9ad5416f822\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03InputUnitConsumerTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03InputUnitConsumerTests; 2026-10-02T16:33:20
+EXCEL_AFTER_SUITE: pid=6260; workingSet=165896192; privateBytes=117895168; cpu=99
+EXCEL_AFTER_SUITE: pid=29556; workingSet=198537216; privateBytes=126058496; cpu=691.828125
+OK: audit03.inputUnits.Circle.l0.s0.k0.completed
+OK: audit03.inputUnits.Circle.l0.s0.k0.strengthState
+OK: audit03.inputUnits.Circle.l0.s0.k0.capacityState
+OK: audit03.inputUnits.Circle.l0.s0.k0.crackedState
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s0.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s0.k1.completed
+OK: audit03.inputUnits.Circle.l0.s0.k1.strengthState
+OK: audit03.inputUnits.Circle.l0.s0.k1.capacityState
+OK: audit03.inputUnits.Circle.l0.s0.k1.crackedState
+OK: audit03.inputUnits.Circle.l0.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s0.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s1.k0.completed
+OK: audit03.inputUnits.Circle.l0.s1.k0.strengthState
+OK: audit03.inputUnits.Circle.l0.s1.k0.capacityState
+OK: audit03.inputUnits.Circle.l0.s1.k0.crackedState
+OK: audit03.inputUnits.Circle.l0.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s1.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s1.k1.completed
+OK: audit03.inputUnits.Circle.l0.s1.k1.strengthState
+OK: audit03.inputUnits.Circle.l0.s1.k1.capacityState
+OK: audit03.inputUnits.Circle.l0.s1.k1.crackedState
+OK: audit03.inputUnits.Circle.l0.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s1.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s2.k0.completed
+OK: audit03.inputUnits.Circle.l0.s2.k0.strengthState
+OK: audit03.inputUnits.Circle.l0.s2.k0.capacityState
+OK: audit03.inputUnits.Circle.l0.s2.k0.crackedState
+OK: audit03.inputUnits.Circle.l0.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s2.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s2.k1.completed
+OK: audit03.inputUnits.Circle.l0.s2.k1.strengthState
+OK: audit03.inputUnits.Circle.l0.s2.k1.capacityState
+OK: audit03.inputUnits.Circle.l0.s2.k1.crackedState
+OK: audit03.inputUnits.Circle.l0.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s2.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s3.k0.completed
+OK: audit03.inputUnits.Circle.l0.s3.k0.strengthState
+OK: audit03.inputUnits.Circle.l0.s3.k0.capacityState
+OK: audit03.inputUnits.Circle.l0.s3.k0.crackedState
+OK: audit03.inputUnits.Circle.l0.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s3.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s3.k1.completed
+OK: audit03.inputUnits.Circle.l0.s3.k1.strengthState
+OK: audit03.inputUnits.Circle.l0.s3.k1.capacityState
+OK: audit03.inputUnits.Circle.l0.s3.k1.crackedState
+OK: audit03.inputUnits.Circle.l0.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s3.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s4.k0.completed
+OK: audit03.inputUnits.Circle.l0.s4.k0.strengthState
+OK: audit03.inputUnits.Circle.l0.s4.k0.capacityState
+OK: audit03.inputUnits.Circle.l0.s4.k0.crackedState
+OK: audit03.inputUnits.Circle.l0.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s4.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l0.s4.k1.completed
+OK: audit03.inputUnits.Circle.l0.s4.k1.strengthState
+OK: audit03.inputUnits.Circle.l0.s4.k1.capacityState
+OK: audit03.inputUnits.Circle.l0.s4.k1.crackedState
+OK: audit03.inputUnits.Circle.l0.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l0.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l0.s4.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s0.k0.completed
+OK: audit03.inputUnits.Circle.l1.s0.k0.strengthState
+OK: audit03.inputUnits.Circle.l1.s0.k0.capacityState
+OK: audit03.inputUnits.Circle.l1.s0.k0.crackedState
+OK: audit03.inputUnits.Circle.l1.s0.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s0.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s0.k1.completed
+OK: audit03.inputUnits.Circle.l1.s0.k1.strengthState
+OK: audit03.inputUnits.Circle.l1.s0.k1.capacityState
+OK: audit03.inputUnits.Circle.l1.s0.k1.crackedState
+OK: audit03.inputUnits.Circle.l1.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s0.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s1.k0.completed
+OK: audit03.inputUnits.Circle.l1.s1.k0.strengthState
+OK: audit03.inputUnits.Circle.l1.s1.k0.capacityState
+OK: audit03.inputUnits.Circle.l1.s1.k0.crackedState
+OK: audit03.inputUnits.Circle.l1.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s1.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s1.k1.completed
+OK: audit03.inputUnits.Circle.l1.s1.k1.strengthState
+OK: audit03.inputUnits.Circle.l1.s1.k1.capacityState
+OK: audit03.inputUnits.Circle.l1.s1.k1.crackedState
+OK: audit03.inputUnits.Circle.l1.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s1.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s2.k0.completed
+OK: audit03.inputUnits.Circle.l1.s2.k0.strengthState
+OK: audit03.inputUnits.Circle.l1.s2.k0.capacityState
+OK: audit03.inputUnits.Circle.l1.s2.k0.crackedState
+OK: audit03.inputUnits.Circle.l1.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s2.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s2.k1.completed
+OK: audit03.inputUnits.Circle.l1.s2.k1.strengthState
+OK: audit03.inputUnits.Circle.l1.s2.k1.capacityState
+OK: audit03.inputUnits.Circle.l1.s2.k1.crackedState
+OK: audit03.inputUnits.Circle.l1.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s2.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s3.k0.completed
+OK: audit03.inputUnits.Circle.l1.s3.k0.strengthState
+OK: audit03.inputUnits.Circle.l1.s3.k0.capacityState
+OK: audit03.inputUnits.Circle.l1.s3.k0.crackedState
+OK: audit03.inputUnits.Circle.l1.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s3.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s3.k1.completed
+OK: audit03.inputUnits.Circle.l1.s3.k1.strengthState
+OK: audit03.inputUnits.Circle.l1.s3.k1.capacityState
+OK: audit03.inputUnits.Circle.l1.s3.k1.crackedState
+OK: audit03.inputUnits.Circle.l1.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s3.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s4.k0.completed
+OK: audit03.inputUnits.Circle.l1.s4.k0.strengthState
+OK: audit03.inputUnits.Circle.l1.s4.k0.capacityState
+OK: audit03.inputUnits.Circle.l1.s4.k0.crackedState
+OK: audit03.inputUnits.Circle.l1.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s4.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l1.s4.k1.completed
+OK: audit03.inputUnits.Circle.l1.s4.k1.strengthState
+OK: audit03.inputUnits.Circle.l1.s4.k1.capacityState
+OK: audit03.inputUnits.Circle.l1.s4.k1.crackedState
+OK: audit03.inputUnits.Circle.l1.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l1.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l1.s4.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s0.k0.completed
+OK: audit03.inputUnits.Circle.l2.s0.k0.strengthState
+OK: audit03.inputUnits.Circle.l2.s0.k0.capacityState
+OK: audit03.inputUnits.Circle.l2.s0.k0.crackedState
+OK: audit03.inputUnits.Circle.l2.s0.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s0.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s0.k1.completed
+OK: audit03.inputUnits.Circle.l2.s0.k1.strengthState
+OK: audit03.inputUnits.Circle.l2.s0.k1.capacityState
+OK: audit03.inputUnits.Circle.l2.s0.k1.crackedState
+OK: audit03.inputUnits.Circle.l2.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s0.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s1.k0.completed
+OK: audit03.inputUnits.Circle.l2.s1.k0.strengthState
+OK: audit03.inputUnits.Circle.l2.s1.k0.capacityState
+OK: audit03.inputUnits.Circle.l2.s1.k0.crackedState
+OK: audit03.inputUnits.Circle.l2.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s1.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s1.k1.completed
+OK: audit03.inputUnits.Circle.l2.s1.k1.strengthState
+OK: audit03.inputUnits.Circle.l2.s1.k1.capacityState
+OK: audit03.inputUnits.Circle.l2.s1.k1.crackedState
+OK: audit03.inputUnits.Circle.l2.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s1.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s2.k0.completed
+OK: audit03.inputUnits.Circle.l2.s2.k0.strengthState
+OK: audit03.inputUnits.Circle.l2.s2.k0.capacityState
+OK: audit03.inputUnits.Circle.l2.s2.k0.crackedState
+OK: audit03.inputUnits.Circle.l2.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s2.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s2.k1.completed
+OK: audit03.inputUnits.Circle.l2.s2.k1.strengthState
+OK: audit03.inputUnits.Circle.l2.s2.k1.capacityState
+OK: audit03.inputUnits.Circle.l2.s2.k1.crackedState
+OK: audit03.inputUnits.Circle.l2.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s2.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s3.k0.completed
+OK: audit03.inputUnits.Circle.l2.s3.k0.strengthState
+OK: audit03.inputUnits.Circle.l2.s3.k0.capacityState
+OK: audit03.inputUnits.Circle.l2.s3.k0.crackedState
+OK: audit03.inputUnits.Circle.l2.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s3.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s3.k1.completed
+OK: audit03.inputUnits.Circle.l2.s3.k1.strengthState
+OK: audit03.inputUnits.Circle.l2.s3.k1.capacityState
+OK: audit03.inputUnits.Circle.l2.s3.k1.crackedState
+OK: audit03.inputUnits.Circle.l2.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s3.k1; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s4.k0.completed
+OK: audit03.inputUnits.Circle.l2.s4.k0.strengthState
+OK: audit03.inputUnits.Circle.l2.s4.k0.capacityState
+OK: audit03.inputUnits.Circle.l2.s4.k0.crackedState
+OK: audit03.inputUnits.Circle.l2.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k0.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k0.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s4.k0; newFailures=0
+OK: audit03.inputUnits.Circle.l2.s4.k1.completed
+OK: audit03.inputUnits.Circle.l2.s4.k1.strengthState
+OK: audit03.inputUnits.Circle.l2.s4.k1.capacityState
+OK: audit03.inputUnits.Circle.l2.s4.k1.crackedState
+OK: audit03.inputUnits.Circle.l2.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k1.geometry.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k1.properties.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.Circle.l2.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.Circle.l2.s4.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s0.k0.completed
+OK: audit03.inputUnits.RectSet.l0.s0.k0.strengthState
+OK: audit03.inputUnits.RectSet.l0.s0.k0.capacityState
+OK: audit03.inputUnits.RectSet.l0.s0.k0.crackedState
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s0.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s0.k1.completed
+OK: audit03.inputUnits.RectSet.l0.s0.k1.strengthState
+OK: audit03.inputUnits.RectSet.l0.s0.k1.capacityState
+OK: audit03.inputUnits.RectSet.l0.s0.k1.crackedState
+OK: audit03.inputUnits.RectSet.l0.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s0.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s1.k0.completed
+OK: audit03.inputUnits.RectSet.l0.s1.k0.strengthState
+OK: audit03.inputUnits.RectSet.l0.s1.k0.capacityState
+OK: audit03.inputUnits.RectSet.l0.s1.k0.crackedState
+OK: audit03.inputUnits.RectSet.l0.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s1.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s1.k1.completed
+OK: audit03.inputUnits.RectSet.l0.s1.k1.strengthState
+OK: audit03.inputUnits.RectSet.l0.s1.k1.capacityState
+OK: audit03.inputUnits.RectSet.l0.s1.k1.crackedState
+OK: audit03.inputUnits.RectSet.l0.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s1.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s2.k0.completed
+OK: audit03.inputUnits.RectSet.l0.s2.k0.strengthState
+OK: audit03.inputUnits.RectSet.l0.s2.k0.capacityState
+OK: audit03.inputUnits.RectSet.l0.s2.k0.crackedState
+OK: audit03.inputUnits.RectSet.l0.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s2.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s2.k1.completed
+OK: audit03.inputUnits.RectSet.l0.s2.k1.strengthState
+OK: audit03.inputUnits.RectSet.l0.s2.k1.capacityState
+OK: audit03.inputUnits.RectSet.l0.s2.k1.crackedState
+OK: audit03.inputUnits.RectSet.l0.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s2.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s3.k0.completed
+OK: audit03.inputUnits.RectSet.l0.s3.k0.strengthState
+OK: audit03.inputUnits.RectSet.l0.s3.k0.capacityState
+OK: audit03.inputUnits.RectSet.l0.s3.k0.crackedState
+OK: audit03.inputUnits.RectSet.l0.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s3.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s3.k1.completed
+OK: audit03.inputUnits.RectSet.l0.s3.k1.strengthState
+OK: audit03.inputUnits.RectSet.l0.s3.k1.capacityState
+OK: audit03.inputUnits.RectSet.l0.s3.k1.crackedState
+OK: audit03.inputUnits.RectSet.l0.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s3.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s4.k0.completed
+OK: audit03.inputUnits.RectSet.l0.s4.k0.strengthState
+OK: audit03.inputUnits.RectSet.l0.s4.k0.capacityState
+OK: audit03.inputUnits.RectSet.l0.s4.k0.crackedState
+OK: audit03.inputUnits.RectSet.l0.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s4.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l0.s4.k1.completed
+OK: audit03.inputUnits.RectSet.l0.s4.k1.strengthState
+OK: audit03.inputUnits.RectSet.l0.s4.k1.capacityState
+OK: audit03.inputUnits.RectSet.l0.s4.k1.crackedState
+OK: audit03.inputUnits.RectSet.l0.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l0.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l0.s4.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s0.k0.completed
+OK: audit03.inputUnits.RectSet.l1.s0.k0.strengthState
+OK: audit03.inputUnits.RectSet.l1.s0.k0.capacityState
+OK: audit03.inputUnits.RectSet.l1.s0.k0.crackedState
+OK: audit03.inputUnits.RectSet.l1.s0.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s0.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s0.k1.completed
+OK: audit03.inputUnits.RectSet.l1.s0.k1.strengthState
+OK: audit03.inputUnits.RectSet.l1.s0.k1.capacityState
+OK: audit03.inputUnits.RectSet.l1.s0.k1.crackedState
+OK: audit03.inputUnits.RectSet.l1.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s0.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s1.k0.completed
+OK: audit03.inputUnits.RectSet.l1.s1.k0.strengthState
+OK: audit03.inputUnits.RectSet.l1.s1.k0.capacityState
+OK: audit03.inputUnits.RectSet.l1.s1.k0.crackedState
+OK: audit03.inputUnits.RectSet.l1.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s1.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s1.k1.completed
+OK: audit03.inputUnits.RectSet.l1.s1.k1.strengthState
+OK: audit03.inputUnits.RectSet.l1.s1.k1.capacityState
+OK: audit03.inputUnits.RectSet.l1.s1.k1.crackedState
+OK: audit03.inputUnits.RectSet.l1.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s1.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s2.k0.completed
+OK: audit03.inputUnits.RectSet.l1.s2.k0.strengthState
+OK: audit03.inputUnits.RectSet.l1.s2.k0.capacityState
+OK: audit03.inputUnits.RectSet.l1.s2.k0.crackedState
+OK: audit03.inputUnits.RectSet.l1.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s2.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s2.k1.completed
+OK: audit03.inputUnits.RectSet.l1.s2.k1.strengthState
+OK: audit03.inputUnits.RectSet.l1.s2.k1.capacityState
+OK: audit03.inputUnits.RectSet.l1.s2.k1.crackedState
+OK: audit03.inputUnits.RectSet.l1.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s2.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s3.k0.completed
+OK: audit03.inputUnits.RectSet.l1.s3.k0.strengthState
+OK: audit03.inputUnits.RectSet.l1.s3.k0.capacityState
+OK: audit03.inputUnits.RectSet.l1.s3.k0.crackedState
+OK: audit03.inputUnits.RectSet.l1.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s3.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s3.k1.completed
+OK: audit03.inputUnits.RectSet.l1.s3.k1.strengthState
+OK: audit03.inputUnits.RectSet.l1.s3.k1.capacityState
+OK: audit03.inputUnits.RectSet.l1.s3.k1.crackedState
+OK: audit03.inputUnits.RectSet.l1.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s3.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s4.k0.completed
+OK: audit03.inputUnits.RectSet.l1.s4.k0.strengthState
+OK: audit03.inputUnits.RectSet.l1.s4.k0.capacityState
+OK: audit03.inputUnits.RectSet.l1.s4.k0.crackedState
+OK: audit03.inputUnits.RectSet.l1.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s4.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l1.s4.k1.completed
+OK: audit03.inputUnits.RectSet.l1.s4.k1.strengthState
+OK: audit03.inputUnits.RectSet.l1.s4.k1.capacityState
+OK: audit03.inputUnits.RectSet.l1.s4.k1.crackedState
+OK: audit03.inputUnits.RectSet.l1.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l1.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l1.s4.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s0.k0.completed
+OK: audit03.inputUnits.RectSet.l2.s0.k0.strengthState
+OK: audit03.inputUnits.RectSet.l2.s0.k0.capacityState
+OK: audit03.inputUnits.RectSet.l2.s0.k0.crackedState
+OK: audit03.inputUnits.RectSet.l2.s0.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s0.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s0.k1.completed
+OK: audit03.inputUnits.RectSet.l2.s0.k1.strengthState
+OK: audit03.inputUnits.RectSet.l2.s0.k1.capacityState
+OK: audit03.inputUnits.RectSet.l2.s0.k1.crackedState
+OK: audit03.inputUnits.RectSet.l2.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s0.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s1.k0.completed
+OK: audit03.inputUnits.RectSet.l2.s1.k0.strengthState
+OK: audit03.inputUnits.RectSet.l2.s1.k0.capacityState
+OK: audit03.inputUnits.RectSet.l2.s1.k0.crackedState
+OK: audit03.inputUnits.RectSet.l2.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s1.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s1.k1.completed
+OK: audit03.inputUnits.RectSet.l2.s1.k1.strengthState
+OK: audit03.inputUnits.RectSet.l2.s1.k1.capacityState
+OK: audit03.inputUnits.RectSet.l2.s1.k1.crackedState
+OK: audit03.inputUnits.RectSet.l2.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s1.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s2.k0.completed
+OK: audit03.inputUnits.RectSet.l2.s2.k0.strengthState
+OK: audit03.inputUnits.RectSet.l2.s2.k0.capacityState
+OK: audit03.inputUnits.RectSet.l2.s2.k0.crackedState
+OK: audit03.inputUnits.RectSet.l2.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s2.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s2.k1.completed
+OK: audit03.inputUnits.RectSet.l2.s2.k1.strengthState
+OK: audit03.inputUnits.RectSet.l2.s2.k1.capacityState
+OK: audit03.inputUnits.RectSet.l2.s2.k1.crackedState
+OK: audit03.inputUnits.RectSet.l2.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s2.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s3.k0.completed
+OK: audit03.inputUnits.RectSet.l2.s3.k0.strengthState
+OK: audit03.inputUnits.RectSet.l2.s3.k0.capacityState
+OK: audit03.inputUnits.RectSet.l2.s3.k0.crackedState
+OK: audit03.inputUnits.RectSet.l2.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s3.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s3.k1.completed
+OK: audit03.inputUnits.RectSet.l2.s3.k1.strengthState
+OK: audit03.inputUnits.RectSet.l2.s3.k1.capacityState
+OK: audit03.inputUnits.RectSet.l2.s3.k1.crackedState
+OK: audit03.inputUnits.RectSet.l2.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s3.k1; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s4.k0.completed
+OK: audit03.inputUnits.RectSet.l2.s4.k0.strengthState
+OK: audit03.inputUnits.RectSet.l2.s4.k0.capacityState
+OK: audit03.inputUnits.RectSet.l2.s4.k0.crackedState
+OK: audit03.inputUnits.RectSet.l2.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k0.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s4.k0; newFailures=0
+OK: audit03.inputUnits.RectSet.l2.s4.k1.completed
+OK: audit03.inputUnits.RectSet.l2.s4.k1.strengthState
+OK: audit03.inputUnits.RectSet.l2.s4.k1.capacityState
+OK: audit03.inputUnits.RectSet.l2.s4.k1.crackedState
+OK: audit03.inputUnits.RectSet.l2.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k1.properties.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.RectSet.l2.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RectSet.l2.s4.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k0.crackedState
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s0.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s0.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s1.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s1.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s2.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s2.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l0.s3.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-2.17012711800635E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s3.k0; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l0.s3.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-2.17012711800635E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s3.k1; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l0.s4.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-1.65011442732066E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s4.k0; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l0.s4.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-1.65011442732066E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l0.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l0.s4.k1; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s0.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s0.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s1.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s1.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s2.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s2.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l1.s3.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-2.17012711800635E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s3.k0; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l1.s3.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-2.17012711800635E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s3.k1; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l1.s4.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-1.65011442732066E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s4.k0; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l1.s4.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-1.65011442732066E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l1.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l1.s4.k1; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s0.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s0.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s1.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s1.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s2.k0; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s2.k1; newFailures=0
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l2.s3.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-2.17012711800635E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s3.k0; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l2.s3.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-2.17012711800635E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s3.k1; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l2.s4.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-1.65011442732066E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s4.k0; newFailures=1
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.completed
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.strengthState
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.capacityState
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.crackedState
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.RoundedRectangle.l2.s4.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=-2.01529473997653E-07; actual=-1.65011442732066E-07; factor=1
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.RoundedRectangle.l2.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.RoundedRectangle.l2.s4.k1; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k0.crackedState
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s0.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s0.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s1.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s1.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s2.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s2.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l0.s3.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.7332422430627E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s3.k0; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l0.s3.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.7332422430627E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s3.k1; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l0.s4.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.9522849470377E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s4.k0; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l0.s4.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.9522849470377E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l0.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l0.s4.k1; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s0.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s0.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s1.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s1.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s2.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s2.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l1.s3.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.7332422430627E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s3.k0; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l1.s3.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.7332422430627E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s3.k1; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l1.s4.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.9522849470377E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s4.k0; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l1.s4.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.9522849470377E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l1.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l1.s4.k1; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s0.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s0.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s0.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s1.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s1.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s1.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s2.k0; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.geometry.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.properties.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s2.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s2.k1; newFailures=0
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l2.s3.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.7332422430627E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s3.k0; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l2.s3.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.7332422430627E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s3.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s3.k1; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l2.s4.k0.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.9522849470377E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k0.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s4.k0; newFailures=1
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.completed
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.strengthState
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.capacityState
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.crackedState
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.elements.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.geometry.equivalent; 
+FAIL: audit03.inputUnits.HollowRectangle.l2.s4.k1.properties.equivalent; row=49; col=4; parameter=Transformed.Ixy; expected=1.16404407890514E-07; actual=1.9522849470377E-07; factor=1
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.diagrams.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.strength.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.crack.equivalent; 
+OK: audit03.inputUnits.HollowRectangle.l2.s4.k1.stability.equivalent; 
+INPUT_UNIT_CASE: audit03.inputUnits.HollowRectangle.l2.s4.k1; newFailures=1
+OK: audit03.inputUnits.allCases
+TOTAL_AUDIT03_INPUT_UNIT_CONSUMERS: passed=1269; failed=24
+
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03InputUnitConsumerTests; 2026-10-02T16:35:27
+RESULTS_SAVE_REOPEN: before=4DF250BFB72E73CCDB2B4E2FE73015C7F01194E9D95F8658F0AA761CBA4DA5B6; after=4DF250BFB72E73CCDB2B4E2FE73015C7F01194E9D95F8658F0AA761CBA4DA5B6; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e263b1c0d0464f499c0bb9ad5416f822\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

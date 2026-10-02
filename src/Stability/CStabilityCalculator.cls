@@ -1163,6 +1163,33 @@ Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
+' Объясняет готовую инженерную проверку, не определяя статус по тексту.
+' При отказе перечисляет только не прошедшие главные плоскости и их безразмерные
+' запас/eta; физические условия остаются в CalculateSP63/CalculateSP35.
+Private Function StabilityCheckComment() As String
+    If mCheckPassed Then
+        If mCode = CODE_SP35 Then
+            StabilityCheckComment = "Проверка устойчивости по СП 35 выполнена."
+        Else
+            StabilityCheckComment = "Проверка устойчивости по СП 63 выполнена."
+        End If
+        Exit Function
+    End If
+    StabilityCheckComment = "Проверка устойчивости не проходит"
+    Dim planeDetails As String
+    If mPlaneApplicable1 And Not mPlanePassed1 Then
+        planeDetails = "в главной плоскости 1: запас = " & CStr(mReserve1) & _
+            "; коэффициент увеличения момента eta = " & CStr(mEta1)
+    End If
+    If mPlaneApplicable2 And Not mPlanePassed2 Then
+        If Len(planeDetails) > 0 Then planeDetails = planeDetails & "; "
+        planeDetails = planeDetails & "в главной плоскости 2: запас = " & CStr(mReserve2) & _
+            "; коэффициент увеличения момента eta = " & CStr(mEta2)
+    End If
+    If Len(planeDetails) > 0 Then StabilityCheckComment = StabilityCheckComment & " " & planeDetails
+    StabilityCheckComment = StabilityCheckComment & "."
+End Function
+
 ' Формирует инженерную meta собственной проверки устойчивости. Ни writer,
 ' ни display-policy не повторяют эти условия и не придумывают причину по
 ' Branch. Отсутствующие программные зависимости отличаются от ошибочного Config.
@@ -1180,9 +1207,9 @@ Public Property Get ResultMeta() As CResultMeta
     ElseIf Not mApplicable Then
         meta.SetNotApplicable rkStability, "Устойчивость не проверяется: в сочетании нет сжатия."
     ElseIf mCheckPassed Then
-        meta.SetResult rsSuccess, rcCheckPassed, rkStability, mStopReason
+        meta.SetResult rsSuccess, rcCheckPassed, rkStability, StabilityCheckComment()
     Else
-        meta.SetResult rsCheckFailed, rcCheckFailed, rkStability, mStopReason
+        meta.SetResult rsCheckFailed, rcCheckFailed, rkStability, StabilityCheckComment()
     End If
     Set ResultMeta = meta
 End Property

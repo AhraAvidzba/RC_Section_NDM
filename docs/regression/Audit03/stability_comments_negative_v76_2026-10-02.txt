@@ -1,0 +1,8 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_stability_comments_negative_v76.xlsm
+SOURCE_SHA256: C48920D0049BF80911F83B44CB39A5BDB9D0DAEFB3352E474FEAC5B25019DB01
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bd3d36b5c5a84ab4adb1f0ab8e978a57\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03StabilityCommentTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03StabilityCommentTests; 2026-10-02T16:54:07
+SCRIPT ERROR: Исключение при вызове "Run" с "1" аргументами: "Исключение из HRESULT: 0x800A9C68"
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

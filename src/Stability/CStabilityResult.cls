@@ -254,8 +254,6 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     mPlaneApplicable2 = stability.PlaneApplicable2
     mPlanePassed1 = stability.PlanePassed1
     mPlanePassed2 = stability.PlanePassed2
-    If Len(Trim$(mBranch)) > 0 And Len(Trim$(mMeta.ResultComment)) = 0 Then _
-        mMeta.ResultComment = mBranch
 End Sub
 
 ' Переводит внутренние коды ветвей устойчивости в русский текст для Results.
