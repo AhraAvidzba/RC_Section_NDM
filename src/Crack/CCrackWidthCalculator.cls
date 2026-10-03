@@ -139,12 +139,19 @@ End Sub
 
 ' Принимает готовый Formation без поиска НДС. Отсутствие точки не блокирует
 ' ширину: по допустимому текущему НДС используется psi_s = 1 с предупреждением.
-' Достоверно найденный порог выше текущего LC сохраняет отсутствие трещины.
+' Подтвержденный NotCracked, в том числе доказанное недостижение критерия без
+' пороговой точки, исключает расчет ширины независимо от режима коэффициентов.
 Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
     ClearResult
     Set mFormation = formation
     If formation Is Nothing Then
         SetWidthResult rsInternalError, rcInternalError, "Не передан результат образования трещины."
+        Exit Sub
+    End If
+    If formation.ConfirmedNotCracked Then
+        mConverged = True
+        mCentralTensionBranch = formation.CentralTensionBranch
+        SetWidthResult rsNotApplicable, rcCrackNotFormed, formation.ResultMeta.ResultComment
         Exit Sub
     End If
     mFallbackPsi1 = Not formation.HasLimitPoint

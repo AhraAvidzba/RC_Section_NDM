@@ -1,0 +1,25 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_not_cracked_negative_v136.xlsm
+SOURCE_SHA256: FCB25F1E7B541D707692F2EB5EE3311F8AD556B71E2070A185506D525D5DF534
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_459d91810921445daa4ee499f652c665\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: crack.confirmedNotCracked.4.User.notFormed
+FAIL: crack.confirmedNotCracked.4.User.notApplicable
+FAIL: crack.confirmedNotCracked.4.User.reason
+FAIL: crack.confirmedNotCracked.4.Auto.notFormed
+FAIL: crack.confirmedNotCracked.4.Auto.notApplicable
+FAIL: crack.confirmedNotCracked.4.Auto.reason
+FAIL: crack.confirmedNotCracked.4.AlwaysCalc.notFormed
+FAIL: crack.confirmedNotCracked.4.AlwaysCalc.notApplicable
+FAIL: crack.confirmedNotCracked.4.AlwaysCalc.reason
+FAIL: crack.confirmedNotCracked.9.User.notFormed
+FAIL: crack.confirmedNotCracked.9.User.notApplicable
+FAIL: crack.confirmedNotCracked.9.User.reason
+FAIL: crack.confirmedNotCracked.9.Auto.notFormed
+FAIL: crack.confirmedNotCracked.9.Auto.notApplicable
+FAIL: crack.confirmedNotCracked.9.Auto.reason
+FAIL: crack.confirmedNotCracked.9.AlwaysCalc.notFormed
+FAIL: crack.confirmedNotCracked.9.AlwaysCalc.notApplicable
+FAIL: crack.confirmedNotCracked.9.AlwaysCalc.reason
+TOTAL_AUDIT03_CRACK_FORMATION_GATE: passed=420; failed=18
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

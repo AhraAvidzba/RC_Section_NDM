@@ -1,0 +1,452 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_not_cracked_v136.xlsm
+SOURCE_SHA256: 58097F1D264EC666369B4FCECFBEAA7D36D7B989F06D4F91790A559998C7F4EC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5c0c34034d614090b864e977db898962\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCrackWidth.RunAudit03CrackFormationGateTests =====
+SUITE_STARTED: modTestCrackWidth.RunAudit03CrackFormationGateTests; 2026-10-03T09:23:37
+EXCEL_AFTER_SUITE: pid=22856; workingSet=132333568; privateBytes=91828224; cpu=2.984375
+OK: crack.confirmedNotCracked.noPoint.4
+OK: crack.confirmedNotCracked.4.User.notFormed
+OK: crack.confirmedNotCracked.4.User.notApplicable
+OK: crack.confirmedNotCracked.4.User.notCalculated
+OK: crack.confirmedNotCracked.4.User.external
+OK: crack.confirmedNotCracked.4.User.reason
+OK: crack.confirmedNotCracked.4.User.noFallbackWarning
+OK: crack.confirmedNotCracked.4.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.4.Auto.notFormed
+OK: crack.confirmedNotCracked.4.Auto.notApplicable
+OK: crack.confirmedNotCracked.4.Auto.notCalculated
+OK: crack.confirmedNotCracked.4.Auto.external
+OK: crack.confirmedNotCracked.4.Auto.reason
+OK: crack.confirmedNotCracked.4.Auto.noFallbackWarning
+OK: crack.confirmedNotCracked.4.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.4.AlwaysCalc.notFormed
+OK: crack.confirmedNotCracked.4.AlwaysCalc.notApplicable
+OK: crack.confirmedNotCracked.4.AlwaysCalc.notCalculated
+OK: crack.confirmedNotCracked.4.AlwaysCalc.external
+OK: crack.confirmedNotCracked.4.AlwaysCalc.reason
+OK: crack.confirmedNotCracked.4.AlwaysCalc.noFallbackWarning
+OK: crack.confirmedNotCracked.4.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.noPoint.9
+OK: crack.confirmedNotCracked.9.User.notFormed
+OK: crack.confirmedNotCracked.9.User.notApplicable
+OK: crack.confirmedNotCracked.9.User.notCalculated
+OK: crack.confirmedNotCracked.9.User.external
+OK: crack.confirmedNotCracked.9.User.reason
+OK: crack.confirmedNotCracked.9.User.noFallbackWarning
+OK: crack.confirmedNotCracked.9.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.9.Auto.notFormed
+OK: crack.confirmedNotCracked.9.Auto.notApplicable
+OK: crack.confirmedNotCracked.9.Auto.notCalculated
+OK: crack.confirmedNotCracked.9.Auto.external
+OK: crack.confirmedNotCracked.9.Auto.reason
+OK: crack.confirmedNotCracked.9.Auto.noFallbackWarning
+OK: crack.confirmedNotCracked.9.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.9.AlwaysCalc.notFormed
+OK: crack.confirmedNotCracked.9.AlwaysCalc.notApplicable
+OK: crack.confirmedNotCracked.9.AlwaysCalc.notCalculated
+OK: crack.confirmedNotCracked.9.AlwaysCalc.external
+OK: crack.confirmedNotCracked.9.AlwaysCalc.reason
+OK: crack.confirmedNotCracked.9.AlwaysCalc.noFallbackWarning
+OK: crack.confirmedNotCracked.9.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.longitudinalPass
+OK: crack.confirmedNotCracked.longitudinalCalculated
+OK: crack.confirmedNotCracked.longitudinalFail
+OK: crack.confirmedNotCracked.longitudinalFailCalculated
+OK: crack.confirmedNotCracked.formationPreserved
+OK: crack.formationFailureFallback.1.User.calculated
+OK: crack.formationFailureFallback.1.User.warning
+OK: crack.formationFailureFallback.1.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.User.comment
+OK: crack.formationFailureFallback.1.User.converged
+OK: crack.formationFailureFallback.1.User.formed
+OK: crack.formationFailureFallback.1.User.tensionBars
+OK: crack.formationFailureFallback.1.User.sigmaPositive
+OK: crack.formationFailureFallback.1.User.spacingPositive
+OK: crack.formationFailureFallback.1.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.1.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.1.User.formationCausePreserved
+OK: crack.formationFailureFallback.1.User.exceededCalculated
+OK: crack.formationFailureFallback.1.User.exceededStatus
+OK: crack.formationFailureFallback.1.User.exceededCode
+OK: crack.formationFailureFallback.1.User.exceededWarning
+OK: crack.formationFailureFallback.1.User.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.Auto.calculated
+OK: crack.formationFailureFallback.1.Auto.warning
+OK: crack.formationFailureFallback.1.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.Auto.comment
+OK: crack.formationFailureFallback.1.Auto.converged
+OK: crack.formationFailureFallback.1.Auto.formed
+OK: crack.formationFailureFallback.1.Auto.tensionBars
+OK: crack.formationFailureFallback.1.Auto.sigmaPositive
+OK: crack.formationFailureFallback.1.Auto.spacingPositive
+OK: crack.formationFailureFallback.1.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.1.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.1.Auto.formationCausePreserved
+OK: crack.formationFailureFallback.1.Auto.exceededCalculated
+OK: crack.formationFailureFallback.1.Auto.exceededStatus
+OK: crack.formationFailureFallback.1.Auto.exceededCode
+OK: crack.formationFailureFallback.1.Auto.exceededWarning
+OK: crack.formationFailureFallback.1.Auto.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.AlwaysCalc.calculated
+OK: crack.formationFailureFallback.1.AlwaysCalc.warning
+OK: crack.formationFailureFallback.1.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.AlwaysCalc.comment
+OK: crack.formationFailureFallback.1.AlwaysCalc.converged
+OK: crack.formationFailureFallback.1.AlwaysCalc.formed
+OK: crack.formationFailureFallback.1.AlwaysCalc.tensionBars
+OK: crack.formationFailureFallback.1.AlwaysCalc.sigmaPositive
+OK: crack.formationFailureFallback.1.AlwaysCalc.spacingPositive
+OK: crack.formationFailureFallback.1.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.1.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.1.AlwaysCalc.formationCausePreserved
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededCalculated
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededStatus
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededCode
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededWarning
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.User.calculated
+OK: crack.formationFailureFallback.3.User.warning
+OK: crack.formationFailureFallback.3.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.User.comment
+OK: crack.formationFailureFallback.3.User.converged
+OK: crack.formationFailureFallback.3.User.formed
+OK: crack.formationFailureFallback.3.User.tensionBars
+OK: crack.formationFailureFallback.3.User.sigmaPositive
+OK: crack.formationFailureFallback.3.User.spacingPositive
+OK: crack.formationFailureFallback.3.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.3.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.3.User.formationCausePreserved
+OK: crack.formationFailureFallback.3.User.exceededCalculated
+OK: crack.formationFailureFallback.3.User.exceededStatus
+OK: crack.formationFailureFallback.3.User.exceededCode
+OK: crack.formationFailureFallback.3.User.exceededWarning
+OK: crack.formationFailureFallback.3.User.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.Auto.calculated
+OK: crack.formationFailureFallback.3.Auto.warning
+OK: crack.formationFailureFallback.3.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.Auto.comment
+OK: crack.formationFailureFallback.3.Auto.converged
+OK: crack.formationFailureFallback.3.Auto.formed
+OK: crack.formationFailureFallback.3.Auto.tensionBars
+OK: crack.formationFailureFallback.3.Auto.sigmaPositive
+OK: crack.formationFailureFallback.3.Auto.spacingPositive
+OK: crack.formationFailureFallback.3.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.3.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.3.Auto.formationCausePreserved
+OK: crack.formationFailureFallback.3.Auto.exceededCalculated
+OK: crack.formationFailureFallback.3.Auto.exceededStatus
+OK: crack.formationFailureFallback.3.Auto.exceededCode
+OK: crack.formationFailureFallback.3.Auto.exceededWarning
+OK: crack.formationFailureFallback.3.Auto.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.AlwaysCalc.calculated
+OK: crack.formationFailureFallback.3.AlwaysCalc.warning
+OK: crack.formationFailureFallback.3.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.AlwaysCalc.comment
+OK: crack.formationFailureFallback.3.AlwaysCalc.converged
+OK: crack.formationFailureFallback.3.AlwaysCalc.formed
+OK: crack.formationFailureFallback.3.AlwaysCalc.tensionBars
+OK: crack.formationFailureFallback.3.AlwaysCalc.sigmaPositive
+OK: crack.formationFailureFallback.3.AlwaysCalc.spacingPositive
+OK: crack.formationFailureFallback.3.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.3.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.3.AlwaysCalc.formationCausePreserved
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededCalculated
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededStatus
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededCode
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededWarning
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.User.calculated
+OK: crack.formationFailureFallback.4.User.warning
+OK: crack.formationFailureFallback.4.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.User.comment
+OK: crack.formationFailureFallback.4.User.converged
+OK: crack.formationFailureFallback.4.User.formed
+OK: crack.formationFailureFallback.4.User.tensionBars
+OK: crack.formationFailureFallback.4.User.sigmaPositive
+OK: crack.formationFailureFallback.4.User.spacingPositive
+OK: crack.formationFailureFallback.4.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.4.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.4.User.formationCausePreserved
+OK: crack.formationFailureFallback.4.User.exceededCalculated
+OK: crack.formationFailureFallback.4.User.exceededStatus
+OK: crack.formationFailureFallback.4.User.exceededCode
+OK: crack.formationFailureFallback.4.User.exceededWarning
+OK: crack.formationFailureFallback.4.User.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.Auto.calculated
+OK: crack.formationFailureFallback.4.Auto.warning
+OK: crack.formationFailureFallback.4.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.Auto.comment
+OK: crack.formationFailureFallback.4.Auto.converged
+OK: crack.formationFailureFallback.4.Auto.formed
+OK: crack.formationFailureFallback.4.Auto.tensionBars
+OK: crack.formationFailureFallback.4.Auto.sigmaPositive
+OK: crack.formationFailureFallback.4.Auto.spacingPositive
+OK: crack.formationFailureFallback.4.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.4.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.4.Auto.formationCausePreserved
+OK: crack.formationFailureFallback.4.Auto.exceededCalculated
+OK: crack.formationFailureFallback.4.Auto.exceededStatus
+OK: crack.formationFailureFallback.4.Auto.exceededCode
+OK: crack.formationFailureFallback.4.Auto.exceededWarning
+OK: crack.formationFailureFallback.4.Auto.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.AlwaysCalc.calculated
+OK: crack.formationFailureFallback.4.AlwaysCalc.warning
+OK: crack.formationFailureFallback.4.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.AlwaysCalc.comment
+OK: crack.formationFailureFallback.4.AlwaysCalc.converged
+OK: crack.formationFailureFallback.4.AlwaysCalc.formed
+OK: crack.formationFailureFallback.4.AlwaysCalc.tensionBars
+OK: crack.formationFailureFallback.4.AlwaysCalc.sigmaPositive
+OK: crack.formationFailureFallback.4.AlwaysCalc.spacingPositive
+OK: crack.formationFailureFallback.4.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.4.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.4.AlwaysCalc.formationCausePreserved
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededCalculated
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededStatus
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededCode
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededWarning
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.User.calculated
+OK: crack.formationFailureFallback.5.User.warning
+OK: crack.formationFailureFallback.5.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.User.comment
+OK: crack.formationFailureFallback.5.User.converged
+OK: crack.formationFailureFallback.5.User.formed
+OK: crack.formationFailureFallback.5.User.tensionBars
+OK: crack.formationFailureFallback.5.User.sigmaPositive
+OK: crack.formationFailureFallback.5.User.spacingPositive
+OK: crack.formationFailureFallback.5.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.5.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.5.User.formationCausePreserved
+OK: crack.formationFailureFallback.5.User.exceededCalculated
+OK: crack.formationFailureFallback.5.User.exceededStatus
+OK: crack.formationFailureFallback.5.User.exceededCode
+OK: crack.formationFailureFallback.5.User.exceededWarning
+OK: crack.formationFailureFallback.5.User.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.Auto.calculated
+OK: crack.formationFailureFallback.5.Auto.warning
+OK: crack.formationFailureFallback.5.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.Auto.comment
+OK: crack.formationFailureFallback.5.Auto.converged
+OK: crack.formationFailureFallback.5.Auto.formed
+OK: crack.formationFailureFallback.5.Auto.tensionBars
+OK: crack.formationFailureFallback.5.Auto.sigmaPositive
+OK: crack.formationFailureFallback.5.Auto.spacingPositive
+OK: crack.formationFailureFallback.5.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.5.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.5.Auto.formationCausePreserved
+OK: crack.formationFailureFallback.5.Auto.exceededCalculated
+OK: crack.formationFailureFallback.5.Auto.exceededStatus
+OK: crack.formationFailureFallback.5.Auto.exceededCode
+OK: crack.formationFailureFallback.5.Auto.exceededWarning
+OK: crack.formationFailureFallback.5.Auto.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.AlwaysCalc.calculated
+OK: crack.formationFailureFallback.5.AlwaysCalc.warning
+OK: crack.formationFailureFallback.5.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.AlwaysCalc.comment
+OK: crack.formationFailureFallback.5.AlwaysCalc.converged
+OK: crack.formationFailureFallback.5.AlwaysCalc.formed
+OK: crack.formationFailureFallback.5.AlwaysCalc.tensionBars
+OK: crack.formationFailureFallback.5.AlwaysCalc.sigmaPositive
+OK: crack.formationFailureFallback.5.AlwaysCalc.spacingPositive
+OK: crack.formationFailureFallback.5.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.5.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.5.AlwaysCalc.formationCausePreserved
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededCalculated
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededStatus
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededCode
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededWarning
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.currentMissingBlocks
+OK: crack.formationFailureFallback.currentPhysicalFailureBlocks
+OK: crack.uniformFallback.0.0.0.User.converged
+OK: crack.uniformFallback.0.0.0.User.causePreserved
+OK: crack.uniformFallback.0.0.0.User.notApplicable
+OK: crack.uniformFallback.0.0.0.User.notCalculated
+OK: crack.uniformFallback.0.0.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.User.reason
+OK: crack.uniformFallback.0.0.0.Auto.converged
+OK: crack.uniformFallback.0.0.0.Auto.causePreserved
+OK: crack.uniformFallback.0.0.0.Auto.notApplicable
+OK: crack.uniformFallback.0.0.0.Auto.notCalculated
+OK: crack.uniformFallback.0.0.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.Auto.reason
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.reason
+OK: crack.uniformFallback.0.000000001.0.0.User.converged
+OK: crack.uniformFallback.0.000000001.0.0.User.causePreserved
+OK: crack.uniformFallback.0.000000001.0.0.User.notApplicable
+OK: crack.uniformFallback.0.000000001.0.0.User.notCalculated
+OK: crack.uniformFallback.0.000000001.0.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.000000001.0.0.User.reason
+OK: crack.uniformFallback.0.000000001.0.0.Auto.converged
+OK: crack.uniformFallback.0.000000001.0.0.Auto.causePreserved
+OK: crack.uniformFallback.0.000000001.0.0.Auto.notApplicable
+OK: crack.uniformFallback.0.000000001.0.0.Auto.notCalculated
+OK: crack.uniformFallback.0.000000001.0.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.000000001.0.0.Auto.reason
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.reason
+OK: crack.uniformFallback.-0.000000001.0.0.User.converged
+OK: crack.uniformFallback.-0.000000001.0.0.User.causePreserved
+OK: crack.uniformFallback.-0.000000001.0.0.User.notApplicable
+OK: crack.uniformFallback.-0.000000001.0.0.User.notCalculated
+OK: crack.uniformFallback.-0.000000001.0.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-0.000000001.0.0.User.reason
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.converged
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.causePreserved
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.notApplicable
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.notCalculated
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.reason
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.reason
+OK: crack.uniformFallback.0.0.000000001.0.User.converged
+OK: crack.uniformFallback.0.0.000000001.0.User.causePreserved
+OK: crack.uniformFallback.0.0.000000001.0.User.notApplicable
+OK: crack.uniformFallback.0.0.000000001.0.User.notCalculated
+OK: crack.uniformFallback.0.0.000000001.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.000000001.0.User.reason
+OK: crack.uniformFallback.0.0.000000001.0.Auto.converged
+OK: crack.uniformFallback.0.0.000000001.0.Auto.causePreserved
+OK: crack.uniformFallback.0.0.000000001.0.Auto.notApplicable
+OK: crack.uniformFallback.0.0.000000001.0.Auto.notCalculated
+OK: crack.uniformFallback.0.0.000000001.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.000000001.0.Auto.reason
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.converged
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.reason
+OK: crack.uniformFallback.0.-0.000000001.0.User.converged
+OK: crack.uniformFallback.0.-0.000000001.0.User.causePreserved
+OK: crack.uniformFallback.0.-0.000000001.0.User.notApplicable
+OK: crack.uniformFallback.0.-0.000000001.0.User.notCalculated
+OK: crack.uniformFallback.0.-0.000000001.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.-0.000000001.0.User.reason
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.converged
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.causePreserved
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.notApplicable
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.notCalculated
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.reason
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.converged
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.reason
+OK: crack.uniformFallback.0.0.0.000000001.User.converged
+OK: crack.uniformFallback.0.0.0.000000001.User.causePreserved
+OK: crack.uniformFallback.0.0.0.000000001.User.notApplicable
+OK: crack.uniformFallback.0.0.0.000000001.User.notCalculated
+OK: crack.uniformFallback.0.0.0.000000001.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.000000001.User.reason
+OK: crack.uniformFallback.0.0.0.000000001.Auto.converged
+OK: crack.uniformFallback.0.0.0.000000001.Auto.causePreserved
+OK: crack.uniformFallback.0.0.0.000000001.Auto.notApplicable
+OK: crack.uniformFallback.0.0.0.000000001.Auto.notCalculated
+OK: crack.uniformFallback.0.0.0.000000001.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.000000001.Auto.reason
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.converged
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.reason
+OK: crack.uniformFallback.0.0.-0.000000001.User.converged
+OK: crack.uniformFallback.0.0.-0.000000001.User.causePreserved
+OK: crack.uniformFallback.0.0.-0.000000001.User.notApplicable
+OK: crack.uniformFallback.0.0.-0.000000001.User.notCalculated
+OK: crack.uniformFallback.0.0.-0.000000001.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.-0.000000001.User.reason
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.converged
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.causePreserved
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.notApplicable
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.notCalculated
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.reason
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.converged
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.reason
+OK: crack.uniformFallback.-200000.0.0.User.converged
+OK: crack.uniformFallback.-200000.0.0.User.causePreserved
+OK: crack.uniformFallback.-200000.0.0.User.notApplicable
+OK: crack.uniformFallback.-200000.0.0.User.notCalculated
+OK: crack.uniformFallback.-200000.0.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-200000.0.0.User.reason
+OK: crack.uniformFallback.-200000.0.0.Auto.converged
+OK: crack.uniformFallback.-200000.0.0.Auto.causePreserved
+OK: crack.uniformFallback.-200000.0.0.Auto.notApplicable
+OK: crack.uniformFallback.-200000.0.0.Auto.notCalculated
+OK: crack.uniformFallback.-200000.0.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-200000.0.0.Auto.reason
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.reason
+OK: crack.uniformFallback.200000.0.0.User.converged
+OK: crack.uniformFallback.200000.0.0.User.causePreserved
+OK: crack.uniformFallback.200000.0.0.User.calculated
+OK: crack.uniformFallback.200000.0.0.User.warning
+OK: crack.uniformFallback.200000.0.0.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.User.allConcrete; actual=60000.; expected=60000.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.User.converged
+OK: crack.uniformFallback.200000.0.0.User.formed
+OK: crack.uniformFallback.200000.0.0.User.tensionBars
+OK: crack.uniformFallback.200000.0.0.User.sigmaPositive
+OK: crack.uniformFallback.200000.0.0.User.spacingPositive
+OK: crack.uniformFallback.200000.0.0.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.Auto.converged
+OK: crack.uniformFallback.200000.0.0.Auto.causePreserved
+OK: crack.uniformFallback.200000.0.0.Auto.calculated
+OK: crack.uniformFallback.200000.0.0.Auto.warning
+OK: crack.uniformFallback.200000.0.0.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.Auto.allConcrete; actual=60000.; expected=60000.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.Auto.converged
+OK: crack.uniformFallback.200000.0.0.Auto.formed
+OK: crack.uniformFallback.200000.0.0.Auto.tensionBars
+OK: crack.uniformFallback.200000.0.0.Auto.sigmaPositive
+OK: crack.uniformFallback.200000.0.0.Auto.spacingPositive
+OK: crack.uniformFallback.200000.0.0.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.calculated
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.warning
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.allConcrete; actual=60000.; expected=60000.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.formed
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.tensionBars
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.sigmaPositive
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.spacingPositive
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+TOTAL_AUDIT03_CRACK_FORMATION_GATE: passed=438; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5c0c34034d614090b864e977db898962\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCrackWidth.RunAudit03CrackFormationGateTests; 2026-10-03T09:23:38
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

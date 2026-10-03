@@ -1,0 +1,207 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_not_cracked_v136.xlsm
+SOURCE_SHA256: C2CACA6BD4B885393FEDE648946410B9794937075B0284A30D64FD1C2E8A4AFA
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0992a60aa1dd4bb5a9dc65d073039479\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03NotCrackedBatchTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03NotCrackedBatchTests; 2026-10-03T09:30:18
+EXCEL_AFTER_SUITE: pid=21824; workingSet=145731584; privateBytes=100040704; cpu=5.46875
+OK: audit03.notCrackedBatch.SP35.User.1.formationConfirmed
+OK: audit03.notCrackedBatch.SP35.User.1.formationNoPoint
+OK: audit03.notCrackedBatch.SP35.User.1.noPre
+OK: audit03.notCrackedBatch.SP35.User.1.noPost
+OK: audit03.notCrackedBatch.SP35.User.1.current
+OK: audit03.notCrackedBatch.SP35.User.1.width
+OK: audit03.notCrackedBatch.SP35.User.1.normalAggregate
+OK: audit03.notCrackedBatch.SP35.User.1.widthNotCalculated
+OK: audit03.notCrackedBatch.SP35.User.1.widthNotBlocked
+OK: audit03.notCrackedBatch.SP35.User.1.longitudinal
+OK: audit03.notCrackedBatch.SP35.User.1.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP35.User.1.writerState
+OK: audit03.notCrackedBatch.SP35.User.1.writerWidth
+OK: audit03.notCrackedBatch.SP35.User.1.writerLongitudinal
+OK: audit03.notCrackedBatch.SP35.User.1.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP35.User.1|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.186 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=
+OK: audit03.notCrackedBatch.SP35.User.2.formationConfirmed
+OK: audit03.notCrackedBatch.SP35.User.2.formationNoPoint
+OK: audit03.notCrackedBatch.SP35.User.2.noPre
+OK: audit03.notCrackedBatch.SP35.User.2.noPost
+OK: audit03.notCrackedBatch.SP35.User.2.current
+OK: audit03.notCrackedBatch.SP35.User.2.width
+OK: audit03.notCrackedBatch.SP35.User.2.normalAggregate
+OK: audit03.notCrackedBatch.SP35.User.2.widthNotCalculated
+OK: audit03.notCrackedBatch.SP35.User.2.widthNotBlocked
+OK: audit03.notCrackedBatch.SP35.User.2.longitudinal
+OK: audit03.notCrackedBatch.SP35.User.2.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP35.User.2.writerState
+OK: audit03.notCrackedBatch.SP35.User.2.writerWidth
+OK: audit03.notCrackedBatch.SP35.User.2.writerLongitudinal
+OK: audit03.notCrackedBatch.SP35.User.2.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP35.User.2|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.notCrackedBatch.SP35.Auto.1.formationConfirmed
+OK: audit03.notCrackedBatch.SP35.Auto.1.formationNoPoint
+OK: audit03.notCrackedBatch.SP35.Auto.1.noPre
+OK: audit03.notCrackedBatch.SP35.Auto.1.noPost
+OK: audit03.notCrackedBatch.SP35.Auto.1.current
+OK: audit03.notCrackedBatch.SP35.Auto.1.width
+OK: audit03.notCrackedBatch.SP35.Auto.1.normalAggregate
+OK: audit03.notCrackedBatch.SP35.Auto.1.widthNotCalculated
+OK: audit03.notCrackedBatch.SP35.Auto.1.widthNotBlocked
+OK: audit03.notCrackedBatch.SP35.Auto.1.longitudinal
+OK: audit03.notCrackedBatch.SP35.Auto.1.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP35.Auto.1.writerState
+OK: audit03.notCrackedBatch.SP35.Auto.1.writerWidth
+OK: audit03.notCrackedBatch.SP35.Auto.1.writerLongitudinal
+OK: audit03.notCrackedBatch.SP35.Auto.1.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP35.Auto.1|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.186 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=
+OK: audit03.notCrackedBatch.SP35.Auto.2.formationConfirmed
+OK: audit03.notCrackedBatch.SP35.Auto.2.formationNoPoint
+OK: audit03.notCrackedBatch.SP35.Auto.2.noPre
+OK: audit03.notCrackedBatch.SP35.Auto.2.noPost
+OK: audit03.notCrackedBatch.SP35.Auto.2.current
+OK: audit03.notCrackedBatch.SP35.Auto.2.width
+OK: audit03.notCrackedBatch.SP35.Auto.2.normalAggregate
+OK: audit03.notCrackedBatch.SP35.Auto.2.widthNotCalculated
+OK: audit03.notCrackedBatch.SP35.Auto.2.widthNotBlocked
+OK: audit03.notCrackedBatch.SP35.Auto.2.longitudinal
+OK: audit03.notCrackedBatch.SP35.Auto.2.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP35.Auto.2.writerState
+OK: audit03.notCrackedBatch.SP35.Auto.2.writerWidth
+OK: audit03.notCrackedBatch.SP35.Auto.2.writerLongitudinal
+OK: audit03.notCrackedBatch.SP35.Auto.2.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP35.Auto.2|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.formationConfirmed
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.formationNoPoint
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.noPre
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.noPost
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.current
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.width
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.normalAggregate
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.widthNotCalculated
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.widthNotBlocked
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.longitudinal
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.writerState
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.writerWidth
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.writerLongitudinal
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.1.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP35.AlwaysCalc.1|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.186 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.formationConfirmed
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.formationNoPoint
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.noPre
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.noPost
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.current
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.width
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.normalAggregate
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.widthNotCalculated
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.widthNotBlocked
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.longitudinal
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.writerState
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.writerWidth
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.writerLongitudinal
+OK: audit03.notCrackedBatch.SP35.AlwaysCalc.2.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP35.AlwaysCalc.2|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.notCrackedBatch.SP63.User.1.formationConfirmed
+OK: audit03.notCrackedBatch.SP63.User.1.formationNoPoint
+OK: audit03.notCrackedBatch.SP63.User.1.noPre
+OK: audit03.notCrackedBatch.SP63.User.1.noPost
+OK: audit03.notCrackedBatch.SP63.User.1.current
+OK: audit03.notCrackedBatch.SP63.User.1.width
+OK: audit03.notCrackedBatch.SP63.User.1.normalAggregate
+OK: audit03.notCrackedBatch.SP63.User.1.widthNotCalculated
+OK: audit03.notCrackedBatch.SP63.User.1.widthNotBlocked
+OK: audit03.notCrackedBatch.SP63.User.1.longitudinal
+OK: audit03.notCrackedBatch.SP63.User.1.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP63.User.1.writerState
+OK: audit03.notCrackedBatch.SP63.User.1.writerWidth
+OK: audit03.notCrackedBatch.SP63.User.1.writerLongitudinal
+OK: audit03.notCrackedBatch.SP63.User.1.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP63.User.1|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.186 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=
+OK: audit03.notCrackedBatch.SP63.User.2.formationConfirmed
+OK: audit03.notCrackedBatch.SP63.User.2.formationNoPoint
+OK: audit03.notCrackedBatch.SP63.User.2.noPre
+OK: audit03.notCrackedBatch.SP63.User.2.noPost
+OK: audit03.notCrackedBatch.SP63.User.2.current
+OK: audit03.notCrackedBatch.SP63.User.2.width
+OK: audit03.notCrackedBatch.SP63.User.2.normalAggregate
+OK: audit03.notCrackedBatch.SP63.User.2.widthNotCalculated
+OK: audit03.notCrackedBatch.SP63.User.2.widthNotBlocked
+OK: audit03.notCrackedBatch.SP63.User.2.longitudinal
+OK: audit03.notCrackedBatch.SP63.User.2.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP63.User.2.writerState
+OK: audit03.notCrackedBatch.SP63.User.2.writerWidth
+OK: audit03.notCrackedBatch.SP63.User.2.writerLongitudinal
+OK: audit03.notCrackedBatch.SP63.User.2.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP63.User.2|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.notCrackedBatch.SP63.Auto.1.formationConfirmed
+OK: audit03.notCrackedBatch.SP63.Auto.1.formationNoPoint
+OK: audit03.notCrackedBatch.SP63.Auto.1.noPre
+OK: audit03.notCrackedBatch.SP63.Auto.1.noPost
+OK: audit03.notCrackedBatch.SP63.Auto.1.current
+OK: audit03.notCrackedBatch.SP63.Auto.1.width
+OK: audit03.notCrackedBatch.SP63.Auto.1.normalAggregate
+OK: audit03.notCrackedBatch.SP63.Auto.1.widthNotCalculated
+OK: audit03.notCrackedBatch.SP63.Auto.1.widthNotBlocked
+OK: audit03.notCrackedBatch.SP63.Auto.1.longitudinal
+OK: audit03.notCrackedBatch.SP63.Auto.1.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP63.Auto.1.writerState
+OK: audit03.notCrackedBatch.SP63.Auto.1.writerWidth
+OK: audit03.notCrackedBatch.SP63.Auto.1.writerLongitudinal
+OK: audit03.notCrackedBatch.SP63.Auto.1.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP63.Auto.1|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.186 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=
+OK: audit03.notCrackedBatch.SP63.Auto.2.formationConfirmed
+OK: audit03.notCrackedBatch.SP63.Auto.2.formationNoPoint
+OK: audit03.notCrackedBatch.SP63.Auto.2.noPre
+OK: audit03.notCrackedBatch.SP63.Auto.2.noPost
+OK: audit03.notCrackedBatch.SP63.Auto.2.current
+OK: audit03.notCrackedBatch.SP63.Auto.2.width
+OK: audit03.notCrackedBatch.SP63.Auto.2.normalAggregate
+OK: audit03.notCrackedBatch.SP63.Auto.2.widthNotCalculated
+OK: audit03.notCrackedBatch.SP63.Auto.2.widthNotBlocked
+OK: audit03.notCrackedBatch.SP63.Auto.2.longitudinal
+OK: audit03.notCrackedBatch.SP63.Auto.2.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP63.Auto.2.writerState
+OK: audit03.notCrackedBatch.SP63.Auto.2.writerWidth
+OK: audit03.notCrackedBatch.SP63.Auto.2.writerLongitudinal
+OK: audit03.notCrackedBatch.SP63.Auto.2.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP63.Auto.2|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.formationConfirmed
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.formationNoPoint
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.noPre
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.noPost
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.current
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.width
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.normalAggregate
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.widthNotCalculated
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.widthNotBlocked
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.longitudinal
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.writerState
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.writerWidth
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.writerLongitudinal
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.1.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP63.AlwaysCalc.1|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.186 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.formationConfirmed
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.formationNoPoint
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.noPre
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.noPost
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.current
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.width
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.normalAggregate
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.widthNotCalculated
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.widthNotBlocked
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.longitudinal
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.longitudinalCalculated
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.writerState
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.writerWidth
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.writerLongitudinal
+OK: audit03.notCrackedBatch.SP63.AlwaysCalc.2.writerComment
+NOT_CRACKED_OUTPUT: audit03.notCrackedBatch.SP63.AlwaysCalc.2|formation=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|width=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.|longitudinal=Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.|summary=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.815 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+TOTAL_AUDIT03_NOT_CRACKED_BATCH: passed=180; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0992a60aa1dd4bb5a9dc65d073039479\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03NotCrackedBatchTests; 2026-10-03T09:30:23
+RESULTS_SAVE_REOPEN: before=FF9D18EC854B88215DC6F2BDBD99401D789F1C0B09FB50890805DD6B706A1756; after=FF9D18EC854B88215DC6F2BDBD99401D789F1C0B09FB50890805DD6B706A1756; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0992a60aa1dd4bb5a9dc65d073039479\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=29EC576E08D9EFB7CCF914A9BAB097544FF3BF85C836B7A630D8D7DB84951BE4; after=29EC576E08D9EFB7CCF914A9BAB097544FF3BF85C836B7A630D8D7DB84951BE4; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

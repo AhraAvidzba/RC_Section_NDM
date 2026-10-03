@@ -69,6 +69,44 @@
 
 ## Актуальная Точка Продолжения
 
+- Счетчики v135 зафиксированы `edb087d`. Уточнение пользователя о NotCracked
+  выполняется отдельным цельным v136 gate до продолжения geometry input.
+  Negative прежнего production `420/18`: успешное CRITERION_NOT_REACHED без
+  точки ошибочно включало fallback и не оставляло Width неприменимой.
+  Formation result теперь явно отличает ConfirmedNotCracked по typed
+  InternalStatus/ResultCode от неудачного поиска; Width завершает такой исход
+  без подготовки данных/формулы, writer показывает NotCracked даже без точки.
+  Directed positive `438/0`; psi=1/warning при ошибках Formation и блокировка
+  по непригодному current state сохранены. Итоговый batch-test `180/0`,
+  Results и status-style save/reopen=True; full Off `23553/0`, все восемь
+  suites завершены, общие actual-числа с v135 `5577/5577`, missing=0,
+  differences=0. Full On `23564/0`, общие числа `5582/5582`, missing=0,
+  differences=0; source unchanged=True в обоих режимах. Первоначальный
+  batch oracle `156/12` ошибочно требовал N/A у
+  NormalCrackStatus (это агрегат Formation+Width): N/A относится к leaf Width,
+  а успешная проверка отсутствия образования оставляет общий normal итог OK.
+  Исправлен только oracle, каноническая агрегация не менялась. Этот первый
+  журнал не является production negative. Справка уточнена для СП 35/СП 63,
+  продольные трещины независимы; статусы не назначаются по тексту. Правила
+  AGENTS уточнены тем же контрактом. Полная чистая сборка завершена; help
+  clean/update `2537/2537`, mergesEqual=True, source/export `103/103`.
+  Code census: 4245 методов, 1491 guard-кандидат, 83 production + 3 test
+  classes; новых `.cls` нет. Universal On `827/0`, palette Off `351/0`:
+  Results save/reopen=True, для palette также status-style=True. Read-only
+  Config formatting `1003/0`, deviations=0; Validate updated/clean `25/25`
+  в каждой книге. Все процессы завершены. Книга SHA
+  `85833E3A3EC9B1F993E761658DA0AA84BCD3DDC7A76AA60A3699D969E82E48FB`,
+  export `5BD1546971767C015ADD413869AFC595B708157C311392AA0167D90D65848630`.
+  Штатный Validate удаляет дублирующее имя Print_Area до структурной проверки:
+  SHA чистой книги после этой нормализации
+  `0349FE2D5D5CA3DF6C1A50DEB3156947139FF44D139F7F04B29F2B5500230F99`.
+  Повторная help-сверка после Validate `2537/2537`, mergesEqual=True;
+  изменяемый validator требует отдельного анализа D/UI, не blanket PASS.
+  ТЗ и основная output-книга сохраняют исходные хеши. Реестр остается
+  `118/1064`, fullAcceptance=False: семантика NotCracked не является полной
+  приемкой Config. Следующий шаг после checkpoint: цельный geometry input
+  gate с отрицательным воспроизведением missing/blank/TODO/error-cell и
+  проверкой точных адресов, recovery и неактивных полей; без изменения физики.
 - Geometry Config v134 зафиксирован коммитом `78fd486`. Следующий F07 срез
   v135 проверяет представимость счетчиков трех некруглых builders до циклов
   и выделения массивов. Negative `7/18`: реальные Overflow=6 воспроизведены

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_rebar_counter_v135.xlsm
-Date: 2026-10-03 08:48:41
+Workbook: RC_Section_NDM_not_cracked_v136.xlsm
+Date: 2026-10-03 09:29:30
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -22639,7 +22639,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationResult
 TYPE: 2
-LINES: 199
+LINES: 214
 ====================================================================================================
 Option Explicit
 
@@ -22747,6 +22747,21 @@ End Property
 
 Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
+End Property
+
+' Подтвержденное отсутствие нормальной трещины отличается от неудачного
+' поиска точки. Успешное недостижение критерия допустимо без Pre/Post; найденный
+' порог выше текущего LC требует реальной точки. Ошибки и граница поиска
+' таким подтверждением не являются и оставляют возможность psi=1 fallback.
+Public Property Get ConfirmedNotCracked() As Boolean
+    If mCrackFormed Then Exit Property
+    If mMeta.InternalStatus <> rsSuccess And mMeta.InternalStatus <> rsSuccessWithWarning Then Exit Property
+    Select Case mMeta.ResultCode
+        Case rcCriterionNotReached, rcCrackNotFormed
+            ConfirmedNotCracked = True
+        Case rcCheckPassed
+            ConfirmedNotCracked = mHasLimitPoint
+    End Select
 End Property
 
 Public Property Get FormationMethod() As String
@@ -22981,7 +22996,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CCrackWidthCalculator
 TYPE: 2
-LINES: 1338
+LINES: 1345
 ====================================================================================================
 Option Explicit
 
@@ -23115,12 +23130,19 @@ End Sub
 
 ' Принимает готовый Formation без поиска НДС. Отсутствие точки не блокирует
 ' ширину: по допустимому текущему НДС используется psi_s = 1 с предупреждением.
-' Достоверно найденный порог выше текущего LC сохраняет отсутствие трещины.
+' Подтвержденный NotCracked, в том числе доказанное недостижение критерия без
+' пороговой точки, исключает расчет ширины независимо от режима коэффициентов.
 Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
     ClearResult
     Set mFormation = formation
     If formation Is Nothing Then
         SetWidthResult rsInternalError, rcInternalError, "Не передан результат образования трещины."
+        Exit Sub
+    End If
+    If formation.ConfirmedNotCracked Then
+        mConverged = True
+        mCentralTensionBranch = formation.CentralTensionBranch
+        SetWidthResult rsNotApplicable, rcCrackNotFormed, formation.ResultMeta.resultComment
         Exit Sub
     End If
     mFallbackPsi1 = Not formation.HasLimitPoint
@@ -32528,7 +32550,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackSummaryWriter
 TYPE: 2
-LINES: 872
+LINES: 874
 ====================================================================================================
 Option Explicit
 
@@ -32990,7 +33012,9 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_PRE_CRACK_STATUS) = NamedStateStatus(batch, index, sstPreCrackState, policy)
     data(rowIndex, COL_POST_CRACK_STATUS) = NamedStateStatus(batch, index, sstPostCrackState, policy)
 
-    If hasFormationData Then
+    If batch.ResultAt(index).crackResult.formation.ConfirmedNotCracked Then
+        data(rowIndex, COL_FORMATION_STATE) = "NotCracked"
+    ElseIf hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = IIf(batch.ResultAt(index).crackResult.formation.CrackFormed, "Cracked", "NotCracked")
     Else
         data(rowIndex, COL_FORMATION_STATE) = CrackFormationStatusText(batch, index, policy)
@@ -47277,7 +47301,7 @@ End Property
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 8372
+LINES: 8456
 ====================================================================================================
 Option Explicit
 
@@ -47473,6 +47497,7 @@ Public Function RunBatchCalculationTests() As String
     AppendLine stats, "RUN: TestInvalidModeSettingsAreNotFallbacks"
     TestInvalidModeSettingsAreNotFallbacks stats
     TestAudit03BatchInputMessages stats
+    TestAudit03NotCrackedBatchOutput stats
     AppendLine stats, "RUN: TestResultMetaStatusDictionary"
     TestResultMetaStatusDictionary stats
     AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
@@ -55651,6 +55676,89 @@ Restore:
     On Error GoTo 0
 End Sub
 
+' ============================== ДЛЯ ТЕСТОВ: NOTCRACKED ==============================
+' Проверяет общий результат Formation -> Width -> фактический вывод Results.
+' Численный solve остается только у текущего НДС; повторное открытие проверяет
+' штатный mode-runner на независимой копии этой книги.
+Public Function RunAudit03NotCrackedBatchTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03NotCrackedBatchOutput stats
+    RunAudit03NotCrackedBatchTests = stats.Report & "TOTAL_AUDIT03_NOT_CRACKED_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: достоверное отсутствие нормальных трещин при осевом сжатии
+' исключает Width, но не проверку продольных трещин. Общий gate не зависит от
+' выбора СП 35/СП 63 для устойчивости; отдельной нормативной ветки Width этот
+' тест не придумывает. Две нагрузки дают независимые OK/FAIL по сжатому бетону.
+Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim standard As Variant, mode As Variant, settings As CSystemSettingsReader, batch As CBatchSectionCalculator
+    Dim result As CCombinationResult, writer As CBatchResultWriter, anchor As Object, sheet As Object
+    Dim i As Long, outputRow As Long, prefix As String, expectedLongitudinal As String
+    Dim policy As CResultStatusPolicy
+    On Error GoTo Failed
+    Set policy = New CResultStatusPolicy
+    Set systemRange = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.formula: savedProfiles = profileRange.formula
+    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetSystemSetting "General.DiagramExtension", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    For Each standard In Array("SP35", "SP63")
+        SetSystemSetting "Stability.Code", CStr(standard)
+        For Each mode In Array("User", "Auto", "AlwaysCalc")
+            SetSystemSetting "SLS.Crack.PsiMode", CStr(mode)
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromWorkbook ThisWorkbook
+            Set batch = BuildBatchCalculator(False)
+            batch.ApplySettings settings
+            batch.AddCombination "NO_CRACK_LONG_OK", -90000#, 0#, 0#, "PR2", "Проверка продольных трещин проходит.", "Auto"
+            batch.AddCombination "NO_CRACK_LONG_FAIL", -1200000#, 0#, 0#, "PR2", "Проверка продольных трещин не проходит.", "Auto"
+            batch.Execute
+            Set writer = New CBatchResultWriter
+            writer.WriteSummary ThisWorkbook, batch
+            Set sheet = ThisWorkbook.Worksheets.item("Results")
+            Set anchor = ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange
+            For i = 1 To 2
+                Set result = batch.ResultAt(i)
+                prefix = "audit03.notCrackedBatch." & CStr(standard) & "." & CStr(mode) & "." & CStr(i)
+                If i = 1 Then expectedLongitudinal = "OK" Else expectedLongitudinal = "FAIL"
+                AssertTrue stats, prefix & ".formationConfirmed", result.crackResult.formation.ConfirmedNotCracked
+                AssertTrue stats, prefix & ".formationNoPoint", Not result.crackResult.formation.HasLimitPoint
+                AssertTrue stats, prefix & ".noPre", result.crackResult.formation.PreCrackState Is Nothing
+                AssertTrue stats, prefix & ".noPost", result.crackResult.formation.PostCrackState Is Nothing
+                AssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
+                AssertEquals stats, prefix & ".width", policy.ExternalStatus(result.CrackWidthMeta), "N/A"
+                AssertEquals stats, prefix & ".normalAggregate", result.NormalCrackStatus, "OK"
+                AssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.calculated
+                AssertTrue stats, prefix & ".widthNotBlocked", result.CrackWidthMeta.InternalStatus = rsNotApplicable
+                AssertEquals stats, prefix & ".longitudinal", result.crackResult.longitudinal.status, expectedLongitudinal
+                AssertTrue stats, prefix & ".longitudinalCalculated", result.LongitudinalCrackMeta.calculated
+                outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", batch.combinationID(i))
+                AssertEquals stats, prefix & ".writerState", CStr(sheet.Cells.item(outputRow, anchor.column + 20).Value2), "NotCracked"
+                AssertEquals stats, prefix & ".writerWidth", CStr(sheet.Cells.item(outputRow, anchor.column + 44).Value2), "N/A"
+                AssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.item(outputRow, anchor.column + 48).Value2), expectedLongitudinal
+                AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.item(outputRow, anchor.column + 1).Value2), result.CrackSummaryMeta.resultComment
+                AppendLine stats, "NOT_CRACKED_OUTPUT: " & prefix & "|formation=" & result.CrackFormationMeta.resultComment & _
+                    "|width=" & result.CrackWidthMeta.resultComment & "|longitudinal=" & result.LongitudinalCrackMeta.resultComment & _
+                    "|summary=" & result.CrackSummaryMeta.resultComment
+            Next i
+        Next mode
+    Next standard
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.notCrackedBatch.runtime; " & CStr(Err.number) & "; " & Err.description
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.formula = savedProfiles
+    On Error GoTo 0
+End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
@@ -58950,7 +59058,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: 1
-LINES: 1473
+LINES: 1534
 ====================================================================================================
 Option Explicit
 
@@ -58993,6 +59101,7 @@ Public Function RunCrackWidthTests() As String
     TestCrackInitiationLoadPaths stats
     TestFormationFailureStillCalculatesWidth stats
     TestFormationFallbackWithUniformCurrentState stats
+    TestAudit03ConfirmedNotCrackedSkipsWidth stats
     TestCrackFormationSearchBoundKeepsTechnicalCode stats
     TestCrackFormationNoCrackDoesNotBuildPostState stats
     TestCrackFormationCacheHitWithoutLastRunner stats
@@ -59015,6 +59124,7 @@ Failed:
     RunCrackWidthTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.number) & _
         "; source=" & Err.source & "; description=" & Err.description
 End Function
+
 
 
 ' ------------------------------
@@ -60424,6 +60534,65 @@ Private Function Audit03SigmaBoundarySection() As CSectionModel
     rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", geom
     Set Audit03SigmaBoundarySection = BuildGeneratedSectionModel(mesh, rebars)
 End Function
+
+' ============================== ДЛЯ ТЕСТОВ: FORMATION GATE ==============================
+' ДЛЯ ТЕСТОВ: различает доказанное отсутствие нормальной трещины и отсутствие
+' пригодной точки из-за ошибки поиска. Во втором случае проверяется psi=1,
+' в первом формула не должна получать даже отсутствующее текущее состояние.
+Public Function RunAudit03CrackFormationGateTests() As String
+    Dim stats As TCrackTestStats
+    TestAudit03ConfirmedNotCrackedSkipsWidth stats
+    TestFormationFailureStillCalculatesWidth stats
+    TestFormationFallbackWithUniformCurrentState stats
+    AppendLine stats, "TOTAL_AUDIT03_CRACK_FORMATION_GATE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CrackFormationGateTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: успешное CRITERION_NOT_REACHED является подтвержденным
+' NotCracked даже без Pre/Post и пороговой точки. Настройки коэффициентов и
+' PsiMode не должны включать формулу; продольные трещины используют только
+' свое текущее НДС и независимо могут дать как OK, так и FAIL.
+Private Sub TestAudit03ConfirmedNotCrackedSkipsWidth(ByRef stats As TCrackTestStats)
+    Dim owner As CCrackFormationCalculator, formation As CCrackFormationResult, meta As CResultMeta
+    Dim width As CCrackWidthCalculator, mode As Variant, status As Variant, prefix As String
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    Set owner = New CCrackFormationCalculator
+    owner.LimitSearchFinishNoCrack "Подтверждено: нормальная трещина при заданной нагрузке не образуется."
+    For Each status In Array(rsSuccess, rsSuccessWithWarning)
+        Set meta = New CResultMeta
+        meta.SetResult CLng(status), rcCriterionNotReached, rkCrackFormation, owner.stopReason
+        Set formation = New CCrackFormationResult
+        formation.InitializeFromCalculator owner, meta
+        AssertTrue stats, "crack.confirmedNotCracked.noPoint." & CStr(status), Not formation.HasLimitPoint
+        For Each mode In Array("User", "Auto", "AlwaysCalc")
+            prefix = "crack.confirmedNotCracked." & CStr(status) & "." & CStr(mode)
+            Set width = New CCrackWidthCalculator
+            width.psiMode = CStr(mode): width.PsiS = 0.25
+            width.Calculate Nothing, Nothing, Nothing, Nothing, formation, Nothing
+            AssertTrue stats, prefix & ".notFormed", Not width.CrackFormed
+            AssertTrue stats, prefix & ".notApplicable", width.ResultMeta.InternalStatus = rsNotApplicable
+            AssertTrue stats, prefix & ".notCalculated", Not width.ResultMeta.calculated
+            AssertTrue stats, prefix & ".external", policy.ExternalStatus(width.ResultMeta) = "N/A"
+            AssertTrue stats, prefix & ".reason", InStr(1, width.ResultMeta.resultComment, "не образуется", vbTextCompare) > 0
+            AssertTrue stats, prefix & ".noFallbackWarning", InStr(1, width.ResultMeta.resultComment, "psi_s", vbTextCompare) = 0
+            AssertClose stats, prefix & ".zeroWidth", width.crackWidth, 0#, 0#
+        Next mode
+    Next status
+    Dim section As CSectionModel, solver As CSectionSolver, current As CSectionStateResult
+    Set solver = SolveServiceState(section, -200000#, 0#, 0#)
+    Set current = New CSectionStateResult
+    current.InitializeFromSolver sstCrackedState, cpCrackedNDS, TestCrackedStateSpec(), solver, False, True
+    Dim longitudinal As CLongitudinalCrackCalculator, result As CLongitudinalCrackResult
+    Set longitudinal = New CLongitudinalCrackCalculator
+    Set result = longitudinal.Calculate(current, 100#)
+    AssertTrue stats, "crack.confirmedNotCracked.longitudinalPass", result.ResultMeta.InternalStatus = rsSuccess
+    AssertTrue stats, "crack.confirmedNotCracked.longitudinalCalculated", result.ResultMeta.calculated
+    Set result = longitudinal.Calculate(current, 0.000001)
+    AssertTrue stats, "crack.confirmedNotCracked.longitudinalFail", result.ResultMeta.InternalStatus = rsCheckFailed
+    AssertTrue stats, "crack.confirmedNotCracked.longitudinalFailCalculated", result.ResultMeta.calculated
+    AssertTrue stats, "crack.confirmedNotCracked.formationPreserved", formation.ResultMeta.InternalStatus = rsSuccessWithWarning
+End Sub
 
 
 ====================================================================================================

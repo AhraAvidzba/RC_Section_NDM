@@ -1,0 +1,19 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_not_cracked_v136.xlsm
+SOURCE_SHA256: E09CEAB70F036B4A5F306EFF85B0A6D69BDDDAC9E3B6E85C173EAF5B63B812D5
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2959fa95cdc2451586886a2df3490764\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.notCrackedBatch.SP35.User.1.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP35.User.2.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP35.Auto.1.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP35.Auto.2.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP35.AlwaysCalc.1.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP35.AlwaysCalc.2.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP63.User.1.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP63.User.2.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP63.Auto.1.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP63.Auto.2.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP63.AlwaysCalc.1.normal; actual=OK; expected=N/A
+FAIL: audit03.notCrackedBatch.SP63.AlwaysCalc.2.normal; actual=OK; expected=N/A
+TOTAL_AUDIT03_NOT_CRACKED_BATCH: passed=156; failed=12
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

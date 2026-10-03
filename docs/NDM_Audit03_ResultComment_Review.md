@@ -185,3 +185,44 @@ Universal `827/0`, Results save/reopen=True; палитра `351/0`, values/styl
 save/reopen=True; Config formatting `1003/0`, deviations=0. Структурный
 Validate-Workbook: 25/25 True, exit=0. Книга/spec основного выпуска не менялись.
 Это приемка конкретной правки F05, не всего набора F05/F07/K/T/D/UI.
+
+## Подтвержденный NotCracked И Fallback v136
+
+Уточнение пользователя: подтвержденный NotCracked исключает только формулу
+ширины нормальных трещин для СП 35/СП 63; продольные трещины независимо
+проверяются по пригодному текущему НДС. Неудача получения точки Formation
+не является таким подтверждением: Width сохраняет psi=1 с предупреждением.
+
+Negative неизменного v135 production + только новый test module `420/18`
+показывает ошибочное включение fallback для успешного CRITERION_NOT_REACHED
+без пороговой точки. Result теперь публикует ConfirmedNotCracked из своих
+typed данных, Width не готовит формулу, writer показывает NotCracked даже
+без Pre/Post. Ни строка комментария, ни display-статус не классифицируют исход.
+Directed positive `438/0`: два успешных внутренних статуса x три PsiMode,
+независимые продольные OK/FAIL, прежние typed formation failures и непригодный
+current state. Отсутствующие входы формулы в confirmed-case явно доказывают,
+что они не читаются и формула не вызывается.
+
+Интеграционный v136b `180/0` проверяет фактический batch и Results при
+Stability.Code SP35/SP63 и трех PsiMode. Это проверка независимости общего
+gate от выбора методики устойчивости, не утверждение о наличии отдельного
+нормативного переключателя Width. При осевом сжатии подтвержден NotCracked,
+Pre/Post не создаются, Width N/A/Calculated=False, current OK; две нагрузки
+дают продольные OK и FAIL. Все leaf-комментарии выводятся в сыром журнале,
+ResultComment подробного блока точно совпадает с каноническим subtree.
+Results и оформление статусов после save/reopen совпали, source unchanged=True.
+
+Первый интеграционный журнал `156/12` сохранен как ошибочный oracle:
+NormalCrackStatus агрегирует Formation+Width и при успешном подтверждении
+отсутствия образования дает OK; N/A принадлежит leaf Width. Исправлено только
+ожидание теста, production aggregation не менялась. Это не новый дефект
+production и не negative-доказательство исправленной инженерной логики.
+Full Off `23553/0` и On `23564/0` завершены; все общие actual-числа с v135
+совпали (5577 Off, 5582 On), missing=0, differences=0. Исторические
+explicit-On setup сохранены, новый допуск не вводился. Source/export
+`103/103`, clean/update help `2537/2537`, mergesEqual=True. Universal On
+`827/0`, palette Off `351/0`: Results save/reopen=True, status-style для
+palette=True. Read-only Config formatting `1003/0`, deviations=0; Validate
+updated/clean `25/25` в каждой книге. Это приемка NotCracked gate; широкая
+актуальная матрица и остальные выпускные требования остаются обязательными,
+Audit03 целиком не закрыт.

@@ -467,7 +467,9 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_PRE_CRACK_STATUS) = NamedStateStatus(batch, index, sstPreCrackState, policy)
     data(rowIndex, COL_POST_CRACK_STATUS) = NamedStateStatus(batch, index, sstPostCrackState, policy)
 
-    If hasFormationData Then
+    If batch.ResultAt(index).CrackResult.Formation.ConfirmedNotCracked Then
+        data(rowIndex, COL_FORMATION_STATE) = "NotCracked"
+    ElseIf hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = IIf(batch.ResultAt(index).CrackResult.Formation.CrackFormed, "Cracked", "NotCracked")
     Else
         data(rowIndex, COL_FORMATION_STATE) = CrackFormationStatusText(batch, index, policy)

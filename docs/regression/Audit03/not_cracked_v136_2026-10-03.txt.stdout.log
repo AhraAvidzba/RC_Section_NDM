@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_not_cracked_v136.xlsm
+SOURCE_SHA256: 58097F1D264EC666369B4FCECFBEAA7D36D7B989F06D4F91790A559998C7F4EC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5c0c34034d614090b864e977db898962\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_CRACK_FORMATION_GATE: passed=438; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

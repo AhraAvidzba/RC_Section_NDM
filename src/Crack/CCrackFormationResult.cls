@@ -115,6 +115,21 @@ Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
 End Property
 
+' Подтвержденное отсутствие нормальной трещины отличается от неудачного
+' поиска точки. Успешное недостижение критерия допустимо без Pre/Post; найденный
+' порог выше текущего LC требует реальной точки. Ошибки и граница поиска
+' таким подтверждением не являются и оставляют возможность psi=1 fallback.
+Public Property Get ConfirmedNotCracked() As Boolean
+    If mCrackFormed Then Exit Property
+    If mMeta.InternalStatus <> rsSuccess And mMeta.InternalStatus <> rsSuccessWithWarning Then Exit Property
+    Select Case mMeta.ResultCode
+        Case rcCriterionNotReached, rcCrackNotFormed
+            ConfirmedNotCracked = True
+        Case rcCheckPassed
+            ConfirmedNotCracked = mHasLimitPoint
+    End Select
+End Property
+
 Public Property Get FormationMethod() As String
     FormationMethod = mFormationMethod
 End Property

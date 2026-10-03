@@ -193,6 +193,7 @@ Public Function RunBatchCalculationTests() As String
     AppendLine stats, "RUN: TestInvalidModeSettingsAreNotFallbacks"
     TestInvalidModeSettingsAreNotFallbacks stats
     TestAudit03BatchInputMessages stats
+    TestAudit03NotCrackedBatchOutput stats
     AppendLine stats, "RUN: TestResultMetaStatusDictionary"
     TestResultMetaStatusDictionary stats
     AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
@@ -8364,6 +8365,89 @@ Private Sub TestAudit03BatchInputMessages(ByRef stats As TBatchTestStats)
 Failed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: audit03.batchInputMessage.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ: NOTCRACKED ==============================
+' Проверяет общий результат Formation -> Width -> фактический вывод Results.
+' Численный solve остается только у текущего НДС; повторное открытие проверяет
+' штатный mode-runner на независимой копии этой книги.
+Public Function RunAudit03NotCrackedBatchTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03NotCrackedBatchOutput stats
+    RunAudit03NotCrackedBatchTests = stats.Report & "TOTAL_AUDIT03_NOT_CRACKED_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: достоверное отсутствие нормальных трещин при осевом сжатии
+' исключает Width, но не проверку продольных трещин. Общий gate не зависит от
+' выбора СП 35/СП 63 для устойчивости; отдельной нормативной ветки Width этот
+' тест не придумывает. Две нагрузки дают независимые OK/FAIL по сжатому бетону.
+Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim standard As Variant, mode As Variant, settings As CSystemSettingsReader, batch As CBatchSectionCalculator
+    Dim result As CCombinationResult, writer As CBatchResultWriter, anchor As Object, sheet As Object
+    Dim i As Long, outputRow As Long, prefix As String, expectedLongitudinal As String
+    Dim policy As CResultStatusPolicy
+    On Error GoTo Failed
+    Set policy = New CResultStatusPolicy
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetSystemSetting "General.DiagramExtension", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    For Each standard In Array("SP35", "SP63")
+        SetSystemSetting "Stability.Code", CStr(standard)
+        For Each mode In Array("User", "Auto", "AlwaysCalc")
+            SetSystemSetting "SLS.Crack.PsiMode", CStr(mode)
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromWorkbook ThisWorkbook
+            Set batch = BuildBatchCalculator(False)
+            batch.ApplySettings settings
+            batch.AddCombination "NO_CRACK_LONG_OK", -90000#, 0#, 0#, "PR2", "Проверка продольных трещин проходит.", "Auto"
+            batch.AddCombination "NO_CRACK_LONG_FAIL", -1200000#, 0#, 0#, "PR2", "Проверка продольных трещин не проходит.", "Auto"
+            batch.Execute
+            Set writer = New CBatchResultWriter
+            writer.WriteSummary ThisWorkbook, batch
+            Set sheet = ThisWorkbook.Worksheets.Item("Results")
+            Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+            For i = 1 To 2
+                Set result = batch.ResultAt(i)
+                prefix = "audit03.notCrackedBatch." & CStr(standard) & "." & CStr(mode) & "." & CStr(i)
+                If i = 1 Then expectedLongitudinal = "OK" Else expectedLongitudinal = "FAIL"
+                AssertTrue stats, prefix & ".formationConfirmed", result.CrackResult.Formation.ConfirmedNotCracked
+                AssertTrue stats, prefix & ".formationNoPoint", Not result.CrackResult.Formation.HasLimitPoint
+                AssertTrue stats, prefix & ".noPre", result.CrackResult.Formation.PreCrackState Is Nothing
+                AssertTrue stats, prefix & ".noPost", result.CrackResult.Formation.PostCrackState Is Nothing
+                AssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
+                AssertEquals stats, prefix & ".width", policy.ExternalStatus(result.CrackWidthMeta), "N/A"
+                AssertEquals stats, prefix & ".normalAggregate", result.NormalCrackStatus, "OK"
+                AssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.Calculated
+                AssertTrue stats, prefix & ".widthNotBlocked", result.CrackWidthMeta.InternalStatus = rsNotApplicable
+                AssertEquals stats, prefix & ".longitudinal", result.CrackResult.Longitudinal.Status, expectedLongitudinal
+                AssertTrue stats, prefix & ".longitudinalCalculated", result.LongitudinalCrackMeta.Calculated
+                outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", batch.CombinationID(i))
+                AssertEquals stats, prefix & ".writerState", CStr(sheet.Cells.Item(outputRow, anchor.Column + 20).Value2), "NotCracked"
+                AssertEquals stats, prefix & ".writerWidth", CStr(sheet.Cells.Item(outputRow, anchor.Column + 44).Value2), "N/A"
+                AssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.Item(outputRow, anchor.Column + 48).Value2), expectedLongitudinal
+                AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), result.CrackSummaryMeta.ResultComment
+                AppendLine stats, "NOT_CRACKED_OUTPUT: " & prefix & "|formation=" & result.CrackFormationMeta.ResultComment & _
+                    "|width=" & result.CrackWidthMeta.ResultComment & "|longitudinal=" & result.LongitudinalCrackMeta.ResultComment & _
+                    "|summary=" & result.CrackSummaryMeta.ResultComment
+            Next i
+        Next mode
+    Next standard
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.notCrackedBatch.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem

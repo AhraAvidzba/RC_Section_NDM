@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/full_on_rebar_counter_v135_2026-10-03.txt",
+  "CurrentReport": "docs/regression/Audit03/full_on_not_cracked_v136_2026-10-03.txt",
+  "BaselineSHA256": "D6F72BCA2857CEA27A9720000A53E90D9787289258B7CE6E5B33F3C20135946B",
+  "CurrentSHA256": "D0E7B0B0FC8D8DDA3795A672342982368130E01EA600CD55A0DCB783C41023E6",
+  "BaselineNumericAssertions": 5582,
+  "CurrentNumericAssertions": 5588,
+  "Compared": 5582,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}
