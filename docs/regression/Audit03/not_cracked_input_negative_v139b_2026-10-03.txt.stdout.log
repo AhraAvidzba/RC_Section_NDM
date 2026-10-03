@@ -1,0 +1,127 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_not_cracked_input_negative_v139b.xlsm
+SOURCE_SHA256: 5423E19AFBAFECC161288D7F5F2FE97B65E6CAE461364607BA0FF9E8AE9DEC55
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_055fa454e9124c16aeeb988e08384543\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.notCrackedInput.0.2.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.0.2.noSolve
+FAIL: audit03.notCrackedInput.0.2.key
+FAIL: audit03.notCrackedInput.0.2.sheet
+FAIL: audit03.notCrackedInput.0.2.address
+FAIL: audit03.notCrackedInput.0.2.inputMessage
+FAIL: audit03.notCrackedInput.0.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.0.4.noSolve
+FAIL: audit03.notCrackedInput.0.4.key
+FAIL: audit03.notCrackedInput.0.4.sheet
+FAIL: audit03.notCrackedInput.0.4.address
+FAIL: audit03.notCrackedInput.0.4.inputMessage
+FAIL: audit03.notCrackedInput.1.2.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.1.2.noSolve
+FAIL: audit03.notCrackedInput.1.2.key
+FAIL: audit03.notCrackedInput.1.2.sheet
+FAIL: audit03.notCrackedInput.1.2.address
+FAIL: audit03.notCrackedInput.1.2.inputMessage
+FAIL: audit03.notCrackedInput.1.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.1.4.noSolve
+FAIL: audit03.notCrackedInput.1.4.key
+FAIL: audit03.notCrackedInput.1.4.sheet
+FAIL: audit03.notCrackedInput.1.4.address
+FAIL: audit03.notCrackedInput.1.4.inputMessage
+FAIL: audit03.notCrackedInput.2.2.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.2.2.noSolve
+FAIL: audit03.notCrackedInput.2.2.key
+FAIL: audit03.notCrackedInput.2.2.sheet
+FAIL: audit03.notCrackedInput.2.2.address
+FAIL: audit03.notCrackedInput.2.2.inputMessage
+FAIL: audit03.notCrackedInput.2.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.2.4.noSolve
+FAIL: audit03.notCrackedInput.2.4.key
+FAIL: audit03.notCrackedInput.2.4.sheet
+FAIL: audit03.notCrackedInput.2.4.address
+FAIL: audit03.notCrackedInput.2.4.inputMessage
+FAIL: audit03.notCrackedInput.3.2.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.3.2.noSolve
+FAIL: audit03.notCrackedInput.3.2.key
+FAIL: audit03.notCrackedInput.3.2.sheet
+FAIL: audit03.notCrackedInput.3.2.address
+FAIL: audit03.notCrackedInput.3.2.inputMessage
+FAIL: audit03.notCrackedInput.3.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.3.4.noSolve
+FAIL: audit03.notCrackedInput.3.4.key
+FAIL: audit03.notCrackedInput.3.4.sheet
+FAIL: audit03.notCrackedInput.3.4.address
+FAIL: audit03.notCrackedInput.3.4.inputMessage
+FAIL: audit03.notCrackedInput.4.2.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.4.2.noSolve
+FAIL: audit03.notCrackedInput.4.2.key
+FAIL: audit03.notCrackedInput.4.2.sheet
+FAIL: audit03.notCrackedInput.4.2.address
+FAIL: audit03.notCrackedInput.4.2.inputMessage
+FAIL: audit03.notCrackedInput.4.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.4.4.noSolve
+FAIL: audit03.notCrackedInput.4.4.key
+FAIL: audit03.notCrackedInput.4.4.sheet
+FAIL: audit03.notCrackedInput.4.4.address
+FAIL: audit03.notCrackedInput.4.4.inputMessage
+FAIL: audit03.notCrackedInput.5.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.5.4.noSolve
+FAIL: audit03.notCrackedInput.5.4.key
+FAIL: audit03.notCrackedInput.5.4.sheet
+FAIL: audit03.notCrackedInput.5.4.address
+FAIL: audit03.notCrackedInput.5.4.inputMessage
+FAIL: audit03.notCrackedInput.5.5.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.5.5.noSolve
+FAIL: audit03.notCrackedInput.5.5.key
+FAIL: audit03.notCrackedInput.5.5.sheet
+FAIL: audit03.notCrackedInput.5.5.address
+FAIL: audit03.notCrackedInput.5.5.inputMessage
+FAIL: audit03.notCrackedInput.6.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.6.4.noSolve
+FAIL: audit03.notCrackedInput.6.4.key
+FAIL: audit03.notCrackedInput.6.4.sheet
+FAIL: audit03.notCrackedInput.6.4.address
+FAIL: audit03.notCrackedInput.6.4.inputMessage
+FAIL: audit03.notCrackedInput.6.5.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.6.5.noSolve
+FAIL: audit03.notCrackedInput.6.5.key
+FAIL: audit03.notCrackedInput.6.5.sheet
+FAIL: audit03.notCrackedInput.6.5.address
+FAIL: audit03.notCrackedInput.6.5.inputMessage
+FAIL: audit03.notCrackedInput.7.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.7.4.noSolve
+FAIL: audit03.notCrackedInput.7.4.key
+FAIL: audit03.notCrackedInput.7.4.sheet
+FAIL: audit03.notCrackedInput.7.4.address
+FAIL: audit03.notCrackedInput.7.4.inputMessage
+FAIL: audit03.notCrackedInput.7.5.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.7.5.noSolve
+FAIL: audit03.notCrackedInput.7.5.key
+FAIL: audit03.notCrackedInput.7.5.sheet
+FAIL: audit03.notCrackedInput.7.5.address
+FAIL: audit03.notCrackedInput.7.5.inputMessage
+FAIL: audit03.notCrackedInput.8.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.8.4.noSolve
+FAIL: audit03.notCrackedInput.8.4.key
+FAIL: audit03.notCrackedInput.8.4.sheet
+FAIL: audit03.notCrackedInput.8.4.address
+FAIL: audit03.notCrackedInput.8.4.inputMessage
+FAIL: audit03.notCrackedInput.8.5.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.8.5.noSolve
+FAIL: audit03.notCrackedInput.8.5.key
+FAIL: audit03.notCrackedInput.8.5.sheet
+FAIL: audit03.notCrackedInput.8.5.address
+FAIL: audit03.notCrackedInput.8.5.inputMessage
+FAIL: audit03.notCrackedInput.9.4.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.9.4.noSolve
+FAIL: audit03.notCrackedInput.9.4.key
+FAIL: audit03.notCrackedInput.9.4.sheet
+FAIL: audit03.notCrackedInput.9.4.address
+FAIL: audit03.notCrackedInput.9.4.inputMessage
+FAIL: audit03.notCrackedInput.9.5.status; actual=OK; expected=InputErr
+FAIL: audit03.notCrackedInput.9.5.noSolve
+FAIL: audit03.notCrackedInput.9.5.key
+FAIL: audit03.notCrackedInput.9.5.sheet
+FAIL: audit03.notCrackedInput.9.5.address
+FAIL: audit03.notCrackedInput.9.5.inputMessage
+TOTAL_AUDIT03_NOT_CRACKED_INPUT: passed=1515; failed=120
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

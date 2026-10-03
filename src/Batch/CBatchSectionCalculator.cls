@@ -327,6 +327,12 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         End If
         conversionKey = vbNullString
     End If
+    ' Владелец Width проверяет ввод до раннего NotCracked и до любого solve.
+    ' Batch только передает настройки; диапазоны/режимы не дублируются здесь.
+    Dim widthOptions As CCrackWidthCalculator
+    Set widthOptions = New CCrackWidthCalculator
+    ConfigureCrackCalculator widthOptions
+    widthOptions.ValidateSettings settings
     ConfigureMomentZeroFilter
     NormalizeAllCombinationMoments
     Exit Sub
@@ -1443,10 +1449,9 @@ Private Sub ConfigureStateProvider(ByVal provider As CStateProvider)
     provider.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
-' Передает в расчет трещин те же настройки прямого равновесия, что и в
-' сервисный solve LC. Это важно для сопоставимости: состояние с раскрытой
-' трещиной ищется тем же CSectionSolver, только с принудительно выключенным
-' растянутым бетоном.
+' Передает только параметры подготовки и формулы ширины. Проверка введенных
+' режимов/коэффициентов остается у Width; ни solver-options, ни поиск НДС
+' через этот метод не передаются. Текущее состояние получает отдельный runner.
 Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.AllowableCrackWidth = mCrackAllowable
     crack.PsiMode = mCrackPsiMode

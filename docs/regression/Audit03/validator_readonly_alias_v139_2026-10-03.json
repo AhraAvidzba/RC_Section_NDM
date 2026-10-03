@@ -1,0 +1,17 @@
+﻿[
+    {
+        "Check":  "Canonical print area names",
+        "Passed":  false,
+        "Details":  "CalculationSheetIndex=2; canonical=1; noncanonical=1; file not repaired"
+    },
+    {
+        "Check":  "Validation runtime",
+        "Passed":  false,
+        "Details":  "Именованная область печати листа Расчет отсутствует, повторяется или содержит неканоническое имя Print_Area. Исправьте имя в книге; проверка остановлена без изменения файла."
+    },
+    {
+        "Check":  "Source workbook unchanged",
+        "Passed":  true,
+        "Details":  "Before=3C78D2FA5080C08318A2202D451D71035A39E4F01FA8697993C9A383E0011740; After=3C78D2FA5080C08318A2202D451D71035A39E4F01FA8697993C9A383E0011740"
+    }
+]

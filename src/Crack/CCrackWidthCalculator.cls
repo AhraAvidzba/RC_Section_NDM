@@ -148,6 +148,7 @@ Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
         SetWidthResult rsInternalError, rcInternalError, "Не передан результат образования трещины."
         Exit Sub
     End If
+    ValidateSettings
     If formation.ConfirmedNotCracked Then
         mConverged = True
         mCentralTensionBranch = formation.CentralTensionBranch
@@ -200,7 +201,7 @@ Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section A
         Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "MaterialModel.CrackedState не заполнен."
     Set mCrackedStateSpec = crackedStateSpec.Clone
     mSteelEs = materialProvider.SteelElasticModulusFromSpec(mCrackedStateSpec)
-    NormalizeSettings
+    ValidateSettings
     mConverged = False
     mCrackFormed = False
     mStopReason = vbNullString
@@ -244,6 +245,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     If Not units Is Nothing Then
         mAllowableCrackWidth = units.InputLengthToInternal(mAllowableCrackWidth)
     End If
+    ValidateSettings settings
 End Sub
 
 
@@ -969,9 +971,11 @@ End Function
 
 
 
-' Нормализует текстовые режимы и проверяет численные параметры до запуска
-' внутренних solve, чтобы ошибки Config были понятны пользователю.
-Private Sub NormalizeSettings()
+' Нормализует режимы и проверяет коэффициенты независимо от применимости
+' формулы. Batch вызывает этот gate до Formation/current solve; автономный
+' потребитель проверяется до выхода NotCracked. При переданном reader ошибка
+' содержит фактический адрес Config. Метод не решает НДС и не меняет результат.
+Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = Nothing)
     Select Case LCase$(Trim$(mPsiMode))
         Case "user", "manual", "fixed1", "unity"
             mPsiMode = PSI_MODE_USER
@@ -980,7 +984,7 @@ Private Sub NormalizeSettings()
         Case "alwayscalc", "alwayscalculate", "always", "calc"
             mPsiMode = PSI_MODE_ALWAYS_CALC
         Case Else
-            Err.Raise vbObjectError + 3707, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.PsiMode выберите User, Auto или AlwaysCalc."
+            RaiseInvalidSetting 3707, "SLS.Crack.PsiMode", "Неизвестный режим коэффициента psi_s.", "Выберите User, Auto или AlwaysCalc.", settings
     End Select
 
     Select Case LCase$(Trim$(mSigmaSCrcAveragingMode))
@@ -989,8 +993,8 @@ Private Sub NormalizeSettings()
         Case "tensiononly", "tension", "positiveonly", "old"
             mSigmaSCrcAveragingMode = SIGMA_S_CRC_AVERAGE_TENSION_ONLY
         Case Else
-            Err.Raise vbObjectError + 3736, "CCrackWidthCalculator", _
-                "На листе Config в строке SLS.Crack.SigmaSCrcAveragingMode выберите AllSelected или TensionOnly."
+            RaiseInvalidSetting 3736, "SLS.Crack.SigmaSCrcAveragingMode", _
+                "Неизвестный способ усреднения напряжения сразу после образования трещины.", "Выберите AllSelected или TensionOnly.", settings
     End Select
 
     Select Case LCase$(Trim$(mPhi3Mode))
@@ -999,13 +1003,13 @@ Private Sub NormalizeSettings()
         Case "auto"
             mPhi3Mode = "Auto"
         Case Else
-            Err.Raise vbObjectError + 3709, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.Phi3Mode выберите User или Auto."
+            RaiseInvalidSetting 3709, "SLS.Crack.Phi3Mode", "Неизвестный режим коэффициента phi3.", "Выберите User или Auto.", settings
     End Select
 
     Select Case LCase$(Trim$(mTensionZoneMode))
         Case "effective": mTensionZoneMode = "Effective"
         Case "fulltension": mTensionZoneMode = "FullTension"
-        Case Else: Err.Raise vbObjectError + 3708, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.TensionZoneMode выберите Effective или FullTension."
+        Case Else: RaiseInvalidSetting 3708, "SLS.Crack.TensionZoneMode", "Неизвестный способ выбора растянутой зоны.", "Выберите Effective или FullTension.", settings
     End Select
 
     Select Case LCase$(Trim$(mCoverMode))
@@ -1014,16 +1018,30 @@ Private Sub NormalizeSettings()
         Case "globalextreme", "global", "extreme"
             mCoverMode = COVER_MODE_GLOBAL_EXTREME
         Case Else
-            Err.Raise vbObjectError + 3721, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.CoverDistanceMode выберите NearestContour или GlobalExtreme."
+            RaiseInvalidSetting 3721, "SLS.Crack.CoverDistanceMode", "Неизвестный способ определения расстояния до границы бетона.", "Выберите NearestContour или GlobalExtreme.", settings
     End Select
 
 
-    If mAllowableCrackWidth <= 0# Then Err.Raise vbObjectError + 3710, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.Allowable введите допустимую ширину больше нуля в единицах INPUT Length."
-    If mPhi1Input <= 0# Then Err.Raise vbObjectError + 3717, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.Phi1 введите коэффициент больше нуля."
-    If mPhi2Input <= 0# Then Err.Raise vbObjectError + 3718, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.Phi2 введите коэффициент больше нуля."
-    If mPhi3Input <= 0# Then Err.Raise vbObjectError + 3719, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.Phi3 введите коэффициент больше нуля."
-    If mPsiSInput <= 0# Then Err.Raise vbObjectError + 3720, "CCrackWidthCalculator", "На листе Config в строке SLS.Crack.PsiS введите коэффициент больше нуля."
+    If mAllowableCrackWidth <= 0# Then RaiseInvalidSetting 3710, "SLS.Crack.Allowable", "Допустимая ширина должна быть положительной.", "Введите ширину больше нуля в единицах INPUT Length.", settings
+    If mPhi1Input <= 0# Then RaiseInvalidSetting 3717, "SLS.Crack.Phi1", "Коэффициент должен быть положительным.", "Введите коэффициент больше нуля.", settings
+    If mPhi2Input <= 0# Then RaiseInvalidSetting 3718, "SLS.Crack.Phi2", "Коэффициент должен быть положительным.", "Введите коэффициент больше нуля.", settings
+    If mPhi3Input <= 0# Then RaiseInvalidSetting 3719, "SLS.Crack.Phi3", "Коэффициент должен быть положительным.", "Введите коэффициент больше нуля.", settings
+    If mPsiSInput <= 0# Then RaiseInvalidSetting 3720, "SLS.Crack.PsiS", "Коэффициент должен быть положительным.", "Введите коэффициент больше нуля.", settings
     If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackWidthCalculator", "Steel.Es должен быть положительным для расчета трещин."
+End Sub
+
+' Сохраняет прежний машинный номер ошибки инженерной настройки. Reader
+' добавляет место ввода, но не принимает решение о допустимости коэффициента;
+' автономный API без reader получает тот же ключ и понятное исправление.
+Private Sub RaiseInvalidSetting(ByVal errorCode As Long, ByVal key As String, _
+        ByVal reason As String, ByVal correction As String, ByVal settings As CSystemSettingsReader)
+    Dim message As String
+    If settings Is Nothing Then
+        message = "На листе Config в строке " & key & ": " & reason & " " & correction
+    Else
+        message = settings.InputErrorMessage(key, reason, correction)
+    End If
+    Err.Raise vbObjectError + errorCode, "CCrackWidthCalculator", message
 End Sub
 
 

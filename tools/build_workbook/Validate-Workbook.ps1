@@ -1,12 +1,16 @@
 ﻿# скрипт проверяет структуру собранной книги, именованные диапазоны и ключевые правила интерфейса.
 
+# Не исправляет проверяемый файл. Excel открывается read-only без макросов и
+# событий; хеш входной книги после проверки должен совпасть. По запросу
+# сохраняется машинно-читаемый отчет отдельных структурных проверок.
 param(
-    [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
+    [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm",
+    [string]$ReportPath = ""
 )
 
 $ErrorActionPreference = "Stop"
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Сохраняет отдельную структурную проверку и ее фактическую причину в отчете.
 function Add-Check {
     param(
         [System.Collections.Generic.List[object]]$Checks,
@@ -68,48 +72,39 @@ if (-not (Test-Path -LiteralPath $fullWorkbookPath)) {
 $checks = [System.Collections.Generic.List[object]]::new()
 $excel = $null
 $workbook = $null
+$beforeHash = (Get-FileHash -LiteralPath $fullWorkbookPath -Algorithm SHA256).Hash
 
-# Удаляет только служебный объект, который может мешать повторяемой сборке или проверке.
-function Remove-DuplicatePrintAreaName {
-    param([string]$Path)
-    Add-Type -AssemblyName System.IO.Compression
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $zip = [System.IO.Compression.ZipFile]::Open($Path, [System.IO.Compression.ZipArchiveMode]::Update)
-    try {
-        $entry = $zip.GetEntry("xl/workbook.xml")
-        if ($entry -eq $null) { return }
-        $reader = New-Object IO.StreamReader($entry.Open())
-        $xml = $reader.ReadToEnd()
-        $reader.Close()
-        $newXml = [regex]::Replace($xml, '<definedName name="Print_Area"[^>]*>.*?</definedName>\s*', '')
-        if ($newXml -ne $xml) {
-            $stream = $entry.Open()
-            $stream.SetLength(0)
-            $writer = New-Object IO.StreamWriter($stream, (New-Object System.Text.UTF8Encoding($false)))
-            $writer.Write($newXml)
-            $writer.Close()
-        }
-    }
-    finally {
-        if ($zip -ne $null) { $zip.Dispose() }
-    }
-}
-
-Remove-DuplicatePrintAreaName $fullWorkbookPath
-
-# Возвращает подготовленные данные или справочное значение для дальнейшего шага сборки.
+# Читает каноническую область печати именно листа Расчет без открытия ZIP
+# на запись. Неканоническое/повторное имя не удаляется из проверяемой книги:
+# структурная ошибка фиксируется в отчете, а исходный файл остается неизменным.
 function Get-PrintAreaFromWorkbookXml {
-    param([string]$Path)
+    param([string]$Path, [System.Collections.Generic.List[object]]$Checks)
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $zip = [System.IO.Compression.ZipFile]::OpenRead($Path)
     try {
         $entry = $zip.GetEntry("xl/workbook.xml")
-        if ($entry -eq $null) { return "" }
+        if ($entry -eq $null) { throw "В книге отсутствует xl/workbook.xml." }
         $reader = New-Object IO.StreamReader($entry.Open())
-        $xml = $reader.ReadToEnd()
-        $reader.Close()
-        $match = [regex]::Match($xml, '<definedName name="_xlnm\.Print_Area"[^>]*>(.*?)</definedName>')
-        if ($match.Success) { return $match.Groups[1].Value }
+        try { [xml]$xml = $reader.ReadToEnd() } finally { $reader.Dispose() }
+        $sheetIndex = -1
+        $index = 0
+        foreach ($sheet in $xml.workbook.sheets.sheet) {
+            if ([string]$sheet.name -eq "Расчет") { $sheetIndex = $index }
+            $index++
+        }
+        $namespaces = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
+        $namespaces.AddNamespace('w', $xml.DocumentElement.NamespaceURI)
+        $names = $xml.SelectNodes('/w:workbook/w:definedNames/w:definedName', $namespaces)
+        $areas = @($names | Where-Object {
+            $_.GetAttribute('name') -eq '_xlnm.Print_Area' -and
+            $_.GetAttribute('localSheetId') -eq [string]$sheetIndex
+        })
+        $aliases = @($names | Where-Object {
+            $_.GetAttribute('name') -eq 'Print_Area'
+        })
+        Add-Check $Checks "Canonical print area names" ($sheetIndex -ge 0 -and $areas.Count -eq 1 -and $aliases.Count -eq 0) (
+            "CalculationSheetIndex=$sheetIndex; canonical=$($areas.Count); noncanonical=$($aliases.Count); file not repaired")
+        if ($areas.Count -eq 1) { return [string]$areas[0].InnerText }
         return ""
     }
     finally {
@@ -117,12 +112,17 @@ function Get-PrintAreaFromWorkbookXml {
     }
 }
 
-$printAreaXml = Get-PrintAreaFromWorkbookXml $fullWorkbookPath
+$printAreaXml = Get-PrintAreaFromWorkbookXml $fullWorkbookPath $checks
 
 try {
+    if (@($checks | Where-Object { -not $_.Passed }).Count -gt 0) {
+        throw "Именованная область печати листа Расчет отсутствует, повторяется или содержит неканоническое имя Print_Area. Исправьте имя в книге; проверка остановлена без изменения файла."
+    }
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
+    $excel.AutomationSecurity = 3
+    $excel.EnableEvents = $false
 
     $workbook = $excel.Workbooks.Open($fullWorkbookPath, $null, $true)
 
@@ -387,6 +387,9 @@ try {
     )
     Add-Check $checks "Runtime Excel IO uses bulk ranges" ($cellItemMatches.Count -eq 0) ("Cells.Item matches: " + ($cellItemMatches -join "; "))
 }
+catch {
+    Add-Check $checks "Validation runtime" $false $_.Exception.Message
+}
 finally {
     if ($workbook -ne $null) {
         try {
@@ -410,6 +413,11 @@ finally {
     [GC]::WaitForPendingFinalizers()
 }
 
+$afterHash = (Get-FileHash -LiteralPath $fullWorkbookPath -Algorithm SHA256).Hash
+Add-Check $checks "Source workbook unchanged" ($beforeHash -eq $afterHash) "Before=$beforeHash; After=$afterHash"
+if ($ReportPath) {
+    $checks | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $root $ReportPath) -Encoding UTF8
+}
 $checks | Format-Table -AutoSize
 
 $failed = @($checks | Where-Object { -not $_.Passed })

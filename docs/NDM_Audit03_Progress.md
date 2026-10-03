@@ -69,6 +69,43 @@
 
 ## Актуальная Точка Продолжения
 
+- Checkpoint geometry/Psi scope v137/v138: `692def91`. Следующий срез v139:
+  ранний NotCracked скрывал неизвестные режимы и нулевые/отрицательные
+  коэффициенты Width. Окончательный negative на прежнем production
+  `1515/120` подтверждает 20 ошибочно принятых вариантов из 55. Первоначальный
+  negative `1480/155` дополнительно содержал 35 ошибок нового oracle сообщения:
+  popup показывает конкретную причину, а не весь агрегированный OverallComment.
+  Oracle исправлен на ответственный leaf-comment; этот первый лог не выдается
+  за 155 production-дефектов. Тот же final тест текущего source `1635/0`,
+  Results и status-style save/reopen=True. Width владеет ValidateSettings:
+  batch вызывает его до Formation/current solve, автономный API до выхода
+  NotCracked. Машинные номера и допустимые aliases сохранены; ошибку reader
+  дополняет точным адресом Config. Дополнительного solve/класса нет.
+  Source/export `103/103`, failed=0, SHA экспорта
+  `1AE0AFE0BB0313DB20E20FBC4D0B29A80CA5FF3376D2367BEA52E03080702E2D`.
+  Help updated: failed=0, 1941 строка, 140 ссылок, 118 shapes, исходные
+  input/Formulas/validation и область печати сохранены. Full Off v139
+  завершен: `26264/0`, все восемь suites, source unchanged=True. Общие
+  actual-числа с принятым v137 Off: `5601/5601`, missing=0, differences=0.
+  Full On завершен: `26275/0`, все восемь suites, source unchanged=True.
+  Общие actual-числа с принятым v137 On: `5606/5606`, missing=0,
+  differences=0. Чистая сборка завершена; help clean/update `2556/2556`,
+  mergesEqual=True, source unchanged=True. Updated и clean прошли по `27/27`
+  read-only structural checks без изменения хешей. Config formatting
+  `1003/0`, deviations=0. Universal On `827/0` и palette Off `351/0`:
+  Results save/reopen=True; у palette также status-style=True. Все COM-сессии
+  среза завершены. Книга updated SHA
+  `5D28C25922A0B699BBAB57BC197A1931A067880024D85FB7F7581575061AEEF4`,
+  clean SHA `83B16E8F280B946259F48BD1EBD53595FC2B0C324FED19CB131D1DECCD9512E7`.
+  Validator больше не открывает ZIP на запись: clean `27/27`, хеш unchanged.
+  Специальная alias-копия отклоняется до Excel, хеш unchanged и имя не удалено.
+  Эти проверки не закрывают окончательный D/UI gate всей цели.
+  Следующий контрпример: предупреждение о конфликте ограничений ls при
+  d_s,eq > 40 мм пока попадает только в необязательный технический журнал.
+  Нужен реальный runtime с найденными states, проверкой ResultComment и
+  изоляции предупреждения; численные правила принятия ls не меняются.
+  Затем продолжаются оставшиеся K/F/D/T/P и выпускная приемка. ТЗ и основная
+  пользовательская output-книга сохраняют исходные хеши.
 - Geometry input v137: завершенный отрицательный runtime `535/461` на
   неизменном production v136 подтвердил скрытые defaults и потерю адресов.
   В нем также были четыре ошибки нового oracle восстановления диаметра:

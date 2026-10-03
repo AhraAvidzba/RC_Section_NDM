@@ -194,6 +194,7 @@ Public Function RunBatchCalculationTests() As String
     TestInvalidModeSettingsAreNotFallbacks stats
     TestAudit03BatchInputMessages stats
     TestAudit03NotCrackedBatchOutput stats
+    TestAudit03NotCrackedInputValidation stats
     AppendLine stats, "RUN: TestResultMetaStatusDictionary"
     TestResultMetaStatusDictionary stats
     AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
@@ -8020,7 +8021,8 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: ошибки reader-а и ошибки ApplySettings получают один реальный
 ' batch InputErr. Текст исключения не используется для назначения статуса.
-Private Function Audit03CrackConfigInvalidBatch(ByRef stats As TBatchTestStats, ByVal key As String) As CBatchSectionCalculator
+Private Function Audit03CrackConfigInvalidBatch(ByRef stats As TBatchTestStats, ByVal key As String, _
+        Optional ByVal targetN As Double = 200000#) As CBatchSectionCalculator
     Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, reason As String
     Set batch = BuildBatchCalculator()
     Set settings = New CSystemSettingsReader
@@ -8029,7 +8031,7 @@ Private Function Audit03CrackConfigInvalidBatch(ByRef stats As TBatchTestStats, 
     On Error GoTo InvalidRead
     settings.LoadFromWorkbook ThisWorkbook
     batch.ApplySettings settings
-    batch.AddCombination "CRACK_CONFIG_INVALID", 200000#, 0#, 0#, "PR2", "Ошибочный Config"
+    batch.AddCombination "CRACK_CONFIG_INVALID", targetN, 0#, 0#, "PR2", "Ошибочный Config"
     batch.Execute
     GoTo Publish
 InvalidRead:
@@ -8133,6 +8135,89 @@ Private Sub Audit03TraceExcelContext(ByVal stage As String, Optional ByVal reset
         Next row
     Next name
     Close #fileNumber
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ: ВВОД ПРИ NOTCRACKED ==============================
+' Проверяет обязательные Width-настройки на реальном сжатом сочетании.
+' Подтвержденный NotCracked исключает формулу, но не делает ошибочный Config
+' допустимым. Ошибка должна содержать ключ/ячейку и возникать до любого solve.
+Public Function RunAudit03NotCrackedInputTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03NotCrackedInputValidation stats
+    RunAudit03NotCrackedInputTests = stats.Report & "TOTAL_AUDIT03_NOT_CRACKED_INPUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: меняет по одному пять селекторов и пять числовых коэффициентов.
+' Каждое повреждение проходит штатные reader/batch/writer, затем значение
+' восстанавливается и валидное сочетание снова подтверждает отсутствие трещины.
+Private Sub TestAudit03NotCrackedInputValidation(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim keys As Variant, invalidValues As Variant, invalidValue As Variant, cell As Object
+    Dim i As Long, row As Long, index As Long, originalValue As Variant, prefix As String
+    Dim settings As CSystemSettingsReader, batch As CBatchSectionCalculator, result As CCombinationResult
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetSystemSetting "General.DiagramExtension", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    keys = Array("SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", _
+        "SLS.Crack.TensionZoneMode", "SLS.Crack.CoverDistanceMode", "SLS.Crack.Phi3Mode", _
+        "SLS.Crack.Allowable", "SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3", "SLS.Crack.PsiS")
+    For i = 0 To UBound(keys)
+        Set cell = Nothing
+        For row = 2 To systemRange.Rows.Count
+            If CStr(systemRange.Cells(row, 1).Value2) = CStr(keys(i)) Then
+                Set cell = systemRange.Cells(row, 2)
+                Exit For
+            End If
+        Next row
+        If cell Is Nothing Then Err.Raise 5, , "Не найдена проверяемая настройка " & CStr(keys(i))
+        originalValue = cell.Formula
+        If i < 5 Then
+            invalidValues = Array("", "TODO", "abc", CVErr(2015), "unknownmode")
+        Else
+            invalidValues = Array("", "TODO", "abc", CVErr(2015), "0", "-1")
+        End If
+        index = 0
+        For Each invalidValue In invalidValues
+            cell.Value2 = invalidValue
+            prefix = "audit03.notCrackedInput." & CStr(i) & "." & CStr(index)
+            Set batch = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)), -90000#)
+            Set result = batch.ResultAt(1)
+            AssertEquals stats, prefix & ".status", result.Status, "InputErr"
+            AssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
+            AssertTrue stats, prefix & ".key", InStr(1, result.OverallMeta.ResultComment, CStr(keys(i)), vbBinaryCompare) > 0
+            AssertTrue stats, prefix & ".sheet", InStr(1, result.OverallMeta.ResultComment, "Config", vbBinaryCompare) > 0
+            AssertTrue stats, prefix & ".address", InStr(1, result.OverallMeta.ResultComment, cell.Address(False, False), vbBinaryCompare) > 0
+            AssertTrue stats, prefix & ".inputMessage", InStr(1, batch.FirstInvalidInputMessage, result.DirectStateMeta.ResultComment, vbBinaryCompare) > 0
+            cell.Formula = originalValue
+            index = index + 1
+        Next invalidValue
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set batch = BuildBatchCalculator(False): batch.ApplySettings settings
+        batch.AddCombination "NOT_CRACKED_RECOVERY", -90000#, 0#, 0#, "PR2", "Восстановленный Config", "Auto"
+        batch.Execute
+        Set result = batch.ResultAt(1)
+        prefix = "audit03.notCrackedInput.recovery." & CStr(i)
+        AssertEquals stats, prefix & ".status", result.Status, "OK"
+        AssertTrue stats, prefix & ".formation", result.CrackResult.Formation.ConfirmedNotCracked
+        AssertTrue stats, prefix & ".noFormula", Not result.CrackWidthMeta.Calculated
+        AssertTrue stats, prefix & ".longitudinal", result.LongitudinalCrackMeta.Calculated
+    Next i
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.notCrackedInput.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: многократно пишет один готовый batch, не запускает Search/State
