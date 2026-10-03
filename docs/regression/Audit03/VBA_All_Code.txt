@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_not_cracked_v136.xlsm
-Date: 2026-10-03 09:29:30
+Workbook: RC_Section_NDM_required_geometry_v137.xlsm
+Date: 2026-10-03 10:51:44
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -3710,7 +3710,7 @@ End Sub
 ' Инициализирует новую форму RoundedRectangle. B задает длину горизонтальной
 ' базы, H - высоту, а левая/правая боковые части управляются независимо.
 Public Sub InitializeSides(ByVal bMm As Double, ByVal hMm As Double, _
-        ByVal LeftType As String, ByVal RightType As String, _
+        ByVal leftType As String, ByVal rightType As String, _
         ByVal leftWMm As Double, ByVal rightWMm As Double, _
         ByVal leftR1Mm As Double, ByVal rightR1Mm As Double, _
         ByVal leftR2Mm As Double, ByVal rightR2Mm As Double, _
@@ -3721,8 +3721,8 @@ Public Sub InitializeSides(ByVal bMm As Double, ByVal hMm As Double, _
     mValidationMessage = vbNullString
     mB = bMm
     mH = hMm
-    mLeftType = NormalizeSideType(LeftType)
-    mRightType = NormalizeSideType(RightType)
+    mLeftType = NormalizeSideType(leftType)
+    mRightType = NormalizeSideType(rightType)
     mLeftW = leftWMm
     mRightW = rightWMm
     mLeftR1 = leftR1Mm
@@ -3753,20 +3753,20 @@ Public Property Get height() As Double
     height = mMaxY - mMinY
 End Property
 
-Public Property Get LeftType() As String
-    LeftType = DisplaySideType(mLeftType)
+Public Property Get leftType() As String
+    leftType = DisplaySideType(mLeftType)
 End Property
 
-Public Property Get RightType() As String
-    RightType = DisplaySideType(mRightType)
+Public Property Get rightType() As String
+    rightType = DisplaySideType(mRightType)
 End Property
 
-Public Property Get LeftW() As Double
-    LeftW = mLeftW
+Public Property Get leftW() As Double
+    leftW = mLeftW
 End Property
 
-Public Property Get RightW() As Double
-    RightW = mRightW
+Public Property Get rightW() As Double
+    rightW = mRightW
 End Property
 
 Public Property Get LeftR1() As Double
@@ -3777,12 +3777,12 @@ Public Property Get RightR1() As Double
     RightR1 = mRightR1
 End Property
 
-Public Property Get LeftR2() As Double
-    LeftR2 = mLeftR2
+Public Property Get leftR2() As Double
+    leftR2 = mLeftR2
 End Property
 
-Public Property Get RightR2() As Double
-    RightR2 = mRightR2
+Public Property Get rightR2() As Double
+    rightR2 = mRightR2
 End Property
 
 Public Property Get centerX() As Double
@@ -4815,7 +4815,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
     If units Is Nothing Then Err.Raise vbObjectError + 3163, "CCircleRebarLayoutBuilder", "Система единиц не передана."
 
     Set BuildFromSettings = Build( _
-        units.InputLengthToInternal(settings.GetDouble("Circle.Diameter", 300#)), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("Circle.Diameter")), _
         centerX, _
         centerY, _
         units.InputLengthToInternal(settings.GetDouble("Rebar.AxisDistance", 40#)), _
@@ -5174,14 +5174,14 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
     Dim geom As CGeometryHollowRectangle
     Set geom = New CGeometryHollowRectangle
     geom.Initialize _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.B", 500#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.H", 800#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.R", 180#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningB", 200#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningH", 500#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningR", 30#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetX", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetY", 0#))
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.B")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.H")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.R")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningB")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningH")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningR")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetX")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetY"))
 
     Set BuildFromSettings = Build(geom, _
         ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "20"), _
@@ -6369,7 +6369,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CRectSetRebarLayoutBuilder
 TYPE: 2
-LINES: 749
+LINES: 759
 ====================================================================================================
 Option Explicit
 
@@ -6398,11 +6398,22 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
     If settings Is Nothing Then Err.Raise vbObjectError + 3190, "CRectSetRebarLayoutBuilder", "Настройки Config не переданы."
     If units Is Nothing Then Err.Raise vbObjectError + 3191, "CRectSetRebarLayoutBuilder", "Система единиц не передана."
 
+    Dim sectionType As String, lowerB As Double, lowerH As Double, upperOffset As Double
+    sectionType = settings.GetRequiredChoice("RectSet.SectionType", _
+        Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
+    ' Не читаем нижние размеры и смещение, если выбранная форма их не использует.
+    If sectionType <> "Rectangle" Then
+        lowerB = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B2"))
+        lowerH = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H2"))
+    End If
+    If sectionType <> "Rectangle" And sectionType <> "LSection" And sectionType <> "RectSet" Then _
+        upperOffset = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.UpperOffsetX"))
+
     Set BuildFromSettings = Build( _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.B1", 250#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.H1", 550#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.B2", 600#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.H2", 250#)), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B1")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H1")), _
+        lowerB, _
+        lowerH, _
         0#, _
         0#, _
         ReadFaceSettingsFromConfig(settings, units, "H1"), _
@@ -6410,8 +6421,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         ReadFaceSettingsFromConfig(settings, units, "B1"), _
         ReadFaceSettingsFromConfig(settings, units, "B2"), _
         REBAR_STEEL_CLASS, _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.UpperOffsetX", 0#)), _
-        settings.GetString("RectSet.SectionType", "LSection"))
+        upperOffset, sectionType)
 End Function
 
 ' Читает параметры одной смысловой грани RectSet-сечения.
@@ -7226,14 +7236,14 @@ Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geomet
 
     Dim actualLeftW As Double
     actualLeftW = rounded.LeftBaseX - rounded.minX
-    If StrComp(rounded.LeftType, "Tapered", vbTextCompare) = 0 And actualLeftW > GEOM_TOLERANCE Then
+    If StrComp(rounded.leftType, "Tapered", vbTextCompare) = 0 And actualLeftW > GEOM_TOLERANCE Then
         annotations.AddDimension "DIM_W_LEFT", rounded.minX, rounded.topY, _
             rounded.LeftBaseX, rounded.topY, 0#, 1#, "W'", RoundedLengthForDisplay(actualLeftW), _
             "Фактический вынос левого края бетона относительно левого торца базы B."
     End If
     Dim actualRightW As Double
     actualRightW = rounded.maxX - rounded.RightBaseX
-    If StrComp(rounded.RightType, "Tapered", vbTextCompare) = 0 And actualRightW > GEOM_TOLERANCE Then
+    If StrComp(rounded.rightType, "Tapered", vbTextCompare) = 0 And actualRightW > GEOM_TOLERANCE Then
         annotations.AddDimension "DIM_W_RIGHT", rounded.RightBaseX, rounded.topY, _
             rounded.maxX, rounded.topY, 0#, 1#, "W'", RoundedLengthForDisplay(actualRightW), _
             "Фактический вынос правого края бетона относительно правого торца базы B."
@@ -7255,7 +7265,7 @@ End Function
 ====================================================================================================
 COMPONENT: CRoundedRectRebarLayoutBuilder
 TYPE: 2
-LINES: 491
+LINES: 498
 ====================================================================================================
 Option Explicit
 
@@ -7280,17 +7290,24 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
 
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
+    Dim leftType As String, rightType As String, leftW As Double, rightW As Double, leftR2 As Double, rightR2 As Double
+    leftType = settings.GetRequiredChoice("RoundedRectangle.Left.Type", Array("Simple", "Tapered"))
+    rightType = settings.GetRequiredChoice("RoundedRectangle.Right.Type", Array("Simple", "Tapered"))
+    ' Для Simple поля W/R2 не участвуют в форме и не должны требовать числа.
+    If leftType = "Tapered" Then
+        leftW = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.W"))
+        leftR2 = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R2"))
+    End If
+    If rightType = "Tapered" Then
+        rightW = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.W"))
+        rightR2 = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R2"))
+    End If
     geom.InitializeSides _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.B", 300#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.H", 200#)), _
-        settings.GetString("RoundedRectangle.Left.Type", "Simple"), _
-        settings.GetString("RoundedRectangle.Right.Type", "Simple"), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.W", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.W", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R1", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R1", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R2", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R2", 0#))
+        units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.B")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.H")), _
+        leftType, rightType, leftW, rightW, _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R1")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R1")), leftR2, rightR2
 
     Set BuildFromSettings = Build(geom, _
         ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "32"), _
@@ -39198,8 +39215,8 @@ End Function
 Private Sub AddLegendRect(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal colorValue As Long)
     Dim marker As Object
-    Set marker = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
-    marker.name = SHAPE_PREFIX & "LegendGradient" & CStr(mChart.Shapes.count)
+    Set marker = mChart.shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
+    marker.name = SHAPE_PREFIX & "LegendGradient" & CStr(mChart.shapes.count)
     marker.Fill.ForeColor.RGB = colorValue
     marker.line.ForeColor.RGB = colorValue
 End Sub
@@ -39239,8 +39256,8 @@ End Sub
 Private Function DrawChartLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String) As Object
     Dim lineShape As Object
-    Set lineShape = mChart.Shapes.AddLine(x1, y1, x2, y2)
-    lineShape.name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.count)
+    Set lineShape = mChart.shapes.AddLine(x1, y1, x2, y2)
+    lineShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     lineShape.line.ForeColor.RGB = colorValue
     lineShape.line.weight = weight
     Set DrawChartLine = lineShape
@@ -39267,7 +39284,7 @@ Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, 
     ny = dx / lengthValue * thickness / 2#
 
     Dim builder As Object
-    Set builder = mChart.Shapes.BuildFreeform(MSO_EDITING_AUTO, x1 + nx, y1 + ny)
+    Set builder = mChart.shapes.BuildFreeform(MSO_EDITING_AUTO, x1 + nx, y1 + ny)
     builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, x2 + nx, y2 + ny
     builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, x2 - nx, y2 - ny
     builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, x1 - nx, y1 - ny
@@ -39275,7 +39292,7 @@ Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, 
 
     Dim bandShape As Object
     Set bandShape = builder.ConvertToShape
-    bandShape.name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.count)
+    bandShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     bandShape.Fill.ForeColor.RGB = colorValue
     bandShape.line.Visible = False
     BringShapeToFront bandShape
@@ -39431,8 +39448,8 @@ Private Function DrawModelRectangle(ByVal x1 As Double, ByVal y1 As Double, ByVa
     If widthValue <= 0# Or heightValue <= 0# Then Exit Function
 
     Dim rectShape As Object
-    Set rectShape = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
-    rectShape.name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.count)
+    Set rectShape = mChart.shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
+    rectShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     rectShape.Fill.ForeColor.RGB = fillColor
     rectShape.line.ForeColor.RGB = lineColor
     rectShape.line.weight = weight
@@ -39457,9 +39474,9 @@ Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal cente
     If widthValue <= 0# Or heightValue <= 0# Then Exit Function
 
     Dim rectShape As Object
-    Set rectShape = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, centerChartX - widthValue / 2#, _
+    Set rectShape = mChart.shapes.AddShape(MSO_SHAPE_RECTANGLE, centerChartX - widthValue / 2#, _
         centerChartY - heightValue / 2#, widthValue, heightValue)
-    rectShape.name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.count)
+    rectShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     rectShape.Fill.ForeColor.RGB = fillColor
     rectShape.line.ForeColor.RGB = lineColor
     rectShape.line.weight = weight
@@ -39483,8 +39500,8 @@ Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     If widthValue <= 0# Or heightValue <= 0# Then Exit Function
 
     Dim ovalShape As Object
-    Set ovalShape = mChart.Shapes.AddShape(MSO_SHAPE_OVAL, leftPos, topPos, widthValue, heightValue)
-    ovalShape.name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.count)
+    Set ovalShape = mChart.shapes.AddShape(MSO_SHAPE_OVAL, leftPos, topPos, widthValue, heightValue)
+    ovalShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     ovalShape.line.ForeColor.RGB = colorValue
     ovalShape.line.weight = weight
     If filled Then
@@ -39505,7 +39522,7 @@ Private Sub DrawPoint(ByVal xCoord As Double, ByVal yCoord As Double, ByVal size
     leftPos = ModelToChartX(xCoord) - sizeValue / 2#
     topPos = ModelToChartY(yCoord) - sizeValue / 2#
     Dim pointShape As Object
-    Set pointShape = mChart.Shapes.AddShape(shapeType, leftPos, topPos, sizeValue, sizeValue)
+    Set pointShape = mChart.shapes.AddShape(shapeType, leftPos, topPos, sizeValue, sizeValue)
     pointShape.name = SHAPE_PREFIX & "Point" & labelText
     pointShape.Fill.ForeColor.RGB = colorValue
     pointShape.line.ForeColor.RGB = RGB(0, 0, 0)
@@ -39522,7 +39539,7 @@ Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVa
     topPos = ModelToChartY(yCoord) - sizeValue / 2#
 
     Dim pointShape As Object
-    Set pointShape = mChart.Shapes.AddShape(shapeType, leftPos, topPos, sizeValue, sizeValue)
+    Set pointShape = mChart.shapes.AddShape(shapeType, leftPos, topPos, sizeValue, sizeValue)
     pointShape.name = SHAPE_PREFIX & markerName
     pointShape.Fill.ForeColor.RGB = colorValue
     pointShape.line.ForeColor.RGB = RGB(0, 0, 0)
@@ -39559,8 +39576,8 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
     If useNativeVerticalText And Abs(rotation) = 90# Then orientation = MSO_TEXT_ORIENTATION_UPWARD
 
     Dim textShape As Object
-    Set textShape = mChart.Shapes.AddTextbox(orientation, leftPos, topPos, widthValue, heightValue)
-    textShape.name = SHAPE_PREFIX & "Text" & CStr(mChart.Shapes.count)
+    Set textShape = mChart.shapes.AddTextbox(orientation, leftPos, topPos, widthValue, heightValue)
+    textShape.name = SHAPE_PREFIX & "Text" & CStr(mChart.shapes.count)
     textShape.TextFrame.Characters().text = textValue
     If fontSize <= 0# Then fontSize = 8#
     textShape.TextFrame.Characters().Font.size = fontSize
@@ -39699,9 +39716,9 @@ End Function
 ' перед перерисовкой; пользовательские фигуры с другими именами сохраняет.
 Private Sub ClearGeneratedShapes()
     Dim i As Long
-    For i = mChart.Shapes.count To 1 Step -1
-        If Left$(mChart.Shapes.item(i).name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
-            mChart.Shapes.item(i).Delete
+    For i = mChart.shapes.count To 1 Step -1
+        If Left$(mChart.shapes.item(i).name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
+            mChart.shapes.item(i).Delete
         End If
     Next i
 End Sub
@@ -39717,9 +39734,9 @@ Private Sub ClearLegacyWorksheetGeneratedShapes()
     If sheet Is Nothing Then Exit Sub
 
     Dim i As Long
-    For i = sheet.Shapes.count To 1 Step -1
-        If Left$(sheet.Shapes.item(i).name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
-            sheet.Shapes.item(i).Delete
+    For i = sheet.shapes.count To 1 Step -1
+        If Left$(sheet.shapes.item(i).name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
+            sheet.shapes.item(i).Delete
         End If
     Next i
 End Sub
@@ -39965,7 +39982,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSectionTypeRegistry
 TYPE: 2
-LINES: 212
+LINES: 225
 ====================================================================================================
 Option Explicit
 
@@ -39993,8 +40010,8 @@ Private Function ActiveGeometryType(ByVal settings As CSystemSettingsReader) As 
         "CSectionTypeRegistry", "Настройки Config не переданы."
 
     Dim geometryType As String
-    geometryType = LCase$(Trim$(settings.GetString("Geometry.Type", "RectSet")))
-    If Len(Trim$(geometryType)) = 0 Then geometryType = TYPE_RECTSET
+    geometryType = LCase$(settings.GetRequiredChoice("Geometry.Type", _
+        Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")))
 
     Select Case geometryType
         Case TYPE_CIRCLE, TYPE_RECTSET, TYPE_ROUNDED_RECTANGLE, TYPE_HOLLOW_RECTANGLE
@@ -40009,6 +40026,7 @@ End Function
 ' Здесь допустим shape-specific Select Case: это единственная точка регистрации
 ' встроенных форм. Ниже по цепочке расчетное ядро видит только ISectionGeometry.
 Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As ISectionGeometry
+    If units Is Nothing Then Err.Raise vbObjectError + 4135, "CSectionTypeRegistry", "Система единиц геометрии не передана."
     Dim circleGeometry As CGeometryCircle ' Конкретная математическая форма круга.
     Dim RectSetGeometry As CGeometryRectSet ' Математическая форма из одного/двух прямоугольников.
     Dim roundedGeometry As CGeometryRoundedRectangle ' Конкретная математическая форма скругленного прямоугольника.
@@ -40017,45 +40035,57 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
     Select Case ActiveGeometryType(settings)
         Case TYPE_CIRCLE
             Set circleGeometry = New CGeometryCircle
-            circleGeometry.InitializeByDiameter units.InputLengthToInternal(settings.GetDouble("Circle.Diameter", 300#)), 0#, 0#
+            circleGeometry.InitializeByDiameter units.InputLengthToInternal(settings.GetRequiredDouble("Circle.Diameter")), 0#, 0#
             Set CreateGeometry = circleGeometry
 
         Case TYPE_RECTSET
             Set RectSetGeometry = New CGeometryRectSet
-            RectSetGeometry.Initialize units.InputLengthToInternal(settings.GetDouble("RectSet.B1", 250#)), _
-                units.InputLengthToInternal(settings.GetDouble("RectSet.H1", 550#)), _
-                units.InputLengthToInternal(settings.GetDouble("RectSet.B2", 600#)), _
-                units.InputLengthToInternal(settings.GetDouble("RectSet.H2", 250#)), 0#, 0#, _
-                units.InputLengthToInternal(settings.GetDouble("RectSet.UpperOffsetX", 0#)), _
-                settings.GetString("RectSet.SectionType", "LSection")
+            Dim sectionType As String, lowerB As Double, lowerH As Double, upperOffset As Double
+            sectionType = settings.GetRequiredChoice("RectSet.SectionType", _
+                Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
+            If sectionType <> "Rectangle" Then
+                lowerB = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B2"))
+                lowerH = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H2"))
+            End If
+            If sectionType <> "Rectangle" And sectionType <> "LSection" And sectionType <> "RectSet" Then _
+                upperOffset = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.UpperOffsetX"))
+            RectSetGeometry.Initialize units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B1")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H1")), _
+                lowerB, lowerH, 0#, 0#, upperOffset, sectionType
             Set CreateGeometry = RectSetGeometry
 
         Case TYPE_ROUNDED_RECTANGLE
             Set roundedGeometry = New CGeometryRoundedRectangle
+            Dim leftType As String, rightType As String, leftW As Double, rightW As Double, leftR2 As Double, rightR2 As Double
+            leftType = settings.GetRequiredChoice("RoundedRectangle.Left.Type", Array("Simple", "Tapered"))
+            rightType = settings.GetRequiredChoice("RoundedRectangle.Right.Type", Array("Simple", "Tapered"))
+            If leftType = "Tapered" Then
+                leftW = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.W"))
+                leftR2 = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R2"))
+            End If
+            If rightType = "Tapered" Then
+                rightW = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.W"))
+                rightR2 = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R2"))
+            End If
             roundedGeometry.InitializeSides _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.B", 300#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.H", 200#)), _
-                settings.GetString("RoundedRectangle.Left.Type", "Simple"), _
-                settings.GetString("RoundedRectangle.Right.Type", "Simple"), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.W", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.W", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R1", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R1", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R2", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R2", 0#))
+                units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.B")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.H")), _
+                leftType, rightType, leftW, rightW, _
+                units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R1")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R1")), leftR2, rightR2
             Set CreateGeometry = roundedGeometry
 
         Case TYPE_HOLLOW_RECTANGLE
             Set hollowGeometry = New CGeometryHollowRectangle
             hollowGeometry.Initialize _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.B", 500#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.H", 800#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.R", 180#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningB", 200#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningH", 500#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningR", 30#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetX", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetY", 0#))
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.B")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.H")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.R")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningB")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningH")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningR")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetX")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetY"))
             Set CreateGeometry = hollowGeometry
     End Select
 End Function
@@ -40137,10 +40167,10 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
 
-    Dim meshStepX As Double ' Шаг бетонной сетки по X во внутренних единицах; старый Mesh.Step читается только для совместимости.
-    Dim meshStepY As Double ' Шаг бетонной сетки по Y; если ключа нет, сохраняем старое квадратное поведение.
-    meshStepX = units.InputLengthToInternal(settings.GetDouble("Mesh.StepX", settings.GetDouble("Mesh.Step", 10#)))
-    meshStepY = units.InputLengthToInternal(settings.GetDouble("Mesh.StepY", settings.GetDouble("Mesh.StepX", settings.GetDouble("Mesh.Step", 10#))))
+    Dim meshStepX As Double ' Обязательный шаг бетонной сетки по X во внутренних единицах.
+    Dim meshStepY As Double ' Обязательный независимый шаг бетонной сетки по Y.
+    meshStepX = units.InputLengthToInternal(settings.GetRequiredDouble("Mesh.StepX"))
+    meshStepY = units.InputLengthToInternal(settings.GetRequiredDouble("Mesh.StepY"))
     mesh.BuildMesh geometry, meshStepX, meshStepY, 1, MeshBoundarySubdivisions(settings)
 
     Dim rebars As CRebarLayout
@@ -40172,11 +40202,11 @@ Public Function MeshBoundarySubdivisions(ByVal settings As CSystemSettingsReader
         Dim rawValue As String
         rawValue = Trim$(settings.GetRawString("Mesh.BoundarySubdivisions"))
         If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
-            "Mesh.BoundarySubdivisions не задан: введите целое число не меньше 1 на листе Config."
+            settings.InputErrorMessage("Mesh.BoundarySubdivisions", "Число подъячеек не задано.", "Введите целое число не меньше 1.")
     End If
-    MeshBoundarySubdivisions = settings.GetLong("Mesh.BoundarySubdivisions", 1)
+    MeshBoundarySubdivisions = settings.GetRequiredLong("Mesh.BoundarySubdivisions")
     If MeshBoundarySubdivisions < 1 Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
-        "Mesh.BoundarySubdivisions должен быть целым числом не меньше 1. Проверьте значение на листе Config."
+        settings.InputErrorMessage("Mesh.BoundarySubdivisions", "Число подъячеек меньше 1.", "Введите целое число не меньше 1.")
 End Function
 
 
@@ -41908,7 +41938,7 @@ End Function
 ====================================================================================================
 COMPONENT: CSystemSettingsReader
 TYPE: 2
-LINES: 1171
+LINES: 1212
 ====================================================================================================
 Option Explicit
 
@@ -42440,12 +42470,12 @@ Private Sub AppendHollowRectangleSettings(ByRef data As Variant)
 
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendSetting "HollowRectangle.H", Trim$(CStr(data(valueRow, 1))), Trim$(CStr(data(valueRow, 1))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.B", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.R", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.OpeningH", Trim$(CStr(data(valueRow, 4))), Trim$(CStr(data(valueRow, 4))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.OpeningB", Trim$(CStr(data(valueRow, 5))), Trim$(CStr(data(valueRow, 5))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.OpeningR", Trim$(CStr(data(valueRow, 6))), Trim$(CStr(data(valueRow, 6))), "HollowRectangle geometry"
+    AppendGeometryValue data, "HollowRectangle.H", valueRow, 1
+    AppendGeometryValue data, "HollowRectangle.B", valueRow, 2
+    AppendGeometryValue data, "HollowRectangle.R", valueRow, 3
+    AppendGeometryValue data, "HollowRectangle.OpeningH", valueRow, 4
+    AppendGeometryValue data, "HollowRectangle.OpeningB", valueRow, 5
+    AppendGeometryValue data, "HollowRectangle.OpeningR", valueRow, 6
 
     Dim mainHeaderRow As Long
     mainHeaderRow = FindRowWithCaption(data, "Грань", 1, geometryHeaderRow + 1)
@@ -42465,7 +42495,7 @@ Private Sub AppendHollowRectangleCommonSettings(ByRef data As Variant, ByVal geo
                 StrComp(keyValue, "HollowRectangle.InnerOffsetY", vbTextCompare) = 0 Then
             Dim sourceValue As String
             If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
-            AppendSetting keyValue, Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), sourceValue
+            AppendGeometryValue data, keyValue, rowIndex, 2, sourceValue
         End If
     Next rowIndex
 End Sub
@@ -42550,20 +42580,20 @@ Private Sub AppendRoundedRectangleFaceSettings(ByRef data As Variant)
 
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendSetting "RoundedRectangle.B", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "RoundedRectangle geometry"
-    AppendSetting "RoundedRectangle.H", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "RoundedRectangle geometry"
+    AppendGeometryValue data, "RoundedRectangle.B", valueRow, 2
+    AppendGeometryValue data, "RoundedRectangle.H", valueRow, 3
 
     Dim sideHeaderRow As Long
     sideHeaderRow = FindRowWithCaption(data, "слева", 2, geometryHeaderRow + 1)
     If sideHeaderRow > 0 And UBound(data, 1) >= sideHeaderRow + 4 Then
-        AppendSetting "RoundedRectangle.Left.Type", Trim$(CStr(data(sideHeaderRow + 1, 2))), Trim$(CStr(data(sideHeaderRow + 1, 2))), Trim$(CStr(data(sideHeaderRow + 1, 5)))
-        AppendSetting "RoundedRectangle.Right.Type", Trim$(CStr(data(sideHeaderRow + 1, 3))), Trim$(CStr(data(sideHeaderRow + 1, 3))), Trim$(CStr(data(sideHeaderRow + 1, 5)))
-        AppendSetting "RoundedRectangle.Left.W", Trim$(CStr(data(sideHeaderRow + 2, 2))), Trim$(CStr(data(sideHeaderRow + 2, 2))), Trim$(CStr(data(sideHeaderRow + 2, 5)))
-        AppendSetting "RoundedRectangle.Right.W", Trim$(CStr(data(sideHeaderRow + 2, 3))), Trim$(CStr(data(sideHeaderRow + 2, 3))), Trim$(CStr(data(sideHeaderRow + 2, 5)))
-        AppendSetting "RoundedRectangle.Left.R1", Trim$(CStr(data(sideHeaderRow + 3, 2))), Trim$(CStr(data(sideHeaderRow + 3, 2))), Trim$(CStr(data(sideHeaderRow + 3, 5)))
-        AppendSetting "RoundedRectangle.Right.R1", Trim$(CStr(data(sideHeaderRow + 3, 3))), Trim$(CStr(data(sideHeaderRow + 3, 3))), Trim$(CStr(data(sideHeaderRow + 3, 5)))
-        AppendSetting "RoundedRectangle.Left.R2", Trim$(CStr(data(sideHeaderRow + 4, 2))), Trim$(CStr(data(sideHeaderRow + 4, 2))), Trim$(CStr(data(sideHeaderRow + 4, 5)))
-        AppendSetting "RoundedRectangle.Right.R2", Trim$(CStr(data(sideHeaderRow + 4, 3))), Trim$(CStr(data(sideHeaderRow + 4, 3))), Trim$(CStr(data(sideHeaderRow + 4, 5)))
+        AppendGeometryValue data, "RoundedRectangle.Left.Type", sideHeaderRow + 1, 2
+        AppendGeometryValue data, "RoundedRectangle.Right.Type", sideHeaderRow + 1, 3
+        AppendGeometryValue data, "RoundedRectangle.Left.W", sideHeaderRow + 2, 2
+        AppendGeometryValue data, "RoundedRectangle.Right.W", sideHeaderRow + 2, 3
+        AppendGeometryValue data, "RoundedRectangle.Left.R1", sideHeaderRow + 3, 2
+        AppendGeometryValue data, "RoundedRectangle.Right.R1", sideHeaderRow + 3, 3
+        AppendGeometryValue data, "RoundedRectangle.Left.R2", sideHeaderRow + 4, 2
+        AppendGeometryValue data, "RoundedRectangle.Right.R2", sideHeaderRow + 4, 3
     End If
 
     Dim mainHeaderRow As Long
@@ -42716,7 +42746,7 @@ Private Sub AppendRectSetCommonSettings(ByRef data As Variant, ByVal geometryHea
                 StrComp(keyValue, "RectSet.UpperOffsetX", vbTextCompare) = 0 Then
             Dim sourceValue As String
             If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
-            AppendSetting keyValue, Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), sourceValue
+            AppendGeometryValue data, keyValue, rowIndex, 2, sourceValue
         End If
     Next rowIndex
 End Sub
@@ -42726,10 +42756,10 @@ End Sub
 Private Sub AppendRectSetSectionedSettings(ByRef data As Variant, Optional ByVal geometryHeaderRow As Long = 2)
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendSetting "RectSet.H1", Trim$(CStr(data(valueRow, 1))), Trim$(CStr(data(valueRow, 1))), "RectSet geometry"
-    AppendSetting "RectSet.B1", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "RectSet geometry"
-    AppendSetting "RectSet.H2", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "RectSet geometry"
-    AppendSetting "RectSet.B2", Trim$(CStr(data(valueRow, 4))), Trim$(CStr(data(valueRow, 4))), "RectSet geometry"
+    AppendGeometryValue data, "RectSet.H1", valueRow, 1
+    AppendGeometryValue data, "RectSet.B1", valueRow, 2
+    AppendGeometryValue data, "RectSet.H2", valueRow, 3
+    AppendGeometryValue data, "RectSet.B2", valueRow, 4
 
     Dim faceNames(1 To 8) As String
     Dim sideIndexes(1 To 8) As Long
@@ -42807,6 +42837,16 @@ Private Sub FillRectSetSectionedFaceOrder(ByRef faceNames() As String, ByRef sid
     faceNames(8) = "B2": sideIndexes(8) = 2
 End Sub
 
+' Сохраняет значение размерной или управляющей ячейки геометрии вместе с
+' фактическим адресом. Ошибка формулы не становится текстом Error 2015;
+' числовой диапазон и активность параметра проверяет потребитель геометрии.
+Private Sub AppendGeometryValue(ByRef data As Variant, ByVal key As String, _
+        ByVal rowIndex As Long, ByVal columnIndex As Long, Optional ByVal source As String = vbNullString)
+    Dim value As String
+    value = ConfigCellText(data(rowIndex, columnIndex), "значение геометрии", rowIndex, key, False, columnIndex)
+    AppendSetting key, value, value, source, rowIndex, columnIndex
+End Sub
+
 ' Добавляет одну пару ключ-значение в reader.
 ' Массивы параллельные: это проще и быстрее для VBA, чем словарь с Variant-объектами,
 ' а поиск по ключу остается достаточно дешевым для числа настроек Config.
@@ -42867,6 +42907,11 @@ Private Function InputSettingsSection(ByVal key As String) As String
         Case Left$(key, 7) = "Solver.": sectionName = "настройки решателя"
         Case Left$(key, 9) = "Capacity.": sectionName = "настройки несущей способности"
         Case Left$(key, 15) = "AutoCAD.Import.": sectionName = "импорт геометрии из AutoCAD"
+        Case Left$(key, 7) = "Circle.", Left$(key, 6) = "Rebar.": sectionName = "круглое сечение"
+        Case Left$(key, 8) = "RectSet.": sectionName = "RectSet-сечение"
+        Case Left$(key, 17) = "RoundedRectangle.": sectionName = "скругленный прямоугольник"
+        Case Left$(key, 16) = "HollowRectangle.": sectionName = "пустотелый прямоугольник"
+        Case Left$(key, 9) = "Geometry.", Left$(key, 5) = "Mesh.": sectionName = "геометрия и расчетная сетка"
         Case Else: sectionName = "таблица исходных настроек"
     End Select
     InputSettingsSection = "лист Config, раздел """ & sectionName & """"
@@ -42975,6 +43020,22 @@ Public Function GetRequiredString(ByVal key As String) As String
     GetRequiredString = textValue
 End Function
 
+' Читает обязательный селектор из явного набора значений. Возвращает запись
+' из набора с каноническим регистром; пустота/TODO и неизвестный вариант
+' дают ошибку ввода с адресом ячейки, а не выбор первого варианта по умолчанию.
+Public Function GetRequiredChoice(ByVal key As String, ByVal choices As Variant) As String
+    Dim value As String, choice As Variant
+    value = GetRequiredString(key)
+    For Each choice In choices
+        If StrComp(value, CStr(choice), vbTextCompare) = 0 Then
+            GetRequiredChoice = CStr(choice)
+            Exit Function
+        End If
+    Next choice
+    Err.Raise vbObjectError + 4311, "CSystemSettingsReader.GetRequiredChoice", _
+        InputErrorMessage(key, "Недопустимый вариант: """ & value & """.", "Выберите из списка: " & Join(choices, ", ") & ".")
+End Function
+
 ' Подсказывает действие отдельно для утраченной строки и незаполненного значения.
 ' Число/текст проверяются здесь, а инженерный диапазон остается у потребителя.
 Private Function RequiredInputCorrection(ByVal key As String, ByVal numericValue As Boolean) As String
@@ -42990,13 +43051,23 @@ End Function
 ' передается общему числовому reader-у; знак и инженерный диапазон проверяет consumer.
 Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long = 0, _
         Optional ByVal allowBlankValue As Boolean = True) As Long
-    Dim value As Double
-    value = GetDouble(key, CDbl(defaultValue), allowBlankValue)
+    GetLong = CheckedLong(key, GetDouble(key, CDbl(defaultValue), allowBlankValue))
+End Function
+
+' Читает обязательный счетчик без подстановки отсутствующего/пустого значения.
+' Применяет ту же проверку представимости и отсутствия округления, что GetLong.
+Public Function GetRequiredLong(ByVal key As String) As Long
+    GetRequiredLong = CheckedLong(key, GetRequiredDouble(key))
+End Function
+
+' Проверяет числовой ввод перед CLng. Знак и допустимый инженерный диапазон
+' остаются у владельца настройки; здесь исключены Overflow и округление дроби.
+Private Function CheckedLong(ByVal key As String, ByVal value As Double) As Long
     If value < -2147483648# Or value > 2147483647# Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
         InputErrorMessage(key, "Целое число выходит за допустимый диапазон Long.", "Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.")
     If value <> Fix(value) Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
         InputErrorMessage(key, "Введено дробное значение вместо целого; автоматическое округление не выполняется.", "Введите целое число.")
-    GetLong = CLng(value)
+    CheckedLong = CLng(value)
 End Function
 
 ' Читает Yes/No и утвержденные aliases. Default допустим только для отсутствующего
@@ -45436,7 +45507,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
 TYPE: 1
-LINES: 1088
+LINES: 1086
 ====================================================================================================
 Option Explicit
 
@@ -46466,9 +46537,7 @@ Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settin
     If settings Is Nothing Then Err.Raise vbObjectError + 4131, "BuildWorkbookSectionModel", "Настройки Config не переданы."
 
     Dim geometrySource As String
-    geometrySource = Trim$(settings.GetRawString("Geometry.Source", "Generated"))
-    If Len(geometrySource) = 0 Then Err.Raise vbObjectError + 4132, "BuildWorkbookSectionModel", _
-        "Geometry.Source должен быть Generated или AutoCAD."
+    geometrySource = settings.GetRequiredChoice("Geometry.Source", Array("Generated", "AutoCAD"))
 
     If StrComp(geometrySource, "Generated", vbTextCompare) = 0 Then
         Dim registry As CSectionTypeRegistry
@@ -47301,7 +47370,7 @@ End Property
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 8456
+LINES: 8464
 ====================================================================================================
 Option Explicit
 
@@ -55707,6 +55776,7 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
     SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
     SetSystemSetting "General.DiagramExtension", "No"
     SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "SLS.Crack.PsiS", "0.25"
     For Each standard In Array("SP35", "SP63")
         SetSystemSetting "Stability.Code", CStr(standard)
         For Each mode In Array("User", "Auto", "AlwaysCalc")
@@ -55735,11 +55805,18 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
                 AssertEquals stats, prefix & ".normalAggregate", result.NormalCrackStatus, "OK"
                 AssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.calculated
                 AssertTrue stats, prefix & ".widthNotBlocked", result.CrackWidthMeta.InternalStatus = rsNotApplicable
+                AssertClose stats, prefix & ".psiPreserved", result.crackResult.width.PsiS, 0.25, 0#
+                AssertTrue stats, prefix & ".noPsiWarning", InStr(1, result.CrackWidthMeta.resultComment, "psi", vbTextCompare) = 0 And _
+                    InStr(1, result.CrackWidthMeta.resultComment, "?", vbBinaryCompare) = 0
+                AssertTrue stats, prefix & ".noSummaryPsiWarning", InStr(1, result.CrackSummaryMeta.resultComment, "psi", vbTextCompare) = 0 And _
+                    InStr(1, result.CrackSummaryMeta.resultComment, "?", vbBinaryCompare) = 0
                 AssertEquals stats, prefix & ".longitudinal", result.crackResult.longitudinal.status, expectedLongitudinal
                 AssertTrue stats, prefix & ".longitudinalCalculated", result.LongitudinalCrackMeta.calculated
                 outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", batch.combinationID(i))
                 AssertEquals stats, prefix & ".writerState", CStr(sheet.Cells.item(outputRow, anchor.column + 20).Value2), "NotCracked"
                 AssertEquals stats, prefix & ".writerWidth", CStr(sheet.Cells.item(outputRow, anchor.column + 44).Value2), "N/A"
+                AssertEquals stats, prefix & ".writerPsiBlank", CStr(sheet.Cells.item(outputRow, anchor.column + 35).Value2), vbNullString
+                AssertEquals stats, prefix & ".writerWidthBlank", CStr(sheet.Cells.item(outputRow, anchor.column + 41).Value2), vbNullString
                 AssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.item(outputRow, anchor.column + 48).Value2), expectedLongitudinal
                 AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.item(outputRow, anchor.column + 1).Value2), result.CrackSummaryMeta.resultComment
                 AppendLine stats, "NOT_CRACKED_OUTPUT: " & prefix & "|formation=" & result.CrackFormationMeta.resultComment & _
@@ -59058,7 +59135,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: 1
-LINES: 1534
+LINES: 1535
 ====================================================================================================
 Option Explicit
 
@@ -60576,6 +60653,7 @@ Private Sub TestAudit03ConfirmedNotCrackedSkipsWidth(ByRef stats As TCrackTestSt
             AssertTrue stats, prefix & ".external", policy.ExternalStatus(width.ResultMeta) = "N/A"
             AssertTrue stats, prefix & ".reason", InStr(1, width.ResultMeta.resultComment, "не образуется", vbTextCompare) > 0
             AssertTrue stats, prefix & ".noFallbackWarning", InStr(1, width.ResultMeta.resultComment, "psi_s", vbTextCompare) = 0
+            AssertClose stats, prefix & ".psiPreserved", width.PsiS, 0.25, 0#
             AssertClose stats, prefix & ".zeroWidth", width.crackWidth, 0#, 0#
         Next mode
     Next status
@@ -62166,7 +62244,7 @@ Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
     AssertTrue stats, "rounded.tapered.area.positive", props125.area > 0#
     AssertTrue stats, "rounded.tapered.centroid.inside", geom.ContainsPoint(props125.centroidX, props125.centroidY)
     AssertTrue stats, "rounded.tapered.rightExtension", _
-        geom.maxX > geom.RightBaseX And geom.maxX < geom.RightBaseX + geom.RightW
+        geom.maxX > geom.RightBaseX And geom.maxX < geom.RightBaseX + geom.rightW
     AssertClose stats, "rounded.tapered.height", geom.maxY - geom.minY, 180#, 0.000001
     AssertRelative stats, "rounded.tapered.area.convergence", props125.area, props25.area, 0.08
     AssertRelative stats, "rounded.tapered.Ix.convergence", props125.Ixc, props25.Ixc, 0.15
@@ -62186,11 +62264,11 @@ Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
     Dim expectedTopTangent As Double
     Dim expectedNoseMaxX As Double
     expectedTopTangent = wideGeom.RightBaseX - 300# * (Sqr(2#) - 1#)
-    expectedNoseMaxX = wideGeom.RightBaseX + wideGeom.RightW - 100# * (Sqr(2#) - 1#)
+    expectedNoseMaxX = wideGeom.RightBaseX + wideGeom.rightW - 100# * (Sqr(2#) - 1#)
     AssertClose stats, "rounded.tapered.variableAngle.topTangent", x2, expectedTopTangent, 0.000001
     AssertClose stats, "rounded.tapered.variableAngle.maxX", wideGeom.maxX, expectedNoseMaxX, 0.000001
     AssertTrue stats, "rounded.tapered.variableAngle.maxLessThanRawApex", _
-        wideGeom.maxX < wideGeom.RightBaseX + wideGeom.RightW
+        wideGeom.maxX < wideGeom.RightBaseX + wideGeom.rightW
 
     Dim largeR1 As CGeometryRoundedRectangle
     Set largeR1 = New CGeometryRoundedRectangle
@@ -63192,7 +63270,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestGeometryConfig
 TYPE: 1
-LINES: 664
+LINES: 950
 ====================================================================================================
 Option Explicit
 
@@ -63856,6 +63934,292 @@ Private Sub Check(ByRef stats As TGeometryConfigStats, ByVal name As String, ByV
         stats.Failed = stats.Failed + 1
         stats.Report = stats.Report & "FAIL: " & name & vbCrLf
     End If
+End Sub
+
+' ======================================================================
+' ДЛЯ ТЕСТОВ: ОБЯЗАТЕЛЬНЫЙ ВВОД АКТИВНОЙ ГЕОМЕТРИИ
+' ======================================================================
+
+' Проверяет реальные таблицы четырех форм двумя независимыми входами:
+' фабрика геометрии и BuildFromSettings арматуры. Не заполняет пропущенные
+' значения вместо пользователя; все Formula-массивы восстанавливает после
+' серии, включая неудачу. Количество assertions доступно полному UI-suite.
+Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef Passed As Long = 0, _
+        Optional ByRef Failed As Long = 0) As String
+    Dim stats As TGeometryConfigStats, ranges(0 To 5) As Object, saved(0 To 5) As Variant
+    Dim names As Variant, shapes As Variant, shape As String, fields As Variant
+    Dim i As Long, j As Long, item As Variant, route As Variant, bad As Variant
+    Dim cell As Object, baseline As Variant, current As Variant, description As String
+    Dim errorNumber As Long, prefix As String, caseIndex As Long
+    names = Array("rngSystemSettings", "rngUnitSettings", "rngCircleGeometry", _
+        "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+    shapes = Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+    On Error GoTo FailedRun
+    For i = 0 To 5
+        Set ranges(i) = ThisWorkbook.names.item(CStr(names(i))).RefersToRange
+        saved(i) = ranges(i).formula
+    Next i
+    ranges(1).Cells(2, 2).Value2 = "mm"
+    For i = 0 To 3
+        shape = CStr(shapes(i))
+        SetKey ranges(0), "Geometry.Type", shape
+        If shape = "Circle" Then
+            ConfigureCircle ranges(i + 2)
+            Set cell = RequiredGeometryKeyCell(ranges(i + 2), "Circle.Diameter")
+            fields = Array(Array("Circle.Diameter", cell.row - ranges(i + 2).row + 1, 2, CDbl(cell.Value2)))
+        Else
+            ConfigureShape ranges(i + 2), shape
+            fields = ShapeFields(shape)
+            ConfigureRequiredGeometryRebars ranges(i + 2), shape
+        End If
+        For Each route In Array("Geometry", "Rebars")
+            baseline = RequiredGeometryRouteSnapshot(shape, CStr(route))
+            For Each item In fields
+                Set cell = ranges(i + 2).Cells(CLng(item(1)), CLng(item(2)))
+                caseIndex = 0
+                For Each bad In Array(vbNullString, "TODO", "abc", CVErr(2015))
+                    caseIndex = caseIndex + 1
+                    cell.Value2 = bad
+                    prefix = "requiredGeometry." & CStr(item(0)) & "." & CStr(route) & "." & CStr(caseIndex)
+                    RequiredGeometryProgress prefix, stats.Report
+                    errorNumber = 0: description = vbNullString
+                    On Error Resume Next
+                    current = RequiredGeometryRouteSnapshot(shape, CStr(route))
+                    errorNumber = Err.number: description = Err.description
+                    Err.Clear
+                    On Error GoTo FailedRun
+                    Check stats, prefix & ".reject", errorNumber <> 0
+                    Check stats, prefix & ".key", InStr(1, description, CStr(item(0)), vbBinaryCompare) > 0
+                    Check stats, prefix & ".address", InStr(1, description, "Config", vbTextCompare) > 0 And _
+                        InStr(1, description, cell.address(False, False), vbTextCompare) > 0
+                    stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & _
+                        CStr(errorNumber) & "; " & description & vbCrLf
+                    cell.Value2 = item(3)
+                    current = RequiredGeometryRouteSnapshot(shape, CStr(route))
+                    Check stats, prefix & ".recovery", SameGeometryRouteSnapshot(baseline, current)
+                Next bad
+            Next item
+        Next route
+    Next i
+    CheckRequiredGeometryInactive stats, ranges(0), ranges(3), ranges(4)
+    CheckRequiredGeometryCommon stats, ranges(0), ranges(2)
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    stats.Report = stats.Report & "FAIL: requiredGeometry.runtime; " & CStr(Err.number) & "; " & Err.description & vbCrLf
+Restore:
+    On Error GoTo FailedRestore
+    For j = 0 To 5
+        If Not ranges(j) Is Nothing Then
+            ranges(j).formula = saved(j)
+            Check stats, "requiredGeometry.restore." & CStr(names(j)), SameFormula(ranges(j).formula, saved(j))
+        End If
+    Next j
+    GoTo Finish
+FailedRestore:
+    stats.Failed = stats.Failed + 1
+    stats.Report = stats.Report & "FAIL: requiredGeometry.restore.runtime; " & CStr(Err.number) & "; " & Err.description & vbCrLf
+Finish:
+    Passed = stats.Passed: Failed = stats.Failed
+    RunAudit03RequiredGeometryInputTests = stats.Report & "TOTAL_REQUIRED_GEOMETRY: passed=" & _
+        CStr(Passed) & "; failed=" & CStr(Failed) & vbCrLf
+End Function
+
+' Настраивает допустимые стержни для измененных размеров fixture. Не меняет
+' тестируемые геометрические поля и не зависит от исходного армирования книги.
+Private Sub ConfigureRequiredGeometryRebars(ByVal target As Object, ByVal shape As String)
+    Dim rowIndex As Long
+    If shape = "RectSet" Then
+        For rowIndex = 11 To 18
+            target.Cells(rowIndex, 2).Value2 = 20#: target.Cells(rowIndex, 3).Value2 = 16#
+            target.Cells(rowIndex, 4).Value2 = 3
+            target.Cells(rowIndex, 5).Value2 = 20#: target.Cells(rowIndex, 6).Value2 = 20#
+        Next rowIndex
+        For rowIndex = 21 To 28
+            target.Cells(rowIndex, 2).Value2 = 0#: target.Cells(rowIndex, 5).Value2 = 0#
+        Next rowIndex
+    Else
+        If shape = "RoundedRectangle" Then rowIndex = 13 Else rowIndex = 11
+        Dim firstRow As Long, lastRow As Long, extraFirst As Long
+        firstRow = rowIndex: lastRow = firstRow + 3
+        If shape = "RoundedRectangle" Then extraFirst = firstRow + 6 Else extraFirst = firstRow + 10
+        If shape = "HollowRectangle" Then lastRow = firstRow + 7
+        For rowIndex = firstRow To lastRow
+            target.Cells(rowIndex, 2).Value2 = 40#: target.Cells(rowIndex, 3).Value2 = 16#
+            If rowIndex < firstRow + 4 Then target.Cells(rowIndex, 4).Value2 = 3
+        Next rowIndex
+        For rowIndex = extraFirst To extraFirst + lastRow - firstRow
+            target.Cells(rowIndex, 2).Value2 = 0#: target.Cells(rowIndex, 5).Value2 = 0#
+        Next rowIndex
+    End If
+End Sub
+
+' Читает полный Config и выбранный производственный вход, не вызывая фабрику
+' формы перед builder-ом: так тест обнаруживает его собственные defaults.
+' Снимок арматуры содержит все координаты/диаметры, а не только общий count.
+Private Function RequiredGeometryRouteSnapshot(ByVal shape As String, ByVal route As String) As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set registry = New CSectionTypeRegistry
+    If route = "Geometry" Then
+        RequiredGeometryRouteSnapshot = ShapeSnapshot(registry.CreateGeometry(settings, units))
+        Exit Function
+    End If
+    Dim circleBuilder As CCircleRebarLayoutBuilder, rect As CRectSetRebarLayoutBuilder
+    Dim rounded As CRoundedRectRebarLayoutBuilder, hollow As CHollowRectRebarLayoutBuilder
+    Dim bars As CRebarLayout
+    Select Case shape
+        Case "Circle": Set circleBuilder = New CCircleRebarLayoutBuilder: Set bars = circleBuilder.BuildFromSettings(settings, units)
+        Case "RectSet": Set rect = New CRectSetRebarLayoutBuilder: Set bars = rect.BuildFromSettings(settings, units)
+        Case "RoundedRectangle": Set rounded = New CRoundedRectRebarLayoutBuilder: Set bars = rounded.BuildFromSettings(settings, units)
+        Case "HollowRectangle": Set hollow = New CHollowRectRebarLayoutBuilder: Set bars = hollow.BuildFromSettings(settings, units)
+    End Select
+    Dim values() As Double, i As Long
+    ReDim values(0 To bars.count * 3)
+    values(0) = bars.count
+    For i = 1 To bars.count
+        values(i * 3 - 2) = bars.x(i): values(i * 3 - 1) = bars.y(i): values(i * 3) = bars.diameter(i)
+    Next i
+    RequiredGeometryRouteSnapshot = values
+End Function
+
+' Сравнивает расчетные snapshots в том же абсолютном геометрическом допуске,
+' что и shape-tests; неодинаковый размер массива означает различие раскладки.
+Private Function SameGeometryRouteSnapshot(ByVal first As Variant, ByVal second As Variant) As Boolean
+    If UBound(first) <> UBound(second) Then Exit Function
+    Dim i As Long
+    For i = LBound(first) To UBound(first)
+        If Abs(CDbl(first(i)) - CDbl(second(i))) > 0.000001 Then Exit Function
+    Next i
+    SameGeometryRouteSnapshot = True
+End Function
+
+' Возвращает фактическую ячейку ключевой таблицы. Потеря строки fixture
+' является ошибкой теста, а не добавлением отсутствующего Config/default.
+Private Function RequiredGeometryKeyCell(ByVal target As Object, ByVal key As String) As Object
+    Dim rowIndex As Long
+    For rowIndex = 2 To target.rows.count
+        If CStr(target.Cells(rowIndex, 1).Value2) = key Then
+            Set RequiredGeometryKeyCell = target.Cells(rowIndex, 2)
+            Exit Function
+        End If
+    Next rowIndex
+    Err.Raise vbObjectError + 5965, "modTestGeometryConfig", "Не найдена строка fixture: " & key
+End Function
+
+' Проверяет неактивные размеры Rectangle и W/R2 сторон Simple. Эти значения
+' не участвуют в форме/раскладке, поэтому не должны требовать числового ввода.
+' Ошибки формул Excel здесь не подменяются пустым значением reader-а.
+Private Sub CheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, _
+        ByVal rectRange As Object, ByVal roundedRange As Object)
+    Dim route As Variant, item As Variant, value As Variant, baseline As Variant, current As Variant
+    Dim description As String, errorNumber As Long, prefix As String
+    SetKey systemRange, "Geometry.Type", "RectSet"
+    ConfigureShape rectRange, "RectSet": ConfigureRequiredGeometryRebars rectRange, "RectSet"
+    rectRange.Cells(3, 2).Value2 = "Rectangle"
+    For Each route In Array("Geometry", "Rebars")
+        baseline = RequiredGeometryRouteSnapshot("RectSet", CStr(route))
+        For Each item In Array(Array(8, 3), Array(8, 4), Array(4, 2))
+            For Each value In Array(vbNullString, "TODO", "abc")
+                rectRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = value
+                errorNumber = 0: description = vbNullString
+                On Error Resume Next
+                current = RequiredGeometryRouteSnapshot("RectSet", CStr(route))
+                errorNumber = Err.number: description = Err.description
+                Err.Clear: On Error GoTo 0
+                prefix = "requiredGeometry.inactive.Rectangle." & CStr(route) & "." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(value)
+                Check stats, prefix, errorNumber = 0
+                If errorNumber = 0 Then Check stats, prefix & ".snapshot", SameGeometryRouteSnapshot(baseline, current)
+                stats.Report = stats.Report & "INACTIVE_GEOMETRY: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
+            Next value
+            rectRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = 100#
+        Next item
+    Next route
+    SetKey systemRange, "Geometry.Type", "RoundedRectangle"
+    ConfigureShape roundedRange, "RoundedRectangle": ConfigureRequiredGeometryRebars roundedRange, "RoundedRectangle"
+    roundedRange.Cells(7, 2).Value2 = "Simple": roundedRange.Cells(7, 3).Value2 = "Simple"
+    For Each route In Array("Geometry", "Rebars")
+        baseline = RequiredGeometryRouteSnapshot("RoundedRectangle", CStr(route))
+        For Each item In Array(Array(8, 2), Array(8, 3), Array(10, 2), Array(10, 3))
+            For Each value In Array(vbNullString, "TODO", "abc")
+                roundedRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = value
+                errorNumber = 0: description = vbNullString
+                On Error Resume Next
+                current = RequiredGeometryRouteSnapshot("RoundedRectangle", CStr(route))
+                errorNumber = Err.number: description = Err.description
+                Err.Clear: On Error GoTo 0
+                prefix = "requiredGeometry.inactive.Simple." & CStr(route) & "." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(value)
+                Check stats, prefix, errorNumber = 0
+                If errorNumber = 0 Then Check stats, prefix & ".snapshot", SameGeometryRouteSnapshot(baseline, current)
+                stats.Report = stats.Report & "INACTIVE_GEOMETRY: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
+            Next value
+            roundedRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = 0#
+        Next item
+    Next route
+End Sub
+
+' Обязательные общие Geometry/mesh поля проверяет штатная сборка модели.
+' В missing-варианте временно меняется ключ, а не удаляются пользовательские
+' строки; recovery восстанавливает его до следующего сценария.
+Private Sub CheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal circleRange As Object)
+    Dim key As Variant, bad As Variant, cell As Object, savedValue As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel
+    Dim errorNumber As Long, description As String, prefix As String, caseIndex As Long
+    SetKey systemRange, "Geometry.Type", "Circle": SetKey systemRange, "Geometry.Source", "Generated"
+    ConfigureCircle circleRange
+    For Each key In Array("Geometry.Type", "Geometry.Source", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions")
+        Set cell = RequiredGeometryKeyCell(systemRange, CStr(key))
+        savedValue = cell.formula: caseIndex = 0
+        For Each bad In Array(vbNullString, "TODO", "abc", CVErr(2015), "__MISSING_KEY__")
+            caseIndex = caseIndex + 1
+            If Not IsError(bad) Then
+                If CStr(bad) = "__MISSING_KEY__" Then cell.Offset(0, -1).Value2 = "Audit03.Hidden." & CStr(key) Else cell.Value2 = bad
+            Else
+                cell.Value2 = bad
+            End If
+            errorNumber = 0: description = vbNullString
+            RequiredGeometryProgress "requiredGeometry.common." & CStr(key) & "." & CStr(caseIndex), stats.Report
+            On Error Resume Next
+            Set model = RequiredGeometryModelFromWorkbook()
+            errorNumber = Err.number: description = Err.description
+            Err.Clear: On Error GoTo 0
+            prefix = "requiredGeometry.common." & CStr(key) & "." & CStr(caseIndex)
+            Check stats, prefix & ".reject", errorNumber <> 0
+            Check stats, prefix & ".key", InStr(1, description, CStr(key), vbBinaryCompare) > 0
+            Check stats, prefix & ".location", InStr(1, description, "Config", vbTextCompare) > 0
+            If caseIndex < 5 Then Check stats, prefix & ".address", InStr(1, description, cell.address(False, False), vbTextCompare) > 0
+            stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
+            cell.Offset(0, -1).Value2 = key: cell.formula = savedValue
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+            Check stats, prefix & ".recovery", model.ConcreteCount > 0 And model.rebarCount = 24
+        Next bad
+    Next key
+End Sub
+
+' Выполняет один обычный production-маршрут без Resume Next между reader,
+' units и builder. Первая ошибка ввода сохраняется, следующие шаги при ней
+' не вызываются; внешний тест перехватывает единственный вызов целиком.
+Private Function RequiredGeometryModelFromWorkbook() As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set RequiredGeometryModelFromWorkbook = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+End Function
+
+' Сохраняет уже выполненные assertions и следующий сценарий рядом с временной
+' книгой. Watchdog забирает этот журнал при timeout; отметка START не считается
+' успешной проверкой. Ошибка записи диагностики не изменяет результат теста.
+Private Sub RequiredGeometryProgress(ByVal nextCase As String, ByVal Report As String)
+    On Error Resume Next
+    Dim fso As Object, stream As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set stream = fso.CreateTextFile(ThisWorkbook.path & "\Audit03_Search_Progress.txt", True, True)
+    stream.Write Report & "START_REQUIRED_GEOMETRY: " & nextCase & vbCrLf
+    stream.Close
+    On Error GoTo 0
 End Sub
 
 
@@ -66725,7 +67089,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 6737
+LINES: 6741
 ====================================================================================================
 Option Explicit
 
@@ -66788,6 +67152,10 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarCounterTests(rebarCounterPassed, rebarCounterFailed)
     stats.Passed = stats.Passed + rebarCounterPassed
     stats.Failed = stats.Failed + rebarCounterFailed
+    Dim requiredGeometryPassed As Long, requiredGeometryFailed As Long
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RequiredGeometryInputTests(requiredGeometryPassed, requiredGeometryFailed)
+    stats.Passed = stats.Passed + requiredGeometryPassed
+    stats.Failed = stats.Failed + requiredGeometryFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -66902,11 +67270,11 @@ Private Sub TestButtons(ByRef stats As TUiTestStats)
     Dim importButton As Object
     Dim acadButton As Object
     Dim plotButton As Object
-    Set runButton = calc.Shapes.item("btnRunSectionCalculation")
-    Set importButton = calc.Shapes.item("btnImportGeometryFromAutoCAD")
-    Set clearButton = calc.Shapes.item("btnClearAutoCADDrawing")
-    Set acadButton = calc.Shapes.item("btnExportStressToAutoCAD")
-    Set plotButton = calc.Shapes.item("btnUpdateSectionPlot")
+    Set runButton = calc.shapes.item("btnRunSectionCalculation")
+    Set importButton = calc.shapes.item("btnImportGeometryFromAutoCAD")
+    Set clearButton = calc.shapes.item("btnClearAutoCADDrawing")
+    Set acadButton = calc.shapes.item("btnExportStressToAutoCAD")
+    Set plotButton = calc.shapes.item("btnUpdateSectionPlot")
 
     AssertTrue stats, "ui.buttons.run.exists", Not runButton Is Nothing
     AssertTrue stats, "ui.buttons.import.exists", Not importButton Is Nothing
@@ -67452,7 +67820,7 @@ Private Sub TestPlotClearsLegacyWorksheetShapes(ByRef stats As TUiTestStats)
     Dim calc As Object
     Set calc = ThisWorkbook.Worksheets.item("Расчет")
     Dim legacyShape As Object
-    Set legacyShape = calc.Shapes.AddShape(1, 10#, 10#, 20#, 20#)
+    Set legacyShape = calc.shapes.AddShape(1, 10#, 10#, 20#, 20#)
     legacyShape.name = "NDMPlot_LegacyWorksheetShapeForTest"
 
     AssertTrue stats, "ui.plot.legacyWorksheetShape.created", _
@@ -68992,10 +69360,10 @@ Private Function PlotVisibleTitleContains(ByVal expectedText As String) As Boole
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
 
     Dim shapeIndex As Long
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If StrComp(chartObject.Chart.Shapes.item(shapeIndex).name, "NDMPlot_Title", vbTextCompare) = 0 Then
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If StrComp(chartObject.Chart.shapes.item(shapeIndex).name, "NDMPlot_Title", vbTextCompare) = 0 Then
             PlotVisibleTitleContains = _
-                (InStr(1, chartObject.Chart.Shapes.item(shapeIndex).TextFrame.Characters().text, expectedText, vbTextCompare) > 0)
+                (InStr(1, chartObject.Chart.shapes.item(shapeIndex).TextFrame.Characters().text, expectedText, vbTextCompare) > 0)
             Exit Function
         End If
     Next shapeIndex
@@ -69009,8 +69377,8 @@ Private Function CountPlotShapes(ByVal nameFragment As String) As Long
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
 
     Dim shapeIndex As Long
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If InStr(1, chartObject.Chart.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If InStr(1, chartObject.Chart.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
             CountPlotShapes = CountPlotShapes + 1
         End If
     Next shapeIndex
@@ -69024,18 +69392,18 @@ Private Function FirstGeneratedPlotShape(ByVal nameFragment As String) As Object
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
 
     Dim shapeIndex As Long
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If InStr(1, chartObject.Chart.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
-            Set FirstGeneratedPlotShape = chartObject.Chart.Shapes.item(shapeIndex)
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If InStr(1, chartObject.Chart.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+            Set FirstGeneratedPlotShape = chartObject.Chart.shapes.item(shapeIndex)
             Exit Function
         End If
     Next shapeIndex
 
     Dim sheet As Object
     Set sheet = ThisWorkbook.Worksheets.item("Расчет")
-    For shapeIndex = 1 To sheet.Shapes.count
-        If InStr(1, sheet.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
-            Set FirstGeneratedPlotShape = sheet.Shapes.item(shapeIndex)
+    For shapeIndex = 1 To sheet.shapes.count
+        If InStr(1, sheet.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+            Set FirstGeneratedPlotShape = sheet.shapes.item(shapeIndex)
             Exit Function
         End If
     Next shapeIndex
@@ -69065,20 +69433,20 @@ Private Function GeneratedPlotShapeCenterAverage(ByVal nameFragment As String, B
 
     Dim shapeIndex As Long
     Dim count As Long
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If InStr(1, chartObject.Chart.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
-            centerX = centerX + CDbl(chartObject.Left) + ShapeCenterX(chartObject.Chart.Shapes.item(shapeIndex))
-            centerY = centerY + CDbl(chartObject.Top) + ShapeCenterY(chartObject.Chart.Shapes.item(shapeIndex))
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If InStr(1, chartObject.Chart.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+            centerX = centerX + CDbl(chartObject.Left) + ShapeCenterX(chartObject.Chart.shapes.item(shapeIndex))
+            centerY = centerY + CDbl(chartObject.Top) + ShapeCenterY(chartObject.Chart.shapes.item(shapeIndex))
             count = count + 1
         End If
     Next shapeIndex
 
     Dim sheet As Object
     Set sheet = ThisWorkbook.Worksheets.item("Расчет")
-    For shapeIndex = 1 To sheet.Shapes.count
-        If InStr(1, sheet.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
-            centerX = centerX + ShapeCenterX(sheet.Shapes.item(shapeIndex))
-            centerY = centerY + ShapeCenterY(sheet.Shapes.item(shapeIndex))
+    For shapeIndex = 1 To sheet.shapes.count
+        If InStr(1, sheet.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+            centerX = centerX + ShapeCenterX(sheet.shapes.item(shapeIndex))
+            centerY = centerY + ShapeCenterY(sheet.shapes.item(shapeIndex))
             count = count + 1
         End If
     Next shapeIndex
@@ -69108,15 +69476,15 @@ Private Function PlotShapesInsideStableFrame(ByVal nameFragment As String, ByVal
 
     Dim shapeIndex As Long
     Dim matched As Boolean
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If InStr(1, chartObject.Chart.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If InStr(1, chartObject.Chart.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
             matched = True
-            If CDbl(chartObject.Chart.Shapes.item(shapeIndex).Left) < leftBound Then Exit Function
-            If CDbl(chartObject.Chart.Shapes.item(shapeIndex).Top) < topBound Then Exit Function
-            If CDbl(chartObject.Chart.Shapes.item(shapeIndex).Left) + _
-                    CDbl(chartObject.Chart.Shapes.item(shapeIndex).width) > rightBound Then Exit Function
-            If CDbl(chartObject.Chart.Shapes.item(shapeIndex).Top) + _
-                    CDbl(chartObject.Chart.Shapes.item(shapeIndex).height) > bottomBound Then Exit Function
+            If CDbl(chartObject.Chart.shapes.item(shapeIndex).Left) < leftBound Then Exit Function
+            If CDbl(chartObject.Chart.shapes.item(shapeIndex).Top) < topBound Then Exit Function
+            If CDbl(chartObject.Chart.shapes.item(shapeIndex).Left) + _
+                    CDbl(chartObject.Chart.shapes.item(shapeIndex).width) > rightBound Then Exit Function
+            If CDbl(chartObject.Chart.shapes.item(shapeIndex).Top) + _
+                    CDbl(chartObject.Chart.shapes.item(shapeIndex).height) > bottomBound Then Exit Function
         End If
     Next shapeIndex
     PlotShapesInsideStableFrame = matched
@@ -69136,14 +69504,14 @@ Private Function PlotShapeBoundsContainAbsolutePoint(ByVal nameFragment As Strin
     Dim topValue As Double
     Dim rightValue As Double
     Dim bottomValue As Double
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If InStr(1, chartObject.Chart.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
-            leftValue = CDbl(chartObject.Left) + CDbl(chartObject.Chart.Shapes.item(shapeIndex).Left) - tolerance
-            topValue = CDbl(chartObject.Top) + CDbl(chartObject.Chart.Shapes.item(shapeIndex).Top) - tolerance
-            rightValue = CDbl(chartObject.Left) + CDbl(chartObject.Chart.Shapes.item(shapeIndex).Left) + _
-                CDbl(chartObject.Chart.Shapes.item(shapeIndex).width) + tolerance
-            bottomValue = CDbl(chartObject.Top) + CDbl(chartObject.Chart.Shapes.item(shapeIndex).Top) + _
-                CDbl(chartObject.Chart.Shapes.item(shapeIndex).height) + tolerance
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If InStr(1, chartObject.Chart.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+            leftValue = CDbl(chartObject.Left) + CDbl(chartObject.Chart.shapes.item(shapeIndex).Left) - tolerance
+            topValue = CDbl(chartObject.Top) + CDbl(chartObject.Chart.shapes.item(shapeIndex).Top) - tolerance
+            rightValue = CDbl(chartObject.Left) + CDbl(chartObject.Chart.shapes.item(shapeIndex).Left) + _
+                CDbl(chartObject.Chart.shapes.item(shapeIndex).width) + tolerance
+            bottomValue = CDbl(chartObject.Top) + CDbl(chartObject.Chart.shapes.item(shapeIndex).Top) + _
+                CDbl(chartObject.Chart.shapes.item(shapeIndex).height) + tolerance
             If pointX >= leftValue And pointX <= rightValue And _
                     pointY >= topValue And pointY <= bottomValue Then
                 PlotShapeBoundsContainAbsolutePoint = True
@@ -69162,9 +69530,9 @@ Private Function CountWorksheetPlotShapes(ByVal nameFragment As String) As Long
     Set sheet = ThisWorkbook.Worksheets.item("Расчет")
 
     Dim shapeIndex As Long
-    For shapeIndex = 1 To sheet.Shapes.count
-        If Left$(sheet.Shapes.item(shapeIndex).name, Len("NDMPlot_")) = "NDMPlot_" And _
-                InStr(1, sheet.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+    For shapeIndex = 1 To sheet.shapes.count
+        If Left$(sheet.shapes.item(shapeIndex).name, Len("NDMPlot_")) = "NDMPlot_" And _
+                InStr(1, sheet.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
             CountWorksheetPlotShapes = CountWorksheetPlotShapes + 1
         End If
     Next shapeIndex
@@ -69181,9 +69549,9 @@ Private Function PlotShapeRotationExists(ByVal nameFragment As String, _
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
 
     Dim shapeIndex As Long
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If InStr(1, chartObject.Chart.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
-            If AngleDistanceDegrees(CDbl(chartObject.Chart.Shapes.item(shapeIndex).rotation), expectedDegrees) <= toleranceDegrees Then
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If InStr(1, chartObject.Chart.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+            If AngleDistanceDegrees(CDbl(chartObject.Chart.shapes.item(shapeIndex).rotation), expectedDegrees) <= toleranceDegrees Then
                 PlotShapeRotationExists = True
                 Exit Function
             End If
@@ -69220,12 +69588,12 @@ Private Function PlotShapeTextContains(ByVal expectedText As String) As Boolean
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
 
     Dim shapeIndex As Long
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
         Dim textValue As String
         textValue = vbNullString
         Err.Clear
         On Error Resume Next
-        textValue = chartObject.Chart.Shapes.item(shapeIndex).TextFrame.Characters().text
+        textValue = chartObject.Chart.shapes.item(shapeIndex).TextFrame.Characters().text
         On Error GoTo Failed
         If InStr(1, textValue, expectedText, vbTextCompare) > 0 Then
             PlotShapeTextContains = True
@@ -69242,9 +69610,9 @@ Private Function PlotShapeTextItalic(ByVal nameFragment As String) As Boolean
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
 
     Dim shapeIndex As Long
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If InStr(1, chartObject.Chart.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
-            PlotShapeTextItalic = (chartObject.Chart.Shapes.item(shapeIndex).TextFrame.Characters().Font.Italic <> 0)
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If InStr(1, chartObject.Chart.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+            PlotShapeTextItalic = (chartObject.Chart.shapes.item(shapeIndex).TextFrame.Characters().Font.Italic <> 0)
             Exit Function
         End If
     Next shapeIndex
@@ -69258,9 +69626,9 @@ Private Function PlotShapeTextFontSize(ByVal nameFragment As String) As Double
     Set chartObject = ThisWorkbook.Worksheets.item("Расчет").ChartObjects("chtNDMSectionPlot")
 
     Dim shapeIndex As Long
-    For shapeIndex = 1 To chartObject.Chart.Shapes.count
-        If InStr(1, chartObject.Chart.Shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
-            PlotShapeTextFontSize = CDbl(chartObject.Chart.Shapes.item(shapeIndex).TextFrame.Characters().Font.size)
+    For shapeIndex = 1 To chartObject.Chart.shapes.count
+        If InStr(1, chartObject.Chart.shapes.item(shapeIndex).name, nameFragment, vbTextCompare) > 0 Then
+            PlotShapeTextFontSize = CDbl(chartObject.Chart.shapes.item(shapeIndex).TextFrame.Characters().Font.size)
             Exit Function
         End If
     Next shapeIndex

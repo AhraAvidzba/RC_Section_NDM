@@ -662,3 +662,289 @@ Private Sub Check(ByRef stats As TGeometryConfigStats, ByVal name As String, ByV
         stats.Report = stats.Report & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
+' ======================================================================
+' ДЛЯ ТЕСТОВ: ОБЯЗАТЕЛЬНЫЙ ВВОД АКТИВНОЙ ГЕОМЕТРИИ
+' ======================================================================
+
+' Проверяет реальные таблицы четырех форм двумя независимыми входами:
+' фабрика геометрии и BuildFromSettings арматуры. Не заполняет пропущенные
+' значения вместо пользователя; все Formula-массивы восстанавливает после
+' серии, включая неудачу. Количество assertions доступно полному UI-suite.
+Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TGeometryConfigStats, ranges(0 To 5) As Object, saved(0 To 5) As Variant
+    Dim names As Variant, shapes As Variant, shape As String, fields As Variant
+    Dim i As Long, j As Long, item As Variant, route As Variant, bad As Variant
+    Dim cell As Object, baseline As Variant, current As Variant, description As String
+    Dim errorNumber As Long, prefix As String, caseIndex As Long
+    names = Array("rngSystemSettings", "rngUnitSettings", "rngCircleGeometry", _
+        "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+    shapes = Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+    On Error GoTo FailedRun
+    For i = 0 To 5
+        Set ranges(i) = ThisWorkbook.Names.Item(CStr(names(i))).RefersToRange
+        saved(i) = ranges(i).Formula
+    Next i
+    ranges(1).Cells(2, 2).Value2 = "mm"
+    For i = 0 To 3
+        shape = CStr(shapes(i))
+        SetKey ranges(0), "Geometry.Type", shape
+        If shape = "Circle" Then
+            ConfigureCircle ranges(i + 2)
+            Set cell = RequiredGeometryKeyCell(ranges(i + 2), "Circle.Diameter")
+            fields = Array(Array("Circle.Diameter", cell.Row - ranges(i + 2).Row + 1, 2, CDbl(cell.Value2)))
+        Else
+            ConfigureShape ranges(i + 2), shape
+            fields = ShapeFields(shape)
+            ConfigureRequiredGeometryRebars ranges(i + 2), shape
+        End If
+        For Each route In Array("Geometry", "Rebars")
+            baseline = RequiredGeometryRouteSnapshot(shape, CStr(route))
+            For Each item In fields
+                Set cell = ranges(i + 2).Cells(CLng(item(1)), CLng(item(2)))
+                caseIndex = 0
+                For Each bad In Array(vbNullString, "TODO", "abc", CVErr(2015))
+                    caseIndex = caseIndex + 1
+                    cell.Value2 = bad
+                    prefix = "requiredGeometry." & CStr(item(0)) & "." & CStr(route) & "." & CStr(caseIndex)
+                    RequiredGeometryProgress prefix, stats.Report
+                    errorNumber = 0: description = vbNullString
+                    On Error Resume Next
+                    current = RequiredGeometryRouteSnapshot(shape, CStr(route))
+                    errorNumber = Err.Number: description = Err.Description
+                    Err.Clear
+                    On Error GoTo FailedRun
+                    Check stats, prefix & ".reject", errorNumber <> 0
+                    Check stats, prefix & ".key", InStr(1, description, CStr(item(0)), vbBinaryCompare) > 0
+                    Check stats, prefix & ".address", InStr(1, description, "Config", vbTextCompare) > 0 And _
+                        InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
+                    stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & _
+                        CStr(errorNumber) & "; " & description & vbCrLf
+                    cell.Value2 = item(3)
+                    current = RequiredGeometryRouteSnapshot(shape, CStr(route))
+                    Check stats, prefix & ".recovery", SameGeometryRouteSnapshot(baseline, current)
+                Next bad
+            Next item
+        Next route
+    Next i
+    CheckRequiredGeometryInactive stats, ranges(0), ranges(3), ranges(4)
+    CheckRequiredGeometryCommon stats, ranges(0), ranges(2)
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    stats.Report = stats.Report & "FAIL: requiredGeometry.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Restore:
+    On Error GoTo FailedRestore
+    For j = 0 To 5
+        If Not ranges(j) Is Nothing Then
+            ranges(j).Formula = saved(j)
+            Check stats, "requiredGeometry.restore." & CStr(names(j)), SameFormula(ranges(j).Formula, saved(j))
+        End If
+    Next j
+    GoTo Finish
+FailedRestore:
+    stats.Failed = stats.Failed + 1
+    stats.Report = stats.Report & "FAIL: requiredGeometry.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finish:
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03RequiredGeometryInputTests = stats.Report & "TOTAL_REQUIRED_GEOMETRY: passed=" & _
+        CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
+End Function
+
+' Настраивает допустимые стержни для измененных размеров fixture. Не меняет
+' тестируемые геометрические поля и не зависит от исходного армирования книги.
+Private Sub ConfigureRequiredGeometryRebars(ByVal target As Object, ByVal shape As String)
+    Dim rowIndex As Long
+    If shape = "RectSet" Then
+        For rowIndex = 11 To 18
+            target.Cells(rowIndex, 2).Value2 = 20#: target.Cells(rowIndex, 3).Value2 = 16#
+            target.Cells(rowIndex, 4).Value2 = 3
+            target.Cells(rowIndex, 5).Value2 = 20#: target.Cells(rowIndex, 6).Value2 = 20#
+        Next rowIndex
+        For rowIndex = 21 To 28
+            target.Cells(rowIndex, 2).Value2 = 0#: target.Cells(rowIndex, 5).Value2 = 0#
+        Next rowIndex
+    Else
+        If shape = "RoundedRectangle" Then rowIndex = 13 Else rowIndex = 11
+        Dim firstRow As Long, lastRow As Long, extraFirst As Long
+        firstRow = rowIndex: lastRow = firstRow + 3
+        If shape = "RoundedRectangle" Then extraFirst = firstRow + 6 Else extraFirst = firstRow + 10
+        If shape = "HollowRectangle" Then lastRow = firstRow + 7
+        For rowIndex = firstRow To lastRow
+            target.Cells(rowIndex, 2).Value2 = 40#: target.Cells(rowIndex, 3).Value2 = 16#
+            If rowIndex < firstRow + 4 Then target.Cells(rowIndex, 4).Value2 = 3
+        Next rowIndex
+        For rowIndex = extraFirst To extraFirst + lastRow - firstRow
+            target.Cells(rowIndex, 2).Value2 = 0#: target.Cells(rowIndex, 5).Value2 = 0#
+        Next rowIndex
+    End If
+End Sub
+
+' Читает полный Config и выбранный производственный вход, не вызывая фабрику
+' формы перед builder-ом: так тест обнаруживает его собственные defaults.
+' Снимок арматуры содержит все координаты/диаметры, а не только общий count.
+Private Function RequiredGeometryRouteSnapshot(ByVal shape As String, ByVal route As String) As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set registry = New CSectionTypeRegistry
+    If route = "Geometry" Then
+        RequiredGeometryRouteSnapshot = ShapeSnapshot(registry.CreateGeometry(settings, units))
+        Exit Function
+    End If
+    Dim circleBuilder As CCircleRebarLayoutBuilder, rect As CRectSetRebarLayoutBuilder
+    Dim rounded As CRoundedRectRebarLayoutBuilder, hollow As CHollowRectRebarLayoutBuilder
+    Dim bars As CRebarLayout
+    Select Case shape
+        Case "Circle": Set circleBuilder = New CCircleRebarLayoutBuilder: Set bars = circleBuilder.BuildFromSettings(settings, units)
+        Case "RectSet": Set rect = New CRectSetRebarLayoutBuilder: Set bars = rect.BuildFromSettings(settings, units)
+        Case "RoundedRectangle": Set rounded = New CRoundedRectRebarLayoutBuilder: Set bars = rounded.BuildFromSettings(settings, units)
+        Case "HollowRectangle": Set hollow = New CHollowRectRebarLayoutBuilder: Set bars = hollow.BuildFromSettings(settings, units)
+    End Select
+    Dim values() As Double, i As Long
+    ReDim values(0 To bars.Count * 3)
+    values(0) = bars.Count
+    For i = 1 To bars.Count
+        values(i * 3 - 2) = bars.X(i): values(i * 3 - 1) = bars.Y(i): values(i * 3) = bars.Diameter(i)
+    Next i
+    RequiredGeometryRouteSnapshot = values
+End Function
+
+' Сравнивает расчетные snapshots в том же абсолютном геометрическом допуске,
+' что и shape-tests; неодинаковый размер массива означает различие раскладки.
+Private Function SameGeometryRouteSnapshot(ByVal first As Variant, ByVal second As Variant) As Boolean
+    If UBound(first) <> UBound(second) Then Exit Function
+    Dim i As Long
+    For i = LBound(first) To UBound(first)
+        If Abs(CDbl(first(i)) - CDbl(second(i))) > 0.000001 Then Exit Function
+    Next i
+    SameGeometryRouteSnapshot = True
+End Function
+
+' Возвращает фактическую ячейку ключевой таблицы. Потеря строки fixture
+' является ошибкой теста, а не добавлением отсутствующего Config/default.
+Private Function RequiredGeometryKeyCell(ByVal target As Object, ByVal key As String) As Object
+    Dim rowIndex As Long
+    For rowIndex = 2 To target.Rows.Count
+        If CStr(target.Cells(rowIndex, 1).Value2) = key Then
+            Set RequiredGeometryKeyCell = target.Cells(rowIndex, 2)
+            Exit Function
+        End If
+    Next rowIndex
+    Err.Raise vbObjectError + 5965, "modTestGeometryConfig", "Не найдена строка fixture: " & key
+End Function
+
+' Проверяет неактивные размеры Rectangle и W/R2 сторон Simple. Эти значения
+' не участвуют в форме/раскладке, поэтому не должны требовать числового ввода.
+' Ошибки формул Excel здесь не подменяются пустым значением reader-а.
+Private Sub CheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, _
+        ByVal rectRange As Object, ByVal roundedRange As Object)
+    Dim route As Variant, item As Variant, value As Variant, baseline As Variant, current As Variant
+    Dim description As String, errorNumber As Long, prefix As String
+    SetKey systemRange, "Geometry.Type", "RectSet"
+    ConfigureShape rectRange, "RectSet": ConfigureRequiredGeometryRebars rectRange, "RectSet"
+    rectRange.Cells(3, 2).Value2 = "Rectangle"
+    For Each route In Array("Geometry", "Rebars")
+        baseline = RequiredGeometryRouteSnapshot("RectSet", CStr(route))
+        For Each item In Array(Array(8, 3), Array(8, 4), Array(4, 2))
+            For Each value In Array(vbNullString, "TODO", "abc")
+                rectRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = value
+                errorNumber = 0: description = vbNullString
+                On Error Resume Next
+                current = RequiredGeometryRouteSnapshot("RectSet", CStr(route))
+                errorNumber = Err.Number: description = Err.Description
+                Err.Clear: On Error GoTo 0
+                prefix = "requiredGeometry.inactive.Rectangle." & CStr(route) & "." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(value)
+                Check stats, prefix, errorNumber = 0
+                If errorNumber = 0 Then Check stats, prefix & ".snapshot", SameGeometryRouteSnapshot(baseline, current)
+                stats.Report = stats.Report & "INACTIVE_GEOMETRY: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
+            Next value
+            rectRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = 100#
+        Next item
+    Next route
+    SetKey systemRange, "Geometry.Type", "RoundedRectangle"
+    ConfigureShape roundedRange, "RoundedRectangle": ConfigureRequiredGeometryRebars roundedRange, "RoundedRectangle"
+    roundedRange.Cells(7, 2).Value2 = "Simple": roundedRange.Cells(7, 3).Value2 = "Simple"
+    For Each route In Array("Geometry", "Rebars")
+        baseline = RequiredGeometryRouteSnapshot("RoundedRectangle", CStr(route))
+        For Each item In Array(Array(8, 2), Array(8, 3), Array(10, 2), Array(10, 3))
+            For Each value In Array(vbNullString, "TODO", "abc")
+                roundedRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = value
+                errorNumber = 0: description = vbNullString
+                On Error Resume Next
+                current = RequiredGeometryRouteSnapshot("RoundedRectangle", CStr(route))
+                errorNumber = Err.Number: description = Err.Description
+                Err.Clear: On Error GoTo 0
+                prefix = "requiredGeometry.inactive.Simple." & CStr(route) & "." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(value)
+                Check stats, prefix, errorNumber = 0
+                If errorNumber = 0 Then Check stats, prefix & ".snapshot", SameGeometryRouteSnapshot(baseline, current)
+                stats.Report = stats.Report & "INACTIVE_GEOMETRY: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
+            Next value
+            roundedRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = 0#
+        Next item
+    Next route
+End Sub
+
+' Обязательные общие Geometry/mesh поля проверяет штатная сборка модели.
+' В missing-варианте временно меняется ключ, а не удаляются пользовательские
+' строки; recovery восстанавливает его до следующего сценария.
+Private Sub CheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal circleRange As Object)
+    Dim key As Variant, bad As Variant, cell As Object, savedValue As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel
+    Dim errorNumber As Long, description As String, prefix As String, caseIndex As Long
+    SetKey systemRange, "Geometry.Type", "Circle": SetKey systemRange, "Geometry.Source", "Generated"
+    ConfigureCircle circleRange
+    For Each key In Array("Geometry.Type", "Geometry.Source", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions")
+        Set cell = RequiredGeometryKeyCell(systemRange, CStr(key))
+        savedValue = cell.Formula: caseIndex = 0
+        For Each bad In Array(vbNullString, "TODO", "abc", CVErr(2015), "__MISSING_KEY__")
+            caseIndex = caseIndex + 1
+            If Not IsError(bad) Then
+                If CStr(bad) = "__MISSING_KEY__" Then cell.Offset(0, -1).Value2 = "Audit03.Hidden." & CStr(key) Else cell.Value2 = bad
+            Else
+                cell.Value2 = bad
+            End If
+            errorNumber = 0: description = vbNullString
+            RequiredGeometryProgress "requiredGeometry.common." & CStr(key) & "." & CStr(caseIndex), stats.Report
+            On Error Resume Next
+            Set model = RequiredGeometryModelFromWorkbook()
+            errorNumber = Err.Number: description = Err.Description
+            Err.Clear: On Error GoTo 0
+            prefix = "requiredGeometry.common." & CStr(key) & "." & CStr(caseIndex)
+            Check stats, prefix & ".reject", errorNumber <> 0
+            Check stats, prefix & ".key", InStr(1, description, CStr(key), vbBinaryCompare) > 0
+            Check stats, prefix & ".location", InStr(1, description, "Config", vbTextCompare) > 0
+            If caseIndex < 5 Then Check stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
+            stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
+            cell.Offset(0, -1).Value2 = key: cell.Formula = savedValue
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+            Check stats, prefix & ".recovery", model.ConcreteCount > 0 And model.RebarCount = 24
+        Next bad
+    Next key
+End Sub
+
+' Выполняет один обычный production-маршрут без Resume Next между reader,
+' units и builder. Первая ошибка ввода сохраняется, следующие шаги при ней
+' не вызываются; внешний тест перехватывает единственный вызов целиком.
+Private Function RequiredGeometryModelFromWorkbook() As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set RequiredGeometryModelFromWorkbook = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+End Function
+
+' Сохраняет уже выполненные assertions и следующий сценарий рядом с временной
+' книгой. Watchdog забирает этот журнал при timeout; отметка START не считается
+' успешной проверкой. Ошибка записи диагностики не изменяет результат теста.
+Private Sub RequiredGeometryProgress(ByVal nextCase As String, ByVal report As String)
+    On Error Resume Next
+    Dim fso As Object, stream As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set stream = fso.CreateTextFile(ThisWorkbook.Path & "\Audit03_Search_Progress.txt", True, True)
+    stream.Write report & "START_REQUIRED_GEOMETRY: " & nextCase & vbCrLf
+    stream.Close
+    On Error GoTo 0
+End Sub

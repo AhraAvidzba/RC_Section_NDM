@@ -60,6 +60,10 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarCounterTests(rebarCounterPassed, rebarCounterFailed)
     stats.Passed = stats.Passed + rebarCounterPassed
     stats.Failed = stats.Failed + rebarCounterFailed
+    Dim requiredGeometryPassed As Long, requiredGeometryFailed As Long
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RequiredGeometryInputTests(requiredGeometryPassed, requiredGeometryFailed)
+    stats.Passed = stats.Passed + requiredGeometryPassed
+    stats.Failed = stats.Failed + requiredGeometryFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats

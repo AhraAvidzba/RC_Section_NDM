@@ -33,8 +33,8 @@ Private Function ActiveGeometryType(ByVal settings As CSystemSettingsReader) As 
         "CSectionTypeRegistry", "Настройки Config не переданы."
 
     Dim geometryType As String
-    geometryType = LCase$(Trim$(settings.GetString("Geometry.Type", "RectSet")))
-    If Len(Trim$(geometryType)) = 0 Then geometryType = TYPE_RECTSET
+    geometryType = LCase$(settings.GetRequiredChoice("Geometry.Type", _
+        Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")))
 
     Select Case geometryType
         Case TYPE_CIRCLE, TYPE_RECTSET, TYPE_ROUNDED_RECTANGLE, TYPE_HOLLOW_RECTANGLE
@@ -49,6 +49,7 @@ End Function
 ' Здесь допустим shape-specific Select Case: это единственная точка регистрации
 ' встроенных форм. Ниже по цепочке расчетное ядро видит только ISectionGeometry.
 Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As ISectionGeometry
+    If units Is Nothing Then Err.Raise vbObjectError + 4135, "CSectionTypeRegistry", "Система единиц геометрии не передана."
     Dim circleGeometry As CGeometryCircle ' Конкретная математическая форма круга.
     Dim rectSetGeometry As CGeometryRectSet ' Математическая форма из одного/двух прямоугольников.
     Dim roundedGeometry As CGeometryRoundedRectangle ' Конкретная математическая форма скругленного прямоугольника.
@@ -57,45 +58,57 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
     Select Case ActiveGeometryType(settings)
         Case TYPE_CIRCLE
             Set circleGeometry = New CGeometryCircle
-            circleGeometry.InitializeByDiameter units.InputLengthToInternal(settings.GetDouble("Circle.Diameter", 300#)), 0#, 0#
+            circleGeometry.InitializeByDiameter units.InputLengthToInternal(settings.GetRequiredDouble("Circle.Diameter")), 0#, 0#
             Set CreateGeometry = circleGeometry
 
         Case TYPE_RECTSET
             Set rectSetGeometry = New CGeometryRectSet
-            rectSetGeometry.Initialize units.InputLengthToInternal(settings.GetDouble("RectSet.B1", 250#)), _
-                units.InputLengthToInternal(settings.GetDouble("RectSet.H1", 550#)), _
-                units.InputLengthToInternal(settings.GetDouble("RectSet.B2", 600#)), _
-                units.InputLengthToInternal(settings.GetDouble("RectSet.H2", 250#)), 0#, 0#, _
-                units.InputLengthToInternal(settings.GetDouble("RectSet.UpperOffsetX", 0#)), _
-                settings.GetString("RectSet.SectionType", "LSection")
+            Dim sectionType As String, lowerB As Double, lowerH As Double, upperOffset As Double
+            sectionType = settings.GetRequiredChoice("RectSet.SectionType", _
+                Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
+            If sectionType <> "Rectangle" Then
+                lowerB = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B2"))
+                lowerH = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H2"))
+            End If
+            If sectionType <> "Rectangle" And sectionType <> "LSection" And sectionType <> "RectSet" Then _
+                upperOffset = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.UpperOffsetX"))
+            rectSetGeometry.Initialize units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B1")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H1")), _
+                lowerB, lowerH, 0#, 0#, upperOffset, sectionType
             Set CreateGeometry = rectSetGeometry
 
         Case TYPE_ROUNDED_RECTANGLE
             Set roundedGeometry = New CGeometryRoundedRectangle
+            Dim leftType As String, rightType As String, leftW As Double, rightW As Double, leftR2 As Double, rightR2 As Double
+            leftType = settings.GetRequiredChoice("RoundedRectangle.Left.Type", Array("Simple", "Tapered"))
+            rightType = settings.GetRequiredChoice("RoundedRectangle.Right.Type", Array("Simple", "Tapered"))
+            If leftType = "Tapered" Then
+                leftW = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.W"))
+                leftR2 = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R2"))
+            End If
+            If rightType = "Tapered" Then
+                rightW = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.W"))
+                rightR2 = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R2"))
+            End If
             roundedGeometry.InitializeSides _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.B", 300#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.H", 200#)), _
-                settings.GetString("RoundedRectangle.Left.Type", "Simple"), _
-                settings.GetString("RoundedRectangle.Right.Type", "Simple"), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.W", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.W", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R1", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R1", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R2", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R2", 0#))
+                units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.B")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.H")), _
+                leftType, rightType, leftW, rightW, _
+                units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R1")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R1")), leftR2, rightR2
             Set CreateGeometry = roundedGeometry
 
         Case TYPE_HOLLOW_RECTANGLE
             Set hollowGeometry = New CGeometryHollowRectangle
             hollowGeometry.Initialize _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.B", 500#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.H", 800#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.R", 180#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningB", 200#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningH", 500#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningR", 30#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetX", 0#)), _
-                units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetY", 0#))
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.B")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.H")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.R")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningB")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningH")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningR")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetX")), _
+                units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetY"))
             Set CreateGeometry = hollowGeometry
     End Select
 End Function
@@ -177,10 +190,10 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
 
-    Dim meshStepX As Double ' Шаг бетонной сетки по X во внутренних единицах; старый Mesh.Step читается только для совместимости.
-    Dim meshStepY As Double ' Шаг бетонной сетки по Y; если ключа нет, сохраняем старое квадратное поведение.
-    meshStepX = units.InputLengthToInternal(settings.GetDouble("Mesh.StepX", settings.GetDouble("Mesh.Step", 10#)))
-    meshStepY = units.InputLengthToInternal(settings.GetDouble("Mesh.StepY", settings.GetDouble("Mesh.StepX", settings.GetDouble("Mesh.Step", 10#))))
+    Dim meshStepX As Double ' Обязательный шаг бетонной сетки по X во внутренних единицах.
+    Dim meshStepY As Double ' Обязательный независимый шаг бетонной сетки по Y.
+    meshStepX = units.InputLengthToInternal(settings.GetRequiredDouble("Mesh.StepX"))
+    meshStepY = units.InputLengthToInternal(settings.GetRequiredDouble("Mesh.StepY"))
     mesh.BuildMesh geometry, meshStepX, meshStepY, 1, MeshBoundarySubdivisions(settings)
 
     Dim rebars As CRebarLayout
@@ -212,9 +225,9 @@ Public Function MeshBoundarySubdivisions(ByVal settings As CSystemSettingsReader
         Dim rawValue As String
         rawValue = Trim$(settings.GetRawString("Mesh.BoundarySubdivisions"))
         If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
-            "Mesh.BoundarySubdivisions не задан: введите целое число не меньше 1 на листе Config."
+            settings.InputErrorMessage("Mesh.BoundarySubdivisions", "Число подъячеек не задано.", "Введите целое число не меньше 1.")
     End If
-    MeshBoundarySubdivisions = settings.GetLong("Mesh.BoundarySubdivisions", 1)
+    MeshBoundarySubdivisions = settings.GetRequiredLong("Mesh.BoundarySubdivisions")
     If MeshBoundarySubdivisions < 1 Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
-        "Mesh.BoundarySubdivisions должен быть целым числом не меньше 1. Проверьте значение на листе Config."
+        settings.InputErrorMessage("Mesh.BoundarySubdivisions", "Число подъячеек меньше 1.", "Введите целое число не меньше 1.")
 End Function

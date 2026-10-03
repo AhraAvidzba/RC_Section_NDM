@@ -1027,9 +1027,7 @@ Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settin
     If settings Is Nothing Then Err.Raise vbObjectError + 4131, "BuildWorkbookSectionModel", "Настройки Config не переданы."
 
     Dim geometrySource As String
-    geometrySource = Trim$(settings.GetRawString("Geometry.Source", "Generated"))
-    If Len(geometrySource) = 0 Then Err.Raise vbObjectError + 4132, "BuildWorkbookSectionModel", _
-        "Geometry.Source должен быть Generated или AutoCAD."
+    geometrySource = settings.GetRequiredChoice("Geometry.Source", Array("Generated", "AutoCAD"))
 
     If StrComp(geometrySource, "Generated", vbTextCompare) = 0 Then
         Dim registry As CSectionTypeRegistry

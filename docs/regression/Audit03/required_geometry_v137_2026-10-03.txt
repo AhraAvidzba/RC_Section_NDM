@@ -1,0 +1,1291 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_required_geometry_v137.xlsm
+SOURCE_SHA256: B1E2365136463229B85874CEBBE3FE3A5BD35F3FC2996175223AB960444E0250
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5c8b1853863e4423b73d660f2be66ae2\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometryConfig.RunAudit03RequiredGeometryInputTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03RequiredGeometryInputTests; 2026-10-03T10:30:14
+EXCEL_AFTER_SUITE: pid=11000; workingSet=148234240; privateBytes=103260160; cpu=18.65625
+OK: requiredGeometry.Circle.Diameter.Geometry.1.reject
+OK: requiredGeometry.Circle.Diameter.Geometry.1.key
+OK: requiredGeometry.Circle.Diameter.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Geometry.1; error=-2147217194; Настройка Circle.Diameter (лист Config, ячейка I87): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+FAIL: requiredGeometry.Circle.Diameter.Geometry.1.recovery
+OK: requiredGeometry.Circle.Diameter.Geometry.2.reject
+OK: requiredGeometry.Circle.Diameter.Geometry.2.key
+OK: requiredGeometry.Circle.Diameter.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Geometry.2; error=-2147217194; Настройка Circle.Diameter (лист Config, ячейка I87): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+FAIL: requiredGeometry.Circle.Diameter.Geometry.2.recovery
+OK: requiredGeometry.Circle.Diameter.Geometry.3.reject
+OK: requiredGeometry.Circle.Diameter.Geometry.3.key
+OK: requiredGeometry.Circle.Diameter.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Geometry.3; error=-2147217191; Настройка Circle.Diameter (лист Config, ячейка I87): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+FAIL: requiredGeometry.Circle.Diameter.Geometry.3.recovery
+OK: requiredGeometry.Circle.Diameter.Geometry.4.reject
+OK: requiredGeometry.Circle.Diameter.Geometry.4.key
+OK: requiredGeometry.Circle.Diameter.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Geometry.4; error=-2147217195; Настройка Circle.Diameter (лист Config, ячейка I87) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+FAIL: requiredGeometry.Circle.Diameter.Geometry.4.recovery
+OK: requiredGeometry.Circle.Diameter.Rebars.1.reject
+OK: requiredGeometry.Circle.Diameter.Rebars.1.key
+OK: requiredGeometry.Circle.Diameter.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Rebars.1; error=-2147217194; Настройка Circle.Diameter (лист Config, ячейка I87): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.Circle.Diameter.Rebars.1.recovery
+OK: requiredGeometry.Circle.Diameter.Rebars.2.reject
+OK: requiredGeometry.Circle.Diameter.Rebars.2.key
+OK: requiredGeometry.Circle.Diameter.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Rebars.2; error=-2147217194; Настройка Circle.Diameter (лист Config, ячейка I87): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.Circle.Diameter.Rebars.2.recovery
+OK: requiredGeometry.Circle.Diameter.Rebars.3.reject
+OK: requiredGeometry.Circle.Diameter.Rebars.3.key
+OK: requiredGeometry.Circle.Diameter.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Rebars.3; error=-2147217191; Настройка Circle.Diameter (лист Config, ячейка I87): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.Circle.Diameter.Rebars.3.recovery
+OK: requiredGeometry.Circle.Diameter.Rebars.4.reject
+OK: requiredGeometry.Circle.Diameter.Rebars.4.key
+OK: requiredGeometry.Circle.Diameter.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Rebars.4; error=-2147217195; Настройка Circle.Diameter (лист Config, ячейка I87) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.Circle.Diameter.Rebars.4.recovery
+OK: requiredGeometry.RectSet.H1.Geometry.1.reject
+OK: requiredGeometry.RectSet.H1.Geometry.1.key
+OK: requiredGeometry.RectSet.H1.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Geometry.1; error=-2147217194; Настройка RectSet.H1 (лист Config, ячейка H105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.H1.Geometry.1.recovery
+OK: requiredGeometry.RectSet.H1.Geometry.2.reject
+OK: requiredGeometry.RectSet.H1.Geometry.2.key
+OK: requiredGeometry.RectSet.H1.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Geometry.2; error=-2147217194; Настройка RectSet.H1 (лист Config, ячейка H105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.H1.Geometry.2.recovery
+OK: requiredGeometry.RectSet.H1.Geometry.3.reject
+OK: requiredGeometry.RectSet.H1.Geometry.3.key
+OK: requiredGeometry.RectSet.H1.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Geometry.3; error=-2147217191; Настройка RectSet.H1 (лист Config, ячейка H105): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.H1.Geometry.3.recovery
+OK: requiredGeometry.RectSet.H1.Geometry.4.reject
+OK: requiredGeometry.RectSet.H1.Geometry.4.key
+OK: requiredGeometry.RectSet.H1.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Geometry.4; error=-2147217195; Настройка RectSet.H1 (лист Config, ячейка H105) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.H1.Geometry.4.recovery
+OK: requiredGeometry.RectSet.B1.Geometry.1.reject
+OK: requiredGeometry.RectSet.B1.Geometry.1.key
+OK: requiredGeometry.RectSet.B1.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Geometry.1; error=-2147217194; Настройка RectSet.B1 (лист Config, ячейка I105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.B1.Geometry.1.recovery
+OK: requiredGeometry.RectSet.B1.Geometry.2.reject
+OK: requiredGeometry.RectSet.B1.Geometry.2.key
+OK: requiredGeometry.RectSet.B1.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Geometry.2; error=-2147217194; Настройка RectSet.B1 (лист Config, ячейка I105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.B1.Geometry.2.recovery
+OK: requiredGeometry.RectSet.B1.Geometry.3.reject
+OK: requiredGeometry.RectSet.B1.Geometry.3.key
+OK: requiredGeometry.RectSet.B1.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Geometry.3; error=-2147217191; Настройка RectSet.B1 (лист Config, ячейка I105): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.B1.Geometry.3.recovery
+OK: requiredGeometry.RectSet.B1.Geometry.4.reject
+OK: requiredGeometry.RectSet.B1.Geometry.4.key
+OK: requiredGeometry.RectSet.B1.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Geometry.4; error=-2147217195; Настройка RectSet.B1 (лист Config, ячейка I105) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.B1.Geometry.4.recovery
+OK: requiredGeometry.RectSet.H2.Geometry.1.reject
+OK: requiredGeometry.RectSet.H2.Geometry.1.key
+OK: requiredGeometry.RectSet.H2.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Geometry.1; error=-2147217194; Настройка RectSet.H2 (лист Config, ячейка J105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.H2.Geometry.1.recovery
+OK: requiredGeometry.RectSet.H2.Geometry.2.reject
+OK: requiredGeometry.RectSet.H2.Geometry.2.key
+OK: requiredGeometry.RectSet.H2.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Geometry.2; error=-2147217194; Настройка RectSet.H2 (лист Config, ячейка J105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.H2.Geometry.2.recovery
+OK: requiredGeometry.RectSet.H2.Geometry.3.reject
+OK: requiredGeometry.RectSet.H2.Geometry.3.key
+OK: requiredGeometry.RectSet.H2.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Geometry.3; error=-2147217191; Настройка RectSet.H2 (лист Config, ячейка J105): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.H2.Geometry.3.recovery
+OK: requiredGeometry.RectSet.H2.Geometry.4.reject
+OK: requiredGeometry.RectSet.H2.Geometry.4.key
+OK: requiredGeometry.RectSet.H2.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Geometry.4; error=-2147217195; Настройка RectSet.H2 (лист Config, ячейка J105) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.H2.Geometry.4.recovery
+OK: requiredGeometry.RectSet.B2.Geometry.1.reject
+OK: requiredGeometry.RectSet.B2.Geometry.1.key
+OK: requiredGeometry.RectSet.B2.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Geometry.1; error=-2147217194; Настройка RectSet.B2 (лист Config, ячейка K105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.B2.Geometry.1.recovery
+OK: requiredGeometry.RectSet.B2.Geometry.2.reject
+OK: requiredGeometry.RectSet.B2.Geometry.2.key
+OK: requiredGeometry.RectSet.B2.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Geometry.2; error=-2147217194; Настройка RectSet.B2 (лист Config, ячейка K105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.B2.Geometry.2.recovery
+OK: requiredGeometry.RectSet.B2.Geometry.3.reject
+OK: requiredGeometry.RectSet.B2.Geometry.3.key
+OK: requiredGeometry.RectSet.B2.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Geometry.3; error=-2147217191; Настройка RectSet.B2 (лист Config, ячейка K105): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.B2.Geometry.3.recovery
+OK: requiredGeometry.RectSet.B2.Geometry.4.reject
+OK: requiredGeometry.RectSet.B2.Geometry.4.key
+OK: requiredGeometry.RectSet.B2.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Geometry.4; error=-2147217195; Настройка RectSet.B2 (лист Config, ячейка K105) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.B2.Geometry.4.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.1.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.1.key
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Geometry.1; error=-2147217194; Настройка RectSet.UpperOffsetX (лист Config, ячейка I101): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.1.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.2.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.2.key
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Geometry.2; error=-2147217194; Настройка RectSet.UpperOffsetX (лист Config, ячейка I101): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.2.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.3.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.3.key
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Geometry.3; error=-2147217191; Настройка RectSet.UpperOffsetX (лист Config, ячейка I101): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.3.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.4.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.4.key
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Geometry.4; error=-2147217195; Настройка RectSet.UpperOffsetX (лист Config, ячейка I101) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.4.recovery
+OK: requiredGeometry.RectSet.SectionType.Geometry.1.reject
+OK: requiredGeometry.RectSet.SectionType.Geometry.1.key
+OK: requiredGeometry.RectSet.SectionType.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Geometry.1; error=-2147217193; Настройка RectSet.SectionType (лист Config, ячейка I100): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.SectionType.Geometry.1.recovery
+OK: requiredGeometry.RectSet.SectionType.Geometry.2.reject
+OK: requiredGeometry.RectSet.SectionType.Geometry.2.key
+OK: requiredGeometry.RectSet.SectionType.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Geometry.2; error=-2147217193; Настройка RectSet.SectionType (лист Config, ячейка I100): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.SectionType.Geometry.2.recovery
+OK: requiredGeometry.RectSet.SectionType.Geometry.3.reject
+OK: requiredGeometry.RectSet.SectionType.Geometry.3.key
+OK: requiredGeometry.RectSet.SectionType.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Geometry.3; error=-2147217193; Настройка RectSet.SectionType (лист Config, ячейка I100): Недопустимый вариант: "abc". Выберите из списка: Rectangle, LSection, TwoRectangles, RectSet, TwoRectangle, TwoRectanglesOffset, OffsetTwoRectangles.
+OK: requiredGeometry.RectSet.SectionType.Geometry.3.recovery
+OK: requiredGeometry.RectSet.SectionType.Geometry.4.reject
+OK: requiredGeometry.RectSet.SectionType.Geometry.4.key
+OK: requiredGeometry.RectSet.SectionType.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Geometry.4; error=-2147217195; Настройка RectSet.SectionType (лист Config, ячейка I100) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.SectionType.Geometry.4.recovery
+OK: requiredGeometry.RectSet.H1.Rebars.1.reject
+OK: requiredGeometry.RectSet.H1.Rebars.1.key
+OK: requiredGeometry.RectSet.H1.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Rebars.1; error=-2147217194; Настройка RectSet.H1 (лист Config, ячейка H105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.H1.Rebars.1.recovery
+OK: requiredGeometry.RectSet.H1.Rebars.2.reject
+OK: requiredGeometry.RectSet.H1.Rebars.2.key
+OK: requiredGeometry.RectSet.H1.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Rebars.2; error=-2147217194; Настройка RectSet.H1 (лист Config, ячейка H105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.H1.Rebars.2.recovery
+OK: requiredGeometry.RectSet.H1.Rebars.3.reject
+OK: requiredGeometry.RectSet.H1.Rebars.3.key
+OK: requiredGeometry.RectSet.H1.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Rebars.3; error=-2147217191; Настройка RectSet.H1 (лист Config, ячейка H105): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.H1.Rebars.3.recovery
+OK: requiredGeometry.RectSet.H1.Rebars.4.reject
+OK: requiredGeometry.RectSet.H1.Rebars.4.key
+OK: requiredGeometry.RectSet.H1.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Rebars.4; error=-2147217195; Настройка RectSet.H1 (лист Config, ячейка H105) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.H1.Rebars.4.recovery
+OK: requiredGeometry.RectSet.B1.Rebars.1.reject
+OK: requiredGeometry.RectSet.B1.Rebars.1.key
+OK: requiredGeometry.RectSet.B1.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Rebars.1; error=-2147217194; Настройка RectSet.B1 (лист Config, ячейка I105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.B1.Rebars.1.recovery
+OK: requiredGeometry.RectSet.B1.Rebars.2.reject
+OK: requiredGeometry.RectSet.B1.Rebars.2.key
+OK: requiredGeometry.RectSet.B1.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Rebars.2; error=-2147217194; Настройка RectSet.B1 (лист Config, ячейка I105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.B1.Rebars.2.recovery
+OK: requiredGeometry.RectSet.B1.Rebars.3.reject
+OK: requiredGeometry.RectSet.B1.Rebars.3.key
+OK: requiredGeometry.RectSet.B1.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Rebars.3; error=-2147217191; Настройка RectSet.B1 (лист Config, ячейка I105): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.B1.Rebars.3.recovery
+OK: requiredGeometry.RectSet.B1.Rebars.4.reject
+OK: requiredGeometry.RectSet.B1.Rebars.4.key
+OK: requiredGeometry.RectSet.B1.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Rebars.4; error=-2147217195; Настройка RectSet.B1 (лист Config, ячейка I105) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.B1.Rebars.4.recovery
+OK: requiredGeometry.RectSet.H2.Rebars.1.reject
+OK: requiredGeometry.RectSet.H2.Rebars.1.key
+OK: requiredGeometry.RectSet.H2.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Rebars.1; error=-2147217194; Настройка RectSet.H2 (лист Config, ячейка J105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.H2.Rebars.1.recovery
+OK: requiredGeometry.RectSet.H2.Rebars.2.reject
+OK: requiredGeometry.RectSet.H2.Rebars.2.key
+OK: requiredGeometry.RectSet.H2.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Rebars.2; error=-2147217194; Настройка RectSet.H2 (лист Config, ячейка J105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.H2.Rebars.2.recovery
+OK: requiredGeometry.RectSet.H2.Rebars.3.reject
+OK: requiredGeometry.RectSet.H2.Rebars.3.key
+OK: requiredGeometry.RectSet.H2.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Rebars.3; error=-2147217191; Настройка RectSet.H2 (лист Config, ячейка J105): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.H2.Rebars.3.recovery
+OK: requiredGeometry.RectSet.H2.Rebars.4.reject
+OK: requiredGeometry.RectSet.H2.Rebars.4.key
+OK: requiredGeometry.RectSet.H2.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Rebars.4; error=-2147217195; Настройка RectSet.H2 (лист Config, ячейка J105) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.H2.Rebars.4.recovery
+OK: requiredGeometry.RectSet.B2.Rebars.1.reject
+OK: requiredGeometry.RectSet.B2.Rebars.1.key
+OK: requiredGeometry.RectSet.B2.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Rebars.1; error=-2147217194; Настройка RectSet.B2 (лист Config, ячейка K105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.B2.Rebars.1.recovery
+OK: requiredGeometry.RectSet.B2.Rebars.2.reject
+OK: requiredGeometry.RectSet.B2.Rebars.2.key
+OK: requiredGeometry.RectSet.B2.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Rebars.2; error=-2147217194; Настройка RectSet.B2 (лист Config, ячейка K105): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.B2.Rebars.2.recovery
+OK: requiredGeometry.RectSet.B2.Rebars.3.reject
+OK: requiredGeometry.RectSet.B2.Rebars.3.key
+OK: requiredGeometry.RectSet.B2.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Rebars.3; error=-2147217191; Настройка RectSet.B2 (лист Config, ячейка K105): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.B2.Rebars.3.recovery
+OK: requiredGeometry.RectSet.B2.Rebars.4.reject
+OK: requiredGeometry.RectSet.B2.Rebars.4.key
+OK: requiredGeometry.RectSet.B2.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Rebars.4; error=-2147217195; Настройка RectSet.B2 (лист Config, ячейка K105) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.B2.Rebars.4.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.1.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.1.key
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Rebars.1; error=-2147217194; Настройка RectSet.UpperOffsetX (лист Config, ячейка I101): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.1.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.2.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.2.key
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Rebars.2; error=-2147217194; Настройка RectSet.UpperOffsetX (лист Config, ячейка I101): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.2.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.3.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.3.key
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Rebars.3; error=-2147217191; Настройка RectSet.UpperOffsetX (лист Config, ячейка I101): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.3.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.4.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.4.key
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Rebars.4; error=-2147217195; Настройка RectSet.UpperOffsetX (лист Config, ячейка I101) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.4.recovery
+OK: requiredGeometry.RectSet.SectionType.Rebars.1.reject
+OK: requiredGeometry.RectSet.SectionType.Rebars.1.key
+OK: requiredGeometry.RectSet.SectionType.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Rebars.1; error=-2147217193; Настройка RectSet.SectionType (лист Config, ячейка I100): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.SectionType.Rebars.1.recovery
+OK: requiredGeometry.RectSet.SectionType.Rebars.2.reject
+OK: requiredGeometry.RectSet.SectionType.Rebars.2.key
+OK: requiredGeometry.RectSet.SectionType.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Rebars.2; error=-2147217193; Настройка RectSet.SectionType (лист Config, ячейка I100): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RectSet.SectionType.Rebars.2.recovery
+OK: requiredGeometry.RectSet.SectionType.Rebars.3.reject
+OK: requiredGeometry.RectSet.SectionType.Rebars.3.key
+OK: requiredGeometry.RectSet.SectionType.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Rebars.3; error=-2147217193; Настройка RectSet.SectionType (лист Config, ячейка I100): Недопустимый вариант: "abc". Выберите из списка: Rectangle, LSection, TwoRectangles, RectSet, TwoRectangle, TwoRectanglesOffset, OffsetTwoRectangles.
+OK: requiredGeometry.RectSet.SectionType.Rebars.3.recovery
+OK: requiredGeometry.RectSet.SectionType.Rebars.4.reject
+OK: requiredGeometry.RectSet.SectionType.Rebars.4.key
+OK: requiredGeometry.RectSet.SectionType.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Rebars.4; error=-2147217195; Настройка RectSet.SectionType (лист Config, ячейка I100) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RectSet.SectionType.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.B.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.B.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.B.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Geometry.1; error=-2147217194; Настройка RoundedRectangle.B (лист Config, ячейка I130): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.B.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.B.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.B.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.B.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Geometry.2; error=-2147217194; Настройка RoundedRectangle.B (лист Config, ячейка I130): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.B.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.B.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.B.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.B.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Geometry.3; error=-2147217191; Настройка RoundedRectangle.B (лист Config, ячейка I130): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.B.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.B.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.B.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.B.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Geometry.4; error=-2147217195; Настройка RoundedRectangle.B (лист Config, ячейка I130) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.B.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.H.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.H.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.H.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Geometry.1; error=-2147217194; Настройка RoundedRectangle.H (лист Config, ячейка J130): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.H.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.H.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.H.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.H.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Geometry.2; error=-2147217194; Настройка RoundedRectangle.H (лист Config, ячейка J130): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.H.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.H.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.H.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.H.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Geometry.3; error=-2147217191; Настройка RoundedRectangle.H (лист Config, ячейка J130): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.H.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.H.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.H.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.H.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Geometry.4; error=-2147217195; Настройка RoundedRectangle.H (лист Config, ячейка J130) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.H.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1; error=-2147217193; Настройка RoundedRectangle.Left.Type (лист Config, ячейка I134): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2; error=-2147217193; Настройка RoundedRectangle.Left.Type (лист Config, ячейка I134): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3; error=-2147217193; Настройка RoundedRectangle.Left.Type (лист Config, ячейка I134): Недопустимый вариант: "abc". Выберите из списка: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4; error=-2147217195; Настройка RoundedRectangle.Left.Type (лист Config, ячейка I134) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1; error=-2147217193; Настройка RoundedRectangle.Right.Type (лист Config, ячейка J134): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2; error=-2147217193; Настройка RoundedRectangle.Right.Type (лист Config, ячейка J134): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3; error=-2147217193; Настройка RoundedRectangle.Right.Type (лист Config, ячейка J134): Недопустимый вариант: "abc". Выберите из списка: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4; error=-2147217195; Настройка RoundedRectangle.Right.Type (лист Config, ячейка J134) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Geometry.1; error=-2147217194; Настройка RoundedRectangle.Left.W (лист Config, ячейка I135): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Geometry.2; error=-2147217194; Настройка RoundedRectangle.Left.W (лист Config, ячейка I135): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Geometry.3; error=-2147217191; Настройка RoundedRectangle.Left.W (лист Config, ячейка I135): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Geometry.4; error=-2147217195; Настройка RoundedRectangle.Left.W (лист Config, ячейка I135) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Geometry.1; error=-2147217194; Настройка RoundedRectangle.Right.W (лист Config, ячейка J135): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Geometry.2; error=-2147217194; Настройка RoundedRectangle.Right.W (лист Config, ячейка J135): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Geometry.3; error=-2147217191; Настройка RoundedRectangle.Right.W (лист Config, ячейка J135): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Geometry.4; error=-2147217195; Настройка RoundedRectangle.Right.W (лист Config, ячейка J135) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1; error=-2147217194; Настройка RoundedRectangle.Left.R1 (лист Config, ячейка I136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2; error=-2147217194; Настройка RoundedRectangle.Left.R1 (лист Config, ячейка I136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3; error=-2147217191; Настройка RoundedRectangle.Left.R1 (лист Config, ячейка I136): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4; error=-2147217195; Настройка RoundedRectangle.Left.R1 (лист Config, ячейка I136) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1; error=-2147217194; Настройка RoundedRectangle.Right.R1 (лист Config, ячейка J136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2; error=-2147217194; Настройка RoundedRectangle.Right.R1 (лист Config, ячейка J136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3; error=-2147217191; Настройка RoundedRectangle.Right.R1 (лист Config, ячейка J136): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4; error=-2147217195; Настройка RoundedRectangle.Right.R1 (лист Config, ячейка J136) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1; error=-2147217194; Настройка RoundedRectangle.Left.R2 (лист Config, ячейка I137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2; error=-2147217194; Настройка RoundedRectangle.Left.R2 (лист Config, ячейка I137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3; error=-2147217191; Настройка RoundedRectangle.Left.R2 (лист Config, ячейка I137): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4; error=-2147217195; Настройка RoundedRectangle.Left.R2 (лист Config, ячейка I137) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1.key
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1; error=-2147217194; Настройка RoundedRectangle.Right.R2 (лист Config, ячейка J137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2.key
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2; error=-2147217194; Настройка RoundedRectangle.Right.R2 (лист Config, ячейка J137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3.key
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3; error=-2147217191; Настройка RoundedRectangle.Right.R2 (лист Config, ячейка J137): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4.key
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4; error=-2147217195; Настройка RoundedRectangle.Right.R2 (лист Config, ячейка J137) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.B.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.B.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.B.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Rebars.1; error=-2147217194; Настройка RoundedRectangle.B (лист Config, ячейка I130): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.B.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.B.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.B.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.B.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Rebars.2; error=-2147217194; Настройка RoundedRectangle.B (лист Config, ячейка I130): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.B.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.B.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.B.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.B.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Rebars.3; error=-2147217191; Настройка RoundedRectangle.B (лист Config, ячейка I130): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.B.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.B.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.B.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.B.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Rebars.4; error=-2147217195; Настройка RoundedRectangle.B (лист Config, ячейка I130) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.B.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.H.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.H.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.H.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Rebars.1; error=-2147217194; Настройка RoundedRectangle.H (лист Config, ячейка J130): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.H.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.H.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.H.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.H.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Rebars.2; error=-2147217194; Настройка RoundedRectangle.H (лист Config, ячейка J130): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.H.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.H.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.H.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.H.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Rebars.3; error=-2147217191; Настройка RoundedRectangle.H (лист Config, ячейка J130): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.H.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.H.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.H.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.H.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Rebars.4; error=-2147217195; Настройка RoundedRectangle.H (лист Config, ячейка J130) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.H.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1; error=-2147217193; Настройка RoundedRectangle.Left.Type (лист Config, ячейка I134): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2; error=-2147217193; Настройка RoundedRectangle.Left.Type (лист Config, ячейка I134): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3; error=-2147217193; Настройка RoundedRectangle.Left.Type (лист Config, ячейка I134): Недопустимый вариант: "abc". Выберите из списка: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4; error=-2147217195; Настройка RoundedRectangle.Left.Type (лист Config, ячейка I134) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1; error=-2147217193; Настройка RoundedRectangle.Right.Type (лист Config, ячейка J134): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2; error=-2147217193; Настройка RoundedRectangle.Right.Type (лист Config, ячейка J134): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3; error=-2147217193; Настройка RoundedRectangle.Right.Type (лист Config, ячейка J134): Недопустимый вариант: "abc". Выберите из списка: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4; error=-2147217195; Настройка RoundedRectangle.Right.Type (лист Config, ячейка J134) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Rebars.1; error=-2147217194; Настройка RoundedRectangle.Left.W (лист Config, ячейка I135): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Rebars.2; error=-2147217194; Настройка RoundedRectangle.Left.W (лист Config, ячейка I135): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Rebars.3; error=-2147217191; Настройка RoundedRectangle.Left.W (лист Config, ячейка I135): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Rebars.4; error=-2147217195; Настройка RoundedRectangle.Left.W (лист Config, ячейка I135) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Rebars.1; error=-2147217194; Настройка RoundedRectangle.Right.W (лист Config, ячейка J135): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Rebars.2; error=-2147217194; Настройка RoundedRectangle.Right.W (лист Config, ячейка J135): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Rebars.3; error=-2147217191; Настройка RoundedRectangle.Right.W (лист Config, ячейка J135): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Rebars.4; error=-2147217195; Настройка RoundedRectangle.Right.W (лист Config, ячейка J135) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1; error=-2147217194; Настройка RoundedRectangle.Left.R1 (лист Config, ячейка I136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2; error=-2147217194; Настройка RoundedRectangle.Left.R1 (лист Config, ячейка I136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3; error=-2147217191; Настройка RoundedRectangle.Left.R1 (лист Config, ячейка I136): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4; error=-2147217195; Настройка RoundedRectangle.Left.R1 (лист Config, ячейка I136) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1; error=-2147217194; Настройка RoundedRectangle.Right.R1 (лист Config, ячейка J136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2; error=-2147217194; Настройка RoundedRectangle.Right.R1 (лист Config, ячейка J136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3; error=-2147217191; Настройка RoundedRectangle.Right.R1 (лист Config, ячейка J136): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4; error=-2147217195; Настройка RoundedRectangle.Right.R1 (лист Config, ячейка J136) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1; error=-2147217194; Настройка RoundedRectangle.Left.R2 (лист Config, ячейка I137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2; error=-2147217194; Настройка RoundedRectangle.Left.R2 (лист Config, ячейка I137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3; error=-2147217191; Настройка RoundedRectangle.Left.R2 (лист Config, ячейка I137): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4; error=-2147217195; Настройка RoundedRectangle.Left.R2 (лист Config, ячейка I137) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1.key
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1; error=-2147217194; Настройка RoundedRectangle.Right.R2 (лист Config, ячейка J137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2.key
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2; error=-2147217194; Настройка RoundedRectangle.Right.R2 (лист Config, ячейка J137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3.key
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3; error=-2147217191; Настройка RoundedRectangle.Right.R2 (лист Config, ячейка J137): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4.key
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4; error=-2147217195; Настройка RoundedRectangle.Right.R2 (лист Config, ячейка J137) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.H.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.H.Geometry.1.key
+OK: requiredGeometry.HollowRectangle.H.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Geometry.1; error=-2147217194; Настройка HollowRectangle.H (лист Config, ячейка H159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.H.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.H.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.H.Geometry.2.key
+OK: requiredGeometry.HollowRectangle.H.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Geometry.2; error=-2147217194; Настройка HollowRectangle.H (лист Config, ячейка H159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.H.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.H.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.H.Geometry.3.key
+OK: requiredGeometry.HollowRectangle.H.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Geometry.3; error=-2147217191; Настройка HollowRectangle.H (лист Config, ячейка H159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.H.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.H.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.H.Geometry.4.key
+OK: requiredGeometry.HollowRectangle.H.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Geometry.4; error=-2147217195; Настройка HollowRectangle.H (лист Config, ячейка H159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.H.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.B.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.B.Geometry.1.key
+OK: requiredGeometry.HollowRectangle.B.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Geometry.1; error=-2147217194; Настройка HollowRectangle.B (лист Config, ячейка I159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.B.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.B.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.B.Geometry.2.key
+OK: requiredGeometry.HollowRectangle.B.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Geometry.2; error=-2147217194; Настройка HollowRectangle.B (лист Config, ячейка I159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.B.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.B.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.B.Geometry.3.key
+OK: requiredGeometry.HollowRectangle.B.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Geometry.3; error=-2147217191; Настройка HollowRectangle.B (лист Config, ячейка I159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.B.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.B.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.B.Geometry.4.key
+OK: requiredGeometry.HollowRectangle.B.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Geometry.4; error=-2147217195; Настройка HollowRectangle.B (лист Config, ячейка I159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.B.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.R.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.R.Geometry.1.key
+OK: requiredGeometry.HollowRectangle.R.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Geometry.1; error=-2147217194; Настройка HollowRectangle.R (лист Config, ячейка J159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.R.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.R.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.R.Geometry.2.key
+OK: requiredGeometry.HollowRectangle.R.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Geometry.2; error=-2147217194; Настройка HollowRectangle.R (лист Config, ячейка J159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.R.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.R.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.R.Geometry.3.key
+OK: requiredGeometry.HollowRectangle.R.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Geometry.3; error=-2147217191; Настройка HollowRectangle.R (лист Config, ячейка J159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.R.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.R.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.R.Geometry.4.key
+OK: requiredGeometry.HollowRectangle.R.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Geometry.4; error=-2147217195; Настройка HollowRectangle.R (лист Config, ячейка J159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.R.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.1.key
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Geometry.1; error=-2147217194; Настройка HollowRectangle.OpeningH (лист Config, ячейка K159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.2.key
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Geometry.2; error=-2147217194; Настройка HollowRectangle.OpeningH (лист Config, ячейка K159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.3.key
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Geometry.3; error=-2147217191; Настройка HollowRectangle.OpeningH (лист Config, ячейка K159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.4.key
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Geometry.4; error=-2147217195; Настройка HollowRectangle.OpeningH (лист Config, ячейка K159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.1.key
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Geometry.1; error=-2147217194; Настройка HollowRectangle.OpeningB (лист Config, ячейка L159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.2.key
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Geometry.2; error=-2147217194; Настройка HollowRectangle.OpeningB (лист Config, ячейка L159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.3.key
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Geometry.3; error=-2147217191; Настройка HollowRectangle.OpeningB (лист Config, ячейка L159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.4.key
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Geometry.4; error=-2147217195; Настройка HollowRectangle.OpeningB (лист Config, ячейка L159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.1.key
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Geometry.1; error=-2147217194; Настройка HollowRectangle.OpeningR (лист Config, ячейка M159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.2.key
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Geometry.2; error=-2147217194; Настройка HollowRectangle.OpeningR (лист Config, ячейка M159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.3.key
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Geometry.3; error=-2147217191; Настройка HollowRectangle.OpeningR (лист Config, ячейка M159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.4.key
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Geometry.4; error=-2147217195; Настройка HollowRectangle.OpeningR (лист Config, ячейка M159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1; error=-2147217194; Настройка HollowRectangle.InnerOffsetX (лист Config, ячейка I155): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2; error=-2147217194; Настройка HollowRectangle.InnerOffsetX (лист Config, ячейка I155): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3; error=-2147217191; Настройка HollowRectangle.InnerOffsetX (лист Config, ячейка I155): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4; error=-2147217195; Настройка HollowRectangle.InnerOffsetX (лист Config, ячейка I155) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1; error=-2147217194; Настройка HollowRectangle.InnerOffsetY (лист Config, ячейка I156): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2; error=-2147217194; Настройка HollowRectangle.InnerOffsetY (лист Config, ячейка I156): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3; error=-2147217191; Настройка HollowRectangle.InnerOffsetY (лист Config, ячейка I156): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4; error=-2147217195; Настройка HollowRectangle.InnerOffsetY (лист Config, ячейка I156) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.H.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.H.Rebars.1.key
+OK: requiredGeometry.HollowRectangle.H.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Rebars.1; error=-2147217194; Настройка HollowRectangle.H (лист Config, ячейка H159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.H.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.H.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.H.Rebars.2.key
+OK: requiredGeometry.HollowRectangle.H.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Rebars.2; error=-2147217194; Настройка HollowRectangle.H (лист Config, ячейка H159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.H.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.H.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.H.Rebars.3.key
+OK: requiredGeometry.HollowRectangle.H.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Rebars.3; error=-2147217191; Настройка HollowRectangle.H (лист Config, ячейка H159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.H.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.H.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.H.Rebars.4.key
+OK: requiredGeometry.HollowRectangle.H.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Rebars.4; error=-2147217195; Настройка HollowRectangle.H (лист Config, ячейка H159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.H.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.B.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.B.Rebars.1.key
+OK: requiredGeometry.HollowRectangle.B.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Rebars.1; error=-2147217194; Настройка HollowRectangle.B (лист Config, ячейка I159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.B.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.B.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.B.Rebars.2.key
+OK: requiredGeometry.HollowRectangle.B.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Rebars.2; error=-2147217194; Настройка HollowRectangle.B (лист Config, ячейка I159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.B.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.B.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.B.Rebars.3.key
+OK: requiredGeometry.HollowRectangle.B.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Rebars.3; error=-2147217191; Настройка HollowRectangle.B (лист Config, ячейка I159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.B.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.B.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.B.Rebars.4.key
+OK: requiredGeometry.HollowRectangle.B.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Rebars.4; error=-2147217195; Настройка HollowRectangle.B (лист Config, ячейка I159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.B.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.R.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.R.Rebars.1.key
+OK: requiredGeometry.HollowRectangle.R.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Rebars.1; error=-2147217194; Настройка HollowRectangle.R (лист Config, ячейка J159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.R.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.R.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.R.Rebars.2.key
+OK: requiredGeometry.HollowRectangle.R.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Rebars.2; error=-2147217194; Настройка HollowRectangle.R (лист Config, ячейка J159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.R.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.R.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.R.Rebars.3.key
+OK: requiredGeometry.HollowRectangle.R.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Rebars.3; error=-2147217191; Настройка HollowRectangle.R (лист Config, ячейка J159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.R.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.R.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.R.Rebars.4.key
+OK: requiredGeometry.HollowRectangle.R.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Rebars.4; error=-2147217195; Настройка HollowRectangle.R (лист Config, ячейка J159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.R.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.1.key
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Rebars.1; error=-2147217194; Настройка HollowRectangle.OpeningH (лист Config, ячейка K159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.2.key
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Rebars.2; error=-2147217194; Настройка HollowRectangle.OpeningH (лист Config, ячейка K159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.3.key
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Rebars.3; error=-2147217191; Настройка HollowRectangle.OpeningH (лист Config, ячейка K159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.4.key
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Rebars.4; error=-2147217195; Настройка HollowRectangle.OpeningH (лист Config, ячейка K159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.1.key
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Rebars.1; error=-2147217194; Настройка HollowRectangle.OpeningB (лист Config, ячейка L159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.2.key
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Rebars.2; error=-2147217194; Настройка HollowRectangle.OpeningB (лист Config, ячейка L159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.3.key
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Rebars.3; error=-2147217191; Настройка HollowRectangle.OpeningB (лист Config, ячейка L159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.4.key
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Rebars.4; error=-2147217195; Настройка HollowRectangle.OpeningB (лист Config, ячейка L159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.1.key
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Rebars.1; error=-2147217194; Настройка HollowRectangle.OpeningR (лист Config, ячейка M159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.2.key
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Rebars.2; error=-2147217194; Настройка HollowRectangle.OpeningR (лист Config, ячейка M159): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.3.key
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Rebars.3; error=-2147217191; Настройка HollowRectangle.OpeningR (лист Config, ячейка M159): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.4.key
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Rebars.4; error=-2147217195; Настройка HollowRectangle.OpeningR (лист Config, ячейка M159) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1; error=-2147217194; Настройка HollowRectangle.InnerOffsetX (лист Config, ячейка I155): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2; error=-2147217194; Настройка HollowRectangle.InnerOffsetX (лист Config, ячейка I155): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3; error=-2147217191; Настройка HollowRectangle.InnerOffsetX (лист Config, ячейка I155): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4; error=-2147217195; Настройка HollowRectangle.InnerOffsetX (лист Config, ячейка I155) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1; error=-2147217194; Настройка HollowRectangle.InnerOffsetY (лист Config, ячейка I156): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2; error=-2147217194; Настройка HollowRectangle.InnerOffsetY (лист Config, ячейка I156): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3; error=-2147217191; Настройка HollowRectangle.InnerOffsetY (лист Config, ячейка I156): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4.key
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4; error=-2147217195; Настройка HollowRectangle.InnerOffsetY (лист Config, ячейка I156) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4.recovery
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.3.
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.8.3.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.3.TODO
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.8.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.3.abc
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.8.3.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.4.
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.4..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.8.4.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.4.TODO
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.4.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.8.4.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.4.abc
+OK: requiredGeometry.inactive.Rectangle.Geometry.8.4.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.8.4.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.4.2.
+OK: requiredGeometry.inactive.Rectangle.Geometry.4.2..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.4.2.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.4.2.TODO
+OK: requiredGeometry.inactive.Rectangle.Geometry.4.2.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.4.2.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.4.2.abc
+OK: requiredGeometry.inactive.Rectangle.Geometry.4.2.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.4.2.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.3.
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.8.3.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.3.TODO
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.8.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.3.abc
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.8.3.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.4.
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.4..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.8.4.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.4.TODO
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.4.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.8.4.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.4.abc
+OK: requiredGeometry.inactive.Rectangle.Rebars.8.4.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.8.4.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.4.2.
+OK: requiredGeometry.inactive.Rectangle.Rebars.4.2..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.4.2.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.4.2.TODO
+OK: requiredGeometry.inactive.Rectangle.Rebars.4.2.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.4.2.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.4.2.abc
+OK: requiredGeometry.inactive.Rectangle.Rebars.4.2.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.4.2.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.8.2.
+OK: requiredGeometry.inactive.Simple.Geometry.8.2..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.8.2.; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.8.2.TODO
+OK: requiredGeometry.inactive.Simple.Geometry.8.2.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.8.2.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.8.2.abc
+OK: requiredGeometry.inactive.Simple.Geometry.8.2.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.8.2.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.8.3.
+OK: requiredGeometry.inactive.Simple.Geometry.8.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.8.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.8.3.TODO
+OK: requiredGeometry.inactive.Simple.Geometry.8.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.8.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.8.3.abc
+OK: requiredGeometry.inactive.Simple.Geometry.8.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.8.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.10.2.
+OK: requiredGeometry.inactive.Simple.Geometry.10.2..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.10.2.; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.10.2.TODO
+OK: requiredGeometry.inactive.Simple.Geometry.10.2.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.10.2.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.10.2.abc
+OK: requiredGeometry.inactive.Simple.Geometry.10.2.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.10.2.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.10.3.
+OK: requiredGeometry.inactive.Simple.Geometry.10.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.10.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.10.3.TODO
+OK: requiredGeometry.inactive.Simple.Geometry.10.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.10.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.10.3.abc
+OK: requiredGeometry.inactive.Simple.Geometry.10.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.10.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.8.2.
+OK: requiredGeometry.inactive.Simple.Rebars.8.2..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.8.2.; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.8.2.TODO
+OK: requiredGeometry.inactive.Simple.Rebars.8.2.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.8.2.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.8.2.abc
+OK: requiredGeometry.inactive.Simple.Rebars.8.2.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.8.2.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.8.3.
+OK: requiredGeometry.inactive.Simple.Rebars.8.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.8.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.8.3.TODO
+OK: requiredGeometry.inactive.Simple.Rebars.8.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.8.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.8.3.abc
+OK: requiredGeometry.inactive.Simple.Rebars.8.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.8.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.10.2.
+OK: requiredGeometry.inactive.Simple.Rebars.10.2..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.10.2.; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.10.2.TODO
+OK: requiredGeometry.inactive.Simple.Rebars.10.2.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.10.2.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.10.2.abc
+OK: requiredGeometry.inactive.Simple.Rebars.10.2.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.10.2.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.10.3.
+OK: requiredGeometry.inactive.Simple.Rebars.10.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.10.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.10.3.TODO
+OK: requiredGeometry.inactive.Simple.Rebars.10.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.10.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.10.3.abc
+OK: requiredGeometry.inactive.Simple.Rebars.10.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.10.3.abc; error=0; 
+OK: requiredGeometry.common.Geometry.Type.1.reject
+OK: requiredGeometry.common.Geometry.Type.1.key
+OK: requiredGeometry.common.Geometry.Type.1.location
+OK: requiredGeometry.common.Geometry.Type.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.1; error=-2147217193; Настройка Geometry.Type (лист Config, ячейка B13): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Type.1.recovery
+OK: requiredGeometry.common.Geometry.Type.2.reject
+OK: requiredGeometry.common.Geometry.Type.2.key
+OK: requiredGeometry.common.Geometry.Type.2.location
+OK: requiredGeometry.common.Geometry.Type.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.2; error=-2147217193; Настройка Geometry.Type (лист Config, ячейка B13): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Type.2.recovery
+OK: requiredGeometry.common.Geometry.Type.3.reject
+OK: requiredGeometry.common.Geometry.Type.3.key
+OK: requiredGeometry.common.Geometry.Type.3.location
+OK: requiredGeometry.common.Geometry.Type.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.3; error=-2147217193; Настройка Geometry.Type (лист Config, ячейка B13): Недопустимый вариант: "abc". Выберите из списка: Circle, RectSet, RoundedRectangle, HollowRectangle.
+OK: requiredGeometry.common.Geometry.Type.3.recovery
+OK: requiredGeometry.common.Geometry.Type.4.reject
+OK: requiredGeometry.common.Geometry.Type.4.key
+OK: requiredGeometry.common.Geometry.Type.4.location
+OK: requiredGeometry.common.Geometry.Type.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.4; error=-2147217195; Настройка Geometry.Type (лист Config, ячейка B13) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Geometry.Type.4.recovery
+OK: requiredGeometry.common.Geometry.Type.5.reject
+OK: requiredGeometry.common.Geometry.Type.5.key
+OK: requiredGeometry.common.Geometry.Type.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.5; error=-2147217193; Настройка Geometry.Type (лист Config, раздел "геометрия и расчетная сетка"): Обязательное значение не задано. Восстановите строку Geometry.Type в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Type.5.recovery
+OK: requiredGeometry.common.Geometry.Source.1.reject
+OK: requiredGeometry.common.Geometry.Source.1.key
+OK: requiredGeometry.common.Geometry.Source.1.location
+OK: requiredGeometry.common.Geometry.Source.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.1; error=-2147217193; Настройка Geometry.Source (лист Config, ячейка B12): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Source.1.recovery
+OK: requiredGeometry.common.Geometry.Source.2.reject
+OK: requiredGeometry.common.Geometry.Source.2.key
+OK: requiredGeometry.common.Geometry.Source.2.location
+OK: requiredGeometry.common.Geometry.Source.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.2; error=-2147217193; Настройка Geometry.Source (лист Config, ячейка B12): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Source.2.recovery
+OK: requiredGeometry.common.Geometry.Source.3.reject
+OK: requiredGeometry.common.Geometry.Source.3.key
+OK: requiredGeometry.common.Geometry.Source.3.location
+OK: requiredGeometry.common.Geometry.Source.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.3; error=-2147217193; Настройка Geometry.Source (лист Config, ячейка B12): Недопустимый вариант: "abc". Выберите из списка: Generated, AutoCAD.
+OK: requiredGeometry.common.Geometry.Source.3.recovery
+OK: requiredGeometry.common.Geometry.Source.4.reject
+OK: requiredGeometry.common.Geometry.Source.4.key
+OK: requiredGeometry.common.Geometry.Source.4.location
+OK: requiredGeometry.common.Geometry.Source.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.4; error=-2147217195; Настройка Geometry.Source (лист Config, ячейка B12) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Geometry.Source.4.recovery
+OK: requiredGeometry.common.Geometry.Source.5.reject
+OK: requiredGeometry.common.Geometry.Source.5.key
+OK: requiredGeometry.common.Geometry.Source.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.5; error=-2147217193; Настройка Geometry.Source (лист Config, раздел "геометрия и расчетная сетка"): Обязательное значение не задано. Восстановите строку Geometry.Source в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Source.5.recovery
+OK: requiredGeometry.common.Mesh.StepX.1.reject
+OK: requiredGeometry.common.Mesh.StepX.1.key
+OK: requiredGeometry.common.Mesh.StepX.1.location
+OK: requiredGeometry.common.Mesh.StepX.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.1; error=-2147217194; Настройка Mesh.StepX (лист Config, ячейка B14): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepX.1.recovery
+OK: requiredGeometry.common.Mesh.StepX.2.reject
+OK: requiredGeometry.common.Mesh.StepX.2.key
+OK: requiredGeometry.common.Mesh.StepX.2.location
+OK: requiredGeometry.common.Mesh.StepX.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.2; error=-2147217194; Настройка Mesh.StepX (лист Config, ячейка B14): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepX.2.recovery
+OK: requiredGeometry.common.Mesh.StepX.3.reject
+OK: requiredGeometry.common.Mesh.StepX.3.key
+OK: requiredGeometry.common.Mesh.StepX.3.location
+OK: requiredGeometry.common.Mesh.StepX.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.3; error=-2147217191; Настройка Mesh.StepX (лист Config, ячейка B14): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.common.Mesh.StepX.3.recovery
+OK: requiredGeometry.common.Mesh.StepX.4.reject
+OK: requiredGeometry.common.Mesh.StepX.4.key
+OK: requiredGeometry.common.Mesh.StepX.4.location
+OK: requiredGeometry.common.Mesh.StepX.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.4; error=-2147217195; Настройка Mesh.StepX (лист Config, ячейка B14) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Mesh.StepX.4.recovery
+OK: requiredGeometry.common.Mesh.StepX.5.reject
+OK: requiredGeometry.common.Mesh.StepX.5.key
+OK: requiredGeometry.common.Mesh.StepX.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.5; error=-2147217194; Настройка Mesh.StepX (лист Config, раздел "геометрия и расчетная сетка"): Обязательное числовое значение не задано. Восстановите строку Mesh.StepX в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepX.5.recovery
+OK: requiredGeometry.common.Mesh.StepY.1.reject
+OK: requiredGeometry.common.Mesh.StepY.1.key
+OK: requiredGeometry.common.Mesh.StepY.1.location
+OK: requiredGeometry.common.Mesh.StepY.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.1; error=-2147217194; Настройка Mesh.StepY (лист Config, ячейка B15): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepY.1.recovery
+OK: requiredGeometry.common.Mesh.StepY.2.reject
+OK: requiredGeometry.common.Mesh.StepY.2.key
+OK: requiredGeometry.common.Mesh.StepY.2.location
+OK: requiredGeometry.common.Mesh.StepY.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.2; error=-2147217194; Настройка Mesh.StepY (лист Config, ячейка B15): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepY.2.recovery
+OK: requiredGeometry.common.Mesh.StepY.3.reject
+OK: requiredGeometry.common.Mesh.StepY.3.key
+OK: requiredGeometry.common.Mesh.StepY.3.location
+OK: requiredGeometry.common.Mesh.StepY.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.3; error=-2147217191; Настройка Mesh.StepY (лист Config, ячейка B15): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.common.Mesh.StepY.3.recovery
+OK: requiredGeometry.common.Mesh.StepY.4.reject
+OK: requiredGeometry.common.Mesh.StepY.4.key
+OK: requiredGeometry.common.Mesh.StepY.4.location
+OK: requiredGeometry.common.Mesh.StepY.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.4; error=-2147217195; Настройка Mesh.StepY (лист Config, ячейка B15) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Mesh.StepY.4.recovery
+OK: requiredGeometry.common.Mesh.StepY.5.reject
+OK: requiredGeometry.common.Mesh.StepY.5.key
+OK: requiredGeometry.common.Mesh.StepY.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.5; error=-2147217194; Настройка Mesh.StepY (лист Config, раздел "геометрия и расчетная сетка"): Обязательное числовое значение не задано. Восстановите строку Mesh.StepY в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepY.5.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.location
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.1; error=-2147217194; Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.location
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.2; error=-2147217194; Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.location
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.3; error=-2147217191; Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.location
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.4; error=-2147217195; Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.5.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.5.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.5; error=-2147217194; Настройка Mesh.BoundarySubdivisions (лист Config, раздел "геометрия и расчетная сетка"): Обязательное числовое значение не задано. Восстановите строку Mesh.BoundarySubdivisions в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.5.recovery
+OK: requiredGeometry.restore.rngSystemSettings
+OK: requiredGeometry.restore.rngUnitSettings
+OK: requiredGeometry.restore.rngCircleGeometry
+OK: requiredGeometry.restore.rngRectSetGeometry
+OK: requiredGeometry.restore.rngRoundedRectangleGeometry
+OK: requiredGeometry.restore.rngHollowRectangleGeometry
+TOTAL_REQUIRED_GEOMETRY: passed=1006; failed=4
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5c8b1853863e4423b73d660f2be66ae2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03RequiredGeometryInputTests; 2026-10-03T10:30:30
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

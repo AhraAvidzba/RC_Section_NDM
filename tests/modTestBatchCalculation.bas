@@ -8403,6 +8403,7 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
     SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
     SetSystemSetting "General.DiagramExtension", "No"
     SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "SLS.Crack.PsiS", "0.25"
     For Each standard In Array("SP35", "SP63")
         SetSystemSetting "Stability.Code", CStr(standard)
         For Each mode In Array("User", "Auto", "AlwaysCalc")
@@ -8431,11 +8432,18 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
                 AssertEquals stats, prefix & ".normalAggregate", result.NormalCrackStatus, "OK"
                 AssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.Calculated
                 AssertTrue stats, prefix & ".widthNotBlocked", result.CrackWidthMeta.InternalStatus = rsNotApplicable
+                AssertClose stats, prefix & ".psiPreserved", result.CrackResult.Width.PsiS, 0.25, 0#
+                AssertTrue stats, prefix & ".noPsiWarning", InStr(1, result.CrackWidthMeta.ResultComment, "psi", vbTextCompare) = 0 And _
+                    InStr(1, result.CrackWidthMeta.ResultComment, "ψ", vbBinaryCompare) = 0
+                AssertTrue stats, prefix & ".noSummaryPsiWarning", InStr(1, result.CrackSummaryMeta.ResultComment, "psi", vbTextCompare) = 0 And _
+                    InStr(1, result.CrackSummaryMeta.ResultComment, "ψ", vbBinaryCompare) = 0
                 AssertEquals stats, prefix & ".longitudinal", result.CrackResult.Longitudinal.Status, expectedLongitudinal
                 AssertTrue stats, prefix & ".longitudinalCalculated", result.LongitudinalCrackMeta.Calculated
                 outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", batch.CombinationID(i))
                 AssertEquals stats, prefix & ".writerState", CStr(sheet.Cells.Item(outputRow, anchor.Column + 20).Value2), "NotCracked"
                 AssertEquals stats, prefix & ".writerWidth", CStr(sheet.Cells.Item(outputRow, anchor.Column + 44).Value2), "N/A"
+                AssertEquals stats, prefix & ".writerPsiBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 35).Value2), vbNullString
+                AssertEquals stats, prefix & ".writerWidthBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 41).Value2), vbNullString
                 AssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.Item(outputRow, anchor.Column + 48).Value2), expectedLongitudinal
                 AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), result.CrackSummaryMeta.ResultComment
                 AppendLine stats, "NOT_CRACKED_OUTPUT: " & prefix & "|formation=" & result.CrackFormationMeta.ResultComment & _

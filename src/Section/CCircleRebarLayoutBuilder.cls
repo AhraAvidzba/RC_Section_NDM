@@ -32,7 +32,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
     If units Is Nothing Then Err.Raise vbObjectError + 3163, "CCircleRebarLayoutBuilder", "Система единиц не передана."
 
     Set BuildFromSettings = Build( _
-        units.InputLengthToInternal(settings.GetDouble("Circle.Diameter", 300#)), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("Circle.Diameter")), _
         centerX, _
         centerY, _
         units.InputLengthToInternal(settings.GetDouble("Rebar.AxisDistance", 40#)), _

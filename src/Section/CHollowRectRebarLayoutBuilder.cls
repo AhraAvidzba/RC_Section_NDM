@@ -31,14 +31,14 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
     Dim geom As CGeometryHollowRectangle
     Set geom = New CGeometryHollowRectangle
     geom.Initialize _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.B", 500#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.H", 800#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.R", 180#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningB", 200#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningH", 500#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.OpeningR", 30#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetX", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle.InnerOffsetY", 0#))
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.B")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.H")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.R")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningB")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningH")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningR")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetX")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetY"))
 
     Set BuildFromSettings = Build(geom, _
         ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "20"), _

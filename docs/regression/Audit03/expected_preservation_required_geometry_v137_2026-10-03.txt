@@ -1,0 +1,11 @@
+﻿FILE|modTestBatchCalculation.bas|baseline=102|current=144
+FILE|modTestCapacitySolver.bas|baseline=33|current=35
+CHANGED|modTestCrackWidth.bas|TestAudit02PsiSignedInputsAndFallbackModes|prefix & ".value"|1|oldExpected=0.65|newExpected=1#|oldTolerance=0#|newTolerance=0#
+MISSING|modTestCrackWidth.bas|TestAudit02PsiSignedInputsAndFallbackModes|prefix & ".value"|2
+FILE|modTestCrackWidth.bas|baseline=51|current=58
+FILE|modTestGeometry.bas|baseline=212|current=217
+FILE|modTestMaterialDiagrams.bas|baseline=64|current=67
+FILE|modTestRegressionBaseline.bas|baseline=10|current=10
+FILE|modTestSectionSolver.bas|baseline=32|current=47
+FILE|modTestWorkbookInterface.bas|baseline=38|current=78
+TOTAL_EXPECTED_PRESERVATION: unchanged=540; reviewedApiOnly=0; changedOrMissing=2; originalTestProcedures=277

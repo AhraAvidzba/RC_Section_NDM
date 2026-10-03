@@ -1515,6 +1515,7 @@ Private Sub TestAudit03ConfirmedNotCrackedSkipsWidth(ByRef stats As TCrackTestSt
             AssertTrue stats, prefix & ".external", policy.ExternalStatus(width.ResultMeta) = "N/A"
             AssertTrue stats, prefix & ".reason", InStr(1, width.ResultMeta.ResultComment, "не образуется", vbTextCompare) > 0
             AssertTrue stats, prefix & ".noFallbackWarning", InStr(1, width.ResultMeta.ResultComment, "psi_s", vbTextCompare) = 0
+            AssertClose stats, prefix & ".psiPreserved", width.PsiS, 0.25, 0#
             AssertClose stats, prefix & ".zeroWidth", width.CrackWidth, 0#, 0#
         Next mode
     Next status

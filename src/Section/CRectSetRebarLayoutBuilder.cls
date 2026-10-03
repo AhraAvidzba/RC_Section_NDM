@@ -34,11 +34,22 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
     If settings Is Nothing Then Err.Raise vbObjectError + 3190, "CRectSetRebarLayoutBuilder", "Настройки Config не переданы."
     If units Is Nothing Then Err.Raise vbObjectError + 3191, "CRectSetRebarLayoutBuilder", "Система единиц не передана."
 
+    Dim sectionType As String, lowerB As Double, lowerH As Double, upperOffset As Double
+    sectionType = settings.GetRequiredChoice("RectSet.SectionType", _
+        Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
+    ' Не читаем нижние размеры и смещение, если выбранная форма их не использует.
+    If sectionType <> "Rectangle" Then
+        lowerB = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B2"))
+        lowerH = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H2"))
+    End If
+    If sectionType <> "Rectangle" And sectionType <> "LSection" And sectionType <> "RectSet" Then _
+        upperOffset = units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.UpperOffsetX"))
+
     Set BuildFromSettings = Build( _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.B1", 250#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.H1", 550#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.B2", 600#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.H2", 250#)), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B1")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H1")), _
+        lowerB, _
+        lowerH, _
         0#, _
         0#, _
         ReadFaceSettingsFromConfig(settings, units, "H1"), _
@@ -46,8 +57,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         ReadFaceSettingsFromConfig(settings, units, "B1"), _
         ReadFaceSettingsFromConfig(settings, units, "B2"), _
         REBAR_STEEL_CLASS, _
-        units.InputLengthToInternal(settings.GetDouble("RectSet.UpperOffsetX", 0#)), _
-        settings.GetString("RectSet.SectionType", "LSection"))
+        upperOffset, sectionType)
 End Function
 
 ' Читает параметры одной смысловой грани RectSet-сечения.

@@ -30,17 +30,24 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
 
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
+    Dim leftType As String, rightType As String, leftW As Double, rightW As Double, leftR2 As Double, rightR2 As Double
+    leftType = settings.GetRequiredChoice("RoundedRectangle.Left.Type", Array("Simple", "Tapered"))
+    rightType = settings.GetRequiredChoice("RoundedRectangle.Right.Type", Array("Simple", "Tapered"))
+    ' Для Simple поля W/R2 не участвуют в форме и не должны требовать числа.
+    If leftType = "Tapered" Then
+        leftW = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.W"))
+        leftR2 = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R2"))
+    End If
+    If rightType = "Tapered" Then
+        rightW = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.W"))
+        rightR2 = units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R2"))
+    End If
     geom.InitializeSides _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.B", 300#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.H", 200#)), _
-        settings.GetString("RoundedRectangle.Left.Type", "Simple"), _
-        settings.GetString("RoundedRectangle.Right.Type", "Simple"), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.W", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.W", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R1", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R1", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Left.R2", 0#)), _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle.Right.R2", 0#))
+        units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.B")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.H")), _
+        leftType, rightType, leftW, rightW, _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R1")), _
+        units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R1")), leftR2, rightR2
 
     Set BuildFromSettings = Build(geom, _
         ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "32"), _

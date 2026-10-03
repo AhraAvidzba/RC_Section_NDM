@@ -537,12 +537,12 @@ Private Sub AppendHollowRectangleSettings(ByRef data As Variant)
 
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendSetting "HollowRectangle.H", Trim$(CStr(data(valueRow, 1))), Trim$(CStr(data(valueRow, 1))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.B", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.R", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.OpeningH", Trim$(CStr(data(valueRow, 4))), Trim$(CStr(data(valueRow, 4))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.OpeningB", Trim$(CStr(data(valueRow, 5))), Trim$(CStr(data(valueRow, 5))), "HollowRectangle geometry"
-    AppendSetting "HollowRectangle.OpeningR", Trim$(CStr(data(valueRow, 6))), Trim$(CStr(data(valueRow, 6))), "HollowRectangle geometry"
+    AppendGeometryValue data, "HollowRectangle.H", valueRow, 1
+    AppendGeometryValue data, "HollowRectangle.B", valueRow, 2
+    AppendGeometryValue data, "HollowRectangle.R", valueRow, 3
+    AppendGeometryValue data, "HollowRectangle.OpeningH", valueRow, 4
+    AppendGeometryValue data, "HollowRectangle.OpeningB", valueRow, 5
+    AppendGeometryValue data, "HollowRectangle.OpeningR", valueRow, 6
 
     Dim mainHeaderRow As Long
     mainHeaderRow = FindRowWithCaption(data, "Грань", 1, geometryHeaderRow + 1)
@@ -562,7 +562,7 @@ Private Sub AppendHollowRectangleCommonSettings(ByRef data As Variant, ByVal geo
                 StrComp(keyValue, "HollowRectangle.InnerOffsetY", vbTextCompare) = 0 Then
             Dim sourceValue As String
             If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
-            AppendSetting keyValue, Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), sourceValue
+            AppendGeometryValue data, keyValue, rowIndex, 2, sourceValue
         End If
     Next rowIndex
 End Sub
@@ -647,20 +647,20 @@ Private Sub AppendRoundedRectangleFaceSettings(ByRef data As Variant)
 
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendSetting "RoundedRectangle.B", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "RoundedRectangle geometry"
-    AppendSetting "RoundedRectangle.H", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "RoundedRectangle geometry"
+    AppendGeometryValue data, "RoundedRectangle.B", valueRow, 2
+    AppendGeometryValue data, "RoundedRectangle.H", valueRow, 3
 
     Dim sideHeaderRow As Long
     sideHeaderRow = FindRowWithCaption(data, "слева", 2, geometryHeaderRow + 1)
     If sideHeaderRow > 0 And UBound(data, 1) >= sideHeaderRow + 4 Then
-        AppendSetting "RoundedRectangle.Left.Type", Trim$(CStr(data(sideHeaderRow + 1, 2))), Trim$(CStr(data(sideHeaderRow + 1, 2))), Trim$(CStr(data(sideHeaderRow + 1, 5)))
-        AppendSetting "RoundedRectangle.Right.Type", Trim$(CStr(data(sideHeaderRow + 1, 3))), Trim$(CStr(data(sideHeaderRow + 1, 3))), Trim$(CStr(data(sideHeaderRow + 1, 5)))
-        AppendSetting "RoundedRectangle.Left.W", Trim$(CStr(data(sideHeaderRow + 2, 2))), Trim$(CStr(data(sideHeaderRow + 2, 2))), Trim$(CStr(data(sideHeaderRow + 2, 5)))
-        AppendSetting "RoundedRectangle.Right.W", Trim$(CStr(data(sideHeaderRow + 2, 3))), Trim$(CStr(data(sideHeaderRow + 2, 3))), Trim$(CStr(data(sideHeaderRow + 2, 5)))
-        AppendSetting "RoundedRectangle.Left.R1", Trim$(CStr(data(sideHeaderRow + 3, 2))), Trim$(CStr(data(sideHeaderRow + 3, 2))), Trim$(CStr(data(sideHeaderRow + 3, 5)))
-        AppendSetting "RoundedRectangle.Right.R1", Trim$(CStr(data(sideHeaderRow + 3, 3))), Trim$(CStr(data(sideHeaderRow + 3, 3))), Trim$(CStr(data(sideHeaderRow + 3, 5)))
-        AppendSetting "RoundedRectangle.Left.R2", Trim$(CStr(data(sideHeaderRow + 4, 2))), Trim$(CStr(data(sideHeaderRow + 4, 2))), Trim$(CStr(data(sideHeaderRow + 4, 5)))
-        AppendSetting "RoundedRectangle.Right.R2", Trim$(CStr(data(sideHeaderRow + 4, 3))), Trim$(CStr(data(sideHeaderRow + 4, 3))), Trim$(CStr(data(sideHeaderRow + 4, 5)))
+        AppendGeometryValue data, "RoundedRectangle.Left.Type", sideHeaderRow + 1, 2
+        AppendGeometryValue data, "RoundedRectangle.Right.Type", sideHeaderRow + 1, 3
+        AppendGeometryValue data, "RoundedRectangle.Left.W", sideHeaderRow + 2, 2
+        AppendGeometryValue data, "RoundedRectangle.Right.W", sideHeaderRow + 2, 3
+        AppendGeometryValue data, "RoundedRectangle.Left.R1", sideHeaderRow + 3, 2
+        AppendGeometryValue data, "RoundedRectangle.Right.R1", sideHeaderRow + 3, 3
+        AppendGeometryValue data, "RoundedRectangle.Left.R2", sideHeaderRow + 4, 2
+        AppendGeometryValue data, "RoundedRectangle.Right.R2", sideHeaderRow + 4, 3
     End If
 
     Dim mainHeaderRow As Long
@@ -813,7 +813,7 @@ Private Sub AppendRectSetCommonSettings(ByRef data As Variant, ByVal geometryHea
                 StrComp(keyValue, "RectSet.UpperOffsetX", vbTextCompare) = 0 Then
             Dim sourceValue As String
             If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
-            AppendSetting keyValue, Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), sourceValue
+            AppendGeometryValue data, keyValue, rowIndex, 2, sourceValue
         End If
     Next rowIndex
 End Sub
@@ -823,10 +823,10 @@ End Sub
 Private Sub AppendRectSetSectionedSettings(ByRef data As Variant, Optional ByVal geometryHeaderRow As Long = 2)
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendSetting "RectSet.H1", Trim$(CStr(data(valueRow, 1))), Trim$(CStr(data(valueRow, 1))), "RectSet geometry"
-    AppendSetting "RectSet.B1", Trim$(CStr(data(valueRow, 2))), Trim$(CStr(data(valueRow, 2))), "RectSet geometry"
-    AppendSetting "RectSet.H2", Trim$(CStr(data(valueRow, 3))), Trim$(CStr(data(valueRow, 3))), "RectSet geometry"
-    AppendSetting "RectSet.B2", Trim$(CStr(data(valueRow, 4))), Trim$(CStr(data(valueRow, 4))), "RectSet geometry"
+    AppendGeometryValue data, "RectSet.H1", valueRow, 1
+    AppendGeometryValue data, "RectSet.B1", valueRow, 2
+    AppendGeometryValue data, "RectSet.H2", valueRow, 3
+    AppendGeometryValue data, "RectSet.B2", valueRow, 4
 
     Dim faceNames(1 To 8) As String
     Dim sideIndexes(1 To 8) As Long
@@ -904,6 +904,16 @@ Private Sub FillRectSetSectionedFaceOrder(ByRef faceNames() As String, ByRef sid
     faceNames(8) = "B2": sideIndexes(8) = 2
 End Sub
 
+' Сохраняет значение размерной или управляющей ячейки геометрии вместе с
+' фактическим адресом. Ошибка формулы не становится текстом Error 2015;
+' числовой диапазон и активность параметра проверяет потребитель геометрии.
+Private Sub AppendGeometryValue(ByRef data As Variant, ByVal key As String, _
+        ByVal rowIndex As Long, ByVal columnIndex As Long, Optional ByVal source As String = vbNullString)
+    Dim value As String
+    value = ConfigCellText(data(rowIndex, columnIndex), "значение геометрии", rowIndex, key, False, columnIndex)
+    AppendSetting key, value, value, source, rowIndex, columnIndex
+End Sub
+
 ' Добавляет одну пару ключ-значение в reader.
 ' Массивы параллельные: это проще и быстрее для VBA, чем словарь с Variant-объектами,
 ' а поиск по ключу остается достаточно дешевым для числа настроек Config.
@@ -964,6 +974,11 @@ Private Function InputSettingsSection(ByVal key As String) As String
         Case Left$(key, 7) = "Solver.": sectionName = "настройки решателя"
         Case Left$(key, 9) = "Capacity.": sectionName = "настройки несущей способности"
         Case Left$(key, 15) = "AutoCAD.Import.": sectionName = "импорт геометрии из AutoCAD"
+        Case Left$(key, 7) = "Circle.", Left$(key, 6) = "Rebar.": sectionName = "круглое сечение"
+        Case Left$(key, 8) = "RectSet.": sectionName = "RectSet-сечение"
+        Case Left$(key, 17) = "RoundedRectangle.": sectionName = "скругленный прямоугольник"
+        Case Left$(key, 16) = "HollowRectangle.": sectionName = "пустотелый прямоугольник"
+        Case Left$(key, 9) = "Geometry.", Left$(key, 5) = "Mesh.": sectionName = "геометрия и расчетная сетка"
         Case Else: sectionName = "таблица исходных настроек"
     End Select
     InputSettingsSection = "лист Config, раздел """ & sectionName & """"
@@ -1072,6 +1087,22 @@ Public Function GetRequiredString(ByVal key As String) As String
     GetRequiredString = textValue
 End Function
 
+' Читает обязательный селектор из явного набора значений. Возвращает запись
+' из набора с каноническим регистром; пустота/TODO и неизвестный вариант
+' дают ошибку ввода с адресом ячейки, а не выбор первого варианта по умолчанию.
+Public Function GetRequiredChoice(ByVal key As String, ByVal choices As Variant) As String
+    Dim value As String, choice As Variant
+    value = GetRequiredString(key)
+    For Each choice In choices
+        If StrComp(value, CStr(choice), vbTextCompare) = 0 Then
+            GetRequiredChoice = CStr(choice)
+            Exit Function
+        End If
+    Next choice
+    Err.Raise vbObjectError + 4311, "CSystemSettingsReader.GetRequiredChoice", _
+        InputErrorMessage(key, "Недопустимый вариант: """ & value & """.", "Выберите из списка: " & Join(choices, ", ") & ".")
+End Function
+
 ' Подсказывает действие отдельно для утраченной строки и незаполненного значения.
 ' Число/текст проверяются здесь, а инженерный диапазон остается у потребителя.
 Private Function RequiredInputCorrection(ByVal key As String, ByVal numericValue As Boolean) As String
@@ -1087,13 +1118,23 @@ End Function
 ' передается общему числовому reader-у; знак и инженерный диапазон проверяет consumer.
 Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long = 0, _
         Optional ByVal allowBlankValue As Boolean = True) As Long
-    Dim value As Double
-    value = GetDouble(key, CDbl(defaultValue), allowBlankValue)
+    GetLong = CheckedLong(key, GetDouble(key, CDbl(defaultValue), allowBlankValue))
+End Function
+
+' Читает обязательный счетчик без подстановки отсутствующего/пустого значения.
+' Применяет ту же проверку представимости и отсутствия округления, что GetLong.
+Public Function GetRequiredLong(ByVal key As String) As Long
+    GetRequiredLong = CheckedLong(key, GetRequiredDouble(key))
+End Function
+
+' Проверяет числовой ввод перед CLng. Знак и допустимый инженерный диапазон
+' остаются у владельца настройки; здесь исключены Overflow и округление дроби.
+Private Function CheckedLong(ByVal key As String, ByVal value As Double) As Long
     If value < -2147483648# Or value > 2147483647# Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
         InputErrorMessage(key, "Целое число выходит за допустимый диапазон Long.", "Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.")
     If value <> Fix(value) Then Err.Raise vbObjectError + 4315, "CSystemSettingsReader.GetLong", _
         InputErrorMessage(key, "Введено дробное значение вместо целого; автоматическое округление не выполняется.", "Введите целое число.")
-    GetLong = CLng(value)
+    CheckedLong = CLng(value)
 End Function
 
 ' Читает Yes/No и утвержденные aliases. Default допустим только для отсутствующего
