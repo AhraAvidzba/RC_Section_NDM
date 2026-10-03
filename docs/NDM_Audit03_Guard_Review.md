@@ -3,6 +3,59 @@
 Дата: 2026-10-02. Статус: частичная содержательная ревизия F07.
 Этот документ не является итоговым PASS всех защитных условий.
 
+## Production IIf И Nothing v171
+
+Повторно просмотрены все восемь production `IIf` и пять составных условий
+с `Nothing` из census v169. Численный production-код v171 в этой части тот
+же; отличие v171 от v169 касается только контролируемого profile-scope fixture.
+
+| Владелец / Метод | Проверенный Контракт |
+| --- | --- |
+| CBatchSectionCalculator.RunCapacity | BuildLoadPath возвращает конкретный descriptor; обе ветви IIf читают безопасные строковые свойства descriptor/валидного LC-index. Ошибочный путь обрабатывает calculator, а не ленивое вычисление IIf. |
+| CBatchSectionCalculator.RunProfileState, два IIf | State проверен последовательным Nothing-guard до чтения Converged/ExtensionUsed; обе альтернативы являются литералами. |
+| CBatchSectionCalculator.RunCrackWidth, отчет CrackFormed | Canonical CrackResult и Formation существуют до отчета; обе альтернативы являются литералами. |
+| CCrackSummaryWriter.PutFormationData | index поступает из обхода допустимых LC; CrackResult/Formation созданы контейнером. Обе альтернативы IIf - строки, дополнительного solve или разыменования в альтернативе нет. |
+| CGeometryHollowRectangle.GetVerticalRebarLine / GetHorizontalRebarPath | IIf выбирает только знак уже прочитанного Double axisDistance. Rotated geometry создается Initialize; builder предварительно проверяет IsValid. Неинициализированная геометрия не является допустимым входом этого маршрута; runtime-ошибка такого private caller не заявляется воспроизведенной. |
+| CMaterialDiagram.InitializeFromArrays | pointCount >= 2 и обе границы входных массивов проверены до ReDim/copy. mPointCount установлен после проверки точек; индекс последней деформации допустим в обеих вычисляемых ветвях. |
+| CStateProvider.GetOrSolve / CStateRepository.BindContext | And/Or проверяют только идентичность объектов с Nothing, не вызывают их свойства. При отсутствии контекста возвращается typed failure либо явная входная ошибка до разыменования. |
+| CSystemSettingsReader.AppendGeometrySettingsRanges | Составное условие проверяет скаляр rangeError и идентичность settingsRange; AppendSettingsRange вызывается уже телом If. Это не blanket приемка всех optional/missing ranges. |
+| CCapacityLimitSearchProblem.BuildSnapshot | hasPoint и проверка materialSpec не разыменовывают spec. LastSolver предварительно проверен отдельным If; InitializeFromSolver вызывается только внутри подтвержденной ветви. |
+| CStateSolutionRunner.TryGetMaterialDiagrams | Обе стороны проверяют только переданные ссылки с Nothing. TypeName/cast выполняются после этого выхода; линейные test materials имеют отдельный допустимый отказ от специализированной подсказки. |
+
+Census содержит 827 production-кандидатов, в том числе 232 упоминания
+LBound/UBound и 601 Boolean-expression; категории пересекаются. Эта запись
+доказывает содержательную ревизию указанной группы, не приемку остальных
+массивных/численных guards или всех test helpers. Нового runtime failure в
+данной группе не обнаружено; код ради замены безопасных IIf не изменялся.
+
+## Массивные Маршруты Текущего Source v173
+
+- `CLimitSearchCoordinator.LoadPathKeys` после проверки load state и ключа
+  возвращает `Array` из одного либо трех путей во всех допустимых ветвях.
+  Поэтому `LBound/UBound` в Formation и `ExecuteLoadPaths` работают с непустым
+  массивом. Нулевое масштабируемое действие проверяется отдельно через
+  `HasScaledLoad`, не через случайное отсутствие массива или деление на ноль.
+- `CStateSolutionRunner.TryRunRetry` создает ключ фиксированной структуры
+  только после проверки identity/revision локальной сессии. Записи коллекции
+  добавляет единственный private `StoreFailedRetryAttempt` с тем же ключом;
+  `TryRestoreFailedRetryAttempt` не принимает внешний произвольный record.
+  Это локальная диагностика неудачной попытки, не reusable physical State.
+- `CBatchSectionCalculator.CombinationCapacity` и `StabilityLoadCapacity`
+  локально перехватывают отсутствие выделенного массива и возвращают 0.
+  Выделение/расширение идет до записи строки; число пользовательских строк
+  ограничено реальным Range Excel. Эта проверка не заявляет успешное создание
+  произвольно огромного массива через низкоуровневый программный API.
+- `CLoadCombinationReader.LoadFromRange` проверяет не менее двух строк и пяти
+  столбцов до `Value2`. На этом пользовательском маршруте результат Excel
+  двухмерный и 1-based; необязательные шестая/седьмая колонки читаются только
+  в соответствующих ветвях. Ошибки пользовательских ячеек проходят отдельный
+  `ReadCellText`/численный parser с сохранением фактического адреса.
+
+Это содержательная проверка перечисленных call paths на текущем source,
+не окончательная приемка всех 1544 guard-кандидатов и не новая физическая
+методика. Синтаксическая полнота census не заменяет runtime доказательство
+неподдержанного или специально поврежденного входа.
+
 ## Ранний Ввод И Read-Only Проверка v139
 
 Width.ValidateSettings вызывается до раннего ConfirmedNotCracked и до

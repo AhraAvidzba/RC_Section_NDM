@@ -725,6 +725,11 @@ Private Sub RunCombination(ByVal index As Long)
     End If
 
     Dim profile As CCalculationProfile
+    If Not mProfiles.HasProfile(mInputs(index).ProfileId) Then
+        MarkInvalid index, "Расчетный профиль " & mInputs(index).ProfileId & _
+            " не найден. Выберите ProfileId из таблицы расчетных профилей на листе Config."
+        Exit Sub
+    End If
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
     mResults(index).SetProfileId profile.ProfileId
     ReportValue "Профиль", profile.ProfileId & " / " & profile.DisplayName
@@ -739,9 +744,6 @@ Private Sub RunCombination(ByVal index As Long)
         Exit Sub
     End If
 
-    mResults(index).SetDirectStateMeta NotApplicableMeta(rkDirectState)
-    mResults(index).SetStabilityMeta NotApplicableMeta(rkStability)
-
     ReportSection "Продольный изгиб и устойчивость"
     If profile.StabilityEnabled Then
         ReportStep "Запускается фильтр продольного изгиба/устойчивости по профилю."
@@ -749,7 +751,7 @@ Private Sub RunCombination(ByVal index As Long)
     Else
         ReportStep "Устойчивость не запрошена профилем."
         mResults(index).ClearStabilityResult
-        mResults(index).SetStabilityMeta NotApplicableMeta(rkStability)
+        mResults(index).SetStabilityMeta NotRequestedMeta(rkStability)
     End If
 
     ReportSection "Расчет по модели прочности"
@@ -779,8 +781,15 @@ FinalizeCombination:
     Exit Sub
 
 Failed:
-    ReportStep "Ошибка при расчете сочетания: " & Err.Description
-    MarkInvalid index, Err.Description
+    Dim failureNumber As Long, failureText As String, failureSource As String, failureMeta As CResultMeta
+    failureNumber = Err.Number: failureText = Err.Description: failureSource = Err.Source
+    ReportStep "Ошибка при расчете сочетания: " & failureText
+    Set failureMeta = New CResultMeta
+    failureMeta.SetResult rsInternalError, rcInternalError, rkGeneric, _
+        "Расчет сочетания остановлен из-за ошибки выполнения: " & failureText, _
+        failureSource & "; error=" & CStr(failureNumber)
+    mResults(index).SetWorkflowMeta failureMeta
+    AppendDiagnostic index
 End Sub
 
 ' Применяет расчет продольного изгиба как изолированный фильтр усилий.
@@ -1327,7 +1336,7 @@ End Sub
 Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
     Dim capacityResult As CCapacityResult
     Set capacityResult = New CCapacityResult
-    capacityResult.InitializeSkipped "Проверка несущей способности не запрошена профилем."
+    capacityResult.InitializeNotRequested "Проверка несущей способности не запрошена профилем."
     mResults(index).StoreCapacityResult capacityResult
 End Sub
 
@@ -1341,13 +1350,13 @@ Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
     mResults(index).StoreCapacityResult capacityResult
 End Sub
 
-' Создает meta для отключенной или неприменимой ветки расчета.
-Private Function NotApplicableMeta(ByVal resultKind As EResultKind, _
-        Optional ByVal reason As String = vbNullString) As CResultMeta
+' Создает meta для проверки, отключенной профилем, а не неприменимой физики.
+' Ни запуск, ни обязательная зависимость у такой ветви не заявляются.
+Private Function NotRequestedMeta(ByVal resultKind As EResultKind) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetNotApplicable resultKind, reason
-    Set NotApplicableMeta = meta
+    meta.SetNotRequested resultKind
+    Set NotRequestedMeta = meta
 End Function
 
 ' Создает meta для ошибки пользовательских данных или настроек.
@@ -1374,9 +1383,17 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then reason = "Некорректное сочетание нагрузок."
     mInputs(index).InputError = reason
     mResults(index).SetProfileId mInputs(index).ProfileId
-    mResults(index).SetDirectStateMeta InvalidInputMeta(rkDirectState, reason)
-    mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, reason), reason
-    StoreInvalidCapacity index, reason
+    mResults(index).SetWorkflowMeta InvalidInputMeta(rkGeneric, reason)
+    ' Ошибка одной строки относится только к запрошенным проверкам.
+    ' Неизвестный профиль не дает права выдумывать набор активных расчетов.
+    If mProfiles.HasProfile(mInputs(index).ProfileId) Then
+        Dim profile As CCalculationProfile
+        Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
+        If profile.StrengthDirectStateEnabled Then mResults(index).SetDirectStateMeta InvalidInputMeta(rkDirectState, reason)
+        If profile.StrengthCapacityEnabled Then StoreInvalidCapacity index, reason
+        If profile.StabilityEnabled Then mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, reason), reason
+        If profile.CrackWidthEnabled Then mResults(index).CrackResult.SetInputFailure reason
+    End If
     If Not mMaterialProvider Is Nothing Then
         mResults(index).SetDiagramExtensionEnabled mMaterialProvider.DiagramExtensionEnabled
     End If
@@ -1513,6 +1530,9 @@ Private Sub ClearResultRow(ByVal index As Long)
     ' Новый запуск не должен менять объект, на который у него осталась ссылка.
     Set mResults(index) = New CCombinationResult
     mResults(index).Clear CAPACITY_PATH_NONE
+    mResults(index).SetDirectStateMeta NotRequestedMeta(rkDirectState)
+    mResults(index).SetStabilityMeta NotRequestedMeta(rkStability)
+    mResults(index).CrackResult.SetNotRequested
     mResults(index).SetProfileId mInputs(index).ProfileId
 End Sub
 

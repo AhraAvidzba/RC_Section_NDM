@@ -22,6 +22,219 @@ Private Const MOMENT_FACTOR As Double = 9806650# ' Независимый эта
 Private Const ROW_COUNT As Long = 30 ' Поадресная приемка штатного шаблона, не ограничение runtime.
 Private mDiagnosticRun As Boolean ' Только отдельный диагностический entrypoint включает подробные solver logs.
 
+' ============================== ДЛЯ ТЕСТОВ: ПРОФИЛИ И ОШИБКИ LC ==============================
+
+' Проверяет все 16 сочетаний четырех переключателей каждого PR-профиля.
+' Ошибка общей строки не запускает решатели, не активирует отключенные ветви
+' и появляется в общем комментарии один раз; подробные блоки получают свою причину.
+Public Function RunAudit03ProfileFailureScopeTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TLoadTableStats, loads As Object, source As Object, system As Object
+    Dim unitRange As Object, signRange As Object
+    Dim savedLoads As Variant, savedProfiles As Variant, savedSystem As Variant, data As Variant
+    Dim savedUnits As Variant, savedSigns As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, profiles As CCalculationProfileCatalog
+    Dim section As CSectionModel, provider As CMaterialModelProvider, batch As CBatchSectionCalculator
+    Dim result As CCombinationResult, retained As CCombinationResult, profile As Long, mask As Long
+    Dim column As Long, row As Long, prefix As String, reason As String, oldComment As String
+    Dim writer As CBatchResultWriter, anchor As Object
+    Dim meta As CResultMeta, standalone As CCombinationResult
+    On Error GoTo FailedRun
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Set system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    Set signRange = ThisWorkbook.Names.Item("rngSignConventionSettings").RefersToRange
+    savedLoads = loads.Formula: savedProfiles = source.Formula: savedSystem = system.Formula
+    savedUnits = unitRange.Formula: savedSigns = signRange.Formula
+    ' Нагрузка recovery имеет независимый физический смысл: растяжение 1 tf.
+    ' Scope проверяет включение ветвей, а не случайные настройки соседних UI-тестов.
+    SetSetting unitRange, "Force", "tf", 2
+    SetSetting unitRange, "Moment", "tf*m", 2
+    SetSetting signRange, "+N", "Compression", 2
+    SetSetting signRange, "+Mx", "+Y tension", 2
+    SetSetting signRange, "+My", "+X tension", 2
+    SetSetting system, "Calculation.ZeroMomentPerDepth", "0"
+    SetSetting system, "Load.ReferenceOffsetX", "0"
+    SetSetting system, "Load.ReferenceOffsetY", "0"
+    SetSetting system, "Solver.ToleranceN", FormatNumberInvariant(0.01 / FORCE_FACTOR)
+    SetSetting system, "Solver.ToleranceMx", FormatNumberInvariant(1# / MOMENT_FACTOR)
+    SetSetting system, "Solver.ToleranceMy", FormatNumberInvariant(1# / MOMENT_FACTOR)
+    SetSetting system, "Stability.Code", "SP63"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    LogLine stats, "PROFILE_SCOPE_SETUP: force=" & settings.GetString("Units.Force.Input", "") & _
+        "; length=" & settings.GetString("Units.Length.Input", "") & _
+        "; signN=" & settings.GetString("Sign.N.User", "") & _
+        "; strategy=" & settings.GetString("Capacity.SolutionStrategy", "")
+    BuildPhysicalFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
+    For profile = 1 To 4
+        For mask = 0 To 15
+            source.Formula = savedProfiles
+            column = profile + 2
+            For row = 1 To source.Rows.Count
+                Select Case CStr(source.Cells(row, 2).Value2)
+                    Case "Calculation.Strength.DirectState": SetProfileSwitch source.Cells(row, column), mask, 1
+                    Case "Calculation.Strength.Capacity": SetProfileSwitch source.Cells(row, column), mask, 2
+                    Case "Calculation.Crack.Width": SetProfileSwitch source.Cells(row, column), mask, 4
+                    Case "Calculation.Stability.Enabled": SetProfileSwitch source.Cells(row, column), mask, 8
+                End Select
+            Next row
+            Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+            data = loads.Value2
+            For row = 2 To UBound(data, 1)
+                For column = 1 To UBound(data, 2)
+                    data(row, column) = vbNullString
+                Next column
+            Next row
+            data(2, 1) = "PROFILE_SCOPE": data(2, 2) = CVErr(xlErrNA)
+            data(2, 3) = 0#: data(2, 4) = 0#: data(2, 5) = "PR" & CStr(profile)
+            data(2, 6) = "Auto": data(2, 7) = "Проверка области ошибки входа"
+            loads.Value2 = data
+            Set batch = ReadAndExecute(section, provider, profiles, settings, units)
+            Set result = batch.ResultAt(1): Set retained = result
+            prefix = "profileScope.PR" & CStr(profile) & ".mask" & CStr(mask)
+            reason = loads.Worksheet.Name & "!" & loads.Cells(2, 2).Address(False, False)
+            Check stats, prefix & ".status", result.Status = "InputErr"
+            Check stats, prefix & ".workflowTyped", result.WorkflowMeta.InternalStatus = rsInvalidInput And _
+                result.WorkflowMeta.ResultCode = rcInvalidInput And Not result.WorkflowMeta.Calculated
+            Check stats, prefix & ".noSolve", batch.SolverCallCount = 0
+            Check stats, prefix & ".noStates", result.StateRepository.StateCount = 0
+            Check stats, prefix & ".singleCommonReason", TextOccurrences(result.OverallMeta.ResultComment, reason) = 1
+            If (mask And 3) <> 0 Then Check stats, prefix & ".singleStrengthReason", TextOccurrences(result.StrengthMeta.ResultComment, reason) = 1
+            If (mask And 4) <> 0 Then Check stats, prefix & ".singleCrackReason", TextOccurrences(result.CrackSummaryMeta.ResultComment, reason) = 1
+            If (mask And 8) <> 0 Then Check stats, prefix & ".singleStabilityReason", TextOccurrences(result.StabilityMeta.ResultComment, reason) = 1
+            CheckProfileFailureMeta stats, prefix & ".direct", result.DirectStateMeta, (mask And 1) <> 0, False, reason
+            CheckProfileFailureMeta stats, prefix & ".capacity", result.CapacityMeta, (mask And 2) <> 0, False, reason
+            CheckProfileFailureMeta stats, prefix & ".stability", result.StabilityMeta, (mask And 8) <> 0, False, reason
+            CheckProfileFailureMeta stats, prefix & ".formation", result.CrackFormationMeta, (mask And 4) <> 0, False, reason
+            CheckProfileFailureMeta stats, prefix & ".current", result.CrackCurrentStateMeta, (mask And 4) <> 0, True, reason
+            CheckProfileFailureMeta stats, prefix & ".width", result.CrackWidthMeta, (mask And 4) <> 0, True, reason
+            CheckProfileFailureMeta stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, (mask And 4) <> 0, True, reason
+            Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch, units
+            Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
+            Check stats, prefix & ".batchComment", CStr(anchor.Offset(12, 2).Value2) = result.OverallMeta.ResultComment
+            Set anchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+            Check stats, prefix & ".strengthComment", CStr(anchor.Offset(0, 1).Value2) = result.StrengthMeta.ResultComment
+            Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+            Check stats, prefix & ".crackComment", CStr(anchor.Offset(0, 1).Value2) = result.CrackSummaryMeta.ResultComment
+            Set anchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+            Check stats, prefix & ".stabilityComment", CStr(anchor.Offset(0, 1).Value2) = result.StabilityMeta.ResultComment
+            LogLine stats, "PROFILE_SCOPE: " & prefix & "|batch=" & result.OverallMeta.ResultComment & _
+                "|strength=" & result.StrengthMeta.ResultComment & "|crack=" & result.CrackSummaryMeta.ResultComment & _
+                "|stability=" & result.StabilityMeta.ResultComment
+            oldComment = retained.OverallMeta.ResultComment
+            batch.Execute
+            Check stats, prefix & ".repeatComment", batch.ResultAt(1).OverallMeta.ResultComment = oldComment
+            Check stats, prefix & ".publishedComment", retained.OverallMeta.ResultComment = oldComment
+            If mask > 0 Then
+                data(2, 2) = -1#: loads.Value2 = data
+                Set batch = ReadAndExecute(section, provider, profiles, settings, units)
+                Set result = batch.ResultAt(1)
+                LogLine stats, "PROFILE_SCOPE_RECOVERY: " & prefix & "; N=" & FormatNumberInvariant(batch.N(1)) & _
+                    "; overall=" & result.Status & "; capacityCode=" & CStr(result.CapacityMeta.ResultCode) & _
+                    "; capacity=" & result.CapacityMeta.ResultComment & "; stabilityCode=" & CStr(result.StabilityMeta.ResultCode) & _
+                    "; stability=" & result.StabilityMeta.ResultComment
+                CheckClose stats, prefix & ".recoveryTensionN", batch.N(1), FORCE_FACTOR, 0.00000001
+                Check stats, prefix & ".recoveryInput", result.Status <> "InputErr"
+                Check stats, prefix & ".recoveryComment", InStr(1, result.OverallMeta.ResultComment, reason, vbBinaryCompare) = 0
+                Check stats, prefix & ".retainedAfterRecovery", retained.OverallMeta.ResultComment = oldComment
+                If (mask And 1) <> 0 Then
+                    Check stats, prefix & ".directExecuted", result.DirectStateMeta.Calculated And result.StrengthResult.DirectState.StateAvailable
+                Else
+                    Check stats, prefix & ".directStillOff", result.DirectStateMeta.InternalStatus = rsNotRequested
+                End If
+                If (mask And 2) <> 0 Then
+                    Check stats, prefix & ".capacityExecuted", result.CapacityMeta.Calculated And result.StrengthResult.Capacity.LambdaCapacity > 0#
+                Else
+                    Check stats, prefix & ".capacityStillOff", result.CapacityMeta.InternalStatus = rsNotRequested
+                End If
+                If (mask And 4) <> 0 Then
+                    Check stats, prefix & ".formationExecuted", result.CrackFormationMeta.Calculated
+                    Check stats, prefix & ".currentExecuted", result.CrackCurrentStateMeta.Calculated
+                Else
+                    Check stats, prefix & ".crackStillOff", result.CrackFormationMeta.InternalStatus = rsNotRequested
+                End If
+                If (mask And 8) <> 0 Then
+                    Check stats, prefix & ".stabilityExecuted", Len(result.StabilityResult.Code) > 0 And result.StabilityMeta.InternalStatus = rsNotApplicable
+                Else
+                    Check stats, prefix & ".stabilityStillOff", result.StabilityMeta.InternalStatus = rsNotRequested
+                End If
+            End If
+            stats.Cases = stats.Cases + 1
+        Next mask
+    Next profile
+    ' Агрегация общей валидации не должна скрывать более тяжелый технический
+    ' отказ самостоятельного subtree; причины сохраняются без анализа текста.
+    Set standalone = New CCombinationResult
+    Set meta = New CResultMeta: meta.SetResult rsInvalidInput, rcInvalidInput, rkGeneric, "Ошибка общего ввода."
+    standalone.SetWorkflowMeta meta
+    Set meta = New CResultMeta: meta.SetResult rsInternalError, rcInternalError, rkDirectState, "Отдельная ошибка результата.", calculated:=False
+    standalone.SetDirectStateMeta meta
+    Check stats, "profileScope.aggregate.typedPriority", standalone.Status = "CalcErr" And standalone.OverallMeta.ResultCode = rcInternalError
+    Check stats, "profileScope.aggregate.commonReason", InStr(1, standalone.OverallMeta.ResultComment, "Ошибка общего ввода.", vbBinaryCompare) > 0
+    Check stats, "profileScope.aggregate.ownReason", InStr(1, standalone.OverallMeta.ResultComment, "Отдельная ошибка результата.", vbBinaryCompare) > 0
+    Set meta = standalone.WorkflowMeta: meta.Clear
+    Check stats, "profileScope.aggregate.metaIsolation", standalone.WorkflowMeta.InternalStatus = rsInvalidInput
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    LogLine stats, "FAIL: profileScope.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not loads Is Nothing Then loads.Formula = savedLoads
+    If Not source Is Nothing Then source.Formula = savedProfiles
+    If Not system Is Nothing Then system.Formula = savedSystem
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    If Not signRange Is Nothing Then signRange.Formula = savedSigns
+    On Error GoTo 0
+    LogLine stats, "TOTAL_AUDIT03_PROFILE_FAILURE_SCOPE: passed=" & CStr(stats.Passed) & _
+        "; failed=" & CStr(stats.Failed) & "; cases=" & CStr(stats.Cases)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03ProfileFailureScopeTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: повторяет штатный UI-prefix и scope-проверку в одной книге.
+' Это воспроизводит зависимость от оставленного Config без полного восьмичастного прогона.
+Public Function RunAudit03ProfileScopePrefixDiagnosticTests() As String
+    RunAudit03ProfileScopePrefixDiagnosticTests = modTestWorkbookInterface.RunAudit03PreLoadTableDiagnosticTests() & _
+        RunAudit03ProfileFailureScopeTests()
+End Function
+
+' Задает один реальный переключатель профиля по независимой битовой маске.
+' Четыре бита соответствуют DirectState, Capacity, Crack и Stability.
+Private Sub SetProfileSwitch(ByVal cell As Object, ByVal mask As Long, ByVal bit As Long)
+    If (mask And bit) <> 0 Then cell.Value2 = "Yes" Else cell.Value2 = "No"
+End Sub
+
+' Различает ошибку обязательного входа, блокировку зависимого этапа и расчет,
+' отключенный профилем. Ни одна из этих ветвей не содержит численную попытку.
+Private Sub CheckProfileFailureMeta(ByRef stats As TLoadTableStats, ByVal prefix As String, _
+        ByVal meta As CResultMeta, ByVal requested As Boolean, ByVal dependent As Boolean, ByVal address As String)
+    Check stats, prefix & ".notCalculated", Not meta.Calculated
+    Check stats, prefix & ".applies", meta.Applies = requested
+    If requested Then
+        If dependent Then
+            Check stats, prefix & ".internal", meta.InternalStatus = rsBlockedByDependency
+            Check stats, prefix & ".code", meta.ResultCode = rcBlockedByDependency
+        Else
+            Check stats, prefix & ".internal", meta.InternalStatus = rsInvalidInput
+            Check stats, prefix & ".code", meta.ResultCode = rcInvalidInput
+        End If
+        Check stats, prefix & ".reason", InStr(1, meta.ResultComment, address, vbBinaryCompare) > 0
+    Else
+        Check stats, prefix & ".internal", meta.InternalStatus = rsNotRequested
+        Check stats, prefix & ".code", meta.ResultCode = rcNotRequested
+        Check stats, prefix & ".noForeignReason", InStr(1, meta.ResultComment, address, vbBinaryCompare) = 0
+    End If
+End Sub
+
+' Считает точные вхождения общей причины только для проверки presentation.
+' Расчетная классификация в production не зависит от этого сравнения текста.
+Private Function TextOccurrences(ByVal text As String, ByVal fragment As String) As Long
+    If Len(fragment) > 0 Then TextOccurrences = UBound(Split(text, fragment, -1, vbBinaryCompare))
+End Function
+
 ' Выполняет целиком адресный блок LC. Optional-счетчики позволяют включить
 ' отчет в штатную suite без второго запуска и без подмены отдельных failures.
 Public Function RunAudit03LoadTableTests(Optional ByRef passed As Long = 0, _

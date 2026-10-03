@@ -326,3 +326,78 @@ Batch не анализирует текст для решения о допус
 Off/On завершены `26264/0` и `26275/0`; общие actual-числа с v137 совпали
 в 5601/5606 assertions без пропусков. Чистая сборка и окончательная приемка
 после этого изменения еще выполняются.
+
+## Общая Ошибка LC И Профиль v171
+
+Negative v166 на принятом production checkpoint `06c69235` выполнил все
+64 маски четырех запросов PR1-PR4: `1844/1216`. Общая ошибка формулы LC
+появлялась как самостоятельная ошибка НДС, Capacity и Stability даже при No;
+активный Crack не получал своей причины. Это дефект scope/lifecycle результата,
+а не численная несходимость или изменение расчетной методики.
+
+В `CCombinationResult` общий вход/техническая остановка имеет canonical
+workflow meta. Ее статус участвует в единственной общей policy вместе с
+готовыми инженерными subtrees. Общий InputErr не повторяется под именами
+зависимых разделов; более тяжелый отдельный CalcErr не скрывается. Каждая
+отключенная ветвь получает `rsNotRequested`. Нулевая физическая траектория
+Capacity сохраняет `rsNotApplicable` и не смешивается с отключенной проверкой.
+
+Активный Crack при ошибке общей строки получает Formation InputErr, а
+Current/Width/Longitudinal остаются `rsBlockedByDependency` без solve. В
+подробном Crack-комментарии причина валидации одна, все leaf-причины доступны
+в typed results. Strength формирует свое общее пояснение без дубля Direct/
+Capacity. Writers только выгружают соответствующие готовые комментарии.
+
+Первый positive v167 `3176/64` сохранил оставшиеся ошибки NotApplicable у
+отключенной Capacity; этот лог не объявлен PASS. Final directed v169:
+`3512/0`, все 64 маски, repeat/recovery, реальные активные calculations,
+сохранность опубликованных результатов и clone workflow meta. Results и
+status-style после save/reopen совпали. Physical expected/tolerance не менялись.
+Технический catch orchestration проверен чтением кода и typed-агрегацией;
+принудительный runtime fault в этом catch не инъецировался.
+
+Справка v169 обновлена: 760 input-records/value/formula/validation сохранены,
+1949 строк, 140 ссылок, failed=0; форматирование `1003/0`, deviations=0;
+структурный Validate `27/27`. Полные Off/On текущего source еще выполняются;
+общий Audit03 и остальные профильные material/presentation поля остаются открыты.
+
+Full Off v169 завершился с 96 failures только в новом profile-scope recovery;
+это не скрытый отказ остальных suites. Diagnostic v170 повторил UI-prefix и
+scope: `3416/96`. Его машинные причины показывают фактический Config force=N,
+signN=Tension: -1 дает сжатие 1 Н и rcSearchBoundReached; выбранный СП35 без
+переданной таблицы 7.21 дает rcInvalidInput устойчивости. Все эти причины
+видны в typed results и в диагностическом журнале.
+
+v171 явно задает физическую recovery-нагрузку растяжения 1 tf, offsets=0,
+компонентные tolerances и СП63 для этой проверки активности, сохраняя и
+восстанавливая исходные units/signs/system/profiles/LC. Это исправление
+тестовой постановки, не расширение приемки нормативных ветвей или подбор
+ожидаемых статусов. Дополнительные 60 независимых force assertions дают
+`3572/0`, cases=64, Results/status-style reopen=True. Полные v171 пока Pending.
+
+Full Off v171 завершен `44045/0`, все восемь suites. 9225 общих actual
+assertions с v165 совпали без пропусков/различий. Это численная приемка,
+не структурный PASS: отдельный Validate обнаружил alias Print_Area,
+появившийся после Update-Audit03TestModule COM-save. Исправлена только
+тестовая утилита сохранения имен; расчетный VBA v171/v172 одинаков.
+Окончательная v172 прошла directed `3572/0` с Results/status-style reopen,
+Validate `27/27`, formatting `1003/0`, help `2564/2564`, mergesEqual=True.
+Full On v172 завершен `44056/0`; 9230 общих actual assertions с v165 совпали
+без пропусков и различий. Ранние отрицательные журналы не переписаны и не
+заменены положительными.
+
+Окончательная v173 после удаления неиспользуемого private helper прошла
+directed `3572/0`, Validate `27/27`, formatting `1003/0`, help `2564/2564`,
+mergesEqual=True и source/export `104/104`. Full Off v173: `44045/0`, все
+восемь suites; 9225 общих actual assertions с v165 совпали. Full On v173
+завершен `44056/0`, все восемь suites; 9230 общих actual assertions с v165
+совпали без пропусков/различий. Runtime fault технического catch отдельно не инъецировался;
+общий Audit03 и остальные семейства Config этим срезом не закрываются.
+
+Итоговые runtime-доказательства: `profile_scope_final_v173_2026-10-03.txt`,
+`full_off_profile_scope_final_v173_2026-10-03.txt` и
+`full_on_profile_scope_final_v173_2026-10-03.txt` в `docs/regression/Audit03`.
+Results SHA после reopen `0D24CCA9E9C256EBB4314D32F040A4AA7111B139C293C8026E7FACCE45EF395B`,
+status-style SHA `5C632562754D42BA1C3F8640FE5162DACE25BDA0417B64028C4B9FF4C11F95B4`;
+оба совпали до/после сохранения. Основная пользовательская output-книга
+не заменена промежуточной audit-копией.

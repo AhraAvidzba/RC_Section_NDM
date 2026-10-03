@@ -35,7 +35,7 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     AssertWritable
     Set mDirectState = New CDirectStateResult
     Set mCapacity = New CCapacityResult
-    mCapacity.InitializeSkipped "Несущая способность не запрошена.", defaultCapacityPath
+    mCapacity.InitializeNotRequested "Несущая способность не запрошена.", defaultCapacityPath
 End Sub
 
 ' Сохраняет typed meta прямого НДС без изменения его численных данных.
@@ -101,8 +101,15 @@ Public Property Get ResultMeta() As CResultMeta
     Dim direct As CResultMeta, capacity As CResultMeta, comment As String
     Set direct = DirectMeta
     Set capacity = CapacityMeta
-    direct.AppendCommentTo comment
-    capacity.AppendCommentTo comment
+    If direct.InternalStatus = rsInvalidInput And capacity.InternalStatus = rsInvalidInput And _
+            StrComp(direct.ResultComment, capacity.ResultComment, vbBinaryCompare) = 0 Then
+        ' Общая валидация не запускала ни DirectState, ни Capacity. Одно
+        ' пояснение относится ко всему блоку; leaf-статусы остаются независимыми.
+        comment = "Прочность: " & direct.ResultComment
+    Else
+        direct.AppendCommentTo comment
+        capacity.AppendCommentTo comment
+    End If
     Set ResultMeta = mPolicy.WorstResultMeta(rkGeneric, direct, capacity)
     ResultMeta.ResultComment = comment
 End Property

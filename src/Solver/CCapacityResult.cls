@@ -116,6 +116,14 @@ Public Sub InitializeCalcError(ByVal reason As String, _
     InitializeEarlyResult rsInternalError, rcInternalError, reason, pathKey
 End Sub
 
+' Отмечает проверку, выключенную профилем, без найденной точки и без solve.
+' Это отличается от физической неприменимости нулевой lambda-траектории.
+Public Sub InitializeNotRequested(ByVal reason As String, _
+        Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    AssertWritable
+    InitializeEarlyResult rsNotRequested, rcNotRequested, reason, pathKey
+End Sub
+
 ' Заполняет результат штатным пропуском capacity без запуска search.
 ' Нулевая траектория не является ошибкой ввода: для нее просто нет направления,
 ' по которому можно искать предельный множитель lambda.

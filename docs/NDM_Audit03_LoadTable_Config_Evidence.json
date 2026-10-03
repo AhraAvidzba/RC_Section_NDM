@@ -1,11 +1,11 @@
 {
   "Scope": "Активная поадресная приемка 210 полей rngLoadCombinations; не заменяет полный диапазон всех Config, профильные параметры и общую матрицу геометрий/нагрузок",
-  "AcceptanceStatus": "Направленный PASS; полные Off/On Pending, в общий реестр адресная приемка еще не включена",
+  "AcceptanceStatus": "Направленный PASS 11021/0, 910 случаев; полный regression v173 Off 44045/0, On 44056/0; 210 полей адресно приняты, не blanket full Config acceptance",
   "PositiveReport": "docs/regression/Audit03/load_table_diagnostic_v143_2026-10-03.txt",
   "PositiveGate": "TOTAL_AUDIT03_LOAD_TABLE: passed=11021; failed=0; cases=910",
   "FullReports": [
-    "docs/regression/Audit03/full_off_load_table_v143b_2026-10-03.txt",
-    "docs/regression/Audit03/full_on_load_table_v143_2026-10-03.txt"
+    "docs/regression/Audit03/full_off_profile_scope_final_v173_2026-10-03.txt",
+    "docs/regression/Audit03/full_on_profile_scope_final_v173_2026-10-03.txt"
   ],
   "Consumer": "CLoadCombinationReader -> CUnitSystem -> реальные profiles/batch -> State/Capacity/Formation -> typed result comments/status -> CBatchResultWriter",
   "TestId": "modTestLoadTableConfig.RunAudit03LoadTableTests",

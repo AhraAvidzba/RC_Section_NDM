@@ -6,6 +6,7 @@ param(
     [switch]$RestoreGeometryConstants
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $bookPath = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Audit03')) + [IO.Path]::DirectorySeparatorChar
@@ -13,6 +14,7 @@ if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) 
 if ($TestModule -notmatch '^modTest[A-Za-z0-9]+$') { throw 'Expected a standard test module.' }
 $source = Join-Path $root ("tests/$TestModule.bas")
 $body = ([IO.File]::ReadAllText($source, [Text.Encoding]::UTF8) -split '\r?\n' | Where-Object { $_ -notmatch '^Attribute VB_' }) -join "`r`n"
+$printAreas = @(Get-WorkbookPrintAreas $bookPath)
 $excel = $null
 $book = $null
 try {
@@ -53,3 +55,6 @@ try {
         [Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel) | Out-Null
     }
 }
+# Excel может записать локализованный alias имени при сохранении VBA-проекта.
+# Возвращаем сохраненную область печати только после закрытия COM-книги.
+Restore-WorkbookPrintAreas $bookPath $printAreas

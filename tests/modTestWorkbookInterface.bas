@@ -94,6 +94,11 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: Audit03 Load table completed; " & Audit02ExcelMemory()
     stats.Passed = stats.Passed + loadTablePassed
     stats.Failed = stats.Failed + loadTableFailed
+    Dim profileScopePassed As Long, profileScopeFailed As Long
+    AppendLine stats, "RUN: RunAudit03ProfileFailureScopeTests"
+    stats.Report = stats.Report & modTestLoadTableConfig.RunAudit03ProfileFailureScopeTests(profileScopePassed, profileScopeFailed)
+    stats.Passed = stats.Passed + profileScopePassed
+    stats.Failed = stats.Failed + profileScopeFailed
     Dim resultWidthsPassed As Long, resultWidthsFailed As Long
     stats.Report = stats.Report & modTestLoadTableConfig.RunAudit03ResultColumnWidthTests(resultWidthsPassed, resultWidthsFailed)
     stats.Passed = stats.Passed + resultWidthsPassed

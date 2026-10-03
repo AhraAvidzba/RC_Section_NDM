@@ -21,7 +21,7 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. v95 имеет 79 адресно принятых активных полей из 1065; остальные поля, полный диапазон/pairwise, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты. Search-селекторы v96-v102 проходят отдельную приемку, не blanket PASS. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v173: 344 активных поля из 1064, включая 210 LC и 16 профильных переключателей. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
 | 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
 
 ## Карта Обязанностей
@@ -68,6 +68,38 @@
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
 
 ## Актуальная Точка Продолжения
+
+- Текущий F04/F05-срез v173: standalone profile scope `3572/0`, все 64 маски
+  и точная физическая сила recovery; Results/status-style после reopen равны.
+  Полный Off v169 завершился с `3416/96` в новом scope-блоке после UI-prefix.
+  Все остальные suites и width-preservation `1116/0` прошли. Diagnostic v170
+  повторил эти 96 failures: force=N/signN=Tension превращали -1 в сжатие 1 Н,
+  Capacity достигала MaxLambda; активный SP35 без таблицы 7.21 давал InputErr.
+  Это наследование неконтролируемого setup, не потеря typed causes в production.
+  v171 задает tf/Compression, offsets=0, независимые компонентные tolerances
+  и SP63, затем восстанавливает units/signs/system/profiles/LC. Исторические
+  expected/tolerance не ослаблены. Full Off v171: `44045/0`, восемь suites;
+  9225 общих actual assertions с v165 совпали, missing/differences=0.
+  Validate v171 отдельно отклонил неканонический Print_Area после test-module
+  update. Утилита теперь сохраняет print names перед COM-save и восстанавливает
+  их после закрытия книги через существующий DOM helper. v172: Validate `27/27`,
+  formatting `1003/0`, help `2564/2564`, mergesEqual=True; source unchanged.
+  Directed v172 также `3572/0`, Results/status-style reopen=True. Full On v172
+  завершен `44056/0`; 9230 общих actual assertions с v165 совпали без пропусков.
+  После удаления private NotApplicableMeta окончательная v173 также прошла
+  directed `3572/0`, Validate `27/27`, formatting `1003/0`, help `2564/2564`.
+  Full Off v173 завершен `44045/0`, все восемь suites; 9225 общих actual
+  assertions с v165 совпали, missing/differences=0. Full On v173 завершен
+  `44056/0`, все восемь suites; 9230 общих actual assertions с v165 также
+  совпали без пропусков. Width-preservation `1116/0` прошел в обоих режимах.
+  Общий Config registry после merge содержит 344 active-reviewed поля из
+  1064, fullAcceptance=False. v171 не
+  объявляется полностью принятой книгой на основании одной численной suite.
+  Source/export `104/104`, failed=0; новые classes отсутствуют, production/test
+  `83/3`. Журналы v169/v170 сохраняются; output и пользовательское ТЗ не менялись.
+  Книга v173 SHA `D7EA24E02DF8528E20AC0143F68D7F07B5ADCB9D46B95B3932503DDD0FA1029D`;
+  export SHA `8C928E153007BE435A7A1486DB8B5B1607ECB88C485A05E26FEC3F6D5D2E82A8`.
+  Ниже остаются исторические шаги предыдущих срезов, не текущие блокеры.
 
 - Full Off v143b не принят: шесть suites завершены без failures, но UI-suite
   остановилась с Excel runtime 14 `Out of string space`. Последний внешний
@@ -258,6 +290,42 @@
   runtime не содержит ColumnWidth/StandardWidth/AutoFit. Это checkpoint,
   не финальный выпуск: защищенная output-книга и ТЗ сохраняют baseline-хеши.
 - Принятый срез v140 зафиксирован commit `285182d` (без push).
+  Перед следующим F05-срезом checkpoint `06c69235` сохраняет reader, строгий
+  lambda*N physical gate, widths и bounded snapshot title вместе с evidence.
+  Standalone UI той же v165 после точных RUN checkpoints: `20346/0`,
+  elapsed=328.64 с, privateBytes после suite=120868864, source unchanged=True.
+  Это фактический положительный полный UI gate, но не объяснение прежнего
+  runtime 14: между v164 и v165 численная production-логика не менялась.
+  Полный восьмисоставный Off/On повтор выполняется отдельно. Новый directed
+  F04/F05 тест проверяет все 16 масок четырех активных расчетов для PR1-PR4,
+  scope InputErr, единственную общую причину, реальные writer comments,
+  повтор и восстановление. До отрицательного/положительного runtime gate
+  новая поадресная приемка профилей не назначается.
+  Полный Off v165 завершил все восемь suites: Batch `11159/0`, UI `20346/0`,
+  failed=0, source unchanged=True; UI privateBytes после suite=138850304.
+  Directed negative v166 (неизмененный production v165 + новый scope test)
+  завершен: `1844/1216`, все 64 маски выполнены. Подтверждены активирование
+  отключенных branches и тройная общая причина InputErr. На основе этого
+  reproducer-а подготовлен F04/F05-срез: canonical workflow meta LC,
+  NotRequested для отключенных расчетов, Formation InputErr и зависимые
+  Blocked без solve, одна общая причина в каждом своем output subtree.
+  Неожиданный exception orchestration сохраняет CalcErr и полученные ранее
+  subresults; неизвестный ProfileId отдельно валидируется как InputErr.
+  Новых классов, formula/search-изменений и ослабления physical tolerance нет.
+  Положительный runtime, обновленная справка и окончательный Off/On этого
+  исходника еще требуются; это рабочий срез, не выпуск или приемка всех 92
+  полей профилей. Existing comment-oracle отличает общую prevalidation от
+  самостоятельных отказов расчетов по typed workflow meta, а не по display.
+  Full On v165 также завершен: Batch `11170/0`, UI `20346/0`, все восемь suites
+  без ошибок, source unchanged=True. Последующий F05 positive v167 дал
+  `3176/64` на всех 64 масках; Results/status-style save/reopen=True.
+  Оставшиеся 64 assertions относятся только к отключенной Capacity:
+  InitializeSkipped правильно означает физическую неприменимость нулевого
+  пути, но ошибочно использовался и для выключенной проверки. Добавлен
+  отдельный InitializeNotRequested в существующий CCapacityResult; нулевая
+  траектория и ее исторические expected остаются NotApplicable без изменения.
+  Scope/reader/physical assertions не ослаблены. v167 source/export `104/104`,
+  failed=0; v168 проверяет последний lifecycle fix и актуальный полный suite.
   Следующий цельный блок v141 проверяет 210 фактических адресов таблицы
   сочетаний: 910 LC-cases, все 30 строк/семь колонок/четыре профиля,
   перестановку/пропуски/повтор, ошибки формул/текст/overflow и шесть путей

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_snapshot_title_final_v165.xlsm
-Date: 2026-10-03 17:52:54
+Workbook: RC_Section_NDM_profile_scope_final_v173.xlsm
+Date: 2026-10-03 19:57:11
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -22,7 +22,7 @@ Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal target As Hy
     Set targetCell = helpSheet.range(addressText)
 
     RevealHelpOutlineGroup helpSheet, targetCell.row
-    Application.Goto targetCell, True
+    Application.GoTo targetCell, True
     If Not ActiveWindow Is Nothing Then
         ActiveWindow.ScrollRow = targetCell.row
         ActiveWindow.ScrollColumn = 1
@@ -12333,7 +12333,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityResult
 TYPE: 2
-LINES: 402
+LINES: 410
 ====================================================================================================
 Option Explicit
 
@@ -12442,6 +12442,14 @@ Public Sub InitializeCalcError(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
     AssertWritable
     InitializeEarlyResult rsInternalError, rcInternalError, reason, pathKey
+End Sub
+
+' Отмечает проверку, выключенную профилем, без найденной точки и без solve.
+' Это отличается от физической неприменимости нулевой lambda-траектории.
+Public Sub InitializeNotRequested(ByVal reason As String, _
+        Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
+    AssertWritable
+    InitializeEarlyResult rsNotRequested, rcNotRequested, reason, pathKey
 End Sub
 
 ' Заполняет результат штатным пропуском capacity без запуска search.
@@ -22681,7 +22689,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationResult
 TYPE: 2
-LINES: 214
+LINES: 226
 ====================================================================================================
 Option Explicit
 
@@ -22756,6 +22764,18 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
     Set mPostCrackState = crack.PostCrackState
     mStopReason = crack.stopReason
     mDiagnosticLog = crack.DiagnosticLog
+End Sub
+
+' Сохраняет отсутствие запуска поиска по готовой meta: выключенный расчет,
+' ошибочный вход или блокировка. Здесь не создаются calculator, lambda-точка
+' и физические State; предыдущий численный снимок полностью удаляется.
+Friend Sub InitializeUncalculated(ByVal meta As CResultMeta)
+    AssertWritable
+    ResetResult
+    If meta Is Nothing Then Err.Raise vbObjectError + 3944, "CCrackFormationResult", "Не передана причина отсутствия расчета образования трещины."
+    If meta.calculated Then Err.Raise vbObjectError + 3944, "CCrackFormationResult", "Незапущенный поиск не может иметь признак выполненного расчета."
+    Set mMeta = meta.clone
+    mStopReason = meta.resultComment
 End Sub
 
 ' Удаляет все данные предыдущего заполнения; неуспешный повтор не оставляет
@@ -22901,7 +22921,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CCrackResult
 TYPE: 2
-LINES: 131
+LINES: 186
 ====================================================================================================
 Option Explicit
 
@@ -22945,6 +22965,38 @@ Public Sub Initialize(ByVal formation As CCrackFormationResult, _
     If mLongitudinal Is Nothing Then Set mLongitudinal = New CLongitudinalCrackResult
 End Sub
 
+' Отмечает весь crack workflow как отключенный профилем. Численные State
+' и формулы не создаются; каждый leaf сохраняет именно NotRequested.
+Friend Sub SetNotRequested()
+    AssertWritable
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta: meta.SetNotRequested rkCrackFormation
+    Set mFormation = New CCrackFormationResult: mFormation.InitializeUncalculated meta
+    Set mCurrentStateMeta = New CResultMeta: mCurrentStateMeta.SetNotRequested rkDirectState
+    Set meta = New CResultMeta: meta.SetNotRequested rkCrackWidth
+    Set mWidth = New CCrackWidthResult: mWidth.InitializeFromCalculator Nothing, meta
+    Set meta = New CResultMeta: meta.SetNotRequested rkLongitudinalCrack
+    Set mLongitudinal = New CLongitudinalCrackResult: mLongitudinal.Initialize meta, 0#, 0#, 0#
+End Sub
+
+' Сохраняет ошибку общих исходных данных до запуска crack workflow.
+' Formation получает точную причину валидации, а Current/Width/Longitudinal
+' остаются заблокированными зависимыми этапами без фиктивной численной попытки.
+Friend Sub SetInputFailure(ByVal reason As String)
+    AssertWritable
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta: meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, reason
+    Set mFormation = New CCrackFormationResult: mFormation.InitializeUncalculated meta
+    Set mCurrentStateMeta = New CResultMeta
+    mCurrentStateMeta.SetBlockedByDependency rkDirectState, "исходных данных сочетания", reason
+    Set meta = New CResultMeta
+    meta.SetBlockedByDependency rkCrackWidth, "текущего НДС от сочетания", mCurrentStateMeta.resultComment
+    Set mWidth = New CCrackWidthResult: mWidth.InitializeFromCalculator Nothing, meta
+    Set meta = New CResultMeta
+    meta.SetBlockedByDependency rkLongitudinalCrack, "текущего НДС от сочетания", mCurrentStateMeta.resultComment
+    Set mLongitudinal = New CLongitudinalCrackResult: mLongitudinal.Initialize meta, 0#, 0#, 0#
+End Sub
+
 Public Property Get formation() As CCrackFormationResult
     Set formation = mFormation
 End Property
@@ -22971,6 +23023,13 @@ Public Property Get NormalMeta() As CResultMeta
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
     Dim formation As CResultMeta, width As CResultMeta, currentProblem As CResultMeta
     Set formation = mFormation.ResultMeta
+    If HasCommonInputFailure Then
+        Dim inputComment As String
+        formation.AppendCommentTo inputComment
+        Set NormalMeta = formation.clone
+        NormalMeta.resultComment = inputComment
+        Exit Property
+    End If
     Set width = mWidth.ResultMeta
     If mPolicy.IsFailedOverall(mPolicy.ExternalStatus(mCurrentStateMeta)) Or _
             mCurrentStateMeta.InternalStatus = rsSuccessWithWarning Then Set currentProblem = mCurrentStateMeta
@@ -22989,12 +23048,28 @@ Public Property Get ResultMeta() As CResultMeta
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
     Dim normal As CResultMeta, longitudinal As CResultMeta, comment As String
     Set normal = NormalMeta
+    If HasCommonInputFailure Then
+        Set ResultMeta = normal
+        Exit Property
+    End If
     Set longitudinal = mLongitudinal.ResultMeta
     normal.AppendCommentTo comment, True
     AppendDependentComment longitudinal, comment
     Set ResultMeta = mPolicy.WorstResultMeta(rkGeneric, normal, longitudinal)
     ResultMeta.resultComment = comment
 End Property
+
+' Различает общую ошибку входа до запуска от самостоятельного отказа Search.
+' Зависимые этапы при этом не добавляют ту же причину второй раз в комментарий.
+Private Function HasCommonInputFailure() As Boolean
+    Select Case mFormation.ResultMeta.InternalStatus
+        Case rsInvalidInput, rsInvalidConfiguration
+            HasCommonInputFailure = (mCurrentStateMeta.InternalStatus = rsBlockedByDependency And _
+                mWidth.ResultMeta.InternalStatus = rsBlockedByDependency And _
+                mLongitudinal.ResultMeta.InternalStatus = rsBlockedByDependency And _
+                Not mFormation.ResultMeta.calculated)
+    End Select
+End Function
 
 ' Сохраняет отдельное пояснение blocked-проверки, но не повторяет в aggregate
 ' уже записанную полную причину CurrentCrackedState. Leaf/meta не изменяются.
@@ -26889,7 +26964,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2101
+LINES: 2121
 ====================================================================================================
 Option Explicit
 
@@ -27609,6 +27684,11 @@ Private Sub RunCombination(ByVal index As Long)
     End If
 
     Dim profile As CCalculationProfile
+    If Not mProfiles.HasProfile(mInputs(index).profileId) Then
+        MarkInvalid index, "Расчетный профиль " & mInputs(index).profileId & _
+            " не найден. Выберите ProfileId из таблицы расчетных профилей на листе Config."
+        Exit Sub
+    End If
     Set profile = mProfiles.ProfileById(mInputs(index).profileId)
     mResults(index).SetProfileId profile.profileId
     ReportValue "Профиль", profile.profileId & " / " & profile.DisplayName
@@ -27623,9 +27703,6 @@ Private Sub RunCombination(ByVal index As Long)
         Exit Sub
     End If
 
-    mResults(index).SetDirectStateMeta NotApplicableMeta(rkDirectState)
-    mResults(index).SetStabilityMeta NotApplicableMeta(rkStability)
-
     ReportSection "Продольный изгиб и устойчивость"
     If profile.StabilityEnabled Then
         ReportStep "Запускается фильтр продольного изгиба/устойчивости по профилю."
@@ -27633,7 +27710,7 @@ Private Sub RunCombination(ByVal index As Long)
     Else
         ReportStep "Устойчивость не запрошена профилем."
         mResults(index).ClearStabilityResult
-        mResults(index).SetStabilityMeta NotApplicableMeta(rkStability)
+        mResults(index).SetStabilityMeta NotRequestedMeta(rkStability)
     End If
 
     ReportSection "Расчет по модели прочности"
@@ -27663,8 +27740,15 @@ FinalizeCombination:
     Exit Sub
 
 Failed:
-    ReportStep "Ошибка при расчете сочетания: " & Err.description
-    MarkInvalid index, Err.description
+    Dim failureNumber As Long, failureText As String, failureSource As String, failureMeta As CResultMeta
+    failureNumber = Err.number: failureText = Err.description: failureSource = Err.source
+    ReportStep "Ошибка при расчете сочетания: " & failureText
+    Set failureMeta = New CResultMeta
+    failureMeta.SetResult rsInternalError, rcInternalError, rkGeneric, _
+        "Расчет сочетания остановлен из-за ошибки выполнения: " & failureText, _
+        failureSource & "; error=" & CStr(failureNumber)
+    mResults(index).SetWorkflowMeta failureMeta
+    AppendDiagnostic index
 End Sub
 
 ' Применяет расчет продольного изгиба как изолированный фильтр усилий.
@@ -28211,7 +28295,7 @@ End Sub
 Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
     Dim capacityResult As CCapacityResult
     Set capacityResult = New CCapacityResult
-    capacityResult.InitializeSkipped "Проверка несущей способности не запрошена профилем."
+    capacityResult.InitializeNotRequested "Проверка несущей способности не запрошена профилем."
     mResults(index).StoreCapacityResult capacityResult
 End Sub
 
@@ -28225,13 +28309,13 @@ Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
     mResults(index).StoreCapacityResult capacityResult
 End Sub
 
-' Создает meta для отключенной или неприменимой ветки расчета.
-Private Function NotApplicableMeta(ByVal resultKind As EResultKind, _
-        Optional ByVal reason As String = vbNullString) As CResultMeta
+' Создает meta для проверки, отключенной профилем, а не неприменимой физики.
+' Ни запуск, ни обязательная зависимость у такой ветви не заявляются.
+Private Function NotRequestedMeta(ByVal resultKind As EResultKind) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetNotApplicable resultKind, reason
-    Set NotApplicableMeta = meta
+    meta.SetNotRequested resultKind
+    Set NotRequestedMeta = meta
 End Function
 
 ' Создает meta для ошибки пользовательских данных или настроек.
@@ -28258,9 +28342,17 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then reason = "Некорректное сочетание нагрузок."
     mInputs(index).inputError = reason
     mResults(index).SetProfileId mInputs(index).profileId
-    mResults(index).SetDirectStateMeta InvalidInputMeta(rkDirectState, reason)
-    mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, reason), reason
-    StoreInvalidCapacity index, reason
+    mResults(index).SetWorkflowMeta InvalidInputMeta(rkGeneric, reason)
+    ' Ошибка одной строки относится только к запрошенным проверкам.
+    ' Неизвестный профиль не дает права выдумывать набор активных расчетов.
+    If mProfiles.HasProfile(mInputs(index).profileId) Then
+        Dim profile As CCalculationProfile
+        Set profile = mProfiles.ProfileById(mInputs(index).profileId)
+        If profile.StrengthDirectStateEnabled Then mResults(index).SetDirectStateMeta InvalidInputMeta(rkDirectState, reason)
+        If profile.StrengthCapacityEnabled Then StoreInvalidCapacity index, reason
+        If profile.StabilityEnabled Then mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, reason), reason
+        If profile.CrackWidthEnabled Then mResults(index).crackResult.SetInputFailure reason
+    End If
     If Not mMaterialProvider Is Nothing Then
         mResults(index).SetDiagramExtensionEnabled mMaterialProvider.diagramExtensionEnabled
     End If
@@ -28397,6 +28489,9 @@ Private Sub ClearResultRow(ByVal index As Long)
     ' Новый запуск не должен менять объект, на который у него осталась ссылка.
     Set mResults(index) = New CCombinationResult
     mResults(index).Clear CAPACITY_PATH_NONE
+    mResults(index).SetDirectStateMeta NotRequestedMeta(rkDirectState)
+    mResults(index).SetStabilityMeta NotRequestedMeta(rkStability)
+    mResults(index).crackResult.SetNotRequested
     mResults(index).SetProfileId mInputs(index).profileId
 End Sub
 
@@ -29526,7 +29621,7 @@ End Property
 ====================================================================================================
 COMPONENT: CCombinationResult
 TYPE: 2
-LINES: 331
+LINES: 357
 ====================================================================================================
 Option Explicit
 
@@ -29547,6 +29642,7 @@ Private mResultPolicy As CResultStatusPolicy ' Единственное прео
 Private mStrengthResult As CStrengthResult ' DirectState и Capacity.
 Private mCrackResult As CCrackResult ' Formation, CurrentState, Width, Longitudinal.
 Private mStabilityResult As CStabilityResult ' Проверка устойчивости.
+Private mWorkflowMeta As CResultMeta ' Общий вход LC либо техническая остановка orchestration, не результат инженерной проверки.
 
 ' Создает нейтральное дерево результатов без фиктивных физических состояний.
 Private Sub Class_Initialize()
@@ -29561,6 +29657,8 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     mStrengthResult.Clear defaultCapacityPath
     Set mCrackResult = New CCrackResult
     Set mStabilityResult = New CStabilityResult
+    Set mWorkflowMeta = New CResultMeta
+    mWorkflowMeta.SetNotRequested rkGeneric
     mProfileId = vbNullString
     mDiagramExtensionEnabled = False
 End Sub
@@ -29610,13 +29708,36 @@ Public Property Get OverallMeta() As CResultMeta
     Set strength = mStrengthResult.ResultMeta
     Set crack = mCrackResult.ResultMeta
     Set stability = mStabilityResult.meta
+    Set OverallMeta = policy.WorstResultMeta(rkGeneric, mWorkflowMeta, strength, crack, stability)
+    ' Общая валидация не повторяет одну причину под именами зависимых разделов.
+    ' Выбор статуса всегда проходит policy: отдельный CalcErr не скрывается.
+    If mWorkflowMeta.InternalStatus = rsInvalidInput Or mWorkflowMeta.InternalStatus = rsInvalidConfiguration Then
+        If OverallMeta.InternalStatus = mWorkflowMeta.InternalStatus And OverallMeta.ResultCode = mWorkflowMeta.ResultCode Then
+            OverallMeta.resultComment = mWorkflowMeta.resultComment
+            Exit Property
+        End If
+    End If
     Dim comment As String
+    mWorkflowMeta.AppendCommentTo comment
     strength.AppendCommentTo comment, True
     crack.AppendCommentTo comment, True
     stability.AppendCommentTo comment
-    Set OverallMeta = policy.WorstResultMeta(rkGeneric, strength, crack, stability)
     OverallMeta.resultComment = comment
 End Property
+
+' Возвращает независимую причину общей валидации или технической остановки LC.
+' Успешные инженерные результаты остаются в собственных subtrees.
+Public Property Get WorkflowMeta() As CResultMeta
+    Set WorkflowMeta = mWorkflowMeta.clone
+End Property
+
+' Сохраняет готовую typed-причину orchestration без разбора пользовательского
+' текста. Этот узел не содержит НДС и не подменяет результаты calculators.
+Friend Sub SetWorkflowMeta(ByVal meta As CResultMeta)
+    AssertWritable
+    If meta Is Nothing Then Err.Raise vbObjectError + 3943, "CCombinationResult", "Не передана причина остановки сочетания."
+    Set mWorkflowMeta = meta.clone
+End Sub
 
 ' Возвращает сводную ResultMeta блока прочности: сначала ищет
 ' проблемный direct/capacity-result, затем оставляет агрегированный
@@ -31050,7 +31171,7 @@ End Property
 ====================================================================================================
 COMPONENT: CStrengthResult
 TYPE: 2
-LINES: 126
+LINES: 133
 ====================================================================================================
 Option Explicit
 
@@ -31080,7 +31201,7 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     AssertWritable
     Set mDirectState = New CDirectStateResult
     Set mCapacity = New CCapacityResult
-    mCapacity.InitializeSkipped "Несущая способность не запрошена.", defaultCapacityPath
+    mCapacity.InitializeNotRequested "Несущая способность не запрошена.", defaultCapacityPath
 End Sub
 
 ' Сохраняет typed meta прямого НДС без изменения его численных данных.
@@ -31146,8 +31267,15 @@ Public Property Get ResultMeta() As CResultMeta
     Dim direct As CResultMeta, capacity As CResultMeta, comment As String
     Set direct = directMeta
     Set capacity = CapacityMeta
-    direct.AppendCommentTo comment
-    capacity.AppendCommentTo comment
+    If direct.InternalStatus = rsInvalidInput And capacity.InternalStatus = rsInvalidInput And _
+            StrComp(direct.resultComment, capacity.resultComment, vbBinaryCompare) = 0 Then
+        ' Общая валидация не запускала ни DirectState, ни Capacity. Одно
+        ' пояснение относится ко всему блоку; leaf-статусы остаются независимыми.
+        comment = "Прочность: " & direct.resultComment
+    Else
+        direct.AppendCommentTo comment
+        capacity.AppendCommentTo comment
+    End If
     Set ResultMeta = mPolicy.WorstResultMeta(rkGeneric, direct, capacity)
     ResultMeta.resultComment = comment
 End Property
@@ -47435,7 +47563,7 @@ End Property
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 8719
+LINES: 8731
 ====================================================================================================
 Option Explicit
 
@@ -53732,18 +53860,21 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
     Dim result As CCombinationResult, prefix As String
     Set result = batch.ResultAt(index)
     prefix = "audit03.comments." & batch.combinationID(index)
-    Audit03CheckMetaComment stats, prefix & ".direct", result.DirectStateMeta, result.StrengthMeta
-    Audit03CheckMetaComment stats, prefix & ".capacity", result.CapacityMeta, result.StrengthMeta
-    Audit03CheckMetaComment stats, prefix & ".formation", result.CrackFormationMeta, result.CrackSummaryMeta
-    Audit03CheckMetaComment stats, prefix & ".current", result.CrackCurrentStateMeta, result.CrackSummaryMeta
+    Dim commonInputReason As String
+    If result.WorkflowMeta.InternalStatus = rsInvalidInput Or result.WorkflowMeta.InternalStatus = rsInvalidConfiguration Then _
+        commonInputReason = result.WorkflowMeta.resultComment
+    Audit03CheckMetaComment stats, prefix & ".direct", result.DirectStateMeta, result.StrengthMeta, commonInputReason:=commonInputReason
+    Audit03CheckMetaComment stats, prefix & ".capacity", result.CapacityMeta, result.StrengthMeta, commonInputReason:=commonInputReason
+    Audit03CheckMetaComment stats, prefix & ".formation", result.CrackFormationMeta, result.CrackSummaryMeta, commonInputReason:=commonInputReason
+    Audit03CheckMetaComment stats, prefix & ".current", result.CrackCurrentStateMeta, result.CrackSummaryMeta, commonInputReason:=commonInputReason
     Dim independentOccurrences As Long
     independentOccurrences = 1 + Audit03TextOccurrences(result.CrackFormationMeta.resultComment, _
         result.CrackCurrentStateMeta.resultComment)
     Audit03CheckMetaComment stats, prefix & ".width", result.CrackWidthMeta, result.CrackSummaryMeta, _
-        result.CrackCurrentStateMeta.resultComment, independentOccurrences
+        result.CrackCurrentStateMeta.resultComment, independentOccurrences, commonInputReason
     Audit03CheckMetaComment stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, result.CrackSummaryMeta, _
-        result.CrackCurrentStateMeta.resultComment, independentOccurrences
-    Audit03CheckMetaComment stats, prefix & ".stability", result.stabilityMeta, result.OverallMeta
+        result.CrackCurrentStateMeta.resultComment, independentOccurrences, commonInputReason
+    Audit03CheckMetaComment stats, prefix & ".stability", result.stabilityMeta, result.OverallMeta, commonInputReason:=commonInputReason
     If result.CrackWidthMeta.InternalStatus = rsBlockedByDependency Then
         If Audit03RequiresComment(result.CrackCurrentStateMeta) Then
             AssertTrue stats, prefix & ".widthBlockActualReason", _
@@ -53785,6 +53916,7 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
         If Len(expectedOverall) > 0 Then expectedOverall = expectedOverall & "; "
         expectedOverall = expectedOverall & "Устойчивость: " & result.stabilityMeta.resultComment
     End If
+    If Len(commonInputReason) > 0 Then expectedOverall = commonInputReason
     AssertEquals stats, prefix & ".overallComposition", result.OverallMeta.resultComment, expectedOverall
     Dim anchor As Object
     Set anchor = ThisWorkbook.names.item("rngBatchSummary").RefersToRange
@@ -53806,7 +53938,8 @@ End Sub
 Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix As String, _
         ByVal meta As CResultMeta, ByVal aggregate As CResultMeta, _
         Optional ByVal sharedDependencyReason As String = vbNullString, _
-        Optional ByVal independentReasonOccurrences As Long = 1)
+        Optional ByVal independentReasonOccurrences As Long = 1, _
+        Optional ByVal commonInputReason As String = vbNullString)
     AppendLine stats, "META: " & prefix & "|status=" & ResultInternalStatusToText(meta.InternalStatus) & _
         "|code=" & ResultCodeToText(meta.ResultCode) & "|applies=" & CStr(meta.Applies) & _
         "|calculated=" & CStr(meta.calculated) & "|comment=" & meta.resultComment
@@ -53829,6 +53962,13 @@ Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix
     Next machinePrefix
     AssertTrue stats, prefix & ".noMachinePrefix", Not hasMachinePrefix
     If Not requiresComment Then Exit Sub
+    If Len(commonInputReason) > 0 Then
+        ' Все leaves сохраняют точную причину; общий отказ валидации выводится
+        ' один раз в своем блоке, без повторов через неисполнявшиеся зависимости.
+        AssertTrue stats, prefix & ".commonInputLeaf", InStr(1, meta.resultComment, commonInputReason, vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".commonInputSubtreeOnce", Audit03TextOccurrences(aggregate.resultComment, commonInputReason) = 1
+        Exit Sub
+    End If
     Dim dependencyAt As Long, ownExplanation As String
     If meta.InternalStatus = rsBlockedByDependency And Len(sharedDependencyReason) > 0 Then _
         dependencyAt = InStr(1, meta.resultComment, sharedDependencyReason, vbBinaryCompare)
@@ -64546,7 +64686,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestLoadTableConfig
 TYPE: 1
-LINES: 643
+LINES: 856
 ====================================================================================================
 Option Explicit
 
@@ -64570,6 +64710,219 @@ Private Const FORCE_FACTOR As Double = 9806.65 ' Независимый этал
 Private Const MOMENT_FACTOR As Double = 9806650# ' Независимый эталон tf*m -> N*mm.
 Private Const ROW_COUNT As Long = 30 ' Поадресная приемка штатного шаблона, не ограничение runtime.
 Private mDiagnosticRun As Boolean ' Только отдельный диагностический entrypoint включает подробные solver logs.
+
+' ============================== ДЛЯ ТЕСТОВ: ПРОФИЛИ И ОШИБКИ LC ==============================
+
+' Проверяет все 16 сочетаний четырех переключателей каждого PR-профиля.
+' Ошибка общей строки не запускает решатели, не активирует отключенные ветви
+' и появляется в общем комментарии один раз; подробные блоки получают свою причину.
+Public Function RunAudit03ProfileFailureScopeTests(Optional ByRef Passed As Long = 0, _
+        Optional ByRef Failed As Long = 0) As String
+    Dim stats As TLoadTableStats, loads As Object, source As Object, system As Object
+    Dim unitRange As Object, signRange As Object
+    Dim savedLoads As Variant, savedProfiles As Variant, savedSystem As Variant, data As Variant
+    Dim savedUnits As Variant, savedSigns As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, profiles As CCalculationProfileCatalog
+    Dim section As CSectionModel, provider As CMaterialModelProvider, batch As CBatchSectionCalculator
+    Dim result As CCombinationResult, retained As CCombinationResult, profile As Long, mask As Long
+    Dim column As Long, row As Long, prefix As String, reason As String, oldComment As String
+    Dim writer As CBatchResultWriter, anchor As Object
+    Dim meta As CResultMeta, standalone As CCombinationResult
+    On Error GoTo FailedRun
+    Set loads = ThisWorkbook.names.item("rngLoadCombinations").RefersToRange
+    Set source = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
+    Set system = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
+    Set unitRange = ThisWorkbook.names.item("rngUnitSettings").RefersToRange
+    Set signRange = ThisWorkbook.names.item("rngSignConventionSettings").RefersToRange
+    savedLoads = loads.formula: savedProfiles = source.formula: savedSystem = system.formula
+    savedUnits = unitRange.formula: savedSigns = signRange.formula
+    ' Нагрузка recovery имеет независимый физический смысл: растяжение 1 tf.
+    ' Scope проверяет включение ветвей, а не случайные настройки соседних UI-тестов.
+    SetSetting unitRange, "Force", "tf", 2
+    SetSetting unitRange, "Moment", "tf*m", 2
+    SetSetting signRange, "+N", "Compression", 2
+    SetSetting signRange, "+Mx", "+Y tension", 2
+    SetSetting signRange, "+My", "+X tension", 2
+    SetSetting system, "Calculation.ZeroMomentPerDepth", "0"
+    SetSetting system, "Load.ReferenceOffsetX", "0"
+    SetSetting system, "Load.ReferenceOffsetY", "0"
+    SetSetting system, "Solver.ToleranceN", FormatNumberInvariant(0.01 / FORCE_FACTOR)
+    SetSetting system, "Solver.ToleranceMx", FormatNumberInvariant(1# / MOMENT_FACTOR)
+    SetSetting system, "Solver.ToleranceMy", FormatNumberInvariant(1# / MOMENT_FACTOR)
+    SetSetting system, "Stability.Code", "SP63"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    LogLine stats, "PROFILE_SCOPE_SETUP: force=" & settings.GetString("Units.Force.Input", "") & _
+        "; length=" & settings.GetString("Units.Length.Input", "") & _
+        "; signN=" & settings.GetString("Sign.N.User", "") & _
+        "; strategy=" & settings.GetString("Capacity.SolutionStrategy", "")
+    BuildPhysicalFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
+    For profile = 1 To 4
+        For mask = 0 To 15
+            source.formula = savedProfiles
+            column = profile + 2
+            For row = 1 To source.rows.count
+                Select Case CStr(source.cells(row, 2).Value2)
+                    Case "Calculation.Strength.DirectState": SetProfileSwitch source.cells(row, column), mask, 1
+                    Case "Calculation.Strength.Capacity": SetProfileSwitch source.cells(row, column), mask, 2
+                    Case "Calculation.Crack.Width": SetProfileSwitch source.cells(row, column), mask, 4
+                    Case "Calculation.Stability.Enabled": SetProfileSwitch source.cells(row, column), mask, 8
+                End Select
+            Next row
+            Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+            data = loads.Value2
+            For row = 2 To UBound(data, 1)
+                For column = 1 To UBound(data, 2)
+                    data(row, column) = vbNullString
+                Next column
+            Next row
+            data(2, 1) = "PROFILE_SCOPE": data(2, 2) = CVErr(xlErrNA)
+            data(2, 3) = 0#: data(2, 4) = 0#: data(2, 5) = "PR" & CStr(profile)
+            data(2, 6) = "Auto": data(2, 7) = "Проверка области ошибки входа"
+            loads.Value2 = data
+            Set batch = ReadAndExecute(section, provider, profiles, settings, units)
+            Set result = batch.ResultAt(1): Set retained = result
+            prefix = "profileScope.PR" & CStr(profile) & ".mask" & CStr(mask)
+            reason = loads.Worksheet.name & "!" & loads.cells(2, 2).address(False, False)
+            Check stats, prefix & ".status", result.status = "InputErr"
+            Check stats, prefix & ".workflowTyped", result.WorkflowMeta.InternalStatus = rsInvalidInput And _
+                result.WorkflowMeta.ResultCode = rcInvalidInput And Not result.WorkflowMeta.calculated
+            Check stats, prefix & ".noSolve", batch.SolverCallCount = 0
+            Check stats, prefix & ".noStates", result.StateRepository.stateCount = 0
+            Check stats, prefix & ".singleCommonReason", TextOccurrences(result.OverallMeta.resultComment, reason) = 1
+            If (mask And 3) <> 0 Then Check stats, prefix & ".singleStrengthReason", TextOccurrences(result.StrengthMeta.resultComment, reason) = 1
+            If (mask And 4) <> 0 Then Check stats, prefix & ".singleCrackReason", TextOccurrences(result.CrackSummaryMeta.resultComment, reason) = 1
+            If (mask And 8) <> 0 Then Check stats, prefix & ".singleStabilityReason", TextOccurrences(result.stabilityMeta.resultComment, reason) = 1
+            CheckProfileFailureMeta stats, prefix & ".direct", result.DirectStateMeta, (mask And 1) <> 0, False, reason
+            CheckProfileFailureMeta stats, prefix & ".capacity", result.CapacityMeta, (mask And 2) <> 0, False, reason
+            CheckProfileFailureMeta stats, prefix & ".stability", result.stabilityMeta, (mask And 8) <> 0, False, reason
+            CheckProfileFailureMeta stats, prefix & ".formation", result.CrackFormationMeta, (mask And 4) <> 0, False, reason
+            CheckProfileFailureMeta stats, prefix & ".current", result.CrackCurrentStateMeta, (mask And 4) <> 0, True, reason
+            CheckProfileFailureMeta stats, prefix & ".width", result.CrackWidthMeta, (mask And 4) <> 0, True, reason
+            CheckProfileFailureMeta stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, (mask And 4) <> 0, True, reason
+            Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch, units
+            Set anchor = ThisWorkbook.names.item("rngBatchSummary").RefersToRange
+            Check stats, prefix & ".batchComment", CStr(anchor.Offset(12, 2).Value2) = result.OverallMeta.resultComment
+            Set anchor = ThisWorkbook.names.item("rngStrengthSummaryAnchor").RefersToRange
+            Check stats, prefix & ".strengthComment", CStr(anchor.Offset(0, 1).Value2) = result.StrengthMeta.resultComment
+            Set anchor = ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange
+            Check stats, prefix & ".crackComment", CStr(anchor.Offset(0, 1).Value2) = result.CrackSummaryMeta.resultComment
+            Set anchor = ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange
+            Check stats, prefix & ".stabilityComment", CStr(anchor.Offset(0, 1).Value2) = result.stabilityMeta.resultComment
+            LogLine stats, "PROFILE_SCOPE: " & prefix & "|batch=" & result.OverallMeta.resultComment & _
+                "|strength=" & result.StrengthMeta.resultComment & "|crack=" & result.CrackSummaryMeta.resultComment & _
+                "|stability=" & result.stabilityMeta.resultComment
+            oldComment = retained.OverallMeta.resultComment
+            batch.Execute
+            Check stats, prefix & ".repeatComment", batch.ResultAt(1).OverallMeta.resultComment = oldComment
+            Check stats, prefix & ".publishedComment", retained.OverallMeta.resultComment = oldComment
+            If mask > 0 Then
+                data(2, 2) = -1#: loads.Value2 = data
+                Set batch = ReadAndExecute(section, provider, profiles, settings, units)
+                Set result = batch.ResultAt(1)
+                LogLine stats, "PROFILE_SCOPE_RECOVERY: " & prefix & "; N=" & FormatNumberInvariant(batch.n(1)) & _
+                    "; overall=" & result.status & "; capacityCode=" & CStr(result.CapacityMeta.ResultCode) & _
+                    "; capacity=" & result.CapacityMeta.resultComment & "; stabilityCode=" & CStr(result.stabilityMeta.ResultCode) & _
+                    "; stability=" & result.stabilityMeta.resultComment
+                CheckClose stats, prefix & ".recoveryTensionN", batch.n(1), FORCE_FACTOR, 0.00000001
+                Check stats, prefix & ".recoveryInput", result.status <> "InputErr"
+                Check stats, prefix & ".recoveryComment", InStr(1, result.OverallMeta.resultComment, reason, vbBinaryCompare) = 0
+                Check stats, prefix & ".retainedAfterRecovery", retained.OverallMeta.resultComment = oldComment
+                If (mask And 1) <> 0 Then
+                    Check stats, prefix & ".directExecuted", result.DirectStateMeta.calculated And result.StrengthResult.DirectState.StateAvailable
+                Else
+                    Check stats, prefix & ".directStillOff", result.DirectStateMeta.InternalStatus = rsNotRequested
+                End If
+                If (mask And 2) <> 0 Then
+                    Check stats, prefix & ".capacityExecuted", result.CapacityMeta.calculated And result.StrengthResult.capacity.LambdaCapacity > 0#
+                Else
+                    Check stats, prefix & ".capacityStillOff", result.CapacityMeta.InternalStatus = rsNotRequested
+                End If
+                If (mask And 4) <> 0 Then
+                    Check stats, prefix & ".formationExecuted", result.CrackFormationMeta.calculated
+                    Check stats, prefix & ".currentExecuted", result.CrackCurrentStateMeta.calculated
+                Else
+                    Check stats, prefix & ".crackStillOff", result.CrackFormationMeta.InternalStatus = rsNotRequested
+                End If
+                If (mask And 8) <> 0 Then
+                    Check stats, prefix & ".stabilityExecuted", Len(result.StabilityResult.code) > 0 And result.stabilityMeta.InternalStatus = rsNotApplicable
+                Else
+                    Check stats, prefix & ".stabilityStillOff", result.stabilityMeta.InternalStatus = rsNotRequested
+                End If
+            End If
+            stats.Cases = stats.Cases + 1
+        Next mask
+    Next profile
+    ' Агрегация общей валидации не должна скрывать более тяжелый технический
+    ' отказ самостоятельного subtree; причины сохраняются без анализа текста.
+    Set standalone = New CCombinationResult
+    Set meta = New CResultMeta: meta.SetResult rsInvalidInput, rcInvalidInput, rkGeneric, "Ошибка общего ввода."
+    standalone.SetWorkflowMeta meta
+    Set meta = New CResultMeta: meta.SetResult rsInternalError, rcInternalError, rkDirectState, "Отдельная ошибка результата.", calculated:=False
+    standalone.SetDirectStateMeta meta
+    Check stats, "profileScope.aggregate.typedPriority", standalone.status = "CalcErr" And standalone.OverallMeta.ResultCode = rcInternalError
+    Check stats, "profileScope.aggregate.commonReason", InStr(1, standalone.OverallMeta.resultComment, "Ошибка общего ввода.", vbBinaryCompare) > 0
+    Check stats, "profileScope.aggregate.ownReason", InStr(1, standalone.OverallMeta.resultComment, "Отдельная ошибка результата.", vbBinaryCompare) > 0
+    Set meta = standalone.WorkflowMeta: meta.Clear
+    Check stats, "profileScope.aggregate.metaIsolation", standalone.WorkflowMeta.InternalStatus = rsInvalidInput
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    LogLine stats, "FAIL: profileScope.runtime; " & CStr(Err.number) & "; " & Err.description
+Restore:
+    On Error Resume Next
+    If Not loads Is Nothing Then loads.formula = savedLoads
+    If Not source Is Nothing Then source.formula = savedProfiles
+    If Not system Is Nothing Then system.formula = savedSystem
+    If Not unitRange Is Nothing Then unitRange.formula = savedUnits
+    If Not signRange Is Nothing Then signRange.formula = savedSigns
+    On Error GoTo 0
+    LogLine stats, "TOTAL_AUDIT03_PROFILE_FAILURE_SCOPE: passed=" & CStr(stats.Passed) & _
+        "; failed=" & CStr(stats.Failed) & "; cases=" & CStr(stats.Cases)
+    Passed = stats.Passed: Failed = stats.Failed
+    RunAudit03ProfileFailureScopeTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: повторяет штатный UI-prefix и scope-проверку в одной книге.
+' Это воспроизводит зависимость от оставленного Config без полного восьмичастного прогона.
+Public Function RunAudit03ProfileScopePrefixDiagnosticTests() As String
+    RunAudit03ProfileScopePrefixDiagnosticTests = modTestWorkbookInterface.RunAudit03PreLoadTableDiagnosticTests() & _
+        RunAudit03ProfileFailureScopeTests()
+End Function
+
+' Задает один реальный переключатель профиля по независимой битовой маске.
+' Четыре бита соответствуют DirectState, Capacity, Crack и Stability.
+Private Sub SetProfileSwitch(ByVal cell As Object, ByVal mask As Long, ByVal bit As Long)
+    If (mask And bit) <> 0 Then cell.Value2 = "Yes" Else cell.Value2 = "No"
+End Sub
+
+' Различает ошибку обязательного входа, блокировку зависимого этапа и расчет,
+' отключенный профилем. Ни одна из этих ветвей не содержит численную попытку.
+Private Sub CheckProfileFailureMeta(ByRef stats As TLoadTableStats, ByVal prefix As String, _
+        ByVal meta As CResultMeta, ByVal requested As Boolean, ByVal dependent As Boolean, ByVal address As String)
+    Check stats, prefix & ".notCalculated", Not meta.calculated
+    Check stats, prefix & ".applies", meta.Applies = requested
+    If requested Then
+        If dependent Then
+            Check stats, prefix & ".internal", meta.InternalStatus = rsBlockedByDependency
+            Check stats, prefix & ".code", meta.ResultCode = rcBlockedByDependency
+        Else
+            Check stats, prefix & ".internal", meta.InternalStatus = rsInvalidInput
+            Check stats, prefix & ".code", meta.ResultCode = rcInvalidInput
+        End If
+        Check stats, prefix & ".reason", InStr(1, meta.resultComment, address, vbBinaryCompare) > 0
+    Else
+        Check stats, prefix & ".internal", meta.InternalStatus = rsNotRequested
+        Check stats, prefix & ".code", meta.ResultCode = rcNotRequested
+        Check stats, prefix & ".noForeignReason", InStr(1, meta.resultComment, address, vbBinaryCompare) = 0
+    End If
+End Sub
+
+' Считает точные вхождения общей причины только для проверки presentation.
+' Расчетная классификация в production не зависит от этого сравнения текста.
+Private Function TextOccurrences(ByVal text As String, ByVal fragment As String) As Long
+    If Len(fragment) > 0 Then TextOccurrences = UBound(Split(text, fragment, -1, vbBinaryCompare))
+End Function
 
 ' Выполняет целиком адресный блок LC. Optional-счетчики позволяют включить
 ' отчет в штатную suite без второго запуска и без подмены отдельных failures.
@@ -68058,7 +68411,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 6799
+LINES: 6804
 ====================================================================================================
 Option Explicit
 
@@ -68155,6 +68508,11 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: Audit03 Load table completed; " & Audit02ExcelMemory()
     stats.Passed = stats.Passed + loadTablePassed
     stats.Failed = stats.Failed + loadTableFailed
+    Dim profileScopePassed As Long, profileScopeFailed As Long
+    AppendLine stats, "RUN: RunAudit03ProfileFailureScopeTests"
+    stats.Report = stats.Report & modTestLoadTableConfig.RunAudit03ProfileFailureScopeTests(profileScopePassed, profileScopeFailed)
+    stats.Passed = stats.Passed + profileScopePassed
+    stats.Failed = stats.Failed + profileScopeFailed
     Dim resultWidthsPassed As Long, resultWidthsFailed As Long
     stats.Report = stats.Report & modTestLoadTableConfig.RunAudit03ResultColumnWidthTests(resultWidthsPassed, resultWidthsFailed)
     stats.Passed = stats.Passed + resultWidthsPassed

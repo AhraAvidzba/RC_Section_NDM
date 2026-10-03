@@ -26,6 +26,7 @@ Private mResultPolicy As CResultStatusPolicy ' Единственное прео
 Private mStrengthResult As CStrengthResult ' DirectState и Capacity.
 Private mCrackResult As CCrackResult ' Formation, CurrentState, Width, Longitudinal.
 Private mStabilityResult As CStabilityResult ' Проверка устойчивости.
+Private mWorkflowMeta As CResultMeta ' Общий вход LC либо техническая остановка orchestration, не результат инженерной проверки.
 
 ' Создает нейтральное дерево результатов без фиктивных физических состояний.
 Private Sub Class_Initialize()
@@ -40,6 +41,8 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     mStrengthResult.Clear defaultCapacityPath
     Set mCrackResult = New CCrackResult
     Set mStabilityResult = New CStabilityResult
+    Set mWorkflowMeta = New CResultMeta
+    mWorkflowMeta.SetNotRequested rkGeneric
     mProfileId = vbNullString
     mDiagramExtensionEnabled = False
 End Sub
@@ -89,13 +92,36 @@ Public Property Get OverallMeta() As CResultMeta
     Set strength = mStrengthResult.ResultMeta
     Set crack = mCrackResult.ResultMeta
     Set stability = mStabilityResult.Meta
+    Set OverallMeta = Policy.WorstResultMeta(rkGeneric, mWorkflowMeta, strength, crack, stability)
+    ' Общая валидация не повторяет одну причину под именами зависимых разделов.
+    ' Выбор статуса всегда проходит policy: отдельный CalcErr не скрывается.
+    If mWorkflowMeta.InternalStatus = rsInvalidInput Or mWorkflowMeta.InternalStatus = rsInvalidConfiguration Then
+        If OverallMeta.InternalStatus = mWorkflowMeta.InternalStatus And OverallMeta.ResultCode = mWorkflowMeta.ResultCode Then
+            OverallMeta.ResultComment = mWorkflowMeta.ResultComment
+            Exit Property
+        End If
+    End If
     Dim comment As String
+    mWorkflowMeta.AppendCommentTo comment
     strength.AppendCommentTo comment, True
     crack.AppendCommentTo comment, True
     stability.AppendCommentTo comment
-    Set OverallMeta = Policy.WorstResultMeta(rkGeneric, strength, crack, stability)
     OverallMeta.ResultComment = comment
 End Property
+
+' Возвращает независимую причину общей валидации или технической остановки LC.
+' Успешные инженерные результаты остаются в собственных subtrees.
+Public Property Get WorkflowMeta() As CResultMeta
+    Set WorkflowMeta = mWorkflowMeta.Clone
+End Property
+
+' Сохраняет готовую typed-причину orchestration без разбора пользовательского
+' текста. Этот узел не содержит НДС и не подменяет результаты calculators.
+Friend Sub SetWorkflowMeta(ByVal meta As CResultMeta)
+    AssertWritable
+    If meta Is Nothing Then Err.Raise vbObjectError + 3943, "CCombinationResult", "Не передана причина остановки сочетания."
+    Set mWorkflowMeta = meta.Clone
+End Sub
 
 ' Возвращает сводную ResultMeta блока прочности: сначала ищет
 ' проблемный direct/capacity-result, затем оставляет агрегированный

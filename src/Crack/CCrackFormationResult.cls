@@ -82,6 +82,18 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
     mDiagnosticLog = crack.DiagnosticLog
 End Sub
 
+' Сохраняет отсутствие запуска поиска по готовой meta: выключенный расчет,
+' ошибочный вход или блокировка. Здесь не создаются calculator, lambda-точка
+' и физические State; предыдущий численный снимок полностью удаляется.
+Friend Sub InitializeUncalculated(ByVal meta As CResultMeta)
+    AssertWritable
+    ResetResult
+    If meta Is Nothing Then Err.Raise vbObjectError + 3944, "CCrackFormationResult", "Не передана причина отсутствия расчета образования трещины."
+    If meta.Calculated Then Err.Raise vbObjectError + 3944, "CCrackFormationResult", "Незапущенный поиск не может иметь признак выполненного расчета."
+    Set mMeta = meta.Clone
+    mStopReason = meta.ResultComment
+End Sub
+
 ' Удаляет все данные предыдущего заполнения; неуспешный повтор не оставляет
 ' старую точку, состояния или диагностический журнал доступными потребителям.
 Private Sub ResetResult()

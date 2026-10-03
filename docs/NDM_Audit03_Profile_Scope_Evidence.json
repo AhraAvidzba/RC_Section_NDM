@@ -1,0 +1,212 @@
+{
+  "Scope": "16 расчетных переключателей PR1-PR4; все 64 маски активных проверок, InputErr/Blocked/NotRequested, comments/writers, повтор/recovery. Не закрывает остальные 76 полей профилей или полный Config.",
+  "AcceptanceStatus": "Направленный PASS 3572/0 и полный regression Off 44045/0, On 44056/0; 16 переключателей адресно приняты, full-range остальных Config не закрыт",
+  "PositiveReport": "docs/regression/Audit03/profile_scope_final_v173_2026-10-03.txt",
+  "PositiveGate": "TOTAL_AUDIT03_PROFILE_FAILURE_SCOPE: passed=3572; failed=0; cases=64",
+  "FullReports": [
+    "docs/regression/Audit03/full_off_profile_scope_final_v173_2026-10-03.txt",
+    "docs/regression/Audit03/full_on_profile_scope_final_v173_2026-10-03.txt"
+  ],
+  "Consumer": "CCalculationProfileCatalog -> реальные CBatchSectionCalculator/calculators -> canonical typed result-tree -> CBatchResultWriter и detailed writers",
+  "TestId": "modTestLoadTableConfig.RunAudit03ProfileFailureScopeTests",
+  "NegativeReports": [
+    "docs/regression/Audit03/profile_scope_negative_v166_2026-10-03.txt",
+    "docs/regression/Audit03/profile_scope_positive_v167_2026-10-03.txt",
+    "docs/regression/Audit03/full_off_profile_scope_final_v169_2026-10-03.txt",
+    "docs/regression/Audit03/profile_scope_prefix_diagnostic_v170_2026-10-03.txt"
+  ],
+  "Entries": [
+    {
+      "Id": "PR1.Calculation.Strength.DirectState",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Прямое НДС: конечное состояние и Calculated при Yes; NotRequested при No",
+      "AssertionPrefix": "profileScope.PR1.mask15.directExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR1 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR1.Calculation.Strength.Capacity",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Несущая: вычисленная положительная lambda при Yes; NotRequested при No; нулевой физический путь отдельно NotApplicable",
+      "AssertionPrefix": "profileScope.PR1.mask15.capacityExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR1 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR1.Calculation.Crack.Width",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Formation и CurrentCrackedState выполняются при Yes; все crack leaves NotRequested при No",
+      "AssertionPrefix": "profileScope.PR1.mask15.formationExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR1 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR1.Calculation.Stability.Enabled",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "При Yes выполнен calculator с фактическим нормативным кодом и физической неприменимостью растяжения; при No NotRequested",
+      "AssertionPrefix": "profileScope.PR1.mask15.stabilityExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR1 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR2.Calculation.Strength.DirectState",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Прямое НДС: конечное состояние и Calculated при Yes; NotRequested при No",
+      "AssertionPrefix": "profileScope.PR2.mask15.directExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR2 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR2.Calculation.Strength.Capacity",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Несущая: вычисленная положительная lambda при Yes; NotRequested при No; нулевой физический путь отдельно NotApplicable",
+      "AssertionPrefix": "profileScope.PR2.mask15.capacityExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR2 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR2.Calculation.Crack.Width",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Formation и CurrentCrackedState выполняются при Yes; все crack leaves NotRequested при No",
+      "AssertionPrefix": "profileScope.PR2.mask15.formationExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR2 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR2.Calculation.Stability.Enabled",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "При Yes выполнен calculator с фактическим нормативным кодом и физической неприменимостью растяжения; при No NotRequested",
+      "AssertionPrefix": "profileScope.PR2.mask15.stabilityExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR2 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR3.Calculation.Strength.DirectState",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Прямое НДС: конечное состояние и Calculated при Yes; NotRequested при No",
+      "AssertionPrefix": "profileScope.PR3.mask15.directExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR3 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR3.Calculation.Strength.Capacity",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Несущая: вычисленная положительная lambda при Yes; NotRequested при No; нулевой физический путь отдельно NotApplicable",
+      "AssertionPrefix": "profileScope.PR3.mask15.capacityExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR3 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR3.Calculation.Crack.Width",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Formation и CurrentCrackedState выполняются при Yes; все crack leaves NotRequested при No",
+      "AssertionPrefix": "profileScope.PR3.mask15.formationExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR3 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR3.Calculation.Stability.Enabled",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "При Yes выполнен calculator с фактическим нормативным кодом и физической неприменимостью растяжения; при No NotRequested",
+      "AssertionPrefix": "profileScope.PR3.mask15.stabilityExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR3 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR4.Calculation.Strength.DirectState",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Прямое НДС: конечное состояние и Calculated при Yes; NotRequested при No",
+      "AssertionPrefix": "profileScope.PR4.mask15.directExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR4 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR4.Calculation.Strength.Capacity",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Несущая: вычисленная положительная lambda при Yes; NotRequested при No; нулевой физический путь отдельно NotApplicable",
+      "AssertionPrefix": "profileScope.PR4.mask15.capacityExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR4 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR4.Calculation.Crack.Width",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "Formation и CurrentCrackedState выполняются при Yes; все crack leaves NotRequested при No",
+      "AssertionPrefix": "profileScope.PR4.mask15.formationExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR4 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    },
+    {
+      "Id": "PR4.Calculation.Stability.Enabled",
+      "Type": "Boolean selector",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательное значение Yes/No и утвержденные Boolean aliases; ошибочный ввод не выключает расчет молча",
+      "ValidRange": "Yes/No; True/False; 1/0; Да/Нет. Переключатель определяет запрос своего расчета, не физическую применимость",
+      "Activity": "Профиль назначен строке LC; собственная активная ветвь и все попарные/групповые сочетания четырех запросов",
+      "ExpectedEffect": "При Yes выполнен calculator с фактическим нормативным кодом и физической неприменимостью растяжения; при No NotRequested",
+      "AssertionPrefix": "profileScope.PR4.mask15.stabilityExecuted",
+      "BlankAndErrorContract": "Полный UI содержит строгий общий profile-input gate. Новый scope gate подтверждает, что ошибка общих LC-данных не активирует No, а Yes получает InputErr либо Blocked без solve",
+      "RangeReview": "Для PR4 выполнены все 16 масок четырех Boolean-переключателей, включая mask0/15, реальные входные ошибки, recovery и исполнение активных ветвей. Точности/физика не менялись. Каждый численный material/presentation параметр профиля проверяется отдельно; full Config acceptance не заявляется."
+    }
+  ]
+}

@@ -49,6 +49,38 @@ Public Sub Initialize(ByVal formation As CCrackFormationResult, _
     If mLongitudinal Is Nothing Then Set mLongitudinal = New CLongitudinalCrackResult
 End Sub
 
+' Отмечает весь crack workflow как отключенный профилем. Численные State
+' и формулы не создаются; каждый leaf сохраняет именно NotRequested.
+Friend Sub SetNotRequested()
+    AssertWritable
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta: meta.SetNotRequested rkCrackFormation
+    Set mFormation = New CCrackFormationResult: mFormation.InitializeUncalculated meta
+    Set mCurrentStateMeta = New CResultMeta: mCurrentStateMeta.SetNotRequested rkDirectState
+    Set meta = New CResultMeta: meta.SetNotRequested rkCrackWidth
+    Set mWidth = New CCrackWidthResult: mWidth.InitializeFromCalculator Nothing, meta
+    Set meta = New CResultMeta: meta.SetNotRequested rkLongitudinalCrack
+    Set mLongitudinal = New CLongitudinalCrackResult: mLongitudinal.Initialize meta, 0#, 0#, 0#
+End Sub
+
+' Сохраняет ошибку общих исходных данных до запуска crack workflow.
+' Formation получает точную причину валидации, а Current/Width/Longitudinal
+' остаются заблокированными зависимыми этапами без фиктивной численной попытки.
+Friend Sub SetInputFailure(ByVal reason As String)
+    AssertWritable
+    Dim meta As CResultMeta
+    Set meta = New CResultMeta: meta.SetResult rsInvalidInput, rcInvalidInput, rkCrackFormation, reason
+    Set mFormation = New CCrackFormationResult: mFormation.InitializeUncalculated meta
+    Set mCurrentStateMeta = New CResultMeta
+    mCurrentStateMeta.SetBlockedByDependency rkDirectState, "исходных данных сочетания", reason
+    Set meta = New CResultMeta
+    meta.SetBlockedByDependency rkCrackWidth, "текущего НДС от сочетания", mCurrentStateMeta.ResultComment
+    Set mWidth = New CCrackWidthResult: mWidth.InitializeFromCalculator Nothing, meta
+    Set meta = New CResultMeta
+    meta.SetBlockedByDependency rkLongitudinalCrack, "текущего НДС от сочетания", mCurrentStateMeta.ResultComment
+    Set mLongitudinal = New CLongitudinalCrackResult: mLongitudinal.Initialize meta, 0#, 0#, 0#
+End Sub
+
 Public Property Get Formation() As CCrackFormationResult
     Set Formation = mFormation
 End Property
@@ -75,6 +107,13 @@ Public Property Get NormalMeta() As CResultMeta
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
     Dim formation As CResultMeta, width As CResultMeta, currentProblem As CResultMeta
     Set formation = mFormation.ResultMeta
+    If HasCommonInputFailure Then
+        Dim inputComment As String
+        formation.AppendCommentTo inputComment
+        Set NormalMeta = formation.Clone
+        NormalMeta.ResultComment = inputComment
+        Exit Property
+    End If
     Set width = mWidth.ResultMeta
     If mPolicy.IsFailedOverall(mPolicy.ExternalStatus(mCurrentStateMeta)) Or _
             mCurrentStateMeta.InternalStatus = rsSuccessWithWarning Then Set currentProblem = mCurrentStateMeta
@@ -93,12 +132,28 @@ Public Property Get ResultMeta() As CResultMeta
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
     Dim normal As CResultMeta, longitudinal As CResultMeta, comment As String
     Set normal = NormalMeta
+    If HasCommonInputFailure Then
+        Set ResultMeta = normal
+        Exit Property
+    End If
     Set longitudinal = mLongitudinal.ResultMeta
     normal.AppendCommentTo comment, True
     AppendDependentComment longitudinal, comment
     Set ResultMeta = mPolicy.WorstResultMeta(rkGeneric, normal, longitudinal)
     ResultMeta.ResultComment = comment
 End Property
+
+' Различает общую ошибку входа до запуска от самостоятельного отказа Search.
+' Зависимые этапы при этом не добавляют ту же причину второй раз в комментарий.
+Private Function HasCommonInputFailure() As Boolean
+    Select Case mFormation.ResultMeta.InternalStatus
+        Case rsInvalidInput, rsInvalidConfiguration
+            HasCommonInputFailure = (mCurrentStateMeta.InternalStatus = rsBlockedByDependency And _
+                mWidth.ResultMeta.InternalStatus = rsBlockedByDependency And _
+                mLongitudinal.ResultMeta.InternalStatus = rsBlockedByDependency And _
+                Not mFormation.ResultMeta.Calculated)
+    End Select
+End Function
 
 ' Сохраняет отдельное пояснение blocked-проверки, но не повторяет в aggregate
 ' уже записанную полную причину CurrentCrackedState. Leaf/meta не изменяются.

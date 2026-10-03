@@ -6294,18 +6294,21 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
     Dim result As CCombinationResult, prefix As String
     Set result = batch.ResultAt(index)
     prefix = "audit03.comments." & batch.CombinationID(index)
-    Audit03CheckMetaComment stats, prefix & ".direct", result.DirectStateMeta, result.StrengthMeta
-    Audit03CheckMetaComment stats, prefix & ".capacity", result.CapacityMeta, result.StrengthMeta
-    Audit03CheckMetaComment stats, prefix & ".formation", result.CrackFormationMeta, result.CrackSummaryMeta
-    Audit03CheckMetaComment stats, prefix & ".current", result.CrackCurrentStateMeta, result.CrackSummaryMeta
+    Dim commonInputReason As String
+    If result.WorkflowMeta.InternalStatus = rsInvalidInput Or result.WorkflowMeta.InternalStatus = rsInvalidConfiguration Then _
+        commonInputReason = result.WorkflowMeta.ResultComment
+    Audit03CheckMetaComment stats, prefix & ".direct", result.DirectStateMeta, result.StrengthMeta, commonInputReason:=commonInputReason
+    Audit03CheckMetaComment stats, prefix & ".capacity", result.CapacityMeta, result.StrengthMeta, commonInputReason:=commonInputReason
+    Audit03CheckMetaComment stats, prefix & ".formation", result.CrackFormationMeta, result.CrackSummaryMeta, commonInputReason:=commonInputReason
+    Audit03CheckMetaComment stats, prefix & ".current", result.CrackCurrentStateMeta, result.CrackSummaryMeta, commonInputReason:=commonInputReason
     Dim independentOccurrences As Long
     independentOccurrences = 1 + Audit03TextOccurrences(result.CrackFormationMeta.ResultComment, _
         result.CrackCurrentStateMeta.ResultComment)
     Audit03CheckMetaComment stats, prefix & ".width", result.CrackWidthMeta, result.CrackSummaryMeta, _
-        result.CrackCurrentStateMeta.ResultComment, independentOccurrences
+        result.CrackCurrentStateMeta.ResultComment, independentOccurrences, commonInputReason
     Audit03CheckMetaComment stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, result.CrackSummaryMeta, _
-        result.CrackCurrentStateMeta.ResultComment, independentOccurrences
-    Audit03CheckMetaComment stats, prefix & ".stability", result.StabilityMeta, result.OverallMeta
+        result.CrackCurrentStateMeta.ResultComment, independentOccurrences, commonInputReason
+    Audit03CheckMetaComment stats, prefix & ".stability", result.StabilityMeta, result.OverallMeta, commonInputReason:=commonInputReason
     If result.CrackWidthMeta.InternalStatus = rsBlockedByDependency Then
         If Audit03RequiresComment(result.CrackCurrentStateMeta) Then
             AssertTrue stats, prefix & ".widthBlockActualReason", _
@@ -6347,6 +6350,7 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
         If Len(expectedOverall) > 0 Then expectedOverall = expectedOverall & "; "
         expectedOverall = expectedOverall & "Устойчивость: " & result.StabilityMeta.ResultComment
     End If
+    If Len(commonInputReason) > 0 Then expectedOverall = commonInputReason
     AssertEquals stats, prefix & ".overallComposition", result.OverallMeta.ResultComment, expectedOverall
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
@@ -6368,7 +6372,8 @@ End Sub
 Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix As String, _
         ByVal meta As CResultMeta, ByVal aggregate As CResultMeta, _
         Optional ByVal sharedDependencyReason As String = vbNullString, _
-        Optional ByVal independentReasonOccurrences As Long = 1)
+        Optional ByVal independentReasonOccurrences As Long = 1, _
+        Optional ByVal commonInputReason As String = vbNullString)
     AppendLine stats, "META: " & prefix & "|status=" & ResultInternalStatusToText(meta.InternalStatus) & _
         "|code=" & ResultCodeToText(meta.ResultCode) & "|applies=" & CStr(meta.Applies) & _
         "|calculated=" & CStr(meta.Calculated) & "|comment=" & meta.ResultComment
@@ -6391,6 +6396,13 @@ Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix
     Next machinePrefix
     AssertTrue stats, prefix & ".noMachinePrefix", Not hasMachinePrefix
     If Not requiresComment Then Exit Sub
+    If Len(commonInputReason) > 0 Then
+        ' Все leaves сохраняют точную причину; общий отказ валидации выводится
+        ' один раз в своем блоке, без повторов через неисполнявшиеся зависимости.
+        AssertTrue stats, prefix & ".commonInputLeaf", InStr(1, meta.ResultComment, commonInputReason, vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".commonInputSubtreeOnce", Audit03TextOccurrences(aggregate.ResultComment, commonInputReason) = 1
+        Exit Sub
+    End If
     Dim dependencyAt As Long, ownExplanation As String
     If meta.InternalStatus = rsBlockedByDependency And Len(sharedDependencyReason) > 0 Then _
         dependencyAt = InStr(1, meta.ResultComment, sharedDependencyReason, vbBinaryCompare)
