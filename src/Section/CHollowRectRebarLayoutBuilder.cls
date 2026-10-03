@@ -100,13 +100,21 @@ Public Function Build(ByVal geom As CGeometryHollowRectangle, _
     Set Build = layout
 End Function
 
-' Читает компактную строку параметров одной смысловой грани.
+' Читает параметры грани и проверяет инженерный диапазон ее счетчика.
+' Для ввода Config ошибка содержит фактическую ячейку; прямой Build отдельно
+' проверяет переданный массив. Пустой наружный счетчик означает выключенную грань.
 Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal faceName As String, ByVal defaultAs As String, ByVal defaultD As String) As Variant
+    Dim countKey As String, barCount As Long
+    countKey = "HollowRectangle." & faceName & ".n"
+    barCount = settings.GetLong(countKey, 0)
+    If barCount < 0 Then Err.Raise vbObjectError + 3250, "CHollowRectRebarLayoutBuilder", _
+        settings.InputErrorMessage(countKey, HollowFaceDisplayName(faceName) & ": количество стержней не может быть отрицательным.", _
+            "Введите целое неотрицательное количество; 0 или пустая ячейка выключают арматуру на этой грани.")
     ReadFaceSettingsFromConfig = Array( _
         units.InputLengthToInternal(settings.GetDouble("HollowRectangle." & faceName & ".as", CDbl(defaultAs))), _
         OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d", CDbl(defaultD)), _
-        settings.GetLong("HollowRectangle." & faceName & ".n", 0), _
+        barCount, _
         OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d_2row", 0#), _
         OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d_3row", 0#), _
         settings.GetString("HollowRectangle." & faceName & ".loc_2row", "Stacked"), _

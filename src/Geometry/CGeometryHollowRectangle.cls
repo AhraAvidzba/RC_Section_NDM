@@ -35,7 +35,7 @@ Private mOpeningH As Double ' Высота внутреннего отверст
 Private mOpeningR As Double ' Радиус внутренних углов R_o.
 Private mOpeningOffsetX As Double ' Смещение центра отверстия относительно центра наружного контура по X.
 Private mOpeningOffsetY As Double ' Смещение центра отверстия относительно центра наружного контура по Y.
-Private mArea As Double ' Аналитическая площадь бетонного кольца.
+Private mArea As Double ' Площадь бетонного кольца по polygon-контурам наружной формы и отверстия.
 Private mCentroidX As Double ' Центр тяжести бетонного кольца.
 Private mCentroidY As Double
 Private mInitialized As Boolean
@@ -304,16 +304,16 @@ Private Function ValidateCurrentGeometry(ByRef message As String) As Boolean
     ValidateCurrentGeometry = True
 End Function
 
-' Возвращает аналитическую площадь бетонного кольца, если геометрия прошла
-' валидацию. Для расчетной сетки это справочная точная площадь исходной формы:
-' наружный скругленный прямоугольник минус Opening.
+' Возвращает площадь бетонного кольца по подготовленным polygon-контурам,
+' если геометрия прошла валидацию. Дуги имеют ту же дискретизацию, что у
+' RoundedRectangle; результат не является площадью точных круговых дуг.
 Public Function AnalyticalArea(ByRef available As Boolean) As Double
     Dim message As String
     available = IsValid(message)
     If available Then AnalyticalArea = mArea
 End Function
 
-' Возвращает аналитический центр тяжести бетонной части. При смещенном Opening
+' Возвращает центр тяжести бетонной части по тем же polygon-контурам. При смещенном отверстии
 ' центр смещается в сторону, противоположную отверстию; этот результат нужен
 ' для согласованной схемы, аннотаций и контрольных свойств сечения.
 Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)

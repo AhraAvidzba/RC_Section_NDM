@@ -52,6 +52,10 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03CircleConfigTests(circleConfigPassed, circleConfigFailed)
     stats.Passed = stats.Passed + circleConfigPassed
     stats.Failed = stats.Failed + circleConfigFailed
+    Dim shapeConfigPassed As Long, shapeConfigFailed As Long
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03ShapeConfigTests(shapeConfigPassed, shapeConfigFailed)
+    stats.Passed = stats.Passed + shapeConfigPassed
+    stats.Failed = stats.Failed + shapeConfigFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats

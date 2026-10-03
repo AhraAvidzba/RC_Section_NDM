@@ -567,7 +567,10 @@ Private Sub AppendHollowRectangleCommonSettings(ByRef data As Variant, ByVal geo
     Next rowIndex
 End Sub
 
-' Читает основной ряд арматуры HollowRectangle по видимым пользователю граням H/B и Opening.
+' Читает основной ряд по наружным граням и граням отверстия. Пользовательское
+' количество наружных стержней сохраняется без предварительного отбора чисел:
+' ошибочный текст должен дойти до строгого GetLong, а не выключить грань.
+' Количество на гранях отверстия служебное и определяется проекцией арматуры.
 Private Sub AppendHollowRectangleMainRebars(ByRef data As Variant, ByVal mainHeaderRow As Long)
     Dim rowIndex As Long
     For rowIndex = mainHeaderRow + 1 To UBound(data, 1)
@@ -576,8 +579,11 @@ Private Sub AppendHollowRectangleMainRebars(ByRef data As Variant, ByVal mainHea
         If Len(faceKey) = 0 Then Exit For
         AppendSetting "HollowRectangle." & faceKey & ".as", Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 2))), Trim$(CStr(data(rowIndex, 6)))
         AppendSetting "HollowRectangle." & faceKey & ".d", Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 3))), Trim$(CStr(data(rowIndex, 6)))
-        If IsNumericSettingText(data(rowIndex, 4)) Then
-            AppendSetting "HollowRectangle." & faceKey & ".n", Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 4))), Trim$(CStr(data(rowIndex, 6)))
+        If Left$(faceKey, 8) <> "Opening." Then
+            Dim countKey As String, countValue As String
+            countKey = "HollowRectangle." & faceKey & ".n"
+            countValue = ConfigCellText(data(rowIndex, 4), "Количество стержней", rowIndex, countKey, False, 4)
+            AppendSetting countKey, countValue, countValue, Trim$(CStr(data(rowIndex, 6))), rowIndex, 4
         End If
     Next rowIndex
 End Sub
@@ -610,14 +616,6 @@ Private Function HollowRectangleFaceKey(ByVal faceCaption As String) As String
         Case "b_o - верхняя", "bo-top", "opening.b.top": HollowRectangleFaceKey = "Opening.B.Top"
         Case "b_o - нижняя", "bo-bottom", "opening.b.bottom": HollowRectangleFaceKey = "Opening.B.Bottom"
     End Select
-End Function
-
-' Проверяет, можно ли строку настройки трактовать как число, не считая прочерки активными значениями.
-Private Function IsNumericSettingText(ByVal value As Variant) As Boolean
-    Dim textValue As String
-    textValue = Trim$(CStr(value))
-    If Len(textValue) = 0 Or textValue = "-" Or UCase$(textValue) = "TODO" Then Exit Function
-    IsNumericSettingText = IsNumeric(Replace$(textValue, ".", ApplicationDecimalSeparator()))
 End Function
 
 ' Распознает новую табличную компоновку RoundedRectangle: B/H, левая/правая

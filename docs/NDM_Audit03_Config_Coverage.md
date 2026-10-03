@@ -444,3 +444,27 @@ checks `25/25`; clean/update help `2536/2536`, mergesEqual=True.
 принятых активных полей, fullAcceptance=False. Это не полная приемка Config:
 range/default/pairwise и остальные семьи сохраняются в текущей цели. Основная
 пользовательская книга не заменена промежуточным снимком.
+
+## Некруглые Формы v134
+
+Адресно проверены 6 параметров RectSet, 10 RoundedRectangle, 8 HollowRectangle
+и четыре наружных счетчика n. Directed final `213/0` использует реальные
+Config/reader/units/registry, активные мутации, недопустимые значения, recovery,
+неактивные таблицы/режимы, mm/cm-equivalence и восстановление Formula.
+Дополнительные oracle проверяют площадь/центр; дискретизация дуг не меняется.
+
+Negative `161/40` подтвердил молчаливое выключение наружной грани при abc или
+CVErr в Hollow n. Ошибка теперь сохраняет key/ячейку и инженерное пояснение;
+blank/0 и автоматические счетчики отверстия остаются допустимыми.
+
+Все восемь full suites: Off `23295/0`, On `23306/0`. Общие actual-числа
+с v133 совпали `5577`/`5582`, missing=0, differences=0. Source/export `103/103`;
+help `2536/2536`, mergesEqual=True; Universal `827/0` и palette `351/0`
+сохранены после reopen; formatting `1003/0`, deviations=0; Validate `25/25`.
+
+`NDM_Audit03_Shape_Config_Evidence.json` содержит 28 новых адресных записей,
+а `config_behavior_registry_v134_2026-10-03` содержит 118 active-reviewed из
+1064. Full-range/default/missing/error-cell для остальных размеров, остальные
+поля армирования и pairwise не закрыты этой приемкой. Перенос прежних 90
+семантических записей выполнен по точному Id с сохранением текущего census;
+он не является повторной blanket приемкой всего Config.

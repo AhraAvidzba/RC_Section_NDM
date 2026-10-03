@@ -69,6 +69,25 @@
 
 ## Актуальная Точка Продолжения
 
+- Срез v133 зафиксирован коммитом `27d55e4`. Текущий следующий geometry Config
+  срез v134: 24 параметра форм + четыре наружных счетчика HollowRectangle.
+  Negative `161/40` подтвердил молчаливое отключение наружной грани при abc
+  или ошибке формулы; raw значение и адрес теперь сохраняются, отрицательный
+  счетчик объясняет builder. Blank/0 и автоматические количества отверстия
+  сохраняют утвержденное поведение. Directed final `213/0`, source/export
+  `103/103`, failed=0; full Off `23295/0`, On `23306/0`, все восемь suites.
+  Общие actual-числа с v133: `5577/5577` Off, `5582/5582` On, missing=0,
+  differences=0. Universal `827/0`, palette `351/0`: Results и status-style
+  save/reopen=True; formatting `1003/0`, deviations=0; Validate `25/25`.
+  Help clean/update `2536/2536`, mergesEqual=True. Новый адресный evidence
+  принят только после обоих full gates: registry `118/1064`, fullAcceptance=False.
+  Подробности в NDM_Audit03_Geometry_Config_Review.md. Книга SHA
+  `75EBCDE707473B914DAE64233B6428319F3247960AC4E8E2C3C9F7EBA9291498`,
+  export `0736EB9FB69BC5C235CE3FE1776AF8110CB252D7CF3122B664AD257688179B74`.
+  Все процессы завершены; срез готов к scoped checkpoint. Новых `.cls` нет.
+  ТЗ и основная output-книга сохраняют исходные хеши. Следующий цельный срез
+  геометрии: представимость счетчиков некруглых builders и оставшиеся поля
+  арматуры, затем полные диапазоны/pairwise; не начинать новую архитектуру.
 - F05 срез v131 зафиксирован коммитом `25a5cab`; все его directed/full/
   numeric/save-reopen/formatting/структурные gates завершены. Следующий рабочий
   срез F07/D01/K02: ранняя сумма рядов Circle, содержательные комментарии и
