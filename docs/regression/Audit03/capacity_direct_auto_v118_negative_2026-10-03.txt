@@ -1,0 +1,52 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_direct_auto_v118_negative.xlsm
+SOURCE_SHA256: BA50FDE0FFF3B02A5654CBC4AA49B4E27095D1726440D6CAAC135DD79C7D1BEF
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_132464746a6b491cb85873a9b02d1a8e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCapacitySolver.RunAudit03CapacityLifecycle =====
+SUITE_STARTED: modTestCapacitySolver.RunAudit03CapacityLifecycle; 2026-10-03T04:39:44
+EXCEL_AFTER_SUITE: pid=28600; workingSet=131108864; privateBytes=114597888; cpu=3.421875
+OK: audit03.capacity.lifecycle.missing.notExecuted
+OK: audit03.capacity.lifecycle.missing.notCalculated
+OK: audit03.capacity.lifecycle.empty.notExecuted
+OK: audit03.capacity.lifecycle.empty.notCalculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.attempted
+OK: audit03.capacity.lifecycle.LoadMultiplier.calculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.point
+OK: audit03.capacity.lifecycle.LoadMultiplier.invalidBeforeSearch
+OK: audit03.capacity.lifecycle.LoadMultiplier.invalidNotCalculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.invalidNoPoint
+OK: audit03.capacity.lifecycle.LoadMultiplier.priorSnapshot
+OK: audit03.capacity.lifecycle.LoadMultiplier.missingReset
+OK: audit03.capacity.lifecycle.LoadMultiplier.missingNoPoint
+OK: audit03.capacity.lifecycle.UltimateStrain.attempted
+OK: audit03.capacity.lifecycle.UltimateStrain.calculated
+OK: audit03.capacity.lifecycle.UltimateStrain.point
+OK: audit03.capacity.lifecycle.UltimateStrain.invalidBeforeSearch
+OK: audit03.capacity.lifecycle.UltimateStrain.invalidNotCalculated
+OK: audit03.capacity.lifecycle.UltimateStrain.invalidNoPoint
+OK: audit03.capacity.lifecycle.UltimateStrain.priorSnapshot
+OK: audit03.capacity.lifecycle.UltimateStrain.missingReset
+OK: audit03.capacity.lifecycle.UltimateStrain.missingNoPoint
+OK: audit03.capacity.lifecycle.fallback.firstAttemptKept
+OK: audit03.capacity.lifecycle.fallback.finalConfig
+OK: audit03.capacity.lifecycle.fallback.noPoint
+OK: audit03.capacity.lifecycle.fallback.finalNoProbe
+FAIL: audit03.capacity.lifecycle.directAuto.firstAttemptKept
+OK: audit03.capacity.lifecycle.directAuto.finalConfig
+OK: audit03.capacity.lifecycle.directAuto.noPoint
+OK: audit03.capacity.lifecycle.directAuto.finalNoProbe
+OK: audit03.capacity.lifecycle.generic.executed
+OK: audit03.capacity.lifecycle.generic.invalidNotExecuted
+OK: audit03.capacity.lifecycle.generic.invalidNoProbe
+OK: audit03.capacity.lifecycle.default.notExecuted
+OK: audit03.capacity.lifecycle.default.notCalculated
+OK: audit03.capacity.lifecycle.report.reason
+OK: audit03.capacity.lifecycle.report.russian
+OK: audit03.capacity.lifecycle.report.noRawStatus
+TOTAL_AUDIT03_CAPACITY_LIFECYCLE: passed=37; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_132464746a6b491cb85873a9b02d1a8e\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCapacitySolver.RunAudit03CapacityLifecycle; 2026-10-03T04:39:45
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

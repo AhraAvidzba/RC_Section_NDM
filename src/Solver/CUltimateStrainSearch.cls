@@ -69,11 +69,13 @@ Private Function ExecuteCapacityFallbackToLoadMultiplier(ByVal request As CLimit
     firstStopReason = request.Problem.StopReason
     firstLimitState = request.Problem.LimitState
     firstDiagnostics = request.Problem.DiagnosticLog
+    Dim firstSearchExecuted As Boolean
+    firstSearchExecuted = request.Problem.BuildResult(request, False).SearchExecuted
 
     Dim ignoredResult As CLimitSearchResult
     Set ignoredResult = ExecuteCapacityLoadMultiplier(request)
     request.Problem.MergeFallback firstLimitState, firstStopReason, _
-        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage
+        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage, firstSearchExecuted
 
     Set ExecuteCapacityFallbackToLoadMultiplier = request.Problem.BuildResult(request, request.Problem.Converged)
 End Function

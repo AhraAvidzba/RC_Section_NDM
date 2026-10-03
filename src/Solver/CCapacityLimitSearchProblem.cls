@@ -288,6 +288,8 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
         Optional ByVal materialSpec As CMaterialModelSpec = Nothing) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = New CResultMeta
+    Dim searchExecuted As Boolean
+    If Not mCapacity Is Nothing Then searchExecuted = mCapacity.SearchExecuted
     If mCapacity Is Nothing Then
         meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности.", vbNullString, True, False
     ElseIf mCapacity.Converged Then
@@ -296,7 +298,7 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
         meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkCapacity, mCapacity.StopReason
     ElseIf mCapacity.FailureCode = sfcInternalError Then
         meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.StopReason, _
-            vbNullString, True, (mCapacity.Iterations > 0)
+            vbNullString, True, searchExecuted
     ElseIf mCapacity.SearchBoundReached Then
         meta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, mCapacity.StopReason
     ElseIf mCapacity.LimitSearchInitialLambdaRejected And _
@@ -311,7 +313,8 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
         If mCapacity.FailureCode = sfcSingularTangent Then failureResultCode = rcSingularTangent
         meta.SetResult rsNumericalFailure, failureResultCode, rkCapacity, mCapacity.StopReason
     Else
-        meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.StopReason
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.StopReason, _
+            vbNullString, True, searchExecuted
     End If
 
     Dim pointState As CSectionStateResult
@@ -345,7 +348,7 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, requestedStrategy, methodName, hasPoint, lambdaValue, _
-        nValue, mxValue, myValue, pointState, criterionName, diagnostics, finalDiagnostic
+        nValue, mxValue, myValue, pointState, criterionName, diagnostics, finalDiagnostic, searchExecuted
     Set BuildSnapshot = result
 End Function
 
@@ -480,9 +483,10 @@ End Sub
 ' Комментарий конечного результата формируется владельцем, не writer-ом.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
-        ByVal transitionMessage As String, ByVal successMessage As String)
+        ByVal transitionMessage As String, ByVal successMessage As String, _
+        Optional ByVal firstSearchExecuted As Boolean = False)
     mCapacity.LimitSearchMergeCapacityFallback firstLimitState, firstStopReason, _
-        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage
+        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage, firstSearchExecuted
 End Sub
 
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double

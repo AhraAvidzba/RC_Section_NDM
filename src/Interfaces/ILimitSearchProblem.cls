@@ -273,7 +273,10 @@ End Sub
 
 ' Объединяет диагностику первой и резервной попыток в результирующем контексте.
 ' Последняя принятая попытка определяет исход; история объясняет переход метода.
+' Факт первой численной попытки сохраняется явно и не восстанавливается
+' по наличию/тексту журнала, который может быть отключен настройкой Diagnostics.
 Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
-        ByVal transitionMessage As String, ByVal successMessage As String)
+        ByVal transitionMessage As String, ByVal successMessage As String, _
+        Optional ByVal firstSearchExecuted As Boolean = False)
 End Sub

@@ -73,6 +73,7 @@ Public Function RunCapacitySolverTests() As String
     TestAudit03SearchArithmetic stats
     TestAudit03RealCapacityPrecision stats
     TestAudit03CapacityTypedFailures stats
+    TestAudit03CapacitySearchLifecycle stats
     TestAudit03UltimateGuards stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
@@ -206,6 +207,7 @@ Private Sub TestConcreteTensionBehaviorAffectsSolverAndCapacity(ByRef stats As T
     AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.my", mesh, rebars, -50000#, 0#, -5000000#
     AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.mxy", mesh, rebars, -50000#, -5000000#, -3000000#
 End Sub
+
 
 ' Решает один вектор усилий с отключенным и активным растянутым бетоном;
 ' проверяет сходимость обеих моделей и значимое различие параметров плоскости.
@@ -2346,6 +2348,122 @@ Private Sub SaveAudit03SearchProgress(ByRef stats As TCapacityTestStats, ByVal s
     Print #fileNumber, stats.Report
     Print #fileNumber, stage
     Close #fileNumber
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+' ДЛЯ ТЕСТОВ: проверяет реальный lifecycle Capacity/Search, в том числе снимок
+' до запуска и reset одного solver-а после успешной численной попытки.
+Public Function RunAudit03CapacityLifecycle() As String
+    On Error GoTo Failed
+    Dim stats As TCapacityTestStats
+    TestAudit03CapacitySearchLifecycle stats
+    AppendLine stats, "TOTAL_AUDIT03_CAPACITY_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CapacityLifecycle = stats.Report
+    Exit Function
+Failed:
+    RunAudit03CapacityLifecycle = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: оба численных метода действительно ищут предел, а невалидные
+' допуски/бюджет и отсутствующая зависимость останавливаются до Search.
+' При повторе старый результат должен сохранять независимый факт выполнения.
+Private Sub TestAudit03CapacitySearchLifecycle(ByRef stats As TCapacityTestStats)
+    Dim problem As CCapacityLimitSearchProblem, result As CLimitSearchResult
+    Set problem = New CCapacityLimitSearchProblem
+    Set result = problem.BuildSnapshot("Auto")
+    AssertTrue stats, "audit03.capacity.lifecycle.missing.notExecuted", Not result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.missing.notCalculated", Not result.Meta.Calculated
+    Dim mesh As CFiberMeshBuilder, rebars As CRebarLayout, section As CSectionModel
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim cap As CCapacitySolver, retained As CLimitSearchResult, strategy As Variant
+    Set cap = New CCapacitySolver
+    Set result = Audit02CapacitySnapshot(cap, "Auto")
+    AssertTrue stats, "audit03.capacity.lifecycle.empty.notExecuted", Not result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.empty.notCalculated", Not result.Meta.Calculated
+    For Each strategy In Array("LoadMultiplier", "UltimateStrain")
+        ConfigureCapacity cap
+        If CStr(strategy) = "LoadMultiplier" Then
+            cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        Else
+            cap.SolveByUltimateLoadPath section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        End If
+        Set result = Audit02CapacitySnapshot(cap, CStr(strategy))
+        Set retained = result.Clone
+        Dim prefix As String
+        prefix = "audit03.capacity.lifecycle." & CStr(strategy)
+        AssertTrue stats, prefix & ".attempted", result.SearchExecuted
+        AssertTrue stats, prefix & ".calculated", result.Meta.Calculated
+        AssertTrue stats, prefix & ".point", result.HasLimitPoint
+        If CStr(strategy) = "LoadMultiplier" Then
+            cap.LambdaTolerance = 0#
+            cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        Else
+            cap.SolverMaxIterations = 0
+            cap.SolveByUltimateLoadPath section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        End If
+        Set result = Audit02CapacitySnapshot(cap, CStr(strategy))
+        AssertTrue stats, prefix & ".invalidBeforeSearch", Not result.SearchExecuted
+        AssertTrue stats, prefix & ".invalidNotCalculated", Not result.Meta.Calculated
+        AssertTrue stats, prefix & ".invalidNoPoint", Not result.HasLimitPoint
+        AssertTrue stats, prefix & ".priorSnapshot", retained.SearchExecuted And retained.HasLimitPoint
+        cap.SolveByLoadPathMultiplier Nothing, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        Set result = Audit02CapacitySnapshot(cap, CStr(strategy))
+        AssertTrue stats, prefix & ".missingReset", Not result.SearchExecuted
+        AssertTrue stats, prefix & ".missingNoPoint", Not result.HasLimitPoint
+    Next strategy
+    ' UltimateStrain начинает реальную попытку, а настройки резервного
+    ' LoadMultiplier ошибочны. Очистка второй ветви не должна стирать этот факт.
+    ConfigureCapacity cap
+    cap.SolverMaxIterations = 1
+    cap.LambdaTolerance = 0#
+    Dim request As CLimitSearchRequest, coordinator As CLimitSearchCoordinator
+    Set request = New CLimitSearchRequest: Set coordinator = New CLimitSearchCoordinator
+    request.InitializeCapacity cap, section, LinearConcrete(), LinearSteel(), _
+        "Auto", -20000#, 0#, 0#, 10000000#, 0#, 0#, False, False
+    Set result = coordinator.ExecuteCapacity(request)
+    AssertTrue stats, "audit03.capacity.lifecycle.fallback.firstAttemptKept", result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.fallback.finalConfig", result.Meta.InternalStatus = rsInvalidConfiguration
+    AssertTrue stats, "audit03.capacity.lifecycle.fallback.noPoint", Not result.HasLimitPoint
+    AssertTrue stats, "audit03.capacity.lifecycle.fallback.finalNoProbe", cap.Iterations = 0
+    ' Прямой содержательный API должен сохранять тот же lifecycle, что coordinator.
+    ConfigureCapacity cap
+    cap.SolverMaxIterations = 1
+    cap.LambdaTolerance = 0#
+    cap.SolveByAutoLoadPath section, LinearConcrete(), LinearSteel(), _
+        -20000#, 0#, 0#, 10000000#, 0#, 0#, False, False
+    Set result = Audit02CapacitySnapshot(cap, "Auto")
+    AssertTrue stats, "audit03.capacity.lifecycle.directAuto.firstAttemptKept", result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.directAuto.finalConfig", result.Meta.InternalStatus = rsInvalidConfiguration
+    AssertTrue stats, "audit03.capacity.lifecycle.directAuto.noPoint", Not result.HasLimitPoint
+    AssertTrue stats, "audit03.capacity.lifecycle.directAuto.finalNoProbe", cap.Iterations = 0
+    Dim fake As CTestLimitSearchProblem, multiplier As CLoadMultiplierSearch
+    Set fake = New CTestLimitSearchProblem: Set multiplier = New CLoadMultiplierSearch
+    fake.Configure "Bisection", 1.25, 0.000001, 80
+    request.InitializeWithProblem fake, rkCapacity, "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+    Set result = multiplier.Execute(request)
+    AssertTrue stats, "audit03.capacity.lifecycle.generic.executed", result.SearchExecuted
+    fake.Configure "Bisection", 1.25, 0#, 80
+    Set result = multiplier.Execute(request)
+    AssertTrue stats, "audit03.capacity.lifecycle.generic.invalidNotExecuted", Not result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.generic.invalidNoProbe", fake.ProbeCalls = 0
+    Set result = New CLimitSearchResult
+    result.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, vbNullString, vbNullString
+    AssertTrue stats, "audit03.capacity.lifecycle.default.notExecuted", Not result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.default.notCalculated", Not result.Meta.Calculated
+    ' Ранний отчет берет объяснение из собственного инженерного результата,
+    ' а не из технического LimitState и не из несуществующего поля meta.
+    Dim capacityResult As CCapacityResult, load As CSectionLoadState, path As CLoadPathDescriptor
+    Set capacityResult = New CCapacityResult
+    Set load = New CSectionLoadState: Set path = New CLoadPathDescriptor
+    load.Initialize 0#, 10000000#, 0#, 0#, 0#
+    path.InitializeFromLoadState "LambdaMx", load
+    capacityResult.InitializeInvalidInput "В Config задайте положительный допуск поиска.", path.Key
+    Dim earlyReport As String
+    earlyReport = capacityResult.EarlyStopReport(path)
+    AssertTrue stats, "audit03.capacity.lifecycle.report.reason", InStr(1, earlyReport, capacityResult.ResultMeta.ResultComment, vbBinaryCompare) > 0
+    AssertTrue stats, "audit03.capacity.lifecycle.report.russian", InStr(1, earlyReport, "Поиск несущей способности", vbBinaryCompare) = 1
+    AssertTrue stats, "audit03.capacity.lifecycle.report.noRawStatus", InStr(1, earlyReport, "InvalidInput", vbTextCompare) = 0
 End Sub
 
 

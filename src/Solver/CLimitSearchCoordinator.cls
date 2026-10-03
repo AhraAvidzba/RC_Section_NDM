@@ -185,13 +185,14 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
         Exit Function
     End If
 
-    Set ExecuteAutoCapacity = ExecuteAutoCapacityLoadMultiplierFallback(request)
+    Set ExecuteAutoCapacity = ExecuteAutoCapacityLoadMultiplierFallback(request, firstResult.SearchExecuted)
 End Function
 
 ' Повторяет Auto-поиск capacity через LoadMultiplier после неудачного
 ' UltimateStrain и возвращает обновленный snapshot результата. Диагностика
 ' первой попытки сохраняется перед тем, как LoadMultiplier очистит поля solver-а.
-Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLimitSearchRequest) As CLimitSearchResult
+Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLimitSearchRequest, _
+        ByVal firstSearchExecuted As Boolean) As CLimitSearchResult
     Dim firstStopReason As String
     Dim firstLimitState As String
     Dim firstDiagnostics As String
@@ -208,7 +209,7 @@ Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLim
         firstDiagnostics, _
         "Auto: первая попытка UltimateStrain не дала принятую предельную точку", _
         "Auto: переходим к LoadMultiplier по той же lambda-траектории.", _
-        "Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier."
+        "Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier.", firstSearchExecuted
 
     Set ExecuteAutoCapacityLoadMultiplierFallback = request.Problem.BuildResult(request, False)
 End Function

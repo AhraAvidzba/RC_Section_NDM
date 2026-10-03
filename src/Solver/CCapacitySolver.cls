@@ -49,6 +49,7 @@ Private mMyUltimate As Double ' Предельный My, если My входи�
 Private mSafetyFactor As Double ' Коэффициент запаса по capacity; сейчас совпадает с lambdaUltimate.
 Private mUtilization As Double ' Использование несущей способности: 1 / lambdaUltimate.
 Private mIterations As Long ' Число внешних итераций поиска несущей способности.
+Private mSearchExecuted As Boolean ' Начата численная попытка текущего Search; ранняя валидация не считается попыткой.
 Private mRetryCount As Long ' Число повторов после численных отказов внутреннего решателя.
 Private mLastSolver As CSectionSolver ' Последний внутренний расчет равновесия, успешный или диагностический.
 Private mLastAcceptableSolver As CSectionSolver ' Последнее состояние, которое еще не вышло за физический предел.
@@ -263,12 +264,15 @@ Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
     Dim firstStopReason As String
     Dim firstLimitState As String
     Dim firstDiagnostics As String
+    Dim firstSearchExecuted As Boolean ' Первая попытка остается выполненной даже при раннем отказе резервного метода.
     firstStopReason = mStopReason
     firstLimitState = mLimitState
     firstDiagnostics = mDiagnosticLog
+    firstSearchExecuted = mSearchExecuted
 
     SolveByLoadPathMultiplier section, concreteMaterial, steelMaterial, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathRetainedLimit
+    mSearchExecuted = mSearchExecuted Or firstSearchExecuted
 
     If mDiagnosticsEnabled Then
         mDiagnosticLog = "Auto: первая попытка UltimateStrain не дала принятую предельную точку; статус=" & _
@@ -668,6 +672,7 @@ Public Function LimitSearchEvaluateCapacityLoadMultiplier(ByVal section As CSect
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByRef functionValue As Double, ByRef probeState As String) As Boolean
+    mSearchExecuted = True
     Dim nValue As Double
     Dim mxValue As Double
     Dim myValue As Double
@@ -845,6 +850,9 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    ' Общий Newton проверил настройки; отказ при подготовке плоскости тоже
+    ' относится к реально начатой численной попытке, а не к раннему пропуску.
+    mSearchExecuted = True
     If Not startSolver Is Nothing Then
         eps0 = startSolver.Epsilon0
         kx = startSolver.KappaX
@@ -1712,6 +1720,7 @@ Private Sub ClearResult()
     mSafetyFactor = 0#
     mUtilization = 0#
     mIterations = 0
+    mSearchExecuted = False
     mRetryCount = 0
     mMomentEquilibriumResidual = 0#
     mCriticalStrain = 0#
@@ -1791,13 +1800,20 @@ Public Property Get SearchBoundReached() As Boolean
     SearchBoundReached = mSearchBoundReached
 End Property
 
+' Отдает факт запуска независимо от успеха, числа завершенных итераций
+' и наличия точки. BuildSnapshot сохраняет его без анализа диагностического текста.
+Public Property Get SearchExecuted() As Boolean
+    SearchExecuted = mSearchExecuted
+End Property
+
 ' Объединяет диагностику неудачной первой ветки с последующим fallback-расчетом
 ' LoadMultiplier. Search-слой сам выбирает порядок попыток, но только
 ' CCapacitySolver имеет право менять свой внутренний журнал и StopReason.
 Public Sub LimitSearchMergeCapacityFallback(ByVal firstLimitState As String, _
         ByVal firstStopReason As String, ByVal firstDiagnostics As String, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
-        ByVal successMessage As String)
+        ByVal successMessage As String, Optional ByVal firstSearchExecuted As Boolean = False)
+    mSearchExecuted = mSearchExecuted Or firstSearchExecuted
     If mDiagnosticsEnabled Then
         Dim mergedDiagnostics As String
         mergedDiagnostics = firstAttemptMessage & "; статус=" & firstLimitState & _

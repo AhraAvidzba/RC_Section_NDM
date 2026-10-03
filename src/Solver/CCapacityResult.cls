@@ -256,15 +256,15 @@ End Property
 ' Batch-слой только выводит эту строку в отчет и не повторяет domain-логику.
 Public Function EarlyStopReport(ByVal loadPath As CLoadPathDescriptor) As String
     If loadPath Is Nothing Then
-        EarlyStopReport = "Capacity остановлен: LoadPath не подготовлен."
+        EarlyStopReport = "Поиск несущей способности остановлен: путь нагрузки не подготовлен."
     ElseIf Not loadPath.Valid Then
-        EarlyStopReport = "Capacity остановлен: неизвестное значение LoadPath."
+        EarlyStopReport = "Поиск несущей способности остановлен: неизвестное значение LoadPath."
     ElseIf Not loadPath.HasPath Then
-        EarlyStopReport = "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
+        EarlyStopReport = "Поиск несущей способности не требуется: в сочетании нет ни момента, ни продольной силы."
     ElseIf Not loadPath.HasScaledLoad Then
-        EarlyStopReport = "Capacity остановлен: выбранная lambda-траектория не содержит ненулевой масштабируемой нагрузки."
+        EarlyStopReport = "Поиск несущей способности остановлен: выбранный путь не содержит ненулевой масштабируемой нагрузки."
     Else
-        EarlyStopReport = "Capacity остановлен: " & mLimitState
+        EarlyStopReport = "Поиск несущей способности остановлен до численных проб: " & mResultMeta.ResultComment
     End If
 End Function
 

@@ -52,6 +52,7 @@ Public Function RunCrackWidthTests() As String
     TestAudit02IndependentFormation stats
     TestAudit02PsiSignedInputsAndFallbackModes stats
     TestAudit03FormationTypedFailures stats
+    TestAudit03FormationSearchLifecycle stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -1270,6 +1271,106 @@ Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
             AppendLine stats, "COMMENT: " & prefix & "; " & result.ResultMeta.ResultComment
         Next scenario
     Next path
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет факт численного Search отдельно от аналитического
+' Ncrc и получения Pre/PostState. Повторные вызовы одного calculator-а не
+' должны переносить флаг выполнения или найденную точку между сочетаниями.
+Public Function RunAudit03FormationLifecycle() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestAudit03FormationSearchLifecycle stats
+    AppendLine stats, "TOTAL_AUDIT03_FORMATION_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03FormationLifecycle = stats.Report
+    Exit Function
+Failed:
+    RunAudit03FormationLifecycle = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: реальные нагрузки охватывают ранний выход, аналитическую точку
+' с/без состояний, численный поиск и ошибочный фиксированный путь до проб.
+' Невалидный метод solver-а отдельно доказывает попытку поиска без успеха.
+Private Sub TestAudit03FormationSearchLifecycle(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel, setupSolver As CSectionSolver
+    Set setupSolver = SolveServiceState(section, 0#, 0#, 0#)
+    Dim provider As CMaterialModelProvider, load As CSectionLoadState
+    Set provider = TestMaterialProvider()
+    Set load = New CSectionLoadState
+    Dim calculator As CCrackFormationCalculator
+    Set calculator = New CCrackFormationCalculator
+    calculator.SolverLoadSteps = 8
+    calculator.SolverMaxIterations = 100
+    calculator.SolverToleranceN = 5#
+    calculator.SolverToleranceMx = 5000#
+    calculator.SolverToleranceMy = 5000#
+    Dim strategy As Variant, scenario As Long, nValue As Double, mxValue As Double
+    Dim result As CCrackFormationResult, search As CLimitSearchResult, retained As CLimitSearchResult
+    For Each strategy In Array("Auto", "UltimateStrain", "LoadMultiplier")
+        calculator.CrackFormationSolutionStrategy = CStr(strategy)
+        For scenario = 0 To 5
+            calculator.CrackFormationPath = "Auto"
+            calculator.SolverMethod = "Newton"
+            nValue = 0#: mxValue = 0#
+            Select Case scenario
+                Case 1: nValue = 1000#
+                Case 2: nValue = 250000#
+                Case 3: nValue = -20000#: mxValue = -15000000#
+                Case 4
+                    nValue = -20000#: mxValue = -15000000#
+                    calculator.CrackFormationPath = "lambda*My"
+                Case 5
+                    nValue = -20000#: mxValue = -15000000#
+                    calculator.SolverMethod = "Invalid"
+            End Select
+            load.Initialize nValue, mxValue, 0#, 0#, 0#
+            Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
+                TestCrackInitiationSpec(), nValue, mxValue, 0#, load, 0#, 0#)
+            Set search = result.SearchResult
+            Dim prefix As String, expectedExecuted As Boolean
+            prefix = "audit03.formation.lifecycle." & CStr(strategy) & "." & CStr(scenario)
+            expectedExecuted = (scenario = 3 Or scenario = 5)
+            AssertTrue stats, prefix & ".searchExists", Not search Is Nothing
+            If Not search Is Nothing Then
+                AssertTrue stats, prefix & ".searchExecuted", search.SearchExecuted = expectedExecuted
+                AssertTrue stats, prefix & ".cloneFlag", search.Clone.SearchExecuted = expectedExecuted
+                AssertTrue stats, prefix & ".metaSnapshot", search.Meta.Calculated = result.ResultMeta.Calculated
+                If scenario = 3 Then Set retained = search
+            End If
+            If scenario = 0 Or scenario = 4 Then
+                AssertTrue stats, prefix & ".notCalculated", Not result.ResultMeta.Calculated
+                AssertTrue stats, prefix & ".noSolver", result.SolverCallCount = 0
+                AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+                AssertTrue stats, prefix & ".noPre", result.PreCrackState Is Nothing
+                AssertTrue stats, prefix & ".noPost", result.PostCrackState Is Nothing
+            ElseIf scenario = 1 Then
+                AssertTrue stats, prefix & ".analyticalCalculated", result.ResultMeta.Calculated
+                AssertTrue stats, prefix & ".analyticalNoSolver", result.SolverCallCount = 0
+                AssertTrue stats, prefix & ".thresholdBeyondLoad", result.LambdaCrc > 1#
+            ElseIf scenario = 2 Then
+                AssertTrue stats, prefix & ".analyticalCalculated", result.ResultMeta.Calculated
+                AssertTrue stats, prefix & ".namedSolves", result.SolverCallCount > 0
+                AssertTrue stats, prefix & ".preState", Not result.PreCrackState Is Nothing
+                AssertTrue stats, prefix & ".postState", Not result.PostCrackState Is Nothing
+            ElseIf scenario = 3 Then
+                AssertTrue stats, prefix & ".numericCalculated", result.ResultMeta.Calculated
+                AssertTrue stats, prefix & ".numericPoint", result.HasLimitPoint
+            ElseIf scenario = 5 Then
+                AssertTrue stats, prefix & ".typedConfiguration", result.ResultMeta.InternalStatus = rsInvalidConfiguration
+                AssertTrue stats, prefix & ".failedAttempt", result.SolverCallCount > 0
+                AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+            End If
+            If scenario >= 4 Then AssertTrue stats, prefix & ".priorSnapshot", retained.SearchExecuted And retained.HasLimitPoint
+            AppendLine stats, "FORMATION_LIFECYCLE: " & prefix & "; SearchExecuted=" & CStr(search.SearchExecuted) & _
+                "; Calculated=" & CStr(result.ResultMeta.Calculated) & "; solves=" & CStr(result.SolverCallCount) & _
+                "; comment=" & result.ResultMeta.ResultComment
+        Next scenario
+        ' Нулевой повтор после отказа дополнительно проверяет reset между LC.
+        calculator.SolverMethod = "Newton": calculator.CrackFormationPath = "Auto"
+        load.Initialize 0#, 0#, 0#, 0#, 0#
+        Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
+            TestCrackInitiationSpec(), 0#, 0#, 0#, load, 0#, 0#)
+        AssertTrue stats, "audit03.formation.lifecycle." & CStr(strategy) & ".finalReset", Not result.SearchResult.SearchExecuted
+    Next strategy
 End Sub
 
 ' ДЛЯ ТЕСТОВ: ищет воспроизводимые случаи неположительного sigma_s,crc

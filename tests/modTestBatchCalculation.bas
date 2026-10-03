@@ -15,6 +15,7 @@ End Type
 
 Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутренних Н*мм.
 Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
+Private mAudit03ResourceTrace As Boolean ' ДЛЯ ТЕСТОВ: отдельный журнал размеров Excel, не влияющий на расчет и assertions.
 
 ' Выполняет пакетные регрессии профилей, путей, typed results, reuse и вывода.
 ' Общий отчет сохраняет отдельные причины failure и количество assertions.
@@ -3705,6 +3706,10 @@ Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestS
 
     Dim app As Object
     Set app = ThisWorkbook.Application
+    Dim originalSheet As Object ' Временный лист не должен менять рабочий лист следующих тестов.
+    Set originalSheet = app.ActiveSheet
+    Dim originalSheetCount As Long
+    originalSheetCount = ThisWorkbook.Worksheets.Count
     Dim oldDisplayAlerts As Boolean
     oldDisplayAlerts = app.DisplayAlerts
     app.DisplayAlerts = False
@@ -3730,9 +3735,18 @@ Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestS
 CleanUp:
     On Error Resume Next
     ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo = originalRefersTo
+    ' Возвращаем исходный лист до удаления временного, чтобы Excel не выбирал
+    ' автоматически последний лист Results с уже отформатированными таблицами.
+    If Not originalSheet Is Nothing Then originalSheet.Activate
     If Not tempSheet Is Nothing Then tempSheet.Delete
     app.DisplayAlerts = oldDisplayAlerts
     On Error GoTo 0
+    If Not app Is Nothing Then
+        AssertTrue stats, "batch.writer.availableRows.activeSheetRestored", app.ActiveSheet Is originalSheet
+        AssertEquals stats, "batch.writer.availableRows.nameRestored", ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo, originalRefersTo
+        AssertTrue stats, "batch.writer.availableRows.sheetCountRestored", ThisWorkbook.Worksheets.Count = originalSheetCount
+        AssertTrue stats, "batch.writer.availableRows.alertsRestored", app.DisplayAlerts = oldDisplayAlerts
+    End If
     Exit Sub
 
 Failed:
@@ -5289,6 +5303,8 @@ End Sub
 ' Дополняет протокол; числовые поля ниже форматируются одинаково при любой локали.
 Private Sub AppendLine(ByRef stats As TBatchTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
+    If mAudit03ResourceTrace And Left$(text, 5) = "RUN: " Then _
+        Audit03TraceExcelContext text & "; reportChars=" & CStr(Len(stats.Report))
 End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
@@ -8024,4 +8040,253 @@ Publish:
     Audit03CheckResultComments stats, batch, 1
     AppendLine stats, "INPUT_MESSAGE: " & key & "|" & batch.ResultAt(1).OverallMeta.ResultComment
     Set Audit03CrackConfigInvalidBatch = batch
+End Function
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Изолирует настройки Excel.Application при диагностике роста памяти в batch.
+' Выполняет неизменный полный набор assertions; режим не подменяет результаты
+' и не является заменой штатного full gate. Исходные настройки восстанавливаются.
+Public Function RunAudit03BatchApplicationDiagnostics(ByVal mode As String) As String
+    Dim oldEvents As Boolean, oldScreen As Boolean, oldCalculation As Variant
+    Dim oldTrace As Boolean
+    Dim guard As CExcelAppStateGuard, report As String, failureNumber As Long, failureText As String
+    oldEvents = Application.EnableEvents
+    oldScreen = Application.ScreenUpdating
+    oldCalculation = Application.Calculation
+    oldTrace = mAudit03ResourceTrace
+    On Error GoTo FailedRun
+    mAudit03ResourceTrace = True
+    Audit03TraceExcelContext "BEGIN: " & mode, True
+    Select Case mode
+        Case "Observe"
+        Case "EventsOff": Application.EnableEvents = False
+        Case "ScreenOff": Application.ScreenUpdating = False
+        Case "ManualCalculation": Application.Calculation = xlCalculationManual
+        Case "Guard"
+            Set guard = New CExcelAppStateGuard
+            guard.Enter Application
+        Case Else
+            Err.Raise vbObjectError + 4498, "RunAudit03BatchApplicationDiagnostics", "Неизвестный диагностический режим Excel.Application."
+    End Select
+    report = RunBatchCalculationTests()
+    Audit03SaveMatrixProgress "APPLICATION_DIAGNOSTIC_COMPLETED: " & mode & vbCrLf & report
+    GoTo Restore
+FailedRun:
+    failureNumber = Err.Number
+    failureText = Err.Description
+Restore:
+    On Error GoTo 0
+    mAudit03ResourceTrace = oldTrace
+    If Not guard Is Nothing Then guard.Restore
+    Application.Calculation = oldCalculation
+    Application.EnableEvents = oldEvents
+    Application.ScreenUpdating = oldScreen
+    If failureNumber <> 0 Then Err.Raise failureNumber, "RunAudit03BatchApplicationDiagnostics", failureText
+    If Application.EnableEvents <> oldEvents Or Application.Calculation <> oldCalculation Or _
+            Application.ScreenUpdating <> oldScreen Then
+        Err.Raise vbObjectError + 4497, "RunAudit03BatchApplicationDiagnostics", "Не удалось восстановить настройки Excel.Application после диагностики."
+    End If
+    RunAudit03BatchApplicationDiagnostics = "APPLICATION_DIAGNOSTIC: mode=" & mode & _
+        "; eventsRestored=True; calculationRestored=True; screenRestored=True" & vbCrLf & report
+End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет границы таблиц и число форматов без чтения значений
+' большой UsedRange. Журнал помогает локализовать накопление объектов Excel;
+' он не участвует в выборе статуса и не входит в resultComment.
+Private Sub Audit03TraceExcelContext(ByVal stage As String, Optional ByVal resetLog As Boolean = False)
+    Dim fileNumber As Integer, sheet As Object, name As Variant
+    fileNumber = FreeFile
+    If resetLog Then
+        Open ThisWorkbook.Path & Application.PathSeparator & "Audit03_Resource_Progress.txt" For Output As #fileNumber
+    Else
+        Open ThisWorkbook.Path & Application.PathSeparator & "Audit03_Resource_Progress.txt" For Append As #fileNumber
+    End If
+    Print #fileNumber, Format$(Now, "yyyy-mm-dd hh:nn:ss") & "|" & stage
+    Print #fileNumber, "styles=" & CStr(ThisWorkbook.Styles.Count)
+    Print #fileNumber, "activeSheet=" & Application.ActiveSheet.Name & "; screenUpdating=" & CStr(Application.ScreenUpdating)
+    For Each name In Array("rngLoadCombinations", "rngBatchSummary", "rngStrengthSummaryAnchor", _
+            "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+        Print #fileNumber, CStr(name) & "=" & ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Address(External:=True)
+    Next name
+    Set sheet = ThisWorkbook.Worksheets.Item("Results")
+    Print #fileNumber, "used=" & sheet.UsedRange.Address & "; conditionalFormats=" & CStr(sheet.UsedRange.FormatConditions.Count)
+    Dim data As Variant, row As Long, column As Long, value As Variant
+    For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngCalculationProfiles")
+        data = ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Value2
+        For row = 1 To UBound(data, 1)
+            For column = 1 To UBound(data, 2)
+                value = data(row, column)
+                If IsError(value) Then
+                    Print #fileNumber, CStr(name) & "[" & CStr(row) & "," & CStr(column) & "]=CVErr"
+                ElseIf IsNull(value) Then
+                    Print #fileNumber, CStr(name) & "[" & CStr(row) & "," & CStr(column) & "]=Null"
+                Else
+                    Print #fileNumber, CStr(name) & "[" & CStr(row) & "," & CStr(column) & "]=" & CStr(value)
+                End If
+            Next column
+        Next row
+    Next name
+    Close #fileNumber
+End Sub
+
+' ДЛЯ ТЕСТОВ: многократно пишет один готовый batch, не запускает Search/State
+' в цикле и не меняет ожидаемые инженерные результаты. Это отдельный
+' диагностический маршрут writer-ов, не замена штатным regression gates.
+Public Function RunAudit03RepeatedWriterDiagnostics() As String
+    Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter, i As Long
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "RESOURCE_WRITER", 200000#, 0#, 0#, "PR2", "Диагностика повторной записи", "Auto"
+    batch.Execute
+    Set writer = New CBatchResultWriter
+    Audit03TraceExcelContext "BEGIN: repeated writer", True
+    For i = 1 To 75
+        Audit03TraceExcelContext "BEFORE: writer " & CStr(i)
+        writer.WriteSummary ThisWorkbook, batch
+        Audit03TraceExcelContext "AFTER: writer " & CStr(i)
+    Next i
+    RunAudit03RepeatedWriterDiagnostics = "WRITER_DIAGNOSTIC: writes=75; solves=" & CStr(batch.SolverCallCount)
+End Function
+
+' ДЛЯ ТЕСТОВ: воспроизводит On/Off pair перед Search Config отдельно от
+' остальных batch-тестов. Это сохраняет исходные assertions и дает сопоставимый
+' снимок настроек для поиска межтестовой мутации, а не новый инженерный oracle.
+Public Function RunAudit03PhysicalPairResourceDiagnostics(Optional ByVal prefixLength As Long = 0) As String
+    Dim stats As TBatchTestStats, passed As Long, failed As Long, report As String
+    If prefixLength < 0 Then Err.Raise vbObjectError + 4495, "RunAudit03PhysicalPairResourceDiagnostics", "Размер тестового префикса не может быть отрицательным."
+    stats.Report = String$(prefixLength, "x")
+    Audit03TraceExcelContext "BEGIN: isolated physical pair", True
+    TestAudit02OnOffPhysicalResults stats
+    Audit03TraceExcelContext "AFTER: isolated physical pair"
+    report = RunAudit03SearchConfigTests(passed, failed)
+    stats.Report = stats.Report & report
+    Audit03TraceExcelContext "AFTER: Search Config"
+    RunAudit03PhysicalPairResourceDiagnostics = Mid$(stats.Report, prefixLength + 1) & "TOTAL_PAIR_RESOURCE: passed=" & _
+        CStr(stats.Passed + passed) & "; failed=" & CStr(stats.Failed + failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: изолирует накопление строк в существующем stats без решателей,
+' State, writer-ов и изменений Config. Начальный размер равен порядку отчета
+' перед On/Off pair; возвращается только счет, а не искусственный префикс.
+Public Function RunAudit03BatchReportGrowthDiagnostics() As String
+    Dim stats As TBatchTestStats, i As Long
+    stats.Report = String$(500000, "x")
+    Audit03TraceExcelContext "BEGIN: report-only growth", True
+    For i = 1 To 3000
+        AppendLine stats, "RESOURCE_REPORT: " & CStr(i)
+    Next i
+    Audit03TraceExcelContext "END: report-only growth; chars=" & CStr(Len(stats.Report))
+    RunAudit03BatchReportGrowthDiagnostics = "REPORT_GROWTH_DIAGNOSTIC: lines=3000; chars=" & CStr(Len(stats.Report))
+End Function
+
+' ДЛЯ ТЕСТОВ: воспроизводит заключительную группу до On/Off pair в исходном
+' порядке. Набор предназначен для локализации межтестового эффекта; не меняет
+' assertions и не считается заменой полного batch-набора.
+Public Function RunAudit03LateBatchResourceDiagnostics(Optional ByVal groupName As String = "All", _
+        Optional ByVal applicationMode As String = "Observe") As String
+    Dim stats As TBatchTestStats, passed As Long, failed As Long, report As String
+    Dim oldStability As String, oldTrace As Boolean, oldScreenUpdating As Boolean
+    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldTrace = mAudit03ResourceTrace
+    oldScreenUpdating = Application.ScreenUpdating
+    On Error GoTo FailedRun
+    Select Case applicationMode
+        Case "Observe"
+        Case "ScreenOff": Application.ScreenUpdating = False
+        Case Else: Err.Raise vbObjectError + 4493, "RunAudit03LateBatchResourceDiagnostics", "Неизвестный режим экранного обновления диагностического набора."
+    End Select
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    mAudit03ResourceTrace = True
+    Audit03TraceExcelContext "BEGIN: late batch group " & groupName & "; application=" & applicationMode, True
+    If groupName <> "All" And groupName <> "Writers" And groupName <> "Meta" And groupName <> "Repository" And groupName <> "None" And _
+        groupName <> "Summary" And groupName <> "Gaps" And groupName <> "Rows" And groupName <> "Settings" And groupName <> "Invalid" And _
+        groupName <> "Summaries" And groupName <> "OtherWriters" And groupName <> "SummaryRows" And groupName <> "WritersNoRows" Then _
+        Err.Raise vbObjectError + 4494, "RunAudit03LateBatchResourceDiagnostics", "Неизвестная группа диагностического набора."
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Summary" Or groupName = "Summaries" Or _
+        groupName = "SummaryRows" Or groupName = "WritersNoRows" Then TestBatchSummaryWriter stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Gaps" Or groupName = "Summaries" Or _
+        groupName = "WritersNoRows" Then TestBatchSummaryPreservesSourceRowGaps stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Rows" Or groupName = "OtherWriters" Or _
+        groupName = "SummaryRows" Then TestBatchSummaryRowsUseAvailableLoadRange stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Settings" Or groupName = "OtherWriters" Or _
+        groupName = "WritersNoRows" Then TestBatchCapacityUsesSystemSettings stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Invalid" Or groupName = "OtherWriters" Or _
+        groupName = "WritersNoRows" Then TestInvalidModeSettingsAreNotFallbacks stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Summary" Or groupName = "Gaps" Or groupName = "Rows" Or _
+        groupName = "Settings" Or groupName = "Invalid" Or groupName = "Summaries" Or groupName = "OtherWriters" Or _
+        groupName = "SummaryRows" Or groupName = "WritersNoRows" Then
+        Audit03TraceExcelContext "AFTER: Writers group"
+    End If
+    If groupName = "All" Or groupName = "Meta" Then
+        TestResultMetaStatusDictionary stats
+        TestResultMetaAggregateSkipsNotApplicable stats
+        TestCombinationResultTreeDrivesDisplayFields stats
+        TestCrackAggregateIncludesCurrentStateFailure stats
+        TestFormulaChecksDoNotCreateNumFail stats
+        TestSectionStateResultStoresEquilibriumData stats
+        Audit03TraceExcelContext "AFTER: Meta group"
+    End If
+    If groupName = "All" Or groupName = "Repository" Then
+        TestStateRequestEquivalenceIgnoresSolveOptions stats
+        TestStateRepositoryReusesOnlyConvergedStates stats
+        TestPrePostCrackStateNames stats
+        TestAudit02CurrentCrackedStateCacheHitCalculatesWidth stats
+        TestAudit02CanonicalResultsAndReset stats
+        TestAudit02RepositoryContextAndRetry stats
+        Audit03TraceExcelContext "AFTER: Repository group"
+    End If
+    Audit03TraceExcelContext "BEFORE: late group physical pair"
+    TestAudit02OnOffPhysicalResults stats
+    Audit03TraceExcelContext "AFTER: late group physical pair"
+    report = RunAudit03SearchConfigTests(passed, failed)
+    stats.Report = stats.Report & report
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: lateBatchResource.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo 0
+    Application.ScreenUpdating = oldScreenUpdating
+    mAudit03ResourceTrace = oldTrace
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    RunAudit03LateBatchResourceDiagnostics = stats.Report & "TOTAL_LATE_RESOURCE: passed=" & _
+        CStr(stats.Passed + passed) & "; failed=" & CStr(stats.Failed + failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: сравнивает два способа вызова одного Search Config-набора.
+' Все assertions, Config и расчеты одинаковы; различается только накопление
+' возвращенного текстового отчета в вызывающем VBA-кадре.
+Public Function RunAudit03SearchExpressionDiagnostics(ByVal mode As String) As String
+    Dim stats As TBatchTestStats, passed As Long, failed As Long, searchReport As String
+    stats.Report = "SEARCH_EXPRESSION_DIAGNOSTIC: " & mode & vbCrLf
+    Audit03TraceExcelContext "BEGIN: Search expression " & mode, True
+    Select Case mode
+        Case "Concatenated"
+            stats.Report = stats.Report & RunAudit03SearchConfigTests(passed, failed)
+        Case "Separated"
+            searchReport = RunAudit03SearchConfigTests(passed, failed)
+            stats.Report = stats.Report & searchReport
+        Case Else
+            Err.Raise vbObjectError + 4496, "RunAudit03SearchExpressionDiagnostics", "Неизвестный режим накопления отчета."
+    End Select
+    Audit03TraceExcelContext "END: Search expression " & mode
+    RunAudit03SearchExpressionDiagnostics = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: временное переназначение LC не должно оставлять другой лист
+' активным, лишний лист, измененное имя диапазона или DisplayAlerts.
+' Проверяет реальный существующий setup и его cleanup без численного solve.
+Public Function RunAudit03TemporaryLoadRangeIsolation() As String
+    Dim stats As TBatchTestStats, originalSheet As Object, originalName As String
+    Dim sheetCount As Long, originalAlerts As Boolean
+    Set originalSheet = Application.ActiveSheet
+    originalName = ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo
+    sheetCount = ThisWorkbook.Worksheets.Count
+    originalAlerts = Application.DisplayAlerts
+    TestBatchSummaryRowsUseAvailableLoadRange stats
+    AssertTrue stats, "audit03.temporaryLoadRange.activeSheetRestored", Application.ActiveSheet Is originalSheet
+    AssertEquals stats, "audit03.temporaryLoadRange.nameRestored", ThisWorkbook.Names.Item("rngLoadCombinations").RefersTo, originalName
+    AssertTrue stats, "audit03.temporaryLoadRange.sheetCountRestored", ThisWorkbook.Worksheets.Count = sheetCount
+    AssertTrue stats, "audit03.temporaryLoadRange.alertsRestored", Application.DisplayAlerts = originalAlerts
+    RunAudit03TemporaryLoadRangeIsolation = stats.Report & "TOTAL_TEMPORARY_RANGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function

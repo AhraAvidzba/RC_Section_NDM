@@ -376,7 +376,8 @@ End Sub
 ' Этот callback общего coordinator не дублирует уже сохраненные сообщения.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
-        ByVal transitionMessage As String, ByVal successMessage As String)
+        ByVal transitionMessage As String, ByVal successMessage As String, _
+        Optional ByVal firstSearchExecuted As Boolean = False)
 End Sub
 
 ' Форматирует lambda для диагностического журнала с точкой как разделителем.

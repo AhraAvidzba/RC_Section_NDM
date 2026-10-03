@@ -20,7 +20,7 @@ Option Explicit
 
 Private mMeta As CResultMeta ' Машинный исход, подготовленный владельцем задачи.
 Private mRequestedStrategy As String ' Запрошенная численная стратегия.
-Private mActualMethod As String ' Фактически выполненный численный метод.
+Private mActualMethod As String ' Способ определения точки: численный метод либо аналитический Ncrc.
 Private mHasLimitPoint As Boolean ' Найдена точка, а не только завершена процедура.
 Private mPointState As CSectionStateResult ' Единственный снимок НДС найденной точки.
 Private mSearchExecuted As Boolean ' Численный поиск действительно запускался.
@@ -41,13 +41,15 @@ End Sub
 
 ' Принимает готовый исход задачи и численный снимок без живых калькуляторов.
 ' Отсутствие найденной точки очищает ее числа и State при повторном заполнении.
+' Факт запуска передается явно владельцем: пропущенный аргумент не выдумывает
+' выполненный поиск, например для аналитического Ncrc или ранней валидации.
 Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As String, _
         ByVal actualMethod As String, ByVal hasLimitPoint As Boolean, _
         ByVal lambdaValue As Double, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal pointState As CSectionStateResult, _
         ByVal limitState As String, ByVal diagnosticLog As String, _
         Optional ByVal finalSolverDiagnosticLog As String = vbNullString, _
-        Optional ByVal searchExecuted As Boolean = True)
+        Optional ByVal searchExecuted As Boolean = False)
     ResetPoint
     mRequestedStrategy = requestedStrategy
     mActualMethod = actualMethod

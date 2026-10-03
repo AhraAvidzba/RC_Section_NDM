@@ -1,0 +1,30 @@
+COMMAND: powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.ps1 -WorkbookPath docs/regression/Audit03/RC_Section_NDM_search_lifecycle_v130.xlsm
+EXIT_CODE: 0
+
+Check                                   Passed Details                                                                 
+-----                                   ------ -------                                                                 
+Sheets Config/Справка/Расчет/Results      True Config, Справка, Расчет, Results                                        
+Required named ranges                     True Missing:                                                                
+Results ranges layout                     True batch=Results!R1C1:1 cols; strengthAnchor=R49C1; crackAnchor=R85C1; s...
+Stability duration loads range            True Address=$P$37:$S$67                                                     
+SP35 table 7.21 range                     True Address=$AI$60:$AP$78; Rows=19; Columns=8                               
+No duplicate names                        True Duplicates:                                                             
+No obsolete named ranges                  True Present:                                                                
+Print area                                True PageSetup=; Xml=Расчет!$A$1:$AJ$60                                      
+A4 portrait                               True PaperSize=9; Orientation=1                                              
+Print scale for one-page blocks           True Zoom=80; HBreaks=0                                                      
+Vertical page breaks                      True Columns: 19                                                             
+Load combinations table on Config O3      True Sheet=Config; Row=3; Column=15                                          
+Config settings table headers             True Параметр | Значение | Ед. | Комментарий | Справка                       
+No duplicate Config keys                  True Duplicates:                                                             
+No obsolete Config settings               True Present:                                                                
+Solver.Method default                     True Value=Newton                                                            
+Stability.Code default                    True Value=SP35                                                              
+Solver.Method validation list             True Values=Newton, Secant                                                   
+Concrete material parameters              True Rows=8; Columns=6                                                       
+Steel material parameters                 True Rows=6; Columns=6                                                       
+Calculation profiles                      True Rows=32; Columns=7                                                      
+Config right-side ranges vertical stack   True rngUnitSettings=R3C8:R9; rngSignConventionSettings=R12C8:R15; rngStee...
+Load combinations table headers           True CombinationID | N, tf | Mx, tf*m | My, tf*m | ProfileId | LoadPath | ...
+Formulas allowed on workbook sheets       True Excel formulas are allowed and preferred for transparent user-level c...
+Runtime Excel IO uses bulk ranges         True Cells.Item matches:

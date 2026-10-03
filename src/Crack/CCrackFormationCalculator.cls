@@ -38,10 +38,11 @@ Private mStopReason As String ' Короткое пояснение резуль
 Private mDiagnosticLog As String ' Диагностика пути, критерия и состояний трещинообразования.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mSolverCallCount As Long ' Сколько внутренних CSectionSolver/CStateSolutionRunner-вызовов выполнил расчет трещин.
+Private mSearchExecuted As Boolean ' Хотя бы одна численная попытка поиска точки в текущем LC; аналитический Ncrc не является Search.
 Private mFormationInternalStatus As EResultInternalStatus ' Машинный статус этапа образования нормальной трещины.
 Private mFormationResultCode As EResultCode ' Машинный код причины результата образования нормальной трещины.
 Private mCrackFormed As Boolean ' True, если по выбранной ветке расчета трещина считается образованной.
-Private mCrackFormationPath As String ' Auto, LambdaMxy, LambdaN или LambdaNMxy: какая часть LC масштабируется при поиске образования трещины.
+Private mCrackFormationPath As String ' Auto либо LambdaMx/My/Mxy/N/NMxy: масштабируемая часть LC общего LoadPath.
 Private mResolvedCrackFormationPath As String ' Фактический путь, который дал принятую точку образования трещины.
 Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска стадии образования трещины.
 Private mFormationSolutionMethod As String ' Фактически выполненный метод; Ncrc для аналитической центральной ветки.
@@ -161,6 +162,7 @@ Private Sub ClearResult()
     mStopReason = vbNullString
     mDiagnosticLog = vbNullString
     mSolverCallCount = 0
+    mSearchExecuted = False
     mFormationInternalStatus = rsUnset
     mFormationResultCode = rcNone
     mCrackFormed = False
@@ -219,7 +221,7 @@ Public Property Get ResultMeta() As CResultMeta
             vbNullString, True, False
     Else
         meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason, _
-            vbNullString, True, (mSolverCallCount > 0 Or mFormationInternalStatus = rsSuccess Or _
+            vbNullString, True, (mSearchExecuted Or mSolverCallCount > 0 Or mFormationInternalStatus = rsSuccess Or _
                 mFormationInternalStatus = rsSuccessWithWarning)
     End If
     Set ResultMeta = meta
@@ -620,6 +622,7 @@ Public Function LimitSearchEvaluateCrackFormationLoadMultiplier(ByVal section As
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
     mFormationSolutionMethod = STRATEGY_LOAD_MULTIPLIER
+    mSearchExecuted = True
     Dim probeN As Double
     Dim probeMx As Double
     Dim probeMy As Double
@@ -775,6 +778,9 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    ' Общий Newton уже проверил свои настройки; подготовка старта является
+    ' частью реально начатой попытки, даже если ее арифметика завершится отказом.
+    mSearchExecuted = True
     Dim guessN As Double
     Dim guessMx As Double
     Dim guessMy As Double
@@ -974,6 +980,7 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
     ' не сработал. Это сохраняет производительность и одновременно помогает
     ' сложным сочетаниям, где уже найденная плоскость НДС дает лучший initial.
     Dim formationStart As CSectionSolver
+    mSearchExecuted = True
     Set formationStart = SolveState(section, concreteMaterial, steelMaterial, Nothing, targetN, targetMx, targetMy)
     If formationStart Is Nothing Then
         SetFormationResult rsInternalError, rcInternalError, "Не получен рабочий решатель стартового состояния трещинообразования."
@@ -1080,6 +1087,7 @@ Private Function TryMarkConstantPartFormationFallback(ByVal section As CSectionM
     End If
 
     Dim probeSolver As CSectionSolver
+    mSearchExecuted = True
     Set probeSolver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
         probeN, probeMx, probeMy)
     If probeSolver Is Nothing Then Exit Function
@@ -2045,6 +2053,7 @@ Private Sub ClearFormationAttemptState()
     mFormationLoadMy = 0#
     mFormationPathFallbackPsi1 = False
     mResolvedCrackFormationPath = vbNullString
+    mFormationSolutionMethod = vbNullString
 End Sub
 
 
@@ -2083,7 +2092,8 @@ End Function
 ' --------------------------------------------------------------------------
 ' Сохраняет машинный исход и подтвержденное НДС в общий численный результат.
 ' Search-result не трактует отсутствие трещины при текущем LC и не читает
-' рабочий Formation-контекст после создания этого снимка.
+' рабочий Formation-контекст после создания этого снимка. Факт Search хранится
+' отдельно: аналитический Ncrc может получить Pre/PostState без lambda-поиска.
 Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = ResultMeta
@@ -2092,7 +2102,8 @@ Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimit
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, requestedStrategy, mFormationSolutionMethod, HasLimitPoint, _
-        mLambdaCrc, nValue, mxValue, myValue, mPreCrackState, vbNullString, mDiagnosticLog
+        mLambdaCrc, nValue, mxValue, myValue, mPreCrackState, vbNullString, mDiagnosticLog, _
+        vbNullString, mSearchExecuted
     Set BuildSearchSnapshot = result
 End Function
 

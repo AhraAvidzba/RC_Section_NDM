@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_universal_path_v112.xlsm
-Date: 2026-10-03 02:15:15
+Workbook: RC_Section_NDM_search_lifecycle_v130.xlsm
+Date: 2026-10-03 06:02:59
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -22,7 +22,7 @@ Private Sub Workbook_SheetFollowHyperlink(ByVal Sh As Object, ByVal target As Hy
     Set targetCell = helpSheet.range(addressText)
 
     RevealHelpOutlineGroup helpSheet, targetCell.row
-    Application.Goto targetCell, True
+    Application.GoTo targetCell, True
     If Not ActiveWindow Is Nothing Then
         ActiveWindow.ScrollRow = targetCell.row
         ActiveWindow.ScrollColumn = 1
@@ -1979,7 +1979,7 @@ End Function
 ====================================================================================================
 COMPONENT: ILimitSearchProblem
 TYPE: 2
-LINES: 271
+LINES: 274
 ====================================================================================================
 Option Explicit
 
@@ -2247,9 +2247,12 @@ End Sub
 
 ' Объединяет диагностику первой и резервной попыток в результирующем контексте.
 ' Последняя принятая попытка определяет исход; история объясняет переход метода.
+' Факт первой численной попытки сохраняется явно и не восстанавливается
+' по наличию/тексту журнала, который может быть отключен настройкой Diagnostics.
 Public Sub MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
-        ByVal transitionMessage As String, ByVal successMessage As String)
+        ByVal transitionMessage As String, ByVal successMessage As String, _
+        Optional ByVal firstSearchExecuted As Boolean = False)
 End Sub
 
 
@@ -11712,7 +11715,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCapacityLimitSearchProblem
 TYPE: 2
-LINES: 487
+LINES: 491
 ====================================================================================================
 Option Explicit
 
@@ -11995,6 +11998,8 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
         Optional ByVal MaterialSpec As CMaterialModelSpec = Nothing) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = New CResultMeta
+    Dim SearchExecuted As Boolean
+    If Not mCapacity Is Nothing Then SearchExecuted = mCapacity.SearchExecuted
     If mCapacity Is Nothing Then
         meta.SetResult rsInternalError, rcInternalError, rkCapacity, "Не передана задача несущей способности.", vbNullString, True, False
     ElseIf mCapacity.Converged Then
@@ -12003,7 +12008,7 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
         meta.SetResult rsInvalidConfiguration, rcInvalidConfiguration, rkCapacity, mCapacity.stopReason
     ElseIf mCapacity.FailureCode = sfcInternalError Then
         meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.stopReason, _
-            vbNullString, True, (mCapacity.iterations > 0)
+            vbNullString, True, SearchExecuted
     ElseIf mCapacity.SearchBoundReached Then
         meta.SetResult rsNumericalFailure, rcSearchBoundReached, rkCapacity, mCapacity.stopReason
     ElseIf mCapacity.LimitSearchInitialLambdaRejected And _
@@ -12018,7 +12023,8 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
         If mCapacity.FailureCode = sfcSingularTangent Then failureResultCode = rcSingularTangent
         meta.SetResult rsNumericalFailure, failureResultCode, rkCapacity, mCapacity.stopReason
     Else
-        meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.stopReason
+        meta.SetResult rsInternalError, rcInternalError, rkCapacity, mCapacity.stopReason, _
+            vbNullString, True, SearchExecuted
     End If
 
     Dim PointState As CSectionStateResult
@@ -12052,7 +12058,7 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, requestedStrategy, methodName, hasPoint, lambdaValue, _
-        nValue, mxValue, myValue, PointState, criterionName, diagnostics, finalDiagnostic
+        nValue, mxValue, myValue, PointState, criterionName, diagnostics, finalDiagnostic, SearchExecuted
     Set BuildSnapshot = result
 End Function
 
@@ -12187,9 +12193,10 @@ End Sub
 ' Комментарий конечного результата формируется владельцем, не writer-ом.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
-        ByVal transitionMessage As String, ByVal successMessage As String)
+        ByVal transitionMessage As String, ByVal successMessage As String, _
+        Optional ByVal firstSearchExecuted As Boolean = False)
     mCapacity.LimitSearchMergeCapacityFallback firstLimitState, firstStopReason, _
-        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage
+        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage, firstSearchExecuted
 End Sub
 
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
@@ -12456,15 +12463,15 @@ End Property
 ' Batch-слой только выводит эту строку в отчет и не повторяет domain-логику.
 Public Function EarlyStopReport(ByVal loadPath As CLoadPathDescriptor) As String
     If loadPath Is Nothing Then
-        EarlyStopReport = "Capacity остановлен: LoadPath не подготовлен."
+        EarlyStopReport = "Поиск несущей способности остановлен: путь нагрузки не подготовлен."
     ElseIf Not loadPath.Valid Then
-        EarlyStopReport = "Capacity остановлен: неизвестное значение LoadPath."
+        EarlyStopReport = "Поиск несущей способности остановлен: неизвестное значение LoadPath."
     ElseIf Not loadPath.HasPath Then
-        EarlyStopReport = "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
+        EarlyStopReport = "Поиск несущей способности не требуется: в сочетании нет ни момента, ни продольной силы."
     ElseIf Not loadPath.hasScaledLoad Then
-        EarlyStopReport = "Capacity остановлен: выбранная lambda-траектория не содержит ненулевой масштабируемой нагрузки."
+        EarlyStopReport = "Поиск несущей способности остановлен: выбранный путь не содержит ненулевой масштабируемой нагрузки."
     Else
-        EarlyStopReport = "Capacity остановлен: " & mLimitState
+        EarlyStopReport = "Поиск несущей способности остановлен до численных проб: " & mResultMeta.resultComment
     End If
 End Function
 
@@ -12613,7 +12620,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CCapacitySolver
 TYPE: 2
-LINES: 2028
+LINES: 2044
 ====================================================================================================
 Option Explicit
 
@@ -12657,6 +12664,7 @@ Private mMyUltimate As Double ' Предельный My, если My входи�
 Private mSafetyFactor As Double ' Коэффициент запаса по capacity; сейчас совпадает с lambdaUltimate.
 Private mUtilization As Double ' Использование несущей способности: 1 / lambdaUltimate.
 Private mIterations As Long ' Число внешних итераций поиска несущей способности.
+Private mSearchExecuted As Boolean ' Начата численная попытка текущего Search; ранняя валидация не считается попыткой.
 Private mRetryCount As Long ' Число повторов после численных отказов внутреннего решателя.
 Private mLastSolver As CSectionSolver ' Последний внутренний расчет равновесия, успешный или диагностический.
 Private mLastAcceptableSolver As CSectionSolver ' Последнее состояние, которое еще не вышло за физический предел.
@@ -12871,12 +12879,15 @@ Public Sub SolveByAutoLoadPath(ByVal section As CSectionModel, _
     Dim firstStopReason As String
     Dim firstLimitState As String
     Dim firstDiagnostics As String
+    Dim firstSearchExecuted As Boolean ' Первая попытка остается выполненной даже при раннем отказе резервного метода.
     firstStopReason = mStopReason
     firstLimitState = mLimitState
     firstDiagnostics = mDiagnosticLog
+    firstSearchExecuted = mSearchExecuted
 
     SolveByLoadPathMultiplier section, concreteMaterial, steelMaterial, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathRetainedLimit
+    mSearchExecuted = mSearchExecuted Or firstSearchExecuted
 
     If mDiagnosticsEnabled Then
         mDiagnosticLog = "Auto: первая попытка UltimateStrain не дала принятую предельную точку; статус=" & _
@@ -13276,6 +13287,7 @@ Public Function LimitSearchEvaluateCapacityLoadMultiplier(ByVal section As CSect
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByRef functionValue As Double, ByRef probeState As String) As Boolean
+    mSearchExecuted = True
     Dim nValue As Double
     Dim mxValue As Double
     Dim myValue As Double
@@ -13453,6 +13465,9 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    ' Общий Newton проверил настройки; отказ при подготовке плоскости тоже
+    ' относится к реально начатой численной попытке, а не к раннему пропуску.
+    mSearchExecuted = True
     If Not startSolver Is Nothing Then
         eps0 = startSolver.epsilon0
         kx = startSolver.kappaX
@@ -14320,6 +14335,7 @@ Private Sub ClearResult()
     mSafetyFactor = 0#
     mUtilization = 0#
     mIterations = 0
+    mSearchExecuted = False
     mRetryCount = 0
     mMomentEquilibriumResidual = 0#
     mCriticalStrain = 0#
@@ -14399,13 +14415,20 @@ Public Property Get SearchBoundReached() As Boolean
     SearchBoundReached = mSearchBoundReached
 End Property
 
+' Отдает факт запуска независимо от успеха, числа завершенных итераций
+' и наличия точки. BuildSnapshot сохраняет его без анализа диагностического текста.
+Public Property Get SearchExecuted() As Boolean
+    SearchExecuted = mSearchExecuted
+End Property
+
 ' Объединяет диагностику неудачной первой ветки с последующим fallback-расчетом
 ' LoadMultiplier. Search-слой сам выбирает порядок попыток, но только
 ' CCapacitySolver имеет право менять свой внутренний журнал и StopReason.
 Public Sub LimitSearchMergeCapacityFallback(ByVal firstLimitState As String, _
         ByVal firstStopReason As String, ByVal firstDiagnostics As String, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
-        ByVal successMessage As String)
+        ByVal successMessage As String, Optional ByVal firstSearchExecuted As Boolean = False)
+    mSearchExecuted = mSearchExecuted Or firstSearchExecuted
     If mDiagnosticsEnabled Then
         Dim mergedDiagnostics As String
         mergedDiagnostics = firstAttemptMessage & "; статус=" & firstLimitState & _
@@ -14647,7 +14670,7 @@ End Property
 ====================================================================================================
 COMPONENT: CCrackLimitSearchProblem
 TYPE: 2
-LINES: 377
+LINES: 378
 ====================================================================================================
 Option Explicit
 
@@ -15018,7 +15041,8 @@ End Sub
 ' Этот callback общего coordinator не дублирует уже сохраненные сообщения.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
-        ByVal transitionMessage As String, ByVal successMessage As String)
+        ByVal transitionMessage As String, ByVal successMessage As String, _
+        Optional ByVal firstSearchExecuted As Boolean = False)
 End Sub
 
 ' Форматирует lambda для диагностического журнала с точкой как разделителем.
@@ -15030,7 +15054,7 @@ End Function
 ====================================================================================================
 COMPONENT: CLimitSearchCoordinator
 TYPE: 2
-LINES: 281
+LINES: 282
 ====================================================================================================
 Option Explicit
 
@@ -15210,13 +15234,14 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
         Exit Function
     End If
 
-    Set ExecuteAutoCapacity = ExecuteAutoCapacityLoadMultiplierFallback(request)
+    Set ExecuteAutoCapacity = ExecuteAutoCapacityLoadMultiplierFallback(request, firstResult.SearchExecuted)
 End Function
 
 ' Повторяет Auto-поиск capacity через LoadMultiplier после неудачного
 ' UltimateStrain и возвращает обновленный snapshot результата. Диагностика
 ' первой попытки сохраняется перед тем, как LoadMultiplier очистит поля solver-а.
-Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLimitSearchRequest) As CLimitSearchResult
+Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLimitSearchRequest, _
+        ByVal firstSearchExecuted As Boolean) As CLimitSearchResult
     Dim firstStopReason As String
     Dim firstLimitState As String
     Dim firstDiagnostics As String
@@ -15233,7 +15258,7 @@ Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLim
         firstDiagnostics, _
         "Auto: первая попытка UltimateStrain не дала принятую предельную точку", _
         "Auto: переходим к LoadMultiplier по той же lambda-траектории.", _
-        "Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier."
+        "Auto: UltimateStrain не сошелся, предельная точка найдена через LoadMultiplier.", firstSearchExecuted
 
     Set ExecuteAutoCapacityLoadMultiplierFallback = request.problem.BuildResult(request, False)
 End Function
@@ -15630,7 +15655,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CLimitSearchResult
 TYPE: 2
-LINES: 208
+LINES: 210
 ====================================================================================================
 Option Explicit
 
@@ -15645,7 +15670,7 @@ Option Explicit
 
 Private mMeta As CResultMeta ' Машинный исход, подготовленный владельцем задачи.
 Private mRequestedStrategy As String ' Запрошенная численная стратегия.
-Private mActualMethod As String ' Фактически выполненный численный метод.
+Private mActualMethod As String ' Способ определения точки: численный метод либо аналитический Ncrc.
 Private mHasLimitPoint As Boolean ' Найдена точка, а не только завершена процедура.
 Private mPointState As CSectionStateResult ' Единственный снимок НДС найденной точки.
 Private mSearchExecuted As Boolean ' Численный поиск действительно запускался.
@@ -15666,13 +15691,15 @@ End Sub
 
 ' Принимает готовый исход задачи и численный снимок без живых калькуляторов.
 ' Отсутствие найденной точки очищает ее числа и State при повторном заполнении.
+' Факт запуска передается явно владельцем: пропущенный аргумент не выдумывает
+' выполненный поиск, например для аналитического Ncrc или ранней валидации.
 Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As String, _
         ByVal ActualMethod As String, ByVal HasLimitPoint As Boolean, _
         ByVal lambdaValue As Double, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal PointState As CSectionStateResult, _
         ByVal LimitState As String, ByVal DiagnosticLog As String, _
         Optional ByVal finalSolverDiagnosticLog As String = vbNullString, _
-        Optional ByVal SearchExecuted As Boolean = True)
+        Optional ByVal SearchExecuted As Boolean = False)
     ResetPoint
     mRequestedStrategy = requestedStrategy
     mActualMethod = ActualMethod
@@ -19771,7 +19798,7 @@ End Property
 ====================================================================================================
 COMPONENT: CUltimateStrainSearch
 TYPE: 2
-LINES: 374
+LINES: 376
 ====================================================================================================
 Option Explicit
 
@@ -19835,11 +19862,13 @@ Private Function ExecuteCapacityFallbackToLoadMultiplier(ByVal request As CLimit
     firstStopReason = request.problem.stopReason
     firstLimitState = request.problem.LimitState
     firstDiagnostics = request.problem.DiagnosticLog
+    Dim firstSearchExecuted As Boolean
+    firstSearchExecuted = request.problem.BuildResult(request, False).SearchExecuted
 
     Dim ignoredResult As CLimitSearchResult
     Set ignoredResult = ExecuteCapacityLoadMultiplier(request)
     request.problem.MergeFallback firstLimitState, firstStopReason, _
-        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage
+        firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage, firstSearchExecuted
 
     Set ExecuteCapacityFallbackToLoadMultiplier = request.problem.BuildResult(request, request.problem.Converged)
 End Function
@@ -20151,7 +20180,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationCalculator
 TYPE: 2
-LINES: 2333
+LINES: 2344
 ====================================================================================================
 Option Explicit
 
@@ -20184,10 +20213,11 @@ Private mStopReason As String ' Короткое пояснение резуль
 Private mDiagnosticLog As String ' Диагностика пути, критерия и состояний трещинообразования.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mSolverCallCount As Long ' Сколько внутренних CSectionSolver/CStateSolutionRunner-вызовов выполнил расчет трещин.
+Private mSearchExecuted As Boolean ' Хотя бы одна численная попытка поиска точки в текущем LC; аналитический Ncrc не является Search.
 Private mFormationInternalStatus As EResultInternalStatus ' Машинный статус этапа образования нормальной трещины.
 Private mFormationResultCode As EResultCode ' Машинный код причины результата образования нормальной трещины.
 Private mCrackFormed As Boolean ' True, если по выбранной ветке расчета трещина считается образованной.
-Private mCrackFormationPath As String ' Auto, LambdaMxy, LambdaN или LambdaNMxy: какая часть LC масштабируется при поиске образования трещины.
+Private mCrackFormationPath As String ' Auto либо LambdaMx/My/Mxy/N/NMxy: масштабируемая часть LC общего LoadPath.
 Private mResolvedCrackFormationPath As String ' Фактический путь, который дал принятую точку образования трещины.
 Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска стадии образования трещины.
 Private mFormationSolutionMethod As String ' Фактически выполненный метод; Ncrc для аналитической центральной ветки.
@@ -20307,6 +20337,7 @@ Private Sub ClearResult()
     mStopReason = vbNullString
     mDiagnosticLog = vbNullString
     mSolverCallCount = 0
+    mSearchExecuted = False
     mFormationInternalStatus = rsUnset
     mFormationResultCode = rcNone
     mCrackFormed = False
@@ -20365,7 +20396,7 @@ Public Property Get ResultMeta() As CResultMeta
             vbNullString, True, False
     Else
         meta.SetResult mFormationInternalStatus, mFormationResultCode, rkCrackFormation, mStopReason, _
-            vbNullString, True, (mSolverCallCount > 0 Or mFormationInternalStatus = rsSuccess Or _
+            vbNullString, True, (mSearchExecuted Or mSolverCallCount > 0 Or mFormationInternalStatus = rsSuccess Or _
                 mFormationInternalStatus = rsSuccessWithWarning)
     End If
     Set ResultMeta = meta
@@ -20766,6 +20797,7 @@ Public Function LimitSearchEvaluateCrackFormationLoadMultiplier(ByVal section As
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
     mFormationSolutionMethod = STRATEGY_LOAD_MULTIPLIER
+    mSearchExecuted = True
     Dim probeN As Double
     Dim probeMx As Double
     Dim probeMy As Double
@@ -20921,6 +20953,9 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    ' Общий Newton уже проверил свои настройки; подготовка старта является
+    ' частью реально начатой попытки, даже если ее арифметика завершится отказом.
+    mSearchExecuted = True
     Dim guessN As Double
     Dim guessMx As Double
     Dim guessMy As Double
@@ -21120,6 +21155,7 @@ Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionMod
     ' не сработал. Это сохраняет производительность и одновременно помогает
     ' сложным сочетаниям, где уже найденная плоскость НДС дает лучший initial.
     Dim formationStart As CSectionSolver
+    mSearchExecuted = True
     Set formationStart = SolveState(section, concreteMaterial, steelMaterial, Nothing, targetN, targetMx, targetMy)
     If formationStart Is Nothing Then
         SetFormationResult rsInternalError, rcInternalError, "Не получен рабочий решатель стартового состояния трещинообразования."
@@ -21226,6 +21262,7 @@ Private Function TryMarkConstantPartFormationFallback(ByVal section As CSectionM
     End If
 
     Dim probeSolver As CSectionSolver
+    mSearchExecuted = True
     Set probeSolver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
         probeN, probeMx, probeMy)
     If probeSolver Is Nothing Then Exit Function
@@ -22191,6 +22228,7 @@ Private Sub ClearFormationAttemptState()
     mFormationLoadMy = 0#
     mFormationPathFallbackPsi1 = False
     mResolvedCrackFormationPath = vbNullString
+    mFormationSolutionMethod = vbNullString
 End Sub
 
 
@@ -22229,7 +22267,8 @@ End Function
 ' --------------------------------------------------------------------------
 ' Сохраняет машинный исход и подтвержденное НДС в общий численный результат.
 ' Search-result не трактует отсутствие трещины при текущем LC и не читает
-' рабочий Formation-контекст после создания этого снимка.
+' рабочий Formation-контекст после создания этого снимка. Факт Search хранится
+' отдельно: аналитический Ncrc может получить Pre/PostState без lambda-поиска.
 Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = ResultMeta
@@ -22238,7 +22277,8 @@ Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimit
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, requestedStrategy, mFormationSolutionMethod, HasLimitPoint, _
-        mLambdaCrc, nValue, mxValue, myValue, mPreCrackState, vbNullString, mDiagnosticLog
+        mLambdaCrc, nValue, mxValue, myValue, mPreCrackState, vbNullString, mDiagnosticLog, _
+        vbNullString, mSearchExecuted
     Set BuildSearchSnapshot = result
 End Function
 
@@ -22490,7 +22530,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCrackFormationResult
 TYPE: 2
-LINES: 197
+LINES: 199
 ====================================================================================================
 Option Explicit
 
@@ -22661,8 +22701,10 @@ Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
-' Возвращает отдельный небольшой контейнер Search либо Nothing, если поиск
-' не выполнялся. Ссылки на конечные named-states не копируются по волокнам.
+' Возвращает отдельный небольшой контейнер исхода Formation. Он существует
+' и для аналитического Ncrc/раннего выхода: факт численного поиска задает
+' SearchExecuted. Nothing означает отсутствие заполненного результата.
+' Ссылки на конечные named-states не копируются по волокнам.
 Public Property Get searchResult() As CLimitSearchResult
     If Not mSearchResult Is Nothing Then Set searchResult = mSearchResult.clone
 End Property
@@ -46522,7 +46564,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CTestLimitSearchProblem
 TYPE: 2
-LINES: 596
+LINES: 601
 ====================================================================================================
 Option Explicit
 
@@ -46560,6 +46602,7 @@ Private mDiagnosticLog As String ' Накопленный диагностиче
 Private mIterationLimitHit As Boolean ' True, если search остановился по лимиту итераций.
 Private mProbeMaxLambda As Double ' Наибольшая реально проверенная точка.
 Private mProbeCalls As Long ' Счетчик проб общего алгоритма.
+Private mSearchExecuted As Boolean ' ДЛЯ ТЕСТОВ: факт начала пробы или подготовки старта, независимо от ее успеха.
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
 Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
 Private mRecoveryWithoutProgress As Boolean ' Намеренно неисправный callback recovery возвращает прежнюю границу.
@@ -46593,6 +46636,7 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mIterationLimitHit = False
     mProbeMaxLambda = 0#
     mProbeCalls = 0
+    mSearchExecuted = False
     mFailureAbove = 0#
     mStepCriterion = False
     mRecoveryWithoutProgress = False
@@ -46753,6 +46797,7 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    mSearchExecuted = True
     eps0 = mUltimateInitialEps: kx = 0#: ky = 0#
 End Sub
 
@@ -46872,6 +46917,7 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
+    mSearchExecuted = True
     functionValue = lambdaValue - mRootLambda
     If mStepCriterion Then
         If lambdaValue < mRootLambda Then functionValue = -1# Else functionValue = 1#
@@ -47023,7 +47069,7 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     If mConverged Then
         meta.SetResult rsSuccess, rcCheckPassed, mKind, "Тестовый критерий найден."
     ElseIf mFailureCode <> sfcNone Then
-        meta.SetSolverFailure mFailureCode, mKind, mDiagnosticLog, (mUltimateCalls > 0)
+        meta.SetSolverFailure mFailureCode, mKind, mDiagnosticLog, mSearchExecuted
     ElseIf mLimitState = "SearchBoundReached" Then
         meta.SetResult rsNumericalFailure, rcSearchBoundReached, mKind, mLimitState
     ElseIf mLimitState = PROBE_INPUTERR Then
@@ -47034,7 +47080,7 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, request.SolutionStrategy, mFinalMethod, mConverged, mFinalLambda, _
-        mFinalLambda, 0#, 0#, Nothing, mLimitState, mDiagnosticLog
+        mFinalLambda, 0#, 0#, Nothing, mLimitState, mDiagnosticLog, vbNullString, mSearchExecuted
     Set ILimitSearchProblem_BuildResult = result
 End Function
 
@@ -47063,7 +47109,8 @@ End Sub
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, _
         ByVal firstStopReason As String, ByVal firstDiagnostics As String, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
-        ByVal successMessage As String)
+        ByVal successMessage As String, Optional ByVal firstSearchExecuted As Boolean = False)
+    mSearchExecuted = mSearchExecuted Or firstSearchExecuted
     AppendDiagnosticLine firstAttemptMessage
     AppendDiagnosticLine transitionMessage
     AppendDiagnosticLine successMessage
@@ -47124,7 +47171,7 @@ End Property
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 8027
+LINES: 8292
 ====================================================================================================
 Option Explicit
 
@@ -47142,6 +47189,7 @@ End Type
 
 Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутренних Н*мм.
 Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
+Private mAudit03ResourceTrace As Boolean ' ДЛЯ ТЕСТОВ: отдельный журнал размеров Excel, не влияющий на расчет и assertions.
 
 ' Выполняет пакетные регрессии профилей, путей, typed results, reuse и вывода.
 ' Общий отчет сохраняет отдельные причины failure и количество assertions.
@@ -50832,6 +50880,10 @@ Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestS
 
     Dim app As Object
     Set app = ThisWorkbook.Application
+    Dim originalSheet As Object ' Временный лист не должен менять рабочий лист следующих тестов.
+    Set originalSheet = app.ActiveSheet
+    Dim originalSheetCount As Long
+    originalSheetCount = ThisWorkbook.Worksheets.count
     Dim oldDisplayAlerts As Boolean
     oldDisplayAlerts = app.DisplayAlerts
     app.DisplayAlerts = False
@@ -50857,9 +50909,18 @@ Private Sub TestBatchSummaryRowsUseAvailableLoadRange(ByRef stats As TBatchTestS
 CleanUp:
     On Error Resume Next
     ThisWorkbook.names.item("rngLoadCombinations").RefersTo = originalRefersTo
+    ' Возвращаем исходный лист до удаления временного, чтобы Excel не выбирал
+    ' автоматически последний лист Results с уже отформатированными таблицами.
+    If Not originalSheet Is Nothing Then originalSheet.Activate
     If Not tempSheet Is Nothing Then tempSheet.Delete
     app.DisplayAlerts = oldDisplayAlerts
     On Error GoTo 0
+    If Not app Is Nothing Then
+        AssertTrue stats, "batch.writer.availableRows.activeSheetRestored", app.ActiveSheet Is originalSheet
+        AssertEquals stats, "batch.writer.availableRows.nameRestored", ThisWorkbook.names.item("rngLoadCombinations").RefersTo, originalRefersTo
+        AssertTrue stats, "batch.writer.availableRows.sheetCountRestored", ThisWorkbook.Worksheets.count = originalSheetCount
+        AssertTrue stats, "batch.writer.availableRows.alertsRestored", app.DisplayAlerts = oldDisplayAlerts
+    End If
     Exit Sub
 
 Failed:
@@ -52416,6 +52477,8 @@ End Sub
 ' Дополняет протокол; числовые поля ниже форматируются одинаково при любой локали.
 Private Sub AppendLine(ByRef stats As TBatchTestStats, ByVal text As String)
     stats.Report = stats.Report & text & vbCrLf
+    If mAudit03ResourceTrace And Left$(text, 5) = "RUN: " Then _
+        Audit03TraceExcelContext text & "; reportChars=" & CStr(Len(stats.Report))
 End Sub
 
 Private Function FormatNumberInvariant(ByVal value As Double) As String
@@ -55153,11 +55216,260 @@ Publish:
     Set Audit03CrackConfigInvalidBatch = batch
 End Function
 
+' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Изолирует настройки Excel.Application при диагностике роста памяти в batch.
+' Выполняет неизменный полный набор assertions; режим не подменяет результаты
+' и не является заменой штатного full gate. Исходные настройки восстанавливаются.
+Public Function RunAudit03BatchApplicationDiagnostics(ByVal mode As String) As String
+    Dim oldEvents As Boolean, oldScreen As Boolean, oldCalculation As Variant
+    Dim oldTrace As Boolean
+    Dim guard As CExcelAppStateGuard, Report As String, failureNumber As Long, failureText As String
+    oldEvents = Application.EnableEvents
+    oldScreen = Application.ScreenUpdating
+    oldCalculation = Application.Calculation
+    oldTrace = mAudit03ResourceTrace
+    On Error GoTo FailedRun
+    mAudit03ResourceTrace = True
+    Audit03TraceExcelContext "BEGIN: " & mode, True
+    Select Case mode
+        Case "Observe"
+        Case "EventsOff": Application.EnableEvents = False
+        Case "ScreenOff": Application.ScreenUpdating = False
+        Case "ManualCalculation": Application.Calculation = xlCalculationManual
+        Case "Guard"
+            Set guard = New CExcelAppStateGuard
+            guard.Enter Application
+        Case Else
+            Err.Raise vbObjectError + 4498, "RunAudit03BatchApplicationDiagnostics", "Неизвестный диагностический режим Excel.Application."
+    End Select
+    Report = RunBatchCalculationTests()
+    Audit03SaveMatrixProgress "APPLICATION_DIAGNOSTIC_COMPLETED: " & mode & vbCrLf & Report
+    GoTo Restore
+FailedRun:
+    failureNumber = Err.number
+    failureText = Err.description
+Restore:
+    On Error GoTo 0
+    mAudit03ResourceTrace = oldTrace
+    If Not guard Is Nothing Then guard.Restore
+    Application.Calculation = oldCalculation
+    Application.EnableEvents = oldEvents
+    Application.ScreenUpdating = oldScreen
+    If failureNumber <> 0 Then Err.Raise failureNumber, "RunAudit03BatchApplicationDiagnostics", failureText
+    If Application.EnableEvents <> oldEvents Or Application.Calculation <> oldCalculation Or _
+            Application.ScreenUpdating <> oldScreen Then
+        Err.Raise vbObjectError + 4497, "RunAudit03BatchApplicationDiagnostics", "Не удалось восстановить настройки Excel.Application после диагностики."
+    End If
+    RunAudit03BatchApplicationDiagnostics = "APPLICATION_DIAGNOSTIC: mode=" & mode & _
+        "; eventsRestored=True; calculationRestored=True; screenRestored=True" & vbCrLf & Report
+End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет границы таблиц и число форматов без чтения значений
+' большой UsedRange. Журнал помогает локализовать накопление объектов Excel;
+' он не участвует в выборе статуса и не входит в resultComment.
+Private Sub Audit03TraceExcelContext(ByVal stage As String, Optional ByVal resetLog As Boolean = False)
+    Dim fileNumber As Integer, sheet As Object, name As Variant
+    fileNumber = FreeFile
+    If resetLog Then
+        Open ThisWorkbook.path & Application.PathSeparator & "Audit03_Resource_Progress.txt" For Output As #fileNumber
+    Else
+        Open ThisWorkbook.path & Application.PathSeparator & "Audit03_Resource_Progress.txt" For Append As #fileNumber
+    End If
+    Print #fileNumber, Format$(Now, "yyyy-mm-dd hh:nn:ss") & "|" & stage
+    Print #fileNumber, "styles=" & CStr(ThisWorkbook.Styles.count)
+    Print #fileNumber, "activeSheet=" & Application.ActiveSheet.name & "; screenUpdating=" & CStr(Application.ScreenUpdating)
+    For Each name In Array("rngLoadCombinations", "rngBatchSummary", "rngStrengthSummaryAnchor", _
+            "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+        Print #fileNumber, CStr(name) & "=" & ThisWorkbook.names.item(CStr(name)).RefersToRange.address(External:=True)
+    Next name
+    Set sheet = ThisWorkbook.Worksheets.item("Results")
+    Print #fileNumber, "used=" & sheet.UsedRange.address & "; conditionalFormats=" & CStr(sheet.UsedRange.FormatConditions.count)
+    Dim data As Variant, row As Long, column As Long, value As Variant
+    For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngCalculationProfiles")
+        data = ThisWorkbook.names.item(CStr(name)).RefersToRange.Value2
+        For row = 1 To UBound(data, 1)
+            For column = 1 To UBound(data, 2)
+                value = data(row, column)
+                If IsError(value) Then
+                    Print #fileNumber, CStr(name) & "[" & CStr(row) & "," & CStr(column) & "]=CVErr"
+                ElseIf IsNull(value) Then
+                    Print #fileNumber, CStr(name) & "[" & CStr(row) & "," & CStr(column) & "]=Null"
+                Else
+                    Print #fileNumber, CStr(name) & "[" & CStr(row) & "," & CStr(column) & "]=" & CStr(value)
+                End If
+            Next column
+        Next row
+    Next name
+    Close #fileNumber
+End Sub
+
+' ДЛЯ ТЕСТОВ: многократно пишет один готовый batch, не запускает Search/State
+' в цикле и не меняет ожидаемые инженерные результаты. Это отдельный
+' диагностический маршрут writer-ов, не замена штатным regression gates.
+Public Function RunAudit03RepeatedWriterDiagnostics() As String
+    Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter, i As Long
+    Set batch = BuildBatchCalculator()
+    batch.AddCombination "RESOURCE_WRITER", 200000#, 0#, 0#, "PR2", "Диагностика повторной записи", "Auto"
+    batch.Execute
+    Set writer = New CBatchResultWriter
+    Audit03TraceExcelContext "BEGIN: repeated writer", True
+    For i = 1 To 75
+        Audit03TraceExcelContext "BEFORE: writer " & CStr(i)
+        writer.WriteSummary ThisWorkbook, batch
+        Audit03TraceExcelContext "AFTER: writer " & CStr(i)
+    Next i
+    RunAudit03RepeatedWriterDiagnostics = "WRITER_DIAGNOSTIC: writes=75; solves=" & CStr(batch.SolverCallCount)
+End Function
+
+' ДЛЯ ТЕСТОВ: воспроизводит On/Off pair перед Search Config отдельно от
+' остальных batch-тестов. Это сохраняет исходные assertions и дает сопоставимый
+' снимок настроек для поиска межтестовой мутации, а не новый инженерный oracle.
+Public Function RunAudit03PhysicalPairResourceDiagnostics(Optional ByVal prefixLength As Long = 0) As String
+    Dim stats As TBatchTestStats, Passed As Long, Failed As Long, Report As String
+    If prefixLength < 0 Then Err.Raise vbObjectError + 4495, "RunAudit03PhysicalPairResourceDiagnostics", "Размер тестового префикса не может быть отрицательным."
+    stats.Report = String$(prefixLength, "x")
+    Audit03TraceExcelContext "BEGIN: isolated physical pair", True
+    TestAudit02OnOffPhysicalResults stats
+    Audit03TraceExcelContext "AFTER: isolated physical pair"
+    Report = RunAudit03SearchConfigTests(Passed, Failed)
+    stats.Report = stats.Report & Report
+    Audit03TraceExcelContext "AFTER: Search Config"
+    RunAudit03PhysicalPairResourceDiagnostics = Mid$(stats.Report, prefixLength + 1) & "TOTAL_PAIR_RESOURCE: passed=" & _
+        CStr(stats.Passed + Passed) & "; failed=" & CStr(stats.Failed + Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: изолирует накопление строк в существующем stats без решателей,
+' State, writer-ов и изменений Config. Начальный размер равен порядку отчета
+' перед On/Off pair; возвращается только счет, а не искусственный префикс.
+Public Function RunAudit03BatchReportGrowthDiagnostics() As String
+    Dim stats As TBatchTestStats, i As Long
+    stats.Report = String$(500000, "x")
+    Audit03TraceExcelContext "BEGIN: report-only growth", True
+    For i = 1 To 3000
+        AppendLine stats, "RESOURCE_REPORT: " & CStr(i)
+    Next i
+    Audit03TraceExcelContext "END: report-only growth; chars=" & CStr(Len(stats.Report))
+    RunAudit03BatchReportGrowthDiagnostics = "REPORT_GROWTH_DIAGNOSTIC: lines=3000; chars=" & CStr(Len(stats.Report))
+End Function
+
+' ДЛЯ ТЕСТОВ: воспроизводит заключительную группу до On/Off pair в исходном
+' порядке. Набор предназначен для локализации межтестового эффекта; не меняет
+' assertions и не считается заменой полного batch-набора.
+Public Function RunAudit03LateBatchResourceDiagnostics(Optional ByVal groupName As String = "All", _
+        Optional ByVal applicationMode As String = "Observe") As String
+    Dim stats As TBatchTestStats, Passed As Long, Failed As Long, Report As String
+    Dim oldStability As String, oldTrace As Boolean, oldScreenUpdating As Boolean
+    oldStability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    oldTrace = mAudit03ResourceTrace
+    oldScreenUpdating = Application.ScreenUpdating
+    On Error GoTo FailedRun
+    Select Case applicationMode
+        Case "Observe"
+        Case "ScreenOff": Application.ScreenUpdating = False
+        Case Else: Err.Raise vbObjectError + 4493, "RunAudit03LateBatchResourceDiagnostics", "Неизвестный режим экранного обновления диагностического набора."
+    End Select
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    mAudit03ResourceTrace = True
+    Audit03TraceExcelContext "BEGIN: late batch group " & groupName & "; application=" & applicationMode, True
+    If groupName <> "All" And groupName <> "Writers" And groupName <> "Meta" And groupName <> "Repository" And groupName <> "None" And _
+        groupName <> "Summary" And groupName <> "Gaps" And groupName <> "Rows" And groupName <> "Settings" And groupName <> "Invalid" And _
+        groupName <> "Summaries" And groupName <> "OtherWriters" And groupName <> "SummaryRows" And groupName <> "WritersNoRows" Then _
+        Err.Raise vbObjectError + 4494, "RunAudit03LateBatchResourceDiagnostics", "Неизвестная группа диагностического набора."
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Summary" Or groupName = "Summaries" Or _
+        groupName = "SummaryRows" Or groupName = "WritersNoRows" Then TestBatchSummaryWriter stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Gaps" Or groupName = "Summaries" Or _
+        groupName = "WritersNoRows" Then TestBatchSummaryPreservesSourceRowGaps stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Rows" Or groupName = "OtherWriters" Or _
+        groupName = "SummaryRows" Then TestBatchSummaryRowsUseAvailableLoadRange stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Settings" Or groupName = "OtherWriters" Or _
+        groupName = "WritersNoRows" Then TestBatchCapacityUsesSystemSettings stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Invalid" Or groupName = "OtherWriters" Or _
+        groupName = "WritersNoRows" Then TestInvalidModeSettingsAreNotFallbacks stats
+    If groupName = "All" Or groupName = "Writers" Or groupName = "Summary" Or groupName = "Gaps" Or groupName = "Rows" Or _
+        groupName = "Settings" Or groupName = "Invalid" Or groupName = "Summaries" Or groupName = "OtherWriters" Or _
+        groupName = "SummaryRows" Or groupName = "WritersNoRows" Then
+        Audit03TraceExcelContext "AFTER: Writers group"
+    End If
+    If groupName = "All" Or groupName = "Meta" Then
+        TestResultMetaStatusDictionary stats
+        TestResultMetaAggregateSkipsNotApplicable stats
+        TestCombinationResultTreeDrivesDisplayFields stats
+        TestCrackAggregateIncludesCurrentStateFailure stats
+        TestFormulaChecksDoNotCreateNumFail stats
+        TestSectionStateResultStoresEquilibriumData stats
+        Audit03TraceExcelContext "AFTER: Meta group"
+    End If
+    If groupName = "All" Or groupName = "Repository" Then
+        TestStateRequestEquivalenceIgnoresSolveOptions stats
+        TestStateRepositoryReusesOnlyConvergedStates stats
+        TestPrePostCrackStateNames stats
+        TestAudit02CurrentCrackedStateCacheHitCalculatesWidth stats
+        TestAudit02CanonicalResultsAndReset stats
+        TestAudit02RepositoryContextAndRetry stats
+        Audit03TraceExcelContext "AFTER: Repository group"
+    End If
+    Audit03TraceExcelContext "BEFORE: late group physical pair"
+    TestAudit02OnOffPhysicalResults stats
+    Audit03TraceExcelContext "AFTER: late group physical pair"
+    Report = RunAudit03SearchConfigTests(Passed, Failed)
+    stats.Report = stats.Report & Report
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: lateBatchResource.runtime; " & CStr(Err.number) & "; " & Err.description
+Restore:
+    On Error GoTo 0
+    Application.ScreenUpdating = oldScreenUpdating
+    mAudit03ResourceTrace = oldTrace
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", oldStability
+    RunAudit03LateBatchResourceDiagnostics = stats.Report & "TOTAL_LATE_RESOURCE: passed=" & _
+        CStr(stats.Passed + Passed) & "; failed=" & CStr(stats.Failed + Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: сравнивает два способа вызова одного Search Config-набора.
+' Все assertions, Config и расчеты одинаковы; различается только накопление
+' возвращенного текстового отчета в вызывающем VBA-кадре.
+Public Function RunAudit03SearchExpressionDiagnostics(ByVal mode As String) As String
+    Dim stats As TBatchTestStats, Passed As Long, Failed As Long, searchReport As String
+    stats.Report = "SEARCH_EXPRESSION_DIAGNOSTIC: " & mode & vbCrLf
+    Audit03TraceExcelContext "BEGIN: Search expression " & mode, True
+    Select Case mode
+        Case "Concatenated"
+            stats.Report = stats.Report & RunAudit03SearchConfigTests(Passed, Failed)
+        Case "Separated"
+            searchReport = RunAudit03SearchConfigTests(Passed, Failed)
+            stats.Report = stats.Report & searchReport
+        Case Else
+            Err.Raise vbObjectError + 4496, "RunAudit03SearchExpressionDiagnostics", "Неизвестный режим накопления отчета."
+    End Select
+    Audit03TraceExcelContext "END: Search expression " & mode
+    RunAudit03SearchExpressionDiagnostics = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: временное переназначение LC не должно оставлять другой лист
+' активным, лишний лист, измененное имя диапазона или DisplayAlerts.
+' Проверяет реальный существующий setup и его cleanup без численного solve.
+Public Function RunAudit03TemporaryLoadRangeIsolation() As String
+    Dim stats As TBatchTestStats, originalSheet As Object, originalName As String
+    Dim sheetCount As Long, originalAlerts As Boolean
+    Set originalSheet = Application.ActiveSheet
+    originalName = ThisWorkbook.names.item("rngLoadCombinations").RefersTo
+    sheetCount = ThisWorkbook.Worksheets.count
+    originalAlerts = Application.DisplayAlerts
+    TestBatchSummaryRowsUseAvailableLoadRange stats
+    AssertTrue stats, "audit03.temporaryLoadRange.activeSheetRestored", Application.ActiveSheet Is originalSheet
+    AssertEquals stats, "audit03.temporaryLoadRange.nameRestored", ThisWorkbook.names.item("rngLoadCombinations").RefersTo, originalName
+    AssertTrue stats, "audit03.temporaryLoadRange.sheetCountRestored", ThisWorkbook.Worksheets.count = sheetCount
+    AssertTrue stats, "audit03.temporaryLoadRange.alertsRestored", Application.DisplayAlerts = originalAlerts
+    RunAudit03TemporaryLoadRangeIsolation = stats.Report & "TOTAL_TEMPORARY_RANGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
 
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: 1
-LINES: 2349
+LINES: 2467
 ====================================================================================================
 Option Explicit
 
@@ -55233,6 +55545,7 @@ Public Function RunCapacitySolverTests() As String
     TestAudit03SearchArithmetic stats
     TestAudit03RealCapacityPrecision stats
     TestAudit03CapacityTypedFailures stats
+    TestAudit03CapacitySearchLifecycle stats
     TestAudit03UltimateGuards stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
@@ -55366,6 +55679,7 @@ Private Sub TestConcreteTensionBehaviorAffectsSolverAndCapacity(ByRef stats As T
     AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.my", mesh, rebars, -50000#, 0#, -5000000#
     AssertTensionBehaviorAffectsSolverMode stats, "tensionBehavior.strength.mxy", mesh, rebars, -50000#, -5000000#, -3000000#
 End Sub
+
 
 ' Решает один вектор усилий с отключенным и активным растянутым бетоном;
 ' проверяет сходимость обеих моделей и значимое различие параметров плоскости.
@@ -57508,6 +57822,122 @@ Private Sub SaveAudit03SearchProgress(ByRef stats As TCapacityTestStats, ByVal s
     Close #fileNumber
 End Sub
 
+' ============================== ДЛЯ ТЕСТОВ ==============================
+' ДЛЯ ТЕСТОВ: проверяет реальный lifecycle Capacity/Search, в том числе снимок
+' до запуска и reset одного solver-а после успешной численной попытки.
+Public Function RunAudit03CapacityLifecycle() As String
+    On Error GoTo Failed
+    Dim stats As TCapacityTestStats
+    TestAudit03CapacitySearchLifecycle stats
+    AppendLine stats, "TOTAL_AUDIT03_CAPACITY_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CapacityLifecycle = stats.Report
+    Exit Function
+Failed:
+    RunAudit03CapacityLifecycle = stats.Report & "RUNTIME ERROR: " & CStr(Err.number) & "; " & Err.description
+End Function
+
+' ДЛЯ ТЕСТОВ: оба численных метода действительно ищут предел, а невалидные
+' допуски/бюджет и отсутствующая зависимость останавливаются до Search.
+' При повторе старый результат должен сохранять независимый факт выполнения.
+Private Sub TestAudit03CapacitySearchLifecycle(ByRef stats As TCapacityTestStats)
+    Dim problem As CCapacityLimitSearchProblem, result As CLimitSearchResult
+    Set problem = New CCapacityLimitSearchProblem
+    Set result = problem.BuildSnapshot("Auto")
+    AssertTrue stats, "audit03.capacity.lifecycle.missing.notExecuted", Not result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.missing.notCalculated", Not result.meta.calculated
+    Dim mesh As CFiberMeshBuilder, rebars As CRebarLayout, section As CSectionModel
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim cap As CCapacitySolver, retained As CLimitSearchResult, strategy As Variant
+    Set cap = New CCapacitySolver
+    Set result = Audit02CapacitySnapshot(cap, "Auto")
+    AssertTrue stats, "audit03.capacity.lifecycle.empty.notExecuted", Not result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.empty.notCalculated", Not result.meta.calculated
+    For Each strategy In Array("LoadMultiplier", "UltimateStrain")
+        ConfigureCapacity cap
+        If CStr(strategy) = "LoadMultiplier" Then
+            cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        Else
+            cap.SolveByUltimateLoadPath section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        End If
+        Set result = Audit02CapacitySnapshot(cap, CStr(strategy))
+        Set retained = result.clone
+        Dim prefix As String
+        prefix = "audit03.capacity.lifecycle." & CStr(strategy)
+        AssertTrue stats, prefix & ".attempted", result.SearchExecuted
+        AssertTrue stats, prefix & ".calculated", result.meta.calculated
+        AssertTrue stats, prefix & ".point", result.HasLimitPoint
+        If CStr(strategy) = "LoadMultiplier" Then
+            cap.LambdaTolerance = 0#
+            cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        Else
+            cap.SolverMaxIterations = 0
+            cap.SolveByUltimateLoadPath section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        End If
+        Set result = Audit02CapacitySnapshot(cap, CStr(strategy))
+        AssertTrue stats, prefix & ".invalidBeforeSearch", Not result.SearchExecuted
+        AssertTrue stats, prefix & ".invalidNotCalculated", Not result.meta.calculated
+        AssertTrue stats, prefix & ".invalidNoPoint", Not result.HasLimitPoint
+        AssertTrue stats, prefix & ".priorSnapshot", retained.SearchExecuted And retained.HasLimitPoint
+        cap.SolveByLoadPathMultiplier Nothing, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        Set result = Audit02CapacitySnapshot(cap, CStr(strategy))
+        AssertTrue stats, prefix & ".missingReset", Not result.SearchExecuted
+        AssertTrue stats, prefix & ".missingNoPoint", Not result.HasLimitPoint
+    Next strategy
+    ' UltimateStrain начинает реальную попытку, а настройки резервного
+    ' LoadMultiplier ошибочны. Очистка второй ветви не должна стирать этот факт.
+    ConfigureCapacity cap
+    cap.SolverMaxIterations = 1
+    cap.LambdaTolerance = 0#
+    Dim request As CLimitSearchRequest, coordinator As CLimitSearchCoordinator
+    Set request = New CLimitSearchRequest: Set coordinator = New CLimitSearchCoordinator
+    request.InitializeCapacity cap, section, LinearConcrete(), LinearSteel(), _
+        "Auto", -20000#, 0#, 0#, 10000000#, 0#, 0#, False, False
+    Set result = coordinator.ExecuteCapacity(request)
+    AssertTrue stats, "audit03.capacity.lifecycle.fallback.firstAttemptKept", result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.fallback.finalConfig", result.meta.InternalStatus = rsInvalidConfiguration
+    AssertTrue stats, "audit03.capacity.lifecycle.fallback.noPoint", Not result.HasLimitPoint
+    AssertTrue stats, "audit03.capacity.lifecycle.fallback.finalNoProbe", cap.iterations = 0
+    ' Прямой содержательный API должен сохранять тот же lifecycle, что coordinator.
+    ConfigureCapacity cap
+    cap.SolverMaxIterations = 1
+    cap.LambdaTolerance = 0#
+    cap.SolveByAutoLoadPath section, LinearConcrete(), LinearSteel(), _
+        -20000#, 0#, 0#, 10000000#, 0#, 0#, False, False
+    Set result = Audit02CapacitySnapshot(cap, "Auto")
+    AssertTrue stats, "audit03.capacity.lifecycle.directAuto.firstAttemptKept", result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.directAuto.finalConfig", result.meta.InternalStatus = rsInvalidConfiguration
+    AssertTrue stats, "audit03.capacity.lifecycle.directAuto.noPoint", Not result.HasLimitPoint
+    AssertTrue stats, "audit03.capacity.lifecycle.directAuto.finalNoProbe", cap.iterations = 0
+    Dim fake As CTestLimitSearchProblem, multiplier As CLoadMultiplierSearch
+    Set fake = New CTestLimitSearchProblem: Set multiplier = New CLoadMultiplierSearch
+    fake.Configure "Bisection", 1.25, 0.000001, 80
+    request.InitializeWithProblem fake, rkCapacity, "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+    Set result = multiplier.Execute(request)
+    AssertTrue stats, "audit03.capacity.lifecycle.generic.executed", result.SearchExecuted
+    fake.Configure "Bisection", 1.25, 0#, 80
+    Set result = multiplier.Execute(request)
+    AssertTrue stats, "audit03.capacity.lifecycle.generic.invalidNotExecuted", Not result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.generic.invalidNoProbe", fake.ProbeCalls = 0
+    Set result = New CLimitSearchResult
+    result.Initialize Nothing, "Auto", vbNullString, False, 0#, 0#, 0#, 0#, Nothing, vbNullString, vbNullString
+    AssertTrue stats, "audit03.capacity.lifecycle.default.notExecuted", Not result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.default.notCalculated", Not result.meta.calculated
+    ' Ранний отчет берет объяснение из собственного инженерного результата,
+    ' а не из технического LimitState и не из несуществующего поля meta.
+    Dim capacityResult As CCapacityResult, load As CSectionLoadState, path As CLoadPathDescriptor
+    Set capacityResult = New CCapacityResult
+    Set load = New CSectionLoadState: Set path = New CLoadPathDescriptor
+    load.Initialize 0#, 10000000#, 0#, 0#, 0#
+    path.InitializeFromLoadState "LambdaMx", load
+    capacityResult.InitializeInvalidInput "В Config задайте положительный допуск поиска.", path.key
+    Dim earlyReport As String
+    earlyReport = capacityResult.EarlyStopReport(path)
+    AssertTrue stats, "audit03.capacity.lifecycle.report.reason", InStr(1, earlyReport, capacityResult.ResultMeta.resultComment, vbBinaryCompare) > 0
+    AssertTrue stats, "audit03.capacity.lifecycle.report.russian", InStr(1, earlyReport, "Поиск несущей способности", vbBinaryCompare) = 1
+    AssertTrue stats, "audit03.capacity.lifecycle.report.noRawStatus", InStr(1, earlyReport, "InvalidInput", vbTextCompare) = 0
+End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestConfiguration
@@ -58272,7 +58702,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: 1
-LINES: 1368
+LINES: 1469
 ====================================================================================================
 Option Explicit
 
@@ -58327,6 +58757,7 @@ Public Function RunCrackWidthTests() As String
     TestAudit02IndependentFormation stats
     TestAudit02PsiSignedInputsAndFallbackModes stats
     TestAudit03FormationTypedFailures stats
+    TestAudit03FormationSearchLifecycle stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -59545,6 +59976,106 @@ Private Sub TestAudit03FormationTypedFailures(ByRef stats As TCrackTestStats)
             AppendLine stats, "COMMENT: " & prefix & "; " & result.ResultMeta.resultComment
         Next scenario
     Next path
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет факт численного Search отдельно от аналитического
+' Ncrc и получения Pre/PostState. Повторные вызовы одного calculator-а не
+' должны переносить флаг выполнения или найденную точку между сочетаниями.
+Public Function RunAudit03FormationLifecycle() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestAudit03FormationSearchLifecycle stats
+    AppendLine stats, "TOTAL_AUDIT03_FORMATION_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03FormationLifecycle = stats.Report
+    Exit Function
+Failed:
+    RunAudit03FormationLifecycle = stats.Report & "RUNTIME ERROR: " & CStr(Err.number) & "; " & Err.description
+End Function
+
+' ДЛЯ ТЕСТОВ: реальные нагрузки охватывают ранний выход, аналитическую точку
+' с/без состояний, численный поиск и ошибочный фиксированный путь до проб.
+' Невалидный метод solver-а отдельно доказывает попытку поиска без успеха.
+Private Sub TestAudit03FormationSearchLifecycle(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel, setupSolver As CSectionSolver
+    Set setupSolver = SolveServiceState(section, 0#, 0#, 0#)
+    Dim provider As CMaterialModelProvider, load As CSectionLoadState
+    Set provider = TestMaterialProvider()
+    Set load = New CSectionLoadState
+    Dim calculator As CCrackFormationCalculator
+    Set calculator = New CCrackFormationCalculator
+    calculator.SolverLoadSteps = 8
+    calculator.SolverMaxIterations = 100
+    calculator.SolverToleranceN = 5#
+    calculator.SolverToleranceMx = 5000#
+    calculator.SolverToleranceMy = 5000#
+    Dim strategy As Variant, scenario As Long, nValue As Double, mxValue As Double
+    Dim result As CCrackFormationResult, search As CLimitSearchResult, retained As CLimitSearchResult
+    For Each strategy In Array("Auto", "UltimateStrain", "LoadMultiplier")
+        calculator.CrackFormationSolutionStrategy = CStr(strategy)
+        For scenario = 0 To 5
+            calculator.CrackFormationPath = "Auto"
+            calculator.SolverMethod = "Newton"
+            nValue = 0#: mxValue = 0#
+            Select Case scenario
+                Case 1: nValue = 1000#
+                Case 2: nValue = 250000#
+                Case 3: nValue = -20000#: mxValue = -15000000#
+                Case 4
+                    nValue = -20000#: mxValue = -15000000#
+                    calculator.CrackFormationPath = "lambda*My"
+                Case 5
+                    nValue = -20000#: mxValue = -15000000#
+                    calculator.SolverMethod = "Invalid"
+            End Select
+            load.Initialize nValue, mxValue, 0#, 0#, 0#
+            Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
+                TestCrackInitiationSpec(), nValue, mxValue, 0#, load, 0#, 0#)
+            Set search = result.searchResult
+            Dim prefix As String, expectedExecuted As Boolean
+            prefix = "audit03.formation.lifecycle." & CStr(strategy) & "." & CStr(scenario)
+            expectedExecuted = (scenario = 3 Or scenario = 5)
+            AssertTrue stats, prefix & ".searchExists", Not search Is Nothing
+            If Not search Is Nothing Then
+                AssertTrue stats, prefix & ".searchExecuted", search.SearchExecuted = expectedExecuted
+                AssertTrue stats, prefix & ".cloneFlag", search.clone.SearchExecuted = expectedExecuted
+                AssertTrue stats, prefix & ".metaSnapshot", search.meta.calculated = result.ResultMeta.calculated
+                If scenario = 3 Then Set retained = search
+            End If
+            If scenario = 0 Or scenario = 4 Then
+                AssertTrue stats, prefix & ".notCalculated", Not result.ResultMeta.calculated
+                AssertTrue stats, prefix & ".noSolver", result.SolverCallCount = 0
+                AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+                AssertTrue stats, prefix & ".noPre", result.PreCrackState Is Nothing
+                AssertTrue stats, prefix & ".noPost", result.PostCrackState Is Nothing
+            ElseIf scenario = 1 Then
+                AssertTrue stats, prefix & ".analyticalCalculated", result.ResultMeta.calculated
+                AssertTrue stats, prefix & ".analyticalNoSolver", result.SolverCallCount = 0
+                AssertTrue stats, prefix & ".thresholdBeyondLoad", result.LambdaCrc > 1#
+            ElseIf scenario = 2 Then
+                AssertTrue stats, prefix & ".analyticalCalculated", result.ResultMeta.calculated
+                AssertTrue stats, prefix & ".namedSolves", result.SolverCallCount > 0
+                AssertTrue stats, prefix & ".preState", Not result.PreCrackState Is Nothing
+                AssertTrue stats, prefix & ".postState", Not result.PostCrackState Is Nothing
+            ElseIf scenario = 3 Then
+                AssertTrue stats, prefix & ".numericCalculated", result.ResultMeta.calculated
+                AssertTrue stats, prefix & ".numericPoint", result.HasLimitPoint
+            ElseIf scenario = 5 Then
+                AssertTrue stats, prefix & ".typedConfiguration", result.ResultMeta.InternalStatus = rsInvalidConfiguration
+                AssertTrue stats, prefix & ".failedAttempt", result.SolverCallCount > 0
+                AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+            End If
+            If scenario >= 4 Then AssertTrue stats, prefix & ".priorSnapshot", retained.SearchExecuted And retained.HasLimitPoint
+            AppendLine stats, "FORMATION_LIFECYCLE: " & prefix & "; SearchExecuted=" & CStr(search.SearchExecuted) & _
+                "; Calculated=" & CStr(result.ResultMeta.calculated) & "; solves=" & CStr(result.SolverCallCount) & _
+                "; comment=" & result.ResultMeta.resultComment
+        Next scenario
+        ' Нулевой повтор после отказа дополнительно проверяет reset между LC.
+        calculator.SolverMethod = "Newton": calculator.CrackFormationPath = "Auto"
+        load.Initialize 0#, 0#, 0#, 0#, 0#
+        Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
+            TestCrackInitiationSpec(), 0#, 0#, 0#, load, 0#, 0#)
+        AssertTrue stats, "audit03.formation.lifecycle." & CStr(strategy) & ".finalReset", Not result.searchResult.SearchExecuted
+    Next strategy
 End Sub
 
 ' ДЛЯ ТЕСТОВ: ищет воспроизводимые случаи неположительного sigma_s,crc

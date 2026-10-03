@@ -69,6 +69,96 @@
 
 ## Актуальная Точка Продолжения
 
+- Текущий проверяемый source-срез v130: full Off `22969/0`, On `22980/0`,
+  по восемь suites, watchdog exit=0, source unchanged=True. Книга SHA256
+  `961FF06B3A1272B3FBF0405E6C0D86AD059BBAF1C8A3D1105E3EB41ECE4A257B`,
+  export SHA256 `2E247A7EC8F7BBE67F2158D8BA5F79A9C09034D35BF89422B609CCA8A0232A50`.
+  Source/export `102/102`, failed=0; clean/update help `2536/2536`,
+  mergesEqual=True, failed=0. Census v130: 102 модуля, 4205 методов,
+  1485 кандидатов guards; это индекс дальнейшей ревизии, не blanket PASS.
+  Проверка последовательности прежних 17 tests + pair/Search `3595/0`.
+  Точные actual-числа общих assertions относительно принятой v112 совпали:
+  Off `5574/5574`, On `5579/5579`, missing=0, differences=0. Скрипт сравнения
+  проверен на намеренном изменении числа и пропуске ID: оба выявлены.
+  Это сравнение чисел журнала, не blanket приемка всех сохраненных Results.
+  Directed v130: Capacity `38/0`, Formation `147/0`, временный диапазон `10/0`,
+  universal On `827/0`, Results save/reopen=True; палитра `351/0`, значения
+  и status-style save/reopen=True. Config `1003/0`, 1002 адреса,
+  deviations=0; validation `25/25`, exit=0. Все COM-проверки завершены.
+  Проверенный срез готов к локальному checkpoint; полный Audit03 не завершен.
+  Следующий отдельный F04-контрпример: факт выполненной попытки при Auto-переходе
+  между разными LoadPath, когда следующий путь завершается до probe.
+  Primary output и неизменяемое ТЗ сохраняют исходные хеши.
+- Принятый universal LoadPath/Width-fallback срез зафиксирован коммитом
+  `7839c65`. Текущий следующий срез -
+  [Search lifecycle F04](NDM_Audit03_Search_Lifecycle_Review.md).
+  Negative Formation v113: 120/27, Capacity: 15/7 на прежнем production.
+  Positive v113: Formation 147/0, Capacity 26/0; окончательный v114 directed
+  Capacity/generic 31/0. Реальные callbacks хранят факт численной попытки,
+  аналитический Ncrc не считается Search. EarlyStopReport Capacity использует
+  русский ResultComment вместо внутреннего LimitState.
+  v114 source/export 102/102, failed=0, но full Off остановлен ошибкой
+  компиляции новой строки EarlyStopReport (mMeta вместо mResultMeta).
+  Этот прогон не принят; его тестовый Excel закрыт, RPC-error сохранена.
+  v115 directed Capacity/generic/report 34/0, source/export 102/102, failed=0;
+  full Off v115 не завершен из-за runtime-ошибки 14 `Out of string space`
+  в batch-suite. Изолированный Search Config прошел `1813/0`, но отдельная
+  batch-suite аварийно завершила Excel с `RPC_E_SERVERFAULT`; оба отрицательных
+  журнала сохранены, причина пока не установлена. Пустой Excel с панелью
+  восстановления закрыт отдельно. Чистая сборка v116 завершена, source/export
+  `102/102`, help `2536/2536`, mergesEqual=True, failed=0; ее full Off тоже
+  остановлен ошибкой 14, память Excel достигла 3 572 256 768 байт.
+  Версия о проблеме только обновленного VBA не подтверждена. Запущен видимый
+  batch v116 для локализации строки; он тоже аварийно завершил Excel.
+  Повтор batch на принятой v112 также аварийно завершен с ростом памяти
+  до 3 582 541 824 байт; привязка отказа только к F04 не подтверждена.
+  EventsOff v117 не устраняет аварию. Тестовый диагностический entrypoint
+  изолирует настройки Application и не заменяет обычный full gate.
+  Найден отдельный direct Auto lifecycle пропуск: negative v118 `37/1`,
+  единственная ошибка `directAuto.firstAttemptKept`. Исправлены только три
+  строки сохранения флага; положительная v118 Capacity `38/0`, source/export
+  `102/102`, failed=0. Export SHA256
+  `E14D01D53F8D8829EC6FD940886406628A1BADD7F1F2B7F3BE8B19CD5AE2F52B`.
+  ManualCalculation v118 тоже аварийно завершен; режим пересчета не устранил
+  этот воспроизведенный отказ. v119: 75 повторных записей одного готового batch
+  завершены, privateBytes после набора 97 632 256; размеры Results, 49 styles
+  и отсутствие CF стабильны. Полный batch Observe v119 вновь аварийно завершен;
+  контекст диапазонов нормальный, память росла уже на On/Off pair и затем
+  Search Config. Эти факты не устанавливают причину утечки/роста памяти.
+  Добавлены только тестовые диагностические входы и отдельный журнал контекста.
+  v120 сравнивает одинаковый Search Config при вложенном выражении склейки
+  и при отдельном вызове: оба `1813/0`, численные expected/tolerance не менялись.
+  v121 изолированный On/Off pair + Search Config: `3261/0`, память после
+  138 973 184 байт. В полном batch перед pair уже 517 622 символа отчета;
+  этап занимает около 55 секунд вместо одной в изолированном вызове.
+  Сравнение 892 значений Config показывает только ожидаемый temporary
+  Stability PR1. v122 report-only 3000 строк поверх 500 000 символов завершен
+  без сбоя, privateBytes 90 656 768; pair + Search с таким же длинным префиксом
+  `3261/0`. Размер отчета сам по себе причину не воспроизводит.
+  v123 заключительная группа перед pair воспроизвела ошибку 14 уже в Search
+  Config; Excel закрыт после чтения диалога, точная строка Debug недоступна
+  (coordinate input geometry is unavailable). v124 контроль None без
+  предварительных тестов `3261/0`; далее изолируются Writers/Meta/Repository.
+  Repository v124 `3364/0`, но Writers снова воспроизвел runtime 14 при
+  3 567 603 712 байт privateBytes. После чтения диалога закрыт только тестовый
+  Excel, отрицательный исход сохранен. V125 отдельные действия: Summary
+  `3425/0`, Rows `3263/0`, Invalid `3264/0`; production остается v118,
+  assertions/tolerance не менялись. Settings/Gaps/Meta и взаимодействие
+  действий еще проверяются, root cause не установлен.
+  Продолжение диагностики: Settings `3263/0`, Gaps `3268/0`, Summaries
+  `3432/0`, OtherWriters `3268/0`. Summary + Rows воспроизводит ошибку 14;
+  Rows не восстанавливал активный лист и оставлял Results. ScreenOff дает
+  `3427/0`, но 1,16 ГБ памяти, поэтому не принят как исправление. K04 negative
+  v129 `5/1` подтверждает именно activeSheetRestored. Cleanup возвращает
+  исходный лист до удаления временного: isolation `6/0`; тот же исходный
+  ресурсный порядок `3427/0`, privateBytes 140 165 120, Config остается активным.
+  В штатный Rows-тест v130 добавлены четыре restoration assertions.
+  Внутренний механизм аллокации Excel не заявляется установленным; полные
+  обычные Off/On и saved Results остаются обязательными после этой правки.
+  Численная причина аварии этим не установлена и NumFail не назначается.
+  Далее диагностика вызовов/объектов, затем обязательны
+  full Off/On и saved Results gate; общий DoD остается открытым.
+  Основная книга и ТЗ не изменены; общий DoD остается открытым.
 - Checkpoint Search-среза: `ff5caa46737f64be4d8e5d11e9e99eed7cf5c019`.
   Принятый следующий срез v112: единый LoadPath согласно
   [дополнению текущей цели](NDM_Audit03_Universal_LoadPath_Scope.md).
@@ -138,11 +228,10 @@
   per-address evidence не превращаются автоматически в приемку новой книги.
   Новая нагрузочная матрица имеет 12 вариантов: шесть для каждого критерия,
   Light 588 и Stress 288 независимых случаев на форму и Extension-режим.
-- F04-кандидат для следующего проверяемого среза: BuildSearchSnapshot Formation
-  всегда использует default SearchExecuted=True, в том числе при раннем
-  нулевом Auto-LC или аналитическом Ncrc без численного Search. Meta уже
-  различает Calculated, но отдельный флаг снимка требует направленного
-  negative/positive lifecycle gate. Текущая приемка Width не закрывает его.
+- F04-кандидат после v112 воспроизведен и исправлен в текущем v114 source:
+  BuildSearchSnapshot Formation и Capacity BuildSnapshot больше не используют
+  default SearchExecuted=True. Negative/positive lifecycle доказательства
+  перечислены выше; окончательные full/save-reopen gates этого среза еще идут.
 - Итог текущего Search-среза v103: directed 1812/0; полные восемь suites
   Off 21534/0 и On 21543/0; unit/sign equivalence On 1584/0;
   formatting 1004/0, Validate 25/25, source/export 102/102.

@@ -1,0 +1,3 @@
+OK: tool.numeric; actual=100.; expected=100.; absDiff=0.
+OK: tool.exponent|actual=1E-6|expected=1E-6
+OK: tool.text|actual=ExtUsed|expected=ExtUsed

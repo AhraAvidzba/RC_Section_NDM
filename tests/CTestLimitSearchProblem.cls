@@ -43,6 +43,7 @@ Private mDiagnosticLog As String ' Накопленный диагностиче
 Private mIterationLimitHit As Boolean ' True, если search остановился по лимиту итераций.
 Private mProbeMaxLambda As Double ' Наибольшая реально проверенная точка.
 Private mProbeCalls As Long ' Счетчик проб общего алгоритма.
+Private mSearchExecuted As Boolean ' ДЛЯ ТЕСТОВ: факт начала пробы или подготовки старта, независимо от ее успеха.
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
 Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
 Private mRecoveryWithoutProgress As Boolean ' Намеренно неисправный callback recovery возвращает прежнюю границу.
@@ -76,6 +77,7 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mIterationLimitHit = False
     mProbeMaxLambda = 0#
     mProbeCalls = 0
+    mSearchExecuted = False
     mFailureAbove = 0#
     mStepCriterion = False
     mRecoveryWithoutProgress = False
@@ -236,6 +238,7 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    mSearchExecuted = True
     eps0 = mUltimateInitialEps: kx = 0#: ky = 0#
 End Sub
 
@@ -355,6 +358,7 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
+    mSearchExecuted = True
     functionValue = lambdaValue - mRootLambda
     If mStepCriterion Then
         If lambdaValue < mRootLambda Then functionValue = -1# Else functionValue = 1#
@@ -506,7 +510,7 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     If mConverged Then
         meta.SetResult rsSuccess, rcCheckPassed, mKind, "Тестовый критерий найден."
     ElseIf mFailureCode <> sfcNone Then
-        meta.SetSolverFailure mFailureCode, mKind, mDiagnosticLog, (mUltimateCalls > 0)
+        meta.SetSolverFailure mFailureCode, mKind, mDiagnosticLog, mSearchExecuted
     ElseIf mLimitState = "SearchBoundReached" Then
         meta.SetResult rsNumericalFailure, rcSearchBoundReached, mKind, mLimitState
     ElseIf mLimitState = PROBE_INPUTERR Then
@@ -517,7 +521,7 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, request.SolutionStrategy, mFinalMethod, mConverged, mFinalLambda, _
-        mFinalLambda, 0#, 0#, Nothing, mLimitState, mDiagnosticLog
+        mFinalLambda, 0#, 0#, Nothing, mLimitState, mDiagnosticLog, vbNullString, mSearchExecuted
     Set ILimitSearchProblem_BuildResult = result
 End Function
 
@@ -546,7 +550,8 @@ End Sub
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, _
         ByVal firstStopReason As String, ByVal firstDiagnostics As String, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
-        ByVal successMessage As String)
+        ByVal successMessage As String, Optional ByVal firstSearchExecuted As Boolean = False)
+    mSearchExecuted = mSearchExecuted Or firstSearchExecuted
     AppendDiagnosticLine firstAttemptMessage
     AppendDiagnosticLine transitionMessage
     AppendDiagnosticLine successMessage

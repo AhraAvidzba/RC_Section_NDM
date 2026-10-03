@@ -1,0 +1,179 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_lifecycle_v113_negative.xlsm
+SOURCE_SHA256: BB43B24AD483876C9B18CCD8797FE6F4870C2342C86E6A6DDE431BC02390E0F2
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6e3f9a06a095469ba68973848e4db5ae\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03FormationLifecycle =====
+SUITE_STARTED: RunAudit03FormationLifecycle; 2026-10-03T03:12:44
+EXCEL_AFTER_SUITE: pid=26008; workingSet=129802240; privateBytes=90271744; cpu=2.625
+OK: audit03.formation.lifecycle.Auto.0.searchExists
+FAIL: audit03.formation.lifecycle.Auto.0.searchExecuted
+FAIL: audit03.formation.lifecycle.Auto.0.cloneFlag
+OK: audit03.formation.lifecycle.Auto.0.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.0.notCalculated
+OK: audit03.formation.lifecycle.Auto.0.noSolver
+OK: audit03.formation.lifecycle.Auto.0.noPoint
+OK: audit03.formation.lifecycle.Auto.0.noPre
+OK: audit03.formation.lifecycle.Auto.0.noPost
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.0; SearchExecuted=True; Calculated=False; solves=0; comment=Нагрузки сочетания равны нулю; поиск точки образования трещины не требуется.
+OK: audit03.formation.lifecycle.Auto.1.searchExists
+FAIL: audit03.formation.lifecycle.Auto.1.searchExecuted
+FAIL: audit03.formation.lifecycle.Auto.1.cloneFlag
+OK: audit03.formation.lifecycle.Auto.1.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.1.analyticalCalculated
+OK: audit03.formation.lifecycle.Auto.1.analyticalNoSolver
+OK: audit03.formation.lifecycle.Auto.1.thresholdBeyondLoad
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.1; SearchExecuted=True; Calculated=True; solves=0; comment=Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы.
+OK: audit03.formation.lifecycle.Auto.2.searchExists
+FAIL: audit03.formation.lifecycle.Auto.2.searchExecuted
+FAIL: audit03.formation.lifecycle.Auto.2.cloneFlag
+OK: audit03.formation.lifecycle.Auto.2.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.2.analyticalCalculated
+OK: audit03.formation.lifecycle.Auto.2.namedSolves
+OK: audit03.formation.lifecycle.Auto.2.preState
+OK: audit03.formation.lifecycle.Auto.2.postState
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.2; SearchExecuted=True; Calculated=True; solves=2; comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.Auto.3.searchExists
+OK: audit03.formation.lifecycle.Auto.3.searchExecuted
+OK: audit03.formation.lifecycle.Auto.3.cloneFlag
+OK: audit03.formation.lifecycle.Auto.3.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.3.numericCalculated
+OK: audit03.formation.lifecycle.Auto.3.numericPoint
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.3; SearchExecuted=True; Calculated=True; solves=18; comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.Auto.4.searchExists
+FAIL: audit03.formation.lifecycle.Auto.4.searchExecuted
+FAIL: audit03.formation.lifecycle.Auto.4.cloneFlag
+OK: audit03.formation.lifecycle.Auto.4.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.4.notCalculated
+OK: audit03.formation.lifecycle.Auto.4.noSolver
+OK: audit03.formation.lifecycle.Auto.4.noPoint
+OK: audit03.formation.lifecycle.Auto.4.noPre
+OK: audit03.formation.lifecycle.Auto.4.noPost
+OK: audit03.formation.lifecycle.Auto.4.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.4; SearchExecuted=True; Calculated=False; solves=0; comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.formation.lifecycle.Auto.5.searchExists
+OK: audit03.formation.lifecycle.Auto.5.searchExecuted
+OK: audit03.formation.lifecycle.Auto.5.cloneFlag
+OK: audit03.formation.lifecycle.Auto.5.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.5.typedConfiguration
+OK: audit03.formation.lifecycle.Auto.5.failedAttempt
+OK: audit03.formation.lifecycle.Auto.5.noPoint
+OK: audit03.formation.lifecycle.Auto.5.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.5; SearchExecuted=True; Calculated=False; solves=1; comment=Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+FAIL: audit03.formation.lifecycle.Auto.finalReset
+OK: audit03.formation.lifecycle.UltimateStrain.0.searchExists
+FAIL: audit03.formation.lifecycle.UltimateStrain.0.searchExecuted
+FAIL: audit03.formation.lifecycle.UltimateStrain.0.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.0.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.0.notCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.0.noSolver
+OK: audit03.formation.lifecycle.UltimateStrain.0.noPoint
+OK: audit03.formation.lifecycle.UltimateStrain.0.noPre
+OK: audit03.formation.lifecycle.UltimateStrain.0.noPost
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.0; SearchExecuted=True; Calculated=False; solves=0; comment=Нагрузки сочетания равны нулю; поиск точки образования трещины не требуется.
+OK: audit03.formation.lifecycle.UltimateStrain.1.searchExists
+FAIL: audit03.formation.lifecycle.UltimateStrain.1.searchExecuted
+FAIL: audit03.formation.lifecycle.UltimateStrain.1.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.1.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.1.analyticalCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.1.analyticalNoSolver
+OK: audit03.formation.lifecycle.UltimateStrain.1.thresholdBeyondLoad
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.1; SearchExecuted=True; Calculated=True; solves=0; comment=Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы.
+OK: audit03.formation.lifecycle.UltimateStrain.2.searchExists
+FAIL: audit03.formation.lifecycle.UltimateStrain.2.searchExecuted
+FAIL: audit03.formation.lifecycle.UltimateStrain.2.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.2.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.2.analyticalCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.2.namedSolves
+OK: audit03.formation.lifecycle.UltimateStrain.2.preState
+OK: audit03.formation.lifecycle.UltimateStrain.2.postState
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.2; SearchExecuted=True; Calculated=True; solves=2; comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.UltimateStrain.3.searchExists
+OK: audit03.formation.lifecycle.UltimateStrain.3.searchExecuted
+OK: audit03.formation.lifecycle.UltimateStrain.3.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.3.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.3.numericCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.3.numericPoint
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.3; SearchExecuted=True; Calculated=True; solves=18; comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.UltimateStrain.4.searchExists
+FAIL: audit03.formation.lifecycle.UltimateStrain.4.searchExecuted
+FAIL: audit03.formation.lifecycle.UltimateStrain.4.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.4.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.4.notCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.4.noSolver
+OK: audit03.formation.lifecycle.UltimateStrain.4.noPoint
+OK: audit03.formation.lifecycle.UltimateStrain.4.noPre
+OK: audit03.formation.lifecycle.UltimateStrain.4.noPost
+OK: audit03.formation.lifecycle.UltimateStrain.4.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.4; SearchExecuted=True; Calculated=False; solves=0; comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.formation.lifecycle.UltimateStrain.5.searchExists
+OK: audit03.formation.lifecycle.UltimateStrain.5.searchExecuted
+OK: audit03.formation.lifecycle.UltimateStrain.5.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.5.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.5.typedConfiguration
+OK: audit03.formation.lifecycle.UltimateStrain.5.failedAttempt
+OK: audit03.formation.lifecycle.UltimateStrain.5.noPoint
+OK: audit03.formation.lifecycle.UltimateStrain.5.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.5; SearchExecuted=True; Calculated=False; solves=1; comment=Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+FAIL: audit03.formation.lifecycle.UltimateStrain.finalReset
+OK: audit03.formation.lifecycle.LoadMultiplier.0.searchExists
+FAIL: audit03.formation.lifecycle.LoadMultiplier.0.searchExecuted
+FAIL: audit03.formation.lifecycle.LoadMultiplier.0.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.0.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.0.notCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.0.noSolver
+OK: audit03.formation.lifecycle.LoadMultiplier.0.noPoint
+OK: audit03.formation.lifecycle.LoadMultiplier.0.noPre
+OK: audit03.formation.lifecycle.LoadMultiplier.0.noPost
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.0; SearchExecuted=True; Calculated=False; solves=0; comment=Нагрузки сочетания равны нулю; поиск точки образования трещины не требуется.
+OK: audit03.formation.lifecycle.LoadMultiplier.1.searchExists
+FAIL: audit03.formation.lifecycle.LoadMultiplier.1.searchExecuted
+FAIL: audit03.formation.lifecycle.LoadMultiplier.1.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.1.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.1.analyticalCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.1.analyticalNoSolver
+OK: audit03.formation.lifecycle.LoadMultiplier.1.thresholdBeyondLoad
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.1; SearchExecuted=True; Calculated=True; solves=0; comment=Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы.
+OK: audit03.formation.lifecycle.LoadMultiplier.2.searchExists
+FAIL: audit03.formation.lifecycle.LoadMultiplier.2.searchExecuted
+FAIL: audit03.formation.lifecycle.LoadMultiplier.2.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.2.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.2.analyticalCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.2.namedSolves
+OK: audit03.formation.lifecycle.LoadMultiplier.2.preState
+OK: audit03.formation.lifecycle.LoadMultiplier.2.postState
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.2; SearchExecuted=True; Calculated=True; solves=2; comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.LoadMultiplier.3.searchExists
+OK: audit03.formation.lifecycle.LoadMultiplier.3.searchExecuted
+OK: audit03.formation.lifecycle.LoadMultiplier.3.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.3.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.3.numericCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.3.numericPoint
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.3; SearchExecuted=True; Calculated=True; solves=29; comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.LoadMultiplier.4.searchExists
+FAIL: audit03.formation.lifecycle.LoadMultiplier.4.searchExecuted
+FAIL: audit03.formation.lifecycle.LoadMultiplier.4.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.4.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.4.notCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.4.noSolver
+OK: audit03.formation.lifecycle.LoadMultiplier.4.noPoint
+OK: audit03.formation.lifecycle.LoadMultiplier.4.noPre
+OK: audit03.formation.lifecycle.LoadMultiplier.4.noPost
+OK: audit03.formation.lifecycle.LoadMultiplier.4.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.4; SearchExecuted=True; Calculated=False; solves=0; comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.formation.lifecycle.LoadMultiplier.5.searchExists
+OK: audit03.formation.lifecycle.LoadMultiplier.5.searchExecuted
+OK: audit03.formation.lifecycle.LoadMultiplier.5.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.5.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.5.typedConfiguration
+OK: audit03.formation.lifecycle.LoadMultiplier.5.failedAttempt
+OK: audit03.formation.lifecycle.LoadMultiplier.5.noPoint
+OK: audit03.formation.lifecycle.LoadMultiplier.5.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.5; SearchExecuted=True; Calculated=False; solves=1; comment=Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+FAIL: audit03.formation.lifecycle.LoadMultiplier.finalReset
+TOTAL_AUDIT03_FORMATION_LIFECYCLE: passed=120; failed=27
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6e3f9a06a095469ba68973848e4db5ae\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03FormationLifecycle; 2026-10-03T03:12:44
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

@@ -1,0 +1,36 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_lifecycle_v113_negative.xlsm
+SOURCE_SHA256: 4DEB3025C887F520DF1E6AD90DF2500E2CE17E67BE4C23AD2BE84A2599F64B6B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_395b469b3bed409a991f547babf8930b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03CapacityLifecycle =====
+SUITE_STARTED: RunAudit03CapacityLifecycle; 2026-10-03T03:16:02
+EXCEL_AFTER_SUITE: pid=29664; workingSet=128880640; privateBytes=90554368; cpu=2.640625
+FAIL: audit03.capacity.lifecycle.missing.notExecuted
+OK: audit03.capacity.lifecycle.missing.notCalculated
+FAIL: audit03.capacity.lifecycle.empty.notExecuted
+FAIL: audit03.capacity.lifecycle.empty.notCalculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.attempted
+OK: audit03.capacity.lifecycle.LoadMultiplier.calculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.point
+FAIL: audit03.capacity.lifecycle.LoadMultiplier.invalidBeforeSearch
+OK: audit03.capacity.lifecycle.LoadMultiplier.invalidNotCalculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.invalidNoPoint
+OK: audit03.capacity.lifecycle.LoadMultiplier.priorSnapshot
+FAIL: audit03.capacity.lifecycle.LoadMultiplier.missingReset
+OK: audit03.capacity.lifecycle.LoadMultiplier.missingNoPoint
+OK: audit03.capacity.lifecycle.UltimateStrain.attempted
+OK: audit03.capacity.lifecycle.UltimateStrain.calculated
+OK: audit03.capacity.lifecycle.UltimateStrain.point
+FAIL: audit03.capacity.lifecycle.UltimateStrain.invalidBeforeSearch
+OK: audit03.capacity.lifecycle.UltimateStrain.invalidNotCalculated
+OK: audit03.capacity.lifecycle.UltimateStrain.invalidNoPoint
+OK: audit03.capacity.lifecycle.UltimateStrain.priorSnapshot
+FAIL: audit03.capacity.lifecycle.UltimateStrain.missingReset
+OK: audit03.capacity.lifecycle.UltimateStrain.missingNoPoint
+TOTAL_AUDIT03_CAPACITY_LIFECYCLE: passed=15; failed=7
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_395b469b3bed409a991f547babf8930b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03CapacityLifecycle; 2026-10-03T03:16:03
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

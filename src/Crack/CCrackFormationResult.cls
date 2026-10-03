@@ -176,8 +176,10 @@ Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
-' Возвращает отдельный небольшой контейнер Search либо Nothing, если поиск
-' не выполнялся. Ссылки на конечные named-states не копируются по волокнам.
+' Возвращает отдельный небольшой контейнер исхода Formation. Он существует
+' и для аналитического Ncrc/раннего выхода: факт численного поиска задает
+' SearchExecuted. Nothing означает отсутствие заполненного результата.
+' Ссылки на конечные named-states не копируются по волокнам.
 Public Property Get SearchResult() As CLimitSearchResult
     If Not mSearchResult Is Nothing Then Set SearchResult = mSearchResult.Clone
 End Property

@@ -1,0 +1,15 @@
+{
+  "BaselineReport": "docs/regression/Audit03/suite_number_tool_baseline_2026-10-03.txt",
+  "CurrentReport": "docs/regression/Audit03/suite_number_tool_missing_2026-10-03.txt",
+  "BaselineSHA256": "C3BCD4F7A31F71372AEF5164877443203FAC64A9BE75302EF91E32A0706B9DBE",
+  "CurrentSHA256": "6BE6F3C10FB2883D2C43CD37FF5C1608D8286EE0D0146D69D9345FEE4D30BAFD",
+  "BaselineNumericAssertions": 2,
+  "CurrentNumericAssertions": 1,
+  "Compared": 1,
+  "Missing": [
+    "tool.numeric#1"
+  ],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": false
+}

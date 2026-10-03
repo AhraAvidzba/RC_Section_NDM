@@ -1,0 +1,19 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_sheet_isolation_v129.xlsm
+SOURCE_SHA256: CDF5B292D29B27950C0984F972390A89BF6C9710EDD5796EDDF213840CA4675E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_dcb62fb37557406cbad578238f4b9062\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03TemporaryLoadRangeIsolation =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03TemporaryLoadRangeIsolation; 2026-10-03T05:59:37
+EXCEL_AFTER_SUITE: pid=20776; workingSet=134766592; privateBytes=107945984; cpu=2.78125
+OK: batch.writer.availableRows.dataRows31
+OK: batch.writer.availableRows.summaryRows43
+OK: audit03.temporaryLoadRange.activeSheetRestored
+OK: audit03.temporaryLoadRange.nameRestored
+OK: audit03.temporaryLoadRange.sheetCountRestored
+OK: audit03.temporaryLoadRange.alertsRestored
+TOTAL_TEMPORARY_RANGE: passed=6; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_dcb62fb37557406cbad578238f4b9062\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03TemporaryLoadRangeIsolation; 2026-10-03T05:59:38
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True
