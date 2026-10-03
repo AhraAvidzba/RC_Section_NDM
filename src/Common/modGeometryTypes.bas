@@ -13,6 +13,7 @@ Option Explicit
 ' VBA до 15 цифр; повторная компиляция не должна менять точки контура на границе.
 Public Const GEOM_PI As Double = 3.14159265358979 + 3.10862446895044E-15
 Public Const GEOM_TOLERANCE As Double = 0.000000001
+Public Const GEOM_MAX_REBAR_COUNT As Double = 2147483646# ' Long-счетчик должен сохранять представимость следующего шага обхода.
 
 Public Type TPoint2D
     X As Double
@@ -67,6 +68,29 @@ Public Function GeomMin(ByVal A As Double, ByVal B As Double) As Double
         GeomMin = A
     Else
         GeomMin = B
+    End If
+End Function
+
+' Считает запрошенные позиции активной линии до удаления геометрических дублей.
+' Double исключает переполнение суммы рядов; EverySecondBar берет нечетные
+' позиции первого ряда. Это техническая оценка счетчиков, не физический лимит
+' армирования. Выключенная линия не создает и зависимые дополнительные ряды.
+Public Function RebarRequestedPositionCount(ByVal baseCount As Long, ByVal baseDiameter As Double, _
+        ByVal row2Diameter As Double, ByVal row3Diameter As Double, _
+        ByVal row2Binding As String, ByVal row3Binding As String) As Double
+    If baseCount <= 0 Or baseDiameter <= 0# Then Exit Function
+    Dim countValue As Double, rowCount As Double
+    countValue = CDbl(baseCount)
+    RebarRequestedPositionCount = countValue
+    If row2Diameter > 0# Then
+        rowCount = countValue
+        If StrComp(row2Binding, "EverySecondBar", vbTextCompare) = 0 Then rowCount = Fix((countValue + 1#) / 2#)
+        RebarRequestedPositionCount = RebarRequestedPositionCount + rowCount
+    End If
+    If row3Diameter > 0# Then
+        rowCount = countValue
+        If StrComp(row3Binding, "EverySecondBar", vbTextCompare) = 0 Then rowCount = Fix((countValue + 1#) / 2#)
+        RebarRequestedPositionCount = RebarRequestedPositionCount + rowCount
     End If
 End Function
 

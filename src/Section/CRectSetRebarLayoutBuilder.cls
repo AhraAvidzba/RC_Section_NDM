@@ -112,6 +112,14 @@ Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
     Set geom = New CGeometryRectSet
     geom.Initialize upperWidth, upperHeight, lowerWidth, lowerHeight, originX, originY, upperOffsetX, sectionType
 
+    ' Проверяем счетчики до массивов distances/used и размещения первого стержня.
+    ' Нижние грани Rectangle и линии с нулевым диаметром не участвуют в сумме.
+    Dim requestedPositions As Double
+    requestedPositions = FaceRequestedPositions(h1Settings) + FaceRequestedPositions(b1Settings)
+    If geom.HasLowerRectangle Then requestedPositions = requestedPositions + FaceRequestedPositions(h2Settings) + FaceRequestedPositions(b2Settings)
+    If requestedPositions > GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3171, "CRectSetRebarLayoutBuilder", _
+        "На листе Config в блоке RectSet уменьшите количество стержней n_1/n_2 или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы."
+
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
 
@@ -148,6 +156,18 @@ Public Function Build(ByVal upperWidth As Double, ByVal upperHeight As Double, _
         mCentroidY = 0#
     End If
     Set Build = layout
+End Function
+
+' Суммирует запрошенные позиции двух линий грани в Double, включая активные
+' дополнительные ряды. Не выбирает координаты и не считает удаленные дубли.
+Private Function FaceRequestedPositions(ByVal faceSettings As Variant) As Double
+    Dim lineIndex As Long, lineSettings As Variant
+    For lineIndex = 1 To 2
+        lineSettings = FaceLineSettings(faceSettings, lineIndex)
+        FaceRequestedPositions = FaceRequestedPositions + RebarRequestedPositionCount( _
+            LineBarCount(lineSettings), LineBarDiameter(lineSettings), LineRow2Diameter(lineSettings), LineRow3Diameter(lineSettings), _
+            LineRow2Binding(lineSettings), LineRow3Binding(lineSettings))
+    Next lineIndex
 End Function
 
 ' Передает размеры и смещение верхнего прямоугольника общему владельцу

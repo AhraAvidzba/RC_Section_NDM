@@ -1,0 +1,26 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_rebar_counter_v135.xlsm
+SOURCE_SHA256: C5812332A3B8BC705EC0C6D02E3FA1F16ADEC1E3C502DD38252A3A52FFB5BFA3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3b5f7a5009b5459d837ec6f5f26241fd\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL: passed=536; failed=0
+MODE_AFTER_SUITE: No
+TOTAL_MATERIAL: passed=2856; failed=0; elapsedSec=3.68359375
+MODE_AFTER_SUITE: No
+TOTAL_SECTION_SOLVER: passed=895; failed=0; elapsedSec=2.203125
+MODE_AFTER_SUITE: No
+TOTAL_CAPACITY: passed=1748; failed=0; elapsedSec=42.578125
+MODE_AFTER_SUITE: No
+TOTAL_CRACK: passed=1027; failed=0; elapsedSec=1.75390625
+MODE_AFTER_SUITE: No
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1813; failed=0
+TOTAL_AUDIT03_UNIVERSAL_PATH: passed=827; failed=0
+TOTAL_BATCH: passed=9024; failed=0; elapsedSec=110.9765625
+MODE_AFTER_SUITE: No
+TOTAL_CIRCLE_CONFIG: passed=53; failed=0
+TOTAL_SHAPE_CONFIG: passed=213; failed=0
+TOTAL_REBAR_COUNTER: passed=29; failed=0
+TOTAL_WORKBOOK_UI: passed=7199; failed=0; elapsedSec=354.955078125
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.494140625
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

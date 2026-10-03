@@ -1,0 +1,48 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_rebar_counter_negative_v135.xlsm
+SOURCE_SHA256: A4C003CD1CF8D793DF62513682EF5DCC6D5BF3A9508D246C5D590D8A8F0E36D0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f6551fb1a6cb487697c886a1533469da\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometryConfig.RunAudit03RebarCounterTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03RebarCounterTests; 2026-10-03T08:46:17
+EXCEL_AFTER_SUITE: pid=22844; workingSet=128761856; privateBytes=97787904; cpu=2.90625
+FAIL: rebarCounter.RectSet.0.typed
+FAIL: rebarCounter.RectSet.0.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=0; error=-2147218331; comment=H1 - левая грань: расстояние as до оси стержня должно быть больше d/2.
+FAIL: rebarCounter.RectSet.1.typed
+FAIL: rebarCounter.RectSet.1.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=1; error=-2147218331; comment=H1 - левая грань: расстояние as до оси стержня должно быть больше d/2.
+FAIL: rebarCounter.RectSet.2.typed
+FAIL: rebarCounter.RectSet.2.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=2; error=-2147218331; comment=H1 - левая грань: расстояние as до оси стержня должно быть больше d/2.
+OK: rebarCounter.RectSet.disabled
+OK: rebarCounter.RectSet.recovery
+FAIL: rebarCounter.RoundedRectangle.0.typed
+FAIL: rebarCounter.RoundedRectangle.0.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=0; error=6; comment=Overflow
+FAIL: rebarCounter.RoundedRectangle.1.typed
+FAIL: rebarCounter.RoundedRectangle.1.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=1; error=-2147218272; comment=H - левая грань: расстояние as до оси стержня должно быть больше d/2.
+FAIL: rebarCounter.RoundedRectangle.2.typed
+FAIL: rebarCounter.RoundedRectangle.2.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=2; error=-2147218272; comment=H - левая грань: расстояние as до оси стержня должно быть больше d/2.
+OK: rebarCounter.RoundedRectangle.disabled
+OK: rebarCounter.RoundedRectangle.recovery
+FAIL: rebarCounter.HollowRectangle.0.typed
+FAIL: rebarCounter.HollowRectangle.0.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=0; error=6; comment=Overflow
+FAIL: rebarCounter.HollowRectangle.1.typed
+FAIL: rebarCounter.HollowRectangle.1.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=1; error=-2147218252; comment=B - верхняя наружная грань: расстояние as до оси стержня должно быть больше d/2.
+FAIL: rebarCounter.HollowRectangle.2.typed
+FAIL: rebarCounter.HollowRectangle.2.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=2; error=-2147218252; comment=B - верхняя наружная грань: расстояние as до оси стержня должно быть больше d/2.
+OK: rebarCounter.HollowRectangle.disabled
+OK: rebarCounter.HollowRectangle.recovery
+OK: rebarCounter.RectSet.inactiveLower
+TOTAL_REBAR_COUNTER: passed=7; failed=18
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f6551fb1a6cb487697c886a1533469da\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03RebarCounterTests; 2026-10-03T08:46:17
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

@@ -1,0 +1,25 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_rebar_counter_negative_v135.xlsm
+SOURCE_SHA256: A4C003CD1CF8D793DF62513682EF5DCC6D5BF3A9508D246C5D590D8A8F0E36D0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f6551fb1a6cb487697c886a1533469da\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: rebarCounter.RectSet.0.typed
+FAIL: rebarCounter.RectSet.0.message
+FAIL: rebarCounter.RectSet.1.typed
+FAIL: rebarCounter.RectSet.1.message
+FAIL: rebarCounter.RectSet.2.typed
+FAIL: rebarCounter.RectSet.2.message
+FAIL: rebarCounter.RoundedRectangle.0.typed
+FAIL: rebarCounter.RoundedRectangle.0.message
+FAIL: rebarCounter.RoundedRectangle.1.typed
+FAIL: rebarCounter.RoundedRectangle.1.message
+FAIL: rebarCounter.RoundedRectangle.2.typed
+FAIL: rebarCounter.RoundedRectangle.2.message
+FAIL: rebarCounter.HollowRectangle.0.typed
+FAIL: rebarCounter.HollowRectangle.0.message
+FAIL: rebarCounter.HollowRectangle.1.typed
+FAIL: rebarCounter.HollowRectangle.1.message
+FAIL: rebarCounter.HollowRectangle.2.typed
+FAIL: rebarCounter.HollowRectangle.2.message
+TOTAL_REBAR_COUNTER: passed=7; failed=18
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

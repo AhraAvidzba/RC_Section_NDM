@@ -69,6 +69,34 @@
 
 ## Актуальная Точка Продолжения
 
+- Geometry Config v134 зафиксирован коммитом `78fd486`. Следующий F07 срез
+  v135 проверяет представимость счетчиков трех некруглых builders до циклов
+  и выделения массивов. Negative `7/18`: реальные Overflow=6 воспроизведены
+  для RoundedRectangle H и HollowRectangle B при n=2147483647; остальные
+  случаи намеренно имеют неверный отступ, чтобы старый код завершался быстро,
+  не выделяя огромные массивы. Новая общая численная оценка запрошенных
+  позиций учитывает дополнительные ряды/EverySecondBar и выключенные линии;
+  Rectangle не включает нижние грани. Это техническая граница Long, не новый
+  физический/нормативный лимит армирования. Opening сохраняет фактическое
+  количество проекций, общая раскладка проверяет фактический счетчик.
+  Directed positive `29/0`, source/export `103/103`, failed=0; full Off
+  `23324/0`, общие actual-числа с v134 `5577/5577`, missing=0, differences=0.
+  Help `2536/2536`, mergesEqual=True. Полный On завершен `23335/0`, общие
+  числа с v134 `5582/5582`, missing=0, differences=0. Universal `827/0`,
+  palette `351/0`: Results и status-style save/reopen=True. Read-only
+  formatting `1003/0`, deviations=0; Validate `25/25`. Все процессы завершены.
+  Книга SHA `C5812332A3B8BC705EC0C6D02E3FA1F16ADEC1E3C502DD38252A3A52FFB5BFA3`,
+  export `367F712EB9BEB75550C32AF3C9C5ACC4A1D1D133F4FFC8BF2051E45BE57ABA3A`.
+  ТЗ и основная output-книга сохраняют исходные хеши. Registry `118/1064`,
+  fullAcceptance=False: counter gate не добавляет поадресный Config PASS.
+  Census 103 модуля, 4240 методов,
+  1490 guard-кандидатов, 83 production + 3 test classes. Новых `.cls` нет;
+  Formation absence -> psi=1/warning и current-state blocking не менялись.
+  Следующий цельный geometry input gate: обязательные активные размеры/
+  selectors и raw-input/адреса в таблицах; при missing/blank/TODO/невалидном
+  вводе не подставлять программные defaults. Разрешенные blank/0 выключения
+  рядов и неактивные геометрические поля рассматривать отдельно. Пока это
+  обнаруженный call-site риск, не завершенный runtime gate.
 - Срез v133 зафиксирован коммитом `27d55e4`. Текущий следующий geometry Config
   срез v134: 24 параметра форм + четыре наружных счетчика HollowRectangle.
   Negative `161/40` подтвердил молчаливое отключение наружной грани при abc

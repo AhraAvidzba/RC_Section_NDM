@@ -61,6 +61,13 @@ Public Function Build(ByVal geom As CGeometryRoundedRectangle, _
     Dim message As String
     If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3223, "CRoundedRectRebarLayoutBuilder", message
 
+    ' Сумма в Double проверяется до Long-выражения n+1, циклов и размещения.
+    Dim requestedPositions As Double
+    requestedPositions = FaceRequestedPositions(hLeftSettings) + FaceRequestedPositions(hRightSettings) + _
+        FaceRequestedPositions(bTopSettings) + FaceRequestedPositions(bBottomSettings)
+    If requestedPositions > GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3230, "CRoundedRectRebarLayoutBuilder", _
+        "На листе Config в блоке скругленного прямоугольника уменьшите количество стержней n или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы."
+
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
     mRequestedCount = 0
@@ -74,6 +81,13 @@ Public Function Build(ByVal geom As CGeometryRoundedRectangle, _
     AddSideFace layout, geom, "H.Right", False, hRightSettings, steelClass, nextIndex
 
     Set Build = layout
+End Function
+
+' Оценивает запрошенные позиции одной активной грани без координат и дублей;
+' нулевой первый ряд выключает также зависящие от него дополнительные ряды.
+Private Function FaceRequestedPositions(ByVal settings As Variant) As Double
+    FaceRequestedPositions = RebarRequestedPositionCount(FaceCount(settings), FaceDiameter(settings), _
+        FaceRow2Diameter(settings), FaceRow3Diameter(settings), FaceRow2Binding(settings), FaceRow3Binding(settings))
 End Function
 
 ' Читает параметры одной строки арматуры RoundedRectangle.

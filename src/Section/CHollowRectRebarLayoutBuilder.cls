@@ -65,6 +65,15 @@ Public Function Build(ByVal geom As CGeometryHollowRectangle, _
     Dim message As String
     If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3243, "CHollowRectRebarLayoutBuilder", message
 
+    ' Наружные счетчики проверяем до n+1 и накопления массивов проекций.
+    ' Opening не имеет собственного n: его фактическое количество проверяет
+    ' CRebarLayout при добавлении, не подменяем его верхней оценкой проекций.
+    Dim requestedPositions As Double
+    requestedPositions = FaceRequestedPositions(hLeftSettings) + FaceRequestedPositions(hRightSettings) + _
+        FaceRequestedPositions(bTopSettings) + FaceRequestedPositions(bBottomSettings)
+    If requestedPositions > GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3250, "CHollowRectRebarLayoutBuilder", _
+        "На листе Config в блоке пустотелого прямоугольника уменьшите наружное количество стержней n или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы."
+
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
 
@@ -98,6 +107,13 @@ Public Function Build(ByVal geom As CGeometryHollowRectangle, _
         openingBTopSettings, openingBBottomSettings, rightX, rightY, rightNX, rightNY, rightCount, steelClass, nextIndex
 
     Set Build = layout
+End Function
+
+' Суммирует запрошенные позиции наружной активной грани в Double, учитывая
+' привязку дополнительных рядов. Не назначает количество арматуры отверстия.
+Private Function FaceRequestedPositions(ByVal settings As Variant) As Double
+    FaceRequestedPositions = RebarRequestedPositionCount(FaceCount(settings), FaceDiameter(settings), _
+        FaceRow2Diameter(settings), FaceRow3Diameter(settings), FaceRow2Binding(settings), FaceRow3Binding(settings))
 End Function
 
 ' Читает параметры грани и проверяет инженерный диапазон ее счетчика.

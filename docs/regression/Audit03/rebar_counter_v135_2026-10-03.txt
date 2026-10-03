@@ -1,0 +1,56 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_rebar_counter_v135.xlsm
+SOURCE_SHA256: C5812332A3B8BC705EC0C6D02E3FA1F16ADEC1E3C502DD38252A3A52FFB5BFA3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4452cd619e874195a38ba2272c8b005c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometryConfig.RunAudit03RebarCounterTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03RebarCounterTests; 2026-10-03T08:49:04
+EXCEL_AFTER_SUITE: pid=29056; workingSet=129290240; privateBytes=90746880; cpu=2.84375
+OK: rebarCounter.RectSet.0.typed
+OK: rebarCounter.RectSet.0.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=0; error=-2147218333; comment=На листе Config в блоке RectSet уменьшите количество стержней n_1/n_2 или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.RectSet.1.typed
+OK: rebarCounter.RectSet.1.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=1; error=-2147218333; comment=На листе Config в блоке RectSet уменьшите количество стержней n_1/n_2 или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.RectSet.2.typed
+OK: rebarCounter.RectSet.2.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=2; error=-2147218333; comment=На листе Config в блоке RectSet уменьшите количество стержней n_1/n_2 или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.RectSet.disabled
+OK: rebarCounter.RectSet.recovery
+OK: rebarCounter.RoundedRectangle.0.typed
+OK: rebarCounter.RoundedRectangle.0.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=0; error=-2147218274; comment=На листе Config в блоке скругленного прямоугольника уменьшите количество стержней n или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.RoundedRectangle.1.typed
+OK: rebarCounter.RoundedRectangle.1.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=1; error=-2147218274; comment=На листе Config в блоке скругленного прямоугольника уменьшите количество стержней n или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.RoundedRectangle.2.typed
+OK: rebarCounter.RoundedRectangle.2.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=2; error=-2147218274; comment=На листе Config в блоке скругленного прямоугольника уменьшите количество стержней n или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.RoundedRectangle.disabled
+OK: rebarCounter.RoundedRectangle.recovery
+OK: rebarCounter.HollowRectangle.0.typed
+OK: rebarCounter.HollowRectangle.0.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=0; error=-2147218254; comment=На листе Config в блоке пустотелого прямоугольника уменьшите наружное количество стержней n или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.HollowRectangle.1.typed
+OK: rebarCounter.HollowRectangle.1.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=1; error=-2147218254; comment=На листе Config в блоке пустотелого прямоугольника уменьшите наружное количество стержней n или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.HollowRectangle.2.typed
+OK: rebarCounter.HollowRectangle.2.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=2; error=-2147218254; comment=На листе Config в блоке пустотелого прямоугольника уменьшите наружное количество стержней n или число активных рядов: суммарное количество запрошенных позиций превышает диапазон счетчиков программы.
+OK: rebarCounter.HollowRectangle.disabled
+OK: rebarCounter.HollowRectangle.recovery
+OK: rebarCounter.RectSet.inactiveLower
+OK: rebarCounter.binding.odd
+CIRCLE_CONFIG_NUMBER: rebarCounter.binding.odd; actual=11; expected=11
+OK: rebarCounter.binding.even
+CIRCLE_CONFIG_NUMBER: rebarCounter.binding.even; actual=15; expected=15
+OK: rebarCounter.binding.maxLong
+CIRCLE_CONFIG_NUMBER: rebarCounter.binding.maxLong; actual=3221225471; expected=3221225471
+OK: rebarCounter.binding.disabled
+CIRCLE_CONFIG_NUMBER: rebarCounter.binding.disabled; actual=0; expected=0
+TOTAL_REBAR_COUNTER: passed=29; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4452cd619e874195a38ba2272c8b005c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03RebarCounterTests; 2026-10-03T08:49:04
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

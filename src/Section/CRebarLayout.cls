@@ -69,6 +69,10 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
 
     If Len(Trim$(barName)) = 0 Then Err.Raise vbObjectError + 3100, "CRebarLayout", "ID стержня не заполнен."
     If diameter <= 0# Then Err.Raise vbObjectError + 3101, "CRebarLayout", "Диаметр арматуры должен быть положительным."
+    ' Общая защита фактического количества, в том числе для проекций Opening
+    ' и импорта; builders дополнительно проверяют свой запрос до размещения.
+    If CDbl(mCount) >= GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3108, "CRebarLayout", _
+        "Количество стержней превышает диапазон счетчиков программы. Уменьшите активную раскладку в Config или число импортируемых элементов."
 
     Dim actualArea As Double
     If area <= 0# Then

@@ -15,6 +15,113 @@ Private Type TGeometryConfigStats
     Report As String
 End Type
 
+' Проверяет представимость количества до размещения и выделения массивов.
+' Только два max-Long случая имеют корректный отступ и воспроизводят Overflow;
+' остальные намеренно используют неверный отступ, чтобы старый код завершался
+' безопасно, без миллиардного цикла или многогигабайтного массива.
+Public Function RunAudit03RebarCounterTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TGeometryConfigStats, shapeName As Variant, scenario As Long
+    Dim bars As CRebarLayout, number As Long, description As String, expected As Long
+    For Each shapeName In Array("RectSet", "RoundedRectangle", "HollowRectangle")
+        Select Case CStr(shapeName)
+            Case "RectSet": expected = vbObjectError + 3171
+            Case "RoundedRectangle": expected = vbObjectError + 3230
+            Case "HollowRectangle": expected = vbObjectError + 3250
+        End Select
+        For scenario = 0 To 2
+            Set bars = Nothing: number = 0: description = vbNullString
+            On Error Resume Next
+            Set bars = CounterFixture(CStr(shapeName), scenario)
+            number = Err.Number: description = Err.Description
+            Err.Clear
+            On Error GoTo 0
+            Check stats, "rebarCounter." & CStr(shapeName) & "." & CStr(scenario) & ".typed", number = expected
+            Check stats, "rebarCounter." & CStr(shapeName) & "." & CStr(scenario) & ".message", _
+                InStr(1, description, "Config", vbTextCompare) > 0 And InStr(1, description, "счетчиков", vbTextCompare) > 0
+            stats.Report = stats.Report & "REBAR_COUNTER_FAILURE: shape=" & CStr(shapeName) & "; scenario=" & CStr(scenario) & _
+                "; error=" & CStr(number) & "; comment=" & description & vbCrLf
+        Next scenario
+        On Error GoTo FailedRun
+        Set bars = CounterFixture(CStr(shapeName), 3)
+        Check stats, "rebarCounter." & CStr(shapeName) & ".disabled", bars.Count = 0
+        Set bars = CounterFixture(CStr(shapeName), 4)
+        Check stats, "rebarCounter." & CStr(shapeName) & ".recovery", bars.Count = 3
+    Next shapeName
+    Set bars = CounterFixture("RectSet", 5)
+    Check stats, "rebarCounter.RectSet.inactiveLower", bars.Count = 0
+    Near stats, "rebarCounter.binding.odd", RebarRequestedPositionCount(5, 16#, 12#, 10#, "EverySecondBar", "EverySecondBar"), 11#
+    Near stats, "rebarCounter.binding.even", RebarRequestedPositionCount(6, 16#, 12#, 10#, "EverySecondBar", "EachBar"), 15#
+    Near stats, "rebarCounter.binding.maxLong", RebarRequestedPositionCount(2147483647, 16#, 12#, 0#, "EverySecondBar", "EachBar"), 3221225471#
+    Near stats, "rebarCounter.binding.disabled", RebarRequestedPositionCount(2147483647, 0#, 12#, 10#, "EachBar", "EachBar"), 0#
+    GoTo Finish
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    stats.Report = stats.Report & "FAIL: rebarCounter.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finish:
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03RebarCounterTests = stats.Report & "TOTAL_REBAR_COUNTER: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
+End Function
+
+' Создает один и тот же безопасный крайний ввод для трех штатных builders.
+' Сценарии: max Long, сумма двух граней, сумма рядов, выключенная грань,
+' обычные три стержня и неактивные нижние грани режима Rectangle.
+Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Long) As CRebarLayout
+    Dim count1 As Long, count2 As Long, axisDistance As Double, diameter As Double, row2 As Double
+    count1 = 2147483647: axisDistance = 0#: diameter = 16#
+    Select Case scenario
+        Case 0
+            If shapeName <> "RectSet" Then axisDistance = 40#
+        Case 1: count1 = 1100000000: count2 = 1100000000
+        Case 2: count1 = 1100000000: row2 = 16#
+        Case 3: diameter = 0#: axisDistance = 40#
+        Case 4: count1 = 3: axisDistance = 40#
+        Case 5: axisDistance = 40#
+    End Select
+    Dim inactive As Variant, active As Variant, second As Variant
+    If shapeName = "RectSet" Then
+        inactive = CounterRectFace(0, 0, 40#, 0#, 0#)
+        active = CounterRectFace(count1, count2, axisDistance, diameter, row2)
+        Dim rectBuilder As CRectSetRebarLayoutBuilder
+        Set rectBuilder = New CRectSetRebarLayoutBuilder
+        If scenario = 5 Then
+            Set CounterFixture = rectBuilder.Build(600#, 400#, 600#, 400#, 0#, 0#, inactive, active, inactive, active, "Rebar", 0#, "Rectangle")
+        Else
+            Set CounterFixture = rectBuilder.Build(600#, 400#, 600#, 400#, 0#, 0#, active, inactive, inactive, inactive, "Rebar", 0#, "Rectangle")
+        End If
+    Else
+        inactive = CounterCompactFace(0, 40#, 0#, 0#)
+        active = CounterCompactFace(count1, axisDistance, diameter, row2)
+        second = CounterCompactFace(count2, axisDistance, diameter, 0#)
+        If shapeName = "RoundedRectangle" Then
+            Dim rounded As CGeometryRoundedRectangle, roundedBuilder As CRoundedRectRebarLayoutBuilder
+            Set rounded = New CGeometryRoundedRectangle: rounded.Initialize 600#, 400#
+            Set roundedBuilder = New CRoundedRectRebarLayoutBuilder
+            Set CounterFixture = roundedBuilder.Build(rounded, active, second, inactive, inactive, "Rebar")
+        Else
+            Dim hollow As CGeometryHollowRectangle, hollowBuilder As CHollowRectRebarLayoutBuilder
+            Set hollow = New CGeometryHollowRectangle: hollow.Initialize 1000#, 1200#, 60#, 400#, 500#, 30#
+            Set hollowBuilder = New CHollowRectRebarLayoutBuilder
+            Set CounterFixture = hollowBuilder.Build(hollow, inactive, inactive, active, second, inactive, inactive, inactive, inactive, "Rebar")
+        End If
+    End If
+End Function
+
+' Заполняет компактную грань Rounded/Hollow: первый ряд, дополнительные ряды
+' и их положение/привязка. Неактивные диаметры остаются нулевыми.
+Private Function CounterCompactFace(ByVal count As Long, ByVal axisDistance As Double, _
+        ByVal diameter As Double, ByVal row2 As Double) As Variant
+    CounterCompactFace = Array(axisDistance, diameter, count, row2, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+End Function
+
+' Заполняет две линии одной грани RectSet без концевых отступов; второй ряд
+' относится только к первой линии. Нижние грани можно передать неактивными.
+Private Function CounterRectFace(ByVal count1 As Long, ByVal count2 As Long, ByVal axisDistance As Double, _
+        ByVal diameter As Double, ByVal row2 As Double) As Variant
+    CounterRectFace = Array(axisDistance, axisDistance, diameter, diameter, count1, count2, _
+        0#, 0#, 0#, 0#, row2, 0#, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+End Function
+
 ' Выполняет активные/неактивные варианты восьми параметров круга, границы
 ' и восстановление после ошибочного ввода. Счетчики доступны полному UI-suite.
 Public Function RunAudit03CircleConfigTests(Optional ByRef passed As Long = 0, _

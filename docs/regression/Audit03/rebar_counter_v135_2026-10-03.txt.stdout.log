@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_rebar_counter_v135.xlsm
+SOURCE_SHA256: C5812332A3B8BC705EC0C6D02E3FA1F16ADEC1E3C502DD38252A3A52FFB5BFA3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4452cd619e874195a38ba2272c8b005c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_REBAR_COUNTER: passed=29; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True
