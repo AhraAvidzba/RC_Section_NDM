@@ -130,6 +130,7 @@ Private mStabilityLoadCombinationID() As String ' LC, к которому отн
 Private mStabilityLoadN() As Double ' N от постоянных или постоянных+длительных нагрузок, Н.
 Private mStabilityLoadUserMx() As Double ' Пользовательский Mx длительной части в точке приложения нагрузки.
 Private mStabilityLoadUserMy() As Double ' Пользовательский My длительной части в точке приложения нагрузки.
+Private mStabilityLoadInputError() As String ' Ошибка прочтения длительной части только этого LC; пусто для корректной строки.
 
 ' Создает общую status-policy, report и фильтр моментов, резервирует массивы
 ' LC и длительных нагрузок. Начальные параметры нужны прямому API класса;
@@ -416,6 +417,7 @@ Public Sub ClearStabilityDurationLoads()
         mStabilityLoadN(i) = 0#
         mStabilityLoadUserMx(i) = 0#
         mStabilityLoadUserMy(i) = 0#
+        mStabilityLoadInputError(i) = vbNullString
     Next i
 End Sub
 
@@ -431,6 +433,17 @@ Public Sub AddStabilityDurationLoad(ByVal combinationID As String, ByVal nValue 
     mStabilityLoadN(mStabilityLoadCount) = nValue
     mStabilityLoadUserMx(mStabilityLoadCount) = mxValue
     mStabilityLoadUserMy(mStabilityLoadCount) = myValue
+    mStabilityLoadInputError(mStabilityLoadCount) = vbNullString
+End Sub
+
+' Сохраняет ошибку дополнительной нагрузки без подмены ее нулевой нагрузкой.
+' Причина подготовлена Excel-reader-ом; она блокирует только устойчивость этого
+' LC, а остальные запрошенные проверки продолжаются с исходными усилиями.
+Public Sub AddInvalidStabilityDurationLoad(ByVal combinationID As String, ByVal reason As String)
+    If Len(Trim$(reason)) = 0 Then Err.Raise vbObjectError + 4113, _
+        "CBatchSectionCalculator", "Не передана причина ошибки дополнительной нагрузки устойчивости."
+    AddStabilityDurationLoad combinationID, 0#, 0#, 0#
+    mStabilityLoadInputError(mStabilityLoadCount) = reason
 End Sub
 
 ' Принимает таблицу 7.21 СП 35 из Config. Таблица нужна только при выборе
@@ -535,11 +548,13 @@ Private Sub EnsureStabilityLoadCapacity(ByVal requiredCount As Long)
         ReDim mStabilityLoadN(1 To newCapacity)
         ReDim mStabilityLoadUserMx(1 To newCapacity)
         ReDim mStabilityLoadUserMy(1 To newCapacity)
+        ReDim mStabilityLoadInputError(1 To newCapacity)
     Else
         ReDim Preserve mStabilityLoadCombinationID(1 To newCapacity)
         ReDim Preserve mStabilityLoadN(1 To newCapacity)
         ReDim Preserve mStabilityLoadUserMx(1 To newCapacity)
         ReDim Preserve mStabilityLoadUserMy(1 To newCapacity)
+        ReDim Preserve mStabilityLoadInputError(1 To newCapacity)
     End If
 End Sub
 
@@ -799,6 +814,14 @@ End Sub
 Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialValueSet)
     On Error GoTo Failed
 
+    Dim durationInputError As String
+    durationInputError = StabilityDurationInputError(mInputs(index).CombinationID)
+    If Len(durationInputError) > 0 Then
+        mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, durationInputError), durationInputError
+        ReportStep "Устойчивость не рассчитана: " & durationInputError
+        Exit Sub
+    End If
+
     Dim referenceX As Double
     Dim referenceY As Double
     TransformedReferencePoint valueSet, referenceX, referenceY
@@ -854,6 +877,20 @@ Failed:
     mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, Err.Description), Err.Description
     ReportStep "Устойчивость не рассчитана: " & Err.Description
 End Sub
+
+
+' Возвращает ошибку первой сопоставленной строки длительных нагрузок.
+' Порядок совпадает с выбором самих усилий: последующая строка с тем же ID
+' не должна менять уже выбранную строку, а прошлый запуск сбрасывается Clear.
+Private Function StabilityDurationInputError(ByVal combinationID As String) As String
+    Dim i As Long
+    For i = 1 To mStabilityLoadCount
+        If StrComp(mStabilityLoadCombinationID(i), Trim$(combinationID), vbTextCompare) = 0 Then
+            StabilityDurationInputError = mStabilityLoadInputError(i)
+            Exit Function
+        End If
+    Next i
+End Function
 
 
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,

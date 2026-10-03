@@ -21,7 +21,7 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v176: 400 активных полей из 1064, включая 210 LC, 16 профильных переключателей и 56 material/name полей. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v179: 490 активных полей из 1064, включая 90 дополнительных нагрузок устойчивости; из 760 editable полей 270 еще не приняты. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
 | 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
 
 ## Карта Обязанностей
@@ -123,12 +123,74 @@
   остальных диапазонов и взаимодействий. Основная книга и ТЗ сохраняют
   baseline SHA; чужой Excel PID 23476 и его книги не затронуты.
 
-- Следующий цельный Config-срез: дополнительные нагрузки устойчивости
-  `rngStabilityDurationLoads`, 30 строк по N/Mx/My (90 editable полей),
-  реальные active/inactive consumers, units/signs, ошибочные значения,
-  динамические адреса и comments собственного subtree. Read-only review
-  выявил для проверки NumericCellOrZero и missing-range handler; дефекты
-  не объявляются подтвержденными до отрицательного runtime gate.
+- Checkpoint среза профилей и адресов: `38ecc80f`. Следующий цельный Config-срез
+  v177-v178: `rngStabilityDurationLoads`, 30 строк по N/Mx/My (90 editable полей).
+  Отрицательный runtime v177b `7926/576`, 606 случаев, watchdog exit=1,
+  source unchanged=True: текстовые числа вызывали необработанный Type mismatch,
+  CVErr превращался в численный ввод, недоступная таблица подменялась нулями,
+  не было собственного адресного InputErr для длительной части. Все допустимые
+  числовые варианты и units/signs этого negative прошли, их физика не меняется.
+  v177 не дошел до RUN-checkpoints и открыл VBE; в новом тесте было объявление
+  переменной именем зарезервированного типа Variant. Исправлено только это
+  объявление, затем v177b выполнил расчетный reproducer. Журнал v177 не принят.
+  Sky capture дважды завершился timeout; закрыт только тестовый Excel PID 25164,
+  пользовательский PID 23476 сохранен. Это не external blocker всей цели.
+  В v178 reader сохраняет InputErr в отдельном входе длительной части; Batch
+  не запускает устойчивость этой строки, но продолжает другие проверки.
+  Подготовлены также overflow, первая duplicate-ID строка, регистр ID,
+  error-ID и перемещенный диапазон. Directed v178 `9964/0`, 613 случаев,
+  exit=0/source unchanged=True. Results SHA
+  `AF95BD37A685968A6C60A2FFCD702E5F8D1397C549D00BF61CB3B9201C5CD228`
+  и status-style SHA `8BBB9692392C892E33E8E17B60142675480837DC5DE2E019D3A49C96DD8D88F7`
+  совпали после reopen. Source/export v178 `105/105`, failed=0; census
+  4348 methods/1570 guards остается семантически Pending. v179 уточняет только
+  setup нулевых эксцентриситетов и проверку comments следующего корректного LC;
+  production методика не меняется. Full suites включают направленный набор;
+  отдельный повтор того же entrypoint не заменяет полную приемку.
+  v179 source/export `105/105`, failed=0; export SHA
+  `880D1256DF6E6E22306AAC7D6EE3E672BFC9EF22562F109DE0DEA3F70D98E2CA`.
+  Validate `27/27`, formatting `1003/0`, deviations=0; help failed=0,
+  1963 строки, 140 links, 118 shapes, input/print areas сохранены.
+  Полный Off v179 запущен через watchdog с budget 3600 секунд, без запрещенных
+  full-suite reopen flags. On и clean/update еще обязательны; registry
+  остается 400/1064, fullAcceptance=False. Предыдущий ответ с оценкой срока
+  не являлся продвижением цели; перед продолжением проверены Git, progress,
+  активные процессы и новый source/export. Незавершенный старый exec-handle
+  отсутствует; посторонний Excel PID 23476 сохранен.
+
+- Окончательная приемка Duration v179: все восемь suites прошли Off
+  `58483/0` и On `58494/0`, watchdog exit=0/source unchanged=True. В каждом
+  full направленный Duration-блок имеет `10504/0`, 613 случаев; исходные
+  expected и tolerance не изменены. Все 10305/10310 общих численных actual
+  с принятым v176 совпали точно, missing/differences=0. Чистая сборка v179
+  завершена: Validate `27/27`, formatting `1003/0`, 1002 адреса,
+  deviations=0/source unchanged=True; clean/update help `2579/2579`,
+  mergesEqual=True, failed=0. Это не полный повтор suites на clean-книге
+  и не пиксельная приемка. SHA clean-книги
+  `63F52DD9A730AEB682D3859C2551ED609A6A158E50DFC996647BA08D479223D5`,
+  updated-книги
+  `7EA9B6C62633111A6080E780ACA8CDEDD7327E1EA2328A21CA6979E2D476F4C7`.
+  После этих gates присоединены 90 per-key записей: registry Duration v179
+  имеет 490/1064 active-reviewed, fullAcceptance=False. Остаются 270 editable
+  полей, full-range/interactions и окончательные F/A/D/P/T gates.
+  Основной output и пользовательское ТЗ не опубликованы/не изменены;
+  пользовательский Excel сохранен. Последние gates завершены 4 октября,
+  имена отчетов сохраняют дату начала среза 3 октября 2026 года.
+  Следующий цельный объем: оставшиеся geometry rebar/Config поля и directed
+  доказательства найденных при семантическом чтении F03/F07 кандидатов;
+  они не объявляются выполненными на основании индекса методов или full v179.
+
+- Продолжение F03/F07 во время full Off v179: статически рассмотрены
+  `CLoadMultiplierSearch.Execute/RunSearch/FindBracket` и
+  `CUltimateStrainSearch.ReportArithmeticOrContractFailure`. В FindBracket
+  обработчик ArithmeticFailed охватывает также доменные callbacks и любую
+  VBA-ошибку передает SetNumericalFailure; Ultimate различает Overflow (6)
+  и внутреннюю ошибку. Это пока кандидат на дефект, не runtime PASS и не
+  доказанная production-несходимость. Нужен directed fault в существующем
+  CTestLimitSearchProblem с сохранением точного кода/terminal behavior;
+  новые классы или отдельный Search не вводить. Production v179 заморожен
+  до завершения Off/On и clean/update gates. Черновик поадресной проверки
+  граней арматуры v180 сохранен вне tests и не включен в приемку v179.
 
 - Текущий F04/F05-срез v173: standalone profile scope `3572/0`, все 64 маски
   и точная физическая сила recovery; Results/status-style после reopen равны.

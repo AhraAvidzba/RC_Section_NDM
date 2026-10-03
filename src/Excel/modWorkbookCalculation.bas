@@ -908,36 +908,130 @@ End Sub
 
 ' Читает дополнительную таблицу нагрузок для устойчивости. Excel-слой сразу
 ' приводит силы и моменты к внутренним единицам, чтобы расчетный batch не
-' обращался к листам и не знал пользовательских единиц.
-Private Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
+' обращался к листам и не знал пользовательских единиц. Читаются только ID
+' запрошенной устойчивости; ошибки строки сохраняются для ее отдельного result.
+Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
         ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
-    On Error GoTo MissingRange
-    If workbook Is Nothing Then Exit Sub
-    If batch Is Nothing Then Exit Sub
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4113, _
+        "LoadStabilityDurationLoadsFromWorkbook", "Не передана книга для чтения дополнительных нагрузок устойчивости."
+    If batch Is Nothing Then Err.Raise vbObjectError + 4113, _
+        "LoadStabilityDurationLoadsFromWorkbook", "Не передан расчетный пакет для дополнительных нагрузок устойчивости."
 
+    batch.ClearStabilityDurationLoads
+    Dim activeIDs As Object, index As Long
+    Set activeIDs = CreateObject("Scripting.Dictionary")
+    activeIDs.CompareMode = vbTextCompare
+    For index = 1 To batch.Count
+        If batch.StabilityRequested(index) Then activeIDs(batch.CombinationID(index)) = True
+    Next index
+    If activeIDs.Count = 0 Then Exit Sub
+    If units Is Nothing Then Err.Raise vbObjectError + 4113, _
+        "LoadStabilityDurationLoadsFromWorkbook", "Не передана система единиц для дополнительных нагрузок устойчивости."
+
+    On Error GoTo MissingRange
     Dim range As Object
     Set range = workbook.Names.Item("rngStabilityDurationLoads").RefersToRange
     On Error GoTo 0
+    If range.Rows.Count < 2 Or range.Columns.Count < 4 Then
+        RecordDurationTableError batch, activeIDs, _
+            "Таблица дополнительных нагрузок устойчивости rngStabilityDurationLoads (" & _
+            range.Worksheet.Name & "!" & range.Address(False, False) & _
+            ") должна содержать заголовок, хотя бы одну строку и четыре столбца: Combination ID, N, Mx, My. " & _
+            "Восстановите границы именованного диапазона в диспетчере имен Excel."
+        Exit Sub
+    End If
     Dim values As Variant
     values = range.Value2
 
-    batch.ClearStabilityDurationLoads
-
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(values, 1)
+        If IsError(values(rowIndex, 1)) Or IsNull(values(rowIndex, 1)) Then
+            RecordDurationTableError batch, activeIDs, _
+                "В таблице rngStabilityDurationLoads ссылка на сочетание (" & _
+                range.Worksheet.Name & "!" & range.Cells(rowIndex, 1).Address(False, False) & _
+                ") содержит ошибку. Исправьте формулу или Combination ID; без этой ссылки нельзя сопоставить дополнительные нагрузки."
+            Exit Sub
+        End If
         Dim combinationID As String
         combinationID = Trim$(CStr(values(rowIndex, 1)))
-        If Len(combinationID) > 0 Then
-            batch.AddStabilityDurationLoad combinationID, _
-                units.InputForceToInternal(NumericCellOrZero(values(rowIndex, 2))), _
-                units.InputMomentMxToInternal(NumericCellOrZero(values(rowIndex, 3))), _
-                units.InputMomentMyToInternal(NumericCellOrZero(values(rowIndex, 4)))
+        If activeIDs.Exists(combinationID) Then
+            Dim component As Long, loads(2 To 4) As Double, rowError As String, componentError As String
+            rowError = vbNullString
+            For component = 2 To 4
+                componentError = vbNullString
+                If Not TryReadDurationLoad(values(rowIndex, component), component, units, loads(component), componentError) Then
+                    If Len(rowError) > 0 Then rowError = rowError & "; "
+                    rowError = rowError & DurationLoadComponentName(component) & " (" & _
+                        range.Worksheet.Name & "!" & range.Cells(rowIndex, component).Address(False, False) & "): " & componentError
+                End If
+            Next component
+            If Len(rowError) > 0 Then
+                batch.AddInvalidStabilityDurationLoad combinationID, _
+                    "Дополнительные нагрузки устойчивости для сочетания " & combinationID & _
+                    " в таблице rngStabilityDurationLoads: " & rowError & _
+                    " Исправьте указанные ячейки; пустое значение допускается и означает ноль."
+            Else
+                batch.AddStabilityDurationLoad combinationID, loads(2), loads(3), loads(4)
+            End If
         End If
     Next rowIndex
     Exit Sub
 
 MissingRange:
+    Dim errorNumber As Long, description As String
+    errorNumber = Err.Number: description = Err.Description
+    If errorNumber <> 1004 Then Err.Raise errorNumber, "LoadStabilityDurationLoadsFromWorkbook", description
+    RecordDurationTableError batch, activeIDs, _
+        "Для запрошенной проверки устойчивости не удалось прочитать таблицу дополнительных нагрузок rngStabilityDurationLoads. " & _
+        "Восстановите ссылку этого имени в диспетчере имен Excel. Отсутствующая таблица не заменяется нулевыми нагрузками."
+End Sub
+
+' Читает одно числовое значение и выполняет централизованный перевод знаков
+' и единиц. Пустота допустима; Null, ошибка формулы, текст и переполнение
+' получают причину ввода. Неожиданная программная ошибка не маскируется.
+Private Function TryReadDurationLoad(ByVal value As Variant, ByVal component As Long, _
+        ByVal units As CUnitSystem, ByRef internalValue As Double, ByRef reason As String) As Boolean
+    internalValue = 0#: reason = vbNullString
+    If IsError(value) Then reason = "ячейка содержит ошибку формулы Excel.": Exit Function
+    If IsNull(value) Then reason = "значение не определено.": Exit Function
+    If IsEmpty(value) Then TryReadDurationLoad = True: Exit Function
+    If VarType(value) = vbString Then
+        If Len(Trim$(CStr(value))) = 0 Then TryReadDurationLoad = True: Exit Function
+    End If
+    If Not IsNumeric(value) Then reason = "вместо числа задан текст или другой недопустимый тип значения.": Exit Function
+    On Error GoTo InvalidNumber
+    Select Case component
+        Case 2: internalValue = units.InputForceToInternal(CDbl(value))
+        Case 3: internalValue = units.InputMomentMxToInternal(CDbl(value))
+        Case 4: internalValue = units.InputMomentMyToInternal(CDbl(value))
+        Case Else: Err.Raise vbObjectError + 4113, "TryReadDurationLoad", "Неизвестная компонента дополнительной нагрузки устойчивости."
+    End Select
+    TryReadDurationLoad = True
+    Exit Function
+InvalidNumber:
+    Dim errorNumber As Long, description As String
+    errorNumber = Err.Number: description = Err.Description
+    If errorNumber <> 6 And errorNumber <> 13 Then Err.Raise errorNumber, "TryReadDurationLoad", description
+    reason = "число невозможно прочитать или перевести в выбранные единицы INPUT без переполнения."
+End Function
+
+' Возвращает физическую подпись компоненты фиксированного четырехколоночного
+' контракта. Это не адрес ячейки и не источник пользовательских единиц.
+Private Function DurationLoadComponentName(ByVal component As Long) As String
+    Select Case component
+        Case 2: DurationLoadComponentName = "N"
+        Case 3: DurationLoadComponentName = "Mx"
+        Case 4: DurationLoadComponentName = "My"
+    End Select
+End Function
+
+' Сохраняет структурную ошибку таблицы для всех реально запрошенных проверок
+' устойчивости. Ранее прочитанные строки сбрасываются: частичный ввод при
+' поврежденном диапазоне не должен выдаваться за корректную нулевую нагрузку.
+Private Sub RecordDurationTableError(ByVal batch As CBatchSectionCalculator, ByVal activeIDs As Object, ByVal reason As String)
     batch.ClearStabilityDurationLoads
+    Dim id As Variant
+    For Each id In activeIDs.Keys: batch.AddInvalidStabilityDurationLoad CStr(id), reason: Next id
 End Sub
 
 ' Возвращает таблицу 7.21 СП 35 как обычный массив Variant. Дальше она живет
@@ -953,16 +1047,6 @@ Private Function ReadSP35Table721FromWorkbook(ByVal workbook As Object) As Varia
     Exit Function
 
 MissingRange:
-End Function
-
-' Превращает пустую ячейку дополнительной таблицы нагрузок в 0. Ошибочные
-' значения оставляем ошибкой исходных данных Excel, чтобы они не маскировались.
-Private Function NumericCellOrZero(ByVal value As Variant) As Double
-    If IsEmpty(value) Or IsNull(value) Then Exit Function
-    If VarType(value) = vbString Then
-        If Len(Trim$(CStr(value))) = 0 Then Exit Function
-    End If
-    NumericCellOrZero = CDbl(value)
 End Function
 
 ' Возвращает центр тяжести бетонной части сечения.

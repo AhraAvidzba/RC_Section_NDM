@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_duration_v178.xlsm
+SOURCE_SHA256: F0F3AA8EBDF84278C217A81FDBF8CDA75BAEDEAA1F37DF6FC2966806D4DA5CCE
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ab1e538c352d4417a34e72183ed287ed\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_DURATION_CONFIG: passed=9964; failed=0; cases=613
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

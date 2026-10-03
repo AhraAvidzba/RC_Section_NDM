@@ -113,6 +113,11 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestProfileConfig.RunAudit03RelocatedInputTests(relocatedPassed, relocatedFailed)
     stats.Passed = stats.Passed + relocatedPassed
     stats.Failed = stats.Failed + relocatedFailed
+    Dim durationPassed As Long, durationFailed As Long
+    AppendLine stats, "RUN: RunAudit03DurationConfigTests"
+    stats.Report = stats.Report & modTestProfileConfig.RunAudit03DurationConfigTests(durationPassed, durationFailed)
+    stats.Passed = stats.Passed + durationPassed
+    stats.Failed = stats.Failed + durationFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats

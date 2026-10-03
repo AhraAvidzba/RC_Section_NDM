@@ -1,5 +1,56 @@
 # Audit03: Комментарии К Актуальному Коду
 
+## Дополнение v179: Численные Защиты
+
+Содержательно прочитаны CLoadMultiplierSearch и CLoadPathMath, основные
+маршруты CLimitSearchCoordinator, CStateProvider и CStateRepository.
+FindEquivalent отсекает несошедшееся состояние и дополнительно сравнивает
+точные TargetN/Mx/My, поэтому формат ключа не объединяет разные нагрузки.
+BindContext проверяет identity/revision модели и материалов, Extension и
+допуски; probes остаются в локальном Search. Freeze запрещает изменение
+опубликованных named-state и repository. Это проверка конкретных тел,
+не приемка всех методов проекта или всех программных API.
+
+Проверены тела и предусловия всех восьми production-вызовов IIf текущего
+среза: четыре в Batch, два в Hollow-геометрии, по одному в MaterialDiagram
+и CrackSummaryWriter. Обе вычисляемые ветви безопасны: скаляры/строки либо
+уже созданный объект и проверенный индекс массива. Три однострочных
+Nothing+Or в provider/repository/runner сравнивают только ссылки, без
+разыменования во второй части. Остальные 1570 guard-кандидатов census
+не получают автоматический PASS по этой выборке.
+
+Открытые кандидаты F03/D01 для следующего directed среза:
+
+- FindBracket классифицирует любую перехваченную VBA-ошибку как численную,
+  хотя область handler-а включает доменные callbacks. Нужен fault-reproducer.
+- EvaluateCrcLoadPathResidual также поглощает все исключения через
+  SetFormationNumericalFailure; после EvaluateStrainPlane не проверяется
+  его FailureCode. Не считать неправильную зависимость несходимостью.
+- RunProfileState при отсутствии возвращенного state создает
+  NumericalFailureMeta. Проверить producer и сохранить фактическую причину;
+  отсутствие объекта само по себе не доказывает численную несходимость.
+  GetOrSolve при отсутствующем runner.ResultSolver возвращает Nothing;
+  это соседняя граница того же контракта, а не четвертый вид solve.
+- RunSearch после неудачи FindBracket вызывает доменную финализацию даже
+  при терминальной причине. AcceptPureAxialRetainedCapacity проверяет
+  search bound и retained solver, но не терминальную причину в начале;
+  directed fault должен проверить отсутствие восстановления после CalcErr/InputErr.
+- В IsMomentOnlyLoadPath/IsPureBendingProbe/ApplyInitialGuess и стартовых
+  crack-расчетах есть Sqr(Mx*Mx + My*My). При конечной компоненте порядка
+  1e155 промежуточный квадрат выходит за Double, хотя сам модуль представим.
+  Подготовить безопасный runtime-контрпример и сохранить исходные критерии,
+  допуски, статус технического отказа и все обычные численные эталоны.
+- Комментарии FinalizeKnownProbe/CanFinalizeSecantProbe описывают
+  несошедшуюся физическую probe как пригодную верхнюю границу. Реальный
+  Capacity ProbeOnce отделяет failure от достижения критерия, поэтому
+  подпись нужно согласовать с текущим контрактом, не меняя численный метод.
+- Подпись FinalizeAfterProbe говорит о пересчете lambda, но тело повторно
+  оценивает заданную точку. HandleBisectionIterationLimit вычисляет reason,
+  который не передает callback-у; фактическую причину формирует владелец.
+
+Production/test source v179 заморожен до полного Off/On и clean/update.
+Ни кандидаты, ни наличие русского текста не объявляются закрытием F03/D01.
+
 ## Границы Снимка v164
 
 SnapshotTitleRange описывает собственную область общего заголовка, вычисляемую

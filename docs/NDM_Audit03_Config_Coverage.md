@@ -544,3 +544,30 @@ assertions, missing=0, differences=0. Отдельная clean-сборка пр
 active-reviewed поля, fullAcceptance=False. Из 760 editable адресов 360 еще
 не имеют активной адресной приемки; full-range/pairwise для остальных принятых
 полей также не закрыт этим числом.
+
+## Дополнительные Нагрузки Устойчивости v179
+
+Присоединены все 90 editable N/Mx/My ячеек 30 строк duration-таблицы.
+Тридцать производных Combination ID не объявляются физическими настройками.
+Каждая ячейка проверена через настоящий workbook-reader, CUnitSystem,
+Batch/Stability и собственные comments/числа writers. Пустота/ноль допускаются,
+непрочитанная таблица, текст, CVErr и переполнение дают адресный InputErr
+только устойчивости соответствующего LC; остальные проверки и следующий
+корректный LC продолжаются. Две позиции named range на другом листе проверены
+по фактическому адресу, не по строке шаблона.
+
+Negative v177b `7926/576` сохранен. Directed v178 `9964/0`, 613 случаев,
+включает 390 числовых вариантов, 24 сочетания INPUT units/signs, 180 ошибок
+активных ячеек, recovery и структурные края. Full v179 в каждом режиме
+дополнительно проверяет comments recovery и содержит `10504/0` этого блока.
+Все восемь suites прошли: Off `58483/0`, On `58494/0`; source unchanged=True.
+10305/10310 общих actual-чисел с v176 совпали точно, missing/differences=0.
+Source/export `105/105`; Validate clean/update `27/27`, formatting `1003/0`,
+deviations=0; справка совпала по 2579 ячейкам и всем объединениям.
+
+Актуальный реестр `config_behavior_registry_duration_v179_2026-10-03`
+содержит 490/1064 active-reviewed, fullAcceptance=False. Остаются 270 editable
+полей без активной адресной приемки. У уже принятых полей full-range/pairwise
+и остальные условия K01-K04 не объявляются автоматически закрытыми.
+Подробная трассировка: `NDM_Audit03_Duration_Config_Review.md` и per-key
+`NDM_Audit03_Duration_Config_Evidence.json`. Завершение clean gates: 2026-10-04.

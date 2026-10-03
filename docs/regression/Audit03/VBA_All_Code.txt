@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_profile_config_v176.xlsm
-Date: 2026-10-03 21:26:09
+Workbook: RC_Section_NDM_duration_v179.xlsm
+Date: 2026-10-03 22:42:57
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -24962,7 +24962,7 @@ Private Const PASS_TOLERANCE As Double = 0.000000001 ' Малый допуск �
 Private Const SP35_REBAR_AREA_LIMIT_RATIO As Double = 0.03 ' Порог 3% площади арматуры по СП 35.
 
 Private Type TPlaneResult
-    Moment As Double
+    moment As Double
     sustainedMoment As Double
     DesignMoment As Double
     InertiaConcrete As Double
@@ -25237,8 +25237,8 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     props.PrincipalAxisDirection 1, axis1X, axis1Y
     props.PrincipalAxisDirection 2, axis2X, axis2Y
 
-    plane1.Moment = mxValue * axis1X + myValue * axis1Y
-    plane2.Moment = mxValue * axis2X + myValue * axis2Y
+    plane1.moment = mxValue * axis1X + myValue * axis1Y
+    plane2.moment = mxValue * axis2X + myValue * axis2Y
     plane1.sustainedMoment = sustainedMx * axis1X + sustainedMy * axis1Y
     plane2.sustainedMoment = sustainedMx * axis2X + sustainedMy * axis2Y
     plane1.InertiaConcrete = props.ConcreteInertiaAboutAxis(section, axis1X, axis1Y, props.centroidX, props.centroidY)
@@ -25277,14 +25277,14 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
     ' Для чистого сжатия без моментов остаются пользовательские направления +1/-1.
     Dim hasMomentVector As Boolean
     Dim applyBothPlanes As Boolean
-    hasMomentVector = (Abs(plane1.Moment) > SMALL_VALUE Or Abs(plane2.Moment) > SMALL_VALUE)
+    hasMomentVector = (Abs(plane1.moment) > SMALL_VALUE Or Abs(plane2.moment) > SMALL_VALUE)
     applyBothPlanes = (NormalizeAccidentalPlanes(accidentalPlanes) = ACC_PLANES_BOTH)
     FillAccidentalAndInitialEccentricity plane1, zeroMomentSign1, systemType, _
         accidentalMode, accidentalUserValue1, "Stability.AccidentalEccentricityUser1", _
-        (applyBothPlanes Or Not hasMomentVector Or Abs(plane1.Moment) > SMALL_VALUE)
+        (applyBothPlanes Or Not hasMomentVector Or Abs(plane1.moment) > SMALL_VALUE)
     FillAccidentalAndInitialEccentricity plane2, zeroMomentSign2, systemType, _
         accidentalMode, accidentalUserValue2, "Stability.AccidentalEccentricityUser2", _
-        (applyBothPlanes Or Not hasMomentVector Or Abs(plane2.Moment) > SMALL_VALUE)
+        (applyBothPlanes Or Not hasMomentVector Or Abs(plane2.moment) > SMALL_VALUE)
 End Sub
 
 ' Назначает случайный и начальный эксцентриситет для одной главной плоскости.
@@ -25293,7 +25293,7 @@ End Sub
 ' после поворота осей случайный остаток M1/M2 не меняет ветвь устойчивости.
 Private Sub NormalizePlaneMoments(ByRef plane As TPlaneResult, ByVal momentFilter As CMomentZeroFilter)
     If momentFilter Is Nothing Then Exit Sub
-    plane.Moment = momentFilter.NormalizeMoment(plane.Moment, plane.Depth)
+    plane.moment = momentFilter.NormalizeMoment(plane.moment, plane.Depth)
     plane.sustainedMoment = momentFilter.NormalizeMoment(plane.sustainedMoment, plane.Depth)
 End Sub
 
@@ -25305,18 +25305,18 @@ Private Sub FillAccidentalAndInitialEccentricity(ByRef plane As TPlaneResult, _
         ByVal accidentalMode As String, ByVal accidentalUserValue As Double, _
         ByVal accidentalUserSettingName As String, _
         ByVal allowZeroMomentAccidental As Boolean)
-    If Abs(plane.Moment) <= SMALL_VALUE And Not allowZeroMomentAccidental Then
+    If Abs(plane.moment) <= SMALL_VALUE And Not allowZeroMomentAccidental Then
         plane.accidentalEccentricity = 0#
         plane.eccentricity = 0#
         Exit Sub
     End If
 
     Dim signValue As Double
-    signValue = SignForEccentricity(plane.Moment, zeroMomentSign)
+    signValue = SignForEccentricity(plane.moment, zeroMomentSign)
     plane.accidentalEccentricity = signValue * accidentalEccentricity( _
         accidentalMode, accidentalUserValue, accidentalUserSettingName, _
         plane.geometricLength, plane.effectiveLength, plane.Depth)
-    plane.eccentricity = InitialEccentricity(plane.Moment, 1#, plane.accidentalEccentricity, systemType)
+    plane.eccentricity = InitialEccentricity(plane.moment, 1#, plane.accidentalEccentricity, systemType)
 End Sub
 
 ' Сохраняет крайние точки бетонного контура относительно центра приведенного
@@ -25392,7 +25392,7 @@ Private Function PhiLSP63(ByVal phiLMode As String, ByVal section As CSectionMod
     Dim rebarProjection As Double
     rebarProjection = RebarProjectionForMoment(section, plane)
     PhiLSP63 = PhiLFromMomentRatio(phiLMode, _
-        MomentAboutProjection(plane.Moment, nCompression, rebarProjection), _
+        MomentAboutProjection(plane.moment, nCompression, rebarProjection), _
         MomentAboutProjection(plane.sustainedMoment, sustainedCompression, rebarProjection))
 End Function
 
@@ -25428,7 +25428,7 @@ Private Sub CalculateSP63Plane(ByVal section As CSectionModel, ByVal nCompressio
         ByVal deltaEMax As Double, ByRef plane As TPlaneResult, ByVal planeLabel As String)
     EnsurePositivePlaneGeometry plane, CODE_SP63, planeLabel
 
-    plane.eccentricity = InitialEccentricity(plane.Moment, nCompression, _
+    plane.eccentricity = InitialEccentricity(plane.moment, nCompression, _
         plane.accidentalEccentricity, systemType)
     plane.phiL = PhiLSP63(phiLMode, section, nCompression, sustainedCompression, plane)
 
@@ -25542,7 +25542,7 @@ Private Sub CalculateSP35Plane(ByVal concreteArea As Double, ByVal totalSteelAre
         ByRef plane As TPlaneResult, ByVal planeLabel As String)
     EnsurePositivePlaneGeometry plane, CODE_SP35, planeLabel
 
-    plane.eccentricity = InitialEccentricity(plane.Moment, nCompression, _
+    plane.eccentricity = InitialEccentricity(plane.moment, nCompression, _
         plane.accidentalEccentricity, systemType)
 
     Dim coreDistance As Double
@@ -25620,7 +25620,7 @@ Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal sustainedC
         ByVal nOverNcrLimit As Double, ByRef plane As TPlaneResult)
     Dim faceProjection As Double
     faceProjection = ConcreteFaceProjectionForMoment(plane)
-    plane.phiL = PhiLSP35Eta(phiLMode, MomentAboutProjection(plane.Moment, nCompression, faceProjection), _
+    plane.phiL = PhiLSP35Eta(phiLMode, MomentAboutProjection(plane.moment, nCompression, faceProjection), _
         MomentAboutProjection(plane.sustainedMoment, sustainedCompression, faceProjection), _
         plane.eccentricity, plane.Depth)
 
@@ -25726,8 +25726,8 @@ Private Sub StorePlaneResults(ByRef plane1 As TPlaneResult, ByRef plane2 As TPla
     mNcr2 = plane2.ncrForce
     mNultimate1 = plane1.NultimateForce
     mNultimate2 = plane2.NultimateForce
-    mMoment1 = plane1.Moment
-    mMoment2 = plane2.Moment
+    mMoment1 = plane1.moment
+    mMoment2 = plane2.moment
     mSustainedMoment1 = plane1.sustainedMoment
     mSustainedMoment2 = plane2.sustainedMoment
     mDesignMoment1 = plane1.DesignMoment
@@ -26964,7 +26964,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2121
+LINES: 2158
 ====================================================================================================
 Option Explicit
 
@@ -27089,6 +27089,7 @@ Private mStabilityLoadCombinationID() As String ' LC, к которому отн
 Private mStabilityLoadN() As Double ' N от постоянных или постоянных+длительных нагрузок, Н.
 Private mStabilityLoadUserMx() As Double ' Пользовательский Mx длительной части в точке приложения нагрузки.
 Private mStabilityLoadUserMy() As Double ' Пользовательский My длительной части в точке приложения нагрузки.
+Private mStabilityLoadInputError() As String ' Ошибка прочтения длительной части только этого LC; пусто для корректной строки.
 
 ' Создает общую status-policy, report и фильтр моментов, резервирует массивы
 ' LC и длительных нагрузок. Начальные параметры нужны прямому API класса;
@@ -27375,6 +27376,7 @@ Public Sub ClearStabilityDurationLoads()
         mStabilityLoadN(i) = 0#
         mStabilityLoadUserMx(i) = 0#
         mStabilityLoadUserMy(i) = 0#
+        mStabilityLoadInputError(i) = vbNullString
     Next i
 End Sub
 
@@ -27390,6 +27392,17 @@ Public Sub AddStabilityDurationLoad(ByVal combinationID As String, ByVal nValue 
     mStabilityLoadN(mStabilityLoadCount) = nValue
     mStabilityLoadUserMx(mStabilityLoadCount) = mxValue
     mStabilityLoadUserMy(mStabilityLoadCount) = myValue
+    mStabilityLoadInputError(mStabilityLoadCount) = vbNullString
+End Sub
+
+' Сохраняет ошибку дополнительной нагрузки без подмены ее нулевой нагрузкой.
+' Причина подготовлена Excel-reader-ом; она блокирует только устойчивость этого
+' LC, а остальные запрошенные проверки продолжаются с исходными усилиями.
+Public Sub AddInvalidStabilityDurationLoad(ByVal combinationID As String, ByVal reason As String)
+    If Len(Trim$(reason)) = 0 Then Err.Raise vbObjectError + 4113, _
+        "CBatchSectionCalculator", "Не передана причина ошибки дополнительной нагрузки устойчивости."
+    AddStabilityDurationLoad combinationID, 0#, 0#, 0#
+    mStabilityLoadInputError(mStabilityLoadCount) = reason
 End Sub
 
 ' Принимает таблицу 7.21 СП 35 из Config. Таблица нужна только при выборе
@@ -27494,11 +27507,13 @@ Private Sub EnsureStabilityLoadCapacity(ByVal requiredCount As Long)
         ReDim mStabilityLoadN(1 To newCapacity)
         ReDim mStabilityLoadUserMx(1 To newCapacity)
         ReDim mStabilityLoadUserMy(1 To newCapacity)
+        ReDim mStabilityLoadInputError(1 To newCapacity)
     Else
         ReDim Preserve mStabilityLoadCombinationID(1 To newCapacity)
         ReDim Preserve mStabilityLoadN(1 To newCapacity)
         ReDim Preserve mStabilityLoadUserMx(1 To newCapacity)
         ReDim Preserve mStabilityLoadUserMy(1 To newCapacity)
+        ReDim Preserve mStabilityLoadInputError(1 To newCapacity)
     End If
 End Sub
 
@@ -27758,6 +27773,14 @@ End Sub
 Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialValueSet)
     On Error GoTo Failed
 
+    Dim durationInputError As String
+    durationInputError = StabilityDurationInputError(mInputs(index).combinationID)
+    If Len(durationInputError) > 0 Then
+        mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, durationInputError), durationInputError
+        ReportStep "Устойчивость не рассчитана: " & durationInputError
+        Exit Sub
+    End If
+
     Dim referenceX As Double
     Dim referenceY As Double
     TransformedReferencePoint valueSet, referenceX, referenceY
@@ -27813,6 +27836,20 @@ Failed:
     mResults(index).SetStabilityMeta InvalidInputMeta(rkStability, Err.description), Err.description
     ReportStep "Устойчивость не рассчитана: " & Err.description
 End Sub
+
+
+' Возвращает ошибку первой сопоставленной строки длительных нагрузок.
+' Порядок совпадает с выбором самих усилий: последующая строка с тем же ID
+' не должна менять уже выбранную строку, а прошлый запуск сбрасывается Clear.
+Private Function StabilityDurationInputError(ByVal combinationID As String) As String
+    Dim i As Long
+    For i = 1 To mStabilityLoadCount
+        If StrComp(mStabilityLoadCombinationID(i), Trim$(combinationID), vbTextCompare) = 0 Then
+            StabilityDurationInputError = mStabilityLoadInputError(i)
+            Exit Function
+        End If
+    Next i
+End Function
 
 
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
@@ -45789,7 +45826,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
 TYPE: 1
-LINES: 1086
+LINES: 1170
 ====================================================================================================
 Option Explicit
 
@@ -46700,36 +46737,130 @@ End Sub
 
 ' Читает дополнительную таблицу нагрузок для устойчивости. Excel-слой сразу
 ' приводит силы и моменты к внутренним единицам, чтобы расчетный batch не
-' обращался к листам и не знал пользовательских единиц.
-Private Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
+' обращался к листам и не знал пользовательских единиц. Читаются только ID
+' запрошенной устойчивости; ошибки строки сохраняются для ее отдельного result.
+Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
         ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
-    On Error GoTo MissingRange
-    If workbook Is Nothing Then Exit Sub
-    If batch Is Nothing Then Exit Sub
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4113, _
+        "LoadStabilityDurationLoadsFromWorkbook", "Не передана книга для чтения дополнительных нагрузок устойчивости."
+    If batch Is Nothing Then Err.Raise vbObjectError + 4113, _
+        "LoadStabilityDurationLoadsFromWorkbook", "Не передан расчетный пакет для дополнительных нагрузок устойчивости."
 
+    batch.ClearStabilityDurationLoads
+    Dim activeIDs As Object, index As Long
+    Set activeIDs = CreateObject("Scripting.Dictionary")
+    activeIDs.CompareMode = vbTextCompare
+    For index = 1 To batch.count
+        If batch.StabilityRequested(index) Then activeIDs(batch.combinationID(index)) = True
+    Next index
+    If activeIDs.count = 0 Then Exit Sub
+    If units Is Nothing Then Err.Raise vbObjectError + 4113, _
+        "LoadStabilityDurationLoadsFromWorkbook", "Не передана система единиц для дополнительных нагрузок устойчивости."
+
+    On Error GoTo MissingRange
     Dim range As Object
     Set range = workbook.names.item("rngStabilityDurationLoads").RefersToRange
     On Error GoTo 0
+    If range.rows.count < 2 Or range.columns.count < 4 Then
+        RecordDurationTableError batch, activeIDs, _
+            "Таблица дополнительных нагрузок устойчивости rngStabilityDurationLoads (" & _
+            range.Worksheet.name & "!" & range.address(False, False) & _
+            ") должна содержать заголовок, хотя бы одну строку и четыре столбца: Combination ID, N, Mx, My. " & _
+            "Восстановите границы именованного диапазона в диспетчере имен Excel."
+        Exit Sub
+    End If
     Dim values As Variant
     values = range.Value2
 
-    batch.ClearStabilityDurationLoads
-
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(values, 1)
+        If IsError(values(rowIndex, 1)) Or IsNull(values(rowIndex, 1)) Then
+            RecordDurationTableError batch, activeIDs, _
+                "В таблице rngStabilityDurationLoads ссылка на сочетание (" & _
+                range.Worksheet.name & "!" & range.cells(rowIndex, 1).address(False, False) & _
+                ") содержит ошибку. Исправьте формулу или Combination ID; без этой ссылки нельзя сопоставить дополнительные нагрузки."
+            Exit Sub
+        End If
         Dim combinationID As String
         combinationID = Trim$(CStr(values(rowIndex, 1)))
-        If Len(combinationID) > 0 Then
-            batch.AddStabilityDurationLoad combinationID, _
-                units.InputForceToInternal(NumericCellOrZero(values(rowIndex, 2))), _
-                units.InputMomentMxToInternal(NumericCellOrZero(values(rowIndex, 3))), _
-                units.InputMomentMyToInternal(NumericCellOrZero(values(rowIndex, 4)))
+        If activeIDs.Exists(combinationID) Then
+            Dim component As Long, loads(2 To 4) As Double, rowError As String, componentError As String
+            rowError = vbNullString
+            For component = 2 To 4
+                componentError = vbNullString
+                If Not TryReadDurationLoad(values(rowIndex, component), component, units, loads(component), componentError) Then
+                    If Len(rowError) > 0 Then rowError = rowError & "; "
+                    rowError = rowError & DurationLoadComponentName(component) & " (" & _
+                        range.Worksheet.name & "!" & range.cells(rowIndex, component).address(False, False) & "): " & componentError
+                End If
+            Next component
+            If Len(rowError) > 0 Then
+                batch.AddInvalidStabilityDurationLoad combinationID, _
+                    "Дополнительные нагрузки устойчивости для сочетания " & combinationID & _
+                    " в таблице rngStabilityDurationLoads: " & rowError & _
+                    " Исправьте указанные ячейки; пустое значение допускается и означает ноль."
+            Else
+                batch.AddStabilityDurationLoad combinationID, loads(2), loads(3), loads(4)
+            End If
         End If
     Next rowIndex
     Exit Sub
 
 MissingRange:
+    Dim errorNumber As Long, description As String
+    errorNumber = Err.number: description = Err.description
+    If errorNumber <> 1004 Then Err.Raise errorNumber, "LoadStabilityDurationLoadsFromWorkbook", description
+    RecordDurationTableError batch, activeIDs, _
+        "Для запрошенной проверки устойчивости не удалось прочитать таблицу дополнительных нагрузок rngStabilityDurationLoads. " & _
+        "Восстановите ссылку этого имени в диспетчере имен Excel. Отсутствующая таблица не заменяется нулевыми нагрузками."
+End Sub
+
+' Читает одно числовое значение и выполняет централизованный перевод знаков
+' и единиц. Пустота допустима; Null, ошибка формулы, текст и переполнение
+' получают причину ввода. Неожиданная программная ошибка не маскируется.
+Private Function TryReadDurationLoad(ByVal value As Variant, ByVal component As Long, _
+        ByVal units As CUnitSystem, ByRef internalValue As Double, ByRef reason As String) As Boolean
+    internalValue = 0#: reason = vbNullString
+    If IsError(value) Then reason = "ячейка содержит ошибку формулы Excel.": Exit Function
+    If IsNull(value) Then reason = "значение не определено.": Exit Function
+    If IsEmpty(value) Then TryReadDurationLoad = True: Exit Function
+    If VarType(value) = vbString Then
+        If Len(Trim$(CStr(value))) = 0 Then TryReadDurationLoad = True: Exit Function
+    End If
+    If Not IsNumeric(value) Then reason = "вместо числа задан текст или другой недопустимый тип значения.": Exit Function
+    On Error GoTo InvalidNumber
+    Select Case component
+        Case 2: internalValue = units.InputForceToInternal(CDbl(value))
+        Case 3: internalValue = units.InputMomentMxToInternal(CDbl(value))
+        Case 4: internalValue = units.InputMomentMyToInternal(CDbl(value))
+        Case Else: Err.Raise vbObjectError + 4113, "TryReadDurationLoad", "Неизвестная компонента дополнительной нагрузки устойчивости."
+    End Select
+    TryReadDurationLoad = True
+    Exit Function
+InvalidNumber:
+    Dim errorNumber As Long, description As String
+    errorNumber = Err.number: description = Err.description
+    If errorNumber <> 6 And errorNumber <> 13 Then Err.Raise errorNumber, "TryReadDurationLoad", description
+    reason = "число невозможно прочитать или перевести в выбранные единицы INPUT без переполнения."
+End Function
+
+' Возвращает физическую подпись компоненты фиксированного четырехколоночного
+' контракта. Это не адрес ячейки и не источник пользовательских единиц.
+Private Function DurationLoadComponentName(ByVal component As Long) As String
+    Select Case component
+        Case 2: DurationLoadComponentName = "N"
+        Case 3: DurationLoadComponentName = "Mx"
+        Case 4: DurationLoadComponentName = "My"
+    End Select
+End Function
+
+' Сохраняет структурную ошибку таблицы для всех реально запрошенных проверок
+' устойчивости. Ранее прочитанные строки сбрасываются: частичный ввод при
+' поврежденном диапазоне не должен выдаваться за корректную нулевую нагрузку.
+Private Sub RecordDurationTableError(ByVal batch As CBatchSectionCalculator, ByVal activeIDs As Object, ByVal reason As String)
     batch.ClearStabilityDurationLoads
+    Dim id As Variant
+    For Each id In activeIDs.keys: batch.AddInvalidStabilityDurationLoad CStr(id), reason: Next id
 End Sub
 
 ' Возвращает таблицу 7.21 СП 35 как обычный массив Variant. Дальше она живет
@@ -46745,16 +46876,6 @@ Private Function ReadSP35Table721FromWorkbook(ByVal workbook As Object) As Varia
     Exit Function
 
 MissingRange:
-End Function
-
-' Превращает пустую ячейку дополнительной таблицы нагрузок в 0. Ошибочные
-' значения оставляем ошибкой исходных данных Excel, чтобы они не маскировались.
-Private Function NumericCellOrZero(ByVal value As Variant) As Double
-    If IsEmpty(value) Or IsNull(value) Then Exit Function
-    If VarType(value) = vbString Then
-        If Len(Trim$(CStr(value))) = 0 Then Exit Function
-    End If
-    NumericCellOrZero = CDbl(value)
 End Function
 
 ' Возвращает центр тяжести бетонной части сечения.
@@ -66473,16 +66594,18 @@ End Function
 ====================================================================================================
 COMPONENT: modTestProfileConfig
 TYPE: 1
-LINES: 723
+LINES: 1169
 ====================================================================================================
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: МАТЕРИАЛЬНЫЕ И ВИЗУАЛЬНЫЕ ПОЛЯ РАСЧЕТНЫХ ПРОФИЛЕЙ
+' ДЛЯ ТЕСТОВ: ПРОФИЛИ, АДРЕСНЫЙ ВВОД И НАГРУЗКИ УСТОЙЧИВОСТИ
 ' ==========================================================================
 ' Проверяет реальные ячейки PR1-PR4, передачу material spec в State/Search
 ' и выбор сохраненных результатов для схемы. Ожидаемая спецификация задается
 ' независимо от прочитанного профиля; равновесие пересчитывается по элементам.
+' Дополнительные нагрузки проходят тот же workbook-reader, что кнопка расчета;
+' ошибка активной строки должна оставаться в собственном результате устойчивости.
 ' Тесты не вводят новую физику, не меняют допуски production и восстанавливают
 ' все затронутые входные таблицы даже после ошибки. Новых классов нет.
 
@@ -67045,13 +67168,17 @@ End Sub
 ' Пропускает реальную таблицу LC через reader и новый batch-контекст.
 ' Профильные диаграммы выбирает production, не тестовый fake solver.
 Private Function ExecuteFixture(ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
-        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CBatchSectionCalculator
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        Optional ByVal readDurationLoads As Boolean = False, _
+        Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#) As CBatchSectionCalculator
     Dim catalog As CCalculationProfileCatalog, batch As CBatchSectionCalculator, reader As CLoadCombinationReader
     Set catalog = New CCalculationProfileCatalog: catalog.LoadFromWorkbook ThisWorkbook
     Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
     Set batch.ProfileCatalog = catalog: batch.ApplySettings settings, units
     batch.SetSP35Table721 ThisWorkbook.names.item("rngSP35Table721").RefersToRange.Value2
     Set reader = New CLoadCombinationReader: reader.LoadFromWorkbook ThisWorkbook, batch, units
+    If readDurationLoads Then LoadStabilityDurationLoadsFromWorkbook ThisWorkbook, batch, units
+    If referenceX <> 0# Or referenceY <> 0# Then batch.ApplyLoadReference referenceX, referenceY, 0#, 0#
     batch.Execute
     Set ExecuteFixture = batch
 End Function
@@ -67078,6 +67205,446 @@ Private Sub ConfigureProfiles(ByVal source As Object)
         SetProfileValue source, profile, "Visualization.StrainPrecision", "6"
     Next profile
 End Sub
+
+' ======================= ДЛЯ ТЕСТОВ: DURATION LOADS =======================
+
+' Проверяет каждую из 90 ячеек дополнительных нагрузок на реальном расчете.
+' Отдельно проверяет ошибочный ввод, изоляцию LC, единицы/знаки, перенос точки
+' приложения и адреса после перемещения имени. Формулы/Names восстанавливаются.
+Public Function RunAudit03DurationConfigTests(Optional ByRef Passed As Long = 0, _
+        Optional ByRef Failed As Long = 0) As String
+    Dim stats As TProfileStats, names As Variant, saved(0 To 5) As Variant, i As Long
+    Dim profiles As Object, system As Object, loads As Object, duration As Object
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
+    Dim provider As CMaterialModelProvider, durationRef As String, sheet As Object
+    Dim oldAlerts As Boolean, restoreNumber As Long, restoreReason As String
+    On Error GoTo FailedRun
+    names = Array("rngCalculationProfiles", "rngSystemSettings", "rngUnitSettings", _
+        "rngSignConventionSettings", "rngLoadCombinations", "rngStabilityDurationLoads")
+    For i = 0 To UBound(names): saved(i) = ThisWorkbook.names.item(CStr(names(i))).RefersToRange.formula: Next i
+    durationRef = ThisWorkbook.names.item("rngStabilityDurationLoads").RefersTo
+    oldAlerts = Application.DisplayAlerts
+    Set profiles = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
+    Set system = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
+    Set loads = ThisWorkbook.names.item("rngLoadCombinations").RefersToRange
+    Set duration = ThisWorkbook.names.item("rngStabilityDurationLoads").RefersToRange
+    ConfigureProfiles profiles: EnableChecks profiles, 1, "No", "No", "No", "Yes"
+    SetTableValue system, "Stability.Code", "SP63", 2
+    SetTableValue system, "Stability.ElementLength", "1000", 2
+    SetTableValue system, "Stability.Mu1", "1", 2: SetTableValue system, "Stability.Mu2", "1", 2
+    SetTableValue system, "Stability.SystemType", "Determinate", 2
+    SetTableValue system, "Stability.ZeroMomentEccentricitySign1", "1", 2
+    SetTableValue system, "Stability.ZeroMomentEccentricitySign2", "1", 2
+    SetTableValue system, "Stability.AccidentalEccentricityMode", "User", 2
+    SetTableValue system, "Stability.AccidentalEccentricityPlanes", "BothPlanes", 2
+    SetTableValue system, "Stability.AccidentalEccentricityUser1", "5", 2
+    SetTableValue system, "Stability.AccidentalEccentricityUser2", "5", 2
+    SetTableValue system, "Stability.PhiLMode", "Auto", 2
+    SetTableValue system, "Calculation.ZeroMomentPerDepth", "0", 2
+    SetTableValue system, "Load.ReferenceOffsetX", "0", 2: SetTableValue system, "Load.ReferenceOffsetY", "0", 2
+    SetTableValue system, "Solver.ToleranceN", "0.01", 2
+    SetTableValue system, "Solver.ToleranceMx", "1", 2: SetTableValue system, "Solver.ToleranceMy", "1", 2
+    ConfigureDurationUnits "N", "N*mm", "Tension", "+Y tension", "+X tension"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    BuildDurationFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
+    TestDurationCells stats, profiles, loads, duration, section, provider, settings, units
+    TestDurationUnits stats, loads, duration, section, provider, settings, units
+    ConfigureDurationUnits "N", "N*mm", "Tension", "+Y tension", "+X tension"
+    settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
+    TestDurationInvalidRows stats, profiles, loads, duration, section, provider, settings, units
+    TestDurationOverflow stats, loads, duration, section, provider, settings, units
+    TestDurationInactive stats, profiles, loads, duration, section, provider, settings, units
+    TestDurationTableLinks stats, loads, duration, section, provider, settings, units
+    TestDurationRangeContract stats, loads, duration, durationRef, section, provider, settings, units, sheet
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    LogLine stats, "FAIL: durationConfig.runtime; " & CStr(Err.number) & "; " & Err.description
+Restore:
+    On Error Resume Next
+    ThisWorkbook.names.item("rngStabilityDurationLoads").RefersTo = durationRef
+    For i = 0 To UBound(names)
+        Err.Clear: ThisWorkbook.names.item(CStr(names(i))).RefersToRange.formula = saved(i)
+        If Err.number <> 0 Then restoreNumber = Err.number: restoreReason = Err.description
+    Next i
+    If Not sheet Is Nothing Then Application.DisplayAlerts = False: sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+    If restoreNumber <> 0 Then stats.Failed = stats.Failed + 1: LogLine stats, "FAIL: durationConfig.restore; " & CStr(restoreNumber) & "; " & restoreReason
+    LogLine stats, "TOTAL_AUDIT03_DURATION_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & "; cases=" & CStr(stats.Cases)
+    Passed = stats.Passed: Failed = stats.Failed: RunAudit03DurationConfigTests = stats.Report
+End Function
+
+' Для симметричного высокого прямоугольника главные оси совпадают с X/Y.
+' Поэтому знаки и компоненты длительных моментов проверяются без production
+' преобразователя осей; поставщик материалов остается общим с другими тестами.
+Private Sub BuildDurationFixture(ByRef section As CSectionModel, ByRef provider As CMaterialModelProvider, ByVal extensionEnabled As Boolean)
+    Dim geometry As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    BuildFixture section, provider, extensionEnabled
+    Set geometry = New CGeometryRoundedRectangle: geometry.Initialize 200#, 300#, 0#, 0#, 0#, 0#
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 20#, 30#, 1
+    Set rebars = New CRebarLayout
+    rebars.AddBar "A", -60#, -90#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "B", 60#, -90#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "C", -60#, 90#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "D", 60#, 90#, 20#, 0#, "A400", "", geometry
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "Audit03DurationConfig")
+End Sub
+
+' Перебирает все source slots и каждую компоненту отдельно. Остальные строки
+' имеют другие ID, чтобы тест выявлял неверное сопоставление по позиции.
+Private Sub TestDurationCells(ByRef stats As TProfileStats, ByVal profiles As Object, ByVal loads As Object, _
+        ByVal duration As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim slot As Long, column As Long, testValue As Variant, variants As Variant, data As Variant
+    Dim values As Variant, batch As CBatchSectionCalculator, code As Long, reason As String, prefix As String
+    For slot = 1 To duration.rows.count - 1
+        For column = 2 To 4
+            Select Case column
+                Case 2: variants = Array(-10000#, -70000#, 5000#, 0#, vbNullString)
+                Case 3: variants = Array(-800000#, 1200000#, 0#, vbNullString)
+                Case 4: variants = Array(-900000#, 2500000#, 0#, vbNullString)
+            End Select
+            For Each testValue In variants
+                PrepareDurationLoads loads, duration, slot
+                data = duration.Value2: data(slot + 1, column) = testValue: duration.Value2 = data
+                values = Array(-25000#, 400000#, 600000#)
+                If Len(CStr(testValue)) = 0 Then values(column - 2) = 0# Else values(column - 2) = CDbl(testValue)
+                prefix = "durationConfig.Slot" & CStr(slot) & "." & DurationColumnKey(column) & ".value=" & CStr(testValue)
+                LogLine stats, "RUN: " & prefix
+                code = ExecuteDuration(section, provider, settings, units, batch, reason)
+                Check stats, prefix & ".reader", code = 0
+                If code = 0 Then
+                    CheckDurationResult stats, prefix, batch, units, CDbl(values(0)), CDbl(values(1)), CDbl(values(2))
+                    CheckComments stats, prefix, batch, units
+                Else
+                    LogLine stats, "DURATION_ERROR: " & prefix & "; " & CStr(code) & "; " & reason
+                End If
+                stats.Cases = stats.Cases + 1
+            Next testValue
+        Next column
+    Next slot
+    ' Перенос длительной нагрузки должен использовать ту же точку, что полный LC.
+    PrepareDurationLoads loads, duration, 1
+    code = ExecuteDuration(section, provider, settings, units, batch, reason, 40#, -25#)
+    Check stats, "durationConfig.offset.reader", code = 0
+    If code = 0 Then CheckDurationResult stats, "durationConfig.offset", batch, units, -25000#, 1025000#, -400000#, 2250000#, 0#
+    stats.Cases = stats.Cases + 1
+End Sub
+
+' Проверяет эквивалентные физические нагрузки в N/kN/tf и N*mm/kN*m/tf*m,
+' оба знака N и независимые знаки Mx/My. Ожидаемые масштабы заданы числами,
+' а не вычисляются тем же InputForceToInternal, который проверяется.
+Private Sub TestDurationUnits(ByRef stats As TProfileStats, ByVal loads As Object, ByVal duration As Object, _
+        ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim mode As Long, signN As Long, signMx As Long, signMy As Long, data As Variant
+    Dim forceUnit As String, momentUnit As String, forceScale As Double, momentScale As Double
+    Dim nSign As String, mxSign As String, mySign As String, batch As CBatchSectionCalculator
+    Dim code As Long, reason As String, prefix As String
+    For mode = 1 To 3
+        Select Case mode
+            Case 1: forceUnit = "N": momentUnit = "N*mm": forceScale = 1#: momentScale = 1#
+            Case 2: forceUnit = "kN": momentUnit = "kN*m": forceScale = 1000#: momentScale = 1000000#
+            Case 3: forceUnit = "tf": momentUnit = "tf*m": forceScale = 9806.65: momentScale = 9806650#
+        End Select
+        For signN = -1 To 1 Step 2
+            For signMx = -1 To 1 Step 2
+                For signMy = -1 To 1 Step 2
+                    If signN = 1 Then nSign = "Tension" Else nSign = "Compression"
+                    If signMx = 1 Then mxSign = "+Y tension" Else mxSign = "-Y tension"
+                    If signMy = 1 Then mySign = "+X tension" Else mySign = "-X tension"
+                    ConfigureDurationUnits forceUnit, momentUnit, nSign, mxSign, mySign
+                    settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
+                    PrepareDurationLoads loads, duration, 1
+                    data = loads.Value2
+                    data(2, 2) = -50000# / forceScale * signN
+                    data(2, 3) = 1000000# / momentScale * signMx: data(2, 4) = 2000000# / momentScale * signMy
+                    loads.Value2 = data
+                    data = duration.Value2
+                    data(2, 2) = -25000# / forceScale * signN
+                    data(2, 3) = 400000# / momentScale * signMx: data(2, 4) = 600000# / momentScale * signMy
+                    duration.Value2 = data
+                    prefix = "durationConfig.units." & CStr(mode) & "." & CStr(signN) & "." & CStr(signMx) & "." & CStr(signMy)
+                    LogLine stats, "RUN: " & prefix
+                    code = ExecuteDuration(section, provider, settings, units, batch, reason)
+                    Check stats, prefix & ".reader", code = 0
+                    If code = 0 Then CheckDurationResult stats, prefix, batch, units, -25000#, 400000#, 600000#: CheckComments stats, prefix, batch, units
+                    stats.Cases = stats.Cases + 1
+                Next signMy
+            Next signMx
+        Next signN
+    Next mode
+End Sub
+
+' Ошибка каждой активной ячейки относится только к устойчивости данного LC.
+' DirectState и следующая корректная строка должны быть рассчитаны; невыполненная
+' устойчивость не получает Calculated=True или NumFail.
+Private Sub TestDurationInvalidRows(ByRef stats As TProfileStats, ByVal profiles As Object, ByVal loads As Object, _
+        ByVal duration As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim slot As Long, column As Long, testValue As Variant, data As Variant, batch As CBatchSectionCalculator
+    Dim code As Long, reason As String, prefix As String, cell As Object, errorCase As Long
+    EnableChecks profiles, 1, "Yes", "No", "No", "Yes"
+    For slot = 1 To duration.rows.count - 1
+        For column = 2 To 4
+            For errorCase = 1 To 2
+                PrepareDurationLoads loads, duration, slot
+                If errorCase = 1 Then testValue = "BAD_DURATION" Else testValue = CVErr(2015)
+                data = duration.Value2: data(slot + 1, column) = testValue: duration.Value2 = data
+                AddDurationRecoveryLoad loads
+                Set cell = duration.cells(slot + 1, column)
+                prefix = "durationConfig.Slot" & CStr(slot) & "." & DurationColumnKey(column) & ".error" & CStr(errorCase)
+                LogLine stats, "RUN: " & prefix
+                code = ExecuteDuration(section, provider, settings, units, batch, reason)
+                Check stats, prefix & ".readerNoAbort", code = 0
+                If code = 0 Then
+                    CheckDurationInputError stats, prefix, batch, units, cell.Worksheet.name & "!" & cell.address(False, False)
+                    Check stats, prefix & ".directContinues", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
+                    Check stats, prefix & ".recovery", batch.count = 2 And batch.ResultAt(2).stabilityMeta.InternalStatus = rsSuccess
+                    Check stats, prefix & ".recoveryDirect", batch.ResultAt(2).DirectStateMeta.InternalStatus = rsSuccess
+                    Check stats, prefix & ".recoveryBatchComment", _
+                        CStr(ThisWorkbook.names.item("rngBatchSummary").RefersToRange.Offset(13, 2).Value2) = batch.ResultAt(2).OverallMeta.resultComment
+                    Check stats, prefix & ".recoveryOwnComment", _
+                        CStr(ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange.Offset(1, 1).Value2) = batch.ResultAt(2).stabilityMeta.resultComment
+                    Check stats, prefix & ".noReasonLeak", InStr(1, batch.ResultAt(2).stabilityMeta.resultComment, _
+                        cell.Worksheet.name & "!" & cell.address(False, False), vbBinaryCompare) = 0
+                Else
+                    LogLine stats, "DURATION_ERROR: " & prefix & "; " & CStr(code) & "; " & reason
+                End If
+                stats.Cases = stats.Cases + 1
+            Next errorCase
+        Next column
+    Next slot
+    EnableChecks profiles, 1, "No", "No", "No", "Yes"
+End Sub
+
+' Число может помещаться в Double до перевода, но переполнить внутренние Н
+' или Н*мм. Это адресная ошибка входа данной строки, а не NumFail solver-а.
+Private Sub TestDurationOverflow(ByRef stats As TProfileStats, ByVal loads As Object, ByVal duration As Object, _
+        ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim column As Long, data As Variant, batch As CBatchSectionCalculator, code As Long, reason As String, prefix As String, cell As Object
+    ConfigureDurationUnits "tf", "tf*m", "Tension", "+Y tension", "+X tension"
+    settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
+    For column = 2 To 4
+        PrepareDurationLoads loads, duration, 1
+        data = loads.Value2: data(2, 2) = -50000# / 9806.65
+        data(2, 3) = 1000000# / 9806650#: data(2, 4) = 2000000# / 9806650#: loads.Value2 = data
+        data = duration.Value2: data(2, 2) = -25000# / 9806.65
+        data(2, 3) = 400000# / 9806650#: data(2, 4) = 600000# / 9806650#
+        data(2, column) = 1E+305: duration.Value2 = data
+        prefix = "durationConfig.overflow." & DurationColumnKey(column): LogLine stats, "RUN: " & prefix
+        code = ExecuteDuration(section, provider, settings, units, batch, reason)
+        Check stats, prefix & ".readerNoAbort", code = 0
+        Set cell = duration.cells(2, column)
+        If code = 0 Then CheckDurationInputError stats, prefix, batch, units, cell.Worksheet.name & "!" & cell.address(False, False)
+        stats.Cases = stats.Cases + 1
+    Next column
+    ConfigureDurationUnits "N", "N*mm", "Tension", "+Y tension", "+X tension"
+    settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
+End Sub
+
+' Проверяет case-insensitive ID и существующий приоритет первой строки.
+' Ошибка формулы в самом ID является структурной, ее адрес не выдумывается.
+Private Sub TestDurationTableLinks(ByRef stats As TProfileStats, ByVal loads As Object, ByVal duration As Object, _
+        ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim mode As Long, data As Variant, batch As CBatchSectionCalculator, code As Long, reason As String, prefix As String, cell As Object
+    For mode = 1 To 4
+        PrepareDurationLoads loads, duration, 1
+        data = duration.Value2
+        If mode = 1 Then data(2, 1) = "duration_1"
+        If mode = 2 Then data(3, 1) = "DURATION_1": data(3, 2) = "BAD_DUPLICATE"
+        If mode = 3 Then data(3, 1) = "DURATION_1": data(2, 2) = "BAD_FIRST"
+        If mode = 4 Then data(3, 1) = CVErr(2015)
+        duration.Value2 = data
+        prefix = "durationConfig.links." & CStr(mode): LogLine stats, "RUN: " & prefix
+        code = ExecuteDuration(section, provider, settings, units, batch, reason)
+        Check stats, prefix & ".readerNoAbort", code = 0
+        If code = 0 Then
+            If mode <= 2 Then
+                CheckDurationResult stats, prefix, batch, units, -25000#, 400000#, 600000#
+                CheckComments stats, prefix, batch, units
+            Else
+                If mode = 3 Then Set cell = duration.cells(2, 2) Else Set cell = duration.cells(3, 1)
+                CheckDurationInputError stats, prefix, batch, units, cell.Worksheet.name & "!" & cell.address(False, False)
+            End If
+        End If
+        stats.Cases = stats.Cases + 1
+    Next mode
+End Sub
+
+' Неактивный профиль и неиспользуемый ID не должны зависеть от ошибочных
+' чисел дополнительной строки. Проверяется также пустая строка без ID.
+Private Sub TestDurationInactive(ByRef stats As TProfileStats, ByVal profiles As Object, ByVal loads As Object, _
+        ByVal duration As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim mode As Long, data As Variant, batch As CBatchSectionCalculator, code As Long, reason As String, prefix As String
+    For mode = 1 To 3
+        PrepareDurationLoads loads, duration, 1
+        EnableChecks profiles, 1, "Yes", "No", "No", "Yes"
+        data = duration.Value2
+        If mode = 1 Then EnableChecks profiles, 1, "Yes", "No", "No", "No"
+        If mode = 2 Then data(3, 1) = "UNUSED_ID"
+        If mode = 3 Then data(3, 1) = vbNullString
+        If mode = 1 Then data(2, 2) = CVErr(2015) Else data(3, 2) = CVErr(2015)
+        duration.Value2 = data
+        prefix = "durationConfig.inactive." & CStr(mode): LogLine stats, "RUN: " & prefix
+        code = ExecuteDuration(section, provider, settings, units, batch, reason)
+        Check stats, prefix & ".readerNoAbort", code = 0
+        If code = 0 Then
+            Check stats, prefix & ".direct", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
+            If mode = 1 Then Check stats, prefix & ".notRequested", batch.ResultAt(1).stabilityMeta.InternalStatus = rsNotRequested Else Check stats, prefix & ".stability", batch.ResultAt(1).stabilityMeta.InternalStatus = rsSuccess
+            CheckComments stats, prefix, batch, units
+        End If
+        stats.Cases = stats.Cases + 1
+    Next mode
+    EnableChecks profiles, 1, "No", "No", "No", "Yes"
+End Sub
+
+' Непрочитанный активный named range не эквивалентен пустой допустимой строке.
+' При переносе на другой лист ошибка обязана указывать новое место ввода.
+Private Sub TestDurationRangeContract(ByRef stats As TProfileStats, ByVal loads As Object, ByVal duration As Object, _
+        ByVal originalRef As String, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByRef sheet As Object)
+    Dim code As Long, reason As String, batch As CBatchSectionCalculator, position As Long, column As Long
+    Dim target As Object, data As Variant, prefix As String, cell As Object
+    PrepareDurationLoads loads, duration, 1
+    ThisWorkbook.names.item("rngStabilityDurationLoads").RefersTo = "=#REF!"
+    code = ExecuteDuration(section, provider, settings, units, batch, reason)
+    Check stats, "durationConfig.missing.readerNoAbort", code = 0
+    If code = 0 Then CheckDurationInputError stats, "durationConfig.missing", batch, units, "rngStabilityDurationLoads"
+    stats.Cases = stats.Cases + 1
+    ThisWorkbook.names.item("rngStabilityDurationLoads").RefersTo = originalRef
+    ThisWorkbook.names.item("rngStabilityDurationLoads").RefersTo = "='" & duration.Worksheet.name & "'!" & duration.Resize(duration.rows.count, 3).address
+    code = ExecuteDuration(section, provider, settings, units, batch, reason)
+    Check stats, "durationConfig.columns.readerNoAbort", code = 0
+    If code = 0 Then CheckDurationInputError stats, "durationConfig.columns", batch, units, "rngStabilityDurationLoads"
+    stats.Cases = stats.Cases + 1
+    ThisWorkbook.names.item("rngStabilityDurationLoads").RefersTo = originalRef
+    Set sheet = ThisWorkbook.Worksheets.Add: sheet.name = "__AuditDurationInputs"
+    For position = 1 To 2
+        If position = 1 Then Set target = sheet.cells(10, 5) Else Set target = sheet.cells(800, 60)
+        Set target = target.Resize(duration.rows.count, duration.columns.count)
+        For column = 2 To 4
+            PrepareDurationLoads loads, duration, 1
+            data = duration.Value2: data(2, column) = CVErr(2015): target.Value2 = data
+            ThisWorkbook.names.item("rngStabilityDurationLoads").RefersTo = "='" & sheet.name & "'!" & target.address
+            Set cell = target.cells(2, column)
+            prefix = "durationConfig.relocated." & CStr(position) & "." & DurationColumnKey(column): LogLine stats, "RUN: " & prefix
+            code = ExecuteDuration(section, provider, settings, units, batch, reason)
+            Check stats, prefix & ".readerNoAbort", code = 0
+            If code = 0 Then CheckDurationInputError stats, prefix, batch, units, sheet.name & "!" & cell.address(False, False)
+            ThisWorkbook.names.item("rngStabilityDurationLoads").RefersTo = originalRef
+            stats.Cases = stats.Cases + 1
+        Next column
+    Next position
+End Sub
+
+' Задает один основной LC и 30 независимых duration ID. Пустой ID сам по себе
+' не вводит ошибочный LC, а сопоставление производится по ID, не по номеру строки.
+Private Sub PrepareDurationLoads(ByVal loads As Object, ByVal duration As Object, ByVal activeSlot As Long)
+    Dim data As Variant, row As Long
+    SetLoad loads, 1, -50000#, 1000000#, 2000000#, "Auto"
+    data = loads.Value2: data(2, 1) = "DURATION_" & CStr(activeSlot): loads.Value2 = data
+    data = duration.Value2
+    For row = 2 To UBound(data, 1)
+        data(row, 1) = "DURATION_" & CStr(row - 1)
+        data(row, 2) = -25000#: data(row, 3) = 400000#: data(row, 4) = 600000#
+    Next row
+    duration.Value2 = data
+End Sub
+
+' Добавляет следующую корректную строку, не совпадающую с поврежденным ID.
+' Длительная часть для нее отсутствует, что по действующему контракту допустимо.
+Private Sub AddDurationRecoveryLoad(ByVal loads As Object)
+    Dim data As Variant
+    data = loads.Value2
+    data(3, 1) = "DURATION_RECOVERY": data(3, 2) = -50000#
+    data(3, 3) = 1000000#: data(3, 4) = 2000000#: data(3, 5) = "PR1": data(3, 6) = "Auto"
+    loads.Value2 = data
+End Sub
+
+' Меняет только таблицы единиц/знаков; все физические величины теста остаются
+' одинаковыми. OUTPUT установлен явно, чтобы предыдущая suite не влияла на writer.
+Private Sub ConfigureDurationUnits(ByVal force As String, ByVal moment As String, ByVal signN As String, ByVal signMx As String, ByVal signMy As String)
+    Dim source As Object
+    Set source = ThisWorkbook.names.item("rngUnitSettings").RefersToRange
+    SetTableValue source, "Length", "mm", 2: SetTableValue source, "Force", force, 2
+    SetTableValue source, "Moment", moment, 2: SetTableValue source, "Stress", "MPa", 2
+    SetTableValue source, "Force", force, 4: SetTableValue source, "Moment", moment, 4
+    Set source = ThisWorkbook.names.item("rngSignConventionSettings").RefersToRange
+    SetTableValue source, "+N", signN, 2: SetTableValue source, "+Mx", signMx, 2: SetTableValue source, "+My", signMy, 2
+End Sub
+
+' Сохраняет необработанный отказ reader-а для отрицательного evidence.
+' После исправления ошибки строки должны находиться в StabilityMeta, не Err.
+Private Function ExecuteDuration(ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByRef batch As CBatchSectionCalculator, ByRef reason As String, _
+        Optional ByVal referenceX As Double = 0#, Optional ByVal referenceY As Double = 0#) As Long
+    Set batch = Nothing: reason = vbNullString
+    On Error GoTo Failed
+    Set batch = ExecuteFixture(section, provider, settings, units, True, referenceX, referenceY)
+    Exit Function
+Failed:
+    ExecuteDuration = Err.number: reason = Err.description
+End Function
+
+' Проверяет подготовленные внутренние усилия и их фактический вывод. PhiL
+' обязан реагировать на длительную часть; дополнительного State solve нет.
+Private Sub CheckDurationResult(ByRef stats As TProfileStats, ByVal prefix As String, ByVal batch As CBatchSectionCalculator, _
+        ByVal units As CUnitSystem, ByVal n As Double, ByVal mx As Double, ByVal my As Double, _
+        Optional ByVal totalMx As Double = 1000000#, Optional ByVal totalMy As Double = 2000000#)
+    Dim result As CStabilityResult, writer As CBatchResultWriter, source As Object
+    Set result = batch.ResultAt(1).StabilityResult
+    Check stats, prefix & ".calculated", result.meta.calculated
+    Check stats, prefix & ".status", result.meta.InternalStatus = rsSuccess
+    CheckClose stats, prefix & ".N", result.sustainedN, -n, 0.01
+    CheckClose stats, prefix & ".Mx", result.SustainedMoment1, mx, 0.01
+    CheckClose stats, prefix & ".My", result.SustainedMoment2, my, 0.01
+    CheckClose stats, prefix & ".PhiL1", result.PhiL1, DurationExpectedPhi(mx - n * 90#, totalMx + 50000# * 90#), 0.00000001
+    CheckClose stats, prefix & ".PhiL2", result.PhiL2, DurationExpectedPhi(my - n * 60#, totalMy + 50000# * 60#), 0.00000001
+    Check stats, prefix & ".noSolve", batch.SolverCallCount = 0
+    Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch, units
+    Set source = ThisWorkbook.names.item("rngStabilitySummaryAnchor").RefersToRange
+    CheckClose stats, prefix & ".outputN", CDbl(source.Offset(0, 18).Value2), units.InternalForceToOutput(n), 0.00000001
+    CheckClose stats, prefix & ".outputM1", CDbl(source.Offset(0, 19).Value2), units.InternalMomentMagnitudeToOutput(mx), 0.00000001
+    CheckClose stats, prefix & ".outputM2", CDbl(source.Offset(0, 20).Value2), units.InternalMomentMagnitudeToOutput(my), 0.00000001
+End Sub
+
+' Независимый oracle существующей формулы СП 63 для ненулевого полного
+' момента относительно выбранного стержня; здесь не проверяется новая норма.
+Private Function DurationExpectedPhi(ByVal sustainedMoment As Double, ByVal totalMoment As Double) As Double
+    DurationExpectedPhi = 1# + sustainedMoment / totalMoment
+    If DurationExpectedPhi < 1# Then DurationExpectedPhi = 1#
+    If DurationExpectedPhi > 2# Then DurationExpectedPhi = 2#
+End Function
+
+' Ввод длительной нагрузки не является численной несходимостью. Ошибка должна
+' быть адресной, необрезанной в subtree и не склеиваться заново writer-ом.
+Private Sub CheckDurationInputError(ByRef stats As TProfileStats, ByVal prefix As String, ByVal batch As CBatchSectionCalculator, _
+        ByVal units As CUnitSystem, ByVal location As String)
+    Dim meta As CResultMeta, policy As CResultStatusPolicy
+    Set meta = batch.ResultAt(1).stabilityMeta: Set policy = New CResultStatusPolicy
+    Check stats, prefix & ".typed", meta.InternalStatus = rsInvalidInput And meta.ResultCode = rcInvalidInput
+    Check stats, prefix & ".display", policy.ExternalStatus(meta) = "InputErr"
+    Check stats, prefix & ".notCalculated", Not meta.calculated
+    Check stats, prefix & ".address", InStr(1, meta.resultComment, location, vbBinaryCompare) > 0
+    Check stats, prefix & ".repair", InStr(1, meta.resultComment, "исправ", vbTextCompare) > 0 Or InStr(1, meta.resultComment, "восстанов", vbTextCompare) > 0
+    CheckComments stats, prefix, batch, units
+End Sub
+
+' Короткий машинный ключ компоненты не зависит от выбранной подписи единиц.
+Private Function DurationColumnKey(ByVal column As Long) As String
+    Select Case column
+        Case 2: DurationColumnKey = "N"
+        Case 3: DurationColumnKey = "Mx"
+        Case 4: DurationColumnKey = "My"
+    End Select
+End Function
 
 ' Выбирает запросы существующих calculators без смешения с material spec.
 Private Sub EnableChecks(ByVal source As Object, ByVal profile As Long, ByVal direct As String, _
@@ -69229,7 +69796,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 6814
+LINES: 6819
 ====================================================================================================
 Option Explicit
 
@@ -69345,6 +69912,11 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestProfileConfig.RunAudit03RelocatedInputTests(relocatedPassed, relocatedFailed)
     stats.Passed = stats.Passed + relocatedPassed
     stats.Failed = stats.Failed + relocatedFailed
+    Dim durationPassed As Long, durationFailed As Long
+    AppendLine stats, "RUN: RunAudit03DurationConfigTests"
+    stats.Report = stats.Report & modTestProfileConfig.RunAudit03DurationConfigTests(durationPassed, durationFailed)
+    stats.Passed = stats.Passed + durationPassed
+    stats.Failed = stats.Failed + durationFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
