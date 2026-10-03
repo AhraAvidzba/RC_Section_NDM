@@ -69,6 +69,42 @@
 
 ## Актуальная Точка Продолжения
 
+- F05 срез v131 зафиксирован коммитом `25a5cab`; все его directed/full/
+  numeric/save-reopen/formatting/структурные gates завершены. Следующий рабочий
+  срез F07/D01/K02: ранняя сумма рядов Circle, содержательные комментарии и
+  активная проверка фактических Config-полей круга. Negative count guard v132
+  `4/8` воспроизводит неверную причину координат до проверки количества;
+  positive `12/0`. Это не наблюдение миллиардного цикла/фактического Overflow:
+  малый radius fixture специально дает быстрый отказ старого маршрута.
+  Full Off v132 завершен `23029/0`; общие числа с v131 совпали `5574/5574`,
+  missing=0, differences=0; source/export этого снимка `102/102`, failed=0.
+  Последующие comment-only изменения Width и новый standard test module
+  modTestGeometryConfig входят в следующий v133 snapshot: directed Config
+  `53/0`, source/export `103/103`, clean/update help `2536/2536`.
+  Полные v133 Off/On завершены `23082/0` / `23093/0`, все восемь suites,
+  watchdog exit=0 и source unchanged=True. Общие числа с v131 совпали:
+  `5574/5574` Off и `5579/5579` On, missing=0, differences=0. Universal
+  `827/0`, Results save/reopen=True; palette `351/0`, values/style reopen=True;
+  read-only formatting `1003/0`, deviations=0; Validate-Workbook `25/25`.
+  UI-suite сохраняет исторические явные On setup; его копия закрывается без
+  сохранения, следующий suite открывает исходный Off fixture. Этот override
+  явно отмечен runner-ом, не скрытое расширение обычного Off расчета.
+  Реестр текущего Config содержит 1064 адреса; 82 исторически принятых поля
+  v103 перенесены по Id без удаленного InitiationLoadPath, восемь новых полей
+  Circle имеют actual active/invalid/recovery/inactive evidence. Итого 90,
+  fullAcceptance=False; исходные диапазоны/validation/help взяты из v133.
+  Новых `.cls` нет. SHA книги v133
+  `6E9A5EDF4EA5A769C130DBEEF01E7B98A94151EF18B6EA5BCFEB0430CE1894A6`,
+  export `6CDC1CF6D85DF6308E5A362A1FE65905C40E94C4531CA34D5B5E081BB898B111`.
+  Все процессы gates завершены. Следующая K02/F05 работа: полный input/range
+  contract геометрии и адресная приемка оставшихся семей Config, затем
+  актуальные broad/pairwise/near-limit и benchmark перед финальным DoD.
+  Отсутствие Formation/Post по-прежнему допускает Width с psi=1/warning;
+  только обязательный текущий State блокирует зависимые crack-проверки.
+- Census v132: 102 модуля, 4210 методов, 1481 кандидатов guards, 83 production
+  classes. Template candidates=0; среди методов без собственного комментария
+  нет body длиннее двух строк. Это индекс и проверка конкретных комментариев,
+  а не автоматическая содержательная приемка всех методов/guards.
 - Проверенный Search lifecycle/K04 срез v130 зафиксирован локальным коммитом
   `2e17181`. Текущий следующий срез F05 - итоговое сообщение InputErr.
   Negative v131b `9/3`: теряется ResultComment DirectState, Capacity и

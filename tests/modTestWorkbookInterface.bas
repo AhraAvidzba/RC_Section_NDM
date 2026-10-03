@@ -48,6 +48,10 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03RectSetSharedSelectors stats
     TestAudit03RectSetSharedSelectorLayout stats
     TestAudit03RectSetSharedSelectorEffects stats
+    Dim circleConfigPassed As Long, circleConfigFailed As Long
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03CircleConfigTests(circleConfigPassed, circleConfigFailed)
+    stats.Passed = stats.Passed + circleConfigPassed
+    stats.Failed = stats.Failed + circleConfigFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -2889,6 +2893,8 @@ Private Function RectSetExtraRow(ByVal faceName As String, ByVal sideIndex As Lo
     RectSetExtraRow = 20 + RectSetFaceOrdinal(faceName, sideIndex)
 End Function
 
+' Переводит пару грань/сторона в порядковый номер строки fixture-таблицы:
+' H1, B1, H2, B2 занимают по две строки, стороны сохраняют порядок 1/2.
 Private Function RectSetFaceOrdinal(ByVal faceName As String, ByVal sideIndex As Long) As Long
     Select Case UCase$(faceName)
         Case "H1": RectSetFaceOrdinal = sideIndex
@@ -4026,6 +4032,8 @@ Private Function FileExists(ByVal path As String) As Boolean
     FileExists = CreateObject("Scripting.FileSystemObject").FileExists(path)
 End Function
 
+' Удаляет существующий отчет по известному пути текущего UI-теста;
+' отсутствие файла допустимо, произвольные пользовательские пути не передаются.
 Private Sub DeleteFileIfExists(ByVal path As String)
     Dim fso As Object
     Set fso = CreateObject("Scripting.FileSystemObject")

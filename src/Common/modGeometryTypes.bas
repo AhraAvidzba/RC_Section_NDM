@@ -60,6 +60,8 @@ Public Function GeomMax(ByVal A As Double, ByVal B As Double) As Double
     End If
 End Function
 
+' Выбирает меньший геометрический скаляр в той же системе единиц;
+' преобразование пользовательских единиц остается обязанностью CUnitSystem.
 Public Function GeomMin(ByVal A As Double, ByVal B As Double) As Double
     If A <= B Then
         GeomMin = A

@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/input_message_full_off_v131_2026-10-03.txt",
+  "CurrentReport": "docs/regression/Audit03/circle_count_full_off_v132_2026-10-03.txt",
+  "BaselineSHA256": "E0D96C741CEBC14D7C49DFC97856F32CC8FC3A45EF4FAB8F380400952E00C6D4",
+  "CurrentSHA256": "EF697CBE5330BE036086E510E9A0CBCC2D6DFC104F7CAA95413E615AA7554EB5",
+  "BaselineNumericAssertions": 5574,
+  "CurrentNumericAssertions": 5577,
+  "Compared": 5574,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

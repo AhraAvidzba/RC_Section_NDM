@@ -953,12 +953,16 @@ Private Function ProvisionalConcrete() As CMaterialDiagram
     Set ProvisionalConcrete = provider.ConcreteMaterial(cpCrackedNDS)
 End Function
 
+' Получает физическую диаграмму бетона с растяжением для роли образования
+' трещины; точки предельной деформации здесь не расширяются для равновесия.
 Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
     Set ProvisionalConcreteWithTension = provider.ConcreteMaterial(cpMcrc)
 End Function
 
+' Получает диаграмму арматуры роли текущего cracked-НДС из общего fixture
+' provider-а, согласованную с материалами остальных crack-тестов.
 Private Function ProvisionalSteel() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()

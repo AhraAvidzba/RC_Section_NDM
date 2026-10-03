@@ -33,8 +33,8 @@ Private Const PSI_MODE_ALWAYS_CALC As String = "AlwaysCalc" ' psi_s всегда
 Private Const SIGMA_S_CRC_AVERAGE_ALL_SELECTED As String = "AllSelected" ' Для sigma_s,crc учитывать все выбранные стержни со знаком напряжения.
 Private Const SIGMA_S_CRC_AVERAGE_TENSION_ONLY As String = "TensionOnly" ' Сжатые напряжения в sigma_s,crc принимать равными нулю.
 
-Private mConverged As Boolean ' True, если расчет трещины завершился без ошибки входных данных или несходимости.
-Private mStopReason As String ' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
+Private mConverged As Boolean ' Подготовка данных и формула завершены без ошибки; равновесие этот класс не решает.
+Private mStopReason As String ' Инженерная причина результата или предупреждение по готовым входным состояниям.
 Private mDiagnosticLog As String ' Текстовая диагностика выбора зоны, арматуры, ls и psi_s.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mWidthInternalStatus As EResultInternalStatus ' Машинный статус формульного расчета ширины нормальной трещины.
@@ -59,7 +59,7 @@ Private mTensionRebarCount As Long ' Сколько стержней попал�
 Private mMaxSteelStrain As Double ' Максимальная растягивающая деформация среди выбранных стержней As.
 Private mMaxSteelStress As Double ' Напряжение в стержне с максимальной растягивающей деформацией, МПа.
 Private mSigmaS As Double ' Средневзвешенное напряжение выбранной растянутой арматуры при текущей нагрузке, МПа.
-Private mSigmaSCrc As Double ' То же напряжение в состоянии lambda_crc * LC после образования трещины, МПа.
+Private mSigmaSCrc As Double ' Среднее той же группы в AfterMcrcState выбранного пути с учетом режима усреднения, МПа.
 Private mAs As Double ' Площадь выбранной растянутой арматуры, мм2.
 Private mAbt As Double ' Площадь бетона, попавшая в расчетную растянутую зону, мм2.
 Private mDsEquivalent As Double ' Эквивалентный диаметр выбранных стержней для разных d, мм.

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_input_message_v131.xlsm
-Date: 2026-10-03 06:45:12
+Workbook: RC_Section_NDM_geometry_config_v133.xlsm
+Date: 2026-10-03 07:23:21
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -1733,7 +1733,7 @@ End Function
 ====================================================================================================
 COMPONENT: modGeometryTypes
 TYPE: 1
-LINES: 77
+LINES: 79
 ====================================================================================================
 Option Explicit
 
@@ -1796,6 +1796,8 @@ Public Function GeomMax(ByVal a As Double, ByVal b As Double) As Double
     End If
 End Function
 
+' Выбирает меньший геометрический скаляр в той же системе единиц;
+' преобразование пользовательских единиц остается обязанностью CUnitSystem.
 Public Function GeomMin(ByVal a As Double, ByVal b As Double) As Double
     If a <= b Then
         GeomMin = a
@@ -4761,7 +4763,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CCircleRebarLayoutBuilder
 TYPE: 2
-LINES: 250
+LINES: 259
 ====================================================================================================
 Option Explicit
 
@@ -4850,6 +4852,19 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
         Exit Function
     End If
 
+    ' Суммируем активные ряды в Double до построения. Счетчики раскладки
+    ' и обходы имеют тип Long; оставляем представимым также шаг Next.
+    Dim expectedCountValue As Double
+    expectedCountValue = CDbl(barCount)
+    If row2Diameter > 0# Then expectedCountValue = expectedCountValue + CDbl(barCount)
+    If row3Diameter > 0# Then expectedCountValue = expectedCountValue + CDbl(barCount)
+    If expectedCountValue > 2147483646# Then
+        Err.Raise vbObjectError + 3164, "CCircleRebarLayoutBuilder", _
+            "На листе Config в блоке круглого сечения уменьшите Rebar.Count или число активных рядов: суммарное количество стержней превышает диапазон счетчиков программы."
+    End If
+    Dim expectedCount As Long
+    expectedCount = CLng(expectedCountValue)
+
     mAxisRadius = diameter / 2# - axisDistance
     mAngleStep = 2# * GEOM_PI / CDbl(barCount)
 
@@ -4878,10 +4893,6 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
         sy = sy + yCoord
     Next i
 
-    Dim expectedCount As Long
-    expectedCount = barCount
-    If row2Diameter > 0# Then expectedCount = expectedCount + barCount
-    If row3Diameter > 0# Then expectedCount = expectedCount + barCount
     If layout.count <> expectedCount Then Err.Raise vbObjectError + 3160, "CCircleRebarLayoutBuilder", "Количество созданных стержней не совпадает с заданным."
 
     mCentroidX = sx / CDbl(barCount)
@@ -15662,7 +15673,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CLimitSearchResult
 TYPE: 2
-LINES: 210
+LINES: 214
 ====================================================================================================
 Option Explicit
 
@@ -15842,6 +15853,8 @@ Public Property Get nUltimate() As Double
     End If
 End Property
 
+' Возвращает Mx из сохраненного физического состояния, если оно присутствует,
+' иначе из скалярного вектора результата; наличие точки проверяется отдельно.
 Public Property Get mxUltimate() As Double
     If mPointState Is Nothing Then
         mxUltimate = mMxUltimate
@@ -15850,6 +15863,8 @@ Public Property Get mxUltimate() As Double
     End If
 End Property
 
+' Возвращает My по тому же источнику, что N/Mx, во внутренних Н*мм;
+' сам accessor не назначает успех поиска и не создает новое состояние.
 Public Property Get myUltimate() As Double
     If mPointState Is Nothing Then
         myUltimate = mMyUltimate
@@ -22907,8 +22922,8 @@ Private Const PSI_MODE_ALWAYS_CALC As String = "AlwaysCalc" ' psi_s всегда
 Private Const SIGMA_S_CRC_AVERAGE_ALL_SELECTED As String = "AllSelected" ' Для sigma_s,crc учитывать все выбранные стержни со знаком напряжения.
 Private Const SIGMA_S_CRC_AVERAGE_TENSION_ONLY As String = "TensionOnly" ' Сжатые напряжения в sigma_s,crc принимать равными нулю.
 
-Private mConverged As Boolean ' True, если расчет трещины завершился без ошибки входных данных или несходимости.
-Private mStopReason As String ' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
+Private mConverged As Boolean ' Подготовка данных и формула завершены без ошибки; равновесие этот класс не решает.
+Private mStopReason As String ' Инженерная причина результата или предупреждение по готовым входным состояниям.
 Private mDiagnosticLog As String ' Текстовая диагностика выбора зоны, арматуры, ls и psi_s.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mWidthInternalStatus As EResultInternalStatus ' Машинный статус формульного расчета ширины нормальной трещины.
@@ -22933,7 +22948,7 @@ Private mTensionRebarCount As Long ' Сколько стержней попал�
 Private mMaxSteelStrain As Double ' Максимальная растягивающая деформация среди выбранных стержней As.
 Private mMaxSteelStress As Double ' Напряжение в стержне с максимальной растягивающей деформацией, МПа.
 Private mSigmaS As Double ' Средневзвешенное напряжение выбранной растянутой арматуры при текущей нагрузке, МПа.
-Private mSigmaSCrc As Double ' То же напряжение в состоянии lambda_crc * LC после образования трещины, МПа.
+Private mSigmaSCrc As Double ' Среднее той же группы в AfterMcrcState выбранного пути с учетом режима усреднения, МПа.
 Private mAs As Double ' Площадь выбранной растянутой арматуры, мм2.
 Private mAbt As Double ' Площадь бетона, попавшая в расчетную растянутую зону, мм2.
 Private mDsEquivalent As Double ' Эквивалентный диаметр выбранных стержней для разных d, мм.
@@ -28795,7 +28810,7 @@ End Function
 ====================================================================================================
 COMPONENT: CCalculationProfile
 TYPE: 2
-LINES: 280
+LINES: 282
 ====================================================================================================
 Option Explicit
 
@@ -29048,6 +29063,8 @@ Public Property Get VisualizationStressPrecision() As Long
     End If
 End Property
 
+' Возвращает точность подписей деформаций из профиля либо программный default,
+' если это поле не задано через API; расчетное НДС не округляет.
 Public Property Get VisualizationStrainPrecision() As Long
     If mHasVisualizationStrainPrecision Then
         VisualizationStrainPrecision = mVisualizationStrainPrecision
@@ -39567,8 +39584,8 @@ Private Function PlotCoordinateHeight() As Double
     End If
 End Function
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
-' Удаляет все Shape-объекты, созданные текущим plotter-ом внутри графика.
+' Удаляет внутри графика только Shape-объекты с префиксом этого plotter-а
+' перед перерисовкой; пользовательские фигуры с другими именами сохраняет.
 Private Sub ClearGeneratedShapes()
     Dim i As Long
     For i = mChart.Shapes.count To 1 Step -1
@@ -47175,7 +47192,7 @@ End Property
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 8370
+LINES: 8372
 ====================================================================================================
 Option Explicit
 
@@ -52455,6 +52472,8 @@ Private Sub AssertTrue(ByRef stats As TBatchTestStats, ByVal name As String, ByV
     End If
 End Sub
 
+' Сравнивает строки точно, включая регистр и состав комментария;
+' при расхождении сохраняет actual/expected, не нормализуя результат.
 Private Sub AssertEquals(ByRef stats As TBatchTestStats, ByVal name As String, _
         ByVal actual As String, ByVal expected As String)
     If actual = expected Then
@@ -58846,7 +58865,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestCrackWidth
 TYPE: 1
-LINES: 1469
+LINES: 1473
 ====================================================================================================
 Option Explicit
 
@@ -59802,12 +59821,16 @@ Private Function ProvisionalConcrete() As CMaterialDiagram
     Set ProvisionalConcrete = provider.concreteMaterial(cpCrackedNDS)
 End Function
 
+' Получает физическую диаграмму бетона с растяжением для роли образования
+' трещины; точки предельной деформации здесь не расширяются для равновесия.
 Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
     Set ProvisionalConcreteWithTension = provider.concreteMaterial(cpMcrc)
 End Function
 
+' Получает диаграмму арматуры роли текущего cracked-НДС из общего fixture
+' provider-а, согласованную с материалами остальных crack-тестов.
 Private Function ProvisionalSteel() As CMaterialDiagram
     Dim provider As CMaterialModelProvider
     Set provider = TestMaterialProvider()
@@ -60321,7 +60344,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestGeometry
 TYPE: 1
-LINES: 2535
+LINES: 2588
 ====================================================================================================
 Option Explicit
 
@@ -60389,6 +60412,7 @@ Public Function RunGeometryTests() As String
     TestMeshConvergence stats
     TestPerformance stats
     TestAudit03GeometryLifecycle stats
+    TestAudit03CircleCountGuard stats
 
     AppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunGeometryTests = stats.Report
@@ -62780,6 +62804,58 @@ Failed:
     RunAudit03GeometryLifecycleTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.number) & "; " & Err.description
 End Function
 
+' Проверяет раннюю защиту суммарного количества нескольких круговых рядов
+' без попытки выделить гигантскую раскладку; возвращает отдельный протокол.
+Public Function RunAudit03CircleCountGuardTests() As String
+    On Error GoTo Failed
+    Dim stats As TTestStats
+    TestAudit03CircleCountGuard stats
+    AppendLine stats, "TOTAL_CIRCLE_COUNT_GUARD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CircleCountGuardTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03CircleCountGuardTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.number) & "; " & Err.description
+End Function
+
+' Малый радиус делает второй основной стержень почти совпадающим с первым:
+' без ранней защиты старый маршрут быстро отказывает по координатам, а не
+' запускает миллиардный цикл. Oracle требует именно причины количества.
+' Затем тот же builder строит обычные ряды и сохраняет выключение первого.
+Private Sub TestAudit03CircleCountGuard(ByRef stats As TTestStats)
+    Dim builder As CCircleRebarLayoutBuilder, layout As CRebarLayout
+    Set builder = New CCircleRebarLayoutBuilder
+    Dim scenario As Long, count As Long, thirdDiameter As Double
+    Dim errorNumber As Long, errorDescription As String, prefix As String
+    For scenario = 2 To 3
+        If scenario = 2 Then
+            count = 1073741824
+            thirdDiameter = 0#
+        Else
+            count = 715827883
+            thirdDiameter = 0.001
+        End If
+        errorNumber = 0: errorDescription = vbNullString
+        On Error Resume Next
+        Set layout = builder.Build(1#, 0#, 0#, 0.4, count, 0.001, "Rebar", 0.001, thirdDiameter)
+        errorNumber = Err.number: errorDescription = Err.description
+        Err.Clear
+        On Error GoTo 0
+        prefix = "audit03.circle.countGuard." & CStr(scenario)
+        AssertTrue stats, prefix & ".countReason", errorNumber = vbObjectError + 3164
+        AssertTrue stats, prefix & ".sheet", InStr(1, errorDescription, "Config", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".key", InStr(1, errorDescription, "Rebar.Count", vbBinaryCompare) > 0
+        AssertClose stats, prefix & ".beforeCoordinates", builder.AxisRadius, 0#, 0#
+        AppendLine stats, "CIRCLE_COUNT_ERROR: rows=" & CStr(scenario) & "; number=" & CStr(errorNumber) & "; " & errorDescription
+    Next scenario
+    Set layout = builder.Build(1000#, 0#, 0#, 50#, 12, 16#, "Rebar", 16#)
+    AssertTrue stats, "audit03.circle.countGuard.twoRowsRecovery", layout.count = 24
+    Set layout = builder.Build(1000#, 0#, 0#, 50#, 12, 16#, "Rebar", 16#, 12#)
+    AssertTrue stats, "audit03.circle.countGuard.threeRowsRecovery", layout.count = 36
+    Set layout = builder.Build(1000#, 0#, 0#, 50#, 1073741824, 0#, "Rebar", 16#, 12#)
+    AssertTrue stats, "audit03.circle.countGuard.disabledBase", layout.count = 0
+    AssertClose stats, "audit03.circle.countGuard.disabledRadius", builder.AxisRadius, 0#, 0#
+End Sub
+
 ' Сопоставляет прогретую и заново созданную геометрию по сетке точек после
 ' valid-invalid-valid переходов. Допуски, дуги и алгоритм сетки не меняются.
 Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByVal includeContourDetails As Boolean = False)
@@ -62856,6 +62932,255 @@ Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByV
     AssertTrue stats, "audit03.geometry.hollow.areaAvailable", available And freshAvailable
     AppendLine stats, "CONST: GEOM_PI deltaFrom3x1e15=" & CStr((GEOM_PI - 3#) * 1E+15)
     AssertClose stats, "audit03.geometry.piFullPrecision", GEOM_PI, 4# * Atn(1#), 0#
+End Sub
+
+
+====================================================================================================
+COMPONENT: modTestGeometryConfig
+TYPE: 1
+LINES: 243
+====================================================================================================
+Option Explicit
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: параметры геометрии через фактический Config
+' ==========================================================================
+' Проверяет передачу пользовательских геометрических полей от ячеек через
+' CSystemSettingsReader/CUnitSystem и CSectionTypeRegistry к готовой форме
+' и раскладке. Не ищет равновесие и не подменяет инженерный расчет fixtures.
+' Измененные таблицы восстанавливаются по исходным формулам даже при ошибке.
+
+Private Type TGeometryConfigStats
+    Passed As Long
+    Failed As Long
+    Report As String
+End Type
+
+' Выполняет активные/неактивные варианты восьми параметров круга, границы
+' и восстановление после ошибочного ввода. Счетчики доступны полному UI-suite.
+Public Function RunAudit03CircleConfigTests(Optional ByRef Passed As Long = 0, _
+        Optional ByRef Failed As Long = 0) As String
+    Dim stats As TGeometryConfigStats
+    Dim systemRange As Object, circleRange As Object, unitRange As Object
+    Dim savedSystem As Variant, savedCircle As Variant, savedUnits As Variant
+    On Error GoTo FailedRun
+    Set systemRange = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
+    Set circleRange = ThisWorkbook.names.item("rngCircleGeometry").RefersToRange
+    Set unitRange = ThisWorkbook.names.item("rngUnitSettings").RefersToRange
+    savedSystem = systemRange.formula: savedCircle = circleRange.formula: savedUnits = unitRange.formula
+    SetKey systemRange, "Geometry.Type", "Circle"
+    unitRange.Cells(2, 2).Value2 = "mm"
+    ConfigureCircle circleRange
+    CheckCircleEffects stats, circleRange
+    CheckCircleBoundaries stats, circleRange
+    CheckCircleInactive stats, systemRange, circleRange
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    stats.Report = stats.Report & "FAIL: circleConfig.runtime; " & CStr(Err.number) & "; " & Err.description & vbCrLf
+Restore:
+    On Error GoTo FailedRestore
+    If Not systemRange Is Nothing Then systemRange.formula = savedSystem
+    If Not circleRange Is Nothing Then circleRange.formula = savedCircle
+    If Not unitRange Is Nothing Then unitRange.formula = savedUnits
+    If Not systemRange Is Nothing Then Check stats, "circleConfig.restore.system", SameFormula(systemRange.formula, savedSystem)
+    If Not circleRange Is Nothing Then Check stats, "circleConfig.restore.circle", SameFormula(circleRange.formula, savedCircle)
+    If Not unitRange Is Nothing Then Check stats, "circleConfig.restore.units", SameFormula(unitRange.formula, savedUnits)
+    GoTo Finish
+FailedRestore:
+    stats.Failed = stats.Failed + 1
+    stats.Report = stats.Report & "FAIL: circleConfig.restore.runtime; " & CStr(Err.number) & "; " & Err.description & vbCrLf
+Finish:
+    Passed = stats.Passed: Failed = stats.Failed
+    RunAudit03CircleConfigTests = stats.Report & "TOTAL_CIRCLE_CONFIG: passed=" & CStr(Passed) & "; failed=" & CStr(Failed) & vbCrLf
+End Function
+
+' Задает достаточное защитное расстояние и три активных ряда. Каждая следующая
+' проверка меняет только одно поле относительно этого физически допустимого набора.
+Private Sub ConfigureCircle(ByVal target As Object)
+    SetKey target, "Circle.Diameter", 1000#
+    SetKey target, "Rebar.AxisDistance", 50#
+    SetKey target, "Rebar.Count", 8
+    SetKey target, "Rebar.Diameter", 16#
+    SetKey target, "Rebar.Diameter2", 12#
+    SetKey target, "Rebar.Diameter3", 10#
+    SetKey target, "Rebar.Loc2row", "Stacked"
+    SetKey target, "Rebar.Loc3row", "Stacked"
+End Sub
+
+' Oracle первой позиции не использует builder: ось основного ряда лежит на +X,
+' Stacked сдвигает внутрь на полусумму диаметров, третий ряд перескакивает второй.
+Private Sub CheckCircleEffects(ByRef stats As TGeometryConfigStats, ByVal target As Object)
+    Dim key As Variant, geom As ISectionGeometry, bars As CRebarLayout
+    For Each key In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
+            "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
+        ConfigureCircle target
+        Select Case CStr(key)
+            Case "Circle.Diameter": SetKey target, CStr(key), 1100#
+            Case "Rebar.AxisDistance": SetKey target, CStr(key), 60#
+            Case "Rebar.Count": SetKey target, CStr(key), 10
+            Case "Rebar.Diameter": SetKey target, CStr(key), 20#
+            Case "Rebar.Diameter2": SetKey target, CStr(key), 20#
+            Case "Rebar.Diameter3": SetKey target, CStr(key), 14#
+            Case Else: SetKey target, CStr(key), "SideBySide"
+        End Select
+        ReadGeometry geom, bars
+        Dim prefix As String
+        prefix = "circleConfig.effect." & CStr(key)
+        Select Case CStr(key)
+            Case "Circle.Diameter"
+                Near stats, prefix & ".concreteExtent", geom.maxX, 550#
+                Near stats, prefix & ".barAxis", bars.x(1), 500#
+            Case "Rebar.AxisDistance"
+                Near stats, prefix & ".barAxis", bars.x(1), 440#
+                Near stats, prefix & ".row2Axis", bars.x(2), 426#
+            Case "Rebar.Count"
+                Check stats, prefix & ".allRows", bars.count = 30
+                Near stats, prefix & ".secondAngleX", bars.x(4), 450# * Cos(2# * GEOM_PI / 10#)
+            Case "Rebar.Diameter"
+                Near stats, prefix & ".diameter", bars.diameter(1), 20#
+                Near stats, prefix & ".row2Axis", bars.x(2), 434#
+            Case "Rebar.Diameter2"
+                Near stats, prefix & ".diameter", bars.diameter(2), 20#
+                Near stats, prefix & ".row3Skip", bars.x(3), 417#
+            Case "Rebar.Diameter3"
+                Near stats, prefix & ".diameter", bars.diameter(3), 14#
+                Near stats, prefix & ".row3Axis", bars.x(3), 423#
+            Case "Rebar.Loc2row"
+                Near stats, prefix & ".tangentX", bars.x(2), 450#
+                Near stats, prefix & ".clockwiseY", bars.y(2), -14#
+                Near stats, prefix & ".row3NoSkip", bars.x(3), 437#
+            Case "Rebar.Loc3row"
+                Near stats, prefix & ".tangentX", bars.x(3), 450#
+                Near stats, prefix & ".clockwiseY", bars.y(3), -13#
+                Near stats, prefix & ".row2Unchanged", bars.x(2), 436#
+        End Select
+        stats.Report = stats.Report & "CIRCLE_CONFIG_EFFECT: key=" & CStr(key) & "; bars=" & CStr(bars.count) & vbCrLf
+    Next key
+End Sub
+
+' Проверяет ошибочные численные/enum значения на том же reader/registry-маршруте,
+' затем обычную раскладку. Пустые/нулевые диаметры сохраняют утвержденное выключение ряда.
+Private Sub CheckCircleBoundaries(ByRef stats As TGeometryConfigStats, ByVal target As Object)
+    Dim key As Variant, value As Variant, errorNumber As Long, description As String
+    Dim geom As ISectionGeometry, bars As CRebarLayout
+    For Each key In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
+            "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
+        ConfigureCircle target
+        If InStr(1, CStr(key), "Loc", vbBinaryCompare) > 0 Then value = "Unknown" Else value = -1
+        SetKey target, CStr(key), value
+        errorNumber = 0: description = vbNullString
+        On Error Resume Next
+        ReadGeometry geom, bars
+        errorNumber = Err.number: description = Err.description
+        Err.Clear
+        On Error GoTo 0
+        Check stats, "circleConfig.invalid." & CStr(key), errorNumber <> 0 And Len(description) > 0
+        ConfigureCircle target
+        ReadGeometry geom, bars
+        Check stats, "circleConfig.recovery." & CStr(key), bars.count = 24
+    Next key
+    For Each key In Array("Rebar.Diameter", "Rebar.Diameter2", "Rebar.Diameter3")
+        For Each value In Array(vbNullString, 0#)
+            ConfigureCircle target
+            SetKey target, CStr(key), value
+            ReadGeometry geom, bars
+            If CStr(key) = "Rebar.Diameter" Then
+                Check stats, "circleConfig.optional." & CStr(key) & "." & CStr(value), bars.count = 0
+            Else
+                Check stats, "circleConfig.optional." & CStr(key) & "." & CStr(value), bars.count = 16
+            End If
+        Next value
+    Next key
+    ConfigureCircle target
+    SetKey target, "Rebar.Count", 0
+    ReadGeometry geom, bars
+    Check stats, "circleConfig.count.zero", bars.count = 0
+    SetKey target, "Rebar.Count", 2
+    ReadGeometry geom, bars
+    Check stats, "circleConfig.count.minimum", bars.count = 6
+End Sub
+
+' При другом Geometry.Type изменение каждого поля круга не должно менять
+' форму и арматуру выбранного RectSet. Проверяем весь снимок, а не один счетчик.
+Private Sub CheckCircleInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal target As Object)
+    SetKey systemRange, "Geometry.Type", "RectSet"
+    Dim originalGeom As ISectionGeometry, originalBars As CRebarLayout
+    Dim geom As ISectionGeometry, bars As CRebarLayout, key As Variant, index As Long, equal As Boolean
+    ReadGeometry originalGeom, originalBars
+    For Each key In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
+            "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
+        ConfigureCircle target
+        If InStr(1, CStr(key), "Loc", vbBinaryCompare) > 0 Then
+            SetKey target, CStr(key), "SideBySide"
+        Else
+            SetKey target, CStr(key), 30#
+        End If
+        ReadGeometry geom, bars
+        equal = geom.minX = originalGeom.minX And geom.maxX = originalGeom.maxX And _
+            geom.minY = originalGeom.minY And geom.maxY = originalGeom.maxY And bars.count = originalBars.count
+        If bars.count = originalBars.count Then
+            For index = 1 To bars.count
+                If bars.x(index) <> originalBars.x(index) Or bars.y(index) <> originalBars.y(index) Or _
+                        bars.diameter(index) <> originalBars.diameter(index) Then equal = False
+            Next index
+        End If
+        Check stats, "circleConfig.inactive." & CStr(key), equal
+    Next key
+End Sub
+
+' Читает текущие ячейки заново и использует штатные единицы/registry;
+' прямые вызовы чистого Build здесь не могли бы обнаружить обрыв Config-передачи.
+Private Sub ReadGeometry(ByRef geom As ISectionGeometry, ByRef bars As CRebarLayout)
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set registry = New CSectionTypeRegistry
+    Set geom = registry.CreateGeometry(settings, units)
+    Set bars = registry.CreateRebars(geom, settings, units)
+End Sub
+
+' Меняет реальную ячейку значения по ключу таблицы; отсутствие ключа является
+' ошибкой fixture, а не скрытым созданием новой настройки или default.
+Private Sub SetKey(ByVal target As Object, ByVal key As String, ByVal value As Variant)
+    Dim rowIndex As Long
+    For rowIndex = 2 To target.rows.count
+        If CStr(target.Cells(rowIndex, 1).Value2) = key Then
+            target.Cells(rowIndex, 2).Value2 = value
+            Exit Sub
+        End If
+    Next rowIndex
+    Err.Raise vbObjectError + 5960, "modTestGeometryConfig", "Не найдена строка fixture: " & key
+End Sub
+
+' Сравнивает восстановленные двумерные Formula-массивы без округления,
+' включая пустые значения; формы исходных диапазонов не изменяются тестом.
+Private Function SameFormula(ByVal actual As Variant, ByVal expected As Variant) As Boolean
+    Dim rowIndex As Long, columnIndex As Long
+    For rowIndex = LBound(expected, 1) To UBound(expected, 1)
+        For columnIndex = LBound(expected, 2) To UBound(expected, 2)
+            If CStr(actual(rowIndex, columnIndex)) <> CStr(expected(rowIndex, columnIndex)) Then Exit Function
+        Next columnIndex
+    Next rowIndex
+    SameFormula = True
+End Function
+
+' Фиксирует абсолютный геометрический допуск 1e-6 мм и оба значения oracle;
+' этот допуск не меняет настройки рабочего solver-а.
+Private Sub Near(ByRef stats As TGeometryConfigStats, ByVal name As String, ByVal actual As Double, ByVal expected As Double)
+    Check stats, name, Abs(actual - expected) <= 0.000001
+    stats.Report = stats.Report & "CIRCLE_CONFIG_NUMBER: " & name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected) & vbCrLf
+End Sub
+
+' Сохраняет счет и строку каждого assertion, не останавливая набор при несовпадении.
+Private Sub Check(ByRef stats As TGeometryConfigStats, ByVal name As String, ByVal condition As Boolean)
+    If condition Then
+        stats.Passed = stats.Passed + 1
+        stats.Report = stats.Report & "OK: " & name & vbCrLf
+    Else
+        stats.Failed = stats.Failed + 1
+        stats.Report = stats.Report & "FAIL: " & name & vbCrLf
+    End If
 End Sub
 
 
@@ -63698,7 +64023,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestRegressionBaseline
 TYPE: 1
-LINES: 378
+LINES: 380
 ====================================================================================================
 Option Explicit
 
@@ -63964,6 +64289,8 @@ Private Function ProvisionalConcrete() As CMaterialDiagram
     Set ProvisionalConcrete = concrete
 End Function
 
+' Создает физическую диаграмму арматуры baseline: 350 МПа, начало плато
+' 0.00175 и предельная деформация 0.025; расширение не включается.
 Private Function ProvisionalSteel() As CMaterialDiagram
     Dim steel As CMaterialDiagram
     Set steel = New CMaterialDiagram
@@ -65723,7 +66050,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 6721
+LINES: 6729
 ====================================================================================================
 Option Explicit
 
@@ -65774,6 +66101,10 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03RectSetSharedSelectors stats
     TestAudit03RectSetSharedSelectorLayout stats
     TestAudit03RectSetSharedSelectorEffects stats
+    Dim circleConfigPassed As Long, circleConfigFailed As Long
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03CircleConfigTests(circleConfigPassed, circleConfigFailed)
+    stats.Passed = stats.Passed + circleConfigPassed
+    stats.Failed = stats.Failed + circleConfigFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -68615,6 +68946,8 @@ Private Function RectSetExtraRow(ByVal faceName As String, ByVal sideIndex As Lo
     RectSetExtraRow = 20 + RectSetFaceOrdinal(faceName, sideIndex)
 End Function
 
+' Переводит пару грань/сторона в порядковый номер строки fixture-таблицы:
+' H1, B1, H2, B2 занимают по две строки, стороны сохраняют порядок 1/2.
 Private Function RectSetFaceOrdinal(ByVal faceName As String, ByVal sideIndex As Long) As Long
     Select Case UCase$(faceName)
         Case "H1": RectSetFaceOrdinal = sideIndex
@@ -69752,6 +70085,8 @@ Private Function FileExists(ByVal path As String) As Boolean
     FileExists = CreateObject("Scripting.FileSystemObject").FileExists(path)
 End Function
 
+' Удаляет существующий отчет по известному пути текущего UI-теста;
+' отсутствие файла допустимо, произвольные пользовательские пути не передаются.
 Private Sub DeleteFileIfExists(ByVal path As String)
     Dim fso As Object
     Set fso = CreateObject("Scripting.FileSystemObject")

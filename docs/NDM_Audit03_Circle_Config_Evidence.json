@@ -1,0 +1,101 @@
+{
+  "Scope": "Восемь фактических полей Circle: активное поведение, оба положения рядов, невалидные значения, неактивность при RectSet. Не полная приемка диапазонов или всего Config.",
+  "PositiveReport": "docs/regression/Audit03/circle_config_v133_2026-10-03.txt",
+  "PositiveGate": "TOTAL_CIRCLE_CONFIG: passed=53; failed=0",
+  "FullReports": [
+    "docs/regression/Audit03/geometry_config_full_off_v133_2026-10-03.txt",
+    "docs/regression/Audit03/geometry_config_full_on_v133_2026-10-03.txt"
+  ],
+  "Consumer": "Config.rngCircleGeometry -> CSystemSettingsReader -> CUnitSystem -> CSectionTypeRegistry -> CGeometryCircle / CCircleRebarLayoutBuilder",
+  "TestId": "modTestGeometryConfig.RunAudit03CircleConfigTests",
+  "Entries": [
+    {
+      "Id": "Circle.Diameter",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "300 пользовательских единиц длины при отсутствующем ключе в BuildFromSettings; отдельная приемка этого default впереди",
+      "ValidRange": "> 0; конечное представимое число, допускающее построение выбранной раскладки",
+      "Activity": "Geometry.Type = Circle",
+      "ExpectedEffect": "1000 -> 1100 мм: граница бетона 500 -> 550 мм, ось первого стержня 450 -> 500 мм",
+      "AssertionPrefix": "circleConfig.effect.Circle.Diameter.",
+      "RangeReview": "Проверены положительная мутация, -1 и recovery, неактивность для RectSet. Предельные большие значения, пустое значение и error-cell для этого поля остаются отдельным gate."
+    },
+    {
+      "Id": "Rebar.AxisDistance",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "40 пользовательских единиц длины при отсутствующем ключе",
+      "ValidRange": "При активном первом ряде: Rebar.Diameter/2 < AxisDistance < Circle.Diameter/2",
+      "Activity": "Circle с активным первым рядом",
+      "ExpectedEffect": "50 -> 60 мм: ось первого стержня 450 -> 440 мм; второго 436 -> 426 мм",
+      "AssertionPrefix": "circleConfig.effect.Rebar.AxisDistance.",
+      "RangeReview": "Проверены активная мутация, -1 и recovery, неактивность для RectSet. Равенства обеим геометрическим границам проверяются отдельно, здесь не получают PASS."
+    },
+    {
+      "Id": "Rebar.Count",
+      "Type": "Long",
+      "InternalUnits": "count",
+      "RuntimeDefault": "0 при отсутствующем ключе",
+      "ValidRange": "0 либо целое >= 2 при активном диаметре; сумма активных рядов <= 2147483646 для представимости счетчиков",
+      "Activity": "Circle; 0 выключает основной и зависимые ряды",
+      "ExpectedEffect": "8 -> 10: 24 -> 30 стержней трех рядов и изменение углового шага",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Count.",
+      "RangeReview": "Через Config проверены 0, 2, -1, recovery и RectSet inactive. Отдельный builder test circle_count_v132 проверяет ранний предел суммы Long, но не миллиардное построение или практический лимит памяти."
+    },
+    {
+      "Id": "Rebar.Diameter",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "20 пользовательских единиц длины при отсутствующем ключе; пустая существующая ячейка выключает ряд",
+      "ValidRange": ">= 0; активный диаметр должен помещаться при выбранном AxisDistance",
+      "Activity": "Circle; пустой/0 выключает основной и зависимые ряды",
+      "ExpectedEffect": "16 -> 20 мм: изменяется диаметр первого ряда и радиальное положение второго",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Diameter.",
+      "RangeReview": "Проверены активная мутация, пустое/0, -1, recovery, RectSet inactive. Проверка всего непрерывного диапазона не заявляется."
+    },
+    {
+      "Id": "Rebar.Diameter2",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "0 при отсутствующем ключе",
+      "ValidRange": ">= 0; стержень дополнительного ряда целиком должен помещаться внутри бетона",
+      "Activity": "Circle с активным первым рядом; пустое/0 выключает второй ряд",
+      "ExpectedEffect": "12 -> 20 мм: изменяется диаметр второго ряда и позиция третьего при одинаковом положении рядов",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Diameter2.",
+      "RangeReview": "Проверены активная мутация, пустое/0, -1, recovery, RectSet inactive. Предельное размещение и ошибки формул остаются отдельными проверками."
+    },
+    {
+      "Id": "Rebar.Diameter3",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "0 при отсутствующем ключе",
+      "ValidRange": ">= 0; стержень дополнительного ряда целиком должен помещаться внутри бетона",
+      "Activity": "Circle с активным первым рядом; пустое/0 выключает третий ряд",
+      "ExpectedEffect": "10 -> 14 мм: изменяется диаметр и радиальная позиция третьего ряда",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Diameter3.",
+      "RangeReview": "Проверены активная мутация, пустое/0, -1, recovery, RectSet inactive. Предельное размещение и ошибки формул остаются отдельными проверками."
+    },
+    {
+      "Id": "Rebar.Loc2row",
+      "Type": "Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Stacked при отсутствующем ключе",
+      "ValidRange": "Stacked / SideBySide",
+      "Activity": "Circle с активным первым и вторым рядом",
+      "ExpectedEffect": "Stacked смещает внутрь по радиусу; SideBySide по касательной по часовой стрелке; третий ряд учитывает совпадение положений",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Loc2row.",
+      "RangeReview": "Оба enum-варианта проверены по координатам, Unknown отклоняется, recovery/RectSet inactive проверены. Blank, error-cell и inactive второй ряд остаются отдельным gate."
+    },
+    {
+      "Id": "Rebar.Loc3row",
+      "Type": "Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Stacked при отсутствующем ключе",
+      "ValidRange": "Stacked / SideBySide",
+      "Activity": "Circle с активным первым и третьим рядом",
+      "ExpectedEffect": "Меняется направление третьего ряда; при одинаковом положении рядов он перескакивает второй",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Loc3row.",
+      "RangeReview": "Оба enum-варианта проверены по координатам, Unknown отклоняется, recovery/RectSet inactive проверены. Blank, error-cell и inactive третий ряд остаются отдельным gate."
+    }
+  ]
+}

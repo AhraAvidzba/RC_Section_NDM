@@ -258,6 +258,8 @@ Public Property Get VisualizationStressPrecision() As Long
     End If
 End Property
 
+' Возвращает точность подписей деформаций из профиля либо программный default,
+' если это поле не задано через API; расчетное НДС не округляет.
 Public Property Get VisualizationStrainPrecision() As Long
     If mHasVisualizationStrainPrecision Then
         VisualizationStrainPrecision = mVisualizationStrainPrecision

@@ -1,0 +1,93 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_geometry_config_v133.xlsm
+SOURCE_SHA256: 6E9A5EDF4EA5A769C130DBEEF01E7B98A94151EF18B6EA5BCFEB0430CE1894A6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_45c1e4569d2743fbb01c497902bfc3c9\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometryConfig.RunAudit03CircleConfigTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03CircleConfigTests; 2026-10-03T07:24:53
+EXCEL_AFTER_SUITE: pid=14808; workingSet=284647424; privateBytes=272588800; cpu=583.8125
+EXCEL_AFTER_SUITE: pid=25780; workingSet=133849088; privateBytes=90886144; cpu=3.8125
+OK: circleConfig.effect.Circle.Diameter.concreteExtent
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Circle.Diameter.concreteExtent; actual=550; expected=550
+OK: circleConfig.effect.Circle.Diameter.barAxis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Circle.Diameter.barAxis; actual=500; expected=500
+CIRCLE_CONFIG_EFFECT: key=Circle.Diameter; bars=24
+OK: circleConfig.effect.Rebar.AxisDistance.barAxis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.AxisDistance.barAxis; actual=440; expected=440
+OK: circleConfig.effect.Rebar.AxisDistance.row2Axis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.AxisDistance.row2Axis; actual=426; expected=426
+CIRCLE_CONFIG_EFFECT: key=Rebar.AxisDistance; bars=24
+OK: circleConfig.effect.Rebar.Count.allRows
+OK: circleConfig.effect.Rebar.Count.secondAngleX
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Count.secondAngleX; actual=364.057647468726; expected=364.057647468726
+CIRCLE_CONFIG_EFFECT: key=Rebar.Count; bars=30
+OK: circleConfig.effect.Rebar.Diameter.diameter
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter.diameter; actual=20; expected=20
+OK: circleConfig.effect.Rebar.Diameter.row2Axis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter.row2Axis; actual=434; expected=434
+CIRCLE_CONFIG_EFFECT: key=Rebar.Diameter; bars=24
+OK: circleConfig.effect.Rebar.Diameter2.diameter
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter2.diameter; actual=20; expected=20
+OK: circleConfig.effect.Rebar.Diameter2.row3Skip
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter2.row3Skip; actual=417; expected=417
+CIRCLE_CONFIG_EFFECT: key=Rebar.Diameter2; bars=24
+OK: circleConfig.effect.Rebar.Diameter3.diameter
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter3.diameter; actual=14; expected=14
+OK: circleConfig.effect.Rebar.Diameter3.row3Axis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter3.row3Axis; actual=423; expected=423
+CIRCLE_CONFIG_EFFECT: key=Rebar.Diameter3; bars=24
+OK: circleConfig.effect.Rebar.Loc2row.tangentX
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc2row.tangentX; actual=450; expected=450
+OK: circleConfig.effect.Rebar.Loc2row.clockwiseY
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc2row.clockwiseY; actual=-14; expected=-14
+OK: circleConfig.effect.Rebar.Loc2row.row3NoSkip
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc2row.row3NoSkip; actual=437; expected=437
+CIRCLE_CONFIG_EFFECT: key=Rebar.Loc2row; bars=24
+OK: circleConfig.effect.Rebar.Loc3row.tangentX
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc3row.tangentX; actual=450; expected=450
+OK: circleConfig.effect.Rebar.Loc3row.clockwiseY
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc3row.clockwiseY; actual=-13; expected=-13
+OK: circleConfig.effect.Rebar.Loc3row.row2Unchanged
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc3row.row2Unchanged; actual=436; expected=436
+CIRCLE_CONFIG_EFFECT: key=Rebar.Loc3row; bars=24
+OK: circleConfig.invalid.Circle.Diameter
+OK: circleConfig.recovery.Circle.Diameter
+OK: circleConfig.invalid.Rebar.AxisDistance
+OK: circleConfig.recovery.Rebar.AxisDistance
+OK: circleConfig.invalid.Rebar.Count
+OK: circleConfig.recovery.Rebar.Count
+OK: circleConfig.invalid.Rebar.Diameter
+OK: circleConfig.recovery.Rebar.Diameter
+OK: circleConfig.invalid.Rebar.Diameter2
+OK: circleConfig.recovery.Rebar.Diameter2
+OK: circleConfig.invalid.Rebar.Diameter3
+OK: circleConfig.recovery.Rebar.Diameter3
+OK: circleConfig.invalid.Rebar.Loc2row
+OK: circleConfig.recovery.Rebar.Loc2row
+OK: circleConfig.invalid.Rebar.Loc3row
+OK: circleConfig.recovery.Rebar.Loc3row
+OK: circleConfig.optional.Rebar.Diameter.
+OK: circleConfig.optional.Rebar.Diameter.0
+OK: circleConfig.optional.Rebar.Diameter2.
+OK: circleConfig.optional.Rebar.Diameter2.0
+OK: circleConfig.optional.Rebar.Diameter3.
+OK: circleConfig.optional.Rebar.Diameter3.0
+OK: circleConfig.count.zero
+OK: circleConfig.count.minimum
+OK: circleConfig.inactive.Circle.Diameter
+OK: circleConfig.inactive.Rebar.AxisDistance
+OK: circleConfig.inactive.Rebar.Count
+OK: circleConfig.inactive.Rebar.Diameter
+OK: circleConfig.inactive.Rebar.Diameter2
+OK: circleConfig.inactive.Rebar.Diameter3
+OK: circleConfig.inactive.Rebar.Loc2row
+OK: circleConfig.inactive.Rebar.Loc3row
+OK: circleConfig.restore.system
+OK: circleConfig.restore.circle
+OK: circleConfig.restore.units
+TOTAL_CIRCLE_CONFIG: passed=53; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_45c1e4569d2743fbb01c497902bfc3c9\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03CircleConfigTests; 2026-10-03T07:24:54
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1,0 +1,28 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_circle_count_v132.xlsm
+SOURCE_SHA256: AB4F529A5E6C0968521C22FF1FDB600DC38B6D653984C07D7648104CFB66B13F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e949b5660bdc4fc1bb0107f53e3132b4\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometry.RunAudit03CircleCountGuardTests =====
+SUITE_STARTED: modTestGeometry.RunAudit03CircleCountGuardTests; 2026-10-03T07:12:36
+EXCEL_AFTER_SUITE: pid=29324; workingSet=128581632; privateBytes=88080384; cpu=2.859375
+OK: audit03.circle.countGuard.2.countReason
+OK: audit03.circle.countGuard.2.sheet
+OK: audit03.circle.countGuard.2.key
+OK: audit03.circle.countGuard.2.beforeCoordinates; actual=0.; expected=0.; absDiff=0.
+CIRCLE_COUNT_ERROR: rows=2; number=-2147218340; На листе Config в блоке круглого сечения уменьшите Rebar.Count или число активных рядов: суммарное количество стержней превышает диапазон счетчиков программы.
+OK: audit03.circle.countGuard.3.countReason
+OK: audit03.circle.countGuard.3.sheet
+OK: audit03.circle.countGuard.3.key
+OK: audit03.circle.countGuard.3.beforeCoordinates; actual=0.; expected=0.; absDiff=0.
+CIRCLE_COUNT_ERROR: rows=3; number=-2147218340; На листе Config в блоке круглого сечения уменьшите Rebar.Count или число активных рядов: суммарное количество стержней превышает диапазон счетчиков программы.
+OK: audit03.circle.countGuard.twoRowsRecovery
+OK: audit03.circle.countGuard.threeRowsRecovery
+OK: audit03.circle.countGuard.disabledBase
+OK: audit03.circle.countGuard.disabledRadius; actual=0.; expected=0.; absDiff=0.
+TOTAL_CIRCLE_COUNT_GUARD: passed=12; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e949b5660bdc4fc1bb0107f53e3132b4\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometry.RunAudit03CircleCountGuardTests; 2026-10-03T07:12:36
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -5277,6 +5277,8 @@ Private Sub AssertTrue(ByRef stats As TBatchTestStats, ByVal name As String, ByV
     End If
 End Sub
 
+' Сравнивает строки точно, включая регистр и состав комментария;
+' при расхождении сохраняет actual/expected, не нормализуя результат.
 Private Sub AssertEquals(ByRef stats As TBatchTestStats, ByVal name As String, _
         ByVal actual As String, ByVal expected As String)
     If actual = expected Then

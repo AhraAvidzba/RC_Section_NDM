@@ -185,6 +185,8 @@ Public Property Get NUltimate() As Double
     End If
 End Property
 
+' Возвращает Mx из сохраненного физического состояния, если оно присутствует,
+' иначе из скалярного вектора результата; наличие точки проверяется отдельно.
 Public Property Get MxUltimate() As Double
     If mPointState Is Nothing Then
         MxUltimate = mMxUltimate
@@ -193,6 +195,8 @@ Public Property Get MxUltimate() As Double
     End If
 End Property
 
+' Возвращает My по тому же источнику, что N/Mx, во внутренних Н*мм;
+' сам accessor не назначает успех поиска и не создает новое состояние.
 Public Property Get MyUltimate() As Double
     If mPointState Is Nothing Then
         MyUltimate = mMyUltimate

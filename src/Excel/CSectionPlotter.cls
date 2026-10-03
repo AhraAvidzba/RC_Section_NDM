@@ -2163,8 +2163,8 @@ Private Function PlotCoordinateHeight() As Double
     End If
 End Function
 
-' Очищает накопленное состояние перед новым расчетом или повторным формированием вывода.
-' Удаляет все Shape-объекты, созданные текущим plotter-ом внутри графика.
+' Удаляет внутри графика только Shape-объекты с префиксом этого plotter-а
+' перед перерисовкой; пользовательские фигуры с другими именами сохраняет.
 Private Sub ClearGeneratedShapes()
     Dim i As Long
     For i = mChart.Shapes.Count To 1 Step -1

@@ -1,0 +1,28 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_circle_count_negative_v132.xlsm
+SOURCE_SHA256: D707DFDE18BBA551BA301D7F3DB3217038647896C3ED8B4554EB511C3CDB93A9
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_189fdd578aa94e2fae03f687dfb71ee5\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometry.RunAudit03CircleCountGuardTests =====
+SUITE_STARTED: modTestGeometry.RunAudit03CircleCountGuardTests; 2026-10-03T07:09:11
+EXCEL_AFTER_SUITE: pid=27848; workingSet=129216512; privateBytes=88461312; cpu=2.671875
+FAIL: audit03.circle.countGuard.2.countReason
+FAIL: audit03.circle.countGuard.2.sheet
+FAIL: audit03.circle.countGuard.2.key
+FAIL: audit03.circle.countGuard.2.beforeCoordinates; actual=0.1; expected=0.; absDiff=0.1
+CIRCLE_COUNT_ERROR: rows=2; number=-2147218400; Дублирующиеся координаты стержней.
+FAIL: audit03.circle.countGuard.3.countReason
+FAIL: audit03.circle.countGuard.3.sheet
+FAIL: audit03.circle.countGuard.3.key
+FAIL: audit03.circle.countGuard.3.beforeCoordinates; actual=0.1; expected=0.; absDiff=0.1
+CIRCLE_COUNT_ERROR: rows=3; number=-2147218400; Дублирующиеся координаты стержней.
+OK: audit03.circle.countGuard.twoRowsRecovery
+OK: audit03.circle.countGuard.threeRowsRecovery
+OK: audit03.circle.countGuard.disabledBase
+OK: audit03.circle.countGuard.disabledRadius; actual=0.; expected=0.; absDiff=0.
+TOTAL_CIRCLE_COUNT_GUARD: passed=4; failed=8
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_189fdd578aa94e2fae03f687dfb71ee5\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometry.RunAudit03CircleCountGuardTests; 2026-10-03T07:09:11
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

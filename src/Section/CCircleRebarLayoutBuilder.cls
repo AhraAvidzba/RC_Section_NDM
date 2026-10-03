@@ -94,6 +94,19 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
         Exit Function
     End If
 
+    ' Суммируем активные ряды в Double до построения. Счетчики раскладки
+    ' и обходы имеют тип Long; оставляем представимым также шаг Next.
+    Dim expectedCountValue As Double
+    expectedCountValue = CDbl(barCount)
+    If row2Diameter > 0# Then expectedCountValue = expectedCountValue + CDbl(barCount)
+    If row3Diameter > 0# Then expectedCountValue = expectedCountValue + CDbl(barCount)
+    If expectedCountValue > 2147483646# Then
+        Err.Raise vbObjectError + 3164, "CCircleRebarLayoutBuilder", _
+            "На листе Config в блоке круглого сечения уменьшите Rebar.Count или число активных рядов: суммарное количество стержней превышает диапазон счетчиков программы."
+    End If
+    Dim expectedCount As Long
+    expectedCount = CLng(expectedCountValue)
+
     mAxisRadius = diameter / 2# - axisDistance
     mAngleStep = 2# * GEOM_PI / CDbl(barCount)
 
@@ -122,10 +135,6 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
         sy = sy + yCoord
     Next i
 
-    Dim expectedCount As Long
-    expectedCount = barCount
-    If row2Diameter > 0# Then expectedCount = expectedCount + barCount
-    If row3Diameter > 0# Then expectedCount = expectedCount + barCount
     If layout.Count <> expectedCount Then Err.Raise vbObjectError + 3160, "CCircleRebarLayoutBuilder", "Количество созданных стержней не совпадает с заданным."
 
     mCentroidX = sx / CDbl(barCount)

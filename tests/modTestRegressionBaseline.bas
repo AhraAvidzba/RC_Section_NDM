@@ -263,6 +263,8 @@ Private Function ProvisionalConcrete() As CMaterialDiagram
     Set ProvisionalConcrete = concrete
 End Function
 
+' Создает физическую диаграмму арматуры baseline: 350 МПа, начало плато
+' 0.00175 и предельная деформация 0.025; расширение не включается.
 Private Function ProvisionalSteel() As CMaterialDiagram
     Dim steel As CMaterialDiagram
     Set steel = New CMaterialDiagram

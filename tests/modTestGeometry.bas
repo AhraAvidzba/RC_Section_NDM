@@ -65,6 +65,7 @@ Public Function RunGeometryTests() As String
     TestMeshConvergence stats
     TestPerformance stats
     TestAudit03GeometryLifecycle stats
+    TestAudit03CircleCountGuard stats
 
     AppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunGeometryTests = stats.Report
@@ -2455,6 +2456,58 @@ Public Function RunAudit03GeometryLifecycleTests(Optional ByVal includeContourDe
 Failed:
     RunAudit03GeometryLifecycleTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
+
+' Проверяет раннюю защиту суммарного количества нескольких круговых рядов
+' без попытки выделить гигантскую раскладку; возвращает отдельный протокол.
+Public Function RunAudit03CircleCountGuardTests() As String
+    On Error GoTo Failed
+    Dim stats As TTestStats
+    TestAudit03CircleCountGuard stats
+    AppendLine stats, "TOTAL_CIRCLE_COUNT_GUARD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CircleCountGuardTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03CircleCountGuardTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Малый радиус делает второй основной стержень почти совпадающим с первым:
+' без ранней защиты старый маршрут быстро отказывает по координатам, а не
+' запускает миллиардный цикл. Oracle требует именно причины количества.
+' Затем тот же builder строит обычные ряды и сохраняет выключение первого.
+Private Sub TestAudit03CircleCountGuard(ByRef stats As TTestStats)
+    Dim builder As CCircleRebarLayoutBuilder, layout As CRebarLayout
+    Set builder = New CCircleRebarLayoutBuilder
+    Dim scenario As Long, count As Long, thirdDiameter As Double
+    Dim errorNumber As Long, errorDescription As String, prefix As String
+    For scenario = 2 To 3
+        If scenario = 2 Then
+            count = 1073741824
+            thirdDiameter = 0#
+        Else
+            count = 715827883
+            thirdDiameter = 0.001
+        End If
+        errorNumber = 0: errorDescription = vbNullString
+        On Error Resume Next
+        Set layout = builder.Build(1#, 0#, 0#, 0.4, count, 0.001, "Rebar", 0.001, thirdDiameter)
+        errorNumber = Err.Number: errorDescription = Err.Description
+        Err.Clear
+        On Error GoTo 0
+        prefix = "audit03.circle.countGuard." & CStr(scenario)
+        AssertTrue stats, prefix & ".countReason", errorNumber = vbObjectError + 3164
+        AssertTrue stats, prefix & ".sheet", InStr(1, errorDescription, "Config", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".key", InStr(1, errorDescription, "Rebar.Count", vbBinaryCompare) > 0
+        AssertClose stats, prefix & ".beforeCoordinates", builder.AxisRadius, 0#, 0#
+        AppendLine stats, "CIRCLE_COUNT_ERROR: rows=" & CStr(scenario) & "; number=" & CStr(errorNumber) & "; " & errorDescription
+    Next scenario
+    Set layout = builder.Build(1000#, 0#, 0#, 50#, 12, 16#, "Rebar", 16#)
+    AssertTrue stats, "audit03.circle.countGuard.twoRowsRecovery", layout.Count = 24
+    Set layout = builder.Build(1000#, 0#, 0#, 50#, 12, 16#, "Rebar", 16#, 12#)
+    AssertTrue stats, "audit03.circle.countGuard.threeRowsRecovery", layout.Count = 36
+    Set layout = builder.Build(1000#, 0#, 0#, 50#, 1073741824, 0#, "Rebar", 16#, 12#)
+    AssertTrue stats, "audit03.circle.countGuard.disabledBase", layout.Count = 0
+    AssertClose stats, "audit03.circle.countGuard.disabledRadius", builder.AxisRadius, 0#, 0#
+End Sub
 
 ' Сопоставляет прогретую и заново созданную геометрию по сетке точек после
 ' valid-invalid-valid переходов. Допуски, дуги и алгоритм сетки не меняются.
