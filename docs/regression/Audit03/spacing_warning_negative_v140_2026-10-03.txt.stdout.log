@@ -1,0 +1,17 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_spacing_warning_negative_v140.xlsm
+SOURCE_SHA256: F51B3FC8256A3DEEFA11D300A6A4589936F06CE8C4E97032652AE06FC012B95F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_43c68ea0cccf478b9c24e8c78676bb5c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.spacingWarning.No.50..warningTyped
+FAIL: audit03.spacingWarning.No.50..warningComment
+FAIL: audit03.spacingWarning.No.50..warningOnce
+FAIL: audit03.spacingWarning.No.50..summaryWarningOnce
+FAIL: audit03.spacingWarning.No.50..boundExplanation
+FAIL: audit03.spacingWarning.Yes.50..warningTyped
+FAIL: audit03.spacingWarning.Yes.50..warningComment
+FAIL: audit03.spacingWarning.Yes.50..warningOnce
+FAIL: audit03.spacingWarning.Yes.50..summaryWarningOnce
+FAIL: audit03.spacingWarning.Yes.50..boundExplanation
+TOTAL_AUDIT03_SPACING_WARNING: passed=212; failed=10
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

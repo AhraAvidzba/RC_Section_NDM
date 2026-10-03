@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_spacing_warning_v140.xlsm
+SOURCE_SHA256: 83311124EE26C1D8725AAB84E59A2452616AF57FFCFE7A8016A4A28AE7561380
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ee736b4161ba4f30a869a4e33a0e009d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_SPACING_WARNING: passed=256; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

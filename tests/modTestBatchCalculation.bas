@@ -195,6 +195,7 @@ Public Function RunBatchCalculationTests() As String
     TestAudit03BatchInputMessages stats
     TestAudit03NotCrackedBatchOutput stats
     TestAudit03NotCrackedInputValidation stats
+    TestAudit03CrackSpacingWarning stats
     AppendLine stats, "RUN: TestResultMetaStatusDictionary"
     TestResultMetaStatusDictionary stats
     AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
@@ -5019,6 +5020,7 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
 End Sub
 
 
+
 ' Проверяет канонический результат реального расчета и повторное использование
 ' контейнеров: State не копируется в direct-result, meta не меняется снаружи,
 ' а нейтральная повторная инициализация не оставляет чисел прошлого сочетания.
@@ -8541,6 +8543,137 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
 Failed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: audit03.notCrackedBatch.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет конфликт 10d_s > 400 мм на обычном физически допустимом
+' НДС. Предупреждение принадлежит Width и должно попасть в Results независимо
+' от технического журнала, но не переноситься на следующий LC без конфликта.
+Public Function RunAudit03CrackSpacingWarningTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03CrackSpacingWarning stats
+    RunAudit03CrackSpacingWarningTests = stats.Report & "TOTAL_AUDIT03_SPACING_WARNING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: диаметры 20/40/50 мм проверяют обычный интервал, совпадение
+' границ и настоящий конфликт. Нагрузка соответствует напряжению 100 МПа;
+' после растяжения тот же batch считает сжатие без вызова формулы Width.
+Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim reportMode As Variant, barDiameter As Variant, section As CSectionModel, batch As CBatchSectionCalculator
+    Dim settings As CSystemSettingsReader, report As CExecutionReport, writer As CBatchResultWriter
+    Dim result As CCombinationResult, width As CCrackWidthResult, policy As CResultStatusPolicy
+    Dim steelArea As Double, expectedSpacing As Double, lower As Double, upper As Double
+    Dim i As Long, outputRow As Long, prefix As String, warningText As String, solveCount As Long
+    Dim sheet As Object, anchor As Object
+    Dim calculator As CCrackWidthCalculator, currentState As CSectionStateResult, loadState As CSectionLoadState
+    Dim materials As CMaterialModelProvider, firstSection As CSectionModel, firstResult As CCombinationResult
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetSystemSetting "General.DiagramExtension", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "SLS.Crack.PsiMode", "User"
+    SetSystemSetting "SLS.Crack.PsiS", "1"
+    SetSystemSetting "SLS.Crack.Allowable", "0.3"
+    warningText = "ограничения расстояния между трещинами противоречат друг другу"
+    Set policy = New CResultStatusPolicy
+    For Each reportMode In Array("No", "Yes")
+        SetSystemSetting "General.ExecutionReportEnabled", CStr(reportMode)
+        Set calculator = New CCrackWidthCalculator
+        For Each barDiameter In Array(20#, 40#, 50#)
+            Set section = BuildCircleStabilitySection(300#, 8, CDbl(barDiameter))
+            steelArea = 0#
+            For i = 1 To section.RebarCount
+                steelArea = steelArea + section.RebarArea(i)
+            Next i
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set materials = TestMaterialProvider(False)
+            Set batch = New CBatchSectionCalculator
+            batch.Initialize section, materials
+            Set batch.ProfileCatalog = TestProfileCatalog()
+            batch.ApplySettings settings
+            Set report = New CExecutionReport: report.Initialize ThisWorkbook, settings
+            Set batch.ExecutionReport = report
+            batch.AddCombination "SPACING_TENSION", 100# * steelArea, 0#, 0#, "PR2", "Проверка ограничений ls", "Auto"
+            batch.AddCombination "SPACING_COMPRESSION", -90000#, 0#, 0#, "PR2", "Проверка отсутствия лишнего предупреждения", "Auto"
+            batch.Execute
+            Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch
+            Set sheet = ThisWorkbook.Worksheets.Item("Results")
+            Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+            Set result = batch.ResultAt(1): Set width = result.CrackResult.Width
+            If CDbl(barDiameter) = 20# Then
+                Set firstSection = section: Set firstResult = result
+            End If
+            prefix = "audit03.spacingWarning." & CStr(reportMode) & "." & FormatNumberInvariant(CDbl(barDiameter))
+            AssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
+            AssertTrue stats, prefix & ".formationPoint", result.CrackResult.Formation.HasLimitPoint
+            AssertTrue stats, prefix & ".calculated", result.CrackWidthMeta.Calculated
+            AssertEquals stats, prefix & ".widthStatus", policy.ExternalStatus(result.CrackWidthMeta), "OK"
+            AssertClose stats, prefix & ".diameter", width.DsEquivalent, CDbl(barDiameter), 0.000000001
+            lower = MaxDouble(10# * CDbl(barDiameter), 100#): upper = 400#
+            expectedSpacing = MaxDouble(width.CrackSpacingRaw, lower)
+            If expectedSpacing > upper Then expectedSpacing = upper
+            AssertClose stats, prefix & ".spacing", width.CrackSpacing, expectedSpacing, 0.000000001
+            AssertClose stats, prefix & ".formula", width.CrackWidth, width.Phi1 * width.Phi2 * width.Phi3 * _
+                width.PsiS * width.SigmaS / width.SteelEs * expectedSpacing, 0.000000000001
+            Set currentState = result.StateRepository.FindState(sstCrackedState)
+            Set loadState = New CSectionLoadState: loadState.Initialize 100# * steelArea, 0#, 0#, 0#, 0#
+            calculator.ApplySettings settings
+            solveCount = SectionEquilibriumSolveCount()
+            calculator.Calculate currentState, section, materials, currentState.MaterialSpec, result.CrackResult.Formation, loadState
+            AssertEquals stats, prefix & ".reusedCalculatorComment", calculator.ResultMeta.ResultComment, result.CrackWidthMeta.ResultComment
+            AssertTrue stats, prefix & ".formulaNoSolve", SectionEquilibriumSolveCount() = solveCount
+            If lower > upper Then
+                AssertTrue stats, prefix & ".warningTyped", result.CrackWidthMeta.InternalStatus = rsSuccessWithWarning
+                AssertTrue stats, prefix & ".warningComment", InStr(1, result.CrackWidthMeta.ResultComment, warningText, vbTextCompare) > 0
+                AssertTrue stats, prefix & ".warningOnce", Audit03TextOccurrences(result.CrackWidthMeta.ResultComment, warningText) = 1
+                AssertTrue stats, prefix & ".summaryWarningOnce", Audit03TextOccurrences(result.OverallMeta.ResultComment, warningText) = 1
+                AssertTrue stats, prefix & ".boundExplanation", InStr(1, result.CrackWidthMeta.ResultComment, "500", vbBinaryCompare) > 0 And _
+                    InStr(1, result.CrackWidthMeta.ResultComment, "400", vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".numberFormatting", InStr(1, result.CrackWidthMeta.ResultComment, ". мм", vbBinaryCompare) = 0
+                calculator.AllowableCrackWidth = 0.01
+                calculator.Calculate currentState, section, materials, currentState.MaterialSpec, result.CrackResult.Formation, loadState
+                AssertEquals stats, prefix & ".failedCheck", policy.ExternalStatus(calculator.ResultMeta), "FAIL"
+                AssertTrue stats, prefix & ".failedCheckCode", calculator.ResultMeta.ResultCode = rcCrackWidthExceeded
+                AssertTrue stats, prefix & ".failedCheckWarningOnce", Audit03TextOccurrences(calculator.ResultMeta.ResultComment, warningText) = 1
+                AssertClose stats, prefix & ".failedCheckSameWidth", calculator.CrackWidth, width.CrackWidth, 0.000000000001
+                calculator.AllowableCrackWidth = width.AllowableCrackWidth
+            Else
+                AssertTrue stats, prefix & ".noWarning", InStr(1, result.CrackWidthMeta.ResultComment, warningText, vbTextCompare) = 0
+                AssertTrue stats, prefix & ".success", result.CrackWidthMeta.InternalStatus = rsSuccess
+            End If
+            outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", "SPACING_TENSION")
+            AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), result.CrackSummaryMeta.ResultComment
+            Audit03CheckResultComments stats, batch, 1
+            AppendLine stats, "SPACING_WARNING: " & prefix & "|ls=" & FormatNumberInvariant(width.CrackSpacing) & _
+                "|width=" & result.CrackWidthMeta.ResultComment & "|summary=" & result.OverallMeta.ResultComment
+            Set result = batch.ResultAt(2)
+            AssertTrue stats, prefix & ".compressionNotCracked", result.CrackResult.Formation.ConfirmedNotCracked
+            AssertTrue stats, prefix & ".compressionNoFormula", Not result.CrackWidthMeta.Calculated
+            AssertTrue stats, prefix & ".compressionNoWarning", InStr(1, result.OverallMeta.ResultComment, warningText, vbTextCompare) = 0
+            calculator.InitializeForFormation result.CrackResult.Formation
+            AssertTrue stats, prefix & ".resetNoWarning", InStr(1, calculator.ResultMeta.ResultComment, warningText, vbTextCompare) = 0
+        Next barDiameter
+        Set currentState = firstResult.StateRepository.FindState(sstCrackedState)
+        Set loadState = New CSectionLoadState: loadState.Initialize currentState.TargetN, 0#, 0#, 0#, 0#
+        calculator.Calculate currentState, firstSection, materials, currentState.MaterialSpec, firstResult.CrackResult.Formation, loadState
+        AssertTrue stats, "audit03.spacingWarning." & CStr(reportMode) & ".recoveryAfterConflict", _
+            calculator.ResultMeta.InternalStatus = rsSuccess And InStr(1, calculator.ResultMeta.ResultComment, warningText, vbTextCompare) = 0
+    Next reportMode
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.spacingWarning.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     If IsArray(savedSystem) Then systemRange.Formula = savedSystem

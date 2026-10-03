@@ -69,6 +69,47 @@
 
 ## Актуальная Точка Продолжения
 
+- Checkpoint раннего ввода/read-only validator v139: `aeefb7b`.
+  Срез v140 проверяет передачу предупреждения несовместимых границ ls в
+  ResultComment. Negative на прежнем production `212/10`: все шесть
+  пар диаметр 20/40/50 мм x report No/Yes имеют найденный current state и
+  Formation-точку, но оба случая d=50 мм теряют warning в Width и summary.
+  Численное принятие верхней границы 400 мм не меняется. Width сохраняет
+  собственное предупреждение, успешная формула получает rsSuccessWithWarning,
+  неуспешная остается rsCheckFailed; writer не формирует причину.
+  Расширенный первый positive `254/0` включает повторное использование
+  calculator-а, сброс warning, FAIL по ширине и отсутствие нового solve;
+  Results и status-style save/reopen=True. Его сохраненная post-test книга
+  `RC_Section_NDM_spacing_warning_pre_format_saved_v140.xlsm` имеет SHA
+  `612BAF992A18C7FCA53B85F852A245044BC1557FC7AF99517F16C3214375A222`.
+  Source/export первого positive `103/103`, failed=0, export SHA
+  `3F6262AC9647C283492C9B5280749BD4B6948FD537DDE603849E5A3376F4D0D1`.
+  После него улучшено только форматирование целых чисел в комментариях Width:
+  `500 мм`, не `500. мм`; добавлен отдельный assertion. Финальный directed
+  `256/0`, Results и status-style save/reopen=True, source unchanged=True.
+  Help updated: failed=0, 1944 строки, 140 ссылок, 118 shapes, input/Formulas/
+  validation и print-area сохранены. Final source/export `103/103`, failed=0,
+  export SHA `3A282C5859F5D4B0B69A4C124D9F23322012B78196C707081DF9B0DF243009EE`.
+  Книга SHA `83311124EE26C1D8725AAB84E59A2452616AF57FFCFE7A8016A4A28AE7561380`.
+  Full Off/On v140 завершены: `26520/0` и `26531/0`, все восемь suites,
+  source unchanged=True. Общие actual-числа с v139 совпадают точно:
+  Off `5601/5601`, On `5606/5606`, missing=0, differences=0.
+  Чистая сборка завершена; help clean/update `2559/2559`, mergesEqual=True,
+  source unchanged=True. Updated и clean прошли по `27/27` read-only checks;
+  updated Config formatting `1003/0`, deviations=0. Palette Off `351/0`,
+  Results и status-style save/reopen=True; Universal On на clean `827/0`,
+  Results save/reopen=True. Все COM/test-сессии среза завершены.
+  Clean SHA `78B8D525F0B95A896E4BAB49203546AA71B28833F76E627AED58C89F1EA2A029`;
+  updated и защищенные исходная output-книга/ТЗ сохранили свои хеши.
+  Этот checkpoint не закрывает всю цель: далее идет цельный адресный блок
+  rngLoadCombinations, затем профили/длительные нагрузки, K/F/D/T/P и
+  окончательная независимая приемка. Наличие зеленого полного regression
+  не присваивает PASS еще не проверенным адресам Config.
+  Эквивалентный диаметр
+  больше не приписывается непроверенному источнику Eurocode; принятое
+  инженерное обобщение и формула сохранены, ONQ-004 не закрывается.
+  Актуальный final census: 4263 метода, 1503 guard-кандидата,
+  83 production + 3 test classes; semantic acceptance остается Pending.
 - Checkpoint geometry/Psi scope v137/v138: `692def91`. Следующий срез v139:
   ранний NotCracked скрывал неизвестные режимы и нулевые/отрицательные
   коэффициенты Width. Окончательный negative на прежнем production

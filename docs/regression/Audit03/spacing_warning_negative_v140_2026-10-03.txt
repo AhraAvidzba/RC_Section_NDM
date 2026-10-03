@@ -1,0 +1,291 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_spacing_warning_negative_v140.xlsm
+SOURCE_SHA256: F51B3FC8256A3DEEFA11D300A6A4589936F06CE8C4E97032652AE06FC012B95F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_43c68ea0cccf478b9c24e8c78676bb5c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03CrackSpacingWarningTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03CrackSpacingWarningTests; 2026-10-03T12:17:26
+EXCEL_AFTER_SUITE: pid=26608; workingSet=147472384; privateBytes=109326336; cpu=5.296875
+OK: audit03.spacingWarning.No.20..current
+OK: audit03.spacingWarning.No.20..formationPoint
+OK: audit03.spacingWarning.No.20..calculated
+OK: audit03.spacingWarning.No.20..widthStatus
+OK: audit03.spacingWarning.No.20..diameter; actual=20.; expected=20.
+OK: audit03.spacingWarning.No.20..spacing; actual=281.704249272655; expected=281.704249272655
+OK: audit03.spacingWarning.No.20..formula; actual=0.118315784695; expected=0.118315784695
+OK: audit03.spacingWarning.No.20..noWarning
+OK: audit03.spacingWarning.No.20..success
+OK: audit03.spacingWarning.No.20..writerComment
+META: audit03.comments.SPACING_TENSION.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.SPACING_TENSION.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.SPACING_TENSION.capacity.russianReason
+OK: audit03.comments.SPACING_TENSION.capacity.readable
+OK: audit03.comments.SPACING_TENSION.capacity.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.SPACING_TENSION.formation.russianReason
+OK: audit03.comments.SPACING_TENSION.formation.readable
+OK: audit03.comments.SPACING_TENSION.formation.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.SPACING_TENSION.current.russianReason
+OK: audit03.comments.SPACING_TENSION.current.readable
+OK: audit03.comments.SPACING_TENSION.current.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.comments.SPACING_TENSION.width.russianReason
+OK: audit03.comments.SPACING_TENSION.width.readable
+OK: audit03.comments.SPACING_TENSION.width.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.SPACING_TENSION.longitudinal.russianReason
+OK: audit03.comments.SPACING_TENSION.longitudinal.readable
+OK: audit03.comments.SPACING_TENSION.longitudinal.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.SPACING_TENSION.formulaNoNumFail
+OK: audit03.comments.SPACING_TENSION.strengthNoCrack
+OK: audit03.comments.SPACING_TENSION.crackNoCapacity
+OK: audit03.comments.SPACING_TENSION.overallComposition
+OK: audit03.comments.SPACING_TENSION.batchOutput
+OK: audit03.comments.SPACING_TENSION.strengthOutput
+OK: audit03.comments.SPACING_TENSION.crackOutput
+OK: audit03.comments.SPACING_TENSION.stabilityOutput
+OUTPUT: audit03.comments.SPACING_TENSION|strength=|crack=|stability=|batch=
+SPACING_WARNING: audit03.spacingWarning.No.20.|ls=281.704249272655|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.|summary=
+OK: audit03.spacingWarning.No.20..compressionNotCracked
+OK: audit03.spacingWarning.No.20..compressionNoFormula
+OK: audit03.spacingWarning.No.20..compressionNoWarning
+OK: audit03.spacingWarning.No.40..current
+OK: audit03.spacingWarning.No.40..formationPoint
+OK: audit03.spacingWarning.No.40..calculated
+OK: audit03.spacingWarning.No.40..widthStatus
+OK: audit03.spacingWarning.No.40..diameter; actual=40.; expected=40.
+OK: audit03.spacingWarning.No.40..spacing; actual=400.; expected=400.
+OK: audit03.spacingWarning.No.40..formula; actual=0.168; expected=0.168
+OK: audit03.spacingWarning.No.40..noWarning
+OK: audit03.spacingWarning.No.40..success
+OK: audit03.spacingWarning.No.40..writerComment
+META: audit03.comments.SPACING_TENSION.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.SPACING_TENSION.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.SPACING_TENSION.capacity.russianReason
+OK: audit03.comments.SPACING_TENSION.capacity.readable
+OK: audit03.comments.SPACING_TENSION.capacity.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.SPACING_TENSION.formation.russianReason
+OK: audit03.comments.SPACING_TENSION.formation.readable
+OK: audit03.comments.SPACING_TENSION.formation.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.SPACING_TENSION.current.russianReason
+OK: audit03.comments.SPACING_TENSION.current.readable
+OK: audit03.comments.SPACING_TENSION.current.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.comments.SPACING_TENSION.width.russianReason
+OK: audit03.comments.SPACING_TENSION.width.readable
+OK: audit03.comments.SPACING_TENSION.width.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.SPACING_TENSION.longitudinal.russianReason
+OK: audit03.comments.SPACING_TENSION.longitudinal.readable
+OK: audit03.comments.SPACING_TENSION.longitudinal.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.SPACING_TENSION.formulaNoNumFail
+OK: audit03.comments.SPACING_TENSION.strengthNoCrack
+OK: audit03.comments.SPACING_TENSION.crackNoCapacity
+OK: audit03.comments.SPACING_TENSION.overallComposition
+OK: audit03.comments.SPACING_TENSION.batchOutput
+OK: audit03.comments.SPACING_TENSION.strengthOutput
+OK: audit03.comments.SPACING_TENSION.crackOutput
+OK: audit03.comments.SPACING_TENSION.stabilityOutput
+OUTPUT: audit03.comments.SPACING_TENSION|strength=|crack=|stability=|batch=
+SPACING_WARNING: audit03.spacingWarning.No.40.|ls=400.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.|summary=
+OK: audit03.spacingWarning.No.40..compressionNotCracked
+OK: audit03.spacingWarning.No.40..compressionNoFormula
+OK: audit03.spacingWarning.No.40..compressionNoWarning
+OK: audit03.spacingWarning.No.50..current
+OK: audit03.spacingWarning.No.50..formationPoint
+OK: audit03.spacingWarning.No.50..calculated
+OK: audit03.spacingWarning.No.50..widthStatus
+OK: audit03.spacingWarning.No.50..diameter; actual=50.; expected=50.
+OK: audit03.spacingWarning.No.50..spacing; actual=400.; expected=400.
+OK: audit03.spacingWarning.No.50..formula; actual=0.168; expected=0.168
+FAIL: audit03.spacingWarning.No.50..warningTyped
+FAIL: audit03.spacingWarning.No.50..warningComment
+FAIL: audit03.spacingWarning.No.50..warningOnce
+FAIL: audit03.spacingWarning.No.50..summaryWarningOnce
+FAIL: audit03.spacingWarning.No.50..boundExplanation
+OK: audit03.spacingWarning.No.50..writerComment
+META: audit03.comments.SPACING_TENSION.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.SPACING_TENSION.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.SPACING_TENSION.capacity.russianReason
+OK: audit03.comments.SPACING_TENSION.capacity.readable
+OK: audit03.comments.SPACING_TENSION.capacity.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.SPACING_TENSION.formation.russianReason
+OK: audit03.comments.SPACING_TENSION.formation.readable
+OK: audit03.comments.SPACING_TENSION.formation.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.SPACING_TENSION.current.russianReason
+OK: audit03.comments.SPACING_TENSION.current.readable
+OK: audit03.comments.SPACING_TENSION.current.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.comments.SPACING_TENSION.width.russianReason
+OK: audit03.comments.SPACING_TENSION.width.readable
+OK: audit03.comments.SPACING_TENSION.width.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.SPACING_TENSION.longitudinal.russianReason
+OK: audit03.comments.SPACING_TENSION.longitudinal.readable
+OK: audit03.comments.SPACING_TENSION.longitudinal.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.SPACING_TENSION.formulaNoNumFail
+OK: audit03.comments.SPACING_TENSION.strengthNoCrack
+OK: audit03.comments.SPACING_TENSION.crackNoCapacity
+OK: audit03.comments.SPACING_TENSION.overallComposition
+OK: audit03.comments.SPACING_TENSION.batchOutput
+OK: audit03.comments.SPACING_TENSION.strengthOutput
+OK: audit03.comments.SPACING_TENSION.crackOutput
+OK: audit03.comments.SPACING_TENSION.stabilityOutput
+OUTPUT: audit03.comments.SPACING_TENSION|strength=|crack=|stability=|batch=
+SPACING_WARNING: audit03.spacingWarning.No.50.|ls=400.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.|summary=
+OK: audit03.spacingWarning.No.50..compressionNotCracked
+OK: audit03.spacingWarning.No.50..compressionNoFormula
+OK: audit03.spacingWarning.No.50..compressionNoWarning
+OK: audit03.spacingWarning.Yes.20..current
+OK: audit03.spacingWarning.Yes.20..formationPoint
+OK: audit03.spacingWarning.Yes.20..calculated
+OK: audit03.spacingWarning.Yes.20..widthStatus
+OK: audit03.spacingWarning.Yes.20..diameter; actual=20.; expected=20.
+OK: audit03.spacingWarning.Yes.20..spacing; actual=281.704249272655; expected=281.704249272655
+OK: audit03.spacingWarning.Yes.20..formula; actual=0.118315784695; expected=0.118315784695
+OK: audit03.spacingWarning.Yes.20..noWarning
+OK: audit03.spacingWarning.Yes.20..success
+OK: audit03.spacingWarning.Yes.20..writerComment
+META: audit03.comments.SPACING_TENSION.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.SPACING_TENSION.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.SPACING_TENSION.capacity.russianReason
+OK: audit03.comments.SPACING_TENSION.capacity.readable
+OK: audit03.comments.SPACING_TENSION.capacity.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.SPACING_TENSION.formation.russianReason
+OK: audit03.comments.SPACING_TENSION.formation.readable
+OK: audit03.comments.SPACING_TENSION.formation.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.SPACING_TENSION.current.russianReason
+OK: audit03.comments.SPACING_TENSION.current.readable
+OK: audit03.comments.SPACING_TENSION.current.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.comments.SPACING_TENSION.width.russianReason
+OK: audit03.comments.SPACING_TENSION.width.readable
+OK: audit03.comments.SPACING_TENSION.width.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.SPACING_TENSION.longitudinal.russianReason
+OK: audit03.comments.SPACING_TENSION.longitudinal.readable
+OK: audit03.comments.SPACING_TENSION.longitudinal.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.SPACING_TENSION.formulaNoNumFail
+OK: audit03.comments.SPACING_TENSION.strengthNoCrack
+OK: audit03.comments.SPACING_TENSION.crackNoCapacity
+OK: audit03.comments.SPACING_TENSION.overallComposition
+OK: audit03.comments.SPACING_TENSION.batchOutput
+OK: audit03.comments.SPACING_TENSION.strengthOutput
+OK: audit03.comments.SPACING_TENSION.crackOutput
+OK: audit03.comments.SPACING_TENSION.stabilityOutput
+OUTPUT: audit03.comments.SPACING_TENSION|strength=|crack=|stability=|batch=
+SPACING_WARNING: audit03.spacingWarning.Yes.20.|ls=281.704249272655|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.|summary=
+OK: audit03.spacingWarning.Yes.20..compressionNotCracked
+OK: audit03.spacingWarning.Yes.20..compressionNoFormula
+OK: audit03.spacingWarning.Yes.20..compressionNoWarning
+OK: audit03.spacingWarning.Yes.40..current
+OK: audit03.spacingWarning.Yes.40..formationPoint
+OK: audit03.spacingWarning.Yes.40..calculated
+OK: audit03.spacingWarning.Yes.40..widthStatus
+OK: audit03.spacingWarning.Yes.40..diameter; actual=40.; expected=40.
+OK: audit03.spacingWarning.Yes.40..spacing; actual=400.; expected=400.
+OK: audit03.spacingWarning.Yes.40..formula; actual=0.168; expected=0.168
+OK: audit03.spacingWarning.Yes.40..noWarning
+OK: audit03.spacingWarning.Yes.40..success
+OK: audit03.spacingWarning.Yes.40..writerComment
+META: audit03.comments.SPACING_TENSION.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.SPACING_TENSION.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.SPACING_TENSION.capacity.russianReason
+OK: audit03.comments.SPACING_TENSION.capacity.readable
+OK: audit03.comments.SPACING_TENSION.capacity.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.SPACING_TENSION.formation.russianReason
+OK: audit03.comments.SPACING_TENSION.formation.readable
+OK: audit03.comments.SPACING_TENSION.formation.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.SPACING_TENSION.current.russianReason
+OK: audit03.comments.SPACING_TENSION.current.readable
+OK: audit03.comments.SPACING_TENSION.current.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.comments.SPACING_TENSION.width.russianReason
+OK: audit03.comments.SPACING_TENSION.width.readable
+OK: audit03.comments.SPACING_TENSION.width.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.SPACING_TENSION.longitudinal.russianReason
+OK: audit03.comments.SPACING_TENSION.longitudinal.readable
+OK: audit03.comments.SPACING_TENSION.longitudinal.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.SPACING_TENSION.formulaNoNumFail
+OK: audit03.comments.SPACING_TENSION.strengthNoCrack
+OK: audit03.comments.SPACING_TENSION.crackNoCapacity
+OK: audit03.comments.SPACING_TENSION.overallComposition
+OK: audit03.comments.SPACING_TENSION.batchOutput
+OK: audit03.comments.SPACING_TENSION.strengthOutput
+OK: audit03.comments.SPACING_TENSION.crackOutput
+OK: audit03.comments.SPACING_TENSION.stabilityOutput
+OUTPUT: audit03.comments.SPACING_TENSION|strength=|crack=|stability=|batch=
+SPACING_WARNING: audit03.spacingWarning.Yes.40.|ls=400.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.|summary=
+OK: audit03.spacingWarning.Yes.40..compressionNotCracked
+OK: audit03.spacingWarning.Yes.40..compressionNoFormula
+OK: audit03.spacingWarning.Yes.40..compressionNoWarning
+OK: audit03.spacingWarning.Yes.50..current
+OK: audit03.spacingWarning.Yes.50..formationPoint
+OK: audit03.spacingWarning.Yes.50..calculated
+OK: audit03.spacingWarning.Yes.50..widthStatus
+OK: audit03.spacingWarning.Yes.50..diameter; actual=50.; expected=50.
+OK: audit03.spacingWarning.Yes.50..spacing; actual=400.; expected=400.
+OK: audit03.spacingWarning.Yes.50..formula; actual=0.168; expected=0.168
+FAIL: audit03.spacingWarning.Yes.50..warningTyped
+FAIL: audit03.spacingWarning.Yes.50..warningComment
+FAIL: audit03.spacingWarning.Yes.50..warningOnce
+FAIL: audit03.spacingWarning.Yes.50..summaryWarningOnce
+FAIL: audit03.spacingWarning.Yes.50..boundExplanation
+OK: audit03.spacingWarning.Yes.50..writerComment
+META: audit03.comments.SPACING_TENSION.direct|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+META: audit03.comments.SPACING_TENSION.capacity|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.SPACING_TENSION.capacity.russianReason
+OK: audit03.comments.SPACING_TENSION.capacity.readable
+OK: audit03.comments.SPACING_TENSION.capacity.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.SPACING_TENSION.formation.russianReason
+OK: audit03.comments.SPACING_TENSION.formation.readable
+OK: audit03.comments.SPACING_TENSION.formation.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.SPACING_TENSION.current.russianReason
+OK: audit03.comments.SPACING_TENSION.current.readable
+OK: audit03.comments.SPACING_TENSION.current.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.comments.SPACING_TENSION.width.russianReason
+OK: audit03.comments.SPACING_TENSION.width.readable
+OK: audit03.comments.SPACING_TENSION.width.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.SPACING_TENSION.longitudinal.russianReason
+OK: audit03.comments.SPACING_TENSION.longitudinal.readable
+OK: audit03.comments.SPACING_TENSION.longitudinal.noMachinePrefix
+META: audit03.comments.SPACING_TENSION.stability|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=
+OK: audit03.comments.SPACING_TENSION.formulaNoNumFail
+OK: audit03.comments.SPACING_TENSION.strengthNoCrack
+OK: audit03.comments.SPACING_TENSION.crackNoCapacity
+OK: audit03.comments.SPACING_TENSION.overallComposition
+OK: audit03.comments.SPACING_TENSION.batchOutput
+OK: audit03.comments.SPACING_TENSION.strengthOutput
+OK: audit03.comments.SPACING_TENSION.crackOutput
+OK: audit03.comments.SPACING_TENSION.stabilityOutput
+OUTPUT: audit03.comments.SPACING_TENSION|strength=|crack=|stability=|batch=
+SPACING_WARNING: audit03.spacingWarning.Yes.50.|ls=400.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.|summary=
+OK: audit03.spacingWarning.Yes.50..compressionNotCracked
+OK: audit03.spacingWarning.Yes.50..compressionNoFormula
+OK: audit03.spacingWarning.Yes.50..compressionNoWarning
+TOTAL_AUDIT03_SPACING_WARNING: passed=212; failed=10
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_43c68ea0cccf478b9c24e8c78676bb5c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03CrackSpacingWarningTests; 2026-10-03T12:17:31
+RESULTS_SAVE_REOPEN: before=3AE57799EAE8794B8550A93B5B6B49262CD0467923341C44D20B51E4D78B78C3; after=3AE57799EAE8794B8550A93B5B6B49262CD0467923341C44D20B51E4D78B78C3; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_43c68ea0cccf478b9c24e8c78676bb5c\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=EF201DAF0603C5CF9B6DCCE4409045A74339DD95C840FD990088AA5830B86022; after=EF201DAF0603C5CF9B6DCCE4409045A74339DD95C840FD990088AA5830B86022; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

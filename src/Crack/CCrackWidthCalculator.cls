@@ -65,6 +65,7 @@ Private mAbt As Double ' Площадь бетона, попавшая в рас
 Private mDsEquivalent As Double ' Эквивалентный диаметр выбранных стержней для разных d, мм.
 Private mLsRaw As Double ' Нормативная длина ls до ограничений 10ds/100/40ds/400, мм.
 Private mLs As Double ' Итоговое расстояние между трещинами после ограничений, мм.
+Private mSpacingLimitWarning As String ' Объяснение несовместимых границ ls; публикуется только при выполненной формуле.
 Private mPsiS As Double ' Коэффициент неравномерности деформаций арматуры между трещинами.
 Private mPhi1 As Double ' Коэффициент длительности действия нагрузки.
 Private mPhi2 As Double ' Пользовательский коэффициент, учитывающий поверхность арматуры.
@@ -121,6 +122,7 @@ Private Sub ClearResult()
     mDsEquivalent = 0#
     mLsRaw = 0#
     mLs = 0#
+    mSpacingLimitWarning = vbNullString
     mPsiS = mPsiSInput
     mPhi1 = mPhi1Input
     mPhi2 = mPhi2Input
@@ -533,6 +535,7 @@ Private Sub FinalizeWidth(ByVal reason As String)
     End If
 
     mFormulaCalculated = True
+    If Len(mSpacingLimitWarning) > 0 Then reason = reason & " " & mSpacingLimitWarning
     mCrackWidth = CrackWidthFromData(mPhi1, mPhi2, mPhi3, mPsiS, mSigmaS, mSteelEs, mLs)
     mUtilization = UtilizationFromData(mCrackWidth, mAllowableCrackWidth)
     mCrackFormed = True
@@ -542,7 +545,7 @@ Private Sub FinalizeWidth(ByVal reason As String)
             "Раскрытие нормальной трещины " & FormatNumberInvariant(mCrackWidth) & _
             " мм превышает допускаемое " & FormatNumberInvariant(mAllowableCrackWidth) & " мм. " & reason
     Else
-        If mFallbackPsi1 Then
+        If mFallbackPsi1 Or Len(mSpacingLimitWarning) > 0 Then
             SetWidthResult rsSuccessWithWarning, rcCheckPassed, reason
         Else
             SetWidthResult rsSuccess, rcCheckPassed, reason
@@ -851,7 +854,7 @@ End Function
 
 
 
-' Для разных диаметров используется эквивалентный диаметр Eurocode:
+' Для разных диаметров используется принятое обобщение эквивалентного диаметра:
 ' ds,eq = sum(n_i*d_i^2) / sum(n_i*d_i). В дискретной модели каждый стержень
 ' считается отдельным i, поэтому n_i фактически равен количеству совпадающих d.
 Private Function EquivalentDiameter(ByVal section As CSectionModel, ByRef selected() As Boolean) As Double
@@ -872,14 +875,20 @@ End Function
 
 
 
-' Применяет ограничения СП 63 к расстоянию между трещинами.
+' Ограничивает ls снизу, затем сверху по принятой расчетной последовательности.
+' Если нижняя граница больше верхней, сохраняет верхнюю и инженерное
+' предупреждение для результата формулы; это не ошибка поиска равновесия.
 Private Function LimitedCrackSpacing(ByVal rawLs As Double, ByVal ds As Double) As Double
     Dim lower As Double
     Dim upper As Double
     lower = MaxDouble(10# * ds, 100#)
     upper = MinDouble(40# * ds, 400#)
     If lower > upper Then
-        AppendDiagnostic "Предупреждение: ограничения ls конфликтуют; использована верхняя граница " & FormatNumberInvariant(upper) & " мм."
+        mSpacingLimitWarning = "Предупреждение: ограничения расстояния между трещинами противоречат друг другу: " & _
+            "нижняя граница " & FormatNumberInvariant(lower) & " мм выше верхней " & _
+            FormatNumberInvariant(upper) & " мм при d_s,eq = " & FormatNumberInvariant(ds) & _
+            " мм. Принято ls = " & FormatNumberInvariant(upper) & " мм по правилу ограничения сверху."
+        AppendDiagnostic mSpacingLimitWarning
         LimitedCrackSpacing = upper
     Else
         LimitedCrackSpacing = MinDouble(MaxDouble(rawLs, lower), upper)
@@ -1067,9 +1076,12 @@ End Sub
 
 
 
-' Форматирует числа диагностического журнала через точку.
+' Форматирует числа журнала и инженерного комментария через точку.
+' У целого числа убирает пустой десятичный разделитель перед единицей измерения.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+    If Right$(FormatNumberInvariant, 1) = "." Then _
+        FormatNumberInvariant = Left$(FormatNumberInvariant, Len(FormatNumberInvariant) - 1)
 End Function
 
 

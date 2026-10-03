@@ -1,0 +1,27 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_spacing_warning_v140.xlsm
+SOURCE_SHA256: 83311124EE26C1D8725AAB84E59A2452616AF57FFCFE7A8016A4A28AE7561380
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_cfd9892a5a6b443f9f00bd7114abff68\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL: passed=536; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_MATERIAL: passed=2856; failed=0; elapsedSec=2.375
+MODE_AFTER_SUITE: Yes
+TOTAL_SECTION_SOLVER: passed=895; failed=0; elapsedSec=1.44140625
+MODE_AFTER_SUITE: Yes
+TOTAL_CAPACITY: passed=1748; failed=0; elapsedSec=40.83984375
+MODE_AFTER_SUITE: Yes
+TOTAL_CRACK: passed=1082; failed=0; elapsedSec=1.40625
+MODE_AFTER_SUITE: Yes
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1813; failed=0
+TOTAL_AUDIT03_UNIVERSAL_PATH: passed=827; failed=0
+TOTAL_BATCH: passed=11166; failed=0; elapsedSec=101.21875
+MODE_AFTER_SUITE: Yes
+TOTAL_CIRCLE_CONFIG: passed=53; failed=0
+TOTAL_SHAPE_CONFIG: passed=213; failed=0
+TOTAL_REBAR_COUNTER: passed=29; failed=0
+TOTAL_REQUIRED_GEOMETRY: passed=1010; failed=0
+TOTAL_WORKBOOK_UI: passed=8209; failed=0; elapsedSec=181.8203125
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.51953125
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True
