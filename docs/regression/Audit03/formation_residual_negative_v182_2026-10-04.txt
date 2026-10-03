@@ -1,0 +1,505 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_formation_residual_negative_v182.xlsm
+SOURCE_SHA256: F58223DC3F009420E14CEE10E9E6E82222EBB34D52B97625775516A9084315D7
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5b5e4e76b25b4aa99ccca3965c095125\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCrackWidth.RunAudit03FormationResidualContracts =====
+SUITE_STARTED: modTestCrackWidth.RunAudit03FormationResidualContracts; 2026-10-04T00:24:26
+EXCEL_AFTER_SUITE: pid=23476; workingSet=208490496; privateBytes=160006144; cpu=8951.4375
+EXCEL_AFTER_SUITE: pid=26116; workingSet=133672960; privateBytes=98754560; cpu=3.0625
+OK: audit03.formationResidual.LambdaMx.1.noResidual
+FAIL: audit03.formationResidual.LambdaMx.1.status
+FAIL: audit03.formationResidual.LambdaMx.1.code
+FAIL: audit03.formationResidual.LambdaMx.1.display
+OK: audit03.formationResidual.LambdaMx.1.noPoint
+OK: audit03.formationResidual.LambdaMx.1.noState
+OK: audit03.formationResidual.LambdaMx.1.reason
+OK: audit03.formationResidual.LambdaMx.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.1; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaMx.1.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.1.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.2.noResidual
+OK: audit03.formationResidual.LambdaMx.2.status
+OK: audit03.formationResidual.LambdaMx.2.code
+OK: audit03.formationResidual.LambdaMx.2.display
+OK: audit03.formationResidual.LambdaMx.2.noPoint
+OK: audit03.formationResidual.LambdaMx.2.noState
+OK: audit03.formationResidual.LambdaMx.2.reason
+OK: audit03.formationResidual.LambdaMx.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.2; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMx.2.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.2.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.3.noResidual
+FAIL: audit03.formationResidual.LambdaMx.3.status
+FAIL: audit03.formationResidual.LambdaMx.3.code
+FAIL: audit03.formationResidual.LambdaMx.3.display
+OK: audit03.formationResidual.LambdaMx.3.noPoint
+OK: audit03.formationResidual.LambdaMx.3.noState
+OK: audit03.formationResidual.LambdaMx.3.reason
+OK: audit03.formationResidual.LambdaMx.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.3; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMx.3.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.3.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.4.noResidual
+FAIL: audit03.formationResidual.LambdaMx.4.status
+FAIL: audit03.formationResidual.LambdaMx.4.code
+FAIL: audit03.formationResidual.LambdaMx.4.display
+OK: audit03.formationResidual.LambdaMx.4.noPoint
+OK: audit03.formationResidual.LambdaMx.4.noState
+OK: audit03.formationResidual.LambdaMx.4.reason
+OK: audit03.formationResidual.LambdaMx.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.4; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMx.4.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.4.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.5.noResidual
+FAIL: audit03.formationResidual.LambdaMx.5.status
+FAIL: audit03.formationResidual.LambdaMx.5.code
+FAIL: audit03.formationResidual.LambdaMx.5.display
+OK: audit03.formationResidual.LambdaMx.5.noPoint
+OK: audit03.formationResidual.LambdaMx.5.noState
+OK: audit03.formationResidual.LambdaMx.5.reason
+OK: audit03.formationResidual.LambdaMx.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.5; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaMx.5.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.5.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.6.noResidual
+OK: audit03.formationResidual.LambdaMx.6.status
+OK: audit03.formationResidual.LambdaMx.6.code
+OK: audit03.formationResidual.LambdaMx.6.display
+OK: audit03.formationResidual.LambdaMx.6.noPoint
+OK: audit03.formationResidual.LambdaMx.6.noState
+OK: audit03.formationResidual.LambdaMx.6.reason
+OK: audit03.formationResidual.LambdaMx.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.6; оценка lambda трещинообразования по load-path не выполнена: Overflow
+OK: audit03.formationResidual.LambdaMx.6.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.6.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.7.noResidual
+OK: audit03.formationResidual.LambdaMx.7.status
+OK: audit03.formationResidual.LambdaMx.7.code
+OK: audit03.formationResidual.LambdaMx.7.display
+OK: audit03.formationResidual.LambdaMx.7.noPoint
+OK: audit03.formationResidual.LambdaMx.7.noState
+OK: audit03.formationResidual.LambdaMx.7.reason
+FAIL: audit03.formationResidual.LambdaMx.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaMx.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaMx.7.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.7.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.8.noResidual
+OK: audit03.formationResidual.LambdaMx.8.status
+OK: audit03.formationResidual.LambdaMx.8.code
+OK: audit03.formationResidual.LambdaMx.8.display
+OK: audit03.formationResidual.LambdaMx.8.noPoint
+OK: audit03.formationResidual.LambdaMx.8.noState
+OK: audit03.formationResidual.LambdaMx.8.reason
+FAIL: audit03.formationResidual.LambdaMx.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaMx.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaMx.8.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.8.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.8.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.1.noResidual
+FAIL: audit03.formationResidual.LambdaMy.1.status
+FAIL: audit03.formationResidual.LambdaMy.1.code
+FAIL: audit03.formationResidual.LambdaMy.1.display
+OK: audit03.formationResidual.LambdaMy.1.noPoint
+OK: audit03.formationResidual.LambdaMy.1.noState
+OK: audit03.formationResidual.LambdaMy.1.reason
+OK: audit03.formationResidual.LambdaMy.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.1; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaMy.1.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.1.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.2.noResidual
+OK: audit03.formationResidual.LambdaMy.2.status
+OK: audit03.formationResidual.LambdaMy.2.code
+OK: audit03.formationResidual.LambdaMy.2.display
+OK: audit03.formationResidual.LambdaMy.2.noPoint
+OK: audit03.formationResidual.LambdaMy.2.noState
+OK: audit03.formationResidual.LambdaMy.2.reason
+OK: audit03.formationResidual.LambdaMy.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.2; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMy.2.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.2.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.3.noResidual
+FAIL: audit03.formationResidual.LambdaMy.3.status
+FAIL: audit03.formationResidual.LambdaMy.3.code
+FAIL: audit03.formationResidual.LambdaMy.3.display
+OK: audit03.formationResidual.LambdaMy.3.noPoint
+OK: audit03.formationResidual.LambdaMy.3.noState
+OK: audit03.formationResidual.LambdaMy.3.reason
+OK: audit03.formationResidual.LambdaMy.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.3; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMy.3.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.3.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.4.noResidual
+FAIL: audit03.formationResidual.LambdaMy.4.status
+FAIL: audit03.formationResidual.LambdaMy.4.code
+FAIL: audit03.formationResidual.LambdaMy.4.display
+OK: audit03.formationResidual.LambdaMy.4.noPoint
+OK: audit03.formationResidual.LambdaMy.4.noState
+OK: audit03.formationResidual.LambdaMy.4.reason
+OK: audit03.formationResidual.LambdaMy.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.4; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMy.4.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.4.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.5.noResidual
+FAIL: audit03.formationResidual.LambdaMy.5.status
+FAIL: audit03.formationResidual.LambdaMy.5.code
+FAIL: audit03.formationResidual.LambdaMy.5.display
+OK: audit03.formationResidual.LambdaMy.5.noPoint
+OK: audit03.formationResidual.LambdaMy.5.noState
+OK: audit03.formationResidual.LambdaMy.5.reason
+OK: audit03.formationResidual.LambdaMy.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.5; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaMy.5.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.5.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.6.noResidual
+OK: audit03.formationResidual.LambdaMy.6.status
+OK: audit03.formationResidual.LambdaMy.6.code
+OK: audit03.formationResidual.LambdaMy.6.display
+OK: audit03.formationResidual.LambdaMy.6.noPoint
+OK: audit03.formationResidual.LambdaMy.6.noState
+OK: audit03.formationResidual.LambdaMy.6.reason
+OK: audit03.formationResidual.LambdaMy.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.6; оценка lambda трещинообразования по load-path не выполнена: Overflow
+OK: audit03.formationResidual.LambdaMy.6.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.6.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.7.noResidual
+OK: audit03.formationResidual.LambdaMy.7.status
+OK: audit03.formationResidual.LambdaMy.7.code
+OK: audit03.formationResidual.LambdaMy.7.display
+OK: audit03.formationResidual.LambdaMy.7.noPoint
+OK: audit03.formationResidual.LambdaMy.7.noState
+OK: audit03.formationResidual.LambdaMy.7.reason
+FAIL: audit03.formationResidual.LambdaMy.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaMy.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaMy.7.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.7.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.8.noResidual
+OK: audit03.formationResidual.LambdaMy.8.status
+OK: audit03.formationResidual.LambdaMy.8.code
+OK: audit03.formationResidual.LambdaMy.8.display
+OK: audit03.formationResidual.LambdaMy.8.noPoint
+OK: audit03.formationResidual.LambdaMy.8.noState
+OK: audit03.formationResidual.LambdaMy.8.reason
+FAIL: audit03.formationResidual.LambdaMy.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaMy.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaMy.8.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.8.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.8.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.1.noResidual
+FAIL: audit03.formationResidual.LambdaMxy.1.status
+FAIL: audit03.formationResidual.LambdaMxy.1.code
+FAIL: audit03.formationResidual.LambdaMxy.1.display
+OK: audit03.formationResidual.LambdaMxy.1.noPoint
+OK: audit03.formationResidual.LambdaMxy.1.noState
+OK: audit03.formationResidual.LambdaMxy.1.reason
+OK: audit03.formationResidual.LambdaMxy.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.1; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaMxy.1.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.1.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.2.noResidual
+OK: audit03.formationResidual.LambdaMxy.2.status
+OK: audit03.formationResidual.LambdaMxy.2.code
+OK: audit03.formationResidual.LambdaMxy.2.display
+OK: audit03.formationResidual.LambdaMxy.2.noPoint
+OK: audit03.formationResidual.LambdaMxy.2.noState
+OK: audit03.formationResidual.LambdaMxy.2.reason
+OK: audit03.formationResidual.LambdaMxy.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.2; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMxy.2.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.2.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.3.noResidual
+FAIL: audit03.formationResidual.LambdaMxy.3.status
+FAIL: audit03.formationResidual.LambdaMxy.3.code
+FAIL: audit03.formationResidual.LambdaMxy.3.display
+OK: audit03.formationResidual.LambdaMxy.3.noPoint
+OK: audit03.formationResidual.LambdaMxy.3.noState
+OK: audit03.formationResidual.LambdaMxy.3.reason
+OK: audit03.formationResidual.LambdaMxy.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.3; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMxy.3.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.3.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.4.noResidual
+FAIL: audit03.formationResidual.LambdaMxy.4.status
+FAIL: audit03.formationResidual.LambdaMxy.4.code
+FAIL: audit03.formationResidual.LambdaMxy.4.display
+OK: audit03.formationResidual.LambdaMxy.4.noPoint
+OK: audit03.formationResidual.LambdaMxy.4.noState
+OK: audit03.formationResidual.LambdaMxy.4.reason
+OK: audit03.formationResidual.LambdaMxy.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.4; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaMxy.4.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.4.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.5.noResidual
+FAIL: audit03.formationResidual.LambdaMxy.5.status
+FAIL: audit03.formationResidual.LambdaMxy.5.code
+FAIL: audit03.formationResidual.LambdaMxy.5.display
+OK: audit03.formationResidual.LambdaMxy.5.noPoint
+OK: audit03.formationResidual.LambdaMxy.5.noState
+OK: audit03.formationResidual.LambdaMxy.5.reason
+OK: audit03.formationResidual.LambdaMxy.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.5; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaMxy.5.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.5.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.6.noResidual
+OK: audit03.formationResidual.LambdaMxy.6.status
+OK: audit03.formationResidual.LambdaMxy.6.code
+OK: audit03.formationResidual.LambdaMxy.6.display
+OK: audit03.formationResidual.LambdaMxy.6.noPoint
+OK: audit03.formationResidual.LambdaMxy.6.noState
+OK: audit03.formationResidual.LambdaMxy.6.reason
+OK: audit03.formationResidual.LambdaMxy.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.6; оценка lambda трещинообразования по load-path не выполнена: Overflow
+OK: audit03.formationResidual.LambdaMxy.6.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.6.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.7.noResidual
+OK: audit03.formationResidual.LambdaMxy.7.status
+OK: audit03.formationResidual.LambdaMxy.7.code
+OK: audit03.formationResidual.LambdaMxy.7.display
+OK: audit03.formationResidual.LambdaMxy.7.noPoint
+OK: audit03.formationResidual.LambdaMxy.7.noState
+OK: audit03.formationResidual.LambdaMxy.7.reason
+FAIL: audit03.formationResidual.LambdaMxy.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaMxy.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaMxy.7.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.7.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.8.noResidual
+OK: audit03.formationResidual.LambdaMxy.8.status
+OK: audit03.formationResidual.LambdaMxy.8.code
+OK: audit03.formationResidual.LambdaMxy.8.display
+OK: audit03.formationResidual.LambdaMxy.8.noPoint
+OK: audit03.formationResidual.LambdaMxy.8.noState
+OK: audit03.formationResidual.LambdaMxy.8.reason
+FAIL: audit03.formationResidual.LambdaMxy.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaMxy.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaMxy.8.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.8.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.8.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.1.noResidual
+FAIL: audit03.formationResidual.LambdaN.1.status
+FAIL: audit03.formationResidual.LambdaN.1.code
+FAIL: audit03.formationResidual.LambdaN.1.display
+OK: audit03.formationResidual.LambdaN.1.noPoint
+OK: audit03.formationResidual.LambdaN.1.noState
+OK: audit03.formationResidual.LambdaN.1.reason
+OK: audit03.formationResidual.LambdaN.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.1; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaN.1.recoverySuccess
+OK: audit03.formationResidual.LambdaN.1.recoveryPoint
+OK: audit03.formationResidual.LambdaN.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.2.noResidual
+OK: audit03.formationResidual.LambdaN.2.status
+OK: audit03.formationResidual.LambdaN.2.code
+OK: audit03.formationResidual.LambdaN.2.display
+OK: audit03.formationResidual.LambdaN.2.noPoint
+OK: audit03.formationResidual.LambdaN.2.noState
+OK: audit03.formationResidual.LambdaN.2.reason
+OK: audit03.formationResidual.LambdaN.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.2; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaN.2.recoverySuccess
+OK: audit03.formationResidual.LambdaN.2.recoveryPoint
+OK: audit03.formationResidual.LambdaN.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.3.noResidual
+FAIL: audit03.formationResidual.LambdaN.3.status
+FAIL: audit03.formationResidual.LambdaN.3.code
+FAIL: audit03.formationResidual.LambdaN.3.display
+OK: audit03.formationResidual.LambdaN.3.noPoint
+OK: audit03.formationResidual.LambdaN.3.noState
+OK: audit03.formationResidual.LambdaN.3.reason
+OK: audit03.formationResidual.LambdaN.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.3; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaN.3.recoverySuccess
+OK: audit03.formationResidual.LambdaN.3.recoveryPoint
+OK: audit03.formationResidual.LambdaN.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.4.noResidual
+FAIL: audit03.formationResidual.LambdaN.4.status
+FAIL: audit03.formationResidual.LambdaN.4.code
+FAIL: audit03.formationResidual.LambdaN.4.display
+OK: audit03.formationResidual.LambdaN.4.noPoint
+OK: audit03.formationResidual.LambdaN.4.noState
+OK: audit03.formationResidual.LambdaN.4.reason
+OK: audit03.formationResidual.LambdaN.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.4; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaN.4.recoverySuccess
+OK: audit03.formationResidual.LambdaN.4.recoveryPoint
+OK: audit03.formationResidual.LambdaN.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.5.noResidual
+FAIL: audit03.formationResidual.LambdaN.5.status
+FAIL: audit03.formationResidual.LambdaN.5.code
+FAIL: audit03.formationResidual.LambdaN.5.display
+OK: audit03.formationResidual.LambdaN.5.noPoint
+OK: audit03.formationResidual.LambdaN.5.noState
+OK: audit03.formationResidual.LambdaN.5.reason
+OK: audit03.formationResidual.LambdaN.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.5; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaN.5.recoverySuccess
+OK: audit03.formationResidual.LambdaN.5.recoveryPoint
+OK: audit03.formationResidual.LambdaN.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.6.noResidual
+OK: audit03.formationResidual.LambdaN.6.status
+OK: audit03.formationResidual.LambdaN.6.code
+OK: audit03.formationResidual.LambdaN.6.display
+OK: audit03.formationResidual.LambdaN.6.noPoint
+OK: audit03.formationResidual.LambdaN.6.noState
+OK: audit03.formationResidual.LambdaN.6.reason
+OK: audit03.formationResidual.LambdaN.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.6; оценка lambda трещинообразования по load-path не выполнена: Overflow
+OK: audit03.formationResidual.LambdaN.6.recoverySuccess
+OK: audit03.formationResidual.LambdaN.6.recoveryPoint
+OK: audit03.formationResidual.LambdaN.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.7.noResidual
+OK: audit03.formationResidual.LambdaN.7.status
+OK: audit03.formationResidual.LambdaN.7.code
+OK: audit03.formationResidual.LambdaN.7.display
+OK: audit03.formationResidual.LambdaN.7.noPoint
+OK: audit03.formationResidual.LambdaN.7.noState
+OK: audit03.formationResidual.LambdaN.7.reason
+FAIL: audit03.formationResidual.LambdaN.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaN.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaN.7.recoverySuccess
+OK: audit03.formationResidual.LambdaN.7.recoveryPoint
+OK: audit03.formationResidual.LambdaN.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.8.noResidual
+OK: audit03.formationResidual.LambdaN.8.status
+OK: audit03.formationResidual.LambdaN.8.code
+OK: audit03.formationResidual.LambdaN.8.display
+OK: audit03.formationResidual.LambdaN.8.noPoint
+OK: audit03.formationResidual.LambdaN.8.noState
+OK: audit03.formationResidual.LambdaN.8.reason
+FAIL: audit03.formationResidual.LambdaN.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaN.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaN.8.recoverySuccess
+OK: audit03.formationResidual.LambdaN.8.recoveryPoint
+OK: audit03.formationResidual.LambdaN.8.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.1.noResidual
+FAIL: audit03.formationResidual.LambdaNMxy.1.status
+FAIL: audit03.formationResidual.LambdaNMxy.1.code
+FAIL: audit03.formationResidual.LambdaNMxy.1.display
+OK: audit03.formationResidual.LambdaNMxy.1.noPoint
+OK: audit03.formationResidual.LambdaNMxy.1.noState
+OK: audit03.formationResidual.LambdaNMxy.1.reason
+OK: audit03.formationResidual.LambdaNMxy.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.1; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaNMxy.1.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.1.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.2.noResidual
+OK: audit03.formationResidual.LambdaNMxy.2.status
+OK: audit03.formationResidual.LambdaNMxy.2.code
+OK: audit03.formationResidual.LambdaNMxy.2.display
+OK: audit03.formationResidual.LambdaNMxy.2.noPoint
+OK: audit03.formationResidual.LambdaNMxy.2.noState
+OK: audit03.formationResidual.LambdaNMxy.2.reason
+OK: audit03.formationResidual.LambdaNMxy.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.2; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaNMxy.2.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.2.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.3.noResidual
+FAIL: audit03.formationResidual.LambdaNMxy.3.status
+FAIL: audit03.formationResidual.LambdaNMxy.3.code
+FAIL: audit03.formationResidual.LambdaNMxy.3.display
+OK: audit03.formationResidual.LambdaNMxy.3.noPoint
+OK: audit03.formationResidual.LambdaNMxy.3.noState
+OK: audit03.formationResidual.LambdaNMxy.3.reason
+OK: audit03.formationResidual.LambdaNMxy.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.3; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaNMxy.3.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.3.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.4.noResidual
+FAIL: audit03.formationResidual.LambdaNMxy.4.status
+FAIL: audit03.formationResidual.LambdaNMxy.4.code
+FAIL: audit03.formationResidual.LambdaNMxy.4.display
+OK: audit03.formationResidual.LambdaNMxy.4.noPoint
+OK: audit03.formationResidual.LambdaNMxy.4.noState
+OK: audit03.formationResidual.LambdaNMxy.4.reason
+OK: audit03.formationResidual.LambdaNMxy.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.4; не удалось определить предельная растягивающая деформация бетона для состояния образования трещины.
+OK: audit03.formationResidual.LambdaNMxy.4.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.4.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.5.noResidual
+FAIL: audit03.formationResidual.LambdaNMxy.5.status
+FAIL: audit03.formationResidual.LambdaNMxy.5.code
+FAIL: audit03.formationResidual.LambdaNMxy.5.display
+OK: audit03.formationResidual.LambdaNMxy.5.noPoint
+OK: audit03.formationResidual.LambdaNMxy.5.noState
+OK: audit03.formationResidual.LambdaNMxy.5.reason
+OK: audit03.formationResidual.LambdaNMxy.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.5; оценка lambda трещинообразования по load-path не выполнена: Object variable or With block variable not set
+OK: audit03.formationResidual.LambdaNMxy.5.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.5.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.6.noResidual
+OK: audit03.formationResidual.LambdaNMxy.6.status
+OK: audit03.formationResidual.LambdaNMxy.6.code
+OK: audit03.formationResidual.LambdaNMxy.6.display
+OK: audit03.formationResidual.LambdaNMxy.6.noPoint
+OK: audit03.formationResidual.LambdaNMxy.6.noState
+OK: audit03.formationResidual.LambdaNMxy.6.reason
+OK: audit03.formationResidual.LambdaNMxy.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.6; оценка lambda трещинообразования по load-path не выполнена: Overflow
+OK: audit03.formationResidual.LambdaNMxy.6.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.6.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.7.noResidual
+OK: audit03.formationResidual.LambdaNMxy.7.status
+OK: audit03.formationResidual.LambdaNMxy.7.code
+OK: audit03.formationResidual.LambdaNMxy.7.display
+OK: audit03.formationResidual.LambdaNMxy.7.noPoint
+OK: audit03.formationResidual.LambdaNMxy.7.noState
+OK: audit03.formationResidual.LambdaNMxy.7.reason
+FAIL: audit03.formationResidual.LambdaNMxy.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaNMxy.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaNMxy.7.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.7.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.8.noResidual
+OK: audit03.formationResidual.LambdaNMxy.8.status
+OK: audit03.formationResidual.LambdaNMxy.8.code
+OK: audit03.formationResidual.LambdaNMxy.8.display
+OK: audit03.formationResidual.LambdaNMxy.8.noPoint
+OK: audit03.formationResidual.LambdaNMxy.8.noState
+OK: audit03.formationResidual.LambdaNMxy.8.reason
+FAIL: audit03.formationResidual.LambdaNMxy.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaNMxy.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaNMxy.8.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.8.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.8.recoveryReasonClean
+TOTAL_AUDIT03_FORMATION_RESIDUAL: passed=380; failed=70
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5b5e4e76b25b4aa99ccca3965c095125\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCrackWidth.RunAudit03FormationResidualContracts; 2026-10-04T00:24:26
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

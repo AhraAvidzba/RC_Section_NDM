@@ -55,6 +55,8 @@ Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: line search не
 Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: направленный отказ callback-а.
 Private mUltimateCalls As Long ' ДЛЯ ТЕСТОВ: число оценок невязки Newton.
 Private mFailureCode As ESolverFailureCode ' ДЛЯ ТЕСТОВ: точная причина остановки.
+Private mMultiplierScenario As Long ' ДЛЯ ТЕСТОВ: управляемый отказ конкретного callback-а LoadMultiplier.
+Private mFallbackCalls As Long ' ДЛЯ ТЕСТОВ: терминальная ошибка запрещает резервную финализацию.
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -89,6 +91,8 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mUltimateScenario = 0
     mUltimateCalls = 0
     mFailureCode = sfcNone
+    mMultiplierScenario = 0
+    mFallbackCalls = 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
@@ -208,6 +212,7 @@ End Function
 
 ' Fake-задача не требует доменной подготовки перед поиском.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
+    If mMultiplierScenario = 13 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
     ILimitSearchProblem_Prepare = True
 End Function
 
@@ -344,6 +349,7 @@ End Property
 
 ' Создает универсальную траекторию Offset + lambda*Base из request.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
+    If mMultiplierScenario = 14 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
     Dim loadPath As CLoadPathVector
     Set loadPath = New CLoadPathVector
     loadPath.Initialize request.NOffset, request.NBase, _
@@ -366,6 +372,36 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     mProbeCalls = mProbeCalls + 1
     If lambdaValue > mProbeMaxLambda Then mProbeMaxLambda = lambdaValue
     Set solver = Nothing
+    Select Case mMultiplierScenario
+        Case 1
+            If lambdaValue = 0# Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
+        Case 2
+            If lambdaValue = 1# Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
+        Case 3
+            If lambdaValue = 1# Then Err.Raise 6, "CTestLimitSearchProblem", MultiplierFaultReason()
+        Case 4, 5, 6, 7
+            If lambdaValue = 1# Then
+                Dim failureCode As ESolverFailureCode
+                Select Case mMultiplierScenario
+                    Case 4, 7: failureCode = sfcInvalidConfiguration
+                    Case 5: failureCode = sfcInvalidInput
+                    Case 6: failureCode = sfcInternalError
+                End Select
+                ILimitSearchProblem_SetFailure failureCode, MultiplierFaultReason()
+                probeState = mLimitState
+                If mMultiplierScenario = 7 Then Err.Raise 6, "CTestLimitSearchProblem", MultiplierFaultReason()
+                Exit Function
+            End If
+        Case 8, 9
+            If lambdaValue > 1# And lambdaValue < 2# Then
+                If mMultiplierScenario = 8 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
+                ILimitSearchProblem_SetFailure sfcInvalidConfiguration, MultiplierFaultReason()
+                probeState = mLimitState
+                Exit Function
+            End If
+        Case 16
+            If lambdaValue = 0# Then Err.Raise 6, "CTestLimitSearchProblem", MultiplierFaultReason()
+    End Select
     If mFailureAbove > 0# And lambdaValue > mFailureAbove Then
         probeState = PROBE_NUMFAIL
         Exit Function
@@ -421,6 +457,10 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: отличает техническую границу поиска от найденного корня fixture.
 Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
+    If mMultiplierScenario = 12 Then
+        ILimitSearchProblem_SetFailure sfcInvalidConfiguration, MultiplierFaultReason()
+        Exit Sub
+    End If
     mLimitState = "SearchBoundReached"
     AppendDiagnosticLine "bracketNotFound lowLambda=" & FormatNumberInvariant(lowLambda)
 End Sub
@@ -471,6 +511,11 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
         ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
+    If mMultiplierScenario = 10 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
+    If mMultiplierScenario = 11 Then
+        ILimitSearchProblem_SetFailure sfcInvalidConfiguration, MultiplierFaultReason()
+        Exit Function
+    End If
     mConverged = True
     mFinalLambda = lambdaValue
     mFinalMethod = methodName
@@ -487,6 +532,11 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
         ByVal methodName As String, ByVal iterations As Long)
+    If mMultiplierScenario = 10 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
+    If mMultiplierScenario = 11 Then
+        ILimitSearchProblem_SetFailure sfcInvalidConfiguration, MultiplierFaultReason()
+        Exit Sub
+    End If
     Dim lambdaValue As Double
     If mKind = rkCrackFormation Then lambdaValue = highLambda Else lambdaValue = lowLambda
     mConverged = True
@@ -499,6 +549,8 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: отмечает вызов последней попытки финализации, не объявляя успех.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
+    mFallbackCalls = mFallbackCalls + 1
+    If mMultiplierScenario = 15 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
     AppendDiagnosticLine "retainedCapacity"
 End Sub
 
@@ -607,3 +659,26 @@ End Property
 Public Property Get FailureCode() As ESolverFailureCode
     FailureCode = mFailureCode
 End Property
+
+' ДЛЯ ТЕСТОВ: отказы до пробы, при расширении, внутри скобки и в финализации
+' проверяют один общий error-boundary без зависимости от реальных материалов.
+' Настройка сбрасывается Configure, поэтому recovery не наследует старую причину.
+Public Sub ConfigureMultiplierFaultCase(ByVal scenario As Long, ByVal searchMethod As String, _
+        ByVal kind As EResultKind)
+    Configure searchMethod, 1.25, 0.000001, 80, resultKind:=kind
+    mMultiplierScenario = scenario
+    If scenario = 12 Then mRootLambda = 100#: mMaxLambda = 4#
+    If scenario = 15 Then mFailureAbove = 0.00000001
+End Sub
+
+' ДЛЯ ТЕСТОВ: наблюдает только резервный callback; основной поиск не должен
+' вызывать его после configuration/input/internal failure.
+Public Property Get FallbackCalls() As Long
+    FallbackCalls = mFallbackCalls
+End Property
+
+' ДЛЯ ТЕСТОВ: уникальная русская причина позволяет проверить сохранность
+' первичного сообщения, не назначая машинный статус по тексту сообщения.
+Private Function MultiplierFaultReason() As String
+    MultiplierFaultReason = "Контрольный отказ LoadMultiplier, сценарий " & CStr(mMultiplierScenario) & "."
+End Function

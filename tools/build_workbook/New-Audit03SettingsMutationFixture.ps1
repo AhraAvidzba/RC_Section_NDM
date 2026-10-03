@@ -5,7 +5,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$SourceWorkbook,
     [Parameter(Mandatory=$true)][string]$OutputWorkbook,
-    [ValidateSet('SolverMethod', 'CapacityStrategy', 'CapacitySearchMethod', 'LoadPath', 'FormationStrategy', 'WidthFormationGate')]
+    [ValidateSet('SolverMethod', 'CapacityStrategy', 'CapacitySearchMethod', 'LoadPath', 'FormationStrategy', 'WidthFormationGate', 'StateProviderMissingSolver', 'StateProviderNoResult')]
     [string]$Mutation = 'SolverMethod'
 )
 $ErrorActionPreference = 'Stop'
@@ -61,6 +61,18 @@ try {
             $key = 'Width output after Formation failure'
             $needle = 'If Not batch.ResultAt(index).CrackWidthMeta.Calculated Then'
             $replacement = 'If Not batch.ResultAt(index).CrackResult.Formation.CrackFormed Then'
+        }
+        'StateProviderMissingSolver' {
+            $componentName = 'CStateProvider'
+            $key = 'Named-state producer did not receive a solver'
+            $needle = 'Set service = runner.ResultSolver'
+            $replacement = 'Set service = Nothing'
+        }
+        'StateProviderNoResult' {
+            $componentName = 'CStateProvider'
+            $key = 'Named-state producer did not publish a result'
+            $needle = 'If Not mRepository Is Nothing Then mRepository.StoreForRequest request, stateResult'
+            $replacement = 'Exit Function'
         }
     }
     $module = $book.VBProject.VBComponents.Item($componentName).CodeModule

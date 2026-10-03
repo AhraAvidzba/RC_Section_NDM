@@ -1,5 +1,190 @@
 # Audit03: Комментарии К Актуальному Коду
 
+## Содержательное Чтение Малых Владельцев v185
+
+Полностью прочитаны тела и соседние предусловия CSectionModelBuilder,
+CCircleAnnotationBuilder, CRectSetAnnotationBuilder,
+CRebarGroupAnnotationBuilder, CLinearConcreteMaterial, CLinearSteelMaterial,
+CMomentZeroFilter, CLoadPathVector, CMaterialModelSpec, CExcelAppStateGuard,
+CLinearSystem3x3, CLongitudinalCrackCalculator/Result и CStateRequest.
+Дополнительно прочитаны CCalculationProfile, CHollowRectAnnotationBuilder,
+CRoundedRectAnnotationBuilder и ISectionGeometry. Затем прочитаны CStrengthResult,
+CDirectStateResult, CSectionLoadState, CSteelMaterialParameters, CResultMeta и
+CResultStatusPolicy. Во время full On дополнительно полностью прочитаны
+CStateRepository, CLoadPathMath, CSectionAnnotations, CGeometryCircle,
+CConcreteMaterialParameters, CRebarLayout, CFiberMeshBuilder,
+CSectionTypeRegistry, CLoadPathDescriptor и CLimitSearchCoordinator.
+После них прочитаны CUnitSystem, CStateProvider и CCalculationProfileCatalog:
+всего 37 владельцев в этой выборке.
+Это выборочная семантическая ревизия, не blanket PASS всех 4357 методов.
+
+- BuildFromGenerated последовательно проверяет mesh/Nothing и FiberCount;
+  optional rebars проверен до Count/индексов. Пользовательский registry
+  создает и валидирует geometry/mesh до этой сборки.
+- RectSet AddContour получает выделенные одинаковые массивы от реального
+  CGeometryRectSet.GetExtremePoints: четыре точки Rectangle либо заполненный
+  контур из AddOutlinePoint. Неподдержанный произвольный ISectionGeometry,
+  который не выполняет интерфейсный контракт, не объявляется пользовательским
+  сбоем без directed reproducer.
+- AddRebarLabels проверяет optional rebars отдельным If до безопасного Or
+  скалярных счетчиков. Split получает внутренний ключ group + `|` + diameter,
+  поэтому его два используемых индекса существуют на штатном generated path.
+- LoadPathVector не выбирает инженерный критерий; Target имеет один источник
+  Offset + lambda*Base. Арифметическая представимость крайних значений еще
+  входит в оставшийся F06/F07 gate, а не гарантируется наличием короткого метода.
+- Longitudinal получает только готовое допустимое НДС и не ищет равновесие.
+  MinConcreteStress в CSectionSolver обнуляется при отсутствии сжатия,
+  поэтому Abs здесь не превращает положительное растяжение в сжатый бетон.
+  ResultMeta клонируется, опубликованный result закрыт Freeze/AssertWritable.
+- CStateRequest отделяет retry/warm-start от physical key и клонирует spec.
+  Repository дополнительно сравнивает точные Double target-компоненты;
+  форматирование ключа не является единственным доказательством equivalence.
+
+Найденное обязательно включено в следующий список правок/контрпримеров:
+
+1. У Build методов Circle/RectSet/Rounded annotation и SectionModelBuilder, а также
+   AddRebarLabels нет собственного непосредственного русского комментария.
+   Это нетривиальные операции: общего комментария класса недостаточно.
+2. Шапка CLinearConcreteMaterial говорит об ограничениях и "старых тестах",
+   но GetStress реализует только E*epsilon. Описать фактический тестовый закон
+   без исторической ссылки; два линейных класса остаются владельцами простых
+   независимых oracle, а не новыми пользовательскими диаграммами.
+3. CLinearSystem3x3 действительно используется Newton, Secant, GuessBuilder
+   и Ultimate. Проверить промежуточный determinant/residual overflow отдельно
+   от вырожденности; ветка pivot имеет также отклонение отступа mStopReason.
+4. CMaterialModelSpec.Initialize не сбрасывает mComplete до последовательного
+   parse. Нужен public valid-invalid-valid reproducer для повторного вызова;
+   Catalog обычно создает новый spec, поэтому пользовательское падение пока
+   не заявлено. Не смешивать частично обновленный spec с успешным snapshot.
+5. CExcelAppStateGuard.Enter ставит mActive только после COM-setters. При
+   отказе последнего setter-а теоретически уже изменены предыдущие настройки;
+   нужен допустимый fault-контракт и проверка restoration. Restore сознательно
+   подавляет только cleanup COM-ошибки, а не расчетный failure.
+6. CMomentZeroFilter.MomentTolerance и Longitudinal utilization имеют обычное
+   произведение/деление конечных Double. Нужны крайние directed входы и
+   проверка достижимости настоящим Config, без новой произвольной физической
+   границы и без назначения NumFail формуле.
+
+Отдельный кандидат A03/A05/D01 после чтения CResultStatusPolicy:
+AggregateExternalStatus и IsNumerical не имеют вызовов в production/tests/tools;
+AggregateMeta вызывают только три старых unit assertions. Рабочие typed owners
+используют WorstResultMeta. Проверить окончательную карту вызовов перед удалением
+неиспользуемых фасадов; unit assertions перенести на действующий typed API,
+сохранив ожидаемые статусы. Комментарий AggregateExternalStatus про flat-поля
+не описывает текущий source-of-truth. Удаление пока не выполнено; это не новое
+архитектурное объединение и не основание объявить весь A05 закрытым.
+
+Проверенные границы result-owners: DirectState хранит каноническое State и
+возвращает копию meta; обязательная отсутствующая meta дает CalcErr, а не
+фиктивное НДС. Strength собирает комментарии собственного subtree и Freeze
+закрывает обе ветви. В CResultMeta SetSolverFailure использует enum, а поиск
+подстроки применяется только для дедупликации комментария, не для статуса.
+Кандидаты арифметики CSectionLoadState и StrainReserve при крайних Double
+нуждаются в отдельном рабочем reproducer; чтение обычного произведения/отношения
+не считается доказанным пользовательским дефектом.
+
+У дополнительных владельцев проверены следующие конкретные границы:
+
+- Repository сохраняет неуспешный named-state только для snapshot/диагностики;
+  IsReusablePhysicalState требует Converged и допустимый typed outcome,
+  поэтому FindEquivalent не возвращает missing-state из v185. StoreState
+  закрывает результат Freeze, контекст и точные Double targets проверяются
+  отдельно от форматированного equivalence key.
+- Descriptor дает независимый Vector snapshot; момент от эксцентриситета
+  остается связан с масштабированием N. Coordinator выбирает Auto по
+  LoadPointMx/My, принимает найденную предельную точку независимо от lambda < 1
+  и не маскирует InvalidInput/InvalidConfiguration/InternalError другим путем.
+  Историю комментариев и diagnostics сохраняет result, не writer.
+- RebarLayout/SectionAnnotations проверяют индекс до чтения массива; optional
+  geometry проверяется отдельно до ContainsPoint. Промежуточные builder ID
+  не становятся расчетными R1/R2, которые создает CSectionModel.
+- FiberMesh проверяет Nothing, размер Long и верхнюю оценку подъячеек до
+  выделения массива. При обычных размерах multiplication проверки счетчиков
+  не имеет Long overflow: используются CDbl. Это не общая гарантия безопасной
+  арифметики координат при крайних конечных Double.
+
+Дополнительные Pending-кандидаты, без заявления об исправлении:
+
+1. Поле mEbt в CConcreteMaterialParameters называет равенство Eb нормативным
+   default, хотя LoadFromSettings требует отдельное значение Ebt, а
+   NormativeTraceability прямо отмечает необходимость подтверждения источника.
+   Комментарий должен описывать обязательный пользовательский параметр,
+   не приписывать неподтвержденный default СП.
+2. У Circle ContainsPoint и площади, RebarLayout вычисления площади и FiberMesh
+   координат возможна обычная промежуточная арифметика больших Double.
+   Нужны достижимые входы и правильная адресная InputErr/typed-классификация;
+   произвольный физический максимум размеров не вводится по статическому чтению.
+3. У FiberMesh shortcut четырех внутренних углов не доказывает отсутствие
+   пустоты внутри coarse-cell пустотелого сечения. Проверить fixture наружного
+   прямоугольника 1000x1000 с отверстием 200x200, шагом 1000 и subdivision > 1
+   против независимого subcell oracle. Это пока логический кандидат, не runtime
+   доказательство, не основание менять исторические корректные expected.
+
+Проверка справки по текущему SettingsCatalog выявила конкретные остатки:
+SLS.Crack.InitiationSolutionStrategy, общий crack guide и отдельные вводные
+абзацы еще пишут "ширина 0" при NotCracked, тогда как принятый результат
+Width не рассчитан, N/A и незаполненный a_crc. Вводный текст модели CrackedState
+говорит "обычно" о выключении растянутого бетона, хотя активный профиль
+валидирует Ignore обязательно. Включить в следующий help-срез и повторно
+проверить фактический лист, ссылки и clean/update. Точное текстовое совпадение
+двух книг само по себе не подтверждает содержательность справки.
+
+Source/test v185 заморожен до его full gates; эти обнаруженные пункты пока
+Pending и не маскируются зеленым census. Runtime-контрпример не заменяется
+статическим предположением.
+
+## Следующий Config Gate: Арматура И Неактивные Поля
+
+Прочитан настоящий путь modTestGeometryConfig.ReadGeometry ->
+CSystemSettingsReader.LoadFromWorkbook -> CSectionTypeRegistry.CreateGeometry/
+CreateRebars. Существующий draft по граням еще не импортирован и не принят.
+Следующие кандидаты требуют отрицательного runtime-доказательства:
+
+- ReadFaceSettingsFromConfig RectSet/RoundedRectangle читает as и отступы
+  через GetDouble с default даже для активного ряда. Нужны отдельные проверки
+  пустоты обязательного поля, допустимого нуля, неправильного текста и
+  восстановления того же физического сценария; optional diameter/count
+  сохраняют утвержденный смысл выключения ряда.
+- RectSet BuildFromSettings читает H2/B2 face settings и в режиме Rectangle,
+  хотя Build не использует нижние грани. Проверить отсутствие влияния
+  неактивных граней без расширения поддерживаемых форм или новой методики.
+- Reader добавляет все geometry ranges и ConfigCellText сразу отвергает
+  ошибку формулы. Поэтому отличать невалидный активный ввод от ошибки в
+  параметре другой формы или отключенного ряда нужно на реальном маршруте,
+  а не только при программной передаче строки builder-у. Проверить также
+  Simple W/R2, нижние размеры Rectangle, дополнительные ряды с d=0 и
+  зависимые ряды при отсутствии первого ряда.
+- Объединенные loc/bind RectSet являются одним input anchor для пары сторон;
+  ошибки и coverage должны относиться к этому anchor, а не follower-ячейке.
+  Проверить сохранение динамического адреса после переноса именованной таблицы.
+
+Это список проверок K02/K04/F07, не утверждение, что все перечисленное
+уже воспроизведено, исправлено или покрыто. Registry остается 490/1064
+active-reviewed; draft и чтение исходников не увеличивают accepted count.
+
+## Дополнение v180-v185: Подтвержденные Typed Контракты
+
+Четыре кандидата предыдущего раздела теперь имеют отдельные отрицательные
+и положительные runtime-доказательства: классификация callback-ошибок
+LoadMultiplier, terminal fallback, FailureCode Formation residual и отсутствие
+обязательного named-state. Подробная карта и пределы проверки сохранены в
+`NDM_Audit03_Search_State_Typed_Review.md`; full gates v185 еще выполняются.
+Численная методика и исторические expected/tolerance не менялись.
+
+Комментарии FinalizeAfterProbe/FinalizeKnownProbe/CanFinalizeSecantProbe
+теперь описывают фактические действия: повторная оценка той же lambda,
+соответствие retained solver этой точке и запрет считать несошедшуюся пробу
+доказанной физической границей. Удалено неиспользуемое локальное формирование
+reason в HandleBisectionIterationLimit; причину продолжает формировать
+доменный callback, не generic Search. MissingStateMeta описывает обе границы
+получения named-state, без превращения отсутствия объекта в несходимость.
+
+Новые fault/recovery methods находятся в существующих тестовых классах/
+модулях под CAPS-разделами; отдельный комментарий объясняет, что missing-state
+entrypoint предназначен только для изолированных fault-injected книг.
+Оставшиеся большие Sqr/initial-plane кандидаты ниже еще не приняты.
+Историческая запись v179 сохраняется как описание состояния до reproducer.
+
 ## Дополнение v179: Численные Защиты
 
 Содержательно прочитаны CLoadMultiplierSearch и CLoadPathMath, основные

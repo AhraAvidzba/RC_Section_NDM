@@ -1,0 +1,12 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_missing_result_negative_v184.xlsm
+SOURCE_SHA256: 8E6C047C3BB0D4A27F5E13711B3192C6FDD24690681ACEB47927D04CB8F1A316
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1ed0550d200548f380e9f7e1611b71d5\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.missingState.1.internal
+FAIL: audit03.missingState.1.code
+FAIL: audit03.missingState.1.notCalculated
+FAIL: audit03.missingState.1.overallDisplay; actual=NumFail; expected=CalcErr
+FAIL: audit03.missingState.2.widthDisplay; actual=CalcErr; expected=N/A
+TOTAL_AUDIT03_MISSING_STATE: passed=64; failed=5
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

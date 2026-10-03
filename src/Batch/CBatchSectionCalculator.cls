@@ -1113,7 +1113,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 
     If stateResult Is Nothing Then
         If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, _
-            NumericalFailureMeta(rkDirectState, "Прямое НДС не вернуло расчетное состояние.")
+            MissingStateMeta(runner, "Прямое НДС не получено: решатель не вернул расчетное состояние.")
         ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не вернуло расчетное состояние."
         Set RunProfileState = runner
         Exit Function
@@ -1312,21 +1312,23 @@ Private Function CurrentCrackedStateMeta(ByVal stateResult As CSectionStateResul
         Exit Function
     End If
 
-    blockReason = "CurrentCrackedState не получен."
+    blockReason = "Текущее НДС для расчета трещин не получено: отсутствует расчетное состояние."
     If Not runner Is Nothing Then
         If Not runner.ResultSolver Is Nothing Then
-            If Len(Trim$(runner.ResultSolver.StopReason)) > 0 Then blockReason = runner.ResultSolver.StopReason
+            If Not runner.ResultSolver.Converged Then
+                If Len(Trim$(runner.ResultSolver.StopReason)) > 0 Then blockReason = runner.ResultSolver.StopReason
+            End If
         End If
     End If
 
-    Set CurrentCrackedStateMeta = MissingCurrentCrackedStateMeta(runner, blockReason)
+    Set CurrentCrackedStateMeta = MissingStateMeta(runner, blockReason)
 End Function
 
-' Формирует meta для случая, когда CurrentCrackedState не был создан вообще.
+' Формирует meta для случая, когда обязательное named-state не было создано.
 ' Статус не выводится из текста blockReason: если typed-state не создан,
 ' runner может дать только факт отсутствия физического НДС, а подробная строка
 ' остается комментарием/diagnostic.
-Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRunner, _
+Private Function MissingStateMeta(ByVal runner As CStateSolutionRunner, _
         ByVal blockReason As String) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
@@ -1336,7 +1338,7 @@ Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRu
             If Not runner.ResultSolver.Converged Then
                 meta.SetSolverFailure runner.ResultSolver.FailureCode, rkDirectState, blockReason, _
                     (runner.ResultSolver.Iterations > 0)
-                Set MissingCurrentCrackedStateMeta = meta
+                Set MissingStateMeta = meta
                 Exit Function
             End If
         End If
@@ -1344,7 +1346,7 @@ Private Function MissingCurrentCrackedStateMeta(ByVal runner As CStateSolutionRu
 
     meta.SetResult rsInternalError, rcSolverDidNotReturnState, rkDirectState, blockReason, _
         vbNullString, True, False
-    Set MissingCurrentCrackedStateMeta = meta
+    Set MissingStateMeta = meta
 End Function
 
 
@@ -1403,15 +1405,6 @@ Private Function InvalidInputMeta(ByVal resultKind As EResultKind, _
     Set meta = New CResultMeta
     meta.SetResult rsInvalidInput, rcInvalidInput, resultKind, reason
     Set InvalidInputMeta = meta
-End Function
-
-' Создает meta для настоящей численной несходимости state-solve/search.
-Private Function NumericalFailureMeta(ByVal resultKind As EResultKind, _
-        ByVal reason As String) As CResultMeta
-    Dim meta As CResultMeta
-    Set meta = New CResultMeta
-    meta.SetResult rsNumericalFailure, rcNumericalFailure, resultKind, reason
-    Set NumericalFailureMeta = meta
 End Function
 
 ' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти

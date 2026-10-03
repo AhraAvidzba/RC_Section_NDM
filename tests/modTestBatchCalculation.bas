@@ -8508,6 +8508,69 @@ Restore:
     On Error GoTo 0
 End Sub
 
+' ============================== ДЛЯ ТЕСТОВ AUDIT03 ==============================
+' Выполняется только на специально fault-injected копии книги: producer
+' намеренно не возвращает solver либо named-state. Проверяется настоящий
+' Batch -> typed result -> writers, а не вручную созданная ошибка meta.
+Public Function RunAudit03MissingStateContracts() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats, profileRange As Object, savedProfiles As Variant
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedProfiles = profileRange.Formula
+    Dim profile As Variant, key As Variant
+    For Each profile In Array("PR1", "PR2")
+        For Each key In Array("Calculation.Stability.Enabled", "Calculation.Strength.DirectState", _
+                "Calculation.Strength.Capacity", "Calculation.Crack.Width")
+            SetProfileValue CStr(key), CStr(profile), "No"
+        Next key
+    Next profile
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, result As CCombinationResult
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set batch = BuildBatchCalculator(False): batch.ApplySettings settings
+    batch.AddCombination "MISSING_STRENGTH", -100000#, -4000000#, -2000000#, "PR1", ""
+    batch.AddCombination "MISSING_CRACK", -20000#, -15000000#, 0#, "PR2", ""
+    batch.Execute
+    Dim writer As CBatchResultWriter
+    Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch
+    Dim policy As CResultStatusPolicy
+    Set policy = New CResultStatusPolicy
+    Dim index As Long, meta As CResultMeta, prefix As String
+    For index = 1 To 2
+        Set result = batch.ResultAt(index)
+        prefix = "audit03.missingState." & CStr(index)
+        If index = 1 Then Set meta = result.DirectStateMeta Else Set meta = result.CrackCurrentStateMeta
+        AssertTrue stats, prefix & ".internal", meta.InternalStatus = rsInternalError
+        AssertTrue stats, prefix & ".code", meta.ResultCode = rcSolverDidNotReturnState
+        AssertTrue stats, prefix & ".notCalculated", Not meta.Calculated
+        AssertEquals stats, prefix & ".overallDisplay", result.Status, "CalcErr"
+        AssertTrue stats, prefix & ".reason", Len(Trim$(meta.ResultComment)) > 0
+        AssertTrue stats, prefix & ".notNumerical", InStr(1, meta.ResultComment, "не сош", vbTextCompare) = 0
+        AssertTrue stats, prefix & ".noFalseSuccessComment", InStr(1, meta.ResultComment, "Равновесие найдено", vbTextCompare) = 0
+        Audit03CheckResultComments stats, batch, index
+        AppendLine stats, "MISSING_STATE_COMMENT: " & prefix & "; " & meta.ResultComment
+        If index = 2 Then
+            AssertTrue stats, prefix & ".widthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
+            AssertTrue stats, prefix & ".longitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
+            AssertTrue stats, prefix & ".widthNotCalculated", Not result.CrackWidthMeta.Calculated
+            AssertTrue stats, prefix & ".longitudinalNotCalculated", Not result.LongitudinalCrackMeta.Calculated
+            AssertEquals stats, prefix & ".widthDisplay", policy.ExternalStatus(result.CrackWidthMeta), "N/A"
+            AssertEquals stats, prefix & ".longitudinalDisplay", policy.ExternalStatus(result.LongitudinalCrackMeta), "N/A"
+        End If
+    Next index
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.missingState.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+    AppendLine stats, "TOTAL_AUDIT03_MISSING_STATE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03MissingStateContracts = stats.Report
+End Function
+
 ' ============================== ДЛЯ ТЕСТОВ: NOTCRACKED ==============================
 ' Проверяет общий результат Formation -> Width -> фактический вывод Results.
 ' Численный solve остается только у текущего НДС; повторное открытие проверяет

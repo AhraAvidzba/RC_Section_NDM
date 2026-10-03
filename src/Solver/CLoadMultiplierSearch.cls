@@ -29,7 +29,9 @@ Public Function Execute(ByVal request As CLimitSearchRequest) As CLimitSearchRes
         Set Execute = ContractFailure(request, "Не передана задача общего поиска.")
         Exit Function
     End If
+    On Error GoTo SearchFailed
     If Not request.Problem.Prepare(request) Then
+        On Error GoTo 0
         Set Execute = request.Problem.BuildResult(request, False)
         Exit Function
     End If
@@ -41,7 +43,13 @@ Public Function Execute(ByVal request As CLimitSearchRequest) As CLimitSearchRes
         Exit Function
     End If
     RunSearch request, loadPath
+    On Error GoTo 0
     Set Execute = request.Problem.BuildResult(request, request.Problem.Converged)
+    Exit Function
+SearchFailed:
+    ReportArithmeticOrContractFailure request.Problem, _
+        "Поиск предельного множителя нагрузки", Err.Number, Err.Description
+    Set Execute = request.Problem.BuildResult(request, False)
 End Function
 
 ' Отсутствие обязательного внутреннего объекта является ошибкой контракта,
@@ -75,12 +83,14 @@ Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CL
     If Not request.Problem.AcceptInitialPoint(request, loadPath, functionValue, probeState, lowSolver) Then Exit Sub
 
     If Not FindBracket(request, loadPath, lowLambda, lowSolver, highLambda, highSolver) Then
-        request.Problem.TryFinalizeAfterSearchFailure request
+        If Not request.Problem.StoppedTerminally Then request.Problem.TryFinalizeAfterSearchFailure request
         Exit Sub
     End If
     RunSearchInsideBracket request, loadPath, lowLambda, highLambda, lowSolver, highSolver, _
         request.Problem.SearchMethod, request.Problem.LambdaTolerance, request.Problem.MaxIterations
-    If Not request.Problem.Converged Then request.Problem.TryFinalizeAfterSearchFailure request
+    If Not request.Problem.Converged Then
+        If Not request.Problem.StoppedTerminally Then request.Problem.TryFinalizeAfterSearchFailure request
+    End If
 End Sub
 
 ' Проверяет численный диапазон до проб и арифметики. Нулевой bisection-budget
@@ -151,8 +161,20 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
     request.Problem.HandleBracketNotFound lowLambda
     Exit Function
 ArithmeticFailed:
-    request.Problem.SetNumericalFailure "Не удалось продолжить численный поиск lambda: " & Err.Description
+    ReportArithmeticOrContractFailure request.Problem, _
+        "Расширение интервала предельного множителя нагрузки", Err.Number, Err.Description
 End Function
+
+' Переполнение численного шага сохраняется как numerical failure. Ошибка
+' программного callback-а является внутренней, а уже установленная terminal
+' причина не заменяется вторичным исключением и не разрешает новый solve.
+Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProblem, _
+        ByVal stage As String, ByVal errorNumber As Long, ByVal description As String)
+    If context.StoppedTerminally Then Exit Sub
+    Dim failureCode As ESolverFailureCode
+    If errorNumber = 6 Then failureCode = sfcNumericalFailure Else failureCode = sfcInternalError
+    context.SetFailure failureCode, stage & " не выполнен: " & description
+End Sub
 
 ' Запускает выбранный одномерный метод внутри уже найденной физической скобки.
 Private Sub RunSearchInsideBracket(ByVal request As CLimitSearchRequest, _
@@ -488,17 +510,11 @@ End Function
 ' нижнюю границу как успешную найденную точку.
 Private Sub HandleBisectionIterationLimit(ByVal request As CLimitSearchRequest, _
         ByVal maxIterations As Long, ByVal remainingWidth As Double, ByVal tolerance As Double)
-    Dim reason As String
-    reason = "Поиск Bisection достиг лимита итераций до заданной точности: ширина скобки " & _
-        FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
-    If maxIterations <= 0 Then _
-        reason = "Поиск Bisection остановлен до достижения заданной точности: ширина скобки " & _
-            FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
-
     request.Problem.HandleIterationLimit maxIterations, remainingWidth, tolerance
 End Sub
 
-' Пересчитывает итоговую lambda и передает доменному объекту финализацию.
+' Повторно оценивает заданную lambda, если callback не передал solver-снимок,
+' и возвращает фактический ответ доменной финализации без изменения lambda.
 Private Function FinalizeAfterProbe(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal methodName As String) As Boolean
@@ -511,9 +527,9 @@ Private Function FinalizeAfterProbe(ByVal request As CLimitSearchRequest, _
 End Function
 
 ' Финализирует уже рассчитанную probe-точку без повторного solve.
-' Это важно для Secant: верхняя точка физической скобки может быть найденной
-' несошедшейся probe, пригодной как граница, но не как итоговое НДС. False
-' означает отказ доменного callback-а; общий цикл продолжает уточнение.
+' Снимок соответствует той же lambda; несошедшаяся проба не доказывает
+' физическую границу и не становится итоговым НДС. False означает отказ
+' доменного callback-а; без terminal причины общий цикл продолжает уточнение.
 Private Function FinalizeKnownProbe(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
@@ -601,7 +617,7 @@ End Function
 ' Проверяет, можно ли использовать Secant-probe как итоговое НДС.
 ' Acceptable-точка уже находится с безопасной стороны. Limit-точка допустима
 ' только если внутренний CSectionSolver действительно сошелся; несошедшаяся
-' физическая probe остается только верхней границей поиска.
+' проба не доказывает физическую границу и требует отдельного recovery.
 Private Function CanFinalizeSecantProbe(ByVal request As CLimitSearchRequest, _
         ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
     If IsAcceptableState(request, probeState) Then

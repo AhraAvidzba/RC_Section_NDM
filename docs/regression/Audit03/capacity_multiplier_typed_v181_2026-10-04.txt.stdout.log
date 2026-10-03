@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_multiplier_typed_v181.xlsm
+SOURCE_SHA256: 1335AEE9CD291795BBA4243CBD1A9F1F2D6DB5198CA72992E79A2F5DA6AAB100
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4647ae301daf49b6982e74e6c37b8c9c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_CAPACITY: passed=3074; failed=0; elapsedSec=41.557006835938
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

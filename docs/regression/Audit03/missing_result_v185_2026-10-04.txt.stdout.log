@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_missing_result_v185.xlsm
+SOURCE_SHA256: 26DF974D57B377B7DF6421557DBC364CC51F41BA731C560212634CA416E0494A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d71d4e0720064d6693c26525ba1e26cb\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_MISSING_STATE: passed=71; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

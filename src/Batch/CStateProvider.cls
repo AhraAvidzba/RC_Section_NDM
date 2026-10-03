@@ -124,7 +124,17 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
 
     Dim service As CSectionSolver
     Set service = runner.ResultSolver
-    If service Is Nothing Then Exit Function
+    If service Is Nothing Then
+        Set missingMeta = New CResultMeta
+        missingMeta.SetResult rsInternalError, rcSolverDidNotReturnState, ResultKindForRequest(request), _
+            "Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.", _
+            runner.DiagnosticLog, True, False
+        Set missingState = New CSectionStateResult
+        missingState.InitializeFailure request, missingMeta
+        If Not mRepository Is Nothing Then mRepository.StoreForRequest request, missingState
+        Set GetOrSolve = missingState
+        Exit Function
+    End If
 
     Dim stateResult As CSectionStateResult
     Set stateResult = New CSectionStateResult

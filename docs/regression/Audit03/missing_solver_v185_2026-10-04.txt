@@ -1,0 +1,104 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_missing_solver_v185.xlsm
+SOURCE_SHA256: 679B186D56258A7D6594F2C09620AE6C4A7307F00295F0D5EF0094F5B926E2BE
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9f49c1a366aa4cfeb9277ddc199f0be6\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03MissingStateContracts =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03MissingStateContracts; 2026-10-04T00:40:28
+EXCEL_AFTER_SUITE: pid=23476; workingSet=208846848; privateBytes=160436224; cpu=8952.65625
+EXCEL_AFTER_SUITE: pid=29064; workingSet=144252928; privateBytes=101875712; cpu=3.1875
+OK: audit03.missingState.1.internal
+OK: audit03.missingState.1.code
+OK: audit03.missingState.1.notCalculated
+OK: audit03.missingState.1.overallDisplay
+OK: audit03.missingState.1.reason
+OK: audit03.missingState.1.notNumerical
+OK: audit03.missingState.1.noFalseSuccessComment
+META: audit03.comments.MISSING_STRENGTH.direct|status=rsInternalError|code=SOLVER_DID_NOT_RETURN_STATE|applies=True|calculated=False|comment=Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.
+OK: audit03.comments.MISSING_STRENGTH.direct.reasonPresent
+OK: audit03.comments.MISSING_STRENGTH.direct.russianReason
+OK: audit03.comments.MISSING_STRENGTH.direct.readable
+OK: audit03.comments.MISSING_STRENGTH.direct.noMachinePrefix
+OK: audit03.comments.MISSING_STRENGTH.direct.ownSubtree
+META: audit03.comments.MISSING_STRENGTH.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.MISSING_STRENGTH.capacity.russianReason
+OK: audit03.comments.MISSING_STRENGTH.capacity.readable
+OK: audit03.comments.MISSING_STRENGTH.capacity.noMachinePrefix
+META: audit03.comments.MISSING_STRENGTH.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.MISSING_STRENGTH.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.MISSING_STRENGTH.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.MISSING_STRENGTH.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.MISSING_STRENGTH.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.MISSING_STRENGTH.formulaNoNumFail
+OK: audit03.comments.MISSING_STRENGTH.strengthNoCrack
+OK: audit03.comments.MISSING_STRENGTH.crackNoCapacity
+OK: audit03.comments.MISSING_STRENGTH.overallComposition
+OK: audit03.comments.MISSING_STRENGTH.batchOutput
+OK: audit03.comments.MISSING_STRENGTH.strengthOutput
+OK: audit03.comments.MISSING_STRENGTH.crackOutput
+OK: audit03.comments.MISSING_STRENGTH.stabilityOutput
+OUTPUT: audit03.comments.MISSING_STRENGTH|strength=НДС: Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.|crack=|stability=|batch=НДС: Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.
+MISSING_STATE_COMMENT: audit03.missingState.1; Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.
+OK: audit03.missingState.2.internal
+OK: audit03.missingState.2.code
+OK: audit03.missingState.2.notCalculated
+OK: audit03.missingState.2.overallDisplay
+OK: audit03.missingState.2.reason
+OK: audit03.missingState.2.notNumerical
+OK: audit03.missingState.2.noFalseSuccessComment
+META: audit03.comments.MISSING_CRACK.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.MISSING_CRACK.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.MISSING_CRACK.capacity.russianReason
+OK: audit03.comments.MISSING_CRACK.capacity.readable
+OK: audit03.comments.MISSING_CRACK.capacity.noMachinePrefix
+META: audit03.comments.MISSING_CRACK.formation|status=rsInternalError|code=SOLVER_DID_NOT_RETURN_STATE|applies=True|calculated=True|comment=После образования трещины: Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.
+OK: audit03.comments.MISSING_CRACK.formation.reasonPresent
+OK: audit03.comments.MISSING_CRACK.formation.russianReason
+OK: audit03.comments.MISSING_CRACK.formation.readable
+OK: audit03.comments.MISSING_CRACK.formation.noMachinePrefix
+OK: audit03.comments.MISSING_CRACK.formation.ownSubtree
+META: audit03.comments.MISSING_CRACK.current|status=rsInternalError|code=SOLVER_DID_NOT_RETURN_STATE|applies=True|calculated=False|comment=Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.
+OK: audit03.comments.MISSING_CRACK.current.reasonPresent
+OK: audit03.comments.MISSING_CRACK.current.russianReason
+OK: audit03.comments.MISSING_CRACK.current.readable
+OK: audit03.comments.MISSING_CRACK.current.noMachinePrefix
+OK: audit03.comments.MISSING_CRACK.current.ownSubtree
+META: audit03.comments.MISSING_CRACK.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.
+OK: audit03.comments.MISSING_CRACK.width.reasonPresent
+OK: audit03.comments.MISSING_CRACK.width.russianReason
+OK: audit03.comments.MISSING_CRACK.width.readable
+OK: audit03.comments.MISSING_CRACK.width.noMachinePrefix
+OK: audit03.comments.MISSING_CRACK.width.ownSubtree
+OK: audit03.comments.MISSING_CRACK.width.dependencyOncePerIndependentStage
+META: audit03.comments.MISSING_CRACK.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.
+OK: audit03.comments.MISSING_CRACK.longitudinal.reasonPresent
+OK: audit03.comments.MISSING_CRACK.longitudinal.russianReason
+OK: audit03.comments.MISSING_CRACK.longitudinal.readable
+OK: audit03.comments.MISSING_CRACK.longitudinal.noMachinePrefix
+OK: audit03.comments.MISSING_CRACK.longitudinal.ownSubtree
+OK: audit03.comments.MISSING_CRACK.longitudinal.dependencyOncePerIndependentStage
+META: audit03.comments.MISSING_CRACK.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.MISSING_CRACK.widthBlockActualReason
+OK: audit03.comments.MISSING_CRACK.longitudinalBlockActualReason
+OK: audit03.comments.MISSING_CRACK.formulaNoNumFail
+OK: audit03.comments.MISSING_CRACK.strengthNoCrack
+OK: audit03.comments.MISSING_CRACK.crackNoCapacity
+OK: audit03.comments.MISSING_CRACK.overallComposition
+OK: audit03.comments.MISSING_CRACK.batchOutput
+OK: audit03.comments.MISSING_CRACK.strengthOutput
+OK: audit03.comments.MISSING_CRACK.crackOutput
+OK: audit03.comments.MISSING_CRACK.stabilityOutput
+OUTPUT: audit03.comments.MISSING_CRACK|strength=|crack=Трещинообразование: После образования трещины: Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.; НДС: Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=Трещинообразование: После образования трещины: Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.; НДС: Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+MISSING_STATE_COMMENT: audit03.missingState.2; Расчетное НДС не получено: решатель не вернул результат для запрошенного состояния.
+OK: audit03.missingState.2.widthBlocked
+OK: audit03.missingState.2.longitudinalBlocked
+OK: audit03.missingState.2.widthNotCalculated
+OK: audit03.missingState.2.longitudinalNotCalculated
+OK: audit03.missingState.2.widthDisplay
+OK: audit03.missingState.2.longitudinalDisplay
+TOTAL_AUDIT03_MISSING_STATE: passed=71; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9f49c1a366aa4cfeb9277ddc199f0be6\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03MissingStateContracts; 2026-10-04T00:40:29
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

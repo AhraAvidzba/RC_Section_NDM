@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_typed_v183.xlsm
+SOURCE_SHA256: 679ED7EE98FDDE970379507AB7764F5DE514DE774C4D2935FC2552C310A22195
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a7cdeb2cb721457d91c19002c194395f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_FORMATION_RESIDUAL: passed=450; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

@@ -1121,10 +1121,15 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
         ByRef solver As CSectionSolver, ByRef rPath1 As Double, ByRef rPath2 As Double, _
         ByRef rLimit As Double, ByRef lambdaValue As Double) As Boolean
     On Error GoTo Failed
+    If FormationSearchStoppedTerminally() Then Exit Function
 
     Set solver = New CSectionSolver
     mSolverCallCount = mSolverCallCount + 1
     solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
+    If solver.FailureCode <> sfcNone Then
+        CaptureFormationSolverFailure solver
+        Exit Function
+    End If
 
     Dim loadPathMath As CLoadPathMath
     Set loadPathMath = NewLoadPathMath()
@@ -1158,7 +1163,12 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
     Exit Function
 
 Failed:
-    SetFormationNumericalFailure "NumericalFailure: оценка lambda_crc по load-path не выполнена: " & Err.Description
+    Dim errorNumber As Long, description As String, failureCode As ESolverFailureCode
+    errorNumber = Err.Number: description = Err.Description
+    If FormationSearchStoppedTerminally() Then Exit Function
+    If errorNumber = 6 Then failureCode = sfcNumericalFailure Else failureCode = sfcInternalError
+    LimitSearchSetFailure failureCode, _
+        "Не удалось оценить плоскость деформаций при поиске образования трещины: " & description
 End Function
 
 

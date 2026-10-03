@@ -54,6 +54,7 @@ Public Function RunCrackWidthTests() As String
     TestAudit02PsiSignedInputsAndFallbackModes stats
     TestAudit03FormationTypedFailures stats
     TestAudit03FormationSearchLifecycle stats
+    TestAudit03FormationResidualContracts stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -1532,4 +1533,97 @@ Private Sub TestAudit03ConfirmedNotCrackedSkipsWidth(ByRef stats As TCrackTestSt
     AssertTrue stats, "crack.confirmedNotCracked.longitudinalFail", result.ResultMeta.InternalStatus = rsCheckFailed
     AssertTrue stats, "crack.confirmedNotCracked.longitudinalFailCalculated", result.ResultMeta.Calculated
     AssertTrue stats, "crack.confirmedNotCracked.formationPreserved", formation.ResultMeta.InternalStatus = rsSuccessWithWarning
+End Sub
+
+' ============================== ДЛЯ ТЕСТОВ AUDIT03 ==============================
+' Выполняет отдельный reproducer границы fixed-plane callback Formation.
+' Здесь не ищется еще одно равновесие: проверяется сохранение точной причины
+' EvaluateStrainPlane и отсутствие фиктивного предельного состояния.
+Public Function RunAudit03FormationResidualContracts() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestAudit03FormationResidualContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_FORMATION_RESIDUAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03FormationResidualContracts = stats.Report
+    Exit Function
+Failed:
+    RunAudit03FormationResidualContracts = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: реальные section/materials и все пять путей используются для
+' отсутствующих зависимостей, пустого бетона, переполнения и уже установленной
+' terminal причины. Повтор CheckFormation на том же calculator проверяет reset.
+Private Sub TestAudit03FormationResidualContracts(ByRef stats As TCrackTestStats)
+    Dim validSection As CSectionModel, setupSolver As CSectionSolver
+    Set setupSolver = SolveServiceState(validSection, -20000#, -15000000#, 0#)
+    Dim provider As CMaterialModelProvider, load As CSectionLoadState
+    Set provider = TestMaterialProvider(): Set load = New CSectionLoadState
+    load.Initialize -20000#, -15000000#, -7500000#, 0#, 0#
+    Dim recoveryLoad As CSectionLoadState
+    Set recoveryLoad = New CSectionLoadState
+    recoveryLoad.Initialize -20000#, -15000000#, 0#, 0#, 0#
+    Dim path As Variant, scenario As Long, descriptor As CLoadPathDescriptor
+    Dim calculator As CCrackFormationCalculator, section As CSectionModel
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, vector As CLoadPathVector
+    Dim solver As CSectionSolver, search As CLimitSearchResult, recovery As CCrackFormationResult
+    Dim eps0 As Double, kx As Double, r1 As Double, r2 As Double, rLimit As Double, lambdaValue As Double
+    Dim state As String, evaluated As Boolean, prefix As String, expectedStatus As EResultInternalStatus
+    Dim expectedCode As EResultCode, policy As CResultStatusPolicy, expectedDisplay As String
+    Set policy = New CResultStatusPolicy
+    For Each path In Array("LambdaMx", "LambdaMy", "LambdaMxy", "LambdaN", "LambdaNMxy")
+        For scenario = 1 To 8
+            Set calculator = New CCrackFormationCalculator
+            Set section = validSection
+            Set concrete = provider.ConcreteMaterialFromSpec(TestCrackInitiationSpec())
+            Set steel = provider.SteelMaterialFromSpec(TestCrackInitiationSpec())
+            Set descriptor = New CLoadPathDescriptor
+            descriptor.InitializeFromLoadState CStr(path), load
+            Set vector = descriptor.Vector
+            eps0 = 0#: kx = 0#: state = vbNullString: Set solver = Nothing
+            expectedStatus = rsInternalError: expectedCode = rcInternalError: expectedDisplay = "CalcErr"
+            Select Case scenario
+                Case 1: Set section = Nothing
+                Case 2
+                    Set section = New CSectionModel
+                    expectedStatus = rsInvalidInput: expectedCode = rcInvalidInput: expectedDisplay = "InputErr"
+                Case 3: Set concrete = Nothing
+                Case 4: Set steel = Nothing
+                Case 5: Set vector = Nothing
+                Case 6
+                    eps0 = 1E+308: kx = 1E+308
+                    expectedStatus = rsNumericalFailure: expectedCode = rcNumericalFailure: expectedDisplay = "NumFail"
+                Case 7
+                    calculator.LimitSearchSetFailure sfcInvalidConfiguration, "Контрольная первичная ошибка настройки Formation."
+                    Set vector = Nothing
+                    expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration: expectedDisplay = "InputErr"
+                Case 8
+                    calculator.LimitSearchSetFailure sfcInternalError, "Контрольная первичная ошибка контракта Formation."
+                    Set vector = Nothing
+            End Select
+            prefix = "audit03.formationResidual." & CStr(path) & "." & CStr(scenario)
+            evaluated = calculator.LimitSearchEvaluateUltimateResidual(section, concrete, steel, vector, _
+                eps0, kx, 0#, solver, r1, r2, rLimit, lambdaValue, state)
+            Set search = calculator.BuildSearchSnapshot("UltimateStrain")
+            AssertTrue stats, prefix & ".noResidual", Not evaluated
+            AssertTrue stats, prefix & ".status", search.Meta.InternalStatus = expectedStatus
+            AssertTrue stats, prefix & ".code", search.Meta.ResultCode = expectedCode
+            AssertTrue stats, prefix & ".display", policy.ExternalStatus(search.Meta) = expectedDisplay
+            AssertTrue stats, prefix & ".noPoint", Not search.HasLimitPoint And Not calculator.HasLimitPoint
+            AssertTrue stats, prefix & ".noState", search.PointState Is Nothing
+            AssertTrue stats, prefix & ".reason", Len(Trim$(search.Meta.ResultComment)) > 0
+            If scenario >= 7 Then
+                AssertTrue stats, prefix & ".noTerminalProbe", calculator.SolverCallCount = 0
+                AssertTrue stats, prefix & ".primaryReason", InStr(1, search.Meta.ResultComment, "Контрольная первичная", vbBinaryCompare) = 1
+            Else
+                AssertTrue stats, prefix & ".oneEvaluation", calculator.SolverCallCount = 1
+            End If
+            AppendLine stats, "FORMATION_RESIDUAL_COMMENT: " & prefix & "; " & search.Meta.ResultComment
+            Set recovery = calculator.CheckFormation(validSection, provider, TestCrackedStateSpec(), _
+                TestCrackInitiationSpec(), -20000#, -15000000#, 0#, recoveryLoad, 0#, 0#)
+            AssertTrue stats, prefix & ".recoverySuccess", recovery.ResultMeta.InternalStatus = rsSuccess Or _
+                recovery.ResultMeta.InternalStatus = rsSuccessWithWarning
+            AssertTrue stats, prefix & ".recoveryPoint", recovery.HasLimitPoint
+            AssertTrue stats, prefix & ".recoveryReasonClean", InStr(1, recovery.ResultMeta.ResultComment, "Контрольная первичная", vbBinaryCompare) = 0
+        Next scenario
+    Next path
 End Sub

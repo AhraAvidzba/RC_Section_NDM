@@ -75,6 +75,7 @@ Public Function RunCapacitySolverTests() As String
     TestAudit03CapacityTypedFailures stats
     TestAudit03CapacitySearchLifecycle stats
     TestAudit03UltimateGuards stats
+    TestAudit03MultiplierTypedFaults stats
     AppendLine stats, "RUN: TestCapacityLoadPathMethodMatrix"
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
@@ -2527,6 +2528,101 @@ Private Sub TestAudit03CapacityConfigurationMessages(ByRef stats As TCapacityTes
         AppendLine stats, "CAPACITY_CONFIG_MESSAGE: " & CStr(key) & "|" & result.Meta.ResultComment
     Next key
 End Sub
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+' Проверяет фактический общий LoadMultiplier для обоих инженерных видов и
+' всех трех методов. Исключение callback-а не должно выходить из Execute,
+' а терминальная причина запрещает последующий recovery/finalization.
+Public Function RunAudit03MultiplierTypedFaults() As String
+    On Error GoTo Failed
+    Dim stats As TCapacityTestStats
+    TestAudit03MultiplierTypedFaults stats
+    AppendLine stats, "TOTAL_AUDIT03_MULTIPLIER_TYPED: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03MultiplierTypedFaults = stats.Report
+    Exit Function
+Failed:
+    RunAudit03MultiplierTypedFaults = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: каждый направленный отказ имеет отдельный expected enum,
+' физическую точку не создает и затем проходит настоящий повтор успешного
+' поиска на том же problem/request. Никакой текстовый mapping не используется.
+Private Sub TestAudit03MultiplierTypedFaults(ByRef stats As TCapacityTestStats)
+    Dim kind As Variant, method As Variant, scenario As Long
+    Dim expectedStatus As EResultInternalStatus, expectedCode As EResultCode
+    Dim expectedFailure As ESolverFailureCode, policy As CResultStatusPolicy
+    Dim fake As CTestLimitSearchProblem, request As CLimitSearchRequest
+    Dim search As CLoadMultiplierSearch, result As CLimitSearchResult, prefix As String
+    Dim errorNumber As Long, errorText As String, expectedDisplay As String
+    Set policy = New CResultStatusPolicy
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For Each method In Array("Bisection", "Brent", "Secant")
+            For scenario = 1 To 16
+                Set fake = New CTestLimitSearchProblem: Set request = New CLimitSearchRequest
+                Set search = New CLoadMultiplierSearch
+                fake.ConfigureMultiplierFaultCase scenario, CStr(method), CLng(kind)
+                request.InitializeWithProblem fake, CLng(kind), "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+                prefix = "audit03.multiplierTyped." & CStr(kind) & "." & CStr(method) & "." & CStr(scenario)
+                expectedStatus = rsInternalError: expectedCode = rcInternalError
+                expectedFailure = sfcInternalError: expectedDisplay = "CalcErr"
+                Select Case scenario
+                    Case 3, 16
+                        expectedStatus = rsNumericalFailure: expectedCode = rcNumericalFailure
+                        expectedFailure = sfcNumericalFailure: expectedDisplay = "NumFail"
+                    Case 4, 7, 9, 11, 12
+                        expectedStatus = rsInvalidConfiguration: expectedCode = rcInvalidConfiguration
+                        expectedFailure = sfcInvalidConfiguration: expectedDisplay = "InputErr"
+                    Case 5
+                        expectedStatus = rsInvalidInput: expectedCode = rcInvalidInput
+                        expectedFailure = sfcInvalidInput: expectedDisplay = "InputErr"
+                End Select
+                errorNumber = 0: errorText = vbNullString
+                Set result = Audit03ExecuteMultiplierFault(search, request, errorNumber, errorText)
+                AssertTrue stats, prefix & ".noUnhandled", errorNumber = 0
+                AssertTrue stats, prefix & ".resultExists", Not result Is Nothing
+                If Not result Is Nothing Then
+                    AssertTrue stats, prefix & ".status", result.Meta.InternalStatus = expectedStatus
+                    AssertTrue stats, prefix & ".code", result.Meta.ResultCode = expectedCode
+                    AssertTrue stats, prefix & ".display", policy.ExternalStatus(result.Meta) = expectedDisplay
+                    AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint And Not fake.Converged
+                    AssertTrue stats, prefix & ".typedCause", fake.FailureCode = expectedFailure
+                    AssertTrue stats, prefix & ".comment", InStr(1, result.Meta.ResultComment, _
+                        "Контрольный отказ LoadMultiplier, сценарий " & CStr(scenario), vbBinaryCompare) > 0
+                    If scenario = 13 Or scenario = 14 Then
+                        AssertTrue stats, prefix & ".notCalculated", Not result.Meta.Calculated And Not result.SearchExecuted
+                    ElseIf expectedStatus = rsInvalidInput Or expectedStatus = rsInvalidConfiguration Then
+                        AssertTrue stats, prefix & ".validationLifecycle", Not result.Meta.Calculated And result.SearchExecuted
+                    Else
+                        AssertTrue stats, prefix & ".calculated", result.Meta.Calculated And result.SearchExecuted
+                    End If
+                Else
+                    AppendLine stats, "FAULT_EXCEPTION: " & prefix & "; " & CStr(errorNumber) & "; " & errorText
+                End If
+                If expectedStatus <> rsNumericalFailure And scenario <> 15 Then
+                    AssertTrue stats, prefix & ".noTerminalFallback", fake.FallbackCalls = 0
+                End If
+                AssertTrue stats, prefix & ".finiteWork", fake.ProbeCalls < 100
+                fake.Configure CStr(method), 1.25, 0.000001, 80, resultKind:=CLng(kind)
+                Set result = search.Execute(request)
+                AssertTrue stats, prefix & ".recoverySuccess", result.Meta.InternalStatus = rsSuccess And result.HasLimitPoint
+                AssertTrue stats, prefix & ".recoveryCauseReset", fake.FailureCode = sfcNone
+                AssertTrue stats, prefix & ".recoveryCommentClean", InStr(1, result.Meta.ResultComment, "Контрольный отказ", vbBinaryCompare) = 0
+            Next scenario
+        Next method
+    Next kind
+End Sub
+
+' ДЛЯ ТЕСТОВ: перехватывает только исключение проверяемого публичного Execute,
+' чтобы отрицательный reproducer дошел до всех сценариев и записал каждый
+' необработанный отказ. Такой отказ никогда не считается успешным result.
+Private Function Audit03ExecuteMultiplierFault(ByVal search As CLoadMultiplierSearch, _
+        ByVal request As CLimitSearchRequest, ByRef errorNumber As Long, ByRef errorText As String) As CLimitSearchResult
+    On Error GoTo Failed
+    Set Audit03ExecuteMultiplierFault = search.Execute(request)
+    Exit Function
+Failed:
+    errorNumber = Err.Number: errorText = Err.Description
+End Function
 
 
 

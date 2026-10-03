@@ -48,7 +48,7 @@
 | --- | --- | --- |
 | F01 | directed runtime PASS | Реальные Range 5/6/7/9 и 4-column rejection; negative/positive_v3 logs. |
 | F02 | directed runtime PASS, расширение покрытия впереди | abc N/M, формулы/CVErr, numeric string, Empty/zero/space, tiny в двух системах единиц, overflow и последующий LC; требуется полный output/comment matrix и отдельный Null путь. |
-| F03 | directed runtime PASS, расширение проверки продолжается | Provider -> runner -> state: 73/0; real Capacity typed failures/precision: 54/0; Formation все четыре пути и terminal config: 64/0. Два старых expected general numerical code уточнены до rcSingularTangent, внешний NumFail и физика не менялись. |
+| F03 | directed runtime PASS, расширение проверки продолжается | Provider -> runner -> state: 73/0; real Capacity typed failures/precision: 54/0; Formation terminal config: 64/0. Срез v185: LoadMultiplier fault/recovery 1326/0, Formation residual 450/0, два missing-state fixtures по 71/0; full Off/On 60259/0 и 60270/0, directed save/reopen 355/0. Старые численные expected/tolerance не менялись. |
 | F04 | directed runtime PASS, workflow приемка продолжается | SetResult обеспечивает lifecycle для not-requested/not-applicable/blocked/validation; ранние missing/internal factories передают False. Matrix 172/0: десять исходов x attempted, clone/reset и result factories; повторные реальные LC еще входят в расширенную приемку. |
 | F05 | directed runtime PASS, расширенная приемка впереди | Физический отказ, BaseFail, numerical failure, blocked Width/Longitudinal, отсутствие трещины: actual writers всех путей. Исправлена передача успешного StopReason в blocked reason. Save/reopen/report/остальные формы еще впереди. |
 | F06 | основные directed runtime PASS, полный аудит продолжается | Baseline adjacent-Double Bisection budget=0 завис до watchdog; исправленный generic matrix 114/0, real Capacity tol=1e-18/budget=0 завершен за 58 probes без ложной точки. Остальные Ultimate/recovery call paths еще проверяются. |
@@ -68,6 +68,41 @@
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
 
 ## Актуальная Точка Продолжения
+
+- Текущий рабочий source/test-срез v180-v185 после checkpoint `dc8fd13c`:
+  общий LoadMultiplier сохраняет typed callback failures и не запускает
+  финализацию после terminal причины; Formation проверяет FailureCode
+  EvaluateStrainPlane; StateProvider/Batch не превращают отсутствующий
+  обязательный State в NumFail и не подставляют успешный StopReason.
+  Новых классов, search-реализации, критериев или допусков нет.
+  Negative LoadMultiplier v180b `858/174`, Formation v182 `380/70`, два
+  missing-state v184b по `66/5`; исходные v180/v184 с ошибками новых oracle
+  сохранены отдельно и не объявляются только production-дефектами.
+  Positive общей clean-сборки v185: `1326/0`, `450/0`, два fault-fixtures
+  по `71/0`, все exit=0/source unchanged=True. Полный Capacity v181 `3074/0`.
+  Full Off v185 завершен: 60259/0, exit=0/source unchanged=True; все
+  13641 общих numeric actual совпали с v179, missing=0. Full On завершен
+  на user-preserving updated v185: 60270/0, source unchanged=True;
+  13646 общих numeric actual совпали с On v179, missing=0.
+  Validate clean/update 27/27 каждая, formatting 1003/0 каждая, 1002 адреса
+  без отклонений. Справка 2579 cells/merges равна; все 2681 Config cells,
+  формулы и PrintArea сохранены при обновлении. Фактический VBE export v185
+  соответствует source 105/105, failed=0; SHA export F3C74176F1AB0890C14AB8FF2E592E6B3F3740BE6969C10571C39070E0EB0176.
+  Updated SHA 5899B5DEC96352A8B71D0AD60C0CD3047E47D9C6E25B4F4EC6EC1D2C0289E04A.
+  Directed palette/save/reopen завершен: 355/0, exit=0/source unchanged=True,
+  Results SHA 9F6AB303F8493E8761F2694159CB3CC2EB9B0248E466B3EC9221A14018704414
+  и status/style SHA 1EABA40A72D5A28392F11FC5D38F0D2B1E9B264FDFAD9F5514ACB9EE1A1E1132
+  совпали после повторного открытия. Текущий срез принят для checkpoint,
+  остальные требования Audit03 не объявляются закрытыми.
+  Подробности и негрин raw expected-preservation: `NDM_Audit03_Search_State_Typed_Review.md`.
+  Основная output-книга и чужой Excel PID 23476 не затронуты; registry остается
+  490/1064 active-reviewed, 270 editable pending, fullAcceptance=False.
+  Read-only census v185: 105 modules, 4357 methods, 1581 guards,
+  semantic acceptance Pending. Во время full gate полностью прочитаны
+  37 владельцев выборки и реальные registry/solver call sites; конкретные
+  comment/guard/арифметические кандидаты и противоречия старых абзацев help
+  записаны в Code_Comment_Review. Они не объявляются исправленными и
+  добавлены в следующий цельный срез без изменения замороженного v185.
 
 - Текущий срез v174-v176: стандартный `modTestProfileConfig`, без новых классов.
   Материальные роли всех PR1-PR4 проходят настоящий Catalog/LC reader/Batch,

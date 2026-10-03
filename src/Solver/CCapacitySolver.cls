@@ -316,6 +316,7 @@ End Function
 Private Sub AcceptPureAxialRetainedCapacity(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector)
+    If LimitSearchHasTerminalFailure Then Exit Sub
     If mSearchBoundReached Then Exit Sub
     If loadPath Is Nothing Then Exit Sub
     If mLastAcceptableSolver Is Nothing Then Exit Sub

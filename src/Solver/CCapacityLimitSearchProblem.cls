@@ -267,6 +267,7 @@ End Sub
 ' без замены фиксированных моментов и без признания failed probe пределом.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
     If mCapacity.Converged Then Exit Sub
+    If mCapacity.LimitSearchHasTerminalFailure Then Exit Sub
     If Not request.ForceOnly And Not request.PureAxialForMethod Then
         If request.SelectedLoadPath Is Nothing Then Exit Sub
         If Not request.SelectedLoadPath.ScalesN Then Exit Sub
