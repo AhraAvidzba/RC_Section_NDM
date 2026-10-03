@@ -1,0 +1,601 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_relocated_input_negative_v174c.xlsm
+SOURCE_SHA256: 2F37A394351F867FD16CD757E63E6C56F06A3305AC3F4EEE27FAD3619B39CC9C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_adae05c751d24719a9922d09b07221df\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestProfileConfig.RunAudit03RelocatedInputTests =====
+SUITE_STARTED: modTestProfileConfig.RunAudit03RelocatedInputTests; 2026-10-03T21:09:08
+EXCEL_AFTER_SUITE: pid=23476; workingSet=207994880; privateBytes=159617024; cpu=7673.5
+EXCEL_AFTER_SUITE: pid=27828; workingSet=157671424; privateBytes=118669312; cpu=6.28125
+RUN: relocated.rngSystemSettings.p1.Solver.ToleranceN; actual=__AuditMovedInputs!F32
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.registered
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.locationSheet
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.locationAddress
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.rejected
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.errorSheet
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.errorAddress
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSystemSettings.p1.Solver.ToleranceN; Настройка Solver.ToleranceN (лист __AuditMovedInputs, ячейка F32) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batchInputErr
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batchAddress
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batchNoSolve
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch.writerNoSolve
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch.batchComment
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch.comment0
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch.failureReason0
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch.comment1
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch.failureReason1
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch.comment2
+OK: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch.failureReason2
+PROFILE_CONFIG_RESULT: relocated.rngSystemSettings.p1.Solver.ToleranceN.batch; status=InputErr; comment=Настройка Solver.ToleranceN (лист __AuditMovedInputs, ячейка F32): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+RUN: relocated.rngSystemSettings.p1.SLS.Crack.Allowable; actual=__AuditMovedInputs!F82
+OK: relocated.rngSystemSettings.p1.SLS.Crack.Allowable.registered
+OK: relocated.rngSystemSettings.p1.SLS.Crack.Allowable.locationSheet
+OK: relocated.rngSystemSettings.p1.SLS.Crack.Allowable.locationAddress
+OK: relocated.rngSystemSettings.p1.SLS.Crack.Allowable.rejected
+OK: relocated.rngSystemSettings.p1.SLS.Crack.Allowable.errorSheet
+OK: relocated.rngSystemSettings.p1.SLS.Crack.Allowable.errorAddress
+OK: relocated.rngSystemSettings.p1.SLS.Crack.Allowable.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSystemSettings.p1.SLS.Crack.Allowable; Настройка SLS.Crack.Allowable (лист __AuditMovedInputs, ячейка F82) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngSystemSettings.p2.Solver.ToleranceN; actual=__AuditMovedInputs!BI822
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.registered
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.locationSheet
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.locationAddress
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.rejected
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.errorSheet
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.errorAddress
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSystemSettings.p2.Solver.ToleranceN; Настройка Solver.ToleranceN (лист __AuditMovedInputs, ячейка BI822) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batchInputErr
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batchAddress
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batchNoSolve
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch.writerNoSolve
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch.batchComment
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch.comment0
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch.failureReason0
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch.comment1
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch.failureReason1
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch.comment2
+OK: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch.failureReason2
+PROFILE_CONFIG_RESULT: relocated.rngSystemSettings.p2.Solver.ToleranceN.batch; status=InputErr; comment=Настройка Solver.ToleranceN (лист __AuditMovedInputs, ячейка BI822): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+RUN: relocated.rngSystemSettings.p2.SLS.Crack.Allowable; actual=__AuditMovedInputs!BI872
+OK: relocated.rngSystemSettings.p2.SLS.Crack.Allowable.registered
+OK: relocated.rngSystemSettings.p2.SLS.Crack.Allowable.locationSheet
+OK: relocated.rngSystemSettings.p2.SLS.Crack.Allowable.locationAddress
+OK: relocated.rngSystemSettings.p2.SLS.Crack.Allowable.rejected
+OK: relocated.rngSystemSettings.p2.SLS.Crack.Allowable.errorSheet
+OK: relocated.rngSystemSettings.p2.SLS.Crack.Allowable.errorAddress
+OK: relocated.rngSystemSettings.p2.SLS.Crack.Allowable.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSystemSettings.p2.SLS.Crack.Allowable; Настройка SLS.Crack.Allowable (лист __AuditMovedInputs, ячейка BI872) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngUnitSettings.p1.Units.Force.Input; actual=__AuditMovedInputs!F13
+OK: relocated.rngUnitSettings.p1.Units.Force.Input.registered
+OK: relocated.rngUnitSettings.p1.Units.Force.Input.locationSheet
+OK: relocated.rngUnitSettings.p1.Units.Force.Input.locationAddress
+OK: relocated.rngUnitSettings.p1.Units.Force.Input.rejected
+OK: relocated.rngUnitSettings.p1.Units.Force.Input.errorSheet
+OK: relocated.rngUnitSettings.p1.Units.Force.Input.errorAddress
+OK: relocated.rngUnitSettings.p1.Units.Force.Input.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngUnitSettings.p1.Units.Force.Input; Настройка Units.Force.Input (лист __AuditMovedInputs, ячейка F13) содержит ошибку Excel в колонке "INPUT". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngUnitSettings.p1.Units.Force.Output; actual=__AuditMovedInputs!H13
+OK: relocated.rngUnitSettings.p1.Units.Force.Output.registered
+OK: relocated.rngUnitSettings.p1.Units.Force.Output.locationSheet
+OK: relocated.rngUnitSettings.p1.Units.Force.Output.locationAddress
+OK: relocated.rngUnitSettings.p1.Units.Force.Output.rejected
+OK: relocated.rngUnitSettings.p1.Units.Force.Output.errorSheet
+OK: relocated.rngUnitSettings.p1.Units.Force.Output.errorAddress
+OK: relocated.rngUnitSettings.p1.Units.Force.Output.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngUnitSettings.p1.Units.Force.Output; Настройка Units.Force.Output (лист __AuditMovedInputs, ячейка H13) содержит ошибку Excel в колонке "OUTPUT". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngUnitSettings.p2.Units.Force.Input; actual=__AuditMovedInputs!BI803
+OK: relocated.rngUnitSettings.p2.Units.Force.Input.registered
+OK: relocated.rngUnitSettings.p2.Units.Force.Input.locationSheet
+OK: relocated.rngUnitSettings.p2.Units.Force.Input.locationAddress
+OK: relocated.rngUnitSettings.p2.Units.Force.Input.rejected
+OK: relocated.rngUnitSettings.p2.Units.Force.Input.errorSheet
+OK: relocated.rngUnitSettings.p2.Units.Force.Input.errorAddress
+OK: relocated.rngUnitSettings.p2.Units.Force.Input.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngUnitSettings.p2.Units.Force.Input; Настройка Units.Force.Input (лист __AuditMovedInputs, ячейка BI803) содержит ошибку Excel в колонке "INPUT". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngUnitSettings.p2.Units.Force.Output; actual=__AuditMovedInputs!BK803
+OK: relocated.rngUnitSettings.p2.Units.Force.Output.registered
+OK: relocated.rngUnitSettings.p2.Units.Force.Output.locationSheet
+OK: relocated.rngUnitSettings.p2.Units.Force.Output.locationAddress
+OK: relocated.rngUnitSettings.p2.Units.Force.Output.rejected
+OK: relocated.rngUnitSettings.p2.Units.Force.Output.errorSheet
+OK: relocated.rngUnitSettings.p2.Units.Force.Output.errorAddress
+OK: relocated.rngUnitSettings.p2.Units.Force.Output.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngUnitSettings.p2.Units.Force.Output; Настройка Units.Force.Output (лист __AuditMovedInputs, ячейка BK803) содержит ошибку Excel в колонке "OUTPUT". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngSignConventionSettings.p1.Sign.N.User; actual=__AuditMovedInputs!F11
+OK: relocated.rngSignConventionSettings.p1.Sign.N.User.registered
+OK: relocated.rngSignConventionSettings.p1.Sign.N.User.locationSheet
+OK: relocated.rngSignConventionSettings.p1.Sign.N.User.locationAddress
+OK: relocated.rngSignConventionSettings.p1.Sign.N.User.rejected
+OK: relocated.rngSignConventionSettings.p1.Sign.N.User.errorSheet
+OK: relocated.rngSignConventionSettings.p1.Sign.N.User.errorAddress
+OK: relocated.rngSignConventionSettings.p1.Sign.N.User.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSignConventionSettings.p1.Sign.N.User; Настройка Sign.N.User (лист __AuditMovedInputs, ячейка F11) содержит ошибку Excel в колонке "USER". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngSignConventionSettings.p2.Sign.N.User; actual=__AuditMovedInputs!BI801
+OK: relocated.rngSignConventionSettings.p2.Sign.N.User.registered
+OK: relocated.rngSignConventionSettings.p2.Sign.N.User.locationSheet
+OK: relocated.rngSignConventionSettings.p2.Sign.N.User.locationAddress
+OK: relocated.rngSignConventionSettings.p2.Sign.N.User.rejected
+OK: relocated.rngSignConventionSettings.p2.Sign.N.User.errorSheet
+OK: relocated.rngSignConventionSettings.p2.Sign.N.User.errorAddress
+OK: relocated.rngSignConventionSettings.p2.Sign.N.User.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSignConventionSettings.p2.Sign.N.User; Настройка Sign.N.User (лист __AuditMovedInputs, ячейка BI801) содержит ошибку Excel в колонке "USER". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS; actual=__AuditMovedInputs!F11
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS.registered
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS.locationSheet
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS.locationAddress
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS.rejected
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS.errorSheet
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS.errorAddress
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngConcreteMaterialParameters.p1.Concrete.Rb.ULS; Настройка Concrete.R.ULS(I) (лист __AuditMovedInputs, ячейка F11) содержит ошибку Excel в колонке "Сжатие". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS; actual=__AuditMovedInputs!G11
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS.registered
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS.locationSheet
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS.locationAddress
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS.rejected
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS.errorSheet
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS.errorAddress
+OK: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngConcreteMaterialParameters.p1.Concrete.Rbt.ULS; Настройка Concrete.R.ULS(I) (лист __AuditMovedInputs, ячейка G11) содержит ошибку Excel в колонке "Растяжение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS; actual=__AuditMovedInputs!BI801
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS.registered
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS.locationSheet
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS.locationAddress
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS.rejected
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS.errorSheet
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS.errorAddress
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngConcreteMaterialParameters.p2.Concrete.Rb.ULS; Настройка Concrete.R.ULS(I) (лист __AuditMovedInputs, ячейка BI801) содержит ошибку Excel в колонке "Сжатие". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS; actual=__AuditMovedInputs!BJ801
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS.registered
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS.locationSheet
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS.locationAddress
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS.rejected
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS.errorSheet
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS.errorAddress
+OK: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngConcreteMaterialParameters.p2.Concrete.Rbt.ULS; Настройка Concrete.R.ULS(I) (лист __AuditMovedInputs, ячейка BJ801) содержит ошибку Excel в колонке "Растяжение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngSteelMaterialParameters.p1.Steel.Esc; actual=__AuditMovedInputs!F13
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Esc.registered
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Esc.locationSheet
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Esc.locationAddress
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Esc.rejected
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Esc.errorSheet
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Esc.errorAddress
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Esc.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSteelMaterialParameters.p1.Steel.Esc; Настройка Steel.E (лист __AuditMovedInputs, ячейка F13) содержит ошибку Excel в колонке "Сжатие". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngSteelMaterialParameters.p1.Steel.Es; actual=__AuditMovedInputs!G13
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Es.registered
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Es.locationSheet
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Es.locationAddress
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Es.rejected
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Es.errorSheet
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Es.errorAddress
+OK: relocated.rngSteelMaterialParameters.p1.Steel.Es.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSteelMaterialParameters.p1.Steel.Es; Настройка Steel.E (лист __AuditMovedInputs, ячейка G13) содержит ошибку Excel в колонке "Растяжение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngSteelMaterialParameters.p2.Steel.Esc; actual=__AuditMovedInputs!BI803
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Esc.registered
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Esc.locationSheet
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Esc.locationAddress
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Esc.rejected
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Esc.errorSheet
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Esc.errorAddress
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Esc.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSteelMaterialParameters.p2.Steel.Esc; Настройка Steel.E (лист __AuditMovedInputs, ячейка BI803) содержит ошибку Excel в колонке "Сжатие". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngSteelMaterialParameters.p2.Steel.Es; actual=__AuditMovedInputs!BJ803
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Es.registered
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Es.locationSheet
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Es.locationAddress
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Es.rejected
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Es.errorSheet
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Es.errorAddress
+OK: relocated.rngSteelMaterialParameters.p2.Steel.Es.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngSteelMaterialParameters.p2.Steel.Es; Настройка Steel.E (лист __AuditMovedInputs, ячейка BJ803) содержит ошибку Excel в колонке "Растяжение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngCircleGeometry.p1.Circle.Diameter; actual=__AuditMovedInputs!F11
+OK: relocated.rngCircleGeometry.p1.Circle.Diameter.registered
+OK: relocated.rngCircleGeometry.p1.Circle.Diameter.locationSheet
+OK: relocated.rngCircleGeometry.p1.Circle.Diameter.locationAddress
+OK: relocated.rngCircleGeometry.p1.Circle.Diameter.rejected
+OK: relocated.rngCircleGeometry.p1.Circle.Diameter.errorSheet
+OK: relocated.rngCircleGeometry.p1.Circle.Diameter.errorAddress
+OK: relocated.rngCircleGeometry.p1.Circle.Diameter.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCircleGeometry.p1.Circle.Diameter; Настройка Circle.Diameter (лист __AuditMovedInputs, ячейка F11) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngCircleGeometry.p1.Rebar.AxisDistance; actual=__AuditMovedInputs!F12
+OK: relocated.rngCircleGeometry.p1.Rebar.AxisDistance.registered
+OK: relocated.rngCircleGeometry.p1.Rebar.AxisDistance.locationSheet
+OK: relocated.rngCircleGeometry.p1.Rebar.AxisDistance.locationAddress
+OK: relocated.rngCircleGeometry.p1.Rebar.AxisDistance.rejected
+OK: relocated.rngCircleGeometry.p1.Rebar.AxisDistance.errorSheet
+OK: relocated.rngCircleGeometry.p1.Rebar.AxisDistance.errorAddress
+OK: relocated.rngCircleGeometry.p1.Rebar.AxisDistance.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCircleGeometry.p1.Rebar.AxisDistance; Настройка Rebar.AxisDistance (лист __AuditMovedInputs, ячейка F12) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngCircleGeometry.p2.Circle.Diameter; actual=__AuditMovedInputs!BI801
+OK: relocated.rngCircleGeometry.p2.Circle.Diameter.registered
+OK: relocated.rngCircleGeometry.p2.Circle.Diameter.locationSheet
+OK: relocated.rngCircleGeometry.p2.Circle.Diameter.locationAddress
+OK: relocated.rngCircleGeometry.p2.Circle.Diameter.rejected
+OK: relocated.rngCircleGeometry.p2.Circle.Diameter.errorSheet
+OK: relocated.rngCircleGeometry.p2.Circle.Diameter.errorAddress
+OK: relocated.rngCircleGeometry.p2.Circle.Diameter.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCircleGeometry.p2.Circle.Diameter; Настройка Circle.Diameter (лист __AuditMovedInputs, ячейка BI801) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngCircleGeometry.p2.Rebar.AxisDistance; actual=__AuditMovedInputs!BI802
+OK: relocated.rngCircleGeometry.p2.Rebar.AxisDistance.registered
+OK: relocated.rngCircleGeometry.p2.Rebar.AxisDistance.locationSheet
+OK: relocated.rngCircleGeometry.p2.Rebar.AxisDistance.locationAddress
+OK: relocated.rngCircleGeometry.p2.Rebar.AxisDistance.rejected
+OK: relocated.rngCircleGeometry.p2.Rebar.AxisDistance.errorSheet
+OK: relocated.rngCircleGeometry.p2.Rebar.AxisDistance.errorAddress
+OK: relocated.rngCircleGeometry.p2.Rebar.AxisDistance.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCircleGeometry.p2.Rebar.AxisDistance; Настройка Rebar.AxisDistance (лист __AuditMovedInputs, ячейка BI802) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B; actual=__AuditMovedInputs!F12
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B.registered
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B.locationSheet
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B.locationAddress
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B.rejected
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B.errorSheet
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B.errorAddress
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.B; Настройка RoundedRectangle.B (лист __AuditMovedInputs, ячейка F12) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as; actual=__AuditMovedInputs!F22
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as.registered
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as.locationSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as.locationAddress
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as.rejected
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as.errorSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as.errorAddress
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.as; 
+RUN: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d; actual=__AuditMovedInputs!G22
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d.registered
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d.locationSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d.locationAddress
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d.rejected
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d.errorSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d.errorAddress
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.d; 
+RUN: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n; actual=__AuditMovedInputs!H22
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n.registered
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n.locationSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n.locationAddress
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n.rejected
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n.errorSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n.errorAddress
+OK: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRoundedRectangleGeometry.p1.RoundedRectangle.H.Left.n; 
+RUN: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B; actual=__AuditMovedInputs!BI802
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B.registered
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B.locationSheet
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B.locationAddress
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B.rejected
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B.errorSheet
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B.errorAddress
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.B; Настройка RoundedRectangle.B (лист __AuditMovedInputs, ячейка BI802) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as; actual=__AuditMovedInputs!BI812
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as.registered
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as.locationSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as.locationAddress
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as.rejected
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as.errorSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as.errorAddress
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.as; 
+RUN: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d; actual=__AuditMovedInputs!BJ812
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d.registered
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d.locationSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d.locationAddress
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d.rejected
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d.errorSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d.errorAddress
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.d; 
+RUN: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n; actual=__AuditMovedInputs!BK812
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n.registered
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n.locationSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n.locationAddress
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n.rejected
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n.errorSheet
+FAIL: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n.errorAddress
+OK: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRoundedRectangleGeometry.p2.RoundedRectangle.H.Left.n; 
+RUN: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX; actual=__AuditMovedInputs!F12
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX.registered
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX.locationSheet
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX.locationAddress
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX.rejected
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX.errorSheet
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX.errorAddress
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.InnerOffsetX; Настройка HollowRectangle.InnerOffsetX (лист __AuditMovedInputs, ячейка F12) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as; actual=__AuditMovedInputs!F20
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as.registered
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as.locationSheet
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as.locationAddress
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as.rejected
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as.errorSheet
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as.errorAddress
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.as; 
+RUN: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d; actual=__AuditMovedInputs!G20
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d.registered
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d.locationSheet
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d.locationAddress
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d.rejected
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d.errorSheet
+FAIL: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d.errorAddress
+OK: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngHollowRectangleGeometry.p1.HollowRectangle.H.Left.d; 
+RUN: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX; actual=__AuditMovedInputs!BI802
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX.registered
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX.locationSheet
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX.locationAddress
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX.rejected
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX.errorSheet
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX.errorAddress
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.InnerOffsetX; Настройка HollowRectangle.InnerOffsetX (лист __AuditMovedInputs, ячейка BI802) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as; actual=__AuditMovedInputs!BI810
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as.registered
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as.locationSheet
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as.locationAddress
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as.rejected
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as.errorSheet
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as.errorAddress
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.as; 
+RUN: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d; actual=__AuditMovedInputs!BJ810
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d.registered
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d.locationSheet
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d.locationAddress
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d.rejected
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d.errorSheet
+FAIL: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d.errorAddress
+OK: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngHollowRectangleGeometry.p2.HollowRectangle.H.Left.d; 
+RUN: relocated.rngRectSetGeometry.p1.RectSet.SectionType; actual=__AuditMovedInputs!F12
+OK: relocated.rngRectSetGeometry.p1.RectSet.SectionType.registered
+OK: relocated.rngRectSetGeometry.p1.RectSet.SectionType.locationSheet
+OK: relocated.rngRectSetGeometry.p1.RectSet.SectionType.locationAddress
+OK: relocated.rngRectSetGeometry.p1.RectSet.SectionType.rejected
+OK: relocated.rngRectSetGeometry.p1.RectSet.SectionType.errorSheet
+OK: relocated.rngRectSetGeometry.p1.RectSet.SectionType.errorAddress
+OK: relocated.rngRectSetGeometry.p1.RectSet.SectionType.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRectSetGeometry.p1.RectSet.SectionType; Настройка RectSet.SectionType (лист __AuditMovedInputs, ячейка F12) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1; actual=__AuditMovedInputs!F20
+OK: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1.registered
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1.locationSheet
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1.locationAddress
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1.rejected
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1.errorSheet
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1.errorAddress
+OK: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRectSetGeometry.p1.RectSet.H1.as_1; 
+RUN: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1; actual=__AuditMovedInputs!G20
+OK: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1.registered
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1.locationSheet
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1.locationAddress
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1.rejected
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1.errorSheet
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1.errorAddress
+OK: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRectSetGeometry.p1.RectSet.H1.d_1; 
+RUN: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1; actual=__AuditMovedInputs!H20
+OK: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1.registered
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1.locationSheet
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1.locationAddress
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1.rejected
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1.errorSheet
+FAIL: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1.errorAddress
+OK: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRectSetGeometry.p1.RectSet.H1.n_1; 
+RUN: relocated.rngRectSetGeometry.p2.RectSet.SectionType; actual=__AuditMovedInputs!BI802
+OK: relocated.rngRectSetGeometry.p2.RectSet.SectionType.registered
+OK: relocated.rngRectSetGeometry.p2.RectSet.SectionType.locationSheet
+OK: relocated.rngRectSetGeometry.p2.RectSet.SectionType.locationAddress
+OK: relocated.rngRectSetGeometry.p2.RectSet.SectionType.rejected
+OK: relocated.rngRectSetGeometry.p2.RectSet.SectionType.errorSheet
+OK: relocated.rngRectSetGeometry.p2.RectSet.SectionType.errorAddress
+OK: relocated.rngRectSetGeometry.p2.RectSet.SectionType.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRectSetGeometry.p2.RectSet.SectionType; Настройка RectSet.SectionType (лист __AuditMovedInputs, ячейка BI802) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+RUN: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1; actual=__AuditMovedInputs!BI810
+OK: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1.registered
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1.locationSheet
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1.locationAddress
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1.rejected
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1.errorSheet
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1.errorAddress
+OK: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRectSetGeometry.p2.RectSet.H1.as_1; 
+RUN: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1; actual=__AuditMovedInputs!BJ810
+OK: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1.registered
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1.locationSheet
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1.locationAddress
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1.rejected
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1.errorSheet
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1.errorAddress
+OK: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRectSetGeometry.p2.RectSet.H1.d_1; 
+RUN: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1; actual=__AuditMovedInputs!BK810
+OK: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1.registered
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1.locationSheet
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1.locationAddress
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1.rejected
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1.errorSheet
+FAIL: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1.errorAddress
+OK: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngRectSetGeometry.p2.RectSet.H1.n_1; 
+RUN: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled; actual=__AuditMovedInputs!F11
+OK: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled.registered
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled.locationSheet
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled.locationAddress
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled.rejected
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled.errorSheet
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled.errorAddress
+OK: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngPlotAnnotationSettings.p1.Plot.RebarLabels.Enabled; 
+RUN: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight; actual=__AuditMovedInputs!G18
+OK: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight.registered
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight.locationSheet
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight.locationAddress
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight.rejected
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight.errorSheet
+FAIL: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight.errorAddress
+OK: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngPlotAnnotationSettings.p1.Plot.Dimensions.TextHeight; 
+RUN: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled; actual=__AuditMovedInputs!BI801
+OK: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled.registered
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled.locationSheet
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled.locationAddress
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled.rejected
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled.errorSheet
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled.errorAddress
+OK: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngPlotAnnotationSettings.p2.Plot.RebarLabels.Enabled; 
+RUN: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight; actual=__AuditMovedInputs!BJ808
+OK: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight.registered
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight.locationSheet
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight.locationAddress
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight.rejected
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight.errorSheet
+FAIL: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight.errorAddress
+OK: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngPlotAnnotationSettings.p2.Plot.Dimensions.TextHeight; 
+RUN: relocated.rngCalculationProfiles.p1.PR1.MaterialModel.Strength.ValueSet; actual=__AuditMovedInputs!G23
+OK: relocated.rngCalculationProfiles.p1.PR1.MaterialModel.Strength.ValueSet.rejected
+FAIL: relocated.rngCalculationProfiles.p1.PR1.MaterialModel.Strength.ValueSet.errorSheet
+FAIL: relocated.rngCalculationProfiles.p1.PR1.MaterialModel.Strength.ValueSet.errorAddress
+OK: relocated.rngCalculationProfiles.p1.PR1.MaterialModel.Strength.ValueSet.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p1.PR1.MaterialModel.Strength.ValueSet; ValueSet материальной модели должен быть ULS(I) или SLS(II).
+RUN: relocated.rngCalculationProfiles.p1.PR1.Visualization.StressPrecision; actual=__AuditMovedInputs!G40
+OK: relocated.rngCalculationProfiles.p1.PR1.Visualization.StressPrecision.rejected
+FAIL: relocated.rngCalculationProfiles.p1.PR1.Visualization.StressPrecision.errorSheet
+FAIL: relocated.rngCalculationProfiles.p1.PR1.Visualization.StressPrecision.errorAddress
+OK: relocated.rngCalculationProfiles.p1.PR1.Visualization.StressPrecision.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p1.PR1.Visualization.StressPrecision; Visualization.StressPrecision должен быть целым числом от 0 до 10.
+RUN: relocated.rngCalculationProfiles.p1.PR2.MaterialModel.Strength.ValueSet; actual=__AuditMovedInputs!H23
+OK: relocated.rngCalculationProfiles.p1.PR2.MaterialModel.Strength.ValueSet.rejected
+FAIL: relocated.rngCalculationProfiles.p1.PR2.MaterialModel.Strength.ValueSet.errorSheet
+FAIL: relocated.rngCalculationProfiles.p1.PR2.MaterialModel.Strength.ValueSet.errorAddress
+OK: relocated.rngCalculationProfiles.p1.PR2.MaterialModel.Strength.ValueSet.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p1.PR2.MaterialModel.Strength.ValueSet; ValueSet материальной модели должен быть ULS(I) или SLS(II).
+RUN: relocated.rngCalculationProfiles.p1.PR2.Visualization.StressPrecision; actual=__AuditMovedInputs!H40
+OK: relocated.rngCalculationProfiles.p1.PR2.Visualization.StressPrecision.rejected
+FAIL: relocated.rngCalculationProfiles.p1.PR2.Visualization.StressPrecision.errorSheet
+FAIL: relocated.rngCalculationProfiles.p1.PR2.Visualization.StressPrecision.errorAddress
+OK: relocated.rngCalculationProfiles.p1.PR2.Visualization.StressPrecision.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p1.PR2.Visualization.StressPrecision; Visualization.StressPrecision должен быть целым числом от 0 до 10.
+RUN: relocated.rngCalculationProfiles.p1.PR3.MaterialModel.Strength.ValueSet; actual=__AuditMovedInputs!I23
+OK: relocated.rngCalculationProfiles.p1.PR3.MaterialModel.Strength.ValueSet.rejected
+FAIL: relocated.rngCalculationProfiles.p1.PR3.MaterialModel.Strength.ValueSet.errorSheet
+FAIL: relocated.rngCalculationProfiles.p1.PR3.MaterialModel.Strength.ValueSet.errorAddress
+OK: relocated.rngCalculationProfiles.p1.PR3.MaterialModel.Strength.ValueSet.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p1.PR3.MaterialModel.Strength.ValueSet; ValueSet материальной модели должен быть ULS(I) или SLS(II).
+RUN: relocated.rngCalculationProfiles.p1.PR3.Visualization.StressPrecision; actual=__AuditMovedInputs!I40
+OK: relocated.rngCalculationProfiles.p1.PR3.Visualization.StressPrecision.rejected
+FAIL: relocated.rngCalculationProfiles.p1.PR3.Visualization.StressPrecision.errorSheet
+FAIL: relocated.rngCalculationProfiles.p1.PR3.Visualization.StressPrecision.errorAddress
+OK: relocated.rngCalculationProfiles.p1.PR3.Visualization.StressPrecision.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p1.PR3.Visualization.StressPrecision; Visualization.StressPrecision должен быть целым числом от 0 до 10.
+RUN: relocated.rngCalculationProfiles.p1.PR4.MaterialModel.Strength.ValueSet; actual=__AuditMovedInputs!J23
+OK: relocated.rngCalculationProfiles.p1.PR4.MaterialModel.Strength.ValueSet.rejected
+FAIL: relocated.rngCalculationProfiles.p1.PR4.MaterialModel.Strength.ValueSet.errorSheet
+FAIL: relocated.rngCalculationProfiles.p1.PR4.MaterialModel.Strength.ValueSet.errorAddress
+OK: relocated.rngCalculationProfiles.p1.PR4.MaterialModel.Strength.ValueSet.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p1.PR4.MaterialModel.Strength.ValueSet; ValueSet материальной модели должен быть ULS(I) или SLS(II).
+RUN: relocated.rngCalculationProfiles.p1.PR4.Visualization.StressPrecision; actual=__AuditMovedInputs!J40
+OK: relocated.rngCalculationProfiles.p1.PR4.Visualization.StressPrecision.rejected
+FAIL: relocated.rngCalculationProfiles.p1.PR4.Visualization.StressPrecision.errorSheet
+FAIL: relocated.rngCalculationProfiles.p1.PR4.Visualization.StressPrecision.errorAddress
+OK: relocated.rngCalculationProfiles.p1.PR4.Visualization.StressPrecision.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p1.PR4.Visualization.StressPrecision; Visualization.StressPrecision должен быть целым числом от 0 до 10.
+RUN: relocated.rngCalculationProfiles.p2.PR1.MaterialModel.Strength.ValueSet; actual=__AuditMovedInputs!BJ813
+OK: relocated.rngCalculationProfiles.p2.PR1.MaterialModel.Strength.ValueSet.rejected
+FAIL: relocated.rngCalculationProfiles.p2.PR1.MaterialModel.Strength.ValueSet.errorSheet
+FAIL: relocated.rngCalculationProfiles.p2.PR1.MaterialModel.Strength.ValueSet.errorAddress
+OK: relocated.rngCalculationProfiles.p2.PR1.MaterialModel.Strength.ValueSet.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p2.PR1.MaterialModel.Strength.ValueSet; ValueSet материальной модели должен быть ULS(I) или SLS(II).
+RUN: relocated.rngCalculationProfiles.p2.PR1.Visualization.StressPrecision; actual=__AuditMovedInputs!BJ830
+OK: relocated.rngCalculationProfiles.p2.PR1.Visualization.StressPrecision.rejected
+FAIL: relocated.rngCalculationProfiles.p2.PR1.Visualization.StressPrecision.errorSheet
+FAIL: relocated.rngCalculationProfiles.p2.PR1.Visualization.StressPrecision.errorAddress
+OK: relocated.rngCalculationProfiles.p2.PR1.Visualization.StressPrecision.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p2.PR1.Visualization.StressPrecision; Visualization.StressPrecision должен быть целым числом от 0 до 10.
+RUN: relocated.rngCalculationProfiles.p2.PR2.MaterialModel.Strength.ValueSet; actual=__AuditMovedInputs!BK813
+OK: relocated.rngCalculationProfiles.p2.PR2.MaterialModel.Strength.ValueSet.rejected
+FAIL: relocated.rngCalculationProfiles.p2.PR2.MaterialModel.Strength.ValueSet.errorSheet
+FAIL: relocated.rngCalculationProfiles.p2.PR2.MaterialModel.Strength.ValueSet.errorAddress
+OK: relocated.rngCalculationProfiles.p2.PR2.MaterialModel.Strength.ValueSet.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p2.PR2.MaterialModel.Strength.ValueSet; ValueSet материальной модели должен быть ULS(I) или SLS(II).
+RUN: relocated.rngCalculationProfiles.p2.PR2.Visualization.StressPrecision; actual=__AuditMovedInputs!BK830
+OK: relocated.rngCalculationProfiles.p2.PR2.Visualization.StressPrecision.rejected
+FAIL: relocated.rngCalculationProfiles.p2.PR2.Visualization.StressPrecision.errorSheet
+FAIL: relocated.rngCalculationProfiles.p2.PR2.Visualization.StressPrecision.errorAddress
+OK: relocated.rngCalculationProfiles.p2.PR2.Visualization.StressPrecision.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p2.PR2.Visualization.StressPrecision; Visualization.StressPrecision должен быть целым числом от 0 до 10.
+RUN: relocated.rngCalculationProfiles.p2.PR3.MaterialModel.Strength.ValueSet; actual=__AuditMovedInputs!BL813
+OK: relocated.rngCalculationProfiles.p2.PR3.MaterialModel.Strength.ValueSet.rejected
+FAIL: relocated.rngCalculationProfiles.p2.PR3.MaterialModel.Strength.ValueSet.errorSheet
+FAIL: relocated.rngCalculationProfiles.p2.PR3.MaterialModel.Strength.ValueSet.errorAddress
+OK: relocated.rngCalculationProfiles.p2.PR3.MaterialModel.Strength.ValueSet.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p2.PR3.MaterialModel.Strength.ValueSet; ValueSet материальной модели должен быть ULS(I) или SLS(II).
+RUN: relocated.rngCalculationProfiles.p2.PR3.Visualization.StressPrecision; actual=__AuditMovedInputs!BL830
+OK: relocated.rngCalculationProfiles.p2.PR3.Visualization.StressPrecision.rejected
+FAIL: relocated.rngCalculationProfiles.p2.PR3.Visualization.StressPrecision.errorSheet
+FAIL: relocated.rngCalculationProfiles.p2.PR3.Visualization.StressPrecision.errorAddress
+OK: relocated.rngCalculationProfiles.p2.PR3.Visualization.StressPrecision.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p2.PR3.Visualization.StressPrecision; Visualization.StressPrecision должен быть целым числом от 0 до 10.
+RUN: relocated.rngCalculationProfiles.p2.PR4.MaterialModel.Strength.ValueSet; actual=__AuditMovedInputs!BM813
+OK: relocated.rngCalculationProfiles.p2.PR4.MaterialModel.Strength.ValueSet.rejected
+FAIL: relocated.rngCalculationProfiles.p2.PR4.MaterialModel.Strength.ValueSet.errorSheet
+FAIL: relocated.rngCalculationProfiles.p2.PR4.MaterialModel.Strength.ValueSet.errorAddress
+OK: relocated.rngCalculationProfiles.p2.PR4.MaterialModel.Strength.ValueSet.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p2.PR4.MaterialModel.Strength.ValueSet; ValueSet материальной модели должен быть ULS(I) или SLS(II).
+RUN: relocated.rngCalculationProfiles.p2.PR4.Visualization.StressPrecision; actual=__AuditMovedInputs!BM830
+OK: relocated.rngCalculationProfiles.p2.PR4.Visualization.StressPrecision.rejected
+FAIL: relocated.rngCalculationProfiles.p2.PR4.Visualization.StressPrecision.errorSheet
+FAIL: relocated.rngCalculationProfiles.p2.PR4.Visualization.StressPrecision.errorAddress
+OK: relocated.rngCalculationProfiles.p2.PR4.Visualization.StressPrecision.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngCalculationProfiles.p2.PR4.Visualization.StressPrecision; Visualization.StressPrecision должен быть целым числом от 0 до 10.
+RUN: relocated.rngLoadCombinations.p1.N; actual=__AuditMovedInputs!F11
+OK: relocated.rngLoadCombinations.p1.N.noSolve
+OK: relocated.rngLoadCombinations.p1.N.writerNoSolve
+OK: relocated.rngLoadCombinations.p1.N.batchComment
+OK: relocated.rngLoadCombinations.p1.N.comment0
+OK: relocated.rngLoadCombinations.p1.N.failureReason0
+OK: relocated.rngLoadCombinations.p1.N.comment1
+OK: relocated.rngLoadCombinations.p1.N.failureReason1
+OK: relocated.rngLoadCombinations.p1.N.comment2
+OK: relocated.rngLoadCombinations.p1.N.failureReason2
+PROFILE_CONFIG_RESULT: relocated.rngLoadCombinations.p1.N; status=InputErr; comment=N, __AuditMovedInputs!F11 должен быть числом
+OK: relocated.rngLoadCombinations.p1.N.rejected
+OK: relocated.rngLoadCombinations.p1.N.errorSheet
+OK: relocated.rngLoadCombinations.p1.N.errorAddress
+OK: relocated.rngLoadCombinations.p1.N.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngLoadCombinations.p1.N; N, __AuditMovedInputs!F11 должен быть числом
+RUN: relocated.rngLoadCombinations.p2.N; actual=__AuditMovedInputs!BI801
+OK: relocated.rngLoadCombinations.p2.N.noSolve
+OK: relocated.rngLoadCombinations.p2.N.writerNoSolve
+OK: relocated.rngLoadCombinations.p2.N.batchComment
+OK: relocated.rngLoadCombinations.p2.N.comment0
+OK: relocated.rngLoadCombinations.p2.N.failureReason0
+OK: relocated.rngLoadCombinations.p2.N.comment1
+OK: relocated.rngLoadCombinations.p2.N.failureReason1
+OK: relocated.rngLoadCombinations.p2.N.comment2
+OK: relocated.rngLoadCombinations.p2.N.failureReason2
+PROFILE_CONFIG_RESULT: relocated.rngLoadCombinations.p2.N; status=InputErr; comment=N, __AuditMovedInputs!BI801 должен быть числом
+OK: relocated.rngLoadCombinations.p2.N.rejected
+OK: relocated.rngLoadCombinations.p2.N.errorSheet
+OK: relocated.rngLoadCombinations.p2.N.errorAddress
+OK: relocated.rngLoadCombinations.p2.N.oldAddressAbsent
+RELOCATED_INPUT_MESSAGE: relocated.rngLoadCombinations.p2.N; N, __AuditMovedInputs!BI801 должен быть числом
+OK: relocated.recovery.settings
+OK: relocated.recovery.profiles
+TOTAL_AUDIT03_RELOCATED_INPUT: passed=318; failed=132; cases=66
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_adae05c751d24719a9922d09b07221df\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestProfileConfig.RunAudit03RelocatedInputTests; 2026-10-03T21:09:12
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

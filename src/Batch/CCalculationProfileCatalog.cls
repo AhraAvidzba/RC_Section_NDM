@@ -59,54 +59,85 @@ Public Sub LoadFromRange(ByVal source As Object)
     Dim profileIndex As Long
     For profileIndex = 1 To profileCount
         mProfileIds(profileIndex) = profileIds(profileIndex)
-        Set mProfiles(profileIndex) = BuildProfile(data, profileColumns(profileIndex), profileIds(profileIndex))
+        Set mProfiles(profileIndex) = BuildProfile(source, data, profileColumns(profileIndex), profileIds(profileIndex))
     Next profileIndex
 End Sub
 
-' Создает профиль по одному столбцу PR.
-Private Function BuildProfile(ByRef data As Variant, ByVal profileColumn As Long, ByVal profileId As String) As CCalculationProfile
+' Создает профиль по одному столбцу PR и сохраняет адреса его параметров
+' для понятной ошибки ввода. Адреса не передаются в расчетное ядро.
+Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
+        ByVal profileColumn As Long, ByVal profileId As String) As CCalculationProfile
+    On Error GoTo InvalidValue
     Dim values As Object
+    Dim locations As Object
+    Dim activeKey As String ' Параметр, который сейчас проверяется; пустой для уже адресной ошибки.
     Set values = CreateObject("Scripting.Dictionary")
+    Set locations = CreateObject("Scripting.Dictionary")
     values.CompareMode = 1
+    locations.CompareMode = 1
 
     Dim rowIndex As Long
     For rowIndex = 1 To UBound(data, 1)
         Dim keyText As String
         keyText = Trim$(CStr(data(rowIndex, 2)))
-        If Len(keyText) > 0 Then values(keyText) = Trim$(CStr(data(rowIndex, profileColumn)))
+        If Len(keyText) > 0 Then
+            locations(keyText) = source.Worksheet.Name & "!" & source.Cells(rowIndex, profileColumn).Address(False, False)
+            values(keyText) = ProfileCellText(data(rowIndex, profileColumn), keyText, profileId, locations)
+        End If
     Next rowIndex
 
     Dim profile As CCalculationProfile
     Set profile = New CCalculationProfile
     profile.Initialize profileId, ProfileValue(values, "Profile.DisplayName"), _
         ProfileValue(values, "Profile.Description"), _
-        YesNo(ProfileValue(values, "Calculation.Strength.DirectState"), "Calculation.Strength.DirectState", profileId), _
-        YesNo(ProfileValue(values, "Calculation.Strength.Capacity"), "Calculation.Strength.Capacity", profileId), _
-        YesNo(ProfileValue(values, "Calculation.Crack.Width"), "Calculation.Crack.Width", profileId), _
-        YesNo(ProfileValue(values, "Calculation.Stability.Enabled"), "Calculation.Stability.Enabled", profileId)
+        YesNo(ProfileValue(values, "Calculation.Strength.DirectState"), "Calculation.Strength.DirectState", profileId, locations), _
+        YesNo(ProfileValue(values, "Calculation.Strength.Capacity"), "Calculation.Strength.Capacity", profileId, locations), _
+        YesNo(ProfileValue(values, "Calculation.Crack.Width"), "Calculation.Crack.Width", profileId, locations), _
+        YesNo(ProfileValue(values, "Calculation.Stability.Enabled"), "Calculation.Stability.Enabled", profileId, locations)
 
     Dim spec As CMaterialModelSpec
-    Set spec = SpecFromValues(values, "MaterialModel.Strength")
+    Set spec = SpecFromValues(values, locations, profileId, "MaterialModel.Strength")
     If spec.IsComplete Then profile.SetStrengthSpec spec
 
-    Set spec = SpecFromValues(values, "MaterialModel.CrackInitiation")
+    Set spec = SpecFromValues(values, locations, profileId, "MaterialModel.CrackInitiation")
     If spec.IsComplete Then profile.SetCrackInitiationSpec spec
 
-    Set spec = SpecFromValues(values, "MaterialModel.CrackedState")
+    Set spec = SpecFromValues(values, locations, profileId, "MaterialModel.CrackedState")
     If spec.IsComplete Then profile.SetCrackedStateSpec spec
 
-    profile.SetStabilityValueSet ProfileValue(values, "MaterialModel.Stability.ValueSet")
+    activeKey = "MaterialModel.Stability.ValueSet"
+    If profile.StabilityEnabled Then RequireProfileValue values, activeKey
+    profile.SetStabilityValueSet ProfileValue(values, activeKey)
 
-    profile.SetVisualization ProfileValue(values, "Visualization.State"), _
-        ProfileValue(values, "Visualization.Quantity"), _
-        ProfileValue(values, "Visualization.StressPrecision"), _
-        ProfileValue(values, "Visualization.StrainPrecision")
+    activeKey = "Visualization.State"
+    RequireProfileValue values, activeKey
+    profile.SetVisualization ProfileValue(values, activeKey), vbNullString
+    activeKey = "Visualization.Quantity"
+    RequireProfileValue values, activeKey
+    profile.SetVisualization vbNullString, ProfileValue(values, activeKey)
+    activeKey = "Visualization.StressPrecision"
+    RequireProfileValue values, activeKey
+    profile.SetVisualization vbNullString, vbNullString, ProfileValue(values, activeKey)
+    activeKey = "Visualization.StrainPrecision"
+    RequireProfileValue values, activeKey
+    profile.SetVisualization vbNullString, vbNullString, vbNullString, ProfileValue(values, activeKey)
 
     Set BuildProfile = profile
+    Exit Function
+InvalidValue:
+    Dim errorNumber As Long, description As String
+    errorNumber = Err.Number: description = Err.Description
+    If Len(activeKey) = 0 Then Err.Raise errorNumber, "CCalculationProfileCatalog", description
+    RaiseProfileInputError errorNumber, description, activeKey, profileId, locations
 End Function
 
-' Собирает MaterialModelSpec из четырех строк одного префикса.
-Private Function SpecFromValues(ByVal values As Object, ByVal prefix As String) As CMaterialModelSpec
+' Собирает MaterialModelSpec теми же enum-парсерами, что использует ядро.
+' Каждая ошибка называет конкретное поле; полностью пустая неактивная модель
+' остается ненастроенной и не получает произвольную диаграмму по умолчанию.
+Private Function SpecFromValues(ByVal values As Object, ByVal locations As Object, _
+        ByVal profileId As String, ByVal prefix As String) As CMaterialModelSpec
+    On Error GoTo InvalidValue
+    Dim activeKey As String
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
 
@@ -124,9 +155,53 @@ Private Function SpecFromValues(ByVal values As Object, ByVal prefix As String) 
         Set SpecFromValues = spec
         Exit Function
     End If
+    activeKey = prefix & ".ValueSet"
+    Call MaterialValueSetFromText(valueSetText)
+    activeKey = prefix & ".ConcreteDiagram"
+    Call ConcreteDiagramKindFromText(concreteDiagramText)
+    activeKey = prefix & ".ConcreteTension"
+    Call ConcreteTensionKindFromText(concreteTensionText)
+    activeKey = prefix & ".SteelDiagram"
+    Call SteelDiagramKindFromText(steelDiagramText)
     spec.Initialize valueSetText, concreteDiagramText, concreteTensionText, steelDiagramText
     Set SpecFromValues = spec
+    Exit Function
+InvalidValue:
+    RaiseProfileInputError Err.Number, Err.Description, activeKey, profileId, locations
 End Function
+
+' Различает строку, пустоту и ошибку Excel до преобразования в String.
+' Ошибка формулы не становится неизвестным selector-ом или значением default.
+Private Function ProfileCellText(ByVal value As Variant, ByVal key As String, _
+        ByVal profileId As String, ByVal locations As Object) As String
+    Dim errorNumber As Long
+    errorNumber = vbObjectError + 3989
+    If Left$(key, 12) = "Calculation." Then errorNumber = vbObjectError + 3988
+    If IsError(value) Then RaiseProfileInputError errorNumber, "Ячейка содержит ошибку формулы Excel.", key, profileId, locations
+    If IsNull(value) Then RaiseProfileInputError errorNumber, "Значение ячейки не определено.", key, profileId, locations
+    ProfileCellText = Trim$(CStr(value))
+End Function
+
+' Проверяет обязательность поля из Config. Optional-параметры программного
+' API профиля не разрешают молча заменить пустой пользовательский ввод.
+Private Sub RequireProfileValue(ByVal values As Object, ByVal key As String)
+    If Len(ProfileValue(values, key)) = 0 Then Err.Raise vbObjectError + 3989, _
+        "CCalculationProfileCatalog", "Обязательное значение не задано; выберите или введите его в таблице профилей."
+End Sub
+
+' Добавляет адресную навигацию к исходной причине ввода, сохраняя машинный
+' номер ошибки enum/параметра. Статус результата по этому тексту не назначается.
+Private Sub RaiseProfileInputError(ByVal errorNumber As Long, ByVal description As String, _
+        ByVal key As String, ByVal profileId As String, ByVal locations As Object)
+    Dim location As String
+    location = "лист Config, таблица rngCalculationProfiles"
+    If Not locations Is Nothing Then
+        If locations.Exists(key) Then location = CStr(locations(key))
+    End If
+    Err.Raise errorNumber, "CCalculationProfileCatalog", "Профиль " & profileId & _
+        ": параметр " & key & " (" & location & "). " & description & _
+        " Проверьте указанную ячейку или восстановите строку параметра в таблице профилей."
+End Sub
 
 ' Возвращает строковое значение параметра профиля по ключу, если такая строка есть в таблице.
 Private Function ProfileValue(ByVal values As Object, ByVal keyText As String) As String
@@ -173,15 +248,15 @@ End Function
 ' Читает обязательный переключатель расчета профиля. Все утвержденные
 ' Boolean aliases сохраняются; пустое/неизвестное значение является ошибкой
 ' Config, а не неявным отключением запрошенного пользователем расчета.
-Private Function YesNo(ByVal value As String, ByVal key As String, ByVal profileId As String) As Boolean
+Private Function YesNo(ByVal value As String, ByVal key As String, ByVal profileId As String, _
+        ByVal locations As Object) As Boolean
     value = UCase$(Trim$(value))
     Select Case value
         Case "YES", "TRUE", "1", "ДА": YesNo = True
         Case "NO", "FALSE", "0", "НЕТ": YesNo = False
         Case Else
-            Err.Raise vbObjectError + 3988, "CCalculationProfileCatalog", _
-                "Профиль " & profileId & ": параметр " & key & _
-                " должен содержать Yes или No. Проверьте значение или формулу на листе Config; прочитано: """ & value & """."
+            RaiseProfileInputError vbObjectError + 3988, _
+                "Выберите Yes или No; прочитано: """ & value & """.", key, profileId, locations
     End Select
 End Function
 

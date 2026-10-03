@@ -103,6 +103,16 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestLoadTableConfig.RunAudit03ResultColumnWidthTests(resultWidthsPassed, resultWidthsFailed)
     stats.Passed = stats.Passed + resultWidthsPassed
     stats.Failed = stats.Failed + resultWidthsFailed
+    Dim profileConfigPassed As Long, profileConfigFailed As Long
+    AppendLine stats, "RUN: RunAudit03ProfileConfigTests"
+    stats.Report = stats.Report & modTestProfileConfig.RunAudit03ProfileConfigTests(profileConfigPassed, profileConfigFailed)
+    stats.Passed = stats.Passed + profileConfigPassed
+    stats.Failed = stats.Failed + profileConfigFailed
+    Dim relocatedPassed As Long, relocatedFailed As Long
+    AppendLine stats, "RUN: RunAudit03RelocatedInputTests"
+    stats.Report = stats.Report & modTestProfileConfig.RunAudit03RelocatedInputTests(relocatedPassed, relocatedFailed)
+    stats.Passed = stats.Passed + relocatedPassed
+    stats.Failed = stats.Failed + relocatedFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats

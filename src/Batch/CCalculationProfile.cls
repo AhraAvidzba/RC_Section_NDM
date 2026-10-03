@@ -283,8 +283,13 @@ Private Function ParseVisualizationPrecision(ByVal valueText As String, ByVal se
     If Not IsNumeric(valueText) Then Err.Raise vbObjectError + 3991, "CCalculationProfile", _
         settingName & " должен быть целым числом от 0 до 10."
 
-    ParseVisualizationPrecision = CLng(CDbl(valueText))
-    If ParseVisualizationPrecision < 0 Or ParseVisualizationPrecision > 10 Then _
+    Dim numericValue As Double
+    numericValue = CDbl(valueText)
+    If numericValue < 0# Or numericValue > 10# Then _
         Err.Raise vbObjectError + 3992, "CCalculationProfile", _
             settingName & " должен быть целым числом от 0 до 10."
+    If numericValue <> Fix(numericValue) Then _
+        Err.Raise vbObjectError + 3992, "CCalculationProfile", _
+            settingName & " должен быть целым числом от 0 до 10."
+    ParseVisualizationPrecision = CLng(numericValue)
 End Function

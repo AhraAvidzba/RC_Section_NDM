@@ -510,3 +510,37 @@ Results и status-style одинаковы после save/reopen; source unchan
 и взаимодействия остаются в работе; fullAcceptance=False. Runtime injection
 технической остановки orchestration не выполнялся. Журналы отрицательных
 v166/v167/v169/v170 и структурного отклонения v171 сохранены, а не переписаны.
+
+## Профильные Модели И Динамические Адреса v176
+
+Новый стандартный test module проверяет все 48 material-spec ячеек PR1-PR4,
+четыре stability value-set и четыре изменяемых имени профиля на настоящем
+LC/Batch/State/Search маршруте. Directed `3260/0`, 276 случаев, включает
+независимые N/Mx/My, actual spec и comments соответствующих writers.
+Visualization.State/Quantity и precision 0..10 проверены в snapshot-reader;
+все форматированные надписи схемы не приняты этой серией. Description остается
+поясняющим metadata, а не придуманным физическим коэффициентом.
+
+Динамические адреса проверены отдельно: 12 named input ranges, другой лист,
+две позиции E10/BH800, actual formula errors, конфликты двух общих селекторов
+RectSet, ResultComment и writers. Окончательный gate `674/0`, 98 случаев,
+сохранение Results/status-style после reopen=True. В VBA сообщения используют
+фактическое начало Range и положение поля либо Range.Cells.Address; writer
+не восстанавливает адрес по hardcoded Config-строке. После следующего чтения
+перемещенная таблица дает новый адрес, старые расчетные comments сохраняют
+трассировку того запуска. UI Cut/drag не имитировался, проверена переадресация
+имени Excel; все ссылки/формулы восстановлены после серии.
+
+Negative v174b `2924/336`, v174c `318/132` и v175c `514/160` сохранены.
+В v176 исправлены потеря geometry/annotation адресов, профильная диагностика,
+строгий integer precision и обе ячейки конфликта RectSet. Это не изменения
+физических критериев/допусков. Source/export `105/105`, Validate `27/27`,
+formatting `1003/0`, deviations=0. Полные восемь suites завершены: Off v176b
+`47979/0`, On v176 `47990/0`; общие actual-числа с v173 совпали в 9285/9290
+assertions, missing=0, differences=0. Отдельная clean-сборка прошла Validate
+`27/27`; вся справка clean/update совпала `2569/2569`, mergesEqual=True.
+После обоих full gates присоединены 56 per-key записей. Актуальный реестр
+`config_behavior_registry_profile_config_v176_2026-10-03` содержит 400/1064
+active-reviewed поля, fullAcceptance=False. Из 760 editable адресов 360 еще
+не имеют активной адресной приемки; full-range/pairwise для остальных принятых
+полей также не закрыт этим числом.
