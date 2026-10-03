@@ -115,7 +115,7 @@ End Sub
 ' напрямую не читается.
 Public Function Calculate(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal strengthSpec As CMaterialModelSpec, ByVal loadPath As CCapacityLoadPath, _
+        ByVal strengthSpec As CMaterialModelSpec, ByVal loadPath As CLoadPathDescriptor, _
         ByVal loadState As CSectionLoadState, ByVal strengthReferenceX As Double, _
         ByVal strengthReferenceY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
@@ -124,7 +124,7 @@ Public Function Calculate(ByVal section As CSectionModel, _
     Dim result As CCapacityResult
     Set result = New CCapacityResult
     If loadPath Is Nothing Then
-        result.InitializeInvalidInput "CapacityLoadPath не подготовлен."
+        result.InitializeInvalidInput "LoadPath не подготовлен."
         Set Calculate = result
         Exit Function
     End If
@@ -143,7 +143,7 @@ Public Function Calculate(ByVal section As CSectionModel, _
 
     If Not loadPath.HasScaledLoad Then
         result.InitializeInvalidInput _
-            "Для выбранного CapacityLoadPath соответствующая нагрузка должна быть ненулевой."
+            "Для выбранного LoadPath соответствующая нагрузка должна быть ненулевой."
         Set Calculate = result
         Exit Function
     End If
@@ -161,14 +161,19 @@ Public Function Calculate(ByVal section As CSectionModel, _
         SolutionStrategy, loadPath.NOffset, loadPath.NBase, loadPath.MxOffset, _
         loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly, _
         pureAxialForMethod, strengthSpec
+    Dim axialPath As CLoadPathDescriptor
+    Set axialPath = BuildLoadPath("LambdaN", loadState)
+    request.ConfigureLoadPathSelection loadPath.Key, loadState, _
+        IsPureAxialForMethod(axialPath, loadState, strengthReferenceX, strengthReferenceY, _
+            momentFilter, concreteDepthForMx, concreteDepthForMy)
 
     Dim coordinator As CLimitSearchCoordinator
     Set coordinator = New CLimitSearchCoordinator
 
     Dim searchResult As CLimitSearchResult
     Set searchResult = coordinator.ExecuteCapacity(request)
-    result.InitializeFromSearch searchResult, loadPath, _
-        pureAxialForMethod, loadReferenceX, loadReferenceY, momentFilter, _
+    result.InitializeFromSearch searchResult, request.SelectedLoadPath, _
+        request.PureAxialForMethod, loadReferenceX, loadReferenceY, momentFilter, _
         concreteDepthForMx, concreteDepthForMy
 
     Set Calculate = result
@@ -192,9 +197,9 @@ End Property
 ' состояния нагрузки. Это часть инженерной подготовки Capacity, поэтому batch
 ' не должен иметь собственную копию такой фабрики.
 Public Function BuildLoadPath(ByVal rawPath As String, _
-        ByVal loadState As CSectionLoadState) As CCapacityLoadPath
-    Dim loadPath As CCapacityLoadPath
-    Set loadPath = New CCapacityLoadPath
+        ByVal loadState As CSectionLoadState) As CLoadPathDescriptor
+    Dim loadPath As CLoadPathDescriptor
+    Set loadPath = New CLoadPathDescriptor
     loadPath.InitializeFromLoadState rawPath, loadState
     Set BuildLoadPath = loadPath
 End Function
@@ -203,18 +208,18 @@ End Function
 ' Results и execution report. Соответствие ключей и подписей остается рядом с
 ' объектом траектории, а calculator дает batch-слою короткую точку входа.
 Public Function DisplayNameForKey(ByVal loadPathKey As String) As String
-    Dim loadPath As CCapacityLoadPath
-    Set loadPath = New CCapacityLoadPath
+    Dim loadPath As CLoadPathDescriptor
+    Set loadPath = New CLoadPathDescriptor
     DisplayNameForKey = loadPath.DisplayNameForKey(loadPathKey)
 End Function
 
 ' Формирует русское пояснение для execution report перед запуском общего
 ' search. Это не меняет расчет: текст только объясняет, какую стратегию и
 ' почему выбрал capacity-calculator для текущей траектории.
-Public Function SearchPlanReport(ByVal loadPath As CCapacityLoadPath, _
+Public Function SearchPlanReport(ByVal loadPath As CLoadPathDescriptor, _
         ByVal pureAxialForMethod As Boolean) As String
     If loadPath Is Nothing Then
-        SearchPlanReport = "Capacity остановлен: CapacityLoadPath не подготовлен."
+        SearchPlanReport = "Capacity остановлен: LoadPath не подготовлен."
         Exit Function
     End If
 
@@ -246,7 +251,7 @@ End Function
 ' к расчетному центру приведенного сечения. Это влияет только на выбор численной
 ' ветки Capacity: для действительно осевой траектории устойчивее сразу работать
 ' через LoadMultiplier, а не через вырожденный UltimateStrain.
-Private Function IsPureAxialForMethod(ByVal loadPath As CCapacityLoadPath, _
+Private Function IsPureAxialForMethod(ByVal loadPath As CLoadPathDescriptor, _
         ByVal loadState As CSectionLoadState, ByVal referenceX As Double, _
         ByVal referenceY As Double, ByVal momentFilter As CMomentZeroFilter, _
         ByVal concreteDepthForMx As Double, ByVal concreteDepthForMy As Double) As Boolean

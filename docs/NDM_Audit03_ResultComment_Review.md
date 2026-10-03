@@ -60,6 +60,50 @@ v46 остановлен на CircleSym/Stress/On: четыре ошибочны
 txt-report и save/reopen. Широкий повтор текущего v48 исходника еще обязателен.
 Это приемка данного исправляющего среза, не завершение всего Audit03.
 
+## Formation Не Блокирует Width, v110
+
+По уточнению пользователя отсутствие пригодной Formation-точки или Post-state
+само по себе не блокирует Width/Longitudinal. При пригодном текущем CrackedState
+Width получает psi_s=1 и собственное предупреждение; Formation сохраняет
+первичную typed причину. Aggregate включает оба относящихся к нему исхода,
+не назначая формуле численную несходимость Search. Ненайденное или физически
+недопустимое обязательное текущее State блокирует обе проверки, с единственной
+общей причиной в сводке и полной причиной в leaf.
+
+Crack suite v110: 697/0. Включены четыре typed причины Formation и три PsiMode,
+реальная ширина с успешным/неуспешным допуском, psi_s=1/warning, отсутствие
+или физический отказ текущего State. Universal directed: 782/0; фактический
+fixed My/BaseFail выводит a_crc=0.0820763491231383 мм, psi_s=1, Es=200000 МПа
+и собственный статус Width. Проверены detail/summary comments и warning;
+Results после save/reopen совпадают.
+
+Подтвержденный writer-дефект: числа Width раньше скрывались по чужому флагу
+Formation.CrackFormed. Writer теперь читает собственный CrackWidthMeta.Calculated
+и Es готового Width. Отрицательная мутация, возвращающая прежний guard:
+779/3; actual-cell assertions psi_s/a_crc/Es обнаруживают исчезновение чисел.
+Статус в mutation не подменяется, поэтому его assertion остается успешным.
+Полные Off/On v110: 22552/0 и 22563/0, восемь suites. Общая 12-вариантная
+матрица и final DoD еще открыты. Broad v110 выявил Overflow в Width при
+нулевой кривизне, который общий обработчик ошибочно превращал в InputErr
+других блоков с английским текстом. Причина устранена до деления: равномерное
+текущее НДС классифицируется отдельно. v111 направленно: Crack 880/0,
+Universal 822/0. Оба Light-повтора CircleUneven Off/On прошли без failures.
+Stress/Off обнаружил отдельную потерю истории Auto: 13243/8, 288 случаев.
+При найденной точке lambda<1 CCapacityResult заменял комментарий Search
+инженерным FAIL и переносил его в diagnostics. v112 сохраняет оба смысла
+в ResultComment, исходные DiagnosticDetails и машинный physical FAIL.
+Проверка writer-ов читает готовый subtree; численные точки не изменяются.
+Отрицательные отчеты v110/v111 сохранены. Приемка v112: full Off 22780/0,
+On 22791/0; scoped matrix 3504 случая, 147163/0 assertions. В CSV отдельно
+проверены 200 Width fallback без Formation-точки: psi_s=1 и warning у каждого;
+Blocked при успешном CurrentState и rsNumericalFailure у формул отсутствуют.
+Auto-history при найденном пределе ниже текущего LC видна и в собственном
+Capacity ResultComment, и в Strength/Batch output. Это не полный D01/F05 DoD.
+Актуальная writer-мутация v112: 824/3, падают только численные ячейки
+psi_s/a_crc/Es после возврата Formation guard; собственный Width-status
+не изменяется. Save/reopen=True и source unchanged=True. Исторический v110
+negative не переписывается и не является текущей положительной приемкой.
+
 ## Дополнительная Проверка Устойчивости v76
 
 Сохраненный сквозной INPUT-v75 показал `SP35-eta` в ResultComment.

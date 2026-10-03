@@ -38,6 +38,8 @@ Public Function RunCrackWidthTests() As String
     TestAutoMcrcPureBendingConverges stats
     TestAutoMcrcFixedNIndependentOfMomentMagnitude stats
     TestCrackInitiationLoadPaths stats
+    TestFormationFailureStillCalculatesWidth stats
+    TestFormationFallbackWithUniformCurrentState stats
     TestCrackFormationSearchBoundKeepsTechnicalCode stats
     TestCrackFormationNoCrackDoesNotBuildPostState stats
     TestCrackFormationCacheHitWithoutLastRunner stats
@@ -401,6 +403,9 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
         "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*N")
     AssertTrue stats, "crack.path.nFixedMomentFallback.converged", crackNFixedMomentFallback.Converged
     AssertTrue stats, "crack.path.nFixedMomentFallback.formed", crackNFixedMomentFallback.CrackFormed
+    AssertTrue stats, "crack.path.nFixedMomentFallback.baseFailure", _
+        crackNFixedMomentFallback.FormationResult.ResultMeta.InternalStatus = rsCheckFailed And _
+        crackNFixedMomentFallback.FormationResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
     AssertClose stats, "crack.path.nFixedMomentFallback.lambda0", crackNFixedMomentFallback.FormationResult.LambdaCrc, 0#, 0.000000001
     AssertClose stats, "crack.path.nFixedMomentFallback.noFormationN", crackNFixedMomentFallback.FormationResult.FormationNcrc, 0#, 0.000000001
     AssertClose stats, "crack.path.nFixedMomentFallback.noMcrc", crackNFixedMomentFallback.FormationResult.Mcrc, 0#, 0.000000001
@@ -414,9 +419,102 @@ Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
         "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*Mxy")
     AssertTrue stats, "crack.path.mxyAxialFallback.converged", crackFallback.Converged
     AssertTrue stats, "crack.path.mxyAxialFallback.formed", crackFallback.CrackFormed
+    AssertTrue stats, "crack.path.mxyAxialFallback.emptyScaledLoad", _
+        crackFallback.FormationResult.ResultMeta.InternalStatus = rsInvalidInput And _
+        crackFallback.FormationResult.ResultMeta.ResultCode = rcInvalidInput
     AssertClose stats, "crack.path.mxyAxialFallback.lambda0", crackFallback.FormationResult.LambdaCrc, 0#, 0.000000001
     AssertClose stats, "crack.path.mxyAxialFallback.psi1", crackFallback.PsiS, 1#, 0.000000001
     AssertCrackCalculatorNotNumFail stats, "crack.path.mxyAxialFallback.status", crackFallback
+End Sub
+
+' ДЛЯ ТЕСТОВ: настоящая формула получает физическое текущее НДС и отсутствие
+' точки Formation с разными typed причинами. Ширина сохраняет psi_s = 1 и
+' warning, а NumericalFailure остается только у поиска образования.
+Private Sub TestFormationFailureStillCalculatesWidth(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel, solver As CSectionSolver, current As CSectionStateResult
+    Set solver = SolveServiceState(section, 200000#, 0#, 0#)
+    Set current = New CSectionStateResult
+    current.InitializeFromSolver sstCrackedState, cpCrackedNDS, TestCrackedStateSpec(), solver, False, True
+    Dim owner As CCrackFormationCalculator, formation As CCrackFormationResult, meta As CResultMeta
+    Dim width As CCrackWidthCalculator, load As CSectionLoadState, mode As Variant, failure As Variant, prefix As String
+    Set load = New CSectionLoadState: load.Initialize 200000#, 0#, 0#, 0#, 0#
+    For Each failure In Array(sfcNumericalFailure, sfcInvalidInput, sfcInvalidConfiguration, sfcInternalError)
+        Set owner = New CCrackFormationCalculator
+        owner.LimitSearchSetFailure CLng(failure), "Контрольная причина отсутствия точки образования трещины."
+        Set formation = New CCrackFormationResult
+        Set meta = New CResultMeta
+        meta.SetSolverFailure CLng(failure), rkCrackFormation, "Контрольная причина отсутствия точки образования трещины.", True
+        formation.InitializeFromCalculator owner, meta
+        For Each mode In Array("User", "Auto", "AlwaysCalc")
+            prefix = "crack.formationFailureFallback." & CStr(failure) & "." & CStr(mode)
+            Set width = New CCrackWidthCalculator
+            width.PsiMode = CStr(mode): width.PsiS = 0.25: width.AllowableCrackWidth = 10#
+            width.Calculate current, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, load
+            AssertTrue stats, prefix & ".calculated", width.ResultMeta.Calculated
+            AssertTrue stats, prefix & ".warning", width.ResultMeta.InternalStatus = rsSuccessWithWarning
+            AssertClose stats, prefix & ".psi1", width.PsiS, 1#, 0#
+            AssertTrue stats, prefix & ".comment", InStr(1, width.ResultMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
+            AssertCrackCommon stats, prefix, width
+            AssertTrue stats, prefix & ".formationCausePreserved", formation.ResultMeta.InternalStatus = meta.InternalStatus
+            width.AllowableCrackWidth = 0.0000001
+            width.Calculate current, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, load
+            AssertTrue stats, prefix & ".exceededCalculated", width.ResultMeta.Calculated
+            AssertTrue stats, prefix & ".exceededStatus", width.ResultMeta.InternalStatus = rsCheckFailed
+            AssertTrue stats, prefix & ".exceededCode", width.ResultMeta.ResultCode = rcCrackWidthExceeded
+            AssertTrue stats, prefix & ".exceededWarning", _
+                InStr(1, width.ResultMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
+            AssertClose stats, prefix & ".exceededPsi1", width.PsiS, 1#, 0#
+        Next mode
+    Next failure
+    Set width = New CCrackWidthCalculator
+    width.Calculate Nothing, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, load
+    AssertTrue stats, "crack.formationFailureFallback.currentMissingBlocks", width.CrackWidthInternalStatus = rsBlockedByDependency
+    current.InitializeFromSolver sstCrackedState, cpCrackedNDS, TestCrackedStateSpec(), solver, False, False
+    width.Calculate current, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, load
+    AssertTrue stats, "crack.formationFailureFallback.currentPhysicalFailureBlocks", _
+        width.CrackWidthInternalStatus = rsBlockedByDependency And Not width.ResultMeta.Calculated
+End Sub
+
+' ДЛЯ ТЕСТОВ: отсутствие Formation не превращает нулевую кривизну в ошибку
+' деления. Реальные нулевые/малые и сжатые состояния дают неприменимость Width,
+' а равномерное растяжение использует всю растянутую арматуру и psi_s = 1.
+Private Sub TestFormationFallbackWithUniformCurrentState(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel, solver As CSectionSolver, current As CSectionStateResult
+    Dim owner As CCrackFormationCalculator, formation As CCrackFormationResult, meta As CResultMeta
+    Dim width As CCrackWidthCalculator, load As CSectionLoadState, item As Variant, mode As Variant, prefix As String
+    Set owner = New CCrackFormationCalculator
+    owner.LimitSearchSetFailure sfcNumericalFailure, "Контрольная несходимость поиска точки образования трещины."
+    Set meta = New CResultMeta
+    meta.SetSolverFailure sfcNumericalFailure, rkCrackFormation, "Контрольная несходимость поиска точки образования трещины.", True
+    Set formation = New CCrackFormationResult: formation.InitializeFromCalculator owner, meta
+    For Each item In Array(Array(0#, 0#, 0#), Array(0.000000001, 0#, 0#), _
+            Array(-0.000000001, 0#, 0#), Array(0#, 0.000000001, 0#), Array(0#, -0.000000001, 0#), _
+            Array(0#, 0#, 0.000000001), Array(0#, 0#, -0.000000001), Array(-200000#, 0#, 0#), Array(200000#, 0#, 0#))
+        Set solver = SolveServiceState(section, CDbl(item(0)), CDbl(item(1)), CDbl(item(2)))
+        Set current = New CSectionStateResult
+        current.InitializeFromSolver sstCrackedState, cpCrackedNDS, TestCrackedStateSpec(), solver, False, True
+        Set load = New CSectionLoadState: load.Initialize CDbl(item(0)), CDbl(item(1)), CDbl(item(2)), 0#, 0#
+        For Each mode In Array("User", "Auto", "AlwaysCalc")
+            prefix = "crack.uniformFallback." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(item(2)) & "." & CStr(mode)
+            Set width = New CCrackWidthCalculator
+            width.PsiMode = CStr(mode): width.PsiS = 0.25: width.AllowableCrackWidth = 10#
+            width.Calculate current, section, TestMaterialProvider(), TestCrackedStateSpec(), formation, load
+            AssertTrue stats, prefix & ".converged", width.Converged
+            AssertTrue stats, prefix & ".causePreserved", formation.ResultMeta.InternalStatus = rsNumericalFailure
+            If CDbl(item(0)) = 200000# Then
+                AssertTrue stats, prefix & ".calculated", width.ResultMeta.Calculated
+                AssertTrue stats, prefix & ".warning", width.ResultMeta.InternalStatus = rsSuccessWithWarning
+                AssertClose stats, prefix & ".psi1", width.PsiS, 1#, 0#
+                AssertClose stats, prefix & ".allConcrete", width.Abt, 60000#, 0.000000001
+                AssertCrackCommon stats, prefix, width
+            Else
+                AssertTrue stats, prefix & ".notApplicable", width.ResultMeta.InternalStatus = rsNotApplicable
+                AssertTrue stats, prefix & ".notCalculated", Not width.ResultMeta.Calculated
+                AssertClose stats, prefix & ".zeroWidth", width.CrackWidth, 0#, 0#
+                AssertTrue stats, prefix & ".reason", Len(width.ResultMeta.ResultComment) > 0
+            End If
+        Next mode
+    Next item
 End Sub
 
 ' Малый момент не достигает критерия до технического MaxLambda. Результат
@@ -431,7 +529,7 @@ Private Sub TestCrackFormationSearchBoundKeepsTechnicalCode(ByRef stats As TCrac
         "Auto", "Effective", allowable:=0.0001, formationPath:="lambda*Mxy", _
         formationStrategy:="LoadMultiplier")
 
-    AssertTrue stats, "crack.searchBound.notConverged", Not crack.Converged
+    AssertTrue stats, "crack.searchBound.formationNotConverged", Not crack.FormationResult.Converged
     AssertTrue stats, "crack.searchBound.notFormed", Not crack.CrackFormed
     AssertTrue stats, "crack.searchBound.internalStatus", _
         crack.FormationResult.ResultMeta.InternalStatus = rsCheckFailed
@@ -456,8 +554,8 @@ Private Sub TestCrackFormationNoCrackDoesNotBuildPostState(ByRef stats As TCrack
     AssertTrue stats, "crack.noCrack.notFormed", Not crack.CrackFormed
     AssertTrue stats, "crack.noCrack.criterion", _
         crack.FormationResult.ResultMeta.ResultCode = rcCriterionNotReached
-    AssertTrue stats, "crack.noCrack.widthNotApplicable", _
-        crack.CrackWidthResultCode = rcCrackNotFormed
+    AssertTrue stats, "crack.noCrack.fixedPhysicalFailure", crack.FormationResult.ResultMeta.InternalStatus = rsCheckFailed
+    AssertTrue stats, "crack.noCrack.widthNotApplicable", crack.CrackWidthInternalStatus = rsNotApplicable
     AssertTrue stats, "crack.noCrack.noBeforeState", crack.FormationResult.PreCrackState Is Nothing
     AssertTrue stats, "crack.noCrack.noPostState", crack.FormationResult.PostCrackState Is Nothing
     AssertCrackCalculatorNotNumFail stats, "crack.noCrack.notNumFail", crack
@@ -1032,7 +1130,9 @@ Private Sub TestAudit02IndependentFormation(ByRef stats As TCrackTestStats)
     Dim second As CCrackFormationResult
     Set second = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
         TestCrackInitiationSpec(), load.N, load.InternalMx, load.InternalMy, load, 0#, 0#)
-    AssertTrue stats, "audit02.formationOnly.reuseNoCrack", second.Converged And Not second.CrackFormed
+    AssertTrue stats, "audit02.formationOnly.reuseEmptyFixedPath", _
+        second.ResultMeta.InternalStatus = rsInvalidInput And second.ResultMeta.ResultCode = rcInvalidInput
+    AssertTrue stats, "audit02.formationOnly.reuseNoCrack", Not second.CrackFormed
     AssertTrue stats, "audit02.formationOnly.reuseNoPoint", Not second.HasLimitPoint
     AssertClose stats, "audit02.formationOnly.snapshot", result.LambdaCrc, lambdaSnapshot, 0#
     result.InitializeFromCalculator Nothing, Nothing
@@ -1044,7 +1144,8 @@ End Sub
 
 ' Различает найденный порог за текущим LC и трещину от постоянной части пути.
 ' Проверяет сохранение машинного кода/предупреждения и отсутствие фиктивных
-' состояний в разрешенном psi=1 fallback, без изменения численных expected.
+' состояний в консервативном psi=1 fallback. Путь без масштабируемой
+' составляющей сохраняет ошибку ввода, но не заменяет пригодное текущее НДС.
 Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     Dim section As CSectionModel
     Dim solver As CSectionSolver
@@ -1070,8 +1171,8 @@ Private Sub TestAudit02FormationOutcomeSemantics(ByRef stats As TCrackTestStats)
     Set crack = CalculateCrack(solver, section, 200000#, 0#, 0#, _
         "AlwaysCalc", "Effective", formationPath:="lambda*Mxy")
     Set search = crack.FormationResult.SearchResult
-    AssertTrue stats, "audit02.formation.constant.warning", search.Meta.InternalStatus = rsSuccessWithWarning
-    AssertTrue stats, "audit02.formation.constant.code", search.Meta.ResultCode = rcInitialStateBeyondLimit
+    AssertTrue stats, "audit02.formation.constant.emptyPath", search.Meta.InternalStatus = rsInvalidInput
+    AssertTrue stats, "audit02.formation.constant.code", search.Meta.ResultCode = rcInvalidInput
     AssertTrue stats, "audit02.formation.constant.comment", Len(search.Meta.ResultComment) > 0
     AssertTrue stats, "audit02.formation.constant.noPre", crack.FormationResult.PreCrackState Is Nothing
     AssertTrue stats, "audit02.formation.constant.noPost", crack.FormationResult.PostCrackState Is Nothing
@@ -1104,13 +1205,11 @@ Private Sub TestAudit02PsiSignedInputsAndFallbackModes(ByRef stats As TCrackTest
         Dim prefix As String
         prefix = "audit02.psi.fallback." & CStr(mode)
         AssertTrue stats, prefix & ".converged", crack.Converged
-        AssertTrue stats, prefix & ".warningCode", crack.FormationResult.ResultMeta.ResultCode = rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".formationCode", crack.FormationResult.ResultMeta.ResultCode = rcInvalidInput
         AssertTrue stats, prefix & ".noPost", crack.FormationResult.PostCrackState Is Nothing
-        If CStr(mode) = "User" Then
-            AssertClose stats, prefix & ".value", crack.PsiS, 0.65, 0#
-        Else
-            AssertClose stats, prefix & ".value", crack.PsiS, 1#, 0#
-        End If
+        AssertClose stats, prefix & ".value", crack.PsiS, 1#, 0#
+        AssertTrue stats, prefix & ".warningComment", _
+            InStr(1, crack.ResultMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
         AssertTrue stats, prefix & ".upperBound", crack.PsiS <= 1#
         AssertCrackCalculatorNotNumFail stats, prefix & ".notNumerical", crack
     Next mode

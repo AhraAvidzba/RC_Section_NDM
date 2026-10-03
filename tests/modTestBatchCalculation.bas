@@ -229,6 +229,10 @@ Public Function RunBatchCalculationTests() As String
     stats.Report = stats.Report & RunAudit03SearchConfigTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
+    AppendLine stats, "RUN: RunAudit03UniversalLoadPathTests"
+    stats.Report = stats.Report & RunAudit03UniversalLoadPathTests(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed
+    stats.Failed = stats.Failed + searchFailed
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -462,7 +466,7 @@ End Sub
 
 ' Проверяет пользовательский сценарий из книги: Г-сечение, нагрузка
 ' N=-200 тс при принятом знаке +N=Compression, то есть внутреннее растяжение,
-' и путь CapacityLoadPath = lambda*N. Точка приложения проходит через бетонный
+' и путь LoadPath = lambda*N. Точка приложения проходит через бетонный
 ' центр тяжести, поэтому внутри solver-а вместе с N масштабируются и моменты
 ' переноса, но пользовательская постановка остается чистым Nult.
 Private Sub TestBatchRectSetN200CapacityPathNDoesNotNumFail(ByRef stats As TBatchTestStats)
@@ -591,7 +595,7 @@ Private Sub TestCapacityLoadPathNReportsUltimateAtLoadPoint(ByRef stats As TBatc
         Abs(batch.ResultAt(1).StrengthResult.Capacity.CapacityStateMy - batch.ResultAt(1).StrengthResult.Capacity.MyUltimate) > 100000#
 End Sub
 
-' Проверяет все пользовательские варианты CapacityLoadPath. Тест не
+' Проверяет все пользовательские варианты LoadPath. Тест не
 ' привязывается к конкретной величине запаса: здесь важно, что batch
 ' корректно распознает путь и не подменяет выбранную пользователем траекторию.
 Private Sub TestBatchCapacityLoadPathVariants(ByRef stats As TBatchTestStats)
@@ -709,30 +713,30 @@ Private Sub TestMomentZeroFilterDefaultThresholds(ByRef stats As TBatchTestStats
     AssertClose stats, "batch.zeroMoment.h3m.threshold", filter.NormalizeMoment(1.5 * TEST_TF_M_IN_NMM, 3000#), 0#, 0#
 End Sub
 
-' Проверяет, что CapacityLoadPath не пропускает в solver момент, который уже
+' Проверяет, что LoadPath не пропускает в solver момент, который уже
 ' меньше инженерного порога Calculation.ZeroMomentPerDepth * h.
 Private Sub TestCapacityLoadPathFiltersEngineeringSmallMoments(ByRef stats As TBatchTestStats)
     Dim filter As CMomentZeroFilter
     Set filter = New CMomentZeroFilter
     filter.Initialize 0.001 * TEST_TF_M_IN_NMM
 
-    Dim pathMxy As CCapacityLoadPath
+    Dim pathMxy As CLoadPathDescriptor
     Dim loadMxy As CSectionLoadState
     Set loadMxy = New CSectionLoadState
     loadMxy.Initialize -100# * 9806.65, 0#, -0.158 * TEST_TF_M_IN_NMM, _
         0#, 0#, filter, 870#, 870#
-    Set pathMxy = New CCapacityLoadPath
+    Set pathMxy = New CLoadPathDescriptor
     pathMxy.InitializeFromLoadState ChrW$(&H3BB) & "*Mxy", loadMxy
 
     AssertTrue stats, "batch.zeroMoment.pathMxy.noScaledMoment", Not pathMxy.HasScaledLoad
     AssertClose stats, "batch.zeroMoment.pathMxy.myBase", pathMxy.MyBase, 0#, 0#
 
-    Dim pathNMxy As CCapacityLoadPath
+    Dim pathNMxy As CLoadPathDescriptor
     Dim loadNMxy As CSectionLoadState
     Set loadNMxy = New CSectionLoadState
     loadNMxy.Initialize -100# * 9806.65, 0#, -0.158 * TEST_TF_M_IN_NMM, _
         0#, 0#, filter, 870#, 870#
-    Set pathNMxy = New CCapacityLoadPath
+    Set pathNMxy = New CLoadPathDescriptor
     pathNMxy.InitializeFromLoadState ChrW$(&H3BB) & "*NMxy", loadNMxy
 
     AssertTrue stats, "batch.zeroMoment.pathNMxy.forceOnly", pathNMxy.ForceOnly
@@ -839,7 +843,7 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет, что ошибочный текст CapacityLoadPath не заменяется молча
+' Проверяет, что ошибочный текст LoadPath не заменяется молча
 ' авто-выбором. Пользователь должен сразу увидеть ошибку в строке LC.
 Private Sub TestBatchInvalidCapacityLoadPathReportsInputErr(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
@@ -1077,7 +1081,6 @@ Private Sub TestCrackInitiationLoadPathsWriteFormationSummary(ByRef stats As TBa
     Dim oldStrategy As String
     Dim oldPsiMode As String
     Dim oldAllowable As String
-    oldPath = GetSystemSetting("SLS.Crack.InitiationLoadPath")
     oldStrategy = GetSystemSetting("SLS.Crack.InitiationSolutionStrategy")
     oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
     oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
@@ -1098,7 +1101,6 @@ Private Sub TestCrackInitiationLoadPathsWriteFormationSummary(ByRef stats As TBa
         50# * TEST_TF_M_IN_NMM, 0#, True, True
 
 Restore:
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", oldPath
     SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", oldStrategy
     SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
     SetSystemSetting "SLS.Crack.Allowable", oldAllowable
@@ -1119,13 +1121,11 @@ Private Sub TestCrackAutoFormationPathSwitchesForRectSet(ByRef stats As TBatchTe
     Dim oldStrategy As String
     Dim oldPsiMode As String
     Dim oldAllowable As String
-    oldPath = GetSystemSetting("SLS.Crack.InitiationLoadPath")
     oldStrategy = GetSystemSetting("SLS.Crack.InitiationSolutionStrategy")
     oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
     oldAllowable = GetSystemSetting("SLS.Crack.Allowable")
 
     On Error GoTo RestoreAndFail
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", "Auto"
     SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
     SetSystemSetting "SLS.Crack.PsiMode", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "0.0001"
@@ -1133,12 +1133,11 @@ Private Sub TestCrackAutoFormationPathSwitchesForRectSet(ByRef stats As TBatchTe
     CheckCrackAutoFormationCase stats, "batch.crack.auto.rectset.nOnly", _
         100# * 9806.65, 0#, 0#, ChrW$(&H3BB) & "*N", True, False
     CheckCrackAutoFormationCase stats, "batch.crack.auto.rectset.mOnly", _
-        0#, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*Mxy", False, True
+        0#, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*Mx", False, True
     CheckCrackAutoFormationCase stats, "batch.crack.auto.rectset.nAndM", _
         100# * 9806.65, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*NMxy", True, True
 
 Restore:
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", oldPath
     SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", oldStrategy
     SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
     SetSystemSetting "SLS.Crack.Allowable", oldAllowable
@@ -1193,13 +1192,10 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
         ByVal pathText As String, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal expectNcrc As Boolean, ByVal expectMcrc As Boolean)
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", pathText
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
-    AssertTrue stats, prefix & ".pathSetting", _
-        StrComp(settings.GetString("SLS.Crack.InitiationLoadPath", vbNullString), pathText, vbTextCompare) = 0
 
     Dim referenceX As Double
     Dim referenceY As Double
@@ -1207,7 +1203,7 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     batch.AddCombination UCase$(Replace$(Replace$(pathText, "lambda*", vbNullString), "*", vbNullString)), _
-        nValue, mxValue, myValue, "PR2", "crack formation path"
+        nValue, mxValue, myValue, "PR2", "crack formation path", pathText
     Dim executionReport As CExecutionReport
     Set executionReport = New CExecutionReport
     executionReport.Initialize ThisWorkbook, settings
@@ -5986,8 +5982,7 @@ End Function
 ' Фильтр малых моментов проверяется отдельно; здесь он равен нулю, чтобы
 ' независимое сравнение компонент проверяло именно выбранный load path.
 Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
-    Dim oldPath As String, oldPr1Stability As String, oldPr2Stability As String, oldZeroMoment As String
-    oldPath = GetSystemSetting("SLS.Crack.InitiationLoadPath")
+    Dim oldPr1Stability As String, oldPr2Stability As String, oldZeroMoment As String
     oldPr1Stability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
     oldPr2Stability = GetProfileValue("Calculation.Stability.Enabled", "PR2")
     oldZeroMoment = GetSystemSetting("Calculation.ZeroMomentPerDepth")
@@ -6001,7 +5996,7 @@ Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
     loads = Array(Array(-150000#, -6000000#, -3000000#), _
         Array(-1500000#, -60000000#, 20000000#), Array(200000#, 9000000#, -3000000#))
     capacityPaths = Array("Mx", "My", "Mxy", "N", "NMxy")
-    formationPaths = Array("Auto", "Mxy", "N", "NMxy")
+    formationPaths = Array("Auto", "Mx", "My", "Mxy", "N", "NMxy")
     Dim settings As CSystemSettingsReader, units As CUnitSystem
     Dim batch As CBatchSectionCalculator, writer As CBatchResultWriter
     Set settings = New CSystemSettingsReader
@@ -6034,10 +6029,9 @@ Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
         Audit03CheckResultComments stats, batch, index
     Next index
 
-    For pathIndex = 0 To 3
+    For pathIndex = LBound(formationPaths) To UBound(formationPaths)
         path = CStr(formationPaths(pathIndex))
         If path <> "Auto" Then path = ChrW$(&H3BB) & "*" & path
-        SetSystemSetting "SLS.Crack.InitiationLoadPath", path
         settings.LoadFromWorkbook ThisWorkbook
         units.LoadFromSettings settings
         Set batch = BuildBatchCalculator(extensionEnabled)
@@ -6045,19 +6039,18 @@ Private Sub TestAudit03LoadPathComments(ByRef stats As TBatchTestStats)
         For loadIndex = 0 To 2
             batch.AddCombination "A03_F_" & CStr(pathIndex) & "_" & CStr(loadIndex), _
                 CDbl(loads(loadIndex)(0)), CDbl(loads(loadIndex)(1)), CDbl(loads(loadIndex)(2)), _
-                "PR2", "Audit03: formation path"
+                "PR2", "Audit03: formation path", path
         Next loadIndex
         batch.ApplyLoadReference 10#, -7#, 0#, 0#
         batch.Execute
         writer.WriteSummary ThisWorkbook, batch, units
         For index = 1 To batch.Count
             Audit03CheckFormationPath stats, batch.ResultAt(index).CrackResult.Formation, _
-                "audit03.paths." & batch.CombinationID(index), path
+                "audit03.paths." & batch.CombinationID(index), path, loads(index - 1)
             Audit03CheckResultComments stats, batch, index
         Next index
     Next pathIndex
 Restore:
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", oldPath
     SetSystemSetting "Calculation.ZeroMomentPerDepth", oldZeroMoment
     SetProfileValue "Calculation.Stability.Enabled", "PR1", oldPr1Stability
     SetProfileValue "Calculation.Stability.Enabled", "PR2", oldPr2Stability
@@ -6080,12 +6073,30 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
     If component = "Auto" Then
         ' Независимый выбор по пользовательским моментам: эксцентриситет N
         ' сам по себе не превращает осевой Auto-путь в масштабирование Mxy.
-        If Sqr(CDbl(load(1)) * CDbl(load(1)) + CDbl(load(2)) * CDbl(load(2))) > 0.000000001 Then
+        If CDbl(load(1)) <> 0# And CDbl(load(2)) <> 0# Then
             component = "Mxy"
-        ElseIf Abs(CDbl(load(0))) > 0.000000001 Then
+        ElseIf CDbl(load(1)) <> 0# Then
+            component = "Mx"
+        ElseIf CDbl(load(2)) <> 0# Then
+            component = "My"
+        ElseIf CDbl(load(0)) <> 0# Then
             component = "N"
         Else
             component = "None"
+        End If
+        If component <> "None" And component <> "N" And CDbl(load(0)) <> 0# Then
+            Dim firstMomentPath As String, resolvedComponent As String
+            firstMomentPath = component
+            resolvedComponent = Mid$(capacity.PathResolved, 7)
+            AssertTrue stats, prefix & ".autoAllowedPath", resolvedComponent = firstMomentPath Or _
+                resolvedComponent = "N" Or resolvedComponent = "NMxy"
+            If resolvedComponent = "N" Or resolvedComponent = "NMxy" Then
+                AssertTrue stats, prefix & ".autoMomentReason", _
+                    InStr(1, capacity.ResultMeta.ResultComment, "Путь " & ChrW$(&H3BB) & "*" & firstMomentPath, vbBinaryCompare) > 0
+            End If
+            If resolvedComponent = "NMxy" Then AssertTrue stats, prefix & ".autoNReason", _
+                InStr(1, capacity.ResultMeta.ResultComment, "Путь " & ChrW$(&H3BB) & "*N", vbBinaryCompare) > 0
+            If Len(resolvedComponent) > 0 Then component = resolvedComponent
         End If
     End If
     AppendLine stats, "CASE: " & prefix & "|N=" & CStr(load(0)) & "|Mx=" & CStr(load(1)) & _
@@ -6107,11 +6118,11 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
         Dim hasScaledLoad As Boolean, nInput As Double, mxInput As Double, myInput As Double
         nInput = CDbl(load(0)): mxInput = CDbl(load(1)): myInput = CDbl(load(2))
         Select Case component
-            Case "Mx": hasScaledLoad = Abs(mxInput) > 0.000000001
-            Case "My": hasScaledLoad = Abs(myInput) > 0.000000001
-            Case "Mxy": hasScaledLoad = Sqr(mxInput * mxInput + myInput * myInput) > 0.000000001
-            Case "N": hasScaledLoad = Abs(nInput) > 0.000000001
-            Case "NMxy": hasScaledLoad = Abs(nInput) + Abs(mxInput) + Abs(myInput) > 0.000000001
+            Case "Mx": hasScaledLoad = (mxInput <> 0#)
+            Case "My": hasScaledLoad = (myInput <> 0#)
+            Case "Mxy": hasScaledLoad = (mxInput <> 0# Or myInput <> 0#)
+            Case "N": hasScaledLoad = (nInput <> 0#)
+            Case "NMxy", "Auto": hasScaledLoad = (nInput <> 0# Or mxInput <> 0# Or myInput <> 0#)
         End Select
         If Not hasScaledLoad Then
             AssertTrue stats, prefix & ".unscaledInput", capacity.ResultMeta.InternalStatus = rsInvalidInput And _
@@ -6142,21 +6153,44 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
 End Sub
 
 ' Проверяет фактический путь, конечность и отсутствие extended-физической
-' точки у formation. Auto допускает выбор одного из трех путей; fixed path
+' точки у formation. Auto допускает общий выбор Mx/My/Mxy/N/NMxy; fixed path
 ' не должен незаметно стать другим. В журнал попадают и честные неуспехи.
 Private Sub Audit03CheckFormationPath(ByRef stats As TBatchTestStats, ByVal formation As CCrackFormationResult, _
-        ByVal prefix As String, ByVal requestedPath As String)
+        ByVal prefix As String, ByVal requestedPath As String, Optional ByVal load As Variant)
     AppendLine stats, "CASE: " & prefix & "|requested=" & requestedPath & "|resolved=" & formation.FormationMethod & _
         "|lambda=" & FormatNumberInvariant(formation.LambdaCrc) & "|Ncrc=" & FormatNumberInvariant(formation.FormationNcrc) & _
         "|Mcrc=" & FormatNumberInvariant(formation.Mcrc) & "|point=" & CStr(formation.HasLimitPoint) & _
         "|formed=" & CStr(formation.CrackFormed)
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
+    If IsArray(load) Then
+        Dim component As String, hasScaledLoad As Boolean
+        component = Replace$(requestedPath, ChrW$(&H3BB) & "*", vbNullString)
+        Select Case component
+            Case "Mx": hasScaledLoad = (CDbl(load(1)) <> 0#)
+            Case "My": hasScaledLoad = (CDbl(load(2)) <> 0#)
+            Case "Mxy": hasScaledLoad = (CDbl(load(1)) <> 0# Or CDbl(load(2)) <> 0#)
+            Case "N": hasScaledLoad = (CDbl(load(0)) <> 0#)
+            Case "NMxy", "Auto": hasScaledLoad = (CDbl(load(0)) <> 0# Or CDbl(load(1)) <> 0# Or CDbl(load(2)) <> 0#)
+        End Select
+        If Not hasScaledLoad Then
+            If requestedPath = "Auto" Then
+                AssertTrue stats, prefix & ".zeroAutoNotApplicable", formation.ResultMeta.InternalStatus = rsNotApplicable
+            Else
+                AssertTrue stats, prefix & ".unscaledInput", formation.ResultMeta.InternalStatus = rsInvalidInput And _
+                    formation.ResultMeta.ResultCode = rcInvalidInput
+            End If
+            AssertTrue stats, prefix & ".unscaledNoPoint", Not formation.HasLimitPoint
+            AssertTrue stats, prefix & ".unscaledNoStates", formation.PreCrackState Is Nothing And formation.PostCrackState Is Nothing
+            Exit Sub
+        End If
+    End If
     AssertTrue stats, prefix & ".validInput", policy.ExternalStatus(formation.ResultMeta) <> "InputErr" And _
         policy.ExternalStatus(formation.ResultMeta) <> "CalcErr"
     If Len(formation.FormationMethod) > 0 Then
         If requestedPath = "Auto" Then
             AssertTrue stats, prefix & ".autoPath", formation.FormationMethod = ChrW$(&H3BB) & "*Mxy" Or _
+                formation.FormationMethod = ChrW$(&H3BB) & "*Mx" Or formation.FormationMethod = ChrW$(&H3BB) & "*My" Or _
                 formation.FormationMethod = ChrW$(&H3BB) & "*N" Or formation.FormationMethod = ChrW$(&H3BB) & "*NMxy"
         Else
             AssertEquals stats, prefix & ".fixedPath", formation.FormationMethod, requestedPath
@@ -6216,18 +6250,19 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
             AssertTrue stats, prefix & ".widthBlockActualReason", _
                 InStr(1, result.CrackWidthMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
         Else
-            ' Успешное текущее НДС не исключает отказ Formation. Его причина
-            ' находится в собственном leaf и общем crack-поддереве, без дубля
-            ' в Width; Width объясняет, какая обязательная зависимость отсутствует.
-            AssertTrue stats, prefix & ".widthBlockFormation", Audit03RequiresComment(result.CrackFormationMeta)
-            AssertTrue stats, prefix & ".widthBlockDependency", InStr(1, result.CrackWidthMeta.ResultComment, "результата образования трещины", vbBinaryCompare) > 0
-            AssertTrue stats, prefix & ".widthBlockFormationReason", _
-                InStr(1, result.CrackSummaryMeta.ResultComment, result.CrackFormationMeta.ResultComment, vbBinaryCompare) > 0
+            AssertTrue stats, prefix & ".widthCannotBeBlockedByFormation", False
         End If
     End If
     If result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency Then
         AssertTrue stats, prefix & ".longitudinalBlockActualReason", _
             InStr(1, result.LongitudinalCrackMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
+    End If
+    If Not result.CrackResult.Formation.HasLimitPoint And result.CrackWidthMeta.Calculated Then
+        AssertClose stats, prefix & ".formationUnavailablePsi1", result.CrackResult.Width.PsiS, 1#, 0#
+        AssertTrue stats, prefix & ".formationUnavailableWarning", _
+            InStr(1, result.CrackWidthMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
+        AssertTrue stats, prefix & ".formationUnavailableLongitudinalIndependent", _
+            result.LongitudinalCrackMeta.InternalStatus <> rsBlockedByDependency
     End If
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
@@ -6496,12 +6531,11 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
         "|rebars=" & CStr(section.RebarCount) & "|referenceX=" & FormatNumberInvariant(referenceX) & _
         "|referenceY=" & FormatNumberInvariant(referenceY) & "|offsetX=10|offsetY=-7|zeroMoment=0|stability=No"
     Set writer = New CBatchResultWriter
-    paths = Array("Mx", "My", "Mxy", "N", "NMxy", "Auto", "Auto", "Mxy", "N", "NMxy")
+    paths = Array("Mx", "My", "Mxy", "N", "NMxy", "Auto", "Auto", "Mx", "My", "Mxy", "N", "NMxy")
     For pathIndex = LBound(paths) To UBound(paths)
         If pathIndex < CAPACITY_VARIANT_COUNT Then profileId = "PR1" Else profileId = "PR2"
         path = CStr(paths(pathIndex))
         If path <> "Auto" Then path = ChrW$(&H3BB) & "*" & path
-        If pathIndex >= CAPACITY_VARIANT_COUNT Then SetSystemSetting "SLS.Crack.InitiationLoadPath", path
         settings.LoadFromWorkbook ThisWorkbook
         units.LoadFromSettings settings
         ' Двадцать LC сохраняют штатную сетку Results без изменения Config.
@@ -6542,7 +6576,7 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
                         CStr(paths(pathIndex)), Array(item(1), item(2), item(3)), referenceX, referenceY, True
                 Else
                     Audit03CheckFormationPath stats, batch.ResultAt(localIndex).CrackResult.Formation, _
-                        "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), path
+                        "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), path, Array(item(1), item(2), item(3))
                 End If
                 Audit03CheckResultComments stats, batch, localIndex
                 Audit03CheckMatrixStates stats, batch.ResultAt(localIndex), settings, units, extensionEnabled, _
@@ -7755,7 +7789,6 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
     ' занимают столбцы 2/4, а столбец 3 содержит неизменные INTERNAL.
     unitRange.Cells(2, 2).Value2 = "mm": unitRange.Cells(2, 4).Value2 = "mm"
     SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", "Auto"
     SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "1"
     SetSystemSetting "SLS.Crack.Phi1", "1.4"
@@ -7836,7 +7869,6 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
 
     ' У этой сжатой нагрузки выбранная по текущему НДС арматура еще сжата
     ' в PostCrackState. Режим меняет только справочное sigma_s,crc, не As/sigma_s.
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", "lambda*Mxy"
     SetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
     Set baseline = Audit03CrackConfigBatch(stats, "averagingSigned", -528000#, 30800000#, 0#)
     Set value = baseline.ResultAt(1).CrackResult.Width
@@ -7861,9 +7893,8 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
     SetSystemSetting "SLS.Crack.CoverDistanceMode", "GlobalExtreme"
     Set changed = Audit03CrackConfigBatch(stats, "coverGlobal", -20000#, -32000000#, 0#, True)
     AssertTrue stats, "audit03.crackConfig.cover.differsDistance", Abs(changed.ResultAt(1).CrackResult.Width.CoverA - value.CoverA) > 1#
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", "Auto"
 
-    keys = Array("SLS.Crack.Allowable", "SLS.Crack.InitiationLoadPath", "SLS.Crack.InitiationSolutionStrategy", _
+    keys = Array("SLS.Crack.Allowable", "SLS.Crack.InitiationSolutionStrategy", _
         "SLS.Crack.TensionZoneMode", "SLS.Crack.CoverDistanceMode", "SLS.Crack.Phi1", "SLS.Crack.Phi2", _
         "SLS.Crack.Phi3Mode", "SLS.Crack.Phi3", "SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", "SLS.Crack.PsiS")
     Dim invalidValue As Variant, cell As Object, keyCell As Object, row As Long, originalKey As Variant, invalidText As String
@@ -7891,7 +7922,9 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
             End If
             cell.Value2 = previous
         Next invalidValue
-        If i = 0 Or i = 5 Or i = 6 Or i = 8 Or i = 11 Then
+        If CStr(keys(i)) = "SLS.Crack.Allowable" Or CStr(keys(i)) = "SLS.Crack.Phi1" Or _
+                CStr(keys(i)) = "SLS.Crack.Phi2" Or CStr(keys(i)) = "SLS.Crack.Phi3" Or _
+                CStr(keys(i)) = "SLS.Crack.PsiS" Then
             For Each invalidValue In Array("0", "-1", "1e309")
                 cell.Value2 = invalidValue
                 Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))

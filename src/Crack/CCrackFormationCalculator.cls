@@ -13,7 +13,8 @@ Option Explicit
 ' Образование нормальной трещины
 ' ==========================================================================
 ' Владелец инженерной постановки трещинообразования: material spec, физический
-' load path и Auto-политика, критерий бетона, результаты Pre/PostCrackState.
+' критерий бетона, результаты Pre/PostCrackState. Общий LoadPath и порядок
+' Auto-попыток задает CLimitSearchCoordinator.
 ' Численные bracket/Newton выполняют общие CLimitSearch*-классы; обычное НДС
 ' решается общим State pipeline. Здесь нет зоны As/Abt, sigma_s, psi или формулы
 ' ширины. Width получает только готовый CCrackFormationResult.
@@ -25,8 +26,7 @@ Private Const CRACK_LAMBDA_BRACKET_LIMIT As Double = 1024# ' Верхняя гр
 Private Const CRACK_LAMBDA_BISECTION_TOLERANCE As Double = 0.000001 ' Относительная точность fallback-бисекции lambda_crc.
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
-Private Const CRACK_PATH_AUTO As String = "Auto" ' Последовательно пробует lambda*Mxy, lambda*N и lambda*NMxy.
-Private Const CRACK_PATH_MXY As String = "LambdaMxy" ' При поиске трещинообразования масштабируется только моментный вектор Mx/My.
+Private Const CRACK_PATH_AUTO As String = "Auto" ' Общий Search выбирает порядок по активным компонентам сочетания.
 Private Const CRACK_PATH_N As String = "LambdaN" ' При поиске трещинообразования масштабируется только продольная сила N.
 Private Const CRACK_PATH_NMXY As String = "LambdaNMxy" ' При поиске трещинообразования масштабируется весь вектор N/Mx/My.
 Private Const STRATEGY_AUTO As String = "Auto" ' Сначала UltimateStrain, при численной неудаче LoadMultiplier.
@@ -81,6 +81,11 @@ Private mFormationNcrc As Double ' Продольная сила в общей N
 Private mMcrc As Double ' Модуль изгибающего момента на стадии образования трещины, Н*мм.
 Private mAred As Double ' Площадь приведенного сечения для Ncrc при центральном растяжении, мм2.
 Private mCentralTensionBranch As Boolean ' True, если сработала отдельная ветка центрального растяжения.
+Private mInputLoadState As CSectionLoadState ' Единый нормализованный LC с пользовательской точкой приложения.
+Private mActiveSearchLoadPath As CLoadPathDescriptor ' Общий описатель конкретной траектории текущей search-session.
+Private mRequestedLoadPath As String ' Исходный выбор LC; физическое отсутствие точки для Auto и фиксированного пути трактуется раздельно.
+Private mSearchReferenceX As Double ' Центр, относительно которого проверяется осевая составляющая выбранного пути, мм.
+Private mSearchReferenceY As Double ' Центр, относительно которого проверяется осевая составляющая выбранного пути, мм.
 
 
 ' ------------------------------
@@ -118,14 +123,12 @@ End Sub
 ' Загружает только те настройки, которые нужны расчету трещин и внутренним
 ' прямым solve. Все пользовательские единицы сразу переводятся во внутренние
 ' мм, Н, Н*мм и МПа; дальше класс работает как часть расчетного ядра.
-' Путь и стратегия Formation обязательны; пустые значения не заменяются
-' defaults. Явно пустой численный Solver-параметр также является ошибкой Config.
+' Стратегия Formation обязательна. Путь передается из строки сочетания,
+' а не из отдельной настройки Config. Пустой численный Solver-параметр ошибочен.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
 
-    mCrackFormationPath = settings.GetRequiredString("SLS.Crack.InitiationLoadPath")
     mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
-    mCrackFormationPath = NormalizeCrackFormationPath(mCrackFormationPath, settings)
     mCrackFormationSolutionStrategy = NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
 
     mSolverMaxIterations = settings.GetLong("Solver.MaxIterations", mSolverMaxIterations, False)
@@ -180,6 +183,11 @@ Private Sub ClearResult()
     mFormationPathFallbackPsi1 = False
     mResolvedCrackFormationPath = vbNullString
     mFormationSolutionMethod = vbNullString
+    Set mInputLoadState = Nothing
+    Set mActiveSearchLoadPath = Nothing
+    mRequestedLoadPath = vbNullString
+    mSearchReferenceX = 0#
+    mSearchReferenceY = 0#
 End Sub
 
 ' Выполняет самостоятельный formation-сценарий без Width-калькулятора.
@@ -191,8 +199,11 @@ Public Function CheckFormation(ByVal section As CSectionModel, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal loadStateForClassification As CSectionLoadState, _
         ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As CCrackFormationResult
+    Dim requestedPath As String
+    requestedPath = NormalizeCrackFormationPath(mCrackFormationPath)
     CheckFormationCore section, materialProvider, crackedStateSpec, crackInitiationSpec, _
         targetN, targetMx, targetMy, loadStateForClassification, centralReferenceX, centralReferenceY
+    mCrackFormationPath = requestedPath
     Dim result As CCrackFormationResult
     Set result = New CCrackFormationResult
     result.InitializeFromCalculator Me, ResultMeta
@@ -246,12 +257,34 @@ Private Sub CheckFormationCore(ByVal section As CSectionModel, _
         ByVal centralReferenceX As Double, ByVal centralReferenceY As Double)
     ClearResult
     ValidateFormationInputs section, materialProvider, loadStateForClassification, crackedStateSpec, crackInitiationSpec
+    Set mInputLoadState = loadStateForClassification
     Set mCrackedStateSpec = crackedStateSpec.Clone
     If crackInitiationSpec.IsComplete Then Set mCrackInitiationSpec = crackInitiationSpec.Clone
     ApplyMaterialProviderProperties materialProvider
     NormalizeSettings
+    mRequestedLoadPath = mCrackFormationPath
+    mSearchReferenceX = centralReferenceX
+    mSearchReferenceY = centralReferenceY
 
-    If IsCentralTensionState(loadStateForClassification, centralReferenceX, centralReferenceY) Then
+    ' Нулевой Auto-LC не задает физической траектории. Не запускаем Search
+    ' ради отсутствующего действия; явный пустой scaled path проверяется
+    ' общим механизмом отдельно как ошибка выбора пути.
+    If mRequestedLoadPath = CRACK_PATH_AUTO And loadStateForClassification.N = 0# And _
+            loadStateForClassification.LoadPointMx = 0# And loadStateForClassification.LoadPointMy = 0# Then
+        mConverged = True
+        mResolvedCrackFormationPath = "None"
+        SetFormationResult rsNotApplicable, rcNotApplicable, _
+            "Нагрузки сочетания равны нулю; поиск точки образования трещины не требуется."
+        Exit Sub
+    End If
+
+    Dim paths As Variant, coordinator As CLimitSearchCoordinator
+    Set coordinator = New CLimitSearchCoordinator
+    paths = coordinator.LoadPathKeys(mCrackFormationPath, loadStateForClassification)
+    If IsCentralTensionState(loadStateForClassification, centralReferenceX, centralReferenceY) And _
+            UBound(paths) = LBound(paths) And _
+            (CStr(paths(LBound(paths))) = CRACK_PATH_N Or CStr(paths(LBound(paths))) = CRACK_PATH_NMXY) Then
+        mCrackFormationPath = CStr(paths(LBound(paths)))
         CheckCentralTensionFormation section, materialProvider, targetN, targetMx, targetMy, loadStateForClassification
     Else
         CheckGeneralFormation section, materialProvider, targetN, targetMx, targetMy, _
@@ -324,22 +357,6 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
 
     Dim activePath As String
     activePath = mCrackFormationPath
-    If StrComp(activePath, CRACK_PATH_AUTO, vbTextCompare) = 0 Then
-        AppendDiagnostic "Auto-путь: центральное растяжение распознано до перебора путей; " & ChrW$(&H3BB) & _
-            "*Mxy не масштабирует продольную силу N, поэтому эта попытка пропущена и программа переходит к " & _
-            ChrW$(&H3BB) & "*N."
-        activePath = CRACK_PATH_N
-    End If
-
-    If StrComp(activePath, CRACK_PATH_MXY, vbTextCompare) = 0 Then
-        If targetN >= mNcrc Then
-            MarkFormationPathFallback "Центральное растяжение уже образует трещину, но выбран путь lambda*Mxy без масштабируемого момента; psi_s остается равным 1."
-            mResolvedCrackFormationPath = activePath
-        Else
-            FinishNoCrack "Трещина не образована: Ncrc больше заданной растягивающей силы, а выбранный путь lambda*Mxy не масштабирует N."
-        End If
-        Exit Sub
-    End If
 
     mLambdaCrc = mNcrc / targetN
     If mLambdaCrc <= 0# Then
@@ -379,11 +396,6 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
         SetFormationInvalidInput "InputError: для Calculation.Crack.Width требуется MaterialModel.CrackInitiation."
         Exit Sub
     End If
-    If Not HasNormalCrackDrivingAction(loadStateForClassification, centralReferenceX, centralReferenceY) Then
-        FinishNoCrack "Трещина не образована: нет растягивающей силы или изгибающего момента, вызывающего нормальную трещину."
-        Exit Sub
-    End If
-
     Dim momentMxAtReference As Double
     Dim momentMyAtReference As Double
     momentMxAtReference = loadStateForClassification.MxAboutPoint(centralReferenceY)
@@ -416,7 +428,7 @@ End Sub
 ' Передает поиск стадии образования нормальной трещины в общий LimitSearch.
 ' CCrackFormationCalculator остается владельцем crack-критерия, диагностического
 ' журнала и сохранения PreCrackState/PostCrackState. Физический путь выбирается
-' здесь, численная стратегия выполняется общим поисковым слоем.
+' общим Search, численная стратегия выполняется тем же поисковым слоем.
 Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -432,6 +444,7 @@ Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
     request.InitializeCrackFormation Me, section, concreteMaterial, steelMaterial, _
         mCrackFormationSolutionStrategy, mCrackFormationPath, targetN, targetMx, targetMy, _
         momentMxAtReference, momentMyAtReference, referenceX, referenceY
+    request.ConfigureLoadPathSelection mCrackFormationPath, mInputLoadState
 
     Dim searchResult As CLimitSearchResult
     Set searchResult = ExecuteFormationSearch(request)
@@ -459,33 +472,30 @@ End Function
 ' Готовит одну попытку поиска образования трещины для общего LimitSearch.
 ' Диагностика сохраняется общей для всего Auto-перебора, а расчетные поля
 ' конкретной попытки очищаются.
-Public Sub LimitSearchBeginCrackFormationAttempt(ByVal pathKey As String)
+Public Sub LimitSearchBeginCrackFormationAttempt(ByVal pathKey As String, _
+        Optional ByVal loadPath As CLoadPathDescriptor = Nothing)
     ClearFormationAttemptState
     mCrackFormationPath = pathKey
+    Set mActiveSearchLoadPath = loadPath
 End Sub
 
-
-
-' Временно задает текущий путь трещинообразования. Координатор использует это
-' при восстановлении пользовательского Auto/фиксированного пути после попытки.
-Public Sub LimitSearchSetCurrentFormationPath(ByVal pathKey As String)
-    mCrackFormationPath = pathKey
-End Sub
-
-
-
-' Сохраняет фактически выбранный путь образования трещины для Results и отчета.
-Public Sub LimitSearchSetResolvedCrackFormationPath(ByVal pathKey As String)
+' Сохраняет фактический общий путь и причины Auto-переходов у Formation.
+' Последующая проверка наличия трещины не теряет эту историю в ResultComment.
+Public Sub LimitSearchFinishLoadPath(ByVal pathKey As String, ByVal history As String)
     mResolvedCrackFormationPath = pathKey
+    If Len(Trim$(history)) = 0 Then Exit Sub
+    If mFormationInternalStatus = rsSuccess Then mFormationInternalStatus = rsSuccessWithWarning
+    mStopReason = Trim$(history) & " Итоговый путь " & CrackFormationPathDisplayNameForKey(pathKey) & ": " & mStopReason
 End Sub
 
 
 
-' Возвращает True, если текущая попытка дала только резервный psi_s=1 без
-' честной точки образования трещины.
-Public Property Get LimitSearchFormationFallbackOnly() As Boolean
-    LimitSearchFormationFallbackOnly = mFormationPathFallbackPsi1
-End Property
+
+
+
+
+
+
 
 
 
@@ -565,24 +575,19 @@ End Function
 Public Function LimitSearchAcceptFormationInitialPoint(ByVal targetN As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
         ByVal residual As Double) As Boolean
-    If StrComp(mCrackFormationPath, CRACK_PATH_N, vbTextCompare) = 0 And targetN <= 0.000001 Then
-        If residual >= 0# Then
-            MarkFormationPathFallback "Трещина уже образуется от постоянного момента выбранного пути " & _
-                CrackFormationPathDisplayName() & "; сжимающая или нулевая N не масштабируется для поиска Ncrc, psi_s остается равным 1."
-        Else
-            FinishNoCrack "Трещина не образована от постоянного момента, а выбранный путь " & _
-                CrackFormationPathDisplayName() & " не масштабирует растягивающую продольную силу."
-        End If
-        Exit Function
-    End If
     If residual >= 0# Then
-        MarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
-            CrackFormationPathDisplayName() & "; точка sigma_s,crc по lambda не определяется, psi_s остается равным 1."
+        MarkFormationPathFallback "Постоянная часть пути " & CrackFormationPathDisplayName() & _
+            " уже образует нормальную трещину. Отдельная точка ее образования на этом пути не определяется."
         Exit Function
     End If
     If Not LimitSearchCrackFormationHasScaledLoad(targetN, momentMxAtReference, momentMyAtReference) Then
-        FinishNoCrack "Трещина не образована в постоянной части, а выбранный путь " & _
-            CrackFormationPathDisplayName() & " не содержит ненулевой масштабируемой нагрузки."
+        SetFormationInvalidInput "Для пути " & CrackFormationPathDisplayName() & _
+            " в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой."
+        Exit Function
+    End If
+    If IsNonTensileForcePath(targetN) Then
+        FinishNoCrack "Путь " & CrackFormationPathDisplayName() & _
+            " увеличивает только центральное сжатие, а постоянные моменты не образуют нормальную трещину. Критерий трещинообразования на этом пути не достигается."
         Exit Function
     End If
     LimitSearchAcceptFormationInitialPoint = True
@@ -595,7 +600,13 @@ End Function
 ' скобку и оставляет физическое решение за crack-слоем.
 Public Function LimitSearchCrackFormationHasScaledLoad(ByVal targetN As Double, _
         ByVal targetMomentMx As Double, ByVal targetMomentMy As Double) As Boolean
-    LimitSearchCrackFormationHasScaledLoad = FormationPathHasScaledLoad(targetN, targetMomentMx, targetMomentMy)
+    If Not mActiveSearchLoadPath Is Nothing Then
+        LimitSearchCrackFormationHasScaledLoad = mActiveSearchLoadPath.HasScaledLoad
+        Exit Function
+    End If
+    Dim path As CLoadPathVector
+    Set path = FormationLoadPath(targetN, targetMomentMx, targetMomentMy, mSearchReferenceX, mSearchReferenceY)
+    LimitSearchCrackFormationHasScaledLoad = (path.NBase <> 0# Or path.MxBase <> 0# Or path.MyBase <> 0#)
 End Function
 
 
@@ -1053,14 +1064,20 @@ Private Function TryMarkConstantPartFormationFallback(ByVal section As CSectionM
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double) As Boolean
     If lambdaValue > CRACK_LAMBDA_BISECTION_TOLERANCE Then Exit Function
-    If StrComp(mCrackFormationPath, CRACK_PATH_NMXY, vbTextCompare) = 0 Then Exit Function
     If loadPath Is Nothing Then Exit Function
 
     Dim probeN As Double
     Dim probeMx As Double
     Dim probeMy As Double
     loadPath.Target 0#, probeN, probeMx, probeMy
-    If IsZeroLoadProbe(probeN, probeMx, probeMy) Then Exit Function
+    If IsZeroLoadProbe(probeN, probeMx, probeMy) Then
+        If IsNonTensileForcePath(loadPath.NBase) Then
+            FinishNoCrack "Путь " & CrackFormationPathDisplayName() & _
+                " увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины."
+            TryMarkConstantPartFormationFallback = True
+        End If
+        Exit Function
+    End If
 
     Dim probeSolver As CSectionSolver
     Set probeSolver = SolveState(section, concreteMaterial, steelMaterial, Nothing, _
@@ -1071,11 +1088,19 @@ Private Function TryMarkConstantPartFormationFallback(ByVal section As CSectionM
     Dim residual As Double
     If Not SolverFormationResidual(section, probeSolver, residual) Then Exit Function
     If FormationProbeBlockedByPhysicalLimit(section, probeSolver, concreteMaterial, steelMaterial, residual) Then Exit Function
-    If residual < 0# Then Exit Function
-
-    MarkFormationPathFallback "Трещина уже образуется в постоянной части выбранного пути " & _
-        CrackFormationPathDisplayName() & "; точка sigma_s,crc по этому пути не определяется, psi_s остается равным 1."
-    TryMarkConstantPartFormationFallback = True
+    If residual >= 0# Then
+        MarkFormationPathFallback "Постоянная часть пути " & CrackFormationPathDisplayName() & _
+            " уже образует нормальную трещину. Отдельная точка ее образования на этом пути не определяется."
+        TryMarkConstantPartFormationFallback = True
+    ElseIf IsNonTensileForcePath(loadPath.NBase) Then
+        FinishNoCrack "Путь " & CrackFormationPathDisplayName() & _
+            " увеличивает только центральное сжатие, а постоянные моменты не образуют нормальную трещину. Критерий трещинообразования на этом пути не достигается."
+        TryMarkConstantPartFormationFallback = True
+    ElseIf loadPath.NBase = 0# And loadPath.MxBase = 0# And loadPath.MyBase = 0# Then
+        SetFormationInvalidInput "Для пути " & CrackFormationPathDisplayName() & _
+            " в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой."
+        TryMarkConstantPartFormationFallback = True
+    End If
 End Function
 
 
@@ -1281,16 +1306,6 @@ End Sub
 
 
 
-' Для общей N+M ветки переводит моментный множитель lambda обратно во
-' внутренние усилия solver-а: N остается постоянной, а масштабируется только
-' момент относительно расчетного центра образования трещины.
-Private Sub StoreMomentFormationLoad(ByVal targetN As Double, ByVal targetMomentMx As Double, _
-        ByVal targetMomentMy As Double, ByVal referenceX As Double, ByVal referenceY As Double)
-    Dim loadPath As CLoadPathVector
-    Set loadPath = MomentFormationLoadPath(targetN, targetMomentMx, targetMomentMy, referenceX, referenceY)
-
-    StoreFormationLoadFromPath loadPath, mLambdaCrc
-End Sub
 
 
 
@@ -1317,81 +1332,42 @@ End Sub
 
 
 
-' Создает общую lambda-траекторию для общей ветки образования трещины:
-' продольная сила остается постоянной, а моментный вектор относительно
-' расчетного центра масштабируется. Сама формула Offset + lambda*Base живет
-' в CLoadPathVector, поэтому трещины и Capacity не держат две разные
-' реализации load-path.
-Private Function MomentFormationLoadPath(ByVal targetN As Double, _
-        ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
-        ByVal referenceX As Double, ByVal referenceY As Double) As CLoadPathVector
-    Dim loadPath As CLoadPathVector
-    Set loadPath = New CLoadPathVector
-    loadPath.InitializeFixedNAndMomentAboutPoint targetN, targetMomentMx, targetMomentMy, referenceX, referenceY
-    Set MomentFormationLoadPath = loadPath
-End Function
 
 
 
-' Создает lambda-траекторию образования трещины по выбранной настройке
-' SLS.Crack.InitiationLoadPath. Моменты targetMomentMx/My передаются
-' относительно расчетного центра трещин, а CSectionSolver получает моменты
-' относительно начала модели, поэтому вклад масштабируемой N переносится
-' в Base, когда путь масштабирует продольную силу.
+' Возвращает общую траекторию текущей search-session. Для низкоуровневого
+' запроса без LC восстанавливает нагрузку относительно переданной точки и
+' использует тот же описатель пути, не дублируя правила Offset/Base.
 Private Function FormationLoadPath(ByVal targetN As Double, _
         ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As CLoadPathVector
-    Dim loadPath As CLoadPathVector
-    Set loadPath = New CLoadPathVector
-
-    Select Case mCrackFormationPath
-        Case CRACK_PATH_N
-            loadPath.Initialize 0#, targetN, _
-                targetMomentMx, targetN * referenceY, _
-                targetMomentMy, targetN * referenceX
-        Case CRACK_PATH_NMXY
-            loadPath.Initialize 0#, targetN, _
-                0#, targetMomentMx + targetN * referenceY, _
-                0#, targetMomentMy + targetN * referenceX
-        Case Else
-            loadPath.InitializeFixedNAndMomentAboutPoint targetN, targetMomentMx, targetMomentMy, referenceX, referenceY
-    End Select
-    Set FormationLoadPath = loadPath
+    If Not mActiveSearchLoadPath Is Nothing Then
+        Set FormationLoadPath = mActiveSearchLoadPath.Vector
+        Exit Function
+    End If
+    Dim load As CSectionLoadState, descriptor As CLoadPathDescriptor
+    Set load = New CSectionLoadState
+    load.Initialize targetN, targetMomentMx, targetMomentMy, referenceX, referenceY
+    Set descriptor = New CLoadPathDescriptor
+    Dim pathKey As String, coordinator As CLimitSearchCoordinator, paths As Variant
+    pathKey = mCrackFormationPath
+    If pathKey = CRACK_PATH_AUTO Then
+        Set coordinator = New CLimitSearchCoordinator
+        paths = coordinator.LoadPathKeys(pathKey, load)
+        pathKey = CStr(paths(LBound(paths)))
+    End If
+    descriptor.InitializeFromLoadState pathKey, load
+    Set FormationLoadPath = descriptor.Vector
 End Function
 
 
 
-' Проверяет, есть ли у выбранного пути ненулевая часть Base. Если Base нет,
-' нижняя точка lambda=0 уже является единственной проверяемой нагрузкой.
-Private Function FormationPathHasScaledLoad(ByVal targetN As Double, _
-        ByVal targetMomentMx As Double, ByVal targetMomentMy As Double) As Boolean
-    Dim momentNorm As Double
-    momentNorm = Sqr(targetMomentMx * targetMomentMx + targetMomentMy * targetMomentMy)
-    Select Case mCrackFormationPath
-        Case CRACK_PATH_N
-            FormationPathHasScaledLoad = (Abs(targetN) > NEAR_ZERO_FORCE)
-        Case CRACK_PATH_NMXY
-            FormationPathHasScaledLoad = (Abs(targetN) > NEAR_ZERO_FORCE Or _
-                momentNorm > MaxDouble(mSolverToleranceMx, mSolverToleranceMy))
-        Case Else
-            FormationPathHasScaledLoad = (momentNorm > MaxDouble(mSolverToleranceMx, mSolverToleranceMy))
-    End Select
-End Function
 
 
 
 ' Возвращает пользовательское имя пути для диагностики.
 Private Function CrackFormationPathDisplayName() As String
-    Select Case mCrackFormationPath
-        Case CRACK_PATH_AUTO
-            CrackFormationPathDisplayName = "Auto"
-        Case CRACK_PATH_N
-            CrackFormationPathDisplayName = ChrW$(&H3BB) & "*N"
-        Case CRACK_PATH_NMXY
-            CrackFormationPathDisplayName = ChrW$(&H3BB) & "*NMxy"
-        Case Else
-            CrackFormationPathDisplayName = ChrW$(&H3BB) & "*Mxy"
-    End Select
+    CrackFormationPathDisplayName = CrackFormationPathDisplayNameForKey(mCrackFormationPath)
 End Function
 
 
@@ -1399,18 +1375,9 @@ End Function
 ' Возвращает имя фактически использованного пути. Для Auto это уже не Auto,
 ' а конкретный lambda-путь, на котором была принята стадия образования.
 Private Function CrackFormationPathDisplayNameForKey(ByVal pathKey As String) As String
-    Select Case pathKey
-        Case CRACK_PATH_N
-            CrackFormationPathDisplayNameForKey = ChrW$(&H3BB) & "*N"
-        Case CRACK_PATH_NMXY
-            CrackFormationPathDisplayNameForKey = ChrW$(&H3BB) & "*NMxy"
-        Case CRACK_PATH_MXY
-            CrackFormationPathDisplayNameForKey = ChrW$(&H3BB) & "*Mxy"
-        Case CRACK_PATH_AUTO
-            CrackFormationPathDisplayNameForKey = "Auto"
-        Case Else
-            CrackFormationPathDisplayNameForKey = vbNullString
-    End Select
+    Dim descriptor As CLoadPathDescriptor
+    Set descriptor = New CLoadPathDescriptor
+    CrackFormationPathDisplayNameForKey = descriptor.DisplayNameForKey(pathKey)
 End Function
 
 
@@ -1735,8 +1702,12 @@ Private Sub FinishNoCrack(ByVal reason As String)
     mConverged = True
     mCrackFormed = False
     mStopReason = reason
-    If mFormationInternalStatus = rsUnset Then _
+    If mRequestedLoadPath <> CRACK_PATH_AUTO And Len(mRequestedLoadPath) > 0 Then
+        mConverged = False
+        SetFormationResult rsCheckFailed, rcCriterionNotReached, reason
+    ElseIf mFormationInternalStatus = rsUnset Then
         SetFormationResult rsSuccess, rcCriterionNotReached, reason
+    End If
     AppendDiagnostic reason
 End Sub
 
@@ -1756,20 +1727,32 @@ End Sub
 
 
 
-' Завершает проверку как "трещина есть", но без расчетной точки sigma_s,crc.
-' Такой fallback нужен, когда выбранный путь lambda не управляет причиной,
-' которая уже вызвала трещину: например lambda*Mxy при трещине от одной N или
-' lambda*N при трещине от уже приложенного момента. В этих случаях Auto-режим
-' не имеет честного состояния сразу после образования трещины по выбранному
-' пути, поэтому дальше остается консервативное psi_s = 1.
+' Сохраняет физический отказ постоянной части выбранной траектории.
+' Положительной точки образования на ней нет; Auto может попробовать другой
+' путь, а фиксированный путь возвращает BaseFail без фиктивных Pre/Post.
 Private Sub MarkFormationPathFallback(ByVal reason As String)
     mLambdaCrc = 0#
     mFormationPathFallbackPsi1 = True
-    mConverged = True
-    mCrackFormed = True
-    SetFormationResult rsSuccessWithWarning, rcInitialStateBeyondLimit, reason
+    mConverged = False
+    mCrackFormed = False
+    SetFormationResult rsCheckFailed, rcInitialStateBeyondLimit, reason
     AppendDiagnostic reason
 End Sub
+
+' Проверяет осевой путь, не увеличивающий растягивающее действие.
+' Эксцентрическая N сюда не попадает: ее масштабируемый момент может вызвать
+' трещину, поэтому такой путь обязан пройти обычный поиск равновесия.
+Private Function IsNonTensileForcePath(ByVal targetN As Double) As Boolean
+    If mCrackFormationPath <> CRACK_PATH_N And mCrackFormationPath <> CRACK_PATH_NMXY Then Exit Function
+    If targetN >= 0# Then Exit Function
+    If mActiveSearchLoadPath Is Nothing Then
+        IsNonTensileForcePath = (mCrackFormationPath = CRACK_PATH_N)
+    Else
+        IsNonTensileForcePath = _
+            Abs(mActiveSearchLoadPath.MxBase - targetN * mSearchReferenceY) <= MaxDouble(mSolverToleranceMx, 1#) And _
+            Abs(mActiveSearchLoadPath.MyBase - targetN * mSearchReferenceX) <= MaxDouble(mSolverToleranceMy, 1#)
+    End If
+End Function
 
 
 
@@ -1864,24 +1847,6 @@ End Function
 
 
 
-' Проверяет, есть ли в LC растяжение или изгиб относительно расчетного центра.
-' Если после централизованного переноса и ZeroMoment-фильтра нет ни
-' растягивающей силы, ни момента, нормальная трещина не может образоваться и
-' прямой поиск точки образования трещины запускать не нужно.
-Private Function HasNormalCrackDrivingAction(ByVal loadStateForClassification As CSectionLoadState, _
-        ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As Boolean
-    If loadStateForClassification.IsTension(NEAR_ZERO_FORCE) Then
-        HasNormalCrackDrivingAction = True
-        Exit Function
-    End If
-    If Abs(loadStateForClassification.MxAboutPoint(centralReferenceY)) > MaxDouble(mSolverToleranceMx, 1#) Then
-        HasNormalCrackDrivingAction = True
-        Exit Function
-    End If
-    If Abs(loadStateForClassification.MyAboutPoint(centralReferenceX)) > MaxDouble(mSolverToleranceMy, 1#) Then
-        HasNormalCrackDrivingAction = True
-    End If
-End Function
 
 
 
@@ -2021,34 +1986,14 @@ End Function
 
 
 
-' Приводит пользовательский выбор пути трещинообразования к внутреннему ключу.
-' Поддерживаются те же обозначения lambda, что и в CapacityLoadPath, но без
-' одноосных Mx/My: для трещин пользователь выбирает Mxy, N или весь N+Mxy.
-' Batch и автономный ApplySettings используют одну проверку допустимых вариантов.
-' Необязательный reader добавляет фактическое место исправления только к ошибке.
-Public Function NormalizeCrackFormationPath(ByVal rawPath As String, _
-        Optional ByVal settings As CSystemSettingsReader = Nothing) As String
-    Dim value As String
-    value = LCase$(Trim$(rawPath))
-    value = Replace$(value, " ", vbNullString)
-    value = Replace$(value, ChrW$(&H3BB), "lambda")
-
-    Select Case value
-        Case "auto"
-            NormalizeCrackFormationPath = CRACK_PATH_AUTO
-        Case vbNullString, "lambda*mxy", "lambdamxy", "mxy"
-            NormalizeCrackFormationPath = CRACK_PATH_MXY
-        Case "lambda*n", "lambdan", "n"
-            NormalizeCrackFormationPath = CRACK_PATH_N
-        Case "lambda*nmxy", "lambdanmxy", "nmxy", "all"
-            NormalizeCrackFormationPath = CRACK_PATH_NMXY
-        Case Else
-            Dim message As String
-            message = "На листе Config в строке SLS.Crack.InitiationLoadPath выберите Auto, lambda*Mxy, lambda*N или lambda*NMxy."
-            If Not settings Is Nothing Then message = settings.InputErrorMessage("SLS.Crack.InitiationLoadPath", _
-                "Неизвестный путь: """ & rawPath & """.", "Выберите Auto, lambda*Mxy, lambda*N или lambda*NMxy.")
-            Err.Raise vbObjectError + 3734, "CCrackFormationCalculator", message
-    End Select
+' Нормализует общий LoadPath из LC тем же описателем, что Capacity.
+' Пустое значение означает Auto; отдельной настройки пути трещин в Config нет.
+Private Function NormalizeCrackFormationPath(ByVal rawPath As String) As String
+    Dim descriptor As CLoadPathDescriptor
+    Set descriptor = New CLoadPathDescriptor
+    NormalizeCrackFormationPath = descriptor.NormalizeKey(rawPath)
+    If Len(NormalizeCrackFormationPath) = 0 Then Err.Raise vbObjectError + 3734, "CCrackFormationCalculator", _
+        "В таблице сочетаний исправьте LoadPath: выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
 End Function
 
 
@@ -2387,107 +2332,10 @@ Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
 
-' Выбирает физический crack-path; Search выбирает только численный метод.
+' Передает единый выбор и перебор путей общему Search.
 Private Function ExecuteFormationSearch(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim coordinator As CLimitSearchCoordinator
     Set coordinator = New CLimitSearchCoordinator
     If request Is Nothing Then Err.Raise vbObjectError + 4231, "CCrackFormationCalculator", "Не передан запрос limit-search."
-
-    If StrComp(NormalizeCrackPath(request.CrackFormationPath), CRACK_PATH_AUTO, vbTextCompare) = 0 Then
-        Set ExecuteFormationSearch = ExecuteAutoCrackFormation(request)
-    Else
-        LimitSearchBeginCrackFormationAttempt NormalizeCrackPath(request.CrackFormationPath)
-        Dim result As CLimitSearchResult
-        Set result = coordinator.ExecuteCrackFormation(request)
-        If result.Succeeded Then
-            LimitSearchSetResolvedCrackFormationPath NormalizeCrackPath(request.CrackFormationPath)
-            Set result = BuildSearchSnapshot(request.SolutionStrategy)
-        End If
-        Set ExecuteFormationSearch = result
-    End If
-End Function
-
-' Сохраняет инженерную Auto-политику и причины смены путей в результате.
-Private Function ExecuteAutoCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    Dim coordinator As CLimitSearchCoordinator
-    Set coordinator = New CLimitSearchCoordinator
-    Dim warningHistory As String
-    Dim savedPath As String
-    savedPath = NormalizeCrackPath(request.CrackFormationPath)
-
-    Dim paths(1 To 3) As String
-    paths(1) = CRACK_PATH_MXY
-    paths(2) = CRACK_PATH_N
-    paths(3) = CRACK_PATH_NMXY
-
-    AppendDiagnostic "Auto-путь: начинаем поиск образования нормальной трещины. Порядок попыток: " & _
-        ChrW$(&H3BB) & "*Mxy -> " & ChrW$(&H3BB) & "*N -> " & ChrW$(&H3BB) & "*NMxy."
-
-    Dim lastResult As CLimitSearchResult
-    Dim lastStopReason As String
-    Dim i As Long
-    For i = LBound(paths) To UBound(paths)
-        LimitSearchBeginCrackFormationAttempt paths(i)
-        AppendDiagnostic "Auto-путь: попытка " & CStr(i) & " из " & _
-            CStr(UBound(paths)) & " - пробуем " & _
-            CrackFormationPathDisplayName() & "."
-
-        Set lastResult = coordinator.ExecuteCrackFormation(request)
-        If lastResult.Succeeded Then
-            ' Успех без точки может означать только неприменимость этого пути:
-            ' например, lambda*N не масштабирует сжимающую силу. В Auto это
-            ' не доказывает отсутствие точки на следующем разрешенном пути.
-            If Not lastResult.HasLimitPoint And i < UBound(paths) Then
-                lastStopReason = mStopReason
-                warningHistory = warningHistory & CrackFormationPathDisplayName() & ": " & lastStopReason & " "
-                AppendDiagnostic "Auto-путь: " & _
-                    CrackFormationPathDisplayName() & _
-                    " корректно завершен без найденной точки образования трещины. Проверяем следующий разрешенный путь."
-            Else
-                LimitSearchSetResolvedCrackFormationPath paths(i)
-                AppendDiagnostic "Auto-путь: выбран " & _
-                    CrackFormationPathDisplayName() & "."
-                If Len(warningHistory) > 0 Then
-                    mStopReason = Trim$(warningHistory) & " Принят путь " & CrackFormationPathDisplayName() & ". " & mStopReason
-                    If mFormationInternalStatus = rsSuccess Then mFormationInternalStatus = rsSuccessWithWarning
-                End If
-                Set lastResult = BuildSearchSnapshot(request.SolutionStrategy)
-                LimitSearchSetCurrentFormationPath savedPath
-                Set ExecuteAutoCrackFormation = lastResult
-                Exit Function
-            End If
-        Else
-            If lastResult.Meta.InternalStatus = rsInvalidInput Or _
-                    lastResult.Meta.InternalStatus = rsInvalidConfiguration Or _
-                    lastResult.Meta.InternalStatus = rsInternalError Then
-                LimitSearchSetCurrentFormationPath savedPath
-                Set ExecuteAutoCrackFormation = lastResult
-                Exit Function
-            End If
-            lastStopReason = mStopReason
-            warningHistory = warningHistory & CrackFormationPathDisplayName() & ": " & lastStopReason & " "
-            AppendDiagnostic "Auto-путь: " & _
-                CrackFormationPathDisplayName() & _
-                " не дал точку образования трещины: " & mStopReason
-        End If
-    Next i
-
-    LimitSearchSetCurrentFormationPath savedPath
-    If Not lastResult Is Nothing Then Set ExecuteAutoCrackFormation = lastResult
-End Function
-
-' Нормализует внутренний ключ физического пути для инженерного выбора.
-Private Function NormalizeCrackPath(ByVal value As String) As String
-    Select Case UCase$(Trim$(value))
-        Case "AUTO"
-            NormalizeCrackPath = CRACK_PATH_AUTO
-        Case "LAMBDAN", "LAMBDA*N", "N"
-            NormalizeCrackPath = CRACK_PATH_N
-        Case "LAMBDANMXY", "LAMBDA*NMXY", "NMXY", "ALL"
-            NormalizeCrackPath = CRACK_PATH_NMXY
-        Case "LAMBDAMXY", "LAMBDA*MXY", "MXY", vbNullString
-            NormalizeCrackPath = CRACK_PATH_MXY
-        Case Else
-            NormalizeCrackPath = Trim$(value)
-    End Select
+    Set ExecuteFormationSearch = coordinator.ExecuteCrackFormation(request)
 End Function

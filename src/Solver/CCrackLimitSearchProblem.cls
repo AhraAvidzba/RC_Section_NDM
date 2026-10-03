@@ -24,6 +24,19 @@ Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure" ' НДС д
 
 Private mCrack As CCrackFormationCalculator ' Доменный расчетчик трещинообразования и владелец crack-диагностики.
 
+' Готовит критерий и рабочие поля Formation для конкретного общего пути LC.
+' Offset/Base задаются тем же описателем, который использует Capacity.
+Private Sub ILimitSearchProblem_BeginLoadPath(ByVal request As CLimitSearchRequest)
+    mCrack.LimitSearchBeginCrackFormationAttempt request.SelectedLoadPath.Key, request.SelectedLoadPath
+End Sub
+
+' Передает владельцу Formation фактический путь и предыдущие причины.
+' Последующее создание engineering result использует те же комментарии.
+Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
+        ByVal previousPathComments As String)
+    mCrack.LimitSearchFinishLoadPath request.SelectedLoadPath.Key, previousPathComments
+End Sub
+
 ' Подключает существующий расчетчик трещин без изменения его настроек.
 Public Sub Initialize(ByVal crackCalculator As CCrackFormationCalculator)
     If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4250, "CCrackLimitSearchProblem", _
@@ -187,6 +200,10 @@ End Property
 
 ' Создает crack-траекторию с учетом выбранного LambdaMxy/LambdaN/LambdaNMxy.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
+    If request.HasLoadPathSelection Then
+        Set ILimitSearchProblem_BuildLoadPath = request.SelectedLoadPath.Vector
+        Exit Function
+    End If
     Set ILimitSearchProblem_BuildLoadPath = mCrack.LimitSearchCrackFormationLoadPath( _
         request.TargetN, request.MomentMxAtReference, request.MomentMyAtReference, _
         request.ReferenceX, request.ReferenceY)

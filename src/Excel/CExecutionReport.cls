@@ -596,16 +596,18 @@ Public Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
     If Not mEnabled Then Exit Sub
     If crack Is Nothing Then Exit Sub
 
-    If Len(crack.FormationMethod) > 0 Then
+    If crack.HasLimitPoint Then
         AddStep "Трещинообразование: принята точка по пути " & _
             crack.FormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
-    ElseIf crack.CrackFormed And crack.Converged Then
-        AddStep "Трещинообразование: нормальная трещина считается образованной, но выбранный путь не дал отдельную расчетную точку образования трещины. Для этой проверки принят резервный вариант " & _
-            ChrW$(&H3C8) & "s = 1; причина указана в CrackFormationStopReason и диагностике ниже."
-    ElseIf crack.Converged Then
-        AddStep "Трещинообразование: проверка завершена, нормальная трещина при текущем сочетании не образуется."
+    ElseIf crack.ResultMeta.InternalStatus = rsNotApplicable Then
+        AddStep "Трещинообразование: поиск пороговой точки не требуется. " & crack.ResultMeta.ResultComment
+    ElseIf crack.ResultMeta.ResultCode = rcCriterionNotReached Then
+        AddStep "Трещинообразование: на выбранном пути критерий образования трещины не достигается. " & _
+            "Если ширина применима к допустимому текущему НДС, она рассчитывается с " & ChrW$(&H3C8) & "s = 1 и предупреждением."
     Else
-        AddStep "Трещинообразование: точку образования трещины найти не удалось; дальнейшая причина приведена в диагностике ниже."
+        AddStep "Трещинообразование: пригодная точка образования не получена; причина сохранена в результате поиска и диагностике ниже. " & _
+            "Это не блокирует ширину и продольные трещины по допустимому текущему НДС; для ширины используется " & _
+            ChrW$(&H3C8) & "s = 1 с предупреждением."
     End If
 End Sub
 

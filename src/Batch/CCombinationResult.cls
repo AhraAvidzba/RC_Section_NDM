@@ -116,10 +116,10 @@ End Property
 ' Возвращает отображаемое имя фактически принятой capacity-траектории.
 ' Это только presentation-слой результата LC: расчетный ключ остается в
 ' mStrengthResult.Capacity.PathResolved, а преобразование в lambda*... делается единообразно
-' через CCapacityLoadPath.
+' через CLoadPathDescriptor.
 Public Property Get CapacityPathDisplayName() As String
-    Dim loadPath As CCapacityLoadPath
-    Set loadPath = New CCapacityLoadPath
+    Dim loadPath As CLoadPathDescriptor
+    Set loadPath = New CLoadPathDescriptor
     CapacityPathDisplayName = loadPath.DisplayNameForKey(mStrengthResult.Capacity.PathResolved)
 End Property
 

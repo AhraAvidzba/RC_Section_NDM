@@ -78,7 +78,7 @@ Public Function AxialMxAboutPoint(ByVal pointY As Double) As Double
 End Function
 
 ' Возвращает часть My, создаваемую только продольной силой относительно
-' заданной точки. Метод нужен CapacityLoadPath, где момент от N масштабируется
+' заданной точки. Метод нужен LoadPath, где момент от N масштабируется
 ' вместе с N, а пользовательские Mx/My могут масштабироваться отдельно.
 Public Function AxialMyAboutPoint(ByVal pointX As Double) As Double
     AxialMyAboutPoint = NormalizeMy(mN * (mLoadReferenceX - pointX))

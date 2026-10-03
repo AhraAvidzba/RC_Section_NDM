@@ -44,6 +44,10 @@ Private mMomentMxAtReference As Double ' Mx относительно точки,
 Private mMomentMyAtReference As Double ' My относительно точки, в которой строится Mcrc.
 Private mReferenceX As Double ' X расчетной точки CrackFormation во внутренней системе координат.
 Private mReferenceY As Double ' Y расчетной точки CrackFormation во внутренней системе координат.
+Private mLoadState As CSectionLoadState ' Нормализованное сочетание в единственной пользовательской точке приложения.
+Private mRequestedLoadPath As String ' Общий путь LC; Auto и пустой ввод нормализованы одинаково.
+Private mSelectedLoadPath As CLoadPathDescriptor ' Конкретная траектория текущей search-session, общая для обоих критериев.
+Private mPureAxialLoad As Boolean ' Признак осевого полного LC для численной политики Capacity, независимо от первого пути Auto.
 
 ' Заполняет request для поиска несущей способности.
 ' Материалы и capacitySolver передаются готовыми, чтобы общий search-слой
@@ -56,6 +60,7 @@ Public Sub InitializeCapacity(ByVal capacitySolver As CCapacitySolver, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         ByVal forceOnly As Boolean, ByVal pureAxialForMethod As Boolean, _
         Optional ByVal materialSpec As CMaterialModelSpec = Nothing)
+    ClearLoadPathSelection
     If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4200, "CLimitSearchRequest", "Не передан solver поиска несущей способности."
     If section Is Nothing Then Err.Raise vbObjectError + 4201, "CLimitSearchRequest", "Не передана модель сечения для limit-search."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, "CLimitSearchRequest", "Не передана диаграмма бетона для limit-search."
@@ -91,6 +96,7 @@ Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackFormationCalc
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double)
+    ClearLoadPathSelection
     If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4204, "CLimitSearchRequest", "Не передан расчетчик трещинообразования."
     If section Is Nothing Then Err.Raise vbObjectError + 4205, "CLimitSearchRequest", "Не передана модель сечения для поиска трещинообразования."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4206, "CLimitSearchRequest", "Не передана диаграмма бетона для поиска трещинообразования."
@@ -127,6 +133,7 @@ Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         Optional ByVal crackFormationPath As String = vbNullString)
+    ClearLoadPathSelection
     If problem Is Nothing Then Err.Raise vbObjectError + 4208, _
         "CLimitSearchRequest", "Не передана доменная задача LimitSearch."
 
@@ -248,3 +255,61 @@ End Property
 Public Property Get ReferenceY() As Double
     ReferenceY = mReferenceY
 End Property
+
+' Подключает единственный выбор пути LC к готовой инженерной search-задаче.
+' Нагрузки и точка приложения уже нормализованы; Config и Excel здесь не читаются.
+Public Sub ConfigureLoadPathSelection(ByVal rawPath As String, ByVal loadState As CSectionLoadState, _
+        Optional ByVal pureAxialLoad As Boolean = False)
+    If loadState Is Nothing Then Err.Raise vbObjectError + 4209, "CLimitSearchRequest", "Не передана нагрузка для выбора LoadPath."
+    Dim descriptor As CLoadPathDescriptor
+    Set descriptor = New CLoadPathDescriptor
+    mRequestedLoadPath = descriptor.NormalizeKey(rawPath)
+    If Len(mRequestedLoadPath) = 0 Then Err.Raise vbObjectError + 4210, "CLimitSearchRequest", _
+        "Неизвестный LoadPath. Выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
+    Set mLoadState = loadState
+    mPureAxialLoad = pureAxialLoad
+    Set mSelectedLoadPath = Nothing
+End Sub
+
+' Применяет конкретный путь, выбранный общим coordinator-ом.
+' Обе инженерные задачи получают совершенно одинаковые Offset/Base от LC.
+Public Sub SelectLoadPath(ByVal pathKey As String)
+    Set mSelectedLoadPath = New CLoadPathDescriptor
+    mSelectedLoadPath.InitializeFromLoadState pathKey, mLoadState
+    If Not mSelectedLoadPath.Valid Then Err.Raise vbObjectError + 4211, "CLimitSearchRequest", mSelectedLoadPath.ErrorMessage
+    mNOffset = mSelectedLoadPath.NOffset
+    mNBase = mSelectedLoadPath.NBase
+    mMxOffset = mSelectedLoadPath.MxOffset
+    mMxBase = mSelectedLoadPath.MxBase
+    mMyOffset = mSelectedLoadPath.MyOffset
+    mMyBase = mSelectedLoadPath.MyBase
+    mForceOnly = mSelectedLoadPath.ForceOnly
+    mPureAxialForMethod = mForceOnly And mPureAxialLoad
+    mCrackFormationPath = mSelectedLoadPath.Key
+End Sub
+
+' Однотипные свойства общего выбора и активной траектории Search.
+Public Property Get HasLoadPathSelection() As Boolean
+    HasLoadPathSelection = Not mLoadState Is Nothing
+End Property
+
+Public Property Get RequestedLoadPath() As String
+    RequestedLoadPath = mRequestedLoadPath
+End Property
+
+Public Property Get LoadState() As CSectionLoadState
+    Set LoadState = mLoadState
+End Property
+
+Public Property Get SelectedLoadPath() As CLoadPathDescriptor
+    Set SelectedLoadPath = mSelectedLoadPath
+End Property
+
+' Повторная инициализация request не сохраняет выбор другого сочетания.
+' Низкоуровневый request с готовым Offset/Base остается однотраекторным.
+Private Sub ClearLoadPathSelection()
+    Set mLoadState = Nothing
+    Set mSelectedLoadPath = Nothing
+    mRequestedLoadPath = vbNullString
+    mPureAxialLoad = False
+End Sub

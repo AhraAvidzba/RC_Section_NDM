@@ -948,7 +948,7 @@ Failed:
         "; error=" & CStr(Err.Number) & "; description=" & Err.Description
 End Sub
 
-' Проверяет все пользовательские траектории CapacityLoadPath на всех
+' Проверяет все пользовательские траектории LoadPath на всех
 ' доступных способах поиска несущей способности. Тест намеренно работает
 ' на уровне CCapacitySolver: batch уже переводит пользовательские строки
 ' lambda*Mx/lambda*My/... в универсальную форму Offset + lambda*Base.
@@ -1925,8 +1925,8 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     Dim loadState As CSectionLoadState
     Set loadState = New CSectionLoadState
     loadState.Initialize targetN, targetMx, targetMy, 0#, 0#
-    Dim path As CCapacityLoadPath
-    Set path = New CCapacityLoadPath
+    Dim path As CLoadPathDescriptor
+    Set path = New CLoadPathDescriptor
     path.InitializeFromLoadState "lambda*Mxy", loadState
     Dim result As CCapacityResult
     Set result = New CCapacityResult

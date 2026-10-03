@@ -68,30 +68,21 @@ Public Property Get Longitudinal() As CLongitudinalCrackResult
 End Property
 
 ' Собирает итог нормальных трещин из готовых Formation/CurrentState/Width.
-' Недостижение образования делает ширину неприменимой, но не скрывает отказ
-' обязательного текущего НДС. Новые solve или инженерные формулы здесь не выполняются.
+' Поиск Formation и независимые формулы сохраняют собственные исходы.
+' Отсутствующая точка может сопровождаться рассчитанной шириной с psi_s = 1;
+' ни поиск, ни предупреждение не скрывают отказ текущего НДС или самой ширины.
 Public Property Get NormalMeta() As CResultMeta
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
-    Dim formation As CResultMeta, width As CResultMeta, currentProblem As CResultMeta, formationWarning As CResultMeta
+    Dim formation As CResultMeta, width As CResultMeta, currentProblem As CResultMeta
     Set formation = mFormation.ResultMeta
     Set width = mWidth.ResultMeta
     If mPolicy.IsFailedOverall(mPolicy.ExternalStatus(mCurrentStateMeta)) Or _
             mCurrentStateMeta.InternalStatus = rsSuccessWithWarning Then Set currentProblem = mCurrentStateMeta
-    If formation.InternalStatus = rsSuccessWithWarning Then Set formationWarning = formation
     Dim comment As String
     formation.AppendCommentTo comment
     mCurrentStateMeta.AppendCommentTo comment
     AppendDependentComment width, comment
-    If mPolicy.IsFailedOverall(mPolicy.ExternalStatus(formation)) Then
-        Set NormalMeta = mPolicy.WorstResultMeta(rkCrackFormation, formation, currentProblem)
-    ElseIf formation.InternalStatus = rsSuccess And _
-            (formation.ResultCode = rcCriterionNotReached Or formation.ResultCode = rcCrackNotFormed) Then
-        Set NormalMeta = mPolicy.WorstResultMeta(rkCrackFormation, formation, currentProblem)
-    ElseIf mFormation.CrackFormed Then
-        Set NormalMeta = mPolicy.WorstResultMeta(rkCrackWidth, currentProblem, width, formationWarning)
-    Else
-        Set NormalMeta = mPolicy.WorstResultMeta(rkCrackWidth, formation, currentProblem, width)
-    End If
+    Set NormalMeta = mPolicy.WorstResultMeta(rkCrackWidth, formation, currentProblem, width)
     NormalMeta.ResultComment = comment
 End Property
 

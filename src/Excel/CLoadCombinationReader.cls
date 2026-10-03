@@ -47,7 +47,7 @@ Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCal
         If IsEmptyCombinationRow(data, rowIndex) Then
             ' Строка свободна для будущего ввода LC.
         Else
-            AddRow data, batch, rowIndex, units
+            AddRow data, batch, rowIndex, units, source
         End If
     Next rowIndex
 End Sub
@@ -55,20 +55,31 @@ End Sub
 ' Читает одну строку LC и добавляет ее в batch.
 ' Ошибки ввода не прерывают весь расчет: строка попадает в отчет как InvalidInput,
 ' остальные сочетания продолжают считаться.
-Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator, ByVal rowIndex As Long, ByVal units As CUnitSystem)
+Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator, ByVal rowIndex As Long, _
+        ByVal units As CUnitSystem, ByVal source As Object)
     Dim combinationID As String
     Dim profileId As String
-    Dim capacityLoadPath As String
+    Dim loadPathText As String
     Dim comment As String
     Dim errorText As String
+    Dim pathLocation As String
+    pathLocation = "LoadPath, " & source.Worksheet.Name & "!" & source.Cells(rowIndex, 6).Address(False, False)
     combinationID = ReadCellText(data(rowIndex, 1), "CombinationID", errorText)
     profileId = ReadCellText(data(rowIndex, 5), "ProfileId", errorText)
     If UBound(data, 2) >= 7 Then
-        capacityLoadPath = ReadCellText(data(rowIndex, 6), "CapacityLoadPath", errorText)
+        loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText)
         comment = ReadCellText(data(rowIndex, 7), "Комментарий", errorText)
     ElseIf UBound(data, 2) = 6 Then
-        comment = ReadCellText(data(rowIndex, 6), "Комментарий", errorText)
+        If StrComp(CStr(data(1, 6)), "LoadPath", vbTextCompare) = 0 Then
+            loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText)
+        Else
+            comment = ReadCellText(data(rowIndex, 6), "Комментарий", errorText)
+        End If
     End If
+    Dim pathDescriptor As CLoadPathDescriptor
+    Set pathDescriptor = New CLoadPathDescriptor
+    If Len(pathDescriptor.NormalizeKey(loadPathText)) = 0 Then _
+        AppendError errorText, pathLocation & ": выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy"
 
     Dim nValue As Double
     Dim mxValue As Double
@@ -90,9 +101,9 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If Len(profileId) = 0 Then AppendError errorText, "ProfileId не заполнен"
 
     If Len(errorText) > 0 Then
-        batch.AddInvalidCombination combinationID, profileId, comment, errorText, capacityLoadPath, rowIndex - 1
+        batch.AddInvalidCombination combinationID, profileId, comment, errorText, loadPathText, rowIndex - 1
     Else
-        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, capacityLoadPath, rowIndex - 1
+        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, loadPathText, rowIndex - 1
     End If
 End Sub
 

@@ -3,7 +3,8 @@
 # не пересчитывает. Неуспешные и незавершенные прогоны явно остаются в manifest.
 param(
     [string]$LogDirectory = 'docs/regression/Audit03',
-    [string]$OutputPrefix = 'docs/regression/Audit03/load_matrix_summary_2026-10-02'
+    [string]$OutputPrefix = 'docs/regression/Audit03/load_matrix_summary_2026-10-02',
+    [ValidatePattern('^[A-Za-z0-9_-]*$')][string]$VersionFilter = ''
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -23,7 +24,8 @@ function Read-ProtocolFields([string]$Line) {
 }
 
 foreach ($file in Get-ChildItem -LiteralPath $directory -File -Filter 'broad_matrix_*_v*.txt' |
-        Where-Object { $_.Name -notmatch '\.progress\.txt$' } | Sort-Object Name) {
+        Where-Object { $_.Name -notmatch '\.progress\.txt$' -and
+            ([string]::IsNullOrEmpty($VersionFilter) -or $_.Name.Contains("_${VersionFilter}_")) } | Sort-Object Name) {
     $lines = [IO.File]::ReadAllLines($file.FullName, [Text.Encoding]::UTF8)
     $sourceHash = ''; $mode = ''; $current = $null; $count = 0
     $total = ''; $reopen = $false; $finished = $false; $failed = -1
@@ -97,6 +99,7 @@ foreach ($file in Get-ChildItem -LiteralPath $directory -File -Filter 'broad_mat
         Total = $total
     })
 }
+if ($VersionFilter -and $runs.Count -eq 0) { throw "Нет нагрузочных отчетов версии $VersionFilter." }
 $prefix = [IO.Path]::GetFullPath((Join-Path $root $OutputPrefix))
 $rows | ForEach-Object { [pscustomobject]$_ } | Export-Csv -LiteralPath ($prefix + '_cases.csv') -NoTypeInformation -Encoding UTF8
 $runs | Export-Csv -LiteralPath ($prefix + '_runs.csv') -NoTypeInformation -Encoding UTF8

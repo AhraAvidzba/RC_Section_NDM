@@ -548,7 +548,9 @@ Private Function CrackedStateAllowsCrackChecks(ByVal batch As CBatchSectionCalcu
         (policy.ExternalStatus(stateResult.ResultMeta) = policy.OK)
 End Function
 
-' Записывает ширину раскрытия нормальных трещин и величины ее формулы.
+' Записывает уже рассчитанную ширину и подготовленные величины ее формулы.
+' Успех Formation не является условием вывода: допустимый fallback psi_s = 1
+' сохраняется в самостоятельном Width-result. Writer не повторяет проверку.
 Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
@@ -557,8 +559,8 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         Exit Sub
     End If
 
-    If Not batch.ResultAt(index).CrackResult.Formation.CrackFormed Then
-        data(rowIndex, COL_ACRC_STATUS) = policy.NotApplicable
+    If Not batch.ResultAt(index).CrackWidthMeta.Calculated Then
+        data(rowIndex, COL_ACRC_STATUS) = CrackWidthStatusText(batch, index, policy)
         Exit Sub
     End If
 
@@ -586,7 +588,7 @@ Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
     data(rowIndex, COL_NREBARS) = batch.ResultAt(index).CrackResult.Width.TensionRebarCount
     data(rowIndex, COL_SIGMA_S_CRC) = OptionalStress(batch.ResultAt(index).CrackResult.Width.SigmaSCrc, units, policy)
     data(rowIndex, COL_SIGMA_S) = OutputStress(batch.ResultAt(index).CrackResult.Width.SigmaS, units)
-    data(rowIndex, COL_ES) = OutputStress(batch.CrackSteelElasticModulus, units)
+    data(rowIndex, COL_ES) = OutputStress(batch.ResultAt(index).CrackResult.Width.SteelEs, units)
     data(rowIndex, COL_ACRC) = OutputLength(batch.ResultAt(index).CrackResult.Width.CrackWidth, units)
     data(rowIndex, COL_ACRC_ULT) = OutputLength(batch.ResultAt(index).CrackResult.Width.AllowableCrackWidth, units)
     If batch.ResultAt(index).CrackResult.Width.ReserveFactor > SMALL_VALUE Then _

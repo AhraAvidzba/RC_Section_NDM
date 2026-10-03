@@ -626,7 +626,7 @@ End Sub
 ' Ищет предельный lambda для любой траектории Target = Offset + lambda*Base.
 ' Метод используется batch-слоем для новых вариантов lambda*Mx, lambda*My,
 ' lambda*Mxy, lambda*N и lambda*NMxy. Внутренний алгоритм скобки и Bisection/Brent/Secant остается
-' тем же для всех вариантов CapacityLoadPath.
+' тем же для всех вариантов LoadPath.
 Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nOffset As Double, ByVal nBase As Double, _

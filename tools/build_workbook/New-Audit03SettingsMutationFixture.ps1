@@ -5,7 +5,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$SourceWorkbook,
     [Parameter(Mandatory=$true)][string]$OutputWorkbook,
-    [ValidateSet('SolverMethod', 'CapacityStrategy', 'CapacitySearchMethod', 'FormationPath', 'FormationStrategy')]
+    [ValidateSet('SolverMethod', 'CapacityStrategy', 'CapacitySearchMethod', 'LoadPath', 'FormationStrategy', 'WidthFormationGate')]
     [string]$Mutation = 'SolverMethod'
 )
 $ErrorActionPreference = 'Stop'
@@ -45,23 +45,37 @@ try {
             $needle = 'mCapacitySearchMethod = CapacityTextSetting(settings, "Capacity.SearchMethod")'
             $replacement = 'mCapacitySearchMethod = "Bisection"'
         }
-        'FormationPath' {
-            $key = 'SLS.Crack.InitiationLoadPath'
-            $needle = 'mCrackFormationPath = settings.GetRequiredString("SLS.Crack.InitiationLoadPath")'
-            $replacement = 'mCrackFormationPath = "Auto"'
+        'LoadPath' {
+            $componentName = 'CLimitSearchRequest'
+            $key = 'LoadPath'
+            $needle = 'mRequestedLoadPath = descriptor.NormalizeKey(rawPath)'
+            $replacement = 'mRequestedLoadPath = "Auto"'
         }
         'FormationStrategy' {
             $key = 'SLS.Crack.InitiationSolutionStrategy'
             $needle = 'mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")'
             $replacement = 'mCrackFormationSolutionStrategy = "LoadMultiplier"'
         }
+        'WidthFormationGate' {
+            $componentName = 'CCrackSummaryWriter'
+            $key = 'Width output after Formation failure'
+            $needle = 'If Not batch.ResultAt(index).CrackWidthMeta.Calculated Then'
+            $replacement = 'If Not batch.ResultAt(index).CrackResult.Formation.CrackFormed Then'
+        }
     }
     $module = $book.VBProject.VBComponents.Item($componentName).CodeModule
     $body = $module.Lines(1, $module.CountOfLines)
-    if (($body.Split(@($needle), [StringSplitOptions]::None).Count - 1) -ne 1) {
+    # VBE приводит регистр идентификаторов к собственному написанию.
+    # Сопоставляем точный call site по правилам VBA, но не допускаем
+    # неоднозначную подмену нескольких одинаковых участков.
+    $matcher = [regex]::new([regex]::Escape($needle),
+        [Text.RegularExpressions.RegexOptions]::IgnoreCase -bor
+        [Text.RegularExpressions.RegexOptions]::CultureInvariant)
+    $sites = $matcher.Matches($body)
+    if ($sites.Count -ne 1) {
         throw "Точный call site $key не найден или неоднозначен."
     }
-    $body = $body.Replace($needle, $replacement)
+    $body = $body.Remove($sites[0].Index, $sites[0].Length).Insert($sites[0].Index, $replacement)
     $module.DeleteLines(1, $module.CountOfLines)
     $module.AddFromString($body)
     $book.Save()

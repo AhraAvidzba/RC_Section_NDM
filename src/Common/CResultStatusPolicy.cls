@@ -19,7 +19,7 @@ Option Explicit
 
 Private Const STATUS_OK As String = "OK" ' Проверка выполнена и прошла.
 Private Const STATUS_FAIL As String = "FAIL" ' Результат получен, но инженерная проверка не проходит.
-Private Const STATUS_BASEFAIL As String = "BaseFail" ' Capacity: исходная часть выбранного пути уже не проходит проверку.
+Private Const STATUS_BASEFAIL As String = "BaseFail" ' Постоянная часть пути не проходит критерий либо фиксированный путь физически его не достигает.
 Private Const STATUS_NUMFAIL As String = "NumFail" ' Численная несходимость solver/search.
 Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка пользовательских данных или Config.
 Private Const STATUS_CALCERR As String = "CalcErr" ' Внутренняя ошибка программы или несформированный result.
@@ -60,8 +60,9 @@ Public Function ExternalStatus(ByVal meta As CResultMeta) As String
         Exit Function
     End If
 
-    If meta.ResultKind = rkCapacity And meta.InternalStatus = rsCheckFailed And _
-            meta.ResultCode = rcInitialStateBeyondLimit Then
+    If (meta.ResultKind = rkCapacity Or meta.ResultKind = rkCrackFormation) And _
+            meta.InternalStatus = rsCheckFailed And _
+            (meta.ResultCode = rcInitialStateBeyondLimit Or meta.ResultCode = rcCriterionNotReached) Then
         ExternalStatus = STATUS_BASEFAIL
         Exit Function
     End If

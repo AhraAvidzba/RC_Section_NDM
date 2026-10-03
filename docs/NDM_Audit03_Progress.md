@@ -62,13 +62,87 @@
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
 | W01 | в работе | Git/base/spec/hash/progress сохранены; checkpoints без push/destructive Git. |
 
-Последнее уточнение coverage: v95 сохраняет denominator 1065; адресно
+Историческая поадресная приемка v95 сохраняет denominator 1065; адресно
 принято 79 активных полей (13 Solver, 23 Material, 15 Unit/Sign, 1 Worst,
 16 общих RectSet selectors, 1 AutoCAD MinArea, 10 Crack). Остальные 986 адресов не получают blanket PASS.
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
 
 ## Актуальная Точка Продолжения
 
+- Checkpoint Search-среза: `ff5caa46737f64be4d8e5d11e9e99eed7cf5c019`.
+  Принятый следующий срез v112: единый LoadPath согласно
+  [дополнению текущей цели](NDM_Audit03_Universal_LoadPath_Scope.md).
+  Оно включено в цель после завершения предыдущих gates и коммита;
+  направленные gates проходят отдельную приемку. Исторические доказательства
+  v103 не подменяют тестирование общего перебора и нового fallback Width.
+- v110 directed Universal: 782/0, включая actual writer psi_s/a_crc/Es/status,
+  save/reopen=True; source/export 102/102, failed=0. Полный Off v109 прошел
+  восемь suites без failures, но предшествует позднему исправлению writer и
+  не заменяет full Off/On v110. Финальные full v110: Off 22552/0, On 22563/0,
+  восемь suites; directed On также 782/0 с Results save/reopen=True.
+- Negative writer gate: 779/3; прежний Formation guard скрывает actual
+  psi_s/a_crc/Es и обнаруживается независимыми cell assertions. Только этот
+  guard изменен в отдельной книге, статус Width-meta не подменяется. Начальная
+  попытка создания fixture была отвергнута до мутации из-за регистра VBE;
+  точное единственное case-insensitive сопоставление устранило ошибку runner-а.
+- v110 formatting: 1003/0, 1002 адреса, deviations=0, source unchanged=True;
+  Validate 25/25. Clean/update help OpenXML: 2536 непустых ячеек, объединения
+  равны, failed=0. Это не пиксельная приемка справки. Первый новый broad-run
+  CircleUneven/Light/Off v110: 588 случаев, 23882/191. Отрицательный журнал
+  сохранен; следующие семь chunks не запускались после этого отказа.
+- Подтвержденная причина v110: новый fallback запускал Width для нулевого
+  текущего НДС, а общая ветка делила на нулевую кривизну. Исключение Overflow
+  уходило в общий batch handler и искажало статусы/комментарии других блоков.
+  v111 обрабатывает равномерное поле до построения нейтральной линии: текущее
+  растяжение использует существующую центральную ветку; нулевое/сжатое поле
+  дает rsNotApplicable. Дополнительный скрытый порог 1e-9 удален из описателя
+  LoadPath: ненулевой нормализованный ввод остается масштабируемым. Добавлены
+  направленные тесты. v111: Crack 880/0, Universal Off 822/0, Results
+  save/reopen=True; source/export 102/102, failed=0. Повтор восьми scoped
+  matrix chunks остановился на Stress/Off: 13243/8, 288 случаев. Оба Light
+  Off/On завершены: 24117/0 и 23108/0, по 588 случаев с save/reopen=True.
+- Второй подтвержденный дефект: CCapacityResult при принятом пределе lambda<1
+  сохранял FAIL, но заменял ResultComment Search и переносил историю Auto в
+  DiagnosticDetails. v112 сохраняет прежние причины в пользовательском
+  комментарии, добавляет инженерное объяснение FAIL и не подменяет diagnostics.
+  Добавлен независимый result-level тест; отрицательный broad v111 сохранен.
+- v112 полный Off: 22780/0, все восемь suites; embedded Universal 827/0 и
+  Search 1813/0 не добавляются второй раз к общему числу. Source/export
+  102/102, failed=0; help compare 2536 ячеек, mergesEqual=True, failed=0.
+  Полный On также завершен: 22791/0, восемь suites. Все восемь scoped
+  нагрузочных chunks завершены: 3504 случая, 147163/0 assertions, Results
+  save/reopen=True в каждом, source unchanged=True. CSV v112 содержит только
+  эти восемь логов: 200 Width fallback без точки Formation, все с psi_s=1
+  и предупреждением; блокировок при успешном CurrentState и формульных
+  rsNumericalFailure нет. Общий Audit03 не считается закрытым.
+  Проверяемая книга SHA256:
+  `32EF5B9594561C8E25596B4FCCA533829E7EFF3FB8484E3C7A4F78678D174A28`;
+  export SHA256:
+  `A7EBB0C0B72DD5EE95A5624BD1D6426E6B202EED2A90BA7DAEFE70DC46D7A83C`.
+- Directed On v112: 827/0, отдельный Results save/reopen=True. Formatting:
+  1003/0, 1002 адреса, deviations=0; Validate 25/25. По принятому срезу v112
+  checkpoint определяется в git log по сообщению
+  `Audit03 universal load paths and conservative crack fallback`.
+- Актуальная отрицательная writer-мутация v112: 824/3, ожидаемые failures
+  только actual psi_s/a_crc/Es. Изменен один Formation guard в отдельной книге;
+  статус Width не подменяется. Save/reopen=True, source unchanged=True.
+  Для продолжения Audit03 следующий подтвержденный кандидат - F04
+  SearchExecuted ниже; общий Config/F07/D/P/high-risk/final объем остается открытым.
+- В Width удалена зависимость допуска формулы от успеха Formation. Отсутствие
+  пригодной точки/AfterMcrcState дает psi_s=1 и предупреждение, при пригодном
+  текущем НДС; Longitudinal независима. Formation сохраняет свой typed исход
+  и общий статус. Actual writer теперь использует собственный Calculated
+  Width, а не Formation.CrackFormed; negative mutation gate принят выше.
+- Новый census v108: 1064 адреса, 84 validation. Из знаменателя удалена только
+  SLS.Crack.InitiationLoadPath; LC LoadPath остается в реестре. Исторические
+  per-address evidence не превращаются автоматически в приемку новой книги.
+  Новая нагрузочная матрица имеет 12 вариантов: шесть для каждого критерия,
+  Light 588 и Stress 288 независимых случаев на форму и Extension-режим.
+- F04-кандидат для следующего проверяемого среза: BuildSearchSnapshot Formation
+  всегда использует default SearchExecuted=True, в том числе при раннем
+  нулевом Auto-LC или аналитическом Ncrc без численного Search. Meta уже
+  различает Calculated, но отдельный флаг снимка требует направленного
+  negative/positive lifecycle gate. Текущая приемка Width не закрывает его.
 - Итог текущего Search-среза v103: directed 1812/0; полные восемь suites
   Off 21534/0 и On 21543/0; unit/sign equivalence On 1584/0;
   formatting 1004/0, Validate 25/25, source/export 102/102.
@@ -81,12 +155,13 @@
   общий export SHA256:
   `4FA295D689013E602E0D5A1656A17EB83C9919454F9A4065862271C02EB51529`.
   Основная output-книга и исходное ТЗ Audit03 не изменены.
-- Текущий срез готов к checkpoint. После него включить новое согласованное
-  требование единого LoadPath в текущую цель, не объявляя весь Audit03 закрытым.
-  Приведенные ниже записи v101/v102 являются историей диагностики, а не
-  текущей незавершенной очередью проверок.
+- Checkpoint нового среза выполнять после final gates, не объявляя весь
+  Audit03 закрытым. Приведенные ниже записи v101/v102 являются историей
+  диагностики, а не текущей незавершенной очередью проверок.
 
-- Последний коммит: `59ef7cf92cb25847bd7773996164950944b1b904`.
+### История Предыдущего Search-Среза
+
+- Предыдущий промежуточный коммит: `59ef7cf92cb25847bd7773996164950944b1b904`.
 - Текущий dirty-срез: четыре Search-селектора, направленные Config-тесты и
   подтвержденные дефекты Brent/Secant/Formation line-search. Чужие untracked
   файлы и основная output-книга не меняются, новые классы не добавлены.
@@ -132,9 +207,18 @@ CircleUneven/HollowThin Off/On выполняются последователь
 
 ## Important Decisions
 
+- Единственный LoadPath строки LC применяется к обоим критериям. Общий Search
+  выбирает Auto по активным N/Mx/My и перебирает M -> N -> NMxy только до
+  принятой точки; предел ниже текущей нагрузки не запускает поиск удобного OK.
+  Предыдущие причины Auto сохраняются в инженерном ResultComment даже при FAIL.
+- Formation/Post failure не является обязательной зависимостью формул:
+  пригодный CurrentState разрешает Width с psi_s=1 и warning в любом PsiMode;
+  Longitudinal независима. Фактическая Formation meta не скрывается в общем
+  результате. Нулевое/сжатое текущее поле без растяжения дает N/A Width,
+  а отсутствие или физический отказ CurrentState блокирует обе формулы.
 - Checkpoint `a5ed06a`: F07/K02 input-contract guards, all-path физическая приемка Capacity и full v37 Off/On; последующая нагрузочная матрица продолжает приемку, checkpoint не закрывает Audit03.
 - Audit02 E08/E09 разрешает техническое расширение промежуточных Formation/Capacity проб. Запрет относится к выдаче extended-кандидата как физической предельной точки, а не к самому общему state-solve. Failed named-state может оставаться диагностикой и сохранять собственный typed status, но не становится reusable физическим state и не включает HasLimitPoint.
-- Дополнение пользователя: нагрузочная матрица обязательно покрывает все пути Capacity (`lambda*Mx`, `lambda*My`, `lambda*Mxy`, `lambda*N`, `lambda*NMxy`) и CrackFormation (`Auto`, `lambda*Mxy`, `lambda*N`, `lambda*NMxy`). Проверять base/offset на lambda=0, фактически масштабируемые компоненты и момент от эксцентриситета N, физический критерий конечной точки, статусы и ResultComment. Не подменять полный перебор тестом только Auto или общим coordinator. Для Auto отдельно проверять последовательность путей и причины перехода; для фиксированного пути - собственный физический результат без незаявленной смены траектории.
+- Дополнение пользователя от 2026-10-03: нагрузочная матрица покрывает Auto и пять фиксированных путей (`lambda*Mx`, `lambda*My`, `lambda*Mxy`, `lambda*N`, `lambda*NMxy`) для обоих критериев. Проверять base/offset на lambda=0, фактически масштабируемые компоненты и момент от эксцентриситета N, физический критерий конечной точки, статусы и ResultComment. Не подменять полный перебор тестом только Auto или общим coordinator. Для Auto отдельно проверять последовательность путей и причины перехода; для фиксированного пути - собственный физический результат без незаявленной смены траектории.
 - Checkpoint `170ff62d`: проверенный A03/P02/P01/P03 срез и доказательства. Новые input-contract tests были намеренно оставлены отдельным dirty-срезом до направленной и полной приемки.
 - Broad load matrix: отдельный parametrized macro в существующем test-модуле, без новых классов. Каждый chunk проверяет все comments в четырех writers и настоящем execution report; watchdog умеет передать shape/family и сравнить все значения Results после save/reopen. Это не заменяет самостоятельные UI/Config и независимые near-limit gates.
 

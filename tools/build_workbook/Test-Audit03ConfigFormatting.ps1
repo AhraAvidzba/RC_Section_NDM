@@ -6,6 +6,7 @@ param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
     [Parameter(Mandatory=$true)][string]$ReportPath,
     [string]$RegistryPath = 'docs/regression/Audit03/config_field_registry_v71_2026-10-02.csv',
+    [ValidateRange(1, 100000)][int]$ExpectedFieldCount = 1065,
     [switch]$ApplyAlignments
 )
 $ErrorActionPreference = 'Stop'
@@ -17,7 +18,7 @@ if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) 
     throw 'Проверка/исправление допускается только в изолированной Audit03-книге.'
 }
 $fields = @(Import-Csv -LiteralPath (Join-Path $root $RegistryPath))
-if ($fields.Count -ne 1065) { throw "Неожиданный реестр Config: $($fields.Count) адресов вместо 1065." }
+if ($fields.Count -ne $ExpectedFieldCount) { throw "Неожиданный реестр Config: $($fields.Count) адресов вместо $ExpectedFieldCount." }
 $lines = New-Object 'System.Collections.Generic.List[string]'
 $script:failed = 0
 $script:passed = 0
@@ -132,7 +133,7 @@ function Test-Alignment([object]$Book, [hashtable]$Expected, [string]$Phase, [bo
     $lines.Add("ALIGNMENT_SCAN|phase=$Phase|addresses=$($Expected.Count)|deviations=$different")
 }
 
-# Сравнивает все 1065 зарегистрированных адресов без исключения данных общих
+# Сравнивает все зарегистрированные адреса без исключения данных общих
 # selector anchors. Разрешены только ожидаемые H/V изменения; validation,
 # значения, формулы, числовые форматы, заливки и шрифты сохраняются строго.
 function Get-PreservationSignature([object]$Book, [hashtable]$Expected) {
@@ -177,7 +178,7 @@ function Assert-Preservation([object]$Book, [hashtable]$Expected, [string]$Phase
             }
         }
     }
-    Assert-Format $Phase ($BeforeSignature -eq $actual) "fields=1065; before=$BeforeSignature; actual=$actual"
+    Assert-Format $Phase ($BeforeSignature -eq $actual) "fields=$($fields.Count); before=$BeforeSignature; actual=$actual"
 }
 
 try {

@@ -31,7 +31,7 @@ Public Enum EResultCode
     rcCheckPassed = 4                ' Инженерная проверка пройдена.
     rcCheckFailed = 5                ' Инженерная проверка не пройдена без численной ошибки.
     rcPhysicalLimitExceeded = 6      ' НДС найдено, но вышло за физическую диаграмму материала.
-    rcInitialStateBeyondLimit = 7    ' Базовая точка траектории уже за предельным состоянием; для Capacity это BaseFail.
+    rcInitialStateBeyondLimit = 7    ' Постоянная часть траектории уже не проходит выбранный физический критерий.
     rcCriterionNotReached = 8        ' Search корректно установил, что критерий не достигается на выбранной траектории.
     rcSearchBoundReached = 9         ' Достигнута техническая граница поиска без доказательства физического недостижения.
     rcNumericalFailure = 10          ' Общая численная несходимость solver/search.

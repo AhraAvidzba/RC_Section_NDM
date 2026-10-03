@@ -408,7 +408,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "ProfileId", batch.ResultAt(i).ProfileId, "-", "Расчетный профиль, назначенный сочетанию в rngLoadCombinations."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "DirectStateStatus", batch.ResultAt(i).StrengthResult.DirectState.Status, "-", "Статус прямого решения НДС фактического сочетания."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityStatus", batch.ResultAt(i).StrengthResult.Capacity.Status, "-", "Статус расчета несущей способности."
-        PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacityLoadPath", batch.ResultAt(i).CapacityPathDisplayName, "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
+        PutProperty data, rowIndex, runID, batch.CombinationID(i), "LoadPath", batch.ResultAt(i).CapacityPathDisplayName, "-", "Какие компоненты нагрузки масштабировались при поиске несущей способности."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "CapacitySolutionMethod", batch.ResultAt(i).StrengthResult.Capacity.SolutionMethod, "-", "Фактический численный метод, которым найдена предельная несущая способность."
         PutProperty data, rowIndex, runID, batch.CombinationID(i), "LambdaCapacity", batch.ResultAt(i).StrengthResult.Capacity.LambdaCapacity, "-", "Предельный множитель для выбранной lambda-траектории."
         If batch.ResultAt(i).StrengthResult.Capacity.ReserveFactor > 0# Then

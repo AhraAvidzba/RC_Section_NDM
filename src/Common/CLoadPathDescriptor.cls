@@ -2,7 +2,7 @@
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CCapacityLoadPath"
+Attribute VB_Name = "CLoadPathDescriptor"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -10,11 +10,11 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Универсальная lambda-траектория несущей способности
+' Универсальная lambda-траектория поиска предельной точки
 ' ==========================================================================
-' CCapacityLoadPath переводит пользовательский выбор Auto, lambda*Mx,
+' CLoadPathDescriptor переводит пользовательский выбор Auto, lambda*Mx,
 ' lambda*My, lambda*Mxy, lambda*N или lambda*NMxy в единую математическую форму
-' capacity solver-а:
+' общего LimitSearch для несущей способности и образования трещины:
 '
 '     Target(lambda) = Offset + lambda * Base
 '
@@ -24,13 +24,13 @@ Option Explicit
 ' batch-слою для выбора численной политики: есть ли вообще масштабируемая
 ' нагрузка и является ли путь фактически силовым осевым случаем.
 
-Private Const KEY_NONE As String = "None" ' Capacity не запускается: нет ненулевой масштабируемой нагрузки.
+Private Const KEY_NONE As String = "None" ' Начальное состояние описателя до назначения нагрузки.
+Private Const KEY_AUTO As String = "Auto" ' Общий Search выбирает и перебирает конкретные пути.
 Private Const KEY_MX As String = "LambdaMx" ' Масштабируется только пользовательский Mx.
 Private Const KEY_MY As String = "LambdaMy" ' Масштабируется только пользовательский My.
 Private Const KEY_MXY As String = "LambdaMxy" ' Масштабируется пользовательский вектор Mx/My.
 Private Const KEY_N As String = "LambdaN" ' Масштабируется N вместе с моментом от эксцентриситета N.
 Private Const KEY_NMXY As String = "LambdaNMxy" ' Масштабируется весь расчетный вектор N/Mx/My.
-Private Const LOAD_TOLERANCE As Double = 0.000000001 ' Только численный guard после инженерного CMomentZeroFilter.
 
 Private mRawText As String ' Исходная строка из таблицы сочетаний.
 Private mKey As String ' Нормализованный внутренний ключ lambda-траектории.
@@ -54,10 +54,10 @@ End Sub
 
 ' Разбирает load-path через общий объект нагрузки. Так перенос от
 ' Load.ReferenceOffset и фильтр малых моментов остаются в одном классе, а
-' CapacityLoadPath занимается только разложением Target = Offset + lambda*Base.
+' LoadPath занимается только разложением Target = Offset + lambda*Base.
 Public Sub InitializeFromLoadState(ByVal rawPath As String, ByVal loadState As CSectionLoadState)
     If loadState Is Nothing Then _
-        Err.Raise vbObjectError + 3821, "CCapacityLoadPath", "Не передан CSectionLoadState."
+        Err.Raise vbObjectError + 3821, "CLoadPathDescriptor", "Не передан CSectionLoadState."
 
     Clear
     mRawText = Trim$(rawPath)
@@ -67,12 +67,12 @@ Public Sub InitializeFromLoadState(ByVal rawPath As String, ByVal loadState As C
     normalizedUserMx = loadState.LoadPointMx
     normalizedUserMy = loadState.LoadPointMy
 
-    mKey = ResolveKey(mRawText, loadState.N, normalizedUserMx, normalizedUserMy)
+    mKey = NormalizeKey(mRawText)
 
     If Len(mKey) = 0 Then
         If Len(mRawText) > 0 Then
             mValid = False
-            mErrorMessage = "CapacityLoadPath должен быть Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
+            mErrorMessage = "LoadPath должен быть Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy. Пустое значение означает Auto."
         Else
             mKey = KEY_NONE
         End If
@@ -80,17 +80,17 @@ Public Sub InitializeFromLoadState(ByVal rawPath As String, ByVal loadState As C
     End If
 
     mHasPath = (mKey <> KEY_NONE)
+    If mKey = KEY_AUTO Then mHasPath = (loadState.N <> 0# Or normalizedUserMx <> 0# Or normalizedUserMy <> 0#)
     If Not mHasPath Then Exit Sub
 
     BuildFlags loadState.N, normalizedUserMx, normalizedUserMy
     BuildOffsetBase loadState, normalizedUserMx, normalizedUserMy
 End Sub
 
-' Нормализует текст пользователя. Auto и пустая строка получают осторожный
-' default: если есть пользовательский момент - lambda*Mxy, если есть только N -
-' lambda*N.
-Private Function ResolveKey(ByVal rawPath As String, ByVal nValue As Double, _
-        ByVal userMxValue As Double, ByVal userMyValue As Double) As String
+' Нормализует общий выбор пути без выбора физической траектории Auto.
+' Пустой ввод разрешен и означает Auto; неизвестное значение возвращает
+' пустой ключ для адресной ошибки вызывающего Excel-слоя.
+Public Function NormalizeKey(ByVal rawPath As String) As String
     Dim value As String
     value = LCase$(Trim$(rawPath))
     value = Replace$(value, " ", vbNullString)
@@ -98,59 +98,47 @@ Private Function ResolveKey(ByVal rawPath As String, ByVal nValue As Double, _
 
     Select Case value
         Case "lambda*mx", "lambdamx", "mx"
-            ResolveKey = KEY_MX
+            NormalizeKey = KEY_MX
         Case "lambda*my", "lambdamy", "my"
-            ResolveKey = KEY_MY
+            NormalizeKey = KEY_MY
         Case "lambda*mxy", "lambdamxy", "mxy"
-            ResolveKey = KEY_MXY
-        Case "lambda*n", "lambdan", "nload"
-            ResolveKey = KEY_N
+            NormalizeKey = KEY_MXY
+        Case "lambda*n", "lambdan", "nload", "n"
+            NormalizeKey = KEY_N
         Case "lambda*nmxy", "lambdanmxy", "nmxy", "all"
-            ResolveKey = KEY_NMXY
-        Case "auto"
-            If HasMomentVector(userMxValue, userMyValue) Then
-                ResolveKey = KEY_MXY
-            ElseIf Abs(nValue) > LOAD_TOLERANCE Then
-                ResolveKey = KEY_N
-            Else
-                ResolveKey = KEY_NONE
-            End If
-        Case Else
-            If Len(value) > 0 Then
-                ResolveKey = vbNullString
-            ElseIf HasMomentVector(userMxValue, userMyValue) Then
-                ResolveKey = KEY_MXY
-            ElseIf Abs(nValue) > LOAD_TOLERANCE Then
-                ResolveKey = KEY_N
-            Else
-                ResolveKey = KEY_NONE
-            End If
+            NormalizeKey = KEY_NMXY
+        Case "auto", vbNullString
+            NormalizeKey = KEY_AUTO
     End Select
 End Function
 
-' Заполняет логические признаки выбранного пути.
+' Заполняет логические признаки выбранного пути после общей нормализации.
+' Дополнительный порог здесь не применяется: ненулевая компонента остается
+' масштабируемой, даже когда для достижения критерия требуется большая lambda.
 ' Нулевые компоненты не создают отдельную ветку: они просто дают нулевой Base,
 ' а CCapacitySolver дальше получает ту же универсальную формулу Target(lambda).
 Private Sub BuildFlags(ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double)
     Select Case mKey
         Case KEY_MX
             mScalesMx = True
-            mHasScaledLoad = (Abs(userMxValue) > LOAD_TOLERANCE)
+            mHasScaledLoad = (userMxValue <> 0#)
         Case KEY_MY
             mScalesMy = True
-            mHasScaledLoad = (Abs(userMyValue) > LOAD_TOLERANCE)
+            mHasScaledLoad = (userMyValue <> 0#)
         Case KEY_MXY
             mScalesMx = True
             mScalesMy = True
             mHasScaledLoad = HasMomentVector(userMxValue, userMyValue)
         Case KEY_N
             mScalesN = True
-            mHasScaledLoad = (Abs(nValue) > LOAD_TOLERANCE)
+            mHasScaledLoad = (nValue <> 0#)
         Case KEY_NMXY
             mScalesN = True
             mScalesMx = True
             mScalesMy = True
-            mHasScaledLoad = (Abs(nValue) + Abs(userMxValue) + Abs(userMyValue) > LOAD_TOLERANCE)
+            mHasScaledLoad = (nValue <> 0# Or HasMomentVector(userMxValue, userMyValue))
+        Case KEY_AUTO
+            mHasScaledLoad = (nValue <> 0# Or userMxValue <> 0# Or userMyValue <> 0#)
     End Select
 
     mForceOnly = (mKey = KEY_N Or mKey = KEY_NMXY) And Not HasMomentVector(userMxValue, userMyValue)
@@ -178,14 +166,14 @@ Private Sub BuildOffsetBase(ByVal loadState As CSectionLoadState, ByVal userMxVa
             mPath.Initialize nValue, 0#, mxFromN, userMxValue, myFromN, userMyValue
         Case KEY_N
             mPath.Initialize 0#, nValue, userMxValue, mxFromN, userMyValue, myFromN
-        Case KEY_NMXY
+        Case KEY_NMXY, KEY_AUTO
             mPath.Initialize 0#, nValue, 0#, loadState.InternalMx, 0#, loadState.InternalMy
     End Select
 End Sub
 
 ' Проверяет наличие ненулевого пользовательского вектора момента после общего фильтра малых моментов.
 Private Function HasMomentVector(ByVal mxValue As Double, ByVal myValue As Double) As Boolean
-    HasMomentVector = (Sqr(mxValue * mxValue + myValue * myValue) > LOAD_TOLERANCE)
+    HasMomentVector = (mxValue <> 0# Or myValue <> 0#)
 End Function
 
 ' Сбрасывает разобранный путь перед чтением новой строки сочетания нагрузок.
@@ -293,3 +281,12 @@ Public Sub Target(ByVal lambdaValue As Double, ByRef nValue As Double, _
         ByRef mxValue As Double, ByRef myValue As Double)
     mPath.Target lambdaValue, nValue, mxValue, myValue
 End Sub
+
+' Возвращает отдельный математический вектор выбранной траектории.
+' Search получает снимок, поэтому его пробные точки не меняют описатель LC.
+Public Function Vector() As CLoadPathVector
+    Dim result As CLoadPathVector
+    Set result = New CLoadPathVector
+    result.Initialize NOffset, NBase, MxOffset, MxBase, MyOffset, MyBase
+    Set Vector = result
+End Function

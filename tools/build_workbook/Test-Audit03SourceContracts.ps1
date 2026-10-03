@@ -60,7 +60,11 @@ $production = @(Get-ChildItem -LiteralPath (Join-Path $root 'src') -Recurse -Fil
 $testClasses = @(Get-ChildItem -LiteralPath (Join-Path $root 'tests') -Recurse -File -Filter '*.cls')
 $beforeClasses = @(Get-ChildItem -LiteralPath (Join-Path $BaselineRoot 'src') -Recurse -File -Filter '*.cls' |
     ForEach-Object { $_.Name })
-$difference = @(Compare-Object ($beforeClasses | Sort-Object) ($production.Name | Sort-Object))
+# Пользовательский scope LoadPath переименовал существующий описатель без
+# добавления ответственности/класса. Сопоставляем его с baseline по этой явной
+# паре; остальные новые классы по-прежнему запрещены.
+$comparableClasses = @($production.Name | ForEach-Object { if ($_ -eq 'CLoadPathDescriptor.cls') { 'CCapacityLoadPath.cls' } else { $_ } })
+$difference = @(Compare-Object ($beforeClasses | Sort-Object) ($comparableClasses | Sort-Object))
 $added = @($difference | Where-Object { $_.SideIndicator -eq '=>' })
 $removed = @($difference | Where-Object { $_.SideIndicator -eq '<=' } | ForEach-Object { $_.InputObject } | Sort-Object)
 $expectedRemoved = @('CBatchStatusPolicy.cls', 'CCrackWidthFormulaCalculator.cls')

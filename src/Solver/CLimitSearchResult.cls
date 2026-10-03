@@ -111,6 +111,26 @@ Public Function Clone() As CLimitSearchResult
     Set Clone = result
 End Function
 
+' Сохраняет причины неудачных путей в итоговом Search-result, не меняя
+' фактическую причину отказа последней попытки. Успех после смены пути получает
+' warning; отсутствие точки и ошибки не объявляются успешными по тексту.
+' Журналы прежних попыток сохраняются, даже если следующий доменный callback
+' очистил рабочий журнал. Уже накопленный префикс второй раз не добавляется.
+Public Sub AddLoadPathHistory(ByVal history As String, ByVal pathDisplayName As String, _
+        Optional ByVal diagnosticHistory As String = vbNullString)
+    If Len(diagnosticHistory) > 0 Then
+        If StrComp(Left$(mDiagnosticLog, Len(diagnosticHistory)), diagnosticHistory, vbBinaryCompare) <> 0 Then _
+            mDiagnosticLog = diagnosticHistory & vbCrLf & mDiagnosticLog
+    End If
+    If Len(Trim$(history)) = 0 Then Exit Sub
+    Dim status As EResultInternalStatus
+    status = mMeta.InternalStatus
+    If status = rsSuccess Then status = rsSuccessWithWarning
+    mMeta.SetResult status, mMeta.ResultCode, mMeta.ResultKind, _
+        Trim$(history) & " Итоговый путь " & pathDisplayName & ": " & mMeta.ResultComment, _
+        mMeta.DiagnosticDetails, mMeta.Applies, mMeta.Calculated
+End Sub
+
 ' Метаданные выдаются отдельной небольшой копией, а не mutable полем результата.
 Public Property Get Meta() As CResultMeta
     Set Meta = mMeta.Clone

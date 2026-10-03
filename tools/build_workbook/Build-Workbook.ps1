@@ -410,7 +410,7 @@ function Add-MainInputBlock {
     Add-BlockHeader $Sheet 1 "Сочетания нагрузок"
 
     Add-SectionTitle $Sheet 38 1 18 "Сочетания нагрузок"
-    $loadHeaders = @("CombinationID", "N", "Mx", "My", "ProfileId", "CapacityLoadPath", "Comment")
+    $loadHeaders = @("CombinationID", "N", "Mx", "My", "ProfileId", "LoadPath", "Comment")
     for ($i = 0; $i -lt $loadHeaders.Count; $i++) {
         Set-Cell $Sheet 40 ($i + 1) $loadHeaders[$i] -Bold -InteriorColor 14277081 | Out-Null
     }
@@ -434,7 +434,7 @@ function Add-MainInputBlock {
     $profileRange.Validation.InCellDropdown = $true
 
     $lambda = [char]0x03BB
-    $capacityLoadPathOptions = @("$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
+    $capacityLoadPathOptions = @("Auto", "$lambda*Mx", "$lambda*My", "$lambda*Mxy", "$lambda*N", "$lambda*NMxy")
     for ($i = 0; $i -lt $capacityLoadPathOptions.Count; $i++) {
         $Sheet.Cells.Item($i + 1, $capacityLoadPathListColumn).Value2 = $capacityLoadPathOptions[$i]
     }
@@ -444,6 +444,7 @@ function Add-MainInputBlock {
     $capacityLoadPathRange.Validation.Add(3, 1, 1, $capacityLoadPathListAddress)
     $capacityLoadPathRange.Validation.IgnoreBlank = $true
     $capacityLoadPathRange.Validation.InCellDropdown = $true
+    $capacityLoadPathRange.Value2 = "Auto"
     $Sheet.Columns.Item($profileListColumn).Hidden = $true
     $Sheet.Columns.Item($capacityLoadPathListColumn).Hidden = $true
 }

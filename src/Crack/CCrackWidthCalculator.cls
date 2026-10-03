@@ -76,6 +76,7 @@ Private mTensionDepth As Double ' Фактическая глубина раст
 Private mEffectiveZoneDepth As Double ' Глубина зоны Abt, реально использованная после ограничений, мм.
 Private mCentralTensionBranch As Boolean ' True, если сработала отдельная ветка центрального растяжения.
 Private mFormation As CCrackFormationResult ' Единственный источник стадии образования трещины.
+Private mFallbackPsi1 As Boolean ' Нет пригодной точки образования/состояния Post; ширина считается консервативно по текущему НДС.
 
 
 ' ------------------------------
@@ -132,11 +133,13 @@ Private Sub ClearResult()
     mEffectiveZoneDepth = 0#
     mCentralTensionBranch = False
     Set mFormation = Nothing
+    mFallbackPsi1 = False
 End Sub
 
 
-' Принимает готовый результат formation без поиска НДС. Этот вход позволяет
-' orchestrator-у хранить ширину как зависимую, еще не выполненную ветвь.
+' Принимает готовый Formation без поиска НДС. Отсутствие точки не блокирует
+' ширину: по допустимому текущему НДС используется psi_s = 1 с предупреждением.
+' Достоверно найденный порог выше текущего LC сохраняет отсутствие трещины.
 Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
     ClearResult
     Set mFormation = formation
@@ -144,16 +147,22 @@ Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
         SetWidthResult rsInternalError, rcInternalError, "Не передан результат образования трещины."
         Exit Sub
     End If
-    mConverged = (formation.ResultMeta.InternalStatus = rsSuccess Or _
-        formation.ResultMeta.InternalStatus = rsSuccessWithWarning)
-    mCrackFormed = formation.CrackFormed
-    mCentralTensionBranch = formation.CentralTensionBranch
-    If Not mConverged Then
-        SetWidthResult rsBlockedByDependency, rcBlockedByDependency, _
-            "Ширина нормальной трещины не рассчитана: нет корректного результата образования трещины."
-    Else
-        SetWidthResult rsNotApplicable, rcCrackNotFormed, formation.StopReason
+    mFallbackPsi1 = Not formation.HasLimitPoint
+    If formation.ResultMeta.InternalStatus <> rsSuccess And _
+            formation.ResultMeta.InternalStatus <> rsSuccessWithWarning Then mFallbackPsi1 = True
+    If formation.CrackFormed Then
+        Dim postState As CSectionStateResult
+        Set postState = formation.PostCrackState
+        If postState Is Nothing Then
+            mFallbackPsi1 = True
+        ElseIf Not postState.Converged Or Not postState.WithinPhysicalRange Then
+            mFallbackPsi1 = True
+        End If
     End If
+    mConverged = True
+    mCrackFormed = formation.CrackFormed Or mFallbackPsi1
+    mCentralTensionBranch = formation.CentralTensionBranch
+    SetWidthResult rsNotApplicable, rcCrackNotFormed, formation.StopReason
 End Sub
 
 ' Готовит зону, арматуру и коэффициенты по готовым состояниям. Сам поиск
@@ -278,6 +287,16 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
     Dim ny As Double
     Dim normK As Double
     normK = Sqr(currentSolver.KappaX * currentSolver.KappaX + currentSolver.KappaY * currentSolver.KappaY)
+    ' У равномерного поля нет нейтральной линии. После fallback Formation
+    ' его нужно классифицировать по текущему НДС, а не делить на нулевую кривизну.
+    If normK <= NEAR_ZERO_STRAIN Then
+        If currentSolver.Epsilon0 > NEAR_ZERO_STRAIN Then
+            CalculateCentralTension currentSolver, section, materialProvider, targetN, targetMx, targetMy, loadStateForClassification
+        Else
+            FinishNoCrack "В текущем равномерном поле деформаций нет растянутой зоны для расчета раскрытия трещины."
+        End If
+        Exit Sub
+    End If
     nx = currentSolver.KappaY / normK
     ny = currentSolver.KappaX / normK
 
@@ -364,16 +383,24 @@ End Sub
 
 
 ' Завершает расчет раскрытия с учетом режима psi_s.
-' User заканчивает расчет после первой формулы с пользовательским psi_s.
+' Если пригодная точка образования отсутствует, любой режим использует
+' psi_s = 1 с предупреждением; текущий НДС остается обязательным.
+' При доступной точке User использует заданный пользователем psi_s.
 ' Auto сначала делает проверку с psi_s = 1 и уточняет коэффициент только при
 ' непрохождении. AlwaysCalc сразу пытается применить уточненный psi_s. Точка
-' lambda_crc и состояния PreCrackState/PostCrackState уже найдены обязательной
-' предварительной проверкой образования трещины, поэтому повторный поиск точки
-' образования здесь не выполняется.
+' lambda_crc и состояния PreCrackState/PostCrackState берутся из предварительной
+' проверки образования, если она их получила. Повторный поиск здесь не выполняется.
 Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal currentSolver As CSectionStateResult, ByRef selected() As Boolean, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal finalReason As String) As Boolean
+    If mFallbackPsi1 Then
+        mPsiS = 1#
+        FinalizeWidth finalReason & " Предупреждение: пригодное состояние сразу после образования трещины недоступно; " & _
+            "psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания."
+        FinalizeWithPsiMode = mConverged
+        Exit Function
+    End If
     If StrComp(mPsiMode, PSI_MODE_USER, vbTextCompare) = 0 Then
         mPsiS = mPsiSInput
         CaptureSigmaSCrcIfAvailable section, materialProvider, selected
@@ -506,7 +533,11 @@ Private Sub FinalizeWidth(ByVal reason As String)
             "Раскрытие нормальной трещины " & FormatNumberInvariant(mCrackWidth) & _
             " мм превышает допускаемое " & FormatNumberInvariant(mAllowableCrackWidth) & " мм. " & reason
     Else
-        SetWidthResult rsSuccess, rcCheckPassed, reason
+        If mFallbackPsi1 Then
+            SetWidthResult rsSuccessWithWarning, rcCheckPassed, reason
+        Else
+            SetWidthResult rsSuccess, rcCheckPassed, reason
+        End If
     End If
     AppendDiagnostic "a_crc=" & FormatNumberInvariant(mCrackWidth) & _
         "; phi1=" & FormatNumberInvariant(mPhi1) & _

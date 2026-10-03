@@ -49,7 +49,7 @@ End Sub
 ' Даже при numerical/input failure объект остается заполненным: batch получает
 ' единый контейнер и не разбирает поля CCapacitySolver вручную.
 Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
-        ByVal loadPath As CCapacityLoadPath, _
+        ByVal loadPath As CLoadPathDescriptor, _
         ByVal pureAxialForMethod As Boolean, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
@@ -59,7 +59,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     If Not searchResult Is Nothing Then Set mSearchResult = searchResult.Clone
     mPureAxialForMethod = pureAxialForMethod
     If loadPath Is Nothing Then
-        InitializeInvalidInput "CapacityLoadPath не подготовлен.", CAPACITY_PATH_NONE
+        InitializeInvalidInput "LoadPath не подготовлен.", CAPACITY_PATH_NONE
         Exit Sub
     End If
 
@@ -77,12 +77,15 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     Set mResultMeta = searchResult.Meta.Clone
     ' Численный поиск мог успешно найти предел ниже заданной нагрузки.
     ' Только инженерный слой трактует это как непрохождение текущего LC.
+    ' История Auto-путей остается пользовательским комментарием, а не
+    ' перемещается в техническую диагностику при смене успешного Search на FAIL.
     If searchResult.Succeeded And searchResult.Converged Then
         If searchResult.LambdaUltimate > 0# And searchResult.LambdaUltimate < 1# Then
             mResultMeta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkCapacity, _
-                "Несущая способность не проходит: предел по выбранному пути достигается при lambda = " & _
+                Trim$(mResultMeta.ResultComment & " Несущая способность не проходит: предел по выбранному пути достигается при lambda = " & _
                 Replace$(Format$(searchResult.LambdaUltimate, "0.000000"), ",", ".") & _
-                ", раньше заданной нагрузки (lambda = 1).", searchResult.Meta.ResultComment
+                ", раньше заданной нагрузки (lambda = 1)."), mResultMeta.DiagnosticDetails, _
+                mResultMeta.Applies, mResultMeta.Calculated
         End If
     End If
     mLimitState = searchResult.LimitState
@@ -171,7 +174,7 @@ End Sub
 
 ' Переносит найденный полный предельный вектор в пользовательскую точку
 ' приложения нагрузки через общий CSectionLoadState.
-Private Sub StoreUltimateVector(ByVal loadPath As CCapacityLoadPath, _
+Private Sub StoreUltimateVector(ByVal loadPath As CLoadPathDescriptor, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepthForMx As Double, _
         ByVal concreteDepthForMy As Double)
@@ -251,11 +254,11 @@ End Property
 
 ' Формирует русское пояснение ранней остановки до запуска LimitSearch.
 ' Batch-слой только выводит эту строку в отчет и не повторяет domain-логику.
-Public Function EarlyStopReport(ByVal loadPath As CCapacityLoadPath) As String
+Public Function EarlyStopReport(ByVal loadPath As CLoadPathDescriptor) As String
     If loadPath Is Nothing Then
-        EarlyStopReport = "Capacity остановлен: CapacityLoadPath не подготовлен."
+        EarlyStopReport = "Capacity остановлен: LoadPath не подготовлен."
     ElseIf Not loadPath.Valid Then
-        EarlyStopReport = "Capacity остановлен: неизвестное значение CapacityLoadPath."
+        EarlyStopReport = "Capacity остановлен: неизвестное значение LoadPath."
     ElseIf Not loadPath.HasPath Then
         EarlyStopReport = "Capacity не запускается: в сочетании нет ни момента, ни продольной силы."
     ElseIf Not loadPath.HasScaledLoad Then
@@ -269,7 +272,7 @@ End Function
 ' Сам выбор уже сделан search-слоем; здесь остается только инженерная трактовка
 ' для execution report.
 Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
-        ByVal loadPath As CCapacityLoadPath) As String
+        ByVal loadPath As CLoadPathDescriptor) As String
     If Len(Trim$(mSolutionMethod)) = 0 Then Exit Function
 
     If StrComp(solutionStrategy, "Auto", vbTextCompare) = 0 Then

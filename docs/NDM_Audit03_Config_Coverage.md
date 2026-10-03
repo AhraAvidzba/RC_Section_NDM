@@ -56,12 +56,41 @@ Boolean и активный численный параметр проверяе
 к локальному отключению передачи настройки. Служебные столбцы и формулы
 проверяются через зависимости и UI, без искусственного ручного ввода.
 
-Все нагрузочные проверки покрывают пять путей Capacity и отдельно его `Auto`,
-а также четыре варианта Formation, включая `Auto`. Они контролируют все
+Для текущего universal LoadPath запланированы пять фиксированных путей и
+`Auto` отдельно для Capacity и Formation: двенадцать путевых вариантов.
+Исторические прогоны с четырьмя вариантами Formation не являются приемкой
+добавленных Mx/My. Нагрузочные проверки контролируют все
 ResultComment, их инженерный смысл, отсутствие
 дублей, порядок и принадлежность конкретному output-поддереву. Полный перебор
 геометрий/режимов, txt-report и save/reopen не подменяется уже выполненным
 27-LC направленным тестом.
+
+### Universal LoadPath, 2026-10-03
+
+Фактический census изолированной v108-книги содержит 1064 адреса и 84 validation:
+`docs/regression/Audit03/config_field_registry_universal_v108_2026-10-03.json`
+и `.csv`. Из исходного знаменателя 1065 удалена одна obsolete-настройка
+`SLS.Crack.InitiationLoadPath`; в `rngSystemSettings` теперь 101 поле.
+Общая колонка `LoadPath` остается в каждой строке LC, с default/blank `Auto`.
+Остальные блоки и исходный пользовательский census выше не переписаны.
+
+Directed Universal v110: 782/0, включая настоящий reader с пустым значением,
+formula-empty, Unknown, CVErr и recovery; actual output psi_s/a_crc/Es/status
+при Formation BaseFail; Results save/reopen=True. Source/export 102/102.
+Этот gate не присваивает blanket PASS всем 1064 адресам. Полные Off/On v110:
+22552/0 и 22563/0; negative writer 779/3; formatting 1003/0, deviations=0,
+Validate 25/25. Broad v110 CircleUneven/Light/Off выявил 191 failures,
+поэтому новая матрица не принята. Исправленный v111 имеет directed Universal
+822/0 (включая малые ненулевые компоненты), Crack 880/0, source/export 102/102;
+полный повтор и нагрузочная матрица v111 выявили отдельную потерю Auto-history
+при инженерном FAIL. Принятый v112: full Off 22780/0 и On 22791/0, directed
+On 827/0 с save/reopen; source/export 102/102, formatting 1003/0 и Validate
+25/25. Scoped matrix: 8/8 PASS, 3504 случая, 147163/0 assertions. CSV содержит
+только восемь current-source логов. VersionFilter проверен на пустом scope
+(ошибка, не PASS) и на неизменности нефильтрованного списка исторических логов.
+Ни это evidence, ни удаление одного obsolete-поля не закрывают весь K01-K04.
+Историческое адресное evidence требует отдельной
+проверки актуальности, особенно для смещенных после удаления строки адресов.
 
 Numeric input gate v45 охватывает все 56 consumer/key маршрутов численных
 Solver/Capacity настроек в CSectionSolver, CCapacitySolver, Formation и Batch.

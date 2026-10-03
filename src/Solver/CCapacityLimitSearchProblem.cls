@@ -20,6 +20,17 @@ Implements ILimitSearchProblem
 
 Private mCapacity As CCapacitySolver ' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 
+' Начальное состояние каждой capacity search-session очищает ее численный
+' solver. Общий coordinator уже передал новый Offset/Base через request.
+Private Sub ILimitSearchProblem_BeginLoadPath(ByVal request As CLimitSearchRequest)
+End Sub
+
+' Историю путей сохраняет CLimitSearchResult; Capacity трактует его готовую
+' машинную причину и не склеивает собственную параллельную сводку попыток.
+Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
+        ByVal previousPathComments As String)
+End Sub
+
 ' Подключает уже настроенный CCapacitySolver. Настройки материалов, допусков и
 ' solver-а остаются ровно там же, где были до выделения adapter-а.
 Public Sub Initialize(ByVal capacitySolver As CCapacitySolver)

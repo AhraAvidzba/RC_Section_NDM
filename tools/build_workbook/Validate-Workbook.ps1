@@ -370,7 +370,7 @@ try {
     Add-Check $checks "Config right-side ranges vertical stack" $rightStackOk ($rightStackDetails -join "; ")
 
     $loads = $workbook.Names.Item("rngLoadCombinations").RefersToRange
-    $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "ProfileId", "CapacityLoadPath", "Comment")
+    $expectedLoadHeaders = @("CombinationID", "N, tf", "Mx, tf*m", "My, tf*m", "ProfileId", "LoadPath", "Comment")
     $actualLoadHeaders = @()
     for ($i = 1; $i -le 7; $i++) {
         $actualLoadHeaders += [string]$loads.Cells.Item(1, $i).Value2

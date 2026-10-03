@@ -204,7 +204,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "Capacity.SolutionStrategy", "Capacity.SearchMethod", "Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
         "Capacity.ToleranceStrain", _
         "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", _
-        "SLS.Crack.Allowable", "SLS.Crack.InitiationLoadPath", _
+        "SLS.Crack.Allowable", "SLS.Crack.InitiationSolutionStrategy", _
         "SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3Mode", "SLS.Crack.Phi3", _
         "SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", "SLS.Crack.PsiS", "SLS.Crack.TensionZoneMode", _
         "SLS.Crack.CoverDistanceMode")

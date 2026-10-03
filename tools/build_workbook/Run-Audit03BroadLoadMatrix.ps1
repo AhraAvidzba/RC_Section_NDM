@@ -1,5 +1,5 @@
 ﻿# Выполняет широкую матрицу на изолированных копиях одной проверенной книги.
-# Каждый VBA-runner проверяет все десять путевых вариантов, typed результаты,
+# Каждый VBA-runner проверяет двенадцать путевых вариантов, typed результаты,
 # комментарии четырех writer-ов/txt-отчета и сохраненный Results. При отказе
 # серия останавливается; существующее отрицательное доказательство не заменяется.
 param(
@@ -39,7 +39,7 @@ function Test-CompletedMatrixReport([string]$Path, [int]$ExpectedCases, [string]
 foreach ($shape in $Shapes) {
     if ($shape -notmatch '^[A-Za-z]+$') { throw 'Недопустимое имя тестовой формы.' }
     foreach ($family in $Families) {
-        $expectedCases = if ($family -eq 'Light') { 490 } else { 240 }
+        $expectedCases = if ($family -eq 'Light') { 588 } else { 288 }
         foreach ($mode in $Modes) {
             $modeName = if ($mode -eq 'Yes') { 'on' } else { 'off' }
             $relativeReport = "docs/regression/Audit03/broad_matrix_${shape}_${family}_${modeName}_${Version}_${date}.txt"

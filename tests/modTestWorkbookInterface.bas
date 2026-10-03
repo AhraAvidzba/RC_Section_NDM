@@ -1315,7 +1315,7 @@ Private Sub FillLoadCombinationTestRange(ByVal target As Object, ByVal combinati
     target.Cells.Item(1, 3).Value2 = "Mx"
     target.Cells.Item(1, 4).Value2 = "My"
     target.Cells.Item(1, 5).Value2 = "ProfileId"
-    target.Cells.Item(1, 6).Value2 = "CapacityLoadPath"
+    target.Cells.Item(1, 6).Value2 = "LoadPath"
     target.Cells.Item(1, 7).Value2 = "Comment"
 
     Dim rowIndex As Long
@@ -1411,7 +1411,7 @@ End Sub
 ' Проверяет пользовательский сценарий Г-сечения с N + Mx и выбранной
 ' траекторией lambda*Mx через полный путь книги. Этот тест защищает быстрый
 ' UltimateStrain-путь для обычного изгибного расчета: после универсализации
-' CapacityLoadPath он не должен уходить в тяжелую общую residual-систему.
+' LoadPath он не должен уходить в тяжелую общую residual-систему.
 Private Sub TestRectSetMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
     PrepareUserRectSetMomentUltimateInput
 
@@ -1945,8 +1945,7 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         SystemSettingValidationHasOptions("Capacity.SearchMethod", Array("Bisection", "Brent", "Secant"))
     AssertTrue stats, "ui.validation.crackCoverDistanceMode", _
         SystemSettingValidationHasOptions("SLS.Crack.CoverDistanceMode", Array("NearestContour", "GlobalExtreme"))
-    AssertTrue stats, "ui.validation.crackInitiationLoadPath", _
-        SystemSettingValidationHasOptions("SLS.Crack.InitiationLoadPath", Array("Auto", ChrW$(&H3BB) & "*Mxy", ChrW$(&H3BB) & "*N", ChrW$(&H3BB) & "*NMxy"))
+    AssertTrue stats, "ui.validation.universalLoadPath", UniversalLoadPathValidationHasOptions()
     AssertTrue stats, "ui.validation.autocadLabelMode", _
         SystemSettingValidationHasOptions("AutoCAD.Export.LabelMode", Array("ValuesOnly", "NamesAndValues"))
     AssertTrue stats, "ui.validation.autocadNeutralLine", _
@@ -3198,6 +3197,27 @@ End Function
 ' Реальные списки допустимых вариантов сверяются адресными helpers ниже.
 Private Function SystemSettingValidationHasOptions(ByVal key As String, ByVal expectedOptions As Variant) As Boolean
     SystemSettingValidationHasOptions = SettingValidationHasOptionsInRange(ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange, key, expectedOptions)
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет реальный общий dropdown сочетания, включая Auto.
+' Пустой ввод разрешен; удаленная отдельная настройка Formation не используется.
+Private Function UniversalLoadPathValidationHasOptions() As Boolean
+    On Error GoTo Failed
+    Dim loads As Object, cell As Object, options As Object, item As Variant
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    If CStr(loads.Cells(1, 6).Value2) <> "LoadPath" Then Exit Function
+    Set cell = loads.Cells(2, 6)
+    If cell.Validation.Type <> xlValidateList Or Not cell.Validation.IgnoreBlank Then Exit Function
+    Set options = loads.Worksheet.Range(Mid$(CStr(cell.Validation.Formula1), 2))
+    Dim expected As Variant, index As Long
+    expected = Array("Auto", ChrW$(&H3BB) & "*Mx", ChrW$(&H3BB) & "*My", _
+        ChrW$(&H3BB) & "*Mxy", ChrW$(&H3BB) & "*N", ChrW$(&H3BB) & "*NMxy")
+    If options.Cells.Count <> UBound(expected) + 1 Then Exit Function
+    For index = 0 To UBound(expected)
+        If CStr(options.Cells(index + 1, 1).Value2) <> CStr(expected(index)) Then Exit Function
+    Next index
+    UniversalLoadPathValidationHasOptions = True
+Failed:
 End Function
 
 ' Ищет настройку в rngSystemSettings и проверяет, что ее колонка "Ед."
@@ -4797,9 +4817,8 @@ Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats
         If operation = "Formation" Then
             ' Минимальный Config Formation содержит обязательные селекторы;
             ' отсутствие проверяемого Solver-key остается отдельным сценарием.
-            sheet.Range("A3").Value2 = "SLS.Crack.InitiationLoadPath": sheet.Range("B3").Value2 = "Auto"
-            sheet.Range("A4").Value2 = "SLS.Crack.InitiationSolutionStrategy": sheet.Range("B4").Value2 = "Auto"
-            Set inputRange = sheet.Range("A1:C4")
+            sheet.Range("A3").Value2 = "SLS.Crack.InitiationSolutionStrategy": sheet.Range("B3").Value2 = "Auto"
+            Set inputRange = sheet.Range("A1:C3")
         End If
         For Each keyValue In Audit03NumericSettingsKeys(operation)
             key = CStr(keyValue)
@@ -5858,7 +5877,6 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     SetSystemSetting "Solver.MaxDeltaKappa", "0.00005"
     SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
     SetSystemSetting "Capacity.SearchMethod", "Bisection"
-    SetSystemSetting "SLS.Crack.InitiationLoadPath", "Auto"
     SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "0.3"
     SetSystemSetting "Stability.ElementLength", "8000"
@@ -6467,7 +6485,7 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
     savedSteel = steelRange.Formula: savedLoads = loads.Formula
     keys = Array("SLS.Crack.Allowable", "SLS.Crack.Phi1", "SLS.Crack.Phi2", "SLS.Crack.Phi3", "SLS.Crack.PsiS", _
         "SLS.Crack.Phi3Mode", "SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", "SLS.Crack.TensionZoneMode", _
-        "SLS.Crack.CoverDistanceMode", "SLS.Crack.InitiationLoadPath", "SLS.Crack.InitiationSolutionStrategy", _
+        "SLS.Crack.CoverDistanceMode", "SLS.Crack.InitiationSolutionStrategy", _
         "Stability.Code", "Stability.ElementLength", "Stability.Mu1", "Stability.Mu2", "Stability.SystemType", _
         "Stability.ZeroMomentEccentricitySign1", "Stability.ZeroMomentEccentricitySign2", "Stability.PhiLMode", _
         "Stability.AccidentalEccentricityMode", "Stability.AccidentalEccentricityPlanes", _

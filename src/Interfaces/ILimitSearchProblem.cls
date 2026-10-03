@@ -55,6 +55,17 @@ End Property
 Public Property Get DiagnosticLog() As String
 End Property
 
+' Готовит инженерный контекст нового конкретного пути общего Auto-перебора.
+' Численные состояния предыдущей search-session не переиспользуются как
+' физические состояния нового пути; общая диагностика может сохраняться.
+Public Sub BeginLoadPath(ByVal request As CLimitSearchRequest)
+End Sub
+
+' Сохраняет фактический путь и причины предыдущих попыток у владельца результата.
+' Writer не склеивает эти комментарии и не определяет по ним машинный статус.
+Public Sub FinishLoadPath(ByVal request As CLimitSearchRequest, ByVal previousPathComments As String)
+End Sub
+
 ' Выполняет доменную подготовку перед LoadMultiplier.
 Public Function Prepare(ByVal request As CLimitSearchRequest) As Boolean
 End Function

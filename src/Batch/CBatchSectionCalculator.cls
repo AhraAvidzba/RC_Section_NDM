@@ -36,7 +36,7 @@ Private Type TCombinationInput
     UserMx As Double
     UserMy As Double
     ProfileId As String
-    CapacityLoadPath As String
+    LoadPath As String
     Comment As String
     InputValid As Boolean
     InputError As String
@@ -79,7 +79,6 @@ Private mCrackPhi3 As Double ' Пользовательский коэффици
 Private mCrackPsiS As Double ' Пользовательский коэффициент psi_s, если PsiMode = User.
 Private mCrackTensionZoneMode As String ' Effective или FullTension: какая бетонная зона входит в Abt.
 Private mCrackCoverDistanceMode As String ' Как измерять a_s: до ближайшего контура или до дальней растянутой линии.
-Private mCrackFormationPath As String ' Путь поиска образования трещины: Auto, lambda*Mxy, lambda*N или lambda*NMxy.
 Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска уровня трещинообразования.
 Private mSolverMethod As String ' Newton или Secant для прямого равновесия.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки в CSectionSolver.
@@ -157,7 +156,6 @@ Private Sub Class_Initialize()
     mCrackPsiS = 1#
     mCrackTensionZoneMode = "Effective"
     mCrackCoverDistanceMode = "GlobalExtreme"
-    mCrackFormationPath = "Auto"
     mCrackFormationSolutionStrategy = "Auto"
     mSolverMethod = "Newton"
     mSolverLoadSteps = 8
@@ -246,13 +244,11 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCrackAllowable = settings.GetRequiredDouble("SLS.Crack.Allowable")
     mCrackPsiMode = settings.GetRequiredString("SLS.Crack.PsiMode")
     mCrackSigmaSCrcAveragingMode = settings.GetRequiredString("SLS.Crack.SigmaSCrcAveragingMode")
-    mCrackFormationPath = settings.GetRequiredString("SLS.Crack.InitiationLoadPath")
     mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
     ' Formation владеет допустимыми путями и стратегиями; до любого solve
     ' проверяем пользовательский выбор с адресной диагностикой reader-а.
     Dim formationOptions As CCrackFormationCalculator
     Set formationOptions = New CCrackFormationCalculator
-    mCrackFormationPath = formationOptions.NormalizeCrackFormationPath(mCrackFormationPath, settings)
     mCrackFormationSolutionStrategy = formationOptions.NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
     mWorstCombinationCriterion = NormalizeWorstCombinationCriterion( _
         settings.GetRawString("General.WorstCombinationCriterion", mWorstCombinationCriterion))
@@ -441,16 +437,16 @@ End Sub
 ' Усилия уже должны быть во внутренних единицах и в INTERNAL-системе знаков.
 Public Sub AddCombination(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
-        Optional ByVal capacityLoadPath As String = vbNullString, Optional ByVal sourceDataOffset As Long = 0)
-    AddCombinationInternal combinationID, nValue, mxValue, myValue, profileId, comment, True, vbNullString, capacityLoadPath, sourceDataOffset
+        Optional ByVal loadPathText As String = vbNullString, Optional ByVal sourceDataOffset As Long = 0)
+    AddCombinationInternal combinationID, nValue, mxValue, myValue, profileId, comment, True, vbNullString, loadPathText, sourceDataOffset
 End Sub
 
 ' Сохраняет строку LC с ошибкой ввода, чтобы пользователь увидел ее в отчете.
 ' Такие сочетания не передаются в solver, но отображаются как InvalidInput.
 Public Sub AddInvalidCombination(ByVal combinationID As String, ByVal profileId As String, _
-        ByVal comment As String, ByVal reason As String, Optional ByVal capacityLoadPath As String = vbNullString, _
+        ByVal comment As String, ByVal reason As String, Optional ByVal loadPathText As String = vbNullString, _
         Optional ByVal sourceDataOffset As Long = 0)
-    AddCombinationInternal combinationID, 0#, 0#, 0#, profileId, comment, False, reason, capacityLoadPath, sourceDataOffset
+    AddCombinationInternal combinationID, 0#, 0#, 0#, profileId, comment, False, reason, loadPathText, sourceDataOffset
 End Sub
 
 ' Единая точка добавления строки сочетания. Через нее проходят и корректные
@@ -459,7 +455,7 @@ End Sub
 ' нагрузок.
 Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
-        ByVal inputValid As Boolean, ByVal inputError As String, ByVal capacityLoadPath As String, _
+        ByVal inputValid As Boolean, ByVal inputError As String, ByVal loadPathText As String, _
         ByVal sourceDataOffset As Long)
     EnsureCombinationCapacity mCount + 1
     mCount = mCount + 1
@@ -470,7 +466,7 @@ Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue A
     mInputs(mCount).Mx = mxValue
     mInputs(mCount).My = myValue
     mInputs(mCount).ProfileId = Trim$(profileId)
-    mInputs(mCount).CapacityLoadPath = Trim$(capacityLoadPath)
+    mInputs(mCount).LoadPath = Trim$(loadPathText)
     mInputs(mCount).Comment = comment
     mInputs(mCount).UserMx = mxValue
     mInputs(mCount).UserMy = myValue
@@ -705,6 +701,16 @@ Private Sub RunCombination(ByVal index As Long)
         MarkInvalid index, mSettingsError
         Exit Sub
     End If
+
+    Dim pathDescriptor As CLoadPathDescriptor, normalizedPath As String
+    Set pathDescriptor = New CLoadPathDescriptor
+    normalizedPath = pathDescriptor.NormalizeKey(mInputs(index).LoadPath)
+    If Len(normalizedPath) = 0 Then
+        MarkInvalid index, "В сочетании " & mInputs(index).CombinationID & _
+            " исправьте LoadPath: выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
+        Exit Sub
+    End If
+    mInputs(index).LoadPath = normalizedPath
 
     If Len(Trim$(mInputs(index).ProfileId)) = 0 Then
         ReportStep "Сочетание не рассчитано: ProfileId не задан."
@@ -978,11 +984,11 @@ Private Sub StrengthReferencePointForCombination(ByVal index As Long, _
 End Sub
 
 ' Запускает поиск несущей способности для LC.
-' Пользовательский столбец CapacityLoadPath задает, какие компоненты нагрузки
+' Пользовательский столбец LoadPath задает, какие компоненты нагрузки
 ' умножаются на lambda. Все варианты дальше сводятся к одной математике:
 ' Target = Offset + lambda*Base для N, Mx и My.
 Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialModelSpec)
-    Dim loadPath As CCapacityLoadPath
+    Dim loadPath As CLoadPathDescriptor
     Dim capacityCalculator As CCapacityCalculator
     Dim loadState As CSectionLoadState
     Dim reportText As String
@@ -990,8 +996,8 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     Set capacityCalculator = New CCapacityCalculator
     ConfigureCapacityCalculator capacityCalculator
     Set loadState = LoadStateForCombination(index)
-    Set loadPath = capacityCalculator.BuildLoadPath(mInputs(index).CapacityLoadPath, loadState)
-    ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).CapacityLoadPath)
+    Set loadPath = capacityCalculator.BuildLoadPath(mInputs(index).LoadPath, loadState)
+    ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).LoadPath)
 
     ReportValue "Стратегия поиска несущей", capacityCalculator.SolutionStrategy
 
@@ -1101,15 +1107,16 @@ End Function
 ' сохраняется найденная пороговая точка, если она определима. Текущее
 ' CrackedState полного LC считается всегда: по нему выполняется проверка
 ' продольных трещин и записывается snapshot. Формула ширины раскрытия
-' запускается только если нормальная трещина образована.
+' запускается при образованной трещине либо при недоступной точке образования
+' с консервативным psi_s = 1. Только отказ текущего НДС блокирует обе проверки.
 Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProfile)
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
     ReportStep "Запускается проверка образования нормальной трещины."
-    ReportValue "Путь образования трещины", mCrackFormationPath
+    ReportValue "Путь образования трещины", mInputs(index).LoadPath
     ReportValue "Стратегия поиска образования трещины", mCrackFormationSolutionStrategy
-    If Not mReport Is Nothing Then mReport.ReportCrackFormationSearchStart mCrackFormationPath
+    If Not mReport Is Nothing Then mReport.ReportCrackFormationSearchStart mInputs(index).LoadPath
 
     Dim crackReferenceX As Double
     Dim crackReferenceY As Double
@@ -1124,7 +1131,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     ' CSectionLoadState, поэтому здесь нет ручной формулы N*dx/dy.
     Dim formationCalculator As CCrackFormationCalculator
     Set formationCalculator = New CCrackFormationCalculator
-    ConfigureCrackFormationCalculator formationCalculator
+    ConfigureCrackFormationCalculator formationCalculator, index
     Set formationCalculator.StateProvider = CreateStateProvider(index)
     Dim formationResult As CCrackFormationResult
     Set formationResult = formationCalculator.CheckFormation(mSection, _
@@ -1169,10 +1176,6 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
         mMaterialProvider.ConcreteParameters.RbMc2)
     If Not mReport Is Nothing Then mReport.ReportLongitudinalCrackResult longitudinalResult
 
-    If Not crack.Converged Then
-        ReportStep "Проверка образования трещины не завершилась корректно: " & crack.StopReason
-        GoTo ReportCrackResult
-    End If
     If Not crack.CrackFormed Then
         ReportStep "Ширина раскрытия не считается: нормальная трещина не образуется при текущей нагрузке."
         GoTo ReportCrackResult
@@ -1193,7 +1196,11 @@ ReportCrackResult:
     ReportMetaComment "Комментарий продольных трещин", mResults(index).LongitudinalCrackMeta
     ReportValue "Фактический путь образования трещины", mResults(index).CrackResult.Formation.FormationMethod
     ReportValue "lambda образования трещины", FormatNumberInvariant(mResults(index).CrackResult.Formation.LambdaCrc)
-    ReportValue "Трещина образована", IIf(mResults(index).CrackResult.Formation.CrackFormed, "да", "нет")
+    If mResults(index).CrackResult.Formation.HasLimitPoint Then
+        ReportValue "Трещина образована", IIf(mResults(index).CrackResult.Formation.CrackFormed, "да", "нет")
+    Else
+        ReportValue "Трещина образована", "пороговая точка не определена; см. результат поиска"
+    End If
     ReportValue "a_crc", mReport.FormatLength(mResults(index).CrackResult.Width.CrackWidth)
     ReportValue "psi_s", FormatNumberInvariant(mResults(index).CrackResult.Width.PsiS)
     ReportValue "As", mReport.FormatArea(mResults(index).CrackResult.Width.AsTension)
@@ -1456,8 +1463,8 @@ End Sub
 
 ' Передает formation-настройки его владельцу. Width не хранит solver-options
 ' и не участвует в поиске Pre/PostCrackState или выборе физического пути.
-Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormationCalculator)
-    formation.CrackFormationPath = mCrackFormationPath
+Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormationCalculator, ByVal index As Long)
+    formation.CrackFormationPath = mInputs(index).LoadPath
     formation.CrackFormationSolutionStrategy = mCrackFormationSolutionStrategy
     formation.SolverLoadSteps = mSolverLoadSteps
     formation.SolverMethod = mSolverMethod
@@ -1614,7 +1621,7 @@ Private Function IsBetterGoverningCandidate(ByVal candidateIndex As Long, ByVal 
 End Function
 
 ' Возвращает прочностной запас LC как найденный множитель lambda.
-' Для CapacityLoadPath это единая величина для lambda*Mx,
+' Для LoadPath это единая величина для lambda*Mx,
 ' lambda*My, lambda*Mxy, lambda*N и lambda*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
 ' не нужны для выбора Worst.
 Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double

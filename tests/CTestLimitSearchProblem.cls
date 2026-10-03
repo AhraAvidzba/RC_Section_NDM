@@ -182,6 +182,16 @@ Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     ILimitSearchProblem_DiagnosticLog = mDiagnosticLog
 End Property
 
+' ДЛЯ ТЕСТОВ: общий сценарий выбирает путь, не добавляя доменную семантику
+' к управляемому probe callback-у численных контрактных тестов.
+Private Sub ILimitSearchProblem_BeginLoadPath(ByVal request As CLimitSearchRequest)
+End Sub
+
+' ДЛЯ ТЕСТОВ: история попыток хранится в настоящем CLimitSearchResult.
+Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
+        ByVal previousPathComments As String)
+End Sub
+
 ' ДЛЯ ТЕСТОВ: начало линейной функции должно лежать до заданного корня.
 Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
