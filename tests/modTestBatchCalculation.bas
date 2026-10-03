@@ -192,6 +192,7 @@ Public Function RunBatchCalculationTests() As String
     TestBatchCapacityUsesSystemSettings stats
     AppendLine stats, "RUN: TestInvalidModeSettingsAreNotFallbacks"
     TestInvalidModeSettingsAreNotFallbacks stats
+    TestAudit03BatchInputMessages stats
     AppendLine stats, "RUN: TestResultMetaStatusDictionary"
     TestResultMetaStatusDictionary stats
     AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
@@ -4970,6 +4971,7 @@ Public Function RunAudit02ResultMetaStress() As String
         FormatNumberInvariant(Timer - started) & "; status=" & statusText & "; comment=" & commentText
 End Function
 
+
 ' ДЛЯ ТЕСТОВ: проверяет комментарии и четыре блока вывода готового batch.
 ' Позволяет отдельному Config-набору использовать те же проверки subtree,
 ' не запускать весь batch-набор повторно и не копировать его assertions.
@@ -8290,3 +8292,79 @@ Public Function RunAudit03TemporaryLoadRangeIsolation() As String
     AssertTrue stats, "audit03.temporaryLoadRange.alertsRestored", Application.DisplayAlerts = originalAlerts
     RunAudit03TemporaryLoadRangeIsolation = stats.Report & "TOTAL_TEMPORARY_RANGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
+
+' ====================== ДЛЯ ТЕСТОВ: ИТОГОВАЯ ОШИБКА ВВОДА ======================
+
+' ДЛЯ ТЕСТОВ: popup пакетного расчета должен сохранять русскую причину
+' результата нужного блока. Не допускает замены сообщения коротким статусом
+' или машинным LimitState; настройки восстанавливаются после каждого gate.
+Public Function RunAudit03BatchInputMessageTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03BatchInputMessages stats
+    RunAudit03BatchInputMessageTests = stats.Report & "TOTAL_BATCH_INPUT_MESSAGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: ошибочная численная настройка доходит до реального solver
+' через Batch для DirectState, Capacity и текущего НДС расчета трещин.
+' Каждый профиль включает только проверяемую ветвь и не меняет physical oracle.
+Private Sub TestAudit03BatchInputMessages(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim mode As Variant, settings As CSystemSettingsReader, batch As CBatchSectionCalculator
+    Dim result As CCombinationResult, owner As CResultMeta, message As String, profileId As String, prefix As String
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    For Each mode In Array("DirectState", "Capacity", "CrackCurrentState")
+        systemRange.Formula = savedSystem: profileRange.Formula = savedProfiles
+        profileId = "PR1"
+        If CStr(mode) = "CrackCurrentState" Then profileId = "PR2"
+        SetProfileValue "Calculation.Stability.Enabled", profileId, "No"
+        SetProfileValue "Calculation.Strength.DirectState", profileId, "No"
+        SetProfileValue "Calculation.Strength.Capacity", profileId, "No"
+        SetProfileValue "Calculation.Crack.Width", profileId, "No"
+        SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+        Select Case CStr(mode)
+            Case "DirectState"
+                SetProfileValue "Calculation.Strength.DirectState", profileId, "Yes"
+                SetSystemSetting "Solver.DampingInitial", "2"
+            Case "Capacity"
+                SetProfileValue "Calculation.Strength.Capacity", profileId, "Yes"
+                SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+                SetSystemSetting "Capacity.ToleranceLambda", "0"
+            Case "CrackCurrentState"
+                SetProfileValue "Calculation.Crack.Width", profileId, "Yes"
+                SetSystemSetting "Solver.DampingInitial", "2"
+        End Select
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+        batch.AddCombination "INPUT_" & CStr(mode), 200000#, 1000000#, 0#, profileId, vbNullString, "LambdaNMxy"
+        batch.Execute
+        Set result = batch.ResultAt(1)
+        Select Case CStr(mode)
+            Case "DirectState": Set owner = result.DirectStateMeta
+            Case "Capacity": Set owner = result.CapacityMeta
+            Case "CrackCurrentState": Set owner = result.CrackCurrentStateMeta
+        End Select
+        prefix = "audit03.batchInputMessage." & CStr(mode)
+        AssertEquals stats, prefix & ".ownerStatus", result.Status, "InputErr"
+        AssertTrue stats, prefix & ".ownerReason", Len(Trim$(owner.ResultComment)) > 0
+        message = batch.FirstInvalidInputMessage
+        AssertTrue stats, prefix & ".includesReason", InStr(1, message, owner.ResultComment, vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".includesLC", InStr(1, message, "INPUT_" & CStr(mode), vbBinaryCompare) > 0
+        If CStr(mode) = "Capacity" Then
+            AssertTrue stats, prefix & ".configSheet", InStr(1, owner.ResultComment, "Config", vbBinaryCompare) > 0
+            AssertTrue stats, prefix & ".configKey", InStr(1, owner.ResultComment, "Capacity.ToleranceLambda", vbBinaryCompare) > 0
+        End If
+        AppendLine stats, "INPUT_MESSAGE: " & prefix & "|owner=" & owner.ResultComment & "|popup=" & message
+    Next mode
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.batchInputMessage.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+End Sub

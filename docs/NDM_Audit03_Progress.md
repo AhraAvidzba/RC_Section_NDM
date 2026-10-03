@@ -69,6 +69,28 @@
 
 ## Актуальная Точка Продолжения
 
+- Проверенный Search lifecycle/K04 срез v130 зафиксирован локальным коммитом
+  `2e17181`. Текущий следующий срез F05 - итоговое сообщение InputErr.
+  Negative v131b `9/3`: теряется ResultComment DirectState, Capacity и
+  CurrentCrackedState. V131c добавляет требования к имени Config/ключу Capacity;
+  прежние журналы сохранены. Подготовлена локальная правка: popup читает готовый
+  OverallMeta.ResultComment; Capacity называет ошибочную строку настройки.
+  Positive v131: popup `14/0`, Capacity lifecycle/config messages `72/0`;
+  full Off завершен `23017/0`, восемь suites; source/export `102/102`,
+  failed=0. Числа общих Off assertions с v130 совпали: `5574/5574`, missing=0,
+  differences=0. Clean/update help `2536/2536`, mergesEqual=True.
+  Полный On завершен `23028/0`; общие численные assertions с v130
+  совпали `5579/5579`, missing=0, differences=0. Universal `827/0`,
+  Results save/reopen=True; палитра `351/0`, values/style save/reopen=True.
+  Read-only Config formatting `1003/0`, deviations=0; Validate-Workbook
+  выполнил 25 структурных проверок, все True, exit=0. Срез готов к локальному
+  checkpoint, но не закрывает весь Audit03. SHA книги v131
+  `67952A24F354E94819CE78B66D63BA19E633AA79F637F3F22748E9603DCEF2E5`,
+  export `650349E6851692471CD1F280267986ACEA0BA3C0B36FFF210A622818719BBCE6`.
+  Auto-path гипотеза потери флага
+  не подтверждена: v131b выполняет все три моментные траектории и сохраняет
+  SearchExecuted=True, итог rsNumericalFailure. Два неудачных assertions были
+  неверным ожиданием теста, production Auto-поиск по ним не изменен.
 - Текущий проверяемый source-срез v130: full Off `22969/0`, On `22980/0`,
   по восемь suites, watchdog exit=0, source unchanged=True. Книга SHA256
   `961FF06B3A1272B3FBF0405E6C0D86AD059BBAF1C8A3D1105E3EB41ECE4A257B`,

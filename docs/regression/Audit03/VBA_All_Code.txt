@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_search_lifecycle_v130.xlsm
-Date: 2026-10-03 06:02:59
+Workbook: RC_Section_NDM_input_message_v131.xlsm
+Date: 2026-10-03 06:45:12
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -12620,7 +12620,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CCapacitySolver
 TYPE: 2
-LINES: 2044
+LINES: 2051
 ====================================================================================================
 Option Explicit
 
@@ -13823,9 +13823,16 @@ Private Function ValidateLoadMultiplierSettings() As Boolean
     ElseIf StrComp(Trim$(mSolverMethod), "Newton", vbTextCompare) <> 0 And _
             StrComp(Trim$(mSolverMethod), "Secant", vbTextCompare) <> 0 Then
         SetInvalidConfiguration "Solver.Method должен быть Newton или Secant."
-    ElseIf mInitialLambdaStep <= 0# Or mLambdaTolerance <= 0# Or mMaxLambda <= 0# Or _
-            mMaxRetries < 0 Or mSolverBaseLoadSteps <= 0 Then
-        SetInvalidConfiguration "Настройки LoadMultiplier для несущей способности некорректны."
+    ElseIf mInitialLambdaStep <= 0# Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.InitialLambda задайте начальный шаг больше нуля."
+    ElseIf mLambdaTolerance <= 0# Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля."
+    ElseIf mMaxLambda <= 0# Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.MaxLambda задайте верхнюю границу поиска больше нуля."
+    ElseIf mMaxRetries < 0 Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.MaxRetries задайте неотрицательное число повторных попыток."
+    ElseIf mSolverBaseLoadSteps <= 0 Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.BaseLoadSteps задайте число ступеней нагрузки больше нуля."
     Else
         ValidateLoadMultiplierSettings = True
     End If
@@ -13836,7 +13843,7 @@ End Function
 ' плоскости достаточно проверить численную корректность lambda.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
-        SetInvalidConfiguration "Настройки UltimateStrain для несущей способности некорректны."
+        SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceStrain задайте допуск предельной деформации больше нуля."
     Else
         ValidateUltimateStrainSettings = True
     End If
@@ -26686,7 +26693,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2099
+LINES: 2096
 ====================================================================================================
 Option Explicit
 
@@ -28681,12 +28688,9 @@ End Property
 Private Function DetailedInvalidInputMessage(ByVal index As Long) As String
     Dim detail As String
     detail = Trim$(mInputs(index).inputError)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StabilityResult.status) Then _
-        detail = Trim$(mResults(index).stabilityMeta.resultComment)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StrengthResult.capacity.status) Then _
-        detail = Trim$(mResults(index).StrengthResult.capacity.LimitState)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StrengthResult.DirectState.status) Then _
-        detail = Trim$(mResults(index).status)
+    ' Итог уже собран владельцами result-tree, включая самостоятельный crack
+    ' subtree. Popup не подменяет его машинным LimitState или display-статусом.
+    If Len(detail) = 0 Then detail = Trim$(mResults(index).OverallMeta.resultComment)
     If Len(detail) = 0 Then detail = Trim$(mResults(index).status)
     If Len(detail) = 0 Then detail = mStatusPolicy.InputErr
 
@@ -47171,7 +47175,7 @@ End Property
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 8292
+LINES: 8370
 ====================================================================================================
 Option Explicit
 
@@ -47366,6 +47370,7 @@ Public Function RunBatchCalculationTests() As String
     TestBatchCapacityUsesSystemSettings stats
     AppendLine stats, "RUN: TestInvalidModeSettingsAreNotFallbacks"
     TestInvalidModeSettingsAreNotFallbacks stats
+    TestAudit03BatchInputMessages stats
     AppendLine stats, "RUN: TestResultMetaStatusDictionary"
     TestResultMetaStatusDictionary stats
     AppendLine stats, "RUN: TestResultMetaAggregateSkipsNotApplicable"
@@ -52144,6 +52149,7 @@ Public Function RunAudit02ResultMetaStress() As String
         FormatNumberInvariant(Timer - started) & "; status=" & statusText & "; comment=" & commentText
 End Function
 
+
 ' ДЛЯ ТЕСТОВ: проверяет комментарии и четыре блока вывода готового batch.
 ' Позволяет отдельному Config-набору использовать те же проверки subtree,
 ' не запускать весь batch-набор повторно и не копировать его assertions.
@@ -55465,11 +55471,87 @@ Public Function RunAudit03TemporaryLoadRangeIsolation() As String
     RunAudit03TemporaryLoadRangeIsolation = stats.Report & "TOTAL_TEMPORARY_RANGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
+' ====================== ДЛЯ ТЕСТОВ: ИТОГОВАЯ ОШИБКА ВВОДА ======================
+
+' ДЛЯ ТЕСТОВ: popup пакетного расчета должен сохранять русскую причину
+' результата нужного блока. Не допускает замены сообщения коротким статусом
+' или машинным LimitState; настройки восстанавливаются после каждого gate.
+Public Function RunAudit03BatchInputMessageTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03BatchInputMessages stats
+    RunAudit03BatchInputMessageTests = stats.Report & "TOTAL_BATCH_INPUT_MESSAGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: ошибочная численная настройка доходит до реального solver
+' через Batch для DirectState, Capacity и текущего НДС расчета трещин.
+' Каждый профиль включает только проверяемую ветвь и не меняет physical oracle.
+Private Sub TestAudit03BatchInputMessages(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim mode As Variant, settings As CSystemSettingsReader, batch As CBatchSectionCalculator
+    Dim result As CCombinationResult, owner As CResultMeta, message As String, profileId As String, prefix As String
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.formula: savedProfiles = profileRange.formula
+    For Each mode In Array("DirectState", "Capacity", "CrackCurrentState")
+        systemRange.formula = savedSystem: profileRange.formula = savedProfiles
+        profileId = "PR1"
+        If CStr(mode) = "CrackCurrentState" Then profileId = "PR2"
+        SetProfileValue "Calculation.Stability.Enabled", profileId, "No"
+        SetProfileValue "Calculation.Strength.DirectState", profileId, "No"
+        SetProfileValue "Calculation.Strength.Capacity", profileId, "No"
+        SetProfileValue "Calculation.Crack.Width", profileId, "No"
+        SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+        Select Case CStr(mode)
+            Case "DirectState"
+                SetProfileValue "Calculation.Strength.DirectState", profileId, "Yes"
+                SetSystemSetting "Solver.DampingInitial", "2"
+            Case "Capacity"
+                SetProfileValue "Calculation.Strength.Capacity", profileId, "Yes"
+                SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+                SetSystemSetting "Capacity.ToleranceLambda", "0"
+            Case "CrackCurrentState"
+                SetProfileValue "Calculation.Crack.Width", profileId, "Yes"
+                SetSystemSetting "Solver.DampingInitial", "2"
+        End Select
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+        batch.AddCombination "INPUT_" & CStr(mode), 200000#, 1000000#, 0#, profileId, vbNullString, "LambdaNMxy"
+        batch.Execute
+        Set result = batch.ResultAt(1)
+        Select Case CStr(mode)
+            Case "DirectState": Set owner = result.DirectStateMeta
+            Case "Capacity": Set owner = result.CapacityMeta
+            Case "CrackCurrentState": Set owner = result.CrackCurrentStateMeta
+        End Select
+        prefix = "audit03.batchInputMessage." & CStr(mode)
+        AssertEquals stats, prefix & ".ownerStatus", result.status, "InputErr"
+        AssertTrue stats, prefix & ".ownerReason", Len(Trim$(owner.resultComment)) > 0
+        message = batch.FirstInvalidInputMessage
+        AssertTrue stats, prefix & ".includesReason", InStr(1, message, owner.resultComment, vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".includesLC", InStr(1, message, "INPUT_" & CStr(mode), vbBinaryCompare) > 0
+        If CStr(mode) = "Capacity" Then
+            AssertTrue stats, prefix & ".configSheet", InStr(1, owner.resultComment, "Config", vbBinaryCompare) > 0
+            AssertTrue stats, prefix & ".configKey", InStr(1, owner.resultComment, "Capacity.ToleranceLambda", vbBinaryCompare) > 0
+        End If
+        AppendLine stats, "INPUT_MESSAGE: " & prefix & "|owner=" & owner.resultComment & "|popup=" & message
+    Next mode
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.batchInputMessage.runtime; " & CStr(Err.number) & "; " & Err.description
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.formula = savedProfiles
+    On Error GoTo 0
+End Sub
+
 
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: 1
-LINES: 2467
+LINES: 2529
 ====================================================================================================
 Option Explicit
 
@@ -57909,6 +57991,29 @@ Private Sub TestAudit03CapacitySearchLifecycle(ByRef stats As TCapacityTestStats
     AssertTrue stats, "audit03.capacity.lifecycle.directAuto.finalConfig", result.meta.InternalStatus = rsInvalidConfiguration
     AssertTrue stats, "audit03.capacity.lifecycle.directAuto.noPoint", Not result.HasLimitPoint
     AssertTrue stats, "audit03.capacity.lifecycle.directAuto.finalNoProbe", cap.iterations = 0
+    ' Текущее сочетание осевое относительно расчетного центра, но содержит
+    ' взаимно компенсирующиеся пользовательский момент и момент от N.
+    ' Во всех трех Auto-путях остаются моментные компоненты траектории,
+    ' хотя при lambda=1 они компенсированы. Бюджет одной итерации дает
+    ' честную численную неудачу; итог обязан помнить выполненный поиск.
+    ConfigureCapacity cap
+    cap.SolverMaxIterations = 1
+    cap.LambdaTolerance = 0#
+    Dim autoLoad As CSectionLoadState
+    Set autoLoad = New CSectionLoadState
+    autoLoad.Initialize -20000#, 10000000#, 0#, 0#, 500#
+    request.InitializeCapacity cap, section, LinearConcrete(), LinearSteel(), _
+        "UltimateStrain", 0#, 0#, 0#, 1#, 0#, 0#, False, False
+    request.ConfigureLoadPathSelection "Auto", autoLoad, True
+    Set result = coordinator.ExecuteCapacity(request)
+    AppendLine stats, "AUTO_PATH_LIFECYCLE: path=" & request.SelectedLoadPath.key & _
+        "; status=" & CStr(result.meta.InternalStatus) & "; code=" & CStr(result.meta.ResultCode) & _
+        "; searched=" & CStr(result.SearchExecuted) & "; comment=" & result.meta.resultComment
+    AppendLine stats, "AUTO_PATH_LIFECYCLE_DIAGNOSTICS: " & result.DiagnosticLog
+    AssertTrue stats, "audit03.capacity.lifecycle.autoPaths.firstAttemptKept", result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.autoPaths.finalNumerical", result.meta.InternalStatus = rsNumericalFailure
+    AssertTrue stats, "audit03.capacity.lifecycle.autoPaths.finalPathNMxy", request.SelectedLoadPath.key = "LambdaNMxy"
+    AssertTrue stats, "audit03.capacity.lifecycle.autoPaths.noPoint", Not result.HasLimitPoint
     Dim fake As CTestLimitSearchProblem, multiplier As CLoadMultiplierSearch
     Set fake = New CTestLimitSearchProblem: Set multiplier = New CLoadMultiplierSearch
     fake.Configure "Bisection", 1.25, 0.000001, 80
@@ -57936,6 +58041,45 @@ Private Sub TestAudit03CapacitySearchLifecycle(ByRef stats As TCapacityTestStats
     AssertTrue stats, "audit03.capacity.lifecycle.report.reason", InStr(1, earlyReport, capacityResult.ResultMeta.resultComment, vbBinaryCompare) > 0
     AssertTrue stats, "audit03.capacity.lifecycle.report.russian", InStr(1, earlyReport, "Поиск несущей способности", vbBinaryCompare) = 1
     AssertTrue stats, "audit03.capacity.lifecycle.report.noRawStatus", InStr(1, earlyReport, "InvalidInput", vbTextCompare) = 0
+    TestAudit03CapacityConfigurationMessages stats, section
+End Sub
+
+' ДЛЯ ТЕСТОВ: каждый невалидный поисковый параметр должен сохранить typed
+' причину, назвать свою строку Config и завершиться до первой численной пробы.
+Private Sub TestAudit03CapacityConfigurationMessages(ByRef stats As TCapacityTestStats, _
+        ByVal section As CSectionModel)
+    Dim key As Variant, cap As CCapacitySolver, result As CLimitSearchResult
+    Dim prefix As String, strategy As String
+    For Each key In Array("Capacity.InitialLambda", "Capacity.ToleranceLambda", _
+            "Capacity.MaxLambda", "Capacity.MaxRetries", "Capacity.BaseLoadSteps", _
+            "Capacity.ToleranceStrain")
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        strategy = "LoadMultiplier"
+        Select Case CStr(key)
+            Case "Capacity.InitialLambda": cap.InitialLambdaStep = 0#
+            Case "Capacity.ToleranceLambda": cap.LambdaTolerance = 0#
+            Case "Capacity.MaxLambda": cap.maxLambda = 0#
+            Case "Capacity.MaxRetries": cap.MaxRetries = -1
+            Case "Capacity.BaseLoadSteps": cap.SolverBaseLoadSteps = 0
+            Case "Capacity.ToleranceStrain"
+                cap.StrainTolerance = 0#
+                strategy = "UltimateStrain"
+        End Select
+        If strategy = "UltimateStrain" Then
+            cap.SolveByUltimateLoadPath section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        Else
+            cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        End If
+        Set result = Audit02CapacitySnapshot(cap, strategy)
+        prefix = "audit03.capacity.configMessage." & CStr(key)
+        AssertTrue stats, prefix & ".status", result.meta.InternalStatus = rsInvalidConfiguration
+        AssertTrue stats, prefix & ".code", result.meta.ResultCode = rcInvalidConfiguration
+        AssertTrue stats, prefix & ".sheet", InStr(1, result.meta.resultComment, "Config", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".key", InStr(1, result.meta.resultComment, CStr(key), vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".noSearch", Not result.SearchExecuted And cap.iterations = 0
+        AppendLine stats, "CAPACITY_CONFIG_MESSAGE: " & CStr(key) & "|" & result.meta.resultComment
+    Next key
 End Sub
 
 

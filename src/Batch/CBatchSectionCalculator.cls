@@ -2000,12 +2000,9 @@ End Property
 Private Function DetailedInvalidInputMessage(ByVal index As Long) As String
     Dim detail As String
     detail = Trim$(mInputs(index).InputError)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StabilityResult.Status) Then _
-        detail = Trim$(mResults(index).StabilityMeta.ResultComment)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StrengthResult.Capacity.Status) Then _
-        detail = Trim$(mResults(index).StrengthResult.Capacity.LimitState)
-    If Len(detail) = 0 And mStatusPolicy.IsInvalid(mResults(index).StrengthResult.DirectState.Status) Then _
-        detail = Trim$(mResults(index).Status)
+    ' Итог уже собран владельцами result-tree, включая самостоятельный crack
+    ' subtree. Popup не подменяет его машинным LimitState или display-статусом.
+    If Len(detail) = 0 Then detail = Trim$(mResults(index).OverallMeta.ResultComment)
     If Len(detail) = 0 Then detail = Trim$(mResults(index).Status)
     If Len(detail) = 0 Then detail = mStatusPolicy.InputErr
 

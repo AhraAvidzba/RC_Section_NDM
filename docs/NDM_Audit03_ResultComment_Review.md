@@ -157,3 +157,31 @@ Results save/reopen=True; палитра `351/0` с сохранением зн�
 русскую причину из соответствующего result-subtree, а не возвращать один
 display-статус или технический Capacity.LimitState. Пока это предмет проверки,
 не принятая правка production.
+
+## Итоговое Сообщение InputErr v131
+
+На неизменном production v130 воспроизведены три маршрута: negative v131b
+`9/3`. DirectState и CurrentCrackedState имеют готовую русскую причину
+Solver.DampingInitial, но FirstInvalidInputMessage возвращает только InputErr.
+Capacity имеет готовый ResultComment, но popup подставляет InvalidInput из
+LimitState. Первоначальный Width/Phi1 пример отклонялся до Width calculator,
+поэтому его пустая Width-meta не является дефектом; oracle уточнен до CurrentState.
+V131c дополнительно требует точный ключ Capacity.ToleranceLambda и Config.
+Подготовленная правка берет готовый OverallMeta.ResultComment; отдельные причины
+собирают прежние владельцы. В Capacity уточнены тексты тех же validation-ветвей,
+без изменения условий, статусов, формулы или алгоритма поиска. Positive и
+штатные полные gates еще выполняются.
+
+Направленный positive v131 завершен: popup `14/0`, Capacity lifecycle и шесть
+адресных validation-причин `72/0`, watchdog exit=0, source unchanged=True.
+Negative v131c `9/5` сохранен: три потерянных owner-комментария и отсутствие
+Config/точного ключа у Capacity. Ни условия проверок, ни typed-коды не менялись.
+Auto-path fixture действительно выполняет три UltimateStrain-попытки и хранит
+SearchExecuted=True; прежний ошибочный oracle исправлен без правки production
+поиска. Обязательные gates этого среза завершены: full Off `23017/0`,
+On `23028/0`; source/export `102/102`; общие численные assertions с v130
+совпали без нового допуска (5574 Off, 5579 On, missing=0, differences=0).
+Universal `827/0`, Results save/reopen=True; палитра `351/0`, values/style
+save/reopen=True; Config formatting `1003/0`, deviations=0. Структурный
+Validate-Workbook: 25/25 True, exit=0. Книга/spec основного выпуска не менялись.
+Это приемка конкретной правки F05, не всего набора F05/F07/K/T/D/UI.

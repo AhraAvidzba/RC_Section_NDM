@@ -2437,6 +2437,29 @@ Private Sub TestAudit03CapacitySearchLifecycle(ByRef stats As TCapacityTestStats
     AssertTrue stats, "audit03.capacity.lifecycle.directAuto.finalConfig", result.Meta.InternalStatus = rsInvalidConfiguration
     AssertTrue stats, "audit03.capacity.lifecycle.directAuto.noPoint", Not result.HasLimitPoint
     AssertTrue stats, "audit03.capacity.lifecycle.directAuto.finalNoProbe", cap.Iterations = 0
+    ' Текущее сочетание осевое относительно расчетного центра, но содержит
+    ' взаимно компенсирующиеся пользовательский момент и момент от N.
+    ' Во всех трех Auto-путях остаются моментные компоненты траектории,
+    ' хотя при lambda=1 они компенсированы. Бюджет одной итерации дает
+    ' честную численную неудачу; итог обязан помнить выполненный поиск.
+    ConfigureCapacity cap
+    cap.SolverMaxIterations = 1
+    cap.LambdaTolerance = 0#
+    Dim autoLoad As CSectionLoadState
+    Set autoLoad = New CSectionLoadState
+    autoLoad.Initialize -20000#, 10000000#, 0#, 0#, 500#
+    request.InitializeCapacity cap, section, LinearConcrete(), LinearSteel(), _
+        "UltimateStrain", 0#, 0#, 0#, 1#, 0#, 0#, False, False
+    request.ConfigureLoadPathSelection "Auto", autoLoad, True
+    Set result = coordinator.ExecuteCapacity(request)
+    AppendLine stats, "AUTO_PATH_LIFECYCLE: path=" & request.SelectedLoadPath.Key & _
+        "; status=" & CStr(result.Meta.InternalStatus) & "; code=" & CStr(result.Meta.ResultCode) & _
+        "; searched=" & CStr(result.SearchExecuted) & "; comment=" & result.Meta.ResultComment
+    AppendLine stats, "AUTO_PATH_LIFECYCLE_DIAGNOSTICS: " & result.DiagnosticLog
+    AssertTrue stats, "audit03.capacity.lifecycle.autoPaths.firstAttemptKept", result.SearchExecuted
+    AssertTrue stats, "audit03.capacity.lifecycle.autoPaths.finalNumerical", result.Meta.InternalStatus = rsNumericalFailure
+    AssertTrue stats, "audit03.capacity.lifecycle.autoPaths.finalPathNMxy", request.SelectedLoadPath.Key = "LambdaNMxy"
+    AssertTrue stats, "audit03.capacity.lifecycle.autoPaths.noPoint", Not result.HasLimitPoint
     Dim fake As CTestLimitSearchProblem, multiplier As CLoadMultiplierSearch
     Set fake = New CTestLimitSearchProblem: Set multiplier = New CLoadMultiplierSearch
     fake.Configure "Bisection", 1.25, 0.000001, 80
@@ -2464,6 +2487,45 @@ Private Sub TestAudit03CapacitySearchLifecycle(ByRef stats As TCapacityTestStats
     AssertTrue stats, "audit03.capacity.lifecycle.report.reason", InStr(1, earlyReport, capacityResult.ResultMeta.ResultComment, vbBinaryCompare) > 0
     AssertTrue stats, "audit03.capacity.lifecycle.report.russian", InStr(1, earlyReport, "Поиск несущей способности", vbBinaryCompare) = 1
     AssertTrue stats, "audit03.capacity.lifecycle.report.noRawStatus", InStr(1, earlyReport, "InvalidInput", vbTextCompare) = 0
+    TestAudit03CapacityConfigurationMessages stats, section
+End Sub
+
+' ДЛЯ ТЕСТОВ: каждый невалидный поисковый параметр должен сохранить typed
+' причину, назвать свою строку Config и завершиться до первой численной пробы.
+Private Sub TestAudit03CapacityConfigurationMessages(ByRef stats As TCapacityTestStats, _
+        ByVal section As CSectionModel)
+    Dim key As Variant, cap As CCapacitySolver, result As CLimitSearchResult
+    Dim prefix As String, strategy As String
+    For Each key In Array("Capacity.InitialLambda", "Capacity.ToleranceLambda", _
+            "Capacity.MaxLambda", "Capacity.MaxRetries", "Capacity.BaseLoadSteps", _
+            "Capacity.ToleranceStrain")
+        Set cap = New CCapacitySolver
+        ConfigureCapacity cap
+        strategy = "LoadMultiplier"
+        Select Case CStr(key)
+            Case "Capacity.InitialLambda": cap.InitialLambdaStep = 0#
+            Case "Capacity.ToleranceLambda": cap.LambdaTolerance = 0#
+            Case "Capacity.MaxLambda": cap.MaxLambda = 0#
+            Case "Capacity.MaxRetries": cap.MaxRetries = -1
+            Case "Capacity.BaseLoadSteps": cap.SolverBaseLoadSteps = 0
+            Case "Capacity.ToleranceStrain"
+                cap.StrainTolerance = 0#
+                strategy = "UltimateStrain"
+        End Select
+        If strategy = "UltimateStrain" Then
+            cap.SolveByUltimateLoadPath section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        Else
+            cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#, 10000000#, 0#, 0#
+        End If
+        Set result = Audit02CapacitySnapshot(cap, strategy)
+        prefix = "audit03.capacity.configMessage." & CStr(key)
+        AssertTrue stats, prefix & ".status", result.Meta.InternalStatus = rsInvalidConfiguration
+        AssertTrue stats, prefix & ".code", result.Meta.ResultCode = rcInvalidConfiguration
+        AssertTrue stats, prefix & ".sheet", InStr(1, result.Meta.ResultComment, "Config", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".key", InStr(1, result.Meta.ResultComment, CStr(key), vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".noSearch", Not result.SearchExecuted And cap.Iterations = 0
+        AppendLine stats, "CAPACITY_CONFIG_MESSAGE: " & CStr(key) & "|" & result.Meta.ResultComment
+    Next key
 End Sub
 
 

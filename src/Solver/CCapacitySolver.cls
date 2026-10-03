@@ -1208,9 +1208,16 @@ Private Function ValidateLoadMultiplierSettings() As Boolean
     ElseIf StrComp(Trim$(mSolverMethod), "Newton", vbTextCompare) <> 0 And _
             StrComp(Trim$(mSolverMethod), "Secant", vbTextCompare) <> 0 Then
         SetInvalidConfiguration "Solver.Method должен быть Newton или Secant."
-    ElseIf mInitialLambdaStep <= 0# Or mLambdaTolerance <= 0# Or mMaxLambda <= 0# Or _
-            mMaxRetries < 0 Or mSolverBaseLoadSteps <= 0 Then
-        SetInvalidConfiguration "Настройки LoadMultiplier для несущей способности некорректны."
+    ElseIf mInitialLambdaStep <= 0# Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.InitialLambda задайте начальный шаг больше нуля."
+    ElseIf mLambdaTolerance <= 0# Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля."
+    ElseIf mMaxLambda <= 0# Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.MaxLambda задайте верхнюю границу поиска больше нуля."
+    ElseIf mMaxRetries < 0 Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.MaxRetries задайте неотрицательное число повторных попыток."
+    ElseIf mSolverBaseLoadSteps <= 0 Then
+        SetInvalidConfiguration "На листе Config в строке Capacity.BaseLoadSteps задайте число ступеней нагрузки больше нуля."
     Else
         ValidateLoadMultiplierSettings = True
     End If
@@ -1221,7 +1228,7 @@ End Function
 ' плоскости достаточно проверить численную корректность lambda.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
-        SetInvalidConfiguration "Настройки UltimateStrain для несущей способности некорректны."
+        SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceStrain задайте допуск предельной деформации больше нуля."
     Else
         ValidateUltimateStrainSettings = True
     End If

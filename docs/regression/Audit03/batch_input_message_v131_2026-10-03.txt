@@ -1,0 +1,30 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_input_message_v131.xlsm
+SOURCE_SHA256: EF084A9FA6717E74A846489FBED40528959554CF35CC3BB95B1313A16B2CF219
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_84f2fba5cb9c4e17945c5a22131c8db7\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03BatchInputMessageTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03BatchInputMessageTests; 2026-10-03T06:43:33
+EXCEL_AFTER_SUITE: pid=23408; workingSet=134111232; privateBytes=100466688; cpu=3.59375
+OK: audit03.batchInputMessage.DirectState.ownerStatus
+OK: audit03.batchInputMessage.DirectState.ownerReason
+OK: audit03.batchInputMessage.DirectState.includesReason
+OK: audit03.batchInputMessage.DirectState.includesLC
+INPUT_MESSAGE: audit03.batchInputMessage.DirectState|owner=Solver.DampingInitial должен быть больше 0 и не больше 1.|popup=CombinationID=INPUT_DirectState: НДС: Solver.DampingInitial должен быть больше 0 и не больше 1. (статус InputErr)
+OK: audit03.batchInputMessage.Capacity.ownerStatus
+OK: audit03.batchInputMessage.Capacity.ownerReason
+OK: audit03.batchInputMessage.Capacity.includesReason
+OK: audit03.batchInputMessage.Capacity.includesLC
+OK: audit03.batchInputMessage.Capacity.configSheet
+OK: audit03.batchInputMessage.Capacity.configKey
+INPUT_MESSAGE: audit03.batchInputMessage.Capacity|owner=На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля.|popup=CombinationID=INPUT_Capacity: Несущая: На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля. (статус InputErr)
+OK: audit03.batchInputMessage.CrackCurrentState.ownerStatus
+OK: audit03.batchInputMessage.CrackCurrentState.ownerReason
+OK: audit03.batchInputMessage.CrackCurrentState.includesReason
+OK: audit03.batchInputMessage.CrackCurrentState.includesLC
+INPUT_MESSAGE: audit03.batchInputMessage.CrackCurrentState|owner=Solver.DampingInitial должен быть больше 0 и не больше 1.|popup=CombinationID=INPUT_CrackCurrentState: Трещинообразование: Начальный коэффициент демпфирования UltimateStrain должен быть больше 0 и не больше 1.; НДС: Solver.DampingInitial должен быть больше 0 и не больше 1.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. (статус InputErr)
+TOTAL_BATCH_INPUT_MESSAGE: passed=14; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_84f2fba5cb9c4e17945c5a22131c8db7\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03BatchInputMessageTests; 2026-10-03T06:43:33
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

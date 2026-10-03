@@ -1,0 +1,75 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_callpath_negative_v131.xlsm
+SOURCE_SHA256: 1C18AF540EE8C3A8F49582E9D42582103F46147E332F90438D1AC9E425D980F6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_37c00fe88c07452c8c8ab05eb8b893ef\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCapacitySolver.RunAudit03CapacityLifecycle =====
+SUITE_STARTED: modTestCapacitySolver.RunAudit03CapacityLifecycle; 2026-10-03T06:36:25
+EXCEL_AFTER_SUITE: pid=28472; workingSet=131010560; privateBytes=91611136; cpu=3.15625
+OK: audit03.capacity.lifecycle.missing.notExecuted
+OK: audit03.capacity.lifecycle.missing.notCalculated
+OK: audit03.capacity.lifecycle.empty.notExecuted
+OK: audit03.capacity.lifecycle.empty.notCalculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.attempted
+OK: audit03.capacity.lifecycle.LoadMultiplier.calculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.point
+OK: audit03.capacity.lifecycle.LoadMultiplier.invalidBeforeSearch
+OK: audit03.capacity.lifecycle.LoadMultiplier.invalidNotCalculated
+OK: audit03.capacity.lifecycle.LoadMultiplier.invalidNoPoint
+OK: audit03.capacity.lifecycle.LoadMultiplier.priorSnapshot
+OK: audit03.capacity.lifecycle.LoadMultiplier.missingReset
+OK: audit03.capacity.lifecycle.LoadMultiplier.missingNoPoint
+OK: audit03.capacity.lifecycle.UltimateStrain.attempted
+OK: audit03.capacity.lifecycle.UltimateStrain.calculated
+OK: audit03.capacity.lifecycle.UltimateStrain.point
+OK: audit03.capacity.lifecycle.UltimateStrain.invalidBeforeSearch
+OK: audit03.capacity.lifecycle.UltimateStrain.invalidNotCalculated
+OK: audit03.capacity.lifecycle.UltimateStrain.invalidNoPoint
+OK: audit03.capacity.lifecycle.UltimateStrain.priorSnapshot
+OK: audit03.capacity.lifecycle.UltimateStrain.missingReset
+OK: audit03.capacity.lifecycle.UltimateStrain.missingNoPoint
+OK: audit03.capacity.lifecycle.fallback.firstAttemptKept
+OK: audit03.capacity.lifecycle.fallback.finalConfig
+OK: audit03.capacity.lifecycle.fallback.noPoint
+OK: audit03.capacity.lifecycle.fallback.finalNoProbe
+OK: audit03.capacity.lifecycle.directAuto.firstAttemptKept
+OK: audit03.capacity.lifecycle.directAuto.finalConfig
+OK: audit03.capacity.lifecycle.directAuto.noPoint
+OK: audit03.capacity.lifecycle.directAuto.finalNoProbe
+AUTO_PATH_LIFECYCLE: path=LambdaNMxy; status=6; code=10; searched=True; comment=Путь λ*Mx: UltimateStrain: итерации Newton не сошлись. Путь λ*N: UltimateStrain: итерации Newton не сошлись. Итоговый путь λ*NMxy: UltimateStrain: итерации Newton не сошлись.
+AUTO_PATH_LIFECYCLE_DIAGNOSTICS: search=ultimate iter=1; eps0=-0.000010883174; kappaX=0.000016666667; kappaY=0.; rN=-702.590742668044; rDir=0.; rLimit=0.007255449626; lambda=12.987920246743; critical=C1:Compression
+search=ultimate iter=2; eps0=-0.000010882449; kappaX=0.000016666667; kappaY=0.; rN=-702.277236618461; rDir=0.; rLimit=0.007254965929; lambda=12.987920246743; critical=C1:Compression
+search=ultimate iter=3; eps0=-0.000010883174; kappaX=0.000016666679; kappaY=0.; rN=-702.590742666989; rDir=0.; rLimit=0.007256175171; lambda=12.987928944518; critical=C1:Compression
+search=ultimate iter=4; eps0=-0.000010883174; kappaX=0.000016666667; kappaY=0.000000000007; rN=-702.590742667804; rDir=-0.000000908609; rLimit=0.007256126801; lambda=12.987920246743; critical=C1:Compression
+search=ultimate iter=5; eps0=-0.000009257173; kappaX=0.000016563809; kappaY=0.; rN=0.000008813696; rDir=0.; rLimit=0.000000000002; lambda=12.913937409609; critical=C15:Compression
+
+search=ultimatePath iter=1; eps0=-0.000375; kappaX=0.; kappaY=0.; rPath1=0.; rPath2=79018.2515421444; rLimit=-0.75; lambda=40.509125771072; critical=C1:Compression
+search=ultimatePath iter=2; eps0=-0.000374925; kappaX=0.; kappaY=0.; rPath1=0.; rPath2=79002.0478918361; rLimit=-0.75005; lambda=40.501023945918; critical=C1:Compression
+search=ultimatePath iter=3; eps0=-0.000375; kappaX=0.00000000075; kappaY=0.; rPath1=0.; rPath2=79019.3304549666; rLimit=-0.749955; lambda=40.509125771072; critical=C1:Compression
+search=ultimatePath iter=4; eps0=-0.000375; kappaX=0.; kappaY=0.00000000075; rPath1=2.439741349966; rPath2=79018.2515421444; rLimit=-0.74993; lambda=40.509125771072; critical=C1:Compression
+search=ultimatePath iter=5; eps0=-0.000239471537; kappaX=0.000005; kappaY=0.; rPath1=-0.000000000502; rPath2=56930.2594993517; rLimit=-0.54035230838; lambda=25.868753675653; critical=C15:Compression
+
+search=ultimatePath iter=1; eps0=-0.000375; kappaX=0.; kappaY=0.; rPath1=0.; rPath2=0.; rLimit=-0.75; lambda=40.509125771072; critical=C1:Compression
+search=ultimatePath iter=2; eps0=-0.000374925; kappaX=0.; kappaY=0.; rPath1=0.000000000001; rPath2=0.; rLimit=-0.75005; lambda=40.501023945918; critical=C1:Compression
+search=ultimatePath iter=3; eps0=-0.000375; kappaX=0.00000000075; kappaY=0.; rPath1=1.078912822216; rPath2=0.; rLimit=-0.749955; lambda=40.509125771072; critical=C1:Compression
+search=ultimatePath iter=4; eps0=-0.000375; kappaX=0.; kappaY=0.00000000075; rPath1=0.; rPath2=2.439741349966; rLimit=-0.74993; lambda=40.509125771072; critical=C1:Compression
+search=ultimatePath iter=5; eps0=-0.000675; kappaX=0.; kappaY=0.; rPath1=0.000000002748; rPath2=0.000000000208; rLimit=-0.55; lambda=72.91642638793; critical=C1:Compression
+
+OK: audit03.capacity.lifecycle.autoPaths.firstAttemptKept
+FAIL: audit03.capacity.lifecycle.autoPaths.finalConfig
+FAIL: audit03.capacity.lifecycle.autoPaths.finalPathN
+OK: audit03.capacity.lifecycle.autoPaths.noPoint
+OK: audit03.capacity.lifecycle.generic.executed
+OK: audit03.capacity.lifecycle.generic.invalidNotExecuted
+OK: audit03.capacity.lifecycle.generic.invalidNoProbe
+OK: audit03.capacity.lifecycle.default.notExecuted
+OK: audit03.capacity.lifecycle.default.notCalculated
+OK: audit03.capacity.lifecycle.report.reason
+OK: audit03.capacity.lifecycle.report.russian
+OK: audit03.capacity.lifecycle.report.noRawStatus
+TOTAL_AUDIT03_CAPACITY_LIFECYCLE: passed=40; failed=2
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_37c00fe88c07452c8c8ab05eb8b893ef\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCapacitySolver.RunAudit03CapacityLifecycle; 2026-10-03T06:36:26
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

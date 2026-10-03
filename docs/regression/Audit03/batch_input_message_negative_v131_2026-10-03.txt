@@ -1,0 +1,28 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_callpath_negative_v131.xlsm
+SOURCE_SHA256: 5BC41CA898E6FA281BC9D496838FB0B5C727468053E181039F8CE73A340291DC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_44d5f7843be34864b95bb20fa6dc1c23\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03BatchInputMessageTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03BatchInputMessageTests; 2026-10-03T06:33:53
+EXCEL_AFTER_SUITE: pid=22912; workingSet=140926976; privateBytes=120283136; cpu=3.390625
+OK: audit03.batchInputMessage.DirectState.ownerStatus
+OK: audit03.batchInputMessage.DirectState.ownerReason
+FAIL: audit03.batchInputMessage.DirectState.includesReason
+OK: audit03.batchInputMessage.DirectState.includesLC
+INPUT_MESSAGE: audit03.batchInputMessage.DirectState|owner=Solver.DampingInitial должен быть больше 0 и не больше 1.|popup=CombinationID=INPUT_DirectState: InputErr (статус InputErr)
+OK: audit03.batchInputMessage.Capacity.ownerStatus
+OK: audit03.batchInputMessage.Capacity.ownerReason
+FAIL: audit03.batchInputMessage.Capacity.includesReason
+OK: audit03.batchInputMessage.Capacity.includesLC
+INPUT_MESSAGE: audit03.batchInputMessage.Capacity|owner=Настройки LoadMultiplier для несущей способности некорректны.|popup=CombinationID=INPUT_Capacity: InvalidInput (статус InputErr)
+OK: audit03.batchInputMessage.CrackWidth.ownerStatus
+FAIL: audit03.batchInputMessage.CrackWidth.ownerReason
+OK: audit03.batchInputMessage.CrackWidth.includesReason
+OK: audit03.batchInputMessage.CrackWidth.includesLC
+INPUT_MESSAGE: audit03.batchInputMessage.CrackWidth|owner=|popup=CombinationID=INPUT_CrackWidth: На листе Config в строке SLS.Crack.Phi1 введите коэффициент больше нуля. (статус InputErr)
+TOTAL_BATCH_INPUT_MESSAGE: passed=9; failed=3
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_44d5f7843be34864b95bb20fa6dc1c23\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03BatchInputMessageTests; 2026-10-03T06:33:53
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True
