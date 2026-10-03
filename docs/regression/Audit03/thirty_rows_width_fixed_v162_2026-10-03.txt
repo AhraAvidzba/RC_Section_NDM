@@ -1,0 +1,223 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_writer_width_fixed_v162.xlsm
+SOURCE_SHA256: D5E48372941E6A0ADD3F10166C921E9A2F86B4547247FA9D7D8A617B657C0154
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0cc49c2a84324a91b2a9a16aa6b8bc8d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestLoadTableConfig.RunAudit03SummaryWriterDiagnosticTests =====
+SUITE_STARTED: modTestLoadTableConfig.RunAudit03SummaryWriterDiagnosticTests; 2026-10-03T17:13:01
+EXCEL_AFTER_SUITE: pid=23476; workingSet=207073280; privateBytes=158924800; cpu=6137.28125
+EXCEL_AFTER_SUITE: pid=28124; workingSet=146640896; privateBytes=117170176; cpu=9.65625
+RUN: writerDiagnostic.application; screenUpdating=True; calculation=-4105
+OK: writerDiagnostic.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.1; pid=23476; privateBytes=158924800; pid=28124; privateBytes=111616000
+OK: writerDiagnostic.ThirtyRowsBatch.1.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.2; pid=23476; privateBytes=158924800; pid=28124; privateBytes=114475008
+OK: writerDiagnostic.ThirtyRowsBatch.2.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.3; pid=23476; privateBytes=158924800; pid=28124; privateBytes=114966528
+OK: writerDiagnostic.ThirtyRowsBatch.3.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.4; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117092352
+OK: writerDiagnostic.ThirtyRowsBatch.4.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.5; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117313536
+OK: writerDiagnostic.ThirtyRowsBatch.5.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.6; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117313536
+OK: writerDiagnostic.ThirtyRowsBatch.6.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.7; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117178368
+OK: writerDiagnostic.ThirtyRowsBatch.7.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.8; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117170176
+OK: writerDiagnostic.ThirtyRowsBatch.8.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.9; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117170176
+OK: writerDiagnostic.ThirtyRowsBatch.9.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.10; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117170176
+OK: writerDiagnostic.ThirtyRowsBatch.10.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.11; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117170176
+OK: writerDiagnostic.ThirtyRowsBatch.11.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.12; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117170176
+OK: writerDiagnostic.ThirtyRowsBatch.12.noSolve
+RUN: writerDiagnostic.ThirtyRowsBatch.completed; pid=23476; privateBytes=158924800; pid=28124; privateBytes=117170176
+OK: writerDiagnostic.ThirtyRowsBatch.scope1.value
+OK: writerDiagnostic.ThirtyRowsBatch.scope1.fill
+OK: writerDiagnostic.ThirtyRowsBatch.scope1.format
+OK: writerDiagnostic.ThirtyRowsBatch.width1
+OK: writerDiagnostic.ThirtyRowsBatch.scope2.value
+OK: writerDiagnostic.ThirtyRowsBatch.scope2.fill
+OK: writerDiagnostic.ThirtyRowsBatch.scope2.format
+OK: writerDiagnostic.ThirtyRowsBatch.width2
+OK: writerDiagnostic.ThirtyRowsBatch.scope3.value
+OK: writerDiagnostic.ThirtyRowsBatch.scope3.fill
+OK: writerDiagnostic.ThirtyRowsBatch.scope3.format
+OK: writerDiagnostic.ThirtyRowsBatch.width3
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.1
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.1
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.2
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.2
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.3
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.3
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.4
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.4
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.5
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.5
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.6
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.6
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.7
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.7
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.8
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.8
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.9
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.9
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.10
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.10
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.11
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.11
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.12
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.12
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.13
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.13
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.14
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.14
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.15
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.15
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.16
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.16
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.17
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.17
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.18
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.18
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.19
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.19
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.20
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.20
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.21
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.21
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.22
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.22
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.23
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.23
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.24
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.24
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.25
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.25
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.26
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.26
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.27
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.27
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.28
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.28
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.29
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.29
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.30
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.30
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.31
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.31
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.32
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.32
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.33
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.33
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.34
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.34
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.35
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.35
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.36
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.36
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.37
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.37
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.38
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.38
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.39
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.39
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.40
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.40
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.41
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.41
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.42
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.42
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.43
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.43
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.44
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.44
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.45
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.45
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.46
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.46
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.47
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.47
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.48
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.48
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.49
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.49
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.50
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.50
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.51
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.51
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.52
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.52
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.53
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.53
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.54
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.54
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.55
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.55
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.56
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.56
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.57
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.57
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.58
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.58
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.59
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.59
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.60
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.60
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.61
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.61
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.62
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.62
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.63
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.63
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.64
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.64
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.65
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.65
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.66
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.66
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.67
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.67
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.68
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.68
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.69
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.69
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.70
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.70
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.71
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.71
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.72
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.72
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.73
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.73
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.74
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.74
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.75
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.75
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.76
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.76
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.77
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.77
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.78
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.78
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.79
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.79
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.80
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.80
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.81
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.81
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.82
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.82
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.83
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.83
+OK: writerDiagnostic.ThirtyRowsBatch.allWidths.84
+OK: writerDiagnostic.ThirtyRowsBatch.allPoints.84
+TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=193; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0cc49c2a84324a91b2a9a16aa6b8bc8d\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestLoadTableConfig.RunAudit03SummaryWriterDiagnosticTests; 2026-10-03T17:13:09
+RESULTS_SAVE_REOPEN: before=ADABBE00F6B47D02F5AEA15F6A0DA2B889DA19728EEC2E9873E1116AC27D4777; after=ADABBE00F6B47D02F5AEA15F6A0DA2B889DA19728EEC2E9873E1116AC27D4777; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0cc49c2a84324a91b2a9a16aa6b8bc8d\RC_Section_NDM_saved.xlsm
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

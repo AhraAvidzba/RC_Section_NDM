@@ -1,0 +1,15 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_snapshot_title_fixed_v164.xlsm
+SOURCE_SHA256: EFD0F6AA43BB51D925F11E316B0FD66A6FE9E631E02980F0BD9C09F209FD460E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5b934ad3ebf747d0afd56db6122e55c2\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunWorkbookInterfaceTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunWorkbookInterfaceTests; 2026-10-03T17:38:07
+SCRIPT ERROR: Исключение при вызове "Run" с "1" аргументами: "Сбой при удаленном вызове процедуры. (Исключение из HRESULT: 0x800706BE)"
+SCRIPT_ERROR_CONTEXT: macro=modTestWorkbookInterface.RunWorkbookInterfaceTests; exceptionType=System.Management.Automation.MethodInvocationException
+SCRIPT_ERROR_POSITION: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1:208 знак:16
++         else { $result = [string]$excel.Run($macroName) }
++                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SCRIPT_ERROR_STACK: в <ScriptBlock>, C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1: строка 208
+CLEANUP ERROR: workbook; Сервер RPC недоступен. (Исключение из HRESULT: 0x800706BA)
+CLEANUP ERROR: Excel; Исключение при вызове "Quit" с "0" аргументами: "Сервер RPC недоступен. (Исключение из HRESULT: 0x800706BA)"
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

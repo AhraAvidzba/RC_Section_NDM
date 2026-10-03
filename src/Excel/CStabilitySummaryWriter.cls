@@ -38,7 +38,6 @@ Private Const SP63_PLANE2_FIRST As Long = 73
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных таблицах Results.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
-Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' В Results все столбцы оставляем одинаковой ширины.
 
 ' Возвращает количество строк шапки, которые writer строит выше rngStabilitySummaryAnchor.
 Public Function HeaderRowsAboveAnchor() As Long
@@ -152,7 +151,7 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
 
     Dim titleRow As Long
     titleRow = target.Row - 1
-    target.Worksheet.Rows.Item(titleRow).Interior.Color = RGB(189, 215, 238)
+    target.Worksheet.Cells(titleRow, target.Column).Resize(1, TOTAL_COLUMNS).Interior.Color = RGB(189, 215, 238)
     target.Worksheet.Rows.Item(titleRow).RowHeight = 15
     With target.Worksheet.Cells(titleRow, target.Column)
         .Value2 = titleText
@@ -166,10 +165,11 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     End With
 End Sub
 
-' Очищает строку-название вместе со старой заливкой, если якорь блока был перенесен.
+' Очищает название и заливку только в ширине блока устойчивости. Данные
+' справа от таблицы не принадлежат writer-у и не затрагиваются очисткой.
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.Row <= 1 Then Exit Sub
-    target.Worksheet.Rows.Item(target.Row - 1).Clear
+    target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
     target.Worksheet.Rows.Item(target.Row - 1).RowHeight = 15
 End Sub
 
@@ -557,8 +557,6 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, 3).NumberFormat = "@"
     target.Offset(HEADER_ROWS, 1).Resize(dataRows, 1).HorizontalAlignment = -4131
 
-    SetColumnWidths target
-
     FormatStatusCells target, batch
 End Sub
 
@@ -572,11 +570,6 @@ Private Sub FormatHeaderNotes(ByVal target As Object)
         .WrapText = False
     End With
     target.Worksheet.Rows.Item(target.Row + 3).RowHeight = 15
-End Sub
-
-' Задает рабочие ширины столбцов Results для детального блока устойчивости.
-Private Sub SetColumnWidths(ByVal target As Object)
-    target.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 End Sub
 
 ' Оформляет один смысловой блок и не трогает пустой столбец-разделитель рядом.

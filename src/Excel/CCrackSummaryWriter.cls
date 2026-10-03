@@ -81,7 +81,6 @@ Private Const COL_LONG_RATIO As Long = 48
 Private Const COL_LONG_STATUS As Long = 49
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, единый для таблиц Results.
-Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results оставляем одинаковую ширину столбцов.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Порог только для пустых расчетных полей writer-а.
 Private Const HEADER_NOTES_ROW As Long = 3 ' Строка коротких пояснений над нижними обозначениями.
 Private Const HEADER_LABEL_ROW As Long = 4 ' Строка итоговых обозначений с единицами.
@@ -199,7 +198,7 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
 
     Dim titleRow As Long
     titleRow = target.Row - 1
-    target.Worksheet.Rows.Item(titleRow).Interior.Color = RGB(189, 215, 238)
+    target.Worksheet.Cells(titleRow, target.Column).Resize(1, TOTAL_COLUMNS).Interior.Color = RGB(189, 215, 238)
     target.Worksheet.Rows.Item(titleRow).RowHeight = 15
     With target.Worksheet.Cells(titleRow, target.Column)
         .Value2 = titleText
@@ -213,10 +212,11 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     End With
 End Sub
 
-' Очищает старую строку-название, чтобы при переносе якоря не оставались старые форматы.
+' Очищает название и заливку только в ширине блока трещин. Ячейки справа
+' не относятся к этой таблице и сохраняются при повторной записи результатов.
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.Row <= 1 Then Exit Sub
-    target.Worksheet.Rows.Item(target.Row - 1).Clear
+    target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
     target.Worksheet.Rows.Item(target.Row - 1).RowHeight = 15
 End Sub
 
@@ -628,7 +628,6 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.WrapText = False
     target.Rows.RowHeight = 15
 
-    SetColumnWidths target
     FormatBlock target, COL_LEFT_FIRST, COL_LEFT_LAST
     FormatBlock target, COL_MAIN_FIRST, COL_MAIN_LAST
     target.Columns(COL_SEPARATOR).Clear
@@ -658,11 +657,6 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
         ApplyStatusCells target, batch, dataRows
     End If
     ApplyHeaderSubscripts target
-End Sub
-
-' Задает одинаковую стандартную ширину всем столбцам блока Results.
-Private Sub SetColumnWidths(ByVal target As Object)
-    target.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 End Sub
 
 ' Оформляет один непрерывный блок таблицы, не затрагивая пустые разделители.

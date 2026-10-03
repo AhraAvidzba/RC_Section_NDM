@@ -69,6 +69,229 @@
 
 ## Актуальная Точка Продолжения
 
+- Full Off v143b не принят: шесть suites завершены без failures, но UI-suite
+  остановилась с Excel runtime 14 `Out of string space`. Последний внешний
+  RUN-журнал перед остановом: `HollowRectangle.l2.s4.k1` блока input units.
+  Тестовый Excel PID 8936 имел privateBytes=3581952000; окно ошибки прочитано
+  через accessibility. Click Debug не сработал из-за недоступной геометрии
+  окна, capture завершился timeout; read-only VBIDE не имел ActiveCodePane.
+  Точный VBA call-site пока не установлен. Только этот аварийный тестовый
+  Excel закрыт принудительно по ранее данному разрешению пользователя;
+  runner reaped exit=1, source unchanged=True. Это не физический исход
+  Search и не основание ослаблять assertions. В v144 добавлены внешние RUN
+  checkpoints и память между крупными блоками UI, а также этапы адресного
+  LC-набора. На свежем отдельном Excel идет полный UI-repeat, без изменения
+  формул/criteria/tolerances. Книга v144 SHA
+  `F61AB6F00248572A6DB13B837BD8547BF4DFDA769203100BFB73236272E31773`.
+  Основная output-книга и пользовательское ТЗ сохранили baseline-хеши.
+  v144 standalone regular Off: `11021/0`, 910 cases, source unchanged=True,
+  Results save/reopen=True, privateBytes тестового Excel=101924864. Полный
+  UI v144 отдельно воспроизвел рост до 3560681472 bytes и серверный RPC-отказ.
+  v145 проверил раздельное получение дочернего отчета перед конкатенацией:
+  рост памяти и отказ сохранились, гипотеза не принята, изменение отменено.
+  В v146 новый диагностический entrypoint выполняет неизмененный UI-prefix
+  до LC: `7329/0`, privateBytes=160333824, Results save/reopen=True. Сохраненная
+  книга имеет Results A1:CF1468, 24136 XML-ячеек, 118 cell formats, 0 CF rules;
+  все summary anchors штатные. WMI-диагностика теперь указывает PID каждого
+  Excel, а не подменяет тестовую память последним посторонним процессом.
+  LC-набор после сохранения prefix и запуска нового Excel воспроизвел отказ:
+  `load_table_after_ui_reopen_v146_2026-10-03.txt`, runner exit=1,
+  source unchanged=True; privateBytes тестового PID 20700 достигли 2661097472.
+  Это связывает проблему с сохраненным состоянием книги, а не только с памятью
+  предыдущего Excel. Аварийный тестовый процесс закрыт, чужой Excel не затронут.
+  Проверяется ограничение трех summary title rows шириной своего блока:
+  прежние writer-ы очищали и закрашивали целую строку вне собственных данных.
+  v147 повторил отказ, source unchanged=True: ограничение title rows не
+  устранило рост памяти (3567136768 bytes); тестовый Excel завершился аварийно
+  сам, попытка принудительного закрытия уже не нашла PID. v148b отделил
+  выгрузку от Search: 12 записей одной готовой InputErr-строки без solve
+  через Batch дали рост 112578560 -> 1502437376 bytes. Изолированные
+  Strength/Crack/Stability writer-ы имеют `22/0`, save/reopen=True и
+  устойчивую память около 100 МБ. Соседние value/fill/format сохраняются.
+  Первый v148 остановился на ошибке нового диагностического setup: не был
+  загружен обязательный каталог профилей; это не дефект production Search.
+  В v149 проверяется удаление глобального Worksheet.StandardWidth из
+  верхней сводки при сохранении настройки ширины ее собственных столбцов.
+  Удаление только StandardWidth v149 не устранило основной рост:
+  12 Batch-записей 99463168 -> 1443926016 bytes; отдельная поэтапная
+  трассировка v150 показала накопление на нескольких операциях оформления.
+  Пользователь уточнил контракт: ширина задается только в сборке книги.
+  В v151 удалены все ColumnWidth/StandardWidth из пяти расчетных writer-ов,
+  включая snapshot и импортный preview; Build-Workbook по-прежнему задает 10.
+  Контролируемый unguarded repeat: `25/0`, сохранность трех пользовательских
+  ширин и соседних данных, память около 115 МБ после 12 записей, save/reopen=True.
+  Guarded repeat той же книги: `25/0`, около 112 МБ. Новый production guard
+  не добавлялся. Узкий repeat с заранее измененными тремя ширинами стал
+  устойчивым, но это не доказывает устранение роста для исходных ширин.
+  Внутренний механизм Excel не объявляется установленным. Временная
+  поэтапная production-трассировка удалена до регрессионной приемки; WMI
+  осталось только в явном тестовом диагностическом entrypoint-е.
+  Добавлен обычный UI-gate сохранности ширин всех шести output consumers;
+  справка/Architecture/AGENTS фиксируют новый контракт. Full gates,
+  210-address merge и выпуск остаются Pending; новые классы не добавлены.
+- v152: source/export `104/104`, failed=0; шесть consumers вывода/очистки
+  сохраняют пользовательскую ширину, `90/0`, Results save/reopen=True,
+  source unchanged=True. Полный LC-repeat на сохраненном UI-prefix вновь
+  завершился RPC_E_SERVERFAULT: тестовый PID 26676 достиг 3573202944 bytes
+  и завершился сам. Исходник не изменился; это не численная ошибка Search.
+  v153 отделяет первоначальные ширины от ручного setup: 12 готовых строк
+  без solve дают `25/0`, но память 116387840 -> 1527738368 bytes. С тем же
+  существующим CExcelAppStateGuard: `25/0`, 108191744 -> 263376896 bytes
+  (302182400 после Restore). Guard снижает рост, но не доказывает отсутствие
+  утечки; acceptance этого сценария остается открытой. Ширины не возвращаются
+  в runtime и тестовые expected/tolerances не ослабляются. Свежая v154
+  ограничивает также сборочную заливку snapshot-заголовка `A154:BJ154`:
+  раньше она затрагивала всю строку Excel. Исторический сохраненный prefix
+  имеет четыре глобальных row-style записи, хотя новые writer-ы ограничены
+  собственным блоком. Причина памяти проверяется на новой сборке отдельно;
+  посторонние ячейки и пользовательский Excel PID 23476 не меняются.
+- v154 Full Off завершил все восемь suites, но не принят: ровно четыре
+  assertions `batch.writer.stability.columnWidth*` требуют прежний runtime
+  сброс к 10. UI `19320/0`, включая LC `11021/0` и ширины `90/0`; физические
+  assertions не ослаблены. Старые четыре presentation-assertions заменены
+  сохранением ширины, прочитанной до WriteSummary, с точностью 0 вместо 0.01.
+  Изменение oracle следует новому пользовательскому контракту, а не actual
+  после вывода. Память UI v154 достигла около 2.8 ГБ; ограничение title rows
+  не устранило проблему, гипотеза не принята как причина. Экспорт v152
+  отставал от нового diagnostic setup на один модуль, поэтому source-contracts
+  v154 `103/104`, failed=1 не объявляются PASS. v155 задает ширину 10 явно
+  для `A:CF` при сборке, а не глобальный default всего листа; runtime
+  по-прежнему не устанавливает ширины. Проверяются свежая сборка, исходные
+  ширины без тестовой подгонки, полный Off/On и актуальный VBE-export.
+- v155 short unguarded writer `25/0`, 12 повторов, 91557888 -> 98004992
+  bytes, save/reopen=True. Source/export `104/104`, failed=0, экспорт SHA
+  `39CA1297127D2D917E568177D614C99C48F35E8794648DFD90A6C7A4F3248F8B`.
+  Однако Full Off не принят: шесть suites завершены без failures, включая
+  Batch `11155/0`, но UI остановился после `Solver.MaxDeltaKappa.batch`.
+  PID 29516 достиг 3582398464 bytes без дальнейшего RUN-прогресса и закрыт
+  принудительно; чужой PID 23476 не затронут. Последовавший RPC failure
+  runner-а не считается NumFail расчетного ядра; source unchanged=True.
+  Широкая явная инициализация A:CF не принята как memory-fix. v156 проверяет
+  исходную ширину 10 всего листа плюс явное закрепление только A:C при
+  сборке. Runtime остается без ColumnWidth/StandardWidth. Off/On, saved
+  prefix и 210-address merge остаются Pending; дальнейшие задачи цели не
+  закрываются по этому короткому writer-тесту.
+- v156 standalone UI `19320/0`, Results save/reopen=True, source unchanged=True,
+  но память вновь около 2.8 ГБ. Excel при сохранении удалил одинаковую явную
+  ширину A:C: XML имеет только defaultColWidth, без cols. Этот вариант не
+  принимается как оптимизация. v157 использует шаблонные 15/18/21 для ID,
+  пользовательского комментария и расчетного пояснения; прочие столбцы 10.
+  Все ширины задаются только в Build-Workbook, не во время расчета. Это
+  presentation-default новых книг, не изменение физических expected.
+  Полный Off/On, saved-prefix stress и остальная приемка еще обязательны.
+- v157 short unguarded writer завершен: `25/0`, 12 повторов без изменения
+  исходных ширин тестовым setup. Память тестового PID 19604 остается около
+  99 МБ; Results save/reopen=True, source unchanged=True. В сохраненном XML
+  есть три явные customWidth записи A/B/C; runtime не устанавливает ширины.
+  Source/export `104/104`, failed=0. Full Off запущен на независимой копии;
+  окончательная приемка памяти, full On и остальные gates пока Pending.
+- Full Off v157 не принят: Batch `11153/2`, две ширины N/AF действительно
+  изменились; UI позднее остановился с подтвержденным runtime 14
+  `Out of string space` при privateBytes=3559469056. Аварийный тестовый PID
+  29456 закрыт отдельно, пользовательский PID 23476 с четырьмя книгами не
+  затронут. Изолированный v158 `166/2` сравнил не только ColumnWidth, но и
+  Width в пунктах: N 56.25 -> 63, AF 56.25 -> 59.25. Это не округление
+  getter-а. Временная stage-диагностика v159-v161 установила первое изменение
+  на смене шрифта Strength.Format: обе default-колонки 56.25 -> 57 пунктов.
+  В v162 сборка задает явную customWidth для A:CF вместо defaultColWidth
+  всего листа и сохраняет отдельные A/B/C 15/18/21. Все временные проверки
+  удалены из production. Обычный width-gate теперь проверяет обе единицы
+  ширины всех 84 рабочих колонок шести consumers, без нового допуска.
+  Новая сборка/экспорт и направленные/full gates еще выполняются; memory-fix
+  по одному этому уточнению не объявляется доказанным.
+- v162 directed width gates завершены: реальный полный вывод `172/0`,
+  все 84 столбца шести consumers `1098/0`, 12 записей 30 ошибочных LC без
+  solve `193/0`. В последнем тесте privateBytes 111616000 -> 117170176
+  стабилизировались после первых повторов. Results save/reopen=True во всех
+  трех тестах, status-style=True в наборе шести consumers, source unchanged=True.
+  Source/export `104/104`, failed=0, export SHA
+  `25108073B24220820EBEE81D40402AA79FA4ACECC06DA643C9C50A33053C58DD`.
+  Книга SHA `D5E48372941E6A0ADD3F10166C921E9A2F86B4547247FA9D7D8A617B657C0154`.
+  Census: 4282 метода, 1513 guards, прежние 83 + 3 classes. Validate `27/27`.
+  Full Off v162 не принят: шесть suites без failures, Batch `11159/0`,
+  затем UI остановилась после `Solver.MaxDeltaKappa.batch`; тестовый PID
+  17636 достиг 3555 МБ и вывел runtime 14 `Out of string space`.
+  Только этот тестовый процесс закрыт принудительно, runner exit=1,
+  source unchanged=True. Это не NumFail численного ядра. Full On,
+  saved-prefix stress, updated help и 210-address merge еще Pending.
+- v163 добавляет контрольную ячейку справа от общего snapshot-заголовка,
+  которой не было в прежнем width-gate. Negative `1110/6`: Snapshot и Preview
+  стирают ее значение, заливку и формат, хотя все 84 ширины сохраняются.
+  Подтверждены два оставшихся whole-row действия в CNDMResultsWriter.
+  В v164 общий заголовок ограничен правой границей пяти snapshot-таблиц,
+  определенной по их фактическим якорям и схемам. Начальные ширины остаются
+  только у builder-а. Это подтвержденное исправление scope, а не заявленный
+  memory-fix; directed/full приемка и измерение памяти выполняются отдельно.
+- v164 свежая сборка и фактический VBE-export согласованы: `104/104`, failed=0.
+  Повтор контрпримера `1116/0`: все 84 ширины в символах и пунктах, шесть
+  consumers, четыре соседних контрольных ячейки; Results/status-style
+  save/reopen=True, source unchanged=True. Книга SHA
+  `EFD0F6AA43BB51D925F11E316B0FD66A6FE9E631E02980F0BD9C09F209FD460E`,
+  export SHA `5C5A59F2AF5EE5ACB51361C58419945DF05047883B10C6BA77306094347B17A7`.
+  Standalone full UI не принят: runtime 14 при 3562700800 privateBytes,
+  последний RUN `Solver.MaxDeltaKappa.batch`, то есть еще до нового LC/width
+  output-блока. Тестовый PID 5948 закрыт отдельно, runner exit=1,
+  source unchanged=True, пользовательский Excel PID 23476 не затронут.
+  Тот же полный unit/sign consumer-блок в свежем Excel: `44/0`, около
+  исходного расхода памяти. Следовательно, нельзя объявлять MaxDeltaKappa
+  причиной или подтвержденным дефектом solver-а: требуется локализовать
+  влияние предшествующего UI-prefix. Whole-row scope исправлен независимо
+  от этой проблемы. Следующий шаг: точные checkpoints до/после BuildUiBatch,
+  ApplySettings/Execute и предшествующих input-contract tests, без ослабления
+  assertions и без изменения физики. Full Off/On, memory stress и merge
+  адресной приемки 210 полей остаются Pending; Audit03 не завершен.
+- Checkpoint v165: title-cell записывается через Range 1x1; первоначальный
+  source-IO gate v164 `26/27` из-за Cells.Item не замалчивается. Окончательная
+  сборка/Refresh/экспорт: `104/104`, failed=0; Validate `27/27`; width/scope
+  повтор `1116/0`, Results/status-style save/reopen=True, source unchanged=True.
+  Книга SHA `48233F621AA55F55C23B7E5014C6404D942E6DB3706C20040A950A80ABFAC0F1`,
+  export SHA `A15F91FE332DA827798778B4352C974EB2EA7C9B445EF66FBC41D73483009CFF`.
+  Census: 4284 метода, 1513 guards, 83 + 3 classes; semantic acceptance Pending.
+  Диагностический входной prefix: `2291/0`, память тестового PID 29148
+  136171520 bytes. Сохраненная копия prefix в новом Excel проходит тот же
+  unit/sign-блок `44/0`, PID 29004 около 100 МБ. Config/Results этого prefix
+  сами по себе не воспроизводят отказ; причина непрерывного macro еще не
+  установлена. Добавлены только тестовые RUN checkpoints до/после сборки
+  batch, ApplySettings/Execute и входных блоков; production-физика не менялась.
+  Сохраненная fixture `RC_Section_NDM_input_prefix_saved_v165.xlsm` находится
+  в docs/regression/Audit03. Ширины окончательно принадлежат builder-у;
+  runtime не содержит ColumnWidth/StandardWidth/AutoFit. Это checkpoint,
+  не финальный выпуск: защищенная output-книга и ТЗ сохраняют baseline-хеши.
+- Принятый срез v140 зафиксирован commit `285182d` (без push).
+  Следующий цельный блок v141 проверяет 210 фактических адресов таблицы
+  сочетаний: 910 LC-cases, все 30 строк/семь колонок/четыре профиля,
+  перестановку/пропуски/повтор, ошибки формул/текст/overflow и шесть путей
+  обоих Search consumers. Первый завершенный negative v141c: `9863/424`.
+  Из них 420 assertions подтверждают отсутствие адреса исходной ячейки в
+  ошибке; остальные четыре относятся к двум Capacity points на LambdaN.
+  Две предварительные книги v141/v141b остановились на ошибках нового
+  тестового setup (ссылка на чужой private formatter); это не runtime
+  evidence production. Точный compile-site установлен read-only VBIDE.
+  Reader теперь добавляет фактический адрес для каждого поля и overflow
+  пересчета; writer не восстанавливает место ошибки и не меняет ее смысл.
+  Повтор v141: `10283/4`, 420 address-проверок исправлены, все 910 cases
+  выполнены, source unchanged=True, Results save/reopen=True. Два LambdaN
+  отказа имеют `rsNumericalFailure + rcNumericalFailure`: восстановление
+  интервала остановлено. Сейчас v141d повторяет тот же строгий oracle с
+  подробным solver-log для разбора retained physical boundary; эти адреса
+  еще не получают acceptance. Численные expected/tolerances не ослаблены.
+  Дополнительно выявлена дублирующаяся причина общего InputErr в отключенных
+  Capacity/Stability branches; scope/lifecycle требуют отдельной проверки.
+  Новых классов нет, основная output-книга и пользовательское ТЗ защищены.
+  v142 подключил существующую retained-boundary проверку для LambdaN с
+  постоянными пользовательскими моментами; `10283/4` показал, что сама
+  прежняя стартовая плоскость еще застревает на переломе диаграмм. v143
+  повторяет тот же общий Newton со сохранением противоположной деформации
+  из подтвержденной допустимой точки. Directed `11021/0`, 910 cases,
+  строгие N/Mx/My/physical-range/no-extension gates, Results save/reopen=True.
+  Source/export `104/104`, failed=0, export SHA
+  `184B45F979F4F2A5980B9E1F38562CA435D862F89766D0CE48966450F92F4F9D`.
+  Полный Off v143b сейчас выполняется; предварительный v143 не запускал
+  suites из-за неподдерживаемых full-run save/reopen arguments и не считается
+  runtime evidence production. Full On, clean build/help/validation/format,
+  численное сравнение и 210-address registry merge еще необходимы.
+  Updated SHA `63DFDB9249E9CA4BB453162604DE3E3D296BA81EF434CB996BE32747663D4ED1`.
+  Census 4280 методов/1510 guard-кандидатов; семантическая приемка Pending.
 - Checkpoint раннего ввода/read-only validator v139: `aeefb7b`.
   Срез v140 проверяет передачу предупреждения несовместимых границ ls в
   ResultComment. Negative на прежнем production `212/10`: все шесть

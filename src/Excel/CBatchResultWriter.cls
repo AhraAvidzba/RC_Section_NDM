@@ -59,7 +59,6 @@ Private Const STATUS_LEGEND_COLUMNS As Long = 2 ' Ширина правого с
 Private Const STATUS_LEGEND_ROWS As Long = 9 ' Заголовок, шапка и семь пользовательских статусов.
 
 Private Const DEFAULT_SUMMARY_ROWS As Long = 42 ' Штатная высота шаблона: 12 строк до данных и 30 строк LC.
-Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 
@@ -627,8 +626,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Font.Name = "Arial"
     target.Font.Size = 9
     target.Rows.RowHeight = 15
-    target.Worksheet.StandardWidth = RESULTS_COLUMN_WIDTH
-    target.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
+    ' Ширина столбцов задана при сборке книги и сохраняет правки пользователя.
 
     stage = "HeaderStyle"
     target.Offset(0, 0).Resize(META_ROWS, 5).Interior.Color = HEADER_COLOR

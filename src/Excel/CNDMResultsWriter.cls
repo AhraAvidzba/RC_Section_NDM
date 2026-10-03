@@ -35,7 +35,6 @@ Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Дополн�
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 69 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 13 ' Строки metadata одного сохраненного named-state.
-Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' Единая ширина всех столбцов Results.
 Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Общая синяя строка находится на две строки выше нижних snapshot-якорей.
 
 ' Возвращает фактическую ширину одного из блоков Results, которые пишет этот writer.
@@ -176,18 +175,16 @@ Private Function ExistingAnchoredRowCount(ByVal anchor As Object) As Long
     Next rowOffset
 End Function
 
-' Записывает общий заголовок над нижними snapshot-таблицами Results.
+' Записывает общий заголовок в пределах нижних snapshot-таблиц Results;
+' соседние ячейки той же строки не относятся к расчетному снимку.
 Private Sub WriteSnapshotTitle(ByVal workbook As Object)
     On Error GoTo MissingRange
-    Dim anchor As Object
-    Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
-    If anchor.Row <= SNAPSHOT_TITLE_OFFSET Then Exit Sub
-
-    Dim titleRow As Long
-    titleRow = anchor.Row - SNAPSHOT_TITLE_OFFSET
-    anchor.Worksheet.Rows.Item(titleRow).Interior.Color = RGB(189, 215, 238)
-    anchor.Worksheet.Rows.Item(titleRow).RowHeight = 15
-    With anchor.Worksheet.Cells(titleRow, anchor.Column)
+    Dim title As Object
+    Set title = SnapshotTitleRange(workbook)
+    If title Is Nothing Then Exit Sub
+    title.Interior.Color = RGB(189, 215, 238)
+    title.RowHeight = 15
+    With title.Resize(1, 1)
         .Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
         .Font.Name = "Arial"
         .Font.Size = 12
@@ -200,16 +197,36 @@ Private Sub WriteSnapshotTitle(ByVal workbook As Object)
 MissingRange:
 End Sub
 
-' Очищает общую строку-заголовок snapshot-блоков перед новой записью.
+' Очищает только общий заголовок snapshot-блоков перед новой записью,
+' сохраняя пользовательские данные и оформление справа от снимка.
 Private Sub ClearSnapshotTitle(ByVal workbook As Object)
     On Error GoTo MissingRange
-    Dim anchor As Object
-    Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
-    If anchor.Row <= SNAPSHOT_TITLE_OFFSET Then Exit Sub
-    anchor.Worksheet.Rows.Item(anchor.Row - SNAPSHOT_TITLE_OFFSET).Clear
-    anchor.Worksheet.Rows.Item(anchor.Row - SNAPSHOT_TITLE_OFFSET).RowHeight = 15
+    Dim title As Object
+    Set title = SnapshotTitleRange(workbook)
+    If title Is Nothing Then Exit Sub
+    title.Clear
+    title.RowHeight = 15
 MissingRange:
 End Sub
+
+' Определяет границы общего заголовка по фактическим якорям и схемам пяти
+' snapshot-таблиц. При переносе блоков вправо граница следует за ними,
+' а не расширяется до всех 16384 столбцов листа.
+Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
+    Dim anchor As Object, block As Object, name As Variant
+    Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
+    If anchor.Row <= SNAPSHOT_TITLE_OFFSET Then Exit Function
+
+    Dim rightColumn As Long, blockRightColumn As Long
+    rightColumn = anchor.Column
+    For Each name In Array("rngNDMElementResults", "rngNDMSectionGeometry", _
+            "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+        Set block = workbook.Names.Item(CStr(name)).RefersToRange
+        blockRightColumn = block.Column + OutputColumnCount(CStr(name)) - 1
+        If blockRightColumn > rightColumn Then rightColumn = blockRightColumn
+    Next name
+    Set SnapshotTitleRange = anchor.Offset(-SNAPSHOT_TITLE_OFFSET, 0).Resize(1, rightColumn - anchor.Column + 1)
+End Function
 
 ' ------------------------------
 ' LC-зависимые результаты элементов
@@ -1008,8 +1025,6 @@ Private Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, B
     tableRange.Rows.Item(1).Font.Bold = True
     tableRange.Rows.Item(1).HorizontalAlignment = -4131
     tableRange.Columns.Item(1).NumberFormat = "dd.mm.yy"
-
-    tableRange.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 
     AlignCommentColumns tableRange
     ApplyResultNumberFormats tableRange

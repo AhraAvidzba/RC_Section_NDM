@@ -1,0 +1,92 @@
+﻿SOURCE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a5b0ace241f24488b84770934ffb989c\RC_Section_NDM_saved.xlsm
+SOURCE_SHA256: E0891EB64B2A2FB83987FCFCE1B11DCB7FCC1F926E42486EC73B70DAE5F6061C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6db034bf1f664dd7ade13de86238b090\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03UnitSignConsumerTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03UnitSignConsumerTests; 2026-10-03T17:55:04
+EXCEL_AFTER_SUITE: pid=23476; workingSet=207749120; privateBytes=159698944; cpu=6876.5
+EXCEL_AFTER_SUITE: pid=29004; workingSet=147435520; privateBytes=99893248; cpu=4.09375
+RUN: Audit03 unit-sign consumers
+RUN: audit03.unitSign.Solver.ToleranceN.capacity
+OK: audit03.unitSign.Solver.ToleranceN.capacityTyped
+OK: audit03.unitSign.Solver.ToleranceN.capacityHasDiagnosticSolver
+OK: audit03.unitSign.Solver.ToleranceN.capacityNoIterations
+OK: audit03.unitSign.Solver.ToleranceN.capacityNoRetries
+OK: audit03.unitSign.Solver.ToleranceN.capacityReason
+RUN: audit03.unitSign.Solver.ToleranceN.formation
+OK: audit03.unitSign.Solver.ToleranceN.formationTyped
+OK: audit03.unitSign.Solver.ToleranceN.formationNoPoint
+OK: audit03.unitSign.Solver.ToleranceN.formationReason
+RUN: audit03.unitSign.Solver.ToleranceN.batch
+RUN: audit03.unitSign.Solver.ToleranceN.batch.built; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=138981376; privateBytes=94732288
+RUN: audit03.unitSign.Solver.ToleranceN.batch.settingsApplied; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=139059200; privateBytes=94744576
+RUN: audit03.unitSign.Solver.ToleranceN.batch.execute; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=139063296; privateBytes=94744576
+RUN: audit03.unitSign.Solver.ToleranceN.batch.executed; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=140120064; privateBytes=95830016
+OK: audit03.unitSign.Solver.ToleranceN.batchTyped
+OK: audit03.unitSign.Solver.ToleranceN.batchExternal; actual=InputErr
+OK: audit03.unitSign.Solver.ToleranceN.batchReason
+UNIT_SIGN_CONSUMER: key=Solver.ToleranceN|capacity=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|formation=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|batch=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+RUN: audit03.unitSign.Solver.ToleranceMx.capacity
+OK: audit03.unitSign.Solver.ToleranceMx.capacityTyped
+OK: audit03.unitSign.Solver.ToleranceMx.capacityHasDiagnosticSolver
+OK: audit03.unitSign.Solver.ToleranceMx.capacityNoIterations
+OK: audit03.unitSign.Solver.ToleranceMx.capacityNoRetries
+OK: audit03.unitSign.Solver.ToleranceMx.capacityReason
+RUN: audit03.unitSign.Solver.ToleranceMx.formation
+OK: audit03.unitSign.Solver.ToleranceMx.formationTyped
+OK: audit03.unitSign.Solver.ToleranceMx.formationNoPoint
+OK: audit03.unitSign.Solver.ToleranceMx.formationReason
+RUN: audit03.unitSign.Solver.ToleranceMx.batch
+RUN: audit03.unitSign.Solver.ToleranceMx.batch.built; pid=23476; workingSet=207757312; privateBytes=159698944; pid=29004; workingSet=140677120; privateBytes=96399360
+RUN: audit03.unitSign.Solver.ToleranceMx.batch.settingsApplied; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=140689408; privateBytes=96411648
+RUN: audit03.unitSign.Solver.ToleranceMx.batch.execute; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=140701696; privateBytes=96423936
+RUN: audit03.unitSign.Solver.ToleranceMx.batch.executed; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=140713984; privateBytes=96436224
+OK: audit03.unitSign.Solver.ToleranceMx.batchTyped
+OK: audit03.unitSign.Solver.ToleranceMx.batchExternal; actual=InputErr
+OK: audit03.unitSign.Solver.ToleranceMx.batchReason
+UNIT_SIGN_CONSUMER: key=Solver.ToleranceMx|capacity=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|formation=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|batch=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+RUN: audit03.unitSign.Solver.ToleranceMy.capacity
+OK: audit03.unitSign.Solver.ToleranceMy.capacityTyped
+OK: audit03.unitSign.Solver.ToleranceMy.capacityHasDiagnosticSolver
+OK: audit03.unitSign.Solver.ToleranceMy.capacityNoIterations
+OK: audit03.unitSign.Solver.ToleranceMy.capacityNoRetries
+OK: audit03.unitSign.Solver.ToleranceMy.capacityReason
+RUN: audit03.unitSign.Solver.ToleranceMy.formation
+OK: audit03.unitSign.Solver.ToleranceMy.formationTyped
+OK: audit03.unitSign.Solver.ToleranceMy.formationNoPoint
+OK: audit03.unitSign.Solver.ToleranceMy.formationReason
+RUN: audit03.unitSign.Solver.ToleranceMy.batch
+RUN: audit03.unitSign.Solver.ToleranceMy.batch.built; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=141000704; privateBytes=96731136
+RUN: audit03.unitSign.Solver.ToleranceMy.batch.settingsApplied; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=141000704; privateBytes=96731136
+RUN: audit03.unitSign.Solver.ToleranceMy.batch.execute; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=141000704; privateBytes=96731136
+RUN: audit03.unitSign.Solver.ToleranceMy.batch.executed; pid=23476; workingSet=207757312; privateBytes=159698944; pid=29004; workingSet=142049280; privateBytes=97271808
+OK: audit03.unitSign.Solver.ToleranceMy.batchTyped
+OK: audit03.unitSign.Solver.ToleranceMy.batchExternal; actual=InputErr
+OK: audit03.unitSign.Solver.ToleranceMy.batchReason
+UNIT_SIGN_CONSUMER: key=Solver.ToleranceMy|capacity=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|formation=Допуски Solver.ToleranceN/Mx/My должны быть положительными.|batch=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.capacity
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityTyped
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityHasDiagnosticSolver
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityNoIterations
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityNoRetries
+OK: audit03.unitSign.Solver.MaxDeltaKappa.capacityReason
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.formation
+OK: audit03.unitSign.Solver.MaxDeltaKappa.formationTyped
+OK: audit03.unitSign.Solver.MaxDeltaKappa.formationNoPoint
+OK: audit03.unitSign.Solver.MaxDeltaKappa.formationReason
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.batch
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.batch.built; pid=23476; workingSet=208314368; privateBytes=160468992; pid=29004; workingSet=146800640; privateBytes=99512320
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.batch.settingsApplied; pid=23476; workingSet=208510976; privateBytes=160468992; pid=29004; workingSet=146841600; privateBytes=99512320
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.batch.execute; pid=23476; workingSet=208707584; privateBytes=161234944; pid=29004; workingSet=146849792; privateBytes=99512320
+RUN: audit03.unitSign.Solver.MaxDeltaKappa.batch.executed; pid=23476; workingSet=207749120; privateBytes=159698944; pid=29004; workingSet=147378176; privateBytes=99840000
+OK: audit03.unitSign.Solver.MaxDeltaKappa.batchTyped
+OK: audit03.unitSign.Solver.MaxDeltaKappa.batchExternal; actual=InputErr
+OK: audit03.unitSign.Solver.MaxDeltaKappa.batchReason
+UNIT_SIGN_CONSUMER: key=Solver.MaxDeltaKappa|capacity=Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.|formation=Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.|batch=Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.
+TOTAL_AUDIT03_UNIT_SIGN_CONSUMERS: passed=44; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6db034bf1f664dd7ade13de86238b090\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03UnitSignConsumerTests; 2026-10-03T17:55:06
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

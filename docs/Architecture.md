@@ -348,4 +348,9 @@ Provider продолжает активные ветви за их исходн
 - `CStabilitySummaryWriter` пишет подробную таблицу устойчивости от `rngStabilitySummaryAnchor`;
 - `CNDMResultsWriter` пишет расчетный snapshot: `rngNDMSectionGeometry`, `rngNDMElementResults`, `rngNDMSectionProperties`, `rngNDMSectionAnnotations`.
 
+Начальная ширина столбцов Results задается только в `Build-Workbook.ps1`.
+Расчетные writers, очистка и геометрический preview не меняют `ColumnWidth`
+или `StandardWidth`: повторная запись сохраняет пользовательскую ширину.
+Значения, шапки, числовые форматы и палитра статусов обновляются независимо от нее.
+
 AutoCAD export и Excel-схема читают последний снимок `Results`. Они не запускают решатель, не читают исходную геометрию заново и не держат модель в памяти между макросами.

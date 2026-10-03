@@ -611,7 +611,8 @@ try {
     $system.Columns.Item(20).ColumnWidth = 18
     $system.Columns.Item(21).ColumnWidth = 22
     $results.Range("A1:AE1").Font.Bold = $true
-    $results.Rows.Item(154).Interior.Color = 15652797
+    # Заливка относится только к построенному снимку, не ко всей строке листа.
+    $results.Range("A154:BJ154").Interior.Color = 15652797
     $results.Cells.Item(154, 1).Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
     $results.Cells.Item(154, 1).Font.Name = "Arial"
     $results.Cells.Item(154, 1).Font.Size = 12
@@ -624,7 +625,12 @@ try {
     $results.Range("AC156:AH156").Font.Bold = $true
     $results.Range("AK156:AU156").Font.Bold = $true
     $results.Range("AX156:BJ156").Font.Bold = $true
-    $results.Columns.ColumnWidth = 10
+    # Явная ширина используемых колонок не пересчитывается Excel при смене
+    # шрифта ячеек, в отличие от общей default-ширины листа. Это только сборка.
+    $results.Range("A:CF").ColumnWidth = 10
+    $results.Columns.Item(1).ColumnWidth = 15
+    $results.Columns.Item(2).ColumnWidth = 18
+    $results.Columns.Item(3).ColumnWidth = 21
 
     Add-WorkbookName $workbook "rngBatchSummary" $results '$A$1'
     Add-WorkbookName $workbook "rngStrengthSummaryAnchor" $results '$A$49'

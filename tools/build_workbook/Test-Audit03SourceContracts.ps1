@@ -126,6 +126,26 @@ foreach ($path in @('src/Geometry/CGeometryRoundedRectangle.cls', 'src/Geometry/
 $geometryTypes = Get-CodeOnly 'src/Common/modGeometryTypes.bas'
 Assert-Contract 'stableGeometryPiLiteral' ($geometryTypes -match 'GEOM_PI As Double = 3\.14159265358979 \+ 3\.10862446895044E-15') 'Same full-precision Double before and after VBE literal canonicalization'
 
+# Начальная ширина принадлежит сборке, не повторному расчету. Runtime-тест
+# дополнительно проверяет пользовательские ширины после Clear/Write/reopen.
+foreach ($path in @('src/Excel/CBatchResultWriter.cls', 'src/Excel/CStrengthSummaryWriter.cls',
+        'src/Excel/CCrackSummaryWriter.cls', 'src/Excel/CStabilitySummaryWriter.cls',
+        'src/Excel/CNDMResultsWriter.cls')) {
+    $code = Get-CodeOnly $path
+    Assert-Contract "preserveColumnWidths.$path" ($code -notmatch '\.(?:ColumnWidth|StandardWidth)\s*=') 'Calculation output does not resize worksheet columns'
+    Assert-Contract "noTemporaryWriterTrace.$path" ($code -notmatch 'Audit03Trace|Win32_Process|PrivatePageCount') 'Temporary profiling API absent in production writer'
+}
+$build = Get-CodeOnly 'tools/build_workbook/Build-Workbook.ps1'
+Assert-Contract 'columnWidthOwnedByBuild' ($build -match '\$results\.Range\("A:CF"\)\.ColumnWidth\s*=\s*10' -and
+    $build -match '\$results\.Columns\.Item\(1\)\.ColumnWidth\s*=\s*15' -and
+    $build -match '\$results\.Columns\.Item\(2\)\.ColumnWidth\s*=\s*18' -and
+    $build -match '\$results\.Columns\.Item\(3\)\.ColumnWidth\s*=\s*21') 'Initial Results widths belong only to workbook construction'
+Assert-Contract 'snapshotTitleBoundedInBuild' ($build -match '\$results\.Range\("A154:BJ154"\)\.Interior\.Color' -and
+    $build -notmatch '\$results\.Rows\.Item\(154\)\.Interior') 'Snapshot title fill does not format a whole worksheet row'
+$snapshot = Get-CodeOnly 'src/Excel/CNDMResultsWriter.cls'
+Assert-Contract 'snapshotTitleBoundedAtRuntime' ($snapshot -match 'Set title = SnapshotTitleRange\(workbook\)' -and
+    $snapshot -notmatch 'Worksheet\.Rows\.Item\([^\r\n]+\)\.(?:Clear|Interior)') 'Snapshot title write/clear preserves cells outside the snapshot span'
+
 $exportFile = (Resolve-Path -LiteralPath (Join-Path $root $ExportPath)).Path
 $export = Get-Content -LiteralPath $exportFile -Raw -Encoding UTF8
 $components = @{}

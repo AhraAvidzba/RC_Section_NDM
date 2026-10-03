@@ -17,6 +17,8 @@ Private Const TEST_PLOT_FRAME_LEFT As Double = 28#
 Private Const TEST_PLOT_FRAME_TOP As Double = 36#
 Private Const TEST_PLOT_FRAME_WIDTH_MARGIN As Double = 180#
 Private Const TEST_PLOT_FRAME_HEIGHT_MARGIN As Double = 72#
+Private mAudit03StopBeforeLoadTable As Boolean ' Только диагностический прогон сохраняет книгу на границе крупных тестовых блоков.
+Private mAudit03StopBeforeUnitSign As Boolean ' Диагностический снимок входных тестов отделяет состояние книги от накопления ресурсов Excel.
 
 ' Выполняет COM-регрессии структуры Config/Results, workbook-макросов и схемы.
 ' Проверка снимков и export-data не является приемкой фактической записи DWG.
@@ -35,35 +37,67 @@ Public Function RunWorkbookInterfaceTests() As String
     TestLoadCombinationRangeMinimumRows stats
     AppendLine stats, "RUN: TestAudit03ReaderContract"
     TestAudit03ReaderContract stats
+    AppendLine stats, "RUN: TestAudit03InputContracts; " & Audit02ExcelMemory()
     TestAudit03InputContracts stats
+    AppendLine stats, "RUN: TestAudit03ProfileInputContracts; " & Audit02ExcelMemory()
     TestAudit03ProfileInputContracts stats
+    AppendLine stats, "RUN: TestAudit03NumericSettingsInputContracts; " & Audit02ExcelMemory()
     TestAudit03NumericSettingsInputContracts stats
+    AppendLine stats, "RUN: TestAudit03SettingErrorMessages; " & Audit02ExcelMemory()
     TestAudit03SettingErrorMessages stats
+    AppendLine stats, "RUN: TestAudit03RequiredTableMessages; " & Audit02ExcelMemory()
     TestAudit03RequiredTableMessages stats
+    AppendLine stats, "RUN: TestAudit03ConfigConversionMessages; " & Audit02ExcelMemory()
     TestAudit03ConfigConversionMessages stats
+    AppendLine stats, "RUN: TestAudit03UnitSignConsumers; " & Audit02ExcelMemory()
+    If mAudit03StopBeforeUnitSign Then
+        AppendLine stats, "TOTAL_AUDIT03_UI_INPUT_PREFIX: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+        RunWorkbookInterfaceTests = stats.Report
+        Exit Function
+    End If
     TestAudit03UnitSignConsumers stats
     TestAudit03UnitSignChoices stats
     TestAudit03UnitSignEquivalence stats
     TestAudit03InputUnitConsumers stats
+    AppendLine stats, "RUN: Audit03 RectSet selectors; " & Audit02ExcelMemory()
     TestAudit03RectSetSharedSelectors stats
     TestAudit03RectSetSharedSelectorLayout stats
     TestAudit03RectSetSharedSelectorEffects stats
     Dim circleConfigPassed As Long, circleConfigFailed As Long
+    AppendLine stats, "RUN: Audit03 Circle Config; " & Audit02ExcelMemory()
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03CircleConfigTests(circleConfigPassed, circleConfigFailed)
     stats.Passed = stats.Passed + circleConfigPassed
     stats.Failed = stats.Failed + circleConfigFailed
     Dim shapeConfigPassed As Long, shapeConfigFailed As Long
+    AppendLine stats, "RUN: Audit03 Shape Config; " & Audit02ExcelMemory()
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03ShapeConfigTests(shapeConfigPassed, shapeConfigFailed)
     stats.Passed = stats.Passed + shapeConfigPassed
     stats.Failed = stats.Failed + shapeConfigFailed
     Dim rebarCounterPassed As Long, rebarCounterFailed As Long
+    AppendLine stats, "RUN: Audit03 Rebar counters; " & Audit02ExcelMemory()
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarCounterTests(rebarCounterPassed, rebarCounterFailed)
     stats.Passed = stats.Passed + rebarCounterPassed
     stats.Failed = stats.Failed + rebarCounterFailed
     Dim requiredGeometryPassed As Long, requiredGeometryFailed As Long
+    AppendLine stats, "RUN: Audit03 Required geometry; " & Audit02ExcelMemory()
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RequiredGeometryInputTests(requiredGeometryPassed, requiredGeometryFailed)
     stats.Passed = stats.Passed + requiredGeometryPassed
     stats.Failed = stats.Failed + requiredGeometryFailed
+    If mAudit03StopBeforeLoadTable Then
+        AppendLine stats, "TOTAL_AUDIT03_UI_PRE_LOAD_TABLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+        RunWorkbookInterfaceTests = stats.Report
+        Exit Function
+    End If
+    Dim loadTablePassed As Long, loadTableFailed As Long
+    AppendLine stats, "RUN: Audit03 Load table; " & Audit02ExcelMemory()
+    stats.Report = stats.Report & modTestLoadTableConfig.RunAudit03LoadTableTests(loadTablePassed, loadTableFailed)
+    AppendLine stats, "RUN: Audit03 Load table completed; " & Audit02ExcelMemory()
+    stats.Passed = stats.Passed + loadTablePassed
+    stats.Failed = stats.Failed + loadTableFailed
+    Dim resultWidthsPassed As Long, resultWidthsFailed As Long
+    stats.Report = stats.Report & modTestLoadTableConfig.RunAudit03ResultColumnWidthTests(resultWidthsPassed, resultWidthsFailed)
+    stats.Passed = stats.Passed + resultWidthsPassed
+    stats.Failed = stats.Failed + resultWidthsFailed
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
@@ -4219,9 +4253,29 @@ End Function
 Private Function Audit02ExcelMemory() As String
     Dim process As Object
     For Each process In GetObject("winmgmts:").ExecQuery( _
-            "SELECT WorkingSetSize, PrivatePageCount FROM Win32_Process WHERE Name='EXCEL.EXE'")
-        Audit02ExcelMemory = "workingSet=" & CStr(process.WorkingSetSize) & "; privateBytes=" & CStr(process.PrivatePageCount)
+            "SELECT ProcessId, WorkingSetSize, PrivatePageCount FROM Win32_Process WHERE Name='EXCEL.EXE'")
+        If Len(Audit02ExcelMemory) > 0 Then Audit02ExcelMemory = Audit02ExcelMemory & "; "
+        Audit02ExcelMemory = Audit02ExcelMemory & "pid=" & CStr(process.ProcessId) & _
+            "; workingSet=" & CStr(process.WorkingSetSize) & "; privateBytes=" & CStr(process.PrivatePageCount)
     Next process
+End Function
+
+' ДЛЯ ТЕСТОВ: выполняет неизмененные UI/Config-проверки до адресного LC-блока.
+' Runner может сохранить полученную книгу и воспроизвести LC на новом Excel,
+' отличив зависимость от содержимого Results от накопления памяти процесса.
+Public Function RunAudit03PreLoadTableDiagnosticTests() As String
+    mAudit03StopBeforeLoadTable = True
+    RunAudit03PreLoadTableDiagnosticTests = RunWorkbookInterfaceTests()
+    mAudit03StopBeforeLoadTable = False
+End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет неизмененный входной UI-prefix перед unit/sign-блоком.
+' Повтор этого блока на сохраненной копии в свежем Excel отличает влияние
+' Config/Results от ресурсов, накопленных предшествующими тестовыми вызовами.
+Public Function RunAudit03InputPrefixDiagnosticTests() As String
+    mAudit03StopBeforeUnitSign = True
+    RunAudit03InputPrefixDiagnosticTests = RunWorkbookInterfaceTests()
+    mAudit03StopBeforeUnitSign = False
 End Function
 
 ' ДЛЯ ТЕСТОВ
@@ -4978,9 +5032,13 @@ Private Sub TestAudit03UnitSignConsumers(ByRef stats As TUiTestStats)
         AssertTrue stats, prefix & ".formationReason", Len(formed.ResultMeta.ResultComment) > 0
         AppendLine stats, "RUN: " & prefix & ".batch"
         Set batch = BuildUiBatch()
+        AppendLine stats, "RUN: " & prefix & ".batch.built; " & Audit02ExcelMemory()
         batch.ApplySettings settings, units
+        AppendLine stats, "RUN: " & prefix & ".batch.settingsApplied; " & Audit02ExcelMemory()
         batch.AddCombination "UNIT_SIGN", load.N, load.InternalMx, load.InternalMy, "PR1", vbNullString
+        AppendLine stats, "RUN: " & prefix & ".batch.execute; " & Audit02ExcelMemory()
         batch.Execute
+        AppendLine stats, "RUN: " & prefix & ".batch.executed; " & Audit02ExcelMemory()
         Set result = batch.ResultAt(1)
         AssertTrue stats, prefix & ".batchTyped", result.DirectStateMeta.InternalStatus = rsInvalidConfiguration
         AssertTextEquals stats, prefix & ".batchExternal", policy.ExternalStatus(result.DirectStateMeta), "InputErr"

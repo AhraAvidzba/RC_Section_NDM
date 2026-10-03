@@ -3778,11 +3778,26 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     stage = "WriteSummary"
     Dim writer As CBatchResultWriter
     Set writer = New CBatchResultWriter
+    ' Проверяем сохранность входного оформления, а не runtime-сброс к шаблону.
+    Dim resultsSheet As Object, widthColumns As Variant, widthsBefore(0 To 3) As Double, widthIndex As Long
+    Dim pointWidthsBefore(0 To 3) As Double ' Физическая ширина не зависит от единицы ColumnWidth.
+    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
+    widthColumns = Array(1, 14, 32, 81)
+    For widthIndex = 0 To 3
+        widthsBefore(widthIndex) = CDbl(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).ColumnWidth)
+        pointWidthsBefore(widthIndex) = CDbl(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).Width)
+        AppendLine stats, "WIDTH_BEFORE: column=" & CStr(widthColumns(widthIndex)) & _
+            "; chars=" & CStr(widthsBefore(widthIndex)) & _
+            "; points=" & CStr(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).Width)
+    Next widthIndex
     writer.WriteSummary ThisWorkbook, batch
+    For widthIndex = 0 To 3
+        AppendLine stats, "WIDTH_AFTER: column=" & CStr(widthColumns(widthIndex)) & _
+            "; chars=" & CStr(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).ColumnWidth) & _
+            "; points=" & CStr(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).Width)
+    Next widthIndex
 
     stage = "Asserts"
-    Dim resultsSheet As Object
-    Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     Dim summaryRow As Long
     summaryRow = BatchSummaryStartRow()
     AssertTrue stats, "batch.writer.fixedRow", summaryRow = 1
@@ -3954,10 +3969,14 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.stability.header.sp35NcrBranch", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 3, 33).Value2) = "при ec > r"
     AssertTrue stats, "batch.writer.stability.header.sp63PlaneHeight", resultsSheet.Cells.Item(stabilityAnchor.Row - 4, 61).MergeArea.Rows.Count = 2
     AssertTrue stats, "batch.writer.stability.header.sp35Ratio", CStr(resultsSheet.Cells.Item(stabilityAnchor.Row - 1, 37).Value2) = "0.7*Ncr/N"
-    AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), 10#, 0.01
-    AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), 10#, 0.01
-    AssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), 10#, 0.01
-    AssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), 10#, 0.01
+    AssertClose stats, "batch.writer.stability.columnWidthA", CDbl(resultsSheet.Columns.Item(1).ColumnWidth), widthsBefore(0), 0#
+    AssertClose stats, "batch.writer.stability.columnWidthN", CDbl(resultsSheet.Columns.Item(14).ColumnWidth), widthsBefore(1), 0#
+    AssertClose stats, "batch.writer.stability.columnWidthAF", CDbl(resultsSheet.Columns.Item(32).ColumnWidth), widthsBefore(2), 0#
+    AssertClose stats, "batch.writer.stability.columnWidthCC", CDbl(resultsSheet.Columns.Item(81).ColumnWidth), widthsBefore(3), 0#
+    For widthIndex = 0 To 3
+        AssertClose stats, "batch.writer.columnPoints." & CStr(widthColumns(widthIndex)), _
+            CDbl(resultsSheet.Columns.Item(CLng(widthColumns(widthIndex))).Width), pointWidthsBefore(widthIndex), 0#
+    Next widthIndex
     AssertTrue stats, "batch.writer.stability.availableRowsBorder", _
         Len(CStr(resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Value2)) = 0 And _
         resultsSheet.Cells.Item(stabilityAnchor.Row + 19, 1).Borders(9).LineStyle <> -4142
@@ -5018,6 +5037,24 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     AssertClose stats, "audit02.currentCache.psi", second.Width.PsiS, first.Width.PsiS, 0.000000001
     AssertTrue stats, "audit02.currentCache.stateOK", second.CurrentStateMeta.InternalStatus = rsSuccess
 End Sub
+
+' ДЛЯ ТЕСТОВ: запускает существующую проверку полного вывода отдельно от
+' остальных suites, чтобы отличить изменение ширины от накопленного контекста Excel.
+Public Function RunAudit03BatchSummaryWidthDiagnosticTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TBatchTestStats
+    On Error GoTo Failed
+    TestBatchSummaryWriter stats
+Finish:
+    passed = stats.Passed: failed = stats.Failed
+    AppendLine stats, "TOTAL_AUDIT03_BATCH_WIDTH_DIAGNOSTIC: passed=" & CStr(passed) & "; failed=" & CStr(failed)
+    RunAudit03BatchSummaryWidthDiagnosticTests = stats.Report
+    Exit Function
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.batchWidth.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    Resume Finish
+End Function
 
 
 

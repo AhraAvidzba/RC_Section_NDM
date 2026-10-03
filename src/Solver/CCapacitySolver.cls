@@ -378,7 +378,26 @@ Private Sub AcceptPureAxialRetainedCapacity(ByVal section As CSectionModel, _
         mUltimateMomentOnlyPath = False
         If Not search.RunNewton(problem, section, concreteMaterial, steelMaterial, _
                 loadPath, startSolver, _
-                "Не удалось подтвердить равновесие осевого предела по выбранному пути.") Then Exit Sub
+                "Не удалось подтвердить равновесие осевого предела по выбранному пути.") Then
+            If LimitSearchHasTerminalFailure Then Exit Sub
+            If section.RebarCount = 0 Then Exit Sub
+            If Abs(edgeStrain - anchorStrain) <= 0.000000000001 Then Exit Sub
+            ' Нулевой anchor может перенести противоположные стержни на другую
+            ' ветвь диаграммы и создать лишнюю сжатую бетонную зону. Повторяем
+            ' тот же общий Newton, сохранив деформацию этой стороны из реально
+            ' найденной допустимой точки. Это начальная плоскость, не результат.
+            strainScale = (edgeLimit - anchorStrain) / (edgeStrain - anchorStrain)
+            If strainScale <= 1# Then Exit Sub
+            Set startSolver = New CSectionSolver
+            startSolver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, _
+                anchorStrain + (mLastAcceptableSolver.Epsilon0 - anchorStrain) * strainScale, _
+                mLastAcceptableSolver.KappaX * strainScale, _
+                mLastAcceptableSolver.KappaY * strainScale
+            AppendSearchDiagnostic "повторный старт предельной плоскости сохраняет деформацию противоположной стороны арматуры"
+            If Not search.RunNewton(problem, section, concreteMaterial, steelMaterial, _
+                    loadPath, startSolver, _
+                    "Не удалось подтвердить равновесие силового предела из сохраненного НДС.") Then Exit Sub
+        End If
         Set boundarySolver = mLastSolver
         boundaryLambda = mLambdaUltimate
     End If

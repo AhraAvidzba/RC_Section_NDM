@@ -262,10 +262,16 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
 End Sub
 
 ' Для силового осевого пути пробует физически подтвердить сохраненную точку
-' после неудачи общего поиска. Другие траектории этим приемом не подменяются.
+' после неудачи общего поиска. LambdaN с постоянными моментами тоже может
+' выйти на силовое плато: готовая плоскость проверяется на том же Offset/Base,
+' без замены фиксированных моментов и без признания failed probe пределом.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
     If mCapacity.Converged Then Exit Sub
-    If Not request.ForceOnly And Not request.PureAxialForMethod Then Exit Sub
+    If Not request.ForceOnly And Not request.PureAxialForMethod Then
+        If request.SelectedLoadPath Is Nothing Then Exit Sub
+        If Not request.SelectedLoadPath.ScalesN Then Exit Sub
+        If request.SelectedLoadPath.ScalesMx Or request.SelectedLoadPath.ScalesMy Then Exit Sub
+    End If
     mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.Section, _
         request.ConcreteMaterial, request.SteelMaterial, ILimitSearchProblem_BuildLoadPath(request)
 End Sub

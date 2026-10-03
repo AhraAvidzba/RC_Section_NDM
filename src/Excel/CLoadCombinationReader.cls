@@ -63,17 +63,18 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     Dim comment As String
     Dim errorText As String
     Dim pathLocation As String
-    pathLocation = "LoadPath, " & source.Worksheet.Name & "!" & source.Cells(rowIndex, 6).Address(False, False)
-    combinationID = ReadCellText(data(rowIndex, 1), "CombinationID", errorText)
-    profileId = ReadCellText(data(rowIndex, 5), "ProfileId", errorText)
+    pathLocation = "LoadPath"
+    If UBound(data, 2) >= 6 Then pathLocation = CellLocation(source, rowIndex, 6, "LoadPath")
+    combinationID = ReadCellText(data(rowIndex, 1), CellLocation(source, rowIndex, 1, "CombinationID"), errorText)
+    profileId = ReadCellText(data(rowIndex, 5), CellLocation(source, rowIndex, 5, "ProfileId"), errorText)
     If UBound(data, 2) >= 7 Then
         loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText)
-        comment = ReadCellText(data(rowIndex, 7), "Комментарий", errorText)
+        comment = ReadCellText(data(rowIndex, 7), CellLocation(source, rowIndex, 7, "Комментарий"), errorText)
     ElseIf UBound(data, 2) = 6 Then
         If StrComp(CStr(data(1, 6)), "LoadPath", vbTextCompare) = 0 Then
             loadPathText = ReadCellText(data(rowIndex, 6), pathLocation, errorText)
         Else
-            comment = ReadCellText(data(rowIndex, 6), "Комментарий", errorText)
+            comment = ReadCellText(data(rowIndex, 6), CellLocation(source, rowIndex, 6, "Комментарий"), errorText)
         End If
     End If
     Dim pathDescriptor As CLoadPathDescriptor
@@ -84,21 +85,21 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     Dim nValue As Double
     Dim mxValue As Double
     Dim myValue As Double
-    nValue = ReadOptionalLoadDouble(data(rowIndex, 2), "N", errorText)
-    mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), "Mx", errorText)
-    myValue = ReadOptionalLoadDouble(data(rowIndex, 4), "My", errorText)
+    nValue = ReadOptionalLoadDouble(data(rowIndex, 2), CellLocation(source, rowIndex, 2, "N"), errorText)
+    mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText)
+    myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText)
 
     ' Пропускаем только достоверно нулевые нагрузки. Сила и момент имеют
     ' разные размерности; reader не вводит инженерный порог их значимости.
     If Len(errorText) = 0 Then
-        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText
+        ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, source, rowIndex
         If Len(errorText) = 0 Then
             If nValue = 0# And mxValue = 0# And myValue = 0# Then Exit Sub
         End If
     End If
 
-    If Len(Trim$(combinationID)) = 0 Then AppendError errorText, "CombinationID не заполнен"
-    If Len(profileId) = 0 Then AppendError errorText, "ProfileId не заполнен"
+    If Len(Trim$(combinationID)) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 1, "CombinationID") & " не заполнен"
+    If Len(profileId) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 5, "ProfileId") & " не заполнен"
 
     If Len(errorText) > 0 Then
         batch.AddInvalidCombination combinationID, profileId, comment, errorText, loadPathText, rowIndex - 1
@@ -161,17 +162,27 @@ End Function
 ' Переводит успешно прочитанные нагрузки через единый адаптер единиц.
 ' Переполнение конкретной компоненты является ошибкой строки, не всего пакета.
 Private Sub ConvertLoadsToInternal(ByVal units As CUnitSystem, ByRef nValue As Double, _
-        ByRef mxValue As Double, ByRef myValue As Double, ByRef errorText As String)
+        ByRef mxValue As Double, ByRef myValue As Double, ByRef errorText As String, _
+        ByVal source As Object, ByVal rowIndex As Long)
     If units Is Nothing Then Exit Sub
     On Error GoTo ConversionFailed
     Dim fieldName As String
-    fieldName = "N": nValue = units.InputForceToInternal(nValue)
-    fieldName = "Mx": mxValue = units.InputMomentMxToInternal(mxValue)
-    fieldName = "My": myValue = units.InputMomentMyToInternal(myValue)
+    fieldName = CellLocation(source, rowIndex, 2, "N"): nValue = units.InputForceToInternal(nValue)
+    fieldName = CellLocation(source, rowIndex, 3, "Mx"): mxValue = units.InputMomentMxToInternal(mxValue)
+    fieldName = CellLocation(source, rowIndex, 4, "My"): myValue = units.InputMomentMyToInternal(myValue)
     Exit Sub
 ConversionFailed:
     AppendError errorText, fieldName & " не может быть переведено во внутренние единицы: числовой диапазон превышен"
 End Sub
+
+' Дополняет имя поля фактическим адресом исходной таблицы. Адрес формируется
+' только Excel-reader-ом и передается как готовая причина; batch/writer не
+' восстанавливают его по тексту и не читают исходные ячейки повторно.
+Private Function CellLocation(ByVal source As Object, ByVal rowIndex As Long, _
+        ByVal columnIndex As Long, ByVal fieldName As String) As String
+    CellLocation = fieldName & ", " & source.Worksheet.Name & "!" & _
+        source.Cells(rowIndex, columnIndex).Address(False, False)
+End Function
 
 ' Добавляет текст ошибки в одну строку через точку с запятой.
 Private Sub AppendError(ByRef errorText As String, ByVal item As String)

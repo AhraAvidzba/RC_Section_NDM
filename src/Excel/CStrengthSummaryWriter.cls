@@ -88,7 +88,6 @@ Private Const COL_CAP_RESERVE As Long = 48
 Private Const COL_CAP_STATUS As Long = 49
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных подробных блоках.
-Private Const RESULTS_COLUMN_WIDTH As Double = 10# ' На Results все столбцы держим одной ширины.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Численный порог только для пустых расчетных полей writer-а.
 Private Const HEADER_NOTES_ROW As Long = 3
 Private Const HEADER_LABEL_ROW As Long = 4
@@ -206,7 +205,7 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
 
     Dim titleRow As Long
     titleRow = target.Row - 1
-    target.Worksheet.Rows.Item(titleRow).Interior.Color = RGB(189, 215, 238)
+    target.Worksheet.Cells(titleRow, target.Column).Resize(1, TOTAL_COLUMNS).Interior.Color = RGB(189, 215, 238)
     target.Worksheet.Rows.Item(titleRow).RowHeight = 15
     With target.Worksheet.Cells(titleRow, target.Column)
         .Value2 = titleText
@@ -220,10 +219,11 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     End With
 End Sub
 
-' Очищает строку-название вместе со старой заливкой, чтобы при переносе якоря не оставалось старых следов.
+' Очищает название и заливку только в ширине блока прочности. Ячейки справа
+' принадлежат другим данным листа и не должны изменяться при повторной записи.
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.Row <= 1 Then Exit Sub
-    target.Worksheet.Rows.Item(target.Row - 1).Clear
+    target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
     target.Worksheet.Rows.Item(target.Row - 1).RowHeight = 15
 End Sub
 
@@ -572,7 +572,6 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.WrapText = False
     target.Rows.RowHeight = 15
 
-    SetColumnWidths target
     FormatBlock target, COL_LEFT_FIRST, COL_LEFT_LAST
     FormatBlock target, COL_STATE_FIRST, COL_STATE_LAST
     FormatBlock target, COL_CAPACITY_FIRST, COL_CAPACITY_LAST
@@ -614,11 +613,6 @@ Private Sub ApplyStrainNumberFormat(ByVal target As Object, ByVal dataRows As Lo
     target.Offset(HEADER_ROWS, COL_CAP_EPS0 - 1).Resize(dataRows, 1).NumberFormat = "0.0000"
     target.Offset(HEADER_ROWS, COL_CAP_KX - 1).Resize(dataRows, 2).NumberFormat = "0.000000"
     target.Offset(HEADER_ROWS, COL_CAP_EBC - 1).Resize(dataRows, COL_CAP_EST - COL_CAP_EBC + 1).NumberFormat = "0.0000"
-End Sub
-
-' Задает одинаковую стандартную ширину всем столбцам Results, затронутым блоком.
-Private Sub SetColumnWidths(ByVal target As Object)
-    target.Columns.ColumnWidth = RESULTS_COLUMN_WIDTH
 End Sub
 
 ' Оформляет непрерывный блок таблицы, не затрагивая пустые разделители.
