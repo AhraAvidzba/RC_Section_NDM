@@ -90,7 +90,7 @@ Private Sub AppendNamedSettingsRangeIfExists(ByVal workbook As Object, ByVal ran
     Dim settingsRange As Object
     Set settingsRange = workbook.Names.Item(rangeName).RefersToRange
     On Error GoTo 0
-    AppendSettingsRange settingsRange
+    AppendSettingsRange settingsRange, rangeName
     Exit Sub
 MissingRange:
     On Error GoTo 0
@@ -222,11 +222,35 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
     Dim data As Variant
     data = settingsRange.Value2
     If Not IsArray(data) Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
-        "Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца."
+        "Таблица настроек (" & InputCellLocation(1, 1) & ") имеет неполную структуру. " & _
+        "Восстановите заголовок, строки данных, минимум три столбца и ссылку на таблицу в диспетчере имен Excel."
     If UBound(data, 1) < 2 Or UBound(data, 2) < 3 Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
-        "Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца."
+        "Таблица настроек (" & InputCellLocation(1, 1) & ") имеет неполную структуру. " & _
+        "Восстановите заголовок, строки данных, минимум три столбца и ссылку на таблицу в диспетчере имен Excel."
     Dim columnCount As Long
     columnCount = UBound(data, 2)
+
+    ' Имя известных таблиц сохраняет их смысл при повреждении шапки.
+    ' Сначала называем конкретную ячейку структуры, затем читаем значения;
+    ' такой дефект не должен выглядеть как исчезновение обязательных ключей.
+    Select Case LCase$(rangeName)
+        Case "rngunitsettings"
+            RequireSettingsHeaders data, "Единицы измерения", Array("Quantity", "INPUT", "INTERNAL", "OUTPUT"), 4
+            AppendUnitSettings data
+            Exit Sub
+        Case "rngsignconventionsettings"
+            RequireSettingsHeaders data, "Система знаков", Array("Quantity", "USER", "INTERNAL"), 3
+            AppendSignConventionSettings data
+            Exit Sub
+        Case "rngconcretematerialparameters"
+            RequireSettingsHeaders data, "Параметры бетона", Array("Параметр", "Сжатие", "Растяжение"), 4
+            AppendConcreteMaterialParameters data
+            Exit Sub
+        Case "rngsteelmaterialparameters"
+            RequireSettingsHeaders data, "Параметры арматуры", Array("Параметр", "Сжатие", "Растяжение"), 4
+            AppendSteelMaterialParameters data
+            Exit Sub
+    End Select
 
     ' Named-таблица сохраняет свой тип даже после утраты строки параметра.
     ' Иначе отсутствие Placement превращало все поля в чужую scalar-таблицу.
@@ -298,9 +322,30 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
     Next rowIndex
 End Sub
 
-' Возвращает видимый текст ячейки Config и отдельно перехватывает ошибки формул.
-' Без этой проверки Excel-ошибка в формульной ячейке превращалась в малопонятный
-' VBA Type mismatch при CStr(...), без указания проблемной настройки.
+' Проверяет только смысловые колонки известных именованных таблиц.
+' Ожидаемые подписи совпадают с прежним распознаванием формата; изменено
+' место диагностики, а не физический смысл параметров. Адрес вычисляется
+' от текущей ссылки Name, без привязки к координатам шаблона Config.
+Private Sub RequireSettingsHeaders(ByRef data As Variant, ByVal tableCaption As String, _
+        ByVal headers As Variant, ByVal minimumColumns As Long)
+    If UBound(data, 2) < minimumColumns Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+        "Таблица """ & tableCaption & """ (" & InputCellLocation(1, 1) & ") имеет неполную структуру. " & _
+        "Восстановите все колонки таблицы и ссылку на нее в диспетчере имен Excel."
+    Dim index As Long, actual As String
+    For index = LBound(headers) To UBound(headers)
+        actual = ConfigCellText(data(1, index + 1), "заголовок таблицы", 1, tableCaption, False, index + 1)
+        If StrComp(actual, CStr(headers(index)), vbTextCompare) <> 0 Then
+            Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+                "Таблица """ & tableCaption & """ (" & InputCellLocation(1, index + 1) & _
+                "): в заголовке колонки должно быть """ & CStr(headers(index)) & """, сейчас """ & actual & _
+                """. Восстановите заголовок и расположение колонок по исправному шаблону книги."
+        End If
+    Next index
+End Sub
+
+' Возвращает текст ячейки Config, сохраняя различие между обычным значением
+' и ошибкой формулы Excel. Ошибка расчетного поля получает точный адрес;
+' нерасчетные комментарии могут игнорировать ее вместо текста Error 2015.
 Private Function ConfigCellText(ByVal cellValue As Variant, ByVal columnName As String, _
         ByVal rowIndex As Long, ByVal keyValue As String, _
         Optional ByVal allowFormulaErrorAsEmpty As Boolean = False, Optional ByVal columnIndex As Long = 0) As String
@@ -331,7 +376,7 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         Dim rowKey As String
-        rowKey = Trim$(CStr(data(rowIndex, 1)))
+        rowKey = ConfigCellText(data(rowIndex, 1), "параметр бетона", rowIndex, vbNullString, False, 1)
         If Len(rowKey) = 0 Then GoTo NextRow
 
         Dim compressionValue As String
@@ -339,7 +384,7 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
         Dim commentValue As String
         compressionValue = ConfigCellText(data(rowIndex, 2), "Сжатие", rowIndex, rowKey, False, 2)
         tensionValue = ConfigCellText(data(rowIndex, 3), "Растяжение", rowIndex, rowKey, False, 3)
-        If UBound(data, 2) >= 5 Then commentValue = Trim$(CStr(data(rowIndex, 5)))
+        If UBound(data, 2) >= 5 Then commentValue = ConfigCellText(data(rowIndex, 5), "комментарий", rowIndex, rowKey, True, 5)
 
         Select Case LCase$(rowKey)
             Case "concrete.r.uls(i)", "concrete.r.i(uls)", "concrete.r.uls"
@@ -384,7 +429,7 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         Dim rowKey As String
-        rowKey = Trim$(CStr(data(rowIndex, 1)))
+        rowKey = ConfigCellText(data(rowIndex, 1), "параметр арматуры", rowIndex, vbNullString, False, 1)
         If Len(rowKey) = 0 Then GoTo NextRow
 
         Dim compressionValue As String
@@ -392,7 +437,7 @@ Private Sub AppendSteelMaterialParameters(ByRef data As Variant)
         Dim commentValue As String
         compressionValue = ConfigCellText(data(rowIndex, 2), "Сжатие", rowIndex, rowKey, False, 2)
         tensionValue = ConfigCellText(data(rowIndex, 3), "Растяжение", rowIndex, rowKey, False, 3)
-        If UBound(data, 2) >= 5 Then commentValue = Trim$(CStr(data(rowIndex, 5)))
+        If UBound(data, 2) >= 5 Then commentValue = ConfigCellText(data(rowIndex, 5), "комментарий", rowIndex, rowKey, True, 5)
 
         Select Case LCase$(rowKey)
             Case "steel.r.uls(i)", "steel.r.i(uls)", "steel.r.uls"
@@ -473,7 +518,8 @@ Private Sub AppendPlotAnnotationValue(ByRef data As Variant, ByVal keyValue As S
     ElseIf settingName = "LineEnabled" Then
         Exit Sub
     End If
-    AppendDeferredInputValue data, keyValue, rowIndex, columnIndex, Trim$(CStr(data(rowIndex, 5)))
+    AppendDeferredInputValue data, keyValue, rowIndex, columnIndex, _
+        ConfigCellText(data(rowIndex, 5), "комментарий", rowIndex, keyValue, True, 5)
 End Sub
 
 ' Загружает INPUT/INTERNAL/OUTPUT единицы в общий словарь настроек.
@@ -481,7 +527,7 @@ Private Sub AppendUnitSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         Dim quantity As String
-        quantity = UnitQuantityKey(Trim$(CStr(data(rowIndex, 1))))
+        quantity = UnitQuantityKey(ConfigCellText(data(rowIndex, 1), "физическая величина", rowIndex, vbNullString, False, 1))
         If Len(quantity) > 0 Then
             Dim value As String
             value = ConfigCellText(data(rowIndex, 2), "INPUT", rowIndex, "Units." & quantity & ".Input", False, 2)
@@ -499,7 +545,7 @@ Private Sub AppendSignConventionSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         Dim quantity As String
-        quantity = SignQuantityKey(Trim$(CStr(data(rowIndex, 1))))
+        quantity = SignQuantityKey(ConfigCellText(data(rowIndex, 1), "компонента нагрузки", rowIndex, vbNullString, False, 1))
         If Len(quantity) > 0 Then
             Dim value As String
             value = ConfigCellText(data(rowIndex, 2), "USER", rowIndex, "Sign." & quantity & ".User", False, 2)

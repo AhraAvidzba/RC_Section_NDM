@@ -1,0 +1,733 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_settings_table_negative_v231.xlsm
+SOURCE_SHA256: 9E217A78941DC9714A1EE9772467BCA2178B38D94A2200591303BB369FFECD26
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_496f8ada064a4e3b9924e15529f591c2\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03SettingsTableGuardTests =====
+SUITE_STARTED: RunAudit03SettingsTableGuardTests; 2026-10-04T14:07:34
+EXCEL_AFTER_SUITE: pid=14860; workingSet=147013632; privateBytes=112730112; cpu=5.828125
+EXCEL_AFTER_SUITE: pid=23476; workingSet=214441984; privateBytes=165933056; cpu=13969.703125
+OK: audit03.settingsTable.p0.rngUnitSettings.headerCase.accepted
+OK: audit03.settingsTable.p0.rngUnitSettings.headerCase.value
+OK: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header1|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header1|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header1|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header1.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header1.bad10.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header1.bad10.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header1.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header1|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header2|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header2|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header2|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header2.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header2.bad10.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header2.bad10.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header2.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header2|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header3|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header3|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header3|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header3.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header3.bad10.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header3.bad10.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header3.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header3|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header4|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header4|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header4.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header4|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.header4.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header4.bad10.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.header4.bad10.address
+OK: audit03.settingsTable.p0.rngUnitSettings.header4.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.header4|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+FAIL: audit03.settingsTable.p0.rngUnitSettings.key.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.key.address
+FAIL: audit03.settingsTable.p0.rngUnitSettings.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.key|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngUnitSettings.value.typed
+OK: audit03.settingsTable.p0.rngUnitSettings.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.value|code=-2147217195|Настройка Units.Length.Input (лист Config, ячейка B6) содержит ошибку Excel в колонке "INPUT". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngUnitSettings.recovery
+OK: audit03.settingsTable.p0.rngUnitSettings.recovery.value
+OK: audit03.settingsTable.p0.rngUnitSettings.rangeFormat.value
+FAIL: audit03.settingsTable.p0.rngUnitSettings.truncated.typed
+FAIL: audit03.settingsTable.p0.rngUnitSettings.truncated.address
+OK: audit03.settingsTable.p0.rngUnitSettings.truncated.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngUnitSettings.truncated|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.headerCase.accepted
+OK: audit03.settingsTable.p1.rngUnitSettings.headerCase.value
+OK: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header1|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header1|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header1|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header1.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header1.bad10.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header1.bad10.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header1.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header1|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header2|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header2|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header2|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header2.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header2.bad10.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header2.bad10.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header2.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header2|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header3|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header3|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header3|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header3.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header3.bad10.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header3.bad10.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header3.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header3|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header4|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header4|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header4.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header4|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.header4.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header4.bad10.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.header4.bad10.address
+OK: audit03.settingsTable.p1.rngUnitSettings.header4.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.header4|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+FAIL: audit03.settingsTable.p1.rngUnitSettings.key.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.key.address
+FAIL: audit03.settingsTable.p1.rngUnitSettings.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.key|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngUnitSettings.value.typed
+OK: audit03.settingsTable.p1.rngUnitSettings.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.value|code=-2147217195|Настройка Units.Length.Input (лист Config, ячейка CI801) содержит ошибку Excel в колонке "INPUT". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngUnitSettings.recovery
+OK: audit03.settingsTable.p1.rngUnitSettings.recovery.value
+OK: audit03.settingsTable.p1.rngUnitSettings.rangeFormat.value
+FAIL: audit03.settingsTable.p1.rngUnitSettings.truncated.typed
+FAIL: audit03.settingsTable.p1.rngUnitSettings.truncated.address
+OK: audit03.settingsTable.p1.rngUnitSettings.truncated.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngUnitSettings.truncated|code=-2147217191|Настройка Units.Length.Input (лист Config, раздел "единицы измерения, столбцы INPUT/OUTPUT"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.headerCase.accepted
+OK: audit03.settingsTable.p0.rngSignConventionSettings.headerCase.value
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header1|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header1|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header1|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad10.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad10.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header1.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header1|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header2|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header2|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header2|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad10.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad10.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header2.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header2|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header3|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header3|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header3|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad10.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad10.address
+OK: audit03.settingsTable.p0.rngSignConventionSettings.header3.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.header3|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.key.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.key.address
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.key|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.value.typed
+OK: audit03.settingsTable.p0.rngSignConventionSettings.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.value|code=-2147217195|Настройка Sign.N.User (лист Config, ячейка B21) содержит ошибку Excel в колонке "USER". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngSignConventionSettings.recovery
+OK: audit03.settingsTable.p0.rngSignConventionSettings.recovery.value
+OK: audit03.settingsTable.p0.rngSignConventionSettings.rangeFormat.value
+OK: audit03.settingsTable.p0.rngSignConventionSettings.truncated.typed
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.truncated.address
+FAIL: audit03.settingsTable.p0.rngSignConventionSettings.truncated.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSignConventionSettings.truncated|code=-2147217188|Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.headerCase.accepted
+OK: audit03.settingsTable.p1.rngSignConventionSettings.headerCase.value
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header1|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header1|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header1|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad10.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad10.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header1.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header1|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header2|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header2|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header2|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad10.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad10.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header2.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header2|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header3|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header3|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header3|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad10.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad10.address
+OK: audit03.settingsTable.p1.rngSignConventionSettings.header3.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.header3|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.key.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.key.address
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.key|code=-2147217191|Настройка Sign.N.User (лист Config, раздел "система знаков, столбец USER"): Обязательная строка настройки отсутствует. Восстановите строку в указанной таблице и заполните пользовательское значение.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.value.typed
+OK: audit03.settingsTable.p1.rngSignConventionSettings.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.value|code=-2147217195|Настройка Sign.N.User (лист Config, ячейка CI801) содержит ошибку Excel в колонке "USER". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngSignConventionSettings.recovery
+OK: audit03.settingsTable.p1.rngSignConventionSettings.recovery.value
+OK: audit03.settingsTable.p1.rngSignConventionSettings.rangeFormat.value
+OK: audit03.settingsTable.p1.rngSignConventionSettings.truncated.typed
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.truncated.address
+FAIL: audit03.settingsTable.p1.rngSignConventionSettings.truncated.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSignConventionSettings.truncated|code=-2147217188|Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.headerCase.accepted
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.headerCase.value
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad10.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad10.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header1|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad10.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad10.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header2|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad10.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad10.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.header3|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.key.typed
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.key.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.key|code=-2147217195|Настройка строка 2 (лист Config, ячейка A31) содержит ошибку Excel в колонке "ключ настройки". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.value.typed
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.value|code=-2147217195|Настройка Concrete.R.ULS(I) (лист Config, ячейка B31) содержит ошибку Excel в колонке "Сжатие". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.comment.noncritical
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.comment.emptySource
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.comment.valuePreserved
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.recovery
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.recovery.value
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.rangeFormat.value
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.truncated.typed
+FAIL: audit03.settingsTable.p0.rngConcreteMaterialParameters.truncated.address
+OK: audit03.settingsTable.p0.rngConcreteMaterialParameters.truncated.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngConcreteMaterialParameters.truncated|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.headerCase.accepted
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.headerCase.value
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad10.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad10.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header1|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad10.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad10.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header2|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad10.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad10.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.header3|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.key.typed
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.key.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.key|code=-2147217195|Настройка строка 2 (лист Config, ячейка CH801) содержит ошибку Excel в колонке "ключ настройки". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.value.typed
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.value|code=-2147217195|Настройка Concrete.R.ULS(I) (лист Config, ячейка CI801) содержит ошибку Excel в колонке "Сжатие". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.comment.noncritical
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.comment.emptySource
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.comment.valuePreserved
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.recovery
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.recovery.value
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.rangeFormat.value
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.truncated.typed
+FAIL: audit03.settingsTable.p1.rngConcreteMaterialParameters.truncated.address
+OK: audit03.settingsTable.p1.rngConcreteMaterialParameters.truncated.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngConcreteMaterialParameters.truncated|code=-2147217193|Настройка Concrete.Rb.ULS (лист Config, раздел "параметры бетона"): Обязательное значение не задано. Восстановите строку Concrete.Rb.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.headerCase.accepted
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.headerCase.value
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header1|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header1|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header1|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad10.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad10.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header1.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header1|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header2|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header2|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header2|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad10.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad10.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header2.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header2|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header3|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header3|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header3|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad10.rejected
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad10.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad10.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.header3.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.header3|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.key.typed
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.key.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.key|code=-2147217195|Настройка строка 2 (лист Config, ячейка A51) содержит ошибку Excel в колонке "ключ настройки". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.value.typed
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.value|code=-2147217195|Настройка Steel.R.ULS(I) (лист Config, ячейка B51) содержит ошибку Excel в колонке "Сжатие". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.comment.noncritical
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.comment.emptySource
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.comment.valuePreserved
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.recovery
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.recovery.value
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.rangeFormat.value
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.truncated.typed
+FAIL: audit03.settingsTable.p0.rngSteelMaterialParameters.truncated.address
+OK: audit03.settingsTable.p0.rngSteelMaterialParameters.truncated.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSteelMaterialParameters.truncated|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.headerCase.accepted
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.headerCase.value
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header1|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header1|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header1|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad10.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad10.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header1.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header1|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header2|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header2|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header2|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad10.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad10.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header2.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header2|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header3|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header3|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad8.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header3|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad10.rejected
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad10.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad10.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.header3.bad10.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.header3|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.key.typed
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.key.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.key|code=-2147217195|Настройка строка 2 (лист Config, ячейка CH801) содержит ошибку Excel в колонке "ключ настройки". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.value.typed
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.value|code=-2147217195|Настройка Steel.R.ULS(I) (лист Config, ячейка CI801) содержит ошибку Excel в колонке "Сжатие". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.comment.noncritical
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.comment.emptySource
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.comment.valuePreserved
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.recovery
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.recovery.value
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.rangeFormat.value
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.truncated.typed
+FAIL: audit03.settingsTable.p1.rngSteelMaterialParameters.truncated.address
+OK: audit03.settingsTable.p1.rngSteelMaterialParameters.truncated.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSteelMaterialParameters.truncated|code=-2147217193|Настройка Steel.Rsc.ULS (лист Config, раздел "параметры арматуры"): Обязательное значение не задано. Восстановите строку Steel.Rsc.ULS в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.settingsTable.p0.rngSystemSettings.key.typed
+OK: audit03.settingsTable.p0.rngSystemSettings.key.address
+OK: audit03.settingsTable.p0.rngSystemSettings.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSystemSettings.key|code=-2147217195|Настройка строка 3 (лист Config, ячейка H7) содержит ошибку Excel в колонке "ключ настройки". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngSystemSettings.value.typed
+OK: audit03.settingsTable.p0.rngSystemSettings.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngSystemSettings.value|code=-2147217195|Настройка General.ExecutionReportEnabled (лист Config, ячейка I7) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngSystemSettings.comment.noncritical
+OK: audit03.settingsTable.p0.rngSystemSettings.comment.emptySource
+OK: audit03.settingsTable.p0.rngSystemSettings.comment.valuePreserved
+OK: audit03.settingsTable.p0.rngSystemSettings.recovery
+OK: audit03.settingsTable.p0.rngSystemSettings.recovery.value
+OK: audit03.settingsTable.p0.rngSystemSettings.rangeFormat.value
+OK: audit03.settingsTable.p1.rngSystemSettings.key.typed
+OK: audit03.settingsTable.p1.rngSystemSettings.key.address
+OK: audit03.settingsTable.p1.rngSystemSettings.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSystemSettings.key|code=-2147217195|Настройка строка 3 (лист Config, ячейка CH802) содержит ошибку Excel в колонке "ключ настройки". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngSystemSettings.value.typed
+OK: audit03.settingsTable.p1.rngSystemSettings.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngSystemSettings.value|code=-2147217195|Настройка General.ExecutionReportEnabled (лист Config, ячейка CI802) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngSystemSettings.comment.noncritical
+OK: audit03.settingsTable.p1.rngSystemSettings.comment.emptySource
+OK: audit03.settingsTable.p1.rngSystemSettings.comment.valuePreserved
+OK: audit03.settingsTable.p1.rngSystemSettings.recovery
+OK: audit03.settingsTable.p1.rngSystemSettings.recovery.value
+OK: audit03.settingsTable.p1.rngSystemSettings.rangeFormat.value
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.key.typed
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.key.address
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngPlotAnnotationSettings.key|code=-2147217195|Настройка строка 2 (лист Config, ячейка A71) содержит ошибку Excel в колонке "параметр аннотации". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.value.typed
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p0.rngPlotAnnotationSettings.value|code=-2147217195|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка B71) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.comment.noncritical
+FAIL: audit03.settingsTable.p0.rngPlotAnnotationSettings.comment.emptySource
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.comment.valuePreserved
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.recovery
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.recovery.value
+OK: audit03.settingsTable.p0.rngPlotAnnotationSettings.rangeFormat.value
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.key.typed
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.key.address
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.key.action
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngPlotAnnotationSettings.key|code=-2147217195|Настройка строка 2 (лист Config, ячейка CH801) содержит ошибку Excel в колонке "параметр аннотации". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.value.typed
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.value.address
+SETTINGS_TABLE_ERROR: audit03.settingsTable.p1.rngPlotAnnotationSettings.value|code=-2147217195|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка CI801) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.comment.noncritical
+FAIL: audit03.settingsTable.p1.rngPlotAnnotationSettings.comment.emptySource
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.comment.valuePreserved
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.recovery
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.recovery.value
+OK: audit03.settingsTable.p1.rngPlotAnnotationSettings.rangeFormat.value
+OK: audit03.settingsTable.optional.rngConcreteMaterialParameters
+OK: audit03.settingsTable.optionalRecovery.rngConcreteMaterialParameters
+OK: audit03.settingsTable.optional.rngSteelMaterialParameters
+OK: audit03.settingsTable.optionalRecovery.rngSteelMaterialParameters
+OK: audit03.settingsTable.noSolve
+SETTINGS_TABLE_CASES: blocks=6; positions=2; variants=166; equilibriumCases=0
+TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=339; failed=242
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_496f8ada064a4e3b9924e15529f591c2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03SettingsTableGuardTests; 2026-10-04T14:07:37
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

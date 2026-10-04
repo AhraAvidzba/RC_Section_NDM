@@ -47,6 +47,10 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03SettingErrorMessages stats
     AppendLine stats, "RUN: TestAudit03RequiredTableMessages; " & Audit02ExcelMemory()
     TestAudit03RequiredTableMessages stats
+    Dim settingsTablePassed As Long, settingsTableFailed As Long
+    stats.Report = stats.Report & modTestConfiguration.RunAudit03SettingsTableGuardTests(settingsTablePassed, settingsTableFailed)
+    stats.Passed = stats.Passed + settingsTablePassed
+    stats.Failed = stats.Failed + settingsTableFailed
     AppendLine stats, "RUN: TestAudit03ConfigConversionMessages; " & Audit02ExcelMemory()
     TestAudit03ConfigConversionMessages stats
     AppendLine stats, "RUN: TestAudit03UnitSignConsumers; " & Audit02ExcelMemory()

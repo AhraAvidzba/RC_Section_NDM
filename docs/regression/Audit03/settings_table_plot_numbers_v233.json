@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/annotation_bridge_general_v230.log",
+  "CurrentReport": "docs/regression/Audit03/settings_table_plot_v233.log",
+  "BaselineSHA256": "6B9E953255084F678A628F6E670357974609D62D2CF5FA4896BDE0757C74FB02",
+  "CurrentSHA256": "12B968546E7CA7FDA50B49C004F54B1001897FA615C9A986FD3307BB986D8E4D",
+  "BaselineNumericAssertions": 252,
+  "CurrentNumericAssertions": 252,
+  "Compared": 252,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

@@ -69,6 +69,23 @@
 
 ## Актуальная Точка Продолжения
 
+- Annotation bridge зафиксирован `37f655c`. Settings-table срез v231-v233:
+  frozen negative 339/242, final directed 581/0; шесть настоящих таблиц,
+  два положения имен, 166 сценариев, noSolve. Reader сохраняет тип известной
+  таблицы, называет поврежденную шапку/ключ/усечение по текущему адресу;
+  ошибка нерасчетного комментария не становится текстом Error 2015.
+  Optional material и LoadFromRange контракты сохранены. Unit/Sign 588/0,
+  material 1442/0, input messages 1973/0, presentation 2780/0,
+  lifecycle 3929/0; 636 общих actual-values точно совпали, missing=0.
+  Structure 27/27, source/export 106/106. Final book SHA
+  D3A3CD4CC349321F741A23AFF7FE26FCC251E930F9964B7788DC493554B65219,
+  export SHA 4CF89B75757EC1F55540DF317C8C7111ABB2BC37BC8880849C8A83EB5D52D8A5.
+  Scope/ограничения: NDM_Audit03_Settings_Table_Guard_Review.md.
+  Полный On/Off не повторен; численная методика не менялась. Реестр
+  687/1064, editable pending=73; main output/ТЗ/user Excel сохранены.
+  Следом actual general Plot bridge, оставшиеся Config/range/pairwise,
+  geometry/metadata guard paths, semantic review и финальный release.
+
 - Linear-arithmetic зафиксирован `0258a89`. Annotation Config bridge v230:
   directed 425/0, общий presentation 2780/0, structure 27/27. Все 21 активные
   ячейки настоящей таблицы прошли reader -> layout; стрелки также настоящий

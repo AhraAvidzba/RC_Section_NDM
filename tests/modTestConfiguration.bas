@@ -6,6 +6,8 @@ Option Explicit
 ' ==========================================================================
 ' Модуль меняет ячейки изолированной книги, читает их штатным reader-ом и
 ' проверяет реальные результаты Capacity/Formation, а не только getters.
+' Отдельный входной набор проверяет структуру именованных таблиц Config,
+' диагностические адреса и ошибки ключей без запуска расчетного ядра.
 ' Нагрузки и геометрия заданы во внутренних Н, Н*мм и мм; параметры материалов,
 ' профили и solve-options проходят через Config. После набора все формулы
 ' входных таблиц восстанавливаются, а результаты остаются для проверки writer.
@@ -664,6 +666,165 @@ Private Function LargerValue(ByVal first As Double, ByVal second As Double) As D
     LargerValue = first
     If second > first Then LargerValue = second
 End Function
+
+' ==================== ДЛЯ ТЕСТОВ: СТРУКТУРА ИМЕНОВАННЫХ ТАБЛИЦ CONFIG ====================
+
+' Проверяет поврежденные шапки и ключи на настоящих Excel.Range в отдельной
+' временной книге. Возвращает счетчики для общего интерфейсного suite;
+' расчетные результаты и исходные пользовательские данные не изменяются.
+Public Function RunAudit03SettingsTableGuardTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TConfigTestStats
+    TestAudit03SettingsTableGuards stats
+    LogLine stats, "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03SettingsTableGuardTests = stats.Report
+End Function
+
+' Сохраняет исходную ошибку reader-а отдельно от успешного recovery.
+' Чтение обязательного значения проверяет и отложенные ошибки оформления,
+' не требуя его применения к рисунку или запуска НДС.
+Private Sub Audit03ReadSettingsTable(ByVal settings As CSystemSettingsReader, ByVal fixture As Object, _
+        ByVal key As String, ByRef code As Long, ByRef reason As String)
+    Dim value As String
+    On Error Resume Next
+    Err.Clear
+    settings.LoadFromWorkbook fixture
+    If Err.Number = 0 Then value = settings.GetRequiredString(key)
+    code = Err.Number: reason = Err.Description
+    Err.Clear
+    On Error GoTo 0
+End Sub
+
+' Структурные заголовки Units/Signs/Materials определяют смысл колонок.
+' Ошибка ключа должна называться до потери его строки, а Excel-ошибка в
+' нерасчетном комментарии игнорируется так же, как в scalar Config. Каждый
+' сценарий повторяется после перемещения имени; восстановление проверяется
+' новым полным чтением, без подмены проверки уже подготовленным словарем.
+Private Sub TestAudit03SettingsTableGuards(ByRef stats As TConfigTestStats)
+    Dim fixture As Object, sheet As Object, source As Object, table As Object, target As Object, cell As Object
+    Dim names As Variant, addresses As Variant, keys As Variant, headerCounts As Variant, comments As Variant
+    Dim baselines(0 To 5) As Variant, baseline As Variant, bad As Variant, settings As CSystemSettingsReader
+    Dim index As Long, position As Long, column As Long, row As Long, code As Long, cases As Long, solveCount As Long
+    Dim reason As String, prefix As String, originalReference As String, expectedValue As String, currentReference As String
+    Dim minimumColumns As Variant
+    On Error GoTo FailedRun
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Config"
+    names = Array("rngUnitSettings", "rngSignConventionSettings", "rngConcreteMaterialParameters", _
+        "rngSteelMaterialParameters", "rngSystemSettings", "rngPlotAnnotationSettings")
+    addresses = Array("A5", "A20", "A30", "A50", "H5", "A70")
+    keys = Array("Units.Length.Input", "Sign.N.User", "Concrete.Rb.ULS", "Steel.Rsc.ULS", _
+        "General.ExecutionReportEnabled", "Plot.RebarLabels.Enabled")
+    headerCounts = Array(4, 3, 3, 3, 0, 0): comments = Array(0, 0, 5, 5, 4, 5)
+    minimumColumns = Array(4, 3, 4, 4, 0, 0)
+    For index = 0 To UBound(names)
+        Set source = ThisWorkbook.Names.Item(CStr(names(index))).RefersToRange
+        baselines(index) = source.Value2
+        Set table = sheet.Range(CStr(addresses(index))).Resize(source.Rows.Count, source.Columns.Count)
+        table.NumberFormat = "@": table.Value2 = baselines(index)
+        fixture.Names.Add Name:=CStr(names(index)), RefersTo:="=Config!" & table.Address
+    Next index
+    Set settings = New CSystemSettingsReader
+    For index = 0 To UBound(names)
+        baseline = baselines(index)
+        originalReference = fixture.Names.Item(CStr(names(index))).RefersTo
+        For position = 0 To 1
+            If position = 0 Then Set table = sheet.Range(CStr(addresses(index))).Resize(UBound(baseline, 1), UBound(baseline, 2)) Else Set table = sheet.Range("CH800").Resize(UBound(baseline, 1), UBound(baseline, 2))
+            table.NumberFormat = "@": table.Value2 = baseline
+            fixture.Names.Item(CStr(names(index))).RefersTo = "=Config!" & table.Address
+            settings.LoadFromWorkbook fixture
+            expectedValue = settings.GetRequiredString(CStr(keys(index)))
+            prefix = "audit03.settingsTable.p" & CStr(position) & "." & CStr(names(index))
+            If CLng(headerCounts(index)) > 0 Then
+                cases = cases + 1
+                For column = 1 To CLng(headerCounts(index))
+                    table.Cells(1, column).Value2 = " " & LCase$(CStr(baseline(1, column))) & " "
+                Next column
+                Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+                Check stats, prefix & ".headerCase.accepted", code = 0
+                If code = 0 Then Check stats, prefix & ".headerCase.value", settings.GetRequiredString(CStr(keys(index))) = expectedValue
+            End If
+            For column = 1 To CLng(headerCounts(index))
+                Set cell = table.Cells(1, column)
+                For Each bad In Array("", "TODO", "UNKNOWN_HEADER", CVErr(2015))
+                    cases = cases + 1: table.Value2 = baseline: cell.Value2 = bad
+                    Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+                    Check stats, prefix & ".header" & CStr(column) & ".bad" & CStr(VarType(bad)) & ".rejected", code <> 0
+                    Check stats, prefix & ".header" & CStr(column) & ".bad" & CStr(VarType(bad)) & ".typed", _
+                        code = vbObjectError + 4309 Or code = vbObjectError + 4316
+                    Check stats, prefix & ".header" & CStr(column) & ".bad" & CStr(VarType(bad)) & ".address", _
+                        InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0 And InStr(1, reason, "Config", vbTextCompare) > 0
+                    Check stats, prefix & ".header" & CStr(column) & ".bad" & CStr(VarType(bad)) & ".action", _
+                        InStr(1, reason, "Восстановите", vbTextCompare) > 0 Or InStr(1, reason, "Исправьте", vbTextCompare) > 0
+                    LogLine stats, "SETTINGS_TABLE_ERROR: " & prefix & ".header" & CStr(column) & "|code=" & CStr(code) & "|" & reason
+                Next bad
+            Next column
+            table.Value2 = baseline: row = 2
+            If index = 4 Then row = ValueCell(table, CStr(keys(index)), 2).Row - table.Row + 1
+            Set cell = table.Cells(row, 1): cell.Value2 = CVErr(2015): cases = cases + 1
+            Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+            Check stats, prefix & ".key.typed", code = vbObjectError + 4309
+            Check stats, prefix & ".key.address", InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0
+            Check stats, prefix & ".key.action", InStr(1, reason, "Исправьте", vbTextCompare) > 0
+            LogLine stats, "SETTINGS_TABLE_ERROR: " & prefix & ".key|code=" & CStr(code) & "|" & reason
+            table.Value2 = baseline: Set cell = Nothing
+            Set cell = table.Cells(row, 2): cell.Value2 = CVErr(2015): cases = cases + 1
+            Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+            Check stats, prefix & ".value.typed", code = vbObjectError + 4309
+            Check stats, prefix & ".value.address", InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0
+            LogLine stats, "SETTINGS_TABLE_ERROR: " & prefix & ".value|code=" & CStr(code) & "|" & reason
+            If CLng(comments(index)) > 0 Then
+                table.Value2 = baseline: Set cell = table.Cells(row, CLng(comments(index)))
+                cell.Value2 = CVErr(2015): cases = cases + 1
+                Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+                Check stats, prefix & ".comment.noncritical", code = 0
+                If code = 0 Then
+                    Check stats, prefix & ".comment.emptySource", settings.GetSource(CStr(keys(index))) = vbNullString
+                    Check stats, prefix & ".comment.valuePreserved", settings.GetRequiredString(CStr(keys(index))) = expectedValue
+                End If
+            End If
+            table.Value2 = baseline
+            Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+            Check stats, prefix & ".recovery", code = 0
+            If code = 0 Then Check stats, prefix & ".recovery.value", settings.GetRequiredString(CStr(keys(index))) = expectedValue
+            cases = cases + 1
+            settings.LoadFromRange table
+            Check stats, prefix & ".rangeFormat.value", settings.GetRequiredString(CStr(keys(index))) = expectedValue
+            If CLng(minimumColumns(index)) > 0 Then
+                cases = cases + 1: currentReference = fixture.Names.Item(CStr(names(index))).RefersTo
+                fixture.Names.Item(CStr(names(index))).RefersTo = "=Config!" & table.Resize(table.Rows.Count, CLng(minimumColumns(index)) - 1).Address
+                Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+                Check stats, prefix & ".truncated.typed", code = vbObjectError + 4316
+                Check stats, prefix & ".truncated.address", InStr(1, reason, table.Cells(1, 1).Address(False, False), vbTextCompare) > 0
+                Check stats, prefix & ".truncated.action", InStr(1, reason, "Восстановите", vbTextCompare) > 0
+                LogLine stats, "SETTINGS_TABLE_ERROR: " & prefix & ".truncated|code=" & CStr(code) & "|" & reason
+                fixture.Names.Item(CStr(names(index))).RefersTo = currentReference
+            End If
+        Next position
+        fixture.Names.Item(CStr(names(index))).RefersTo = originalReference
+    Next index
+    ' Reader не навязывает материал, пока он не нужен активному расчетному
+    ' потребителю. Пропавшая optional-таблица остается отсутствующим ключом.
+    For index = 2 To 3
+        cases = cases + 1: originalReference = fixture.Names.Item(CStr(names(index))).RefersTo
+        fixture.Names.Item(CStr(names(index))).Delete
+        settings.LoadFromWorkbook fixture
+        Check stats, "audit03.settingsTable.optional." & CStr(names(index)), Not settings.HasKey(CStr(keys(index)))
+        fixture.Names.Add Name:=CStr(names(index)), RefersTo:=originalReference
+        settings.LoadFromWorkbook fixture
+        Check stats, "audit03.settingsTable.optionalRecovery." & CStr(names(index)), settings.HasKey(CStr(keys(index)))
+    Next index
+    Check stats, "audit03.settingsTable.noSolve", SectionEquilibriumSolveCount() = solveCount
+    LogLine stats, "SETTINGS_TABLE_CASES: blocks=6; positions=2; variants=" & CStr(cases) & "; equilibriumCases=0"
+    GoTo Cleanup
+FailedRun:
+    Check stats, "audit03.settingsTable.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
 
 ' Сохраняет численное значение в журнале без зависимости от десятичного
 ' разделителя Windows; расчетные значения и допуски при этом не округляются.
