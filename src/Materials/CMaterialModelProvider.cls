@@ -91,26 +91,7 @@ End Sub
 ' Читает единственную эффективную настройку. Миграция старого формата
 ' выполняется Excel-reader-ом до передачи настроек материальному слою.
 Private Function ReadDiagramExtensionSetting(ByVal settings As CSystemSettingsReader) As Boolean
-    Dim key As String
-    Dim rawValue As String
-
-    key = "General.DiagramExtension"
-    If settings.HasKey(key) Then
-        rawValue = Trim$(settings.GetRawString(key, vbNullString))
-    Else
-        Err.Raise vbObjectError + 3245, "CMaterialModelProvider", _
-            "Каноническая настройка General.DiagramExtension не прочитана."
-    End If
-
-    Select Case UCase$(rawValue)
-        Case "YES", "TRUE", "1", "ДА"
-            ReadDiagramExtensionSetting = True
-        Case "NO", "FALSE", "0", "НЕТ"
-            ReadDiagramExtensionSetting = False
-        Case Else
-            Err.Raise vbObjectError + 3245, "CMaterialModelProvider", _
-                "Настройка " & key & " должна быть Yes или No."
-    End Select
+    ReadDiagramExtensionSetting = settings.GetRequiredBoolean("General.DiagramExtension")
 End Function
 
 ' Строит полный физический материальный набор одной расчетной цели.

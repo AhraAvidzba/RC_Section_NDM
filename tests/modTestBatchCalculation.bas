@@ -247,6 +247,11 @@ Public Function RunBatchCalculationTests() As String
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
 
+    AppendLine stats, "RUN: RunAudit03GeneralGeometryConfigTests"
+    stats.Report = stats.Report & RunAudit03GeneralGeometryConfigTests(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed
+    stats.Failed = stats.Failed + searchFailed
+
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability

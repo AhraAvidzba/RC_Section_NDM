@@ -47,7 +47,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
     AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
     AppendRequiredNamedSettingsRange workbook, "rngPlotAnnotationSettings", "Подписи и размеры схемы"
     AppendGeometrySettingsRanges workbook
-    NormalizeDiagramExtensionSetting
+    NormalizeDiagramExtensionSetting True
 End Sub
 
 ' Различает поврежденное имя обязательной таблицы и ошибку ее значения.
@@ -155,7 +155,7 @@ End Sub
 ' Читает старый формат только на границе Excel. До любых defaults сохраняет
 ' явно введенное значение, затем удаляет старый ключ из runtime-настроек.
 ' Конфликт не скрывается: новый ключ имеет приоритет, причина доступна отчету.
-Private Sub NormalizeDiagramExtensionSetting()
+Private Sub NormalizeDiagramExtensionSetting(Optional ByVal requireWorkbookValue As Boolean = False)
     Const canonicalKey As String = "General.DiagramExtension"
     Const legacyKey As String = "Solver.DirectState.DiagramExtension"
     Dim canonicalIndex As Long
@@ -185,6 +185,11 @@ Private Sub NormalizeDiagramExtensionSetting()
         mValues(legacyIndex) = valueText
         legacyIndex = 0
     Else
+        If requireWorkbookValue Then Err.Raise vbObjectError + 4313, "CSystemSettingsReader", _
+            InputErrorMessage(canonicalKey, "Обязательная строка настройки отсутствует.", _
+                "Восстановите строку в системных настройках Config и выберите Yes или No.")
+        ' Неполный автономный LoadFromRange сохраняет контракт reader-а;
+        ' в полной пользовательской книге отсутствие строки является ошибкой.
         AppendSetting canonicalKey, "Yes", "Yes", "Численное продолжение активных диаграмм."
     End If
     If legacyIndex > 0 Then RemoveSettingAt legacyIndex

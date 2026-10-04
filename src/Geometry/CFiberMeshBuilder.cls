@@ -87,24 +87,23 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
     For iy = 0 To ny - 1
         cellMinY = minY + iy * stepY
         y = cellMinY + stepY / 2#
-        If y <= maxY + GEOM_TOLERANCE Then
-            For ix = 0 To nx - 1
-                cellMinX = minX + ix * stepX
-                x = cellMinX + stepX / 2#
-                If x <= maxX + GEOM_TOLERANCE Then
-                    If boundarySubdivisions = 1 Then
-                        If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
-                    Else
-                        GetCornerStatus geometry, cellMinX, cellMinY, stepX, stepY, allCornersInside, anyCornerInside
-                        If allCornersInside Then
-                            AddFiber x, y, stepX, stepY, materialID
-                        Else
-                            AddSubcellFibers geometry, cellMinX, cellMinY, stepX, stepY, boundarySubdivisions, materialID
-                        End If
-                    End If
+        For ix = 0 To nx - 1
+            cellMinX = minX + ix * stepX
+            x = cellMinX + stepX / 2#
+            ' Центр последней базовой ячейки может быть за габаритом, хотя
+            ' часть ее подъячеек находится в бетоне. Отбор выполняет форма
+            ' по центрам фактических элементов, не по центру базовой ячейки.
+            If boundarySubdivisions = 1 Then
+                If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
+            Else
+                GetCornerStatus geometry, cellMinX, cellMinY, stepX, stepY, allCornersInside, anyCornerInside
+                If allCornersInside Then
+                    AddFiber x, y, stepX, stepY, materialID
+                Else
+                    AddSubcellFibers geometry, cellMinX, cellMinY, stepX, stepY, boundarySubdivisions, materialID
                 End If
-            Next ix
-        End If
+            End If
+        Next ix
     Next iy
 
     If mFiberCount <= 0 Then

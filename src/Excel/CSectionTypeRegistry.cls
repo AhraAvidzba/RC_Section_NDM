@@ -192,8 +192,8 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
 
     Dim meshStepX As Double ' Обязательный шаг бетонной сетки по X во внутренних единицах.
     Dim meshStepY As Double ' Обязательный независимый шаг бетонной сетки по Y.
-    meshStepX = units.InputLengthToInternal(settings.GetRequiredDouble("Mesh.StepX"))
-    meshStepY = units.InputLengthToInternal(settings.GetRequiredDouble("Mesh.StepY"))
+    meshStepX = ReadMeshStep(settings, units, "Mesh.StepX")
+    meshStepY = ReadMeshStep(settings, units, "Mesh.StepY")
     mesh.BuildMesh geometry, meshStepX, meshStepY, 1, MeshBoundarySubdivisions(settings)
 
     Dim rebars As CRebarLayout
@@ -214,6 +214,25 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Set model = modelBuilder.BuildFromGenerated(mesh, rebars, "Generated")
     BuildAnnotations model, geometry, rebars, settings
     Set BuildGeneratedModel = model
+End Function
+
+' Читает положительный шаг и нормализует INPUT длину до построения сетки.
+' Диагностика адаптера сохраняет ключ и действующий адрес; builder независимо
+' защищает свой внутренний API от невалидного шага без зависимости от Excel.
+Private Function ReadMeshStep(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal key As String) As Double
+    Dim value As Double
+    value = settings.GetRequiredDouble(key)
+    If value <= 0# Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
+        settings.InputErrorMessage(key, "Шаг бетонной сетки должен быть положительным.", _
+            "Введите число больше нуля в текущей INPUT-единице длины.")
+    On Error GoTo InvalidConversion
+    ReadMeshStep = units.InputLengthToInternal(value)
+    Exit Function
+InvalidConversion:
+    If Err.Number <> 6 Then Err.Raise Err.Number, Err.Source, Err.Description
+    Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
+        settings.InputErrorMessage(key, "Шаг слишком велик для пересчета в мм.", _
+            "Уменьшите число и проверьте INPUT-единицу длины.")
 End Function
 
 ' Возвращает число подъячеек для уточнения границы бетонной сетки.

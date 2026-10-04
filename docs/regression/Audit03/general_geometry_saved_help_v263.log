@@ -1,0 +1,9 @@
+SAVED_HELP|passed=True|addresses=B934|needle=В полной книге обязательно заполненное Yes или No.
+SAVED_HELP|passed=True|addresses=B946|needle=Значение обязательно и неотрицательно: 0 отключает инженерное зануление
+SAVED_HELP|passed=True|addresses=B951|needle=Если |M| ≤ M_tol
+SAVED_HELP|passed=True|addresses=B956|needle=Источник обязателен: выберите Generated или AutoCAD.
+SAVED_HELP|passed=False|addresses=|needle=Смещение обязательно задается числом
+SAVED_HELP|passed=True|addresses=B994|needle=последние базовые ячейки могут пересекать границу
+SAVED_HELP|passed=True|addresses=B960|needle=координаты и размеры - мм, площади - мм2, инерции - мм4
+SAVED_HELP_SOURCE_UNCHANGED: True; SHA256=3E5E46D429B78FDABDA8C00F02FC1CEE2764A56BFDE4B92C5B0B75BC93789939
+TOTAL_SAVED_GENERAL_GEOMETRY_HELP: checks=7; failed=1

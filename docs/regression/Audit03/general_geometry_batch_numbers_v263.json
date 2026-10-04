@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/stability_config_batch_v257.log",
+  "CurrentReport": "docs/regression/Audit03/general_geometry_batch_from_full_v263.log",
+  "BaselineSHA256": "38B9C58911E1B018E788D08CC62925D13B8C4EF713EDF55DC5678D16C5932FC9",
+  "CurrentSHA256": "C38FDE3047CA9062B2F67D1D26ECC0C29F2D6794784530FBCA4521BB0096578C",
+  "BaselineNumericAssertions": 2264,
+  "CurrentNumericAssertions": 2264,
+  "Compared": 2264,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

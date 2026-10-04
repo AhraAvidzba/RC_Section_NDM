@@ -914,10 +914,29 @@ Private Sub ApplyLoadReferenceFromSettings(ByVal section As CSectionModel, _
         ByVal batch As CBatchSectionCalculator)
     Dim referenceX As Double
     Dim referenceY As Double
+    Dim offsetX As Double, offsetY As Double
+    Dim key As String ' Текущая координата для адресной диагностики переполнения.
     CalculateConcreteSectionCentroid section, referenceX, referenceY
 
-    batch.ApplyLoadReference referenceX + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetX", 0#)), _
-        referenceY + units.InputLengthToInternal(settings.GetDouble("Load.ReferenceOffsetY", 0#)), referenceX, referenceY
+    key = "Load.ReferenceOffsetX"
+    offsetX = settings.GetRequiredDouble(key)
+    On Error GoTo InvalidConversion
+    offsetX = units.InputLengthToInternal(offsetX)
+    offsetX = referenceX + offsetX
+    On Error GoTo 0
+    key = "Load.ReferenceOffsetY"
+    offsetY = settings.GetRequiredDouble(key)
+    On Error GoTo InvalidConversion
+    offsetY = units.InputLengthToInternal(offsetY)
+    offsetY = referenceY + offsetY
+    On Error GoTo 0
+    batch.ApplyLoadReference offsetX, offsetY, referenceX, referenceY
+    Exit Sub
+InvalidConversion:
+    If Err.Number <> 6 Then Err.Raise Err.Number, Err.Source, Err.Description
+    Err.Raise vbObjectError + 4139, "ApplyLoadReferenceFromSettings", _
+        settings.InputErrorMessage(key, "Смещение слишком велико для получения координаты точки нагрузки в мм.", _
+            "Уменьшите модуль числа и проверьте INPUT-единицу длины.")
 End Sub
 
 ' Читает дополнительную таблицу нагрузок для устойчивости. Excel-слой сразу
@@ -1182,3 +1201,14 @@ Private Function ElapsedSecondsFrom(ByVal startTimer As Double) As Double
         ElapsedSecondsFrom = 86400# - startTimer + nowTimer
     End If
 End Function
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: ШТАТНЫЙ ПЕРЕНОС ПОЛЬЗОВАТЕЛЬСКОЙ ТОЧКИ НАГРУЗКИ
+' ==========================================================================
+' Открывает настоящий Excel-adapter для направленной проверки Config.
+' Не повторяет преобразование единиц, вычисление центра или формулу переноса.
+Public Sub Audit03ApplyLoadReferenceForTests(ByVal section As CSectionModel, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByVal batch As CBatchSectionCalculator)
+    ApplyLoadReferenceFromSettings section, settings, units, batch
+End Sub

@@ -69,6 +69,47 @@
 
 ## Актуальная Точка Продолжения
 
+- Контроль после v263: полный eight-suite Off завершился, exit=1,
+  source unchanged=True. Расчетные suites зеленые, Batch 25607/0;
+  WorkbookUI 64151/12. Подробные причины в General_Geometry_Config_Review:
+  шесть поврежденных служебных подписей единиц старого Refresh-Workbook,
+  пять неверных assumptions AutoPlot fixture/counter и один отказ optional
+  test-log I/O. Исправления исходников внесены; v264 изолированно обновлена.
+  Directed gates: General/Geometry 1788/0, таблицы 583/0, AutoPlot 86/0,
+  saved units 101/0, structure 27/27 и native source/export 107/107.
+  Help failed=0; все 760 inputs/формулы/validation сохранены после reopen.
+  Config census v263 -> v264: только 15 служебных подписей единиц изменены,
+  editable differences=0. Snapshot и hashes зафиксированы в review MD.
+  Старый отрицательный журнал сохраняется; новый full gate еще обязателен.
+  Registry не продвинут: pending 29/760 до регрессионной приемки девяти полей.
+  Текущая ориентировочная оценка: 20-30% всей audit-работы еще открыто,
+  16-24 часа активной работы, резерв до 30; ожидание реального AutoCAD
+  не включено. Это оценка трудоемкости, не доля неудачных assertions.
+
+- Общие/geometry настройки v258-v263: отдельный standard test module без
+  новых classes проверяет девять полей через фактические модели, snapshot,
+  НДС и writer comments. v258 NotRun: синтаксис нового test setup; v259
+  753/89 включал дефект test profile fixture. Уточненные frozen v260 754/90
+  и v262 1698/90 подтверждают defaults отсутствующих/пустых настроек,
+  потерю знака отрицательного порога при units и сообщения шагов без адреса.
+  Найден дополнительный F07 geometry defect: при D=300/step=55/subdivisions=4
+  пропуск крайних подъячеек давал A=65415.625 вместо независимо проверенных
+  71465.625 мм2. Отбор теперь делает ContainsPoint фактического элемента;
+  coarse subdivisions=1 сохраняет прежние 66550 мм2. Формулы СП, пределы,
+  solver tolerances и старые numerical expected не менялись.
+  v261 directed 844/0; усиленный final v263 1788/0, 164 consumer-сценария,
+  source unchanged=True. 88 invalid values, 18 missing keys и 18 recovery,
+  два положения таблицы. Help v263 failed=0, 2042 строки, 140 links,
+  118 Shapes, все 760 inputs/validation сохранены после save/reopen.
+  Scope: NDM_Audit03_General_Geometry_Config_Review.md. Registry пока v257,
+  731/1064, pending 29/760: новые девять не получают PASS до регрессионных
+  gates. Следом Geometry/Batch/UI/baseline, source/export/structure, затем
+  двадцать AutoCAD и общий range/pairwise/overflow/final release.
+  Реальная CAD activation завершилась 0x80080005 для зарегистрированного
+  AutoCAD.Application.24.3. Это terminal failure, живого CAD-job нет;
+  настоящий DWG NotRun, не PASS. Диагностика сохранена отдельно в
+  NDM_Audit03_AutoCAD_Environment_2026-10-04.md. Другие работы продолжаются.
+
 - Stability Config v252-v257: новый направленный pipeline проверяет 17 полей
   через настоящий reader -> units -> batch -> Calculator -> writers в двух
   положениях именованной таблицы. Уточненный frozen v254: 7680/138;

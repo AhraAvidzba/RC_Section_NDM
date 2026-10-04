@@ -1,0 +1,817 @@
+{
+  "Workbook": "docs/regression/Audit03/RC_Section_NDM_general_geometry_final_v264.xlsm",
+  "Hash": "60569C86E31F230B0C21B1DC78165F07EC817AC029C77F9E4E38B685EF71B191",
+  "Checks": [
+    {
+      "Key": "General.ExecutionReportEnabled",
+      "Address": "Config!C5",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "General.NonCriticalMessagesEnabled",
+      "Address": "Config!C6",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "General.WorstCombinationCriterion",
+      "Address": "Config!C7",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "General.DiagramExtension",
+      "Address": "Config!C8",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Calculation.ZeroMomentPerDepth",
+      "Address": "Config!C9",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Moment\",INDEX(rngUnitSettings,,1),0),2)&\"/\"&INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "tf*m/mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Moment\",INDEX(rngUnitSettings,,1),0),2)&\"/\"&INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Geometry.Source",
+      "Address": "Config!C12",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Geometry.Type",
+      "Address": "Config!C13",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Mesh.StepX",
+      "Address": "Config!C14",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Mesh.StepY",
+      "Address": "Config!C15",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Mesh.BoundarySubdivisions",
+      "Address": "Config!C16",
+      "Passed": true,
+      "Expected": "шт",
+      "Value": "шт",
+      "Formula": ""
+    },
+    {
+      "Key": "Load.ReferenceOffsetX",
+      "Address": "Config!C17",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Load.ReferenceOffsetY",
+      "Address": "Config!C18",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Solver.Method",
+      "Address": "Config!C22",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Solver.MaxIterations",
+      "Address": "Config!C23",
+      "Passed": true,
+      "Expected": "шт",
+      "Value": "шт",
+      "Formula": ""
+    },
+    {
+      "Key": "Solver.LoadSteps",
+      "Address": "Config!C24",
+      "Passed": true,
+      "Expected": "шт",
+      "Value": "шт",
+      "Formula": ""
+    },
+    {
+      "Key": "Solver.ToleranceN",
+      "Address": "Config!C25",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Force\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "tf",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Force\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Solver.ToleranceMx",
+      "Address": "Config!C26",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Moment\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "tf*m",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Moment\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Solver.ToleranceMy",
+      "Address": "Config!C27",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Moment\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "tf*m",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Moment\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Solver.LineSearchEnabled",
+      "Address": "Config!C29",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Solver.DampingInitial",
+      "Address": "Config!C30",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Solver.MinLineSearchAlpha",
+      "Address": "Config!C31",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Solver.MaxDeltaEpsilon0",
+      "Address": "Config!C32",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Solver.MaxDeltaKappa",
+      "Address": "Config!C33",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Curvature\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "1/mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Curvature\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Solver.SecantMaxRestarts",
+      "Address": "Config!C35",
+      "Passed": true,
+      "Expected": "шт",
+      "Value": "шт",
+      "Formula": ""
+    },
+    {
+      "Key": "Solver.SecantMinStepNorm",
+      "Address": "Config!C36",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.SolutionStrategy",
+      "Address": "Config!C40",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.SolverMaxIterations",
+      "Address": "Config!C41",
+      "Passed": true,
+      "Expected": "шт",
+      "Value": "шт",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.ToleranceStrain",
+      "Address": "Config!C43",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.MaxLambda",
+      "Address": "Config!C45",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.SearchMethod",
+      "Address": "Config!C46",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.InitialLambda",
+      "Address": "Config!C47",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.ToleranceLambda",
+      "Address": "Config!C48",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.MaxRetries",
+      "Address": "Config!C49",
+      "Passed": true,
+      "Expected": "шт",
+      "Value": "шт",
+      "Formula": ""
+    },
+    {
+      "Key": "Capacity.BaseLoadSteps",
+      "Address": "Config!C50",
+      "Passed": true,
+      "Expected": "шт",
+      "Value": "шт",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.Code",
+      "Address": "Config!C54",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.ElementLength",
+      "Address": "Config!C55",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Stability.Mu1",
+      "Address": "Config!C56",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.Mu2",
+      "Address": "Config!C57",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.SystemType",
+      "Address": "Config!C58",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign1",
+      "Address": "Config!C59",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.ZeroMomentEccentricitySign2",
+      "Address": "Config!C60",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityMode",
+      "Address": "Config!C61",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser1",
+      "Address": "Config!C62",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityUser2",
+      "Address": "Config!C63",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Stability.AccidentalEccentricityPlanes",
+      "Address": "Config!C64",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.PhiLMode",
+      "Address": "Config!C65",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.SP63.Ks",
+      "Address": "Config!C67",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMin",
+      "Address": "Config!C68",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.SP63.DeltaEMax",
+      "Address": "Config!C69",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.SP35.PhiP",
+      "Address": "Config!C71",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Stability.SP35.NOverNcrLimit",
+      "Address": "Config!C72",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.Allowable",
+      "Address": "Config!C75",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "SLS.Crack.InitiationSolutionStrategy",
+      "Address": "Config!C76",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.TensionZoneMode",
+      "Address": "Config!C77",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.CoverDistanceMode",
+      "Address": "Config!C78",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.Phi1",
+      "Address": "Config!C79",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.Phi2",
+      "Address": "Config!C80",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.Phi3Mode",
+      "Address": "Config!C81",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.Phi3",
+      "Address": "Config!C82",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.PsiMode",
+      "Address": "Config!C83",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.SigmaSCrcAveragingMode",
+      "Address": "Config!C84",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "SLS.Crack.PsiS",
+      "Address": "Config!C85",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Export.CombinationID",
+      "Address": "Config!C88",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Export.NeutralLineEnabled",
+      "Address": "Config!C89",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Export.PrincipalAxesMode",
+      "Address": "Config!C90",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Export.LoadPointEnabled",
+      "Address": "Config!C91",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Export.ContourEnabled",
+      "Address": "Config!C92",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Export.LabelMode",
+      "Address": "Config!C93",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Layer.Concrete",
+      "Address": "Config!C94",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Layer.Rebar",
+      "Address": "Config!C95",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Layer.Contour",
+      "Address": "Config!C96",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteTension",
+      "Address": "Config!C97",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Layer.ConcreteCompression",
+      "Address": "Config!C98",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarTension",
+      "Address": "Config!C99",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Layer.RebarCompression",
+      "Address": "Config!C100",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteTension",
+      "Address": "Config!C101",
+      "Passed": true,
+      "Expected": "ColorIndex",
+      "Value": "ColorIndex",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Color.ConcreteCompression",
+      "Address": "Config!C102",
+      "Passed": true,
+      "Expected": "ColorIndex",
+      "Value": "ColorIndex",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Color.RebarTension",
+      "Address": "Config!C103",
+      "Passed": true,
+      "Expected": "ColorIndex",
+      "Value": "ColorIndex",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Color.RebarCompression",
+      "Address": "Config!C104",
+      "Passed": true,
+      "Expected": "ColorIndex",
+      "Value": "ColorIndex",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Color.Neutral",
+      "Address": "Config!C105",
+      "Passed": true,
+      "Expected": "ColorIndex",
+      "Value": "ColorIndex",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Import.ConcreteLayer",
+      "Address": "Config!C108",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Import.RebarLayer",
+      "Address": "Config!C109",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "AutoCAD.Import.MinArea",
+      "Address": "Config!C110",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Area\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm2",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Area\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Plot.Enabled",
+      "Address": "Config!C113",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.AutoUpdateAfterCalculation",
+      "Address": "Config!C114",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.LoadCase",
+      "Address": "Config!C115",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.ResultGradient",
+      "Address": "Config!C116",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.ResultLabelsEnabled",
+      "Address": "Config!C117",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.ResultLabelSpacing",
+      "Address": "Config!C118",
+      "Passed": true,
+      "Expected": "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+      "Value": "mm",
+      "Formula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Key": "Plot.NeutralLineEnabled",
+      "Address": "Config!C119",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.PrincipalAxesMode",
+      "Address": "Config!C120",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.LoadApplicationPointEnabled",
+      "Address": "Config!C121",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.AxisLabelsEnabled",
+      "Address": "Config!C122",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.AxisLabelsFontSize",
+      "Address": "Config!C123",
+      "Passed": true,
+      "Expected": "pt",
+      "Value": "pt",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.ContourEnabled",
+      "Address": "Config!C124",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.LegendEnabled",
+      "Address": "Config!C125",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.LegendMode",
+      "Address": "Config!C126",
+      "Passed": true,
+      "Expected": "-",
+      "Value": "-",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.Color.RebarCompression",
+      "Address": "Config!C127",
+      "Passed": true,
+      "Expected": "RGB",
+      "Value": "RGB",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.Color.RebarTension",
+      "Address": "Config!C128",
+      "Passed": true,
+      "Expected": "RGB",
+      "Value": "RGB",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.Color.ConcreteCompression",
+      "Address": "Config!C129",
+      "Passed": true,
+      "Expected": "RGB",
+      "Value": "RGB",
+      "Formula": ""
+    },
+    {
+      "Key": "Plot.Color.ConcreteTension",
+      "Address": "Config!C130",
+      "Passed": true,
+      "Expected": "RGB",
+      "Value": "RGB",
+      "Formula": ""
+    }
+  ],
+  "Passed": 101,
+  "Failed": 0,
+  "NativeSaveReopenReport": "general_geometry_help_v264.log"
+}

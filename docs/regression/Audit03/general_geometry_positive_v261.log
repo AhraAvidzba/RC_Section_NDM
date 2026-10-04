@@ -1,0 +1,1170 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_geometry_positive_v261.xlsm
+SOURCE_SHA256: 49F6E73FF4D6351B1A86930FDECA45E71DDF9F594EC340BDEF0319A78B6BC6DF
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_28cac37c14a34801a5faf1244d0c1064\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests =====
+SUITE_STARTED: modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests; 2026-10-04T18:34:25
+EXCEL_AFTER_SUITE: pid=23476; workingSet=221278208; privateBytes=173203456; cpu=17215.296875
+EXCEL_AFTER_SUITE: pid=24856; workingSet=156835840; privateBytes=110755840; cpu=15.203125
+OK: generalGeometry.Geometry.Type.Circle.concrete
+OK: generalGeometry.Geometry.Type.Circle.steel
+OK: generalGeometry.Geometry.Type.Circle.annotations
+OK: generalGeometry.Geometry.Type.Circle.generated
+GENERAL_MODEL: generalGeometry.Geometry.Type.Circle|count=281|area=71600
+OK: generalGeometry.Geometry.Type.RectSet.concrete
+OK: generalGeometry.Geometry.Type.RectSet.steel
+OK: generalGeometry.Geometry.Type.RectSet.annotations
+OK: generalGeometry.Geometry.Type.RectSet.generated
+OK: generalGeometry.Geometry.Type.RectSet.differentSection
+GENERAL_MODEL: generalGeometry.Geometry.Type.RectSet|count=787|area=287500
+OK: generalGeometry.Geometry.Type.RoundedRectangle.concrete
+OK: generalGeometry.Geometry.Type.RoundedRectangle.steel
+OK: generalGeometry.Geometry.Type.RoundedRectangle.annotations
+OK: generalGeometry.Geometry.Type.RoundedRectangle.generated
+OK: generalGeometry.Geometry.Type.RoundedRectangle.differentSection
+GENERAL_MODEL: generalGeometry.Geometry.Type.RoundedRectangle|count=668|area=215900
+OK: generalGeometry.Geometry.Type.HollowRectangle.concrete
+OK: generalGeometry.Geometry.Type.HollowRectangle.steel
+OK: generalGeometry.Geometry.Type.HollowRectangle.annotations
+OK: generalGeometry.Geometry.Type.HollowRectangle.generated
+OK: generalGeometry.Geometry.Type.HollowRectangle.differentSection
+GENERAL_MODEL: generalGeometry.Geometry.Type.HollowRectangle|count=1000|area=272800
+OK: generalGeometry.Mesh.StepX.moreFibers
+OK: generalGeometry.Mesh.StepX.cellArea
+OK: generalGeometry.Mesh.StepX.steelUnchanged
+GENERAL_NUMBER: generalGeometry.Mesh.StepX.areaAccuracy|actual=71000|expected=70685.8347057704|tolerance=1000
+OK: generalGeometry.Mesh.StepX.areaAccuracy
+OK: generalGeometry.Mesh.StepY.moreFibers
+OK: generalGeometry.Mesh.StepY.cellArea
+OK: generalGeometry.Mesh.StepY.steelUnchanged
+GENERAL_NUMBER: generalGeometry.Mesh.StepY.areaAccuracy|actual=71000|expected=70685.8347057704|tolerance=1000
+OK: generalGeometry.Mesh.StepY.areaAccuracy
+GENERAL_NUMBER: generalGeometry.Mesh.BoundarySubdivisions.coarseArea|actual=66550|expected=66550|tolerance=0.00000001
+OK: generalGeometry.Mesh.BoundarySubdivisions.coarseArea
+GENERAL_NUMBER: generalGeometry.Mesh.BoundarySubdivisions.fineArea|actual=71465.625|expected=71465.625|tolerance=0.00000001
+OK: generalGeometry.Mesh.BoundarySubdivisions.fineArea
+OK: generalGeometry.Mesh.BoundarySubdivisions.boundaryChanged
+OK: generalGeometry.Mesh.BoundarySubdivisions.accuracy
+OK: generalGeometry.Geometry.Source.AutoCAD.noGenerator
+GENERAL_NUMBER: generalGeometry.Geometry.Source.AutoCAD.x|actual=20|expected=20|tolerance=0.00000001
+OK: generalGeometry.Geometry.Source.AutoCAD.x
+GENERAL_NUMBER: generalGeometry.Geometry.Source.AutoCAD.area|actual=40000|expected=40000|tolerance=0.00000001
+OK: generalGeometry.Geometry.Source.AutoCAD.area
+GENERAL_NUMBER: generalGeometry.Geometry.Source.AutoCAD.changedInputUnit|actual=20|expected=20|tolerance=0.00000001
+OK: generalGeometry.Geometry.Source.AutoCAD.changedInputUnit
+GENERAL_NUMBER: generalGeometry.Geometry.Source.AutoCAD.changedInputArea|actual=40000|expected=40000|tolerance=0.00000001
+OK: generalGeometry.Geometry.Source.AutoCAD.changedInputArea
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=2999|My=2999|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.2999.mx|actual=0|expected=0|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.2999.mx
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.2999.my|actual=0|expected=0|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.2999.my
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.2999.state
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=3000|My=3000|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.3000.mx|actual=0|expected=0|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.3000.mx
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.3000.my|actual=0|expected=0|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.3000.my
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.3000.state
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=3001|My=3001|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.3001.mx|actual=3001|expected=3001|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.3001.mx
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.3001.my|actual=3001|expected=3001|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.3001.my
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.3001.state
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=2999|My=-2999|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.disabled|actual=2999|expected=2999|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.disabled
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=3000|My=3001|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.unitsMx|actual=0|expected=0|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.unitsMx
+GENERAL_NUMBER: generalGeometry.Calculation.ZeroMomentPerDepth.unitsMy|actual=3001|expected=3001|tolerance=0
+OK: generalGeometry.Calculation.ZeroMomentPerDepth.unitsMy
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetX.-10.mx|actual=200000|expected=200000|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetX.-10.mx
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetX.-10.my|actual=200000|expected=200000|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetX.-10.my
+OK: generalGeometry.Load.ReferenceOffsetX.-10.converged
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetX.-10.n|actual=-10000|expected=-10000|tolerance=0.01
+OK: generalGeometry.Load.ReferenceOffsetX.-10.n
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetX.10.mx|actual=200000.000000002|expected=200000|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetX.10.mx
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetX.10.my|actual=-1.62092561595273E-12|expected=0|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetX.10.my
+OK: generalGeometry.Load.ReferenceOffsetX.10.converged
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetX.10.n|actual=-10000|expected=-10000|tolerance=0.01
+OK: generalGeometry.Load.ReferenceOffsetX.10.n
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetY.-10.mx|actual=300000|expected=300000|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetY.-10.mx
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetY.-10.my|actual=100000|expected=100000|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetY.-10.my
+OK: generalGeometry.Load.ReferenceOffsetY.-10.converged
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetY.-10.n|actual=-10000|expected=-10000|tolerance=0.01
+OK: generalGeometry.Load.ReferenceOffsetY.-10.n
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetY.10.mx|actual=100000|expected=100000|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetY.10.mx
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetY.10.my|actual=100000|expected=100000|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetY.10.my
+OK: generalGeometry.Load.ReferenceOffsetY.10.converged
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetY.10.n|actual=-10000|expected=-10000|tolerance=0.01
+OK: generalGeometry.Load.ReferenceOffsetY.10.n
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetX.units|actual=1.24877885809838E-12|expected=0|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetX.units
+GENERAL_NUMBER: generalGeometry.Load.ReferenceOffsetY.units|actual=299999.999999999|expected=300000|tolerance=1
+OK: generalGeometry.Load.ReferenceOffsetY.units
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+OK: generalGeometry.General.DiagramExtension.PR1.No.normalConverged
+OK: generalGeometry.General.DiagramExtension.PR1.No.normalPhysical
+OK: generalGeometry.General.DiagramExtension.PR1.No.normalNoExtension
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsNumericalFailure|code=NUMERICAL_FAILURE|applies=True|calculated=True|comment=Подбор шага решения не смог уменьшить невязку равновесия.
+OK: audit03.comments.GENERAL_CONFIG.direct.reasonPresent
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+OK: audit03.comments.GENERAL_CONFIG.direct.ownSubtree
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=НДС: Подбор шага решения не смог уменьшить невязку равновесия.|crack=|stability=|batch=НДС: Подбор шага решения не смог уменьшить невязку равновесия.
+GENERAL_BATCH: profile=PR1|N=-10000000|Mx=0|My=0|status=NumFail|solves=3
+OK: generalGeometry.General.DiagramExtension.PR1.No.offNumFail
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.normalConverged
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.normalPhysical
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.normalNoExtension
+GENERAL_NUMBER: generalGeometry.General.DiagramExtension.PR1.Yes.normalEps|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06|tolerance=0.0000000001
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.normalEps
+GENERAL_NUMBER: generalGeometry.General.DiagramExtension.PR1.Yes.normalKx|actual=1.24081654239653E-08|expected=1.24081654239653E-08|tolerance=0.000000000001
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.normalKx
+GENERAL_NUMBER: generalGeometry.General.DiagramExtension.PR1.Yes.normalKy|actual=6.20408271198263E-09|expected=6.20408271198263E-09|tolerance=0.000000000001
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.normalKy
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.GENERAL_CONFIG.direct.reasonPresent
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+OK: audit03.comments.GENERAL_CONFIG.direct.ownSubtree
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.|crack=|stability=|batch=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+GENERAL_BATCH: profile=PR1|N=-10000000|Mx=0|My=0|status=FAIL|solves=2
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.overloadState
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.overloadConverged
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.overloadExtended
+OK: generalGeometry.General.DiagramExtension.PR1.Yes.overloadFail
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.GENERAL_CONFIG.formation.russianReason
+OK: audit03.comments.GENERAL_CONFIG.formation.readable
+OK: audit03.comments.GENERAL_CONFIG.formation.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.current.russianReason
+OK: audit03.comments.GENERAL_CONFIG.current.readable
+OK: audit03.comments.GENERAL_CONFIG.current.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.GENERAL_CONFIG.width.russianReason
+OK: audit03.comments.GENERAL_CONFIG.width.readable
+OK: audit03.comments.GENERAL_CONFIG.width.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.151 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.russianReason
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.readable
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR2|N=-10000|Mx=200000|My=100000|status=OK|solves=2
+OK: generalGeometry.General.DiagramExtension.PR2.No.normalConverged
+OK: generalGeometry.General.DiagramExtension.PR2.No.normalPhysical
+OK: generalGeometry.General.DiagramExtension.PR2.No.normalNoExtension
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsSuccess|code=CRITERION_NOT_REACHED|applies=True|calculated=True|comment=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.
+OK: audit03.comments.GENERAL_CONFIG.formation.russianReason
+OK: audit03.comments.GENERAL_CONFIG.formation.readable
+OK: audit03.comments.GENERAL_CONFIG.formation.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.GENERAL_CONFIG.current.reasonPresent
+OK: audit03.comments.GENERAL_CONFIG.current.russianReason
+OK: audit03.comments.GENERAL_CONFIG.current.readable
+OK: audit03.comments.GENERAL_CONFIG.current.noMachinePrefix
+OK: audit03.comments.GENERAL_CONFIG.current.ownSubtree
+META: audit03.comments.GENERAL_CONFIG.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.GENERAL_CONFIG.width.reasonPresent
+OK: audit03.comments.GENERAL_CONFIG.width.russianReason
+OK: audit03.comments.GENERAL_CONFIG.width.readable
+OK: audit03.comments.GENERAL_CONFIG.width.noMachinePrefix
+OK: audit03.comments.GENERAL_CONFIG.width.ownSubtree
+OK: audit03.comments.GENERAL_CONFIG.width.dependencyOncePerIndependentStage
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.reasonPresent
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.russianReason
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.readable
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.noMachinePrefix
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.ownSubtree
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.dependencyOncePerIndependentStage
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.widthBlockActualReason
+OK: audit03.comments.GENERAL_CONFIG.longitudinalBlockActualReason
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+GENERAL_BATCH: profile=PR2|N=-10000000|Mx=0|My=0|status=NumFail|solves=3
+OK: generalGeometry.General.DiagramExtension.PR2.No.offNumFail
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.GENERAL_CONFIG.formation.russianReason
+OK: audit03.comments.GENERAL_CONFIG.formation.readable
+OK: audit03.comments.GENERAL_CONFIG.formation.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.current.russianReason
+OK: audit03.comments.GENERAL_CONFIG.current.readable
+OK: audit03.comments.GENERAL_CONFIG.current.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.GENERAL_CONFIG.width.russianReason
+OK: audit03.comments.GENERAL_CONFIG.width.readable
+OK: audit03.comments.GENERAL_CONFIG.width.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.151 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.russianReason
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.readable
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR2|N=-10000|Mx=200000|My=100000|status=OK|solves=2
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.normalConverged
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.normalPhysical
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.normalNoExtension
+GENERAL_NUMBER: generalGeometry.General.DiagramExtension.PR2.Yes.normalEps|actual=-6.67871031697108E-06|expected=-6.67871031697108E-06|tolerance=0.0000000001
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.normalEps
+GENERAL_NUMBER: generalGeometry.General.DiagramExtension.PR2.Yes.normalKx|actual=2.17855641467911E-08|expected=2.17855641467911E-08|tolerance=0.000000000001
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.normalKx
+GENERAL_NUMBER: generalGeometry.General.DiagramExtension.PR2.Yes.normalKy|actual=1.08927820733955E-08|expected=1.08927820733955E-08|tolerance=0.000000000001
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.normalKy
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsSuccess|code=CRITERION_NOT_REACHED|applies=True|calculated=True|comment=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.
+OK: audit03.comments.GENERAL_CONFIG.formation.russianReason
+OK: audit03.comments.GENERAL_CONFIG.formation.readable
+OK: audit03.comments.GENERAL_CONFIG.formation.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.current|status=rsCheckFailed|code=STATE_OUTSIDE_PHYSICAL_RANGE|applies=True|calculated=True|comment=Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.GENERAL_CONFIG.current.reasonPresent
+OK: audit03.comments.GENERAL_CONFIG.current.russianReason
+OK: audit03.comments.GENERAL_CONFIG.current.readable
+OK: audit03.comments.GENERAL_CONFIG.current.noMachinePrefix
+OK: audit03.comments.GENERAL_CONFIG.current.ownSubtree
+META: audit03.comments.GENERAL_CONFIG.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.GENERAL_CONFIG.width.reasonPresent
+OK: audit03.comments.GENERAL_CONFIG.width.russianReason
+OK: audit03.comments.GENERAL_CONFIG.width.readable
+OK: audit03.comments.GENERAL_CONFIG.width.noMachinePrefix
+OK: audit03.comments.GENERAL_CONFIG.width.ownSubtree
+OK: audit03.comments.GENERAL_CONFIG.width.dependencyOncePerIndependentStage
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.reasonPresent
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.russianReason
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.readable
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.noMachinePrefix
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.ownSubtree
+OK: audit03.comments.GENERAL_CONFIG.longitudinal.dependencyOncePerIndependentStage
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.widthBlockActualReason
+OK: audit03.comments.GENERAL_CONFIG.longitudinalBlockActualReason
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+GENERAL_BATCH: profile=PR2|N=-10000000|Mx=0|My=0|status=FAIL|solves=2
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.overloadState
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.overloadConverged
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.overloadExtended
+OK: generalGeometry.General.DiagramExtension.PR2.Yes.overloadFail
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+OK: generalGeometry.General.DiagramExtension.capacityPhysical.No
+META: audit03.comments.GENERAL_CONFIG.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.GENERAL_CONFIG.direct.russianReason
+OK: audit03.comments.GENERAL_CONFIG.direct.readable
+OK: audit03.comments.GENERAL_CONFIG.direct.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.GENERAL_CONFIG.capacity.russianReason
+OK: audit03.comments.GENERAL_CONFIG.capacity.readable
+OK: audit03.comments.GENERAL_CONFIG.capacity.noMachinePrefix
+META: audit03.comments.GENERAL_CONFIG.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.GENERAL_CONFIG.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.GENERAL_CONFIG.formulaNoNumFail
+OK: audit03.comments.GENERAL_CONFIG.strengthNoCrack
+OK: audit03.comments.GENERAL_CONFIG.crackNoCapacity
+OK: audit03.comments.GENERAL_CONFIG.overallComposition
+OK: audit03.comments.GENERAL_CONFIG.batchOutput
+OK: audit03.comments.GENERAL_CONFIG.strengthOutput
+OK: audit03.comments.GENERAL_CONFIG.crackOutput
+OK: audit03.comments.GENERAL_CONFIG.stabilityOutput
+OUTPUT: audit03.comments.GENERAL_CONFIG|strength=|crack=|stability=|batch=
+GENERAL_BATCH: profile=PR1|N=-10000|Mx=200000|My=100000|status=OK|solves=1
+OK: generalGeometry.General.DiagramExtension.capacityPhysical.Yes
+GENERAL_NUMBER: generalGeometry.General.DiagramExtension.capacityInvariant|actual=361.876592805491|expected=361.876592808136|tolerance=0.0000001
+OK: generalGeometry.General.DiagramExtension.capacityInvariant
+OK: generalGeometry.invalid.0.General.DiagramExtension.0.rejected
+OK: generalGeometry.invalid.0.General.DiagramExtension.0.key
+OK: generalGeometry.invalid.0.General.DiagramExtension.0.address
+OK: generalGeometry.invalid.0.General.DiagramExtension.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.General.DiagramExtension.0|Настройка General.DiagramExtension (лист Config, ячейка B8): Значение переключателя не распознано. Выберите Yes или No.
+OK: generalGeometry.invalid.0.General.DiagramExtension.1.rejected
+OK: generalGeometry.invalid.0.General.DiagramExtension.1.key
+OK: generalGeometry.invalid.0.General.DiagramExtension.1.address
+OK: generalGeometry.invalid.0.General.DiagramExtension.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.General.DiagramExtension.1|Настройка General.DiagramExtension (лист Config, ячейка B8): Значение переключателя не распознано. Выберите Yes или No.
+OK: generalGeometry.invalid.0.General.DiagramExtension.2.rejected
+OK: generalGeometry.invalid.0.General.DiagramExtension.2.key
+OK: generalGeometry.invalid.0.General.DiagramExtension.2.address
+OK: generalGeometry.invalid.0.General.DiagramExtension.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.General.DiagramExtension.2|Настройка General.DiagramExtension (лист Config, ячейка B8): Значение переключателя не распознано. Выберите Yes или No.
+OK: generalGeometry.invalid.0.General.DiagramExtension.3.rejected
+OK: generalGeometry.invalid.0.General.DiagramExtension.3.key
+OK: generalGeometry.invalid.0.General.DiagramExtension.3.address
+OK: generalGeometry.invalid.0.General.DiagramExtension.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.General.DiagramExtension.3|Настройка General.DiagramExtension (лист Config, ячейка B8) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.0.General.DiagramExtension.rejected
+OK: generalGeometry.missing.0.General.DiagramExtension.key
+OK: generalGeometry.recovery.0.General.DiagramExtension
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.0.rejected
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.0.key
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.0.address
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.0|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка B9): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.1.rejected
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.1.key
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.1.address
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.1|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка B9): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.2.rejected
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.2.key
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.2.address
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.2|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка B9): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.3.rejected
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.3.key
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.3.address
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.3|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка B9) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.4.rejected
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.4.key
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.4.address
+OK: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.4.action
+GENERAL_INPUT: generalGeometry.invalid.0.Calculation.ZeroMomentPerDepth.4|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка B9): Calculation.ZeroMomentPerDepth не может быть отрицательным. Введите ноль для отключения фильтра или положительное число в INPUT-единицах момент/длина.
+OK: generalGeometry.missing.0.Calculation.ZeroMomentPerDepth.rejected
+OK: generalGeometry.missing.0.Calculation.ZeroMomentPerDepth.key
+OK: generalGeometry.recovery.0.Calculation.ZeroMomentPerDepth
+OK: generalGeometry.invalid.0.Geometry.Source.0.rejected
+OK: generalGeometry.invalid.0.Geometry.Source.0.key
+OK: generalGeometry.invalid.0.Geometry.Source.0.address
+OK: generalGeometry.invalid.0.Geometry.Source.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.Geometry.Source.0|Настройка Geometry.Source (лист Config, ячейка B12): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Geometry.Source.1.rejected
+OK: generalGeometry.invalid.0.Geometry.Source.1.key
+OK: generalGeometry.invalid.0.Geometry.Source.1.address
+OK: generalGeometry.invalid.0.Geometry.Source.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.Geometry.Source.1|Настройка Geometry.Source (лист Config, ячейка B12): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Geometry.Source.2.rejected
+OK: generalGeometry.invalid.0.Geometry.Source.2.key
+OK: generalGeometry.invalid.0.Geometry.Source.2.address
+OK: generalGeometry.invalid.0.Geometry.Source.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.Geometry.Source.2|Настройка Geometry.Source (лист Config, ячейка B12): Недопустимый вариант: "abc". Выберите из списка: Generated, AutoCAD.
+OK: generalGeometry.invalid.0.Geometry.Source.3.rejected
+OK: generalGeometry.invalid.0.Geometry.Source.3.key
+OK: generalGeometry.invalid.0.Geometry.Source.3.address
+OK: generalGeometry.invalid.0.Geometry.Source.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.Geometry.Source.3|Настройка Geometry.Source (лист Config, ячейка B12) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.0.Geometry.Source.rejected
+OK: generalGeometry.missing.0.Geometry.Source.key
+OK: generalGeometry.recovery.0.Geometry.Source
+OK: generalGeometry.invalid.0.Geometry.Type.0.rejected
+OK: generalGeometry.invalid.0.Geometry.Type.0.key
+OK: generalGeometry.invalid.0.Geometry.Type.0.address
+OK: generalGeometry.invalid.0.Geometry.Type.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.Geometry.Type.0|Настройка Geometry.Type (лист Config, ячейка B13): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Geometry.Type.1.rejected
+OK: generalGeometry.invalid.0.Geometry.Type.1.key
+OK: generalGeometry.invalid.0.Geometry.Type.1.address
+OK: generalGeometry.invalid.0.Geometry.Type.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.Geometry.Type.1|Настройка Geometry.Type (лист Config, ячейка B13): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Geometry.Type.2.rejected
+OK: generalGeometry.invalid.0.Geometry.Type.2.key
+OK: generalGeometry.invalid.0.Geometry.Type.2.address
+OK: generalGeometry.invalid.0.Geometry.Type.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.Geometry.Type.2|Настройка Geometry.Type (лист Config, ячейка B13): Недопустимый вариант: "abc". Выберите из списка: Circle, RectSet, RoundedRectangle, HollowRectangle.
+OK: generalGeometry.invalid.0.Geometry.Type.3.rejected
+OK: generalGeometry.invalid.0.Geometry.Type.3.key
+OK: generalGeometry.invalid.0.Geometry.Type.3.address
+OK: generalGeometry.invalid.0.Geometry.Type.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.Geometry.Type.3|Настройка Geometry.Type (лист Config, ячейка B13) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.0.Geometry.Type.rejected
+OK: generalGeometry.missing.0.Geometry.Type.key
+OK: generalGeometry.recovery.0.Geometry.Type
+OK: generalGeometry.invalid.0.Mesh.StepX.0.rejected
+OK: generalGeometry.invalid.0.Mesh.StepX.0.key
+OK: generalGeometry.invalid.0.Mesh.StepX.0.address
+OK: generalGeometry.invalid.0.Mesh.StepX.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepX.0|Настройка Mesh.StepX (лист Config, ячейка B14): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Mesh.StepX.1.rejected
+OK: generalGeometry.invalid.0.Mesh.StepX.1.key
+OK: generalGeometry.invalid.0.Mesh.StepX.1.address
+OK: generalGeometry.invalid.0.Mesh.StepX.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepX.1|Настройка Mesh.StepX (лист Config, ячейка B14): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Mesh.StepX.2.rejected
+OK: generalGeometry.invalid.0.Mesh.StepX.2.key
+OK: generalGeometry.invalid.0.Mesh.StepX.2.address
+OK: generalGeometry.invalid.0.Mesh.StepX.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepX.2|Настройка Mesh.StepX (лист Config, ячейка B14): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.0.Mesh.StepX.3.rejected
+OK: generalGeometry.invalid.0.Mesh.StepX.3.key
+OK: generalGeometry.invalid.0.Mesh.StepX.3.address
+OK: generalGeometry.invalid.0.Mesh.StepX.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepX.3|Настройка Mesh.StepX (лист Config, ячейка B14) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.invalid.0.Mesh.StepX.4.rejected
+OK: generalGeometry.invalid.0.Mesh.StepX.4.key
+OK: generalGeometry.invalid.0.Mesh.StepX.4.address
+OK: generalGeometry.invalid.0.Mesh.StepX.4.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepX.4|Настройка Mesh.StepX (лист Config, ячейка B14): Шаг бетонной сетки должен быть положительным. Введите число больше нуля в текущей INPUT-единице длины.
+OK: generalGeometry.invalid.0.Mesh.StepX.5.rejected
+OK: generalGeometry.invalid.0.Mesh.StepX.5.key
+OK: generalGeometry.invalid.0.Mesh.StepX.5.address
+OK: generalGeometry.invalid.0.Mesh.StepX.5.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepX.5|Настройка Mesh.StepX (лист Config, ячейка B14): Шаг бетонной сетки должен быть положительным. Введите число больше нуля в текущей INPUT-единице длины.
+OK: generalGeometry.missing.0.Mesh.StepX.rejected
+OK: generalGeometry.missing.0.Mesh.StepX.key
+OK: generalGeometry.recovery.0.Mesh.StepX
+OK: generalGeometry.invalid.0.Mesh.StepY.0.rejected
+OK: generalGeometry.invalid.0.Mesh.StepY.0.key
+OK: generalGeometry.invalid.0.Mesh.StepY.0.address
+OK: generalGeometry.invalid.0.Mesh.StepY.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepY.0|Настройка Mesh.StepY (лист Config, ячейка B15): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Mesh.StepY.1.rejected
+OK: generalGeometry.invalid.0.Mesh.StepY.1.key
+OK: generalGeometry.invalid.0.Mesh.StepY.1.address
+OK: generalGeometry.invalid.0.Mesh.StepY.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepY.1|Настройка Mesh.StepY (лист Config, ячейка B15): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Mesh.StepY.2.rejected
+OK: generalGeometry.invalid.0.Mesh.StepY.2.key
+OK: generalGeometry.invalid.0.Mesh.StepY.2.address
+OK: generalGeometry.invalid.0.Mesh.StepY.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepY.2|Настройка Mesh.StepY (лист Config, ячейка B15): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.0.Mesh.StepY.3.rejected
+OK: generalGeometry.invalid.0.Mesh.StepY.3.key
+OK: generalGeometry.invalid.0.Mesh.StepY.3.address
+OK: generalGeometry.invalid.0.Mesh.StepY.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepY.3|Настройка Mesh.StepY (лист Config, ячейка B15) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.invalid.0.Mesh.StepY.4.rejected
+OK: generalGeometry.invalid.0.Mesh.StepY.4.key
+OK: generalGeometry.invalid.0.Mesh.StepY.4.address
+OK: generalGeometry.invalid.0.Mesh.StepY.4.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepY.4|Настройка Mesh.StepY (лист Config, ячейка B15): Шаг бетонной сетки должен быть положительным. Введите число больше нуля в текущей INPUT-единице длины.
+OK: generalGeometry.invalid.0.Mesh.StepY.5.rejected
+OK: generalGeometry.invalid.0.Mesh.StepY.5.key
+OK: generalGeometry.invalid.0.Mesh.StepY.5.address
+OK: generalGeometry.invalid.0.Mesh.StepY.5.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.StepY.5|Настройка Mesh.StepY (лист Config, ячейка B15): Шаг бетонной сетки должен быть положительным. Введите число больше нуля в текущей INPUT-единице длины.
+OK: generalGeometry.missing.0.Mesh.StepY.rejected
+OK: generalGeometry.missing.0.Mesh.StepY.key
+OK: generalGeometry.recovery.0.Mesh.StepY
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.0.rejected
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.0.key
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.0.address
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.0|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Число подъячеек не задано. Введите целое число не меньше 1.
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.1.rejected
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.1.key
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.1.address
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.1|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Число подъячеек не задано. Введите целое число не меньше 1.
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.2.rejected
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.2.key
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.2.address
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.2|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.3.rejected
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.3.key
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.3.address
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.3|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.4.rejected
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.4.key
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.4.address
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.4.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.4|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Число подъячеек меньше 1. Введите целое число не меньше 1.
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.5.rejected
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.5.key
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.5.address
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.5.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.5|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Число подъячеек меньше 1. Введите целое число не меньше 1.
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.6.rejected
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.6.key
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.6.address
+OK: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.6.action
+GENERAL_INPUT: generalGeometry.invalid.0.Mesh.BoundarySubdivisions.6|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B16): Введено дробное значение вместо целого; автоматическое округление не выполняется. Введите целое число.
+OK: generalGeometry.missing.0.Mesh.BoundarySubdivisions.rejected
+OK: generalGeometry.missing.0.Mesh.BoundarySubdivisions.key
+OK: generalGeometry.recovery.0.Mesh.BoundarySubdivisions
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.0.rejected
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.0.key
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.0.address
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.Load.ReferenceOffsetX.0|Настройка Load.ReferenceOffsetX (лист Config, ячейка B17): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.1.rejected
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.1.key
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.1.address
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.Load.ReferenceOffsetX.1|Настройка Load.ReferenceOffsetX (лист Config, ячейка B17): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.2.rejected
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.2.key
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.2.address
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.Load.ReferenceOffsetX.2|Настройка Load.ReferenceOffsetX (лист Config, ячейка B17): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.3.rejected
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.3.key
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.3.address
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetX.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.Load.ReferenceOffsetX.3|Настройка Load.ReferenceOffsetX (лист Config, ячейка B17) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.0.Load.ReferenceOffsetX.rejected
+OK: generalGeometry.missing.0.Load.ReferenceOffsetX.key
+OK: generalGeometry.recovery.0.Load.ReferenceOffsetX
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.0.rejected
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.0.key
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.0.address
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.0.action
+GENERAL_INPUT: generalGeometry.invalid.0.Load.ReferenceOffsetY.0|Настройка Load.ReferenceOffsetY (лист Config, ячейка B18): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.1.rejected
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.1.key
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.1.address
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.1.action
+GENERAL_INPUT: generalGeometry.invalid.0.Load.ReferenceOffsetY.1|Настройка Load.ReferenceOffsetY (лист Config, ячейка B18): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.2.rejected
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.2.key
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.2.address
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.2.action
+GENERAL_INPUT: generalGeometry.invalid.0.Load.ReferenceOffsetY.2|Настройка Load.ReferenceOffsetY (лист Config, ячейка B18): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.3.rejected
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.3.key
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.3.address
+OK: generalGeometry.invalid.0.Load.ReferenceOffsetY.3.action
+GENERAL_INPUT: generalGeometry.invalid.0.Load.ReferenceOffsetY.3|Настройка Load.ReferenceOffsetY (лист Config, ячейка B18) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.0.Load.ReferenceOffsetY.rejected
+OK: generalGeometry.missing.0.Load.ReferenceOffsetY.key
+OK: generalGeometry.recovery.0.Load.ReferenceOffsetY
+OK: generalGeometry.invalid.1.General.DiagramExtension.0.rejected
+OK: generalGeometry.invalid.1.General.DiagramExtension.0.key
+OK: generalGeometry.invalid.1.General.DiagramExtension.0.address
+OK: generalGeometry.invalid.1.General.DiagramExtension.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.General.DiagramExtension.0|Настройка General.DiagramExtension (лист Config, ячейка CI805): Значение переключателя не распознано. Выберите Yes или No.
+OK: generalGeometry.invalid.1.General.DiagramExtension.1.rejected
+OK: generalGeometry.invalid.1.General.DiagramExtension.1.key
+OK: generalGeometry.invalid.1.General.DiagramExtension.1.address
+OK: generalGeometry.invalid.1.General.DiagramExtension.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.General.DiagramExtension.1|Настройка General.DiagramExtension (лист Config, ячейка CI805): Значение переключателя не распознано. Выберите Yes или No.
+OK: generalGeometry.invalid.1.General.DiagramExtension.2.rejected
+OK: generalGeometry.invalid.1.General.DiagramExtension.2.key
+OK: generalGeometry.invalid.1.General.DiagramExtension.2.address
+OK: generalGeometry.invalid.1.General.DiagramExtension.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.General.DiagramExtension.2|Настройка General.DiagramExtension (лист Config, ячейка CI805): Значение переключателя не распознано. Выберите Yes или No.
+OK: generalGeometry.invalid.1.General.DiagramExtension.3.rejected
+OK: generalGeometry.invalid.1.General.DiagramExtension.3.key
+OK: generalGeometry.invalid.1.General.DiagramExtension.3.address
+OK: generalGeometry.invalid.1.General.DiagramExtension.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.General.DiagramExtension.3|Настройка General.DiagramExtension (лист Config, ячейка CI805) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.1.General.DiagramExtension.rejected
+OK: generalGeometry.missing.1.General.DiagramExtension.key
+OK: generalGeometry.recovery.1.General.DiagramExtension
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.0.rejected
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.0.key
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.0.address
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.0|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка CI806): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.1.rejected
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.1.key
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.1.address
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.1|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка CI806): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.2.rejected
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.2.key
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.2.address
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.2|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка CI806): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.3.rejected
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.3.key
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.3.address
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.3|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка CI806) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.4.rejected
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.4.key
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.4.address
+OK: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.4.action
+GENERAL_INPUT: generalGeometry.invalid.1.Calculation.ZeroMomentPerDepth.4|Настройка Calculation.ZeroMomentPerDepth (лист Config, ячейка CI806): Calculation.ZeroMomentPerDepth не может быть отрицательным. Введите ноль для отключения фильтра или положительное число в INPUT-единицах момент/длина.
+OK: generalGeometry.missing.1.Calculation.ZeroMomentPerDepth.rejected
+OK: generalGeometry.missing.1.Calculation.ZeroMomentPerDepth.key
+OK: generalGeometry.recovery.1.Calculation.ZeroMomentPerDepth
+OK: generalGeometry.invalid.1.Geometry.Source.0.rejected
+OK: generalGeometry.invalid.1.Geometry.Source.0.key
+OK: generalGeometry.invalid.1.Geometry.Source.0.address
+OK: generalGeometry.invalid.1.Geometry.Source.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.Geometry.Source.0|Настройка Geometry.Source (лист Config, ячейка CI809): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Geometry.Source.1.rejected
+OK: generalGeometry.invalid.1.Geometry.Source.1.key
+OK: generalGeometry.invalid.1.Geometry.Source.1.address
+OK: generalGeometry.invalid.1.Geometry.Source.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.Geometry.Source.1|Настройка Geometry.Source (лист Config, ячейка CI809): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Geometry.Source.2.rejected
+OK: generalGeometry.invalid.1.Geometry.Source.2.key
+OK: generalGeometry.invalid.1.Geometry.Source.2.address
+OK: generalGeometry.invalid.1.Geometry.Source.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.Geometry.Source.2|Настройка Geometry.Source (лист Config, ячейка CI809): Недопустимый вариант: "abc". Выберите из списка: Generated, AutoCAD.
+OK: generalGeometry.invalid.1.Geometry.Source.3.rejected
+OK: generalGeometry.invalid.1.Geometry.Source.3.key
+OK: generalGeometry.invalid.1.Geometry.Source.3.address
+OK: generalGeometry.invalid.1.Geometry.Source.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.Geometry.Source.3|Настройка Geometry.Source (лист Config, ячейка CI809) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.1.Geometry.Source.rejected
+OK: generalGeometry.missing.1.Geometry.Source.key
+OK: generalGeometry.recovery.1.Geometry.Source
+OK: generalGeometry.invalid.1.Geometry.Type.0.rejected
+OK: generalGeometry.invalid.1.Geometry.Type.0.key
+OK: generalGeometry.invalid.1.Geometry.Type.0.address
+OK: generalGeometry.invalid.1.Geometry.Type.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.Geometry.Type.0|Настройка Geometry.Type (лист Config, ячейка CI810): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Geometry.Type.1.rejected
+OK: generalGeometry.invalid.1.Geometry.Type.1.key
+OK: generalGeometry.invalid.1.Geometry.Type.1.address
+OK: generalGeometry.invalid.1.Geometry.Type.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.Geometry.Type.1|Настройка Geometry.Type (лист Config, ячейка CI810): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Geometry.Type.2.rejected
+OK: generalGeometry.invalid.1.Geometry.Type.2.key
+OK: generalGeometry.invalid.1.Geometry.Type.2.address
+OK: generalGeometry.invalid.1.Geometry.Type.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.Geometry.Type.2|Настройка Geometry.Type (лист Config, ячейка CI810): Недопустимый вариант: "abc". Выберите из списка: Circle, RectSet, RoundedRectangle, HollowRectangle.
+OK: generalGeometry.invalid.1.Geometry.Type.3.rejected
+OK: generalGeometry.invalid.1.Geometry.Type.3.key
+OK: generalGeometry.invalid.1.Geometry.Type.3.address
+OK: generalGeometry.invalid.1.Geometry.Type.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.Geometry.Type.3|Настройка Geometry.Type (лист Config, ячейка CI810) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.1.Geometry.Type.rejected
+OK: generalGeometry.missing.1.Geometry.Type.key
+OK: generalGeometry.recovery.1.Geometry.Type
+OK: generalGeometry.invalid.1.Mesh.StepX.0.rejected
+OK: generalGeometry.invalid.1.Mesh.StepX.0.key
+OK: generalGeometry.invalid.1.Mesh.StepX.0.address
+OK: generalGeometry.invalid.1.Mesh.StepX.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepX.0|Настройка Mesh.StepX (лист Config, ячейка CI811): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Mesh.StepX.1.rejected
+OK: generalGeometry.invalid.1.Mesh.StepX.1.key
+OK: generalGeometry.invalid.1.Mesh.StepX.1.address
+OK: generalGeometry.invalid.1.Mesh.StepX.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepX.1|Настройка Mesh.StepX (лист Config, ячейка CI811): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Mesh.StepX.2.rejected
+OK: generalGeometry.invalid.1.Mesh.StepX.2.key
+OK: generalGeometry.invalid.1.Mesh.StepX.2.address
+OK: generalGeometry.invalid.1.Mesh.StepX.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepX.2|Настройка Mesh.StepX (лист Config, ячейка CI811): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.1.Mesh.StepX.3.rejected
+OK: generalGeometry.invalid.1.Mesh.StepX.3.key
+OK: generalGeometry.invalid.1.Mesh.StepX.3.address
+OK: generalGeometry.invalid.1.Mesh.StepX.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepX.3|Настройка Mesh.StepX (лист Config, ячейка CI811) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.invalid.1.Mesh.StepX.4.rejected
+OK: generalGeometry.invalid.1.Mesh.StepX.4.key
+OK: generalGeometry.invalid.1.Mesh.StepX.4.address
+OK: generalGeometry.invalid.1.Mesh.StepX.4.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepX.4|Настройка Mesh.StepX (лист Config, ячейка CI811): Шаг бетонной сетки должен быть положительным. Введите число больше нуля в текущей INPUT-единице длины.
+OK: generalGeometry.invalid.1.Mesh.StepX.5.rejected
+OK: generalGeometry.invalid.1.Mesh.StepX.5.key
+OK: generalGeometry.invalid.1.Mesh.StepX.5.address
+OK: generalGeometry.invalid.1.Mesh.StepX.5.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepX.5|Настройка Mesh.StepX (лист Config, ячейка CI811): Шаг бетонной сетки должен быть положительным. Введите число больше нуля в текущей INPUT-единице длины.
+OK: generalGeometry.missing.1.Mesh.StepX.rejected
+OK: generalGeometry.missing.1.Mesh.StepX.key
+OK: generalGeometry.recovery.1.Mesh.StepX
+OK: generalGeometry.invalid.1.Mesh.StepY.0.rejected
+OK: generalGeometry.invalid.1.Mesh.StepY.0.key
+OK: generalGeometry.invalid.1.Mesh.StepY.0.address
+OK: generalGeometry.invalid.1.Mesh.StepY.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepY.0|Настройка Mesh.StepY (лист Config, ячейка CI812): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Mesh.StepY.1.rejected
+OK: generalGeometry.invalid.1.Mesh.StepY.1.key
+OK: generalGeometry.invalid.1.Mesh.StepY.1.address
+OK: generalGeometry.invalid.1.Mesh.StepY.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepY.1|Настройка Mesh.StepY (лист Config, ячейка CI812): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Mesh.StepY.2.rejected
+OK: generalGeometry.invalid.1.Mesh.StepY.2.key
+OK: generalGeometry.invalid.1.Mesh.StepY.2.address
+OK: generalGeometry.invalid.1.Mesh.StepY.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepY.2|Настройка Mesh.StepY (лист Config, ячейка CI812): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.1.Mesh.StepY.3.rejected
+OK: generalGeometry.invalid.1.Mesh.StepY.3.key
+OK: generalGeometry.invalid.1.Mesh.StepY.3.address
+OK: generalGeometry.invalid.1.Mesh.StepY.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepY.3|Настройка Mesh.StepY (лист Config, ячейка CI812) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.invalid.1.Mesh.StepY.4.rejected
+OK: generalGeometry.invalid.1.Mesh.StepY.4.key
+OK: generalGeometry.invalid.1.Mesh.StepY.4.address
+OK: generalGeometry.invalid.1.Mesh.StepY.4.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepY.4|Настройка Mesh.StepY (лист Config, ячейка CI812): Шаг бетонной сетки должен быть положительным. Введите число больше нуля в текущей INPUT-единице длины.
+OK: generalGeometry.invalid.1.Mesh.StepY.5.rejected
+OK: generalGeometry.invalid.1.Mesh.StepY.5.key
+OK: generalGeometry.invalid.1.Mesh.StepY.5.address
+OK: generalGeometry.invalid.1.Mesh.StepY.5.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.StepY.5|Настройка Mesh.StepY (лист Config, ячейка CI812): Шаг бетонной сетки должен быть положительным. Введите число больше нуля в текущей INPUT-единице длины.
+OK: generalGeometry.missing.1.Mesh.StepY.rejected
+OK: generalGeometry.missing.1.Mesh.StepY.key
+OK: generalGeometry.recovery.1.Mesh.StepY
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.0.rejected
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.0.key
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.0.address
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.0|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка CI813): Число подъячеек не задано. Введите целое число не меньше 1.
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.1.rejected
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.1.key
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.1.address
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.1|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка CI813): Число подъячеек не задано. Введите целое число не меньше 1.
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.2.rejected
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.2.key
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.2.address
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.2|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка CI813): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.3.rejected
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.3.key
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.3.address
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.3|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка CI813) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.4.rejected
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.4.key
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.4.address
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.4.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.4|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка CI813): Число подъячеек меньше 1. Введите целое число не меньше 1.
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.5.rejected
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.5.key
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.5.address
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.5.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.5|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка CI813): Число подъячеек меньше 1. Введите целое число не меньше 1.
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.6.rejected
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.6.key
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.6.address
+OK: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.6.action
+GENERAL_INPUT: generalGeometry.invalid.1.Mesh.BoundarySubdivisions.6|Настройка Mesh.BoundarySubdivisions (лист Config, ячейка CI813): Введено дробное значение вместо целого; автоматическое округление не выполняется. Введите целое число.
+OK: generalGeometry.missing.1.Mesh.BoundarySubdivisions.rejected
+OK: generalGeometry.missing.1.Mesh.BoundarySubdivisions.key
+OK: generalGeometry.recovery.1.Mesh.BoundarySubdivisions
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.0.rejected
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.0.key
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.0.address
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.Load.ReferenceOffsetX.0|Настройка Load.ReferenceOffsetX (лист Config, ячейка CI814): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.1.rejected
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.1.key
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.1.address
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.Load.ReferenceOffsetX.1|Настройка Load.ReferenceOffsetX (лист Config, ячейка CI814): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.2.rejected
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.2.key
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.2.address
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.Load.ReferenceOffsetX.2|Настройка Load.ReferenceOffsetX (лист Config, ячейка CI814): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.3.rejected
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.3.key
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.3.address
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetX.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.Load.ReferenceOffsetX.3|Настройка Load.ReferenceOffsetX (лист Config, ячейка CI814) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.1.Load.ReferenceOffsetX.rejected
+OK: generalGeometry.missing.1.Load.ReferenceOffsetX.key
+OK: generalGeometry.recovery.1.Load.ReferenceOffsetX
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.0.rejected
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.0.key
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.0.address
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.0.action
+GENERAL_INPUT: generalGeometry.invalid.1.Load.ReferenceOffsetY.0|Настройка Load.ReferenceOffsetY (лист Config, ячейка CI815): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.1.rejected
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.1.key
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.1.address
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.1.action
+GENERAL_INPUT: generalGeometry.invalid.1.Load.ReferenceOffsetY.1|Настройка Load.ReferenceOffsetY (лист Config, ячейка CI815): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.2.rejected
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.2.key
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.2.address
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.2.action
+GENERAL_INPUT: generalGeometry.invalid.1.Load.ReferenceOffsetY.2|Настройка Load.ReferenceOffsetY (лист Config, ячейка CI815): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.3.rejected
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.3.key
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.3.address
+OK: generalGeometry.invalid.1.Load.ReferenceOffsetY.3.action
+GENERAL_INPUT: generalGeometry.invalid.1.Load.ReferenceOffsetY.3|Настройка Load.ReferenceOffsetY (лист Config, ячейка CI815) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: generalGeometry.missing.1.Load.ReferenceOffsetY.rejected
+OK: generalGeometry.missing.1.Load.ReferenceOffsetY.key
+OK: generalGeometry.recovery.1.Load.ReferenceOffsetY
+OK: generalGeometry.restore.name
+GENERAL_GEOMETRY_CASES: 158
+TOTAL_GENERAL_GEOMETRY_CONFIG: passed=844; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_28cac37c14a34801a5faf1244d0c1064\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeneralGeometryConfig.RunAudit03GeneralGeometryConfigTests; 2026-10-04T18:34:40
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

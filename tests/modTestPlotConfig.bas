@@ -344,9 +344,8 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     Dim fixture As Object, config As Object, table As Object, cell As Object, profiles As Object, loads As Object
     Dim chart As Object, marker As Object, baseline As Variant, bad As Variant, key As Variant
     Dim path As String, row As Long, column As Long, profileColumn As Long, position As Long, cases As Long, mode As Long
-    Dim code As Long, reason As String, prefix As String, solveCount As Long, result As String
+    Dim code As Long, reason As String, prefix As String, result As String
     On Error GoTo Failed
-    solveCount = SectionEquilibriumSolveCount()
     path = ThisWorkbook.Path & "\Audit03_AutoPlot_" & Format$(Now, "yyyymmdd_hhnnss") & ".xlsm"
     ThisWorkbook.SaveCopyAs path
     Set fixture = Application.Workbooks.Open(path, 0, False)
@@ -416,6 +415,9 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).ClearContents
     loads.Cells(2, 1).Value2 = "NO_STATE": loads.Cells(2, 2).Value2 = 1#: loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#
     loads.Cells(2, 5).Value2 = "PR1": loads.Cells(2, 6).Value2 = "Auto"
+    ' Задаем сжатие явно: исходная система знаков книги не должна превращать
+    ' stability-only fixture в неприменимую проверку растянутого элемента.
+    Audit03SetPlotSetting fixture.Names.Item("rngSignConventionSettings").RefersToRange, "+N", "Compression"
     For mode = 0 To 3
         Audit03SetPlotSetting table, "Plot.Enabled", "Yes": Audit03SetPlotSetting table, "Plot.AutoUpdateAfterCalculation", "Yes"
         Select Case mode
@@ -429,6 +431,9 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
         cases = cases + 1: Audit03CaptureCalculation fixture, code, reason, result
         prefix = "audit03.autoPlot.noState.mode" & CStr(mode)
         AssertTrue stats, prefix & ".completed", code = 0
+        ' Batch сбрасывает счетчик в начале запуска; проверяем этот запуск,
+        ' а не равенство счетчику предыдущих тестов общей suite.
+        AssertTrue stats, prefix & ".noSolve", SectionEquilibriumSolveCount() = 0
         If code = 0 Then
             reason = CStr(fixture.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 3).Value2)
             AssertTrue stats, prefix & ".validProfile", reason = "OK" Or reason = "FAIL"
@@ -440,7 +445,7 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
         End If
         AppendLine stats, "AUTO_PLOT_RUN: " & prefix & "|" & reason & "|" & result
     Next mode
-    AssertTrue stats, "audit03.autoPlot.noSolve", SectionEquilibriumSolveCount() = solveCount
+    AssertTrue stats, "audit03.autoPlot.noSolve", SectionEquilibriumSolveCount() = 0
     AppendLine stats, "AUTO_PLOT_CASES: variants=" & CStr(cases) & "; workbookFixtures=1; equilibriumCases=0"
     GoTo Cleanup
 Failed:

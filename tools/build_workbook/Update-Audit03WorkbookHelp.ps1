@@ -216,6 +216,9 @@ try {
         $before = Get-InputSignature $book
         $beforeRecords = @($script:lastInputRecords)
     }
+    foreach ($record in @(Update-SystemSettingUnitCaptions $book)) {
+        $lines.Add('SYSTEM_UNIT_CAPTION: '+(ConvertTo-Json $record -Compress))
+    }
     Add-SettingsInstructions $book $book.Worksheets.Item('Config') $book.Worksheets.Item('Справка')
     $after = Get-InputSignature $book
     $afterRecords = @($script:lastInputRecords)

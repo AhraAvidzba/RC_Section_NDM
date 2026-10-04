@@ -237,9 +237,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSettingsError = vbNullString
     Set mReportUnits = units
     Set mReport.UnitSystem = units
-    Dim zeroMomentSettingRead As Boolean
     Dim conversionKey As String ' Настройка текущего пересчета единиц для точной диагностики переполнения.
-    zeroMomentSettingRead = settings.HasKey("Calculation.ZeroMomentPerDepth")
     ' Значения таблицы трещин обязательны: очистка ячейки или потерянный key
     ' не должны незаметно менять методику на начальные значения calculator-а.
     mCrackAllowable = settings.GetRequiredDouble("SLS.Crack.Allowable")
@@ -260,7 +258,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCrackPhi3Mode = settings.GetRequiredString("SLS.Crack.Phi3Mode")
     mCrackPhi3 = settings.GetRequiredDouble("SLS.Crack.Phi3")
     mCrackPsiS = settings.GetRequiredDouble("SLS.Crack.PsiS")
-    mZeroMomentPerDepth = settings.GetDouble("Calculation.ZeroMomentPerDepth", mZeroMomentPerDepth)
+    mZeroMomentPerDepth = settings.GetRequiredDouble("Calculation.ZeroMomentPerDepth")
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
     Else
@@ -322,10 +320,10 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
         conversionKey = "Solver.MaxDeltaKappa"
         mSolverMaxDeltaKappa = Sgn(mSolverMaxDeltaKappa) * Abs(units.InputCurvatureToInternal(mSolverMaxDeltaKappa))
-        If zeroMomentSettingRead Then
-            conversionKey = "Calculation.ZeroMomentPerDepth"
-            mZeroMomentPerDepth = units.InputMomentPerLengthToInternal(mZeroMomentPerDepth)
-        End If
+        conversionKey = "Calculation.ZeroMomentPerDepth"
+        ' Adapter переводит модуль момента/длины; исходный отрицательный ввод
+        ' сохраняем для проверки владельцем фильтра, а не превращаем в плюс.
+        mZeroMomentPerDepth = Sgn(mZeroMomentPerDepth) * units.InputMomentPerLengthToInternal(mZeroMomentPerDepth)
         conversionKey = vbNullString
     End If
     ' Владелец Width проверяет ввод до раннего NotCracked и до любого solve.
@@ -360,6 +358,9 @@ InvalidSettings:
         mSettingsError = settings.InputErrorMessage(conversionKey, _
             "Значение слишком велико для пересчета в выбранных INPUT-единицах.", _
             "Введите меньшее по модулю число и проверьте INPUT-единицы на листе Config.")
+    ElseIf Err.Number = vbObjectError + 6010 Then
+        mSettingsError = settings.InputErrorMessage("Calculation.ZeroMomentPerDepth", _
+            Err.Description, "Введите ноль для отключения фильтра или положительное число в INPUT-единицах момент/длина.")
     Else
         mSettingsError = Err.Description
     End If

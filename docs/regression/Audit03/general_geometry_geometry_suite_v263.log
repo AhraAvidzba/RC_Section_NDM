@@ -1,0 +1,632 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_geometry_final_v263.xlsm
+SOURCE_SHA256: 3E5E46D429B78FDABDA8C00F02FC1CEE2764A56BFDE4B92C5B0B75BC93789939
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f5512a4cfa3647959ac3fb8965e66609\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometry.RunGeometryTests =====
+SUITE_STARTED: modTestGeometry.RunGeometryTests; 2026-10-04T18:45:54
+EXCEL_AFTER_SUITE: pid=23476; workingSet=221237248; privateBytes=173125632; cpu=17218.125
+EXCEL_AFTER_SUITE: pid=29348; workingSet=136953856; privateBytes=94621696; cpu=4.296875
+OK: rect.area; actual=20000.; expected=20000.; absDiff=0.
+OK: rect.cx; actual=0.; expected=0.; absDiff=0.
+OK: rect.cy; actual=0.; expected=0.; absDiff=0.
+OK: rect.Ix; actual=16666666.666667; expected=16666666.6666667; relDiff=0.
+OK: rect.Iy; actual=66666666.6666698; expected=66666666.6666667; relDiff=0.
+OK: rect.Ixy; actual=0.; expected=0.; absDiff=0.
+OK: sym.area.available
+OK: sym.area; actual=47475.; expected=47457.8928833008; relDiff=0.000360469369
+OK: sym.cx; actual=0.; expected=0.; absDiff=0.
+OK: sym.cy; actual=0.; expected=0.; absDiff=0.
+OK: sym.Ixy; actual=0.; expected=0.; absDiff=0.
+OK: sym.principal.angle; actual=1.570796326795; expected=1.570796326795; absDiff=0.
+OK: rounded.tapered.area.positive
+OK: rounded.tapered.centroid.inside
+OK: rounded.tapered.rightExtension
+OK: rounded.tapered.height; actual=180.; expected=180.; absDiff=0.
+OK: rounded.tapered.area.convergence; actual=59218.75; expected=59375.; relDiff=0.002631578947
+OK: rounded.tapered.Ix.convergence; actual=143398803.603575; expected=144005276.864035; relDiff=0.004211465536
+OK: rounded.tapered.variableAngle.topTangent; actual=375.735931288071; expected=375.735931288071; absDiff=0.
+OK: rounded.tapered.variableAngle.maxX; actual=708.57864376269; expected=708.57864376269; absDiff=0.
+OK: rounded.tapered.variableAngle.maxLessThanRawApex
+OK: rounded.tapered.r1GreaterThanHalfHeight.valid
+OK: rounded.tapered.radiiOverlap.invalid
+OK: rounded.annotation.hasArcs
+OK: rounded.annotation.hasLines
+OK: rounded.annotation.wRight.exists
+OK: rounded.annotation.wRight.label
+OK: rounded.annotation.wRight.value; actual=209.; expected=209.; absDiff=0.
+OK: rounded.rebar.count
+OK: rounded.rebar.requested
+OK: rounded.rebar.top.firstX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.top.firstY; actual=85.; expected=85.; absDiff=0.
+OK: rounded.rebar.top.lastX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
+OK: rounded.rebar.top.lastX.followsTaperAngle
+OK: rounded.rebar.bottom.firstY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hLeft.pathStartX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.pathStartY; actual=85.; expected=85.; absDiff=0.
+OK: rounded.rebar.hLeft.pathEndX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.pathEndY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hLeft.firstAtOneStepX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.firstAtOneStepY; actual=42.5; expected=42.5; absDiff=0.
+OK: rounded.rebar.hLeft.lastAtOneStepX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.lastAtOneStepY; actual=-42.5; expected=-42.5; absDiff=0.
+OK: rounded.rebar.hRight.pathStartX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
+OK: rounded.rebar.hRight.pathStartY; actual=85.; expected=85.; absDiff=0.
+OK: rounded.rebar.hRight.pathEndX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
+OK: rounded.rebar.hRight.pathEndY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hRight.firstAtOneStepX; actual=431.528867378695; expected=431.528867378695; absDiff=0.
+OK: rounded.rebar.hRight.firstAtOneStepY; actual=46.657612678376; expected=46.657612678376; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathStartX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathStartY; actual=105.; expected=105.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathEndX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathEndY; actual=-105.; expected=-105.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathStartX; actual=360.; expected=360.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathStartY; actual=105.; expected=105.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathEndX; actual=360.; expected=360.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathEndY; actual=-105.; expected=-105.; absDiff=0.
+OK: rounded.rebar.inside.1
+OK: rounded.rebar.inside.2
+OK: rounded.rebar.inside.3
+OK: rounded.rebar.inside.4
+OK: rounded.rebar.inside.5
+OK: rounded.rebar.inside.6
+OK: rounded.rebar.inside.7
+OK: rounded.rebar.inside.8
+OK: rounded.rebar.inside.9
+OK: rounded.rebar.inside.10
+OK: rounded.rebar.inside.11
+OK: rounded.rebar.inside.12
+OK: rounded.rebar.inside.13
+OK: rounded.rebar.inside.14
+OK: rounded.rebar.inside.15
+OK: rounded.rebar.inside.16
+OK: hollow.geometry.valid
+OK: hollow.geometry.areaAvailable
+OK: hollow.geometry.area; actual=300000.; expected=300000.; absDiff=0.
+OK: hollow.geometry.cx; actual=0.; expected=0.; absDiff=0.
+OK: hollow.geometry.cy; actual=0.; expected=0.; absDiff=0.
+OK: hollow.geometry.outerConcrete
+OK: hollow.geometry.openingExcluded
+OK: hollow.geometry.outsideExcluded
+OK: hollow.geometry.offset.valid
+OK: hollow.geometry.offset.cxOppositeOpening
+OK: hollow.geometry.offset.cyOppositeOpening
+OK: hollow.annotation.outerLoop
+OK: hollow.annotation.openingLoop
+OK: hollow.annotation.arcs
+OK: hollow.annotation.dimB
+OK: hollow.annotation.dimOpeningB
+OK: hollow.rebar.external.top
+OK: hollow.rebar.external.bottom
+OK: hollow.rebar.external.left
+OK: hollow.rebar.external.right
+OK: hollow.rebar.hLeft.firstX; actual=-210.; expected=-210.; absDiff=0.
+OK: hollow.rebar.hLeft.firstY; actual=-220.; expected=-220.; absDiff=0.
+OK: hollow.rebar.hLeft.lastX; actual=-210.; expected=-210.; absDiff=0.
+OK: hollow.rebar.hLeft.lastY; actual=220.; expected=220.; absDiff=0.
+OK: hollow.rebar.bTop.anchorStartY; actual=360.; expected=360.; absDiff=0.
+OK: hollow.rebar.bTop.anchorEndY; actual=360.; expected=360.; absDiff=0.
+OK: hollow.rebar.bBottom.anchorStartY; actual=-360.; expected=-360.; absDiff=0.
+OK: hollow.rebar.bBottom.anchorEndY; actual=-360.; expected=-360.; absDiff=0.
+OK: hollow.rebar.openingBTop.anchorStartY; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.openingBTop.anchorEndY; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.openingBBottom.anchorStartY; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.openingBBottom.anchorEndY; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.opening.topProjected
+OK: hollow.rebar.opening.bottomProjected
+OK: hollow.rebar.opening.leftProjected
+OK: hollow.rebar.opening.rightProjected
+OK: hollow.rebar.inside.1
+OK: hollow.rebar.inside.2
+OK: hollow.rebar.inside.3
+OK: hollow.rebar.inside.4
+OK: hollow.rebar.inside.5
+OK: hollow.rebar.inside.6
+OK: hollow.rebar.inside.7
+OK: hollow.rebar.inside.8
+OK: hollow.rebar.inside.9
+OK: hollow.rebar.inside.10
+OK: hollow.rebar.inside.11
+OK: hollow.rebar.inside.12
+OK: hollow.rebar.inside.13
+OK: hollow.rebar.inside.14
+OK: hollow.rebar.inside.15
+OK: hollow.rebar.inside.16
+OK: hollow.rebar.inside.17
+OK: hollow.rebar.inside.18
+OK: hollow.rebar.inside.19
+OK: hollow.rebar.inside.20
+OK: hollow.rebar.inside.21
+OK: hollow.rebar.inside.22
+OK: hollow.rebar.inside.23
+OK: hollow.rebar.inside.24
+OK: hollow.rebar.inside.25
+OK: hollow.rebar.inside.26
+OK: hollow.rebar.inside.27
+OK: hollow.rebar.inside.28
+OK: hollow.rebar.inside.29
+OK: hollow.rebar.inside.30
+OK: hollow.rebar.inside.31
+OK: hollow.rebar.inside.32
+OK: hollow.rebar.inside.33
+OK: hollow.rebar.inside.34
+OK: hollow.rebar.inside.35
+OK: hollow.rebar.inside.36
+OK: hollow.rebar.inside.37
+OK: hollow.rebar.inside.38
+OK: hollow.rebar.inside.39
+OK: hollow.rebar.inside.40
+OK: hollow.rebar.inside.41
+OK: hollow.rebar.inside.42
+OK: hollow.rebar.inside.43
+OK: hollow.rebar.inside.44
+OK: hollow.rebar.inside.45
+OK: hollow.rebar.inside.46
+OK: hollow.rebar.inside.47
+OK: hollow.rebar.inside.48
+OK: hollow.rebar.inside.49
+OK: hollow.rebar.inside.50
+OK: hollow.rebar.inside.51
+OK: hollow.rebar.inside.52
+OK: hollow.rebar.inside.53
+OK: hollow.rebar.inside.54
+OK: hollow.rebar.inside.55
+OK: hollow.rebar.inside.56
+OK: hollow.rebar.sharp.openingTop.count
+OK: hollow.rebar.sharp.openingBottom.count
+OK: hollow.rebar.sharp.openingLeft.count
+OK: hollow.rebar.sharp.openingRight.count
+OK: hollow.rebar.sharp.openingTop.barY.29; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.30; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.31; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.32; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.33; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.34; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.hasBars
+OK: hollow.rebar.sharp.openingBottom.barY.35; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.36; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.37; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.38; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.39; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.40; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.hasBars
+OK: hollow.rebar.sharp.openingLeft.barX.41; actual=-140.; expected=-140.; absDiff=0.
+OK: hollow.rebar.sharp.openingLeft.barX.42; actual=-140.; expected=-140.; absDiff=0.
+OK: hollow.rebar.sharp.openingLeft.barX.43; actual=-140.; expected=-140.; absDiff=0.
+OK: hollow.rebar.sharp.openingLeft.barX.44; actual=-140.; expected=-140.; absDiff=0.
+OK: hollow.rebar.sharp.openingLeft.hasBars
+OK: hollow.rebar.sharp.openingRight.barX.45; actual=140.; expected=140.; absDiff=0.
+OK: hollow.rebar.sharp.openingRight.barX.46; actual=140.; expected=140.; absDiff=0.
+OK: hollow.rebar.sharp.openingRight.barX.47; actual=140.; expected=140.; absDiff=0.
+OK: hollow.rebar.sharp.openingRight.barX.48; actual=140.; expected=140.; absDiff=0.
+OK: hollow.rebar.sharp.openingRight.hasBars
+OK: circle.area.available
+OK: circle.area; actual=70650.; expected=70685.8347057704; relDiff=0.000506957383
+OK: circle.cx; actual=10.; expected=10.; absDiff=0.
+OK: circle.cy; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.Ix; actual=397237187.499859; expected=397607820.219958; relDiff=0.000932156515
+OK: circle.Iy; actual=397237187.499938; expected=397607820.219958; relDiff=0.000932156515
+OK: circle.Ixy; actual=0.; expected=0.; absDiff=0.
+OK: circle.principal.angle; actual=0.; expected=0.; absDiff=0.
+OK: circle.core.xPositive; actual=37.484046945029; expected=37.5; relDiff=0.000425414799
+OK: circle.core.yNegative; actual=37.484046945039; expected=37.5; relDiff=0.000425414799
+OK: core.asymmetric.expectedDifferent
+OK: core.asymmetric.xPlus.oppositeFiber; actual=44.69696969697; expected=44.69696969697; absDiff=0.
+OK: core.asymmetric.xMinus.oppositeFiber; actual=37.820512820513; expected=37.820512820513; absDiff=0.
+OK: core.general.xPlus.inside
+OK: core.general.xPlus.edge; actual=0.; expected=0.; absDiff=0.
+OK: core.general.xPlus.outside
+OK: core.general.xMinus.inside
+OK: core.general.xMinus.edge; actual=0.; expected=0.; absDiff=0.
+OK: core.general.xMinus.outside
+OK: core.general.yPlus.inside
+OK: core.general.yPlus.edge; actual=0.; expected=0.; absDiff=0.
+OK: core.general.yPlus.outside
+OK: core.general.yMinus.inside
+OK: core.general.yMinus.edge; actual=0.; expected=0.; absDiff=0.
+OK: core.general.yMinus.outside
+OK: principal.core.axis1.matchesX; actual=33.333333333333; expected=33.333333333333; absDiff=0.
+OK: principal.core.axis2.matchesY; actual=100.; expected=100.; absDiff=0.
+OK: principal.core.plane1.normalIsAxis2; actual=100.; expected=100.; absDiff=0.
+OK: circle.coarse.principal.angle; actual=0.; expected=0.; absDiff=0.
+OK: circle.coarse.IxIy.nearlyEqual
+OK: circle.invalid.zeroRadius
+OK: circle.invalid.negativeDiameter
+OK: circle.rebar.count
+OK: circle.rebar.angleStep; actual=0.785398163397; expected=0.785398163397; absDiff=0.
+OK: circle.rebar.axisRadius; actual=110.; expected=110.; absDiff=0.
+OK: circle.rebar.firstX; actual=120.; expected=120.; absDiff=0.
+OK: circle.rebar.firstY; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.centroidX; actual=10.; expected=10.; absDiff=0.
+OK: circle.rebar.centroidY; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.area; actual=314.159265358979; expected=314.159265358979; relDiff=0.
+OK: circle.rebar.rows.stacked.count
+OK: circle.rebar.rows.stacked.row2.x; actual=100.; expected=100.; absDiff=0.
+OK: circle.rebar.rows.stacked.row2.y; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.rows.stacked.row3.x; actual=75.; expected=75.; absDiff=0.
+OK: circle.rebar.rows.stacked.row3.y; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.rows.side.count
+OK: circle.rebar.rows.side.row2.x; actual=120.; expected=120.; absDiff=0.
+OK: circle.rebar.rows.side.row2.y; actual=-40.; expected=-40.; absDiff=0.
+OK: circle.rebar.rows.side.row3.x; actual=120.; expected=120.; absDiff=0.
+OK: circle.rebar.rows.side.row3.y; actual=-65.; expected=-65.; absDiff=0.
+OK: circle.rebar.rows.mixed.count
+OK: circle.rebar.rows.mixed.row2.y; actual=-40.; expected=-40.; absDiff=0.
+OK: circle.rebar.rows.mixed.row3.x; actual=95.; expected=95.; absDiff=0.
+OK: circle.rebar.rows.mixed.row3.y; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.rows.thirdOnly.count
+OK: circle.rebar.rows.thirdOnly.row3.x; actual=95.; expected=95.; absDiff=0.
+OK: circle.rebar.rows.thirdOnly.row3.y; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.rows.noFirstByCount.ignored
+OK: circle.rebar.rows.noFirstByCount.angle; actual=0.; expected=0.; absDiff=0.
+OK: circle.rebar.rows.noFirstByDiameter.ignored
+OK: circle.rebar.invalid.D
+OK: circle.rebar.invalid.n
+OK: circle.rebar.invalid.ds
+OK: circle.rebar.invalid.as.small
+OK: circle.rebar.invalid.as.large
+OK: circle.rebar.invalid.loc2
+OK: circle.rebar.invalid.row2.outside
+OK: rectset.area.available
+OK: rectset.area.analytical; actual=287500.; expected=287500.; absDiff=0.
+OK: rectset.cx.analytical; actual=226.304347826087; expected=226.304347826087; absDiff=0.
+OK: rectset.cy.analytical; actual=296.304347826087; expected=296.304347826087; absDiff=0.
+OK: rectset.contains.lower
+OK: rectset.contains.vertical
+OK: rectset.excludes.cutout
+OK: rectset.boundary.subcell.fibers.more
+OK: rectset.boundary.subcell.has.small.fibers
+OK: rectset.boundary.subcell.area; actual=296400.; expected=287500.; relDiff=0.030956521739
+OK: rectset.rectangle.area; actual=137500.; expected=137500.; absDiff=0.
+OK: rectset.rectangle.area.available
+OK: rectset.rectangle.cx; actual=125.; expected=125.; absDiff=0.
+OK: rectset.rectangle.cy; actual=275.; expected=275.; absDiff=0.
+OK: rectset.rectangle.hasNoLower
+OK: rectset.rectangle.containsUpper
+OK: rectset.rectangle.excludesOldLower
+OK: rectset.twoZero.areaEqualsL; actual=287500.; expected=287500.; absDiff=0.
+OK: rectset.twoZero.minX; actual=0.; expected=0.; absDiff=0.
+OK: rectset.twoZero.maxX; actual=600.; expected=600.; absDiff=0.
+OK: rectset.twoZero.cutout
+OK: rectset.tshape.valid
+OK: rectset.tshape.minX; actual=-175.; expected=-175.; absDiff=0.
+OK: rectset.tshape.maxX; actual=425.; expected=425.; absDiff=0.
+OK: rectset.tshape.containsFlange
+OK: rectset.tshape.containsWeb
+OK: rectset.shifted.upperMinX; actual=150.; expected=150.; absDiff=0.
+OK: rectset.shifted.cx; actual=288.04347826087; expected=288.04347826087; absDiff=0.
+OK: rectset.shifted.cy; actual=316.304347826087; expected=316.304347826087; absDiff=0.
+OK: rectset.shifted.containsUpper
+OK: rectset.shifted.excludesOldUpper
+OK: rectset.shifted.rebarX; actual=200.; expected=200.; absDiff=0.
+OK: rectset.rectangle.rebarSkipsLower
+OK: rectset.concrete.axis1.inertia; actual=18088016827.5064; expected=18088016827.5064; relDiff=0.
+OK: rectset.concrete.axis2.inertia; actual=5050796578.29071; expected=5050796578.29052; relDiff=0.
+OK: rectset.concrete.principal.I12.zero
+OK: rectset.concrete.core.plane1.plus; actual=139.951813359855; expected=139.951813359855; absDiff=0.
+OK: rectset.concrete.core.plane1.minus; actual=118.761032231126; expected=118.761032231126; absDiff=0.
+OK: rectset.concrete.core.plane2.plus; actual=53.176383544528; expected=53.176383544528; absDiff=0.
+OK: rectset.concrete.core.plane2.minus; actual=55.076837222433; expected=55.076837222433; absDiff=0.
+OK: rectset.transformed.axis1.inertia; actual=25742590097.4048; expected=25742590097.4048; relDiff=0.
+OK: rectset.transformed.axis2.inertia; actual=7443135031.93637; expected=7443135031.93628; relDiff=0.
+OK: rectset.transformed.principal.I12.zero
+OK: rectset.transformed.core.plane1.plus; actual=141.00121678544; expected=141.00121678544; absDiff=0.
+OK: rectset.transformed.core.plane1.minus; actual=121.03572048568; expected=121.03572048568; absDiff=0.
+OK: rectset.transformed.core.plane2.plus; actual=55.795082953887; expected=55.795082953887; absDiff=0.
+OK: rectset.transformed.core.plane2.minus; actual=57.859913993707; expected=57.859913993707; absDiff=0.
+OK: geometry.cover.localContour; actual=40.; expected=40.; absDiff=0.
+OK: geometry.cover.globalWouldBeWrong; actual=340.; expected=340.; absDiff=0.
+OK: geometry.cover.localLessThanGlobal
+OK: rectset.rebar.count
+OK: rectset.rebar.requested
+OK: rectset.rebar.perimeter; actual=3300.; expected=3300.; absDiff=0.
+OK: rectset.rebar.step; actual=200.; expected=200.; absDiff=0.
+OK: rectset.rebar.firstX; actual=50.; expected=50.; absDiff=0.
+OK: rectset.rebar.firstY; actual=525.; expected=525.; absDiff=0.
+OK: rectset.rebar.zeroFaceSkipped
+OK: rectset.rebar.zeroCountSkipped
+OK: rectset.rebar.zeroDiameterSkipped
+OK: rectset.rebar.allZeroCounts.builderEmpty
+OK: rectset.rebar.inside.1
+OK: rectset.rebar.inside.2
+OK: rectset.rebar.inside.3
+OK: rectset.rebar.inside.4
+OK: rectset.rebar.inside.5
+OK: rectset.rebar.inside.6
+OK: rectset.rebar.inside.7
+OK: rectset.rebar.inside.8
+OK: rectset.rebar.invalid.n
+OK: rectset.rebar.invalid.as.small
+OK: rectset.rebar.invalid.offsets
+OK: rectset.offsets.separate.count
+OK: rectset.offsets.as_1.firstY; actual=680.; expected=680.; absDiff=0.
+OK: rectset.offsets.as_1.edgeY; actual=330.; expected=330.; absDiff=0.
+OK: rectset.offsets.as_2.firstY; actual=320.; expected=320.; absDiff=0.
+OK: rectset.offsets.as_2.edgeY; actual=770.; expected=770.; absDiff=0.
+OK: rectset.rows.stacked.count
+OK: rectset.rows.stacked.row1.x; actual=50.; expected=50.; absDiff=0.
+OK: rectset.rows.stacked.row2.x; actual=70.; expected=70.; absDiff=0.
+OK: rectset.rows.stacked.row3.x; actual=95.; expected=95.; absDiff=0.
+OK: rectset.rows.stacked.sameY; actual=525.; expected=525.; absDiff=0.
+OK: rectset.rows.side.vertical.count
+OK: rectset.rows.side.vertical.sameX; actual=50.; expected=50.; absDiff=0.
+OK: rectset.rows.side.vertical.row2.y; actual=505.; expected=505.; absDiff=0.
+OK: rectset.rows.side.vertical.row3.y; actual=480.; expected=480.; absDiff=0.
+OK: rectset.rows.side.horizontal.count
+OK: rectset.rows.side.horizontal.row2.x; actual=145.; expected=145.; absDiff=0.
+OK: rectset.rows.side.horizontal.row3.x; actual=170.; expected=170.; absDiff=0.
+OK: rectset.rows.side.horizontal.sameY; actual=750.; expected=750.; absDiff=0.
+OK: rectset.rows.thirdOnly.count
+OK: rectset.rows.thirdOnly.row3.x; actual=75.; expected=75.; absDiff=0.
+OK: rectset.rows.thirdOnly.sameY; actual=525.; expected=525.; absDiff=0.
+OK: rectset.rows.noFirstRow.ignored
+OK: rectset.rows.noFirstRow.source
+OK: rectset.rows.mixed.count
+OK: rectset.rows.mixed.row2.y; actual=505.; expected=505.; absDiff=0.
+OK: rectset.rows.mixed.row3.x; actual=75.; expected=75.; absDiff=0.
+OK: rectset.rows.mixed.row3.y; actual=525.; expected=525.; absDiff=0.
+OK: rectset.rows.separateLineDiameters.count
+OK: rectset.rows.separateLineDiameters.row2_1.d; actual=18.; expected=18.; absDiff=0.
+OK: rectset.rows.separateLineDiameters.row3_1.d; actual=28.; expected=28.; absDiff=0.
+OK: rectset.rows.separateLineDiameters.row2_2.d; actual=22.; expected=22.; absDiff=0.
+OK: rectset.rows.separateLineDiameters.row3_2.d; actual=34.; expected=34.; absDiff=0.
+OK: rectset.rows.everySecond.count
+OK: rectset.rows.everySecond.row2.partial
+OK: rectset.rows.everySecond.row3.each
+OK: rectset.rows.invalid.location
+OK: model.concrete.count
+OK: model.rebar.count
+OK: model.concrete.id
+OK: model.rebar.id
+OK: model.rebar.sourceName
+OK: model.rebar.area; actual=314.159265358979; expected=314.159265358979; absDiff=0.
+OK: annotation.circle.count
+OK: annotation.circle.group
+OK: annotation.circle.startX; actual=-100.; expected=-100.; absDiff=0.
+OK: annotation.circle.endX; actual=120.; expected=120.; absDiff=0.
+OK: annotation.circle.normalY; actual=1.; expected=1.; absDiff=0.
+OK: annotation.circle.axisDistance; actual=40.; expected=40.; absDiff=0.
+OK: annotation.rectset.count
+OK: annotation.rectset.group
+OK: annotation.rectset.startY; actual=300.; expected=300.; absDiff=0.
+OK: annotation.rectset.endY; actual=730.; expected=730.; absDiff=0.
+OK: annotation.rectset.normalX; actual=-1.; expected=-1.; absDiff=0.
+OK: annotation.rectset.axisDistance; actual=40.; expected=40.; absDiff=0.
+OK: annotation.manual.anchor.allowed
+OK: annotation.zeroFace.hasOtherBars
+OK: annotation.zeroFace.noAnchor
+OK: annotation.zeroFace.otherAnchor
+OK: annotation.circle.zeroCount.noBars
+OK: annotation.circle.zeroCount.noAnchor
+OK: annotation.model.count
+OK: annotation.model.rebarLabel
+OK: autocad.import.source
+OK: autocad.import.concrete.count
+OK: autocad.import.rebar.count
+OK: autocad.import.concrete.id
+OK: autocad.import.concrete.x; actual=10.; expected=10.; absDiff=0.
+OK: autocad.import.concrete.y; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.concrete.width; actual=6.; expected=6.; absDiff=0.
+OK: autocad.import.concrete.height; actual=3.; expected=3.; absDiff=0.
+OK: autocad.import.concrete.rotation; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.concrete.localIx; actual=13.5; expected=13.5; absDiff=0.
+OK: autocad.import.concrete.localIy; actual=54.; expected=54.; absDiff=0.
+OK: autocad.import.rebar.diameter; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.rebar.marker
+OK: autocad.import.rebar.comment
+OK: autocad.import.concrete.xDepth; actual=6.; expected=6.; absDiff=0.
+OK: autocad.import.concrete.yDepth; actual=3.; expected=3.; absDiff=0.
+OK: autocad.import.rotated.shape
+OK: autocad.import.rotated.width; actual=80.; expected=80.; absDiff=0.
+OK: autocad.import.rotated.height; actual=30.; expected=30.; absDiff=0.
+OK: autocad.import.rotated.rotation; actual=0.785398163397; expected=0.785398163397; absDiff=0.
+OK: autocad.import.rotated.localIx; actual=730000.; expected=730000.; absDiff=0.
+OK: autocad.import.rotated.localIy; actual=730000.; expected=730000.; absDiff=0.
+OK: autocad.import.rotated.localIxy; actual=550000.; expected=550000.; absDiff=0.
+OK: autocad.import.rotated.uDepth; actual=80.; expected=80.; absDiff=0.
+OK: autocad.import.rotated.vDepth; actual=30.; expected=30.; absDiff=0.
+OK: autocad.import.principal.shape
+OK: autocad.import.principal.localIx; actual=466666.666666667; expected=466666.666666667; absDiff=0.
+OK: autocad.import.principal.localIy; actual=1266666.66666667; expected=1266666.66666667; absDiff=0.
+OK: autocad.import.principal.localIxy; actual=692820.323027551; expected=692820.323027551; absDiff=0.
+OK: autocad.import.principal.areaShell; actual=2000.; expected=2000.; absDiff=0.
+OK: autocad.import.principal.noExplode; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.principal.uDepth; actual=100.; expected=100.; absDiff=0.
+OK: autocad.import.principal.vDepth; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.translated.noExplode; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.translated.nearShape
+OK: autocad.import.translated.farShape
+OK: autocad.import.translated.localIx; actual=281139.167602539; expected=281139.167595529; absDiff=0.000007010414
+OK: autocad.import.translated.localIy; actual=1354798.33239746; expected=1354798.33240447; absDiff=0.000007010531
+OK: autocad.import.translated.localIxy; actual=-450453.504608154; expected=-450453.504600645; absDiff=0.000007509138
+OK: autocad.import.translated.width; actual=25.000000000058; expected=25.; absDiff=0.000000000058
+OK: autocad.import.translated.height; actual=89.999999999984; expected=90.; absDiff=0.000000000016
+OK: autocad.import.translated.rotation; actual=1.221730476389; expected=1.221730476396; absDiff=0.000000000007
+OK: autocad.import.translated.i1; actual=1518749.99999946; expected=1518750.; absDiff=0.000000543427
+OK: autocad.import.translated.i2; actual=117187.500000543; expected=117187.5; absDiff=0.000000543543
+OK: autocad.import.edgeProbe.rect.shape
+OK: autocad.import.edgeProbe.rect.noExplode; actual=1.; expected=1.; absDiff=0.
+OK: autocad.import.edgeProbe.square.shape
+OK: autocad.import.edgeProbe.square.width; actual=50.; expected=50.; absDiff=0.
+OK: autocad.import.edgeProbe.square.height; actual=50.; expected=50.; absDiff=0.
+OK: autocad.import.edgeProbe.square.rotation; actual=0.628318530718; expected=0.628318530718; absDiff=0.
+OK: autocad.import.squareFallback.shape
+OK: autocad.import.squareFallback.width; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: autocad.import.squareFallback.height; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: autocad.import.squareFallback.localIx; actual=321276.184931294; expected=321276.184931294; absDiff=0.
+OK: autocad.import.squareFallback.xDepth; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: autocad.import.squareFallback.diagonalDepth; actual=62.665706865775; expected=62.665706865775; absDiff=0.
+OK: autocad.import.squareFallbackRotation.shape
+OK: autocad.import.squareFallbackRotation.angle; actual=0.523598775598; expected=0.523598775598; absDiff=0.
+OK: autocad.import.squareFallbackRotation.projectedSide; actual=238.205080756888; expected=238.205080756888; absDiff=0.
+OK: model.squareEdgeAverage.source.shape
+OK: model.squareEdgeAverage.target.shape
+OK: model.squareEdgeAverage.target.rotation; actual=0.448798950513; expected=0.448798950513; absDiff=0.
+OK: autocad.import.badInertia.shape
+OK: autocad.import.badInertia.localIxy; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.badInertia.xDepth; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: model.boundary.equivalentRectangle.status
+OK: model.boundary.equivalentRectangle.area; actual=2500.; expected=2500.; absDiff=0.
+OK: model.boundary.equivalentRectangle.ratio; actual=6.; expected=6.; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIx; actual=259834.957055045; expected=259834.957055045; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIy; actual=790165.042944955; expected=790165.042944955; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIxy; actual=265165.042944955; expected=265165.042944955; absDiff=0.
+OK: model.boundary.realIx.priorityA; actual=111111.; expected=111111.; absDiff=0.
+OK: model.boundary.realIy.priorityA; actual=222222.; expected=222222.; absDiff=0.
+OK: model.boundary.realIxy.priorityA; actual=12345.; expected=12345.; absDiff=0.
+OK: model.boundary.realIx.independent; actual=111111.; expected=111111.; absDiff=0.
+OK: model.boundary.realIy.independent; actual=222222.; expected=222222.; absDiff=0.
+OK: model.boundary.realIxy.independent; actual=12345.; expected=12345.; absDiff=0.
+OK: model.fallback.square.status
+OK: model.fallback.square.width; actual=60.; expected=60.; absDiff=0.
+OK: model.fallback.square.localIx; actual=1080000.; expected=1080000.; absDiff=0.
+OK: model.fallback.square.localIy; actual=1080000.; expected=1080000.; absDiff=0.
+OK: model.fallback.square.localIxy; actual=0.; expected=0.; absDiff=0.
+OK: invalid.width
+OK: invalid.height
+OK: invalid.negative.radius
+OK: invalid.large.radius
+OK: invalid.neighbor.radii
+OK: invalid.step.zero
+OK: invalid.step.negative
+OK: boundary.subcell.fibers.more
+OK: boundary.subcell.area.better
+OK: boundary.subcell.has.small.fibers
+OK: boundary.subcell.small.width; actual=10.; expected=10.; absDiff=0.
+OK: mesh.rectangularSteps.hasFibers
+OK: mesh.rectangularSteps.width; actual=25.; expected=25.; absDiff=0.
+OK: mesh.rectangularSteps.height; actual=15.; expected=15.; absDiff=0.
+OK: mesh.rectangularSteps.area; actual=375.; expected=375.; absDiff=0.
+OK: mesh.rectangularSteps.modelWidth; actual=25.; expected=25.; absDiff=0.
+OK: mesh.rectangularSteps.modelHeight; actual=15.; expected=15.; absDiff=0.
+CONVERGENCE: step=50 area=80000.; cx=0.; cy=-10.; Ix=266666666.666667; Iy=1066666666.66667; Ixy=0.; I1=1066666666.66667; I2=266666666.666667
+CONVERGENCE: step=25 area=88750.; cx=0.; cy=1.091549295775; Ix=366946339.495306; Iy=1155989583.33333; Ixy=0.; I1=1155989583.33333; I2=366946339.495306
+CONVERGENCE: step=12.5 area=88750.; cx=0.; cy=1.795774647887; Ix=366297131.748829; Iy=1154524739.58334; Ixy=0.; I1=1154524739.58334; I2=366297131.748829
+OK: conv.area.25.12; actual=88750.; expected=88750.; relDiff=0.
+OK: conv.Ix.25.12; actual=366297131.748829; expected=366946339.495306; relDiff=0.001769217121
+OK: conv.Iy.25.12; actual=1154524739.58334; expected=1155989583.33333; relDiff=0.001267177292
+PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.0078125; propsSec=0.; area=398800.
+OK: perf.fibers.positive
+OK: audit03.geometry.rounded.uninitialized
+OK: audit03.geometry.rounded.uninitializedPoint
+OK: audit03.geometry.hollow.uninitialized
+OK: audit03.geometry.hollow.uninitializedPoint
+OK: audit03.geometry.rounded.firstValid
+OK: audit03.geometry.rounded.firstCenter
+OK: audit03.geometry.rounded.invalid
+OK: audit03.geometry.rounded.invalidPoint
+OK: audit03.geometry.rounded.repeatInvalid
+OK: audit03.geometry.rounded.stableReason
+OK: audit03.geometry.rounded.revalidated
+OK: audit03.geometry.hollow.firstValid
+OK: audit03.geometry.hollow.opening
+OK: audit03.geometry.hollow.invalid
+OK: audit03.geometry.hollow.invalidPoint
+OK: audit03.geometry.hollow.repeatInvalid
+OK: audit03.geometry.hollow.stableReason
+OK: audit03.geometry.hollow.revalidated
+OK: audit03.geometry.hollow.newOpening
+GRID: Rounded; y=-360; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-360; 0000000000000000000000000000000000000000000000000
+GRID: Rounded; y=-340; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-340; 0000000000000000000000000000000000000000000000000
+GRID: Rounded; y=-320; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-320; 0000000000011111111111111111111111111100000000000
+GRID: Rounded; y=-300; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-300; 0000000000111111111111111111111111111110000000000
+GRID: Rounded; y=-280; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-280; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=-260; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-260; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=-240; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-240; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=-220; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-220; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=-200; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-200; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=-180; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-180; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=-160; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-160; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=-140; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-140; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=-120; 0000000000000000111111111111111111111111000000000
+GRID: Hollow; y=-120; 0000000000111111100000000000111111111111000000000
+GRID: Rounded; y=-100; 0000000000000001111111111111111111111111110000000
+GRID: Hollow; y=-100; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=-80; 0000000000000001111111111111111111111111111000000
+GRID: Hollow; y=-80; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=-60; 0000000000000001111111111111111111111111111100000
+GRID: Hollow; y=-60; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=-40; 0000000000000001111111111111111111111111111110000
+GRID: Hollow; y=-40; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=-20; 0000000000000001111111111111111111111111111110000
+GRID: Hollow; y=-20; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=0; 0000000000000001111111111111111111111111111100000
+GRID: Hollow; y=0; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=20; 0000000000000001111111111111111111111111111000000
+GRID: Hollow; y=20; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=40; 0000000000000001111111111111111111111111110000000
+GRID: Hollow; y=40; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=60; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=60; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=80; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=80; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=100; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=100; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=120; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=120; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=140; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=140; 0000000000111111100000000000011111111111000000000
+GRID: Rounded; y=160; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=160; 0000000000111111100000000000111111111111000000000
+GRID: Rounded; y=180; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=180; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=200; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=200; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=220; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=220; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=240; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=240; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=260; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=260; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=280; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=280; 0000000000111111111111111111111111111111000000000
+GRID: Rounded; y=300; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=300; 0000000000111111111111111111111111111110000000000
+GRID: Rounded; y=320; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=320; 0000000000011111111111111111111111111100000000000
+GRID: Rounded; y=340; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=340; 0000000000000000000000000000000000000000000000000
+GRID: Rounded; y=360; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=360; 0000000000000000000000000000000000000000000000000
+OK: audit03.geometry.rounded.reinitGrid
+OK: audit03.geometry.hollow.reinitGrid
+OK: audit03.geometry.hollow.outerBoundary
+OK: audit03.geometry.hollow.openingBoundary
+OK: audit03.geometry.rounded.reinitArea; actual=78071.4150594949; expected=78071.4150594949; absDiff=0.
+OK: audit03.geometry.rounded.areaAvailable
+OK: audit03.geometry.hollow.reinitArea; actual=237459.154335938; expected=237459.154335938; absDiff=0.
+OK: audit03.geometry.hollow.areaAvailable
+CONST: GEOM_PI deltaFrom3x1e15=141592653589793
+OK: audit03.geometry.piFullPrecision; actual=3.14159265359; expected=3.14159265359; absDiff=0.
+OK: audit03.circle.countGuard.2.countReason
+OK: audit03.circle.countGuard.2.sheet
+OK: audit03.circle.countGuard.2.key
+OK: audit03.circle.countGuard.2.beforeCoordinates; actual=0.; expected=0.; absDiff=0.
+CIRCLE_COUNT_ERROR: rows=2; number=-2147218340; На листе Config в блоке круглого сечения уменьшите Rebar.Count или число активных рядов: суммарное количество стержней превышает диапазон счетчиков программы.
+OK: audit03.circle.countGuard.3.countReason
+OK: audit03.circle.countGuard.3.sheet
+OK: audit03.circle.countGuard.3.key
+OK: audit03.circle.countGuard.3.beforeCoordinates; actual=0.; expected=0.; absDiff=0.
+CIRCLE_COUNT_ERROR: rows=3; number=-2147218340; На листе Config в блоке круглого сечения уменьшите Rebar.Count или число активных рядов: суммарное количество стержней превышает диапазон счетчиков программы.
+OK: audit03.circle.countGuard.twoRowsRecovery
+OK: audit03.circle.countGuard.threeRowsRecovery
+OK: audit03.circle.countGuard.disabledBase
+OK: audit03.circle.countGuard.disabledRadius; actual=0.; expected=0.; absDiff=0.
+TOTAL: passed=536; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f5512a4cfa3647959ac3fb8965e66609\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometry.RunGeometryTests; 2026-10-04T18:45:56
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

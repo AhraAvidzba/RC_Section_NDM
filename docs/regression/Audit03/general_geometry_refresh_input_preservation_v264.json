@@ -1,0 +1,115 @@
+{
+  "BeforeBook": "docs/regression/Audit03/RC_Section_NDM_general_geometry_final_v263.xlsm",
+  "AfterBook": "docs/regression/Audit03/RC_Section_NDM_general_geometry_final_v264.xlsm",
+  "EditableFields": 760,
+  "InputDifferences": [],
+  "ConfigValueFormulaChanges": [
+    {
+      "Address": "C49",
+      "Before": "0",
+      "After": "шт",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C41",
+      "Before": "60",
+      "After": "шт",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C75",
+      "Before": "0.3",
+      "After": "mm",
+      "BeforeFormula": "",
+      "AfterFormula": "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+    },
+    {
+      "Address": "C82",
+      "Before": "1",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C78",
+      "Before": "GlobalExtreme",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C80",
+      "Before": "0.5",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C47",
+      "Before": "1",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C77",
+      "Before": "Effective",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C85",
+      "Before": "1",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C79",
+      "Before": "1.4",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C50",
+      "Before": "1",
+      "After": "шт",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C83",
+      "Before": "AlwaysCalc",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C48",
+      "Before": "0.01",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C45",
+      "Before": "1024",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    },
+    {
+      "Address": "C81",
+      "Before": "Auto",
+      "After": "-",
+      "BeforeFormula": "",
+      "AfterFormula": ""
+    }
+  ],
+  "CorrectedUnitCaptions": 15,
+  "SourceOnlyRefreshAndHelpPreservedInput": true
+}

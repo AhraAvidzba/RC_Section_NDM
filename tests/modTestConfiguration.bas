@@ -676,6 +676,7 @@ Public Function RunAudit03SettingsTableGuardTests(Optional ByRef passed As Long 
         Optional ByRef failed As Long = 0) As String
     Dim stats As TConfigTestStats
     TestAudit03SettingsTableGuards stats
+    TestAudit03ProgressFileFailure stats
     LogLine stats, "TOTAL_AUDIT03_SETTINGS_TABLE_GUARDS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03SettingsTableGuardTests = stats.Report
@@ -1984,10 +1985,51 @@ End Sub
 
 ' Сохраняет промежуточный отчет рядом с тестовой книгой для watchdog-диагностики.
 ' Тестовый журнал не участвует в расчетах и не заменяет конечный gate.
+' Ошибка необязательной файловой копии остается warning в возвращаемом
+' отчете; она не обрывает assertions и не скрывает их настоящие отказы.
 Private Sub LogLine(ByRef stats As TConfigTestStats, ByVal value As String)
     stats.Report = stats.Report & value & vbCrLf
     Dim fileNumber As Integer: fileNumber = FreeFile
+    On Error GoTo ProgressUnavailable
     Open ThisWorkbook.Path & Application.PathSeparator & "Audit03_Search_Progress.txt" For Output As #fileNumber
     Print #fileNumber, stats.Report;
     Close #fileNumber
+    Exit Sub
+ProgressUnavailable:
+    Dim failureNumber As Long, failureDescription As String
+    failureNumber = Err.Number: failureDescription = Err.Description
+    On Error Resume Next
+    Close #fileNumber
+    On Error GoTo 0
+    stats.Report = stats.Report & "TEST_PROGRESS_WARNING: " & CStr(failureNumber) & "; " & failureDescription & vbCrLf
+End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: ОТКАЗ ПРОМЕЖУТОЧНОГО ЖУРНАЛА ====================
+
+' Блокирует только журнал собственной тестовой книги. Проверяет, что отказ
+' файловой копии сохраняет assertion и диагностику в возвращаемом отчете;
+' после освобождения файла запись возобновляется без повторения расчета.
+Private Sub TestAudit03ProgressFileFailure(ByRef stats As TConfigTestStats)
+    Dim lockedFile As Integer, probe As TConfigTestStats, warningPreserved As Boolean
+    On Error GoTo Failed
+    lockedFile = FreeFile
+    Open ThisWorkbook.Path & Application.PathSeparator & "Audit03_Search_Progress.txt" For Binary Access Read Write Lock Read Write As #lockedFile
+    Check probe, "progressFile.locked.assertion", True
+    warningPreserved = probe.Passed = 1 And probe.Failed = 0 And _
+        InStr(1, probe.Report, "TEST_PROGRESS_WARNING:", vbBinaryCompare) > 0 And _
+        InStr(1, probe.Report, "OK: progressFile.locked.assertion", vbBinaryCompare) > 0
+    Close #lockedFile
+    lockedFile = 0
+    Check stats, "audit03.progressFile.failureDoesNotAbort", warningPreserved
+    Check probe, "progressFile.recovered.assertion", True
+    Check stats, "audit03.progressFile.recovered", probe.Passed = 2 And probe.Failed = 0 And _
+        InStr(1, probe.Report, "OK: progressFile.recovered.assertion", vbBinaryCompare) > 0
+    Exit Sub
+Failed:
+    Dim failureNumber As Long, failureDescription As String
+    failureNumber = Err.Number: failureDescription = Err.Description
+    On Error Resume Next
+    If lockedFile <> 0 Then Close #lockedFile
+    On Error GoTo 0
+    Check stats, "audit03.progressFile.runtime." & CStr(failureNumber) & "." & failureDescription, False
 End Sub
