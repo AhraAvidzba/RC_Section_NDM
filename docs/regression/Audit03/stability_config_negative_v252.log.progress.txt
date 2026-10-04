@@ -1,0 +1,1610 @@
+RUN: audit03.stabilityConfig.p1.base
+META: audit03.comments.audit03.stabilityConfig.p1.base.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.base.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.base.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.base.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.base.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.base.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.base.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.base.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.base.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.base.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.base.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.base.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.base.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.base.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.base.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.base.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.base.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.base.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.base.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.base.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.base.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.base|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.base.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.base|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=142029.561529811|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.base.branch
+OK: audit03.stabilityConfig.p1.base.positiveNcr
+OK: audit03.stabilityConfig.p1.base.l01|actual=20000|expected=20000
+OK: audit03.stabilityConfig.p1.base.e1|actual=120|expected=120
+OK: audit03.stabilityConfig.p1.base.e2|actual=90|expected=90
+RUN: audit03.stabilityConfig.p1.Stability.ElementLength
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.Stability.ElementLength|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.Stability.ElementLength.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.Stability.ElementLength|status=OK|code=SP63|branch=SP63|Ncr1=521325.159205487|Ncr2=568118.246119246|e1=120|e2=90|L01=10000|L02=10000
+OK: audit03.stabilityConfig.p1.L.l01|actual=10000|expected=10000
+OK: audit03.stabilityConfig.p1.L.Ncr1|actual=521325.159205487|expected=521325.159205487
+OK: audit03.stabilityConfig.p1.L.Ncr2|actual=568118.246119246|expected=568118.246119246
+RUN: audit03.stabilityConfig.p1.Stability.Mu1
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu1|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.Stability.Mu1.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.Stability.Mu1|status=OK|code=SP63|branch=SP63|Ncr1=32582.8224503429|Ncr2=142029.561529811|e1=120|e2=90|L01=40000|L02=20000
+OK: audit03.stabilityConfig.p1.mu1.l01|actual=40000|expected=40000
+OK: audit03.stabilityConfig.p1.mu1.Ncr1|actual=32582.8224503429|expected=32582.8224503429
+OK: audit03.stabilityConfig.p1.mu1.Ncr2.unchanged|actual=142029.561529811|expected=142029.561529811
+RUN: audit03.stabilityConfig.p1.Stability.Mu2
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.Stability.Mu2|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.Stability.Mu2.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.Stability.Mu2|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=35507.3903824529|e1=120|e2=90|L01=20000|L02=40000
+OK: audit03.stabilityConfig.p1.mu2.l02|actual=40000|expected=40000
+OK: audit03.stabilityConfig.p1.mu2.Ncr2|actual=35507.3903824529|expected=35507.3903824529
+OK: audit03.stabilityConfig.p1.mu2.Ncr1.unchanged|actual=130331.289801372|expected=130331.289801372
+RUN: audit03.stabilityConfig.p1.SystemType
+META: audit03.comments.audit03.stabilityConfig.p1.SystemType.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SystemType.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SystemType.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SystemType.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SystemType.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SystemType.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SystemType.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SystemType.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SystemType|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SystemType.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SystemType|status=OK|code=SP63|branch=SP63|Ncr1=137719.67194565|Ncr2=146846.496947404|e1=100|e2=80|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.system.e1|actual=100|expected=100
+OK: audit03.stabilityConfig.p1.system.e2|actual=80|expected=80
+OK: audit03.stabilityConfig.p1.system.stiffnessEffect
+RUN: audit03.stabilityConfig.p1.zeroSign1
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign1.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.zeroSign1|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.zeroSign1.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.zeroSign1|status=OK|code=SP63|branch=SP63|Ncr1=137719.67194565|Ncr2=146846.496947404|e1=-100|e2=80|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.zeroSign.ea1.1|actual=-100|expected=-100
+OK: audit03.stabilityConfig.p1.zeroSign.ea2.1|actual=80|expected=80
+RUN: audit03.stabilityConfig.p1.nonzeroSignInactive1
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive1|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.nonzeroSignInactive1.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.nonzeroSignInactive1|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=142029.561529811|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.nonzeroSign.e1.1|actual=120|expected=120
+OK: audit03.stabilityConfig.p1.nonzeroSign.e2.1|actual=90|expected=90
+RUN: audit03.stabilityConfig.p1.zeroSign2
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.zeroSign2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.zeroSign2|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.zeroSign2.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.zeroSign2|status=OK|code=SP63|branch=SP63|Ncr1=137719.67194565|Ncr2=146846.496947404|e1=100|e2=-80|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.zeroSign.ea1.2|actual=100|expected=100
+OK: audit03.stabilityConfig.p1.zeroSign.ea2.2|actual=-80|expected=-80
+RUN: audit03.stabilityConfig.p1.nonzeroSignInactive2
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.nonzeroSignInactive2|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.nonzeroSignInactive2.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.nonzeroSignInactive2|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=142029.561529811|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.nonzeroSign.e1.2|actual=120|expected=120
+OK: audit03.stabilityConfig.p1.nonzeroSign.e2.2|actual=90|expected=90
+RUN: audit03.stabilityConfig.p1.mode.AutoWithL
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithL|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.mode.AutoWithL.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.mode.AutoWithL|status=OK|code=SP63|branch=SP63|Ncr1=40744.4073771616|Ncr2=18813.9476551301|e1=53.3333333333333|e2=43.3333333333333|L01=40000|L02=60000
+OK: audit03.stabilityConfig.p1.mode.L.ea1|actual=33.3333333333333|expected=33.3333333333333
+OK: audit03.stabilityConfig.p1.mode.L.ea2|actual=33.3333333333333|expected=33.3333333333333
+RUN: audit03.stabilityConfig.p1.mode.AutoWithMuL
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWithMuL|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.mode.AutoWithMuL.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.mode.AutoWithMuL|status=OK|code=SP63|branch=SP63|Ncr1=35893.6540715996|Ncr2=14871.1968133226|e1=86.6666666666667|e2=110|L01=40000|L02=60000
+OK: audit03.stabilityConfig.p1.mode.muL.ea1.AutoWithMuL|actual=66.6666666666667|expected=66.6666666666667
+OK: audit03.stabilityConfig.p1.mode.muL.ea2.AutoWithMuL|actual=100|expected=100
+RUN: audit03.stabilityConfig.p1.mode.AutoWith?L
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.mode.AutoWith?L|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.mode.AutoWith?L.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.mode.AutoWith?L|status=OK|code=SP63|branch=SP63|Ncr1=35893.6540715996|Ncr2=14871.1968133226|e1=86.6666666666667|e2=110|L01=40000|L02=60000
+OK: audit03.stabilityConfig.p1.mode.muL.ea1.AutoWith?L|actual=66.6666666666667|expected=66.6666666666667
+OK: audit03.stabilityConfig.p1.mode.muL.ea2.AutoWith?L|actual=100|expected=100
+RUN: audit03.stabilityConfig.p1.User1
+META: audit03.comments.audit03.stabilityConfig.p1.User1.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User1.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.User1.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User1.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User1.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User1.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User1.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.User1.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.User1|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.User1.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.User1|status=OK|code=SP63|branch=SP63|Ncr1=116833.283960864|Ncr2=142029.561529811|e1=170|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.user1.ea|actual=150|expected=150
+OK: audit03.stabilityConfig.p1.user1.other|actual=80|expected=80
+RUN: audit03.stabilityConfig.p1.User2
+META: audit03.comments.audit03.stabilityConfig.p1.User2.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.User2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.User2.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.User2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.User2|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.User2.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.User2|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=119100.948942069|e1=120|e2=160|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.user2.ea|actual=150|expected=150
+OK: audit03.stabilityConfig.p1.user2.other|actual=100|expected=100
+RUN: audit03.stabilityConfig.p1.onlyMoment
+META: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.onlyMoment.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.onlyMoment|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.onlyMoment.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.onlyMoment|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=169325.528896171|e1=120|e2=-1.26973666517106E-15|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.planes.inactive|actual=0|expected=0
+OK: audit03.stabilityConfig.p1.planes.active|actual=100|expected=100
+RUN: audit03.stabilityConfig.p1.bothPlanes
+META: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.bothPlanes.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.bothPlanes|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.bothPlanes.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.bothPlanes|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=146846.496947404|e1=120|e2=80|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.planes.both|actual=80|expected=80
+RUN: audit03.stabilityConfig.p1.PhiL2
+META: audit03.comments.audit03.stabilityConfig.p1.PhiL2.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.PhiL2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.PhiL2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.PhiL2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.PhiL2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.PhiL2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.PhiL2.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.PhiL2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.PhiL2|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.PhiL2.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.PhiL2|status=OK|code=SP63|branch=SP63|Ncr1=95236.4746160517|Ncr2=101085.610480272|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.phi.two1|actual=2|expected=2
+OK: audit03.stabilityConfig.p1.phi.two2|actual=2|expected=2
+OK: audit03.stabilityConfig.p1.phi.NcrEffect
+RUN: audit03.stabilityConfig.p1.sustained
+META: audit03.comments.audit03.stabilityConfig.p1.sustained.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.sustained.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.sustained.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.sustained.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.sustained.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.sustained.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.sustained.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.sustained.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.sustained|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.sustained.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.sustained|status=OK|code=SP63|branch=SP63|Ncr1=106934.746344492|Ncr2=114733.594163451|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.phi.sustained1|actual=1.5|expected=1.5
+OK: audit03.stabilityConfig.p1.phi.sustained2|actual=1.5|expected=1.5
+RUN: audit03.stabilityConfig.p1.Ks
+META: audit03.comments.audit03.stabilityConfig.p1.Ks.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Ks.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.Ks.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Ks.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Ks.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Ks.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.Ks.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.Ks.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.Ks|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.Ks.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.Ks|status=OK|code=SP63|branch=SP63|Ncr1=190472.949232103|Ncr2=202171.220960543|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.Ks.used|actual=1.4|expected=1.4
+OK: audit03.stabilityConfig.p1.Ks.DEffect
+RUN: audit03.stabilityConfig.p1.deltaMin
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMin.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMin.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMin.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMin.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMin.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMin.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMin.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMin.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.deltaMin|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.deltaMin.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.deltaMin|status=OK|code=SP63|branch=SP63|Ncr1=104807.787848412|Ncr2=104807.787848412|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.deltaMin.used1|actual=0.8|expected=0.8
+OK: audit03.stabilityConfig.p1.deltaMin.used2|actual=0.8|expected=0.8
+RUN: audit03.stabilityConfig.p1.deltaMax
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMax.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMax.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMax.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMax.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMax.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMax.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaMax.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaMax.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.deltaMax|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.deltaMax.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.deltaMax|status=OK|code=SP63|branch=SP63|Ncr1=158407.141949628|Ncr2=158407.141949627|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.deltaMax.used1|actual=0.2|expected=0.2
+OK: audit03.stabilityConfig.p1.deltaMax.used2|actual=0.2|expected=0.2
+RUN: audit03.stabilityConfig.p1.deltaDisabled
+META: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.deltaDisabled|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.deltaDisabled.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.deltaDisabled|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=142029.561529811|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.delta.disabled1|actual=0.4|expected=0.4
+RUN: audit03.stabilityConfig.p1.SP35.etaBase
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.etaBase|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.etaBase.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.etaBase|status=OK|code=SP35|branch=SP35-eta|Ncr1=123681.988142349|Ncr2=135364.134809015|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.code
+OK: audit03.stabilityConfig.p1.SP35.eta.branch
+RUN: audit03.stabilityConfig.p1.SP35.PhiP
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.PhiP|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.PhiP.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.PhiP|status=OK|code=SP35|branch=SP35-eta|Ncr1=154834.37925346|Ncr2=170410.574809015|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.PhiP.used|actual=2|expected=2
+OK: audit03.stabilityConfig.p1.SP35.PhiP.DEffect
+RUN: audit03.stabilityConfig.p1.SP35.limit
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limit.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.limit|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.limit.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.limit|status=OK|code=SP35|branch=SP35-eta|Ncr1=123681.988142349|Ncr2=135364.134809015|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.limit.reserve|actual=4.32886958498222|expected=4.32886958498222
+OK: audit03.stabilityConfig.p1.SP35.limit.NcrUnchanged|actual=123681.988142349|expected=123681.988142349
+OK: audit03.stabilityConfig.p1.SP35.limit.etaUnchanged|actual=1.08796468256236|expected=1.08796468256236
+RUN: audit03.stabilityConfig.p1.SP35.limitPass
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.limitPass|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.limitPass.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.limitPass|status=OK|code=SP35|branch=SP35-eta|Ncr1=123681.988142349|Ncr2=135364.134809015|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.limit.pass
+RUN: audit03.stabilityConfig.p1.SP35.limitFail
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.stability|status=rsCheckFailed|code=CHECK_FAILED|applies=True|calculated=True|comment=Проверка устойчивости не проходит в главной плоскости 1: запас = 0.6; коэффициент увеличения момента eta = 2; в главной плоскости 2: запас = 0.656671857440815; коэффициент увеличения момента eta = 1.84110925418269.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.stability.reasonPresent
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.stability.ownSubtree
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.limitFail|strength=|crack=|stability=Проверка устойчивости не проходит в главной плоскости 1: запас = 0.6; коэффициент увеличения момента eta = 2; в главной плоскости 2: запас = 0.656671857440815; коэффициент увеличения момента eta = 1.84110925418269.|batch=Устойчивость: Проверка устойчивости не проходит в главной плоскости 1: запас = 0.6; коэффициент увеличения момента eta = 2; в главной плоскости 2: запас = 0.656671857440815; коэффициент увеличения момента eta = 1.84110925418269.
+OK: audit03.stabilityConfig.p1.SP35.limitFail.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.limitFail|status=FAIL|code=SP35|branch=SP35-eta|Ncr1=123681.988142349|Ncr2=135364.134809015|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.limit.fail
+RUN: audit03.stabilityConfig.p1.SP35.tableBase
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.tableBase|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.tableBase.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.tableBase|status=OK|code=SP35|branch=SP35-table|Ncr1=0|Ncr2=0|e1=5|e2=5|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.table.branch
+OK: audit03.stabilityConfig.p1.SP35.table.capacity
+RUN: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.PhiP|status=OK|code=SP35|branch=SP35-table|Ncr1=0|Ncr2=0|e1=5|e2=5|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult1.Stability.SP35.PhiP|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult2.Stability.SP35.PhiP|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.phi.Stability.SP35.PhiP|actual=0.304698287680427|expected=0.304698287680427
+RUN: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP35.NOverNcrLimit|status=OK|code=SP35|branch=SP35-table|Ncr1=0|Ncr2=0|e1=5|e2=5|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult1.Stability.SP35.NOverNcrLimit|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult2.Stability.SP35.NOverNcrLimit|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.phi.Stability.SP35.NOverNcrLimit|actual=0.304698287680427|expected=0.304698287680427
+RUN: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.Ks|status=OK|code=SP35|branch=SP35-table|Ncr1=0|Ncr2=0|e1=5|e2=5|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult1.Stability.SP63.Ks|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult2.Stability.SP63.Ks|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.phi.Stability.SP63.Ks|actual=0.304698287680427|expected=0.304698287680427
+RUN: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMin|status=OK|code=SP35|branch=SP35-table|Ncr1=0|Ncr2=0|e1=5|e2=5|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult1.Stability.SP63.DeltaEMin|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult2.Stability.SP63.DeltaEMin|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.phi.Stability.SP63.DeltaEMin|actual=0.304698287680427|expected=0.304698287680427
+RUN: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.SP63.DeltaEMax|status=OK|code=SP35|branch=SP35-table|Ncr1=0|Ncr2=0|e1=5|e2=5|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult1.Stability.SP63.DeltaEMax|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult2.Stability.SP63.DeltaEMax|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.phi.Stability.SP63.DeltaEMax|actual=0.304698287680427|expected=0.304698287680427
+RUN: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode|strength=|crack=|stability=Проверка устойчивости по СП 35 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.tableInactive.Stability.PhiLMode|status=OK|code=SP35|branch=SP35-table|Ncr1=0|Ncr2=0|e1=5|e2=5|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult1.Stability.PhiLMode|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.Nult2.Stability.PhiLMode|actual=584064.747775437|expected=584064.747775437
+OK: audit03.stabilityConfig.p1.SP35.tableInactive.phi.Stability.PhiLMode|actual=0.304698287680427|expected=0.304698287680427
+RUN: audit03.stabilityConfig.p1.SP35.SP63Base
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.SP63Base|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.SP63Base.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.SP63Base|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=142029.561529811|e1=120|e2=90|L01=20000|L02=20000
+RUN: audit03.stabilityConfig.p1.SP35.SP35Inactive
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 63 выполнена.
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.SP35.SP35Inactive|strength=|crack=|stability=Проверка устойчивости по СП 63 выполнена.|batch=
+OK: audit03.stabilityConfig.p1.SP35.SP35Inactive.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.p1.SP35.SP35Inactive|status=OK|code=SP63|branch=SP63|Ncr1=130331.289801372|Ncr2=142029.561529811|e1=120|e2=90|L01=20000|L02=20000
+OK: audit03.stabilityConfig.p1.SP35.SP35Inactive.Ncr1|actual=130331.289801372|expected=130331.289801372
+OK: audit03.stabilityConfig.p1.SP35.SP35Inactive.Ncr2|actual=142029.561529811|expected=142029.561529811
+RUN: audit03.stabilityConfig.p1.inactive.base
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.base.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.base.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.base.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.base.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.base.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.base.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.base.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.base.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.base|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.base|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.base.state.converged
+OK: audit03.stabilityConfig.p1.inactive.base.state.physical
+OK: audit03.stabilityConfig.p1.inactive.base.state.noExtension
+OK: audit03.stabilityConfig.p1.inactive.base.state.residualN|actual=-5.45696821063757E-12|expected=0
+OK: audit03.stabilityConfig.p1.inactive.base.state.residualMx|actual=5.82076609134674E-11|expected=0
+OK: audit03.stabilityConfig.p1.inactive.base.state.residualMy|actual=-1.45519152283669E-11|expected=0
+RUN: audit03.stabilityConfig.p1.inactive.Stability.Code
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Code|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.Code|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.Code
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.Code
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.Code|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.Code|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.Code|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.ElementLength
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ElementLength|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.ElementLength|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.ElementLength
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.ElementLength
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.ElementLength|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.ElementLength|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.ElementLength|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.Mu1
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu1|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.Mu1|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.Mu1
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.Mu1
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.Mu1|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.Mu1|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.Mu1|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.Mu2
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.Mu2|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.Mu2|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.Mu2
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.Mu2
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.Mu2|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.Mu2|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.Mu2|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.SystemType
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SystemType|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.SystemType|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.SystemType
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.SystemType
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.SystemType|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.SystemType|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.SystemType|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign1|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.ZeroMomentEccentricitySign1
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.ZeroMomentEccentricitySign1
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.ZeroMomentEccentricitySign1|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.ZeroMomentEccentricitySign1|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.ZeroMomentEccentricitySign1|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.ZeroMomentEccentricitySign2|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.ZeroMomentEccentricitySign2
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.ZeroMomentEccentricitySign2
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.ZeroMomentEccentricitySign2|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.ZeroMomentEccentricitySign2|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.ZeroMomentEccentricitySign2|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityMode|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.AccidentalEccentricityMode
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.AccidentalEccentricityMode
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.AccidentalEccentricityMode|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.AccidentalEccentricityMode|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.AccidentalEccentricityMode|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser1|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.AccidentalEccentricityUser1
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.AccidentalEccentricityUser1
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.AccidentalEccentricityUser1|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.AccidentalEccentricityUser1|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.AccidentalEccentricityUser1|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityUser2|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.AccidentalEccentricityUser2
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.AccidentalEccentricityUser2
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.AccidentalEccentricityUser2|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.AccidentalEccentricityUser2|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.AccidentalEccentricityUser2|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.AccidentalEccentricityPlanes|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.AccidentalEccentricityPlanes
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.AccidentalEccentricityPlanes
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.AccidentalEccentricityPlanes|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.AccidentalEccentricityPlanes|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.AccidentalEccentricityPlanes|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.PhiLMode
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.PhiLMode|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.PhiLMode|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.PhiLMode
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.PhiLMode
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.PhiLMode|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.PhiLMode|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.PhiLMode|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.SP63.Ks|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.SP63.Ks
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.SP63.Ks
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.SP63.Ks|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.SP63.Ks|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.SP63.Ks|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMin|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.SP63.DeltaEMin
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.SP63.DeltaEMin
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.SP63.DeltaEMin|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.SP63.DeltaEMin|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.SP63.DeltaEMin|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.SP63.DeltaEMax|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.SP63.DeltaEMax
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.SP63.DeltaEMax
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.SP63.DeltaEMax|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.SP63.DeltaEMax|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.SP63.DeltaEMax|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.SP35.PhiP|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.SP35.PhiP
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.SP35.PhiP
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.SP35.PhiP|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.SP35.PhiP|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.SP35.PhiP|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.direct.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.direct.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.direct.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit|strength=|crack=|stability=|batch=
+STABILITY_CONFIG: audit03.stabilityConfig.p1.inactive.Stability.SP35.NOverNcrLimit|status=N/A|code=|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.p1.inactive.notRequested.Stability.SP35.NOverNcrLimit
+OK: audit03.stabilityConfig.p1.inactive.solveCount.Stability.SP35.NOverNcrLimit
+OK: audit03.stabilityConfig.p1.inactive.e0.Stability.SP35.NOverNcrLimit|actual=-3.66148209729168E-06|expected=-3.66148209729168E-06
+OK: audit03.stabilityConfig.p1.inactive.kx.Stability.SP35.NOverNcrLimit|actual=1.24081654239653E-08|expected=1.24081654239653E-08
+OK: audit03.stabilityConfig.p1.inactive.ky.Stability.SP35.NOverNcrLimit|actual=6.20408271198263E-09|expected=6.20408271198263E-09
+RUN: audit03.stabilityConfig.invalid.p1.Stability.Code.v0
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Несущая способность не запрошена.
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.stability|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.stability.reasonPresent
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.stability.commonInputLeaf
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.stability.commonInputSubtreeOnce
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v0|strength=|crack=|stability=Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.|batch=Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v0.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.invalid.p1.Stability.Code.v0|status=InputErr|code=|branch=Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v0.inputErr
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v0.noSolve
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v0.key
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v0.cell
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v0.action
+STABILITY_INPUT_MESSAGE: audit03.stabilityConfig.invalid.p1.Stability.Code.v0|Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+RUN: audit03.stabilityConfig.invalid.p1.Stability.Code.v1
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Несущая способность не запрошена.
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.stability|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.stability.reasonPresent
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.stability.commonInputLeaf
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.stability.commonInputSubtreeOnce
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v1|strength=|crack=|stability=Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.|batch=Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v1.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.invalid.p1.Stability.Code.v1|status=InputErr|code=|branch=Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v1.inputErr
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v1.noSolve
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v1.key
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v1.cell
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v1.action
+STABILITY_INPUT_MESSAGE: audit03.stabilityConfig.invalid.p1.Stability.Code.v1|Настройка Stability.Code (лист Config, ячейка B54): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+RUN: audit03.stabilityConfig.invalid.p1.Stability.Code.v2
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.capacity.russianReason
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.capacity.readable
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.capacity.noMachinePrefix
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.formation|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.current|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.width|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.longitudinal|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.stability|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=На листе Config в строке Stability.Code выберите SP63 или SP35.
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.stability.reasonPresent
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.stability.russianReason
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.stability.readable
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.stability.noMachinePrefix
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.stability.ownSubtree
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.formulaNoNumFail
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.strengthNoCrack
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.crackNoCapacity
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.overallComposition
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.batchOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.strengthOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.crackOutput
+OK: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2.stabilityOutput
+OUTPUT: audit03.comments.audit03.stabilityConfig.invalid.p1.Stability.Code.v2|strength=|crack=|stability=На листе Config в строке Stability.Code выберите SP63 или SP35.|batch=Устойчивость: На листе Config в строке Stability.Code выберите SP63 или SP35.
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v2.noStateSolve
+STABILITY_CONFIG: audit03.stabilityConfig.invalid.p1.Stability.Code.v2|status=InputErr|code=abc|branch=|Ncr1=0|Ncr2=0|e1=0|e2=0|L01=0|L02=0
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v2.inputErr
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v2.noSolve
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v2.key
+FAIL: audit03.stabilityConfig.invalid.p1.Stability.Code.v2.cell
+OK: audit03.stabilityConfig.invalid.p1.Stability.Code.v2.action
+STABILITY_INPUT_MESSAGE: audit03.stabilityConfig.invalid.p1.Stability.Code.v2|Устойчивость: На листе Config в строке Stability.Code выберите SP63 или SP35.
+RUN: audit03.stabilityConfig.invalid.p1.Stability.Code.v3
+FAIL: audit03.stabilityConfig.runtime.-2147217581. LC=0: Каталог расчетных профилей не загружен.
+TOTAL_AUDIT03_STABILITY_CONFIG: passed=1033; failed=2

@@ -1,0 +1,12 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_stability_config_final_v256.xlsm
+SOURCE_SHA256: 868F77527939E8BA859C2467EF14B17BFC095D89AF8D56BB8A48126EBC57DC45
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_cbc3f0e0c56c46f0a9dce97cef524874\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: batch.stability.mu.messageAction
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1853; failed=0
+TOTAL_AUDIT03_CAPACITY_NUMERIC_CONFIG: passed=2904; failed=0
+TOTAL_AUDIT03_STABILITY_CONFIG: passed=7944; failed=0
+TOTAL_AUDIT03_UNIVERSAL_PATH: passed=849; failed=0
+TOTAL_BATCH: passed=23818; failed=1; elapsedSec=575.2265625
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

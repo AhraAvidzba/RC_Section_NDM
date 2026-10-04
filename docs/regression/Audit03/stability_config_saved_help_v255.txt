@@ -1,0 +1,12 @@
+SAVED_HELP|Неизвестный вариант не трактуется как определимая схема|matches=1|cells=B1246
+SAVED_HELP|Допустимы строго 1 и -1|matches=2|cells=B1254,B1263
+SAVED_HELP|Отрицательное значение не преобразуется в положительное скрытно|matches=2|cells=B1281,B1291
+SAVED_HELP|Ноль отключает соответствующую программную границу delta|matches=3|cells=B1328,B1337,B1319
+SAVED_HELP|значение 2 - default новой книги|matches=2|cells=B1228,B1237
+SAVED_HELP|Это геометрическая длина элемента L|matches=1|cells=B1220
+SAVED_HELP|Ввод проверяется и при растягивающем сочетании|matches=1|cells=B1272
+SAVED_HELP|Допустимы OnlyMomentPlane и BothPlanes|matches=1|cells=B1300
+SAVED_HELP|даже если текущая табличная ветвь не использует|matches=1|cells=B1307
+SAVED_HELP|произвольного коэффициента|matches=2|cells=B1354,B1346
+SAVED_HELP|Все обязательные настройки устойчивости|matches=1|cells=B1212
+TOTAL_STABILITY_SAVED_HELP: failed=0; sourceUnchanged=True; SHA256=F65D2A4E01591202A0AC7CA96FC30D9BE25DEADE14C92B3C11059C2E06B2189E

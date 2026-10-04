@@ -1,0 +1,9 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_stability_config_negative_v252.xlsm
+SOURCE_SHA256: AF5FC3D28897569CA31AAC1376839A8ECBDB271CD0998D54CCC871E8E08FBC25
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8717358a942f489ba6df5a025a3d5b51\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.stabilityConfig.invalid.p1.Stability.Code.v2.cell
+FAIL: audit03.stabilityConfig.runtime.-2147217581. LC=0: Каталог расчетных профилей не загружен.
+TOTAL_AUDIT03_STABILITY_CONFIG: passed=1033; failed=2
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

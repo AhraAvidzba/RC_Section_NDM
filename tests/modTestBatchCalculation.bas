@@ -238,6 +238,10 @@ Public Function RunBatchCalculationTests() As String
     stats.Report = stats.Report & RunAudit03CapacityNumericConfigTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
+    AppendLine stats, "RUN: RunAudit03StabilityConfigTests"
+    stats.Report = stats.Report & RunAudit03StabilityConfigTests(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed
+    stats.Failed = stats.Failed + searchFailed
     AppendLine stats, "RUN: RunAudit03UniversalLoadPathTests"
     stats.Report = stats.Report & RunAudit03UniversalLoadPathTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed

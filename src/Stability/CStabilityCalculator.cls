@@ -12,11 +12,15 @@ Option Explicit
 ' ==========================================================================
 ' Расчет продольного изгиба и устойчивости
 ' ==========================================================================
-' Класс является изолированным фильтром усилий перед существующим НДМ.
+' Класс является изолированным фильтром усилий перед НДМ.
 ' Он не запускает CSectionSolver, не читает Excel и не меняет материалы:
 ' вызывающий код передает готовую CSectionModel, выбранный набор характеристик
 ' материалов профиля и усилия LC. На выходе возвращаются N/Mx/My с учетом
 ' продольного изгиба, а также расчетные величины для Summary.
+'
+' Допустимость настроек проверяет тот же класс до расчетных ветвей.
+' Уже прочитанный reader может добавить только адрес Config в ошибку;
+' самого чтения листов, выбора профиля и преобразования единиц здесь нет.
 '
 ' Геометрические характеристики класс берет через CSectionPropertiesCalculator.
 ' Поэтому расчет высоты по повернутой оси, локальных инерций и радиусов
@@ -149,6 +153,62 @@ Private mPlaneApplicable2 As Boolean ' True, если вторая плоско�
 Private mPlanePassed1 As Boolean ' True, если первая плоскость прошла свою проверку.
 Private mPlanePassed2 As Boolean ' True, если вторая плоскость прошла свою проверку.
 
+' Проверяет допустимость настроек до геометрии и раннего выхода без сжатия.
+' Значения уже нормализованы по единицам; reader нужен только для текущего
+' адреса Config. Нулевые delta-границы отключают соответствующее ограничение,
+' а не подменяются нормативным значением. Проверка не решает НДС.
+Public Sub ValidateSettings(ByVal codeText As String, ByVal elementLength As Double, _
+        ByVal mu1 As Double, ByVal mu2 As Double, ByVal systemType As String, _
+        ByVal zeroMomentSign1 As Double, ByVal zeroMomentSign2 As Double, _
+        ByVal phiLMode As String, ByVal accidentalMode As String, ByVal accidentalPlanes As String, _
+        ByVal accidentalUserValue1 As Double, ByVal accidentalUserValue2 As Double, _
+        ByVal sp63Ks As Double, ByVal sp63DeltaEMin As Double, ByVal sp63DeltaEMax As Double, _
+        ByVal sp35PhiP As Double, ByVal sp35NOverNcrLimit As Double, _
+        Optional ByVal settings As CSystemSettingsReader = Nothing)
+    Dim code As String, mode As String
+    code = NormalizeCode(codeText)
+    If code <> CODE_SP63 And code <> CODE_SP35 Then RaiseSettingInput "Stability.Code", _
+        "Неизвестная методика устойчивости.", "Выберите SP63 или SP35.", settings
+    If elementLength <= 0# Then RaiseSettingInput "Stability.ElementLength", _
+        "Длина элемента должна быть положительной.", "Введите число больше нуля в единицах INPUT Length.", settings
+    If mu1 <= 0# Then RaiseSettingInput "Stability.Mu1", _
+        "Коэффициент расчетной длины плоскости 1 должен быть положительным.", "Задайте число больше нуля.", settings
+    If mu2 <= 0# Then RaiseSettingInput "Stability.Mu2", _
+        "Коэффициент расчетной длины плоскости 2 должен быть положительным.", "Задайте число больше нуля.", settings
+    If StrComp(Trim$(systemType), SYSTEM_DETERMINATE, vbTextCompare) <> 0 And _
+            StrComp(Trim$(systemType), SYSTEM_INDETERMINATE, vbTextCompare) <> 0 Then _
+        RaiseSettingInput "Stability.SystemType", "Неизвестная расчетная схема.", _
+            "Выберите Determinate или Indeterminate.", settings
+    If zeroMomentSign1 <> 1# And zeroMomentSign1 <> -1# Then RaiseSettingInput "Stability.ZeroMomentEccentricitySign1", _
+        "Направление задается только знаком.", "Введите 1 или -1 для главной плоскости 1.", settings
+    If zeroMomentSign2 <> 1# And zeroMomentSign2 <> -1# Then RaiseSettingInput "Stability.ZeroMomentEccentricitySign2", _
+        "Направление задается только знаком.", "Введите 1 или -1 для главной плоскости 2.", settings
+    If StrComp(Trim$(phiLMode), PHIL_AUTO, vbTextCompare) <> 0 And _
+            StrComp(Trim$(phiLMode), PHIL_2, vbTextCompare) <> 0 Then _
+        RaiseSettingInput "Stability.PhiLMode", "Неизвестный режим учета длительности.", "Выберите Auto или PhiL2.", settings
+    mode = NormalizeAccidentalMode(accidentalMode, settings)
+    Call NormalizeAccidentalPlanes(accidentalPlanes, settings)
+    If accidentalUserValue1 < 0# Or (mode = ACC_USER And accidentalUserValue1 <= SMALL_VALUE) Then _
+        RaiseSettingInput "Stability.AccidentalEccentricityUser1", "Требуется модуль, а не знаковый эксцентриситет.", _
+            "Введите положительное значение для User; в автоматическом режиме допустим также 0.", settings
+    If accidentalUserValue2 < 0# Or (mode = ACC_USER And accidentalUserValue2 <= SMALL_VALUE) Then _
+        RaiseSettingInput "Stability.AccidentalEccentricityUser2", "Требуется модуль, а не знаковый эксцентриситет.", _
+            "Введите положительное значение для User; в автоматическом режиме допустим также 0.", settings
+    If sp63Ks <= 0# Then RaiseSettingInput "Stability.SP63.Ks", _
+        "Коэффициент вклада арматуры должен быть положительным.", "Введите число больше нуля.", settings
+    If sp63DeltaEMin < 0# Then RaiseSettingInput "Stability.SP63.DeltaEMin", _
+        "Нижнее ограничение не может быть отрицательным.", "Введите число не меньше нуля; 0 отключает нижнюю границу.", settings
+    If sp63DeltaEMax < 0# Then RaiseSettingInput "Stability.SP63.DeltaEMax", _
+        "Верхнее ограничение не может быть отрицательным.", "Введите число не меньше нуля; 0 отключает верхнюю границу.", settings
+    If sp63DeltaEMin > 0# And sp63DeltaEMax > 0# And sp63DeltaEMin > sp63DeltaEMax Then _
+        RaiseSettingInput "Stability.SP63.DeltaEMin", "Нижняя граница больше верхней.", _
+            "Исправьте DeltaEMin или DeltaEMax: при двух активных границах нижняя не должна превышать верхнюю.", settings
+    If sp35PhiP <= 0# Then RaiseSettingInput "Stability.SP35.PhiP", _
+        "Коэффициент должен быть положительным.", "Введите число больше нуля.", settings
+    If sp35NOverNcrLimit <= 0# Then RaiseSettingInput "Stability.SP35.NOverNcrLimit", _
+        "Предельное отношение N/Ncr должно быть положительным.", "Введите число больше нуля.", settings
+End Sub
+
 ' Выполняет расчет по выбранному нормативному блоку и возвращает расчетные
 ' усилия для дальнейшего НДМ. Если продольная сила не сжимает сечение, фильтр
 ' считается неприменимым и усилия передаются дальше без изменения.
@@ -168,6 +228,9 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
     On Error GoTo Failed
     Clear
     mCode = NormalizeCode(codeText)
+    ValidateSettings codeText, elementLength, mu1, mu2, systemType, zeroMomentSign1, zeroMomentSign2, _
+        phiLMode, accidentalMode, accidentalPlanes, accidentalUserValue1, accidentalUserValue2, _
+        sp63Ks, sp63DeltaEMin, sp63DeltaEMax, sp35PhiP, sp35NOverNcrLimit
 
     Dim totalLoad As CSectionLoadState
     Set totalLoad = New CSectionLoadState
@@ -192,10 +255,6 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
         mStopReason = "Для проверки устойчивости не передан поставщик материалов."
         GoTo Failed
     End If
-    If elementLength <= 0# Then RaiseInput "На листе Config в строке Stability.ElementLength введите длину элемента больше нуля в единицах INPUT Length."
-    If mu1 <= 0# Or mu2 <= 0# Then RaiseInput "На листе Config в строках Stability.Mu1 и Stability.Mu2 задайте положительные коэффициенты расчетной длины для обеих плоскостей."
-    If mCode <> CODE_SP63 And mCode <> CODE_SP35 Then RaiseInput "На листе Config в строке Stability.Code выберите SP63 или SP35."
-
     Dim nCompression As Double
     nCompression = totalLoad.CompressionMagnitude(SMALL_FORCE)
     If nCompression <= SMALL_FORCE Then
@@ -489,11 +548,6 @@ Private Sub CalculateSP63(ByVal section As CSectionModel, ByVal materialProvider
     eb = materialProvider.ConcreteElasticModulusFromValueSet(valueSet)
     es = materialProvider.SteelElasticModulusFromValueSet(valueSet)
     If eb <= 0# Or es <= 0# Then RaiseInput "Для расчета устойчивости СП 63 нужны положительные Eb и Es."
-    If ksValue <= 0# Then RaiseInput "На листе Config в строке Stability.SP63.Ks введите коэффициент больше нуля."
-    If deltaEMin < 0# Or deltaEMax < 0# Then RaiseInput "На листе Config в строках Stability.SP63.DeltaEMin и Stability.SP63.DeltaEMax введите неотрицательные границы относительного эксцентриситета."
-    If deltaEMin > 0# And deltaEMax > 0# And deltaEMin > deltaEMax Then _
-        RaiseInput "На листе Config исправьте Stability.SP63.DeltaEMin или Stability.SP63.DeltaEMax: нижняя граница не может быть больше верхней."
-
     CalculateSP63Plane section, nCompression, sustainedCompression, eb, es, ksValue, systemType, phiLMode, deltaEMin, deltaEMax, plane1, "1"
     CalculateSP63Plane section, nCompression, sustainedCompression, eb, es, ksValue, systemType, phiLMode, deltaEMin, deltaEMax, plane2, "2"
     mBranch = CODE_SP63
@@ -557,9 +611,6 @@ Private Sub CalculateSP35(ByVal section As CSectionModel, ByVal materialProvider
     rb = materialProvider.ConcreteCompressionResistanceFromValueSet(valueSet)
     rsc = materialProvider.SteelCompressionResistanceFromValueSet(valueSet)
     If eb <= 0# Or es <= 0# Or rb <= 0# Or rsc <= 0# Then RaiseInput "Для расчета устойчивости СП 35 нужны положительные Eb, Es, Rb и Rsc."
-    If phiP <= 0# Then RaiseInput "На листе Config в строке Stability.SP35.PhiP введите коэффициент больше нуля."
-    If nOverNcrLimit <= 0# Then RaiseInput "На листе Config в строке Stability.SP35.NOverNcrLimit введите предельное отношение N/Ncr больше нуля."
-
     CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane1, "1"
     CalculateSP35Plane concreteArea, totalSteelArea, nCompression, sustainedCompression, eb, es, rb, rsc, systemType, phiLMode, phiP, nOverNcrLimit, table721, plane2, "2"
     mBranch = CombinedSP35Branch(plane1, plane2)
@@ -1090,7 +1141,8 @@ End Function
 ' Нормализует режим случайного эксцентриситета. В Excel показывается
 ' AutoWithμL, но код также принимает AutoWithMuL, чтобы не зависеть от способа
 ' ввода греческой буквы mu.
-Private Function NormalizeAccidentalMode(ByVal value As String) As String
+Private Function NormalizeAccidentalMode(ByVal value As String, _
+        Optional ByVal settings As CSystemSettingsReader = Nothing) As String
     Dim normalized As String
     normalized = UCase$(Trim$(value))
     normalized = Replace$(normalized, ChrW$(&H3BC), "MU")
@@ -1104,19 +1156,22 @@ Private Function NormalizeAccidentalMode(ByVal value As String) As String
         Case "AUTOWITHL"
             NormalizeAccidentalMode = ACC_AUTO_L
         Case Else
-            RaiseInput "На листе Config в строке Stability.AccidentalEccentricityMode выберите AutoWithL, AutoWithMuL или User."
+            RaiseSettingInput "Stability.AccidentalEccentricityMode", "Неизвестный режим случайного эксцентриситета.", _
+                "Выберите AutoWithL, AutoWithMuL или User.", settings
     End Select
 End Function
 
 ' Нормализует настройку выбора плоскостей для случайного эксцентриситета.
-Private Function NormalizeAccidentalPlanes(ByVal value As String) As String
+Private Function NormalizeAccidentalPlanes(ByVal value As String, _
+        Optional ByVal settings As CSystemSettingsReader = Nothing) As String
     Select Case UCase$(Trim$(value))
         Case UCase$(ACC_PLANES_BOTH)
             NormalizeAccidentalPlanes = ACC_PLANES_BOTH
         Case UCase$(ACC_PLANES_ONLY_MOMENT)
             NormalizeAccidentalPlanes = ACC_PLANES_ONLY_MOMENT
         Case Else
-            RaiseInput "На листе Config в строке Stability.AccidentalEccentricityPlanes выберите OnlyMomentPlane или BothPlanes."
+            RaiseSettingInput "Stability.AccidentalEccentricityPlanes", "Неизвестный выбор главных плоскостей.", _
+                "Выберите OnlyMomentPlane или BothPlanes.", settings
     End Select
 End Function
 
@@ -1132,7 +1187,21 @@ Private Function NormalizeCode(ByVal value As String) As String
     End Select
 End Function
 
-' Фиксирует ошибку исходных данных и прерывает расчет класса.
+' Добавляет к причине ключ и текущее место Config. При автономном вызове
+' без reader сохраняет ключ и действие, не придумывая адрес ячейки.
+Private Sub RaiseSettingInput(ByVal key As String, ByVal reason As String, _
+        ByVal correction As String, ByVal settings As CSystemSettingsReader)
+    Dim message As String
+    If settings Is Nothing Then
+        message = "Настройка " & key & ": " & reason & " " & correction
+    Else
+        message = settings.InputErrorMessage(key, reason, correction)
+    End If
+    RaiseInput message
+End Sub
+
+' Сохраняет конкретную причину InputErr для автономного вызова Calculator.
+' Программные исключения остаются отдельными от этого контролируемого номера.
 Private Sub RaiseInput(ByVal message As String)
     mInputValid = False
     mStopReason = message
@@ -1203,7 +1272,8 @@ Public Property Get ResultMeta() As CResultMeta
         meta.SetResult rsInternalError, rcInternalError, rkStability, mStopReason, _
             vbNullString, True, mCalculationStarted
     ElseIf Not mInputValid Then
-        meta.SetResult rsInvalidInput, rcInvalidInput, rkStability, mStopReason
+        meta.SetResult rsInvalidInput, rcInvalidInput, rkStability, mStopReason, _
+            vbNullString, True, mCalculationStarted
     ElseIf Not mApplicable Then
         meta.SetNotApplicable rkStability, "Устойчивость не проверяется: в сочетании нет сжатия."
     ElseIf mCheckPassed Then

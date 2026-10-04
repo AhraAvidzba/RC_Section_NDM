@@ -2,10 +2,10 @@ Attribute VB_Name = "modTestConfiguration"
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: поведение численных селекторов через настоящий Config
+' ДЛЯ ТЕСТОВ: поведение расчетных настроек через настоящий Config
 ' ==========================================================================
 ' Модуль меняет ячейки изолированной книги, читает их штатным reader-ом и
-' проверяет реальные результаты Capacity/Formation, а не только getters.
+' проверяет реальные результаты Capacity/Formation/Stability, а не только getters.
 ' Отдельный входной набор проверяет структуру именованных таблиц Config,
 ' диагностические адреса и ошибки ключей без запуска расчетного ядра.
 ' Нагрузки и геометрия заданы во внутренних Н, Н*мм и мм; параметры материалов,
@@ -1418,6 +1418,490 @@ Private Function CapacityNumericLastLambda(ByVal diagnostic As String) As Double
             If at > 0 Then CapacityNumericLastLambda = Val(Mid$(CStr(line), at + 9))
         End If
     Next line
+End Function
+
+' ==================== ДЛЯ ТЕСТОВ: НАСТРОЙКИ УСТОЙЧИВОСТИ ====================
+
+' Меняет все 17 полей устойчивости через настоящий Config. Проверяет обе
+' главные плоскости, активные/неактивные ветви, длины в разных единицах,
+' ошибки и восстановление. Именованная таблица испытывается также после переноса.
+Public Function RunAudit03StabilityConfigTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TConfigTestStats, originalRange As Object, table As Object, movedRange As Object
+    Dim unitRange As Object, profileRange As Object, savedName As String, position As Long
+    Dim savedSystem As Variant, savedMoved As Variant, savedUnits As Variant, savedProfiles As Variant
+    Dim configured As Variant, configuredUnits As Variant, configuredProfiles As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim section As CSectionModel
+    On Error GoTo FailedRun
+    Set originalRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    savedName = ThisWorkbook.Names.Item("rngSystemSettings").RefersTo
+    Set movedRange = originalRange.Worksheet.Range("CH800").Resize(originalRange.Rows.Count, originalRange.Columns.Count)
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = originalRange.Formula: savedMoved = movedRange.Formula
+    savedUnits = unitRange.Formula: savedProfiles = profileRange.Formula
+    ConfigureSearchFixture originalRange, unitRange, profileRange
+    ConfigureStabilityFixture originalRange, profileRange
+    configured = originalRange.Formula: configuredUnits = unitRange.Formula
+    configuredProfiles = profileRange.Formula
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set section = SearchFixtureSection()
+    For position = 1 To 2
+        If position = 1 Then Set table = originalRange Else Set table = movedRange
+        table.Formula = configured
+        ThisWorkbook.Names.Item("rngSystemSettings").RefersTo = "=" & table.Address(True, True, 1, True)
+        CheckStabilityConfigEffects stats, table, configured, position, section, provider, units
+        CheckStabilityConfigSP35 stats, table, configured, position, section, provider, units
+        CheckStabilityConfigIsolation stats, table, configured, position, section, provider, units
+        CheckStabilityConfigInput stats, table, configured, position, section, provider, units
+        CheckStabilityConfigUnits stats, table, configured, unitRange, configuredUnits, position, section, provider, units
+        profileRange.Formula = configuredProfiles
+    Next position
+    CheckStabilityStandaloneInput stats, section, provider
+    GoTo Restore
+FailedRun:
+    Check stats, "audit03.stabilityConfig.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    ThisWorkbook.Names.Item("rngSystemSettings").RefersTo = savedName
+    If Not originalRange Is Nothing Then originalRange.Formula = savedSystem
+    If Not movedRange Is Nothing Then movedRange.Formula = savedMoved
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    If Not profileRange Is Nothing Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+    LogLine stats, "TOTAL_AUDIT03_STABILITY_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03StabilityConfigTests = stats.Report
+End Function
+
+' Фиксирует исходные значения до серии: длинный круг с обеими моментными
+' компонентами дает наблюдаемые Ncr/eta; случайные эксцентриситеты независимы
+' от длины. Второй профиль проверяет настоящий DirectState без устойчивости.
+Private Sub ConfigureStabilityFixture(ByVal table As Object, ByVal profiles As Object)
+    Dim keys As Variant, values As Variant, i As Long
+    keys = StabilityConfigKeys()
+    values = Array("SP63", 20000#, 1#, 1#, "Determinate", 1#, 1#, "User", 100#, 80#, _
+        "BothPlanes", "Auto", 0.7, 0.15, 1.5, 1#, 0.7)
+    For i = LBound(keys) To UBound(keys)
+        SetValue table, CStr(keys(i)), values(i)
+    Next i
+    SetProfileValue profiles, "Calculation.Stability.Enabled", "Yes", "PR1"
+    SetProfileValue profiles, "MaterialModel.Stability.ValueSet", "ULS(I)", "PR1"
+    SetProfileValue profiles, "Calculation.Strength.DirectState", "No", "PR1"
+    SetProfileValue profiles, "Calculation.Strength.Capacity", "No", "PR1"
+    SetProfileValue profiles, "Calculation.Crack.Width", "No", "PR1"
+    SetProfileValue profiles, "Calculation.Strength.DirectState", "Yes", "PR2"
+    SetProfileValue profiles, "Calculation.Crack.Width", "No", "PR2"
+End Sub
+
+' Возвращает именно фактические поля Config в устойчивом порядке для эффектов,
+' input-контрактов и реестра; заголовки таблицы и computed-поля сюда не входят.
+Private Function StabilityConfigKeys() As Variant
+    StabilityConfigKeys = Array("Stability.Code", "Stability.ElementLength", "Stability.Mu1", "Stability.Mu2", _
+        "Stability.SystemType", "Stability.ZeroMomentEccentricitySign1", "Stability.ZeroMomentEccentricitySign2", _
+        "Stability.AccidentalEccentricityMode", "Stability.AccidentalEccentricityUser1", "Stability.AccidentalEccentricityUser2", _
+        "Stability.AccidentalEccentricityPlanes", "Stability.PhiLMode", "Stability.SP63.Ks", _
+        "Stability.SP63.DeltaEMin", "Stability.SP63.DeltaEMax", "Stability.SP35.PhiP", "Stability.SP35.NOverNcrLimit")
+End Function
+
+' Проверяет наблюдаемые величины обеих плоскостей. Обратный квадрат длины
+' испытывается при неизменной жесткости, знаки - при нулевых моментах,
+' границы delta и эксцентриситеты - отдельно от смены нормативной ветви.
+Private Sub CheckStabilityConfigEffects(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)
+    Dim baseline As CStabilityResult, changed As CStabilityResult
+    Dim prefix As String, batch As CBatchSectionCalculator
+    prefix = "audit03.stabilityConfig.p" & CStr(position)
+    table.Formula = configured
+    Set batch = StabilityConfigRun(stats, prefix & ".base", section, provider, units)
+    Set baseline = batch.ResultAt(1).StabilityResult
+    Check stats, prefix & ".base.branch", baseline.Branch = "SP63"
+    Check stats, prefix & ".base.positiveNcr", baseline.Ncr1 > 0# And baseline.Ncr2 > 0#
+    CheckClose stats, prefix & ".base.l01", baseline.EffectiveLength1, 20000#, 0.0000001
+    CheckClose stats, prefix & ".base.e1", baseline.Eccentricity1, 120#, 0.0000001
+    CheckClose stats, prefix & ".base.e2", baseline.Eccentricity2, 90#, 0.0000001
+
+    Dim key As Variant
+    For Each key In Array("Stability.ElementLength", "Stability.Mu1", "Stability.Mu2")
+        table.Formula = configured
+        If CStr(key) = "Stability.ElementLength" Then SetValue table, CStr(key), 10000# Else SetValue table, CStr(key), 2#
+        Set batch = StabilityConfigRun(stats, prefix & "." & CStr(key), section, provider, units)
+        Set changed = batch.ResultAt(1).StabilityResult
+        If CStr(key) = "Stability.ElementLength" Then
+            CheckClose stats, prefix & ".L.l01", changed.EffectiveLength1, 10000#, 0.0000001
+            CheckClose stats, prefix & ".L.Ncr1", changed.Ncr1, baseline.Ncr1 * 4#, 0.00001
+            CheckClose stats, prefix & ".L.Ncr2", changed.Ncr2, baseline.Ncr2 * 4#, 0.00001
+        ElseIf CStr(key) = "Stability.Mu1" Then
+            CheckClose stats, prefix & ".mu1.l01", changed.EffectiveLength1, 40000#, 0.0000001
+            CheckClose stats, prefix & ".mu1.Ncr1", changed.Ncr1, baseline.Ncr1 / 4#, 0.00001
+            CheckClose stats, prefix & ".mu1.Ncr2.unchanged", changed.Ncr2, baseline.Ncr2, 0.00001
+        Else
+            CheckClose stats, prefix & ".mu2.l02", changed.EffectiveLength2, 40000#, 0.0000001
+            CheckClose stats, prefix & ".mu2.Ncr2", changed.Ncr2, baseline.Ncr2 / 4#, 0.00001
+            CheckClose stats, prefix & ".mu2.Ncr1.unchanged", changed.Ncr1, baseline.Ncr1, 0.00001
+        End If
+    Next key
+    table.Formula = configured: SetValue table, "Stability.SystemType", "Indeterminate"
+    Set batch = StabilityConfigRun(stats, prefix & ".SystemType", section, provider, units)
+    Set changed = batch.ResultAt(1).StabilityResult
+    CheckClose stats, prefix & ".system.e1", changed.Eccentricity1, 100#, 0.0000001
+    CheckClose stats, prefix & ".system.e2", changed.Eccentricity2, 80#, 0.0000001
+    Check stats, prefix & ".system.stiffnessEffect", changed.StiffnessD1 > baseline.StiffnessD1
+
+    Dim axis As Long
+    For axis = 1 To 2
+        table.Formula = configured: SetValue table, "Stability.ZeroMomentEccentricitySign" & CStr(axis), -1#
+        Set batch = StabilityConfigRun(stats, prefix & ".zeroSign" & CStr(axis), section, provider, units, -10000#, 0#, 0#)
+        Set changed = batch.ResultAt(1).StabilityResult
+        CheckClose stats, prefix & ".zeroSign.ea1." & CStr(axis), changed.AccidentalEcc1, IIf(axis = 1, -100#, 100#), 0.0000001
+        CheckClose stats, prefix & ".zeroSign.ea2." & CStr(axis), changed.AccidentalEcc2, IIf(axis = 2, -80#, 80#), 0.0000001
+        Set batch = StabilityConfigRun(stats, prefix & ".nonzeroSignInactive" & CStr(axis), section, provider, units)
+        CheckClose stats, prefix & ".nonzeroSign.e1." & CStr(axis), batch.ResultAt(1).StabilityResult.Eccentricity1, baseline.Eccentricity1, 0.0000001
+        CheckClose stats, prefix & ".nonzeroSign.e2." & CStr(axis), batch.ResultAt(1).StabilityResult.Eccentricity2, baseline.Eccentricity2, 0.0000001
+    Next axis
+    Dim mode As Variant
+    For Each mode In Array("AutoWithL", "AutoWithMuL", "AutoWith" & ChrW$(&H3BC) & "L")
+        table.Formula = configured
+        SetValue table, "Stability.Mu1", 2#: SetValue table, "Stability.Mu2", 3#
+        SetValue table, "Stability.AccidentalEccentricityMode", CStr(mode)
+        Set batch = StabilityConfigRun(stats, prefix & ".mode." & CStr(mode), section, provider, units)
+        Set changed = batch.ResultAt(1).StabilityResult
+        If CStr(mode) = "AutoWithL" Then
+            CheckClose stats, prefix & ".mode.L.ea1", changed.AccidentalEcc1, 20000# / 600#, 0.0000001
+            CheckClose stats, prefix & ".mode.L.ea2", changed.AccidentalEcc2, 20000# / 600#, 0.0000001
+        Else
+            CheckClose stats, prefix & ".mode.muL.ea1." & CStr(mode), changed.AccidentalEcc1, 40000# / 600#, 0.0000001
+            CheckClose stats, prefix & ".mode.muL.ea2." & CStr(mode), changed.AccidentalEcc2, 60000# / 600#, 0.0000001
+        End If
+    Next mode
+    For axis = 1 To 2
+        table.Formula = configured: SetValue table, "Stability.AccidentalEccentricityUser" & CStr(axis), 150#
+        Set batch = StabilityConfigRun(stats, prefix & ".User" & CStr(axis), section, provider, units)
+        Set changed = batch.ResultAt(1).StabilityResult
+        If axis = 1 Then
+            CheckClose stats, prefix & ".user1.ea", changed.AccidentalEcc1, 150#, 0.0000001
+            CheckClose stats, prefix & ".user1.other", changed.AccidentalEcc2, 80#, 0.0000001
+        Else
+            CheckClose stats, prefix & ".user2.ea", changed.AccidentalEcc2, 150#, 0.0000001
+            CheckClose stats, prefix & ".user2.other", changed.AccidentalEcc1, 100#, 0.0000001
+        End If
+    Next axis
+    table.Formula = configured: SetValue table, "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
+    Set batch = StabilityConfigRun(stats, prefix & ".onlyMoment", section, provider, units, -10000#, 200000#, 0#)
+    Set changed = batch.ResultAt(1).StabilityResult
+    CheckClose stats, prefix & ".planes.inactive", changed.AccidentalEcc2, 0#, 0.0000001
+    CheckClose stats, prefix & ".planes.active", changed.AccidentalEcc1, 100#, 0.0000001
+    SetValue table, "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    Set batch = StabilityConfigRun(stats, prefix & ".bothPlanes", section, provider, units, -10000#, 200000#, 0#)
+    CheckClose stats, prefix & ".planes.both", batch.ResultAt(1).StabilityResult.AccidentalEcc2, 80#, 0.0000001
+
+    table.Formula = configured: SetValue table, "Stability.PhiLMode", "PhiL2"
+    Set batch = StabilityConfigRun(stats, prefix & ".PhiL2", section, provider, units)
+    Set changed = batch.ResultAt(1).StabilityResult
+    CheckClose stats, prefix & ".phi.two1", changed.PhiL1, 2#, 0.0000001
+    CheckClose stats, prefix & ".phi.two2", changed.PhiL2, 2#, 0.0000001
+    Check stats, prefix & ".phi.NcrEffect", changed.Ncr1 < baseline.Ncr1 And changed.Ncr2 < baseline.Ncr2
+    table.Formula = configured
+    Set batch = StabilityConfigRun(stats, prefix & ".sustained", section, provider, units, -10000#, 200000#, 100000#, -5000#, 100000#, 50000#)
+    CheckClose stats, prefix & ".phi.sustained1", batch.ResultAt(1).StabilityResult.PhiL1, 1.5, 0.0000001
+    CheckClose stats, prefix & ".phi.sustained2", batch.ResultAt(1).StabilityResult.PhiL2, 1.5, 0.0000001
+    table.Formula = configured: SetValue table, "Stability.SP63.Ks", 1.4
+    Set batch = StabilityConfigRun(stats, prefix & ".Ks", section, provider, units)
+    Set changed = batch.ResultAt(1).StabilityResult
+    CheckClose stats, prefix & ".Ks.used", changed.Ks1, 1.4, 0.0000001
+    Check stats, prefix & ".Ks.DEffect", changed.StiffnessD1 > baseline.StiffnessD1 And changed.StiffnessD2 > baseline.StiffnessD2
+    table.Formula = configured: SetValue table, "Stability.SP63.DeltaEMin", 0.8
+    Set batch = StabilityConfigRun(stats, prefix & ".deltaMin", section, provider, units)
+    CheckClose stats, prefix & ".deltaMin.used1", batch.ResultAt(1).StabilityResult.Delta1, 0.8, 0.0000001
+    CheckClose stats, prefix & ".deltaMin.used2", batch.ResultAt(1).StabilityResult.Delta2, 0.8, 0.0000001
+    table.Formula = configured: SetValue table, "Stability.SP63.DeltaEMax", 0.2
+    Set batch = StabilityConfigRun(stats, prefix & ".deltaMax", section, provider, units)
+    CheckClose stats, prefix & ".deltaMax.used1", batch.ResultAt(1).StabilityResult.Delta1, 0.2, 0.0000001
+    CheckClose stats, prefix & ".deltaMax.used2", batch.ResultAt(1).StabilityResult.Delta2, 0.2, 0.0000001
+    table.Formula = configured: SetValue table, "Stability.SP63.DeltaEMin", 0#: SetValue table, "Stability.SP63.DeltaEMax", 0#
+    Set batch = StabilityConfigRun(stats, prefix & ".deltaDisabled", section, provider, units)
+    CheckClose stats, prefix & ".delta.disabled1", batch.ResultAt(1).StabilityResult.Delta1, 0.4, 0.0000001
+    table.Formula = configured
+End Sub
+
+' Переключает на реальные eta/table ветви СП 35. PhiP меняет жесткость только
+' eta-ветви, NOverNcrLimit - только проверочный запас. В табличной ветви
+' допустимые параметры eta и СП 63 не должны подменять сохраненный результат.
+Private Sub CheckStabilityConfigSP35(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)
+    Dim batch As CBatchSectionCalculator, baseline As CStabilityResult, changed As CStabilityResult
+    Dim prefix As String, nValue As Double, tableConfig As Variant, key As Variant, mode As Variant
+    prefix = "audit03.stabilityConfig.p" & CStr(position) & ".SP35"
+    table.Formula = configured: SetValue table, "Stability.Code", "SP35"
+    Set batch = StabilityConfigRun(stats, prefix & ".etaBase", section, provider, units)
+    Set baseline = batch.ResultAt(1).StabilityResult
+    Check stats, prefix & ".code", baseline.Code = "SP35"
+    Check stats, prefix & ".eta.branch", baseline.Branch = "SP35-eta"
+    For Each mode In Array("AutoWithL", "AutoWithMuL")
+        SetValue table, "Stability.AccidentalEccentricityMode", CStr(mode)
+        SetValue table, "Stability.Mu1", 2#: SetValue table, "Stability.Mu2", 3#
+        Set batch = StabilityConfigRun(stats, prefix & ".mode." & CStr(mode), section, provider, units)
+        Set changed = batch.ResultAt(1).StabilityResult
+        If CStr(mode) = "AutoWithL" Then
+            CheckClose stats, prefix & ".mode.L.ea1", changed.AccidentalEcc1, 50#, 0.0000001
+            CheckClose stats, prefix & ".mode.L.ea2", changed.AccidentalEcc2, 50#, 0.0000001
+        Else
+            CheckClose stats, prefix & ".mode.muL.ea1", changed.AccidentalEcc1, 100#, 0.0000001
+            CheckClose stats, prefix & ".mode.muL.ea2", changed.AccidentalEcc2, 150#, 0.0000001
+        End If
+    Next mode
+    table.Formula = configured: SetValue table, "Stability.Code", "SP35"
+    SetValue table, "Stability.PhiLMode", "PhiL2"
+    Set batch = StabilityConfigRun(stats, prefix & ".PhiL2", section, provider, units)
+    CheckClose stats, prefix & ".phi.used", batch.ResultAt(1).StabilityResult.PhiL1, 2#, 0.0000001
+    Check stats, prefix & ".phi.NcrEffect", batch.ResultAt(1).StabilityResult.Ncr1 < baseline.Ncr1
+    SetValue table, "Stability.PhiLMode", "Auto"
+    SetValue table, "Stability.SP35.PhiP", 2#
+    Set batch = StabilityConfigRun(stats, prefix & ".PhiP", section, provider, units)
+    Set changed = batch.ResultAt(1).StabilityResult
+    CheckClose stats, prefix & ".PhiP.used", changed.PhiP1, 2#, 0.0000001
+    Check stats, prefix & ".PhiP.DEffect", changed.StiffnessD1 > baseline.StiffnessD1 And changed.StiffnessD2 > baseline.StiffnessD2
+    SetValue table, "Stability.SP35.PhiP", 1#: SetValue table, "Stability.SP35.NOverNcrLimit", 0.35
+    Set batch = StabilityConfigRun(stats, prefix & ".limit", section, provider, units)
+    Set changed = batch.ResultAt(1).StabilityResult
+    CheckClose stats, prefix & ".limit.reserve", changed.Reserve1, baseline.Reserve1 / 2#, 0.0000001
+    CheckClose stats, prefix & ".limit.NcrUnchanged", changed.Ncr1, baseline.Ncr1, 0.00001
+    CheckClose stats, prefix & ".limit.etaUnchanged", changed.Eta1, baseline.Eta1, 0.0000001
+    nValue = baseline.CriticalForce * 0.5
+    SetValue table, "Stability.SP35.NOverNcrLimit", 0.7
+    Set batch = StabilityConfigRun(stats, prefix & ".limitPass", section, provider, units, -nValue, nValue * 20#, nValue * 10#)
+    Check stats, prefix & ".limit.pass", batch.ResultAt(1).StabilityResult.Status = "OK"
+    SetValue table, "Stability.SP35.NOverNcrLimit", 0.3
+    Set batch = StabilityConfigRun(stats, prefix & ".limitFail", section, provider, units, -nValue, nValue * 20#, nValue * 10#)
+    Check stats, prefix & ".limit.fail", batch.ResultAt(1).StabilityResult.Status = "FAIL"
+
+    table.Formula = configured: SetValue table, "Stability.Code", "SP35"
+    SetValue table, "Stability.AccidentalEccentricityUser1", 5#: SetValue table, "Stability.AccidentalEccentricityUser2", 5#
+    tableConfig = table.Formula
+    Set batch = StabilityConfigRun(stats, prefix & ".tableBase", section, provider, units, -10000#, 0#, 0#)
+    Set baseline = batch.ResultAt(1).StabilityResult
+    Check stats, prefix & ".table.branch", baseline.Branch = "SP35-table"
+    Check stats, prefix & ".table.capacity", baseline.Nultimate1 > 0# And baseline.Nultimate2 > 0#
+    SetValue table, "Stability.ElementLength", 3000#
+    Set batch = StabilityConfigRun(stats, prefix & ".tableShort", section, provider, units, -10000#, 0#, 0#)
+    Set changed = batch.ResultAt(1).StabilityResult
+    SetValue table, "Stability.ElementLength", 6000#
+    Set batch = StabilityConfigRun(stats, prefix & ".tableLong", section, provider, units, -10000#, 0#, 0#)
+    Check stats, prefix & ".table.lengthEffect", changed.Nultimate1 > batch.ResultAt(1).StabilityResult.Nultimate1
+    For Each key In Array("Stability.SP35.PhiP", "Stability.SP35.NOverNcrLimit", "Stability.SP63.Ks", _
+            "Stability.SP63.DeltaEMin", "Stability.SP63.DeltaEMax", "Stability.PhiLMode")
+        table.Formula = tableConfig
+        Select Case CStr(key)
+            Case "Stability.PhiLMode": SetValue table, CStr(key), "PhiL2"
+            Case "Stability.SP63.DeltaEMin": SetValue table, CStr(key), 0.3
+            Case Else: SetValue table, CStr(key), 1.2
+        End Select
+        Set batch = StabilityConfigRun(stats, prefix & ".tableInactive." & CStr(key), section, provider, units, -10000#, 0#, 0#)
+        Set changed = batch.ResultAt(1).StabilityResult
+        CheckClose stats, prefix & ".tableInactive.Nult1." & CStr(key), changed.Nultimate1, baseline.Nultimate1, 0.0000001
+        CheckClose stats, prefix & ".tableInactive.Nult2." & CStr(key), changed.Nultimate2, baseline.Nultimate2, 0.0000001
+        CheckClose stats, prefix & ".tableInactive.phi." & CStr(key), changed.PhiValue1, baseline.PhiValue1, 0.0000001
+    Next key
+    table.Formula = configured
+    Set batch = StabilityConfigRun(stats, prefix & ".SP63Base", section, provider, units)
+    Set baseline = batch.ResultAt(1).StabilityResult
+    SetValue table, "Stability.SP35.PhiP", 2#: SetValue table, "Stability.SP35.NOverNcrLimit", 0.3
+    Set batch = StabilityConfigRun(stats, prefix & ".SP35Inactive", section, provider, units)
+    CheckClose stats, prefix & ".SP35Inactive.Ncr1", batch.ResultAt(1).StabilityResult.Ncr1, baseline.Ncr1, 0.0000001
+    CheckClose stats, prefix & ".SP35Inactive.Ncr2", batch.ResultAt(1).StabilityResult.Ncr2, baseline.Ncr2, 0.0000001
+    table.Formula = configured
+End Sub
+
+' Допустимые настройки отключенного фильтра не меняют настоящее НДС прочности.
+' Плоскость и число solve сравниваются с исходным запуском, не с пустым result.
+Private Sub CheckStabilityConfigIsolation(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)
+    Dim baseline As CBatchSectionCalculator, changed As CBatchSectionCalculator, keys As Variant, values As Variant
+    Dim i As Long, prefix As String, first As CSectionStateResult, point As CSectionStateResult
+    prefix = "audit03.stabilityConfig.p" & CStr(position) & ".inactive"
+    table.Formula = configured
+    Set baseline = StabilityConfigRun(stats, prefix & ".base", section, provider, units, -10000#, 200000#, 100000#, 0#, 0#, 0#, "PR2")
+    Set first = baseline.ResultAt(1).StrengthResult.DirectState.StateResult
+    CheckState stats, prefix & ".base.state", first
+    keys = StabilityConfigKeys()
+    values = Array("SP35", 10000#, 2#, 3#, "Indeterminate", -1#, -1#, "AutoWithL", 150#, 120#, _
+        "OnlyMomentPlane", "PhiL2", 1.4, 0.3, 1.2, 2#, 0.3)
+    For i = LBound(keys) To UBound(keys)
+        table.Formula = configured: SetValue table, CStr(keys(i)), values(i)
+        Set changed = StabilityConfigRun(stats, prefix & "." & CStr(keys(i)), section, provider, units, -10000#, 200000#, 100000#, 0#, 0#, 0#, "PR2")
+        Set point = changed.ResultAt(1).StrengthResult.DirectState.StateResult
+        Check stats, prefix & ".notRequested." & CStr(keys(i)), changed.ResultAt(1).StabilityMeta.InternalStatus = rsNotRequested
+        Check stats, prefix & ".solveCount." & CStr(keys(i)), changed.SolverCallCount = baseline.SolverCallCount
+        CheckClose stats, prefix & ".e0." & CStr(keys(i)), point.Epsilon0, first.Epsilon0, 0#
+        CheckClose stats, prefix & ".kx." & CStr(keys(i)), point.KappaX, first.KappaX, 0#
+        CheckClose stats, prefix & ".ky." & CStr(keys(i)), point.KappaY, first.KappaY, 0#
+    Next i
+    table.Formula = configured
+End Sub
+
+' Все обязательные ключи испытываются на blank/TODO/text/CVErr и потерянную
+' строку. Численные диапазоны и selectors должны дать InputErr с действующим
+' адресом и действием, а не CalcErr, FAIL или скрытое значение по умолчанию.
+Private Sub CheckStabilityConfigInput(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)
+    Dim keys As Variant, key As Variant, invalid As Variant, i As Long, prefix As String, cell As Object
+    Dim batch As CBatchSectionCalculator, message As String
+    keys = StabilityConfigKeys()
+    For Each key In keys
+        Select Case CStr(key)
+            Case "Stability.Code", "Stability.SystemType", "Stability.AccidentalEccentricityMode", _
+                    "Stability.AccidentalEccentricityPlanes", "Stability.PhiLMode"
+                invalid = Array(vbNullString, "TODO", "abc", CVErr(2042))
+            Case "Stability.ZeroMomentEccentricitySign1", "Stability.ZeroMomentEccentricitySign2"
+                invalid = Array(vbNullString, "TODO", "abc", CVErr(2042), 0#, 2#, -2#, 0.5)
+            Case "Stability.SP63.DeltaEMin", "Stability.SP63.DeltaEMax"
+                invalid = Array(vbNullString, "TODO", "abc", CVErr(2042), -1#)
+            Case Else
+                invalid = Array(vbNullString, "TODO", "abc", CVErr(2042), -1#, 0#)
+        End Select
+        For i = LBound(invalid) To UBound(invalid)
+            table.Formula = configured
+            If Left$(CStr(key), 15) = "Stability.SP35." Then SetValue table, "Stability.Code", "SP35"
+            Set cell = ValueCell(table, CStr(key), 2): cell.Value2 = invalid(i)
+            prefix = "audit03.stabilityConfig.invalid.p" & CStr(position) & "." & CStr(key) & ".v" & CStr(i)
+            Set batch = StabilityConfigRun(stats, prefix, section, provider, units, -10000#, 0#, 0#)
+            message = batch.ResultAt(1).OverallMeta.ResultComment
+            Check stats, prefix & ".inputErr", batch.ResultAt(1).Status = "InputErr"
+            Check stats, prefix & ".noSolve", batch.SolverCallCount = 0
+            Check stats, prefix & ".key", InStr(1, message, CStr(key), vbBinaryCompare) > 0
+            Check stats, prefix & ".cell", InStr(1, message, cell.Address(False, False), vbTextCompare) > 0
+            Check stats, prefix & ".action", InStr(1, message, "Введите", vbTextCompare) > 0 Or _
+                InStr(1, message, "выберите", vbTextCompare) > 0 Or InStr(1, message, "Исправьте", vbTextCompare) > 0 Or _
+                InStr(1, message, "задайте", vbTextCompare) > 0
+            LogLine stats, "STABILITY_INPUT_MESSAGE: " & prefix & "|" & message
+        Next i
+        table.Formula = configured
+        Set cell = ValueCell(table, CStr(key), 2): cell.Offset(0, -1).Value2 = "Removed." & CStr(key)
+        prefix = "audit03.stabilityConfig.missing.p" & CStr(position) & "." & CStr(key)
+        Set batch = StabilityConfigRun(stats, prefix, section, provider, units)
+        Check stats, prefix & ".inputErr", batch.ResultAt(1).Status = "InputErr"
+        Check stats, prefix & ".key", InStr(1, batch.ResultAt(1).OverallMeta.ResultComment, CStr(key), vbBinaryCompare) > 0
+        table.Formula = configured
+        Set batch = StabilityConfigRun(stats, "audit03.stabilityConfig.recovery.p" & CStr(position) & "." & CStr(key), section, provider, units)
+        Check stats, "audit03.stabilityConfig.recovery.p" & CStr(position) & "." & CStr(key), batch.ResultAt(1).StabilityResult.Ncr1 > 0#
+    Next key
+    table.Formula = configured: SetValue table, "Stability.SP63.DeltaEMin", 2#
+    prefix = "audit03.stabilityConfig.deltaOrder.p" & CStr(position)
+    Set batch = StabilityConfigRun(stats, prefix, section, provider, units)
+    Check stats, prefix & ".inputErr", batch.ResultAt(1).Status = "InputErr"
+    Check stats, prefix & ".cell", InStr(1, batch.ResultAt(1).OverallMeta.ResultComment, _
+        ValueCell(table, "Stability.SP63.DeltaEMin", 2).Address(False, False), vbTextCompare) > 0
+    table.Formula = configured: SetValue table, "Stability.AccidentalEccentricityMode", "AutoWithL"
+    SetValue table, "Stability.AccidentalEccentricityUser1", 0#: SetValue table, "Stability.AccidentalEccentricityUser2", 0#
+    Set batch = StabilityConfigRun(stats, "audit03.stabilityConfig.autoUnusedZero.p" & CStr(position), section, provider, units)
+    Check stats, "audit03.stabilityConfig.autoUnusedZero.p" & CStr(position), batch.ResultAt(1).StabilityResult.Ncr1 > 0#
+    table.Formula = configured
+    Set batch = StabilityConfigRun(stats, "audit03.stabilityConfig.tension.p" & CStr(position), section, provider, units, 10000#, 0#, 0#)
+    Check stats, "audit03.stabilityConfig.tension.p" & CStr(position), batch.ResultAt(1).StabilityMeta.InternalStatus = rsNotApplicable
+    For Each key In Array("Stability.SystemType", "Stability.AccidentalEccentricityMode", "Stability.PhiLMode")
+        table.Formula = configured: SetValue table, CStr(key), "abc"
+        Set batch = StabilityConfigRun(stats, "audit03.stabilityConfig.tensionInvalid.p" & CStr(position) & "." & CStr(key), _
+            section, provider, units, 10000#, 0#, 0#)
+        Check stats, "audit03.stabilityConfig.tensionInvalid.p" & CStr(position) & "." & CStr(key), batch.ResultAt(1).Status = "InputErr"
+    Next key
+    table.Formula = configured
+End Sub
+
+' Перевод INPUT Length мм -> м с эквивалентными числами не меняет фильтр.
+' Геометрия остается внутренней в мм; OUTPUT Length не переключается.
+Private Sub CheckStabilityConfigUnits(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal unitRange As Object, ByRef configuredUnits As Variant, _
+        ByVal position As Long, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)
+    Dim baseline As CBatchSectionCalculator, changed As CBatchSectionCalculator, prefix As String
+    table.Formula = configured: unitRange.Formula = configuredUnits
+    prefix = "audit03.stabilityConfig.units.p" & CStr(position)
+    Set baseline = StabilityConfigRun(stats, prefix & ".mm", section, provider, units)
+    SetValue unitRange, "Length", "m", 2
+    SetValue table, "Stability.ElementLength", 20#
+    SetValue table, "Stability.AccidentalEccentricityUser1", 0.1
+    SetValue table, "Stability.AccidentalEccentricityUser2", 0.08
+    Set changed = StabilityConfigRun(stats, prefix & ".m", section, provider, units)
+    CheckClose stats, prefix & ".l01", changed.ResultAt(1).StabilityResult.EffectiveLength1, baseline.ResultAt(1).StabilityResult.EffectiveLength1, 0.0000001
+    CheckClose stats, prefix & ".ea1", changed.ResultAt(1).StabilityResult.AccidentalEcc1, baseline.ResultAt(1).StabilityResult.AccidentalEcc1, 0.0000001
+    CheckClose stats, prefix & ".ea2", changed.ResultAt(1).StabilityResult.AccidentalEcc2, baseline.ResultAt(1).StabilityResult.AccidentalEcc2, 0.0000001
+    CheckClose stats, prefix & ".Ncr1", changed.ResultAt(1).StabilityResult.Ncr1, baseline.ResultAt(1).StabilityResult.Ncr1, 0.0000001
+    CheckClose stats, prefix & ".Ncr2", changed.ResultAt(1).StabilityResult.Ncr2, baseline.ResultAt(1).StabilityResult.Ncr2, 0.0000001
+    Check stats, prefix & ".status", changed.ResultAt(1).Status = baseline.ResultAt(1).Status
+    table.Formula = configured: unitRange.Formula = configuredUnits
+End Sub
+
+' Проверяет автономный Calculator без Excel-адресов: ранняя ошибка настройки
+' сохраняет InputErr и Calculated=False, а не успешный физический результат.
+' Это отдельная проверка lifecycle, не повтор формул устойчивости в тесте.
+Private Sub CheckStabilityStandaloneInput(ByRef stats As TConfigTestStats, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider)
+    Dim calculator As CStabilityCalculator, meta As CResultMeta, index As Long, systemType As String, length As Double
+    For index = 1 To 2
+        Set calculator = New CStabilityCalculator
+        systemType = "Determinate": length = 20000#
+        If index = 1 Then systemType = "abc" Else length = -1#
+        calculator.Calculate section, provider, mvsULS, "SP63", -10000#, 200000#, 100000#, 0#, 0#, 0#, _
+            length, 1#, 1#, systemType, 1#, 1#, "Auto", "User", "BothPlanes", 100#, 80#, _
+            0.7, 0.15, 1.5, 1#, 0.7, Empty
+        Set meta = calculator.ResultMeta
+        Check stats, "audit03.stabilityConfig.standalone." & CStr(index) & ".inputErr", meta.InternalStatus = rsInvalidInput
+        Check stats, "audit03.stabilityConfig.standalone." & CStr(index) & ".notCalculated", Not meta.Calculated
+        Check stats, "audit03.stabilityConfig.standalone." & CStr(index) & ".comment", Len(meta.ResultComment) > 0
+    Next index
+End Sub
+
+' Выполняет reader/units/material/profile/batch pipeline заново для каждого
+' случая. После проверки всех writers сохраняет численные данные фильтра;
+' устойчивость сама не должна вызывать state-solver. НДС PR2 считается отдельно.
+Private Function StabilityConfigRun(ByRef stats As TConfigTestStats, ByVal prefix As String, _
+        ByVal section As CSectionModel, ByVal initialProvider As CMaterialModelProvider, ByVal initialUnits As CUnitSystem, _
+        Optional ByVal nValue As Double = -10000#, Optional ByVal mxValue As Double = 200000#, _
+        Optional ByVal myValue As Double = 100000#, Optional ByVal sustainedN As Double = 0#, _
+        Optional ByVal sustainedMx As Double = 0#, Optional ByVal sustainedMy As Double = 0#, _
+        Optional ByVal profileId As String = "PR1") As CBatchSectionCalculator
+    Dim batch As CBatchSectionCalculator, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim provider As CMaterialModelProvider, profiles As CCalculationProfileCatalog, report As CExecutionReport
+    Dim reason As String, passed As Long, failed As Long, result As CStabilityResult
+    Set batch = New CBatchSectionCalculator: batch.Initialize section, initialProvider
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set batch.ProfileCatalog = profiles
+    Set units = initialUnits
+    LogLine stats, "RUN: " & prefix
+    On Error GoTo InvalidRead
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    batch.Initialize section, provider: Set batch.ProfileCatalog = profiles
+    Set report = New CExecutionReport: report.Initialize ThisWorkbook, settings
+    Set batch.ExecutionReport = report
+    batch.ApplySettings settings, units
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination prefix, nValue, mxValue, myValue, profileId, "Проверка устойчивости через Config", "Auto"
+    batch.AddStabilityDurationLoad prefix, sustainedN, sustainedMx, sustainedMy
+    batch.Execute
+    GoTo Publish
+InvalidRead:
+    reason = Err.Description
+    On Error GoTo 0
+    batch.AddInvalidCombination prefix, profileId, "Ошибочный Config", reason
+    batch.Execute
+Publish:
+    stats.Report = stats.Report & Audit03ValidateConfigBatchResults(batch, units, passed, failed)
+    stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
+    If profileId = "PR1" Then Check stats, prefix & ".noStateSolve", batch.SolverCallCount = 0
+    Set result = batch.ResultAt(1).StabilityResult
+    LogLine stats, "STABILITY_CONFIG: " & prefix & "|status=" & result.Status & "|code=" & result.Code & _
+        "|branch=" & result.Branch & "|Ncr1=" & FormatNumberInvariant(result.Ncr1) & "|Ncr2=" & FormatNumberInvariant(result.Ncr2) & _
+        "|e1=" & FormatNumberInvariant(result.Eccentricity1) & "|e2=" & FormatNumberInvariant(result.Eccentricity2) & _
+        "|L01=" & FormatNumberInvariant(result.EffectiveLength1) & "|L02=" & FormatNumberInvariant(result.EffectiveLength2)
+    Set StabilityConfigRun = batch
 End Function
 
 ' Сохраняет численное значение в журнале без зависимости от десятичного

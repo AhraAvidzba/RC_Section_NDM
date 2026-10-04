@@ -340,6 +340,16 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Set capacityOptions = New CCapacityCalculator
     ConfigureCapacityCalculator capacityOptions
     capacityOptions.ValidateSettings settings
+    ' Устойчивость проверяет собственные диапазоны и selectors без запуска
+    ' фильтра. Config-адрес берется из reader после нормализации единиц.
+    Dim stabilityOptions As CStabilityCalculator
+    Set stabilityOptions = New CStabilityCalculator
+    stabilityOptions.ValidateSettings mStabilityCode, mStabilityElementLength, mStabilityMu1, mStabilityMu2, _
+        mStabilitySystemType, mStabilityZeroSign1, mStabilityZeroSign2, mStabilityPhiLMode, _
+        mStabilityAccidentalEccentricityMode, mStabilityAccidentalEccentricityPlanes, _
+        mStabilityAccidentalEccentricityUser1, mStabilityAccidentalEccentricityUser2, _
+        mStabilitySP63Ks, mStabilitySP63DeltaEMin, mStabilitySP63DeltaEMax, _
+        mStabilitySP35PhiP, mStabilitySP35NOverNcrLimit, settings
     ConfigureMomentZeroFilter
     NormalizeAllCombinationMoments
     Exit Sub

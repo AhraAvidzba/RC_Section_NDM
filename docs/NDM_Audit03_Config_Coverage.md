@@ -664,3 +664,35 @@ Registry `config_behavior_registry_capacity_numeric_v251_2026-10-04` содер�
 Трассировка: `NDM_Audit03_Capacity_Numeric_Config_Review.md` и
 `NDM_Audit03_Capacity_Numeric_Config_Evidence.json`. Итоговый выпуск Audit03
 еще не завершен; основная output-книга не заменяется промежуточной копией.
+
+## Настройки Устойчивости v257
+
+Добавлены ровно 17 editable полей Stability через настоящий Config -> reader ->
+units -> batch -> Calculator -> writers. Два положения именованной таблицы,
+обе главные плоскости, SP63 и SP35 table/eta, User/Auto/planes/signs,
+активные эффекты и isolation при отключенной устойчивости проверены отдельно.
+Equivalent INPUT Length мм -> м сохраняет внутренние длины, Ncr и статус.
+Есть 188 invalid values, 34 missing keys и 34 recovery; ошибки содержат ключ,
+текущий адрес и действие. Каждый output-блок получает комментарий своего subtree.
+
+Frozen v254: 7680/138; positive v255: 7944/0, 390 реальных batch-сценариев.
+Два автономных Calculator проверяются отдельно, не входят в число 390.
+Batch v256: 23818/1, единственный отказ прежнего текстового контракта Mu.
+Исправлены только две фразы production; тест и numerical expected/tolerance
+сохранены. Повторный Batch v257: 23819/0, source unchanged=True; все 1958 общих
+numerical actual-values с completed v250 совпали точно, missing/differences=0.
+Actual source/VBE 106/106, 111 components; structure 27/27. Help/update/reopen
+сохранил 760 inputs; 11 saved-text проверок failed=0. Справка v255/v257 совпала
+по 2716 непустым ячейкам и объединениям, source unchanged=True.
+
+Registry `config_behavior_registry_stability_v257_2026-10-04`: 731/1064
+active-reviewed. Из 760 editable полей 29 еще не имеют активной поадресной
+приемки (3.82%): девять общих/geometry/mesh/load-reference и двадцать AutoCAD.
+Extreme Double, переполнение mu*L/L^2, полный диапазон и рискованные пары
+устойчивости остаются открытыми; нормативная допустимость произвольного
+положительного коэффициента не утверждается программной проверкой диапазона.
+FullAcceptance=False. Полный final eight-suite On/Off, нагрузочная матрица,
+benchmarks, help/UI/clean-update и self-audit обязательны до выпуска.
+Трассировка: `NDM_Audit03_Stability_Config_Review.md` и
+`NDM_Audit03_Stability_Config_Evidence.json`. Основная пользовательская книга
+и входное ТЗ не заменялись; Audit03 не объявляется завершенным этим срезом.
