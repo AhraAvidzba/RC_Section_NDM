@@ -1,0 +1,82 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_hollow_cell_frozen_v287.xlsm
+SOURCE_SHA256: 5FF2A3C2D66926DA1399851FF66A12CB3B9D7A8D1484E36B0673DAE3AE5DD18F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_940b5171e03b47e78c79965c7be40043\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestConfiguration.RunAudit03CapacityRetryRangeTests =====
+SUITE_STARTED: modTestConfiguration.RunAudit03CapacityRetryRangeTests; 2026-10-05T00:47:38
+EXCEL_AFTER_SUITE: pid=23476; workingSet=221888512; privateBytes=173719552; cpu=17511.234375
+EXCEL_AFTER_SUITE: pid=24360; workingSet=138838016; privateBytes=108457984; cpu=3.0625
+OK: audit03.capacityRetryRange.p0.v0.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v0; steps=1; retries=0; error=0; 
+OK: audit03.capacityRetryRange.p0.v1.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v1; steps=1; retries=30; error=0; 
+FAIL: audit03.capacityRetryRange.p0.v2.inputError
+FAIL: audit03.capacityRetryRange.p0.v2.key
+FAIL: audit03.capacityRetryRange.p0.v2.address
+FAIL: audit03.capacityRetryRange.p0.v2.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v2; steps=1; retries=31; error=0; 
+OK: audit03.capacityRetryRange.p0.v3.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v3; steps=3; retries=29; error=0; 
+FAIL: audit03.capacityRetryRange.p0.v4.inputError
+FAIL: audit03.capacityRetryRange.p0.v4.key
+FAIL: audit03.capacityRetryRange.p0.v4.address
+FAIL: audit03.capacityRetryRange.p0.v4.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v4; steps=3; retries=30; error=0; 
+OK: audit03.capacityRetryRange.p0.v5.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v5; steps=1073741823; retries=1; error=0; 
+FAIL: audit03.capacityRetryRange.p0.v6.inputError
+FAIL: audit03.capacityRetryRange.p0.v6.key
+FAIL: audit03.capacityRetryRange.p0.v6.address
+FAIL: audit03.capacityRetryRange.p0.v6.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v6; steps=1073741824; retries=1; error=0; 
+FAIL: audit03.capacityRetryRange.p0.v7.inputError
+FAIL: audit03.capacityRetryRange.p0.v7.key
+FAIL: audit03.capacityRetryRange.p0.v7.address
+FAIL: audit03.capacityRetryRange.p0.v7.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v7; steps=2147483647; retries=0; error=0; 
+FAIL: audit03.capacityRetryRange.p0.v8.inputError
+FAIL: audit03.capacityRetryRange.p0.v8.key
+FAIL: audit03.capacityRetryRange.p0.v8.address
+FAIL: audit03.capacityRetryRange.p0.v8.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v8; steps=1; retries=2147483647; error=0; 
+OK: audit03.capacityRetryRange.p1.v0.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v0; steps=1; retries=0; error=0; 
+OK: audit03.capacityRetryRange.p1.v1.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v1; steps=1; retries=30; error=0; 
+FAIL: audit03.capacityRetryRange.p1.v2.inputError
+FAIL: audit03.capacityRetryRange.p1.v2.key
+FAIL: audit03.capacityRetryRange.p1.v2.address
+FAIL: audit03.capacityRetryRange.p1.v2.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v2; steps=1; retries=31; error=0; 
+OK: audit03.capacityRetryRange.p1.v3.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v3; steps=3; retries=29; error=0; 
+FAIL: audit03.capacityRetryRange.p1.v4.inputError
+FAIL: audit03.capacityRetryRange.p1.v4.key
+FAIL: audit03.capacityRetryRange.p1.v4.address
+FAIL: audit03.capacityRetryRange.p1.v4.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v4; steps=3; retries=30; error=0; 
+OK: audit03.capacityRetryRange.p1.v5.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v5; steps=1073741823; retries=1; error=0; 
+FAIL: audit03.capacityRetryRange.p1.v6.inputError
+FAIL: audit03.capacityRetryRange.p1.v6.key
+FAIL: audit03.capacityRetryRange.p1.v6.address
+FAIL: audit03.capacityRetryRange.p1.v6.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v6; steps=1073741824; retries=1; error=0; 
+FAIL: audit03.capacityRetryRange.p1.v7.inputError
+FAIL: audit03.capacityRetryRange.p1.v7.key
+FAIL: audit03.capacityRetryRange.p1.v7.address
+FAIL: audit03.capacityRetryRange.p1.v7.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v7; steps=2147483647; retries=0; error=0; 
+FAIL: audit03.capacityRetryRange.p1.v8.inputError
+FAIL: audit03.capacityRetryRange.p1.v8.key
+FAIL: audit03.capacityRetryRange.p1.v8.address
+FAIL: audit03.capacityRetryRange.p1.v8.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v8; steps=1; retries=2147483647; error=0; 
+OK: audit03.capacityRetryRange.noSolve
+TOTAL_CAPACITY_RETRY_RANGE: passed=9; failed=40
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_940b5171e03b47e78c79965c7be40043\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestConfiguration.RunAudit03CapacityRetryRangeTests; 2026-10-05T00:47:38
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

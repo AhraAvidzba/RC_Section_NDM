@@ -1,0 +1,82 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_guards_v288.xlsm
+SOURCE_SHA256: 2322D9FD729823D4946F8E5C8C2EB2194A1893098C9185F472D8D6CF66022213
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3763db06c5914b5f9c0f824ce37f8345\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestConfiguration.RunAudit03CapacityRetryRangeTests =====
+SUITE_STARTED: modTestConfiguration.RunAudit03CapacityRetryRangeTests; 2026-10-05T00:54:24
+EXCEL_AFTER_SUITE: pid=23476; workingSet=221863936; privateBytes=173694976; cpu=17511.296875
+EXCEL_AFTER_SUITE: pid=26028; workingSet=141807616; privateBytes=108978176; cpu=3.0625
+OK: audit03.capacityRetryRange.p0.v0.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v0; steps=1; retries=0; error=0; 
+OK: audit03.capacityRetryRange.p0.v1.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v1; steps=1; retries=30; error=0; 
+OK: audit03.capacityRetryRange.p0.v2.inputError
+OK: audit03.capacityRetryRange.p0.v2.key
+OK: audit03.capacityRetryRange.p0.v2.address
+OK: audit03.capacityRetryRange.p0.v2.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v2; steps=1; retries=31; error=-2147217314; Настройка Capacity.MaxRetries (лист Лист1, ячейка B3): Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите число повторов до 30 или уменьшите Capacity.BaseLoadSteps.
+OK: audit03.capacityRetryRange.p0.v3.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v3; steps=3; retries=29; error=0; 
+OK: audit03.capacityRetryRange.p0.v4.inputError
+OK: audit03.capacityRetryRange.p0.v4.key
+OK: audit03.capacityRetryRange.p0.v4.address
+OK: audit03.capacityRetryRange.p0.v4.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v4; steps=3; retries=30; error=-2147217314; Настройка Capacity.MaxRetries (лист Лист1, ячейка B3): Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите число повторов до 29 или уменьшите Capacity.BaseLoadSteps.
+OK: audit03.capacityRetryRange.p0.v5.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v5; steps=1073741823; retries=1; error=0; 
+OK: audit03.capacityRetryRange.p0.v6.inputError
+OK: audit03.capacityRetryRange.p0.v6.key
+OK: audit03.capacityRetryRange.p0.v6.address
+OK: audit03.capacityRetryRange.p0.v6.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v6; steps=1073741824; retries=1; error=-2147217314; Настройка Capacity.MaxRetries (лист Лист1, ячейка B3): Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите число повторов до 0 или уменьшите Capacity.BaseLoadSteps.
+OK: audit03.capacityRetryRange.p0.v7.inputError
+OK: audit03.capacityRetryRange.p0.v7.key
+OK: audit03.capacityRetryRange.p0.v7.address
+OK: audit03.capacityRetryRange.p0.v7.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v7; steps=2147483647; retries=0; error=-2147217314; Настройка Capacity.BaseLoadSteps (лист Лист1, ячейка B2): Число ступеней не помещается в расчетный счетчик. Уменьшите значение до 2147483646 или менее.
+OK: audit03.capacityRetryRange.p0.v8.inputError
+OK: audit03.capacityRetryRange.p0.v8.key
+OK: audit03.capacityRetryRange.p0.v8.address
+OK: audit03.capacityRetryRange.p0.v8.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p0.v8; steps=1; retries=2147483647; error=-2147217314; Настройка Capacity.MaxRetries (лист Лист1, ячейка B3): Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите число повторов до 30 или уменьшите Capacity.BaseLoadSteps.
+OK: audit03.capacityRetryRange.p1.v0.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v0; steps=1; retries=0; error=0; 
+OK: audit03.capacityRetryRange.p1.v1.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v1; steps=1; retries=30; error=0; 
+OK: audit03.capacityRetryRange.p1.v2.inputError
+OK: audit03.capacityRetryRange.p1.v2.key
+OK: audit03.capacityRetryRange.p1.v2.address
+OK: audit03.capacityRetryRange.p1.v2.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v2; steps=1; retries=31; error=-2147217314; Настройка Capacity.MaxRetries (лист Лист1, ячейка CI802): Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите число повторов до 30 или уменьшите Capacity.BaseLoadSteps.
+OK: audit03.capacityRetryRange.p1.v3.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v3; steps=3; retries=29; error=0; 
+OK: audit03.capacityRetryRange.p1.v4.inputError
+OK: audit03.capacityRetryRange.p1.v4.key
+OK: audit03.capacityRetryRange.p1.v4.address
+OK: audit03.capacityRetryRange.p1.v4.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v4; steps=3; retries=30; error=-2147217314; Настройка Capacity.MaxRetries (лист Лист1, ячейка CI802): Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите число повторов до 29 или уменьшите Capacity.BaseLoadSteps.
+OK: audit03.capacityRetryRange.p1.v5.accepted
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v5; steps=1073741823; retries=1; error=0; 
+OK: audit03.capacityRetryRange.p1.v6.inputError
+OK: audit03.capacityRetryRange.p1.v6.key
+OK: audit03.capacityRetryRange.p1.v6.address
+OK: audit03.capacityRetryRange.p1.v6.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v6; steps=1073741824; retries=1; error=-2147217314; Настройка Capacity.MaxRetries (лист Лист1, ячейка CI802): Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите число повторов до 0 или уменьшите Capacity.BaseLoadSteps.
+OK: audit03.capacityRetryRange.p1.v7.inputError
+OK: audit03.capacityRetryRange.p1.v7.key
+OK: audit03.capacityRetryRange.p1.v7.address
+OK: audit03.capacityRetryRange.p1.v7.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v7; steps=2147483647; retries=0; error=-2147217314; Настройка Capacity.BaseLoadSteps (лист Лист1, ячейка CI801): Число ступеней не помещается в расчетный счетчик. Уменьшите значение до 2147483646 или менее.
+OK: audit03.capacityRetryRange.p1.v8.inputError
+OK: audit03.capacityRetryRange.p1.v8.key
+OK: audit03.capacityRetryRange.p1.v8.address
+OK: audit03.capacityRetryRange.p1.v8.action
+CAPACITY_RETRY_RANGE: audit03.capacityRetryRange.p1.v8; steps=1; retries=2147483647; error=-2147217314; Настройка Capacity.MaxRetries (лист Лист1, ячейка CI802): Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите число повторов до 30 или уменьшите Capacity.BaseLoadSteps.
+OK: audit03.capacityRetryRange.noSolve
+TOTAL_CAPACITY_RETRY_RANGE: passed=49; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3763db06c5914b5f9c0f824ce37f8345\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestConfiguration.RunAudit03CapacityRetryRangeTests; 2026-10-05T00:54:24
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

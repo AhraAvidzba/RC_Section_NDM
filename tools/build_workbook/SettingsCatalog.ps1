@@ -622,6 +622,7 @@ function Get-SettingInstructionLines {
             "При Generated обязательно целое число не меньше 1. Отсутствующая строка, пустота, TODO, ошибка формулы, дробное, нулевое или отрицательное значение являются ошибкой ввода и не заменяются автоматически единицей.",
             "Значение 1 означает быстрый режим: граничная ячейка проверяется по центру. Значение больше 1 делит граничную ячейку на более мелкие части и считает, какая доля попала внутрь сечения.",
             "Если шаг не делит габарит целиком, последние базовые ячейки могут пересекать границу, даже когда их центр уже за габаритом. При разбиении учитываются все центры подъячеек, попавшие в бетон; положение центра базовой ячейки само по себе не исключает ее внутреннюю часть.",
+            "Для HollowRectangle проверяется также пересечение ячейки с габаритом внутреннего проема. При значении больше 1 такая ячейка уточняется подъячейками, даже если все четыре угла находятся в бетоне: небольшой проем может целиком лежать внутри нее.",
             "Приближенная площадь граничной ячейки: A_boundary = q · Mesh.StepX · Mesh.StepY, где q = n_inside·n_total⁻¹. Здесь n_inside - число подъячеек внутри контура, n_total - общее число подъячеек в ячейке.",
             "Чем больше значение, тем лучше описываются круги, скругления и уступы, но тем дольше строится модель. Для грубого теста обычно достаточно 1, для проверки геометрии лучше увеличивать.",
             "Если оценка числа элементов с учетом подъячеек не помещается в размер массива, построение отклоняется с сообщением: нужно увеличить Mesh.StepX/Mesh.StepY либо уменьшить Mesh.BoundarySubdivisions. Это ограничение представимости данных, а не нормативное ограничение точности.",
@@ -922,6 +923,7 @@ function Get-SettingInstructionLines {
             "Допустимо целое число не меньше нуля. Ноль корректен и отключает дополнительные повторы; дробь, отрицательное значение, пустая ячейка, TODO и ошибка формулы дают InputErr с актуальным местом исправления до запуска НДС.",
             "Первая попытка имеет номер attempt = 0. Если она дала NumFail или SingularTangent, следующая попытка решает ту же самую точку λ, но с более осторожными численными настройками.",
             "Связь с Capacity.BaseLoadSteps прямая: LoadSteps_eff = Capacity.BaseLoadSteps · 2^{attempt}. При BaseLoadSteps = 1 и MaxRetries = 0 выполняется только первая попытка с 1 ступенью; при MaxRetries = 1 добавляется единственный повтор с 2 ступенями.",
+            "Пара BaseLoadSteps/MaxRetries проверяется до расчета: число ступеней каждой разрешенной попытки должно быть не больше 2147483646. Например при BaseLoadSteps = 1 допускается не более 30 повторов, при 3 - не более 29. Это техническая граница счетчика Long, а не ограничение нагрузок по СП; чрезмерные значения дают InputErr с указанием ячейки и просьбой уменьшить настройку.",
             "Одновременно уменьшается допустимый шаг по кривизне: MaxDeltaKappa_eff = Solver.MaxDeltaKappa·2^{-attempt}. Поэтому повтор становится мягче без изменения заданной физической нагрузки.",
             "Если обычные λ-точки сходятся с первой попытки, MaxRetries не увеличивает время расчета: дополнительные solve запускаются только после численной несходимости конкретной точки. Но для некоторых осевых траекторий несходящиеся точки могут встречаться часто, поэтому включенный retry заметно увеличивает время.",
             "Если повторы исчерпаны, точка λ получает NumFail. Такая несходимость не считается разрушением сечения.",
@@ -931,6 +933,7 @@ function Get-SettingInstructionLines {
             "Это базовое число ступеней приложения нагрузки для каждой λ-точки в LoadMultiplier.",
             "Допустимо целое число больше нуля. Ноль, отрицательное значение, дробь, явно пустая ячейка или ошибка формулы дают InputErr до запуска НДС; комментарий называет текущую ячейку Config и действие пользователя.",
             "BaseLoadSteps задает только первую попытку λ-точки. Если MaxRetries разрешает повтор, фактическое число ступеней на повторе увеличивается по формуле BaseLoadSteps·2^attempt.",
+            "Базовое число и все его разрешенные удвоения должны помещаться в расчетный счетчик: BaseLoadSteps·2^{MaxRetries} ≤ 2147483646. При нарушении измените указанный параметр до запуска НДС. Даже допустимое, но очень большое число ступеней может сделать расчет непрактично долгим; эта граница проверяет представимость, а не рекомендуемую производительность.",
             "Например при BaseLoadSteps = 1 и MaxRetries = 0 каждая λ-точка решается один раз с одной ступенью. Если поставить MaxRetries = 1, несошедшаяся точка будет повторена с двумя ступенями и более осторожным шагом кривизны.",
             "Большее базовое значение делает каждую первую λ-точку устойчивее, но замедляет весь LoadMultiplier даже там, где сходимость была бы нормальной.",
             "Настройка не используется как физический шаг увеличения нагрузки. Внешний поиск λ выполняют Bisection, Brent или Secant.",
@@ -1474,6 +1477,7 @@ function Get-SettingsInstructionCatalog {
     )}) | Out-Null
     $items.Add(@{ Key = "MaterialDiagramControlTables"; Title = "Контрольные точки диаграмм"; Lines = @(
         "Служебные таблицы точек на Config нужны как независимый контроль того, какие координаты TwoLine/ThreeLine получаются из исходных параметров.",
+        "Деформации ε безразмерны. Напряжения σ в контрольной таблице и на ее графиках показаны в текущей INPUT-единице Stress, поскольку формулы непосредственно ссылаются на введенные сопротивления и модули. Заголовок и подписи осей связаны с этой единицей; OUTPUT Stress на этот контрольный блок не влияет. Расчетное ядро отдельно переводит напряжения в МПа через CUnitSystem.",
         "Формулы Excel в этом блоке должны совпадать с теми формулами, по которым программа строит рабочие диаграммы материалов.",
         "Расчетное ядро не читает эти таблицы. Если пользователь случайно изменит формулы контрольного блока, расчетные результаты не изменятся, но проверка книги должна показать расхождение.",
         "Графики рядом с контрольными точками служат только для визуальной проверки формы диаграмм. Каждый график строится по строкам контрольной таблицы для I ГПС: одна линия TwoLine и одна линия ThreeLine."
@@ -4024,13 +4028,17 @@ function Add-MaterialDiagramControlTables {
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Контрольные точки диаграмм"
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
-    $headers = @("Материал", "ГПС", "Тип", "Ветвь", "ε", "σ, MPa")
+    $headers = @("Материал", "ГПС", "Тип", "Ветвь", "ε", "")
     for ($i = 0; $i -lt $headers.Count; $i++) {
         $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
         $cell.Value2 = $headers[$i]
         $cell.Font.Bold = $true
         $cell.Interior.Color = 14277081
     }
+    # Численные формулы используют исходные INPUT-значения материалов, поэтому
+    # подпись напряжения следует их единице, а не внутренней единице решателя.
+    $stressUnitRef = New-MaterialParameterRef "rngUnitSettings" "Stress" 2
+    $Sheet.Cells.Item($HeaderRow, $StartColumn + 5).Formula = '="σ, "&' + $stressUnitRef
 
     $concreteGroups = @(
         @{ Group = "I"; Rb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.ULS(I)" 2); Rbt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.ULS(I)" 3); Eb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 2); Ebt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 3) },
@@ -4159,9 +4167,9 @@ function Add-MaterialDiagramCharts {
     $sigmaColumn = $ControlStartColumn + 5
 
     Add-MaterialDiagramChart $Sheet "chMaterialConcreteDiagram" "Диаграмма растяжения/сжатия бетона (I ГПС)" `
-        $left $top $width $height ($ControlHeaderRow + 1) ($ControlHeaderRow + 5) ($ControlHeaderRow + 6) ($ControlHeaderRow + 12) $epsColumn $sigmaColumn
+        $left $top $width $height ($ControlHeaderRow + 1) ($ControlHeaderRow + 5) ($ControlHeaderRow + 6) ($ControlHeaderRow + 12) $epsColumn $sigmaColumn $ControlHeaderRow
     Add-MaterialDiagramChart $Sheet "chMaterialSteelDiagram" "Диаграмма растяжения/сжатия арматуры (I ГПС)" `
-        $left ($top + $height + $gap) $width $height ($ControlHeaderRow + 25) ($ControlHeaderRow + 29) ($ControlHeaderRow + 30) ($ControlHeaderRow + 38) $epsColumn $sigmaColumn
+        $left ($top + $height + $gap) $width $height ($ControlHeaderRow + 25) ($ControlHeaderRow + 29) ($ControlHeaderRow + 30) ($ControlHeaderRow + 38) $epsColumn $sigmaColumn $ControlHeaderRow
 }
 
 function Add-MaterialDiagramChart {
@@ -4178,7 +4186,8 @@ function Add-MaterialDiagramChart {
         [int]$ThreeLineStartRow,
         [int]$ThreeLineEndRow,
         [int]$EpsColumn,
-        [int]$SigmaColumn
+        [int]$SigmaColumn,
+        [int]$ControlHeaderRow
     )
 
     $chartObject = $Sheet.ChartObjects().Add($Left, $Top, $Width, $Height)
@@ -4197,11 +4206,13 @@ function Add-MaterialDiagramChart {
     Add-MaterialDiagramChartSeries $Sheet $chart "TwoLine" $TwoLineStartRow $TwoLineEndRow $EpsColumn $SigmaColumn 15773696
     Add-MaterialDiagramChartSeries $Sheet $chart "ThreeLine" $ThreeLineStartRow $ThreeLineEndRow $EpsColumn $SigmaColumn 49407
 
+    $chart.Axes(2).HasTitle = $true
+    $sigmaCaption = $Sheet.Cells.Item($ControlHeaderRow, $SigmaColumn).Address($true, $true)
+    $chart.Axes(2).AxisTitle.Formula = "='" + $Sheet.Name.Replace("'", "''") + "'!" + $sigmaCaption
+
     try {
         $chart.Axes(1).HasTitle = $true
         $chart.Axes(1).AxisTitle.Text = "ε"
-        $chart.Axes(2).HasTitle = $true
-        $chart.Axes(2).AxisTitle.Text = "σ, MPa"
         $chart.Axes(1).CrossesAt = 0
         $chart.Axes(2).CrossesAt = 0
         $chart.Axes(1).ReversePlotOrder = $true

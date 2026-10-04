@@ -27,6 +27,7 @@ Public Function RunGeometryTests() As String
     TestRoundedRectangleContourAnnotations stats
     TestRoundedRectangleRebarLayout stats
     TestHollowRectangleGeometry stats
+    TestAudit03HollowContainedOpeningMesh stats
     TestHollowRectangleContourAnnotations stats
     TestHollowRectangleRebarLayout stats
     TestHollowRectangleSharpOpeningBProjection stats
@@ -2654,6 +2655,80 @@ Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByV
     AppendLine stats, "CONST: GEOM_PI deltaFrom3x1e15=" & CStr((GEOM_PI - 3#) * 1000000000000000#)
     AssertClose stats, "audit03.geometry.piFullPrecision", GEOM_PI, 4# * Atn(1#), 0#
 End Sub
+
+' Проверяет проем целиком внутри базовой ячейки: все ее углы находятся
+' в бетоне, но это не разрешает включать пустоту в площадь сетки.
+' Границы прямоугольных проемов совпадают с границами подъячеек 10x10 мм,
+' поэтому независимый oracle площади не требует погрешности аппроксимации.
+Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
+    Dim hollow As CGeometryHollowRectangle, mesh As CFiberMeshBuilder
+    Dim scenario As Long, i As Long, area As Double, invalidCenters As Long
+    Dim openingWidth As Double, openingHeight As Double, offsetX As Double, offsetY As Double
+    Dim sx As Double, sy As Double, ix As Double, iy As Double, ixy As Double, fiberArea As Double
+    Dim expectedArea As Double, openingArea As Double, cx As Double, cy As Double
+    Dim prefix As String
+    Set hollow = New CGeometryHollowRectangle
+    Set mesh = New CFiberMeshBuilder
+    For scenario = 0 To 2
+        openingWidth = 40#: openingHeight = 40#: offsetX = 50#: offsetY = 50#
+        If scenario = 1 Then
+            openingWidth = 20#: openingHeight = 40#: offsetX = 70#: offsetY = 30#
+        ElseIf scenario = 2 Then
+            offsetX = 0#: offsetY = 0#
+        End If
+        hollow.Initialize 400#, 400#, 0#, openingWidth, openingHeight, 0#, offsetX, offsetY
+        mesh.BuildMesh hollow, 100#, 100#, 2, 10
+        area = 0#: invalidCenters = 0#: sx = 0#: sy = 0#: ix = 0#: iy = 0#: ixy = 0#
+        For i = 1 To mesh.FiberCount
+            fiberArea = mesh.FiberArea(i)
+            area = area + fiberArea
+            sx = sx + fiberArea * mesh.FiberX(i): sy = sy + fiberArea * mesh.FiberY(i)
+            ' Суммируем целочисленный числитель и делим один раз: локальная
+            ' инерция подъячеек не накапливает округление повторного деления на 12.
+            ix = ix + fiberArea * (12# * mesh.FiberY(i) ^ 2 + mesh.FiberHeight(i) ^ 2)
+            iy = iy + fiberArea * (12# * mesh.FiberX(i) ^ 2 + mesh.FiberWidth(i) ^ 2)
+            ixy = ixy + fiberArea * mesh.FiberX(i) * mesh.FiberY(i)
+            If Not hollow.ContainsPoint(mesh.FiberX(i), mesh.FiberY(i)) Then invalidCenters = invalidCenters + 1
+        Next i
+        prefix = "audit03.hollow.containedOpening." & CStr(scenario)
+        openingArea = openingWidth * openingHeight: expectedArea = 160000# - openingArea
+        cx = -openingArea * offsetX / expectedArea: cy = -openingArea * offsetY / expectedArea
+        AssertClose stats, prefix & ".area", area, expectedArea, 0.000001
+        AssertClose stats, prefix & ".centroidX", sx / area, cx, 0.000000001
+        AssertClose stats, prefix & ".centroidY", sy / area, cy, 0.000000001
+        AssertClose stats, prefix & ".Ix", ix / 12# - sy * sy / area, _
+            400# ^ 4 / 12# - openingArea * (openingHeight ^ 2 / 12# + offsetY ^ 2) - expectedArea * cy ^ 2, 0.000001
+        AssertClose stats, prefix & ".Iy", iy / 12# - sx * sx / area, _
+            400# ^ 4 / 12# - openingArea * (openingWidth ^ 2 / 12# + offsetX ^ 2) - expectedArea * cx ^ 2, 0.000001
+        AssertClose stats, prefix & ".Ixy", ixy - sx * sy / area, _
+            -openingArea * offsetX * offsetY - expectedArea * cx * cy, 0.000001
+        AssertTrue stats, prefix & ".allCentersInConcrete", invalidCenters = 0
+        AppendLine stats, "HOLLOW_CELL_MESH: " & prefix & "; fibers=" & CStr(mesh.FiberCount) & _
+            "; area=" & CStr(area) & "; invalidCenters=" & CStr(invalidCenters)
+    Next scenario
+    Dim rectangle As CGeometryRoundedRectangle
+    Set rectangle = New CGeometryRoundedRectangle
+    rectangle.Initialize 200#, 200#, 0#, 0#, 0#, 0#
+    mesh.BuildMesh rectangle, 100#, 100#, 2, 10
+    Dim fullCellCount As Long
+    For i = 1 To mesh.FiberCount
+        If mesh.FiberWidth(i) = 100# And mesh.FiberHeight(i) = 100# Then fullCellCount = fullCellCount + 1
+    Next i
+    AssertTrue stats, "audit03.hollow.containedOpening.convexFastPath", fullCellCount > 0
+End Sub
+
+' Возвращает отдельный протокол проемов внутри грубой ячейки и сохранения
+' быстрого пути сплошного прямоугольника; исходная геометрия книги не читается.
+Public Function RunAudit03HollowContainedOpeningMeshTests() As String
+    On Error GoTo Failed
+    Dim stats As TTestStats
+    TestAudit03HollowContainedOpeningMesh stats
+    AppendLine stats, "TOTAL_HOLLOW_CELL_MESH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03HollowContainedOpeningMeshTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03HollowContainedOpeningMeshTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
 
 
 

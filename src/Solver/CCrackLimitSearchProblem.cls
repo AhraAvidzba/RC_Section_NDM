@@ -198,7 +198,8 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As D
     ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = mCrack.LimitSearchUltimateMaxDeltaKappa
 End Property
 
-' Создает crack-траекторию с учетом выбранного LambdaMxy/LambdaN/LambdaNMxy.
+' Возвращает выбранную общую траекторию LambdaMx/My/Mxy/N/NMxy; при отсутствии
+' подготовленного descriptor использует нормализованные данные Formation.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
     If request.HasLoadPathSelection Then
         Set ILimitSearchProblem_BuildLoadPath = request.SelectedLoadPath.Vector
@@ -276,7 +277,8 @@ Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
 End Sub
 
 ' Объясняет, на какой lambda равновесие не подтверждено при построении скобки.
-' Такой отказ не должен создавать фиктивные Pre/Post или численную ширину.
+' Такой отказ не создает фиктивные Pre/Post. Возможность расчета ширины
+' определяется отдельно по текущему НДС, а не по наличию точки Formation.
 Private Sub ILimitSearchProblem_HandleBracketNumericalFailure(ByVal lowLambda As Double, _
         ByVal failedLambda As Double, ByVal probeState As String)
     mCrack.LimitSearchSetCrackFormationStopReason _
@@ -296,14 +298,14 @@ End Sub
 ' Останавливает Formation при неизвестном probe-исходе, сохраняя его имя
 ' для диагностики вместо догадки о физическом результате.
 Private Sub ILimitSearchProblem_HandleUnexpectedState(ByVal probeState As String)
-    mCrack.LimitSearchSetCrackFormationStopReason _
-        "Поиск трещинообразования остановлен: " & probeState & "."
+    mCrack.LimitSearchSetFailure sfcInternalError, _
+        "Поиск образования трещины остановлен из-за неизвестного результата контрольной пробы: " & probeState & "."
 End Sub
 
-' Сохраняет текст входной ошибки, обнаруженной общим поиском. Машинная причина
-' проходит отдельным SetFailure и не извлекается из этого сообщения.
+' Передает входную ошибку общего поиска с явным typed-кодом InvalidInput.
+' Текст служит объяснением и не участвует в назначении статуса.
 Private Sub ILimitSearchProblem_SetInvalidInput(ByVal message As String)
-    mCrack.LimitSearchSetCrackFormationStopReason message
+    mCrack.LimitSearchSetFailure sfcInvalidInput, message
 End Sub
 
 ' Передает причину численной остановки Formation без назначения display-статуса.

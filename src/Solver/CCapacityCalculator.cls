@@ -106,6 +106,14 @@ Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = N
         "Число дополнительных попыток не может быть отрицательным.", "Введите целое число не меньше нуля; 0 отключает повторы.", settings
     If mBaseLoadSteps <= 0 Then RaiseInvalidSearchSetting "Capacity.BaseLoadSteps", _
         "Число ступеней нагрузки должно быть положительным.", "Введите целое число больше нуля.", settings
+    Dim solver As CCapacitySolver, maximumRetries As Long
+    Set solver = New CCapacitySolver
+    maximumRetries = solver.MaximumRetryCountForLoadSteps(mBaseLoadSteps)
+    If maximumRetries < 0 Then RaiseInvalidSearchSetting "Capacity.BaseLoadSteps", _
+        "Число ступеней не помещается в расчетный счетчик.", "Уменьшите значение до 2147483646 или менее.", settings
+    If mMaxRetries > maximumRetries Then RaiseInvalidSearchSetting "Capacity.MaxRetries", _
+        "Число ступеней с учетом повторов не помещается в расчетный счетчик.", _
+        "Уменьшите число повторов до " & CStr(maximumRetries) & " или уменьшите Capacity.BaseLoadSteps.", settings
 End Sub
 
 ' Возвращает контролируемую ошибку настройки с ключом и действием. Адрес

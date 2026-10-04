@@ -1,0 +1,59 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_hollow_cell_frozen_v287.xlsm
+SOURCE_SHA256: 5FF2A3C2D66926DA1399851FF66A12CB3B9D7A8D1484E36B0673DAE3AE5DD18F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f3f77f08515b4a0092e59320417767ac\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCrackWidth.RunAudit03FormationAdapterFailuresTests =====
+SUITE_STARTED: modTestCrackWidth.RunAudit03FormationAdapterFailuresTests; 2026-10-05T00:47:29
+EXCEL_AFTER_SUITE: pid=23476; workingSet=221851648; privateBytes=173645824; cpu=17511.234375
+EXCEL_AFTER_SUITE: pid=24184; workingSet=134496256; privateBytes=91463680; cpu=2.859375
+FAIL: audit03.formationAdapterFailure.1.status
+FAIL: audit03.formationAdapterFailure.1.code
+FAIL: audit03.formationAdapterFailure.1.display
+OK: audit03.formationAdapterFailure.1.reason
+OK: audit03.formationAdapterFailure.1.noPoint
+OK: audit03.formationAdapterFailure.1.noState
+OK: audit03.formationAdapterFailure.1.noSolve
+FAIL: audit03.formationAdapterFailure.1.terminal
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.1; Контрольная причина адаптера образования трещины.
+FAIL: audit03.formationAdapterFailure.2.status
+FAIL: audit03.formationAdapterFailure.2.code
+FAIL: audit03.formationAdapterFailure.2.display
+OK: audit03.formationAdapterFailure.2.reason
+OK: audit03.formationAdapterFailure.2.noPoint
+OK: audit03.formationAdapterFailure.2.noState
+OK: audit03.formationAdapterFailure.2.noSolve
+FAIL: audit03.formationAdapterFailure.2.terminal
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.2; Поиск трещинообразования остановлен: Неизвестная контрольная проба.
+OK: audit03.formationAdapterFailure.3.status
+OK: audit03.formationAdapterFailure.3.code
+OK: audit03.formationAdapterFailure.3.display
+OK: audit03.formationAdapterFailure.3.reason
+OK: audit03.formationAdapterFailure.3.noPoint
+OK: audit03.formationAdapterFailure.3.noState
+OK: audit03.formationAdapterFailure.3.noSolve
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.3; Контрольная причина адаптера образования трещины.
+FAIL: audit03.formationAdapterFailure.4.status
+FAIL: audit03.formationAdapterFailure.4.code
+FAIL: audit03.formationAdapterFailure.4.display
+FAIL: audit03.formationAdapterFailure.4.reason
+OK: audit03.formationAdapterFailure.4.noPoint
+OK: audit03.formationAdapterFailure.4.noState
+OK: audit03.formationAdapterFailure.4.noSolve
+FAIL: audit03.formationAdapterFailure.4.terminal
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.4; Вторичная контрольная численная остановка.
+OK: audit03.formationAdapterFailure.5.status
+OK: audit03.formationAdapterFailure.5.code
+OK: audit03.formationAdapterFailure.5.display
+OK: audit03.formationAdapterFailure.5.reason
+OK: audit03.formationAdapterFailure.5.noPoint
+OK: audit03.formationAdapterFailure.5.noState
+OK: audit03.formationAdapterFailure.5.noSolve
+OK: audit03.formationAdapterFailure.5.terminal
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.5; Контрольная причина адаптера образования трещины.
+TOTAL_FORMATION_ADAPTER_FAILURES: passed=26; failed=13
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f3f77f08515b4a0092e59320417767ac\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCrackWidth.RunAudit03FormationAdapterFailuresTests; 2026-10-05T00:47:29
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

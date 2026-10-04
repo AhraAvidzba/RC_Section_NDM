@@ -1104,6 +1104,7 @@ Public Function RunAudit03CapacityNumericConfigTests(Optional ByRef passed As Lo
         CheckCapacityNumericIsolation stats, systemRange, configured, position, section, provider, profiles, units
         CheckCapacityNumericInput stats, systemRange, configured, position, section, provider, profiles, units
     Next position
+    TestAudit03CapacityRetryRange stats
     GoTo Restore
 FailedRun:
     Check stats, "audit03.capacityNumeric.runtime." & CStr(Err.Number) & "." & Err.Description, False
@@ -2033,3 +2034,84 @@ Failed:
     On Error GoTo 0
     Check stats, "audit03.progressFile.runtime." & CStr(failureNumber) & "." & failureDescription, False
 End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: ПРЕДСТАВИМОСТЬ СТУПЕНЕЙ RETRY ====================
+
+' Проверяет совместный диапазон числа ступеней и повторов до любого solve.
+' Удвоение ступеней каждой попытки должно оставаться представимым в Long;
+' сообщение о неверной паре использует адрес фактически прочитанной таблицы.
+Private Sub TestAudit03CapacityRetryRange(ByRef stats As TConfigTestStats)
+    Dim sheet As Object, table As Object, cell As Object, settings As CSystemSettingsReader
+    Dim calculator As CCapacityCalculator, position As Long, scenario As Long
+    Dim baseSteps As Variant, retries As Variant, accepted As Variant
+    Dim errorNumber As Long, reason As String, prefix As String, key As String
+    Dim solveCount As Long, oldAlerts As Boolean
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    oldAlerts = Application.DisplayAlerts
+    Set sheet = ThisWorkbook.Worksheets.Add
+    baseSteps = Array(1, 1, 1, 3, 3, 1073741823, 1073741824, 2147483647, 1)
+    retries = Array(0, 30, 31, 29, 30, 1, 1, 0, 2147483647)
+    accepted = Array(True, True, False, True, False, True, False, False, False)
+    For position = 0 To 1
+        If position = 0 Then Set table = sheet.Range("A1:C3") Else Set table = sheet.Range("CH800:CJ802")
+        table.Cells(1, 1).Value2 = "Параметр": table.Cells(1, 2).Value2 = "Значение"
+        table.Cells(1, 3).Value2 = "Комментарий"
+        table.Cells(2, 1).Value2 = "Capacity.BaseLoadSteps"
+        table.Cells(3, 1).Value2 = "Capacity.MaxRetries"
+        For scenario = LBound(baseSteps) To UBound(baseSteps)
+            table.Cells(2, 2).Value2 = baseSteps(scenario)
+            table.Cells(3, 2).Value2 = retries(scenario)
+            Set settings = New CSystemSettingsReader: settings.LoadFromRange table
+            Set calculator = New CCapacityCalculator
+            calculator.ConfigureSearch 1#, "LoadMultiplier", "Bisection", 1024#, 0.01, 0.00001, _
+                settings.GetLong("Capacity.MaxRetries"), settings.GetLong("Capacity.BaseLoadSteps"), 60
+            errorNumber = 0: reason = vbNullString
+            Audit03ValidateCapacityRetryRange calculator, settings, errorNumber, reason
+            prefix = "audit03.capacityRetryRange.p" & CStr(position) & ".v" & CStr(scenario)
+            If CBool(accepted(scenario)) Then
+                Check stats, prefix & ".accepted", errorNumber = 0
+            Else
+                key = "Capacity.MaxRetries"
+                If CLng(baseSteps(scenario)) = 2147483647 Then key = "Capacity.BaseLoadSteps"
+                Set cell = ValueCell(table, key, 2)
+                Check stats, prefix & ".inputError", errorNumber = vbObjectError + 4190
+                Check stats, prefix & ".key", InStr(1, reason, key, vbBinaryCompare) > 0
+                Check stats, prefix & ".address", InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0
+                Check stats, prefix & ".action", InStr(1, reason, "Уменьшите", vbTextCompare) > 0
+            End If
+            LogLine stats, "CAPACITY_RETRY_RANGE: " & prefix & "; steps=" & CStr(baseSteps(scenario)) & _
+                "; retries=" & CStr(retries(scenario)) & "; error=" & CStr(errorNumber) & "; " & reason
+        Next scenario
+    Next position
+    Check stats, "audit03.capacityRetryRange.noSolve", SectionEquilibriumSolveCount() = solveCount
+    GoTo Restore
+Failed:
+    Check stats, "audit03.capacityRetryRange.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+End Sub
+
+' Перехватывает только ожидаемую ошибку предварительной валидации, чтобы
+' тест дошел до остальных пар значений. НДС и Search здесь не запускаются.
+Private Sub Audit03ValidateCapacityRetryRange(ByVal calculator As CCapacityCalculator, _
+        ByVal settings As CSystemSettingsReader, ByRef errorNumber As Long, ByRef reason As String)
+    On Error GoTo Failed
+    calculator.ValidateSettings settings
+    Exit Sub
+Failed:
+    errorNumber = Err.Number: reason = Err.Description
+End Sub
+
+' Возвращает отдельный короткий протокол крайних пар Config без запуска
+' полного набора численных расчетов и без изменения исходных таблиц книги.
+Public Function RunAudit03CapacityRetryRangeTests() As String
+    Dim stats As TConfigTestStats
+    TestAudit03CapacityRetryRange stats
+    LogLine stats, "TOTAL_CAPACITY_RETRY_RANGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CapacityRetryRangeTests = stats.Report
+End Function

@@ -1,5 +1,6 @@
 ﻿# Обновляет справку только в изолированной Audit03-книге. Проверяет фактический
-# лист, ссылки и неизменность input-значений/формул/validation. По явному флагу
+# лист, ссылки и неизменность input-значений/формул/validation. Подписи единиц
+# контрольных диаграмм связываются с INPUT Stress. По явному флагу
 # объединяет повторные общие селекторы RectSet с отчетом прежних значений;
 # не подтверждает
 # нормативную трассировку либо пиксельную визуальную приемку.
@@ -64,6 +65,32 @@ function Get-InputRecordsSignature([object[]]$Records) {
 function Assert-Help([string]$Name, [bool]$Passed, [string]$Detail) {
     if (-not $Passed) { $script:failed++ }
     $lines.Add("HELP|$Name|passed=$Passed|$Detail")
+}
+
+# Меняет только подпись размерности служебной таблицы и ссылки осей графиков.
+# Строки материалов, численные формулы точек и пользовательский ввод не трогает;
+# обе ячейки находятся по существующим заголовкам и именованной таблице единиц.
+function Update-MaterialControlUnitCaptions([object]$Book) {
+    $sheet = $Book.Worksheets.Item('Config')
+    $title = $sheet.Cells.Find('Контрольные точки диаграмм*', $sheet.Cells.Item(1,1), -4163, 1, 1, 1, $false, $false, $false)
+    if ($null -eq $title) { throw 'На Config не найдена контрольная таблица диаграмм.' }
+    $units = $Book.Names.Item('rngUnitSettings').RefersToRange
+    $stressCell = $null
+    for ($row = 2; $row -le $units.Rows.Count; $row++) {
+        if ([string]$units.Cells.Item($row,1).Value2 -eq 'Stress') { $stressCell = $units.Cells.Item($row,2); break }
+    }
+    if ($null -eq $stressCell) { throw 'В rngUnitSettings не найдена INPUT-единица Stress.' }
+    $caption = $title.Offset(1,5)
+    $caption.Formula = '="σ, "&' + $stressCell.Address($true,$true)
+    $axisFormula = "='" + $sheet.Name.Replace("'", "''") + "'!" + $caption.Address($true,$true)
+    foreach ($name in @('chMaterialConcreteDiagram','chMaterialSteelDiagram')) {
+        $axis = $sheet.ChartObjects($name).Chart.Axes(2)
+        $axis.HasTitle = $true
+        $axis.AxisTitle.Formula = $axisFormula
+        $lines.Add("MATERIAL_CONTROL_CAPTION: chart=$name; formula=$axisFormula")
+    }
+    $sheet.Calculate()
+    Assert-Help 'materialControlCaption' ([string]$caption.Value2 -eq ('σ, '+[string]$stressCell.Value2)) "cell=$($caption.Address($false,$false)); unit=$($stressCell.Value2)"
 }
 
 # Сравнивает область по номеру листа и формуле XML. Канонизация имени
@@ -152,6 +179,7 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'snapshotGeometryNumbersContract' ($body.Contains('координаты, площадь и диаметр арматуры должны содержать числа') -and $body.Contains('Текст с числовым началом, логическое значение и ошибка формулы не принимаются как число') -and $body.Contains('фактическую ячейку Results')) 'Geometry restoration rejects corrupted numbers without losing source address'
     Assert-Help 'axisFontInputContract' ($body.Contains('При Plot.AxisLabelsEnabled=Yes значение обязательно и больше нуля') -and $body.Contains('При No высота подписей не читается')) 'Active axis font is required; disabled font is not read'
     Assert-Help 'gradientDisabledStillUsesStateColor' ($body.Contains('No отключает градации интенсивности: работающие элементы получают один цвет')) 'No gradient does not mean no material color'
+    Assert-Help 'materialControlStressUnits' ($body.Contains('Напряжения σ в контрольной таблице и на ее графиках показаны в текущей INPUT-единице Stress') -and $body.Contains('OUTPUT Stress на этот контрольный блок не влияет')) 'Formula control values and axis captions use INPUT Stress'
     $config = $Book.Worksheets.Item('Config')
     $count = 0
     foreach ($link in $config.Hyperlinks) {
@@ -220,6 +248,7 @@ try {
         $lines.Add('SYSTEM_UNIT_CAPTION: '+(ConvertTo-Json $record -Compress))
     }
     Add-SettingsInstructions $book $book.Worksheets.Item('Config') $book.Worksheets.Item('Справка')
+    Update-MaterialControlUnitCaptions $book
     $after = Get-InputSignature $book
     $afterRecords = @($script:lastInputRecords)
     if ($before -ne $after) {

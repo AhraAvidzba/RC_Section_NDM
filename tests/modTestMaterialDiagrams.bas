@@ -38,6 +38,7 @@ Public Function RunMaterialDiagramTests() As String
     TestAudit02ExtensionOverflowIsExplicit stats
     TestAudit03DiagramArrayInputs stats
     TestAudit03MaterialConfigBehavior stats
+    TestAudit03MaterialControlUnits stats
 
     AppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -827,4 +828,126 @@ Private Function Audit03MaterialDiagramSignature(ByVal diagram As CMaterialDiagr
         signature = signature & CStr(diagram.PointStrain(i)) & ":" & CStr(diagram.PointStress(i)) & "|"
     Next i
     Audit03MaterialDiagramSignature = signature
+End Function
+
+' ==================== ДЛЯ ТЕСТОВ: ЕДИНИЦЫ КОНТРОЛЬНЫХ ТОЧЕК ====================
+
+' Проверяет настоящие формульные точки Config в пяти INPUT-единицах Stress.
+' Таблица не решает НДС: ее 52 узла сопоставляются с физическими диаграммами
+' provider-а. Подписи таблицы и графиков должны называть единицу ее чисел,
+' а численные формулы должны сохранять прямые ссылки и обычную арифметику.
+Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
+    Dim config As Object, title As Object, concreteRange As Object, steelRange As Object, unitRange As Object
+    Dim savedConcrete As Variant, savedSteel As Variant, savedUnits As Variant, stressCell As Object
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim spec As CMaterialModelSpec, diagram As CMaterialDiagram, row As Object, cell As Object
+    Dim unitName As Variant, chartName As Variant, material As String, valueSet As String, kind As String
+    Dim key As String, previousKey As String, pointIndex As Long, rowIndex As Long, columnIndex As Long
+    Dim prefix As String, formula As String, pattern As Object, baselineFactor As Double, factor As Double
+    Dim solveCount As Long, expectedPoints As Long
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set config = ThisWorkbook.Worksheets.Item("Config")
+    Set title = config.Cells.Find("Контрольные точки диаграмм*", config.Cells.Item(1, 1), -4163, 1, 1, 1, False, False, False)
+    If title Is Nothing Then Err.Raise vbObjectError + 9904, "TestAudit03MaterialControlUnits", "В Config нет контрольной таблицы диаграмм."
+    Set concreteRange = ThisWorkbook.Names.Item("rngConcreteMaterialParameters").RefersToRange
+    Set steelRange = ThisWorkbook.Names.Item("rngSteelMaterialParameters").RefersToRange
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    savedConcrete = concreteRange.Formula: savedSteel = steelRange.Formula: savedUnits = unitRange.Formula
+    For rowIndex = 2 To unitRange.Rows.Count
+        If CStr(unitRange.Cells(rowIndex, 1).Value2) = "Stress" Then Set stressCell = unitRange.Cells(rowIndex, 2)
+    Next rowIndex
+    If stressCell Is Nothing Then Err.Raise vbObjectError + 9905, "TestAudit03MaterialControlUnits", "В Config нет INPUT-единицы Stress."
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    baselineFactor = units.InputStressToInternal(1#)
+    Set pattern = CreateObject("VBScript.RegExp")
+    pattern.Pattern = "^=(\$?[A-Z]+\$?[1-9][0-9]*|[0-9]+(\.[0-9]+)?|[+\-*/()]|\s)+$"
+    For Each unitName In Array("MPa", "kPa", "Pa", "kgf/cm2", "tf/m2")
+        concreteRange.Formula = savedConcrete: steelRange.Formula = savedSteel
+        stressCell.Value2 = CStr(unitName)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        units.LoadFromSettings settings
+        factor = units.InputStressToInternal(1#)
+        Audit03RescaleControlMaterialInputs concreteRange, baselineFactor / factor
+        Audit03RescaleControlMaterialInputs steelRange, baselineFactor / factor
+        config.Calculate
+        Set provider = Audit03MaterialConfigProvider()
+        prefix = "audit03.materialControls." & CStr(unitName)
+        AssertTrue stats, prefix & ".tableUnit", CStr(title.Offset(1, 5).Value2) = ChrW$(&H3C3) & ", " & CStr(unitName)
+        For Each chartName In Array("chMaterialConcreteDiagram", "chMaterialSteelDiagram")
+            AssertTrue stats, prefix & ".chartUnit." & CStr(chartName), _
+                CStr(config.ChartObjects.Item(CStr(chartName)).Chart.Axes(2).AxisTitle.Text) = ChrW$(&H3C3) & ", " & CStr(unitName)
+        Next chartName
+        previousKey = vbNullString: pointIndex = 0
+        For rowIndex = 0 To 51
+            Set row = title.Offset(rowIndex + 2, 0)
+            material = CStr(row.Value2): kind = CStr(row.Offset(0, 2).Value2)
+            If CStr(row.Offset(0, 1).Value2) = "I" Then valueSet = "ULS(I)" Else valueSet = "SLS(II)"
+            key = material & "|" & valueSet & "|" & kind
+            If key <> previousKey Then
+                If pointIndex > 0 Then AssertTrue stats, prefix & ".pointCount." & previousKey, pointIndex = expectedPoints
+                Set spec = New CMaterialModelSpec
+                spec.Initialize valueSet, kind, "UseDiagram", kind
+                If material = "Concrete" Then
+                    Set diagram = provider.ConcreteMaterialFromSpec(spec)
+                ElseIf material = "Steel" Then
+                    Set diagram = provider.SteelMaterialFromSpec(spec)
+                Else
+                    Err.Raise vbObjectError + 9906, "TestAudit03MaterialControlUnits", "Неизвестный материал контрольной строки."
+                End If
+                expectedPoints = diagram.PointCount
+                pointIndex = 0: previousKey = key
+            End If
+            pointIndex = pointIndex + 1
+            AssertClose stats, prefix & ".strain." & CStr(rowIndex), CDbl(row.Offset(0, 4).Value2), diagram.PointStrain(pointIndex), 0.000000000001
+            AssertClose stats, prefix & ".stress." & CStr(rowIndex), units.InputStressToInternal(CDbl(row.Offset(0, 5).Value2)), diagram.PointStress(pointIndex), 0.00000001
+            For columnIndex = 4 To 5
+                Set cell = row.Offset(0, columnIndex)
+                If cell.HasFormula Then
+                    formula = CStr(cell.Formula)
+                    AssertTrue stats, prefix & ".directFormula." & cell.Address(False, False), pattern.Test(formula)
+                Else
+                    AssertClose stats, prefix & ".zeroLiteral." & cell.Address(False, False), CDbl(cell.Value2), 0#, 0#
+                End If
+            Next columnIndex
+        Next rowIndex
+        AssertTrue stats, prefix & ".pointCount." & previousKey, pointIndex = expectedPoints
+        AppendLine stats, "MATERIAL_CONTROL_UNITS: unit=" & CStr(unitName) & "; points=52; table=" & title.Address(False, False)
+    Next unitName
+    AssertTrue stats, "audit03.materialControls.noSolve", solveCount = SectionEquilibriumSolveCount()
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.materialControls.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not IsEmpty(savedConcrete) Then concreteRange.Formula = savedConcrete
+    If Not IsEmpty(savedSteel) Then steelRange.Formula = savedSteel
+    If Not IsEmpty(savedUnits) Then unitRange.Formula = savedUnits
+    If Not config Is Nothing Then config.Calculate
+    On Error GoTo 0
+End Sub
+
+' Переводит только размерные сопротивления и модули контрольного fixture.
+' Деформации и неприменимая растянутая ячейка Rb,mc2 остаются без изменения.
+Private Sub Audit03RescaleControlMaterialInputs(ByVal table As Object, ByVal factor As Double)
+    Dim row As Long, column As Long, key As String
+    For row = 2 To table.Rows.Count
+        key = CStr(table.Cells(row, 1).Value2)
+        If InStr(1, key, ".R.", vbBinaryCompare) > 0 Or Right$(key, 2) = ".E" Or key = "Concrete.Rb.mc2" Then
+            For column = 2 To 3
+                If IsNumeric(table.Cells(row, column).Value2) Then table.Cells(row, column).Value2 = CDbl(table.Cells(row, column).Value2) * factor
+            Next column
+        End If
+    Next row
+End Sub
+
+' Возвращает отдельный протокол контрольных точек и подписей без полного
+' material-suite. Все временно измененные входные таблицы возвращаются.
+Public Function RunAudit03MaterialControlUnitsTests() As String
+    Dim stats As TMaterialTestStats
+    TestAudit03MaterialControlUnits stats
+    AppendLine stats, "TOTAL_MATERIAL_CONTROL_UNITS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03MaterialControlUnitsTests = stats.Report
 End Function

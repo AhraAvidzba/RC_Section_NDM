@@ -55,6 +55,7 @@ Public Function RunCrackWidthTests() As String
     TestAudit03FormationTypedFailures stats
     TestAudit03FormationSearchLifecycle stats
     TestAudit03FormationResidualContracts stats
+    TestAudit03FormationAdapterFailures stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -1573,6 +1574,7 @@ Private Sub TestAudit03FormationResidualContracts(ByRef stats As TCrackTestStats
     For Each path In Array("LambdaMx", "LambdaMy", "LambdaMxy", "LambdaN", "LambdaNMxy")
         For scenario = 1 To 8
             Set calculator = New CCrackFormationCalculator
+            calculator.DiagnosticsEnabled = True
             Set section = validSection
             Set concrete = provider.ConcreteMaterialFromSpec(TestCrackInitiationSpec())
             Set steel = provider.SteelMaterialFromSpec(TestCrackInitiationSpec())
@@ -1611,6 +1613,16 @@ Private Sub TestAudit03FormationResidualContracts(ByRef stats As TCrackTestStats
             AssertTrue stats, prefix & ".noPoint", Not search.HasLimitPoint And Not calculator.HasLimitPoint
             AssertTrue stats, prefix & ".noState", search.PointState Is Nothing
             AssertTrue stats, prefix & ".reason", Len(Trim$(search.Meta.ResultComment)) > 0
+            If scenario = 5 Or scenario = 6 Then
+                AssertTrue stats, prefix & ".localizedRuntimeReason", _
+                    InStr(1, search.Meta.ResultComment, "Object variable", vbTextCompare) = 0 And _
+                    InStr(1, search.Meta.ResultComment, "Overflow", vbTextCompare) = 0
+                Dim runtimeNumber As Long
+                If scenario = 5 Then runtimeNumber = 91 Else runtimeNumber = 6
+                AssertTrue stats, prefix & ".runtimeDiagnostic", _
+                    InStr(1, search.DiagnosticLog, "formationResidualRuntimeError=" & CStr(runtimeNumber), vbBinaryCompare) > 0 And _
+                    InStr(1, search.DiagnosticLog, Error$(runtimeNumber), vbBinaryCompare) > 0
+            End If
             If scenario >= 7 Then
                 AssertTrue stats, prefix & ".noTerminalProbe", calculator.SolverCallCount = 0
                 AssertTrue stats, prefix & ".primaryReason", InStr(1, search.Meta.ResultComment, "Контрольная первичная", vbBinaryCompare) = 1
@@ -1627,3 +1639,61 @@ Private Sub TestAudit03FormationResidualContracts(ByRef stats As TCrackTestStats
         Next scenario
     Next path
 End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: ПРИЧИНЫ ОСТАНОВКИ FORMATION-АДАПТЕРА ====================
+
+' Проверяет typed-протокол callback-ов общего Search без решения равновесия.
+' Ошибка входа и неизвестный внутренний probe-исход не являются NumFail;
+' вторичная численная остановка не должна подменять первичную terminal-причину.
+Private Sub TestAudit03FormationAdapterFailures(ByRef stats As TCrackTestStats)
+    Dim calculator As CCrackFormationCalculator, adapter As CCrackLimitSearchProblem
+    Dim context As ILimitSearchProblem, result As CLimitSearchResult, policy As CResultStatusPolicy
+    Dim scenario As Long, prefix As String, reason As String, expectedDisplay As String
+    Dim expectedStatus As EResultInternalStatus, expectedCode As EResultCode
+    Set policy = New CResultStatusPolicy
+    For scenario = 1 To 5
+        Set calculator = New CCrackFormationCalculator
+        Set adapter = New CCrackLimitSearchProblem: adapter.Initialize calculator
+        Set context = adapter
+        reason = "Контрольная причина адаптера образования трещины."
+        expectedStatus = rsInvalidInput: expectedCode = rcInvalidInput: expectedDisplay = "InputErr"
+        Select Case scenario
+            Case 1, 4: context.SetInvalidInput reason
+            Case 2
+                context.HandleUnexpectedState "Неизвестная контрольная проба"
+                reason = "Неизвестная контрольная проба"
+                expectedStatus = rsInternalError: expectedCode = rcInternalError: expectedDisplay = "CalcErr"
+            Case 3
+                context.SetNumericalFailure reason
+                expectedStatus = rsNumericalFailure: expectedCode = rcNumericalFailure: expectedDisplay = "NumFail"
+            Case 5
+                context.SetFailure sfcInternalError, reason
+                expectedStatus = rsInternalError: expectedCode = rcInternalError: expectedDisplay = "CalcErr"
+        End Select
+        If scenario >= 4 Then context.SetNumericalFailure "Вторичная контрольная численная остановка."
+        Set result = calculator.BuildSearchSnapshot("LoadMultiplier")
+        prefix = "audit03.formationAdapterFailure." & CStr(scenario)
+        AssertTrue stats, prefix & ".status", result.Meta.InternalStatus = expectedStatus
+        AssertTrue stats, prefix & ".code", result.Meta.ResultCode = expectedCode
+        AssertTrue stats, prefix & ".display", policy.ExternalStatus(result.Meta) = expectedDisplay
+        AssertTrue stats, prefix & ".reason", InStr(1, result.Meta.ResultComment, reason, vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".noPoint", Not result.HasLimitPoint
+        AssertTrue stats, prefix & ".noState", result.PointState Is Nothing
+        AssertTrue stats, prefix & ".noSolve", calculator.SolverCallCount = 0
+        If scenario <> 3 Then AssertTrue stats, prefix & ".terminal", context.StoppedTerminally
+        AppendLine stats, "FORMATION_ADAPTER_FAILURE: " & prefix & "; " & result.Meta.ResultComment
+    Next scenario
+End Sub
+
+' Возвращает отдельный протокол callback-классификации, не меняя материалы,
+' настройки книги или существующие численные expected и tolerance.
+Public Function RunAudit03FormationAdapterFailuresTests() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestAudit03FormationAdapterFailures stats
+    AppendLine stats, "TOTAL_FORMATION_ADAPTER_FAILURES: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03FormationAdapterFailuresTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03FormationAdapterFailuresTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function

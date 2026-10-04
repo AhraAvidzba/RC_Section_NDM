@@ -83,6 +83,18 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
     Dim cellMinY As Double
     Dim allCornersInside As Boolean
     Dim anyCornerInside As Boolean
+    Dim hasOpening As Boolean, hollowGeometry As CGeometryHollowRectangle
+    Dim openingMinX As Double, openingMaxX As Double, openingMinY As Double, openingMaxY As Double
+    ' Четыре бетонных угла не исключают проем внутри ячейки. Его габариты
+    ' читаем один раз; пересекающиеся ячейки уточняет обычный ContainsPoint.
+    If boundarySubdivisions > 1 Then
+        If TypeOf geometry Is CGeometryHollowRectangle Then
+            Set hollowGeometry = geometry
+            hasOpening = True
+            openingMinX = hollowGeometry.OpeningMinX: openingMaxX = hollowGeometry.OpeningMaxX
+            openingMinY = hollowGeometry.OpeningMinY: openingMaxY = hollowGeometry.OpeningMaxY
+        End If
+    End If
 
     For iy = 0 To ny - 1
         cellMinY = minY + iy * stepY
@@ -97,6 +109,10 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
                 If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
             Else
                 GetCornerStatus geometry, cellMinX, cellMinY, stepX, stepY, allCornersInside, anyCornerInside
+                If allCornersInside And hasOpening Then
+                    If cellMinX < openingMaxX And cellMinX + stepX > openingMinX And _
+                            cellMinY < openingMaxY And cellMinY + stepY > openingMinY Then allCornersInside = False
+                End If
                 If allCornersInside Then
                     AddFiber x, y, stepX, stepY, materialID
                 Else

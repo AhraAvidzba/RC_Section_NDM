@@ -27,6 +27,8 @@ Public Function RunWorkbookInterfaceTests() As String
 
     Dim stats As TUiTestStats
     Dim t0 As Double
+    Dim suiteSheet As Object
+    Set suiteSheet = ThisWorkbook.Application.ActiveSheet
     t0 = Timer
 
     AppendLine stats, "RUN: TestButtons"
@@ -67,9 +69,15 @@ Public Function RunWorkbookInterfaceTests() As String
         RunWorkbookInterfaceTests = stats.Report
         Exit Function
     End If
+    ' Массовые Config-прогоны не требуют отображения постоянно меняющегося
+    ' Results. Активный лист suite возвращаем перед окончательным отчетом.
+    ThisWorkbook.Worksheets.Item("Config").Activate
     TestAudit03UnitSignConsumers stats
+    AppendLine stats, "RUN: TestAudit03UnitSignChoices; " & Audit02ExcelMemory()
     TestAudit03UnitSignChoices stats
+    AppendLine stats, "RUN: TestAudit03UnitSignEquivalence; " & Audit02ExcelMemory()
     TestAudit03UnitSignEquivalence stats
+    AppendLine stats, "RUN: TestAudit03InputUnitConsumers; " & Audit02ExcelMemory()
     TestAudit03InputUnitConsumers stats
     AppendLine stats, "RUN: Audit03 RectSet selectors; " & Audit02ExcelMemory()
     TestAudit03RectSetSharedSelectors stats
@@ -211,14 +219,21 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Passed = stats.Passed + autoCADPassed
     stats.Failed = stats.Failed + autoCADFailed
 
+    suiteSheet.Activate
+    AssertTrue stats, "ui.suite.activeSheetRestored", ThisWorkbook.Application.ActiveSheet Is suiteSheet
     AppendLine stats, "TOTAL_WORKBOOK_UI: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunWorkbookInterfaceTests = stats.Report
     Exit Function
 
 Failed:
-    RunWorkbookInterfaceTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
-        "; source=" & Err.Source & "; description=" & Err.Description
+    Dim failureNumber As Long, failureSource As String, failureDescription As String
+    failureNumber = Err.Number: failureSource = Err.Source: failureDescription = Err.Description
+    On Error Resume Next
+    If Not suiteSheet Is Nothing Then suiteSheet.Activate
+    On Error GoTo 0
+    RunWorkbookInterfaceTests = stats.Report & "RUNTIME ERROR: " & CStr(failureNumber) & _
+        "; source=" & failureSource & "; description=" & failureDescription
 End Function
 
 ' ДЛЯ ТЕСТОВ
@@ -5676,7 +5691,10 @@ End Function
 ' Внешние LC читаются обычным reader-ом; сравниваются все сохраненные named-state,
 ' напряжения, геометрия, физические признаки и metadata. Output-only перевод
 ' выполняется после solve и не должен запускать ни одного дополнительного НДС.
-Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
+' Массовый табличный прогон не отображает меняющийся Results: Excel накапливает
+' ресурсы от его многократного оформления. Исходный активный лист возвращается;
+' короткая stage-диагностика отдельно сохраняет режим воспроизведения этого сбоя.
+Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional ByVal stopAfterCases As Long = 0)
     Dim unitRange As Object, signRange As Object, systemRange As Object, profileRange As Object, loads As Object
     Dim savedUnits As Variant, savedSigns As Variant, savedSystem As Variant, savedProfiles As Variant, savedLoads As Variant
     Dim forceNames As Variant, momentNames As Variant, forceFactors As Variant, momentFactors As Variant
@@ -5690,8 +5708,10 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
     Dim baselineElements As Variant, baselineGeometry As Variant, baselineProperties As Variant
     Dim actual As Variant, signs As Long, forceIndex As Long, momentIndex As Long, caseIndex As Long, i As Long
     Dim lengthFactor As Double, areaFactor As Double, stressFactor As Double, curvatureFactor As Double
-    Dim solveCount As Long, prefix As String
+    Dim solveCount As Long, prefix As String, savedSheet As Object
     On Error GoTo Failed
+    Set savedSheet = ThisWorkbook.Application.ActiveSheet
+    If stopAfterCases = 0 Then ThisWorkbook.Worksheets.Item("Config").Activate
     Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
     Set signRange = ThisWorkbook.Names.Item("rngSignConventionSettings").RefersToRange
     Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
@@ -5740,6 +5760,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
         For forceIndex = 0 To 2
             For momentIndex = 0 To 2
                 prefix = "audit03.unitEquivalent.s" & CStr(signs) & ".f" & CStr(forceIndex) & ".m" & CStr(momentIndex)
+                AppendLine stats, "RUN: " & prefix & "; " & Audit02ExcelMemory()
                 unitRange.Cells(4, 2).Value2 = forceNames(forceIndex)
                 unitRange.Cells(5, 2).Value2 = momentNames(momentIndex)
                 SetSystemSetting "Solver.ToleranceN", CStr(0.1 / CDbl(forceFactors(forceIndex)))
@@ -5770,6 +5791,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
                     AssertClose stats, prefix & ".My." & CStr(i), batch.UserMy(i + 1), CDbl(myValues(i)), 0.000001
                 Next i
                 batch.Execute
+                If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".batch.done; " & Audit02ExcelMemory()
                 solveCount = batch.SolverCallCount
                 AssertTrue stats, prefix & ".solved", solveCount > 0
                 ' Выбор OUTPUT меняем уже после получения всех физических состояний.
@@ -5786,8 +5808,11 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
                 Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
                 units.LoadFromSettings settings
                 snapshot.WriteResults ThisWorkbook, section, provider, batch, units
+                If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".snapshot.done; " & Audit02ExcelMemory()
                 summary.WriteSummary ThisWorkbook, batch, units, section
+                If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".summary.done; " & Audit02ExcelMemory()
                 Audit03AssertAutoCADMmGeometry stats, prefix, section
+                If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".readback.done; " & Audit02ExcelMemory()
                 AssertTrue stats, prefix & ".outputDoesNotSolve", solveCount = batch.SolverCallCount
                 AssertTextEquals stats, prefix & ".outputForceUnit", ResultsPropertyValue("ALL", "Output.ForceUnit"), units.OutputForceUnit
                 AssertTextEquals stats, prefix & ".outputStressUnit", ResultsPropertyValue("ALL", "Output.StressUnit"), CStr(stressNames(caseIndex Mod 5))
@@ -5812,6 +5837,9 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats)
                         CDbl(forceFactors((caseIndex \ 9) Mod 3)), CDbl(momentFactors((caseIndex \ 3) Mod 3)), signN, signMx, signMy
                 End If
                 caseIndex = caseIndex + 1
+                If stopAfterCases > 0 Then
+                    If caseIndex >= stopAfterCases Then GoTo Restore
+                End If
             Next momentIndex
         Next forceIndex
     Next signs
@@ -5827,8 +5855,57 @@ Restore:
     If Not systemRange Is Nothing Then systemRange.Formula = savedSystem
     If Not profileRange Is Nothing Then profileRange.Formula = savedProfiles
     If Not loads Is Nothing Then loads.Formula = savedLoads
+    If stopAfterCases = 0 Then
+        If Not savedSheet Is Nothing Then savedSheet.Activate
+    End If
     On Error GoTo 0
+    If stopAfterCases = 0 Then AssertTrue stats, "audit03.unitEquivalent.activeSheetRestored", _
+        ThisWorkbook.Application.ActiveSheet Is savedSheet
 End Sub
+
+' ДЛЯ ТЕСТОВ: два первых полных unit/sign-варианта локализуют расход памяти
+' между расчетом, snapshot writer, summary writer и чтением AutoCAD-данных.
+' Это диагностический срез, не замена штатных 72 вариантов и их приемки.
+Public Function RunAudit03UnitSignStageDiagnosticTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03UnitSignEquivalence stats, 2
+    AppendLine stats, "TOTAL_UNIT_SIGN_STAGE_DIAGNOSTIC: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UnitSignStageDiagnosticTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: повторяет те же два варианта с изоляцией режима приложения.
+' No/Yes меняют только ScreenUpdating, Config проверяет влияние активного листа,
+' Guard использует штатный быстрый режим. Все исходные настройки возвращаются.
+Public Function RunAudit03UnitSignStageScreenDiagnosticTests(Optional ByVal screenMode As String = "No") As String
+    Dim savedScreen As Boolean, stats As TUiTestStats, guard As CExcelAppStateGuard, savedSheet As Object
+    savedScreen = ThisWorkbook.Application.ScreenUpdating
+    Set savedSheet = ThisWorkbook.Application.ActiveSheet
+    On Error GoTo Failed
+    Select Case screenMode
+        Case "No", "Yes"
+            ThisWorkbook.Application.ScreenUpdating = (screenMode = "Yes")
+        Case "Config"
+            ThisWorkbook.Worksheets.Item("Config").Activate
+        Case "Guard"
+            Set guard = New CExcelAppStateGuard
+            guard.Enter ThisWorkbook.Application
+        Case Else
+            Err.Raise vbObjectError + 4496, "RunAudit03UnitSignStageScreenDiagnosticTests", "Неизвестный режим диагностического теста."
+    End Select
+    AppendLine stats, "RUN: unitStage.screenUpdating=" & CStr(ThisWorkbook.Application.ScreenUpdating)
+    TestAudit03UnitSignEquivalence stats, 2
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: unitStage.screen.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    If Not guard Is Nothing Then guard.Restore
+    savedSheet.Activate
+    ThisWorkbook.Application.ScreenUpdating = savedScreen
+    AssertTrue stats, "unitStage.screen.restored", ThisWorkbook.Application.ScreenUpdating = savedScreen
+    AppendLine stats, "TOTAL_UNIT_SIGN_STAGE_SCREEN: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03UnitSignStageScreenDiagnosticTests = stats.Report
+End Function
 
 ' ДЛЯ ТЕСТОВ: нормализует только выводимые численные поля независимыми
 ' коэффициентами. Strain и PhysicalState не меняются от пользовательских
@@ -5971,7 +6048,8 @@ End Function
 ' ДЛЯ ТЕСТОВ: четыре формы и 30 эквивалентных систем INPUT для каждой.
 ' Геометрия, материалы, допуски, crack width и устойчивость строятся из Config;
 ' сравниваются численные снимки и все комментарии подробных output-блоков.
-' Измененные таблицы восстанавливаются даже после ошибки запуска.
+' Измененные таблицы и активный лист восстанавливаются даже после ошибки;
+' массовый прогон не отображает Results во время каждой табличной записи.
 Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     Dim rangeNames As Variant, original As Collection, prepared As Collection, name As Variant
     Dim target As Object, loads As Object, lengthNames As Variant, lengthFactors As Variant
@@ -5979,8 +6057,10 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     Dim lengthIndex As Long, stressIndex As Long, curvatureIndex As Long, i As Long, caseCount As Long
     Dim baselineElements As Variant, baselineGeometry As Variant, baselineProperties As Variant
     Dim baselineDiagrams As Variant, baselineStrength As Variant, baselineCrack As Variant, baselineStability As Variant
-    Dim actual As Variant, prefix As String, message As String, caseFailures As Long
+    Dim actual As Variant, prefix As String, message As String, caseFailures As Long, savedSheet As Object
     On Error GoTo Failed
+    Set savedSheet = ThisWorkbook.Application.ActiveSheet
+    ThisWorkbook.Worksheets.Item("Config").Activate
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", _
         "rngSteelMaterialParameters", "rngCircleGeometry", "rngRectSetGeometry", _
@@ -6107,7 +6187,9 @@ Restore:
             ThisWorkbook.Names.Item(CStr(rangeNames(i))).RefersToRange.Formula = original.Item(i + 1)
         Next i
     End If
+    If Not savedSheet Is Nothing Then savedSheet.Activate
     On Error GoTo 0
+    AssertTrue stats, "audit03.inputUnits.activeSheetRestored", ThisWorkbook.Application.ActiveSheet Is savedSheet
 End Sub
 
 ' ДЛЯ ТЕСТОВ: изменяет только размерные числовые поля согласно видимым

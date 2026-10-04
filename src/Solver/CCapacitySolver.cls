@@ -1219,6 +1219,21 @@ Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal co
     End If
 End Function
 
+' Определяет наибольшее число удвоений ступеней, представимое счетчиком Long.
+' Возвращает -1 для неверного базового числа. Это техническая граница
+' BaseLoadSteps*2^attempt, а не ограничение физических нагрузок или точности.
+Friend Function MaximumRetryCountForLoadSteps(ByVal baseLoadSteps As Long) As Long
+    MaximumRetryCountForLoadSteps = -1
+    If baseLoadSteps < 1 Or baseLoadSteps > 2147483646 Then Exit Function
+    Dim steps As Double, count As Long
+    steps = CDbl(baseLoadSteps)
+    Do While steps <= 1073741823#
+        steps = steps * 2#
+        count = count + 1
+    Loop
+    MaximumRetryCountForLoadSteps = count
+End Function
+
 ' Проверяет настройки ветки LoadMultiplier перед одномерным поиском lambda.
 ' Здесь контролируются только параметры самой скобки/поиска, а не геометрия
 ' или материалы, которые проверяются выше по цепочке.
@@ -1238,6 +1253,10 @@ Private Function ValidateLoadMultiplierSettings() As Boolean
         SetInvalidConfiguration "На листе Config в строке Capacity.MaxRetries задайте неотрицательное число повторных попыток."
     ElseIf mSolverBaseLoadSteps <= 0 Then
         SetInvalidConfiguration "На листе Config в строке Capacity.BaseLoadSteps задайте число ступеней нагрузки больше нуля."
+    ElseIf MaximumRetryCountForLoadSteps(mSolverBaseLoadSteps) < 0 Then
+        SetInvalidConfiguration "Число ступеней Capacity.BaseLoadSteps не помещается в расчетный счетчик. Уменьшите его до 2147483646 или менее."
+    ElseIf mMaxRetries > MaximumRetryCountForLoadSteps(mSolverBaseLoadSteps) Then
+        SetInvalidConfiguration "Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите Capacity.MaxRetries или Capacity.BaseLoadSteps."
     Else
         ValidateLoadMultiplierSettings = True
     End If

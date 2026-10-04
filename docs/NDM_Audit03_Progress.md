@@ -69,6 +69,82 @@
 
 ## Актуальная Точка Продолжения
 
+- Срез v299-v300, 2026-10-05: отдельный полный WorkbookUI v295 завершен
+  `65754/0`, elapsed 1551.935 с, watchdog exit=0 и source unchanged=True.
+  Results SHA после save/reopen
+  `8810490ACAE7146FAA8815886A99EECCBF5EB3F7247451A42FCDC23032F7FE1C`;
+  status/style SHA
+  `01E8F0949A735857C2EFBBB46916247AF70F2BFA4077FBD9F776684AFE845152`
+  также неизменен. Изоляция массовых тестов не меняет production writers,
+  настройки/варианты или численные comparisons. Исторические остановы v286,
+  v288-v294 ниже остаются отрицательными/неполными доказательствами.
+- Контрольные диаграммы D02: frozen v296c `1084/12` воспроизвел ровно
+  двенадцать неверных подписей единиц (четыре альтернативные Stress INPUT
+  единицы, таблица и два графика). Все 52 точки восьми диаграмм уже совпадали
+  с physical provider; расчетные формулы не изменялись. Builder и updater
+  теперь связывают заголовок и оси с фактической INPUT Stress ячейкой.
+  Positive v299 `1096/0`: пять единиц, 88 прямых формул, 16 нулевых точек,
+  table/chart labels. Setup failures v296/v296b/v297/v298 не являются
+  подтвержденными ошибками расчетного ядра и сохранены отдельно.
+- Actual help v299: 2087 строк, 140 links, 118 Shapes; 760 пользовательских
+  полей/формул/validation сохранены до и после save/reopen, signature
+  `AB4BE6BA8F6645C426CFBDDC3456F460499352595C0B4B5A85598A3AE6D93D19`.
+  В справке уточнены единицы контрольных диаграмм, дискретизация малого
+  внутреннего проема и техническая представимость retry-ступеней.
+  Source/VBE equality v299: 108/108, failed=0, 83 production + 3 test classes.
+  Текущий export SHA
+  `7B6D99707E297BA7EA5B4A47DB03224BB5003DD8D675757A4CB5F984C344CD04`.
+- Новая полная сборка v300 завершена штатным Build-Workbook.ps1, exit=0;
+  `RC_Section_NDM_clean_controls_v300.xlsm` SHA
+  `F04F651233929506DCECA448C0530D2176D0FDAD4899C470DF6CF93264B26626`.
+  Полный eight-suite Off запущен с watchdog 3600 с; первые пять suites
+  завершены без ошибок, Batch выполняется. После него нужны полный On,
+  actual clean/update equality/format/help, Config registry и оставшиеся
+  широкая matrix/benchmark/self-audit. До завершения запуска не открывать
+  другую Excel COM-job. Owned Excel PID 28432, protected PID 23476.
+  Новый census: 108 modules, 4560 methods, 1877 guards, 964 missing individual
+  comments и 0 suspected templates; общий semantic review остается Pending.
+  Основная output-книга и пользовательское ТЗ не изменены.
+- Рабочий срез v287-v290, 2026-10-05: четыре подтвержденных контрпримера
+  исправлены без новых классов и изменения расчетных допусков. Hollow opening
+  внутри полной ячейки: negative 9/13, positive 22/0; четыре угла больше не
+  разрешают fast path при пересечении bbox проема. Formation residual:
+  negative 450/20, positive 470/0; VBA 6/91 дают русскую причину, raw exception
+  остается в diagnostic. Formation adapter: negative 26/13, positive 39/0;
+  InvalidInput/InternalError не заменяются NumericalFailure. Capacity retry
+  range: negative 9/40, positive 49/0; общий владелец проверяет представимость
+  BaseLoadSteps*2^MaxRetries и сообщает фактический адрес Config с действием.
+  v288 SHA `2322D9FD729823D4946F8E5C8C2EB2194A1893098C9185F472D8D6CF66022213`;
+  export SHA `950CF537E5AA1416623EFFC2AE2F15C25FE2FF5377551B99BDBF99CE3A81A0BD`,
+  equality 108/108. Последние тестовые UI markers добавлены после этого export;
+  они требуют нового экспорта. Help source обновлен, actual help еще впереди.
+- UI memory investigation: isolated unit/sign v288 1584/0 при стабильной
+  памяти около 157 МБ; входной prefix 3183/0 сохраняется/reopen без изменения.
+  Полный UI v288 и тот же unit/sign на сохраненном prefix v289 воспроизводят
+  рост около 120 МБ на вариант. Оба тестовых процесса остановлены отдельно
+  до ошибки 14; RPC failure runner-а относится к этому останову, не к НДС.
+  Двухвариантный diagnostic v290 43/0 локализовал рост в WriteSummary:
+  snapshot +3/+21 МБ, summary +110/+105 МБ; readback почти не меняет память.
+  Это не приемка полного UI и не установленная причина до разбора subwriters.
+  Логи `unit_stages_negative_v290_2026-10-05.txt`,
+  `unit_equivalence_after_prefix_v289_2026-10-05.txt` сохранены. Следующий
+  диагностический macro RunAudit02WriterPhasesDiagnostic выполняется на v290;
+  затем устранить подтвержденную причину и повторить полный UI/Off/On.
+  Protected Excel PID 23476, output и пользовательское ТЗ не изменялись.
+- v291b stage trace локализует распределенный расход оформления, не solve;
+  instrumentation находится только во временной fixture, production writers
+  не менялись. Два варианта: screen Yes v292 44/0, privateBytes 357 МБ;
+  screen No 44/0, 150 МБ; Guard v293 44/0, 175 МБ; активный Config 44/0,
+  около 104 МБ без роста второй записи. Сохраненный prefix имеет activeTab=3
+  (Results), исходный v288 activeTab=0. v294 изолировал только 72-case unit/sign:
+  они прошли, privateBytes около 156 МБ; затем InputUnit вновь воспроизвел
+  рост. Только тестовый PID 20156 остановлен, raw UI progress сохранен,
+  full gate не получает PASS. v295 изолирует также InputUnit и массовую часть
+  suite, сохраняет/восстанавливает активный лист, добавляет assertions его
+  восстановления. Числа, настройки, варианты и comparisons не ослаблены.
+  Полный UI/save-reopen v295 выполняется; до завершения не запускать вторую
+  Excel COM-job. Review: NDM_Audit03_Search_Guards_And_UI_Isolation_Review.md.
+  Общий census 108 modules/4557 methods/1876 guards остается semantic Pending.
 - Checkpoint `929c200` сохраняет исправление знака центрального Ixy и CAD
   directed/native gates v276-v278. По дополнительному запросу проверяется
   сквозной импорт -> расчетный Results -> export повернутого прямоугольника,
@@ -94,6 +170,31 @@
   x=0/20/400/10000 мм: 66/0; native 22 shape cases повторно: 1023/0.
   Отрицательные журналы сохранены как неверная постановка теста.
   Полный Off v286 запущен, приемка CAD-полей пока PendingFullRegression.
+- Checkpoint `d22008e` фиксирует повтор native 22 cases и центральное сжатие
+  перенесенного круга. На 2026-10-05 full Off v286 выполнил Geometry 582/0,
+  Material 2856/0, Solver 1031/0, Capacity 3074/0, Crack 1532/0 и Batch 25607/0;
+  WorkbookUI еще выполняется, Baseline впереди. Общий gate не принят до
+  завершения всех восьми suites и watchdog. Другую Excel COM-job до его
+  окончания не запускать; пользовательский PID 23476 остается защищенным.
+  Только тестовые правки подготовлены в существующих Geometry/Crack/Config
+  модулях для frozen v287: проем внутри крупной ячейки; русский комментарий
+  Formation при VBA 6/91 с сохранением raw diagnostic; typed callback
+  InvalidInput/unknown probe; представимость BaseLoadSteps*2^MaxRetries.
+  Эти случаи еще не запускались и не получают PASS. Основной source v286,
+  output-книга и пользовательское ТЗ не менялись. После full gate импортировать
+  только эти три test-модуля в RC_Section_NDM_hollow_cell_frozen_v287.xlsm и
+  выполнить четыре направленных macro, затем исправлять подтвержденные причины.
+- Full Off v286 не завершил WorkbookUI: 2026-10-05 в 00:39 через read-only
+  accessibility обнаружено окно VBA `Run-time error '14': Out of string space`.
+  Перед WorkbookUI тестовый Excel занимал 229 МБ, при остановке около 3.51 ГБ;
+  защищенный пользовательский PID 23476 не затронут. Последний внешний marker
+  относится к unit-sign consumers, следующий marker RectSet еще не записан.
+  UI progress сохранен отдельно как `full_off_autocad_shapes_v286_2026-10-04.ui_progress.txt`.
+  Шесть завершенных suites остаются частичным доказательством; WorkbookUI и
+  Baseline не получают PASS, CAD registry/evidence merge не выполняется.
+  Не установлено, на какой строке возникла ошибка: не назначать ей физический
+  или численный статус расчетов. После owned watchdog cleanup проверить UI
+  отдельно на свежем Excel и добавить точные markers крупных unit-sign блоков.
 - CAD checkpoint `d0fa6f9` сохранен. Следующий test-only срез импортирован в v274:
   независимая смена семи слоев/пяти цветов, включение CAD Config в штатную
   WorkbookUI suite и real Region 120x60 мм под +/-30 градусами в трех положениях.

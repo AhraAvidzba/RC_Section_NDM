@@ -1,0 +1,40 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_search_guards_v288.xlsm
+SOURCE_SHA256: 2322D9FD729823D4946F8E5C8C2EB2194A1893098C9185F472D8D6CF66022213
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_774f2feebb5a4a6fb69cdc72fa780269\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometry.RunAudit03HollowContainedOpeningMeshTests =====
+SUITE_STARTED: modTestGeometry.RunAudit03HollowContainedOpeningMeshTests; 2026-10-05T00:53:58
+EXCEL_AFTER_SUITE: pid=23476; workingSet=221863936; privateBytes=173694976; cpu=17511.28125
+EXCEL_AFTER_SUITE: pid=25940; workingSet=133578752; privateBytes=90836992; cpu=3.046875
+OK: audit03.hollow.containedOpening.0.area; actual=158400.; expected=158400.; absDiff=0.
+OK: audit03.hollow.containedOpening.0.centroidX; actual=-0.505050505051; expected=-0.505050505051; absDiff=0.
+OK: audit03.hollow.containedOpening.0.centroidY; actual=-0.505050505051; expected=-0.505050505051; absDiff=0.
+OK: audit03.hollow.containedOpening.0.Ix; actual=2129079595.9596; expected=2129079595.9596; absDiff=0.
+OK: audit03.hollow.containedOpening.0.Iy; actual=2129079595.9596; expected=2129079595.9596; absDiff=0.
+OK: audit03.hollow.containedOpening.0.Ixy; actual=-4040404.04040404; expected=-4040404.04040404; absDiff=0.
+OK: audit03.hollow.containedOpening.0.allCentersInConcrete
+HOLLOW_CELL_MESH: audit03.hollow.containedOpening.0; fibers=792; area=158400; invalidCenters=0
+OK: audit03.hollow.containedOpening.1.area; actual=159200.; expected=159200.; absDiff=0.
+OK: audit03.hollow.containedOpening.1.centroidX; actual=-0.35175879397; expected=-0.35175879397; absDiff=0.
+OK: audit03.hollow.containedOpening.1.centroidY; actual=-0.150753768844; expected=-0.150753768844; absDiff=0.
+OK: audit03.hollow.containedOpening.1.Ix; actual=2132503048.57621; expected=2132503048.57621; absDiff=0.
+OK: audit03.hollow.containedOpening.1.Iy; actual=2129366968.1742; expected=2129366968.1742; absDiff=0.
+OK: audit03.hollow.containedOpening.1.Ixy; actual=-1688442.21105528; expected=-1688442.21105528; absDiff=0.
+OK: audit03.hollow.containedOpening.1.allCentersInConcrete
+HOLLOW_CELL_MESH: audit03.hollow.containedOpening.1; fibers=800; area=159200; invalidCenters=0
+OK: audit03.hollow.containedOpening.2.area; actual=158400.; expected=158400.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.centroidX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.centroidY; actual=0.; expected=0.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.Ix; actual=2133120000.; expected=2133120000.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.Iy; actual=2133120000.; expected=2133120000.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.Ixy; actual=0.; expected=0.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.allCentersInConcrete
+HOLLOW_CELL_MESH: audit03.hollow.containedOpening.2; fibers=1089; area=158400; invalidCenters=0
+OK: audit03.hollow.containedOpening.convexFastPath
+TOTAL_HOLLOW_CELL_MESH: passed=22; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_774f2feebb5a4a6fb69cdc72fa780269\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometry.RunAudit03HollowContainedOpeningMeshTests; 2026-10-05T00:53:58
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

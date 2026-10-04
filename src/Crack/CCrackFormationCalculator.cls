@@ -742,7 +742,9 @@ End Sub
 
 
 ' Фиксирует техническое достижение границы crack-search без доказанного физического результата.
-' Для Auto-пути это сигнал перейти к следующей траектории, для фиксированного пути - численная ошибка поиска.
+' Для Auto это сигнал попробовать следующую траекторию. Для фиксированного
+' пути остается SEARCH_BOUND_REACHED: он не доказывает отсутствие трещины
+' и сам по себе не является численной несходимостью.
 Public Sub LimitSearchSetCrackFormationSearchBoundReached(ByVal reason As String)
     mConverged = False
     mCrackFormed = False
@@ -1166,7 +1168,14 @@ Failed:
     Dim errorNumber As Long, description As String, failureCode As ESolverFailureCode
     errorNumber = Err.Number: description = Err.Description
     If FormationSearchStoppedTerminally() Then Exit Function
+    AppendDiagnostic "formationResidualRuntimeError=" & CStr(errorNumber) & "; description=" & description
     If errorNumber = 6 Then failureCode = sfcNumericalFailure Else failureCode = sfcInternalError
+    Select Case errorNumber
+        Case 6
+            description = "промежуточные числа вышли за допустимый диапазон при оценке плоскости деформаций."
+        Case 91
+            description = "не переданы обязательные данные траектории нагрузки."
+    End Select
     LimitSearchSetFailure failureCode, _
         "Не удалось оценить плоскость деформаций при поиске образования трещины: " & description
 End Function
