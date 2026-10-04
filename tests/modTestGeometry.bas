@@ -53,6 +53,7 @@ Public Function RunGeometryTests() As String
     TestAutoCADImporterTranslatedRegionKeepsLocalGeometry stats
     TestAudit03AutoCADSmallTranslationInertia stats
     TestAutoCADImporterSquareRegionReadsEdgeRotation stats
+    TestAutoCADImporterZeroEdgeAndCircleAverage stats
     TestAutoCADImporterAreaSquareFallback stats
     TestAutoCADImporterAreaSquareFallbackAverageRotation stats
     TestSectionModelEquivalentSquareEdgeRotationAverageSource stats
@@ -483,6 +484,42 @@ Private Sub TestAutoCADImporterSquareRegionReadsEdgeRotation(ByRef stats As TTes
     AssertClose stats, "autocad.import.edgeProbe.square.width", model.ConcreteWidth(2), Sqr(squareArea), 0.000001
     AssertClose stats, "autocad.import.edgeProbe.square.height", model.ConcreteHeight(2), Sqr(squareArea), 0.000001
     AssertClose stats, "autocad.import.edgeProbe.square.rotation", model.ConcreteRotation(2), squareAngle, 0.000001
+End Sub
+
+' Проверяет известный нулевой угол прямой грани отдельно от неизвестного
+' угла круга. Среднее берется по двум исходным ориентированным элементам;
+' повторное назначение не должно включать круг как новый источник ориентации.
+Private Sub TestAutoCADImporterZeroEdgeAndCircleAverage(ByRef stats As TTestStats)
+    Dim modelSpace As Collection, importer As CAutoCADSectionModelImporter, model As CSectionModel
+    Dim ix As Double, iy As Double, ixy As Double, area As Double
+    Set modelSpace = New Collection
+    area = 2500#
+    modelSpace.Add FakeRegion(area, 0#, 0#, area * area / 12#, area * area / 12#, 0#, _
+        "Concrete", "SQUARE_0", 0#, True)
+    area = 80# * 160#
+    RotatedLocalInertia area * 160# ^ 2 / 12#, area * 80# ^ 2 / 12#, GEOM_PI / 6#, ix, iy, ixy
+    modelSpace.Add FakeRegion(area, 200#, 0#, ix, iy, ixy, "Concrete", "RECT_30", 0#, False)
+    area = GEOM_PI * 20# ^ 2
+    modelSpace.Add FakeRegion(area, 400#, 0#, GEOM_PI * 20# ^ 4 / 4#, GEOM_PI * 20# ^ 4 / 4#, 0#, _
+        "Concrete", "CIRCLE", 0#, False)
+    modelSpace.Add FakeRegion(100#, 0#, 0#, 1#, 1#, 0#, "Reinf", "R1", 0#, False)
+    Set importer = New CAutoCADSectionModelImporter
+    Set model = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "A400", 0#)
+    AssertClose stats, "autocad.import.zeroEdge.square", model.ConcreteRotation(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.mean", model.AverageKnownConcreteElementRotation(), GEOM_PI / 12#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.circle", model.ConcreteRotation(3), GEOM_PI / 12#, 0.000001
+    model.ApplyAverageRotationToEquivalentAreaFallbacks
+    model.ApplyAverageRotationToEquivalentAreaFallbacks
+    AssertClose stats, "autocad.import.zeroEdge.repeated.square", model.ConcreteRotation(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.repeated.circle", model.ConcreteRotation(3), GEOM_PI / 12#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.repeated.mean", model.AverageKnownConcreteElementRotation(), GEOM_PI / 12#, 0.000001
+    model.AddConcreteElement 600#, 0#, 80# * 160#, 1, "new rectangle", "RECT_MINUS_30", _
+        "Rectangle", 80#, 160#, -GEOM_PI / 6#
+    model.ApplyAverageRotationToEquivalentAreaFallbacks
+    AssertClose stats, "autocad.import.zeroEdge.changed.square", model.ConcreteRotation(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.changed.circle", model.ConcreteRotation(3), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.changed.mean", model.AverageKnownConcreteElementRotation(), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.changed.circleIx", model.ConcreteLocalIx(3), GEOM_PI * 20# ^ 4 / 4#, 0.000001
 End Sub
 
 ' Проверяет последний fallback для Region без локальных инерций: габарит

@@ -552,6 +552,10 @@ Public Function RunAudit03RealAutoCADTests(ByVal drawingPath As String, ByVal ex
     CheckNativeImport stats, doc, system
     LogLine stats, "REAL_STAGE: independent central inertia probes"
     CheckNativeRegionInertia stats, doc
+    LogLine stats, "REAL_STAGE: imported shape -> Results -> exported Region"
+    CheckNativeShapeRoundTrip stats, doc, system, unitsRange, drawingPath
+    LogLine stats, "REAL_STAGE: square edge and circular Region average orientation"
+    CheckNativeIsotropicRoundTrip stats, doc, system, unitsRange, drawingPath
     GoTo Restore
 FailedRun:
     stats.Failed = stats.Failed + 1
@@ -699,6 +703,384 @@ End Sub
 Private Function NativeNumber(ByVal value As Double) As String
     NativeNumber = Replace$(CStr(value), ",", ".")
 End Function
+
+' Проверяет весь рабочий snapshot/export путь для повернутого прямоугольника,
+' треугольника и Г-образного Region. Oracle интегрирует исходный polygon,
+' а не использует восстановленные стороны CSectionModel как собственный эталон.
+' Обе ориентации повторяются при OUTPUT мм/м; все DWG принадлежат этому тесту.
+Private Sub CheckNativeShapeRoundTrip(ByRef stats As TCadStats, ByVal doc As Object, _
+        ByVal system As Object, ByVal unitsRange As Object, ByVal drawingPath As String)
+    Dim shape As Long, signValue As Long, unitMode As Long, i As Long, j As Long
+    Dim px As Variant, py As Variant, x() As Double, y() As Double, angle As Double
+    Dim region As Object, bar As Object, entity As Object, exported As Object
+    Dim importer As CAutoCADSectionModelImporter, model As CSectionModel
+    Dim area As Double, cx As Double, cy As Double, ix As Double, iy As Double, ixy As Double
+    Dim actualArea As Double, actualX As Double, actualY As Double
+    Dim actualIx As Double, actualIy As Double, actualIxy As Double
+    Dim prefix As String, path As String, solves As Long, added As Long
+    Set importer = New CAutoCADSectionModelImporter
+    ConfigureFixture system
+    SetValue system, "AutoCAD.Export.PrincipalAxesMode", "None"
+    SetValue system, "AutoCAD.Export.NeutralLineEnabled", "No"
+    SetValue system, "AutoCAD.Export.LoadPointEnabled", "No"
+    SetValue system, "AutoCAD.Export.ContourEnabled", "No"
+    For unitMode = 0 To 1
+        If unitMode = 0 Then
+            SetValue unitsRange, "Length", "mm": CellForKey(unitsRange, "Length", 4).Value2 = "mm"
+            SetValue unitsRange, "Area", "mm2": CellForKey(unitsRange, "Area", 4).Value2 = "mm2"
+        Else
+            SetValue unitsRange, "Length", "m": CellForKey(unitsRange, "Length", 4).Value2 = "m"
+            SetValue unitsRange, "Area", "m2": CellForKey(unitsRange, "Area", 4).Value2 = "m2"
+        End If
+        For shape = 0 To 2
+            Select Case shape
+                Case 0
+                    px = Array(-60#, 60#, 60#, -60#): py = Array(-30#, -30#, 30#, 30#)
+                Case 1
+                    px = Array(-60#, 60#, 0#): py = Array(-30#, -30#, 30#)
+                Case 2
+                    px = Array(-60#, 60#, 60#, 0#, 0#, -60#)
+                    py = Array(-40#, -40#, -10#, -10#, 40#, 40#)
+            End Select
+            For signValue = -1 To 1 Step 2
+                prefix = "realAutoCAD.shape." & CStr(unitMode) & "." & CStr(shape) & "." & CStr(signValue)
+                LogLine stats, "REAL_STAGE: " & prefix
+                ClearOwnModelSpace doc
+                angle = CDbl(signValue) * GEOM_PI / 6#
+                ReDim x(0 To UBound(px)): ReDim y(0 To UBound(py))
+                For i = 0 To UBound(px)
+                    x(i) = 20# + CDbl(px(i)) * Cos(angle) - CDbl(py(i)) * Sin(angle)
+                    y(i) = -10# + CDbl(px(i)) * Sin(angle) + CDbl(py(i)) * Cos(angle)
+                Next i
+                NativePolygonInertia x, y, area, cx, cy, ix, iy, ixy
+                Audit03EnsureAutoCADLayerForTests doc, "AUDIT_SHAPE_IN", 7
+                Audit03EnsureAutoCADLayerForTests doc, "AUDIT_SHAPE_R", 7
+                Set region = NativePolygonRegion(doc, x, y): region.Layer = "AUDIT_SHAPE_IN"
+                For i = -1 To 1 Step 2
+                    For j = 0 To 1
+                        actualX = 20# + 5# * i * Cos(angle) - (-25# + 10# * j) * Sin(angle)
+                        actualY = -10# + 5# * i * Sin(angle) + (-25# + 10# * j) * Cos(angle)
+                        Set bar = NativeRectangleRegion(doc, 2#, 2#, angle, actualX, actualY)
+                        bar.Layer = "AUDIT_SHAPE_R"
+                    Next j
+                Next i
+                Set model = importer.ImportFromModelSpace(doc.ModelSpace, "AUDIT_SHAPE_IN", "AUDIT_SHAPE_R", "A400", 0#)
+                CheckNativeInertiaClose stats, prefix & ".import.area", model.ConcreteArea(1), area
+                CheckNativeInertiaClose stats, prefix & ".import.Ix", model.ConcreteLocalIx(1), ix
+                CheckNativeInertiaClose stats, prefix & ".import.Iy", model.ConcreteLocalIy(1), iy
+                CheckNativeInertiaClose stats, prefix & ".import.Ixy", model.ConcreteLocalIxy(1), ixy
+                If shape = 0 Then
+                    Check stats, prefix & ".sourceRectangle", model.ConcreteShapeType(1) = "Rectangle"
+                Else
+                    Check stats, prefix & ".sourceEquivalent", model.ConcreteShapeType(1) = "Equivalent rectangle"
+                End If
+                PrepareNativeImportedSnapshot stats, system, model, prefix
+                solves = SectionEquilibriumSolveCount()
+                added = Audit03ExportAutoCADDocumentForTests(doc)
+                Check stats, prefix & ".export.noSolve", SectionEquilibriumSolveCount() = solves
+                Check stats, prefix & ".export.added", added >= 10
+                Check stats, prefix & ".export.regionCount", CountEntities(doc, "AcDbRegion", "AUDIT_C") = 1
+                Set exported = Nothing
+                For Each entity In doc.ModelSpace
+                    If entity.ObjectName = "AcDbRegion" And entity.Layer = "AUDIT_C" Then Set exported = entity: Exit For
+                Next entity
+                If exported Is Nothing Then Err.Raise vbObjectError + 4499, "CheckNativeShapeRoundTrip", "Экспортированный бетонный Region не найден."
+                ReadNativeCentralInertia exported, actualArea, actualX, actualY, actualIx, actualIy, actualIxy
+                CheckNativeInertiaClose stats, prefix & ".export.area", actualArea, area
+                CheckNativeInertiaClose stats, prefix & ".export.x", actualX, cx
+                CheckNativeInertiaClose stats, prefix & ".export.y", actualY, cy
+                CheckNativePrincipalShape stats, prefix, ix, iy, ixy, actualIx, actualIy, actualIxy
+                If shape = 0 Then
+                    CheckNativeInertiaClose stats, prefix & ".rectangle.Ix", actualIx, ix
+                    CheckNativeInertiaClose stats, prefix & ".rectangle.Iy", actualIy, iy
+                    CheckNativeInertiaClose stats, prefix & ".rectangle.Ixy", actualIxy, ixy
+                End If
+                CheckNativeRectangleEdges stats, prefix, exported
+                path = Left$(drawingPath, Len(drawingPath) - 4) & "_shape_" & CStr(unitMode) & "_" & CStr(shape) & "_" & CStr(signValue) & ".dwg"
+                If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 4499, "CheckNativeShapeRoundTrip", "Тестовый DWG формы уже существует; перезапись запрещена."
+                doc.SaveAs path
+                LogLine stats, "REAL_SHAPE_DWG: " & doc.FullName & "|shape=" & model.ConcreteShapeType(1) & _
+                    "; sourceArea=" & NativeNumber(area) & "; exportArea=" & NativeNumber(actualArea) & _
+                    "; rotation=" & NativeNumber(model.ConcreteRotation(1))
+            Next signValue
+        Next shape
+    Next unitMode
+End Sub
+
+' Проверяет изотропные Region на реальных сущностях: квадрат берет направление
+' своей прямой грани, круг берет среднее остальных ориентированных элементов.
+' Oracle читает исходные ребра отдельно от importer-а; круг не участвует в среднем.
+Private Sub CheckNativeIsotropicRoundTrip(ByRef stats As TCadStats, ByVal doc As Object, _
+        ByVal system As Object, ByVal unitsRange As Object, ByVal drawingPath As String)
+    Dim scenario As Long, unitMode As Long, i As Long, j As Long, circleIndex As Long
+    Dim squareIndex As Long, squareAngle As Double, expected As Double, angle As Double, circleX As Double
+    Dim sumCos As Double, sumSin As Double, region As Object, circleRegion As Object, bar As Object
+    Dim model As CSectionModel, importer As CAutoCADSectionModelImporter, entity As Object
+    Dim exportedCircle As Object, exportedSquare As Object, added As Long, solves As Long
+    Dim prefix As String, path As String, squareHandle As String, circleHandle As String
+    Dim area As Double, cx As Double, cy As Double, ix As Double, iy As Double, ixy As Double
+    ConfigureFixture system
+    SetValue system, "AutoCAD.Export.PrincipalAxesMode", "None"
+    SetValue system, "AutoCAD.Export.NeutralLineEnabled", "No"
+    SetValue system, "AutoCAD.Export.LoadPointEnabled", "No"
+    SetValue system, "AutoCAD.Export.ContourEnabled", "No"
+    Set importer = New CAutoCADSectionModelImporter
+    For unitMode = 0 To 1
+        If unitMode = 0 Then
+            SetValue unitsRange, "Length", "mm": CellForKey(unitsRange, "Length", 4).Value2 = "mm"
+            SetValue unitsRange, "Area", "mm2": CellForKey(unitsRange, "Area", 4).Value2 = "mm2"
+        Else
+            SetValue unitsRange, "Length", "m": CellForKey(unitsRange, "Length", 4).Value2 = "m"
+            SetValue unitsRange, "Area", "m2": CellForKey(unitsRange, "Area", 4).Value2 = "m2"
+        End If
+        For scenario = 0 To 4
+            prefix = "realAutoCAD.isotropic." & CStr(unitMode) & "." & CStr(scenario)
+            LogLine stats, "REAL_STAGE: " & prefix
+            ClearOwnModelSpace doc
+            sumCos = 0#: sumSin = 0#: squareHandle = vbNullString
+            If scenario <= 1 Then
+                angle = GEOM_PI / 6#: If scenario = 1 Then angle = 0#
+                Set region = NativeRectangleRegion(doc, 60#, 60#, angle, 0#, 0#)
+                region.Layer = "AUDIT_SHAPE_IN": squareHandle = region.Handle
+                squareAngle = NativeFirstEdgeAngle(region)
+                sumCos = Cos(2# * squareAngle): sumSin = Sin(2# * squareAngle)
+                If scenario = 1 Then
+                    Set region = NativeRectangleRegion(doc, 60#, 120#, GEOM_PI / 6#, 200#, 0#)
+                    region.Layer = "AUDIT_SHAPE_IN"
+                    sumCos = sumCos + Cos(GEOM_PI / 3#): sumSin = sumSin + Sin(GEOM_PI / 3#)
+                End If
+            ElseIf scenario = 2 Or scenario = 4 Then
+                angle = 89# * GEOM_PI / 180#: If scenario = 4 Then angle = GEOM_PI / 4#
+                For i = -1 To 1 Step 2
+                    Set region = NativeRectangleRegion(doc, 60#, 120#, CDbl(i) * angle, 100# + 100# * i, 0#)
+                    region.Layer = "AUDIT_SHAPE_IN"
+                    sumCos = sumCos + Cos(2# * CDbl(i) * angle)
+                    sumSin = sumSin + Sin(2# * CDbl(i) * angle)
+                Next i
+            End If
+            expected = 0#
+            If Abs(sumCos) > 0.000000001 Or Abs(sumSin) > 0.000000001 Then
+                expected = Atn(sumSin / IIf(Abs(sumCos) < 0.000000001, 0.000000001, sumCos))
+                If sumCos < 0# Then expected = expected + GEOM_PI
+                expected = expected / 2#
+            End If
+            circleX = 400#: If scenario = 3 Then circleX = 0#
+            Set circleRegion = NativeCircleRegion(doc, circleX, 0#, 20#)
+            circleRegion.Layer = "AUDIT_SHAPE_IN": circleHandle = circleRegion.Handle
+            For i = -1 To 1 Step 2
+                For j = -1 To 1 Step 2
+                    Set bar = NativeRectangleRegion(doc, 2#, 2#, 0#, circleX + 5# * i, 5# * j)
+                    bar.Layer = "AUDIT_SHAPE_R"
+                Next j
+            Next i
+            Set model = importer.ImportFromModelSpace(doc.ModelSpace, "AUDIT_SHAPE_IN", "AUDIT_SHAPE_R", "A400", 0#)
+            circleIndex = 0: squareIndex = 0
+            For i = 1 To model.ConcreteCount
+                If model.ConcreteSourceHandle(i) = circleHandle Then circleIndex = i
+                If Len(squareHandle) > 0 And model.ConcreteSourceHandle(i) = squareHandle Then squareIndex = i
+            Next i
+            Check stats, prefix & ".circle.found", circleIndex > 0
+            If circleIndex = 0 Then Err.Raise vbObjectError + 4499, "CheckNativeIsotropicRoundTrip", "Круговой Region потерян при импорте."
+            If squareIndex > 0 Then CheckNativeDirection stats, prefix & ".square.import", model.ConcreteRotation(squareIndex), squareAngle, 4#
+            CheckNativeDirection stats, prefix & ".average.sources", model.AverageKnownConcreteElementRotation(), expected, 2#
+            model.ApplyAverageRotationToEquivalentAreaFallbacks
+            CheckNativeDirection stats, prefix & ".circle.assigned", model.ConcreteRotation(circleIndex), expected, 2#
+            model.ApplyAverageRotationToEquivalentAreaFallbacks
+            CheckNativeDirection stats, prefix & ".circle.repeated", model.ConcreteRotation(circleIndex), expected, 2#
+            If squareIndex > 0 Then CheckNativeDirection stats, prefix & ".square.retained", model.ConcreteRotation(squareIndex), squareAngle, 4#
+            PrepareNativeImportedSnapshot stats, system, model, prefix
+            solves = SectionEquilibriumSolveCount(): added = Audit03ExportAutoCADDocumentForTests(doc)
+            Check stats, prefix & ".export.noSolve", SectionEquilibriumSolveCount() = solves
+            Check stats, prefix & ".export.regionCount", CountEntities(doc, "AcDbRegion", "AUDIT_C") = model.ConcreteCount
+            Set exportedCircle = Nothing: Set exportedSquare = Nothing
+            For Each entity In doc.ModelSpace
+                If entity.ObjectName = "AcDbRegion" And entity.Layer = "AUDIT_C" Then
+                    ReadNativeCentralInertia entity, area, cx, cy, ix, iy, ixy
+                    If Abs(cx - circleX) < 0.000001 And Abs(cy) < 0.000001 Then Set exportedCircle = entity
+                    If Abs(cx) < 0.000001 And Abs(cy) < 0.000001 Then Set exportedSquare = entity
+                End If
+            Next entity
+            Check stats, prefix & ".circle.exported", Not exportedCircle Is Nothing
+            If exportedCircle Is Nothing Then Err.Raise vbObjectError + 4499, "CheckNativeIsotropicRoundTrip", "Оболочка круга потеряна при экспорте."
+            ReadNativeCentralInertia exportedCircle, area, cx, cy, ix, iy, ixy
+            CheckNativeInertiaClose stats, prefix & ".circle.export.area", area, GEOM_PI * 400#
+            CheckNativeDirection stats, prefix & ".circle.export.edge", NativeFirstEdgeAngle(exportedCircle), expected, 4#
+            CheckNativeRectangleEdges stats, prefix & ".circle.export", exportedCircle
+            If squareIndex > 0 Then
+                Check stats, prefix & ".square.exported", Not exportedSquare Is Nothing
+                If exportedSquare Is Nothing Then Err.Raise vbObjectError + 4499, "CheckNativeIsotropicRoundTrip", "Оболочка квадрата потеряна при экспорте."
+                ReadNativeCentralInertia exportedSquare, area, cx, cy, ix, iy, ixy
+                CheckNativeInertiaClose stats, prefix & ".square.export.area", area, 3600#
+                CheckNativeDirection stats, prefix & ".square.export.edge", NativeFirstEdgeAngle(exportedSquare), squareAngle, 4#
+                CheckNativeRectangleEdges stats, prefix & ".square.export", exportedSquare
+            End If
+            path = Left$(drawingPath, Len(drawingPath) - 4) & "_isotropic_" & CStr(unitMode) & "_" & CStr(scenario) & ".dwg"
+            If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 4499, "CheckNativeIsotropicRoundTrip", "Тестовый DWG уже существует; перезапись запрещена."
+            doc.SaveAs path
+            LogLine stats, "REAL_ISOTROPIC_DWG: " & doc.FullName & "|expected=" & NativeNumber(expected) & "; squareEdge=" & NativeNumber(squareAngle)
+        Next scenario
+    Next unitMode
+End Sub
+
+' Создает круговой Region без прямых граней, чтобы проверять именно средний
+' угол сетки, а не подсказку из полилинии. Все исходные кривые принадлежат тесту.
+Private Function NativeCircleRegion(ByVal doc As Object, ByVal x As Double, ByVal y As Double, ByVal radius As Double) As Object
+    Dim center(0 To 2) As Double, circleEntity As Object, curves(0 To 0) As Object, regions As Variant
+    center(0) = x: center(1) = y
+    Set circleEntity = doc.ModelSpace.AddCircle(center, radius): Set curves(0) = circleEntity
+    regions = doc.ModelSpace.AddRegion(curves): Set NativeCircleRegion = regions(LBound(regions))
+    circleEntity.Delete
+End Function
+
+' Независимо читает угол первого прямого ребра настоящего Region; не вызывает
+' importer. Копия и результаты Explode удаляются из собственного документа.
+Private Function NativeFirstEdgeAngle(ByVal region As Object) As Double
+    Dim copy As Object, pieces As Variant, line As Variant, p As Variant, q As Variant
+    Dim dx As Double, dy As Double, found As Boolean, angle As Double
+    Set copy = region.Copy(): pieces = copy.Explode
+    For Each line In pieces
+        If Not found And line.ObjectName = "AcDbLine" Then
+            p = line.StartPoint: q = line.EndPoint: dx = q(0) - p(0): dy = q(1) - p(1)
+            If Abs(dx) > 0.000000001 Or Abs(dy) > 0.000000001 Then
+                If Abs(dx) < 0.000000001 Then
+                    angle = Sgn(dy) * GEOM_PI / 2#
+                Else
+                    angle = Atn(dy / dx): If dx < 0# Then angle = angle + GEOM_PI
+                End If
+                found = True
+            End If
+        End If
+        line.Delete
+    Next line
+    copy.Delete
+    If Not found Then Err.Raise vbObjectError + 4499, "NativeFirstEdgeAngle", "В тестовой оболочке нет прямого ребра."
+    NativeFirstEdgeAngle = angle
+End Function
+
+' Сравнивает направления без ложного отказа из-за эквивалентных углов:
+' multiplier=2 для оси, multiplier=4 для взаимозаменяемых граней квадрата.
+Private Sub CheckNativeDirection(ByRef stats As TCadStats, ByVal prefix As String, _
+        ByVal actual As Double, ByVal expected As Double, ByVal multiplier As Double)
+    CheckNativeInertiaClose stats, prefix & ".cos", Cos(multiplier * actual), Cos(multiplier * expected)
+    CheckNativeInertiaClose stats, prefix & ".sin", Sin(multiplier * actual), Sin(multiplier * expected)
+End Sub
+
+' Получает настоящее допустимое НДС маленькой осевой нагрузки и записывает
+' импортированную модель существующим writer-ом. Экспорт ниже читает только
+' сохраненный Results; этот setup не подменяет snapshot готовой тестовой строкой.
+Private Sub PrepareNativeImportedSnapshot(ByRef stats As TCadStats, ByVal system As Object, _
+        ByVal model As CSectionModel, ByVal prefix As String)
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim batch As CBatchSectionCalculator, catalog As CCalculationProfileCatalog, writer As CNDMResultsWriter
+    SetValue system, "AutoCAD.Export.CombinationID", "CAD_SHAPE"
+    Set settings = Reader(): Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set catalog = New CCalculationProfileCatalog: catalog.LoadFromWorkbook ThisWorkbook
+    Set batch = New CBatchSectionCalculator: batch.Initialize model, provider
+    Set batch.ProfileCatalog = catalog: batch.ApplySettings settings, units
+    batch.AddCombination "CAD_SHAPE", -1000#, 0#, 0#, "PR1", "Native imported shape", "Auto"
+    batch.Execute
+    LogLine stats, "REAL_SHAPE_STATE: " & prefix & "|" & batch.ResultAt(1).OverallMeta.ResultComment
+    Check stats, prefix & ".snapshot.state", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
+    If batch.ResultAt(1).DirectStateMeta.InternalStatus <> rsSuccess Then _
+        Err.Raise vbObjectError + 4499, "PrepareNativeImportedSnapshot", "Не получено допустимое НДС импортированной формы: " & batch.ResultAt(1).DirectStateMeta.ResultComment
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, model, provider, batch, units
+End Sub
+
+' Создает фактический замкнутый polygon Region в WCS-плоскости собственного
+' test-document. Исходная Polyline после преобразования не остается в ModelSpace.
+Private Function NativePolygonRegion(ByVal doc As Object, ByRef x() As Double, ByRef y() As Double) As Object
+    Dim points() As Double, i As Long, line As Object, curves(0 To 0) As Object, regions As Variant
+    ReDim points(0 To 2 * (UBound(x) + 1) - 1)
+    For i = 0 To UBound(x): points(2 * i) = x(i): points(2 * i + 1) = y(i): Next i
+    Set line = doc.ModelSpace.AddLightWeightPolyline(points): line.Closed = True
+    Set curves(0) = line: regions = doc.ModelSpace.AddRegion(curves)
+    Set NativePolygonRegion = regions(LBound(regions))
+    line.Delete
+End Function
+
+' Независимая квадратура простого polygon по ориентированным ребрам.
+' Сначала получаем интегралы относительно начала, затем снимаем перенос
+' к центру площади. Здесь нет чтения CSectionModel или CAD MomentOfInertia.
+Private Sub NativePolygonInertia(ByRef x() As Double, ByRef y() As Double, _
+        ByRef area As Double, ByRef cx As Double, ByRef cy As Double, _
+        ByRef ix As Double, ByRef iy As Double, ByRef ixy As Double)
+    Dim i As Long, j As Long, cross As Double
+    area = 0#: cx = 0#: cy = 0#: ix = 0#: iy = 0#: ixy = 0#
+    For i = 0 To UBound(x)
+        j = (i + 1) Mod (UBound(x) + 1)
+        cross = x(i) * y(j) - x(j) * y(i)
+        area = area + cross / 2#
+        cx = cx + (x(i) + x(j)) * cross
+        cy = cy + (y(i) + y(j)) * cross
+        ix = ix + (y(i) ^ 2 + y(i) * y(j) + y(j) ^ 2) * cross / 12#
+        iy = iy + (x(i) ^ 2 + x(i) * x(j) + x(j) ^ 2) * cross / 12#
+        ixy = ixy + (2# * x(i) * y(i) + x(i) * y(j) + x(j) * y(i) + 2# * x(j) * y(j)) * cross / 24#
+    Next i
+    If area <= 0# Then Err.Raise vbObjectError + 4499, "NativePolygonInertia", "Тестовый polygon имеет неверную ориентированную площадь."
+    cx = cx / (6# * area): cy = cy / (6# * area)
+    ix = ix - area * cy ^ 2: iy = iy - area * cx ^ 2: ixy = ixy - area * cx * cy
+End Sub
+
+' Читает центральный тензор непосредственно из настоящего Region, независимо
+' от importer-а. Знак отрицательной XY-компоненты AutoCAD подтвержден отдельным
+' native oracle; геометрические значения здесь всегда миллиметровые.
+Private Sub ReadNativeCentralInertia(ByVal region As Object, ByRef area As Double, _
+        ByRef cx As Double, ByRef cy As Double, ByRef ix As Double, ByRef iy As Double, ByRef ixy As Double)
+    Dim center As Variant, moments As Variant, product As Variant
+    area = region.Area: center = region.Centroid
+    cx = center(LBound(center)): cy = center(LBound(center) + 1)
+    moments = region.MomentOfInertia: product = region.ProductOfInertia
+    ix = moments(LBound(moments)) - area * cy ^ 2
+    iy = moments(LBound(moments) + 1) - area * cx ^ 2
+    If IsArray(product) Then
+        ixy = -CDbl(product(LBound(product))) - area * cx * cy
+    Else
+        ixy = -CDbl(product) - area * cx * cy
+    End If
+End Sub
+
+' Сравнивает отношение собственных инерций и беззнаковое направление оси.
+' Нормализованные (Ix-Iy, -2Ixy) задают cos(2a)/sin(2a), поэтому проверка
+' допускает ту же ось плюс 180 градусов, но не ее зеркальное направление.
+Private Sub CheckNativePrincipalShape(ByRef stats As TCadStats, ByVal prefix As String, _
+        ByVal ix As Double, ByVal iy As Double, ByVal ixy As Double, _
+        ByVal ex As Double, ByVal ey As Double, ByVal exy As Double)
+    Dim delta As Double, exportDelta As Double, ratio As Double, exportRatio As Double
+    delta = Sqr((ix - iy) ^ 2 + 4# * ixy ^ 2)
+    exportDelta = Sqr((ex - ey) ^ 2 + 4# * exy ^ 2)
+    ratio = (ix + iy + delta) / (ix + iy - delta)
+    exportRatio = (ex + ey + exportDelta) / (ex + ey - exportDelta)
+    CheckNativeInertiaClose stats, prefix & ".principal.ratio", exportRatio, ratio
+    CheckNativeInertiaClose stats, prefix & ".principal.cos2", (ex - ey) / exportDelta, (ix - iy) / delta
+    CheckNativeInertiaClose stats, prefix & ".principal.sin2", -2# * exy / exportDelta, -2# * ixy / delta
+End Sub
+
+' Проверяет экспортированную оболочку как четыре прямых взаимно перпендикулярных
+' ребра. Даже для polygon исходника export должен дать rectangle, не исходный
+' triangle/L-contour. Временные Explode-сущности удаляются только из own DWG.
+Private Sub CheckNativeRectangleEdges(ByRef stats As TCadStats, ByVal prefix As String, ByVal region As Object)
+    Dim copy As Object, pieces As Variant, line As Variant, p As Variant, q As Variant
+    Dim vx As Double, vy As Double, wx As Double, wy As Double, first As Boolean, count As Long
+    Set copy = region.Copy(): pieces = copy.Explode
+    For Each line In pieces
+        count = count + 1
+        Check stats, prefix & ".rectangle.line." & CStr(count), line.ObjectName = "AcDbLine"
+        If line.ObjectName = "AcDbLine" Then
+            p = line.StartPoint: q = line.EndPoint
+            wx = q(0) - p(0): wy = q(1) - p(1)
+            If first Then
+                Check stats, prefix & ".rectangle.edgeDirection." & CStr(count), _
+                    Abs(vx * wy - vy * wx) <= 0.000001 Or Abs(vx * wx + vy * wy) <= 0.000001
+            Else
+                vx = wx: vy = wy: first = True
+            End If
+        End If
+        line.Delete
+    Next line
+    copy.Delete
+    Check stats, prefix & ".rectangle.fourEdges", count = 4
+End Sub
 
 ' Проверяет текст именно экспортных подписей элементов; осевые подписи
 ' и маркеры нагрузки не включаются в количество восемь расчетных labels.

@@ -34,6 +34,7 @@ Private mConcreteShapeType() As String ' Исходная геометричес
 Private mConcreteWidth() As Double ' Реальная ширина элемента, только если источник достоверно знает прямоугольную оболочку; иначе 0.
 Private mConcreteHeight() As Double ' Реальная высота элемента, только если источник достоверно знает прямоугольную оболочку; иначе 0.
 Private mConcreteRotation() As Double ' Угол достоверной оболочки или угол простой грани почти изотропного Region, рад.
+Private mConcreteRotationKnown() As Boolean ' Источник действительно задал направление; нулевой угол тоже может быть известным.
 Private mConcreteLocalIx() As Double ' Реальный собственный Ix элемента вокруг его центра, мм4; не заменяется оболочкой.
 Private mConcreteLocalIy() As Double ' Реальный собственный Iy элемента вокруг его центра, мм4; не заменяется оболочкой.
 Private mConcreteLocalIxy() As Double ' Реальный собственный центробежный момент элемента, мм4; не заменяется оболочкой.
@@ -82,6 +83,7 @@ Public Sub Clear()
     Erase mConcreteWidth
     Erase mConcreteHeight
     Erase mConcreteRotation
+    Erase mConcreteRotationKnown
     Erase mConcreteLocalIx
     Erase mConcreteLocalIy
     Erase mConcreteLocalIxy
@@ -115,14 +117,15 @@ End Property
 ' Добавляет одно бетонное волокно или импортированную бетонную область.
 ' Координаты и площадь уже должны быть во внутренних единицах проекта. Метод
 ' только проверяет минимальную физическую корректность и присваивает элементу
-' стабильное расчетное имя Cn.
+' стабильное расчетное имя Cn. rotationKnown отличает известный нулевой угол
+' грани от отсутствующего направления почти изотропной области.
 Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, ByVal area As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal sourceName As String = vbNullString, _
         Optional ByVal sourceHandle As String = vbNullString, Optional ByVal shapeType As String = "Rectangle", _
         Optional ByVal width As Double = 0#, Optional ByVal height As Double = 0#, _
         Optional ByVal rotation As Double = 0#, Optional ByVal comment As String = vbNullString, _
         Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
-        Optional ByVal localIxy As Double = 0#)
+        Optional ByVal localIxy As Double = 0#, Optional ByVal rotationKnown As Boolean = False)
     If area <= 0# Then Err.Raise vbObjectError + 5200, "CSectionModel", "Площадь бетонного элемента должна быть положительной."
 
     ' Массивы хранятся параллельно, чтобы горячие расчетные циклы работали без
@@ -139,6 +142,7 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     ReDim Preserve mConcreteWidth(1 To mConcreteCount)
     ReDim Preserve mConcreteHeight(1 To mConcreteCount)
     ReDim Preserve mConcreteRotation(1 To mConcreteCount)
+    ReDim Preserve mConcreteRotationKnown(1 To mConcreteCount)
     ReDim Preserve mConcreteLocalIx(1 To mConcreteCount)
     ReDim Preserve mConcreteLocalIy(1 To mConcreteCount)
     ReDim Preserve mConcreteLocalIxy(1 To mConcreteCount)
@@ -160,6 +164,8 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     mConcreteWidth(mConcreteCount) = width
     mConcreteHeight(mConcreteCount) = height
     mConcreteRotation(mConcreteCount) = rotation
+    mConcreteRotationKnown(mConcreteCount) = rotationKnown Or Abs(rotation) > GEOM_TOLERANCE Or _
+        HasExplicitRectangleGeometry(mConcreteCount)
     mConcreteLocalIx(mConcreteCount) = localIx
     mConcreteLocalIy(mConcreteCount) = localIy
     mConcreteLocalIxy(mConcreteCount) = localIxy
@@ -185,7 +191,7 @@ Public Property Get Revision() As Long
     Revision = mRevision
 End Property
 
-' Назначает эквивалентным площадным оболочкам с незаданным углом среднюю
+' Назначает эквивалентным площадным оболочкам без направления от источника среднюю
 ' ориентацию известных элементов. Инвалидирует затронутый boundary-cache;
 ' реальные A/I элементов не меняются. Форму интерпретирует ConcreteBoundaryRectangle.
 Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
@@ -194,7 +200,7 @@ Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
 
     Dim i As Long
     For i = 1 To mConcreteCount
-        If IsConcreteEquivalentAreaFallback(i) And Abs(mConcreteRotation(i)) <= GEOM_TOLERANCE Then
+        If IsConcreteEquivalentAreaFallback(i) And Not mConcreteRotationKnown(i) Then
             If Abs(mConcreteRotation(i) - fallbackRotation) > GEOM_TOLERANCE Then
                 mConcreteRotation(i) = fallbackRotation
                 InvalidateBoundaryCache i
@@ -207,8 +213,9 @@ End Sub
 ' Находит средний угол бетонных элементов, для которых оболочка уже имеет
 ' определенную ориентацию. Учитываются не только явно переданные Rectangle,
 ' но и Rectangle/Equivalent rectangle, интерпретированные из реальных A/I.
-' Изотропный Equivalent square тоже может быть источником, если importer смог
-' получить его угол по простой грани; нулевой угол считается отсутствующим.
+' Изотропный Equivalent square тоже является источником, если importer получил
+' угол по прямой грани. В том числе учитывается известный нулевой угол;
+' оболочки кругов с назначенным средним направлением источниками не становятся.
 Public Function AverageKnownConcreteElementRotation() As Double
     Dim sumCos As Double
     Dim sumSin As Double
@@ -221,7 +228,7 @@ Public Function AverageKnownConcreteElementRotation() As Double
         Dim rotationValue As Double
         InterpretConcreteBoundary i, statusText, widthValue, heightValue, rotationValue
 
-        If ElementContributesToAverageRotation(statusText, rotationValue, widthValue, heightValue) Then
+        If ElementContributesToAverageRotation(i, statusText, widthValue, heightValue) Then
             sumCos = sumCos + Cos(2# * rotationValue)
             sumSin = sumSin + Sin(2# * rotationValue)
             count = count + 1
@@ -234,15 +241,15 @@ Public Function AverageKnownConcreteElementRotation() As Double
 End Function
 
 ' Решает, можно ли использовать элемент как источник средней ориентации сетки.
-' У Equivalent square ненулевой угол означает, что он был найден по грани
-' AutoCAD Region; нулевой угол оставляется как признак неизвестной ориентации.
-Private Function ElementContributesToAverageRotation(ByVal statusText As String, _
-        ByVal rotationValue As Double, ByVal widthValue As Double, _
+' У Equivalent square происхождение направления хранится независимо от угла:
+' известная горизонтальная грань участвует, а среднее круга не участвует.
+Private Function ElementContributesToAverageRotation(ByVal index As Long, ByVal statusText As String, _
+        ByVal widthValue As Double, _
         ByVal heightValue As Double) As Boolean
     If widthValue <= GEOM_TOLERANCE Or heightValue <= GEOM_TOLERANCE Then Exit Function
 
     If StrComp(statusText, "Equivalent square", vbTextCompare) = 0 Then
-        ElementContributesToAverageRotation = (Abs(rotationValue) > GEOM_TOLERANCE)
+        ElementContributesToAverageRotation = mConcreteRotationKnown(index)
     Else
         ElementContributesToAverageRotation = True
     End If

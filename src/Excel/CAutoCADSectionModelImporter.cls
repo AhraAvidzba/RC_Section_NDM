@@ -85,6 +85,7 @@ End Function
 ' Проходит по ModelSpace и отбирает только Region на пользовательских слоях
 ' бетона и арматуры. На выходе возвращает полностью заполненный CSectionModel,
 ' пригодный для того же расчетного pipeline, что и встроенные генераторы.
+' После чтения всей сетки назначает средний угол оболочкам без направления грани.
 Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteLayer As String, _
         ByVal rebarLayer As String, ByVal steelClass As String, ByVal minArea As Double, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
@@ -110,6 +111,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Next entity
 
     ValidateImportedModel model
+    model.ApplyAverageRotationToEquivalentAreaFallbacks
     Set ImportFromModelSpace = model
 End Function
 
@@ -135,12 +137,13 @@ Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity A
     ReadCentralRegionInertia entity, area, xCoord, yCoord, units, localIx, localIy, localIxy
 
     Dim rotationHint As Double
+    Dim rotationKnown As Boolean
     If model.LocalInertiaIsNearlySquare(localIx, localIy, localIxy, LOCAL_INERTIA_SQUARE_REL_TOLERANCE) Then
-        If Not TryReadFirstStraightEdgeRotation(entity, units, rotationHint) Then rotationHint = 0#
+        rotationKnown = TryReadFirstStraightEdgeRotation(entity, units, rotationHint)
     End If
 
     AddConcreteRegion model, area, xCoord, yCoord, localIx, localIy, localIxy, _
-        0#, 0#, rotationHint, entity.Layer, EntityHandle(entity)
+        0#, 0#, rotationHint, entity.Layer, EntityHandle(entity), rotationKnown
 End Sub
 
 ' Читает один арматурный Region. Для арматуры программа хранит площадь и
@@ -202,7 +205,7 @@ Private Sub AddConcreteRegion(ByVal model As CSectionModel, ByVal area As Double
         ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double, _
         ByVal realWidth As Double, ByVal realHeight As Double, ByVal realRotation As Double, _
-        ByVal sourceName As String, ByVal sourceHandle As String)
+        ByVal sourceName As String, ByVal sourceHandle As String, Optional ByVal rotationKnown As Boolean = False)
     Dim commentText As String
     Dim shapeHint As String
     Dim widthHint As Double
@@ -229,7 +232,7 @@ Private Sub AddConcreteRegion(ByVal model As CSectionModel, ByVal area As Double
 
     model.AddConcreteElement xCoord, yCoord, area, 1, sourceName, sourceHandle, _
         shapeHint, widthHint, heightHint, rotationHint, commentText, _
-        localIx, localIy, localIxy
+        localIx, localIy, localIxy, rotationKnown
 End Sub
 
 ' Добавляет арматурный Region как расчетный стержень с площадью AutoCAD.

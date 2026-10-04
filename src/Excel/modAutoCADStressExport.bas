@@ -256,12 +256,14 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     For rowIndex = 2 To UBound(data, 1)
         If Len(Trim$(CStr(data(rowIndex, colID)))) > 0 Then
             If StrComp(CStr(data(rowIndex, colType)), "Concrete", vbTextCompare) = 0 Then
+                ' Results хранит окончательный угол оболочки: повторный export
+                ' не заменяет горизонтальную грань средним направлением соседей.
                 model.AddConcreteElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colX), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colY), lengthUnit), _
                     OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), 1, vbNullString, vbNullString, _
                     CStr(data(rowIndex, colShape)), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colWidth, True), lengthUnit), _
                     OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colHeight, True), lengthUnit), ReadGeometryNumber(data, anchor, rowIndex, colRotation, True), _
                     CStr(data(rowIndex, colComment)), OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIx, True), fourthUnit), _
-                    OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIy, True), fourthUnit), OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIxy, True), fourthUnit)
+                    OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIy, True), fourthUnit), OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIxy, True), fourthUnit), True
             ElseIf StrComp(CStr(data(rowIndex, colType)), "Rebar", vbTextCompare) = 0 Then
                 model.AddRebarElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colX), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colY), lengthUnit), _
                     OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colDiameter), lengthUnit), OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), _
@@ -841,8 +843,6 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     Dim resultValue As Double
     Dim physicalState As String
     Dim textHeight As Double
-    Dim fallbackSquareRotation As Double
-    fallbackSquareRotation = section.AverageKnownConcreteElementRotation()
 
     For i = 1 To section.ConcreteCount
         Dim concreteWidth As Double
@@ -850,7 +850,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         Dim concreteRotation As Double
         concreteWidth = ConcreteDrawWidth(section, i)
         concreteHeight = ConcreteDrawHeight(section, i)
-        concreteRotation = ConcreteDrawRotation(section, i, fallbackSquareRotation)
+        concreteRotation = ConcreteDrawRotation(section, i)
         resultValue = LookupResultValue(resultByID, section.ConcreteID(i))
         physicalState = ResultPhysicalState(physicalStateByID, section.ConcreteID(i))
         textHeight = 0.22 * MinDouble(concreteWidth, concreteHeight)
@@ -1458,13 +1458,10 @@ Private Sub GetSectionBounds(ByVal section As CSectionModel, ByRef minX As Doubl
     If section Is Nothing Then Err.Raise vbObjectError + 4340, "GetSectionBounds", "Модель сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4341, "GetSectionBounds", "В модели сечения нет бетонных элементов."
 
-    Dim fallbackSquareRotation As Double
-    fallbackSquareRotation = section.AverageKnownConcreteElementRotation()
-
     Dim i As Long
     Dim hasBounds As Boolean
     For i = 1 To section.ConcreteCount
-        ExpandSectionBoundsByConcreteElement section, i, fallbackSquareRotation, minX, maxX, minY, maxY, hasBounds
+        ExpandSectionBoundsByConcreteElement section, i, minX, maxX, minY, maxY, hasBounds
     Next i
 End Sub
 
@@ -1485,14 +1482,10 @@ Private Function ConcreteDrawHeight(ByVal section As CSectionModel, ByVal index 
 End Function
 
 ' Возвращает визуальный угол бетонного элемента для AutoCAD export.
-' Реальные прямоугольники сохраняют свой Rotation; fallback-квадрат по
-' площади получает средний угол импортированной сетки.
-Private Function ConcreteDrawRotation(ByVal section As CSectionModel, ByVal index As Long, _
-        ByVal fallbackSquareRotation As Double) As Double
+' Снимок Results уже содержит окончательные направления оболочек, включая
+' нулевой угол известной грани и назначенное среднее для круговых областей.
+Private Function ConcreteDrawRotation(ByVal section As CSectionModel, ByVal index As Long) As Double
     ConcreteDrawRotation = section.ConcreteRotation(index)
-    If section.IsConcreteEquivalentAreaFallback(index) And Abs(ConcreteDrawRotation) <= 0.000000000001 Then
-        ConcreteDrawRotation = fallbackSquareRotation
-    End If
 End Function
 
 ' Возвращает точку подписи бетонного элемента в его локальной системе осей.
@@ -1515,7 +1508,6 @@ End Sub
 ' линия, оси и предупреждения получают рамку по той же геометрии, которая
 ' реально будет выгружена в AutoCAD.
 Private Sub ExpandSectionBoundsByConcreteElement(ByVal section As CSectionModel, ByVal index As Long, _
-        ByVal fallbackSquareRotation As Double, _
         ByRef minX As Double, ByRef maxX As Double, ByRef minY As Double, ByRef maxY As Double, _
         ByRef hasBounds As Boolean)
     Dim width As Double
@@ -1523,7 +1515,7 @@ Private Sub ExpandSectionBoundsByConcreteElement(ByVal section As CSectionModel,
     Dim rotationRad As Double
     width = ConcreteDrawWidth(section, index)
     height = ConcreteDrawHeight(section, index)
-    rotationRad = ConcreteDrawRotation(section, index, fallbackSquareRotation)
+    rotationRad = ConcreteDrawRotation(section, index)
 
     IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
         -1#, -1#, minX, maxX, minY, maxY, hasBounds

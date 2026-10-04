@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_autocad_shapes_frozen_v281.xlsm
+SOURCE_SHA256: 00188CEFCE6293938F07A4CA3F5ED1FB306638B366944E28847910CEA15FB87D
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6c0ed5d9e8844666a6a93eed638baf69\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestAutoCADConfig.RunAudit03RealAutoCADTests =====
+SUITE_STARTED: modTestAutoCADConfig.RunAudit03RealAutoCADTests; 2026-10-04T23:09:52
+WATCHDOG_FAILURE: timeout=300 sec; macro=modTestAutoCADConfig.RunAudit03RealAutoCADTests; test Excel terminated
