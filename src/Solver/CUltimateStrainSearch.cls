@@ -250,8 +250,8 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
             j21 * hEps / rowScale2, j22 * hKx / rowScale2, j23 * hKy / rowScale2, _
             j31 * hEps / rowScale3, j32 * hKx / rowScale3, j33 * hKy / rowScale3, _
             -rPath1 / rowScale1, -rPath2 / rowScale2, -rLimit / rowScale3) Then
-        context.SetFailure sfcSingularTangent, _
-            "Матрица системы UltimateStrain вырождена: " & system.StopReason
+        context.SetFailure system.FailureCode, _
+            "Не удалось решить линейную систему UltimateStrain: " & system.StopReason
         Exit Function
     End If
 

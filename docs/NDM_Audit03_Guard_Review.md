@@ -446,3 +446,19 @@ structure 27/27, palette/save-reopen 355/0, source unchanged=True.
 локального интерфейсного изменения; финальный gate остается обязательным.
 Census 106/4421/1721 не заменяет semantic review; extreme arithmetic,
 остальные metadata/header paths и весь F07 еще не объявлены завершенными.
+
+## Общая Линейная Арифметика v229
+
+Неиспользуемое произведение pivot-ов и переполненная RHS-норма срывали
+системы с конечным известным решением; другие overflow покидали helper
+без typed failure. Frozen negative 10/40; исправленный directed 142/0,
+включая два настоящих Newton-состояния. Determinant удален после call-map,
+не подменен фиктивной диагностикой. Норма RHS масштабируется только при
+overflow; исходный Gaussian алгоритм и допуски сохраняются.
+
+Newton/Secant/Ultimate получают фактическую машинную причину. Три numerical
+suites в Off/On по 5637/0; 1908 прежних значений точно совпали, missing=0.
+Изолированный microbenchmark имеет overhead +6.52%, ускорение не заявлено.
+Два NotRun новых тестов сохранены отдельно; детали в Linear_Arithmetic_Review.
+Census 106/4427/1732 остается индексом. Этот срез не закрывает весь F07,
+Config/semantic review или полный выпускной gate.

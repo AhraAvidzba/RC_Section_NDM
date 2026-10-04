@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_linear_positive_v228.xlsm
+SOURCE_SHA256: E3D95AC062199FBE4AE88E1DF5B2D14BE6A25D16D6686250ADBEB0C6C1CE1833
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_352d7bfd84c84d53b7be66c10bf2ae3b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_EXTREME_LINEAR: passed=130; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

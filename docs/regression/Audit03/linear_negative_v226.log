@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_linear_negative_v226.xlsm
+SOURCE_SHA256: 810E0116787E8DD7128A2DAC7EAA282C79D21D26D5A7395A44E8D02D8FE95925
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2b087fd87504ed3bcb7760c5b034765\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03ExtremeLinearSystemTests =====
+SUITE_STARTED: RunAudit03ExtremeLinearSystemTests; 2026-10-04T13:15:48
+WATCHDOG_FAILURE: timeout=180 sec; macro=RunAudit03ExtremeLinearSystemTests; test Excel terminated

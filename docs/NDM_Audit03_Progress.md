@@ -69,6 +69,26 @@
 
 ## Актуальная Точка Продолжения
 
+- Excel guard зафиксирован `f7db003`. Следующий linear-arithmetic срез
+  v226-v229 убирает неиспользуемое вычисление determinant, масштабирует
+  только переполненную RHS-норму и передает typed linear failure в Newton/
+  Secant/Ultimate. Frozen negative 10/40; directed final 142/0, два настоящих
+  Newton-НДС с большой конечной жесткостью сходятся за две итерации.
+  Три затронутых numerical suites: 5637/0 Off и 5637/0 On;
+  точное сравнение 1908 прежних actual-values, missing=0/differences=0.
+  Это не полный восьми-suite release. Microbenchmark median 0.1796875 ->
+  0.19140625 s на 100000 calls: overhead +6.52%, ускорение не заявлено.
+  Structure 27/27, actual export 111 components; book SHA
+  9CC2B423CD2CEC051432082EA920A8043539A481AF1EB91E9ED77E56B3AB7440,
+  export SHA F2A6905B1F1F0BDD950F5D5CD3894307229EF24C83E2945CA20CCADC9A01B1E7.
+  Source/export equality 106/106, failed=0, состав классов сохранен.
+  Census 106/4427/1732, semantic Pending. Ошибки новых тестов v226/v228
+  отмечены NotRun в NDM_Audit03_Linear_Arithmetic_Review.md, не скрыты.
+  Methodology/expected/tolerance не менялись. Registry 666/1064 пока без
+  blanket PASS; дальше actual Config annotation bridge, оставшиеся
+  metadata/header paths, остальные Config/range/pairwise, semantic review
+  и полный финальный gate. Основная output-книга/ТЗ/user Excel сохранены.
+
 - Contour-arc срез зафиксирован `53761e9b`. Следующий Excel guard срез
   v224-v225 подтвердил реальный отказ последнего setter-а на собственном
   пустом Application: negative 120/19, positive 139/0, 32 варианта, noSolve.

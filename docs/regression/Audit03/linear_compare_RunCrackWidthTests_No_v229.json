@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/linear_before_RunCrackWidthTests_No_v225.log",
+  "CurrentReport": "docs/regression/Audit03/linear_after_RunCrackWidthTests_No_v229.log",
+  "BaselineSHA256": "6F0A521E030BA730E77541C58BE201AE1488616E088C5F7A18ABEF6B52E716AF",
+  "CurrentSHA256": "90762C0770350346DE8B5F83DD16702C53719AB94221123467BD2807827A983B",
+  "BaselineNumericAssertions": 196,
+  "CurrentNumericAssertions": 196,
+  "Compared": 196,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

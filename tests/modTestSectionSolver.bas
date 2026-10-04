@@ -26,6 +26,9 @@ Public Function RunSectionSolverTests() As String
     TestSystemSettingsCatalog stats
     TestUnitSystemConversions stats
     TestLinearSystem3x3 stats
+    TestAudit03ExtremeLinearSystem stats
+    TestAudit03LinearFailureCodes stats
+    TestAudit03LargeTangentState stats
     TestLinearMaterialEquilibrium stats
     TestLinearMaterialWithRebarReplacement stats
     TestDiagramConcreteCentralCompression stats
@@ -1633,3 +1636,171 @@ Private Sub Audit03LineSearchSettingEffects(ByRef stats As TSectionSolverTestSta
     AssertTrue stats, "audit03.effect.Solver.MinLineSearchAlpha.one", Not first.Converged And first.FailureCode = sfcNumericalFailure
     AssertTrue stats, "audit03.effect.Solver.MinLineSearchAlpha.small", second.Converged
 End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: КРАЙНИЕ МАСШТАБЫ СИСТЕМЫ 3x3 ====================
+
+' Проверяет конечные большие коэффициенты отдельно от нелинейного НДС.
+' Численные expected и допуски штатных инженерных регрессий не меняются.
+Public Function RunAudit03ExtremeLinearSystemTests() As String
+    Dim stats As TSectionSolverTestStats
+    TestLinearSystem3x3 stats
+    TestAudit03ExtremeLinearSystem stats
+    TestAudit03LinearFailureCodes stats
+    TestAudit03LargeTangentState stats
+    AppendLine stats, "TOTAL_AUDIT03_EXTREME_LINEAR: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ExtremeLinearSystemTests = stats.Report
+End Function
+
+' Проверяет причины настоящего линейного solve, а не вручную созданную meta.
+' Большая сумма RHS проходит масштабированную проверку, но непредставимая
+' поправка остается численной ошибкой; recovery очищает прошлый FailureCode.
+Private Sub TestAudit03LinearFailureCodes(ByRef stats As TSectionSolverTestStats)
+    Dim system As CLinearSystem3x3
+    Set system = New CLinearSystem3x3
+    AssertTrue stats, "audit03.linear.typed.large", system.Solve(2#, 1#, 0#, 1#, 2#, 0#, 0#, 0#, 1#, 1E+308, 1E+308, 1E+308)
+    AssertClose stats, "audit03.linear.typed.large.x1", system.X1 / 1E+308, 1# / 3#, 0.000000000000001
+    AssertClose stats, "audit03.linear.typed.large.x2", system.X2 / 1E+308, 1# / 3#, 0.000000000000001
+    AssertTrue stats, "audit03.linear.typed.large.residual", system.RelativeResidual >= 0# And system.RelativeResidual <= 1E-8
+    AssertTrue stats, "audit03.linear.typed.large.code", system.FailureCode = sfcNone
+    AssertTrue stats, "audit03.linear.typed.singular", Not system.Solve(1#, 2#, 3#, 2#, 4#, 6#, 3#, 6#, 9#, 1#, 2#, 3#)
+    AssertTrue stats, "audit03.linear.typed.singular.code", system.FailureCode = sfcSingularTangent
+    AssertTrue stats, "audit03.linear.typed.overflow", Not system.Solve(0.00000000000000001, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1E+308, 1#, 1#)
+    AssertTrue stats, "audit03.linear.typed.overflow.code", system.FailureCode = sfcNumericalFailure
+    AssertTrue stats, "audit03.linear.typed.overflow.vector", system.X1 = 0# And system.X2 = 0# And system.X3 = 0# And Not system.Solved
+    AssertTrue stats, "audit03.linear.typed.recovery", system.Solve(1#, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1#, 2#, 3#)
+    AssertTrue stats, "audit03.linear.typed.recovery.code", system.FailureCode = sfcNone
+End Sub
+
+' Проверяет реальный Newton-потребитель с большой, но конечной жесткостью.
+' Модуль синтетического линейного материала не является нормативным вводом;
+' нагрузки обычного масштаба, проверяется исходное компонентное равновесие.
+Private Sub TestAudit03LargeTangentState(ByRef stats As TSectionSolverTestStats)
+    Dim geom As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, section As CSectionModel
+    Dim concrete As CLinearConcreteMaterial, steel As CLinearSteelMaterial, solver As CSectionSolver
+    Dim modulus As Variant, code As Long, reason As String, prefix As String
+    Set geom = RectangleGeometry(200#, 100#)
+    Set mesh = BuildMesh(geom, 10#)
+    Set section = BuildGeneratedSectionModel(mesh, Nothing)
+    Set concrete = New CLinearConcreteMaterial
+    Set steel = New CLinearSteelMaterial: steel.Initialize 200000#
+    For Each modulus In Array(1E+110, 1E+200)
+        concrete.Initialize CDbl(modulus)
+        Set solver = New CSectionSolver
+        ConfigureStrictSolver solver
+        solver.SolverMethod = "Newton"
+        solver.SetInitialState 0#, 0#, 0#
+        On Error Resume Next
+        Err.Clear: solver.Solve section, concrete, steel, 250000#, 120000000#, -80000000#
+        code = Err.Number: reason = Err.Description
+        On Error GoTo 0
+        prefix = "audit03.linear.largeTangent." & CStr(modulus)
+        AssertTrue stats, prefix & ".noRuntimeError", code = 0
+        AssertTrue stats, prefix & ".converged", solver.Converged
+        AssertTrue stats, prefix & ".code", solver.FailureCode = sfcNone
+        If solver.Converged Then AssertEquilibrium stats, prefix, solver, 250000#, 120000000#, -80000000#
+        AppendLine stats, "LARGE_TANGENT_STATE: " & prefix & "|iterations=" & CStr(solver.Iterations) & "|" & solver.StopReason
+    Next modulus
+End Sub
+
+' Диагональные и переставленные системы имеют точно известный вектор.
+' Большой determinant/норма RHS не должны мешать решению. Непредставимая
+' поправка и арифметическое переполнение возвращают управляемый отказ;
+' последующий обычный solve того же объекта не наследует неудачу.
+Private Sub TestAudit03ExtremeLinearSystem(ByRef stats As TSectionSolverTestStats)
+    Dim system As CLinearSystem3x3, coefficientScale As Variant, direction As Variant
+    Dim value As Double, solved As Boolean, code As Long, reason As String, prefix As Variant
+    Set system = New CLinearSystem3x3
+    For Each coefficientScale In Array(1E+110, 1E+200, 1E+307, 1E+308)
+        For Each direction In Array(-1#, 1#)
+            value = CDbl(coefficientScale) * CDbl(direction)
+            For Each prefix In Array("diagonal", "permuted")
+                On Error Resume Next
+                Err.Clear
+                If prefix = "diagonal" Then
+                    solved = system.Solve(value, 0#, 0#, 0#, value, 0#, 0#, 0#, value, value, -value, value)
+                Else
+                    solved = system.Solve(0#, 0#, value, value, 0#, 0#, 0#, value, 0#, value, value, -value)
+                End If
+                code = Err.Number: reason = Err.Description
+                On Error GoTo 0
+                Dim label As String
+                label = "audit03.linear." & CStr(prefix) & "." & CStr(coefficientScale) & "." & CStr(direction)
+                AssertTrue stats, label & ".noRuntimeError", code = 0
+                AssertTrue stats, label & ".solved", solved And system.Solved
+                If code = 0 And solved Then
+                    AssertClose stats, label & ".x1", system.X1, 1#, 0#
+                    AssertClose stats, label & ".x2", system.X2, -1#, 0#
+                    AssertClose stats, label & ".x3", system.X3, 1#, 0#
+                    AssertClose stats, label & ".residual", system.RelativeResidual, 0#, 0#
+                End If
+                AppendLine stats, "LINEAR_SCALE: " & label & "|solved=" & CStr(solved) & "|error=" & CStr(code) & "|" & reason
+            Next prefix
+        Next direction
+    Next coefficientScale
+    ' Здесь determinant равен 1: воспроизводим отдельно переполнение нормы RHS.
+    For Each direction In Array(-1#, 1#)
+        value = 1E+308 * CDbl(direction)
+        On Error Resume Next
+        Err.Clear
+        solved = system.Solve(1#, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, value, value, value)
+        code = Err.Number: reason = Err.Description
+        On Error GoTo 0
+        label = "audit03.linear.rhsNorm." & CStr(direction)
+        AssertTrue stats, label & ".noRuntimeError", code = 0
+        AssertTrue stats, label & ".solved", solved And system.Solved
+        If code = 0 And solved Then
+            AssertTrue stats, label & ".vector", system.X1 = value And system.X2 = value And system.X3 = value
+            AssertClose stats, label & ".residual", system.RelativeResidual, 0#, 0#
+        End If
+        AppendLine stats, "LINEAR_SCALE: " & label & "|solved=" & CStr(solved) & "|error=" & CStr(code) & "|" & reason
+    Next direction
+    On Error Resume Next
+    Err.Clear
+    solved = system.Solve(0.00000000000000001, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1E+308, 1#, 1#)
+    code = Err.Number: reason = Err.Description
+    On Error GoTo 0
+    AssertTrue stats, "audit03.linear.unrepresentable.noRuntimeError", code = 0
+    AssertTrue stats, "audit03.linear.unrepresentable.failed", Not solved And Not system.Solved
+    AssertTrue stats, "audit03.linear.unrepresentable.reason", Len(system.StopReason) > 0
+    AppendLine stats, "LINEAR_OVERFLOW: division|error=" & CStr(code) & "|" & reason & "|" & system.StopReason
+    On Error Resume Next
+    Err.Clear
+    solved = system.Solve(1E+308, 1E+308, 0#, -1E+308, 1E+308, 0#, 0#, 0#, 1#, 0#, 1E+308, 1#)
+    code = Err.Number: reason = Err.Description
+    On Error GoTo 0
+    AssertTrue stats, "audit03.linear.elimination.noRuntimeError", code = 0
+    AssertTrue stats, "audit03.linear.elimination.failed", Not solved And Not system.Solved
+    AssertTrue stats, "audit03.linear.elimination.reason", Len(system.StopReason) > 0
+    AppendLine stats, "LINEAR_OVERFLOW: elimination|error=" & CStr(code) & "|" & reason & "|" & system.StopReason
+    AssertTrue stats, "audit03.linear.recovery", system.Solve(3#, 2#, -1#, 2#, -2#, 4#, -1#, 0.5, -1#, 1#, -2#, 0#) And system.Solved
+    AssertClose stats, "audit03.linear.recovery.x1", system.X1, 1#, 0.000000000001
+    AppendLine stats, "LINEAR_CASES: validSystems=18; arithmeticFailures=2; nonlinearCases=0"
+End Sub
+
+' Измеряет только общий линейный шаг на одинаковой известной системе.
+' Пять повторов позволяют сравнить старый и исправленный helper отдельно
+' от Excel IO и создания геометрии; это не итоговый benchmark всего НДС.
+Public Function RunAudit03LinearSystemBenchmark() As String
+    Dim system As CLinearSystem3x3, repetition As Long, i As Long
+    Dim started As Double, elapsed As Double, checksum As Double, report As String
+    Set system = New CLinearSystem3x3
+    For repetition = 1 To 5
+        checksum = 0#: started = Timer
+        For i = 1 To 100000
+            If Not system.Solve(3#, 2#, -1#, 2#, -2#, 4#, -1#, 0.5, -1#, 1#, -2#, 0#) Then
+                RunAudit03LinearSystemBenchmark = "RUNTIME ERROR: linear benchmark solve failed; " & system.StopReason
+                Exit Function
+            End If
+            checksum = checksum + system.X1 + system.X2 + system.X3
+        Next i
+        elapsed = Timer - started
+        If elapsed < 0# Then elapsed = elapsed + 86400#
+        report = report & "BENCHMARK_LINEAR: sample=" & CStr(repetition) & "; iterations=100000; elapsedSec=" & _
+            FormatNumberInvariant(elapsed) & "; checksum=" & FormatNumberInvariant(checksum) & vbCrLf
+        If Abs(checksum + 300000#) > 0.000001 Then
+            RunAudit03LinearSystemBenchmark = report & "RUNTIME ERROR: linear benchmark checksum differs."
+            Exit Function
+        End If
+    Next repetition
+    RunAudit03LinearSystemBenchmark = report & "TOTAL_AUDIT03_LINEAR_BENCHMARK: passed=5; failed=0"
+End Function

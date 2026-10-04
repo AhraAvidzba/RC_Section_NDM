@@ -1,0 +1,5 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_linear_positive_v228.xlsm
+SOURCE_SHA256: AE1FCE5F23EEC40A4981683F0684994A99D79BD25E3A8D30FE941481D2AB4940
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_dd7513422a23484fa858d1703f30deea\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+SCRIPT ERROR: Исключение при вызове "Run" с "1" аргументами: "Сбой при удаленном вызове процедуры. (Исключение из HRESULT: 0x800706BE)"

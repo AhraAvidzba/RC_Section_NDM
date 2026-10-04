@@ -1,0 +1,86 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_linear_negative_v227.xlsm
+SOURCE_SHA256: A039C71298A8165DA20384B942C422A267D044AA28F292E5F54FAACF02DD26D0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c7c7207bd30f49879463e8a7bffaba31\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03ExtremeLinearSystemTests =====
+SUITE_STARTED: RunAudit03ExtremeLinearSystemTests; 2026-10-04T13:23:24
+EXCEL_AFTER_SUITE: pid=14516; workingSet=138240000; privateBytes=92041216; cpu=2.859375
+EXCEL_AFTER_SUITE: pid=23476; workingSet=212807680; privateBytes=164327424; cpu=11761.015625
+OK: linsys.solve
+OK: linsys.x1; actual=1.; expected=1.; absDiff=0.
+OK: linsys.x2; actual=-2.; expected=-2.; absDiff=0.
+OK: linsys.x3; actual=-2.; expected=-2.; absDiff=0.
+OK: linsys.residual
+OK: linsys.singular
+FAIL: audit03.linear.diagonal.1E+110.-1.noRuntimeError
+FAIL: audit03.linear.diagonal.1E+110.-1.solved
+LINEAR_SCALE: audit03.linear.diagonal.1E+110.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.permuted.1E+110.-1.noRuntimeError
+FAIL: audit03.linear.permuted.1E+110.-1.solved
+LINEAR_SCALE: audit03.linear.permuted.1E+110.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.diagonal.1E+110.1.noRuntimeError
+FAIL: audit03.linear.diagonal.1E+110.1.solved
+LINEAR_SCALE: audit03.linear.diagonal.1E+110.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.permuted.1E+110.1.noRuntimeError
+FAIL: audit03.linear.permuted.1E+110.1.solved
+LINEAR_SCALE: audit03.linear.permuted.1E+110.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.diagonal.1E+200.-1.noRuntimeError
+FAIL: audit03.linear.diagonal.1E+200.-1.solved
+LINEAR_SCALE: audit03.linear.diagonal.1E+200.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.permuted.1E+200.-1.noRuntimeError
+FAIL: audit03.linear.permuted.1E+200.-1.solved
+LINEAR_SCALE: audit03.linear.permuted.1E+200.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.diagonal.1E+200.1.noRuntimeError
+FAIL: audit03.linear.diagonal.1E+200.1.solved
+LINEAR_SCALE: audit03.linear.diagonal.1E+200.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.permuted.1E+200.1.noRuntimeError
+FAIL: audit03.linear.permuted.1E+200.1.solved
+LINEAR_SCALE: audit03.linear.permuted.1E+200.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.diagonal.1E+307.-1.noRuntimeError
+FAIL: audit03.linear.diagonal.1E+307.-1.solved
+LINEAR_SCALE: audit03.linear.diagonal.1E+307.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.permuted.1E+307.-1.noRuntimeError
+FAIL: audit03.linear.permuted.1E+307.-1.solved
+LINEAR_SCALE: audit03.linear.permuted.1E+307.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.diagonal.1E+307.1.noRuntimeError
+FAIL: audit03.linear.diagonal.1E+307.1.solved
+LINEAR_SCALE: audit03.linear.diagonal.1E+307.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.permuted.1E+307.1.noRuntimeError
+FAIL: audit03.linear.permuted.1E+307.1.solved
+LINEAR_SCALE: audit03.linear.permuted.1E+307.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.diagonal.1E+308.-1.noRuntimeError
+FAIL: audit03.linear.diagonal.1E+308.-1.solved
+LINEAR_SCALE: audit03.linear.diagonal.1E+308.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.permuted.1E+308.-1.noRuntimeError
+FAIL: audit03.linear.permuted.1E+308.-1.solved
+LINEAR_SCALE: audit03.linear.permuted.1E+308.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.diagonal.1E+308.1.noRuntimeError
+FAIL: audit03.linear.diagonal.1E+308.1.solved
+LINEAR_SCALE: audit03.linear.diagonal.1E+308.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.permuted.1E+308.1.noRuntimeError
+FAIL: audit03.linear.permuted.1E+308.1.solved
+LINEAR_SCALE: audit03.linear.permuted.1E+308.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.rhsNorm.-1.noRuntimeError
+FAIL: audit03.linear.rhsNorm.-1.solved
+LINEAR_SCALE: audit03.linear.rhsNorm.-1|solved=False|error=6|Overflow
+FAIL: audit03.linear.rhsNorm.1.noRuntimeError
+FAIL: audit03.linear.rhsNorm.1.solved
+LINEAR_SCALE: audit03.linear.rhsNorm.1|solved=False|error=6|Overflow
+FAIL: audit03.linear.unrepresentable.noRuntimeError
+OK: audit03.linear.unrepresentable.failed
+FAIL: audit03.linear.unrepresentable.reason
+LINEAR_OVERFLOW: division|error=6|Overflow|
+FAIL: audit03.linear.elimination.noRuntimeError
+OK: audit03.linear.elimination.failed
+FAIL: audit03.linear.elimination.reason
+LINEAR_OVERFLOW: elimination|error=6|Overflow|
+OK: audit03.linear.recovery
+OK: audit03.linear.recovery.x1; actual=1.; expected=1.; absDiff=0.
+LINEAR_CASES: validSystems=18; arithmeticFailures=2; nonlinearCases=0
+TOTAL_AUDIT03_EXTREME_LINEAR: passed=10; failed=40
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c7c7207bd30f49879463e8a7bffaba31\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03ExtremeLinearSystemTests; 2026-10-04T13:23:24
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

@@ -1,0 +1,180 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_linear_positive_v229.xlsm
+SOURCE_SHA256: 9CC2B423CD2CEC051432082EA920A8043539A481AF1EB91E9ED77E56B3AB7440
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_31c7c22c543c41439331cd5cf151f83d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03ExtremeLinearSystemTests =====
+SUITE_STARTED: RunAudit03ExtremeLinearSystemTests; 2026-10-04T13:28:42
+EXCEL_AFTER_SUITE: pid=22964; workingSet=140070912; privateBytes=93052928; cpu=2.78125
+EXCEL_AFTER_SUITE: pid=23476; workingSet=212787200; privateBytes=164249600; cpu=11970.4375
+OK: linsys.solve
+OK: linsys.x1; actual=1.; expected=1.; absDiff=0.
+OK: linsys.x2; actual=-2.; expected=-2.; absDiff=0.
+OK: linsys.x3; actual=-2.; expected=-2.; absDiff=0.
+OK: linsys.residual
+OK: linsys.singular
+OK: audit03.linear.diagonal.1E+110.-1.noRuntimeError
+OK: audit03.linear.diagonal.1E+110.-1.solved
+OK: audit03.linear.diagonal.1E+110.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+110.-1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+110.-1.noRuntimeError
+OK: audit03.linear.permuted.1E+110.-1.solved
+OK: audit03.linear.permuted.1E+110.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+110.-1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+110.1.noRuntimeError
+OK: audit03.linear.diagonal.1E+110.1.solved
+OK: audit03.linear.diagonal.1E+110.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+110.1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+110.1.noRuntimeError
+OK: audit03.linear.permuted.1E+110.1.solved
+OK: audit03.linear.permuted.1E+110.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+110.1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+200.-1.noRuntimeError
+OK: audit03.linear.diagonal.1E+200.-1.solved
+OK: audit03.linear.diagonal.1E+200.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+200.-1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+200.-1.noRuntimeError
+OK: audit03.linear.permuted.1E+200.-1.solved
+OK: audit03.linear.permuted.1E+200.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+200.-1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+200.1.noRuntimeError
+OK: audit03.linear.diagonal.1E+200.1.solved
+OK: audit03.linear.diagonal.1E+200.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+200.1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+200.1.noRuntimeError
+OK: audit03.linear.permuted.1E+200.1.solved
+OK: audit03.linear.permuted.1E+200.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+200.1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+307.-1.noRuntimeError
+OK: audit03.linear.diagonal.1E+307.-1.solved
+OK: audit03.linear.diagonal.1E+307.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+307.-1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+307.-1.noRuntimeError
+OK: audit03.linear.permuted.1E+307.-1.solved
+OK: audit03.linear.permuted.1E+307.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+307.-1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+307.1.noRuntimeError
+OK: audit03.linear.diagonal.1E+307.1.solved
+OK: audit03.linear.diagonal.1E+307.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+307.1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+307.1.noRuntimeError
+OK: audit03.linear.permuted.1E+307.1.solved
+OK: audit03.linear.permuted.1E+307.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+307.1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+308.-1.noRuntimeError
+OK: audit03.linear.diagonal.1E+308.-1.solved
+OK: audit03.linear.diagonal.1E+308.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+308.-1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+308.-1.noRuntimeError
+OK: audit03.linear.permuted.1E+308.-1.solved
+OK: audit03.linear.permuted.1E+308.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+308.-1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+308.1.noRuntimeError
+OK: audit03.linear.diagonal.1E+308.1.solved
+OK: audit03.linear.diagonal.1E+308.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+308.1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+308.1.noRuntimeError
+OK: audit03.linear.permuted.1E+308.1.solved
+OK: audit03.linear.permuted.1E+308.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+308.1|solved=True|error=0|
+OK: audit03.linear.rhsNorm.-1.noRuntimeError
+OK: audit03.linear.rhsNorm.-1.solved
+OK: audit03.linear.rhsNorm.-1.vector
+OK: audit03.linear.rhsNorm.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.rhsNorm.-1|solved=True|error=0|
+OK: audit03.linear.rhsNorm.1.noRuntimeError
+OK: audit03.linear.rhsNorm.1.solved
+OK: audit03.linear.rhsNorm.1.vector
+OK: audit03.linear.rhsNorm.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.rhsNorm.1|solved=True|error=0|
+OK: audit03.linear.unrepresentable.noRuntimeError
+OK: audit03.linear.unrepresentable.failed
+OK: audit03.linear.unrepresentable.reason
+LINEAR_OVERFLOW: division|error=0||Не удалось вычислить поправку линейной системы: число выходит за допустимый диапазон арифметики.
+OK: audit03.linear.elimination.noRuntimeError
+OK: audit03.linear.elimination.failed
+OK: audit03.linear.elimination.reason
+LINEAR_OVERFLOW: elimination|error=0||Не удалось вычислить поправку линейной системы: число выходит за допустимый диапазон арифметики.
+OK: audit03.linear.recovery
+OK: audit03.linear.recovery.x1; actual=1.; expected=1.; absDiff=0.
+LINEAR_CASES: validSystems=18; arithmeticFailures=2; nonlinearCases=0
+OK: audit03.linear.typed.large
+OK: audit03.linear.typed.large.x1; actual=0.333333333333; expected=0.333333333333; absDiff=0.
+OK: audit03.linear.typed.large.x2; actual=0.333333333333; expected=0.333333333333; absDiff=0.
+OK: audit03.linear.typed.large.residual
+OK: audit03.linear.typed.large.code
+OK: audit03.linear.typed.singular
+OK: audit03.linear.typed.singular.code
+OK: audit03.linear.typed.overflow
+OK: audit03.linear.typed.overflow.code
+OK: audit03.linear.typed.overflow.vector
+OK: audit03.linear.typed.recovery
+OK: audit03.linear.typed.recovery.code
+OK: audit03.linear.largeTangent.1E+110.noRuntimeError
+OK: audit03.linear.largeTangent.1E+110.converged
+OK: audit03.linear.largeTangent.1E+110.code
+OK: audit03.linear.largeTangent.1E+110.N; actual=249999.999999999; expected=250000.; relDiff=0.
+OK: audit03.linear.largeTangent.1E+110.Mx; actual=120000000.; expected=120000000.; relDiff=0.
+OK: audit03.linear.largeTangent.1E+110.My; actual=-80000000.; expected=-80000000.; relDiff=0.
+LARGE_TANGENT_STATE: audit03.linear.largeTangent.1E+110|iterations=2|Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.linear.largeTangent.1E+200.noRuntimeError
+OK: audit03.linear.largeTangent.1E+200.converged
+OK: audit03.linear.largeTangent.1E+200.code
+OK: audit03.linear.largeTangent.1E+200.N; actual=250000.; expected=250000.; relDiff=0.
+OK: audit03.linear.largeTangent.1E+200.Mx; actual=120000000.; expected=120000000.; relDiff=0.
+OK: audit03.linear.largeTangent.1E+200.My; actual=-80000000.; expected=-80000000.; relDiff=0.
+LARGE_TANGENT_STATE: audit03.linear.largeTangent.1E+200|iterations=2|Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+TOTAL_AUDIT03_EXTREME_LINEAR: passed=142; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_31c7c22c543c41439331cd5cf151f83d\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03ExtremeLinearSystemTests; 2026-10-04T13:28:42
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

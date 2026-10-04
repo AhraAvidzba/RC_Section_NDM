@@ -317,7 +317,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
                 mK(3, 1), mK(3, 2), mK(3, 3), _
                 -mResidualN, -mResidualMx, -mResidualMy) Then
             mConverged = False
-            mFailureCode = sfcSingularTangent
+            mFailureCode = system.FailureCode
             mStopReason = "Не удалось решить касательную систему: " & system.StopReason
             AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, mStopReason
             SolveNewtonLoadStep = False
@@ -385,16 +385,17 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         Dim deltaEps As Double
         Dim deltaKx As Double
         Dim deltaKy As Double
-        If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy) Then
+        Dim linearFailureCode As ESolverFailureCode, linearFailureReason As String
+        If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy, linearFailureCode, linearFailureReason) Then
             If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
                     mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "линейная система не решена") Then
                 SolveSecantLoadStep = False
                 Exit Function
             End If
-            If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy) Then
+            If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy, linearFailureCode, linearFailureReason) Then
                 mConverged = False
-                mFailureCode = sfcSingularTangent
-                mStopReason = "Равновесие не найдено: система Secant не решилась после перезапуска."
+                mFailureCode = linearFailureCode
+                mStopReason = "Равновесие не найдено: система Secant не решилась после перезапуска. " & linearFailureReason
                 SolveSecantLoadStep = False
                 Exit Function
             End If
@@ -543,16 +544,21 @@ Private Sub BuildSecantJacobianColumn(ByVal section As CSectionModel, _
 End Sub
 
 ' Решает линейную систему Secant для поправки плоскости деформаций.
-' Возвращает False, если матрица вырождена или полученный шаг нечисловой.
+' Возвращает False, если матрица вырождена или поправка непредставима.
+' Сохраняет машинную причину для финального отказа после Secant-перезапуска.
 Private Function SolveSecantCorrection(ByRef b() As Double, ByRef deltaEps As Double, _
-        ByRef deltaKx As Double, ByRef deltaKy As Double) As Boolean
+        ByRef deltaKx As Double, ByRef deltaKy As Double, _
+        ByRef failureCode As ESolverFailureCode, ByRef failureReason As String) As Boolean
 
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
+    failureCode = sfcNone: failureReason = vbNullString
     If Not system.Solve(b(1, 1), b(1, 2), b(1, 3), _
             b(2, 1), b(2, 2), b(2, 3), _
             b(3, 1), b(3, 2), b(3, 3), _
             -mResidualN, -mResidualMx, -mResidualMy) Then
+        failureCode = system.FailureCode
+        failureReason = system.StopReason
         SolveSecantCorrection = False
         Exit Function
     End If
@@ -560,6 +566,10 @@ Private Function SolveSecantCorrection(ByRef b() As Double, ByRef deltaEps As Do
     deltaKx = system.X2
     deltaKy = system.X3
     SolveSecantCorrection = IsFiniteNumber(deltaEps) And IsFiniteNumber(deltaKx) And IsFiniteNumber(deltaKy)
+    If Not SolveSecantCorrection Then
+        failureCode = sfcNumericalFailure
+        failureReason = "Поправка Secant выходит за допустимый численный диапазон."
+    End If
 End Function
 
 ' Обновляет приближенную матрицу чувствительности по формуле Бройдена.

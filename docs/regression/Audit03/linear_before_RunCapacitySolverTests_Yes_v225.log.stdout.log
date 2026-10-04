@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_excel_guard_positive_v225.xlsm
+SOURCE_SHA256: 2FB1A9D7399C99FA75CB297703389F22856E5A086F8D844065128309ECC66091
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7d464c80ca41408695e96e3f66d49f3b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL_CAPACITY: passed=3074; failed=0; elapsedSec=43.22265625
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

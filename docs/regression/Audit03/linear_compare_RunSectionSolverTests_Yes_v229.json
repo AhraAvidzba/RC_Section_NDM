@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/linear_before_RunSectionSolverTests_Yes_v225.log",
+  "CurrentReport": "docs/regression/Audit03/linear_after_RunSectionSolverTests_Yes_v229.log",
+  "BaselineSHA256": "E2CF9B92459C0D38304741F9ACE2599306CB419A5F6C6D06B3E0F0AA66399C9E",
+  "CurrentSHA256": "672783379953ED3685B6C8B6BC9F025CCBF89905BBB0371B812FBDBE4A70B172",
+  "BaselineNumericAssertions": 157,
+  "CurrentNumericAssertions": 232,
+  "Compared": 157,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

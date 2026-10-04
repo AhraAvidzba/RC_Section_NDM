@@ -1,0 +1,19 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_linear_negative_v227.xlsm
+SOURCE_SHA256: A039C71298A8165DA20384B942C422A267D044AA28F292E5F54FAACF02DD26D0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6bbdeed4ec5f4c0bb324f3085f5d5707\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03LinearSystemBenchmark =====
+SUITE_STARTED: RunAudit03LinearSystemBenchmark; 2026-10-04T13:21:39
+EXCEL_AFTER_SUITE: pid=16592; workingSet=132808704; privateBytes=89767936; cpu=3.5
+EXCEL_AFTER_SUITE: pid=23476; workingSet=212807680; privateBytes=164327424; cpu=11669.703125
+BENCHMARK_LINEAR: sample=1; iterations=100000; elapsedSec=0.18359375; checksum=-300000.
+BENCHMARK_LINEAR: sample=2; iterations=100000; elapsedSec=0.1796875; checksum=-300000.
+BENCHMARK_LINEAR: sample=3; iterations=100000; elapsedSec=0.1796875; checksum=-300000.
+BENCHMARK_LINEAR: sample=4; iterations=100000; elapsedSec=0.17578125; checksum=-300000.
+BENCHMARK_LINEAR: sample=5; iterations=100000; elapsedSec=0.1875; checksum=-300000.
+TOTAL_AUDIT03_LINEAR_BENCHMARK: passed=5; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6bbdeed4ec5f4c0bb324f3085f5d5707\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03LinearSystemBenchmark; 2026-10-04T13:21:40
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True
