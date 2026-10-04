@@ -1,0 +1,699 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_rebar_all_fields_v189.xlsm
+SOURCE_SHA256: 692A465417DE6DA5C39D81FA6363A3F52923636E35B43065EA033EC8B3FE94C4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_41e1a0e6fb8a4e6f874ad89645cd1cd5\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometryConfig.RunAudit03CircleRebarInputTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03CircleRebarInputTests; 2026-10-04T02:28:05
+EXCEL_AFTER_SUITE: pid=23476; workingSet=208809984; privateBytes=160354304; cpu=9144.734375
+EXCEL_AFTER_SUITE: pid=24980; workingSet=147546112; privateBytes=103944192; cpu=16.96875
+OK: circleRebar.active.Circle.Diameter.1.reject
+OK: circleRebar.active.Circle.Diameter.1.address
+OK: circleRebar.active.Circle.Diameter.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.1; error=-2147217194; Настройка Circle.Diameter (лист Config, ячейка I87): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: circleRebar.active.Circle.Diameter.1.recovery
+OK: circleRebar.active.Circle.Diameter.2.reject
+OK: circleRebar.active.Circle.Diameter.2.address
+OK: circleRebar.active.Circle.Diameter.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.2; error=-2147218354; Настройка Circle.Diameter (лист Config, ячейка I87): Диаметр круглого бетонного сечения должен быть положительным. Введите диаметр больше нуля.
+OK: circleRebar.active.Circle.Diameter.2.recovery
+OK: circleRebar.active.Circle.Diameter.3.reject
+OK: circleRebar.active.Circle.Diameter.3.address
+OK: circleRebar.active.Circle.Diameter.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.3; error=-2147218354; Настройка Circle.Diameter (лист Config, ячейка I87): Диаметр круглого бетонного сечения должен быть положительным. Введите диаметр больше нуля.
+OK: circleRebar.active.Circle.Diameter.3.recovery
+OK: circleRebar.active.Circle.Diameter.4.reject
+OK: circleRebar.active.Circle.Diameter.4.address
+OK: circleRebar.active.Circle.Diameter.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.4; error=-2147217191; Настройка Circle.Diameter (лист Config, ячейка I87): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Circle.Diameter.4.recovery
+OK: circleRebar.active.Circle.Diameter.5.reject
+OK: circleRebar.active.Circle.Diameter.5.address
+OK: circleRebar.active.Circle.Diameter.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.5; error=-2147217195; Настройка Circle.Diameter (лист Config, ячейка I87) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Circle.Diameter.5.recovery
+OK: circleRebar.missing.Circle.Diameter.reject
+OK: circleRebar.missing.Circle.Diameter.key
+OK: circleRebar.missing.Circle.Diameter.repair
+CIRCLE_MISSING_INPUT: Circle.Diameter; error=-2147217194; Настройка Circle.Diameter (лист Config, раздел "круглое сечение"): Обязательное числовое значение не задано. Восстановите строку Circle.Diameter в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: circleRebar.missing.Circle.Diameter.recovery
+OK: circleRebar.active.Rebar.AxisDistance.1.reject
+OK: circleRebar.active.Rebar.AxisDistance.1.address
+OK: circleRebar.active.Rebar.AxisDistance.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.1; error=-2147217194; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: circleRebar.active.Rebar.AxisDistance.1.recovery
+OK: circleRebar.active.Rebar.AxisDistance.2.reject
+OK: circleRebar.active.Rebar.AxisDistance.2.address
+OK: circleRebar.active.Rebar.AxisDistance.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.2; error=-2147218351; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Расстояние до оси первого ряда должно быть больше половины диаметра стержня. Введите as больше Rebar.Diameter/2.
+OK: circleRebar.active.Rebar.AxisDistance.2.recovery
+OK: circleRebar.active.Rebar.AxisDistance.3.reject
+OK: circleRebar.active.Rebar.AxisDistance.3.address
+OK: circleRebar.active.Rebar.AxisDistance.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.3; error=-2147218351; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Расстояние до оси первого ряда должно быть больше половины диаметра стержня. Введите as больше Rebar.Diameter/2.
+OK: circleRebar.active.Rebar.AxisDistance.3.recovery
+OK: circleRebar.active.Rebar.AxisDistance.4.reject
+OK: circleRebar.active.Rebar.AxisDistance.4.address
+OK: circleRebar.active.Rebar.AxisDistance.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.4; error=-2147218350; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Ось первого ряда должна находиться внутри круга, а не в его центре или за ним. Введите as меньше Circle.Diameter/2.
+OK: circleRebar.active.Rebar.AxisDistance.4.recovery
+OK: circleRebar.active.Rebar.AxisDistance.5.reject
+OK: circleRebar.active.Rebar.AxisDistance.5.address
+OK: circleRebar.active.Rebar.AxisDistance.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.5; error=-2147217191; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.AxisDistance.5.recovery
+OK: circleRebar.active.Rebar.AxisDistance.6.reject
+OK: circleRebar.active.Rebar.AxisDistance.6.address
+OK: circleRebar.active.Rebar.AxisDistance.6.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.6; error=-2147217195; Настройка Rebar.AxisDistance (лист Config, ячейка I88) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.AxisDistance.6.recovery
+OK: circleRebar.missing.Rebar.AxisDistance.reject
+OK: circleRebar.missing.Rebar.AxisDistance.key
+OK: circleRebar.missing.Rebar.AxisDistance.repair
+CIRCLE_MISSING_INPUT: Rebar.AxisDistance; error=-2147217194; Настройка Rebar.AxisDistance (лист Config, раздел "круглое сечение"): Обязательное числовое значение не задано. Восстановите строку Rebar.AxisDistance в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: circleRebar.missing.Rebar.AxisDistance.recovery
+OK: circleRebar.active.Rebar.Count.1.reject
+OK: circleRebar.active.Rebar.Count.1.address
+OK: circleRebar.active.Rebar.Count.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.1; error=-2147218353; Настройка Rebar.Count (лист Config, ячейка I89): Количество стержней круглого сечения не может быть отрицательным. Введите 0 или целое количество не меньше 2.
+OK: circleRebar.active.Rebar.Count.1.recovery
+OK: circleRebar.active.Rebar.Count.2.reject
+OK: circleRebar.active.Rebar.Count.2.address
+OK: circleRebar.active.Rebar.Count.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.2; error=-2147218353; Настройка Rebar.Count (лист Config, ячейка I89): Для круговой раскладки требуется не меньше двух стержней первого ряда. Введите целое количество не меньше 2; 0 выключает ряд.
+OK: circleRebar.active.Rebar.Count.2.recovery
+OK: circleRebar.active.Rebar.Count.3.reject
+OK: circleRebar.active.Rebar.Count.3.address
+OK: circleRebar.active.Rebar.Count.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.3; error=-2147217189; Настройка Rebar.Count (лист Config, ячейка I89): Введено дробное значение вместо целого; автоматическое округление не выполняется. Введите целое число.
+OK: circleRebar.active.Rebar.Count.3.recovery
+OK: circleRebar.active.Rebar.Count.4.reject
+OK: circleRebar.active.Rebar.Count.4.address
+OK: circleRebar.active.Rebar.Count.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.4; error=-2147217189; Настройка Rebar.Count (лист Config, ячейка I89): Целое число выходит за допустимый диапазон Long. Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.
+OK: circleRebar.active.Rebar.Count.4.recovery
+OK: circleRebar.active.Rebar.Count.5.reject
+OK: circleRebar.active.Rebar.Count.5.address
+OK: circleRebar.active.Rebar.Count.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.5; error=-2147217192; Настройка Rebar.Count (лист Config, ячейка I89): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.Count.5.recovery
+OK: circleRebar.active.Rebar.Count.6.reject
+OK: circleRebar.active.Rebar.Count.6.address
+OK: circleRebar.active.Rebar.Count.6.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.6; error=-2147217195; Настройка Rebar.Count (лист Config, ячейка I89) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Count.6.recovery
+OK: circleRebar.missing.Rebar.Count.reject
+OK: circleRebar.missing.Rebar.Count.key
+OK: circleRebar.missing.Rebar.Count.repair
+CIRCLE_MISSING_INPUT: Rebar.Count; error=-2147217194; Настройка Rebar.Count (лист Config, раздел "круглое сечение"): Строка количества стержней отсутствует. Восстановите строку; введите целое количество или 0 для отсутствующего ряда.
+OK: circleRebar.missing.Rebar.Count.recovery
+OK: circleRebar.active.Rebar.Diameter.1.reject
+OK: circleRebar.active.Rebar.Diameter.1.address
+OK: circleRebar.active.Rebar.Diameter.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.1; error=-2147218352; Настройка Rebar.Diameter (лист Config, ячейка I90): Диаметр стержней не может быть отрицательным. Введите неотрицательный диаметр; 0 или пустая ячейка выключают ряд.
+OK: circleRebar.active.Rebar.Diameter.1.recovery
+OK: circleRebar.active.Rebar.Diameter.2.reject
+OK: circleRebar.active.Rebar.Diameter.2.address
+OK: circleRebar.active.Rebar.Diameter.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.2; error=-2147217191; Настройка Rebar.Diameter (лист Config, ячейка I90): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.Diameter.2.recovery
+OK: circleRebar.active.Rebar.Diameter.3.reject
+OK: circleRebar.active.Rebar.Diameter.3.address
+OK: circleRebar.active.Rebar.Diameter.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.3; error=-2147217195; Настройка Rebar.Diameter (лист Config, ячейка I90) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Diameter.3.recovery
+OK: circleRebar.missing.Rebar.Diameter.reject
+OK: circleRebar.missing.Rebar.Diameter.key
+OK: circleRebar.missing.Rebar.Diameter.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter; error=-2147217194; Настройка Rebar.Diameter (лист Config, раздел "круглое сечение"): Строка диаметра стержней отсутствует. Восстановите строку; введите диаметр или оставьте ячейку пустой для отсутствующего ряда.
+OK: circleRebar.missing.Rebar.Diameter.recovery
+OK: circleRebar.active.Rebar.Diameter2.1.reject
+OK: circleRebar.active.Rebar.Diameter2.1.address
+OK: circleRebar.active.Rebar.Diameter2.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.1; error=-2147218349; Настройка Rebar.Diameter2 (лист Config, ячейка I92): Диаметр стержней не может быть отрицательным. Введите неотрицательный диаметр; 0 или пустая ячейка выключают ряд.
+OK: circleRebar.active.Rebar.Diameter2.1.recovery
+OK: circleRebar.active.Rebar.Diameter2.2.reject
+OK: circleRebar.active.Rebar.Diameter2.2.address
+OK: circleRebar.active.Rebar.Diameter2.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.2; error=-2147217191; Настройка Rebar.Diameter2 (лист Config, ячейка I92): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.Diameter2.2.recovery
+OK: circleRebar.active.Rebar.Diameter2.3.reject
+OK: circleRebar.active.Rebar.Diameter2.3.address
+OK: circleRebar.active.Rebar.Diameter2.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.3; error=-2147217195; Настройка Rebar.Diameter2 (лист Config, ячейка I92) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Diameter2.3.recovery
+OK: circleRebar.missing.Rebar.Diameter2.reject
+OK: circleRebar.missing.Rebar.Diameter2.key
+OK: circleRebar.missing.Rebar.Diameter2.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter2; error=-2147217194; Настройка Rebar.Diameter2 (лист Config, раздел "круглое сечение"): Строка диаметра стержней отсутствует. Восстановите строку; введите диаметр или оставьте ячейку пустой для отсутствующего ряда.
+OK: circleRebar.missing.Rebar.Diameter2.recovery
+OK: circleRebar.active.Rebar.Diameter3.1.reject
+OK: circleRebar.active.Rebar.Diameter3.1.address
+OK: circleRebar.active.Rebar.Diameter3.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.1; error=-2147218348; Настройка Rebar.Diameter3 (лист Config, ячейка I93): Диаметр стержней не может быть отрицательным. Введите неотрицательный диаметр; 0 или пустая ячейка выключают ряд.
+OK: circleRebar.active.Rebar.Diameter3.1.recovery
+OK: circleRebar.active.Rebar.Diameter3.2.reject
+OK: circleRebar.active.Rebar.Diameter3.2.address
+OK: circleRebar.active.Rebar.Diameter3.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.2; error=-2147217191; Настройка Rebar.Diameter3 (лист Config, ячейка I93): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.Diameter3.2.recovery
+OK: circleRebar.active.Rebar.Diameter3.3.reject
+OK: circleRebar.active.Rebar.Diameter3.3.address
+OK: circleRebar.active.Rebar.Diameter3.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.3; error=-2147217195; Настройка Rebar.Diameter3 (лист Config, ячейка I93) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Diameter3.3.recovery
+OK: circleRebar.missing.Rebar.Diameter3.reject
+OK: circleRebar.missing.Rebar.Diameter3.key
+OK: circleRebar.missing.Rebar.Diameter3.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter3; error=-2147217194; Настройка Rebar.Diameter3 (лист Config, раздел "круглое сечение"): Строка диаметра стержней отсутствует. Восстановите строку; введите диаметр или оставьте ячейку пустой для отсутствующего ряда.
+OK: circleRebar.missing.Rebar.Diameter3.recovery
+OK: circleRebar.active.Rebar.Loc2row.1.reject
+OK: circleRebar.active.Rebar.Loc2row.1.address
+OK: circleRebar.active.Rebar.Loc2row.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.1; error=-2147217193; Настройка Rebar.Loc2row (лист Config, ячейка I94): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: circleRebar.active.Rebar.Loc2row.1.recovery
+OK: circleRebar.active.Rebar.Loc2row.2.reject
+OK: circleRebar.active.Rebar.Loc2row.2.address
+OK: circleRebar.active.Rebar.Loc2row.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.2; error=-2147217193; Настройка Rebar.Loc2row (лист Config, ячейка I94): Недопустимый вариант: "Wrong". Выберите из списка: Stacked, SideBySide.
+OK: circleRebar.active.Rebar.Loc2row.2.recovery
+OK: circleRebar.active.Rebar.Loc2row.3.reject
+OK: circleRebar.active.Rebar.Loc2row.3.address
+OK: circleRebar.active.Rebar.Loc2row.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Loc2row.3.recovery
+OK: circleRebar.missing.Rebar.Loc2row.reject
+OK: circleRebar.missing.Rebar.Loc2row.key
+OK: circleRebar.missing.Rebar.Loc2row.repair
+CIRCLE_MISSING_INPUT: Rebar.Loc2row; error=-2147217193; Настройка Rebar.Loc2row (лист Config, раздел "круглое сечение"): Обязательное значение не задано. Восстановите строку Rebar.Loc2row в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: circleRebar.missing.Rebar.Loc2row.recovery
+OK: circleRebar.active.Rebar.Loc3row.1.reject
+OK: circleRebar.active.Rebar.Loc3row.1.address
+OK: circleRebar.active.Rebar.Loc3row.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.1; error=-2147217193; Настройка Rebar.Loc3row (лист Config, ячейка I95): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: circleRebar.active.Rebar.Loc3row.1.recovery
+OK: circleRebar.active.Rebar.Loc3row.2.reject
+OK: circleRebar.active.Rebar.Loc3row.2.address
+OK: circleRebar.active.Rebar.Loc3row.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.2; error=-2147217193; Настройка Rebar.Loc3row (лист Config, ячейка I95): Недопустимый вариант: "Wrong". Выберите из списка: Stacked, SideBySide.
+OK: circleRebar.active.Rebar.Loc3row.2.recovery
+OK: circleRebar.active.Rebar.Loc3row.3.reject
+OK: circleRebar.active.Rebar.Loc3row.3.address
+OK: circleRebar.active.Rebar.Loc3row.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение геометрии". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Loc3row.3.recovery
+OK: circleRebar.missing.Rebar.Loc3row.reject
+OK: circleRebar.missing.Rebar.Loc3row.key
+OK: circleRebar.missing.Rebar.Loc3row.repair
+CIRCLE_MISSING_INPUT: Rebar.Loc3row; error=-2147217193; Настройка Rebar.Loc3row (лист Config, раздел "круглое сечение"): Обязательное значение не задано. Восстановите строку Rebar.Loc3row в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: circleRebar.missing.Rebar.Loc3row.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.otherShape.Circle.Diameter.1.noInterference
+OK: circleRebar.otherShape.Circle.Diameter.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.1; error=0; 
+OK: circleRebar.otherShape.Circle.Diameter.1.recovery
+OK: circleRebar.otherShape.Circle.Diameter.2.noInterference
+OK: circleRebar.otherShape.Circle.Diameter.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.2; error=0; 
+OK: circleRebar.otherShape.Circle.Diameter.2.recovery
+OK: circleRebar.otherShape.Circle.Diameter.3.noInterference
+OK: circleRebar.otherShape.Circle.Diameter.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.3; error=0; 
+OK: circleRebar.otherShape.Circle.Diameter.3.recovery
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.recovery
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.noInterference
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.recovery
+OK: circleRebar.otherShape.Rebar.AxisDistance.3.noInterference
+OK: circleRebar.otherShape.Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.otherShape.Rebar.AxisDistance.3.recovery
+OK: circleRebar.otherShape.Rebar.Count.1.noInterference
+OK: circleRebar.otherShape.Rebar.Count.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Count.1.recovery
+OK: circleRebar.otherShape.Rebar.Count.2.noInterference
+OK: circleRebar.otherShape.Rebar.Count.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Count.2.recovery
+OK: circleRebar.otherShape.Rebar.Count.3.noInterference
+OK: circleRebar.otherShape.Rebar.Count.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Count.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter.2.recovery
+OK: circleRebar.otherShape.Rebar.Diameter.3.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter2.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter2.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter2.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter2.2.recovery
+OK: circleRebar.otherShape.Rebar.Diameter2.3.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter2.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter3.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter3.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter3.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter3.2.recovery
+OK: circleRebar.otherShape.Rebar.Diameter3.3.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter3.3.recovery
+OK: circleRebar.otherShape.Rebar.Loc2row.1.noInterference
+OK: circleRebar.otherShape.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc2row.1.recovery
+OK: circleRebar.otherShape.Rebar.Loc2row.2.noInterference
+OK: circleRebar.otherShape.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc2row.2.recovery
+OK: circleRebar.otherShape.Rebar.Loc2row.3.noInterference
+OK: circleRebar.otherShape.Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc2row.3.recovery
+OK: circleRebar.otherShape.Rebar.Loc3row.1.noInterference
+OK: circleRebar.otherShape.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc3row.1.recovery
+OK: circleRebar.otherShape.Rebar.Loc3row.2.noInterference
+OK: circleRebar.otherShape.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc3row.2.recovery
+OK: circleRebar.otherShape.Rebar.Loc3row.3.noInterference
+OK: circleRebar.otherShape.Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc3row.3.recovery
+OK: circleRebar.restore.rngSystemSettings
+OK: circleRebar.restore.rngUnitSettings
+OK: circleRebar.restore.rngCircleGeometry
+OK: circleRebar.restore.rngRectSetGeometry
+TOTAL_CIRCLE_REBAR_INPUT: passed=524; failed=0; cases=160
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_41e1a0e6fb8a4e6f874ad89645cd1cd5\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03CircleRebarInputTests; 2026-10-04T02:28:20
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

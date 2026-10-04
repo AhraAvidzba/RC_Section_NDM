@@ -571,3 +571,42 @@ deviations=0; справка совпала по 2579 ячейкам и всем
 и остальные условия K01-K04 не объявляются автоматически закрытыми.
 Подробная трассировка: `NDM_Audit03_Duration_Config_Review.md` и per-key
 `NDM_Audit03_Duration_Config_Evidence.json`. Завершение clean gates: 2026-10-04.
+
+## Арматурные Поля v192
+
+После negative/positive и полных clean Off/update On присоединены 176
+поадресных entries non-circle, из них 156 новых. Проверяются реальные ячейки
+Config, независимые нормали/касательные прямых граней, signed смещение as/t,
+количество/диаметр и направление дополнительных рядов, selectors/bindings,
+активный обязательный ввод, blank/0 выключение, inactive CVErr и recovery.
+Opening as остается геометрическим ограничением соседних проекций и при
+отсутствии собственного ряда; наружный as выключенной грани не читается.
+
+Negative v186: 7546/1376; v190: 10098/24. Positive v192: 10146/0,
+2744 сценария. Circle negative v188: 366/106; positive v189: 524/0,
+160 сценариев. Новые fixtures не ослабляют исторические correct expected
+или tolerance. Полные восемь suites: Off 70929/0, On 70940/0,
+UI 49026/0 в каждом; source unchanged=True. Общие actual-values v185:
+Off 13641, On 13646, missing=0/differences=0, без новых допусков.
+
+Source/VBE equality clean/update 105/105 каждая; Validate 27/27 каждая;
+formatting 1003/0 каждая, 1002 адреса/deviations=0, без ApplyAlignments.
+Palette 355/0 с одинаковыми Results/status-style после save/reopen.
+Справка clean/update равна по 2604 непустым ячейкам и merges; все 2681
+Config-ячейки/формулы/merges/PrintArea v185 сохранены в updated v192.
+
+Актуальный registry `config_behavior_registry_rebar_v192_2026-10-04`
+содержит 646/1064 active-reviewed, fullAcceptance=False. Остаются 114
+editable полей: 73 system, 20 profile presentation/description, 21 annotation.
+Расширенные вещественные границы, curved fixtures и рискованные пары
+армирования остаются обязательными, а не считаются принятыми этим числом.
+Трассировка: `NDM_Audit03_Rebar_Config_Review.md` и
+`NDM_Audit03_Rebar_Config_Evidence.json`. Основная output-книга, итоговый
+Audit03 отчет и полная выпускная приемка пока не обновлены/не завершены.
+
+В актуальном registry также исправлены runtime-contracts восьми Circle-полей:
+активный обязательный ввод не подменяется описанием прежних defaults.
+Evidence `NDM_Audit03_Circle_Rebar_Input_Evidence.json` использует реальные
+53 effect и 524 input assertions и оба full gates. Эти восемь адресов уже
+были приняты ранее, поэтому счетчик 646 не увеличивается; исторические
+registry сохраняют исходные данные своего среза.

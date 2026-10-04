@@ -1,0 +1,2 @@
+HELP_COMPARE|cleanCells=2604|updatedCells=2604|mergesEqual=True|sourceUnchanged=True
+TOTAL_AUDIT03_HELP_COMPARE: failed=0

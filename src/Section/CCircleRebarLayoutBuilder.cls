@@ -22,46 +22,59 @@ Private mCentroidY As Double
 Private mAxisRadius As Double
 Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Техническая метка типа элемента: расчетная арматура, не коэффициент трещин.
 
-' Строит круговую раскладку по таблице rngCircleGeometry.
-' Пустой или нулевой Rebar.Diameter означает, что первый ряд отсутствует;
-' дополнительные ряды без первого ряда не создаются, потому что их положение
-' задается относительно стержней основного ряда.
+' Строит круговую раскладку по таблице rngCircleGeometry. Пустой/нулевой
+' диаметр или количество выключают первый ряд; его отступ и дополнительные
+' ряды тогда не читаются. Активные параметры обязательны, а ошибка называет
+' фактическую ячейку Config и способ исправить ввод вместо подстановки default.
 Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         Optional ByVal centerX As Double = 0#, Optional ByVal centerY As Double = 0#) As CRebarLayout
     If settings Is Nothing Then Err.Raise vbObjectError + 3162, "CCircleRebarLayoutBuilder", "Настройки Config не переданы."
     If units Is Nothing Then Err.Raise vbObjectError + 3163, "CCircleRebarLayoutBuilder", "Система единиц не передана."
 
-    Set BuildFromSettings = Build( _
-        units.InputLengthToInternal(settings.GetRequiredDouble("Circle.Diameter")), _
-        centerX, _
-        centerY, _
-        units.InputLengthToInternal(settings.GetDouble("Rebar.AxisDistance", 40#)), _
-        settings.GetLong("Rebar.Count", 0), _
-        OptionalDiameterFromSettings(settings, units, "Rebar.Diameter", 20#), _
-        REBAR_STEEL_CLASS, _
-        OptionalDiameterFromSettings(settings, units, "Rebar.Diameter2", 0#), _
-        OptionalDiameterFromSettings(settings, units, "Rebar.Diameter3", 0#), _
-        settings.GetString("Rebar.Loc2row", "Stacked"), _
-        settings.GetString("Rebar.Loc3row", "Stacked"))
+    Dim diameter As Double, axisDistance As Double, barCount As Long, barDiameter As Double
+    Dim row2 As Double, row3 As Double, loc2 As String, loc3 As String
+    diameter = units.InputLengthToInternal(settings.GetRequiredDouble("Circle.Diameter"))
+    If diameter <= 0# Then Err.Raise vbObjectError + 3150, "CCircleRebarLayoutBuilder", _
+        settings.InputErrorMessage("Circle.Diameter", "Диаметр круглого бетонного сечения должен быть положительным.", "Введите диаметр больше нуля.")
+    If Not settings.HasKey("Rebar.Count") Then Err.Raise vbObjectError + 4310, "CCircleRebarLayoutBuilder", _
+        settings.InputErrorMessage("Rebar.Count", "Строка количества стержней отсутствует.", "Восстановите строку; введите целое количество или 0 для отсутствующего ряда.")
+    barCount = settings.GetLong("Rebar.Count", 0)
+    If barCount < 0 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", _
+        settings.InputErrorMessage("Rebar.Count", "Количество стержней круглого сечения не может быть отрицательным.", "Введите 0 или целое количество не меньше 2.")
+    barDiameter = OptionalDiameterFromSettings(settings, units, "Rebar.Diameter", 3152)
+    loc2 = "Stacked": loc3 = "Stacked"
+    If barCount > 0 And barDiameter > 0# Then
+        If barCount < 2 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", _
+            settings.InputErrorMessage("Rebar.Count", "Для круговой раскладки требуется не меньше двух стержней первого ряда.", "Введите целое количество не меньше 2; 0 выключает ряд.")
+        axisDistance = units.InputLengthToInternal(settings.GetRequiredDouble("Rebar.AxisDistance"))
+        If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3153, "CCircleRebarLayoutBuilder", _
+            settings.InputErrorMessage("Rebar.AxisDistance", "Расстояние до оси первого ряда должно быть больше половины диаметра стержня.", "Введите as больше Rebar.Diameter/2.")
+        If axisDistance >= diameter / 2# Then Err.Raise vbObjectError + 3154, "CCircleRebarLayoutBuilder", _
+            settings.InputErrorMessage("Rebar.AxisDistance", "Ось первого ряда должна находиться внутри круга, а не в его центре или за ним.", "Введите as меньше Circle.Diameter/2.")
+        row2 = OptionalDiameterFromSettings(settings, units, "Rebar.Diameter2", 3155)
+        row3 = OptionalDiameterFromSettings(settings, units, "Rebar.Diameter3", 3156)
+        If row2 > 0# Then loc2 = settings.GetRequiredChoice("Rebar.Loc2row", Array("Stacked", "SideBySide"))
+        If row3 > 0# Then loc3 = settings.GetRequiredChoice("Rebar.Loc3row", Array("Stacked", "SideBySide"))
+    End If
+    Set BuildFromSettings = Build(diameter, centerX, centerY, axisDistance, barCount, barDiameter, _
+        REBAR_STEEL_CLASS, row2, row3, loc2, loc3)
 End Function
 
-' Возвращает диаметр из Config без подстановки default-а для пустой ячейки.
-' Такое правило важно именно для арматуры: пустое значение означает "не
-' создавать ряд", а не "взять типовой диаметр".
+' Читает существующую строку диаметра: пустота/TODO выключают ряд. Потерянная
+' строка не заменяется типовым диаметром. Отрицательное число сохраняет
+' инженерный errorCode и добавляет фактическое место исправления в Config.
 Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal key As String, ByVal defaultValue As Double) As Double
-    If Not settings.HasKey(key) Then
-        OptionalDiameterFromSettings = units.InputLengthToInternal(defaultValue)
-        Exit Function
-    End If
-
+        ByVal key As String, ByVal errorCode As Long) As Double
+    If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CCircleRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, "Строка диаметра стержней отсутствует.", "Восстановите строку; введите диаметр или оставьте ячейку пустой для отсутствующего ряда.")
     Dim rawValue As String
     rawValue = Trim$(settings.GetRawString(key, vbNullString))
-    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then
-        OptionalDiameterFromSettings = 0#
-    Else
-        OptionalDiameterFromSettings = units.InputLengthToInternal(settings.GetDouble(key, defaultValue))
-    End If
+    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then Exit Function
+    Dim value As Double
+    value = settings.GetRequiredDouble(key)
+    If value < 0# Then Err.Raise vbObjectError + errorCode, "CCircleRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, "Диаметр стержней не может быть отрицательным.", "Введите неотрицательный диаметр; 0 или пустая ячейка выключают ряд.")
+    OptionalDiameterFromSettings = units.InputLengthToInternal(value)
 End Function
 
 ' Создает раскладку из уже нормализованных чисел.

@@ -41,14 +41,14 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetY"))
 
     Set BuildFromSettings = Build(geom, _
-        ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "20"), _
-        ReadFaceSettingsFromConfig(settings, units, "H.Right", "40", "20"), _
-        ReadFaceSettingsFromConfig(settings, units, "B.Top", "40", "20"), _
-        ReadFaceSettingsFromConfig(settings, units, "B.Bottom", "40", "20"), _
-        ReadFaceSettingsFromConfig(settings, units, "Opening.H.Left", "40", "20"), _
-        ReadFaceSettingsFromConfig(settings, units, "Opening.H.Right", "40", "20"), _
-        ReadFaceSettingsFromConfig(settings, units, "Opening.B.Top", "40", "20"), _
-        ReadFaceSettingsFromConfig(settings, units, "Opening.B.Bottom", "40", "20"), _
+        ReadFaceSettingsFromConfig(settings, units, "H.Left"), _
+        ReadFaceSettingsFromConfig(settings, units, "H.Right"), _
+        ReadFaceSettingsFromConfig(settings, units, "B.Top"), _
+        ReadFaceSettingsFromConfig(settings, units, "B.Bottom"), _
+        ReadFaceSettingsFromConfig(settings, units, "Opening.H.Left"), _
+        ReadFaceSettingsFromConfig(settings, units, "Opening.H.Right"), _
+        ReadFaceSettingsFromConfig(settings, units, "Opening.B.Top"), _
+        ReadFaceSettingsFromConfig(settings, units, "Opening.B.Bottom"), _
         REBAR_STEEL_CLASS)
 End Function
 
@@ -116,44 +116,64 @@ Private Function FaceRequestedPositions(ByVal settings As Variant) As Double
         FaceRow2Diameter(settings), FaceRow3Diameter(settings), FaceRow2Binding(settings), FaceRow3Binding(settings))
 End Function
 
-' Читает параметры грани и проверяет инженерный диапазон ее счетчика.
-' Для ввода Config ошибка содержит фактическую ячейку; прямой Build отдельно
-' проверяет переданный массив. Пустой наружный счетчик означает выключенную грань.
+' Читает счетчики/диаметры грани и только активные дополнительные ряды.
+' as отверстия сохраняется даже при отсутствии его собственного ряда: этот
+' отступ ограничивает проекции соседних граней. Обязательные значения не
+' заменяются default, а ошибки содержат фактическую ячейку Config.
 Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal faceName As String, ByVal defaultAs As String, ByVal defaultD As String) As Variant
-    Dim countKey As String, barCount As Long
-    countKey = "HollowRectangle." & faceName & ".n"
-    barCount = settings.GetLong(countKey, 0)
-    If barCount < 0 Then Err.Raise vbObjectError + 3250, "CHollowRectRebarLayoutBuilder", _
-        settings.InputErrorMessage(countKey, HollowFaceDisplayName(faceName) & ": количество стержней не может быть отрицательным.", _
-            "Введите целое неотрицательное количество; 0 или пустая ячейка выключают арматуру на этой грани.")
-    ReadFaceSettingsFromConfig = Array( _
-        units.InputLengthToInternal(settings.GetDouble("HollowRectangle." & faceName & ".as", CDbl(defaultAs))), _
-        OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d", CDbl(defaultD)), _
-        barCount, _
-        OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d_2row", 0#), _
-        OptionalDiameterFromSettings(settings, units, "HollowRectangle." & faceName & ".d_3row", 0#), _
-        settings.GetString("HollowRectangle." & faceName & ".loc_2row", "Stacked"), _
-        settings.GetString("HollowRectangle." & faceName & ".loc_3row", "Stacked"), _
-        settings.GetString("HollowRectangle." & faceName & ".bind_2row", "EachBar"), _
-        settings.GetString("HollowRectangle." & faceName & ".bind_3row", "EachBar"))
+        ByVal faceName As String) As Variant
+    Dim prefix As String, countKey As String, barCount As Long, opening As Boolean
+    Dim axisDistance As Double, diameter As Double, row2 As Double, row3 As Double
+    Dim loc2 As String, loc3 As String, bind2 As String, bind3 As String
+    prefix = "HollowRectangle." & faceName & ".": opening = (Left$(faceName, 8) = "Opening.")
+    If Not opening Then
+        countKey = prefix & "n"
+        If Not settings.HasKey(countKey) Then Err.Raise vbObjectError + 4310, "CHollowRectRebarLayoutBuilder", _
+            settings.InputErrorMessage(countKey, "Строка количества стержней отсутствует.", "Восстановите строку; введите целое количество или 0 для выключенной грани.")
+        barCount = settings.GetLong(countKey, 0)
+        If barCount < 0 Then Err.Raise vbObjectError + 3250, "CHollowRectRebarLayoutBuilder", _
+            settings.InputErrorMessage(countKey, HollowFaceDisplayName(faceName) & ": количество стержней не может быть отрицательным.", _
+                "Введите целое неотрицательное количество; 0 или пустая ячейка выключают арматуру на этой грани.")
+    End If
+    diameter = OptionalDiameterFromSettings(settings, units, prefix & "d", 3251)
+    If opening Or (diameter > 0# And barCount > 0) Then
+        axisDistance = units.InputLengthToInternal(settings.GetRequiredDouble(prefix & "as"))
+        If axisDistance < 0# Then Err.Raise vbObjectError + 3252, "CHollowRectRebarLayoutBuilder", _
+            settings.InputErrorMessage(prefix & "as", HollowFaceDisplayName(faceName) & ": расстояние до оси стержня не может быть отрицательным.", "Введите неотрицательное расстояние as.")
+    End If
+    loc2 = "Stacked": loc3 = "Stacked": bind2 = "EachBar": bind3 = "EachBar"
+    If diameter > 0# And (opening Or barCount > 0) Then
+        If axisDistance <= diameter / 2# Then Err.Raise vbObjectError + 3252, "CHollowRectRebarLayoutBuilder", _
+            settings.InputErrorMessage(prefix & "as", HollowFaceDisplayName(faceName) & ": расстояние до оси стержня должно быть больше d/2.", "Введите расстояние as больше половины диаметра первого ряда.")
+        row2 = OptionalDiameterFromSettings(settings, units, prefix & "d_2row", 3253)
+        row3 = OptionalDiameterFromSettings(settings, units, prefix & "d_3row", 3253)
+        If row2 > 0# Then
+            loc2 = settings.GetRequiredChoice(prefix & "loc_2row", Array("Stacked", "SideBySide"))
+            bind2 = settings.GetRequiredChoice(prefix & "bind_2row", Array("EachBar", "EverySecondBar"))
+        End If
+        If row3 > 0# Then
+            loc3 = settings.GetRequiredChoice(prefix & "loc_3row", Array("Stacked", "SideBySide"))
+            bind3 = settings.GetRequiredChoice(prefix & "bind_3row", Array("EachBar", "EverySecondBar"))
+        End If
+    End If
+    ReadFaceSettingsFromConfig = Array(axisDistance, diameter, barCount, row2, row3, loc2, loc3, bind2, bind3)
 End Function
 
-' Пустой диаметр в таблице означает, что ряд выключен.
+' Читает существующую ячейку диаметра: пустота/TODO/"-" выключают ряд.
+' Отсутствующий ключ не подменяется типовым диаметром; отрицательное число
+' сохраняет инженерный errorCode и указывает фактическую ячейку исправления.
 Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal key As String, ByVal defaultValue As Double) As Double
-    If Not settings.HasKey(key) Then
-        OptionalDiameterFromSettings = units.InputLengthToInternal(defaultValue)
-        Exit Function
-    End If
-
+        ByVal key As String, ByVal errorCode As Long) As Double
+    If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CHollowRectRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, "Строка диаметра отсутствует.", "Восстановите строку; введите диаметр или оставьте ячейку пустой для отсутствующего ряда.")
     Dim rawValue As String
     rawValue = Trim$(settings.GetRawString(key, vbNullString))
-    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Or rawValue = "-" Then
-        OptionalDiameterFromSettings = 0#
-    Else
-        OptionalDiameterFromSettings = units.InputLengthToInternal(settings.GetDouble(key, defaultValue))
-    End If
+    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Or rawValue = "-" Then Exit Function
+    Dim value As Double
+    value = settings.GetRequiredDouble(key)
+    If value < 0# Then Err.Raise vbObjectError + errorCode, "CHollowRectRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, "Диаметр стержней не может быть отрицательным.", "Введите неотрицательный диаметр; 0 или пустая ячейка выключают ряд.")
+    OptionalDiameterFromSettings = units.InputLengthToInternal(value)
 End Function
 
 ' Добавляет верхнюю или нижнюю наружную грань B. Для HollowRectangle это не
@@ -328,7 +348,13 @@ Private Sub AddProjectedHorizontalFace(ByVal layout As CRebarLayout, ByVal geom 
         If projected Then
             ordinal = ordinal + 1
             Dim inwardX As Double, inwardY As Double
-            ConcreteInwardVector geom, xCoord, yCoord, tx, ty, axisDistance, inwardX, inwardY
+            If straightOpeningLine Then
+                ' Продленная прямая у угла может иметь бетон по обе стороны.
+                ' Используем известную нормаль грани от пустоты в бетон.
+                inwardX = -lineNormalX: inwardY = -lineNormalY
+            Else
+                ConcreteInwardVector geom, xCoord, yCoord, tx, ty, axisDistance, inwardX, inwardY
+            End If
             If AddBarIfAvailable(layout, geom, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
                 AccumulateBLabelAnchor isTop, referenceY, xCoord, yCoord, _
                     anchorStartX, anchorStartY, anchorEndX, anchorEndY, anchorProjection, anchorInitialized
@@ -449,8 +475,9 @@ End Function
 Private Sub ValidateFace(ByVal faceName As String, ByVal axisDistance As Double, ByVal diameter As Double, _
         ByVal barCount As Long, ByVal settings As Variant)
     If barCount < 0 Then Err.Raise vbObjectError + 3250, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": количество стержней n должно быть нулевым или положительным."
-    ValidateOpeningFace faceName, axisDistance, diameter, settings
+    If diameter < 0# Then Err.Raise vbObjectError + 3251, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": диаметр d стержней первого ряда не может быть отрицательным."
     If barCount = 0 Or diameter = 0# Then Exit Sub
+    ValidateOpeningFace faceName, axisDistance, diameter, settings
 End Sub
 
 ' Проверяет общие параметры одной грани: as, диаметр первого ряда и параметры

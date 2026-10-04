@@ -1,0 +1,31 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_inactive_offsets_negative_v190.xlsm
+SOURCE_SHA256: 94594599E7324DDCB15208AC50008212E5A886F08B54D8E90ADB49AED83E8441
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_678fb8efc3714e41aec53a50d7259e8f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: rebarFields.inactive.diameterOff.H.Left.as.1.noInterference
+FAIL: rebarFields.inactive.diameterOff.H.Left.as.2.noInterference
+FAIL: rebarFields.inactive.diameterOff.H.Left.as.3.noInterference
+FAIL: rebarFields.inactive.countOff.H.Left.as.1.noInterference
+FAIL: rebarFields.inactive.countOff.H.Left.as.2.noInterference
+FAIL: rebarFields.inactive.countOff.H.Left.as.3.noInterference
+FAIL: rebarFields.inactive.diameterOff.H.Right.as.1.noInterference
+FAIL: rebarFields.inactive.diameterOff.H.Right.as.2.noInterference
+FAIL: rebarFields.inactive.diameterOff.H.Right.as.3.noInterference
+FAIL: rebarFields.inactive.countOff.H.Right.as.1.noInterference
+FAIL: rebarFields.inactive.countOff.H.Right.as.2.noInterference
+FAIL: rebarFields.inactive.countOff.H.Right.as.3.noInterference
+FAIL: rebarFields.inactive.diameterOff.B.Top.as.1.noInterference
+FAIL: rebarFields.inactive.diameterOff.B.Top.as.2.noInterference
+FAIL: rebarFields.inactive.diameterOff.B.Top.as.3.noInterference
+FAIL: rebarFields.inactive.countOff.B.Top.as.1.noInterference
+FAIL: rebarFields.inactive.countOff.B.Top.as.2.noInterference
+FAIL: rebarFields.inactive.countOff.B.Top.as.3.noInterference
+FAIL: rebarFields.inactive.diameterOff.B.Bottom.as.1.noInterference
+FAIL: rebarFields.inactive.diameterOff.B.Bottom.as.2.noInterference
+FAIL: rebarFields.inactive.diameterOff.B.Bottom.as.3.noInterference
+FAIL: rebarFields.inactive.countOff.B.Bottom.as.1.noInterference
+FAIL: rebarFields.inactive.countOff.B.Bottom.as.2.noInterference
+FAIL: rebarFields.inactive.countOff.B.Bottom.as.3.noInterference
+TOTAL_REBAR_FIELD_CONFIG: passed=10098; failed=24; cases=2744
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

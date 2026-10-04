@@ -118,7 +118,9 @@ function Test-ActualHelp([object]$Book) {
         Assert-Help 'baseFailIsPhysical' ([string]$data[($start+3),2] -match 'Физический отказ подтвержден' -and [string]$data[($start+3),2] -match 'не просто несходимость') 'lambda=0 requires physical evidence'
         Assert-Help 'notApplicableDependency' ([string]$data[($start+7),2] -match 'предыдущего результата') 'Blocked dependency is not an OK check'
     }
-    $body = $text.ToString()
+    # Генератор разбивает абзац на несколько объединенных строк. Для поиска
+    # смысловой фразы восстанавливаем пробелы, не меняя слова или их порядок.
+    $body = [regex]::Replace($text.ToString(), '\s+', ' ').Trim()
     Assert-Help 'extensionAllStates' ($body.Contains('PreCrackState/PostCrackState/CurrentCrackedState')) 'Global extension scope'
     Assert-Help 'extensionDoesNotChangePhysicalNodes' ($body.Contains('Исходные физические точки, сопротивления, касательные, плато и предельные деформации не меняются')) 'Physical diagram preserved'
     Assert-Help 'profileBooleanInputContract' ($body.Contains('Все четыре переключателя Calculation.* обязательны')) 'Explicit invalid value is not No'
@@ -138,6 +140,11 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'crackSettingsRequiredInput' ($body.Contains('Все поля раздела SLS.Crack должны быть заполнены допустимыми значениями') -and $body.Contains('а не командой использовать значение по умолчанию')) 'Crack Config invalid/missing values do not become defaults'
     Assert-Help 'crackInactiveUserCoefficientContract' ($body.Contains('Phi3 и PsiS сохраняют допустимое число и в автоматических режимах')) 'Inactive user coefficients remain valid editable inputs'
     Assert-Help 'mandatoryInputErrorNavigation' ($body.Contains('Сообщение называет настройку и фактическую ячейку Config') -and $body.Contains('Если строка удалена, адрес не угадывается') -and $body.Contains('в диспетчере имен Excel')) 'Input diagnostics explain actual cell, missing row and damaged named table repair'
+    Assert-Help 'circleActiveRebarInput' ($body.Contains('Пустой отступ не заменяется значением шаблона') -and $body.Contains('Для каждого активного дополнительного ряда Loc2row/Loc3row обязателен')) 'Circle active cover and row position are required'
+    Assert-Help 'inactiveGeometryFormulaErrors' ($body.Contains('ошибка в неактивном поле или невыбранной форме не мешает построению')) 'Inactive geometry formula error is not a failed active input'
+    Assert-Help 'inactiveRebarFaceOffsets' ($body.Contains('as отключенной наружной грани не читается') -and $body.Contains('as выключенной наружной грани не читается') -and $body.Contains('ее as/t и параметры дополнительных рядов не читаются')) 'Rounded, Hollow and RectSet inactive face contracts are explicit'
+    Assert-Help 'openingCoverStillRequired' ($body.Contains('Отступ as граней Opening нужен также для ограничения проекций соседних внутренних граней') -and $body.Contains('даже при отсутствии собственного ряда')) 'Opening cover retains a geometric consumer when its own row is disabled'
+    Assert-Help 'notCrackedWidthIsNotComputedZero' ($body.Contains('Подтвержденный NotCracked исключает расчет ширины') -and $body.Contains('статус проверки N/A, численная ячейка a_crc остается пустой') -and $body.Contains('это отдельный случай, а не доказательство отсутствия трещины')) 'Uncomputed crack width is distinguished from a calculated zero'
     $config = $Book.Worksheets.Item('Config')
     $count = 0
     foreach ($link in $config.Hyperlinks) {

@@ -23,6 +23,7 @@ Option Explicit
 
 Private mKeys() As String ' Имена настроек Config: Solver.Method, Capacity.SolutionStrategy и т.п.
 Private mValues() As String ' Значения, которые ввел пользователь или подставили формулы таблицы.
+Private mValueErrors() As String ' Отложенные ошибки геометрических ячеек: выдаются при чтении активного параметра, не заменяются default.
 Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
 Private mLocations() As String ' Лист, адрес и видимый столбец прочитанного значения; только диагностика ввода.
@@ -199,6 +200,7 @@ Private Sub RemoveSettingAt(ByVal index As Long)
     For i = index To mCount - 1
         mKeys(i) = mKeys(i + 1)
         mValues(i) = mValues(i + 1)
+        mValueErrors(i) = mValueErrors(i + 1)
         mDefaults(i) = mDefaults(i + 1)
         mSources(i) = mSources(i + 1)
         mLocations(i) = mLocations(i + 1)
@@ -273,10 +275,14 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
             Else
                 sourceValue = vbNullString
             End If
-            AppendSetting keyValue, _
-                ConfigCellText(data(rowIndex, 2), "значение", rowIndex, keyValue, False, 2), _
-                ConfigCellText(data(rowIndex, 3), "единица измерения", rowIndex, keyValue, True), _
-                sourceValue, rowIndex, 2
+            If IsGeometrySettingKey(keyValue) Then
+                AppendGeometryValue data, keyValue, rowIndex, 2, sourceValue
+            Else
+                AppendSetting keyValue, _
+                    ConfigCellText(data(rowIndex, 2), "значение", rowIndex, keyValue, False, 2), _
+                    ConfigCellText(data(rowIndex, 3), "единица измерения", rowIndex, keyValue, True), _
+                    sourceValue, rowIndex, 2
+            End If
         End If
     Next rowIndex
 End Sub
@@ -586,10 +592,9 @@ Private Sub AppendHollowRectangleMainRebars(ByRef data As Variant, ByVal mainHea
         AppendGeometryValue data, "HollowRectangle." & faceKey & ".as", rowIndex, 2, Trim$(CStr(data(rowIndex, 6)))
         AppendGeometryValue data, "HollowRectangle." & faceKey & ".d", rowIndex, 3, Trim$(CStr(data(rowIndex, 6)))
         If Left$(faceKey, 8) <> "Opening." Then
-            Dim countKey As String, countValue As String
+            Dim countKey As String
             countKey = "HollowRectangle." & faceKey & ".n"
-            countValue = ConfigCellText(data(rowIndex, 4), "Количество стержней", rowIndex, countKey, False, 4)
-            AppendSetting countKey, countValue, countValue, Trim$(CStr(data(rowIndex, 6))), rowIndex, 4
+            AppendGeometryValue data, countKey, rowIndex, 4, Trim$(CStr(data(rowIndex, 6)))
         End If
     Next rowIndex
 End Sub
@@ -885,16 +890,20 @@ Private Sub ValidateRectSetSharedSelectors(ByRef data As Variant, ByVal firstRow
             Case 7: parameterName = "привязка третьего ряда к первому": key = "bind_3row"
         End Select
         key = "RectSet." & faceName & "." & key
-        firstValue = ConfigCellText(data(firstRow, CLng(column)), parameterName, firstRow, key, False, CLng(column))
-        secondValue = ConfigCellText(data(firstRow + 1, CLng(column)), parameterName, firstRow + 1, key, False, CLng(column))
-        If Len(secondValue) > 0 And secondValue <> "-" Then
-            If StrComp(firstValue, secondValue, vbTextCompare) <> 0 Then
-                Err.Raise vbObjectError + 4317, "CSystemSettingsReader", _
-                    "В таблице RectSet для " & faceLabel & " параметр """ & _
-                    parameterName & """ задан по-разному в двух строках (" & _
-                    InputCellLocation(firstRow, CLng(column)) & "; " & _
-                    InputCellLocation(firstRow + 1, CLng(column)) & "). Это общий выбор для пары сторон; " & _
-                    "укажите его в первой строке, а во второй оставьте тот же выбор или пустое значение."
+        ' Ошибку формулы основной ячейки проверит активный потребитель ряда.
+        ' Проверка противоречивого отдельного ввода второй стороны сохраняется.
+        If Not IsError(data(firstRow, CLng(column))) Then
+            firstValue = ConfigCellText(data(firstRow, CLng(column)), parameterName, firstRow, key, False, CLng(column))
+            secondValue = ConfigCellText(data(firstRow + 1, CLng(column)), parameterName, firstRow + 1, key, False, CLng(column))
+            If Len(secondValue) > 0 And secondValue <> "-" Then
+                If StrComp(firstValue, secondValue, vbTextCompare) <> 0 Then
+                    Err.Raise vbObjectError + 4317, "CSystemSettingsReader", _
+                        "В таблице RectSet для " & faceLabel & " параметр """ & _
+                        parameterName & """ задан по-разному в двух строках (" & _
+                        InputCellLocation(firstRow, CLng(column)) & "; " & _
+                        InputCellLocation(firstRow + 1, CLng(column)) & "). Это общий выбор для пары сторон; " & _
+                        "укажите его в первой строке, а во второй оставьте тот же выбор или пустое значение."
+                End If
             End If
         End If
     Next column
@@ -914,29 +923,48 @@ Private Sub FillRectSetSectionedFaceOrder(ByRef faceNames() As String, ByRef sid
 End Sub
 
 ' Сохраняет значение размерной или управляющей ячейки геометрии вместе с
-' фактическим адресом. Ошибка формулы не становится текстом Error 2015;
-' числовой диапазон и активность параметра проверяет потребитель геометрии.
+' фактическим адресом. Ошибка формулы сохраняется отдельно до обращения
+' активного потребителя: чужая форма и выключенные ряды не мешают расчету,
+' но чтение ошибочного значения никогда не возвращает пустоту или default.
 Private Sub AppendGeometryValue(ByRef data As Variant, ByVal key As String, _
         ByVal rowIndex As Long, ByVal columnIndex As Long, Optional ByVal source As String = vbNullString)
-    Dim value As String
-    value = ConfigCellText(data(rowIndex, columnIndex), "значение геометрии", rowIndex, key, False, columnIndex)
-    AppendSetting key, value, value, source, rowIndex, columnIndex
+    Dim value As String, valueError As String
+    If IsError(data(rowIndex, columnIndex)) Then
+        valueError = "Настройка " & key & " (" & InputCellLocation(rowIndex, columnIndex) & _
+            ") содержит ошибку Excel в колонке ""значение геометрии"". " & _
+            "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
+    Else
+        value = ConfigCellText(data(rowIndex, columnIndex), "значение геометрии", rowIndex, key, False, columnIndex)
+    End If
+    AppendSetting key, value, value, source, rowIndex, columnIndex, valueError
 End Sub
+
+' Распознает геометрические ключи обычной двухколоночной компоновки, включая
+' таблицу круга. Условия активности определяют builders, а не Excel-reader.
+Private Function IsGeometrySettingKey(ByVal key As String) As Boolean
+    Select Case LCase$(Left$(key, InStr(1, key & ".", ".", vbBinaryCompare) - 1))
+        Case "circle", "rebar", "rectset", "roundedrectangle", "hollowrectangle"
+            IsGeometrySettingKey = True
+    End Select
+End Function
 
 ' Добавляет одну пару ключ-значение в reader.
 ' Массивы параллельные: это проще и быстрее для VBA, чем словарь с Variant-объектами,
 ' а поиск по ключу остается достаточно дешевым для числа настроек Config.
 Private Sub AppendSetting(ByVal keyValue As String, ByVal settingValue As String, _
         ByVal defaultValue As String, ByVal sourceValue As String, _
-        Optional ByVal valueRow As Long = 0, Optional ByVal valueColumn As Long = 0)
+        Optional ByVal valueRow As Long = 0, Optional ByVal valueColumn As Long = 0, _
+        Optional ByVal valueError As String = vbNullString)
     mCount = mCount + 1
     ReDim Preserve mKeys(1 To mCount)
     ReDim Preserve mValues(1 To mCount)
+    ReDim Preserve mValueErrors(1 To mCount)
     ReDim Preserve mDefaults(1 To mCount)
     ReDim Preserve mSources(1 To mCount)
     ReDim Preserve mLocations(1 To mCount)
     mKeys(mCount) = keyValue
     mValues(mCount) = settingValue
+    mValueErrors(mCount) = valueError
     mDefaults(mCount) = defaultValue
     mSources(mCount) = sourceValue
     If valueRow > 0 And valueColumn > 0 Then mLocations(mCount) = InputCellLocation(valueRow, valueColumn)
@@ -997,6 +1025,7 @@ End Function
 Public Sub Clear()
     Erase mKeys
     Erase mValues
+    Erase mValueErrors
     Erase mDefaults
     Erase mSources
     Erase mLocations
@@ -1013,6 +1042,7 @@ End Sub
 Public Function GetString(ByVal key As String, Optional ByVal defaultValue As String = vbNullString) As String
     Dim index As Long
     index = FindKey(key)
+    AssertValueReadable index
     If index = 0 Then
         GetString = defaultValue
     ElseIf Len(mValues(index)) = 0 Or UCase$(mValues(index)) = "TODO" Then
@@ -1027,12 +1057,21 @@ End Function
 Public Function GetRawString(ByVal key As String, Optional ByVal defaultValue As String = vbNullString) As String
     Dim index As Long
     index = FindKey(key)
+    AssertValueReadable index
     If index = 0 Then
         GetRawString = defaultValue
     Else
         GetRawString = mValues(index)
     End If
 End Function
+
+' Выдает сохраненную ошибку активной ячейки до любых правил пустоты/default.
+' Индекс 0 означает отсутствующий ключ; его обязательность проверяет вызывающий API.
+Private Sub AssertValueReadable(ByVal index As Long)
+    If index = 0 Then Exit Sub
+    If Len(mValueErrors(index)) > 0 Then Err.Raise vbObjectError + 4309, _
+        "CSystemSettingsReader", mValueErrors(index)
+End Sub
 
 ' Возвращает Double с учетом десятичного разделителя Excel. Для optional
 ' параметров пустое значение допускается; allowBlankValue=False запрещает

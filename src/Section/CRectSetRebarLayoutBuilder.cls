@@ -53,56 +53,82 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         0#, _
         0#, _
         ReadFaceSettingsFromConfig(settings, units, "H1"), _
-        ReadFaceSettingsFromConfig(settings, units, "H2"), _
+        ReadFaceSettingsFromConfig(settings, units, "H2", sectionType <> "Rectangle"), _
         ReadFaceSettingsFromConfig(settings, units, "B1"), _
-        ReadFaceSettingsFromConfig(settings, units, "B2"), _
+        ReadFaceSettingsFromConfig(settings, units, "B2", sectionType <> "Rectangle"), _
         REBAR_STEEL_CLASS, _
         upperOffset, sectionType)
 End Function
 
-' Читает параметры одной смысловой грани RectSet-сечения.
-' Для диаметров действует особое правило ввода: если ячейка существует, но
-' оставлена пустой, это не default, а явное отсутствие арматуры на данной линии.
+' Подготавливает две стороны одной грани, читая только активные параметры.
+' В Rectangle нижние грани не читаются вообще. Общие selectors ряда нужны,
+' когда этот ряд существует хотя бы на одной стороне; as/t активной линии
+' обязательны, а пустые диаметры и счетчики означают отсутствие арматуры.
 Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal faceName As String) As Variant
-    ReadFaceSettingsFromConfig = Array( _
-        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".as_1", 40#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".as_2", 40#)), _
-        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_1", 32#), _
-        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_2", 32#), _
-        settings.GetLong("RectSet." & faceName & ".n_1", 0), _
-        settings.GetLong("RectSet." & faceName & ".n_2", 0), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".StartOffset1", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".EndOffset1", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".StartOffset2", 80#)), _
-        units.InputLengthToInternal(settings.GetDouble("RectSet." & faceName & ".EndOffset2", 80#)), _
-        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_2row_1", 0#), _
-        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_2row_2", 0#), _
-        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_3row_1", 0#), _
-        OptionalDiameterFromSettings(settings, units, "RectSet." & faceName & ".d_3row_2", 0#), _
-        settings.GetString("RectSet." & faceName & ".loc_2row", "Stacked"), _
-        settings.GetString("RectSet." & faceName & ".loc_3row", "Stacked"), _
-        settings.GetString("RectSet." & faceName & ".bind_2row", "EachBar"), _
-        settings.GetString("RectSet." & faceName & ".bind_3row", "EachBar"))
-End Function
-
-' Возвращает диаметр из Config с учетом пользовательского смысла пустой ячейки.
-' Если ключа вообще нет, используется default для программных вызовов builder-а.
-' Если ключ есть, но значение пустое или TODO, диаметр считается нулевым.
-Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal key As String, ByVal defaultValue As Double) As Double
-    If Not settings.HasKey(key) Then
-        OptionalDiameterFromSettings = units.InputLengthToInternal(defaultValue)
+        ByVal faceName As String, Optional ByVal active As Boolean = True) As Variant
+    Dim values(0 To 17) As Variant, side As Long, prefix As String, key As String, label As String
+    values(14) = "Stacked": values(15) = "Stacked": values(16) = "EachBar": values(17) = "EachBar"
+    If Not active Then
+        ReadFaceSettingsFromConfig = values
         Exit Function
     End If
+    prefix = "RectSet." & faceName & "."
+    For side = 1 To 2
+        label = RebarLineDisplayName(faceName & ".as_" & CStr(side))
+        key = prefix & "n_" & CStr(side)
+        If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CRectSetRebarLayoutBuilder", _
+            settings.InputErrorMessage(key, "Строка количества стержней отсутствует.", "Восстановите строку; введите целое количество или 0 для выключенной линии.")
+        values(side + 3) = settings.GetLong(key, 0)
+        If values(side + 3) < 0 Then Err.Raise vbObjectError + 3171, "CRectSetRebarLayoutBuilder", _
+            settings.InputErrorMessage(key, label & ": количество не может быть отрицательным.", "Введите целое неотрицательное количество стержней.")
+        values(side + 1) = OptionalDiameterFromSettings(settings, units, prefix & "d_" & CStr(side), 3172)
+        If values(side + 3) > 0 And values(side + 1) > 0# Then
+            key = prefix & "as_" & CStr(side)
+            values(side - 1) = units.InputLengthToInternal(settings.GetRequiredDouble(key))
+            If values(side - 1) <= values(side + 1) / 2# Then Err.Raise vbObjectError + 3173, "CRectSetRebarLayoutBuilder", _
+                settings.InputErrorMessage(key, label & ": расстояние до оси стержня должно быть больше d/2.", "Введите расстояние as больше половины диаметра первого ряда.")
+            values(2 * side + 4) = ReadConfiguredOffset(settings, units, prefix & "StartOffset" & CStr(side), label)
+            values(2 * side + 5) = ReadConfiguredOffset(settings, units, prefix & "EndOffset" & CStr(side), label)
+            values(side + 9) = OptionalDiameterFromSettings(settings, units, prefix & "d_2row_" & CStr(side), 3180)
+            values(side + 11) = OptionalDiameterFromSettings(settings, units, prefix & "d_3row_" & CStr(side), 3180)
+        End If
+    Next side
+    If values(10) > 0# Or values(11) > 0# Then
+        values(14) = settings.GetRequiredChoice(prefix & "loc_2row", Array("Stacked", "SideBySide"))
+        values(16) = settings.GetRequiredChoice(prefix & "bind_2row", Array("EachBar", "EverySecondBar"))
+    End If
+    If values(12) > 0# Or values(13) > 0# Then
+        values(15) = settings.GetRequiredChoice(prefix & "loc_3row", Array("Stacked", "SideBySide"))
+        values(17) = settings.GetRequiredChoice(prefix & "bind_3row", Array("EachBar", "EverySecondBar"))
+    End If
+    ReadFaceSettingsFromConfig = values
+End Function
 
+' Читает обязательный отступ активной линии и сохраняет адрес при отрицательном
+' значении. Программный Build получает готовые числа и валидирует их отдельно.
+Private Function ReadConfiguredOffset(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByVal key As String, ByVal label As String) As Double
+    Dim value As Double
+    value = settings.GetRequiredDouble(key)
+    If value < 0# Then Err.Raise vbObjectError + 3174, "CRectSetRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, label & ": отступ первого или последнего стержня не может быть отрицательным.", "Введите неотрицательный отступ от начала или конца линии.")
+    ReadConfiguredOffset = units.InputLengthToInternal(value)
+End Function
+
+' Читает ячейку диаметра без default: пустота/TODO выключает ряд, потерянный
+' ключ и отрицательное число дают адресную ошибку основного/дополнительного ряда.
+Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByVal key As String, ByVal errorCode As Long) As Double
+    If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CRectSetRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, "Строка диаметра отсутствует.", "Восстановите строку; введите диаметр или оставьте ячейку пустой для отсутствующего ряда.")
     Dim rawValue As String
     rawValue = Trim$(settings.GetRawString(key, vbNullString))
-    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then
-        OptionalDiameterFromSettings = 0#
-    Else
-        OptionalDiameterFromSettings = units.InputLengthToInternal(settings.GetDouble(key, defaultValue))
-    End If
+    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then Exit Function
+    Dim value As Double
+    value = settings.GetRequiredDouble(key)
+    If value < 0# Then Err.Raise vbObjectError + errorCode, "CRectSetRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, "Диаметр стержней не может быть отрицательным.", "Введите неотрицательный диаметр; 0 или пустая ячейка выключают ряд.")
+    OptionalDiameterFromSettings = units.InputLengthToInternal(value)
 End Function
 
 ' Создает раскладку из уже нормализованных чисел.

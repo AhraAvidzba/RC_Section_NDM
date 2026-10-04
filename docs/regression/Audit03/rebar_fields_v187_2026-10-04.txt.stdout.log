@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_rebar_fields_v187.xlsm
+SOURCE_SHA256: 976C2C94337D9460B05D10F0B2224C4993E3C8683153B5EF1F972B6E764D0B1A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8808878c180d435eac0023c95b051ab6\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_REBAR_FIELD_CONFIG: passed=9570; failed=0; cases=2552
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

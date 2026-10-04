@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_rebar_all_updated_v191.xlsm
-Date: 2026-10-04 04:10:17
+Workbook: RC_Section_NDM_rebar_all_clean_v192.xlsm
+Date: 2026-10-04 04:10:11
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -29548,9 +29548,9 @@ Private mProfileIds() As String ' Стабильные ID профилей.
 Private mCount As Long ' Количество столбцов профилей в таблице.
 
 ' Загружает каталог из именованного диапазона книги.
-Public Sub LoadFromWorkbook(ByVal workbook As Object)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3980, "CCalculationProfileCatalog", "Книга Excel не передана."
-    LoadFromRange workbook.names.item("rngCalculationProfiles").RefersToRange
+Public Sub LoadFromWorkbook(ByVal Workbook As Object)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3980, "CCalculationProfileCatalog", "Книга Excel не передана."
+    LoadFromRange Workbook.names.item("rngCalculationProfiles").RefersToRange
 End Sub
 
 ' Читает вертикальную таблицу профилей. Структурные строки в квадратных
@@ -32210,14 +32210,14 @@ End Function
 ' Возвращает число строк LC по высоте rngLoadCombinations. Это нужно для
 ' пустой сетки summary: пользователь видит все доступные строки сочетаний,
 ' даже если часть из них сейчас не заполнена.
-Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+Public Function RequiredDataRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
     RequiredDataRowsForWorkbook = combinationCount
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
 
     On Error GoTo SafeExit
-    If workbook Is Nothing Then GoTo SafeExit
+    If Workbook Is Nothing Then GoTo SafeExit
     Dim loads As Object
-    Set loads = workbook.names.item("rngLoadCombinations").RefersToRange
+    Set loads = Workbook.names.item("rngLoadCombinations").RefersToRange
     If loads.rows.count > 1 Then
         If loads.rows.count - 1 > RequiredDataRowsForWorkbook Then _
             RequiredDataRowsForWorkbook = loads.rows.count - 1
@@ -32227,8 +32227,8 @@ SafeExit:
 End Function
 
 ' Возвращает высоту summary для фактической книги с учетом доступных строк rngLoadCombinations.
-Public Function RequiredSummaryRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
-    RequiredSummaryRowsForWorkbook = RequiredSummaryRows(RequiredDataRowsForWorkbook(workbook, combinationCount))
+Public Function RequiredSummaryRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredSummaryRowsForWorkbook = RequiredSummaryRows(RequiredDataRowsForWorkbook(Workbook, combinationCount))
 End Function
 
 ' Возвращает ширину собственно rngBatchSummary.
@@ -32247,32 +32247,32 @@ Public Function RequiredSummaryOutputRows(ByVal combinationCount As Long) As Lon
 End Function
 
 ' Возвращает полную высоту summary для проверки раскладки Results в фактической книге.
-Public Function RequiredSummaryOutputRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
-    RequiredSummaryOutputRowsForWorkbook = RequiredSummaryRowsForWorkbook(workbook, combinationCount)
+Public Function RequiredSummaryOutputRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredSummaryOutputRowsForWorkbook = RequiredSummaryRowsForWorkbook(Workbook, combinationCount)
 End Function
 
 ' Записывает rngBatchSummary одним массивом и оформляет блоки.
 ' section нужен для геометрических величин h/x: в блоке деформаций они
 ' относятся к фактическому LC, а в блоке предельного момента - только к
 ' найденному capacity-состоянию. Если section не передан, эти поля пустые.
-Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
+Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal section As CSectionModel = Nothing)
     On Error GoTo failed
 
     Dim stage As String
     stage = "ValidateArguments"
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3970, "CBatchResultWriter", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3970, "CBatchResultWriter", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3971, "CBatchResultWriter", "Пакетный расчетчик не передан."
 
     Dim summaryRows As Long
-    summaryRows = RequiredSummaryRowsForWorkbook(workbook, batch.count)
+    summaryRows = RequiredSummaryRowsForWorkbook(Workbook, batch.count)
 
     stage = "PrepareSummaryTarget"
-    PrepareSummaryTarget SummaryClearRange(workbook)
+    PrepareSummaryTarget SummaryClearRange(Workbook)
 
     stage = "SummaryTargetRange"
     Dim target As Object
-    Set target = SummaryTargetRange(workbook, summaryRows)
+    Set target = SummaryTargetRange(Workbook, summaryRows)
 
     stage = "AllocateData"
     Dim data() As Variant
@@ -32298,13 +32298,13 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     stage = "WriteSummaryBody"
     WriteSummaryBody target, data
     stage = "FormatSummary"
-    FormatSummary workbook, target, batch
+    FormatSummary Workbook, target, batch
     stage = "WriteStrengthSummary"
-    WriteStrengthSummary workbook, batch, units, section
+    WriteStrengthSummary Workbook, batch, units, section
     stage = "WriteCrackSummary"
-    WriteCrackSummary workbook, batch, units
+    WriteCrackSummary Workbook, batch, units
     stage = "WriteStabilitySummary"
-    WriteStabilitySummary workbook, batch, units
+    WriteStabilitySummary Workbook, batch, units
     Exit Sub
 
 failed:
@@ -32312,29 +32312,29 @@ failed:
 End Sub
 
 ' Очищает текущую сводку перед новым расчетом или ручной очисткой Results.
-Public Sub ClearSummary(ByVal workbook As Object)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3972, "CBatchResultWriter", "Книга Excel не передана."
-    ClearSummaryBody SummaryClearRange(workbook)
-    ClearStrengthSummary workbook
-    ClearCrackSummary workbook
-    ClearStabilitySummary workbook
+Public Sub ClearSummary(ByVal Workbook As Object)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3972, "CBatchResultWriter", "Книга Excel не передана."
+    ClearSummaryBody SummaryClearRange(Workbook)
+    ClearStrengthSummary Workbook
+    ClearCrackSummary Workbook
+    ClearStabilitySummary Workbook
 End Sub
 
 ' Обновляет итоговое время уже после завершения записи Results и схемы.
 ' Сводка формируется перед детальным Results, потому что Plot.LoadCase = Worst читает из
 ' нее определяющее сочетание; поэтому общий elapsed time дозаписывается в конце.
-Public Sub UpdateElapsedSeconds(ByVal workbook As Object, ByVal elapsedSeconds As Double)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3974, "CBatchResultWriter", "Книга Excel не передана."
+Public Sub UpdateElapsedSeconds(ByVal Workbook As Object, ByVal elapsedSeconds As Double)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3974, "CBatchResultWriter", "Книга Excel не передана."
 
     Dim target As Object
-    Set target = SummaryTargetRange(workbook)
+    Set target = SummaryTargetRange(Workbook)
     target.Offset(3, 0).Resize(1, 1).Value2 = elapsedSeconds
 End Sub
 
 ' Возвращает область rngBatchSummary нужного размера и сразу проверяет, хватает ли листа Results.
-Private Function SummaryTargetRange(ByVal workbook As Object, Optional ByVal RequiredRows As Long = 0) As Object
+Private Function SummaryTargetRange(ByVal Workbook As Object, Optional ByVal RequiredRows As Long = 0) As Object
     Dim target As Object
-    Set target = workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
+    Set target = Workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
     If RequiredRows <= 0 Then RequiredRows = RequiredSummaryRows(1)
     If target.row + RequiredRows - 1 > target.Worksheet.rows.count Or _
             target.column + RequiredSummaryOutputColumns() - 1 > target.Worksheet.columns.count Then
@@ -32346,9 +32346,9 @@ End Function
 
 ' Возвращает область безопасной очистки Summary до шапки следующего блока.
 ' Так старые строки от большего числа LC не остаются после уменьшения rngLoadCombinations.
-Private Function SummaryClearRange(ByVal workbook As Object) As Object
+Private Function SummaryClearRange(ByVal Workbook As Object) As Object
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
+    Set anchor = Workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
 
     Dim rowsToClear As Long
     rowsToClear = RequiredSummaryOutputRows(1)
@@ -32357,7 +32357,7 @@ Private Function SummaryClearRange(ByVal workbook As Object) As Object
     Dim strengthWriter As CStrengthSummaryWriter
     Set strengthWriter = New CStrengthSummaryWriter
     Dim strengthAnchor As Object
-    Set strengthAnchor = workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
+    Set strengthAnchor = Workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
     Dim strengthTopRow As Long
     strengthTopRow = strengthAnchor.row - strengthWriter.HeaderRowsAboveAnchor
     If strengthTopRow > anchor.row Then rowsToClear = MaxLong(rowsToClear, strengthTopRow - anchor.row)
@@ -32387,46 +32387,46 @@ Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
 End Sub
 
 ' Обновляет отдельную детальную таблицу устойчивости рядом с расчетным snapshot.
-Private Sub WriteStabilitySummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
+Private Sub WriteStabilitySummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CStabilitySummaryWriter
     Set writer = New CStabilitySummaryWriter
-    writer.WriteSummary workbook, batch, units
+    writer.WriteSummary Workbook, batch, units
 End Sub
 
 ' Обновляет отдельную детальную таблицу НДС и capacity по модели прочности.
-Private Sub WriteStrengthSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
+Private Sub WriteStrengthSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCalculator, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel)
     Dim writer As CStrengthSummaryWriter
     Set writer = New CStrengthSummaryWriter
-    writer.WriteSummary workbook, batch, units, section
+    writer.WriteSummary Workbook, batch, units, section
 End Sub
 
 ' Обновляет отдельную детальную таблицу нормальных и продольных трещин.
-Private Sub WriteCrackSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
+Private Sub WriteCrackSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
-    writer.WriteSummary workbook, batch, units
+    writer.WriteSummary Workbook, batch, units
 End Sub
 
 ' Очищает отдельный блок прочности при общей очистке Results.
-Private Sub ClearStrengthSummary(ByVal workbook As Object)
+Private Sub ClearStrengthSummary(ByVal Workbook As Object)
     Dim writer As CStrengthSummaryWriter
     Set writer = New CStrengthSummaryWriter
-    writer.ClearSummary workbook
+    writer.ClearSummary Workbook
 End Sub
 
 ' Очищает отдельный блок устойчивости при общей очистке Results.
-Private Sub ClearStabilitySummary(ByVal workbook As Object)
+Private Sub ClearStabilitySummary(ByVal Workbook As Object)
     Dim writer As CStabilitySummaryWriter
     Set writer = New CStabilitySummaryWriter
-    writer.ClearSummary workbook
+    writer.ClearSummary Workbook
 End Sub
 
 ' Очищает отдельный блок трещин при общей очистке Results.
-Private Sub ClearCrackSummary(ByVal workbook As Object)
+Private Sub ClearCrackSummary(ByVal Workbook As Object)
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
-    writer.ClearSummary workbook
+    writer.ClearSummary Workbook
 End Sub
 
 ' Заполняет четыре верхние строки summary: worst-сочетание, комментарий,
@@ -32747,7 +32747,7 @@ End Sub
 
 ' Применяет визуальное оформление compact summary: объединения, серые шапки,
 ' статусную палитру, единые шрифты и рамки.
-Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+Private Sub FormatSummary(ByVal Workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     On Error GoTo failed
 
     Dim stage As String
@@ -33081,14 +33081,14 @@ End Function
 
 ' Возвращает число строк данных, которое нужно оформить по текущему диапазону
 ' сочетаний. Пустые доступные строки тоже получают рамки, как в batch summary.
-Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+Public Function RequiredDataRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
     RequiredDataRowsForWorkbook = combinationCount
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
 
     On Error GoTo SafeExit
-    If workbook Is Nothing Then GoTo SafeExit
+    If Workbook Is Nothing Then GoTo SafeExit
     Dim loads As Object
-    Set loads = workbook.names.item("rngLoadCombinations").RefersToRange
+    Set loads = Workbook.names.item("rngLoadCombinations").RefersToRange
     If loads.rows.count > 1 Then
         If loads.rows.count - 1 > RequiredDataRowsForWorkbook Then _
             RequiredDataRowsForWorkbook = loads.rows.count - 1
@@ -33098,8 +33098,8 @@ SafeExit:
 End Function
 
 ' Возвращает полную высоту блока для фактической книги.
-Public Function RequiredRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
-    RequiredRowsForWorkbook = RequiredRows(RequiredDataRowsForWorkbook(workbook, combinationCount))
+Public Function RequiredRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredRowsForWorkbook = RequiredRows(RequiredDataRowsForWorkbook(Workbook, combinationCount))
 End Function
 
 ' Возвращает ширину блока вместе с пустым разделительным столбцом.
@@ -33108,14 +33108,14 @@ Public Function RequiredColumns() As Long
 End Function
 
 ' Записывает детальную таблицу трещин от rngCrackSummaryAnchor.
-Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
+Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
     On Error GoTo failed
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3988, "CCrackSummaryWriter", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3988, "CCrackSummaryWriter", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3989, "CCrackSummaryWriter", "Пакетный расчетчик не передан."
 
     Dim target As Object
-    Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.count))
+    Set target = TargetRange(Workbook, RequiredDataRowsForWorkbook(Workbook, batch.count))
     PrepareTarget target
     WriteBlockTitle target, "Расчет нормальных и продольных трещин"
     WriteHeaders target, units
@@ -33128,24 +33128,24 @@ failed:
 End Sub
 
 ' Полностью очищает старый блок трещин вместе с объединениями и форматами.
-Public Sub ClearSummary(ByVal workbook As Object)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3990, "CCrackSummaryWriter", "Книга Excel не передана."
-    PrepareTarget ClearTargetRange(workbook)
+Public Sub ClearSummary(ByVal Workbook As Object)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3990, "CCrackSummaryWriter", "Книга Excel не передана."
+    PrepareTarget ClearTargetRange(Workbook)
 End Sub
 
 ' Возвращает полный диапазон текущей таблицы: шапка над якорем и строки LC.
-Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows As Long = 1) As Object
+Private Function TargetRange(ByVal Workbook As Object, Optional ByVal dataRows As Long = 1) As Object
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngCrackSummaryAnchor").RefersToRange
+    Set anchor = Workbook.names.item("rngCrackSummaryAnchor").RefersToRange
     If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, "CCrackSummaryWriter", _
         "rngCrackSummaryAnchor должен иметь место для шапки над собой."
     Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
 ' Возвращает диапазон безопасной очистки до следующего нижнего блока Results.
-Private Function ClearTargetRange(ByVal workbook As Object) As Object
+Private Function ClearTargetRange(ByVal Workbook As Object) As Object
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngCrackSummaryAnchor").RefersToRange
+    Set anchor = Workbook.names.item("rngCrackSummaryAnchor").RefersToRange
     If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, "CCrackSummaryWriter", _
         "rngCrackSummaryAnchor должен иметь место для шапки над собой."
 
@@ -33158,7 +33158,7 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
     Dim stabilityWriter As CStabilitySummaryWriter
     Set stabilityWriter = New CStabilitySummaryWriter
     Dim stabilityAnchor As Object
-    Set stabilityAnchor = workbook.names.item("rngStabilitySummaryAnchor").RefersToRange
+    Set stabilityAnchor = Workbook.names.item("rngStabilitySummaryAnchor").RefersToRange
     Dim stabilityTopRow As Long
     stabilityTopRow = stabilityAnchor.row - stabilityWriter.HeaderRowsAboveAnchor
     If stabilityTopRow > topRow Then rowsToClear = stabilityTopRow - topRow
@@ -33971,11 +33971,11 @@ Private mLines As Collection ' Накопленные строки отчета 
 
 ' Готовит объект к работе по настройке General.ExecutionReportEnabled.
 ' Если флаг выключен, остальные методы остаются безопасными пустыми операциями.
-Public Sub Initialize(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
+Public Sub Initialize(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader)
     mEnabled = False
     mFilePath = vbNullString
     Set mLines = New Collection
-    If workbook Is Nothing Then Exit Sub
+    If Workbook Is Nothing Then Exit Sub
     If settings Is Nothing Then Exit Sub
 
     mEnabled = settings.GetBoolean("General.ExecutionReportEnabled", False)
@@ -33984,12 +33984,12 @@ Public Sub Initialize(ByVal workbook As Object, ByVal settings As CSystemSetting
     Set mLines = New Collection
     mStartedAt = Now
     mStartTimer = Timer
-    mFilePath = WorkbookFolder(workbook) & "\" & REPORT_FILE_NAME
+    mFilePath = WorkbookFolder(Workbook) & "\" & REPORT_FILE_NAME
 
     AddRawLine "ОТЧЕТ ВЫПОЛНЕНИЯ RC SECTION NDM"
     AddRawLine String$(72, "=")
-    AddRawLine "Книга: " & SafeWorkbookName(workbook)
-    AddRawLine "Папка книги: " & WorkbookFolder(workbook)
+    AddRawLine "Книга: " & SafeWorkbookName(Workbook)
+    AddRawLine "Папка книги: " & WorkbookFolder(Workbook)
     AddRawLine "Начало: " & Format$(mStartedAt, "yyyy-mm-dd hh:nn:ss")
     AddRawLine String$(72, "-")
     If Len(settings.MigrationWarning) > 0 Then AddStep settings.MigrationWarning
@@ -34100,15 +34100,15 @@ Private Function elapsedSeconds() As Double
 End Function
 
 ' Возвращает папку книги или текущую папку, если книга еще не сохранена.
-Private Function WorkbookFolder(ByVal workbook As Object) As String
-    WorkbookFolder = Trim$(CStr(workbook.path))
+Private Function WorkbookFolder(ByVal Workbook As Object) As String
+    WorkbookFolder = Trim$(CStr(Workbook.path))
     If Len(WorkbookFolder) = 0 Then WorkbookFolder = CurDir$
 End Function
 
 ' Безопасно читает имя книги для отчета выполнения.
-Private Function SafeWorkbookName(ByVal workbook As Object) As String
+Private Function SafeWorkbookName(ByVal Workbook As Object) As String
     On Error GoTo failed
-    SafeWorkbookName = CStr(workbook.name)
+    SafeWorkbookName = CStr(Workbook.name)
     Exit Function
 failed:
     SafeWorkbookName = "(имя книги недоступно)"
@@ -34607,10 +34607,10 @@ Option Explicit
 ' пользовательской системы знаков во внутреннюю систему расчетного ядра.
 
 ' Загружает сочетания из именованного диапазона книги.
-Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3950, "CLoadCombinationReader", "Книга Excel не передана."
+Public Sub LoadFromWorkbook(ByVal Workbook As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3950, "CLoadCombinationReader", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3951, "CLoadCombinationReader", "Пакетный расчетчик не передан."
-    LoadFromRange workbook.names.item("rngLoadCombinations").RefersToRange, batch, units
+    LoadFromRange Workbook.names.item("rngLoadCombinations").RefersToRange, batch, units
 End Sub
 
 ' Загружает сочетания из уже переданного диапазона.
@@ -34851,69 +34851,69 @@ End Function
 ' ------------------------------
 ' Очищает текущий снимок и заново пишет согласованные блоки:
 ' geometry, element results, section properties, material diagrams и annotations.
-Public Sub writeResults(ByVal workbook As Object, ByVal section As CSectionModel, _
+Public Sub writeResults(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
     If materialProvider Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Поставщик материалов не передан."
     If batch Is Nothing Then Err.Raise vbObjectError + 4454, "CNDMResultsWriter", "Пакетный расчетчик не передан."
 
-    ClearResults workbook
+    ClearResults Workbook
 
     Dim runID As Date
     runID = Now
 
-    WriteSnapshotTitle workbook
-    WriteSectionGeometry workbook, section, runID, units
-    WriteElementResults workbook, section, materialProvider, batch, runID, units
-    WriteSectionProperties workbook, section, materialProvider, batch, runID, units
-    WriteMaterialDiagrams workbook, materialProvider, batch, runID, units
+    WriteSnapshotTitle Workbook
+    WriteSectionGeometry Workbook, section, runID, units
+    WriteElementResults Workbook, section, materialProvider, batch, runID, units
+    WriteSectionProperties Workbook, section, materialProvider, batch, runID, units
+    WriteMaterialDiagrams Workbook, materialProvider, batch, runID, units
     EnsureAutoCADImportAnnotations section
-    WriteSectionAnnotations workbook, section, runID, units
+    WriteSectionAnnotations Workbook, section, runID, units
 End Sub
 
 ' Записывает на Results только импортированную геометрию без расчетных LC.
 ' Такой снимок нужен после кнопки AutoCAD import: пользователь сразу видит
 ' элементы на схеме, а последующий расчет берет эту же геометрию из Results.
-Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
+Public Sub WriteGeometryPreview(ByVal Workbook As Object, ByVal section As CSectionModel, _
         Optional ByVal units As CUnitSystem = Nothing)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
 
-    ClearResults workbook
+    ClearResults Workbook
 
     Dim runID As Date
     runID = Now
 
-    WriteSnapshotTitle workbook
-    WriteSectionGeometry workbook, section, runID, units
-    WriteEmptyElementResults workbook, runID, units
-    WriteSectionPropertiesPreview workbook, section, runID, units
+    WriteSnapshotTitle Workbook
+    WriteSectionGeometry Workbook, section, runID, units
+    WriteEmptyElementResults Workbook, runID, units
+    WriteSectionPropertiesPreview Workbook, section, runID, units
     EnsureAutoCADImportAnnotations section
-    WriteSectionAnnotations workbook, section, runID, units
+    WriteSectionAnnotations Workbook, section, runID, units
 End Sub
 
 ' Очищает только расчетные блоки Results перед новым снимком.
-Public Sub ClearResults(ByVal workbook As Object)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4455, "CNDMResultsWriter", "Книга Excel не передана."
+Public Sub ClearResults(ByVal Workbook As Object)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4455, "CNDMResultsWriter", "Книга Excel не передана."
 
-    ClearSnapshotTitle workbook
-    ClearNamedRegion workbook, "rngNDMElementResults"
-    ClearNamedRegion workbook, "rngNDMSectionGeometry"
-    ClearNamedRegion workbook, "rngNDMSectionProperties"
-    ClearNamedRegion workbook, "rngNDMSectionAnnotations"
-    ClearNamedRegion workbook, "rngNDMMaterialDiagrams"
+    ClearSnapshotTitle Workbook
+    ClearNamedRegion Workbook, "rngNDMElementResults"
+    ClearNamedRegion Workbook, "rngNDMSectionGeometry"
+    ClearNamedRegion Workbook, "rngNDMSectionProperties"
+    ClearNamedRegion Workbook, "rngNDMSectionAnnotations"
+    ClearNamedRegion Workbook, "rngNDMMaterialDiagrams"
 End Sub
 
 ' Безопасно чистит только фактический прямоугольник одной snapshot-таблицы.
 ' Ширина берется из схемы writer-а, а высота - по заполненному первому
 ' столбцу старой таблицы. CurrentRegion здесь не используется: он может
 ' захватить соседние Results-блоки из-за старого форматирования листа.
-Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String)
+Private Sub ClearNamedRegion(ByVal Workbook As Object, ByVal rangeName As String)
     On Error GoTo MissingRange
     Dim anchor As Object
-    Set anchor = workbook.names.item(rangeName).RefersToRange
+    Set anchor = Workbook.names.item(rangeName).RefersToRange
 
     Dim columnCount As Long
     columnCount = OutputColumnCount(rangeName)
@@ -34952,10 +34952,10 @@ End Function
 
 ' Записывает общий заголовок в пределах нижних snapshot-таблиц Results;
 ' соседние ячейки той же строки не относятся к расчетному снимку.
-Private Sub WriteSnapshotTitle(ByVal workbook As Object)
+Private Sub WriteSnapshotTitle(ByVal Workbook As Object)
     On Error GoTo MissingRange
     Dim title As Object
-    Set title = SnapshotTitleRange(workbook)
+    Set title = SnapshotTitleRange(Workbook)
     If title Is Nothing Then Exit Sub
     title.Interior.Color = RGB(189, 215, 238)
     title.RowHeight = 15
@@ -34974,10 +34974,10 @@ End Sub
 
 ' Очищает только общий заголовок snapshot-блоков перед новой записью,
 ' сохраняя пользовательские данные и оформление справа от снимка.
-Private Sub ClearSnapshotTitle(ByVal workbook As Object)
+Private Sub ClearSnapshotTitle(ByVal Workbook As Object)
     On Error GoTo MissingRange
     Dim title As Object
-    Set title = SnapshotTitleRange(workbook)
+    Set title = SnapshotTitleRange(Workbook)
     If title Is Nothing Then Exit Sub
     title.Clear
     title.RowHeight = 15
@@ -34987,16 +34987,16 @@ End Sub
 ' Определяет границы общего заголовка по фактическим якорям и схемам пяти
 ' snapshot-таблиц. При переносе блоков вправо граница следует за ними,
 ' а не расширяется до всех 16384 столбцов листа.
-Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
+Private Function SnapshotTitleRange(ByVal Workbook As Object) As Object
     Dim anchor As Object, block As Object, name As Variant
-    Set anchor = workbook.names.item("rngNDMElementResults").RefersToRange
+    Set anchor = Workbook.names.item("rngNDMElementResults").RefersToRange
     If anchor.row <= SNAPSHOT_TITLE_OFFSET Then Exit Function
 
     Dim rightColumn As Long, blockRightColumn As Long
     rightColumn = anchor.column
     For Each name In Array("rngNDMElementResults", "rngNDMSectionGeometry", _
             "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-        Set block = workbook.names.item(CStr(name)).RefersToRange
+        Set block = Workbook.names.item(CStr(name)).RefersToRange
         blockRightColumn = block.column + OutputColumnCount(CStr(name)) - 1
         If blockRightColumn > rightColumn Then rightColumn = blockRightColumn
     Next name
@@ -35008,11 +35008,11 @@ End Function
 ' ------------------------------
 ' В этот блок не пишутся координаты и площади: они уже есть в
 ' rngNDMSectionGeometry и связываются по ElementID.
-Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSectionModel, _
+Private Sub WriteElementResults(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
-    Set target = workbook.names.item("rngNDMElementResults").RefersToRange
+    Set target = Workbook.names.item("rngNDMElementResults").RefersToRange
 
     Dim elementCount As Long
     elementCount = section.ConcreteCount + section.rebarCount
@@ -35054,10 +35054,10 @@ End Sub
 ' ------------------------------
 ' Геометрия не зависит от LoadCase, поэтому записывается один раз. Схема и
 ' AutoCAD export затем объединяют эту таблицу с нужным LC из ElementResults.
-Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSectionModel, _
+Private Sub WriteSectionGeometry(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
-    Set target = workbook.names.item("rngNDMSectionGeometry").RefersToRange
+    Set target = Workbook.names.item("rngNDMSectionGeometry").RefersToRange
 
     Dim rowCount As Long
     rowCount = 1 + section.ConcreteCount + section.rebarCount
@@ -35124,11 +35124,11 @@ End Sub
 ' деформаций named-state каждого LC. Нагрузки пользователя задаются от
 ' бетонного центра, а главные оси схемы и AutoCAD читаются из блока
 ' Transformed.* расчетного snapshot.
-Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _
+Private Sub WriteSectionProperties(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
-    Set target = workbook.names.item("rngNDMSectionProperties").RefersToRange
+    Set target = Workbook.names.item("rngNDMSectionProperties").RefersToRange
 
     Dim rowCount As Long
     rowCount = SectionPropertyRowCount(batch)
@@ -35244,10 +35244,10 @@ End Function
 ' использовали для конечных named-state текущего snapshot. Диаграммы зависят
 ' от профиля, StateType, MaterialModelSpec и режима extension, но не от номера
 ' LC, поэтому одинаковые сочетания не дублируются.
-Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvider As CMaterialModelProvider, _
+Private Sub WriteMaterialDiagrams(ByVal Workbook As Object, ByVal materialProvider As CMaterialModelProvider, _
         ByVal batch As CBatchSectionCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
-    Set target = workbook.names.item("rngNDMMaterialDiagrams").RefersToRange
+    Set target = Workbook.names.item("rngNDMMaterialDiagrams").RefersToRange
 
     Dim rowCapacity As Long
     rowCapacity = MaterialDiagramRowCount(materialProvider, batch)
@@ -35684,10 +35684,10 @@ End Function
 
 ' Записывает минимальные свойства imported-preview: Bounds, количество
 ' элементов и единицы, достаточные для проверки геометрии на схеме.
-Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
+Private Sub WriteSectionPropertiesPreview(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
-    Set target = workbook.names.item("rngNDMSectionProperties").RefersToRange
+    Set target = Workbook.names.item("rngNDMSectionProperties").RefersToRange
 
     Dim data() As Variant
     ReDim data(1 To 43, 1 To SECTION_PROPERTY_COLUMNS)
@@ -35725,10 +35725,10 @@ End Sub
 ' ------------------------------
 ' Эти строки отвечают не за расчет, а за оформление последнего рассчитанного
 ' сечения: контуры, размеры и групповые подписи арматуры.
-Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As CSectionModel, _
+Private Sub WriteSectionAnnotations(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
-    Set target = workbook.names.item("rngNDMSectionAnnotations").RefersToRange
+    Set target = Workbook.names.item("rngNDMSectionAnnotations").RefersToRange
 
     Dim annotations As CSectionAnnotations
     Set annotations = section.annotations
@@ -35755,9 +35755,9 @@ End Sub
 
 ' Оставляет таблицу результатов элементов с одной шапкой.
 ' Для preview нет LC, поэтому записывать Stress/Strain нельзя.
-Private Sub WriteEmptyElementResults(ByVal workbook As Object, ByVal runID As Variant, ByVal units As CUnitSystem)
+Private Sub WriteEmptyElementResults(ByVal Workbook As Object, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
-    Set target = workbook.names.item("rngNDMElementResults").RefersToRange
+    Set target = Workbook.names.item("rngNDMElementResults").RefersToRange
 
     Dim data() As Variant
     ReDim data(1 To 1, 1 To ELEMENT_RESULT_COLUMNS)
@@ -35770,9 +35770,9 @@ End Sub
 ' Оставляет таблицу аннотаций с одной шапкой.
 ' У импортированной AutoCAD-сетки semantic-граней обычно нет, поэтому preview
 ' не должен наследовать старые размеры и подписи.
-Private Sub WriteEmptySectionAnnotations(ByVal workbook As Object, ByVal runID As Variant)
+Private Sub WriteEmptySectionAnnotations(ByVal Workbook As Object, ByVal runID As Variant)
     Dim target As Object
-    Set target = workbook.names.item("rngNDMSectionAnnotations").RefersToRange
+    Set target = Workbook.names.item("rngNDMSectionAnnotations").RefersToRange
 
     Dim data() As Variant
     ReDim data(1 To 1, 1 To ANNOTATION_COLUMNS)
@@ -37090,24 +37090,24 @@ Private mAnnotationText() As String ' Готовый текст подписи �
 ' Загружает все данные, необходимые для Excel-схемы.
 ' Метод намеренно читает расчетные значения только из Results. Из Config
 ' используется только выбор LC и текущие настройки визуализации профиля.
-Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
+Public Sub LoadFromWorkbook(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
     ResetReaderState
-    mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
-    ApplyVisualizationProfile workbook
+    mLoadCase = ResolveLoadCase(Workbook, settings.GetString("Plot.LoadCase", "Worst"))
+    ApplyVisualizationProfile Workbook
 
-    ReadSectionProperties workbook
-    ReadGeometryAndResults workbook
-    ReadAnnotations workbook
+    ReadSectionProperties Workbook
+    ReadGeometryAndResults Workbook
+    ReadAnnotations Workbook
 End Sub
 
 ' Загружает геометрию последнего AutoCAD import для визуального контроля.
 ' Расчетные результаты и нейтральная линия не читаются, но сохраненные
 ' габаритные аннотации по Bounds можно показать сразу после импорта.
-Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
+Public Sub LoadGeometryPreviewFromWorkbook(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
     ResetReaderState
@@ -37116,25 +37116,25 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     mVisualizationQuantity = "Stress"
     mLoadCase = "AutoCAD import"
 
-    ReadSectionProperties workbook
+    ReadSectionProperties Workbook
     mResultCaption = "Геометрия"
     mResultUnit = "-"
-    ReadGeometryPreview workbook
-    ReadAnnotations workbook
+    ReadGeometryPreview Workbook
+    ReadAnnotations Workbook
 End Sub
 
 ' Загружает расчетную геометрию из Results, когда выбранное состояние НДС
 ' отсутствует в snapshot. Это не AutoCAD-preview и не повторный расчет:
 ' пользователь видит актуальную геометрию последнего запуска и понятную
 ' подпись, почему цветовая раскраска Stress/Strain недоступна.
-Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
+Public Sub LoadGeometryOnlyForMissingState(ByVal Workbook As Object, _
         ByVal settings As CSystemSettingsReader, Optional ByVal noteText As String = vbNullString)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
     ResetReaderState
-    mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
-    ApplyVisualizationProfile workbook
+    mLoadCase = ResolveLoadCase(Workbook, settings.GetString("Plot.LoadCase", "Worst"))
+    ApplyVisualizationProfile Workbook
 
     mGeometryOnly = True
     mGeometryOnlyTitle = "Геометрия расчетного сечения: " & mLoadCase
@@ -37142,41 +37142,41 @@ Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
     If Len(mGeometryOnlyNote) = 0 Then mGeometryOnlyNote = MissingStateMessage(mLoadCase, mStateType)
     mGeometryReferenceItemsEnabled = True
 
-    ReadSectionProperties workbook
+    ReadSectionProperties Workbook
     mResultCaption = "Геометрия"
     mResultUnit = "-"
-    ReadGeometryPreview workbook
-    ReadAnnotations workbook
+    ReadGeometryPreview Workbook
+    ReadAnnotations Workbook
 End Sub
 
 ' Определяет, какой LC показывать на схеме.
 ' Значение Worst разворачивается в LC из верхней строки batch summary
 ' "Определяющее сочетание". Критерий выбора задает
 ' General.WorstCombinationCriterion, а схема только читает сохраненный результат.
-Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
+Private Function ResolveLoadCase(ByVal Workbook As Object, ByVal requested As String) As String
     Dim valueText As String
     valueText = Trim$(requested)
     If Len(valueText) = 0 Then valueText = "Worst"
 
     If StrComp(valueText, "Worst", vbTextCompare) <> 0 Then
         ResolveLoadCase = valueText
-        mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
+        mLoadCaseComment = ReadBatchSummaryComment(Workbook, ResolveLoadCase)
         Exit Function
     End If
 
-    ResolveLoadCase = ReadWorstCombinationID(workbook)
-    If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstCalculatedLoadCaseFromResults(workbook)
-    If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstLoadCaseFromSectionProperties(workbook)
-    mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
+    ResolveLoadCase = ReadWorstCombinationID(Workbook)
+    If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstCalculatedLoadCaseFromResults(Workbook)
+    If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstLoadCaseFromSectionProperties(Workbook)
+    mLoadCaseComment = ReadBatchSummaryComment(Workbook, ResolveLoadCase)
     If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, "CSectionPlotDataReader", _
         "В rngBatchSummary не найдено определяющее сочетание для Plot.LoadCase = Worst."
 End Function
 
 ' Читает верхнее поле "Определяющее сочетание" из новой якорной сводки.
-Private Function ReadWorstCombinationID(ByVal workbook As Object) As String
+Private Function ReadWorstCombinationID(ByVal Workbook As Object) As String
     On Error GoTo failed
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
+    Set anchor = Workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
     ReadWorstCombinationID = Trim$(SafeText(anchor.Value2))
 failed:
 End Function
@@ -37184,14 +37184,14 @@ End Function
 ' Применяет настройки визуализации профиля, назначенного выбранному LC.
 ' ProfileId читается из snapshot Results, а не из текущей строки сочетаний:
 ' схема должна показывать ровно тот расчетный запуск, который сохранен.
-Private Sub ApplyVisualizationProfile(ByVal workbook As Object)
-    mProfileId = ReadProfileIdForLoadCase(workbook, mLoadCase)
+Private Sub ApplyVisualizationProfile(ByVal Workbook As Object)
+    mProfileId = ReadProfileIdForLoadCase(Workbook, mLoadCase)
     If Len(mProfileId) = 0 Then Err.Raise vbObjectError + 4710, "CSectionPlotDataReader", _
         "В Results не найден ProfileId для сочетания: " & mLoadCase
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    profiles.LoadFromWorkbook workbook
+    profiles.LoadFromWorkbook Workbook
 
     Dim profile As CCalculationProfile
     Set profile = profiles.ProfileById(mProfileId)
@@ -37205,19 +37205,19 @@ End Sub
 ' основным snapshot-источником; если в выбранном LC нет элементов нужного
 ' состояния, fallback на свойства сечения нужен только для более понятной
 ' ошибки визуализации.
-Private Function ReadProfileIdForLoadCase(ByVal workbook As Object, ByVal loadCase As String) As String
-    ReadProfileIdForLoadCase = ReadProfileIdFromElementResults(workbook, loadCase)
+Private Function ReadProfileIdForLoadCase(ByVal Workbook As Object, ByVal loadCase As String) As String
+    ReadProfileIdForLoadCase = ReadProfileIdFromElementResults(Workbook, loadCase)
     If Len(ReadProfileIdForLoadCase) = 0 Then
-        ReadProfileIdForLoadCase = ReadLoadCasePropertyText(workbook, loadCase, "ProfileId")
+        ReadProfileIdForLoadCase = ReadLoadCasePropertyText(Workbook, loadCase, "ProfileId")
     End If
 End Function
 
 ' Ищет ProfileId в LC-зависимой таблице элементов Results. Это основной
 ' путь, потому что именно в ней каждое состояние связано с расчетным профилем.
-Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal loadCase As String) As String
+Private Function ReadProfileIdFromElementResults(ByVal Workbook As Object, ByVal loadCase As String) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMElementResults")
     If Not HasRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -37235,10 +37235,10 @@ End Function
 
 ' Ищет текстовое свойство конкретного LC в rngNDMSectionProperties.
 ' Используется как fallback, если для состояния нет строк элементов.
-Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal loadCase As String, ByVal propertyName As String) As String
+Private Function ReadLoadCasePropertyText(ByVal Workbook As Object, ByVal loadCase As String, ByVal propertyName As String) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -37261,10 +37261,10 @@ End Function
 ' развернут в прочностное определяющее сочетание, например DirectState без
 ' расчета несущей способности. AutoCAD-preview этим путем не выбирается,
 ' потому что geometry-only snapshot не содержит rngNDMElementResults.
-Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
+Private Function FirstCalculatedLoadCaseFromResults(ByVal Workbook As Object) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMElementResults")
     If Not HasRows(data) Then Exit Function
 
     Dim colLoadCase As Long
@@ -37281,10 +37281,10 @@ End Function
 ' Возвращает первый LC из таблицы свойств сечения.
 ' В некоторых профилях может не быть состояния для визуализации, но свойства
 ' LC все равно помогают показать пользователю, что сохранено в snapshot.
-Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String
+Private Function FirstLoadCaseFromSectionProperties(ByVal Workbook As Object) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasRows(data) Then Exit Function
 
     Dim colLoadCase As Long
@@ -37302,12 +37302,12 @@ End Function
 ' Находит комментарий выбранного LC для заголовка схемы.
 ' Если комментария нет или batch summary еще пустой, возвращается пустая строка
 ' без ошибки: сама схема может строиться и без комментария.
-Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCase As String) As String
+Private Function ReadBatchSummaryComment(ByVal Workbook As Object, ByVal loadCase As String) As String
     On Error GoTo failed
     If Len(Trim$(loadCase)) = 0 Then Exit Function
 
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
+    Set anchor = Workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
 
     Dim rowOffset As Long
     For rowOffset = 11 To 1000
@@ -37322,9 +37322,9 @@ End Function
 ' Читает свойства уровня всего сечения и выбранного LC.
 ' Здесь находятся Bounds, центр тяжести, главные оси, единицы Results и
 ' сохраненная плоскость деформаций epsilon0/kappaX/kappaY.
-Private Sub ReadSectionProperties(ByVal workbook As Object)
+Private Sub ReadSectionProperties(ByVal Workbook As Object)
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasRows(data) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
         "На листе Results нет rngNDMSectionProperties. Сначала выполните расчет."
 
@@ -37414,14 +37414,14 @@ End Sub
 ' Соединяет постоянную геометрию с LC-зависимыми результатами.
 ' rngNDMSectionGeometry хранит координаты и площади один раз, а
 ' rngNDMElementResults хранит Stress/Strain/PhysicalState по LoadCase.
-Private Sub ReadGeometryAndResults(ByVal workbook As Object)
+Private Sub ReadGeometryAndResults(ByVal Workbook As Object)
     Dim geom As Variant
-    geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    geom = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
         "На листе Results нет расчетной геометрии."
 
     Dim results As Variant
-    results = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    results = ReadAnchoredResultTable(Workbook, "rngNDMElementResults")
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."
 
@@ -37481,9 +37481,9 @@ End Sub
 ' Читает только постоянную геометрию элементов и добавляет ее в модель схемы
 ' с нейтральным состоянием. Этот режим используется для AutoCAD-preview и для
 ' схемы без выбранного StateType, если геометрия уже есть в Results.
-Private Sub ReadGeometryPreview(ByVal workbook As Object)
+Private Sub ReadGeometryPreview(ByVal Workbook As Object)
     Dim geom As Variant
-    geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    geom = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
         "На листе Results нет расчетной геометрии."
 
@@ -37560,10 +37560,10 @@ End Sub
 ' Читает semantic-аннотации схемы.
 ' Если таблица отсутствует или пуста, схема все равно строится: для AutoCAD
 ' import это нормальный сценарий, потому что характерные грани могут быть неизвестны.
-Private Sub ReadAnnotations(ByVal workbook As Object)
+Private Sub ReadAnnotations(ByVal Workbook As Object)
     On Error GoTo NoAnnotations
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionAnnotations")
     If Not HasRows(data) Then Exit Sub
 
     Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
@@ -37668,9 +37668,9 @@ End Sub
 ' Читает таблицу Results от именованного якоря, не полагаясь на CurrentRegion.
 ' Это позволяет размещать человекочитаемый заголовок прямо над таблицей и не
 ' включать его в массив данных.
-Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+Private Function ReadAnchoredResultTable(ByVal Workbook As Object, ByVal rangeName As String) As Variant
     Dim anchor As Object
-    Set anchor = workbook.names.item(rangeName).RefersToRange
+    Set anchor = Workbook.names.item(rangeName).RefersToRange
 
     Dim columnCount As Long
     columnCount = AnchoredColumnCount(anchor)
@@ -38114,12 +38114,12 @@ Private mAxisLabelFontSize As Double ' Размер шрифта подписе�
 ' Перестраивает схему по данным последнего расчета.
 ' Метод управляет порядком операций: подготовка chart, равный масштаб X/Y,
 ' расчетные элементы, Shape-аннотации и верхний служебный Shape-оверлей.
-Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
+Public Sub Draw(ByVal Workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
     If data Is Nothing Then Err.Raise vbObjectError + 4801, "CSectionPlotter", "Данные схемы не переданы."
     If settings Is Nothing Then Err.Raise vbObjectError + 4802, "CSectionPlotter", "Настройки Config не переданы."
 
-    Set mChartObject = EnsureChart(workbook.Worksheets.item("Расчет"))
+    Set mChartObject = EnsureChart(Workbook.Worksheets.item("Расчет"))
     Set mChart = mChartObject.Chart
 
     ClearLegacyWorksheetGeneratedShapes
@@ -38156,10 +38156,10 @@ End Sub
 ' Очищает существующую схему до нейтрального состояния без удаления ChartObject.
 ' Положение и размер окна схемы сохраняются, но старые расчетные series,
 ' аннотации и заголовок больше не могут выглядеть как актуальный snapshot.
-Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
+Public Sub ClearExisting(ByVal Workbook As Object, ByVal titleText As String)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
 
-    Set mChartObject = EnsureChart(workbook.Worksheets.item("Расчет"))
+    Set mChartObject = EnsureChart(Workbook.Worksheets.item("Расчет"))
     Set mChart = mChartObject.Chart
 
     ClearLegacyWorksheetGeneratedShapes
@@ -40701,14 +40701,14 @@ End Function
 
 ' Возвращает число строк данных, которое нужно оформить под доступные LC.
 ' Заполненные сочетания берутся из batch, а пустая сетка - из высоты rngLoadCombinations.
-Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+Public Function RequiredDataRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
     RequiredDataRowsForWorkbook = combinationCount
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
 
     On Error GoTo SafeExit
-    If workbook Is Nothing Then GoTo SafeExit
+    If Workbook Is Nothing Then GoTo SafeExit
     Dim loads As Object
-    Set loads = workbook.names.item("rngLoadCombinations").RefersToRange
+    Set loads = Workbook.names.item("rngLoadCombinations").RefersToRange
     If loads.rows.count > 1 Then
         If loads.rows.count - 1 > RequiredDataRowsForWorkbook Then _
             RequiredDataRowsForWorkbook = loads.rows.count - 1
@@ -40719,8 +40719,8 @@ End Function
 
 ' Возвращает полную высоту таблицы для фактической книги, включая пустые
 ' доступные строки сочетаний, которые тоже должны иметь рамки.
-Public Function RequiredRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
-    RequiredRowsForWorkbook = RequiredRows(RequiredDataRowsForWorkbook(workbook, combinationCount))
+Public Function RequiredRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredRowsForWorkbook = RequiredRows(RequiredDataRowsForWorkbook(Workbook, combinationCount))
 End Function
 
 ' Возвращает полную ширину таблицы устойчивости, включая пустые столбцы-разделители.
@@ -40729,14 +40729,14 @@ Public Function RequiredColumns() As Long
 End Function
 
 ' Записывает детальную таблицу устойчивости от якоря rngStabilitySummaryAnchor.
-Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
+Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
     On Error GoTo failed
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3980, "CStabilitySummaryWriter", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3980, "CStabilitySummaryWriter", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3981, "CStabilitySummaryWriter", "Пакетный расчетчик не передан."
 
     Dim target As Object
-    Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.count))
+    Set target = TargetRange(Workbook, RequiredDataRowsForWorkbook(Workbook, batch.count))
     PrepareTarget target
     WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
     WriteHeaders target, units, batch
@@ -40749,24 +40749,24 @@ failed:
 End Sub
 
 ' Полностью очищает старый блок устойчивости вместе с объединениями и форматами.
-Public Sub ClearSummary(ByVal workbook As Object)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3982, "CStabilitySummaryWriter", "Книга Excel не передана."
-    PrepareTarget ClearTargetRange(workbook)
+Public Sub ClearSummary(ByVal Workbook As Object)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3982, "CStabilitySummaryWriter", "Книга Excel не передана."
+    PrepareTarget ClearTargetRange(Workbook)
 End Sub
 
 ' Возвращает полный диапазон таблицы: пять строк шапки над якорем и фактические строки LC.
-Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows As Long = 1) As Object
+Private Function TargetRange(ByVal Workbook As Object, Optional ByVal dataRows As Long = 1) As Object
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngStabilitySummaryAnchor").RefersToRange
+    Set anchor = Workbook.names.item("rngStabilitySummaryAnchor").RefersToRange
     If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3983, "CStabilitySummaryWriter", _
         "rngStabilitySummaryAnchor должен иметь место для шапки над собой."
     Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
 ' Возвращает область очистки старой таблицы до следующего нижнего якоря Results.
-Private Function ClearTargetRange(ByVal workbook As Object) As Object
+Private Function ClearTargetRange(ByVal Workbook As Object) As Object
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngStabilitySummaryAnchor").RefersToRange
+    Set anchor = Workbook.names.item("rngStabilitySummaryAnchor").RefersToRange
     If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3983, "CStabilitySummaryWriter", _
         "rngStabilitySummaryAnchor должен иметь место для шапки над собой."
 
@@ -40778,7 +40778,7 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
 
     On Error GoTo UseDefaultHeight
     Dim nextAnchor As Object
-    Set nextAnchor = workbook.names.item("rngNDMElementResults").RefersToRange
+    Set nextAnchor = Workbook.names.item("rngNDMElementResults").RefersToRange
     If nextAnchor.row > topRow Then rowsToClear = nextAnchor.row - topRow
 
 UseDefaultHeight:
@@ -41646,14 +41646,14 @@ End Function
 
 ' Возвращает число строк данных по высоте rngLoadCombinations, чтобы пустые
 ' доступные строки тоже получили рамки и не выглядели как остаток старого вывода.
-Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
+Public Function RequiredDataRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
     RequiredDataRowsForWorkbook = combinationCount
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
 
     On Error GoTo SafeExit
-    If workbook Is Nothing Then GoTo SafeExit
+    If Workbook Is Nothing Then GoTo SafeExit
     Dim loads As Object
-    Set loads = workbook.names.item("rngLoadCombinations").RefersToRange
+    Set loads = Workbook.names.item("rngLoadCombinations").RefersToRange
     If loads.rows.count > 1 Then
         If loads.rows.count - 1 > RequiredDataRowsForWorkbook Then _
             RequiredDataRowsForWorkbook = loads.rows.count - 1
@@ -41663,8 +41663,8 @@ SafeExit:
 End Function
 
 ' Возвращает полную высоту блока для фактической книги.
-Public Function RequiredRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
-    RequiredRowsForWorkbook = RequiredRows(RequiredDataRowsForWorkbook(workbook, combinationCount))
+Public Function RequiredRowsForWorkbook(ByVal Workbook As Object, ByVal combinationCount As Long) As Long
+    RequiredRowsForWorkbook = RequiredRows(RequiredDataRowsForWorkbook(Workbook, combinationCount))
 End Function
 
 ' Возвращает ширину блока вместе с пустыми разделителями.
@@ -41673,14 +41673,14 @@ Public Function RequiredColumns() As Long
 End Function
 
 ' Записывает подробную таблицу НДС/Capacity по модели прочности.
-Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
+Public Sub WriteSummary(ByVal Workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal section As CSectionModel = Nothing)
     On Error GoTo failed
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3996, "CStrengthSummaryWriter", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3996, "CStrengthSummaryWriter", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3997, "CStrengthSummaryWriter", "Пакетный расчетчик не передан."
 
     Dim target As Object
-    Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.count))
+    Set target = TargetRange(Workbook, RequiredDataRowsForWorkbook(Workbook, batch.count))
     PrepareTarget target
     WriteBlockTitle target, "Расчет НДС и несущей способности по модели прочности"
     WriteHeaders target, units
@@ -41693,24 +41693,24 @@ failed:
 End Sub
 
 ' Очищает старый detailed-блок прочности вместе с объединениями и форматами.
-Public Sub ClearSummary(ByVal workbook As Object)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 3998, "CStrengthSummaryWriter", "Книга Excel не передана."
-    PrepareTarget ClearTargetRange(workbook)
+Public Sub ClearSummary(ByVal Workbook As Object)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 3998, "CStrengthSummaryWriter", "Книга Excel не передана."
+    PrepareTarget ClearTargetRange(Workbook)
 End Sub
 
 ' Возвращает текущий диапазон таблицы: шапка над якорем и строки LC.
-Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows As Long = 1) As Object
+Private Function TargetRange(ByVal Workbook As Object, Optional ByVal dataRows As Long = 1) As Object
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
+    Set anchor = Workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
     If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, "CStrengthSummaryWriter", _
         "rngStrengthSummaryAnchor должен иметь место для шапки над собой."
     Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
 ' Возвращает область безопасной очистки до следующего detailed-блока Results.
-Private Function ClearTargetRange(ByVal workbook As Object) As Object
+Private Function ClearTargetRange(ByVal Workbook As Object) As Object
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
+    Set anchor = Workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
     If anchor.row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, "CStrengthSummaryWriter", _
         "rngStrengthSummaryAnchor должен иметь место для шапки над собой."
 
@@ -41723,7 +41723,7 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
     Dim crackWriter As CCrackSummaryWriter
     Set crackWriter = New CCrackSummaryWriter
     Dim crackAnchor As Object
-    Set crackAnchor = workbook.names.item("rngCrackSummaryAnchor").RefersToRange
+    Set crackAnchor = Workbook.names.item("rngCrackSummaryAnchor").RefersToRange
     Dim crackTopRow As Long
     crackTopRow = crackAnchor.row - crackWriter.HeaderRowsAboveAnchor
     If crackTopRow > topRow Then rowsToClear = crackTopRow - topRow
@@ -42398,25 +42398,25 @@ Private mMigrationWarning As String ' Предупреждение о конфл
 ' Метод объединяет разные именованные диапазоны Config в один внутренний
 ' словарь. Новые таблицы материалов имеют человекочитаемую форму, поэтому
 ' перед попаданием в словарь разворачиваются в ключи Concrete.* / Steel.*.
-Public Sub LoadFromWorkbook(ByVal workbook As Object)
+Public Sub LoadFromWorkbook(ByVal Workbook As Object)
     Clear
-    AppendRequiredNamedSettingsRange workbook, "rngUnitSettings", "Единицы измерения"
-    AppendRequiredNamedSettingsRange workbook, "rngSignConventionSettings", "Система знаков"
+    AppendRequiredNamedSettingsRange Workbook, "rngUnitSettings", "Единицы измерения"
+    AppendRequiredNamedSettingsRange Workbook, "rngSignConventionSettings", "Система знаков"
     ValidateWorkbookUnitAndSignKeys
-    AppendRequiredNamedSettingsRange workbook, "rngSystemSettings", "Системные настройки"
-    AppendNamedSettingsRangeIfExists workbook, "rngConcreteMaterialParameters"
-    AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
-    AppendRequiredNamedSettingsRange workbook, "rngPlotAnnotationSettings", "Подписи и размеры схемы"
-    AppendGeometrySettingsRanges workbook
+    AppendRequiredNamedSettingsRange Workbook, "rngSystemSettings", "Системные настройки"
+    AppendNamedSettingsRangeIfExists Workbook, "rngConcreteMaterialParameters"
+    AppendNamedSettingsRangeIfExists Workbook, "rngSteelMaterialParameters"
+    AppendRequiredNamedSettingsRange Workbook, "rngPlotAnnotationSettings", "Подписи и размеры схемы"
+    AppendGeometrySettingsRanges Workbook
     NormalizeDiagramExtensionSetting
 End Sub
 
 ' Различает поврежденное имя обязательной таблицы и ошибку ее значения.
 ' При утрате имени дает действие для восстановления книги вместо COM-ошибки 1004.
-Private Sub AppendRequiredNamedSettingsRange(ByVal workbook As Object, ByVal rangeName As String, ByVal caption As String)
+Private Sub AppendRequiredNamedSettingsRange(ByVal Workbook As Object, ByVal rangeName As String, ByVal caption As String)
     Dim settingsRange As Object
     On Error GoTo MissingRange
-    Set settingsRange = workbook.names.item(rangeName).RefersToRange
+    Set settingsRange = Workbook.names.item(rangeName).RefersToRange
     On Error GoTo 0
     AppendSettingsRange settingsRange
     Exit Sub
@@ -42446,10 +42446,10 @@ End Sub
 ' Подключает необязательный для reader диапазон, если он есть в книге.
 ' Отсутствие имени не маскирует ошибки значений найденного диапазона;
 ' обязательность конкретных материалных параметров проверяет их потребитель.
-Private Sub AppendNamedSettingsRangeIfExists(ByVal workbook As Object, ByVal rangeName As String)
+Private Sub AppendNamedSettingsRangeIfExists(ByVal Workbook As Object, ByVal rangeName As String)
     On Error GoTo MissingRange
     Dim settingsRange As Object
-    Set settingsRange = workbook.names.item(rangeName).RefersToRange
+    Set settingsRange = Workbook.names.item(rangeName).RefersToRange
     On Error GoTo 0
     AppendSettingsRange settingsRange
     Exit Sub
@@ -42458,11 +42458,11 @@ MissingRange:
 End Sub
 
 ' Находит все входные geometry-диапазоны Config и добавляет их настройки в общий словарь.
-Private Sub AppendGeometrySettingsRanges(ByVal workbook As Object)
+Private Sub AppendGeometrySettingsRanges(ByVal Workbook As Object)
     Dim nameObject As Object
     ' Проходим по именованным диапазонам и выбираем только входные таблицы
     ' геометрии. rngNDMSectionGeometry пропускается: это Results, а не Config.
-    For Each nameObject In workbook.names
+    For Each nameObject In Workbook.names
         Dim rangeName As String
         rangeName = LocalName(CStr(nameObject.name))
         If IsInputGeometrySettingsRangeName(rangeName) Then
@@ -44208,7 +44208,7 @@ End Function
 ' Собирает контекст экспорта из последнего snapshot: геометрию, значения
 ' элементов, плоскость деформаций и предупреждение о физической допустимости.
 ' Профиль выбирает state/величину; текущий ввод геометрии не заменяет Results.
-Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
+Private Sub ReadResultsExportState(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem, ByVal principalAxesMode As String, _
         ByRef section As CSectionModel, ByRef resultByID As Object, ByRef physicalStateByID As Object, ByRef combinationID As String, _
         ByRef profileId As String, ByRef stateType As String, ByRef quantity As String, ByRef resultPrecision As Long, _
@@ -44216,16 +44216,16 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
         ByRef CentroidX As Double, ByRef CentroidY As Double, ByRef principalAngle As Double, _
         ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
-    Set section = ReadSectionGeometryFromResults(workbook, "Results")
+    Set section = ReadSectionGeometryFromResults(Workbook, "Results")
 
-    combinationID = ResolveExportCombinationID(workbook, settings.GetRawString("AutoCAD.Export.CombinationID", "Worst"))
-    profileId = ReadProfileIdForLoadCase(workbook, combinationID)
+    combinationID = ResolveExportCombinationID(Workbook, settings.GetRawString("AutoCAD.Export.CombinationID", "Worst"))
+    profileId = ReadProfileIdForLoadCase(Workbook, combinationID)
     If Len(profileId) = 0 Then Err.Raise vbObjectError + 4366, "ReadResultsExportState", _
         "В Results не найден ProfileId для сочетания: " & combinationID
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    profiles.LoadFromWorkbook workbook
+    profiles.LoadFromWorkbook Workbook
 
     Dim profile As CCalculationProfile
     Set profile = profiles.ProfileById(profileId)
@@ -44237,20 +44237,20 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     resultByID.CompareMode = vbTextCompare
     Set physicalStateByID = CreateObject("Scripting.Dictionary")
     physicalStateByID.CompareMode = vbTextCompare
-    ReadElementResultsForCombination workbook, quantity, combinationID, stateType, resultByID, physicalStateByID
-    ReadSectionPropertiesForCombination workbook, units, combinationID, stateType, principalAxesMode, epsilon0, kappaX, kappaY, _
+    ReadElementResultsForCombination Workbook, quantity, combinationID, stateType, resultByID, physicalStateByID
+    ReadSectionPropertiesForCombination Workbook, units, combinationID, stateType, principalAxesMode, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, CentroidX, CentroidY, principalAngle, extensionUsed, stateWarningText
 End Sub
 
 ' Восстанавливает CSectionModel из таблицы Results в внутренних единицах.
 ' Сохраняет реальные A/I импортированных элементов, отдельно от оболочки
 ' отображения; пустой snapshot отклоняется до чтения строк.
-Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results") As CSectionModel
+Public Function ReadSectionGeometryFromResults(ByVal Workbook As Object, Optional ByVal sourceType As String = "Results") As CSectionModel
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngNDMSectionGeometry").RefersToRange
+    Set anchor = Workbook.names.item("rngNDMSectionGeometry").RefersToRange
 
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4350, "ReadSectionGeometryFromResults", _
         "На листе Results нет таблицы расчетной геометрии. Сначала выполните расчет."
 
@@ -44304,10 +44304,10 @@ End Function
 ' Возвращает диагностическую метку источника геометрии, сохраненную в
 ' rngNDMSectionProperties. Расчет с Geometry.Source = AutoCAD использует ее,
 ' чтобы не принять generated-геометрию за импортированную.
-Public Function ResultsGeometrySource(ByVal workbook As Object) As String
+Public Function ResultsGeometrySource(ByVal Workbook As Object) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -44328,19 +44328,19 @@ End Function
 ' Находит профиль выбранного LC в последнем snapshot Results.
 ' Основной источник - rngNDMElementResults; свойства LC используются только
 ' для понятной ошибки, если выбранное состояние профиля не записывалось.
-Private Function ReadProfileIdForLoadCase(ByVal workbook As Object, ByVal combinationID As String) As String
-    ReadProfileIdForLoadCase = ReadProfileIdFromElementResults(workbook, combinationID)
+Private Function ReadProfileIdForLoadCase(ByVal Workbook As Object, ByVal combinationID As String) As String
+    ReadProfileIdForLoadCase = ReadProfileIdFromElementResults(Workbook, combinationID)
     If Len(ReadProfileIdForLoadCase) = 0 Then
-        ReadProfileIdForLoadCase = ReadLoadCasePropertyText(workbook, combinationID, "ProfileId")
+        ReadProfileIdForLoadCase = ReadLoadCasePropertyText(Workbook, combinationID, "ProfileId")
     End If
 End Function
 
 ' Ищет профиль LC в сохраненной поэлементной таблице. Пустой ответ означает,
 ' что профиль надо искать в свойствах LC; модель и расчет не создаются.
-Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal combinationID As String) As String
+Private Function ReadProfileIdFromElementResults(ByVal Workbook As Object, ByVal combinationID As String) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMElementResults")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -44358,10 +44358,10 @@ End Function
 
 ' Находит текстовое свойство выбранного LC в длинной таблице параметров.
 ' Не подставляет значение из текущего ввода при отсутствии свойства snapshot.
-Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal combinationID As String, ByVal propertyName As String) As String
+Private Function ReadLoadCasePropertyText(ByVal Workbook As Object, ByVal combinationID As String, ByVal propertyName As String) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
@@ -44382,14 +44382,14 @@ End Function
 ' Отбирает Stress/Strain и PhysicalState элементов только для выбранных LC
 ' и named-state. Отсутствие рассчитанного состояния дает адресную ошибку,
 ' а не незаметную замену результатом другого сочетания.
-Private Sub ReadElementResultsForCombination(ByVal workbook As Object, ByVal resultType As String, _
+Private Sub ReadElementResultsForCombination(ByVal Workbook As Object, ByVal resultType As String, _
         ByRef combinationID As String, ByVal stateType As String, _
         ByVal resultByID As Object, ByVal physicalStateByID As Object)
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngNDMElementResults").RefersToRange
+    Set anchor = Workbook.names.item("rngNDMElementResults").RefersToRange
 
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMElementResults")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4352, "ReadElementResultsForCombination", _
         "На листе Results нет таблицы результатов НДМ. Сначала выполните расчет."
 
@@ -44429,14 +44429,14 @@ End Sub
 ' Читает сохраненную плоскость, точку нагрузки и выбранные главные оси.
 ' Переводит длины/кривизны из единиц snapshot и готовит предупреждение о
 ' несошедшемся либо вспомогательном НДС; равновесие повторно не ищется.
-Private Sub ReadSectionPropertiesForCombination(ByVal workbook As Object, ByVal units As CUnitSystem, _
+Private Sub ReadSectionPropertiesForCombination(ByVal Workbook As Object, ByVal units As CUnitSystem, _
         ByVal combinationID As String, ByVal stateType As String, ByVal principalAxesMode As String, _
         ByRef epsilon0 As Double, ByRef kappaX As Double, _
         ByRef kappaY As Double, ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
         ByRef CentroidX As Double, ByRef CentroidY As Double, ByRef principalAngle As Double, _
         ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4360, "ReadSectionPropertiesForCombination", _
         "На листе Results нет rngNDMSectionProperties. Сначала выполните расчет."
 
@@ -44554,25 +44554,25 @@ End Function
 ' Используется только для объяснения отсутствующей визуализации.
 Private Function ExportCombinationHasCrackWidth(ByVal combinationID As String) As Boolean
     On Error GoTo failed
-    Dim workbook As Object
-    Set workbook = ThisWorkbook
+    Dim Workbook As Object
+    Set Workbook = ThisWorkbook
     Dim profileId As String
-    profileId = ReadProfileIdForLoadCase(workbook, combinationID)
+    profileId = ReadProfileIdForLoadCase(Workbook, combinationID)
     If Len(profileId) = 0 Then Exit Function
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    profiles.LoadFromWorkbook workbook
+    profiles.LoadFromWorkbook Workbook
     ExportCombinationHasCrackWidth = profiles.ProfileById(profileId).CrackWidthEnabled
 failed:
 End Function
 
 ' Читает выбранное определяющее сочетание из готовой batch-сводки.
 ' При отсутствии метаданных вызывающий слой сам выбирает сохраненный fallback LC.
-Private Function ReadGoverningCombinationID(ByVal workbook As Object) As String
+Private Function ReadGoverningCombinationID(ByVal Workbook As Object) As String
     On Error GoTo failed
     Dim anchor As Object
-    Set anchor = workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
+    Set anchor = Workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
     ReadGoverningCombinationID = Trim$(SafeText(anchor.Value2))
 failed:
 End Function
@@ -44613,16 +44613,16 @@ End Function
 
 ' Разрешает Worst через сохраненную сводку/таблицы либо принимает точный LC ID.
 ' Пустой выбор и отсутствие рассчитанных сочетаний отклоняются явно.
-Private Function ResolveExportCombinationID(ByVal workbook As Object, ByVal settingValue As String) As String
+Private Function ResolveExportCombinationID(ByVal Workbook As Object, ByVal settingValue As String) As String
     Dim valueText As String
     valueText = Trim$(settingValue)
     If Len(valueText) = 0 Then Err.Raise vbObjectError + 4357, "ResolveExportCombinationID", _
         "AutoCAD.Export.CombinationID должен быть Worst или точным CombinationID из Results."
 
     If StrComp(valueText, "Worst", vbTextCompare) = 0 Then
-        ResolveExportCombinationID = ReadGoverningCombinationID(workbook)
-        If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstCalculatedLoadCaseFromResults(workbook)
-        If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstLoadCaseFromSectionProperties(workbook)
+        ResolveExportCombinationID = ReadGoverningCombinationID(Workbook)
+        If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstCalculatedLoadCaseFromResults(Workbook)
+        If Len(ResolveExportCombinationID) = 0 Then ResolveExportCombinationID = FirstLoadCaseFromSectionProperties(Workbook)
         If Len(ResolveExportCombinationID) = 0 Then Err.Raise vbObjectError + 4358, "ResolveExportCombinationID", _
             "В Results не найдено рассчитанное сочетание для AutoCAD.Export.CombinationID = Worst."
     Else
@@ -44633,10 +44633,10 @@ End Function
 ' Возвращает первый LC из свойств Results, если batch summary не содержит
 ' определяющего сочетания и поэлементная таблица пуста. Дальше экспорт все
 ' равно проверит, что выбранное Visualization.State реально есть в snapshot.
-Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String
+Private Function FirstLoadCaseFromSectionProperties(ByVal Workbook As Object) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long
@@ -44654,10 +44654,10 @@ End Function
 ' Возвращает первое сочетание, для которого в Results есть LC-зависимые
 ' результаты элементов. Это тот же fallback, которым пользуется Excel-схема,
 ' когда определяющее сочетание в batch summary не заполнено.
-Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String
+Private Function FirstCalculatedLoadCaseFromResults(ByVal Workbook As Object) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMElementResults")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colLoadCase As Long
@@ -44723,9 +44723,9 @@ End Function
 ' Читает таблицу Results от именованного якоря. Метод не использует
 ' CurrentRegion, чтобы человекочитаемые заголовки над таблицами не попадали
 ' в массив расчетных данных.
-Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+Private Function ReadAnchoredResultTable(ByVal Workbook As Object, ByVal rangeName As String) As Variant
     Dim anchor As Object
-    Set anchor = workbook.names.item(rangeName).RefersToRange
+    Set anchor = Workbook.names.item(rangeName).RefersToRange
 
     Dim columnCount As Long
     columnCount = AnchoredColumnCount(anchor)
@@ -44923,9 +44923,9 @@ End Sub
 ' Здесь намеренно не восстанавливается контур по бетонным волокнам: для
 ' импортированной AutoCAD-сетки такой контур неизвестен, а значит экспорт
 ' должен пропустить его, а не рисовать приближенную оболочку.
-Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As Object, ByVal contourLayer As String) As Long
+Private Function DrawParametricSectionContour(ByVal Workbook As Object, ByVal ms As Object, ByVal contourLayer As String) As Long
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionAnnotations")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
@@ -44937,7 +44937,7 @@ Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms
     Dim colText As Long: colText = ResultColumn(data, "Text")
     Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
     Dim defaultLengthUnit As String
-    defaultLengthUnit = ResultsOutputLengthUnit(workbook)
+    defaultLengthUnit = ResultsOutputLengthUnit(Workbook)
     If Len(defaultLengthUnit) = 0 Then defaultLengthUnit = ResultHeaderUnit(data, colStartX, "mm")
 
     Dim segStartX() As Double
@@ -45018,10 +45018,10 @@ End Function
 ' Читает единицу длины последнего расчетного снимка. Для annotation-таблицы это
 ' важнее заголовков StartX/EndX: сами заголовки не содержат единицу длины, но
 ' значения уже переведены writer-ом в Output.LengthUnit.
-Private Function ResultsOutputLengthUnit(ByVal workbook As Object) As String
+Private Function ResultsOutputLengthUnit(ByVal Workbook As Object) As String
     On Error GoTo failed
     Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
+    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
@@ -45845,9 +45845,9 @@ End Function
 ' Читает обязательные численные N/Mx/My первой непустой строки таблицы.
 ' Возвращает исходные пользовательские числа без пересчета единиц; этот
 ' служебный вход не является повторным расчетом сохраненного Results state.
-Private Sub ReadFirstExportLoad(ByVal workbook As Object, ByRef nValue As Double, ByRef mxValue As Double, ByRef myValue As Double)
+Private Sub ReadFirstExportLoad(ByVal Workbook As Object, ByRef nValue As Double, ByRef mxValue As Double, ByRef myValue As Double)
     Dim source As Object
-    Set source = workbook.names.item("rngLoadCombinations").RefersToRange
+    Set source = Workbook.names.item("rngLoadCombinations").RefersToRange
     Dim data As Variant
     data = source.Value2
 
@@ -45894,10 +45894,10 @@ End Function
 ' Читает ровно тот snapshot, который используется при экспорте в AutoCAD,
 ' не создавая AutoCAD application и не запуская solver. Текст нужен только
 ' для точного сравнения сохраненных значений после изменения Config.
-Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As String
+Public Function Audit02ReadExportSnapshotForTests(ByVal Workbook As Object) As String
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook workbook
+    settings.LoadFromWorkbook Workbook
     Dim units As CUnitSystem
     Set units = New CUnitSystem
     units.LoadFromSettings settings
@@ -45909,7 +45909,7 @@ Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As S
     Dim referenceX As Double, referenceY As Double
     Dim CentroidX As Double, CentroidY As Double, angle As Double
     Dim extensionUsed As Boolean, warningText As String
-    ReadResultsExportState workbook, settings, units, "Concrete", section, values, physicalStates, _
+    ReadResultsExportState Workbook, settings, units, "Concrete", section, values, physicalStates, _
         combinationID, profileId, stateType, quantity, precision, eps0, kx, ky, _
         referenceX, referenceY, CentroidX, CentroidY, angle, extensionUsed, warningText
     Dim result As String
@@ -46060,12 +46060,12 @@ End Sub
 ' Читает выбранное состояние Results и перерисовывает схему указанной книги.
 ' При отсутствии state допускает только предусмотренный geometry-only preview;
 ' решатель не вызывается, сохраненные таблицы не изменяются.
-Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal raiseIfNoData As Boolean = True)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
+Public Sub UpdateSectionPlotForWorkbook(ByVal Workbook As Object, Optional ByVal raiseIfNoData As Boolean = True)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook workbook
+    settings.LoadFromWorkbook Workbook
 
     If Not settings.GetBoolean("Plot.Enabled", True) Then Exit Sub
 
@@ -46073,13 +46073,13 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
     Set reader = New CSectionPlotDataReader
     Dim plotLoadErrorNumber As Long
     Dim plotLoadErrorDescription As String
-    If Not TryLoadFullPlotReader(reader, workbook, settings, plotLoadErrorNumber, plotLoadErrorDescription) Then
+    If Not TryLoadFullPlotReader(reader, Workbook, settings, plotLoadErrorNumber, plotLoadErrorDescription) Then
         If plotLoadErrorNumber = vbObjectError + 4706 Then
             Set reader = New CSectionPlotDataReader
-            reader.LoadGeometryOnlyForMissingState workbook, settings, plotLoadErrorDescription
+            reader.LoadGeometryOnlyForMissingState Workbook, settings, plotLoadErrorDescription
         Else
-            If Not CanUseGeometryPreview(workbook, settings) Then
-                ClearSectionPlotForNoData workbook, _
+            If Not CanUseGeometryPreview(Workbook, settings) Then
+                ClearSectionPlotForNoData Workbook, _
                     "Схема не обновлена: в Results нет выбранного состояния НДС."
                 If raiseIfNoData Then
                     Err.Raise vbObjectError + 4144, "UpdateSectionPlotForWorkbook", _
@@ -46089,13 +46089,13 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
             End If
 
             Set reader = New CSectionPlotDataReader
-            reader.LoadGeometryPreviewFromWorkbook workbook, settings
+            reader.LoadGeometryPreviewFromWorkbook Workbook, settings
         End If
     End If
 
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
-    plotter.Draw workbook, reader, settings
+    plotter.Draw Workbook, reader, settings
 End Sub
 
 ' Сначала пытаемся построить обычную схему по расчетным результатам.
@@ -46103,12 +46103,12 @@ End Sub
 ' возвращаем False: вызывающий код построит geometry-preview с текущими
 ' настройками аннотаций, не запуская solver и не меняя Results.
 Private Function TryLoadFullPlotReader(ByVal reader As CSectionPlotDataReader, _
-        ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
+        ByVal Workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByRef errorNumber As Long, ByRef errorDescription As String) As Boolean
     On Error GoTo failed
     errorNumber = 0
     errorDescription = vbNullString
-    reader.LoadFromWorkbook workbook, settings
+    reader.LoadFromWorkbook Workbook, settings
     TryLoadFullPlotReader = True
     Exit Function
 
@@ -46127,13 +46127,13 @@ End Function
 ' импортированной AutoCAD-геометрии. Generated-сценарий сюда не допускается:
 ' иначе AutoCAD-preview может остаться на листе после переключения
 ' настроек на автоматическую генерацию сечения.
-Private Function CanUseGeometryPreview(ByVal workbook As Object, ByVal settings As CSystemSettingsReader) As Boolean
+Private Function CanUseGeometryPreview(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader) As Boolean
     On Error GoTo failed
-    If workbook Is Nothing Then Exit Function
+    If Workbook Is Nothing Then Exit Function
     If settings Is Nothing Then Exit Function
     If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) <> 0 Then Exit Function
 
-    CanUseGeometryPreview = (StrComp(ResultsGeometrySource(workbook), "AutoCADImport", vbTextCompare) = 0)
+    CanUseGeometryPreview = (StrComp(ResultsGeometrySource(Workbook), "AutoCADImport", vbTextCompare) = 0)
     Exit Function
 failed:
 End Function
@@ -46142,41 +46142,41 @@ End Function
 ' Это нужно, когда расчет не дал ни одного доступного состояния LC: пользователь
 ' не должен видеть подпись или AutoCAD-preview схему, ошибочно связанную
 ' с текущими Generated-настройками.
-Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText As String)
+Private Sub ClearSectionPlotForNoData(ByVal Workbook As Object, ByVal titleText As String)
     On Error GoTo Done
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
-    plotter.ClearExisting workbook, titleText
+    plotter.ClearExisting Workbook, titleText
 Done:
 End Sub
 
 ' Рисует geometry-only preview сохраненной импортированной модели без НДС.
 ' Настройки оформления читаются из Config, координаты и характеристики - из Results.
-Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
+Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal Workbook As Object)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook workbook
+    settings.LoadFromWorkbook Workbook
 
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader
-    reader.LoadGeometryPreviewFromWorkbook workbook, settings
+    reader.LoadGeometryPreviewFromWorkbook Workbook, settings
 
     Dim plotter As CSectionPlotter
     Set plotter = New CSectionPlotter
-    plotter.Draw workbook, reader, settings
+    plotter.Draw Workbook, reader, settings
 End Sub
 
 ' Импортирует AutoCAD Region в CSectionModel и сохраняет geometry-only snapshot.
 ' Расчет при Geometry.Source = AutoCAD затем использует этот снимок, а не
 ' обращается к AutoCAD повторно.
-Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) As String
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "ImportGeometryFromAutoCADForWorkbook", "Книга Excel не передана."
+Public Function ImportGeometryFromAutoCADForWorkbook(ByVal Workbook As Object) As String
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4142, "ImportGeometryFromAutoCADForWorkbook", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook workbook
+    settings.LoadFromWorkbook Workbook
 
     If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) <> 0 Then
         Err.Raise vbObjectError + 4143, "ImportGeometryFromAutoCADForWorkbook", _
@@ -46199,9 +46199,9 @@ Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) A
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview workbook, section, units
+    writer.WriteGeometryPreview Workbook, section, units
 
-    UpdateSectionGeometryPreviewForWorkbook workbook
+    UpdateSectionGeometryPreviewForWorkbook Workbook
 
     ImportGeometryFromAutoCADForWorkbook = "Геометрия успешно импортирована из AutoCAD." & vbCrLf & _
         "Бетонных Region: " & CStr(section.ConcreteCount) & "; арматурных Region: " & _
@@ -46212,13 +46212,13 @@ End Function
 ' Возвращает пользовательское решение о показе обычных информационных окон.
 ' Ошибки и предупреждения эта настройка не гасит: она нужна только для
 ' сообщений об успешно завершенных действиях, которые могут мешать серии запусков.
-Public Function NonCriticalMessagesEnabled(ByVal workbook As Object) As Boolean
+Public Function NonCriticalMessagesEnabled(ByVal Workbook As Object) As Boolean
     On Error GoTo DefaultEnabled
-    If workbook Is Nothing Then GoTo DefaultEnabled
+    If Workbook Is Nothing Then GoTo DefaultEnabled
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook workbook
+    settings.LoadFromWorkbook Workbook
 
     NonCriticalMessagesEnabled = settings.GetBoolean("General.NonCriticalMessagesEnabled", True)
     Exit Function
@@ -46230,24 +46230,24 @@ End Function
 ' Выполняет весь Excel-сценарий на указанной книге: один раз читает Config,
 ' строит модель/материалы, рассчитывает LC и записывает согласованный Results.
 ' Возвращает сообщение запуска; настройками Excel управляет временный guard.
-Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False) As String
+Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optional ByVal showMessages As Boolean = False) As String
     On Error GoTo failed
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4100, "RunSectionCalculationForWorkbook", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4100, "RunSectionCalculationForWorkbook", "Книга Excel не передана."
 
     Dim excelGuard As CExcelAppStateGuard
     Set excelGuard = New CExcelAppStateGuard
-    excelGuard.Enter workbook.Application
+    excelGuard.Enter Workbook.Application
 
     Dim runStart As Double
     runStart = Timer
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook workbook
+    settings.LoadFromWorkbook Workbook
 
     Dim report As CExecutionReport
     Set report = New CExecutionReport
-    report.Initialize workbook, settings
+    report.Initialize Workbook, settings
     report.AddSection "Старт расчета"
     report.AddStep "Запущен макрос расчета сечения."
     report.AddStep "Лист Config прочитан."
@@ -46283,7 +46283,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Mesh.StepX", settings.GetRawString("Mesh.StepX", settings.GetRawString("Mesh.Step", "-"))
     report.AddValue "Mesh.StepY", settings.GetRawString("Mesh.StepY", settings.GetRawString("Mesh.StepX", settings.GetRawString("Mesh.Step", "-")))
     report.AddValue "Mesh.BoundarySubdivisions", settings.GetRawString("Mesh.BoundarySubdivisions", "-")
-    Set section = BuildWorkbookSectionModel(workbook, settings, units)
+    Set section = BuildWorkbookSectionModel(Workbook, settings, units)
     report.AddStep "CSectionModel построен."
     report.AddValue "Бетонных элементов", CStr(section.ConcreteCount)
     report.AddValue "Стержней арматуры", CStr(section.rebarCount)
@@ -46297,7 +46297,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    profiles.LoadFromWorkbook workbook
+    profiles.LoadFromWorkbook Workbook
     report.AddStep "Загружен каталог расчетных профилей."
     report.AddValue "Профилей в rngCalculationProfiles", CStr(profiles.count)
 
@@ -46315,12 +46315,12 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Set reader = New CLoadCombinationReader
     report.AddSection "Сочетания нагрузок"
     report.AddStep "Начато чтение rngLoadCombinations."
-    reader.LoadFromWorkbook workbook, batch, units
+    reader.LoadFromWorkbook Workbook, batch, units
     If batch.count = 0 Then Err.Raise vbObjectError + 4101, "RunSectionCalculationForWorkbook", "Не задано ни одного сочетания нагрузок."
     report.AddValue "Прочитано сочетаний", CStr(batch.count)
     report.AddBlock "Список сочетаний", CombinationListForReport(batch, units)
-    LoadStabilityDurationLoadsFromWorkbook workbook, batch, units
-    batch.SetSP35Table721 ReadSP35Table721FromWorkbook(workbook)
+    LoadStabilityDurationLoadsFromWorkbook Workbook, batch, units
+    batch.SetSP35Table721 ReadSP35Table721FromWorkbook(Workbook)
     report.AddStep "Прочитаны нагрузки и таблицы для расчета устойчивости."
 
     report.AddSection "Точка приложения нагрузки"
@@ -46330,12 +46330,12 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Точка приложения нагрузки Y", ReportLengthText(batch.loadReferenceY, units)
 
     report.AddSection "Проверка вывода Results"
-    ValidateResultsOutputLayout workbook, section, batch, profiles
+    ValidateResultsOutputLayout Workbook, section, batch, profiles
     report.AddStep "Проверена раскладка Results для " & CStr(batch.count) & " сочетаний."
 
     report.AddSection "Подготовка книги"
     report.AddStep "Начата очистка старых результатов."
-    ClearSectionResultsForWorkbook workbook
+    ClearSectionResultsForWorkbook Workbook
     report.AddStep "Очищены rngBatchSummary и таблицы расчетного снимка Results."
 
     report.AddSection "Расчет сочетаний"
@@ -46346,24 +46346,24 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Set summaryWriter = New CBatchResultWriter
     report.AddSection "Запись результатов"
     report.AddStep "Начата запись batch summary."
-    summaryWriter.WriteSummary workbook, batch, units, section
+    summaryWriter.WriteSummary Workbook, batch, units, section
     report.AddStep "Сводка batch summary записана на лист Results."
 
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
     report.AddStep "Начата запись расчетного snapshot NDM."
-    ndmWriter.writeResults workbook, section, materialProvider, batch, units
+    ndmWriter.writeResults Workbook, section, materialProvider, batch, units
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
     If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) And batch.StateAvailableCount > 0 Then
         report.AddSection "Схема"
         report.AddStep "Начато обновление схемы сечения по Results."
-        UpdateSectionPlotForWorkbook workbook, False
+        UpdateSectionPlotForWorkbook Workbook, False
         report.AddStep "Схема сечения обновлена по сохраненному снимку Results."
     Else
         report.AddSection "Схема"
         If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) Then
-            ClearSectionPlotForNoData workbook, _
+            ClearSectionPlotForNoData Workbook, _
                 "Схема не обновлена: нет доступных расчетных состояний LC."
             report.AddStep "Схема очищена: в Results нет доступных именованных расчетных состояний."
         Else
@@ -46373,7 +46373,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim totalElapsedSeconds As Double
     totalElapsedSeconds = ElapsedSecondsFrom(runStart)
-    summaryWriter.UpdateElapsedSeconds workbook, totalElapsedSeconds
+    summaryWriter.UpdateElapsedSeconds Workbook, totalElapsedSeconds
     report.AddValue "Полное время выполнения макроса", FormatReportNumber(totalElapsedSeconds) & " с"
 
     report.AddSection "Финальное сообщение"
@@ -46382,11 +46382,11 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     If report.Enabled Then
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."
         report.Save RunSectionCalculationForWorkbook
-        summaryWriter.UpdateElapsedSeconds workbook, ElapsedSecondsFrom(runStart)
+        summaryWriter.UpdateElapsedSeconds Workbook, ElapsedSecondsFrom(runStart)
         RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & _
             "Пошаговый отчет сохранен: " & report.FilePath
     End If
-    CalculateResultsSheet workbook
+    CalculateResultsSheet Workbook
     excelGuard.Restore
     Exit Function
 
@@ -46409,9 +46409,9 @@ End Function
 ' Учитываются шапки над якорями, фактические ширины writer-ов и нижние
 ' snapshot-блоки, между которыми по принятому правилу должны оставаться
 ' две пустые строки. Если раскладка тесная, расчет не запускается.
-Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section As CSectionModel, _
+Private Sub ValidateResultsOutputLayout(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal batch As CBatchSectionCalculator, ByVal profiles As CCalculationProfileCatalog)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4160, "ValidateResultsOutputLayout", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4160, "ValidateResultsOutputLayout", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4161, "ValidateResultsOutputLayout", "Модель сечения не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 4162, "ValidateResultsOutputLayout", "Пакетный расчетчик не передан."
 
@@ -46437,11 +46437,11 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Dim stabilityAnchor As Object
     Dim elementAnchor As Object
     On Error GoTo MissingAnchor
-    Set summaryAnchor = workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
-    Set strengthAnchor = workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
-    Set crackAnchor = workbook.names.item("rngCrackSummaryAnchor").RefersToRange
-    Set stabilityAnchor = workbook.names.item("rngStabilitySummaryAnchor").RefersToRange
-    Set elementAnchor = workbook.names.item("rngNDMElementResults").RefersToRange
+    Set summaryAnchor = Workbook.names.item("rngBatchSummary").RefersToRange(1, 1)
+    Set strengthAnchor = Workbook.names.item("rngStrengthSummaryAnchor").RefersToRange
+    Set crackAnchor = Workbook.names.item("rngCrackSummaryAnchor").RefersToRange
+    Set stabilityAnchor = Workbook.names.item("rngStabilitySummaryAnchor").RefersToRange
+    Set elementAnchor = Workbook.names.item("rngNDMElementResults").RefersToRange
     On Error GoTo 0
 
     Dim ws As Object
@@ -46452,11 +46452,11 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     End If
 
     Dim outputCombinationRows As Long
-    outputCombinationRows = summaryWriter.RequiredDataRowsForWorkbook(workbook, batch.count)
+    outputCombinationRows = summaryWriter.RequiredDataRowsForWorkbook(Workbook, batch.count)
 
     Dim summaryRows As Long
     Dim summaryCols As Long
-    summaryRows = summaryWriter.RequiredSummaryOutputRowsForWorkbook(workbook, batch.count)
+    summaryRows = summaryWriter.RequiredSummaryOutputRowsForWorkbook(Workbook, batch.count)
     summaryCols = summaryWriter.RequiredSummaryOutputColumns()
     CheckFootprintWithinSheet issues, ws, "rngBatchSummary", _
         summaryAnchor.row, summaryAnchor.column, summaryRows, summaryCols
@@ -46465,7 +46465,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Dim strengthRows As Long
     Dim strengthCols As Long
     strengthTopRow = strengthAnchor.row - strengthWriter.HeaderRowsAboveAnchor
-    strengthRows = strengthWriter.RequiredRowsForWorkbook(workbook, batch.count)
+    strengthRows = strengthWriter.RequiredRowsForWorkbook(Workbook, batch.count)
     strengthCols = strengthWriter.RequiredColumns()
     If strengthTopRow < 1 Then
         AddLayoutIssue issues, "rngStrengthSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы прочности."
@@ -46478,7 +46478,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Dim crackRows As Long
     Dim crackCols As Long
     crackTopRow = crackAnchor.row - crackWriter.HeaderRowsAboveAnchor
-    crackRows = crackWriter.RequiredRowsForWorkbook(workbook, batch.count)
+    crackRows = crackWriter.RequiredRowsForWorkbook(Workbook, batch.count)
     crackCols = crackWriter.RequiredColumns()
     If crackTopRow < 1 Then
         AddLayoutIssue issues, "rngCrackSummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы трещин."
@@ -46491,7 +46491,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Dim stabilityRows As Long
     Dim stabilityCols As Long
     stabilityTopRow = stabilityAnchor.row - stabilityWriter.HeaderRowsAboveAnchor
-    stabilityRows = stabilityWriter.RequiredRowsForWorkbook(workbook, batch.count)
+    stabilityRows = stabilityWriter.RequiredRowsForWorkbook(Workbook, batch.count)
     stabilityCols = stabilityWriter.RequiredColumns()
     If stabilityTopRow < 1 Then
         AddLayoutIssue issues, "rngStabilitySummaryAnchor расположен слишком высоко: над ним нет места для шапки таблицы устойчивости."
@@ -46527,7 +46527,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     Dim elementCount As Long
     estimatedStateCount = EstimatedNamedStateCountForOutput(batch, profiles)
     elementCount = section.ConcreteCount + section.rebarCount
-    ValidateSnapshotOutputLayout issues, workbook, ws, ndmWriter, elementCount, _
+    ValidateSnapshotOutputLayout issues, Workbook, ws, ndmWriter, elementCount, _
         estimatedStateCount, batch.count, section.annotationCount, SNAPSHOT_GAP_COLUMNS
 
     If issues.count > 0 Then
@@ -46538,12 +46538,12 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
 
 MissingAnchor:
     Err.Raise vbObjectError + 4164, "ValidateResultsOutputLayout", _
-        MissingResultsAnchorMessage(workbook)
+        MissingResultsAnchorMessage(Workbook)
 End Sub
 
 ' Формирует понятное сообщение о конкретных Results-якорях, без которых
 ' невозможно заранее проверить раскладку блоков вывода.
-Private Function MissingResultsAnchorMessage(ByVal workbook As Object) As String
+Private Function MissingResultsAnchorMessage(ByVal Workbook As Object) As String
     Dim requiredNames As Variant
     requiredNames = Array( _
         "rngBatchSummary", _
@@ -46555,7 +46555,7 @@ Private Function MissingResultsAnchorMessage(ByVal workbook As Object) As String
     Dim Missing As String
     Dim index As Long
     For index = LBound(requiredNames) To UBound(requiredNames)
-        If Not WorkbookNameHasRange(workbook, CStr(requiredNames(index))) Then
+        If Not WorkbookNameHasRange(Workbook, CStr(requiredNames(index))) Then
             If Len(Missing) > 0 Then Missing = Missing & ", "
             Missing = Missing & CStr(requiredNames(index))
         End If
@@ -46578,10 +46578,10 @@ Private Function MissingResultsAnchorMessage(ByVal workbook As Object) As String
 End Function
 
 ' Проверяет, что имя существует в книге и действительно ссылается на диапазон.
-Private Function WorkbookNameHasRange(ByVal workbook As Object, ByVal rangeName As String) As Boolean
+Private Function WorkbookNameHasRange(ByVal Workbook As Object, ByVal rangeName As String) As Boolean
     On Error GoTo MissingName
     Dim anchor As Object
-    Set anchor = workbook.names.item(rangeName).RefersToRange
+    Set anchor = Workbook.names.item(rangeName).RefersToRange
     WorkbookNameHasRange = Not anchor Is Nothing
     Exit Function
 
@@ -46590,7 +46590,7 @@ MissingName:
 End Function
 
 ' Проверяет нижние соседние блоки Results по строкам листа и по ширине.
-Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workbook As Object, _
+Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal Workbook As Object, _
         ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
         ByVal annotationCount As Long, ByVal requiredGapColumns As Long)
@@ -46617,7 +46617,7 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
 
         Dim anchor As Object
         On Error GoTo MissingSnapshotAnchor
-        Set anchor = workbook.names.item(names(index)).RefersToRange
+        Set anchor = Workbook.names.item(names(index)).RefersToRange
         On Error GoTo 0
 
         If Not (anchor.Worksheet Is ws) Then
@@ -46764,9 +46764,9 @@ End Function
 ' Во время расчета Excel работает в ручном режиме, поэтому точечный пересчет
 ' нужен, чтобы пользователь сразу видел актуальные коэффициенты запаса, но
 ' чужие открытые книги не пересчитывались на каждом шаге вывода.
-Private Sub CalculateResultsSheet(ByVal workbook As Object)
+Private Sub CalculateResultsSheet(ByVal Workbook As Object)
     On Error GoTo SafeExit
-    workbook.Worksheets.item("Results").Calculate
+    Workbook.Worksheets.item("Results").Calculate
 SafeExit:
 End Sub
 
@@ -46896,9 +46896,9 @@ End Sub
 ' приводит силы и моменты к внутренним единицам, чтобы расчетный batch не
 ' обращался к листам и не знал пользовательских единиц. Читаются только ID
 ' запрошенной устойчивости; ошибки строки сохраняются для ее отдельного result.
-Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
+Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal Workbook As Object, _
         ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4113, _
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4113, _
         "LoadStabilityDurationLoadsFromWorkbook", "Не передана книга для чтения дополнительных нагрузок устойчивости."
     If batch Is Nothing Then Err.Raise vbObjectError + 4113, _
         "LoadStabilityDurationLoadsFromWorkbook", "Не передан расчетный пакет для дополнительных нагрузок устойчивости."
@@ -46916,7 +46916,7 @@ Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
 
     On Error GoTo MissingRange
     Dim range As Object
-    Set range = workbook.names.item("rngStabilityDurationLoads").RefersToRange
+    Set range = Workbook.names.item("rngStabilityDurationLoads").RefersToRange
     On Error GoTo 0
     If range.rows.count < 2 Or range.columns.count < 4 Then
         RecordDurationTableError batch, activeIDs, _
@@ -47022,12 +47022,12 @@ End Sub
 
 ' Возвращает таблицу 7.21 СП 35 как обычный массив Variant. Дальше она живет
 ' только в памяти и передается в CStabilityCalculator через batch.
-Private Function ReadSP35Table721FromWorkbook(ByVal workbook As Object) As Variant
+Private Function ReadSP35Table721FromWorkbook(ByVal Workbook As Object) As Variant
     On Error GoTo MissingRange
-    If workbook Is Nothing Then Exit Function
+    If Workbook Is Nothing Then Exit Function
 
     Dim range As Object
-    Set range = workbook.names.item("rngSP35Table721").RefersToRange
+    Set range = Workbook.names.item("rngSP35Table721").RefersToRange
     On Error GoTo 0
     ReadSP35Table721FromWorkbook = range.Value2
     Exit Function
@@ -47063,19 +47063,19 @@ End Sub
 ' Очищает сводку, подробные расчетные блоки и сохраненные NDM-таблицы Results
 ' через ответственные writer-ы. Исходные настройки не читаются и не меняются;
 ' новый расчет и повторный импорт геометрии здесь не запускаются.
-Public Sub ClearSectionResultsForWorkbook(ByVal workbook As Object)
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4110, "ClearSectionResultsForWorkbook", "Книга Excel не передана."
+Public Sub ClearSectionResultsForWorkbook(ByVal Workbook As Object)
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4110, "ClearSectionResultsForWorkbook", "Книга Excel не передана."
     Dim summaryWriter As CBatchResultWriter
     Set summaryWriter = New CBatchResultWriter
-    summaryWriter.ClearSummary workbook
+    summaryWriter.ClearSummary Workbook
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
-    ndmWriter.ClearResults workbook
+    ndmWriter.ClearResults Workbook
 End Sub
 
 ' Создает выбранную параметрическую геометрию через registry в внутренних мм.
 ' Здесь нет импорта AutoCAD или построения расчетной сетки.
-Public Function ReadWorkbookGeometry(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As ISectionGeometry
+Public Function ReadWorkbookGeometry(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As ISectionGeometry
     If units Is Nothing Then
         Set units = New CUnitSystem
         units.InitializeDefaults
@@ -47088,12 +47088,12 @@ End Function
 ' Получает единственную модель для расчета: строит Generated по Config либо
 ' читает ранее импортированный AutoCAD snapshot из Results. Повторный импорт
 ' не выполняется; отсутствие нужного сохраненного источника является ошибкой.
-Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
+Public Function BuildWorkbookSectionModel(ByVal Workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If units Is Nothing Then
         Set units = New CUnitSystem
         units.InitializeDefaults
     End If
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4130, "BuildWorkbookSectionModel", "Книга Excel не передана."
+    If Workbook Is Nothing Then Err.Raise vbObjectError + 4130, "BuildWorkbookSectionModel", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4131, "BuildWorkbookSectionModel", "Настройки Config не переданы."
 
     Dim geometrySource As String
@@ -47104,12 +47104,12 @@ Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settin
         Set registry = New CSectionTypeRegistry
         Set BuildWorkbookSectionModel = registry.BuildGeneratedModel(settings, units)
     ElseIf StrComp(geometrySource, "AutoCAD", vbTextCompare) = 0 Then
-        If StrComp(ResultsGeometrySource(workbook), "AutoCADImport", vbTextCompare) <> 0 Then
+        If StrComp(ResultsGeometrySource(Workbook), "AutoCADImport", vbTextCompare) <> 0 Then
             Err.Raise vbObjectError + 4134, "BuildWorkbookSectionModel", _
                 "Выбрано Geometry.Source = AutoCAD, но на листе Results нет предварительно импортированной AutoCAD-геометрии. " & _
                 "Сначала нажмите кнопку ""Импортировать геометрию из AutoCAD""."
         End If
-        Set BuildWorkbookSectionModel = ReadSectionGeometryFromResults(workbook, "AutoCADImport")
+        Set BuildWorkbookSectionModel = ReadSectionGeometryFromResults(Workbook, "AutoCADImport")
     Else
         Err.Raise vbObjectError + 4133, "BuildWorkbookSectionModel", _
             "Geometry.Source должен быть Generated или AutoCAD."
@@ -47126,7 +47126,7 @@ End Function
 
 ' Строит автоматическую арматуру выбранной формы через registry и CUnitSystem.
 ' Возвращает раскладку до объединения с бетонной сеткой в CSectionModel.
-Public Function ReadWorkbookRebars(ByVal workbook As Object, ByVal geometry As ISectionGeometry, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CRebarLayout
+Public Function ReadWorkbookRebars(ByVal Workbook As Object, ByVal geometry As ISectionGeometry, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CRebarLayout
     If units Is Nothing Then
         Set units = New CUnitSystem
         units.InitializeDefaults

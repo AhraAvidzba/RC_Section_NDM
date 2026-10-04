@@ -50,10 +50,10 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R1")), leftR2, rightR2
 
     Set BuildFromSettings = Build(geom, _
-        ReadFaceSettingsFromConfig(settings, units, "H.Left", "40", "32"), _
-        ReadFaceSettingsFromConfig(settings, units, "H.Right", "40", "32"), _
-        ReadFaceSettingsFromConfig(settings, units, "B.Top", "40", "32"), _
-        ReadFaceSettingsFromConfig(settings, units, "B.Bottom", "40", "32"), _
+        ReadFaceSettingsFromConfig(settings, units, "H.Left"), _
+        ReadFaceSettingsFromConfig(settings, units, "H.Right"), _
+        ReadFaceSettingsFromConfig(settings, units, "B.Top"), _
+        ReadFaceSettingsFromConfig(settings, units, "B.Bottom"), _
         REBAR_STEEL_CLASS)
 End Function
 
@@ -97,36 +97,54 @@ Private Function FaceRequestedPositions(ByVal settings As Variant) As Double
         FaceRow2Diameter(settings), FaceRow3Diameter(settings), FaceRow2Binding(settings), FaceRow3Binding(settings))
 End Function
 
-' Читает параметры одной строки арматуры RoundedRectangle.
+' Читает только параметры активной грани и активных дополнительных рядов.
+' Нулевой/пустой n или d выключает линию; as и selectors активного ряда
+' обязательны. Ошибки ввода содержат фактический адрес, а не типовой default.
 Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal faceName As String, ByVal defaultAs As String, ByVal defaultD As String) As Variant
-    ReadFaceSettingsFromConfig = Array( _
-        units.InputLengthToInternal(settings.GetDouble("RoundedRectangle." & faceName & ".as", CDbl(defaultAs))), _
-        OptionalDiameterFromSettings(settings, units, "RoundedRectangle." & faceName & ".d", CDbl(defaultD)), _
-        settings.GetLong("RoundedRectangle." & faceName & ".n", 0), _
-        OptionalDiameterFromSettings(settings, units, "RoundedRectangle." & faceName & ".d_2row", 0#), _
-        OptionalDiameterFromSettings(settings, units, "RoundedRectangle." & faceName & ".d_3row", 0#), _
-        settings.GetString("RoundedRectangle." & faceName & ".loc_2row", "Stacked"), _
-        settings.GetString("RoundedRectangle." & faceName & ".loc_3row", "Stacked"), _
-        settings.GetString("RoundedRectangle." & faceName & ".bind_2row", "EachBar"), _
-        settings.GetString("RoundedRectangle." & faceName & ".bind_3row", "EachBar"))
+        ByVal faceName As String) As Variant
+    Dim prefix As String, countKey As String, count As Long, diameter As Double, axisDistance As Double
+    Dim row2 As Double, row3 As Double, loc2 As String, loc3 As String, bind2 As String, bind3 As String
+    prefix = "RoundedRectangle." & faceName & ".": countKey = prefix & "n"
+    If Not settings.HasKey(countKey) Then Err.Raise vbObjectError + 4310, "CRoundedRectRebarLayoutBuilder", _
+        settings.InputErrorMessage(countKey, "Строка количества стержней отсутствует.", "Восстановите строку; введите целое количество или 0 для выключенной грани.")
+    count = settings.GetLong(countKey, 0)
+    If count < 0 Then Err.Raise vbObjectError + 3230, "CRoundedRectRebarLayoutBuilder", _
+        settings.InputErrorMessage(countKey, RoundedFaceDisplayName(faceName) & ": количество не может быть отрицательным.", "Введите целое неотрицательное количество стержней.")
+    diameter = OptionalDiameterFromSettings(settings, units, prefix & "d", 3231)
+    loc2 = "Stacked": loc3 = "Stacked": bind2 = "EachBar": bind3 = "EachBar"
+    If count > 0 And diameter > 0# Then
+        axisDistance = units.InputLengthToInternal(settings.GetRequiredDouble(prefix & "as"))
+        If axisDistance <= diameter / 2# Then Err.Raise vbObjectError + 3232, "CRoundedRectRebarLayoutBuilder", _
+            settings.InputErrorMessage(prefix & "as", RoundedFaceDisplayName(faceName) & ": расстояние до оси стержня должно быть больше d/2.", "Введите расстояние as больше половины диаметра первого ряда.")
+        row2 = OptionalDiameterFromSettings(settings, units, prefix & "d_2row", 3233)
+        row3 = OptionalDiameterFromSettings(settings, units, prefix & "d_3row", 3233)
+        If row2 > 0# Then
+            loc2 = settings.GetRequiredChoice(prefix & "loc_2row", Array("Stacked", "SideBySide"))
+            bind2 = settings.GetRequiredChoice(prefix & "bind_2row", Array("EachBar", "EverySecondBar"))
+        End If
+        If row3 > 0# Then
+            loc3 = settings.GetRequiredChoice(prefix & "loc_3row", Array("Stacked", "SideBySide"))
+            bind3 = settings.GetRequiredChoice(prefix & "bind_3row", Array("EachBar", "EverySecondBar"))
+        End If
+    End If
+    ReadFaceSettingsFromConfig = Array(axisDistance, diameter, count, row2, row3, loc2, loc3, bind2, bind3)
 End Function
 
-' Пустой диаметр означает отсутствие ряда, а не значение по умолчанию.
+' Читает существующую ячейку диаметра: пустота/TODO означают отсутствие ряда.
+' Потерянный ключ и отрицательное число дают адресную ошибку ввода; errorCode
+' сохраняет инженерный код основной либо дополнительной арматуры этой формы.
 Private Function OptionalDiameterFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal key As String, ByVal defaultValue As Double) As Double
-    If Not settings.HasKey(key) Then
-        OptionalDiameterFromSettings = units.InputLengthToInternal(defaultValue)
-        Exit Function
-    End If
-
+        ByVal key As String, ByVal errorCode As Long) As Double
+    If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CRoundedRectRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, "Строка диаметра отсутствует.", "Восстановите строку; введите диаметр или оставьте ячейку пустой для отсутствующего ряда.")
     Dim rawValue As String
     rawValue = Trim$(settings.GetRawString(key, vbNullString))
-    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then
-        OptionalDiameterFromSettings = 0#
-    Else
-        OptionalDiameterFromSettings = units.InputLengthToInternal(settings.GetDouble(key, defaultValue))
-    End If
+    If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then Exit Function
+    Dim value As Double
+    value = settings.GetRequiredDouble(key)
+    If value < 0# Then Err.Raise vbObjectError + errorCode, "CRoundedRectRebarLayoutBuilder", _
+        settings.InputErrorMessage(key, "Диаметр стержней не может быть отрицательным.", "Введите неотрицательный диаметр; 0 или пустая ячейка выключают ряд.")
+    OptionalDiameterFromSettings = units.InputLengthToInternal(value)
 End Function
 
 ' Добавляет один ряд арматуры вдоль верхней или нижней смысловой грани B.

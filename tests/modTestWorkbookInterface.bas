@@ -68,6 +68,11 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03CircleConfigTests(circleConfigPassed, circleConfigFailed)
     stats.Passed = stats.Passed + circleConfigPassed
     stats.Failed = stats.Failed + circleConfigFailed
+    Dim circleInputPassed As Long, circleInputFailed As Long
+    AppendLine stats, "RUN: Audit03 Circle rebar input; " & Audit02ExcelMemory()
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03CircleRebarInputTests(circleInputPassed, circleInputFailed)
+    stats.Passed = stats.Passed + circleInputPassed
+    stats.Failed = stats.Failed + circleInputFailed
     Dim shapeConfigPassed As Long, shapeConfigFailed As Long
     AppendLine stats, "RUN: Audit03 Shape Config; " & Audit02ExcelMemory()
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03ShapeConfigTests(shapeConfigPassed, shapeConfigFailed)
@@ -83,6 +88,11 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RequiredGeometryInputTests(requiredGeometryPassed, requiredGeometryFailed)
     stats.Passed = stats.Passed + requiredGeometryPassed
     stats.Failed = stats.Failed + requiredGeometryFailed
+    Dim rebarFieldPassed As Long, rebarFieldFailed As Long
+    AppendLine stats, "RUN: Audit03 Rebar fields; " & Audit02ExcelMemory()
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarFieldConfigTests(rebarFieldPassed, rebarFieldFailed)
+    stats.Passed = stats.Passed + rebarFieldPassed
+    stats.Failed = stats.Failed + rebarFieldFailed
     If mAudit03StopBeforeLoadTable Then
         AppendLine stats, "TOTAL_AUDIT03_UI_PRE_LOAD_TABLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
         RunWorkbookInterfaceTests = stats.Report

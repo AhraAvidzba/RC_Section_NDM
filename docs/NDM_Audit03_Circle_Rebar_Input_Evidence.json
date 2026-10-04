@@ -1,0 +1,115 @@
+{
+  "Scope": "Уточнение действующих contracts восьми ранее принятых круговых полей; новых accepted адресов не добавляет.",
+  "AcceptanceGate": "CompletedFullOffAndOn:SourceValidateFormattingPaletteReopenPassed",
+  "PositiveReport": "docs/regression/Audit03/rebar_full_off_v192_2026-10-04.txt",
+  "PositiveGate": "TOTAL_CIRCLE_CONFIG: passed=53; failed=0",
+  "SupplementaryReport": "docs/regression/Audit03/circle_rebar_v189_2026-10-04.txt",
+  "SupplementaryGate": "TOTAL_CIRCLE_REBAR_INPUT: passed=524; failed=0; cases=160",
+  "NegativeReports": ["docs/regression/Audit03/circle_rebar_negative_v188_2026-10-04.txt"],
+  "FullReports": [
+    "docs/regression/Audit03/rebar_full_off_v192_2026-10-04.txt",
+    "docs/regression/Audit03/rebar_full_on_updated_v192_2026-10-04.txt"
+  ],
+  "SupplementaryAssertionPrefixes": [
+    "circleRebar.missing.Circle.Diameter.reject",
+    "circleRebar.missing.Rebar.AxisDistance.reject",
+    "circleRebar.missing.Rebar.Count.reject",
+    "circleRebar.missing.Rebar.Diameter.reject",
+    "circleRebar.missing.Rebar.Diameter2.reject",
+    "circleRebar.missing.Rebar.Diameter3.reject",
+    "circleRebar.missing.Rebar.Loc2row.reject",
+    "circleRebar.missing.Rebar.Loc3row.reject"
+  ],
+  "Consumer": "Настоящий Config -> CSystemSettingsReader -> CUnitSystem -> CCircleRebarLayoutBuilder -> CRebarLayout; фактические ошибки/адреса и независимые оси/диаметры/количество.",
+  "TestId": "modTestGeometryConfig.RunAudit03CircleConfigTests + RunAudit03CircleRebarInputTests",
+  "Entries": [
+    {
+      "Id": "Circle.Diameter",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "Не подставляется: диаметр активного Circle обязателен; отсутствующий ключ, blank/TODO или ошибочное число отвергаются.",
+      "ValidRange": "Конечный положительный диаметр с представимой геометрией и допустимым размещением активной арматуры.",
+      "Activity": "Geometry.Type = Circle; требуется и при выключенной арматуре.",
+      "ExpectedEffect": "1000 -> 1100 мм: граница бетона 500 -> 550 мм, ось первого стержня 450 -> 500 мм.",
+      "AssertionPrefix": "circleConfig.effect.Circle.Diameter.concreteExtent",
+      "RangeReview": "Проверены эффект, blank/zero/negative/abc/CVErr, missing key, другая форма и recovery. Полные вещественные границы/overflow/рискованные пары не объявляются закрытыми."
+    },
+    {
+      "Id": "Rebar.AxisDistance",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "Не подставляется: as активного первого ряда обязателен; при выключенном первом ряде не читается.",
+      "ValidRange": "Для активного первого ряда Rebar.Diameter/2 < as < Circle.Diameter/2.",
+      "Activity": "Circle с положительными Rebar.Count и Rebar.Diameter.",
+      "ExpectedEffect": "50 -> 60 мм: ось первого стержня 450 -> 440 мм; второго 436 -> 426 мм.",
+      "AssertionPrefix": "circleConfig.effect.Rebar.AxisDistance.barAxis",
+      "RangeReview": "Проверены эффект и границы d/2, D/2, active blank/abc/CVErr, missing key, inactive snapshot и recovery. Все пары/края геометрического размещения еще не приняты."
+    },
+    {
+      "Id": "Rebar.Count",
+      "Type": "Long",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Существующая пустая ячейка/0 выключают ряд. Отсутствующая строка, отрицательное/дробное/ошибочное число не заменяются 0.",
+      "ValidRange": "Целое неотрицательное; для активного первого ряда не меньше 2, с представимым числом генерируемых стержней.",
+      "Activity": "Circle; Count=0 выключает первый и зависимые дополнительные ряды.",
+      "ExpectedEffect": "8 -> 10: 24 -> 30 стержней трех рядов и изменение углового шага.",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Count.allRows",
+      "RangeReview": "Проверены эффект, blank/0, 1 при активном ряде, negative/fraction/abc/CVErr, missing key и recovery. Ресурсные верхние границы остаются отдельной приемкой."
+    },
+    {
+      "Id": "Rebar.Diameter",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "Существующая blank/TODO/0 выключает первый ряд; отсутствующая строка и ошибочное значение не подменяются типовым диаметром.",
+      "ValidRange": "Неотрицательный диаметр; активный стержень должен размещаться в Circle с as > d/2.",
+      "Activity": "Circle; выключение первого ряда выключает его дополнительные ряды.",
+      "ExpectedEffect": "16 -> 20 мм: изменяется диаметр первого ряда и радиальное положение второго.",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Diameter.diameter",
+      "RangeReview": "Проверены эффект, blank/0, negative/abc/CVErr, missing key, отключение dependent rows и recovery. Все пределы допустимого размещения еще не приняты."
+    },
+    {
+      "Id": "Rebar.Diameter2",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "У активного первого ряда существующая blank/TODO/0 выключает второй ряд; отсутствующая обязательная строка не становится 0. Без первого ряда не читается.",
+      "ValidRange": "Неотрицательный диаметр с допустимым размещением дополнительного стержня.",
+      "Activity": "Circle с активным первым рядом; положительное значение включает второй ряд и его Loc2row.",
+      "ExpectedEffect": "12 -> 20 мм: меняется диаметр второго ряда и позиция третьего при одинаковом положении рядов.",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Diameter2.diameter",
+      "RangeReview": "Проверены эффект, blank/0, negative/abc/CVErr, missing key, inactive первого ряда и recovery. Адресная ошибка слишком большого дополнительного стержня и все пары остаются открытыми."
+    },
+    {
+      "Id": "Rebar.Diameter3",
+      "Type": "Double",
+      "InternalUnits": "mm",
+      "RuntimeDefault": "У активного первого ряда существующая blank/TODO/0 выключает третий ряд; отсутствующая обязательная строка не становится 0. Без первого ряда не читается.",
+      "ValidRange": "Неотрицательный диаметр с допустимым размещением дополнительного стержня.",
+      "Activity": "Circle с активным первым рядом; положительное значение включает третий ряд и его Loc3row.",
+      "ExpectedEffect": "10 -> 14 мм: изменяется диаметр и радиальная позиция третьего ряда.",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Diameter3.diameter",
+      "RangeReview": "Проверены эффект, blank/0, negative/abc/CVErr, missing key, inactive первого ряда и recovery. Адресная ошибка слишком большого дополнительного стержня и все пары остаются открытыми."
+    },
+    {
+      "Id": "Rebar.Loc2row",
+      "Type": "String:Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Активный второй ряд требует явного допустимого выбора без default. При выключенном втором или первом ряде параметр не читается; внутренний inert Stacked не участвует в размещении.",
+      "ValidRange": "Stacked или SideBySide.",
+      "Activity": "Circle с активным первым и вторым рядом.",
+      "ExpectedEffect": "Stacked смещает внутрь по радиусу; SideBySide по касательной по часовой стрелке; третий ряд учитывает совпадение положений.",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Loc2row.tangentX",
+      "RangeReview": "Проверены оба выбора, active blank/Unknown/CVErr, missing key, inactive первого/второго ряда и recovery. Все геометрические комбинации двух дополнительных рядов еще не приняты."
+    },
+    {
+      "Id": "Rebar.Loc3row",
+      "Type": "String:Enum",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Активный третий ряд требует явного допустимого выбора без default. При выключенном третьем или первом ряде параметр не читается; внутренний inert Stacked не участвует в размещении.",
+      "ValidRange": "Stacked или SideBySide.",
+      "Activity": "Circle с активным первым и третьим рядом.",
+      "ExpectedEffect": "Меняется направление третьего ряда; при одинаковом положении рядов он перескакивает второй.",
+      "AssertionPrefix": "circleConfig.effect.Rebar.Loc3row.tangentX",
+      "RangeReview": "Проверены оба выбора, active blank/Unknown/CVErr, missing key, inactive первого/третьего ряда и recovery. Все геометрические комбинации двух дополнительных рядов еще не приняты."
+    }
+  ]
+}

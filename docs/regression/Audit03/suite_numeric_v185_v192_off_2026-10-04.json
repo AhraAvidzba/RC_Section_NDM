@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/search_state_full_off_v185_2026-10-04.txt",
+  "CurrentReport": "docs/regression/Audit03/rebar_full_off_v192_2026-10-04.txt",
+  "BaselineSHA256": "1ED46C7DF3395D4E3F1D5E795C1E9D503F9E81D27711750B2E0B26892A014977",
+  "CurrentSHA256": "0BC471545537D15AF1077544ED4330ADF36AB42905C81447CDE88CF68CEBAA81",
+  "BaselineNumericAssertions": 13641,
+  "CurrentNumericAssertions": 13641,
+  "Compared": 13641,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

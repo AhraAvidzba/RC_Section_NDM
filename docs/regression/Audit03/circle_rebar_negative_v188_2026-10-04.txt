@@ -1,0 +1,647 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_circle_rebar_negative_v188.xlsm
+SOURCE_SHA256: 7C6B649E747E93D7A15A2D20504819C1D677AFA607D3298BF889C280761BB45E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bcd153ce1ade47d0a52d6ad57ea5d426\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestGeometryConfig.RunAudit03CircleRebarInputTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03CircleRebarInputTests; 2026-10-04T02:24:21
+EXCEL_AFTER_SUITE: pid=19628; workingSet=147230720; privateBytes=101003264; cpu=7.453125
+EXCEL_AFTER_SUITE: pid=23476; workingSet=208818176; privateBytes=160366592; cpu=9144.453125
+OK: circleRebar.active.Circle.Diameter.1.reject
+OK: circleRebar.active.Circle.Diameter.1.address
+OK: circleRebar.active.Circle.Diameter.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.1; error=-2147217194; Настройка Circle.Diameter (лист Config, ячейка I87): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: circleRebar.active.Circle.Diameter.1.recovery
+OK: circleRebar.active.Circle.Diameter.2.reject
+FAIL: circleRebar.active.Circle.Diameter.2.address
+FAIL: circleRebar.active.Circle.Diameter.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.2; error=-2147218354; Circle.Diameter должен быть положительным.
+OK: circleRebar.active.Circle.Diameter.2.recovery
+OK: circleRebar.active.Circle.Diameter.3.reject
+FAIL: circleRebar.active.Circle.Diameter.3.address
+FAIL: circleRebar.active.Circle.Diameter.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.3; error=-2147218354; Circle.Diameter должен быть положительным.
+OK: circleRebar.active.Circle.Diameter.3.recovery
+OK: circleRebar.active.Circle.Diameter.4.reject
+OK: circleRebar.active.Circle.Diameter.4.address
+OK: circleRebar.active.Circle.Diameter.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.4; error=-2147217191; Настройка Circle.Diameter (лист Config, ячейка I87): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Circle.Diameter.4.recovery
+OK: circleRebar.active.Circle.Diameter.5.reject
+OK: circleRebar.active.Circle.Diameter.5.address
+OK: circleRebar.active.Circle.Diameter.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.5; error=-2147217195; Настройка Circle.Diameter (лист Config, ячейка I87) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Circle.Diameter.5.recovery
+OK: circleRebar.missing.Circle.Diameter.reject
+OK: circleRebar.missing.Circle.Diameter.key
+OK: circleRebar.missing.Circle.Diameter.repair
+CIRCLE_MISSING_INPUT: Circle.Diameter; error=-2147217194; Настройка Circle.Diameter (лист Config, раздел "круглое сечение"): Обязательное числовое значение не задано. Восстановите строку Circle.Diameter в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: circleRebar.missing.Circle.Diameter.recovery
+FAIL: circleRebar.active.Rebar.AxisDistance.1.reject
+FAIL: circleRebar.active.Rebar.AxisDistance.1.address
+FAIL: circleRebar.active.Rebar.AxisDistance.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.active.Rebar.AxisDistance.1.recovery
+OK: circleRebar.active.Rebar.AxisDistance.2.reject
+FAIL: circleRebar.active.Rebar.AxisDistance.2.address
+FAIL: circleRebar.active.Rebar.AxisDistance.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.2; error=-2147218351; Rebar.AxisDistance должен быть больше Rebar.Diameter/2.
+OK: circleRebar.active.Rebar.AxisDistance.2.recovery
+OK: circleRebar.active.Rebar.AxisDistance.3.reject
+FAIL: circleRebar.active.Rebar.AxisDistance.3.address
+FAIL: circleRebar.active.Rebar.AxisDistance.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.3; error=-2147218351; Rebar.AxisDistance должен быть больше Rebar.Diameter/2.
+OK: circleRebar.active.Rebar.AxisDistance.3.recovery
+OK: circleRebar.active.Rebar.AxisDistance.4.reject
+FAIL: circleRebar.active.Rebar.AxisDistance.4.address
+FAIL: circleRebar.active.Rebar.AxisDistance.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.4; error=-2147218350; Rebar.AxisDistance должен быть меньше Circle.Diameter/2.
+OK: circleRebar.active.Rebar.AxisDistance.4.recovery
+OK: circleRebar.active.Rebar.AxisDistance.5.reject
+OK: circleRebar.active.Rebar.AxisDistance.5.address
+OK: circleRebar.active.Rebar.AxisDistance.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.5; error=-2147217192; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.AxisDistance.5.recovery
+OK: circleRebar.active.Rebar.AxisDistance.6.reject
+OK: circleRebar.active.Rebar.AxisDistance.6.address
+OK: circleRebar.active.Rebar.AxisDistance.6.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.6; error=-2147217195; Настройка Rebar.AxisDistance (лист Config, ячейка I88) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.AxisDistance.6.recovery
+FAIL: circleRebar.missing.Rebar.AxisDistance.reject
+FAIL: circleRebar.missing.Rebar.AxisDistance.key
+FAIL: circleRebar.missing.Rebar.AxisDistance.repair
+CIRCLE_MISSING_INPUT: Rebar.AxisDistance; error=0; 
+OK: circleRebar.missing.Rebar.AxisDistance.recovery
+OK: circleRebar.active.Rebar.Count.1.reject
+FAIL: circleRebar.active.Rebar.Count.1.address
+FAIL: circleRebar.active.Rebar.Count.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.1; error=-2147218353; Rebar.Count не может быть отрицательным.
+OK: circleRebar.active.Rebar.Count.1.recovery
+OK: circleRebar.active.Rebar.Count.2.reject
+FAIL: circleRebar.active.Rebar.Count.2.address
+FAIL: circleRebar.active.Rebar.Count.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.2; error=-2147218353; Rebar.Count должен быть равен 0 или быть не меньше 2.
+OK: circleRebar.active.Rebar.Count.2.recovery
+OK: circleRebar.active.Rebar.Count.3.reject
+OK: circleRebar.active.Rebar.Count.3.address
+OK: circleRebar.active.Rebar.Count.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.3; error=-2147217189; Настройка Rebar.Count (лист Config, ячейка I89): Введено дробное значение вместо целого; автоматическое округление не выполняется. Введите целое число.
+OK: circleRebar.active.Rebar.Count.3.recovery
+OK: circleRebar.active.Rebar.Count.4.reject
+OK: circleRebar.active.Rebar.Count.4.address
+OK: circleRebar.active.Rebar.Count.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.4; error=-2147217189; Настройка Rebar.Count (лист Config, ячейка I89): Целое число выходит за допустимый диапазон Long. Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.
+OK: circleRebar.active.Rebar.Count.4.recovery
+OK: circleRebar.active.Rebar.Count.5.reject
+OK: circleRebar.active.Rebar.Count.5.address
+OK: circleRebar.active.Rebar.Count.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.5; error=-2147217192; Настройка Rebar.Count (лист Config, ячейка I89): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.Count.5.recovery
+OK: circleRebar.active.Rebar.Count.6.reject
+OK: circleRebar.active.Rebar.Count.6.address
+OK: circleRebar.active.Rebar.Count.6.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.6; error=-2147217195; Настройка Rebar.Count (лист Config, ячейка I89) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Count.6.recovery
+FAIL: circleRebar.missing.Rebar.Count.reject
+FAIL: circleRebar.missing.Rebar.Count.key
+FAIL: circleRebar.missing.Rebar.Count.repair
+CIRCLE_MISSING_INPUT: Rebar.Count; error=0; 
+OK: circleRebar.missing.Rebar.Count.recovery
+OK: circleRebar.active.Rebar.Diameter.1.reject
+FAIL: circleRebar.active.Rebar.Diameter.1.address
+FAIL: circleRebar.active.Rebar.Diameter.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.1; error=-2147218352; Rebar.Diameter не может быть отрицательным.
+OK: circleRebar.active.Rebar.Diameter.1.recovery
+OK: circleRebar.active.Rebar.Diameter.2.reject
+OK: circleRebar.active.Rebar.Diameter.2.address
+OK: circleRebar.active.Rebar.Diameter.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.2; error=-2147217192; Настройка Rebar.Diameter (лист Config, ячейка I90): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.Diameter.2.recovery
+OK: circleRebar.active.Rebar.Diameter.3.reject
+OK: circleRebar.active.Rebar.Diameter.3.address
+OK: circleRebar.active.Rebar.Diameter.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.3; error=-2147217195; Настройка Rebar.Diameter (лист Config, ячейка I90) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Diameter.3.recovery
+FAIL: circleRebar.missing.Rebar.Diameter.reject
+FAIL: circleRebar.missing.Rebar.Diameter.key
+FAIL: circleRebar.missing.Rebar.Diameter.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter; error=0; 
+OK: circleRebar.missing.Rebar.Diameter.recovery
+OK: circleRebar.active.Rebar.Diameter2.1.reject
+FAIL: circleRebar.active.Rebar.Diameter2.1.address
+FAIL: circleRebar.active.Rebar.Diameter2.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.1; error=-2147218349; Rebar.Diameter2 не может быть отрицательным.
+OK: circleRebar.active.Rebar.Diameter2.1.recovery
+OK: circleRebar.active.Rebar.Diameter2.2.reject
+OK: circleRebar.active.Rebar.Diameter2.2.address
+OK: circleRebar.active.Rebar.Diameter2.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.2; error=-2147217192; Настройка Rebar.Diameter2 (лист Config, ячейка I92): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.Diameter2.2.recovery
+OK: circleRebar.active.Rebar.Diameter2.3.reject
+OK: circleRebar.active.Rebar.Diameter2.3.address
+OK: circleRebar.active.Rebar.Diameter2.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.3; error=-2147217195; Настройка Rebar.Diameter2 (лист Config, ячейка I92) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Diameter2.3.recovery
+FAIL: circleRebar.missing.Rebar.Diameter2.reject
+FAIL: circleRebar.missing.Rebar.Diameter2.key
+FAIL: circleRebar.missing.Rebar.Diameter2.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter2; error=0; 
+OK: circleRebar.missing.Rebar.Diameter2.recovery
+OK: circleRebar.active.Rebar.Diameter3.1.reject
+FAIL: circleRebar.active.Rebar.Diameter3.1.address
+FAIL: circleRebar.active.Rebar.Diameter3.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.1; error=-2147218348; Rebar.Diameter3 не может быть отрицательным.
+OK: circleRebar.active.Rebar.Diameter3.1.recovery
+OK: circleRebar.active.Rebar.Diameter3.2.reject
+OK: circleRebar.active.Rebar.Diameter3.2.address
+OK: circleRebar.active.Rebar.Diameter3.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.2; error=-2147217192; Настройка Rebar.Diameter3 (лист Config, ячейка I93): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.active.Rebar.Diameter3.2.recovery
+OK: circleRebar.active.Rebar.Diameter3.3.reject
+OK: circleRebar.active.Rebar.Diameter3.3.address
+OK: circleRebar.active.Rebar.Diameter3.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.3; error=-2147217195; Настройка Rebar.Diameter3 (лист Config, ячейка I93) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Diameter3.3.recovery
+FAIL: circleRebar.missing.Rebar.Diameter3.reject
+FAIL: circleRebar.missing.Rebar.Diameter3.key
+FAIL: circleRebar.missing.Rebar.Diameter3.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter3; error=0; 
+OK: circleRebar.missing.Rebar.Diameter3.recovery
+FAIL: circleRebar.active.Rebar.Loc2row.1.reject
+FAIL: circleRebar.active.Rebar.Loc2row.1.address
+FAIL: circleRebar.active.Rebar.Loc2row.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.active.Rebar.Loc2row.1.recovery
+OK: circleRebar.active.Rebar.Loc2row.2.reject
+FAIL: circleRebar.active.Rebar.Loc2row.2.address
+FAIL: circleRebar.active.Rebar.Loc2row.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.2; error=-2147218347; Rebar.Loc2row должен быть SideBySide или Stacked.
+OK: circleRebar.active.Rebar.Loc2row.2.recovery
+OK: circleRebar.active.Rebar.Loc2row.3.reject
+OK: circleRebar.active.Rebar.Loc2row.3.address
+OK: circleRebar.active.Rebar.Loc2row.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Loc2row.3.recovery
+FAIL: circleRebar.missing.Rebar.Loc2row.reject
+FAIL: circleRebar.missing.Rebar.Loc2row.key
+FAIL: circleRebar.missing.Rebar.Loc2row.repair
+CIRCLE_MISSING_INPUT: Rebar.Loc2row; error=0; 
+OK: circleRebar.missing.Rebar.Loc2row.recovery
+FAIL: circleRebar.active.Rebar.Loc3row.1.reject
+FAIL: circleRebar.active.Rebar.Loc3row.1.address
+FAIL: circleRebar.active.Rebar.Loc3row.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.active.Rebar.Loc3row.1.recovery
+OK: circleRebar.active.Rebar.Loc3row.2.reject
+FAIL: circleRebar.active.Rebar.Loc3row.2.address
+FAIL: circleRebar.active.Rebar.Loc3row.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.2; error=-2147218346; Rebar.Loc3row должен быть SideBySide или Stacked.
+OK: circleRebar.active.Rebar.Loc3row.2.recovery
+OK: circleRebar.active.Rebar.Loc3row.3.reject
+OK: circleRebar.active.Rebar.Loc3row.3.address
+OK: circleRebar.active.Rebar.Loc3row.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.active.Rebar.Loc3row.3.recovery
+FAIL: circleRebar.missing.Rebar.Loc3row.reject
+FAIL: circleRebar.missing.Rebar.Loc3row.key
+FAIL: circleRebar.missing.Rebar.Loc3row.repair
+CIRCLE_MISSING_INPUT: Rebar.Loc3row; error=0; 
+OK: circleRebar.missing.Rebar.Loc3row.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2; error=-2147217192; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3; error=-2147217195; Настройка Rebar.AxisDistance (лист Config, ячейка I88) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2; error=-2147217192; Настройка Rebar.Diameter2 (лист Config, ячейка I92): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3; error=-2147217195; Настройка Rebar.Diameter2 (лист Config, ячейка I92) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4; error=-2147218349; Rebar.Diameter2 не может быть отрицательным.
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2; error=-2147217192; Настройка Rebar.Diameter3 (лист Config, ячейка I93): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3; error=-2147217195; Настройка Rebar.Diameter3 (лист Config, ячейка I93) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4; error=-2147218348; Rebar.Diameter3 не может быть отрицательным.
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2; error=-2147217192; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3; error=-2147217195; Настройка Rebar.AxisDistance (лист Config, ячейка I88) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2; error=-2147217192; Настройка Rebar.Diameter2 (лист Config, ячейка I92): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3; error=-2147217195; Настройка Rebar.Diameter2 (лист Config, ячейка I92) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4; error=-2147218349; Rebar.Diameter2 не может быть отрицательным.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2; error=-2147217192; Настройка Rebar.Diameter3 (лист Config, ячейка I93): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3; error=-2147217195; Настройка Rebar.Diameter3 (лист Config, ячейка I93) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4; error=-2147218348; Rebar.Diameter3 не может быть отрицательным.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2; error=-2147217192; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3; error=-2147217195; Настройка Rebar.AxisDistance (лист Config, ячейка I88) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2; error=-2147217192; Настройка Rebar.Diameter2 (лист Config, ячейка I92): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3; error=-2147217195; Настройка Rebar.Diameter2 (лист Config, ячейка I92) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4; error=-2147218349; Rebar.Diameter2 не может быть отрицательным.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2; error=-2147217192; Настройка Rebar.Diameter3 (лист Config, ячейка I93): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3; error=-2147217195; Настройка Rebar.Diameter3 (лист Config, ячейка I93) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4; error=-2147218348; Rebar.Diameter3 не может быть отрицательным.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2; error=-2147217192; Настройка Rebar.AxisDistance (лист Config, ячейка I88): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3; error=-2147217195; Настройка Rebar.AxisDistance (лист Config, ячейка I88) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2; error=-2147217192; Настройка Rebar.Diameter2 (лист Config, ячейка I92): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3; error=-2147217195; Настройка Rebar.Diameter2 (лист Config, ячейка I92) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4; error=-2147218349; Rebar.Diameter2 не может быть отрицательным.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2; error=-2147217192; Настройка Rebar.Diameter3 (лист Config, ячейка I93): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3; error=-2147217195; Настройка Rebar.Diameter3 (лист Config, ячейка I93) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4; error=-2147218348; Rebar.Diameter3 не может быть отрицательным.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.recovery
+FAIL: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.otherShape.Circle.Diameter.1.noInterference
+OK: circleRebar.otherShape.Circle.Diameter.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.1; error=0; 
+OK: circleRebar.otherShape.Circle.Diameter.1.recovery
+OK: circleRebar.otherShape.Circle.Diameter.2.noInterference
+OK: circleRebar.otherShape.Circle.Diameter.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.2; error=0; 
+OK: circleRebar.otherShape.Circle.Diameter.2.recovery
+FAIL: circleRebar.otherShape.Circle.Diameter.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.3; error=-2147217195; Настройка Circle.Diameter (лист Config, ячейка I87) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.otherShape.Circle.Diameter.3.recovery
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.recovery
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.noInterference
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.recovery
+FAIL: circleRebar.otherShape.Rebar.AxisDistance.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.3; error=-2147217195; Настройка Rebar.AxisDistance (лист Config, ячейка I88) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.otherShape.Rebar.AxisDistance.3.recovery
+OK: circleRebar.otherShape.Rebar.Count.1.noInterference
+OK: circleRebar.otherShape.Rebar.Count.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Count.1.recovery
+OK: circleRebar.otherShape.Rebar.Count.2.noInterference
+OK: circleRebar.otherShape.Rebar.Count.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Count.2.recovery
+FAIL: circleRebar.otherShape.Rebar.Count.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.3; error=-2147217195; Настройка Rebar.Count (лист Config, ячейка I89) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.otherShape.Rebar.Count.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter.2.recovery
+FAIL: circleRebar.otherShape.Rebar.Diameter.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.3; error=-2147217195; Настройка Rebar.Diameter (лист Config, ячейка I90) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.otherShape.Rebar.Diameter.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter2.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter2.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter2.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter2.2.recovery
+FAIL: circleRebar.otherShape.Rebar.Diameter2.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.3; error=-2147217195; Настройка Rebar.Diameter2 (лист Config, ячейка I92) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.otherShape.Rebar.Diameter2.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter3.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter3.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter3.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter3.2.recovery
+FAIL: circleRebar.otherShape.Rebar.Diameter3.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.3; error=-2147217195; Настройка Rebar.Diameter3 (лист Config, ячейка I93) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.otherShape.Rebar.Diameter3.3.recovery
+OK: circleRebar.otherShape.Rebar.Loc2row.1.noInterference
+OK: circleRebar.otherShape.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc2row.1.recovery
+OK: circleRebar.otherShape.Rebar.Loc2row.2.noInterference
+OK: circleRebar.otherShape.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc2row.2.recovery
+FAIL: circleRebar.otherShape.Rebar.Loc2row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.3; error=-2147217195; Настройка Rebar.Loc2row (лист Config, ячейка I94) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.otherShape.Rebar.Loc2row.3.recovery
+OK: circleRebar.otherShape.Rebar.Loc3row.1.noInterference
+OK: circleRebar.otherShape.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc3row.1.recovery
+OK: circleRebar.otherShape.Rebar.Loc3row.2.noInterference
+OK: circleRebar.otherShape.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc3row.2.recovery
+FAIL: circleRebar.otherShape.Rebar.Loc3row.3.noInterference
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.3; error=-2147217195; Настройка Rebar.Loc3row (лист Config, ячейка I95) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: circleRebar.otherShape.Rebar.Loc3row.3.recovery
+OK: circleRebar.restore.rngSystemSettings
+OK: circleRebar.restore.rngUnitSettings
+OK: circleRebar.restore.rngCircleGeometry
+OK: circleRebar.restore.rngRectSetGeometry
+TOTAL_CIRCLE_REBAR_INPUT: passed=366; failed=106; cases=160
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bcd153ce1ade47d0a52d6ad57ea5d426\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03CircleRebarInputTests; 2026-10-04T02:24:26
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

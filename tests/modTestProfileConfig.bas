@@ -139,7 +139,10 @@ Public Function RunAudit03RelocatedInputTests(Optional ByRef passed As Long = 0,
                     Check stats, prefix & ".registered", settings.HasKey(key)
                     Check stats, prefix & ".locationSheet", InStr(1, reason, sheet.Name, vbBinaryCompare) > 0
                     Check stats, prefix & ".locationAddress", InStr(1, reason, "ячейка " & address, vbBinaryCompare) > 0
-                    cell.Value2 = CVErr(xlErrDiv0): code = SettingsLoadError(reason)
+                    ' Ошибки геометрических значений хранятся до обращения
+                    ' активного потребителя. Проверяем его чтение по тому же
+                    ' ключу и сохраненный адрес перемещенной ячейки.
+                    cell.Value2 = CVErr(xlErrDiv0): code = SettingsLoadError(reason, key)
                 ElseIf index = 10 Then
                     cell.Value2 = "NOT_A_VALID_CHOICE": code = CatalogError(reason)
                 Else
@@ -291,11 +294,15 @@ Private Function CaptionRow(ByVal source As Object, ByVal caption As String, ByV
     Err.Raise vbObjectError + 4501, "CaptionRow", "В тестовой таблице нет " & caption
 End Function
 
-' Сохраняет фактическую ошибку чтения полной книги после перемещения таблицы.
-Private Function SettingsLoadError(ByRef reason As String) As Long
+' Сохраняет фактическую ошибку загрузки или активного чтения указанного поля
+' после перемещения таблицы. Геометрический CVErr не мешает другой форме,
+' но при обращении к нему обязан выдавать исходный фактический адрес.
+Private Function SettingsLoadError(ByRef reason As String, Optional ByVal readKey As String = vbNullString) As Long
     On Error GoTo Failed
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Dim value As String
+    If Len(readKey) > 0 Then value = settings.GetRawString(readKey)
     reason = vbNullString
     Exit Function
 Failed:

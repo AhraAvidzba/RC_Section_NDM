@@ -1,0 +1,12 @@
+{
+  "Before": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\Audit03\\RC_Section_NDM_search_state_updated_v185.xlsm",
+  "After": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\Audit03\\RC_Section_NDM_rebar_all_updated_v191.xlsm",
+  "BeforeSHA256": "5899B5DEC96352A8B71D0AD60C0CD3047E47D9C6E25B4F4EC6EC1D2C0289E04A",
+  "AfterSHA256": "FC51F528B17A453995254801CDB788D06233AF78A5D6D6C6F8740CD3773C626E",
+  "ConfigCells": 2681,
+  "ChangedCells": [],
+  "EditableInputChanges": [],
+  "MergesEqual": true,
+  "PrintAreasEqual": true,
+  "SourceUnchanged": true
+}
