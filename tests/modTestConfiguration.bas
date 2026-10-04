@@ -826,6 +826,133 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
+' ==================== ДЛЯ ТЕСТОВ: ОБЩИЕ НАСТРОЙКИ ЗАПУСКА ====================
+
+' Проверяет реальные потребители флагов отчета и информационных сообщений.
+' Сохраненная собственная книга изолирует Config, файлы и пользовательский
+' Excel. НДС не запускается; отчет проверяется по фактическому txt-файлу.
+Public Function RunAudit03GeneralRunConfigTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TConfigTestStats
+    CheckGeneralRunControls stats
+    LogLine stats, "TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03GeneralRunConfigTests = stats.Report
+End Function
+
+' Сравнивает Yes/No с реальным файлом отчета и решением показа сообщения.
+' Ошибочные значения/удаленные ключи проверяются до и после переноса Name;
+' recovery и повторный Initialize не должны сохранять прежнее состояние.
+Private Sub CheckGeneralRunControls(ByRef stats As TConfigTestStats)
+    Dim fixture As Object, config As Object, source As Object, table As Object, target As Object, cell As Object
+    Dim settings As CSystemSettingsReader, report As CExecutionReport, fso As Object, stream As Object
+    Dim name As Variant, addresses As Variant, baseline As Variant, bad As Variant, badValues As Variant, keys As Variant, key As Variant
+    Dim index As Long, position As Long, mode As Long, caseIndex As Long, code As Long, cases As Long, solveCount As Long
+    Dim reason As String, prefix As String, folder As String, path As String, originalText As String, currentText As String
+    Dim value As Boolean
+    On Error GoTo FailedRun
+    solveCount = SectionEquilibriumSolveCount()
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    folder = ThisWorkbook.Path & "\Audit03_RunControls_" & Format$(Now, "yyyymmdd_hhnnss")
+    fso.CreateFolder folder
+    Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "RunConfig"
+    addresses = Array("A5", "H5", "H20", "H30")
+    For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", "rngPlotAnnotationSettings")
+        Set source = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        Set target = config.Range(CStr(addresses(index))).Resize(source.Rows.Count, source.Columns.Count)
+        target.NumberFormat = "@": target.Value2 = source.Value2
+        fixture.Names.Add Name:=CStr(name), RefersTo:="='" & config.Name & "'!" & target.Address
+        index = index + 1
+    Next name
+    fixture.SaveAs folder & "\RunControls.xlsx", 51
+    Set table = fixture.Names.Item("rngSystemSettings").RefersToRange: baseline = table.Value2
+    Set settings = New CSystemSettingsReader: Set report = New CExecutionReport
+    keys = Array("General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled")
+    badValues = Array("", "TODO", "INVALID", CVErr(2015))
+    For position = 0 To 1
+        If position = 1 Then Set table = config.Range("CH800").Resize(UBound(baseline, 1), UBound(baseline, 2))
+        table.NumberFormat = "@": table.Value2 = baseline
+        fixture.Names.Item("rngSystemSettings").RefersTo = "='" & config.Name & "'!" & table.Address
+        SetValue table, "General.ExecutionReportEnabled", "Yes"
+        settings.LoadFromWorkbook fixture: report.Initialize fixture, settings
+        report.AddStep "AUDIT03_REPORT_MARKER": report.Save "AUDIT03_FINAL"
+        path = report.FilePath
+        Check stats, "audit03.generalRun.report.Yes.p" & CStr(position), report.Enabled And fso.FileExists(path)
+        Set stream = fso.OpenTextFile(path, 1, False, -1): originalText = stream.ReadAll: stream.Close
+        Check stats, "audit03.generalRun.report.content.p" & CStr(position), InStr(1, originalText, "AUDIT03_REPORT_MARKER", vbBinaryCompare) > 0 And InStr(1, originalText, "AUDIT03_FINAL", vbBinaryCompare) > 0
+        SetValue table, "General.ExecutionReportEnabled", "No"
+        settings.LoadFromWorkbook fixture: report.Initialize fixture, settings
+        report.AddError "AUDIT03", "SHOULD_NOT_BE_WRITTEN": report.Save "SHOULD_NOT_BE_WRITTEN"
+        Set stream = fso.OpenTextFile(path, 1, False, -1): currentText = stream.ReadAll: stream.Close
+        Check stats, "audit03.generalRun.report.No.p" & CStr(position), Not report.Enabled And report.FilePath = vbNullString And currentText = originalText
+        For Each bad In Array("Yes", "No", " TRUE ", " FALSE ", "1", "0", "Да", "Нет")
+            SetValue table, "General.NonCriticalMessagesEnabled", bad
+            CaptureGeneralRunControl fixture, report, False, code, reason, value
+            Check stats, "audit03.generalRun.messages.valid.p" & CStr(position) & "." & CStr(bad), code = 0
+            Check stats, "audit03.generalRun.messages.effect.p" & CStr(position) & "." & CStr(bad), value = (CStr(bad) = "Yes" Or CStr(bad) = " TRUE " Or CStr(bad) = "1" Or CStr(bad) = "Да")
+        Next bad
+        For mode = 0 To 1
+            key = keys(mode): Set cell = ValueCell(table, CStr(key), 2)
+            For caseIndex = 0 To 4
+                table.Value2 = baseline: Set cell = ValueCell(table, CStr(key), 2)
+                If caseIndex = 4 Then
+                    cell.Offset(0, -1).Value2 = "AUDIT03_REMOVED_" & CStr(key)
+                Else
+                    bad = badValues(caseIndex)
+                    cell.Value2 = bad
+                End If
+                cases = cases + 1
+                CaptureGeneralRunControl fixture, report, mode = 0, code, reason, value
+                prefix = "audit03.generalRun.invalid.p" & CStr(position) & "." & CStr(key) & ".v" & CStr(caseIndex)
+                Check stats, prefix & ".rejected", code <> 0
+                Check stats, prefix & ".typed", code >= vbObjectError + 4300 And code <= vbObjectError + 4399
+                Check stats, prefix & ".key", InStr(1, reason, CStr(key), vbTextCompare) > 0
+                Check stats, prefix & ".action", InStr(1, reason, "Выберите", vbTextCompare) > 0 Or InStr(1, reason, "Заполните", vbTextCompare) > 0 Or InStr(1, reason, "Введите", vbTextCompare) > 0 Or InStr(1, reason, "Исправьте", vbTextCompare) > 0
+                If caseIndex < 4 Then Check stats, prefix & ".address", InStr(1, reason, config.Name, vbTextCompare) > 0 And InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0
+                If mode = 0 Then Check stats, prefix & ".reset", Not report.Enabled And report.FilePath = vbNullString
+                LogLine stats, "GENERAL_RUN_ERROR: " & prefix & "|" & reason
+            Next caseIndex
+            table.Value2 = baseline: SetValue table, CStr(key), "Yes"
+            CaptureGeneralRunControl fixture, report, mode = 0, code, reason, value
+            Check stats, "audit03.generalRun.recovery.p" & CStr(position) & "." & CStr(key), code = 0 And value
+        Next mode
+        report.AddStep "AUDIT03_RECOVERY": report.Save "AUDIT03_RECOVERY_FINAL"
+        Set stream = fso.OpenTextFile(report.FilePath, 1, False, -1): currentText = stream.ReadAll: stream.Close
+        Check stats, "audit03.generalRun.report.reinitialize.p" & CStr(position), InStr(1, currentText, "AUDIT03_RECOVERY", vbBinaryCompare) > 0 And InStr(1, currentText, "AUDIT03_REPORT_MARKER", vbBinaryCompare) = 0
+    Next position
+    CaptureGeneralRunControl Nothing, report, False, code, reason, value
+    Check stats, "audit03.generalRun.messages.noWorkbook", code <> 0 And InStr(1, reason, "Книга", vbTextCompare) > 0
+    Check stats, "audit03.generalRun.noSolve", SectionEquilibriumSolveCount() = solveCount
+    LogLine stats, "GENERAL_RUN_CASES: positions=2; invalidVariants=" & CStr(cases) & "; equilibriumCases=0"
+    GoTo Cleanup
+FailedRun:
+    Check stats, "audit03.generalRun.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not stream Is Nothing Then stream.Close
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
+' Вызывает настоящий потребитель без MsgBox и сохраняет исходную typed ошибку.
+' Для отчета проверяется повторный Initialize; для сообщения используется
+' тот же публичный selector, который вызывают пользовательские кнопки.
+Private Sub CaptureGeneralRunControl(ByVal fixture As Object, ByVal report As CExecutionReport, _
+        ByVal reportMode As Boolean, ByRef code As Long, ByRef reason As String, ByRef value As Boolean)
+    On Error GoTo Failed
+    code = 0: reason = vbNullString: value = False
+    If reportMode Then
+        Dim settings As CSystemSettingsReader
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook fixture
+        report.Initialize fixture, settings: value = report.Enabled
+    Else
+        value = NonCriticalMessagesEnabled(fixture)
+    End If
+    Exit Sub
+Failed:
+    code = Err.Number: reason = Err.Description
+End Sub
+
 ' Сохраняет численное значение в журнале без зависимости от десятичного
 ' разделителя Windows; расчетные значения и допуски при этом не округляются.
 Private Function FormatNumberInvariant(ByVal value As Double) As String

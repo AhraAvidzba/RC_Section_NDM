@@ -46,6 +46,9 @@ Public Sub ExportSectionStressToAutoCAD()
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
+    ' Неверный флаг сообщения должен быть найден до изменения чертежа.
+    Dim informationEnabled As Boolean
+    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
     Dim units As CUnitSystem
     Set units = New CUnitSystem
     units.LoadFromSettings settings
@@ -80,7 +83,7 @@ Public Sub ExportSectionStressToAutoCAD()
     DrawResultsStressExport section, resultByID, physicalStateByID, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, resultPrecision, stateWarningText, exportSettings, _
         contourExportCount
-    If NonCriticalMessagesEnabled(ThisWorkbook) Then
+    If informationEnabled Then
         MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
             "; стержней арматуры: " & CStr(section.RebarCount) & _
             "; контурных полилиний: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
@@ -106,6 +109,9 @@ Public Sub ClearAutoCADDrawing()
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
+    ' Используем тот же снимок Config и проверяем флаг до удаления объектов.
+    Dim informationEnabled As Boolean
+    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
 
     Dim exportSettings As TAutoCADExportSettings
     exportSettings = ReadAutoCADExportSettings(settings)
@@ -120,7 +126,7 @@ Public Sub ClearAutoCADDrawing()
     deletedCount = DeleteAutoCADEntitiesOnLayers(doc, AutoCADCleanupLayerSet(exportSettings))
     doc.Regen 1
 
-    If NonCriticalMessagesEnabled(ThisWorkbook) Then
+    If informationEnabled Then
         MsgBox "Чертеж AutoCAD очищен от объектов оформления RC Section NDM." & vbCrLf & _
             "Удалено объектов: " & CStr(deletedCount) & "." & vbCrLf & _
             "Геометрия бетона и арматуры оставлена без изменений.", vbInformation, "RC Section NDM"

@@ -16,11 +16,15 @@ Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых �
 ' независимо от настройки необязательных информационных сообщений.
 Public Sub RunSectionCalculation()
     On Error GoTo Failed
+    ' Проверяем оформление сообщения до расчета, чтобы ошибка Config не
+    ' обнаруживалась лишь после успешной записи нового Results.
+    Dim informationEnabled As Boolean
+    informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
     If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Then
         MsgBox message, vbExclamation, "RC Section NDM"
-    ElseIf NonCriticalMessagesEnabled(ThisWorkbook) Then
+    ElseIf informationEnabled Then
         MsgBox message, vbInformation, "RC Section NDM"
     End If
     Exit Sub
@@ -34,8 +38,10 @@ End Sub
 ' от настройки, а ошибка очистки показывается всегда.
 Public Sub ClearSectionResults()
     On Error GoTo Failed
+    Dim informationEnabled As Boolean
+    informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     ClearSectionResultsForWorkbook ThisWorkbook
-    If NonCriticalMessagesEnabled(ThisWorkbook) Then
+    If informationEnabled Then
         MsgBox "Результаты и диагностика очищены. Исходные данные не изменены.", vbInformation, "RC Section NDM"
     End If
     Exit Sub
@@ -48,8 +54,10 @@ End Sub
 ' Не запускает НДС и не заменяет snapshot текущими исходными параметрами.
 Public Sub UpdateSectionPlot()
     On Error GoTo Failed
+    Dim informationEnabled As Boolean
+    informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     UpdateSectionPlotForWorkbook ThisWorkbook
-    If NonCriticalMessagesEnabled(ThisWorkbook) Then
+    If informationEnabled Then
         MsgBox "Схема сечения обновлена по последнему расчетному снимку Results.", vbInformation, "RC Section NDM"
     End If
     Exit Sub
@@ -62,9 +70,11 @@ End Sub
 ' Показывает причину отказа; кнопка не выполняет расчет прочности или трещин.
 Public Sub ImportGeometryFromAutoCAD()
     On Error GoTo Failed
+    Dim informationEnabled As Boolean
+    informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     Dim message As String
     message = ImportGeometryFromAutoCADForWorkbook(ThisWorkbook)
-    If NonCriticalMessagesEnabled(ThisWorkbook) Then MsgBox message, vbInformation, "RC Section NDM"
+    If informationEnabled Then MsgBox message, vbInformation, "RC Section NDM"
     Exit Sub
 
 Failed:
@@ -228,19 +238,16 @@ End Function
 ' Возвращает пользовательское решение о показе обычных информационных окон.
 ' Ошибки и предупреждения эта настройка не гасит: она нужна только для
 ' сообщений об успешно завершенных действиях, которые могут мешать серии запусков.
+' Ошибка чтения остается адресной ошибкой Config; она не включает сообщения
+' по умолчанию и обрабатывается внешним обработчиком кнопки как обычная ошибка.
 Public Function NonCriticalMessagesEnabled(ByVal workbook As Object) As Boolean
-    On Error GoTo DefaultEnabled
-    If workbook Is Nothing Then GoTo DefaultEnabled
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "NonCriticalMessagesEnabled", "Книга Excel не передана."
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
 
-    NonCriticalMessagesEnabled = settings.GetBoolean("General.NonCriticalMessagesEnabled", True)
-    Exit Function
-
-DefaultEnabled:
-    NonCriticalMessagesEnabled = True
+    NonCriticalMessagesEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
 End Function
 
 ' Выполняет весь Excel-сценарий на указанной книге: один раз читает Config,

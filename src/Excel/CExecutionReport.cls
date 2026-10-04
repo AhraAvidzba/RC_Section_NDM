@@ -32,6 +32,8 @@ Private mLines As Collection ' Накопленные строки отчета 
 
 ' Готовит объект к работе по настройке General.ExecutionReportEnabled.
 ' Если флаг выключен, остальные методы остаются безопасными пустыми операциями.
+' Потерянная или неверная активная настройка возвращает адресную ошибку ввода,
+' а не молча выбирает отсутствие отчета. Повторная инициализация очищает буфер.
 Public Sub Initialize(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
     mEnabled = False
     mFilePath = vbNullString
@@ -39,7 +41,7 @@ Public Sub Initialize(ByVal workbook As Object, ByVal settings As CSystemSetting
     If workbook Is Nothing Then Exit Sub
     If settings Is Nothing Then Exit Sub
 
-    mEnabled = settings.GetBoolean("General.ExecutionReportEnabled", False)
+    mEnabled = settings.GetRequiredBoolean("General.ExecutionReportEnabled")
     If Not mEnabled Then Exit Sub
 
     Set mLines = New Collection

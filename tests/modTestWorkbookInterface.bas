@@ -51,6 +51,10 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestConfiguration.RunAudit03SettingsTableGuardTests(settingsTablePassed, settingsTableFailed)
     stats.Passed = stats.Passed + settingsTablePassed
     stats.Failed = stats.Failed + settingsTableFailed
+    Dim generalRunPassed As Long, generalRunFailed As Long
+    stats.Report = stats.Report & modTestConfiguration.RunAudit03GeneralRunConfigTests(generalRunPassed, generalRunFailed)
+    stats.Passed = stats.Passed + generalRunPassed
+    stats.Failed = stats.Failed + generalRunFailed
     AppendLine stats, "RUN: TestAudit03ConfigConversionMessages; " & Audit02ExcelMemory()
     TestAudit03ConfigConversionMessages stats
     AppendLine stats, "RUN: TestAudit03UnitSignConsumers; " & Audit02ExcelMemory()

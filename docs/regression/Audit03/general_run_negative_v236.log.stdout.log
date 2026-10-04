@@ -1,0 +1,8 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_run_negative_v236.xlsm
+SOURCE_SHA256: 4033EA3FD7C0129B5FEF4480CFD6D1ECBA8660BCE25762784E8ADBAA43377348
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e875c5477531441d929150425be46f9b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.generalRun.runtime.-2147217188.На листе Config недоступна обязательная таблица "Подписи и размеры схемы" (имя rngPlotAnnotationSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=0; failed=1
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

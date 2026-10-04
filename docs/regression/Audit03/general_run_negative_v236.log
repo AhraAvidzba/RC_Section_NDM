@@ -1,0 +1,16 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_run_negative_v236.xlsm
+SOURCE_SHA256: 4033EA3FD7C0129B5FEF4480CFD6D1ECBA8660BCE25762784E8ADBAA43377348
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e875c5477531441d929150425be46f9b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestConfiguration.RunAudit03GeneralRunConfigTests =====
+SUITE_STARTED: modTestConfiguration.RunAudit03GeneralRunConfigTests; 2026-10-04T14:48:57
+EXCEL_AFTER_SUITE: pid=23476; workingSet=216010752; privateBytes=167440384; cpu=16062.578125
+EXCEL_AFTER_SUITE: pid=28756; workingSet=140435456; privateBytes=110043136; cpu=2.65625
+FAIL: audit03.generalRun.runtime.-2147217188.На листе Config недоступна обязательная таблица "Подписи и размеры схемы" (имя rngPlotAnnotationSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=0; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e875c5477531441d929150425be46f9b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestConfiguration.RunAudit03GeneralRunConfigTests; 2026-10-04T14:48:58
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

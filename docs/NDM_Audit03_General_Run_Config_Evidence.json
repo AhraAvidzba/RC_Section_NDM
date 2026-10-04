@@ -1,0 +1,37 @@
+{
+  "Scope": "Два общих флага запуска; настоящие System/Unit/Sign/Annotation Config таблицы, два положения System, реальные CExecutionReport.Initialize/Save и NonCriticalMessagesEnabled. Это не полный release и не автоматизированная приемка интерактивных окон/DWG.",
+  "PositiveReport": "docs/regression/Audit03/general_run_positive_v238.log",
+  "PositiveGate": "TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=152; failed=0",
+  "SupplementaryReport": "docs/regression/Audit03/general_run_workbook_report_v238.log",
+  "SupplementaryGate": "TOTAL_UI_DIAGNOSTIC: passed=3; failed=0",
+  "FullReports": [],
+  "FinalRegressionPending": "Меняется обязательное чтение двух presentation-флагов и preflight кнопок, не solver/численные модели. Направленные presentation/input/report gates выполнены; полный восьми-suite On/Off остается обязательным финальным release по разрешению пользователя.",
+  "Consumer": "Настоящий named Config -> CSystemSettingsReader -> CExecutionReport.Initialize/Save и workbook NonCriticalMessagesEnabled. Кнопки читают решение до побочного эффекта; ошибка Config не скрывается. Счетчик equilibrium solve в направленном тесте не меняется; соседний report gate выполняет обычный workbook calculation.",
+  "TestId": "modTestConfiguration.RunAudit03GeneralRunConfigTests + modTestWorkbookInterface.RunAudit02ReportDiagnostic",
+  "Entries": [
+    {
+      "Id": "General.ExecutionReportEnabled",
+      "Type": "Boolean",
+      "ValidRange": "Yes / No и утвержденные Boolean aliases",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный ключ при инициализации отчета. Потерянная строка/blank/TODO/ошибка не заменяются No; default новой книги остается отдельным значением каталога.",
+      "Activity": "Инициализация отчета пользовательского запуска; невызванный необязательный report-объект не влияет на расчет",
+      "ExpectedEffect": "Yes создает фактический UTF-16 txt с marker/final; No не записывает и не удаляет прежний файл. Повторный Initialize очищает старый буфер; обычный RunSectionCalculationForWorkbook сохраняет ожидаемый отчет.",
+      "AssertionPrefix": "audit03.generalRun.report.No.p1",
+      "BlankAndErrorContract": "Четыре неверных значения и удаленный ключ проверены на A5/CH800. Typed error, ключ, действие и текущий адрес присутствующей ячейки; report reset, recovery и noSolve.",
+      "RangeReview": "Активный Yes/No и state/file lifecycle приняты. Полный release, файловые отказы и mutation sensitivity всех call sites остаются отдельной приемкой."
+    },
+    {
+      "Id": "General.NonCriticalMessagesEnabled",
+      "Type": "Boolean",
+      "ValidRange": "Yes / No; TRUE/FALSE, 1/0, Да/Нет с нормализацией пробелов/регистра",
+      "InternalUnits": "-",
+      "RuntimeDefault": "Обязательный ключ активного решения о показе сообщения. Ошибка чтения и отсутствие ключа не выбирают True.",
+      "Activity": "Пользовательские кнопки расчета/очистки/схемы/import/export; ошибки и предупреждения не подавляются",
+      "ExpectedEffect": "Реальный selector возвращает ожидаемое решение для восьми допустимых вариантов; ошибки передаются внешнему обработчику. Source-review подтверждает preflight всех шести кнопок до изменения данных/чертежа; реальные MsgBox/DWG этим тестом не автоматизировались.",
+      "AssertionPrefix": "audit03.generalRun.messages.effect.p1.No",
+      "BlankAndErrorContract": "Четыре неверных значения и удаленный ключ в двух позициях; typed error, ключ, действие и текущий адрес. Nothing workbook дает контролируемую ошибку; последующий Yes восстанавливается.",
+      "RangeReview": "Активное API-поведение и все канонические Boolean aliases приняты; интерактивные окна, внешняя запись DWG, полный release и mutation sensitivity остаются отдельной приемкой."
+    }
+  ]
+}
