@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
-Workbook: RC_Section_NDM_snapshot_metadata_positive_v216.xlsm
-Date: 2026-10-04 11:48:46
+Workbook: RC_Section_NDM_snapshot_metadata_positive_v215.xlsm
+Date: 2026-10-04 11:43:55
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -37918,8 +37918,8 @@ Private Function SafeText(ByVal value As Variant) As String
     SafeText = CStr(value)
 End Function
 
-' Выбирает рабочую единицу для числового поля Results. Пустая Unit-ячейка
-' или "-" означает единицу из metadata snapshot, а не из текущего Config.
+' Выбирает рабочую единицу для числового поля Results. Пустые и служебные
+' значения не должны ломать старые snapshots, где часть Unit-колонки пустая.
 Private Function UnitOrDefault(ByVal unitText As String, ByVal fallbackUnit As String, _
         ByVal hardDefault As String) As String
     Dim normalized As String

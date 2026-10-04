@@ -1,0 +1,1174 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_snapshot_metadata_positive_v215.xlsm
+SOURCE_SHA256: 0606E721B2931D4323C83A05EEA12B00048451A1E81CFBCD48DED9B2D8125E4B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_28262529bc604205a0a744afd3d27db3\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03GeometrySnapshotTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03GeometrySnapshotTests; 2026-10-04T11:40:50
+EXCEL_AFTER_SUITE: pid=19612; workingSet=151879680; privateBytes=114180096; cpu=3.640625
+EXCEL_AFTER_SUITE: pid=23476; workingSet=209596416; privateBytes=160882688; cpu=9931.171875
+OK: audit03.geometrySnapshot.mm.position0.model.concreteCount
+OK: audit03.geometrySnapshot.mm.position0.model.rebarCount
+OK: audit03.geometrySnapshot.mm.position0.model.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.mm.position0.model.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.mm.position0.model.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.mm.position0.model.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.mm.position0.model.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.mm.position0.model.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.mm.position0.model.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.mm.position0.model.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.mm.position0.model.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.mm.position0.model.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.mm.position0.model.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.mm.position0.model.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.mm.position0.model.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.mm.position0.plot.count
+OK: audit03.geometrySnapshot.mm.position0.plot.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.mm.position0.plot.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.mm.position0.plot.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.mm.position0.plot.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.mm.position0.state.count
+OK: audit03.geometrySnapshot.mm.position0.state.concreteStress; actual=-1.25; expected=-1.25
+OK: audit03.geometrySnapshot.mm.position0.state.rebarStress; actual=2.75; expected=2.75
+OK: audit03.geometrySnapshot.cm.position0.model.concreteCount
+OK: audit03.geometrySnapshot.cm.position0.model.rebarCount
+OK: audit03.geometrySnapshot.cm.position0.model.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.cm.position0.model.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.cm.position0.model.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.cm.position0.model.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.cm.position0.model.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.cm.position0.model.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.cm.position0.model.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.cm.position0.model.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.cm.position0.model.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.cm.position0.model.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.cm.position0.model.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.cm.position0.model.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.cm.position0.model.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.cm.position0.plot.count
+OK: audit03.geometrySnapshot.cm.position0.plot.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.cm.position0.plot.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.cm.position0.plot.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.cm.position0.plot.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.cm.position0.state.count
+OK: audit03.geometrySnapshot.cm.position0.state.concreteStress; actual=-1.25; expected=-1.25
+OK: audit03.geometrySnapshot.cm.position0.state.rebarStress; actual=2.75; expected=2.75
+OK: audit03.geometrySnapshot.m.position0.model.concreteCount
+OK: audit03.geometrySnapshot.m.position0.model.rebarCount
+OK: audit03.geometrySnapshot.m.position0.model.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.m.position0.model.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.m.position0.model.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.m.position0.model.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.m.position0.model.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.m.position0.model.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.m.position0.model.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.m.position0.model.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.m.position0.model.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.m.position0.model.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.m.position0.model.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.m.position0.model.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.m.position0.model.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.m.position0.plot.count
+OK: audit03.geometrySnapshot.m.position0.plot.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.m.position0.plot.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.m.position0.plot.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.m.position0.plot.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.m.position0.state.count
+OK: audit03.geometrySnapshot.m.position0.state.concreteStress; actual=-1.25; expected=-1.25
+OK: audit03.geometrySnapshot.m.position0.state.rebarStress; actual=2.75; expected=2.75
+OK: audit03.geometrySnapshot.mm.position1.model.concreteCount
+OK: audit03.geometrySnapshot.mm.position1.model.rebarCount
+OK: audit03.geometrySnapshot.mm.position1.model.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.mm.position1.model.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.mm.position1.model.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.mm.position1.model.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.mm.position1.model.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.mm.position1.model.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.mm.position1.model.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.mm.position1.model.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.mm.position1.model.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.mm.position1.model.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.mm.position1.model.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.mm.position1.model.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.mm.position1.model.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.mm.position1.plot.count
+OK: audit03.geometrySnapshot.mm.position1.plot.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.mm.position1.plot.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.mm.position1.plot.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.mm.position1.plot.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.mm.position1.state.count
+OK: audit03.geometrySnapshot.mm.position1.state.concreteStress; actual=-1.25; expected=-1.25
+OK: audit03.geometrySnapshot.mm.position1.state.rebarStress; actual=2.75; expected=2.75
+OK: audit03.geometrySnapshot.cm.position1.model.concreteCount
+OK: audit03.geometrySnapshot.cm.position1.model.rebarCount
+OK: audit03.geometrySnapshot.cm.position1.model.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.cm.position1.model.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.cm.position1.model.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.cm.position1.model.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.cm.position1.model.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.cm.position1.model.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.cm.position1.model.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.cm.position1.model.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.cm.position1.model.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.cm.position1.model.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.cm.position1.model.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.cm.position1.model.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.cm.position1.model.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.cm.position1.plot.count
+OK: audit03.geometrySnapshot.cm.position1.plot.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.cm.position1.plot.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.cm.position1.plot.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.cm.position1.plot.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.cm.position1.state.count
+OK: audit03.geometrySnapshot.cm.position1.state.concreteStress; actual=-1.25; expected=-1.25
+OK: audit03.geometrySnapshot.cm.position1.state.rebarStress; actual=2.75; expected=2.75
+OK: audit03.geometrySnapshot.m.position1.model.concreteCount
+OK: audit03.geometrySnapshot.m.position1.model.rebarCount
+OK: audit03.geometrySnapshot.m.position1.model.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.m.position1.model.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.m.position1.model.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.m.position1.model.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.m.position1.model.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.m.position1.model.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.m.position1.model.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.m.position1.model.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.m.position1.model.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.m.position1.model.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.m.position1.model.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.m.position1.model.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.m.position1.model.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.m.position1.plot.count
+OK: audit03.geometrySnapshot.m.position1.plot.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.m.position1.plot.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.m.position1.plot.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.m.position1.plot.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.m.position1.state.count
+OK: audit03.geometrySnapshot.m.position1.state.concreteStress; actual=-1.25; expected=-1.25
+OK: audit03.geometrySnapshot.m.position1.state.rebarStress; actual=2.75; expected=2.75
+OK: audit03.geometrySnapshot.invalid.X, mm.0.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.0.field
+OK: audit03.geometrySnapshot.invalid.X, mm.0.address
+OK: audit03.geometrySnapshot.invalid.X, mm.0.action
+OK: audit03.geometrySnapshot.invalid.X, mm.0.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.0.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.X, mm.0.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.X, mm.0.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.X, mm.0.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.0.plot.State.field
+OK: audit03.geometrySnapshot.invalid.X, mm.0.plot.State.address
+OK: audit03.geometrySnapshot.invalid.X, mm.0.plot.State.action
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.X, mm.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.X, mm.1.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.1.field
+OK: audit03.geometrySnapshot.invalid.X, mm.1.address
+OK: audit03.geometrySnapshot.invalid.X, mm.1.action
+OK: audit03.geometrySnapshot.invalid.X, mm.1.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.1.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.X, mm.1.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.X, mm.1.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.X, mm.1.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.1.plot.State.field
+OK: audit03.geometrySnapshot.invalid.X, mm.1.plot.State.address
+OK: audit03.geometrySnapshot.invalid.X, mm.1.plot.State.action
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.X, mm.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.X, mm.2.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.2.field
+OK: audit03.geometrySnapshot.invalid.X, mm.2.address
+OK: audit03.geometrySnapshot.invalid.X, mm.2.action
+OK: audit03.geometrySnapshot.invalid.X, mm.2.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.2.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.X, mm.2.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.X, mm.2.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.X, mm.2.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.2.plot.State.field
+OK: audit03.geometrySnapshot.invalid.X, mm.2.plot.State.address
+OK: audit03.geometrySnapshot.invalid.X, mm.2.plot.State.action
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.X, mm.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.X, mm.3.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.3.field
+OK: audit03.geometrySnapshot.invalid.X, mm.3.address
+OK: audit03.geometrySnapshot.invalid.X, mm.3.action
+OK: audit03.geometrySnapshot.invalid.X, mm.3.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.3.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.X, mm.3.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.X, mm.3.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.X, mm.3.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.X, mm.3.plot.State.field
+OK: audit03.geometrySnapshot.invalid.X, mm.3.plot.State.address
+OK: audit03.geometrySnapshot.invalid.X, mm.3.plot.State.action
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.X, mm.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Y, mm.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Y, mm.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Y, mm.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Y, mm.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Area, mm2.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Area, mm2.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Area, mm2.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Area, mm2.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Width, mm.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Width, mm.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Width, mm.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Width, mm.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Height, mm.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Height, mm.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Height, mm.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Height, mm.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Diameter, mm.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.plot.Preview.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.plot.Preview.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.plot.Preview.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.plot.Preview.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.plot.State.rejected
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.plot.State.field
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.plot.State.address
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.plot.State.action
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.Rotation, rad.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.field
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.address
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.action
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.field
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.address
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.action
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.field
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.address
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.action
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.field
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.address
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.action
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.field
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.address
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.action
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.field
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.address
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.action
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.field
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.address
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.action
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.field
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.address
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.action
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.field
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.address
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.action
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.field
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.address
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.action
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.field
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.address
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.action
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.rejected
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.field
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.address
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.action
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.concreteCount
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.rebarCount
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.recovery.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.requiredBlank.X, mm.model
+OK: audit03.geometrySnapshot.requiredBlank.X, mm.preview
+OK: audit03.geometrySnapshot.requiredBlank.X, mm.state
+OK: audit03.geometrySnapshot.requiredBlank.Y, mm.model
+OK: audit03.geometrySnapshot.requiredBlank.Y, mm.preview
+OK: audit03.geometrySnapshot.requiredBlank.Y, mm.state
+OK: audit03.geometrySnapshot.requiredBlank.Area, mm2.model
+OK: audit03.geometrySnapshot.requiredBlank.Area, mm2.preview
+OK: audit03.geometrySnapshot.requiredBlank.Area, mm2.state
+OK: audit03.geometrySnapshot.requiredBlank.Diameter, mm.model
+OK: audit03.geometrySnapshot.requiredBlank.Diameter, mm.preview
+OK: audit03.geometrySnapshot.requiredBlank.Diameter, mm.state
+OK: audit03.geometrySnapshot.optionalBlank
+OK: audit03.geometrySnapshot.numericText; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.missingShape.controlled
+OK: audit03.geometrySnapshot.missingShape.named
+OK: audit03.geometrySnapshot.shapeAlias.concreteCount
+OK: audit03.geometrySnapshot.shapeAlias.rebarCount
+OK: audit03.geometrySnapshot.shapeAlias.x; actual=-23.125; expected=-23.125
+OK: audit03.geometrySnapshot.shapeAlias.y; actual=17.625; expected=17.625
+OK: audit03.geometrySnapshot.shapeAlias.area; actual=10828.125; expected=10828.125
+OK: audit03.geometrySnapshot.shapeAlias.width; actual=123.75; expected=123.75
+OK: audit03.geometrySnapshot.shapeAlias.height; actual=87.5; expected=87.5
+OK: audit03.geometrySnapshot.shapeAlias.rotation; actual=0.3125; expected=0.3125
+OK: audit03.geometrySnapshot.shapeAlias.ix; actual=654321.125; expected=654321.125
+OK: audit03.geometrySnapshot.shapeAlias.iy; actual=987654.375; expected=987654.375
+OK: audit03.geometrySnapshot.shapeAlias.ixy; actual=-23456.625; expected=-23456.625
+OK: audit03.geometrySnapshot.shapeAlias.rebarX; actual=12.375; expected=12.375
+OK: audit03.geometrySnapshot.shapeAlias.rebarY; actual=-8.125; expected=-8.125
+OK: audit03.geometrySnapshot.shapeAlias.rebarArea; actual=117.8581; expected=117.8581
+OK: audit03.geometrySnapshot.shapeAlias.rebarDiameter; actual=12.25; expected=12.25
+OK: audit03.geometrySnapshot.lateComment; actual=Комментарий позднего сочетания
+OK: audit03.geometrySnapshot.unchanged
+OK: audit03.geometrySnapshot.lastColumn.model
+OK: audit03.geometrySnapshot.lastColumn.plot
+OK: audit03.geometrySnapshot.noSolve
+CASES_GEOMETRY_SNAPSHOT: independentGeometryFixtures=1; inputVariants=56; equilibriumCases=0
+TOTAL_AUDIT03_GEOMETRY_SNAPSHOT: passed=1158; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_28262529bc604205a0a744afd3d27db3\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03GeometrySnapshotTests; 2026-10-04T11:40:52
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

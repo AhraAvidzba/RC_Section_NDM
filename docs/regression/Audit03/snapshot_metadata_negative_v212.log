@@ -1,0 +1,513 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_snapshot_metadata_negative_v212.xlsm
+SOURCE_SHA256: E9DFCFAEDDAC647473C3FCF9DDB0AB355BBB7A696B6EF7307B647C2F88E1A0F4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4410d2f2ef6c4350b4b0480c3e9fb609\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestPlotConfig.RunAudit03SnapshotMetadataTests =====
+SUITE_STARTED: modTestPlotConfig.RunAudit03SnapshotMetadataTests; 2026-10-04T11:30:02
+EXCEL_AFTER_SUITE: pid=23476; workingSet=209698816; privateBytes=161103872; cpu=9929.796875
+EXCEL_AFTER_SUITE: pid=24144; workingSet=148660224; privateBytes=110964736; cpu=5.171875
+OK: audit03.snapshotMetadata.units.p0.mm.mode0.loaded
+OK: audit03.snapshotMetadata.units.p0.mm.mode0.minX; actual=-100; expected=-100
+OK: audit03.snapshotMetadata.units.p0.mm.mode0.loadX; actual=25; expected=25
+OK: audit03.snapshotMetadata.units.p0.mm.mode0.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.mm.mode0.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.mm.mode0.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p0.mm.mode0.curvature; actual=0.000002; expected=0.000002
+OK: audit03.snapshotMetadata.units.p0.mm.mode1.loaded
+OK: audit03.snapshotMetadata.units.p0.mm.mode1.minX; actual=-100; expected=-100
+OK: audit03.snapshotMetadata.units.p0.mm.mode1.loadX; actual=25; expected=25
+OK: audit03.snapshotMetadata.units.p0.mm.mode1.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.mm.mode1.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.mm.mode1.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p0.mm.mode2.loaded
+OK: audit03.snapshotMetadata.units.p0.mm.mode2.minX; actual=-100; expected=-100
+OK: audit03.snapshotMetadata.units.p0.mm.mode2.loadX; actual=25; expected=25
+OK: audit03.snapshotMetadata.units.p0.mm.mode2.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.mm.mode2.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.mm.mode2.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p0.cm.mode0.loaded
+FAIL: audit03.snapshotMetadata.units.p0.cm.mode0.minX; actual=-10; expected=-100
+FAIL: audit03.snapshotMetadata.units.p0.cm.mode0.loadX; actual=2.5; expected=25
+OK: audit03.snapshotMetadata.units.p0.cm.mode0.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.cm.mode0.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.cm.mode0.annotation; actual=-50; expected=-50
+FAIL: audit03.snapshotMetadata.units.p0.cm.mode0.curvature; actual=0.002; expected=0.000002
+OK: audit03.snapshotMetadata.units.p0.cm.mode1.loaded
+FAIL: audit03.snapshotMetadata.units.p0.cm.mode1.minX; actual=-10; expected=-100
+FAIL: audit03.snapshotMetadata.units.p0.cm.mode1.loadX; actual=2.5; expected=25
+OK: audit03.snapshotMetadata.units.p0.cm.mode1.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.cm.mode1.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.cm.mode1.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p0.cm.mode2.loaded
+FAIL: audit03.snapshotMetadata.units.p0.cm.mode2.minX; actual=-10; expected=-100
+FAIL: audit03.snapshotMetadata.units.p0.cm.mode2.loadX; actual=2.5; expected=25
+OK: audit03.snapshotMetadata.units.p0.cm.mode2.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.cm.mode2.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.cm.mode2.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p0.m.mode0.loaded
+FAIL: audit03.snapshotMetadata.units.p0.m.mode0.minX; actual=-0.1; expected=-100
+FAIL: audit03.snapshotMetadata.units.p0.m.mode0.loadX; actual=0.025; expected=25
+OK: audit03.snapshotMetadata.units.p0.m.mode0.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.m.mode0.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.m.mode0.annotation; actual=-50; expected=-50
+FAIL: audit03.snapshotMetadata.units.p0.m.mode0.curvature; actual=0.002; expected=0.000002
+OK: audit03.snapshotMetadata.units.p0.m.mode1.loaded
+FAIL: audit03.snapshotMetadata.units.p0.m.mode1.minX; actual=-0.1; expected=-100
+FAIL: audit03.snapshotMetadata.units.p0.m.mode1.loadX; actual=0.025; expected=25
+OK: audit03.snapshotMetadata.units.p0.m.mode1.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.m.mode1.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.m.mode1.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p0.m.mode2.loaded
+FAIL: audit03.snapshotMetadata.units.p0.m.mode2.minX; actual=-0.1; expected=-100
+FAIL: audit03.snapshotMetadata.units.p0.m.mode2.loadX; actual=0.025; expected=25
+OK: audit03.snapshotMetadata.units.p0.m.mode2.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p0.m.mode2.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p0.m.mode2.annotation; actual=-50; expected=-50
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v1.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v1.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v1.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v1.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v1.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row11.v1|
+OK: audit03.snapshotMetadata.invalid.p0.row11.v1.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v2.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v2.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v2.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v2.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v2.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row11.v2|
+OK: audit03.snapshotMetadata.invalid.p0.row11.v2.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v3.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v3.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v3.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v3.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v3.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row11.v3|
+OK: audit03.snapshotMetadata.invalid.p0.row11.v3.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v4.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v4.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v4.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v4.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row11.v4.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row11.v4|
+OK: audit03.snapshotMetadata.invalid.p0.row11.v4.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v5.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v5.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v5.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v5.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v5.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row12.v5|
+OK: audit03.snapshotMetadata.invalid.p0.row12.v5.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v6.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v6.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v6.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v6.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v6.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row12.v6|
+OK: audit03.snapshotMetadata.invalid.p0.row12.v6.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v7.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v7.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v7.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v7.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v7.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row12.v7|
+OK: audit03.snapshotMetadata.invalid.p0.row12.v7.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v8.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v8.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v8.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v8.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row12.v8.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row12.v8|
+OK: audit03.snapshotMetadata.invalid.p0.row12.v8.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v9.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v9.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v9.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v9.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v9.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row14.v9|
+OK: audit03.snapshotMetadata.invalid.p0.row14.v9.recovery
+OK: audit03.snapshotMetadata.invalid.p0.row14.v10.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v10.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v10.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v10.action
+OK: audit03.snapshotMetadata.invalid.p0.row14.v10.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row14.v10|Недопустимая единица длины: TODO
+OK: audit03.snapshotMetadata.invalid.p0.row14.v10.recovery
+OK: audit03.snapshotMetadata.invalid.p0.row14.v11.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v11.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v11.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v11.action
+OK: audit03.snapshotMetadata.invalid.p0.row14.v11.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row14.v11|Недопустимая единица длины: INVALID
+OK: audit03.snapshotMetadata.invalid.p0.row14.v11.recovery
+OK: audit03.snapshotMetadata.invalid.p0.row14.v12.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v12.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v12.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row14.v12.action
+OK: audit03.snapshotMetadata.invalid.p0.row14.v12.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row14.v12|Недопустимая единица длины: Error 2015
+OK: audit03.snapshotMetadata.invalid.p0.row14.v12.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v13.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v13.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v13.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v13.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v13.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row15.v13|
+OK: audit03.snapshotMetadata.invalid.p0.row15.v13.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v14.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v14.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v14.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v14.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v14.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row15.v14|
+OK: audit03.snapshotMetadata.invalid.p0.row15.v14.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v15.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v15.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v15.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v15.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v15.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row15.v15|
+OK: audit03.snapshotMetadata.invalid.p0.row15.v15.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v16.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v16.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v16.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v16.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row15.v16.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row15.v16|
+OK: audit03.snapshotMetadata.invalid.p0.row15.v16.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v17.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v17.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v17.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v17.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v17.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row16.v17|
+OK: audit03.snapshotMetadata.invalid.p0.row16.v17.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v18.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v18.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v18.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v18.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v18.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row16.v18|
+OK: audit03.snapshotMetadata.invalid.p0.row16.v18.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v19.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v19.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v19.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v19.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v19.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row16.v19|
+OK: audit03.snapshotMetadata.invalid.p0.row16.v19.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v20.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v20.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v20.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v20.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row16.v20.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row16.v20|
+OK: audit03.snapshotMetadata.invalid.p0.row16.v20.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v21.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v21.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v21.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v21.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v21.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row17.v21|
+OK: audit03.snapshotMetadata.invalid.p0.row17.v21.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v22.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v22.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v22.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v22.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v22.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row17.v22|
+OK: audit03.snapshotMetadata.invalid.p0.row17.v22.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v23.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v23.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v23.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v23.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v23.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row17.v23|
+OK: audit03.snapshotMetadata.invalid.p0.row17.v23.recovery
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v24.rejected
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v24.field
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v24.address
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v24.action
+FAIL: audit03.snapshotMetadata.invalid.p0.row17.v24.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p0.row17.v24|
+OK: audit03.snapshotMetadata.invalid.p0.row17.v24.recovery
+FAIL: audit03.snapshotMetadata.fieldUnit.p0.row2.rejected
+FAIL: audit03.snapshotMetadata.fieldUnit.p0.row2.address
+FAIL: audit03.snapshotMetadata.fieldUnit.p0.row9.rejected
+FAIL: audit03.snapshotMetadata.fieldUnit.p0.row9.address
+FAIL: audit03.snapshotMetadata.annotationUnit.p0
+OK: audit03.snapshotMetadata.flag.p0.True
+OK: audit03.snapshotMetadata.flag.p0.False
+OK: audit03.snapshotMetadata.flag.p0.True
+OK: audit03.snapshotMetadata.flag.p0.False
+OK: audit03.snapshotMetadata.flag.p0.Yes
+OK: audit03.snapshotMetadata.flag.p0.No
+OK: audit03.snapshotMetadata.flag.p0.да
+OK: audit03.snapshotMetadata.flag.p0.нет
+OK: audit03.snapshotMetadata.flag.p0.1
+OK: audit03.snapshotMetadata.flag.p0.0
+OK: audit03.snapshotMetadata.status.p0.OK
+OK: audit03.snapshotMetadata.status.p0.FAIL
+OK: audit03.snapshotMetadata.status.p0.BaseFail
+OK: audit03.snapshotMetadata.status.p0.NumFail
+OK: audit03.snapshotMetadata.status.p0.InputErr
+OK: audit03.snapshotMetadata.status.p0.CalcErr
+OK: audit03.snapshotMetadata.status.p0.N/A
+OK: audit03.snapshotMetadata.unchanged.p0.exactValue2
+OK: audit03.snapshotMetadata.units.p1.mm.mode0.loaded
+OK: audit03.snapshotMetadata.units.p1.mm.mode0.minX; actual=-100; expected=-100
+OK: audit03.snapshotMetadata.units.p1.mm.mode0.loadX; actual=25; expected=25
+OK: audit03.snapshotMetadata.units.p1.mm.mode0.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.mm.mode0.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.mm.mode0.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p1.mm.mode0.curvature; actual=0.000002; expected=0.000002
+OK: audit03.snapshotMetadata.units.p1.mm.mode1.loaded
+OK: audit03.snapshotMetadata.units.p1.mm.mode1.minX; actual=-100; expected=-100
+OK: audit03.snapshotMetadata.units.p1.mm.mode1.loadX; actual=25; expected=25
+OK: audit03.snapshotMetadata.units.p1.mm.mode1.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.mm.mode1.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.mm.mode1.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p1.mm.mode2.loaded
+OK: audit03.snapshotMetadata.units.p1.mm.mode2.minX; actual=-100; expected=-100
+OK: audit03.snapshotMetadata.units.p1.mm.mode2.loadX; actual=25; expected=25
+OK: audit03.snapshotMetadata.units.p1.mm.mode2.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.mm.mode2.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.mm.mode2.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p1.cm.mode0.loaded
+FAIL: audit03.snapshotMetadata.units.p1.cm.mode0.minX; actual=-10; expected=-100
+FAIL: audit03.snapshotMetadata.units.p1.cm.mode0.loadX; actual=2.5; expected=25
+OK: audit03.snapshotMetadata.units.p1.cm.mode0.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.cm.mode0.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.cm.mode0.annotation; actual=-50; expected=-50
+FAIL: audit03.snapshotMetadata.units.p1.cm.mode0.curvature; actual=0.002; expected=0.000002
+OK: audit03.snapshotMetadata.units.p1.cm.mode1.loaded
+FAIL: audit03.snapshotMetadata.units.p1.cm.mode1.minX; actual=-10; expected=-100
+FAIL: audit03.snapshotMetadata.units.p1.cm.mode1.loadX; actual=2.5; expected=25
+OK: audit03.snapshotMetadata.units.p1.cm.mode1.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.cm.mode1.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.cm.mode1.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p1.cm.mode2.loaded
+FAIL: audit03.snapshotMetadata.units.p1.cm.mode2.minX; actual=-10; expected=-100
+FAIL: audit03.snapshotMetadata.units.p1.cm.mode2.loadX; actual=2.5; expected=25
+OK: audit03.snapshotMetadata.units.p1.cm.mode2.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.cm.mode2.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.cm.mode2.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p1.m.mode0.loaded
+FAIL: audit03.snapshotMetadata.units.p1.m.mode0.minX; actual=-0.1; expected=-100
+FAIL: audit03.snapshotMetadata.units.p1.m.mode0.loadX; actual=0.025; expected=25
+OK: audit03.snapshotMetadata.units.p1.m.mode0.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.m.mode0.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.m.mode0.annotation; actual=-50; expected=-50
+FAIL: audit03.snapshotMetadata.units.p1.m.mode0.curvature; actual=0.002; expected=0.000002
+OK: audit03.snapshotMetadata.units.p1.m.mode1.loaded
+FAIL: audit03.snapshotMetadata.units.p1.m.mode1.minX; actual=-0.1; expected=-100
+FAIL: audit03.snapshotMetadata.units.p1.m.mode1.loadX; actual=0.025; expected=25
+OK: audit03.snapshotMetadata.units.p1.m.mode1.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.m.mode1.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.m.mode1.annotation; actual=-50; expected=-50
+OK: audit03.snapshotMetadata.units.p1.m.mode2.loaded
+FAIL: audit03.snapshotMetadata.units.p1.m.mode2.minX; actual=-0.1; expected=-100
+FAIL: audit03.snapshotMetadata.units.p1.m.mode2.loadX; actual=0.025; expected=25
+OK: audit03.snapshotMetadata.units.p1.m.mode2.elementX; actual=-23.125; expected=-23.125
+OK: audit03.snapshotMetadata.units.p1.m.mode2.area; actual=10828.125; expected=10828.125
+OK: audit03.snapshotMetadata.units.p1.m.mode2.annotation; actual=-50; expected=-50
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v25.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v25.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v25.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v25.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v25.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row11.v25|
+OK: audit03.snapshotMetadata.invalid.p1.row11.v25.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v26.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v26.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v26.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v26.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v26.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row11.v26|
+OK: audit03.snapshotMetadata.invalid.p1.row11.v26.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v27.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v27.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v27.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v27.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v27.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row11.v27|
+OK: audit03.snapshotMetadata.invalid.p1.row11.v27.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v28.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v28.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v28.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v28.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row11.v28.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row11.v28|
+OK: audit03.snapshotMetadata.invalid.p1.row11.v28.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v29.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v29.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v29.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v29.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v29.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row12.v29|
+OK: audit03.snapshotMetadata.invalid.p1.row12.v29.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v30.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v30.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v30.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v30.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v30.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row12.v30|
+OK: audit03.snapshotMetadata.invalid.p1.row12.v30.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v31.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v31.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v31.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v31.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v31.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row12.v31|
+OK: audit03.snapshotMetadata.invalid.p1.row12.v31.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v32.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v32.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v32.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v32.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row12.v32.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row12.v32|
+OK: audit03.snapshotMetadata.invalid.p1.row12.v32.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v33.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v33.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v33.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v33.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v33.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row14.v33|
+OK: audit03.snapshotMetadata.invalid.p1.row14.v33.recovery
+OK: audit03.snapshotMetadata.invalid.p1.row14.v34.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v34.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v34.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v34.action
+OK: audit03.snapshotMetadata.invalid.p1.row14.v34.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row14.v34|Недопустимая единица длины: TODO
+OK: audit03.snapshotMetadata.invalid.p1.row14.v34.recovery
+OK: audit03.snapshotMetadata.invalid.p1.row14.v35.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v35.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v35.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v35.action
+OK: audit03.snapshotMetadata.invalid.p1.row14.v35.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row14.v35|Недопустимая единица длины: INVALID
+OK: audit03.snapshotMetadata.invalid.p1.row14.v35.recovery
+OK: audit03.snapshotMetadata.invalid.p1.row14.v36.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v36.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v36.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row14.v36.action
+OK: audit03.snapshotMetadata.invalid.p1.row14.v36.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row14.v36|Недопустимая единица длины: Error 2015
+OK: audit03.snapshotMetadata.invalid.p1.row14.v36.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v37.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v37.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v37.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v37.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v37.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row15.v37|
+OK: audit03.snapshotMetadata.invalid.p1.row15.v37.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v38.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v38.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v38.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v38.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v38.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row15.v38|
+OK: audit03.snapshotMetadata.invalid.p1.row15.v38.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v39.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v39.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v39.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v39.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v39.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row15.v39|
+OK: audit03.snapshotMetadata.invalid.p1.row15.v39.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v40.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v40.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v40.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v40.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row15.v40.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row15.v40|
+OK: audit03.snapshotMetadata.invalid.p1.row15.v40.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v41.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v41.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v41.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v41.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v41.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row16.v41|
+OK: audit03.snapshotMetadata.invalid.p1.row16.v41.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v42.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v42.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v42.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v42.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v42.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row16.v42|
+OK: audit03.snapshotMetadata.invalid.p1.row16.v42.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v43.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v43.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v43.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v43.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v43.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row16.v43|
+OK: audit03.snapshotMetadata.invalid.p1.row16.v43.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v44.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v44.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v44.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v44.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row16.v44.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row16.v44|
+OK: audit03.snapshotMetadata.invalid.p1.row16.v44.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v45.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v45.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v45.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v45.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v45.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row17.v45|
+OK: audit03.snapshotMetadata.invalid.p1.row17.v45.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v46.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v46.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v46.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v46.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v46.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row17.v46|
+OK: audit03.snapshotMetadata.invalid.p1.row17.v46.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v47.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v47.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v47.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v47.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v47.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row17.v47|
+OK: audit03.snapshotMetadata.invalid.p1.row17.v47.recovery
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v48.rejected
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v48.field
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v48.address
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v48.action
+FAIL: audit03.snapshotMetadata.invalid.p1.row17.v48.empty
+SNAPSHOT_METADATA_ERROR: audit03.snapshotMetadata.invalid.p1.row17.v48|
+OK: audit03.snapshotMetadata.invalid.p1.row17.v48.recovery
+FAIL: audit03.snapshotMetadata.fieldUnit.p1.row2.rejected
+FAIL: audit03.snapshotMetadata.fieldUnit.p1.row2.address
+FAIL: audit03.snapshotMetadata.fieldUnit.p1.row9.rejected
+FAIL: audit03.snapshotMetadata.fieldUnit.p1.row9.address
+FAIL: audit03.snapshotMetadata.annotationUnit.p1
+OK: audit03.snapshotMetadata.flag.p1.True
+OK: audit03.snapshotMetadata.flag.p1.False
+OK: audit03.snapshotMetadata.flag.p1.True
+OK: audit03.snapshotMetadata.flag.p1.False
+OK: audit03.snapshotMetadata.flag.p1.Yes
+OK: audit03.snapshotMetadata.flag.p1.No
+OK: audit03.snapshotMetadata.flag.p1.да
+OK: audit03.snapshotMetadata.flag.p1.нет
+OK: audit03.snapshotMetadata.flag.p1.1
+OK: audit03.snapshotMetadata.flag.p1.0
+OK: audit03.snapshotMetadata.status.p1.OK
+OK: audit03.snapshotMetadata.status.p1.FAIL
+OK: audit03.snapshotMetadata.status.p1.BaseFail
+OK: audit03.snapshotMetadata.status.p1.NumFail
+OK: audit03.snapshotMetadata.status.p1.InputErr
+OK: audit03.snapshotMetadata.status.p1.CalcErr
+OK: audit03.snapshotMetadata.status.p1.N/A
+OK: audit03.snapshotMetadata.unchanged.p1.exactValue2
+OK: audit03.snapshotMetadata.noSolve
+SNAPSHOT_METADATA_CASES: variants=66; geometryFixtures=1; equilibriumCases=0
+TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=183; failed=266
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4410d2f2ef6c4350b4b0480c3e9fb609\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestPlotConfig.RunAudit03SnapshotMetadataTests; 2026-10-04T11:30:05
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

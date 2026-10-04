@@ -268,7 +268,6 @@ Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal loadCa
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
     Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
     Dim colValue As Long: colValue = ResultColumn(data, "Value")
-
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         If StrComp(Trim$(SafeText(data(rowIndex, colLoadCase))), loadCase, vbTextCompare) = 0 And _
@@ -359,20 +358,37 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
     Dim colLoadCase As Long: colLoadCase = ResultColumn(data, "LoadCase")
     Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
     Dim colValue As Long: colValue = ResultColumn(data, "Value")
+    Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
 
     Dim rowIndex As Long
+    Dim parameter As String, loadCase As String
+    ' Сначала читаем единицы snapshot: порядок строк не должен влиять на
+    ' пересчет свойств, у которых единица в собственной строке не задана.
+    For rowIndex = 2 To UBound(data, 1)
+        parameter = Trim$(ReadSnapshotText(data(rowIndex, colParameter), anchor, rowIndex, colParameter, "Parameter"))
+        loadCase = Trim$(ReadSnapshotText(data(rowIndex, colLoadCase), anchor, rowIndex, colLoadCase, "LoadCase"))
+        If StrComp(loadCase, "ALL", vbTextCompare) = 0 Or Len(loadCase) = 0 Then
+            Select Case LCase$(parameter)
+                Case "output.lengthunit", "output.areaunit"
+                    ReadCommonProperty parameter, data(rowIndex, colValue), data(rowIndex, colUnit), anchor, rowIndex, colValue, colUnit
+                Case "output.stressunit", "output.curvatureunit"
+                    If Not mGeometryOnly Or mGeometryReferenceItemsEnabled Then _
+                        ReadCommonProperty parameter, data(rowIndex, colValue), data(rowIndex, colUnit), anchor, rowIndex, colValue, colUnit
+            End Select
+        End If
+    Next rowIndex
     ' В одной таблице лежат свойства ALL и свойства конкретных LC. Reader
     ' выбирает только общие строки и строки mLoadCase, остальные LC игнорируются.
     For rowIndex = 2 To UBound(data, 1)
-        Dim parameter As String
-        Dim loadCase As String
-        parameter = Trim$(CStr(data(rowIndex, colParameter)))
-        loadCase = Trim$(CStr(data(rowIndex, colLoadCase)))
+        parameter = Trim$(ReadSnapshotText(data(rowIndex, colParameter), anchor, rowIndex, colParameter, "Parameter"))
+        loadCase = Trim$(ReadSnapshotText(data(rowIndex, colLoadCase), anchor, rowIndex, colLoadCase, "LoadCase"))
         If Len(parameter) > 0 Then
             If StrComp(loadCase, "ALL", vbTextCompare) = 0 Or Len(loadCase) = 0 Then
-                ReadCommonProperty parameter, data(rowIndex, colValue), data(rowIndex, ResultColumn(data, "Unit")), anchor, rowIndex, colValue
+                If Left$(LCase$(parameter), 7) <> "output." Then _
+                    ReadCommonProperty parameter, data(rowIndex, colValue), data(rowIndex, colUnit), anchor, rowIndex, colValue, colUnit
             ElseIf StrComp(loadCase, mLoadCase, vbTextCompare) = 0 Then
-                ReadLoadCaseProperty parameter, data(rowIndex, colValue), data(rowIndex, ResultColumn(data, "Unit")), anchor, rowIndex, colValue
+                If Not mGeometryOnly Or mGeometryReferenceItemsEnabled Then _
+                    ReadLoadCaseProperty parameter, data(rowIndex, colValue), data(rowIndex, colUnit), anchor, rowIndex, colValue, colUnit
             End If
         End If
     Next rowIndex
@@ -396,7 +412,7 @@ End Sub
 ' Запоминает общие свойства расчетного снимка Results.
 ' Эти данные одинаково подходят для Generated и AutoCAD-геометрии.
 Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant, _
-        ByVal anchor As Object, ByVal row As Long, ByVal column As Long)
+        ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal unitColumn As Long)
     Select Case LCase$(parameter)
         Case "bounds.minx", "bounds.maxx", "bounds.miny", "bounds.maxy", _
                 "concrete.centroidx", "concrete.centroidy", "concrete.principalangle", _
@@ -405,7 +421,12 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
             value = ReadSnapshotNumber(value, anchor, row, column, parameter)
     End Select
     Dim unitText As String
-    unitText = Trim$(SafeText(unitValue))
+    Select Case LCase$(parameter)
+        Case "bounds.minx", "bounds.maxx", "bounds.miny", "bounds.maxy", _
+                "concrete.centroidx", "concrete.centroidy", "transformed.centroidx", "transformed.centroidy", _
+                "loadreferencex", "loadreferencey"
+            unitText = ReadSnapshotUnit(unitValue, "Length", mSnapshotLengthUnit, "mm", anchor, row, unitColumn, parameter & ".Unit", True)
+    End Select
     Select Case LCase$(parameter)
         Case "bounds.minx": mMinX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
         Case "bounds.maxx": mMaxX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
@@ -419,10 +440,10 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
         Case "transformed.principalangle": mPrincipalAngle = CDbl(value)
         Case "loadreferencex": mLoadReferenceX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
         Case "loadreferencey": mLoadReferenceY = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
-        Case "output.lengthunit": mSnapshotLengthUnit = CStr(value)
-        Case "output.areaunit": mSnapshotAreaUnit = CStr(value)
-        Case "output.stressunit": mStressUnit = CStr(value)
-        Case "output.curvatureunit": mSnapshotCurvatureUnit = CStr(value)
+        Case "output.lengthunit": mSnapshotLengthUnit = ReadSnapshotUnit(value, "Length", vbNullString, vbNullString, anchor, row, column, parameter)
+        Case "output.areaunit": mSnapshotAreaUnit = ReadSnapshotUnit(value, "Area", vbNullString, vbNullString, anchor, row, column, parameter)
+        Case "output.stressunit": mStressUnit = ReadSnapshotUnit(value, "Stress", vbNullString, vbNullString, anchor, row, column, parameter)
+        Case "output.curvatureunit": mSnapshotCurvatureUnit = ReadSnapshotUnit(value, "Curvature", vbNullString, vbNullString, anchor, row, column, parameter)
     End Select
 End Sub
 
@@ -430,7 +451,7 @@ End Sub
 ' допустимости найденного состояния. Точка приложения нагрузки читается из
 ' общего блока ALL, потому что она задается один раз для всего snapshot.
 Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant, _
-        ByVal anchor As Object, ByVal row As Long, ByVal column As Long)
+        ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal unitColumn As Long)
     Dim key As String
     Dim prefix As String
     key = LCase$(Trim$(parameter))
@@ -438,13 +459,14 @@ Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Varia
     If Left$(key, Len(prefix)) <> prefix Then Exit Sub
 
     Dim unitText As String
-    unitText = Trim$(SafeText(unitValue))
+    If Mid$(key, Len(prefix) + 1) = "kappax" Or Mid$(key, Len(prefix) + 1) = "kappay" Then _
+        unitText = ReadSnapshotUnit(unitValue, "Curvature", mSnapshotCurvatureUnit, "1/mm", anchor, row, unitColumn, parameter & ".Unit", True)
     Select Case Mid$(key, Len(prefix) + 1)
         Case "epsilon0": mEpsilon0 = ReadSnapshotNumber(value, anchor, row, column, parameter)
         Case "kappax": mKappaX = OutputCurvatureToInternalByUnit(ReadSnapshotNumber(value, anchor, row, column, parameter), UnitOrDefault(unitText, mSnapshotCurvatureUnit, "1/mm"))
         Case "kappay": mKappaY = OutputCurvatureToInternalByUnit(ReadSnapshotNumber(value, anchor, row, column, parameter), UnitOrDefault(unitText, mSnapshotCurvatureUnit, "1/mm"))
-        Case "extensionused": mExtensionUsed = SafeBoolean(value)
-        Case "status": mStateStatus = Trim$(SafeText(value))
+        Case "extensionused": mExtensionUsed = ReadSnapshotBoolean(value, anchor, row, column, parameter)
+        Case "status": mStateStatus = ReadSnapshotStatus(value, anchor, row, column, parameter)
     End Select
 End Sub
 
@@ -666,7 +688,7 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
         annotationType = Trim$(ReadAnnotationText(data(rowIndex, colType), anchor, rowIndex, colType, "AnnotationType"))
         If Len(annotationType) > 0 Then
             Dim lengthUnit As String
-            lengthUnit = AnnotationLengthUnit(data, rowIndex, colUnit, mSnapshotLengthUnit)
+            lengthUnit = ReadSnapshotUnit(data(rowIndex, colUnit), "Length", mSnapshotLengthUnit, "mm", anchor, rowIndex, colUnit, "Unit", True)
             Dim startX As Double, startY As Double, endX As Double, endY As Double
             Dim normalX As Double, normalY As Double, textValue As String
             startX = ReadAnnotationNumber(data(rowIndex, colStartX), anchor, rowIndex, colStartX, "StartX")
@@ -858,18 +880,83 @@ Private Function IsCrackVisualizationState(ByVal stateType As String) As Boolean
 NotCrackState:
 End Function
 
-' Читает логический флаг из Results. Snapshot может хранить True/False как
-' настоящий Boolean или как текст после ручного просмотра/копирования.
-Private Function SafeBoolean(ByVal value As Variant) As Boolean
-    If IsError(value) Then Exit Function
+' Читает сохраненный логический признак без подмены повреждения значением
+' False. Допускает Boolean и явные текстовые/числовые пары Yes/No, True/False.
+Private Function ReadSnapshotBoolean(ByVal value As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, ByVal field As String) As Boolean
+    If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
     If VarType(value) = vbBoolean Then
-        SafeBoolean = CBool(value)
+        ReadSnapshotBoolean = CBool(value)
     Else
         Select Case LCase$(Trim$(CStr(value)))
             Case "true", "yes", "да", "1"
-                SafeBoolean = True
+                ReadSnapshotBoolean = True
+            Case "false", "no", "нет", "0"
+                ReadSnapshotBoolean = False
+            Case Else
+                GoTo InvalidValue
         End Select
     End If
+    Exit Function
+InvalidValue:
+    Err.Raise vbObjectError + 4720, "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
+End Function
+
+' Проверяет сохраненный display-статус через единый словарь policy. Reader
+' не назначает инженерный результат: неизвестный текст означает испорченный
+' snapshot, а не новый CalcErr или N/A для найденного состояния.
+Private Function ReadSnapshotStatus(ByVal value As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, ByVal field As String) As String
+    Dim text As String, policy As CResultStatusPolicy
+    text = Trim$(ReadSnapshotText(value, anchor, row, column, field))
+    Set policy = New CResultStatusPolicy
+    ReadSnapshotStatus = policy.ToUserStatus(text)
+    If Len(text) = 0 Or StrComp(text, ReadSnapshotStatus, vbTextCompare) <> 0 Then _
+        Err.Raise vbObjectError + 4720, "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
+End Function
+
+' Читает служебный текст с адресной диагностикой Excel-ошибки/Null. Пустая
+' строка здесь допустима: обязательность определяет потребитель поля.
+Private Function ReadSnapshotText(ByVal value As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, ByVal field As String) As String
+    If IsError(value) Or IsNull(value) Then Err.Raise vbObjectError + 4720, _
+        "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
+    ReadSnapshotText = CStr(value)
+End Function
+
+' Выбирает единицу из строки либо метаданных snapshot и проверяет ее в
+' CUnitSystem. Пустое/"-" допустимо только для необязательной Unit-ячейки;
+' Excel-ошибка не является отсутствием единицы. Новых коэффициентов здесь нет.
+Private Function ReadSnapshotUnit(ByVal value As Variant, ByVal dimension As String, _
+        ByVal fallbackUnit As String, ByVal hardDefault As String, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, ByVal field As String, Optional ByVal allowBlank As Boolean = False) As String
+    Dim unitText As String, checked As Double
+    On Error GoTo InvalidValue
+    If IsError(value) Or IsNull(value) Then GoTo InvalidValue
+    unitText = Trim$(CStr(value))
+    If Len(unitText) = 0 Or unitText = "-" Then
+        If Not allowBlank Then GoTo InvalidValue
+        unitText = UnitOrDefault(unitText, fallbackUnit, hardDefault)
+    End If
+    Select Case dimension
+        Case "Length": checked = mUnits.OutputLengthToInternal(0#, unitText)
+        Case "Area": checked = mUnits.OutputAreaToInternal(0#, unitText)
+        Case "Stress": checked = mUnits.OutputStressToInternal(0#, unitText)
+        Case "Curvature": checked = mUnits.InternalCurvatureToOutput(0#, unitText)
+    End Select
+    ReadSnapshotUnit = unitText
+    Exit Function
+InvalidValue:
+    Err.Raise vbObjectError + 4720, "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
+End Function
+
+' Формирует причину повреждения по текущему якорю Results. Рекомендация
+' относится к восстановлению снимка, а не к изменению текущих input units.
+Private Function SnapshotMetadataInputMessage(ByVal anchor As Object, ByVal row As Long, _
+        ByVal column As Long, ByVal field As String) As String
+    SnapshotMetadataInputMessage = "В сохраненном снимке Results поле " & field & " (" & _
+        anchor.Worksheet.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False) & _
+        ") содержит недопустимое значение. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка."
 End Function
 
 ' Превращает значение ячейки в строку без падения на Excel-ошибках.
@@ -878,15 +965,8 @@ Private Function SafeText(ByVal value As Variant) As String
     SafeText = CStr(value)
 End Function
 
-' Возвращает единицу измерения из строки аннотации. Если строка не содержит
-' единицу или хранит служебный "-", используется единица длины всего snapshot.
-Private Function AnnotationLengthUnit(ByRef data As Variant, ByVal rowIndex As Long, _
-        ByVal colUnit As Long, ByVal defaultUnit As String) As String
-    AnnotationLengthUnit = UnitOrDefault(SafeText(data(rowIndex, colUnit)), defaultUnit, "mm")
-End Function
-
-' Выбирает рабочую единицу для числового поля Results. Пустые и служебные
-' значения не должны ломать старые snapshots, где часть Unit-колонки пустая.
+' Выбирает рабочую единицу для числового поля Results. Пустая Unit-ячейка
+' или "-" означает единицу из metadata snapshot, а не из текущего Config.
 Private Function UnitOrDefault(ByVal unitText As String, ByVal fallbackUnit As String, _
         ByVal hardDefault As String) As String
     Dim normalized As String

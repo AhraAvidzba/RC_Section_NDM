@@ -69,6 +69,37 @@
 
 ## Актуальная Точка Продолжения
 
+- После checkpoint `ce232662e26477aeb481675706d0659aa5ef4784`
+  выполнен metadata-срез v212-v216. Negative v212: 183/266; подтверждены
+  зависимость координат/кривизн от порядка Output.*Unit, молчаливый False
+  и поврежденные Unit/status. Reader сначала читает единицы snapshot,
+  валидирует активные metadata с текущим адресом; CUnitSystem принимает
+  optional saved stress unit без изменения прежних conversions.
+  Positive v213: 449/0, расширенный v214: 471/0. В v214 соседний lifecycle
+  выявил новую регрессию 3749/180: слишком широко отключена проверка plane
+  missing-state режима. Исправлена без ослабления прежних assertions.
+  v215: general+metadata 1880/0, reader lifecycle 3929/0, geometry snapshot
+  1158/0, profile presentation 681/0; structure 27/27, formatting 1003/0,
+  palette/save-reopen 355/0. Final v216 отличается только уточненным
+  комментарием; general+metadata повторно 1880/0, source unchanged=True.
+  Results v215 before/after reopen SHA
+  E05C0BF950A1F5DA36E0BF42A1B9A7C7C68FBA4EA8006FC9B4F2470AC42B6C96,
+  status styles 1EABA40A72D5A28392F11FC5D38F0D2B1E9B264FDFAD9F5514ACB9EE1A1E1132.
+  Book v216 SHA FD5B54048C18E5E13601F4E364C7DA1C8D8F60F9ED1E356C414E9A1B9835E91C;
+  actual VBE export 111 components, SHA
+  0156B1644A3ED6BAA2B5A20165F9FCCE5187854D5766D73317AC55AC7645CFE5.
+  Canonical VBA_All_Code.txt содержит эти фактические байты; финальная
+  source equality 106/106, failed=0. Structure v216 27/27,
+  palette/reopen 355/0, unit/sign consumers 44/0, imported-unit changes 228/0.
+  Results v216 before/after SHA
+  4229D60E3CDE8B06B0568364C1C74FB748E53F1378ACCE794DD62BF6EF73AA98;
+  styles SHA прежний. Все source unchanged=True. Census 106/4412/1700,
+  semantic acceptance Pending. Scope/evidence: NDM_Audit03_Snapshot_Metadata_Review.md.
+  Full Off/On не повторяется: numerical gate v206 остается 82221/82232,
+  финальный release gate обязателен. Main output/ТЗ и user Excel не изменены.
+  AutoUpdate, остальные metadata resolvers/arc parser, крайняя арифметика,
+  полный Config range/pairwise и итоговая матрица остаются открытыми.
+
 - General Plot/annotation срез v207-v210 проверяет только presentation на
   готовых synthetic Results, без solver и новых classes. Negative v207c:
   1000/123; v209b: 1147/168. Подтверждены late validation после очистки Chart,

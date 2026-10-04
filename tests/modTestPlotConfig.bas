@@ -24,10 +24,204 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     TestAudit03GeneralPlotContracts stats
     TestAudit03AnnotationLayoutContracts stats
     TestAudit03PlotEnableContracts stats
+    TestAudit03SnapshotMetadataContracts stats
     AppendLine stats, "TOTAL_AUDIT03_GENERAL_PLOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03GeneralPlotTests = stats.Report
 End Function
+
+' Проверяет метаданные сохраненного snapshot отдельно от расчетного ядра.
+' Порядок строк, текущие Config units и перенос якоря не меняют координаты;
+' поврежденные активные единицы/флаги/статусы не подменяются defaults.
+Public Function RunAudit03SnapshotMetadataTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03SnapshotMetadataContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_SNAPSHOT_METADATA: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SnapshotMetadataTests = stats.Report
+End Function
+
+' Создает собственный snapshot с единицами после численных свойств. Проверяет
+' публичные reader-режимы, точные данные Results и восстановление того же
+' reader-а после ошибки с фактическим, в том числе перенесенным адресом.
+Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
+    Dim fixture As Object, config As Object, sheet As Object, source As Object, table As Object, anchor As Object, cell As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader
+    Dim geometry As Variant, props(1 To 18, 1 To 4) As Variant, elements(1 To 3, 1 To 7) As Variant
+    Dim annotations(1 To 2, 1 To 9) As Variant, keys As Variant, values As Variant, units As Variant, factors As Variant
+    Dim index As Long, row As Variant, position As Long, mode As Long, variantIndex As Long, code As Long, cases As Long
+    Dim unit As Variant, bad As Variant, flag As Variant, state As Variant, baseline As Variant, actual As Variant
+    Dim factor As Double, curvatureFactor As Double, reason As String, prefix As String, solveCount As Long
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "MetadataConfig"
+    Set sheet = fixture.Worksheets.Add: sheet.Name = "Results"
+    Set table = Audit03PlotSettingsTable(config.Range("A5"))
+    Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    config.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Value2 = source.Value2
+    For row = 2 To source.Rows.Count
+        If CStr(source.Cells(row, 2).Value2) = "Visualization.State" Then config.Range("AF5").Cells(row, 3).Value2 = "StrengthState"
+        If CStr(source.Cells(row, 2).Value2) = "Visualization.Quantity" Then config.Range("AF5").Cells(row, 3).Value2 = "Stress"
+    Next row
+    fixture.Names.Add Name:="rngCalculationProfiles", RefersTo:="=MetadataConfig!" & config.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Address
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Results!$R$35"
+    fixture.Names.Add Name:="rngNDMSectionAnnotations", RefersTo:="=Results!$A$20"
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$R$5"
+    elements(1, 1) = "LoadCase": elements(1, 2) = "ProfileId": elements(1, 3) = "StateType": elements(1, 4) = "ElementID"
+    elements(1, 5) = "Strain": elements(1, 6) = "Stress": elements(1, 7) = "PhysicalState"
+    For row = 2 To 3
+        elements(row, 1) = "PLOT": elements(row, 2) = "PR1": elements(row, 3) = "StrengthState"
+        elements(row, 5) = -0.0001: elements(row, 6) = -1.25: elements(row, 7) = "Compression"
+    Next row
+    elements(2, 4) = "C1": elements(3, 4) = "R1"
+    sheet.Range("R35").Resize(3, 7).Value2 = elements
+    keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
+    For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
+    annotations(2, 1) = "DIMENSION": annotations(2, 2) = -5#: annotations(2, 3) = 0#
+    annotations(2, 4) = 5#: annotations(2, 5) = 0#: annotations(2, 6) = 0#: annotations(2, 7) = 1#
+    annotations(2, 8) = "DIM": annotations(2, 9) = "-"
+    keys = Array("Bounds.MinX", "Bounds.MaxX", "Bounds.MinY", "Bounds.MaxY", "LoadReferenceX", "LoadReferenceY", _
+        "State.StrengthState.Epsilon0", "State.StrengthState.KappaX", "State.StrengthState.KappaY", _
+        "State.StrengthState.ExtensionUsed", "State.StrengthState.Status", "ProfileId", _
+        "Output.LengthUnit", "Output.AreaUnit", "Output.StressUnit", "Output.CurvatureUnit", "Concrete.PrincipalAngle")
+    values = Array(-100#, 100#, -100#, 100#, 25#, -50#, -0.0001, 0.000002, -0.000003, "False", "OK", "PR1", "mm", "mm2", "MPa", "1/mm", 0.25)
+    props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
+    For index = 0 To UBound(keys)
+        row = index + 2: props(row, 1) = "ALL"
+        If index >= 6 And index <= 11 Then props(row, 1) = "PLOT"
+        props(row, 2) = keys(index): props(row, 3) = values(index): props(row, 4) = "-"
+    Next index
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange table
+    Set reader = New CSectionPlotDataReader
+    units = Array("mm", "cm", "m"): factors = Array(1#, 10#, 1000#)
+    For position = 0 To 1
+        If position = 0 Then Set anchor = sheet.Range("R5") Else Set anchor = sheet.Range("CH800")
+        sheet.Range("R5:U22").ClearContents
+        fixture.Names.Item("rngNDMSectionProperties").RefersTo = "=Results!" & anchor.Address
+        For index = 0 To UBound(units)
+            unit = units(index): factor = CDbl(factors(index))
+            geometry = Audit03GeometrySnapshotArray(CStr(unit), factor)
+            geometry(1, 3) = "X": geometry(1, 4) = "Y": geometry(1, 5) = "Area"
+            sheet.Range("A5").Resize(3, 15).Value2 = geometry
+            For row = 2 To 7: props(row, 3) = CDbl(values(row - 2)) / factor: Next row
+            props(14, 3) = unit: props(15, 3) = CStr(unit) & "2"
+            If index = 0 Then curvatureFactor = 1# Else curvatureFactor = 1000#
+            props(9, 3) = 0.000002 * curvatureFactor: props(10, 3) = -0.000003 * curvatureFactor
+            If index = 0 Then props(17, 3) = "1/mm" Else props(17, 3) = "1/m"
+            annotations(2, 2) = -50# / factor: annotations(2, 4) = 50# / factor
+            anchor.Resize(18, 4).Value2 = props: sheet.Range("A20").Resize(2, 9).Value2 = annotations
+            For mode = 0 To 2
+                cases = cases + 1: Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
+                prefix = "audit03.snapshotMetadata.units.p" & CStr(position) & "." & CStr(unit) & ".mode" & CStr(mode)
+                AssertTrue stats, prefix & ".loaded", code = 0 And reader.Count = 2
+                If code = 0 Then
+                    AssertClose stats, prefix & ".minX", reader.MinX, -100#, 0.000000001
+                    AssertClose stats, prefix & ".loadX", reader.LoadReferenceX, 25#, 0.000000001
+                    AssertClose stats, prefix & ".elementX", reader.X(1), -23.125, 0.000000001
+                    AssertClose stats, prefix & ".area", reader.Area(1), 10828.125, 0.000000001
+                    AssertClose stats, prefix & ".annotation", reader.AnnotationStartX(1), -50#, 0.000000001
+                    If mode = 0 Then AssertClose stats, prefix & ".curvature", reader.KappaX, 0.000002, 0.000000000001
+                End If
+            Next mode
+        Next index
+        ' Возвращаем mm baseline перед ошибками отдельных метаданных.
+        For index = 0 To UBound(values): props(index + 2, 3) = values(index): Next index
+        anchor.Resize(18, 4).Value2 = props
+        sheet.Range("A5").Resize(3, 15).Value2 = Audit03GeometrySnapshotArray("mm", 1#)
+        annotations(2, 2) = -50#: annotations(2, 4) = 50#: sheet.Range("A20").Resize(2, 9).Value2 = annotations
+        baseline = sheet.Range("A5:X37").Value2
+        For Each row In Array(11, 12, 14, 15, 16, 17)
+            Set cell = anchor.Cells(row, 3)
+            For Each bad In Array("", "TODO", "INVALID", CVErr(2015))
+                variantIndex = variantIndex + 1: cases = cases + 1: cell.Value2 = bad
+                Audit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+                prefix = "audit03.snapshotMetadata.invalid.p" & CStr(position) & ".row" & CStr(row) & ".v" & CStr(variantIndex)
+                AssertTrue stats, prefix & ".rejected", code <> 0
+                AssertTrue stats, prefix & ".field", InStr(1, reason, CStr(anchor.Cells(row, 2).Value2), vbTextCompare) > 0
+                AssertTrue stats, prefix & ".address", InStr(1, reason, "Results!" & cell.Address(False, False), vbTextCompare) > 0
+                AssertTrue stats, prefix & ".action", InStr(1, reason, "Повторите", vbTextCompare) > 0 Or InStr(1, reason, "Исправьте", vbTextCompare) > 0
+                AssertTrue stats, prefix & ".empty", reader.Count = 0 And reader.AnnotationCount = 0
+                AppendLine stats, "SNAPSHOT_METADATA_ERROR: " & prefix & "|" & reason
+                cell.Value2 = values(row - 2): Audit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+                AssertTrue stats, prefix & ".recovery", code = 0 And reader.Count = 2
+            Next bad
+        Next row
+        For Each row In Array(2, 9)
+            Set cell = anchor.Cells(row, 4): cell.Value2 = CVErr(2015)
+            Audit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+            prefix = "audit03.snapshotMetadata.fieldUnit.p" & CStr(position) & ".row" & CStr(row)
+            AssertTrue stats, prefix & ".rejected", code <> 0
+            AssertTrue stats, prefix & ".address", InStr(1, reason, "Results!" & cell.Address(False, False), vbTextCompare) > 0
+            cell.Value2 = "-"
+        Next row
+        Set cell = sheet.Range("I21"): cell.Value2 = CVErr(2015)
+        Audit03ReadLifecycleLoad reader, fixture, settings, 1, code, reason
+        AssertTrue stats, "audit03.snapshotMetadata.annotationUnit.p" & CStr(position), code <> 0 And InStr(1, reason, "Results!I21", vbTextCompare) > 0
+        cell.Value2 = "-"
+        For Each flag In Array(True, False, "True", "False", "Yes", "No", "да", "нет", 1, 0)
+            anchor.Cells(11, 3).Value2 = flag: reader.LoadFromWorkbook fixture, settings
+            AssertTrue stats, "audit03.snapshotMetadata.flag.p" & CStr(position) & "." & CStr(flag), reader.ExtensionUsed = CBool(InStr(1, "|true|yes|да|1|", "|" & LCase$(CStr(flag)) & "|", vbBinaryCompare) > 0)
+        Next flag
+        anchor.Cells(11, 3).Value2 = "False"
+        For Each state In Array("OK", "FAIL", "BaseFail", "NumFail", "InputErr", "CalcErr", "N/A")
+            anchor.Cells(12, 3).Value2 = state: reader.LoadFromWorkbook fixture, settings
+            AssertTrue stats, "audit03.snapshotMetadata.status.p" & CStr(position) & "." & CStr(state), reader.DirectStateStatus = CStr(state)
+        Next state
+        anchor.Cells(12, 3).Value2 = "OK"
+        actual = sheet.Range("A5:X37").Value2: Audit03ComparePlainSnapshot stats, "audit03.snapshotMetadata.unchanged.p" & CStr(position), baseline, actual, 1
+        ' Unit и Value распознаются по шапке, а не по взаимному смещению.
+        values = anchor.Resize(18, 4).Value2
+        actual = values
+        For row = 1 To 18
+            actual(row, 3) = values(row, 4): actual(row, 4) = values(row, 3)
+        Next row
+        anchor.Resize(18, 4).Value2 = actual
+        reader.LoadFromWorkbook fixture, settings
+        AssertClose stats, "audit03.snapshotMetadata.columns.p" & CStr(position), reader.MinX, -100#, 0#
+        anchor.Cells(2, 3).Value2 = CVErr(2015)
+        Audit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+        AssertTrue stats, "audit03.snapshotMetadata.columns.address.p" & CStr(position), code <> 0 And InStr(1, reason, "Results!" & anchor.Cells(2, 3).Address(False, False), vbTextCompare) > 0
+        anchor.Resize(18, 4).Value2 = values
+        ' Неиспользуемое состояние другого LC не влияет на выбранный снимок.
+        anchor.Cells(19, 1).Value2 = "OTHER": anchor.Cells(19, 2).Value2 = "State.StrengthState.KappaX"
+        anchor.Cells(19, 3).Value2 = CVErr(2015): anchor.Cells(19, 4).Value2 = CVErr(2015)
+        reader.LoadFromWorkbook fixture, settings
+        AssertTrue stats, "audit03.snapshotMetadata.otherLC.p" & CStr(position), reader.Count = 2 And reader.KappaX = 0.000002
+        anchor.Cells(19, 1).Resize(1, 4).ClearContents
+        ' Явная единица строки имеет приоритет над общим metadata default.
+        anchor.Cells(14, 3).Value2 = "m": anchor.Cells(2, 3).Value2 = -10#: anchor.Cells(2, 4).Value2 = "cm"
+        reader.LoadFromWorkbook fixture, settings
+        AssertClose stats, "audit03.snapshotMetadata.fieldOverride.p" & CStr(position), reader.MinX, -100#, 0#
+        anchor.Resize(18, 4).Value2 = values
+        For Each unit In Array("Pa", "kPa", "MPa", "kgf/cm2", "tf/m2")
+            anchor.Cells(16, 3).Value2 = unit: reader.LoadFromWorkbook fixture, settings
+            AssertTrue stats, "audit03.snapshotMetadata.stress.p" & CStr(position) & "." & CStr(unit), reader.ResultUnit = CStr(unit) And reader.ResultValue(1) = -1.25
+        Next unit
+        anchor.Cells(16, 3).Value2 = "MPa"
+        ' Import-preview не использует plane/status/extension и напряжения.
+        ' Missing-state reader сохраняет проверку уже записанных данных LC.
+        For Each row In Array(9, 11, 12, 16, 17): anchor.Cells(row, 3).Value2 = CVErr(2015): Next row
+        For mode = 1 To 2
+            Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
+            If mode = 1 Then
+                AssertTrue stats, "audit03.snapshotMetadata.geometry.inactive.p" & CStr(position), code = 0 And reader.Count = 2
+            Else
+                AssertTrue stats, "audit03.snapshotMetadata.missingState.validates.p" & CStr(position), code <> 0 And reader.Count = 0
+            End If
+        Next mode
+        anchor.Resize(18, 4).Value2 = values
+        values = Array(-100#, 100#, -100#, 100#, 25#, -50#, -0.0001, 0.000002, -0.000003, "False", "OK", "PR1", "mm", "mm2", "MPa", "1/mm", 0.25)
+    Next position
+    AssertTrue stats, "audit03.snapshotMetadata.noSolve", SectionEquilibriumSolveCount() = solveCount
+    AppendLine stats, "SNAPSHOT_METADATA_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "audit03.snapshotMetadata.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
 
 ' Неверный активный ввод не должен очищать прежний рисунок. Проверяем
 ' восстановление, перенос таблицы, выключенные потребители и положительный

@@ -190,9 +190,11 @@ Public Function InternalStressToOutput(ByVal value As Double) As Double
     InternalStressToOutput = value / StressFactorToMPa(mOutputStress)
 End Function
 
-' Переводит напряжение из OUTPUT-единиц обратно во внутренние МПа.
-Public Function OutputStressToInternal(ByVal value As Double) As Double
-    OutputStressToInternal = value * StressFactorToMPa(mOutputStress)
+' Переводит напряжение из OUTPUT-единиц обратно во внутренние МПа. Для
+' сохраненного Results можно явно передать его единицу, независимо от Config.
+Public Function OutputStressToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
+    If Len(savedUnit) = 0 Then savedUnit = mOutputStress
+    OutputStressToInternal = value * StressFactorToMPa(savedUnit)
 End Function
 
 ' Переводит кривизну из INPUT-единиц во внутренние 1/мм.

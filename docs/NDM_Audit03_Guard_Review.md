@@ -371,3 +371,23 @@ solver/search код не менялись. Это приемка перечис
 всех Double границ label-сетки или F07. AutoUpdate, snapshot Unit/boolean/text
 metadata, Excel guard, linear-system extreme arithmetic и полная semantic
 ревизия остаются открытыми. Census: 106/4407/1675, acceptance Pending.
+
+## Snapshot Metadata v216
+
+Negative v212 183/266 подтвердил late Output.*Unit и молчаливую подмену
+поврежденных Unit/boolean/status. Двухпроходное чтение сохраняет единицы
+snapshot независимо от порядка строк; проверка Unit использует CUnitSystem,
+display-статуса - CResultStatusPolicy. Ошибка содержит текущий адрес поля,
+включая переставленную Unit-колонку, и действие восстановления снимка.
+
+Новая регрессия v214 3749/180 в missing-state reader устранена без изменения
+старых expected/tolerance. v215: general+metadata 1880/0, lifecycle 3929/0,
+geometry 1158/0, presentation 681/0, structure 27/27, formatting 1003/0,
+palette/reopen 355/0. Final comment-only v216: general+metadata 1880/0.
+66 основных metadata variants, дополнительные флаги/status/единицы/переносы,
+synthetic geometry, noSolve и exact Results Value2/type invariant.
+
+Это приемка перечисленных metadata-потребителей, не всех resolver-ов/арcs,
+Double guards или F07. AutoUpdate, Excel guard и semantic review остаются
+открытыми; census 106 modules/4412 methods/1700 guards - inspection index.
+Full numerical Off/On остается v206 и повторяется на окончательном release.
