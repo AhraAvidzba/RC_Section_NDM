@@ -33,11 +33,7 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
 
     Dim acad As Object
-    On Error Resume Next
-    Set acad = GetObject(, "AutoCAD.Application")
-    On Error GoTo 0
-    If acad Is Nothing Then Err.Raise vbObjectError + 4401, "CAutoCADSectionModelImporter", _
-        "AutoCAD не открыт. Откройте AutoCAD с нужным чертежом и повторите импорт."
+    Set acad = ConnectToRunningAutoCAD()
 
     Dim doc As Object
     On Error Resume Next
@@ -56,6 +52,12 @@ End Function
 Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal settings As CSystemSettingsReader, _
         Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
+    Dim concreteLayer As String, rebarLayer As String
+    concreteLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Import.ConcreteLayer")
+    rebarLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Import.RebarLayer")
+    If StrComp(concreteLayer, rebarLayer, vbTextCompare) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
+        settings.InputErrorMessage("AutoCAD.Import.RebarLayer", "Слои бетона и арматуры совпадают; тип Region нельзя определить однозначно.", _
+            "Введите разные имена AutoCAD.Import.ConcreteLayer и AutoCAD.Import.RebarLayer.")
     Dim importUnits As CUnitSystem
     Set importUnits = units
     If importUnits Is Nothing Then
@@ -72,8 +74,7 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     minArea = importUnits.InputAreaToInternal(minArea)
     On Error GoTo 0
     Set ImportConfiguredModelSpace = ImportFromModelSpace(modelSpace, _
-        settings.GetRequiredString("AutoCAD.Import.ConcreteLayer"), _
-        settings.GetRequiredString("AutoCAD.Import.RebarLayer"), REBAR_STEEL_CLASS, minArea, importUnits)
+        concreteLayer, rebarLayer, REBAR_STEEL_CLASS, minArea, importUnits)
     Exit Function
 InvalidMinimumArea:
     Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
@@ -87,6 +88,10 @@ End Function
 Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteLayer As String, _
         ByVal rebarLayer As String, ByVal steelClass As String, ByVal minArea As Double, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
+    If Len(Trim$(concreteLayer)) = 0 Or Len(Trim$(rebarLayer)) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
+        "Не заданы слои импорта. Укажите отдельный слой бетонных Region и отдельный слой арматурных Region."
+    If StrComp(Trim$(concreteLayer), Trim$(rebarLayer), vbTextCompare) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
+        "Слои бетона и арматуры совпадают. Укажите разные слои, чтобы однозначно определить тип каждого Region."
 
     Dim model As CSectionModel
     Set model = New CSectionModel

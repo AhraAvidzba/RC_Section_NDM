@@ -32,7 +32,6 @@ End Type
 Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
 Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
 Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
-Private Const DEFAULT_CONTOUR_LAYER As String = "RC_NDM_Contour"
 Private Const CONTOUR_LAYER_COLOR_INDEX As Long = 4 ' AutoCAD ColorIndex 4 - голубой/cyan для нового слоя параметрического контура.
 Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001
 Private mSnapshotUnits As CUnitSystem ' Пересчет по явным единицам Results; не загружается из текущего Config.
@@ -114,7 +113,7 @@ Public Sub ClearAutoCADDrawing()
     informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
 
     Dim exportSettings As TAutoCADExportSettings
-    exportSettings = ReadAutoCADExportSettings(settings)
+    exportSettings = ReadAutoCADExportSettings(settings, True)
 
     Dim acad As Object
     Set acad = ConnectToRunningAutoCAD()
@@ -123,7 +122,7 @@ Public Sub ClearAutoCADDrawing()
     Set doc = ActiveAutoCADDocument(acad)
 
     Dim deletedCount As Long
-    deletedCount = DeleteAutoCADEntitiesOnLayers(doc, AutoCADCleanupLayerSet(exportSettings))
+    deletedCount = DeleteAutoCADEntitiesOnLayers(doc.ModelSpace, AutoCADCleanupLayerSet(exportSettings))
     doc.Regen 1
 
     If informationEnabled Then
@@ -166,17 +165,14 @@ Private Sub AddCleanupLayer(ByVal layers As Object, ByVal layerName As String)
 End Sub
 
 ' Проходит ModelSpace с конца, чтобы безопасно удалять найденные объекты.
-' Удаление идет только по слоям оформления; остальные сущности чертежа не
-' затрагиваются, даже если они были созданы не этой программой.
-Private Function DeleteAutoCADEntitiesOnLayers(ByVal doc As Object, ByVal layers As Object) As Long
-    Dim ms As Object
-    Set ms = doc.ModelSpace
-
+' Region всегда сохраняются. Остальные объекты удаляются только со слоев
+' оформления, поэтому пользовательские объекты не следует размещать на них.
+Private Function DeleteAutoCADEntitiesOnLayers(ByVal ms As Object, ByVal layers As Object) As Long
     Dim i As Long
     For i = ms.Count - 1 To 0 Step -1
         Dim entity As Object
         Set entity = ms.Item(i)
-        If layers.Exists(CStr(entity.Layer)) Then
+        If layers.Exists(CStr(entity.Layer)) And StrComp(CStr(entity.ObjectName), "AcDbRegion", vbTextCompare) <> 0 Then
             entity.Delete
             DeleteAutoCADEntitiesOnLayers = DeleteAutoCADEntitiesOnLayers + 1
         End If
@@ -196,10 +192,12 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
     Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
-    combinationID = ResolveExportCombinationID(workbook, settings.GetRawString("AutoCAD.Export.CombinationID", "Worst"))
+    combinationID = ResolveExportCombinationID(workbook, settings.GetRequiredString("AutoCAD.Export.CombinationID"))
     profileId = ReadProfileIdForLoadCase(workbook, combinationID)
     If Len(profileId) = 0 Then Err.Raise vbObjectError + 4366, "ReadResultsExportState", _
-        "В Results не найден ProfileId для сочетания: " & combinationID
+        settings.InputErrorMessage("AutoCAD.Export.CombinationID", _
+            "В сохраненных Results не найдено сочетание " & combinationID & " с расчетным профилем.", _
+            "Выберите Worst или ID сохраненного сочетания; для новых нагрузок сначала выполните расчет.")
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
@@ -812,15 +810,17 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
         ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
         ByVal resultPrecision As Long, ByVal stateWarningText As String, ByRef exportSettings As TAutoCADExportSettings, _
-        ByRef contourExportCount As Long)
+        ByRef contourExportCount As Long, Optional ByVal targetDocument As Object = Nothing)
     ' Проверяем все углы до подключения и добавления объектов в чертеж.
     Dim arcSweeps As Object
     If exportSettings.ContourEnabled Then Set arcSweeps = ReadSavedContourArcSweeps(ThisWorkbook)
-    Dim acad As Object
-    Set acad = ConnectToRunningAutoCAD()
-
     Dim doc As Object
-    Set doc = ActiveAutoCADDocument(acad)
+    Set doc = targetDocument
+    If doc Is Nothing Then
+        Dim acad As Object
+        Set acad = ConnectToRunningAutoCAD()
+        Set doc = ActiveAutoCADDocument(acad)
+    End If
 
     Dim ms As Object
     Set ms = doc.ModelSpace
@@ -834,7 +834,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     EnsureAcadLayer doc, "RC_NDM_Axes", 3
     EnsureAcadLayer doc, "RC_NDM_LoadPoint", 2
     EnsureAcadLayer doc, "RC_NDM_NeutralLine", exportSettings.NeutralColor
-    EnsureAcadLayer doc, exportSettings.ContourLayer, CONTOUR_LAYER_COLOR_INDEX
+    If exportSettings.ContourEnabled Then EnsureAcadLayer doc, exportSettings.ContourLayer, CONTOUR_LAYER_COLOR_INDEX
     EnsureAcadLayer doc, EXTENSION_WARNING_LAYER, 1
 
     Dim i As Long
@@ -1287,14 +1287,30 @@ End Sub
 ' Подключается только к уже открытому AutoCAD.
 ' Если приложение не запущено, возвращаем свою русскую ошибку вместо COM-текста
 ' вроде "ActiveX component can't create object".
-Private Function ConnectToRunningAutoCAD() As Object
-    On Error Resume Next
-    Set ConnectToRunningAutoCAD = GetObject(, "AutoCAD.Application")
-    On Error GoTo 0
-    If ConnectToRunningAutoCAD Is Nothing Then
-        Err.Raise vbObjectError + 4310, "ConnectToRunningAutoCAD", _
-            "AutoCAD не открыт. Откройте AutoCAD с нужным чертежом и повторите экспорт."
-    End If
+Public Function ConnectToRunningAutoCAD() As Object
+    Dim progID As Variant, candidate As Object
+    ' GetObject без имени файла только подключается к ROT, не запускает CAD.
+    ' Версионные ProgID нужны, если общий ключ поврежден другой DWG-программой.
+    For Each progID In Array("AutoCAD.Application", "AutoCAD.Application.25.1", "AutoCAD.Application.25", _
+            "AutoCAD.Application.24.3", "AutoCAD.Application.24.2", "AutoCAD.Application.24.1", _
+            "AutoCAD.Application.24", "AutoCAD.Application.23.1", "AutoCAD.Application.23", "AutoCAD.Application.22")
+        Set candidate = RunningAutodeskAutoCAD(CStr(progID))
+        If Not candidate Is Nothing Then Set ConnectToRunningAutoCAD = candidate: Exit Function
+    Next progID
+    Err.Raise vbObjectError + 4310, "ConnectToRunningAutoCAD", _
+        "Не найден доступный Autodesk AutoCAD. Откройте AutoCAD с нужным чертежом, завершите активную команду или диалог и повторите действие."
+End Function
+
+' Проверяет именно запущенный Autodesk acad.exe, а не OEM-приложение,
+' занявшее его COM-регистрацию. Ошибки одной отсутствующей регистрации не
+' мешают проверить остальные версии; никакой CreateObject здесь нет.
+Private Function RunningAutodeskAutoCAD(ByVal progID As String) As Object
+    On Error GoTo NotAvailable
+    Dim candidate As Object, executable As String
+    Set candidate = GetObject(, progID)
+    executable = LCase$(CStr(candidate.FullName))
+    If Right$(executable, 9) = "\acad.exe" Then Set RunningAutodeskAutoCAD = candidate
+NotAvailable:
 End Function
 
 ' Возвращает активный чертеж AutoCAD.
@@ -1313,42 +1329,92 @@ End Function
 ' Собирает настройки слоев, цветов, подписей и главных осей для одного экспорта.
 ' Общий settings-reader проверяет типы, профиль Results выбирает величину/state;
 ' этот набор управляет только построением и не меняет расчетные материалы.
-Private Function ReadAutoCADExportSettings(ByVal settings As CSystemSettingsReader) As TAutoCADExportSettings
-    With ReadAutoCADExportSettings
-        .ConcreteLayer = settings.GetString("AutoCAD.Layer.Concrete", "Concrete")
-        .RebarLayer = settings.GetString("AutoCAD.Layer.Rebar", "Reinf")
-        .ConcreteTensionLayer = settings.GetString("AutoCAD.Layer.ConcreteTension", "Anno_Concrete_Tension")
-        .ConcreteCompressionLayer = settings.GetString("AutoCAD.Layer.ConcreteCompression", "Anno_Concrete_Compression")
-        .RebarTensionLayer = settings.GetString("AutoCAD.Layer.RebarTension", "Anno_Rebar_Tension")
-        .RebarCompressionLayer = settings.GetString("AutoCAD.Layer.RebarCompression", "Anno_Rebar_Compression")
-        .ConcreteTensionColor = settings.GetLong("AutoCAD.Color.ConcreteTension", 9)
-        .ConcreteCompressionColor = settings.GetLong("AutoCAD.Color.ConcreteCompression", 5)
-        .RebarTensionColor = settings.GetLong("AutoCAD.Color.RebarTension", 1)
-        .RebarCompressionColor = settings.GetLong("AutoCAD.Color.RebarCompression", 6)
-        .NeutralColor = settings.GetLong("AutoCAD.Color.Neutral", 8)
-        .IncludeElementNames = AutoCADLabelModeIncludesNames(settings.GetRawString("AutoCAD.Export.LabelMode", "NamesAndValues"))
-        .NeutralLineEnabled = settings.GetBoolean("AutoCAD.Export.NeutralLineEnabled", True)
-        .PrincipalAxesMode = AutoCADPrincipalAxesMode(settings)
-        .LoadPointEnabled = settings.GetBoolean("AutoCAD.Export.LoadPointEnabled", True)
-        .ContourEnabled = settings.GetBoolean("AutoCAD.Export.ContourEnabled", True)
-        .ContourLayer = settings.GetString("AutoCAD.Layer.Contour", DEFAULT_CONTOUR_LAYER)
+Private Function ReadAutoCADExportSettings(ByVal settings As CSystemSettingsReader, _
+        Optional ByVal forCleanup As Boolean = False) As TAutoCADExportSettings
+    Dim options As TAutoCADExportSettings
+    With options
+        .ConcreteLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Layer.Concrete")
+        .RebarLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Layer.Rebar")
+        .ConcreteTensionLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Layer.ConcreteTension")
+        .ConcreteCompressionLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Layer.ConcreteCompression")
+        .RebarTensionLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Layer.RebarTension")
+        .RebarCompressionLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Layer.RebarCompression")
+        If Not forCleanup Then
+            .ConcreteTensionColor = RequiredAutoCADColor(settings, "AutoCAD.Color.ConcreteTension")
+            .ConcreteCompressionColor = RequiredAutoCADColor(settings, "AutoCAD.Color.ConcreteCompression")
+            .RebarTensionColor = RequiredAutoCADColor(settings, "AutoCAD.Color.RebarTension")
+            .RebarCompressionColor = RequiredAutoCADColor(settings, "AutoCAD.Color.RebarCompression")
+            .NeutralColor = RequiredAutoCADColor(settings, "AutoCAD.Color.Neutral")
+            .IncludeElementNames = AutoCADLabelModeIncludesNames(settings.GetRequiredChoice("AutoCAD.Export.LabelMode", Array("ValuesOnly", "NamesAndValues")))
+            .NeutralLineEnabled = settings.GetRequiredBoolean("AutoCAD.Export.NeutralLineEnabled")
+            .PrincipalAxesMode = AutoCADPrincipalAxesMode(settings)
+            .LoadPointEnabled = settings.GetRequiredBoolean("AutoCAD.Export.LoadPointEnabled")
+            .ContourEnabled = settings.GetRequiredBoolean("AutoCAD.Export.ContourEnabled")
+        End If
+        If forCleanup Or .ContourEnabled Then .ContourLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Layer.Contour")
     End With
+    Dim cleanupLayers As Object
+    Set cleanupLayers = AutoCADCleanupLayerSet(options)
+    If cleanupLayers.Exists(options.ConcreteLayer) Then RaiseGeometryLayerCollision settings, "AutoCAD.Layer.Concrete"
+    If cleanupLayers.Exists(options.RebarLayer) Then RaiseGeometryLayerCollision settings, "AutoCAD.Layer.Rebar"
+    ReadAutoCADExportSettings = options
 End Function
 
-' Читает режим осей AutoCAD export. Старый Yes/No-ключ остается только
-' fallback-ом для старых книг; новый Config использует PrincipalAxesMode.
+' Проверяет общий для import/export синтаксис длинных имен AutoCAD-слоев.
+' Config-адрес берется у reader-а; длина/символы проверяются до изменения DWG.
+Public Function RequiredAutoCADLayerName(ByVal settings As CSystemSettingsReader, ByVal key As String) As String
+    Dim value As String, i As Long, character As String, invalid As Boolean
+    value = settings.GetRequiredString(key)
+    invalid = (Len(value) > 255)
+    For i = 1 To Len(value)
+        character = Mid$(value, i, 1)
+        If AscW(character) >= 0 And AscW(character) < 32 Then invalid = True
+        If InStr(1, "<>/\" & Chr$(34) & ":;?,*|='", character, vbBinaryCompare) > 0 Then invalid = True
+    Next i
+    If invalid Then Err.Raise vbObjectError + 4385, "RequiredAutoCADLayerName", _
+        settings.InputErrorMessage(key, "Имя слоя AutoCAD недопустимо.", _
+            "Введите имя длиной от 1 до 255 символов без управляющих символов и <>/\" & Chr$(34) & ":;?,*|='.")
+    RequiredAutoCADLayerName = value
+End Function
+
+' Цвет применяется и к сущностям, и к новому Layer: допустимы ACI 1..255.
+' Специальные ByBlock/ByLayer не являются цветами слоя и не заменяют ввод.
+Private Function RequiredAutoCADColor(ByVal settings As CSystemSettingsReader, ByVal key As String) As Long
+    Dim value As Long: value = settings.GetRequiredLong(key)
+    If value < 1 Or value > 255 Then Err.Raise vbObjectError + 4386, "RequiredAutoCADColor", _
+        settings.InputErrorMessage(key, "Индекс цвета AutoCAD выходит за допустимый диапазон.", _
+            "Введите целый индекс ACI от 1 до 255; 0 (ByBlock) и 256 (ByLayer) здесь не допускаются.")
+    RequiredAutoCADColor = value
+End Function
+
+' Защищает Region-слои от технического оформления и будущей очистки.
+' Общие annotation-слои допустимы; запрещено смешивать их с геометрией.
+Private Sub RaiseGeometryLayerCollision(ByVal settings As CSystemSettingsReader, ByVal key As String)
+    Err.Raise vbObjectError + 4387, "ReadAutoCADExportSettings", _
+        settings.InputErrorMessage(key, "Слой геометрии совпадает со слоем оформления, который очищается программой.", _
+            "Введите отдельное имя слоя бетона или арматуры, отличное от слоев подписей, контура и RC_NDM_Axes/LoadPoint/NeutralLine/Warnings.")
+End Sub
+
+' Читает обязательный режим осей. Совместимый Boolean-ключ используется
+' только при отсутствии PrincipalAxesMode; пустое каноническое поле ошибочно.
 Private Function AutoCADPrincipalAxesMode(ByVal settings As CSystemSettingsReader) As String
     Dim rawValue As String
-    rawValue = Trim$(settings.GetString("AutoCAD.Export.PrincipalAxesMode", vbNullString))
-    If Len(rawValue) = 0 And settings.HasKey("AutoCAD.Export.PrincipalAxesEnabled") Then
-        If settings.GetBoolean("AutoCAD.Export.PrincipalAxesEnabled", True) Then
+    If Not settings.HasKey("AutoCAD.Export.PrincipalAxesMode") And settings.HasKey("AutoCAD.Export.PrincipalAxesEnabled") Then
+        If settings.GetRequiredBoolean("AutoCAD.Export.PrincipalAxesEnabled") Then
             rawValue = "Transformed"
         Else
             rawValue = "None"
         End If
+    Else
+        rawValue = settings.GetRequiredString("AutoCAD.Export.PrincipalAxesMode")
     End If
-    If Len(rawValue) = 0 Then rawValue = "Transformed"
+    On Error GoTo InvalidMode
     AutoCADPrincipalAxesMode = NormalizePrincipalAxesMode(rawValue, "AutoCAD.Export.PrincipalAxesMode")
+    Exit Function
+InvalidMode:
+    Err.Raise vbObjectError + 4313, "AutoCADPrincipalAxesMode", _
+        settings.InputErrorMessage("AutoCAD.Export.PrincipalAxesMode", "Вариант главных осей не распознан.", _
+            "Выберите Transformed, Concrete или None.")
 End Function
 
 ' Приводит пользовательский выбор осей к единому внутреннему тексту.
@@ -1765,13 +1831,17 @@ Private Sub EnsureAcadLayer(ByVal doc As Object, ByVal layerName As String, ByVa
     On Error Resume Next
     Dim layer As Object
     Set layer = doc.Layers.Item(layerName)
-    Dim layerCreated As Boolean
+    Err.Clear
+    On Error GoTo Failed
     If layer Is Nothing Then
         Set layer = doc.Layers.Add(layerName)
-        layerCreated = True
+        layer.Color = colorIndex
     End If
-    If layerCreated Then layer.Color = colorIndex
-    On Error GoTo 0
+    Exit Sub
+Failed:
+    Err.Raise vbObjectError + 4388, "EnsureAcadLayer", _
+        "Не удалось создать или настроить слой AutoCAD """ & layerName & """. " & _
+        "Проверьте допустимость имени для текущего чертежа, возможность записи и завершите активную команду AutoCAD."
 End Sub
 
 ' Добавляет WCS-окружность маркера с заданным слоем и цветом.
@@ -1893,5 +1963,67 @@ Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As S
     Next key
     Audit02ReadExportSnapshotForTests = result
 End Function
+
+' Проверяет рабочие правила оформления без создания DWG. Возвращает тот же
+' текст, выбранный слой и цвет, которыми пользуется цикл экспорта; флаги сами
+' по себе не подтверждают фактическое создание графики в настоящем AutoCAD.
+Public Function Audit03AutoCADPresentationForTests(ByVal settings As CSystemSettingsReader, _
+        ByVal materialType As String, ByVal physicalState As String, _
+        ByVal elementID As String, ByVal value As Double, ByVal precision As Long) As Object
+    Dim options As TAutoCADExportSettings, result As Object
+    options = ReadAutoCADExportSettings(settings)
+    Set result = CreateObject("Scripting.Dictionary")
+    result.Add "Label", ResultLabelText(elementID, value, options.IncludeElementNames, precision)
+    result.Add "Color", ResultColorByPhysicalState(materialType, physicalState, options)
+    result.Add "AnnotationLayer", ResultAnnotationLayerByPhysicalState(materialType, physicalState, options)
+    If StrComp(materialType, "Rebar", vbTextCompare) = 0 Then
+        result.Add "GeometryLayer", options.RebarLayer
+    Else
+        result.Add "GeometryLayer", options.ConcreteLayer
+    End If
+    result.Add "AxesMode", options.PrincipalAxesMode
+    result.Add "NeutralLine", options.NeutralLineEnabled
+    result.Add "LoadPoint", options.LoadPointEnabled
+    result.Add "Contour", options.ContourEnabled
+    result.Add "ContourLayer", options.ContourLayer
+    Set Audit03AutoCADPresentationForTests = result
+End Function
+
+' Запускает настоящий алгоритм очистки на переданном ModelSpace fixture.
+' Тестовые сущности только отмечают Delete; эта проверка не заменяет DWG,
+' но выявляет удаление Region и ошибочную передачу выбранных слоев.
+Public Function Audit03CleanupAutoCADModelSpaceForTests(ByVal modelSpace As Object, _
+        ByVal settings As CSystemSettingsReader) As Long
+    Dim options As TAutoCADExportSettings
+    options = ReadAutoCADExportSettings(settings, True)
+    Audit03CleanupAutoCADModelSpaceForTests = DeleteAutoCADEntitiesOnLayers(modelSpace, AutoCADCleanupLayerSet(options))
+End Function
+
+' Выполняет весь рабочий export pipeline в переданный собственный тестовый
+' документ, не выбирая случайный ActiveDocument. Возвращает число добавленных
+' сущностей; вызывающий тест проверяет их настоящие CAD-свойства и геометрию.
+Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object) As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, options As TAutoCADExportSettings
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    options = ReadAutoCADExportSettings(settings)
+    Dim section As CSectionModel, values As Object, physicalStates As Object
+    Dim combinationID As String, profileID As String, stateType As String, quantity As String, precision As Long
+    Dim eps0 As Double, kx As Double, ky As Double, referenceX As Double, referenceY As Double
+    Dim centroidX As Double, centroidY As Double, angle As Double, extended As Boolean, warning As String
+    ReadResultsExportState ThisWorkbook, settings, units, options.PrincipalAxesMode, section, values, physicalStates, _
+        combinationID, profileID, stateType, quantity, precision, eps0, kx, ky, referenceX, referenceY, _
+        centroidX, centroidY, angle, extended, warning
+    Dim before As Long, contours As Long: before = doc.ModelSpace.Count
+    DrawResultsStressExport section, values, physicalStates, eps0, kx, ky, referenceX, referenceY, _
+        centroidX, centroidY, angle, precision, warning, options, contours, doc
+    Audit03ExportAutoCADDocumentForTests = doc.ModelSpace.Count - before
+End Function
+
+' Проверяет настоящий Layer API тем же методом, который вызывает экспорт.
+' Важна сохранность существующего слоя и отсутствие проглоченной ошибки Add.
+Public Sub Audit03EnsureAutoCADLayerForTests(ByVal doc As Object, ByVal name As String, ByVal color As Long)
+    EnsureAcadLayer doc, name, color
+End Sub
 
 

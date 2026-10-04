@@ -27,6 +27,7 @@ Private mLayer As String ' Слой, по которому importer относи
 Private mHandle As String ' Тестовый handle для трассировки.
 Private mEdgeRotation As Double ' Угол простой грани, отдаваемой Explode.
 Private mHasEdge As Boolean ' Есть ли у тестового Region пригодная прямая грань.
+Private mDeleted As Boolean ' ДЛЯ ТЕСТОВ: был ли Delete вызван для этой сущности, а не ее Copy.
 
 ' Заполняет фактические свойства тестового Region.
 Public Sub Initialize(ByVal area As Double, ByVal xCoord As Double, ByVal yCoord As Double, _
@@ -43,6 +44,7 @@ Public Sub Initialize(ByVal area As Double, ByVal xCoord As Double, ByVal yCoord
     mHandle = handleText
     mEdgeRotation = edgeRotation
     mHasEdge = hasEdge
+    mDeleted = False
 End Sub
 
 ' Возвращает имя AutoCAD-типа, по которому importer распознает Region.
@@ -116,4 +118,12 @@ End Function
 
 ' Имитирует удаление временной копии Region.
 Public Sub Delete()
+    mDeleted = True
 End Sub
+
+' ============================== ДЛЯ ТЕСТОВ ==============================
+' Позволяет проверке очистки отличить сохраненный Region от удаленного,
+' не создавая AutoCAD application или дополнительный тестовый класс.
+Public Property Get Deleted() As Boolean
+    Deleted = mDeleted
+End Property

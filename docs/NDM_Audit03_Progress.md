@@ -69,6 +69,18 @@
 
 ## Актуальная Точка Продолжения
 
+- Реальный Autodesk AutoCAD 2023, не SOFiPLUS: CAD Config v271 1279/0,
+  392 consumer-сценария в исходном и перенесенном Range; native DWG 409/0.
+  Подтверждены mm export/import после смены текущих units/signs, фактические
+  Layer/Text/Region, флаги оформления, отсутствие нового solve, Region-safe
+  cleanup и DWG save/reopen. Версионный ROT connector принимает только acad.exe;
+  COM-регистрации не менялись. Guide/native v272: help failed=0, 760 inputs
+  сохранены после reopen, structure 27/27, source/export 108/108. Новых классов
+  нет. Review: NDM_Audit03_AutoCAD_Config_Review.md. Pixel capture возвращает
+  timeout и не считается PASS. Полный eight-suite Off v272 выполняется на
+  отдельной копии; registry v257 пока не продвинут. Пользовательский Excel
+  23476 и output-книга не затронуты; общий Audit03 не завершен.
+
 - Контроль после v263: полный eight-suite Off завершился, exit=1,
   source unchanged=True. Расчетные suites зеленые, Batch 25607/0;
   WorkbookUI 64151/12. Подробные причины в General_Geometry_Config_Review:

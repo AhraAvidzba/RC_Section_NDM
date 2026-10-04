@@ -1,0 +1,22 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_autocad_positive_v267.xlsm
+SOURCE_SHA256: 1BFCE0AB56F5E7C79B70E34FEC4DB3699B904478B950443E995BCAF3F6A2B289
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_53b8eca243e444f899cefea34661ee6b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestAutoCADConfig.RunAudit03RealAutoCADTests =====
+SUITE_STARTED: modTestAutoCADConfig.RunAudit03RealAutoCADTests; 2026-10-04T21:05:48
+EXCEL_AFTER_SUITE: pid=17832; workingSet=145235968; privateBytes=103673856; cpu=3.296875
+EXCEL_AFTER_SUITE: pid=23476; workingSet=220286976; privateBytes=172314624; cpu=17346.0625
+AUTOCAD_SNAPSHOT: 
+AUTOCAD_SNAPSHOT: 
+OK: autoCADConfig.snapshot.state1
+OK: autoCADConfig.snapshot.state2
+REAL_AUTOCAD: C:\Program Files\Autodesk\AutoCAD 2023\acad.exe|version=24.2s (LMS Tech)|HWND=25888782
+OK: realAutoCAD.layer.existingColor
+FAIL: realAutoCAD.runtime; -2147217116; Не удалось создать или настроить слой AutoCAD "AUDIT_BYBLOCK". Проверьте допустимость имени для текущего чертежа, возможность записи и завершите активную команду AutoCAD.
+TOTAL_REAL_AUTOCAD: passed=3; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_53b8eca243e444f899cefea34661ee6b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestAutoCADConfig.RunAudit03RealAutoCADTests; 2026-10-04T21:05:51
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

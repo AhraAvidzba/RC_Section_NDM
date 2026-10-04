@@ -1,0 +1,132 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_autocad_positive_v269.xlsm
+SOURCE_SHA256: 086CB828658358DB3035D4142D1C30FEC8A4870038A4609C27DE788F547ECF22
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_46d99fdb7c5844399c8ae2c9eb14d973\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestAutoCADConfig.RunAudit03RealAutoCADTests =====
+SUITE_STARTED: modTestAutoCADConfig.RunAudit03RealAutoCADTests; 2026-10-04T21:18:08
+EXCEL_AFTER_SUITE: pid=14808; workingSet=146292736; privateBytes=106954752; cpu=4.640625
+EXCEL_AFTER_SUITE: pid=23476; workingSet=220520448; privateBytes=172584960; cpu=17346.171875
+AUTOCAD_SNAPSHOT: 
+AUTOCAD_SNAPSHOT: 
+OK: autoCADConfig.snapshot.state1
+OK: autoCADConfig.snapshot.state2
+REAL_SNAPSHOT: CAD_CFG|PR1|StrengthState|Stress|False||4.89217063108277E-21|2.67740385954354E-08|1.33870192977178E-08|0|0
+C1|-6.52617190763743E-02|Compression
+C2|2.17539063587914E-02|Tension
+C3|-2.17539063587916E-02|Compression
+C4|6.52617190763741E-02|Tension
+R1|-0.48193269471783|Compression
+R2|0.160644231572613|Tension
+R3|-0.160644231572604|Compression
+R4|0.481932694717839|Tension
+REAL_AUTOCAD: C:\Program Files\Autodesk\AutoCAD 2023\acad.exe|version=24.2s (LMS Tech)|HWND=25888782
+OK: realAutoCAD.layer.existingColor
+OK: realAutoCAD.layer.color1
+OK: realAutoCAD.layer.color255
+OK: realAutoCAD.export.added
+OK: realAutoCAD.export.regions
+OK: realAutoCAD.export.concrete
+OK: realAutoCAD.export.rebar
+OK: realAutoCAD.export.axes
+OK: realAutoCAD.export.loadPoint
+OK: realAutoCAD.export.neutralLine
+OK: realAutoCAD.export.contour
+OK: realAutoCAD.color.C1.AcDbRegion
+OK: realAutoCAD.color.C1.AcDbText
+OK: realAutoCAD.color.C2.AcDbRegion
+OK: realAutoCAD.color.C2.AcDbText
+OK: realAutoCAD.color.C3.AcDbRegion
+OK: realAutoCAD.color.C3.AcDbText
+OK: realAutoCAD.color.C4.AcDbRegion
+OK: realAutoCAD.color.C4.AcDbText
+OK: realAutoCAD.color.R1.AcDbRegion
+OK: realAutoCAD.color.R1.AcDbText
+OK: realAutoCAD.color.R2.AcDbRegion
+OK: realAutoCAD.color.R2.AcDbText
+OK: realAutoCAD.color.R3.AcDbRegion
+OK: realAutoCAD.color.R3.AcDbText
+OK: realAutoCAD.color.R4.AcDbRegion
+OK: realAutoCAD.color.R4.AcDbText
+OK: realAutoCAD.import.counts
+AUTOCAD_NUMBER: realAutoCAD.import.concreteArea.1|actual=10000|expected=10000|tolerance=0.00000001
+OK: realAutoCAD.import.concreteArea.1
+AUTOCAD_NUMBER: realAutoCAD.import.concreteX.1|actual=50|expected=50|tolerance=0.00000001
+OK: realAutoCAD.import.concreteX.1
+AUTOCAD_NUMBER: realAutoCAD.import.concreteY.1|actual=50|expected=50|tolerance=0.00000001
+OK: realAutoCAD.import.concreteY.1
+AUTOCAD_NUMBER: realAutoCAD.import.concreteArea.2|actual=10000|expected=10000|tolerance=0.00000001
+OK: realAutoCAD.import.concreteArea.2
+AUTOCAD_NUMBER: realAutoCAD.import.concreteX.2|actual=50|expected=50|tolerance=0.00000001
+OK: realAutoCAD.import.concreteX.2
+AUTOCAD_NUMBER: realAutoCAD.import.concreteY.2|actual=50|expected=50|tolerance=0.00000001
+OK: realAutoCAD.import.concreteY.2
+AUTOCAD_NUMBER: realAutoCAD.import.concreteArea.3|actual=10000|expected=10000|tolerance=0.00000001
+OK: realAutoCAD.import.concreteArea.3
+AUTOCAD_NUMBER: realAutoCAD.import.concreteX.3|actual=50|expected=50|tolerance=0.00000001
+OK: realAutoCAD.import.concreteX.3
+AUTOCAD_NUMBER: realAutoCAD.import.concreteY.3|actual=50|expected=50|tolerance=0.00000001
+OK: realAutoCAD.import.concreteY.3
+AUTOCAD_NUMBER: realAutoCAD.import.concreteArea.4|actual=10000|expected=10000|tolerance=0.00000001
+OK: realAutoCAD.import.concreteArea.4
+AUTOCAD_NUMBER: realAutoCAD.import.concreteX.4|actual=50|expected=50|tolerance=0.00000001
+OK: realAutoCAD.import.concreteX.4
+AUTOCAD_NUMBER: realAutoCAD.import.concreteY.4|actual=50|expected=50|tolerance=0.00000001
+OK: realAutoCAD.import.concreteY.4
+AUTOCAD_NUMBER: realAutoCAD.import.rebarArea.1|actual=201.061929829747|expected=201.061929829747|tolerance=0.00000001
+OK: realAutoCAD.import.rebarArea.1
+AUTOCAD_NUMBER: realAutoCAD.import.rebarX.1|actual=60|expected=60|tolerance=0.00000001
+OK: realAutoCAD.import.rebarX.1
+AUTOCAD_NUMBER: realAutoCAD.import.rebarY.1|actual=60|expected=60|tolerance=0.00000001
+OK: realAutoCAD.import.rebarY.1
+AUTOCAD_NUMBER: realAutoCAD.import.rebarArea.2|actual=201.061929829747|expected=201.061929829747|tolerance=0.00000001
+OK: realAutoCAD.import.rebarArea.2
+AUTOCAD_NUMBER: realAutoCAD.import.rebarX.2|actual=60|expected=60|tolerance=0.00000001
+OK: realAutoCAD.import.rebarX.2
+AUTOCAD_NUMBER: realAutoCAD.import.rebarY.2|actual=60|expected=60|tolerance=0.00000001
+OK: realAutoCAD.import.rebarY.2
+AUTOCAD_NUMBER: realAutoCAD.import.rebarArea.3|actual=201.061929829747|expected=201.061929829747|tolerance=0.00000001
+OK: realAutoCAD.import.rebarArea.3
+AUTOCAD_NUMBER: realAutoCAD.import.rebarX.3|actual=60|expected=60|tolerance=0.00000001
+OK: realAutoCAD.import.rebarX.3
+AUTOCAD_NUMBER: realAutoCAD.import.rebarY.3|actual=60|expected=60|tolerance=0.00000001
+OK: realAutoCAD.import.rebarY.3
+AUTOCAD_NUMBER: realAutoCAD.import.rebarArea.4|actual=201.061929829747|expected=201.061929829747|tolerance=0.00000001
+OK: realAutoCAD.import.rebarArea.4
+AUTOCAD_NUMBER: realAutoCAD.import.rebarX.4|actual=60|expected=60|tolerance=0.00000001
+OK: realAutoCAD.import.rebarX.4
+AUTOCAD_NUMBER: realAutoCAD.import.rebarY.4|actual=60|expected=60|tolerance=0.00000001
+OK: realAutoCAD.import.rebarY.4
+OK: realAutoCAD.disabled.NeutralLine
+OK: realAutoCAD.disabled.geometry.NeutralLine
+OK: realAutoCAD.disabled.LoadPoint
+OK: realAutoCAD.disabled.geometry.LoadPoint
+OK: realAutoCAD.disabled.Contour
+OK: realAutoCAD.disabled.geometry.Contour
+OK: realAutoCAD.disabled.PrincipalAxes
+OK: realAutoCAD.disabled.geometry.PrincipalAxes
+OK: realAutoCAD.label.ValuesOnly.1
+OK: realAutoCAD.label.ValuesOnly.2
+OK: realAutoCAD.label.ValuesOnly.3
+OK: realAutoCAD.label.ValuesOnly.4
+OK: realAutoCAD.label.ValuesOnly.5
+OK: realAutoCAD.label.ValuesOnly.6
+OK: realAutoCAD.label.ValuesOnly.7
+OK: realAutoCAD.label.ValuesOnly.8
+OK: realAutoCAD.label.count.ValuesOnly
+OK: realAutoCAD.label.NamesAndValues.1
+OK: realAutoCAD.label.NamesAndValues.2
+OK: realAutoCAD.label.NamesAndValues.3
+OK: realAutoCAD.label.NamesAndValues.4
+OK: realAutoCAD.label.NamesAndValues.5
+OK: realAutoCAD.label.NamesAndValues.6
+OK: realAutoCAD.label.NamesAndValues.7
+OK: realAutoCAD.label.NamesAndValues.8
+OK: realAutoCAD.label.count.NamesAndValues
+FAIL: realAutoCAD.runtime; -2147216967; Настройка Sign.Mx.User (лист Config, ячейка I14): Правило знака момента Mx не распознано. Выберите +Y tension или -Y tension: знак Y обозначает сторону растяжения при положительном Mx.
+TOTAL_REAL_AUTOCAD: passed=80; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_46d99fdb7c5844399c8ae2c9eb14d973\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestAutoCADConfig.RunAudit03RealAutoCADTests; 2026-10-04T21:18:14
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True
