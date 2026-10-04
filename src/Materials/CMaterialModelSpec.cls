@@ -27,9 +27,11 @@ Private mConcreteTension As EConcreteTensionKind ' Ignore или UseDiagram дл
 Private mSteelDiagram As ESteelDiagramKind ' TwoLine или ThreeLine для арматуры.
 Private mComplete As Boolean ' True, если все четыре поля успешно заданы.
 
-' Заполняет спецификацию по текстам из rngCalculationProfiles.
+' Заполняет спецификацию по текстам из rngCalculationProfiles. До успешного
+' разбора всех полей она недоступна provider-у, включая повторный ввод.
 Public Sub Initialize(ByVal valueSetText As String, ByVal concreteDiagramText As String, _
         ByVal concreteTensionText As String, ByVal steelDiagramText As String)
+    mComplete = False
     mValueSet = MaterialValueSetFromText(valueSetText)
     mConcreteDiagram = ConcreteDiagramKindFromText(concreteDiagramText)
     mConcreteTension = ConcreteTensionKindFromText(concreteTensionText)

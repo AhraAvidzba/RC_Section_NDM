@@ -1,0 +1,17 @@
+﻿{
+    "BaselineReport":  "docs/regression/Audit03/full_on_geometry_snapshot_v204_2026-10-04.txt",
+    "CurrentReport":  "docs/regression/Audit03/read_lifecycle_all_on_v206.log",
+    "BaselineSHA256":  "E27B6F10A0763805EF7494124F7F3F2E5C269E5DBFC2D59C68BF9D0D345CB93B",
+    "CurrentSHA256":  "B3AFDDA8660AEAA9EC3544DB3B1B0E1C30B8CB1D11FCED18D04F41BB481D5E84",
+    "BaselineNumericAssertions":  18427,
+    "CurrentNumericAssertions":  18632,
+    "Compared":  18427,
+    "Missing":  [
+
+                ],
+    "Differences":  [
+
+                    ],
+    "AcceptanceScope":  "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+    "Passed":  true
+}

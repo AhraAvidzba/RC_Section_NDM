@@ -69,6 +69,35 @@
 
 ## Актуальная Точка Продолжения
 
+- После checkpoint `37493b2` выполнен цельный lifecycle/read срез v205-v206.
+  Spec valid-invalid-valid не должен сохранять complete; Catalog публикуется
+  только после всех столбцов; три PlotDataReader entrypoints очищают частичный
+  snapshot при отказе. Численные свойства и element Stress/Strain проверяются
+  до CDbl, с текущим полем/адресом/действием; private SafeDouble больше не нужен.
+  Первое v205 остановлено из-за ошибочного имени нового assertion-helper;
+  это test-only defect, не production finding. Negative v205b: 1021/2556;
+  расширенный v205c: 1091/2838. Positive v206: 3929/0, 468 variants,
+  geometryFixtures=1/equilibriumCases=0, noSolve/unchanged property snapshot.
+  Подробности: NDM_Audit03_Read_Lifecycle_Review.md.
+  Все gates замороженного v206 завершены. Full Off 82221/0 и Full On
+  82232/0, UI 60318/0 в каждом; source unchanged=True. С v204 точно
+  совпали 18422 Off и 18427 On общих numeric actual-values,
+  missing=0/differences=0, без изменения expected/tolerance. Read-only
+  structure 27/27, formatting 1003/0 (1002 адреса/deviations=0),
+  palette/save-reopen 355/0; Results и actual status styles сохранены.
+  Help v204/v206: 2628 непустых ячеек, текст/объединения совпали, failed=0;
+  это не новая clean-сборка. Actual read-only VBE/source 105/105,
+  failed=0, 110 компонентов. Export SHA
+  9B01E7073D4C95102B6613DDC72FC507884E4B15B10EA8B6D112118F45566B6F;
+  canonical VBA_All_Code.txt содержит этот же фактический экспорт.
+  Book SHA 6AFEEB93764A158D93F0E32A77F8CAACEDE6C1139428BD100101C6278A007464.
+  Census 105 modules/4390 methods/1639 guard candidates, semantic acceptance
+  Pending. Локальный checkpoint включает только собственные изменения
+  среза и его доказательства, без push/destructive Git. Общий audit не завершен;
+  registry 666/1064 и оставшиеся 94 editable не получают blanket PASS.
+  General Plot/annotation, metadata/Excel guard/крайняя арифметика остаются
+  следующим цельным scope. Main output/user Excel не изменялись.
+
 - Presentation/snapshot срез v199 зафиксирован `59987235128fce0661069239a43d675cf5bbca9c`.
   Следующий цельный срез v200-v204 проверяет публичное восстановление импортной
   геометрии и оба reader-режима без solve. Первый v200: 0/1 из-за ошибочной

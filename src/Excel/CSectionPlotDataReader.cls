@@ -91,10 +91,12 @@ End Sub
 ' Загружает все данные, необходимые для Excel-схемы.
 ' Метод намеренно читает расчетные значения только из Results. Из Config
 ' используется только выбор LC и текущие настройки визуализации профиля.
+' При ошибке частичный снимок удаляется; исходная причина передается caller-у.
 Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
+    On Error GoTo Failed
     ResetReaderState
     mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
     ApplyVisualizationProfile workbook
@@ -102,15 +104,23 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
     ReadSectionProperties workbook
     ReadGeometryAndResults workbook
     ReadAnnotations workbook
+    Exit Sub
+Failed:
+    Dim errorNumber As Long, description As String, errorSource As String
+    errorNumber = Err.Number: description = Err.Description: errorSource = Err.Source
+    ResetReaderState
+    Err.Raise errorNumber, errorSource, description
 End Sub
 
 ' Загружает геометрию последнего AutoCAD import для визуального контроля.
 ' Расчетные результаты и нейтральная линия не читаются, но сохраненные
 ' габаритные аннотации по Bounds можно показать сразу после импорта.
+' Неуспешное чтение не оставляет доступной часть предыдущего или нового снимка.
 Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
+    On Error GoTo Failed
     ResetReaderState
     mGeometryOnly = True
     mGeometryOnlyTitle = "Импортированная геометрия AutoCAD"
@@ -122,17 +132,25 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     mResultUnit = "-"
     ReadGeometryPreview workbook
     ReadAnnotations workbook
+    Exit Sub
+Failed:
+    Dim errorNumber As Long, description As String, errorSource As String
+    errorNumber = Err.Number: description = Err.Description: errorSource = Err.Source
+    ResetReaderState
+    Err.Raise errorNumber, errorSource, description
 End Sub
 
 ' Загружает расчетную геометрию из Results, когда выбранное состояние НДС
 ' отсутствует в snapshot. Это не AutoCAD-preview и не повторный расчет:
 ' пользователь видит актуальную геометрию последнего запуска и понятную
 ' подпись, почему цветовая раскраска Stress/Strain недоступна.
+' Ошибка восстановления очищает reader, не подменяя отсутствующие данные нулями.
 Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
         ByVal settings As CSystemSettingsReader, Optional ByVal noteText As String = vbNullString)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4700, "CSectionPlotDataReader", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4701, "CSectionPlotDataReader", "Настройки Config не переданы."
 
+    On Error GoTo Failed
     ResetReaderState
     mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
     ApplyVisualizationProfile workbook
@@ -148,6 +166,12 @@ Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
     mResultUnit = "-"
     ReadGeometryPreview workbook
     ReadAnnotations workbook
+    Exit Sub
+Failed:
+    Dim errorNumber As Long, description As String, errorSource As String
+    errorNumber = Err.Number: description = Err.Description: errorSource = Err.Source
+    ResetReaderState
+    Err.Raise errorNumber, errorSource, description
 End Sub
 
 ' Определяет, какой LC показывать на схеме.
@@ -326,6 +350,8 @@ End Function
 ' Здесь находятся Bounds, центр тяжести, главные оси, единицы Results и
 ' сохраненная плоскость деформаций epsilon0/kappaX/kappaY.
 Private Sub ReadSectionProperties(ByVal workbook As Object)
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
     Dim data As Variant
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionProperties")
     If Not HasRows(data) Then Err.Raise vbObjectError + 4703, "CSectionPlotDataReader", _
@@ -345,9 +371,9 @@ Private Sub ReadSectionProperties(ByVal workbook As Object)
         loadCase = Trim$(CStr(data(rowIndex, colLoadCase)))
         If Len(parameter) > 0 Then
             If StrComp(loadCase, "ALL", vbTextCompare) = 0 Or Len(loadCase) = 0 Then
-                ReadCommonProperty parameter, data(rowIndex, colValue), data(rowIndex, ResultColumn(data, "Unit"))
+                ReadCommonProperty parameter, data(rowIndex, colValue), data(rowIndex, ResultColumn(data, "Unit")), anchor, rowIndex, colValue
             ElseIf StrComp(loadCase, mLoadCase, vbTextCompare) = 0 Then
-                ReadLoadCaseProperty parameter, data(rowIndex, colValue), data(rowIndex, ResultColumn(data, "Unit"))
+                ReadLoadCaseProperty parameter, data(rowIndex, colValue), data(rowIndex, ResultColumn(data, "Unit")), anchor, rowIndex, colValue
             End If
         End If
     Next rowIndex
@@ -370,7 +396,15 @@ End Sub
 
 ' Запоминает общие свойства расчетного снимка Results.
 ' Эти данные одинаково подходят для Generated и AutoCAD-геометрии.
-Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant)
+Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant, _
+        ByVal anchor As Object, ByVal row As Long, ByVal column As Long)
+    Select Case LCase$(parameter)
+        Case "bounds.minx", "bounds.maxx", "bounds.miny", "bounds.maxy", _
+                "concrete.centroidx", "concrete.centroidy", "concrete.principalangle", _
+                "transformed.centroidx", "transformed.centroidy", "transformed.principalangle", _
+                "loadreferencex", "loadreferencey"
+            value = ReadSnapshotNumber(value, anchor, row, column, parameter)
+    End Select
     Dim unitText As String
     unitText = Trim$(SafeText(unitValue))
     Select Case LCase$(parameter)
@@ -384,8 +418,8 @@ Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant
         Case "transformed.centroidx": mCentroidX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
         Case "transformed.centroidy": mCentroidY = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
         Case "transformed.principalangle": mPrincipalAngle = CDbl(value)
-        Case "loadreferencex": mLoadReferenceX = OutputLengthToInternalByUnit(SafeDouble(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
-        Case "loadreferencey": mLoadReferenceY = OutputLengthToInternalByUnit(SafeDouble(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "loadreferencex": mLoadReferenceX = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
+        Case "loadreferencey": mLoadReferenceY = OutputLengthToInternalByUnit(CDbl(value), UnitOrDefault(unitText, mSnapshotLengthUnit, "mm"))
         Case "output.lengthunit": mSnapshotLengthUnit = CStr(value)
         Case "output.areaunit": mSnapshotAreaUnit = CStr(value)
         Case "output.stressunit": mStressUnit = CStr(value)
@@ -396,7 +430,8 @@ End Sub
 ' Запоминает свойства выбранного LC: плоскость деформаций и признаки
 ' допустимости найденного состояния. Точка приложения нагрузки читается из
 ' общего блока ALL, потому что она задается один раз для всего snapshot.
-Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant)
+Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant, _
+        ByVal anchor As Object, ByVal row As Long, ByVal column As Long)
     Dim key As String
     Dim prefix As String
     key = LCase$(Trim$(parameter))
@@ -406,9 +441,9 @@ Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Varia
     Dim unitText As String
     unitText = Trim$(SafeText(unitValue))
     Select Case Mid$(key, Len(prefix) + 1)
-        Case "epsilon0": mEpsilon0 = SafeDouble(value)
-        Case "kappax": mKappaX = OutputCurvatureToInternalByUnit(SafeDouble(value), UnitOrDefault(unitText, mSnapshotCurvatureUnit, "1/mm"))
-        Case "kappay": mKappaY = OutputCurvatureToInternalByUnit(SafeDouble(value), UnitOrDefault(unitText, mSnapshotCurvatureUnit, "1/mm"))
+        Case "epsilon0": mEpsilon0 = ReadSnapshotNumber(value, anchor, row, column, parameter)
+        Case "kappax": mKappaX = OutputCurvatureToInternalByUnit(ReadSnapshotNumber(value, anchor, row, column, parameter), UnitOrDefault(unitText, mSnapshotCurvatureUnit, "1/mm"))
+        Case "kappay": mKappaY = OutputCurvatureToInternalByUnit(ReadSnapshotNumber(value, anchor, row, column, parameter), UnitOrDefault(unitText, mSnapshotCurvatureUnit, "1/mm"))
         Case "extensionused": mExtensionUsed = SafeBoolean(value)
         Case "status": mStateStatus = Trim$(SafeText(value))
     End Select
@@ -426,6 +461,8 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
         "На листе Results нет расчетной геометрии."
 
     Dim results As Variant
+    Dim resultAnchor As Object
+    Set resultAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
     results = ReadAnchoredResultTable(workbook, "rngNDMElementResults")
     If Not HasRows(results) Then Err.Raise vbObjectError + 4705, "CSectionPlotDataReader", _
         "На листе Results нет результатов элементов."
@@ -448,8 +485,10 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     For rowIndex = 2 To UBound(results, 1)
         If StrComp(Trim$(SafeText(results(rowIndex, colResLC))), mLoadCase, vbTextCompare) = 0 And _
                 StrComp(Trim$(SafeText(results(rowIndex, colResStateType))), mStateType, vbTextCompare) = 0 Then
-            resultMap(CStr(results(rowIndex, colResID))) = Array(CDbl(results(rowIndex, colStrain)), _
-                CDbl(results(rowIndex, colStress)), CStr(results(rowIndex, colState)))
+            resultMap(CStr(results(rowIndex, colResID))) = Array( _
+                ReadSnapshotNumber(results(rowIndex, colStrain), resultAnchor, rowIndex, colStrain, CStr(results(1, colStrain))), _
+                ReadSnapshotNumber(results(rowIndex, colStress), resultAnchor, rowIndex, colStress, CStr(results(1, colStress))), _
+                CStr(results(rowIndex, colState)))
         End If
     Next rowIndex
     If resultMap.Count = 0 Then Err.Raise vbObjectError + 4706, "CSectionPlotDataReader", _
@@ -529,8 +568,16 @@ End Sub
 ' как нулевые координаты/размеры. Адрес берется от текущего Results-якоря.
 Private Function ReadGeometryNumber(ByRef data As Variant, ByVal anchor As Object, _
         ByVal row As Long, ByVal column As Long, Optional ByVal allowBlank As Boolean = False) As Double
-    Dim value As Variant
-    value = data(row, column)
+    ReadGeometryNumber = ReadSnapshotNumber(data(row, column), anchor, row, column, _
+        ResultHeaderBase(CStr(data(1, column))), allowBlank)
+End Function
+
+' Читает число геометрии или свойства снимка до любого CDbl/пересчета единиц.
+' Формульная ошибка, Boolean и нечисловой текст не становятся нулем; сообщение
+' называет фактическую ячейку и действие для восстановления сохраненных данных.
+Private Function ReadSnapshotNumber(ByVal value As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, ByVal field As String, _
+        Optional ByVal allowBlank As Boolean = False) As Double
     If IsError(value) Or IsNull(value) Then GoTo InvalidNumber
     If VarType(value) = vbBoolean Or VarType(value) = vbDate Then GoTo InvalidNumber
     If Len(Trim$(CStr(value))) = 0 Then
@@ -539,11 +586,11 @@ Private Function ReadGeometryNumber(ByRef data As Variant, ByVal anchor As Objec
     End If
     If Not IsNumeric(value) Then GoTo InvalidNumber
     On Error GoTo InvalidNumber
-    ReadGeometryNumber = CDbl(value)
+    ReadSnapshotNumber = CDbl(value)
     Exit Function
 InvalidNumber:
     Err.Raise vbObjectError + 4719, "CSectionPlotDataReader", _
-        "В сохраненной геометрии Results поле " & ResultHeaderBase(CStr(data(1, column))) & _
+        "В сохраненном снимке Results поле " & field & _
         " содержит нечисловое значение: " & anchor.Worksheet.Name & "!" & _
         anchor.Offset(row - 1, column - 1).Address(False, False) & _
         ". Повторите импорт геометрии или расчет, чтобы восстановить корректный снимок."
@@ -810,14 +857,6 @@ Private Function IsCrackVisualizationState(ByVal stateType As String) As Boolean
             IsCrackVisualizationState = True
     End Select
 NotCrackState:
-End Function
-
-' Безопасно читает числовое поле Results, где часть колонок может быть пустой.
-' Например Diameter у бетонных элементов не заполняется.
-Private Function SafeDouble(ByVal value As Variant) As Double
-    If IsError(value) Then Exit Function
-    If Len(Trim$(CStr(value))) = 0 Then Exit Function
-    If IsNumeric(value) Then SafeDouble = CDbl(value)
 End Function
 
 ' Читает логический флаг из Results. Snapshot может хранить True/False как

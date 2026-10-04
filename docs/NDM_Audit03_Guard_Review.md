@@ -333,3 +333,20 @@ SafeDouble либо CDbl без предварительного различе�
 Размер можно подготовить в существующем reader-е, но только после измерения,
 с проверкой повторного чтения/частичной ошибки, чисел и неизменности Results.
 Само статическое наличие ReDim не считается доказанным ускорением.
+
+## Lifecycle И Численный Snapshot v206
+
+Spec/Catalog и partial PlotDataReader из списка v199 воспроизведены actual VBA
+negative v205c 1091/2838; positive v206 3929/0. Четыре Spec ошибки, поздний
+PR4, три публичных reader-режима, 468 variants и восстановление на том же
+экземпляре проверены без равновесия. Формульная ошибка больше не становится
+числом через CDbl, SafeDouble fallback удален. Точная причина читающего
+слоя и relocated address сохраняются; при отказе нет опубликованной части.
+Подробности и ограничения: NDM_Audit03_Read_Lifecycle_Review.md.
+Full Off/On завершены 82221/0 и 82232/0. С v204 точно совпали 18422/18427
+общих numeric actual-values, missing=0/differences=0. Read-only structure
+27/27, formatting 1003/0, palette/save-reopen 355/0 и actual VBE/source
+105/105; source не изменился. Это окончательная приемка данного среза,
+но не всего F07. Census 1639 guard candidates остается индексом для
+семантической проверки. Пункты про Excel guard, Unit/логические metadata
+и крайние численные helpers остаются открытыми.

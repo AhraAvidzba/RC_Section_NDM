@@ -30,10 +30,12 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
 End Sub
 
 ' Читает вертикальную таблицу профилей. Структурные строки в квадратных
-' скобках пропускаются, а профильные столбцы остаются доступными по ProfileId.
+' скобках пропускаются. Каталог доступен только после успешного чтения всех
+' столбцов; при отказе частичные данные удаляются, исходная ошибка сохраняется.
 Public Sub LoadFromRange(ByVal source As Object)
     If source Is Nothing Then Err.Raise vbObjectError + 3981, "CCalculationProfileCatalog", "Диапазон rngCalculationProfiles не найден."
     Clear
+    On Error GoTo Failed
 
     Dim data As Variant
     data = source.Value2
@@ -54,13 +56,19 @@ Public Sub LoadFromRange(ByVal source As Object)
 
     ReDim mProfiles(1 To profileCount)
     ReDim mProfileIds(1 To profileCount)
-    mCount = profileCount
 
     Dim profileIndex As Long
     For profileIndex = 1 To profileCount
         mProfileIds(profileIndex) = profileIds(profileIndex)
         Set mProfiles(profileIndex) = BuildProfile(source, data, profileColumns(profileIndex), profileIds(profileIndex))
     Next profileIndex
+    mCount = profileCount
+    Exit Sub
+Failed:
+    Dim errorNumber As Long, description As String, errorSource As String
+    errorNumber = Err.Number: description = Err.Description: errorSource = Err.Source
+    Clear
+    Err.Raise errorNumber, errorSource, description
 End Sub
 
 ' Создает профиль по одному столбцу PR и сохраняет адреса его параметров

@@ -1,0 +1,42 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_read_lifecycle_positive_v206.xlsm
+SOURCE_SHA256: 6AFEEB93764A158D93F0E32A77F8CAACEDE6C1139428BD100101C6278A007464
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9fc5d93f0af149d3bfd45617d8e35a9e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL: passed=536; failed=0
+MODE_AFTER_SUITE: Yes
+TOTAL_MATERIAL: passed=2856; failed=0; elapsedSec=6.390625
+MODE_AFTER_SUITE: Yes
+TOTAL_SECTION_SOLVER: passed=895; failed=0; elapsedSec=1.6015625
+MODE_AFTER_SUITE: Yes
+TOTAL_CAPACITY: passed=3074; failed=0; elapsedSec=41.61328125
+MODE_AFTER_SUITE: Yes
+TOTAL_CRACK: passed=1532; failed=0; elapsedSec=2.046875
+MODE_AFTER_SUITE: Yes
+TOTAL_AUDIT03_SEARCH_CONFIG: passed=1853; failed=0
+TOTAL_AUDIT03_UNIVERSAL_PATH: passed=849; failed=0
+TOTAL_BATCH: passed=12982; failed=0; elapsedSec=152.8125
+MODE_AFTER_SUITE: Yes
+TOTAL_CIRCLE_CONFIG: passed=53; failed=0
+TOTAL_CIRCLE_REBAR_INPUT: passed=524; failed=0; cases=160
+TOTAL_SHAPE_CONFIG: passed=213; failed=0
+TOTAL_REBAR_COUNTER: passed=29; failed=0
+TOTAL_REQUIRED_GEOMETRY: passed=1010; failed=0
+TOTAL_REBAR_FIELD_CONFIG: passed=10146; failed=0; cases=2744
+TOTAL_AUDIT03_LOAD_TABLE: passed=11021; failed=0; cases=910
+TOTAL_AUDIT03_PROFILE_FAILURE_SCOPE: passed=3572; failed=0; cases=64
+TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0
+TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0
+TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0
+TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0
+TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0
+TOTAL_AUDIT03_WRITER_DIAGNOSTIC: passed=186; failed=0
+TOTAL_AUDIT03_RESULT_COLUMN_WIDTHS: passed=1116; failed=0
+TOTAL_AUDIT03_PROFILE_CONFIG: passed=8784; failed=0; cases=292
+TOTAL_AUDIT03_RELOCATED_INPUT: passed=674; failed=0; cases=98
+TOTAL_AUDIT03_DURATION_CONFIG: passed=10504; failed=0; cases=613
+TOTAL_AUDIT03_PRESENTATION_CONFIG: passed=681; failed=0; cases=105
+TOTAL_WORKBOOK_UI: passed=60318; failed=0; elapsedSec=1973.8359375
+MODE_AFTER_SUITE: Yes
+TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=0.5234375
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

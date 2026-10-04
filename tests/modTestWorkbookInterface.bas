@@ -142,6 +142,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03InputAreaImportFilter stats
     TestAudit03ImportedSnapshotUnitChanges stats
     TestAudit03GeometrySnapshotContract stats
+    TestAudit03ReadLifecycleContracts stats
     AppendLine stats, "RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions"
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
@@ -7072,6 +7073,7 @@ Private Sub Audit03CheckRestoredGeometry(ByRef stats As TUiTestStats, ByVal pref
     AssertClose stats, prefix & ".ixy", model.ConcreteLocalIxy(1), -23456.625, 0.000000001
     If model.RebarCount = 1 Then
         AssertClose stats, prefix & ".rebarX", model.RebarX(1), 12.375, 0.000000001
+        AssertClose stats, prefix & ".rebarY", model.RebarY(1), -8.125, 0.000000001
         AssertClose stats, prefix & ".rebarArea", model.RebarArea(1), 117.8581, 0.000000001
         AssertClose stats, prefix & ".rebarDiameter", model.RebarDiameter(1), 12.25, 0.000000001
     End If
@@ -7087,6 +7089,254 @@ Private Sub Audit03CaptureGeometrySnapshotError(ByVal workbook As Object, ByRef 
     Exit Sub
 Failed:
     number = Err.Number: description = Err.Description
+    Err.Clear
+End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: ОШИБКА ЧТЕНИЯ И ПОВТОРНЫЙ ВВОД ====================
+
+' Запускает направленную проверку незавершенной инициализации и поврежденных
+' чисел сохраненного снимка. Использует только собственную временную книгу,
+' не ищет равновесие и не меняет исходный Config/Results основной книги.
+Public Function RunAudit03ReadLifecycleTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03ReadLifecycleContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_READ_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ReadLifecycleTests = stats.Report
+End Function
+
+' Проверяет valid -> invalid -> valid на тех же экземплярах Spec, Catalog
+' и PlotDataReader. Старая корректная копия результата должна оставаться
+' независимой, но новый неуспешный ввод не должен выглядеть как готовые данные.
+Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
+    Dim fixture As Object, sheet As Object, profiles As Object, source As Object, target As Object
+    Dim spec As CMaterialModelSpec, savedSpec As CMaterialModelSpec, copied As CMaterialModelSpec
+    Dim provider As CMaterialModelProvider, diagram As CMaterialDiagram, baselineDiagram As CMaterialDiagram
+    Dim catalog As CCalculationProfileCatalog, profile As CCalculationProfile, savedProfile As CCalculationProfile
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader
+    Dim arguments As Variant, index As Long, field As Long, row As Long, column As Long, position As Long
+    Dim bad As Variant, badIndex As Long, mode As Long, code As Long, reason As String, prefix As String
+    Dim baseline As Variant, actual As Variant, values As Variant, keys As Variant, badValues As Variant
+    Dim props(1 To 22, 1 To 4) As Variant, results(1 To 3, 1 To 7) As Variant
+    Dim configuration(1 To 2, 1 To 3) As Variant, solveCount As Long, cases As Long
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set provider = New CMaterialModelProvider: provider.Initialize settings
+    Set spec = New CMaterialModelSpec
+    For field = 0 To 3
+        arguments = Array("SLS(II)", "ThreeLine", "UseDiagram", "TwoLine")
+        spec.Initialize CStr(arguments(0)), CStr(arguments(1)), CStr(arguments(2)), CStr(arguments(3))
+        Set savedSpec = spec.Clone: Set baselineDiagram = provider.ConcreteMaterialFromSpec(savedSpec)
+        arguments(field) = "INVALID_SPEC"
+        On Error Resume Next
+        Err.Clear
+        spec.Initialize CStr(arguments(0)), CStr(arguments(1)), CStr(arguments(2)), CStr(arguments(3))
+        code = Err.Number: reason = Err.Description
+        On Error GoTo Failed
+        prefix = "audit03.readLifecycle.spec.field" & CStr(field): cases = cases + 1
+        AssertTrue stats, prefix & ".error", code <> 0
+        AssertTrue stats, prefix & ".incomplete", Not spec.IsComplete
+        AssertTextEquals stats, prefix & ".key", spec.SpecKey, "<empty>"
+        Set copied = spec.Clone
+        AssertTrue stats, prefix & ".cloneIncomplete", Not copied.IsComplete
+        On Error Resume Next
+        Err.Clear
+        Set diagram = Nothing: Set diagram = provider.ConcreteMaterialFromSpec(spec)
+        code = Err.Number
+        On Error GoTo Failed
+        AssertTrue stats, prefix & ".providerRejected", code = vbObjectError + 3251
+        AssertTrue stats, prefix & ".noDiagram", diagram Is Nothing
+        AssertTextEquals stats, prefix & ".snapshot", savedSpec.SpecKey, "SLS(II)|ThreeLine|UseDiagram|TwoLine"
+        spec.Initialize "ULS(I)", "TwoLine", "Ignore", "ThreeLine"
+        Set diagram = provider.ConcreteMaterialFromSpec(spec)
+        AssertTrue stats, prefix & ".recovery", spec.IsComplete
+        AssertTextEquals stats, prefix & ".recoveryKey", spec.SpecKey, "ULS(I)|TwoLine|Ignore|ThreeLine"
+        AssertTrue stats, prefix & ".distinctDiagram", Not diagram Is baselineDiagram
+        AppendLine stats, "READ_LIFECYCLE_SPEC: " & prefix & "|" & reason
+    Next field
+
+    Set fixture = Application.Workbooks.Add(-4167)
+    Set sheet = fixture.Worksheets(1): sheet.Name = "ReadLifecycle"
+    Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Set profiles = sheet.Range("AF5").Resize(source.Rows.Count, source.Columns.Count)
+    profiles.Value2 = source.Value2: baseline = profiles.Value2
+    Set catalog = New CCalculationProfileCatalog: catalog.LoadFromRange profiles
+    Set savedProfile = catalog.ProfileById("PR1")
+    keys = Array("Calculation.Strength.DirectState", "MaterialModel.Strength.ConcreteDiagram", _
+        "Visualization.State", "Visualization.StressPrecision")
+    For position = 0 To 1
+        If position = 0 Then Set target = profiles Else Set target = sheet.Range("CH800").Resize(source.Rows.Count, source.Columns.Count)
+        target.Value2 = baseline
+        For Each bad In Array("BAD_SELECTOR", CVErr(2015), "")
+            For index = 0 To UBound(keys)
+                For row = 2 To target.Rows.Count
+                    If CStr(target.Cells(row, 2).Value2) = CStr(keys(index)) Then Exit For
+                Next row
+                If row > target.Rows.Count Then Err.Raise 5, , "Нет test-параметра " & CStr(keys(index))
+                column = 6 ' Ошибка в последнем PR4 после уже прочитанных PR1-PR3.
+                target.Cells(row, column).Value2 = bad
+                On Error Resume Next
+                Err.Clear: catalog.LoadFromRange target
+                code = Err.Number: reason = Err.Description
+                On Error GoTo Failed
+                prefix = "audit03.readLifecycle.catalog.position" & CStr(position) & ".field" & CStr(index) & ".type" & CStr(VarType(bad))
+                cases = cases + 1
+                AssertTrue stats, prefix & ".error", code <> 0
+                AssertTrue stats, prefix & ".address", InStr(1, reason, sheet.Name & "!" & target.Cells(row, column).Address(False, False), vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".empty", catalog.Count = 0
+                AssertTrue stats, prefix & ".noPR1", Not catalog.HasProfile("PR1")
+                AssertTrue stats, prefix & ".noPR4", Not catalog.HasProfile("PR4")
+                On Error Resume Next
+                Err.Clear: Set profile = Nothing: Set profile = catalog.ProfileById("PR1")
+                code = Err.Number
+                On Error GoTo Failed
+                AssertTrue stats, prefix & ".lookupRejected", code = vbObjectError + 3984
+                AssertTrue stats, prefix & ".noPublishedProfile", profile Is Nothing
+                AssertTextEquals stats, prefix & ".oldSnapshot", savedProfile.ProfileId, "PR1"
+                target.Value2 = baseline: catalog.LoadFromRange target
+                AssertTrue stats, prefix & ".recoveryCount", catalog.Count = 4
+                AssertTrue stats, prefix & ".recoveryPR4", catalog.HasProfile("PR4")
+                AppendLine stats, "READ_LIFECYCLE_CATALOG: " & prefix & "|" & reason
+            Next index
+        Next bad
+    Next position
+
+    fixture.Names.Add Name:="rngCalculationProfiles", RefersTo:="=ReadLifecycle!" & profiles.Address
+    For row = 2 To profiles.Rows.Count
+        If CStr(profiles.Cells(row, 2).Value2) = "Visualization.State" Then profiles.Cells(row, 3).Value2 = "StrengthState"
+    Next row
+    values = Audit03GeometrySnapshotArray("mm", 1#): sheet.Range("A5").Resize(3, 15).Value2 = values
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=ReadLifecycle!$A$5"
+    results(1, 1) = "LoadCase": results(1, 2) = "ProfileId": results(1, 3) = "StateType": results(1, 4) = "ElementID"
+    results(1, 5) = "Strain": results(1, 6) = "Stress, MPa": results(1, 7) = "PhysicalState"
+    results(2, 1) = "LIFE": results(2, 2) = "PR1": results(2, 3) = "StrengthState": results(2, 4) = "C1"
+    results(2, 5) = -0.0001: results(2, 6) = -1.25: results(2, 7) = "Compression"
+    results(3, 1) = "LIFE": results(3, 2) = "PR1": results(3, 3) = "StrengthState": results(3, 4) = "R1"
+    results(3, 5) = 0.000015: results(3, 6) = 2.75: results(3, 7) = "Tension"
+    sheet.Range("R35").Resize(3, 7).Value2 = results
+    fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=ReadLifecycle!$R$35"
+    configuration(1, 1) = "Параметр": configuration(1, 2) = "Значение": configuration(1, 3) = "Комментарий"
+    configuration(2, 1) = "Plot.LoadCase": configuration(2, 2) = "LIFE"
+    sheet.Range("AO70").Resize(2, 3).Value2 = configuration
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("AO70").Resize(2, 3)
+    Set reader = New CSectionPlotDataReader
+    keys = Array("Bounds.MinX", "Bounds.MaxX", "Bounds.MinY", "Bounds.MaxY", _
+        "Concrete.CentroidX", "Concrete.CentroidY", "Concrete.PrincipalAngle", _
+        "Transformed.CentroidX", "Transformed.CentroidY", "Transformed.PrincipalAngle", _
+        "LoadReferenceX", "LoadReferenceY", "State.StrengthState.Epsilon0", _
+        "State.StrengthState.KappaX", "State.StrengthState.KappaY")
+    props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
+    For index = 0 To UBound(keys)
+        row = index + 2: props(row, 1) = "ALL": If index >= 12 Then props(row, 1) = "LIFE"
+        props(row, 2) = keys(index): props(row, 3) = 0.125: props(row, 4) = "mm"
+        If InStr(1, CStr(keys(index)), "Angle", vbTextCompare) > 0 Or index = 12 Then props(row, 4) = "-"
+        If index >= 13 Then props(row, 4) = "1/mm"
+    Next index
+    props(17, 1) = "LIFE": props(17, 2) = "ProfileId": props(17, 3) = "PR1": props(17, 4) = "-"
+    props(18, 1) = "LIFE": props(18, 2) = "State.StrengthState.ExtensionUsed": props(18, 3) = "False": props(18, 4) = "-"
+    props(19, 1) = "LIFE": props(19, 2) = "State.StrengthState.Status": props(19, 3) = "OK": props(19, 4) = "-"
+    props(20, 1) = "OTHER": props(20, 2) = "State.StrengthState.Epsilon0": props(20, 3) = CVErr(2015): props(20, 4) = "-"
+    props(21, 1) = "LIFE": props(21, 2) = "State.CapacityState.Epsilon0": props(21, 3) = CVErr(2015): props(21, 4) = "-"
+    props(22, 1) = "ALL": props(22, 2) = "Output.LengthUnit": props(22, 3) = "mm": props(22, 4) = "-"
+    badValues = Array("123oops", CVErr(2015), True, "", "1e309")
+    For position = 0 To 1
+        If position = 0 Then Set target = sheet.Range("R5") Else Set target = sheet.Range("DC800")
+        target.Resize(22, 4).Value2 = props
+        fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=ReadLifecycle!" & target.Address
+        For mode = 0 To 2
+            Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
+            AssertTrue stats, "audit03.readLifecycle.reader.baseline.p" & CStr(position) & ".m" & CStr(mode), code = 0 And reader.Count = 2
+            For index = 0 To UBound(keys)
+                If mode = 1 And index >= 12 Then Exit For ' AutoCAD-preview не использует плоскость выбранного State.
+                For badIndex = 0 To 4
+                    bad = badValues(badIndex)
+                    row = index + 2: target.Cells(row, 3).Value2 = bad
+                    Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
+                    prefix = "audit03.readLifecycle.reader.p" & CStr(position) & ".m" & CStr(mode) & ".field" & CStr(index) & ".bad" & CStr(badIndex)
+                    cases = cases + 1
+                    AssertTrue stats, prefix & ".error", code = vbObjectError + 4719
+                    AssertTrue stats, prefix & ".field", InStr(1, reason, CStr(keys(index)), vbTextCompare) > 0
+                    AssertTrue stats, prefix & ".address", InStr(1, reason, sheet.Name & "!" & target.Cells(row, 3).Address(False, False), vbBinaryCompare) > 0
+                    AssertTrue stats, prefix & ".action", InStr(1, reason, "Повторите", vbTextCompare) > 0
+                    AssertTrue stats, prefix & ".empty", reader.Count = 0 And reader.AnnotationCount = 0
+                    AssertTrue stats, prefix & ".clearedPlane", reader.Epsilon0 = 0# And reader.KappaX = 0# And reader.KappaY = 0#
+                    AssertTrue stats, prefix & ".clearedSelection", Len(reader.LoadCase) = 0 And Len(reader.ProfileId) = 0
+                    AppendLine stats, "READ_LIFECYCLE_SNAPSHOT: " & prefix & "|" & reason
+                    target.Cells(row, 3).Value2 = props(row, 3)
+                    Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
+                    AssertTrue stats, prefix & ".recovery", code = 0 And reader.Count = 2
+                    If mode = 0 Then AssertClose stats, prefix & ".recoveryPlane", reader.Epsilon0, 0.125, 0#
+                Next badIndex
+            Next index
+            ' Поздняя ошибка после AppendElement не публикует первый элемент как весь снимок.
+            sheet.Range("A5").Cells(3, 3).Value2 = "late-invalid"
+            Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
+            prefix = "audit03.readLifecycle.reader.late.p" & CStr(position) & ".m" & CStr(mode)
+            AssertTrue stats, prefix & ".error", code = vbObjectError + 4719
+            AssertTrue stats, prefix & ".empty", reader.Count = 0 And reader.AnnotationCount = 0
+            sheet.Range("A5").Resize(3, 15).Value2 = values
+            Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
+            AssertTrue stats, prefix & ".recovery", code = 0 And reader.Count = 2
+        Next mode
+        For index = 0 To UBound(keys)
+            target.Cells(index + 2, 3).Value2 = "0.125"
+        Next index
+        Audit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+        AssertTrue stats, "audit03.readLifecycle.numericText.p" & CStr(position), code = 0 And reader.Count = 2
+        AssertClose stats, "audit03.readLifecycle.numericText.epsilon.p" & CStr(position), reader.Epsilon0, 0.125, 0#
+        AssertClose stats, "audit03.readLifecycle.numericText.kappaX.p" & CStr(position), reader.KappaX, 0.125, 0#
+        AssertClose stats, "audit03.readLifecycle.numericText.kappaY.p" & CStr(position), reader.KappaY, 0.125, 0#
+        target.Resize(22, 4).Value2 = props
+        For column = 5 To 6
+            For badIndex = 0 To 4
+                sheet.Range("R35").Cells(3, column).Value2 = badValues(badIndex)
+                Audit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+                prefix = "audit03.readLifecycle.element.p" & CStr(position) & ".column" & CStr(column) & ".bad" & CStr(badIndex)
+                cases = cases + 1
+                AssertTrue stats, prefix & ".error", code = vbObjectError + 4719
+                AssertTrue stats, prefix & ".field", InStr(1, reason, CStr(results(1, column)), vbTextCompare) > 0
+                AssertTrue stats, prefix & ".address", InStr(1, reason, sheet.Name & "!" & sheet.Range("R35").Cells(3, column).Address(False, False), vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".empty", reader.Count = 0
+                AppendLine stats, "READ_LIFECYCLE_ELEMENT: " & prefix & "|" & reason
+                sheet.Range("R35").Resize(3, 7).Value2 = results
+                Audit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+                AssertTrue stats, prefix & ".recovery", code = 0 And reader.Count = 2
+            Next badIndex
+        Next column
+        sheet.Range("R35").Cells(2, 5).Value2 = "-0.0001"
+        sheet.Range("R35").Cells(3, 6).Value2 = "2.75"
+        Audit03ReadLifecycleLoad reader, fixture, settings, 0, code, reason
+        AssertTrue stats, "audit03.readLifecycle.element.numericText.p" & CStr(position), code = 0 And reader.Count = 2
+        AssertClose stats, "audit03.readLifecycle.element.numericValue.p" & CStr(position), reader.ResultValue(2), 2.75, 0#
+        sheet.Range("R35").Resize(3, 7).Value2 = results
+        actual = target.Resize(22, 4).Value2
+        Audit03ComparePlainSnapshot stats, "audit03.readLifecycle.snapshotUnchanged.p" & CStr(position), props, actual, 1
+    Next position
+    AssertTrue stats, "audit03.readLifecycle.noSolve", SectionEquilibriumSolveCount() = solveCount
+    AppendLine stats, "READ_LIFECYCLE_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "audit03.readLifecycle.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
+' Сохраняет typed VBA-ошибку конкретного публичного reader-режима. Повторное
+' чтение выполняется на том же объекте; helper не подменяет snapshot/Config.
+Private Sub Audit03ReadLifecycleLoad(ByVal reader As CSectionPlotDataReader, ByVal workbook As Object, _
+        ByVal settings As CSystemSettingsReader, ByVal mode As Long, ByRef code As Long, ByRef reason As String)
+    code = 0: reason = vbNullString
+    On Error GoTo Failed
+    Select Case mode
+        Case 0: reader.LoadFromWorkbook workbook, settings
+        Case 1: reader.LoadGeometryPreviewFromWorkbook workbook, settings
+        Case 2: reader.LoadGeometryOnlyForMissingState workbook, settings
+    End Select
+    Exit Sub
+Failed:
+    code = Err.Number: reason = Err.Description
     Err.Clear
 End Sub
 
