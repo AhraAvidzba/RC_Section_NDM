@@ -664,11 +664,13 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     Dim fixture As Object, config As Object, sheet As Object, table As Object, source As Object
     Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
     Dim values As Variant, keys As Variant, key As Variant, bad As Variant, cell As Object
-    Dim props(1 To 20, 1 To 4) As Variant, elements(1 To 3, 1 To 7) As Variant, annotations(1 To 4, 1 To 9) As Variant
+    Dim props(1 To 26, 1 To 4) As Variant, elements(1 To 5, 1 To 7) As Variant, annotations(1 To 4, 1 To 9) As Variant
     Dim grid() As Variant, gridResults() As Variant, series As Object, colors As Object, channel As Long
     Dim arrow As Variant, size As Variant, shape As Object, style As Long, metric As Long, badIndex As Long, mode As Long
     Dim row As Long, position As Long, index As Long, code As Long, reason As String, prefix As String
-    Dim baseline As Variant, snapshot As Variant, actual As Variant, chart As Object, marker As Object
+    Dim baseline As Variant, annotationBaseline As Variant, annotationTable As Object
+    Dim snapshot As Variant, actual As Variant, chart As Object, marker As Object
+    Dim changedElements As Variant, expectedColor As Long, elementKind As String, compression As Boolean
     Dim cases As Long, solveCount As Long, geometry As Variant
     On Error GoTo Failed
     solveCount = SectionEquilibriumSolveCount()
@@ -676,8 +678,10 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     Set config = fixture.Worksheets(1): config.Name = "PlotConfig"
     Set sheet = fixture.Worksheets.Add: sheet.Name = "Results"
     fixture.Worksheets.Add.Name = "Расчет"
-    Set table = Audit03PlotSettingsTable(config.Range("A5"))
+    Set table = Audit03NamedGeneralPlotSettingsTable(fixture, config)
     baseline = table.Value2
+    Set annotationTable = fixture.Names.Item("rngPlotAnnotationSettings").RefersToRange
+    annotationBaseline = annotationTable.Value2
     geometry = Audit03GeometrySnapshotArray("mm", 1#)
     sheet.Range("A5").Resize(3, 15).Value2 = geometry
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
@@ -705,7 +709,14 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         If index = 6 Or index = 9 Or index = 12 Or index >= 15 Then props(row, 4) = "-"
         If index = 13 Or index = 14 Then props(row, 4) = "1/mm"
     Next index
-    sheet.Range("R5").Resize(20, 4).Value2 = props
+    ' Второе сочетание содержит только собственные state-поля: общие свойства
+    ' ALL не дублируются. Его числа специально отличаются от первого сочетания.
+    For index = 0 To 5
+        For row = 1 To 4: props(21 + index, row) = props(14 + index, row): Next row
+        props(21 + index, 1) = "ALT"
+    Next index
+    props(21, 3) = 0.0002
+    sheet.Range("R5").Resize(26, 4).Value2 = props
     fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$R$5"
     elements(1, 1) = "LoadCase": elements(1, 2) = "ProfileId": elements(1, 3) = "StateType": elements(1, 4) = "ElementID"
     elements(1, 5) = "Strain": elements(1, 6) = "Stress, MPa": elements(1, 7) = "PhysicalState"
@@ -713,7 +724,13 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     elements(2, 5) = -0.0001: elements(2, 6) = -1.25: elements(2, 7) = "Compression"
     elements(3, 1) = "PLOT": elements(3, 2) = "PR1": elements(3, 3) = "StrengthState": elements(3, 4) = "R1"
     elements(3, 5) = 0.000015: elements(3, 6) = 2.75: elements(3, 7) = "Tension"
-    sheet.Range("R35").Resize(3, 7).Value2 = elements
+    For row = 4 To 5
+        For index = 1 To 7: elements(row, index) = elements(row - 2, index): Next index
+        elements(row, 1) = "ALT"
+    Next row
+    elements(4, 5) = 0.0002: elements(4, 6) = 9.5: elements(4, 7) = "Tension"
+    elements(5, 5) = -0.0003: elements(5, 6) = -7.25: elements(5, 7) = "Compression"
+    sheet.Range("R35").Resize(5, 7).Value2 = elements
     fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Results!$R$35"
     keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
     For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
@@ -726,18 +743,21 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     annotations(4, 1) = "REBAR_ANNOTATION": annotations(4, 2) = -50#: annotations(4, 4) = 50#: annotations(4, 7) = 1#: annotations(4, 8) = "REBAR"
     sheet.Range("A20").Resize(4, 9).Value2 = annotations
     fixture.Names.Add Name:="rngNDMSectionAnnotations", RefersTo:="=Results!$A$20"
-    snapshot = sheet.Range("A5:X37").Value2
-    Set settings = New CSystemSettingsReader: settings.LoadFromRange table
+    snapshot = sheet.Range("A5:X39").Value2
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook fixture
     Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook fixture, settings
     Set plotter = New CSectionPlotter
     plotter.Draw fixture, reader, settings
     Set chart = fixture.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
     chart.Left = 41#: chart.Top = 53#: chart.Width = 700#: chart.Height = 480#
     keys = Array("Plot.ContourEnabled", "Plot.NeutralLineEnabled", "Plot.LoadApplicationPointEnabled", _
-        "Plot.ResultLabelsEnabled", "Plot.LegendEnabled", "Plot.PrincipalAxesMode", "Plot.ResultLabelSpacing")
+        "Plot.ResultLabelsEnabled", "Plot.LegendEnabled", "Plot.PrincipalAxesMode", "Plot.ResultLabelSpacing", _
+        "Plot.ResultGradient", "Plot.AxisLabelsEnabled", "Plot.AxisLabelsFontSize", "Plot.LegendMode", _
+        "Plot.Color.RebarCompression", "Plot.Color.RebarTension", "Plot.Color.ConcreteCompression", "Plot.Color.ConcreteTension")
     For position = 0 To 1
-        If position = 0 Then Set table = config.Range("A5").Resize(UBound(baseline, 1), 3) Else Set table = config.Range("CH800").Resize(UBound(baseline, 1), 3)
-        table.NumberFormat = "@": table.Value2 = baseline
+        If position = 0 Then Set table = config.Range("A5").Resize(UBound(baseline, 1), UBound(baseline, 2)) Else Set table = config.Range("CH800").Resize(UBound(baseline, 1), UBound(baseline, 2))
+        table.NumberFormat = "@": table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
+        fixture.Names.Item("rngSystemSettings").RefersTo = "='" & config.Name & "'!" & table.Address
         Audit03SetPlotSetting table, "Plot.ResultLabelsEnabled", "Yes"
         For Each key In keys
             Set cell = Audit03PlotSettingCell(table, CStr(key))
@@ -745,7 +765,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
             For Each bad In Array("", "TODO", "INVALID", CVErr(2015))
                 badIndex = badIndex + 1
                 cases = cases + 1: values = cell.Value2: cell.Value2 = bad
-                settings.LoadFromRange table
+                settings.LoadFromWorkbook fixture
                 Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#)
                 marker.Name = "NDMPlot_Audit03Sentinel"
                 Audit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
@@ -759,7 +779,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
                 On Error Resume Next
                 chart.Chart.Shapes.Item("NDMPlot_Audit03Sentinel").Delete
                 On Error GoTo Failed
-                cell.Value2 = values: settings.LoadFromRange table
+                cell.Value2 = values: settings.LoadFromWorkbook fixture
                 Audit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
                 AssertTrue stats, prefix & ".recovery", code = 0
             Next bad
@@ -767,37 +787,37 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         For Each bad In Array(0#, -1#)
             cases = cases + 1
             Audit03SetPlotSetting table, "Plot.ResultLabelSpacing", bad
-            settings.LoadFromRange table
+            settings.LoadFromWorkbook fixture
             Audit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
             AssertTrue stats, "audit03.generalPlot.spacing.sign.p" & CStr(position) & "." & CStr(bad), code <> 0 And InStr(1, reason, "Plot.ResultLabelSpacing", vbTextCompare) > 0
         Next bad
         Audit03SetPlotSetting table, "Plot.ResultLabelSpacing", 0.00000001
-        settings.LoadFromRange table
+        settings.LoadFromWorkbook fixture
         Audit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
         AssertTrue stats, "audit03.generalPlot.spacing.smallPositive.p" & CStr(position), code = 0
         AssertTrue stats, "audit03.generalPlot.spacing.label.p" & CStr(position), Audit03PlotTextExists(chart, "-1.25")
         Audit03SetPlotSetting table, "Plot.ResultLabelsEnabled", "No"
         Audit03SetPlotSetting table, "Plot.ResultLabelSpacing", CVErr(2015)
-        settings.LoadFromRange table
+        settings.LoadFromWorkbook fixture
         Audit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
         AssertTrue stats, "audit03.generalPlot.spacing.inactive.p" & CStr(position), code = 0
         Audit03SetPlotSetting table, "Plot.NeutralLineEnabled", CVErr(2015)
         Audit03SetPlotSetting table, "Plot.ResultLabelsEnabled", CVErr(2015)
         Audit03SetPlotSetting table, "Plot.LegendEnabled", CVErr(2015)
-        settings.LoadFromRange table: reader.LoadGeometryPreviewFromWorkbook fixture, settings
+        settings.LoadFromWorkbook fixture: reader.LoadGeometryPreviewFromWorkbook fixture, settings
         Audit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
         AssertTrue stats, "audit03.generalPlot.geometry.inactive.p" & CStr(position), code = 0
-        table.Value2 = baseline: settings.LoadFromRange table: reader.LoadFromWorkbook fixture, settings
+        table.Value2 = baseline: annotationTable.Value2 = annotationBaseline: settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
         For Each key In Array("Plot.NeutralLineEnabled", "Plot.LoadApplicationPointEnabled", "Plot.PrincipalAxesMode")
             Audit03SetPlotSetting table, CStr(key), IIf(CStr(key) = "Plot.PrincipalAxesMode", "None", "No")
-            settings.LoadFromRange table: plotter.Draw fixture, reader, settings
+            settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
             Select Case CStr(key)
                 Case "Plot.NeutralLineEnabled": AssertTrue stats, "audit03.generalPlot.neutral.off.p" & CStr(position), Not Audit03PlotShapeExists(chart, "NeutralAxis")
                 Case "Plot.LoadApplicationPointEnabled": AssertTrue stats, "audit03.generalPlot.load.off.p" & CStr(position), Not Audit03PlotShapeExists(chart, "LoadPoint")
                 Case Else: AssertTrue stats, "audit03.generalPlot.axes.off.p" & CStr(position), Not Audit03PlotShapeExists(chart, "Principal1")
             End Select
             Audit03SetPlotSetting table, CStr(key), IIf(CStr(key) = "Plot.PrincipalAxesMode", "Concrete", "Yes")
-            settings.LoadFromRange table: plotter.Draw fixture, reader, settings
+            settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
             Select Case CStr(key)
                 Case "Plot.NeutralLineEnabled": AssertTrue stats, "audit03.generalPlot.neutral.on.p" & CStr(position), Audit03PlotShapeExists(chart, "NeutralAxis")
                 Case "Plot.LoadApplicationPointEnabled": AssertTrue stats, "audit03.generalPlot.load.on.p" & CStr(position), Audit03PlotShapeExists(chart, "LoadPoint")
@@ -807,36 +827,110 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         Audit03SetPlotSetting table, "Plot.LegendEnabled", "No"
         Audit03SetPlotSetting table, "Plot.ResultLabelSpacing", 100#
         For Each key In Array("Plot.ContourEnabled", "Plot.ResultLabelsEnabled", "Plot.LegendEnabled")
-            Audit03SetPlotSetting table, CStr(key), "No": settings.LoadFromRange table: plotter.Draw fixture, reader, settings
+            Audit03SetPlotSetting table, CStr(key), "No": settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
             prefix = "audit03.generalPlot.toggle.p" & CStr(position) & "." & CStr(key)
             Select Case CStr(key)
                 Case "Plot.ContourEnabled": AssertTrue stats, prefix & ".off", Not Audit03PlotShapeExists(chart, "ContourCircle")
                 Case "Plot.ResultLabelsEnabled": AssertTrue stats, prefix & ".off", Not Audit03PlotTextExists(chart, "-1.25")
                 Case Else: AssertTrue stats, prefix & ".off", Not Audit03PlotShapeExists(chart, "LegendGradient")
             End Select
-            Audit03SetPlotSetting table, CStr(key), "Yes": settings.LoadFromRange table: plotter.Draw fixture, reader, settings
+            Audit03SetPlotSetting table, CStr(key), "Yes": settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
             Select Case CStr(key)
                 Case "Plot.ContourEnabled": AssertTrue stats, prefix & ".on", Audit03PlotShapeExists(chart, "ContourCircle")
                 Case "Plot.ResultLabelsEnabled": AssertTrue stats, prefix & ".on", Audit03PlotTextExists(chart, "-1.25")
                 Case Else: AssertTrue stats, prefix & ".on", Audit03PlotShapeExists(chart, "LegendGradient")
             End Select
         Next key
+        ' Проверяем реальные подписи и шрифт, включая неактивную высоту текста.
+        Audit03SetPlotSetting table, "Plot.AxisLabelsEnabled", "Yes"
+        Audit03SetPlotSetting table, "Plot.AxisLabelsFontSize", 18#
+        settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        Set marker = Audit03PlotShape(chart, "AxisLabelX")
+        AssertTrue stats, "audit03.generalPlot.axisLabels.on.p" & CStr(position), Not marker Is Nothing
+        If Not marker Is Nothing Then AssertClose stats, "audit03.generalPlot.axisLabels.font.p" & CStr(position), marker.TextFrame.Characters().Font.Size, 18#, 0.01
+        Audit03SetPlotSetting table, "Plot.AxisLabelsEnabled", "No"
+        Audit03SetPlotSetting table, "Plot.AxisLabelsFontSize", CVErr(2015)
+        settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        AssertTrue stats, "audit03.generalPlot.axisLabels.off.p" & CStr(position), Not Audit03PlotShapeExists(chart, "AxisLabelX") And Not Audit03PlotShapeExists(chart, "AxisLabelY")
+        table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
+
+        ' Все четыре цвета должны менять соответствующий элемент, а не только
+        ' поле reader-а. Подменяем исключительно собственный синтетический снимок.
+        For Each key In Array("Plot.Color.RebarCompression", "Plot.Color.RebarTension", "Plot.Color.ConcreteCompression", "Plot.Color.ConcreteTension")
+            changedElements = elements
+            compression = (Right$(CStr(key), 11) = "Compression")
+            For row = 2 To 3
+                changedElements(row, 5) = IIf(compression, -0.0001, 0.0001)
+                changedElements(row, 6) = IIf(compression, -2.75, 2.75)
+                changedElements(row, 7) = IIf(compression, "Compression", "Tension")
+            Next row
+            sheet.Range("R35").Resize(5, 7).Value2 = changedElements
+            table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
+            Audit03SetPlotSetting table, "Plot.LegendMode", "Separate"
+            Audit03SetPlotSetting table, "Plot.ResultGradient", "No"
+            Audit03SetPlotSetting table, CStr(key), "17,34,51"
+            settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+            plotter.Draw fixture, reader, settings
+            elementKind = IIf(InStr(1, CStr(key), "Rebar", vbTextCompare) > 0, "ElementRebar", "ElementConcrete")
+            Set marker = Audit03PlotShape(chart, elementKind)
+            prefix = "audit03.generalPlot.color.p" & CStr(position) & "." & CStr(key)
+            AssertTrue stats, prefix & ".shape", Not marker Is Nothing
+            If Not marker Is Nothing Then AssertTrue stats, prefix & ".effect", marker.Fill.ForeColor.RGB = RGB(17, 34, 51)
+            cases = cases + 1
+        Next key
+
+        ' Common использует арматурную шкалу и общий максимум по знаку.
+        ' Для отношения 1.25/2.75 независимый RGB oracle равен 164,169,173.
+        changedElements = elements
+        changedElements(3, 5) = -0.0002: changedElements(3, 6) = -2.75: changedElements(3, 7) = "Compression"
+        sheet.Range("R35").Resize(5, 7).Value2 = changedElements
+        table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
+        Audit03SetPlotSetting table, "Plot.ResultGradient", "No"
+        Audit03SetPlotSetting table, "Plot.Color.ConcreteCompression", "10,20,30"
+        Audit03SetPlotSetting table, "Plot.Color.RebarCompression", "100,110,120"
+        For Each key In Array("Separate", "Common")
+            Audit03SetPlotSetting table, "Plot.LegendMode", CStr(key)
+            settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+            plotter.Draw fixture, reader, settings
+            Set marker = Audit03PlotShape(chart, "ElementConcrete")
+            expectedColor = IIf(CStr(key) = "Separate", RGB(10, 20, 30), RGB(100, 110, 120))
+            AssertTrue stats, "audit03.generalPlot.legendMode.p" & CStr(position) & "." & CStr(key) & ".shape", Not marker Is Nothing
+            If Not marker Is Nothing Then AssertTrue stats, "audit03.generalPlot.legendMode.p" & CStr(position) & "." & CStr(key) & ".effect", marker.Fill.ForeColor.RGB = expectedColor
+        Next key
+        Audit03SetPlotSetting table, "Plot.ResultGradient", "Yes"
+        settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        Set marker = Audit03PlotShape(chart, "ElementConcrete")
+        AssertTrue stats, "audit03.generalPlot.gradient.p" & CStr(position) & ".shape", Not marker Is Nothing
+        If Not marker Is Nothing Then AssertTrue stats, "audit03.generalPlot.gradient.p" & CStr(position) & ".effect", marker.Fill.ForeColor.RGB = RGB(164, 169, 173)
+        sheet.Range("R35").Resize(5, 7).Value2 = elements
+        table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
+        Audit03SetPlotSetting table, "Plot.LoadCase", "ALT"
+        Audit03SetPlotSetting table, "Plot.ResultLabelsEnabled", "Yes"
+        Audit03SetPlotSetting table, "Plot.ResultLabelSpacing", 100#
+        settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
+        plotter.Draw fixture, reader, settings
+        AssertTrue stats, "audit03.generalPlot.loadCase.changed.p" & CStr(position), reader.LoadCase = "ALT"
+        AssertClose stats, "audit03.generalPlot.loadCase.value.p" & CStr(position), reader.ResultValue(1), 9.5, 0#
+        ' Точность Stress в fixture равна двум знакам, поэтому ноль сохраняется.
+        AssertTrue stats, "audit03.generalPlot.loadCase.label.p" & CStr(position), Audit03PlotTextExists(chart, "9.50")
+        table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
+        settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
         Audit03SetPlotSetting table, "Plot.ResultLabelsEnabled", "Yes"
         Audit03SetPlotSetting table, "Plot.ResultLabelSpacing", 100#
         For Each key In keys
             Set cell = Audit03PlotSettingCell(table, CStr(key))
             cases = cases + 1
-            cell.Offset(0, -1).Value2 = "REMOVED_" & CStr(key): settings.LoadFromRange table
+            cell.Offset(0, -1).Value2 = "REMOVED_" & CStr(key): settings.LoadFromWorkbook fixture
             Audit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
             AssertTrue stats, "audit03.generalPlot.missing.p" & CStr(position) & "." & CStr(key), code <> 0 And InStr(1, reason, CStr(key), vbTextCompare) > 0
             cell.Offset(0, -1).Value2 = key
         Next key
-        table.Value2 = baseline
+        table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
         Audit03SetPlotSetting table, "Plot.Dimensions.Enabled", "Yes"
         For Each key In Array("Plot.Dimensions.ArrowType", "Plot.Dimensions.ArrowSize")
             Set cell = Audit03PlotSettingCell(table, CStr(key)): values = cell.Value2: badIndex = 0
             For Each bad In Array("", "TODO", "INVALID", CVErr(2015))
-                badIndex = badIndex + 1: cases = cases + 1: cell.Value2 = bad: settings.LoadFromRange table
+                badIndex = badIndex + 1: cases = cases + 1: cell.Value2 = bad: settings.LoadFromWorkbook fixture
                 Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_Audit03Sentinel"
                 Audit03CapturePlotDraw plotter, fixture, reader, settings, code, reason
                 prefix = "audit03.generalPlot.arrow.p" & CStr(position) & "." & CStr(key) & ".bad" & CStr(badIndex)
@@ -849,7 +943,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
         Next key
         For mode = 0 To 2
             For Each bad In Array("", "TODO", CVErr(2015))
-                cases = cases + 1: Audit03SetPlotSetting table, "Plot.LoadCase", bad: settings.LoadFromRange table
+                cases = cases + 1: Audit03SetPlotSetting table, "Plot.LoadCase", bad: settings.LoadFromWorkbook fixture
                 Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
                 prefix = "audit03.generalPlot.loadCase.p" & CStr(position) & ".mode" & CStr(mode) & ".type" & CStr(VarType(bad))
                 If mode = 1 Then
@@ -862,7 +956,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
                 End If
             Next bad
         Next mode
-        table.Value2 = baseline: settings.LoadFromRange table: reader.LoadFromWorkbook fixture, settings
+        table.Value2 = baseline: annotationTable.Value2 = annotationBaseline: settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
     Next position
     Audit03SetPlotSetting table, "Plot.Dimensions.Enabled", "Yes"
     For Each arrow In Array("Triangle", "Stealth", "Diamond", "Oval", "Open")
@@ -882,7 +976,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
             cases = cases + 1
             Audit03SetPlotSetting table, "Plot.Dimensions.ArrowType", arrow
             Audit03SetPlotSetting table, "Plot.Dimensions.ArrowSize", size
-            settings.LoadFromRange table: plotter.Draw fixture, reader, settings
+            settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
             Set marker = Nothing
             For Each shape In chart.Chart.Shapes
                 If InStr(1, shape.Name, "AnnotationLine", vbTextCompare) > 0 Then
@@ -902,7 +996,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     AssertClose stats, "audit03.generalPlot.chart.top", chart.Top, 53#, 0.01
     AssertClose stats, "audit03.generalPlot.chart.width", chart.Width, 700#, 0.01
     AssertClose stats, "audit03.generalPlot.chart.height", chart.Height, 480#, 0.01
-    actual = sheet.Range("A5:X37").Value2
+    actual = sheet.Range("A5:X39").Value2
     Audit03ComparePlainSnapshot stats, "audit03.generalPlot.ResultsUnchanged", snapshot, actual, 1
     ' На сетке >5000 точек проверяем все 17 уровней градиента. Округление
     ' номера bucket не должно пропускать нечетные целые значения.
@@ -920,10 +1014,10 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     sheet.Range("AV5").Resize(5002, 7).Value2 = gridResults
     fixture.Names.Item("rngNDMSectionGeometry").RefersTo = "=Results!$AF$5"
     fixture.Names.Item("rngNDMElementResults").RefersTo = "=Results!$AV$5"
-    table.Value2 = baseline
+    table.Value2 = baseline: annotationTable.Value2 = annotationBaseline
     Audit03SetPlotSetting table, "Plot.Color.ConcreteCompression", "0,0,0"
     Audit03SetPlotSetting table, "Plot.ResultGradient", "Yes"
-    settings.LoadFromRange table: reader.LoadFromWorkbook fixture, settings
+    settings.LoadFromWorkbook fixture: reader.LoadFromWorkbook fixture, settings
     plotter.Draw fixture, reader, settings
     Set colors = CreateObject("Scripting.Dictionary")
     For Each series In chart.Chart.SeriesCollection
@@ -978,7 +1072,34 @@ Private Function Audit03PlotSettingsTable(ByVal anchor As Object) As Object
     Audit03SetPlotSetting Audit03PlotSettingsTable, "Plot.LegendEnabled", "No"
 End Function
 
+' Копирует настоящие Config-таблицы в собственный presentation fixture.
+' Системные настройки не сворачиваются в трехколоночный словарь, а группы
+' аннотаций сохраняют исходный компактный формат и свои реальные имена.
+' Начальные значения управляют только тестовой схемой, не defaults книги.
+Private Function Audit03NamedGeneralPlotSettingsTable(ByVal fixture As Object, ByVal sheet As Object) As Object
+    Dim name As Variant, addresses As Variant, source As Object, target As Object, index As Long
+    addresses = Array("A5", "W5", "W20", "W30")
+    For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", "rngPlotAnnotationSettings")
+        Set source = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        Set target = sheet.Range(CStr(addresses(index))).Resize(source.Rows.Count, source.Columns.Count)
+        target.NumberFormat = "@": target.Value2 = source.Value2
+        fixture.Names.Add Name:=CStr(name), RefersTo:="='" & sheet.Name & "'!" & target.Address
+        index = index + 1
+    Next name
+    Set Audit03NamedGeneralPlotSettingsTable = fixture.Names.Item("rngSystemSettings").RefersToRange
+    Audit03SetPlotSetting Audit03NamedGeneralPlotSettingsTable, "Plot.LoadCase", "PLOT"
+    Audit03SetPlotSetting Audit03NamedGeneralPlotSettingsTable, "Plot.Dimensions.Enabled", "No"
+    Audit03SetPlotSetting Audit03NamedGeneralPlotSettingsTable, "Plot.RebarLabels.Enabled", "No"
+    Audit03SetPlotSetting Audit03NamedGeneralPlotSettingsTable, "Plot.ResultLabelsEnabled", "No"
+    Audit03SetPlotSetting Audit03NamedGeneralPlotSettingsTable, "Plot.LegendEnabled", "No"
+    Audit03SetPlotSetting Audit03NamedGeneralPlotSettingsTable, "Plot.LegendMode", "Separate"
+    Audit03SetPlotSetting Audit03NamedGeneralPlotSettingsTable, "Plot.AxisLabelsEnabled", "Yes"
+    Audit03SetPlotSetting Audit03NamedGeneralPlotSettingsTable, "Plot.AxisLabelsFontSize", 11#
+End Function
+
 ' Возвращает именно текущую ячейку значения, а не жестко заданный адрес.
+' В полном Config группы аннотаций находятся в отдельной компактной таблице;
+' у автономного scalar fixture сначала используется его собственный ключ.
 ' Отсутствующий test-key является ошибкой fixture, а не успешной проверкой.
 Private Function Audit03PlotSettingCell(ByVal table As Object, ByVal key As String) As Object
     Dim row As Long
@@ -987,6 +1108,10 @@ Private Function Audit03PlotSettingCell(ByVal table As Object, ByVal key As Stri
             Set Audit03PlotSettingCell = table.Cells(row, 2): Exit Function
         End If
     Next row
+    If Left$(key, 17) = "Plot.RebarLabels." Or Left$(key, 16) = "Plot.Dimensions." Then
+        Set Audit03PlotSettingCell = Audit03NamedAnnotationCell(table.Worksheet.Parent.Names.Item("rngPlotAnnotationSettings").RefersToRange, key)
+        Exit Function
+    End If
     Err.Raise 5, "Audit03PlotSettingCell", "В fixture нет параметра " & key
 End Function
 
@@ -1011,6 +1136,15 @@ Private Function Audit03PlotShapeExists(ByVal chart As Object, ByVal fragment As
     Dim shape As Object
     For Each shape In chart.Chart.Shapes
         If InStr(1, shape.Name, fragment, vbTextCompare) > 0 Then Audit03PlotShapeExists = True: Exit Function
+    Next shape
+End Function
+
+' Возвращает фактическую фигуру для проверки ее цвета или шрифта. Отсутствие
+' ожидаемой фигуры остается отдельным провалом assertion, без unsafe dereference.
+Private Function Audit03PlotShape(ByVal chart As Object, ByVal fragment As String) As Object
+    Dim shape As Object
+    For Each shape In chart.Chart.Shapes
+        If InStr(1, shape.Name, fragment, vbTextCompare) > 0 Then Set Audit03PlotShape = shape: Exit Function
     Next shape
 End Function
 

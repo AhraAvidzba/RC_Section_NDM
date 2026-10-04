@@ -1,0 +1,9 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_plot_named_v234.xlsm
+SOURCE_SHA256: 4A36114B44DDEC30DB9A765E86B468E6FC0049C3371BFFDDC23EEB2DCDCC7F8C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_523af1a34ce044088cecc2f76e67dadf\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.generalPlot.loadCase.label.p0
+FAIL: audit03.generalPlot.loadCase.label.p1
+TOTAL_AUDIT03_GENERAL_PLOT: passed=3218; failed=2
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True
