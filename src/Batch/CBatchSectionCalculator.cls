@@ -334,6 +334,12 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Set widthOptions = New CCrackWidthCalculator
     ConfigureCrackCalculator widthOptions
     widthOptions.ValidateSettings settings
+    ' Диапазоны численных Capacity-параметров проверяет их владелец.
+    ' Reader нужен только для актуального адреса ошибочной ячейки Config.
+    Dim capacityOptions As CCapacityCalculator
+    Set capacityOptions = New CCapacityCalculator
+    ConfigureCapacityCalculator capacityOptions
+    capacityOptions.ValidateSettings settings
     ConfigureMomentZeroFilter
     NormalizeAllCombinationMoments
     Exit Sub

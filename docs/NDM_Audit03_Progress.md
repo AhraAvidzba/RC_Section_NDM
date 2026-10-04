@@ -21,7 +21,7 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v238: 707 активных полей из 1064, включая 21 активную ячейку компактной таблицы аннотаций, 18 общих Plot-полей и два флага отчета/сообщений; из 760 editable полей 53 еще не приняты. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v251: 714 активных полей из 1064, включая семь численных Capacity-параметров; из 760 editable полей 46 еще не приняты. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
 | 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
 
 ## Карта Обязанностей
@@ -56,7 +56,7 @@
 | F08 | трассировка подготовлена, приемка продолжается | Per-ID реестр NDM_Audit03_Prior_Audit_Traceability.md; незавершенные K/T/D/UI/save-reopen пункты не получают PASS. |
 | A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
 | P01-P04 | в работе | 15 сценариев x 5 повторов x 2 версии; asymmetric: 94 solves/3874 iterations/20 retries/10 эквивалентных попыток. P02 численные и point-grid инварианты подтверждены; окончательный benchmark/разбор повторов впереди. |
-| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v238 содержит 1064 поля, 707 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
+| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v251 содержит 1064 поля, 714 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
 | T01-T05 | в работе | v68: все 13 форм, Light/Stress, Off/On, 52/52 chunks и 18 980 all-path cases, failed=0. Это приемка численного среза v68, не поздних Config/UI правок; selector variants/pairwise/high-risk tuples, независимые near-limit gates и финальный повтор на выпускном source впереди. |
 | D01-D02 | в работе | Comment-only ревизия export/writers/enum/workbook entrypoints выполнена частично; все остальные methods/tests и фактический help/Config/validation/links в clean/update впереди. |
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
@@ -68,6 +68,36 @@
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
 
 ## Актуальная Точка Продолжения
+
+- Capacity numeric v248-v251: семь фактических полей Config проверены в двух
+  положениях rngSystemSettings, с реальным reader -> batch -> Search -> writers.
+  v248 2196/38 включает 34 воспроизведенных дефекта динамического адреса и четыре
+  ошибки нового oracle; уточненный frozen v249 2318/34 подтверждает именно дефект
+  production. CCapacityCalculator теперь владеет preflight диапазонов настроек,
+  batch передает ему текущий reader; ошибки получают InputErr до Search с ключом,
+  действующим адресом и указанием исправления. Physics/search и прежние expected/
+  tolerance не менялись; defaults отсутствующих optional numeric keys сохранены.
+  v250 directed 2804/0; финальный усиленный v251 2904/0, 154 реальных batch-сценария,
+  88 invalid cases. Проверены активные эффекты всех семи полей, inactive/isolation,
+  recovery, физический final и ResultComment соответствующих блоков. Для
+  ToleranceStrain отдельный настоящий batch с damping=0.5 дает 216 -> 256 оценок
+  и lambda 4.70865403902652 -> 4.71145166569015; обе точки допустимы в заранее
+  заданных component-specific допусках fixture. Width/sigma_s в PR2 совпадают точно.
+  Capacity suite v250 3074/0, Batch v250 15775/0; 601 и 1864 прежних numerical
+  actual-values совпадают с completed v206 точно, missing/differences=0.
+  Последнее изменение v251 только усиливает новые тесты; это не полный eight-suite
+  On/Off gate. Help 2020 строк, 140 links, 118 Shapes, failed=0; 760 inputs
+  сохранены после update/reopen. Saved Help v251 failed=0, structure 27/27.
+  Actual export 111 components, source/export 106/106, failed=0. Книга SHA
+  0DA51B8AEDA04311476F82AEC09462810ED8467B4698C90CE4B8B04AC6BBEAE3;
+  export SHA 0E35E181D97924A55D3261348C8CE11AB979E548E4FB77C93AD4C42B9CBA7143.
+  Scope: NDM_Audit03_Capacity_Numeric_Config_Review.md и соответствующий evidence.
+  Registry v251: 714/1064, editable pending=46 (6.05%), fullAcceptance=False.
+  Остаток всего аудита оценивается около 25% трудоемкости, 16-24 активных часа,
+  резерв до 30 при новых дефектах; это не точная доля незакрытых checklist items.
+  Следом 17 Stability-полей и остальные Config/range/pairwise, geometry/metadata
+  guards, semantic review, финальные matrices/benchmarks/clean-update/self-audit.
+  Main output/spec и пользовательский Excel сохранены; Audit03 остается активным.
 
 - Общие флаги запуска зафиксированы `91cdddb0`. Multi-area срез v239-v247:
   setup 0/1 v239-v245 сохранены как NotRun до assertions; frozen v246 93/64;

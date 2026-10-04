@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_capacity_numeric_positive_v250.xlsm
+SOURCE_SHA256: E56AC887F8018D583F997B990E333CC03DF7AFBFC05FFF4FB36636C00255842A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a3bb638ba3a540b5a52060b7f3b43be3\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_CAPACITY_NUMERIC_CONFIG: passed=2804; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

@@ -1,0 +1,9 @@
+SAVED_HELP: Допустимо число больше нуля. Пустая ячейка|count=1|addresses=B1175
+SAVED_HELP: Допустимо число больше нуля. Явно пустая|count=2|addresses=B1183,B1144
+SAVED_HELP: Допустимо целое число не меньше нуля|count=1|addresses=B1191
+SAVED_HELP: Допустимо целое число больше нуля. Ноль|count=2|addresses=B1202,B1134
+SAVED_HELP: Внутренний критерий использует отношение|count=1|addresses=B1148
+SAVED_HELP: Один шаг Newton может включать несколько оценок|count=1|addresses=B1136
+SAVED_HELP: Если InitialLambda больше MaxLambda|count=1|addresses=B1156
+SOURCE_UNCHANGED: True
+TOTAL_AUDIT03_CAPACITY_HELP: failed=0

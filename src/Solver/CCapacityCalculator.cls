@@ -87,6 +87,41 @@ Public Sub ConfigureSearch(ByVal initialLambdaStep As Double, ByVal solutionStra
     mCapacitySolverMaxIterations = capacitySolverMaxIterations
 End Sub
 
+' Проверяет численные параметры Config до подготовки Search. Ограничения
+' принадлежат Capacity, а reader добавляет только актуальное место исправления.
+' Неактивный в текущей стратегии параметр остается корректной настройкой;
+' проверка не запускает НДС и не меняет физические критерии материалов.
+Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = Nothing)
+    If mCapacitySolverMaxIterations <= 0 Then RaiseInvalidSearchSetting "Capacity.SolverMaxIterations", _
+        "Число итераций должно быть положительным.", "Введите целое число больше нуля.", settings
+    If mStrainTolerance <= 0# Then RaiseInvalidSearchSetting "Capacity.ToleranceStrain", _
+        "Допуск предельной деформации должен быть положительным.", "Введите число больше нуля.", settings
+    If mMaxLambda <= 0# Then RaiseInvalidSearchSetting "Capacity.MaxLambda", _
+        "Верхняя граница поиска должна быть положительной.", "Введите число больше нуля.", settings
+    If mInitialLambdaStep <= 0# Then RaiseInvalidSearchSetting "Capacity.InitialLambda", _
+        "Начальный множитель нагрузки должен быть положительным.", "Введите число больше нуля.", settings
+    If mLambdaTolerance <= 0# Then RaiseInvalidSearchSetting "Capacity.ToleranceLambda", _
+        "Допуск поиска множителя нагрузки должен быть положительным.", "Введите число больше нуля.", settings
+    If mMaxRetries < 0 Then RaiseInvalidSearchSetting "Capacity.MaxRetries", _
+        "Число дополнительных попыток не может быть отрицательным.", "Введите целое число не меньше нуля; 0 отключает повторы.", settings
+    If mBaseLoadSteps <= 0 Then RaiseInvalidSearchSetting "Capacity.BaseLoadSteps", _
+        "Число ступеней нагрузки должно быть положительным.", "Введите целое число больше нуля.", settings
+End Sub
+
+' Возвращает контролируемую ошибку настройки с ключом и действием. Адрес
+' берется из прочитанного Config, не из шаблона и не из текста solver-диагноза.
+' Автономный вызов без reader сохраняет причину и ключ без выдуманной ячейки.
+Private Sub RaiseInvalidSearchSetting(ByVal key As String, ByVal reason As String, _
+        ByVal correction As String, ByVal settings As CSystemSettingsReader)
+    Dim message As String
+    If settings Is Nothing Then
+        message = "Настройка " & key & ": " & reason & " " & correction
+    Else
+        message = settings.InputErrorMessage(key, reason, correction)
+    End If
+    Err.Raise vbObjectError + 4190, "CCapacityCalculator", message
+End Sub
+
 ' Принимает настройки внутреннего CSectionSolver, который вызывается для
 ' пробных lambda-точек Capacity. Это те же параметры равновесия, что применяет
 ' batch для прямого НДС, но владение ими в capacity-сценарии остается здесь.

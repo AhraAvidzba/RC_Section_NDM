@@ -636,3 +636,31 @@ presentation-тест сам по себе не принимает эти 21 ann
 весь Config. Трассировка: `NDM_Audit03_Profile_Presentation_Evidence.json` и
 `NDM_Audit03_Presentation_Snapshot_Review.md`. Основная output-книга и final
 report остаются невыпущенными до полного DoD Audit03.
+
+## Численные Настройки Capacity v251
+
+К текущему реестру добавлены ровно семь editable полей: SolverMaxIterations,
+ToleranceStrain, MaxLambda, InitialLambda, ToleranceLambda, MaxRetries и
+BaseLoadSteps. Это реальные named Config -> reader -> batch -> Capacity/Search
+проверки, а не только чтение свойства. Проверены два положения таблицы, активные
+эффекты, inactive/isolation, 88 invalid cases, recovery и комментарии writers.
+Некорректные диапазоны валидирует CCapacityCalculator до Search; сообщение
+использует текущий адрес CSystemSettingsReader. Отсутствующие optional numeric
+keys сохраняют принятый default-контракт; полная приемка missing keys не заявлена.
+
+Frozen v249: 2318/34, все 34 ошибки относятся к отсутствующему динамическому
+адресу. Positive v250: 2804/0; усиленный v251: 2904/0, 154 реальных batch-сценария.
+Capacity suite v250: 3074/0; Batch v250: 15775/0. Прежние 601 и 1864 numerical
+actual-values совпали с completed v206 точно, missing/differences=0. Последний
+срез v251 усиливает только новые тесты; полного On/Off gate он не заменяет.
+Help/update/reopen сохраняет 760 inputs; Saved Help failed=0, structure 27/27,
+actual source/export 106/106, 111 components.
+
+Registry `config_behavior_registry_capacity_numeric_v251_2026-10-04` содержит
+714/1064 active-reviewed. Из 760 editable полей 46 остаются без активной
+поадресной приемки, около 6.05%. Full-range/pairwise, экстремальные Double/Long,
+переполнение произведения retries/steps, missing-key contracts и metadata
+остаются отдельными открытыми проверками: fullAcceptance=False.
+Трассировка: `NDM_Audit03_Capacity_Numeric_Config_Review.md` и
+`NDM_Audit03_Capacity_Numeric_Config_Evidence.json`. Итоговый выпуск Audit03
+еще не завершен; основная output-книга не заменяется промежуточной копией.

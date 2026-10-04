@@ -1063,6 +1063,363 @@ Failed:
     code = Err.Number: reason = Err.Description
 End Sub
 
+' ==================== ДЛЯ ТЕСТОВ: ЧИСЛЕННЫЕ НАСТРОЙКИ CAPACITY ====================
+
+' Читает семь численных параметров из настоящей таблицы Config в двух местах.
+' Проверяет наблюдаемые пробы Search, физические конечные точки, ошибки ввода
+' и восстановление после них. Перенос таблицы не должен менять адресный контракт.
+Public Function RunAudit03CapacityNumericConfigTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TConfigTestStats, originalRange As Object, systemRange As Object, movedRange As Object
+    Dim unitRange As Object, profileRange As Object, savedName As String
+    Dim savedSystem As Variant, savedMoved As Variant, savedUnits As Variant, savedProfiles As Variant
+    Dim configured As Variant, position As Long, settings As CSystemSettingsReader
+    Dim section As CSectionModel, provider As CMaterialModelProvider, profiles As CCalculationProfileCatalog, units As CUnitSystem
+    On Error GoTo FailedRun
+    Set originalRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    savedName = ThisWorkbook.Names.Item("rngSystemSettings").RefersTo
+    Set movedRange = originalRange.Worksheet.Range("CH800").Resize(originalRange.Rows.Count, originalRange.Columns.Count)
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = originalRange.Formula: savedMoved = movedRange.Formula
+    savedUnits = unitRange.Formula: savedProfiles = profileRange.Formula
+    ConfigureSearchFixture originalRange, unitRange, profileRange
+    SetProfileValue profileRange, "Calculation.Strength.DirectState", "No", "PR1"
+    configured = originalRange.Formula
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set section = SearchFixtureSection()
+    For position = 1 To 2
+        If position = 1 Then
+            Set systemRange = originalRange
+        Else
+            Set systemRange = movedRange
+        End If
+        systemRange.Formula = configured
+        ThisWorkbook.Names.Item("rngSystemSettings").RefersTo = "=" & systemRange.Address(True, True, 1, True)
+        CheckCapacityNumericEffects stats, systemRange, configured, position, section, provider, profiles, units
+        CheckCapacityNumericIsolation stats, systemRange, configured, position, section, provider, profiles, units
+        CheckCapacityNumericInput stats, systemRange, configured, position, section, provider, profiles, units
+    Next position
+    GoTo Restore
+FailedRun:
+    Check stats, "audit03.capacityNumeric.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    ThisWorkbook.Names.Item("rngSystemSettings").RefersTo = savedName
+    If Not originalRange Is Nothing Then originalRange.Formula = savedSystem
+    If Not movedRange Is Nothing Then movedRange.Formula = savedMoved
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    If Not profileRange Is Nothing Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+    LogLine stats, "TOTAL_AUDIT03_CAPACITY_NUMERIC_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03CapacityNumericConfigTests = stats.Report
+End Function
+
+' Меняет по одному параметру на общей модели: реальный Search должен менять
+' численный маршрут, но не выдавать диагностического кандидата за физический
+' предел. Неактивные параметры одномерной скобки проверяются при UltimateStrain.
+Private Sub CheckCapacityNumericEffects(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal profiles As CCalculationProfileCatalog, ByVal units As CUnitSystem)
+    Dim baseline As CCapacityResult, changed As CCapacityResult, other As CCapacityResult
+    Dim prefix As String, key As Variant, value As Variant, index As Long, countBase As Long, countChanged As Long
+    prefix = "audit03.capacityNumeric.p" & CStr(position)
+    table.Formula = configured
+    SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
+    Set baseline = CapacityNumericRun(stats, prefix & ".baseline", section, provider, profiles, units)
+    CheckCapacityNumericPoint stats, prefix & ".baseline", baseline
+
+    SetValue table, "Capacity.MaxLambda", 0.125
+    Set changed = CapacityNumericRun(stats, prefix & ".Capacity.MaxLambda.bounded", section, provider, profiles, units)
+    Check stats, prefix & ".Capacity.MaxLambda.noPoint", Not changed.SearchResult.HasLimitPoint
+    Check stats, prefix & ".Capacity.MaxLambda.code", changed.ResultMeta.ResultCode = rcSearchBoundReached
+    CheckClose stats, prefix & ".Capacity.MaxLambda.lastProbe", CapacityNumericLastLambda(changed.DiagnosticLog), 0.125, 0#
+
+    table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
+    SetValue table, "Capacity.InitialLambda", 0.125
+    Set changed = CapacityNumericRun(stats, prefix & ".Capacity.InitialLambda.small", section, provider, profiles, units)
+    CheckCapacityNumericPoint stats, prefix & ".Capacity.InitialLambda.small", changed
+    CheckClose stats, prefix & ".Capacity.InitialLambda.firstProbe", CapacityNumericFirstLambda(changed.DiagnosticLog), 0.125, 0#
+    CheckClose stats, prefix & ".Capacity.InitialLambda.sameLimit", changed.LambdaCapacity, baseline.LambdaCapacity, 0.000002
+
+    table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
+    SetValue table, "Capacity.ToleranceLambda", 0.001
+    Set changed = CapacityNumericRun(stats, prefix & ".Capacity.ToleranceLambda.coarse", section, provider, profiles, units)
+    CheckCapacityNumericPoint stats, prefix & ".Capacity.ToleranceLambda.coarse", changed
+    countBase = CapacityNumericRecordCount(baseline.DiagnosticLog, "probe=")
+    countChanged = CapacityNumericRecordCount(changed.DiagnosticLog, "probe=")
+    Check stats, prefix & ".Capacity.ToleranceLambda.fewerProbes", countChanged < countBase And countChanged > 0
+    CheckClose stats, prefix & ".Capacity.ToleranceLambda.sameLimit", changed.LambdaCapacity, baseline.LambdaCapacity, 0.002
+
+    table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
+    SetValue table, "Capacity.MaxLambda", 0.125: SetValue table, "Capacity.InitialLambda", 0.125
+    SetValue table, "Capacity.MaxRetries", 0: SetValue table, "Capacity.BaseLoadSteps", 1
+    Set changed = CapacityNumericRun(stats, prefix & ".Capacity.BaseLoadSteps.one", section, provider, profiles, units)
+    SetValue table, "Capacity.BaseLoadSteps", 3
+    Set other = CapacityNumericRun(stats, prefix & ".Capacity.BaseLoadSteps.three", section, provider, profiles, units)
+    Check stats, prefix & ".Capacity.BaseLoadSteps.oneStep", InStr(1, changed.LastSolverDiagnosticLog, "step=1;", vbBinaryCompare) > 0
+    Check stats, prefix & ".Capacity.BaseLoadSteps.threeSteps", InStr(1, other.LastSolverDiagnosticLog, "step=3;", vbBinaryCompare) > 0
+    Check stats, prefix & ".Capacity.BaseLoadSteps.sameBound", changed.ResultMeta.ResultCode = rcSearchBoundReached And _
+        other.ResultMeta.ResultCode = rcSearchBoundReached
+
+    table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
+    SetValue table, "Capacity.SolverMaxIterations", 1: SetValue table, "Capacity.MaxRetries", 0
+    Set changed = CapacityNumericRun(stats, prefix & ".Capacity.MaxRetries.zero", section, provider, profiles, units)
+    SetValue table, "Capacity.MaxRetries", 2
+    Set other = CapacityNumericRun(stats, prefix & ".Capacity.MaxRetries.two", section, provider, profiles, units)
+    Check stats, prefix & ".Capacity.MaxRetries.noRepeat", CapacityNumericRecordCount(changed.DiagnosticLog, "; attempt=1;") = 0
+    Check stats, prefix & ".Capacity.MaxRetries.repeatUsed", CapacityNumericRecordCount(other.DiagnosticLog, "; attempt=1;") > 0 And _
+        CapacityNumericRecordCount(other.DiagnosticLog, "; attempt=2;") > 0
+    Check stats, prefix & ".Capacity.MaxRetries.budget", CapacityNumericRecordCount(other.DiagnosticLog, "; attempt=3;") = 0
+    Check stats, prefix & ".Capacity.MaxRetries.noFalsePoint", Not changed.SearchResult.HasLimitPoint And Not other.SearchResult.HasLimitPoint
+
+    table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "UltimateStrain"
+    Set baseline = CapacityNumericRun(stats, prefix & ".ultimateBaseline", section, provider, profiles, units)
+    CheckCapacityNumericPoint stats, prefix & ".ultimateBaseline", baseline
+    SetValue table, "Capacity.SolverMaxIterations", 1
+    Set changed = CapacityNumericRun(stats, prefix & ".Capacity.SolverMaxIterations.one", section, provider, profiles, units)
+    Check stats, prefix & ".Capacity.SolverMaxIterations.typedFailure", changed.ResultMeta.InternalStatus = rsNumericalFailure
+    Check stats, prefix & ".Capacity.SolverMaxIterations.noPoint", Not changed.SearchResult.HasLimitPoint
+    ' Один Newton-шаг включает оценки трех колонок Якобиана и line-search.
+    ' Лимит итераций не равен числу EvaluateStrainPlane в диагностике.
+    Check stats, prefix & ".Capacity.SolverMaxIterations.budget", _
+        CapacityNumericRecordCount(changed.DiagnosticLog, "ultimatePath iter=") < _
+        CapacityNumericRecordCount(baseline.DiagnosticLog, "ultimatePath iter=")
+
+    table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "UltimateStrain"
+    SetValue table, "Capacity.ToleranceStrain", 0.000000001
+    Set changed = CapacityNumericRun(stats, prefix & ".Capacity.ToleranceStrain.tight", section, provider, profiles, units)
+    CheckCapacityNumericPoint stats, prefix & ".Capacity.ToleranceStrain.tight", changed
+    countBase = CapacityNumericRecordCount(baseline.DiagnosticLog, "ultimatePath iter=")
+    countChanged = CapacityNumericRecordCount(changed.DiagnosticLog, "ultimatePath iter=")
+    ' Финальный контроль равновесия здесь строже обоих деформационных допусков,
+    ' поэтому точка вправе совпасть. Отдельно проверяем настоящий критерий
+    ' остановки на той же физической плоскости с заданной невязкой деформации.
+    CheckCapacityStrainTolerance stats, prefix, table, section, provider, units, baseline.StateResult
+    CheckClose stats, prefix & ".Capacity.ToleranceStrain.sameLimit", changed.LambdaCapacity, baseline.LambdaCapacity, 0.0002
+    CheckCapacityStrainToleranceBatch stats, prefix, table, configured, section, provider, profiles, units
+
+    ' Эти настройки не участвуют в успешном прямом UltimateStrain.
+    ' Валидность чтения сохраняется, но предел и выполненные пробы одинаковы.
+    For Each key In Array("Capacity.MaxLambda", "Capacity.InitialLambda", "Capacity.ToleranceLambda", "Capacity.MaxRetries", "Capacity.BaseLoadSteps")
+        table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "UltimateStrain"
+        Select Case CStr(key)
+            Case "Capacity.MaxLambda": value = 0.125
+            Case "Capacity.InitialLambda": value = 0.25
+            Case "Capacity.ToleranceLambda": value = 0.1
+            Case "Capacity.MaxRetries": value = 0
+            Case "Capacity.BaseLoadSteps": value = 3
+        End Select
+        SetValue table, CStr(key), value
+        Set changed = CapacityNumericRun(stats, prefix & ".inactive." & CStr(key), section, provider, profiles, units)
+        CheckClose stats, prefix & ".inactive." & CStr(key) & ".limit", changed.LambdaCapacity, baseline.LambdaCapacity, 0#
+        Check stats, prefix & ".inactive." & CStr(key) & ".diagnostic", changed.DiagnosticLog = baseline.DiagnosticLog
+    Next key
+    table.Formula = configured
+End Sub
+
+' Изолирует деформационный допуск в настоящем batch-пути: демпфирование 0.5
+' приближает критерий постепенно, а равновесие имеет свои явно заданные допуски.
+' Изменение только ToleranceStrain должно менять остановку Newton; физические
+' пределы и проверка конечных усилий не отключаются и не пересчитываются тестом.
+Private Sub CheckCapacityStrainToleranceBatch(ByRef stats As TConfigTestStats, ByVal prefix As String, _
+        ByVal table As Object, ByRef configured As Variant, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal profiles As CCalculationProfileCatalog, ByVal units As CUnitSystem)
+    Dim coarse As CCapacityResult, tight As CCapacityResult
+    table.Formula = configured
+    SetValue table, "Capacity.SolutionStrategy", "UltimateStrain"
+    SetValue table, "Capacity.SolverMaxIterations", 120
+    SetValue table, "Solver.DampingInitial", 0.5
+    SetValue table, "Solver.ToleranceN", 1000#
+    SetValue table, "Solver.ToleranceMx", 100000#
+    SetValue table, "Solver.ToleranceMy", 100000#
+    SetValue table, "Capacity.ToleranceStrain", 0.0001
+    Set coarse = CapacityNumericRun(stats, prefix & ".Capacity.ToleranceStrain.batchCoarse", section, provider, profiles, units)
+    SetValue table, "Capacity.ToleranceStrain", 0.000000001
+    Set tight = CapacityNumericRun(stats, prefix & ".Capacity.ToleranceStrain.batchTight", section, provider, profiles, units)
+    Check stats, prefix & ".Capacity.ToleranceStrain.batchPoints", coarse.SearchResult.HasLimitPoint And tight.SearchResult.HasLimitPoint
+    If Not coarse.SearchResult.HasLimitPoint Or Not tight.SearchResult.HasLimitPoint Then Exit Sub
+    CheckState stats, prefix & ".Capacity.ToleranceStrain.batchCoarse", coarse.StateResult, 1000#, 100000#
+    CheckState stats, prefix & ".Capacity.ToleranceStrain.batchTight", tight.StateResult, 1000#, 100000#
+    Check stats, prefix & ".Capacity.ToleranceStrain.batchEffect", _
+        CapacityNumericRecordCount(tight.DiagnosticLog, "ultimatePath iter=") > _
+        CapacityNumericRecordCount(coarse.DiagnosticLog, "ultimatePath iter=") Or _
+        Abs(tight.LambdaCapacity - coarse.LambdaCapacity) > 0.000000000001
+    table.Formula = configured
+End Sub
+
+' Проверяет неактивную Capacity в реальном crack-профиле: изменение любого
+' из семи допустимых параметров не меняет Formation/current/width и число solve.
+' Ошибочные значения рассматриваются отдельным общим preflight, не скрываются.
+Private Sub CheckCapacityNumericIsolation(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal profiles As CCalculationProfileCatalog, ByVal units As CUnitSystem)
+    Dim baseline As CBatchSectionCalculator, changed As CBatchSectionCalculator, keys As Variant, values As Variant
+    Dim index As Long, prefix As String, first As CCrackResult, second As CCrackResult
+    keys = Array("Capacity.SolverMaxIterations", "Capacity.ToleranceStrain", "Capacity.MaxLambda", _
+        "Capacity.InitialLambda", "Capacity.ToleranceLambda", "Capacity.MaxRetries", "Capacity.BaseLoadSteps")
+    values = Array(1, 0.000000001, 0.125, 0.25, 0.1, 0, 3)
+    prefix = "audit03.capacityNumeric.isolation.p" & CStr(position)
+    table.Formula = configured
+    Set baseline = RunConfigBatch(stats, prefix & ".baseline", "PR2", section, provider, profiles, units)
+    Set first = baseline.ResultAt(1).CrackResult
+    Check stats, prefix & ".formationPoint", first.Formation.HasLimitPoint
+    For index = LBound(keys) To UBound(keys)
+        table.Formula = configured: SetValue table, CStr(keys(index)), values(index)
+        Set changed = RunConfigBatch(stats, prefix & "." & CStr(keys(index)), "PR2", section, provider, profiles, units)
+        Set second = changed.ResultAt(1).CrackResult
+        CheckClose stats, prefix & "." & CStr(keys(index)) & ".lambda", second.Formation.LambdaCrc, first.Formation.LambdaCrc, 0#
+        Check stats, prefix & "." & CStr(keys(index)) & ".method", second.Formation.FormationMethod = first.Formation.FormationMethod
+        Check stats, prefix & "." & CStr(keys(index)) & ".solveCount", changed.SolverCallCount = baseline.SolverCallCount
+        Check stats, prefix & "." & CStr(keys(index)) & ".status", changed.ResultAt(1).Status = baseline.ResultAt(1).Status
+        CheckClose stats, prefix & "." & CStr(keys(index)) & ".width", second.Width.CrackWidth, first.Width.CrackWidth, 0#
+        CheckClose stats, prefix & "." & CStr(keys(index)) & ".sigmaS", second.Width.SigmaS, first.Width.SigmaS, 0#
+    Next index
+    table.Formula = configured
+End Sub
+
+' Передает Config в существующий Capacity-контекст и оценивает сохраненную
+' физическую плоскость, чтобы критический материал/знак не были выдуманы.
+' Для rLimit=0.001 грубый допуск разрешает остановку, строгий требует уточнения.
+' Сам тест не финализирует эту контрольную невязку как физический результат.
+Private Sub CheckCapacityStrainTolerance(ByRef stats As TConfigTestStats, ByVal prefix As String, _
+        ByVal table As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal units As CUnitSystem, ByVal point As CSectionStateResult)
+    Dim settings As CSystemSettingsReader, context As CCapacitySolver, material As CMaterialModelSpec
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, path As CLoadPathVector, solver As CSectionSolver
+    Dim r1 As Double, r2 As Double, rLimit As Double, lambdaValue As Double, state As String
+    Set material = point.MaterialSpec
+    Set concrete = provider.ConcreteMaterialFromSpec(material): Set steel = provider.SteelMaterialFromSpec(material)
+    Set context = New CCapacitySolver
+    context.ConcreteCompressionLimit = concrete.UltimateCompressionStrain
+    context.ConcreteTensionLimit = concrete.UltimateTensionStrain
+    context.ConcreteTensionLimitEnabled = provider.ConcreteTensionLimitEnabledFromSpec(material)
+    context.SteelCompressionLimit = Abs(steel.UltimateCompressionStrain)
+    context.SteelTensionLimit = Abs(steel.UltimateTensionStrain)
+    Set path = New CLoadPathVector: path.Initialize 0#, FIXTURE_N, 0#, FIXTURE_MX, 0#, FIXTURE_MY
+    Set settings = New CSystemSettingsReader
+    SetValue table, "Capacity.ToleranceStrain", 0.0001
+    settings.LoadFromWorkbook ThisWorkbook: context.ApplySettings settings, units
+    Check stats, prefix & ".Capacity.ToleranceStrain.evaluate", _
+        context.LimitSearchEvaluateUltimateResidual(section, concrete, steel, path, point.Epsilon0, point.KappaX, point.KappaY, _
+            solver, r1, r2, rLimit, lambdaValue, state)
+    Check stats, prefix & ".Capacity.ToleranceStrain.coarseCriterion", context.LimitSearchUltimateResidualReached(0#, 0#, 0.001)
+    SetValue table, "Capacity.ToleranceStrain", 0.000000001
+    settings.LoadFromWorkbook ThisWorkbook: context.ApplySettings settings, units
+    Check stats, prefix & ".Capacity.ToleranceStrain.tightCriterion", Not context.LimitSearchUltimateResidualReached(0#, 0#, 0.001)
+End Sub
+
+' Ошибки чтения и допустимого диапазона должны дать InputErr без solver-а.
+' Сообщение принадлежит владельцу настройки и содержит реальную ячейку;
+' после возврата значения тот же reader/batch путь должен снова найти предел.
+Private Sub CheckCapacityNumericInput(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal profiles As CCalculationProfileCatalog, ByVal units As CUnitSystem)
+    Dim keys As Variant, key As Variant, bad As Variant, invalid As Variant, index As Long
+    Dim prefix As String, message As String, cell As Object, batch As CBatchSectionCalculator
+    keys = Array("Capacity.SolverMaxIterations", "Capacity.ToleranceStrain", "Capacity.MaxLambda", _
+        "Capacity.InitialLambda", "Capacity.ToleranceLambda", "Capacity.MaxRetries", "Capacity.BaseLoadSteps")
+    For Each key In keys
+        invalid = Array(vbNullString, "TODO", "abc", CVErr(2042), -1#, 0#, 1.5)
+        For index = LBound(invalid) To UBound(invalid)
+            If CStr(key) = "Capacity.MaxRetries" And index = 5 Then GoTo NextInvalid
+            If index = 6 And CStr(key) <> "Capacity.MaxRetries" And CStr(key) <> "Capacity.BaseLoadSteps" And _
+                CStr(key) <> "Capacity.SolverMaxIterations" Then GoTo NextInvalid
+            table.Formula = configured
+            If CStr(key) = "Capacity.ToleranceStrain" Then
+                SetValue table, "Capacity.SolutionStrategy", "UltimateStrain"
+            Else
+                SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
+            End If
+            Set cell = ValueCell(table, CStr(key), 2): cell.Value2 = invalid(index)
+            prefix = "audit03.capacityNumeric.invalid.p" & CStr(position) & "." & CStr(key) & ".v" & CStr(index)
+            Set batch = RunConfigBatch(stats, prefix, "PR1", section, provider, profiles, units)
+            message = batch.ResultAt(1).OverallMeta.ResultComment
+            Check stats, prefix & ".inputErr", batch.ResultAt(1).Status = "InputErr"
+            Check stats, prefix & ".noSolve", batch.SolverCallCount = 0
+            Check stats, prefix & ".key", InStr(1, message, CStr(key), vbBinaryCompare) > 0
+            Check stats, prefix & ".cell", InStr(1, message, cell.Address(False, False), vbTextCompare) > 0
+            Check stats, prefix & ".action", InStr(1, message, "Введите", vbTextCompare) > 0 Or _
+                InStr(1, message, "задайте", vbTextCompare) > 0 Or InStr(1, message, "Исправьте", vbTextCompare) > 0
+            LogLine stats, "CAPACITY_INPUT_MESSAGE: " & prefix & "|" & message
+NextInvalid:
+        Next index
+        table.Formula = configured
+        Set batch = RunConfigBatch(stats, "audit03.capacityNumeric.recovery.p" & CStr(position) & "." & CStr(key), _
+            "PR1", section, provider, profiles, units)
+        Check stats, "audit03.capacityNumeric.recovery.p" & CStr(position) & "." & CStr(key), _
+            batch.ResultAt(1).StrengthResult.Capacity.SearchResult.HasLimitPoint
+    Next key
+    table.Formula = configured
+End Sub
+
+' Возвращает опубликованный результат реального batch и сохраняет счетчики
+' фактических Search-проб для анализа причин, не назначая статус по журналу.
+Private Function CapacityNumericRun(ByRef stats As TConfigTestStats, ByVal prefix As String, _
+        ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal profiles As CCalculationProfileCatalog, ByVal units As CUnitSystem) As CCapacityResult
+    Dim batch As CBatchSectionCalculator, result As CCapacityResult
+    Set batch = RunConfigBatch(stats, prefix, "PR1", section, provider, profiles, units)
+    Set result = batch.ResultAt(1).StrengthResult.Capacity
+    LogLine stats, "CAPACITY_NUMERIC: " & prefix & "|lambda=" & FormatNumberInvariant(result.LambdaCapacity) & _
+        "|status=" & result.Status & "|code=" & CStr(result.ResultMeta.ResultCode) & _
+        "|probes=" & CStr(CapacityNumericRecordCount(result.DiagnosticLog, "probe=")) & _
+        "|ultimate=" & CStr(CapacityNumericRecordCount(result.DiagnosticLog, "ultimatePath iter="))
+    LogLine stats, "CAPACITY_DIAGNOSTIC: " & prefix & vbCrLf & result.DiagnosticLog
+    Set CapacityNumericRun = result
+End Function
+
+' Неуспешный Search не получает подставную точку. У принятой точки проверяются
+' равновесие и соответствие полному заранее заданному lambda-вектору нагрузки.
+Private Sub CheckCapacityNumericPoint(ByRef stats As TConfigTestStats, ByVal prefix As String, ByVal result As CCapacityResult)
+    Check stats, prefix & ".point", result.SearchResult.HasLimitPoint
+    If Not result.SearchResult.HasLimitPoint Then Exit Sub
+    CheckState stats, prefix, result.StateResult
+    CheckClose stats, prefix & ".pathN", result.StateResult.Nint, FIXTURE_N * result.LambdaCapacity, FORCE_TOLERANCE
+    CheckClose stats, prefix & ".pathMx", result.StateResult.Mxint, FIXTURE_MX * result.LambdaCapacity, MOMENT_TOLERANCE
+    CheckClose stats, prefix & ".pathMy", result.StateResult.Myint, FIXTURE_MY * result.LambdaCapacity, MOMENT_TOLERANCE
+End Sub
+
+' Считает реальные диагностические записи; это только test oracle маршрута,
+' а инженерная классификация всегда проверяется по InternalStatus/ResultCode.
+Private Function CapacityNumericRecordCount(ByVal diagnostic As String, ByVal marker As String) As Long
+    Dim line As Variant
+    For Each line In Split(diagnostic, vbCrLf)
+        If InStr(1, CStr(line), marker, vbBinaryCompare) > 0 Then CapacityNumericRecordCount = CapacityNumericRecordCount + 1
+    Next line
+End Function
+
+' Возвращает первый ненулевой lambda из подробной записи фактически решенной
+' Capacity-пробы. Val читает invariant-формат журнала независимо от locale.
+Private Function CapacityNumericFirstLambda(ByVal diagnostic As String) As Double
+    Dim line As Variant, at As Long, value As Double
+    For Each line In Split(diagnostic, vbCrLf)
+        If Left$(CStr(line), 6) = "probe=" Then
+            at = InStr(1, CStr(line), "; lambda=", vbBinaryCompare)
+            If at > 0 Then
+                value = Val(Mid$(CStr(line), at + 9))
+                If value > 0# Then CapacityNumericFirstLambda = value: Exit Function
+            End If
+        End If
+    Next line
+End Function
+
+' Возвращает последний фактически решенный lambda без подмены ненайденного
+' физического предела: так проверяется достижение технической границы поиска.
+Private Function CapacityNumericLastLambda(ByVal diagnostic As String) As Double
+    Dim line As Variant, at As Long
+    For Each line In Split(diagnostic, vbCrLf)
+        If Left$(CStr(line), 6) = "probe=" Then
+            at = InStr(1, CStr(line), "; lambda=", vbBinaryCompare)
+            If at > 0 Then CapacityNumericLastLambda = Val(Mid$(CStr(line), at + 9))
+        End If
+    Next line
+End Function
+
 ' Сохраняет численное значение в журнале без зависимости от десятичного
 ' разделителя Windows; расчетные значения и допуски при этом не округляются.
 Private Function FormatNumberInvariant(ByVal value As Double) As String

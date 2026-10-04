@@ -1,0 +1,97 @@
+{
+  "Scope": "Семь численных Capacity-полей через настоящие named Config, два положения System, 154 batch-сценария, реальные Search-пробы/State и output ResultComment. Полный диапазон/pairwise и final release не заявлены завершенными.",
+  "PositiveReport": "docs/regression/Audit03/capacity_numeric_final_v251.log",
+  "PositiveGate": "TOTAL_AUDIT03_CAPACITY_NUMERIC_CONFIG: passed=2904; failed=0",
+  "SupplementaryReport": "docs/regression/Audit03/capacity_numeric_capacity_suite_v250.log",
+  "SupplementaryGate": "TOTAL_CAPACITY: passed=3074; failed=0",
+  "FullReports": [],
+  "FinalRegressionPending": "В этом срезе проверяются значения Config до solve, без изменения физики и numerical Search. Выполнены directed и соседние suites; полная восьми-suite Off/On и все выпускные matrices/benchmarks обязательны в финале.",
+  "Consumer": "Фактический rngSystemSettings -> CSystemSettingsReader -> CBatchSectionCalculator.ConfigureCapacityCalculator -> CCapacityCalculator -> общий CLimitSearch/CCapacitySolver/CStateSolutionRunner. Диапазоны проверяет CapacityCalculator; текущие адреса добавляет reader. Result owners сохраняют причины, writers выгружают готовые subtree-комментарии.",
+  "TestId": "modTestConfiguration.RunAudit03CapacityNumericConfigTests + modTestCapacitySolver.RunCapacitySolverTests",
+  "Entries": [
+    {
+      "Id": "Capacity.SolverMaxIterations",
+      "Type": "Long",
+      "ValidRange": "Целое > 0, представимое Long; большой лимит не гарантирует сходимость",
+      "InternalUnits": "шт",
+      "RuntimeDefault": "60 в автономной фабрике/при отсутствующем optional numeric key; явно пустой/TODO/неверный ввод не заменяется default. Полная приемка missing-key контрактов впереди.",
+      "Activity": "Внутренние равновесия LoadMultiplier и Newton UltimateStrain; не участвует в PR2 без Capacity",
+      "ExpectedEffect": "1 вместо 60 ограничивает фактический Newton, дает typed numerical failure без limit point и меньше EvaluateStrainPlane. Оценки Якобиана/line-search не считаются отдельными Newton-итерациями.",
+      "AssertionPrefix": "audit03.capacityNumeric.p1.Capacity.SolverMaxIterations.budget",
+      "BlankAndErrorContract": "Два положения таблицы: blank/TODO/text/CVErr/negative/zero/fraction -> InputErr, noSolve, ключ/текущий адрес/действие; recovery возвращает принятую точку.",
+      "RangeReview": "1/60, реальные numerical failures, ошибки и recovery приняты. Переполнение счетчиков, extreme positive limits, default/missing и high-risk пары остаются отдельной приемкой."
+    },
+    {
+      "Id": "Capacity.ToleranceStrain",
+      "Type": "Double",
+      "ValidRange": "Число > 0; безразмерный абсолютный допуск деформации",
+      "InternalUnits": "-",
+      "RuntimeDefault": "0.00001 в автономной фабрике/при отсутствующем optional numeric key; явно пустой/TODO/неверный ввод не заменяется default.",
+      "Activity": "Критерий остановки UltimateStrain, не критерий LoadMultiplier и не физический предел материала",
+      "ExpectedEffect": "В реальном batch с damping=0.5 изменение только ToleranceStrain с 0.0001 на 0.000000001 меняет число оценок Newton 216 -> 256 и lambda 4.70865403902652 -> 4.71145166569015. Обе точки проверены физически и по своим component-specific equilibrium tolerance. Дополнительно настоящий критерий Capacity по Config принимает/отвергает rLimit=0.001 на сохраненной физической плоскости.",
+      "AssertionPrefix": "audit03.capacityNumeric.p1.Capacity.ToleranceStrain.batchEffect",
+      "BlankAndErrorContract": "В двух местах blank/TODO/text/CVErr/negative/zero -> InputErr без solve, актуальный ключ/адрес/действие; recovery.",
+      "RangeReview": "Передача настройки через пользовательский batch, реальное решение и active criterion приняты, не только getter или автономный reader. Extreme Double, соседние пределы и полный pairwise остаются открытыми."
+    },
+    {
+      "Id": "Capacity.MaxLambda",
+      "Type": "Double",
+      "ValidRange": "Число > 0; безразмерная техническая граница LoadMultiplier",
+      "InternalUnits": "-",
+      "RuntimeDefault": "1024 в автономной фабрике/при отсутствующем optional numeric key; явно пустой/TODO/неверный ввод не заменяется default.",
+      "Activity": "Расширение скобки LoadMultiplier; успешный UltimateStrain не обрезается этим пределом",
+      "ExpectedEffect": "0.125 дает последнюю пробу ровно 0.125 и SEARCH_BOUND_REACHED без физической точки; 1024 позволяет найти предел около 4.71146. В успешном UltimateStrain изменение допустимого значения не меняет точку/диагностику.",
+      "AssertionPrefix": "audit03.capacityNumeric.p1.Capacity.MaxLambda.lastProbe",
+      "BlankAndErrorContract": "Blank/TODO/text/CVErr/negative/zero в двух положениях -> InputErr без solve с текущим адресом; recovery.",
+      "RangeReview": "0.125/1024 и InitialLambda > MaxLambda приняты. Все extreme/representability, near-bound и pairwise варианты не закрыты этим срезом."
+    },
+    {
+      "Id": "Capacity.InitialLambda",
+      "Type": "Double",
+      "ValidRange": "Число > 0; первая положительная проба ограничивается MaxLambda",
+      "InternalUnits": "-",
+      "RuntimeDefault": "1 в автономной фабрике/при отсутствующем optional numeric key; явно пустой/TODO/неверный ввод не заменяется default.",
+      "Activity": "Старт расширения скобки LoadMultiplier; не участвует в успешном прямом UltimateStrain",
+      "ExpectedEffect": "0.125 меняет первую положительную пробу и число записей 108 -> 111 при том же физическом пределе; усилия и residual точки проверяются независимо.",
+      "AssertionPrefix": "audit03.capacityNumeric.p1.Capacity.InitialLambda.firstProbe",
+      "BlankAndErrorContract": "Blank/TODO/text/CVErr/negative/zero, два места Config, InputErr/noSolve/актуальное действие и recovery.",
+      "RangeReview": "0.125/1, ограничение MaxLambda и inactive Ultimate/PR2 приняты. Extreme Double, underflow и полный pairwise остаются отдельными gates."
+    },
+    {
+      "Id": "Capacity.ToleranceLambda",
+      "Type": "Double",
+      "ValidRange": "Число > 0; безразмерный допуск поиска lambda",
+      "InternalUnits": "-",
+      "RuntimeDefault": "0.01 в автономной фабрике/при отсутствующем optional numeric key; явно пустой/TODO/неверный ввод не заменяется default.",
+      "Activity": "Одномерный LoadMultiplier; не участвует в успешном прямом UltimateStrain",
+      "ExpectedEffect": "0.001 вместо 0.000001 уменьшает реальные probe-записи 108 -> 98. Независимые проверки path/equilibrium/physical не заменяются допуском по lambda.",
+      "AssertionPrefix": "audit03.capacityNumeric.p1.Capacity.ToleranceLambda.fewerProbes",
+      "BlankAndErrorContract": "Blank/TODO/text/CVErr/negative/zero в двух местах -> InputErr без solve; ключ/ячейка/действие и recovery.",
+      "RangeReview": "0.001/0.000001 и inactive Ultimate/PR2 приняты. Все методы/соседние Double/сверхмалые допуски и pairwise требуют объединенной итоговой приемки."
+    },
+    {
+      "Id": "Capacity.MaxRetries",
+      "Type": "Long",
+      "ValidRange": "Целое >= 0, представимое Long; 0 отключает дополнительные повторы",
+      "InternalUnits": "шт",
+      "RuntimeDefault": "0 в автономной фабрике/при отсутствующем optional numeric key; явно пустой/TODO/неверный ввод не заменяется default.",
+      "Activity": "Повторы реальной numerical failure lambda-точки; без первой неудачи дополнительных solve нет",
+      "ExpectedEffect": "При настоящем ограничении CSectionSolver одной итерацией 0/2 дают attempt 0 против 0/1/2, 21 -> 61 проб. Attempt 3 отсутствует, ненайденная физическая точка не публикуется.",
+      "AssertionPrefix": "audit03.capacityNumeric.p1.Capacity.MaxRetries.repeatUsed",
+      "BlankAndErrorContract": "Blank/TODO/text/CVErr/negative/fraction -> InputErr/noSolve в двух местах; 0 корректен; recovery и фактические output-комментарии.",
+      "RangeReview": "0/2, исчерпание бюджета и inactive Ultimate/PR2 приняты. Переполнение 2^attempt, большие счетчики и high-risk retry пары остаются открытыми."
+    },
+    {
+      "Id": "Capacity.BaseLoadSteps",
+      "Type": "Long",
+      "ValidRange": "Целое > 0, представимое Long; число ступеней первой попытки",
+      "InternalUnits": "шт",
+      "RuntimeDefault": "1 в автономной фабрике/при отсутствующем optional numeric key; явно пустой/TODO/неверный ввод не заменяется default.",
+      "Activity": "Внутреннее равновесие LoadMultiplier; не физический шаг внешнего lambda-search",
+      "ExpectedEffect": "На одной малой lambda-точке и MaxRetries=0 реальные final-solver logs показывают step=1 против step=3. Техническая граница и статус причины остаются согласованными.",
+      "AssertionPrefix": "audit03.capacityNumeric.p1.Capacity.BaseLoadSteps.threeSteps",
+      "BlankAndErrorContract": "Blank/TODO/text/CVErr/negative/zero/fraction -> InputErr/noSolve в двух местах с актуальным адресом и recovery.",
+      "RangeReview": "1/3, активный solver и inactive Ultimate/PR2 приняты. Большие счетчики, повторные ступени и полный pairwise остаются отдельной приемкой."
+    }
+  ]
+}

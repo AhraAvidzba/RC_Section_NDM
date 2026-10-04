@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/capacity_numeric_capacity_reference_v206.log",
+  "CurrentReport": "docs/regression/Audit03/capacity_numeric_capacity_suite_v250.log",
+  "BaselineSHA256": "145822217D19BEAD9B416F327A0F434550854EB550824FE6BD80572C6F2F8E53",
+  "CurrentSHA256": "BB6CC510D7FDA8B8CCD2E5B29D69B6A1FD8EBF1937A92ECC13CC9692065F20C2",
+  "BaselineNumericAssertions": 601,
+  "CurrentNumericAssertions": 601,
+  "Compared": 601,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}
