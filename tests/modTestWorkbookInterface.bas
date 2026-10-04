@@ -143,6 +143,10 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03ImportedSnapshotUnitChanges stats
     TestAudit03GeometrySnapshotContract stats
     TestAudit03ReadLifecycleContracts stats
+    Dim plotConfigPassed As Long, plotConfigFailed As Long
+    stats.Report = stats.Report & modTestPlotConfig.RunAudit03GeneralPlotTests(plotConfigPassed, plotConfigFailed)
+    stats.Passed = stats.Passed + plotConfigPassed
+    stats.Failed = stats.Failed + plotConfigFailed
     AppendLine stats, "RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions"
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
@@ -7339,6 +7343,14 @@ Failed:
     code = Err.Number: reason = Err.Description
     Err.Clear
 End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: ОБЩИЕ НАСТРОЙКИ EXCEL-СХЕМЫ ====================
+
+' Сохраняет направленный entrypoint интерфейсного набора; сами проверки
+' готового snapshot и layout находятся в отдельном стандартном test-модуле.
+Public Function RunAudit03GeneralPlotTests() As String
+    RunAudit03GeneralPlotTests = modTestPlotConfig.RunAudit03GeneralPlotTests()
+End Function
 
 
 

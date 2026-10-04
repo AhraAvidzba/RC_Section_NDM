@@ -350,3 +350,24 @@ Full Off/On завершены 82221/0 и 82232/0. С v204 точно совпа
 но не всего F07. Census 1639 guard candidates остается индексом для
 семантической проверки. Пункты про Excel guard, Unit/логические metadata
 и крайние численные helpers остаются открытыми.
+
+## General Plot И Аннотации v211
+
+Negative v207c 1000/123 и v209b 1147/168 подтвердили late validation после
+очистки Chart, недостающие ключи/default, обязательный LoadCase, переполнение
+Long мелким шагом label-сетки, потерю нечетных color buckets и игнорирование
+Plot.Enabled import-preview entrypoint-ом. Отдельные ошибки новых fixture/
+oracle перечислены в NDM_Audit03_General_Plot_Review.md, не считаются production.
+
+Frozen v211: 1409/0, готовые snapshots, actual Shapes/Series, 15 arrow tuples,
+19 layout fields + 2 arrow fields, перемещенные таблицы и exact Value2/type.
+Reader lifecycle 3929/0, geometry snapshot 1158/0, presentation 681/0,
+structure 27/27, formatting 1003/0, palette/reopen 355/0, VBE/source 106/106.
+Новых classes нет, стандартный test-модуль не добавляет production behavior.
+
+По разрешению пользователя full On/Off не повторяется для presentation-only
+среза; окончательный release gate не отменен. Numeric expected/tolerance и
+solver/search код не менялись. Это приемка перечисленных контрпримеров, не
+всех Double границ label-сетки или F07. AutoUpdate, snapshot Unit/boolean/text
+metadata, Excel guard, linear-system extreme arithmetic и полная semantic
+ревизия остаются открытыми. Census: 106/4407/1675, acceptance Pending.

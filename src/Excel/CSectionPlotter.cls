@@ -119,6 +119,13 @@ Private mElementShapeLayerEnabled As Boolean ' True - расчетные эле�
 Private mElementGroupingEnabled As Boolean ' True - включено укрупнение элементов для обхода лимитов/перегрузки Excel Chart.
 Private mAxisLabelsEnabled As Boolean ' Нужно ли выводить маленькие подписи глобальных осей X/Y.
 Private mAxisLabelFontSize As Double ' Размер шрифта подписей глобальных осей X/Y в пунктах Excel.
+Private mContourEnabled As Boolean ' Контур нужен как расчетной, так и geometry-only схеме.
+Private mNeutralLineEnabled As Boolean ' Нейтральная линия доступна только для сохраненного НДС.
+Private mLoadPointEnabled As Boolean ' Точка нагрузки для активного reference-слоя.
+Private mResultLabelsEnabled As Boolean ' Подписи готовых Stress/Strain, без повторного solve.
+Private mLegendEnabled As Boolean ' Цветовая легенда расчетного состояния.
+Private mResultLabelSpacing As Double ' Пространственный шаг подписей в фиксированных модельных мм.
+Private mPrincipalAxesMode As String ' Проверенный режим reference-осей текущего Draw.
 Private mAnnotationLayout As CPlotAnnotationLayout ' Проверенные настройки и размещение аннотаций одного прохода Draw.
 Private mUnits As CUnitSystem ' Единицы переданной модели схемы, без повторного применения пользовательских знаков.
 
@@ -157,6 +164,23 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
         If mAxisLabelFontSize <= 0# Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
             settings.InputErrorMessage("Plot.AxisLabelsFontSize", "Высота подписей осей должна быть больше нуля.", "Введите положительное число в пунктах Excel.")
     End If
+    mContourEnabled = settings.GetRequiredBoolean("Plot.ContourEnabled")
+    mNeutralLineEnabled = False: mResultLabelsEnabled = False: mLegendEnabled = False
+    mLoadPointEnabled = False: mPrincipalAxesMode = "None"
+    If Not data.GeometryOnly Then
+        mNeutralLineEnabled = settings.GetRequiredBoolean("Plot.NeutralLineEnabled")
+        mResultLabelsEnabled = settings.GetRequiredBoolean("Plot.ResultLabelsEnabled")
+        mLegendEnabled = settings.GetRequiredBoolean("Plot.LegendEnabled")
+        If mResultLabelsEnabled Then
+            mResultLabelSpacing = settings.GetRequiredDouble("Plot.ResultLabelSpacing")
+            If mResultLabelSpacing <= 0# Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
+                settings.InputErrorMessage("Plot.ResultLabelSpacing", "Шаг подписей должен быть больше нуля.", "Введите положительное расстояние в мм.")
+        End If
+    End If
+    If Not data.GeometryOnly Or data.GeometryReferenceItemsEnabled Then
+        mPrincipalAxesMode = PlotPrincipalAxesMode(settings)
+        mLoadPointEnabled = settings.GetRequiredBoolean("Plot.LoadApplicationPointEnabled")
+    End If
 
     Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
     Set mChart = mChartObject.Chart
@@ -169,11 +193,11 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     ClearGeneratedShapes
     CalculateResultRange data
     AddElementSeries data
-    DrawShapeDecorations data, settings
+    DrawShapeDecorations data
     If data.GeometryOnly Then
-        DrawGeometryReferenceOverlay data, settings
+        DrawGeometryReferenceOverlay data
     Else
-        DrawAnalysisOverlay data, settings
+        DrawAnalysisOverlay data
     End If
     If mAxisLabelsEnabled Then DrawAxisNameLabels
     DrawPlotTitleOverlay PlotTitleText(data)
@@ -760,38 +784,34 @@ End Function
 ' Нейтральная линия, главные оси и точка нагрузки рисуются Chart.Shape-ами
 ' через тот же model-to-chart mapper, что и элементы, поэтому их координаты
 ' остаются согласованы, а слой можно поднять поверх сетки.
-Private Sub DrawAnalysisOverlay(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
-    Dim axesMode As String
-    axesMode = PlotPrincipalAxesMode(settings)
-    If settings.GetBoolean("Plot.NeutralLineEnabled", True) Then DrawNeutralLine data
-    If PrincipalAxesModeDraws(axesMode) Then DrawPrincipalAxes data, axesMode
-    If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), MSO_SHAPE_DIAMOND, "LoadPoint"
+Private Sub DrawAnalysisOverlay(ByVal data As CSectionPlotDataReader)
+    If mNeutralLineEnabled Then DrawNeutralLine data
+    If PrincipalAxesModeDraws(mPrincipalAxesMode) Then DrawPrincipalAxes data, mPrincipalAxesMode
+    If mLoadPointEnabled Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), MSO_SHAPE_DIAMOND, "LoadPoint"
 End Sub
 
 ' Добавляет к geometry-only схеме только те ориентиры, которые не требуют
 ' найденной плоскости деформаций. Этот режим используется для preview после
 ' AutoCAD-import: можно показать геометрию, главные оси и точку нагрузки,
 ' но нельзя рисовать нейтральную линию, легенду и подписи Stress/Strain.
-Private Sub DrawGeometryReferenceOverlay(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+Private Sub DrawGeometryReferenceOverlay(ByVal data As CSectionPlotDataReader)
     If Not data.GeometryReferenceItemsEnabled Then Exit Sub
-    Dim axesMode As String
-    axesMode = PlotPrincipalAxesMode(settings)
-    If PrincipalAxesModeDraws(axesMode) Then DrawPrincipalAxes data, axesMode
-    If settings.GetBoolean("Plot.LoadApplicationPointEnabled", True) Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), MSO_SHAPE_DIAMOND, "LoadPoint"
+    If PrincipalAxesModeDraws(mPrincipalAxesMode) Then DrawPrincipalAxes data, mPrincipalAxesMode
+    If mLoadPointEnabled Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), MSO_SHAPE_DIAMOND, "LoadPoint"
 End Sub
 
 ' Рисует Shape-слой схемы: контур, размеры, групповые подписи и легенды.
 ' Shapes используются для оформления и служебного оверлея; расчетные значения
 ' читаются только из snapshot Results.
-Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
-    If settings.GetBoolean("Plot.ContourEnabled", True) Then DrawConcreteContour data
-    DrawShapeAnnotations data, settings, mAnnotationLayout.DimensionsEnabled, mAnnotationLayout.RebarLabelsEnabled
+Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader)
+    If mContourEnabled Then DrawConcreteContour data
+    DrawShapeAnnotations data, mAnnotationLayout.DimensionsEnabled, mAnnotationLayout.RebarLabelsEnabled
     If data.GeometryOnly Then
         DrawGeometryOnlyNote data
         Exit Sub
     End If
-    If settings.GetBoolean("Plot.ResultLabelsEnabled", False) Then DrawResultLabels data, settings.GetDouble("Plot.ResultLabelSpacing", 100#)
-    If settings.GetBoolean("Plot.LegendEnabled", True) Then DrawLegend data
+    If mResultLabelsEnabled Then DrawResultLabels data, mResultLabelSpacing
+    If mLegendEnabled Then DrawLegend data
     DrawStateWarning data
 End Sub
 
@@ -1379,24 +1399,17 @@ Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader, ByVal axesMo
         centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal2", MSO_LINE_DASH
 End Sub
 
-' Читает Plot.PrincipalAxesMode. При отсутствии значения допускает входной
-' Yes/No-ключ Plot.PrincipalAxesEnabled: Yes -> Transformed, No -> None.
+' Читает обязательный режим главных осей до очистки существующего Chart.
+' Поддержанные текстовые обозначения приводятся к одному из трех вариантов.
 Private Function PlotPrincipalAxesMode(ByVal settings As CSystemSettingsReader) As String
     Dim rawValue As String
-    rawValue = Trim$(settings.GetString("Plot.PrincipalAxesMode", vbNullString))
-    If Len(rawValue) = 0 And settings.HasKey("Plot.PrincipalAxesEnabled") Then
-        If settings.GetBoolean("Plot.PrincipalAxesEnabled", True) Then
-            rawValue = "Transformed"
-        Else
-            rawValue = "None"
-        End If
-    End If
-    If Len(rawValue) = 0 Then rawValue = "Transformed"
-    PlotPrincipalAxesMode = NormalizePrincipalAxesMode(rawValue, "Plot.PrincipalAxesMode")
+    rawValue = settings.GetRequiredString("Plot.PrincipalAxesMode")
+    PlotPrincipalAxesMode = NormalizePrincipalAxesMode(rawValue, settings)
 End Function
 
-' Приводит пользовательское значение режима осей к одному из трех вариантов.
-Private Function NormalizePrincipalAxesMode(ByVal rawValue As String, ByVal settingKey As String) As String
+' Приводит режим осей к канонической записи; неизвестное значение сообщает
+' собственный текущий адрес Config и допустимые варианты, без default.
+Private Function NormalizePrincipalAxesMode(ByVal rawValue As String, ByVal settings As CSystemSettingsReader) As String
     Select Case LCase$(Trim$(rawValue))
         Case "transformed", "приведенное", "приведенное сечение"
             NormalizePrincipalAxesMode = "Transformed"
@@ -1406,7 +1419,7 @@ Private Function NormalizePrincipalAxesMode(ByVal rawValue As String, ByVal sett
             NormalizePrincipalAxesMode = "None"
         Case Else
             Err.Raise vbObjectError + 4718, "CSectionPlotter", _
-                settingKey & " должен быть Transformed, Concrete или None."
+                settings.InputErrorMessage("Plot.PrincipalAxesMode", "Режим главных осей не распознан.", "Выберите Transformed, Concrete или None.")
     End Select
 End Function
 
@@ -1418,7 +1431,7 @@ End Function
 ' Передает semantic-аннотации Results в CPlotAnnotationLayout.
 ' Здесь нет логики конкретной формы: если аннотация есть, layout размещает ее;
 ' если import не дал semantic-данных, Plotter ничего не угадывает.
-Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader, _
+Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
         ByVal dimensionsEnabled As Boolean, ByVal rebarLabelsEnabled As Boolean)
     If Not dimensionsEnabled And Not rebarLabelsEnabled Then Exit Sub
 
@@ -1512,7 +1525,6 @@ End Function
 ' Подписи не ставятся на неработающий растянутый бетон и выбираются по сетке
 ' spacing, а не по порядковому ElementID.
 Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing As Double)
-    If spacing <= 0# Then spacing = MaxDouble(mMaxX - mMinX, mMaxY - mMinY) / 12#
     Dim bestIndexByCell As Object
     Set bestIndexByCell = CreateObject("Scripting.Dictionary")
     Dim bestDistanceByCell As Object
@@ -1525,18 +1537,20 @@ Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing
     For i = 1 To data.Count
         If StrComp(data.MaterialType(i), "Concrete", vbTextCompare) = 0 And _
                 StrComp(data.PhysicalState(i), "InactiveTensionConcrete", vbTextCompare) <> 0 Then
-            Dim cellX As Long
-            Dim cellY As Long
-            cellX = CLng(Int((data.X(i) - mMinX) / spacing))
-            cellY = CLng(Int((data.Y(i) - mMinY) / spacing))
+            ' Целые номера пространственных ячеек не обязаны помещаться в
+            ' Long: мелкий положительный шаг допустим и не меняет Results.
+            Dim cellX As Double
+            Dim cellY As Double
+            cellX = Int((data.X(i) - mMinX) / spacing)
+            cellY = Int((data.Y(i) - mMinY) / spacing)
 
             Dim key As String
             key = CStr(cellX) & ":" & CStr(cellY)
 
             Dim targetX As Double
             Dim targetY As Double
-            targetX = mMinX + (CDbl(cellX) + 0.5) * spacing
-            targetY = mMinY + (CDbl(cellY) + 0.5) * spacing
+            targetX = mMinX + (cellX + 0.5) * spacing
+            targetY = mMinY + (cellY + 0.5) * spacing
 
             Dim distance2 As Double
             distance2 = (data.X(i) - targetX) * (data.X(i) - targetX) + _
@@ -2349,9 +2363,10 @@ Private Function RoundTo(ByVal value As Double, ByVal digits As Long) As Double
     RoundTo = Round(value, digits)
 End Function
 
-' Округляет положительное значение до ближайшего Long для количества делений.
+' Округляет неотрицательный размер маркера или номер цветовой ступени.
+' Int до CLng сохраняет целые нечетные уровни и округляет ровно половину вверх.
 Private Function RoundToLong(ByVal value As Double) As Long
-    RoundToLong = CLng(value + 0.5)
+    RoundToLong = CLng(Int(value + 0.5))
 End Function
 
 ' Ограничивает значение заданным диапазоном.

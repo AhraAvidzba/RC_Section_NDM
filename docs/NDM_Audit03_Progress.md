@@ -69,7 +69,42 @@
 
 ## Актуальная Точка Продолжения
 
-- После checkpoint `37493b2` выполнен цельный lifecycle/read срез v205-v206.
+- General Plot/annotation срез v207-v210 проверяет только presentation на
+  готовых synthetic Results, без solver и новых classes. Negative v207c:
+  1000/123; v209b: 1147/168. Подтверждены late validation после очистки Chart,
+  fallback потерянных ключей/PrincipalAxesMode/LoadCase, Long overflow мелкого
+  spacing, пропуск восьми нечетных color buckets и игнорирование Plot.Enabled
+  import-preview entrypoint-ом. Ошибки новых fixture/oracle в v207/v207b/v208/
+  v209 отдельно описаны; не выдавать их за дефекты production.
+  CSectionPlotter заранее сохраняет проверенные активные flags и не читает
+  geometry-only result-потребителей; индексы label-сетки Double, bucket Int
+  до CLng. Оба workbook-entrypoint-а требуют Plot.Enabled; два selected-LC
+  reader-а требуют явный Plot.LoadCase, обычный import-preview его игнорирует.
+  Help v210: 2002 rows/140 links/118 shapes, failed=0, input/PrintArea сохранены.
+  Frozen v211: positive 1409/0; reader lifecycle 3929/0, geometry snapshot
+  1158/0, profile presentation 681/0. Все watchdog source unchanged=True.
+  Тесты вынесены в отдельный standard modTestPlotConfig, UI suite агрегирует
+  отчет/счетчики; новых classes нет. Exact Value2/type invariant сохраняется.
+  Structure 27/27, formatting 1003/0 (1002 адреса/deviations=0), palette
+  save/reopen 355/0. Results SHA
+  294BBE8FFB8EB1DEA5E09377A662DDB02388F07C8E8114F02353E000B5454F40;
+  styles SHA 1EABA40A72D5A28392F11FC5D38F0D2B1E9B264FDFAD9F5514ACB9EE1A1E1132.
+  Help v210/v211: 2650 непустых ячеек/merges совпали, failed=0; не clean build.
+  Actual VBE/source 106/106, failed=0, 111 components. Export SHA
+  E56FF811B396F8FB37C5920B81444D2E79E8EC98303515CE30955B330E8DFC67;
+  canonical VBA_All_Code.txt содержит фактический export с теми же байтами.
+  Book SHA 6947B2AB2061B9EACA9C84F69DCA64ACB3ADD649EB908CE694F4EF8EDF876CAE.
+  Census 106 modules/4407 methods/1675 guards, semantic acceptance Pending.
+  По разрешению пользователя полный Off/On после presentation-only среза
+  не повторяется; финальный release gate обязателен. Scope/доказательства:
+  NDM_Audit03_General_Plot_Review.md. Общий audit не завершен, registry пока
+  666/1064; extreme Double/pairwise/AutoUpdate/metadata/Excel guard открыты.
+  Main output/ТЗ сохранили исходные SHA, user Excel PID 23476 не затронут.
+  Локальный checkpoint только этого проверенного source/evidence выполняется
+  без push/destructive Git; работа по общему DoD продолжается.
+
+- После checkpoint `37493b2` выполнен цельный lifecycle/read срез v205-v206,
+  зафиксированный `40626a67bb3e162db8dcb2efa901426e90dc841d`.
   Spec valid-invalid-valid не должен сохранять complete; Catalog публикуется
   только после всех столбцов; три PlotDataReader entrypoints очищают частичный
   snapshot при отказе. Численные свойства и element Stress/Strain проверяются
@@ -1234,6 +1269,13 @@ CircleUneven/HollowThin Off/On выполняются последователь
 
 ## Important Decisions
 
+- Дополнение пользователя от 2026-10-04: полный Off/On не обязателен после
+  каждого среза, если измененный код не может повлиять на его численные
+  результаты. Для таких срезов выполнять направленные проверки измененных
+  компонентов, их consumers, failure/recovery и сохранности артефактов.
+  Объем регрессии solver/search и общих численных контрактов выбирать по
+  риску; обязательные контрольные полные Off/On и выпускная матрица остаются
+  в финальной приемке. Непрогнанный gate не обозначать PASS.
 - Единственный LoadPath строки LC применяется к обоим критериям. Общий Search
   выбирает Auto по активным N/Mx/My и перебирает M -> N -> NMxy только до
   принятой точки; предел ниже текущей нагрузки не запускает поиск удобного OK.

@@ -1,0 +1,9 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_plot_negative_v207.xlsm
+SOURCE_SHA256: 027ECD9A12BF70E0388892E576854CA20006D773F47D667121932F981F389919
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e113d362d7c84106aaa286956fa59bcc\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.generalPlot.runtime.5.В fixture нет параметра Plot.Dimensions.Enabled
+FAIL: audit03.annotation.runtime.5.В fixture нет параметра Plot.Dimensions.Enabled
+TOTAL_AUDIT03_GENERAL_PLOT: passed=0; failed=2
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

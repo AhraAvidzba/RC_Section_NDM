@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_plot_positive_v211.xlsm
+SOURCE_SHA256: 6947B2AB2061B9EACA9C84F69DCA64ACB3ADD649EB908CE694F4EF8EDF876CAE
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bdc229954be040c7b2331d02f4a09491\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_GEOMETRY_SNAPSHOT: passed=1158; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

@@ -98,7 +98,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
 
     On Error GoTo Failed
     ResetReaderState
-    mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
+    mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
     ApplyVisualizationProfile workbook
 
     ReadSectionProperties workbook
@@ -152,7 +152,7 @@ Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
 
     On Error GoTo Failed
     ResetReaderState
-    mLoadCase = ResolveLoadCase(workbook, settings.GetString("Plot.LoadCase", "Worst"))
+    mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
     ApplyVisualizationProfile workbook
 
     mGeometryOnly = True
@@ -181,7 +181,6 @@ End Sub
 Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
     Dim valueText As String
     valueText = Trim$(requested)
-    If Len(valueText) = 0 Then valueText = "Worst"
 
     If StrComp(valueText, "Worst", vbTextCompare) <> 0 Then
         ResolveLoadCase = valueText

@@ -1,0 +1,17 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_plot_negative_v207.xlsm
+SOURCE_SHA256: 027ECD9A12BF70E0388892E576854CA20006D773F47D667121932F981F389919
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e113d362d7c84106aaa286956fa59bcc\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03GeneralPlotTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03GeneralPlotTests; 2026-10-04T10:42:05
+EXCEL_AFTER_SUITE: pid=23476; workingSet=209543168; privateBytes=160849920; cpu=9927.203125
+EXCEL_AFTER_SUITE: pid=24724; workingSet=136900608; privateBytes=115675136; cpu=2.578125
+FAIL: audit03.generalPlot.runtime.5.В fixture нет параметра Plot.Dimensions.Enabled
+FAIL: audit03.annotation.runtime.5.В fixture нет параметра Plot.Dimensions.Enabled
+TOTAL_AUDIT03_GENERAL_PLOT: passed=0; failed=2
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e113d362d7c84106aaa286956fa59bcc\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03GeneralPlotTests; 2026-10-04T10:42:06
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

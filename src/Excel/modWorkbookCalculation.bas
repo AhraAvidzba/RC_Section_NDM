@@ -81,7 +81,7 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
 
-    If Not settings.GetBoolean("Plot.Enabled", True) Then Exit Sub
+    If Not settings.GetRequiredBoolean("Plot.Enabled") Then Exit Sub
 
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader
@@ -172,6 +172,8 @@ Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
+
+    If Not settings.GetRequiredBoolean("Plot.Enabled") Then Exit Sub
 
     Dim reader As CSectionPlotDataReader
     Set reader = New CSectionPlotDataReader

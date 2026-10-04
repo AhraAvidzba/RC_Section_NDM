@@ -1,0 +1,1638 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_general_plot_positive_v210.xlsm
+SOURCE_SHA256: C320EA7E575B82A5E9EA5B9F0E7535435436CE3CE783701F1B5816D5FCAF3597
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a887daa88e44463e8dfcdc3eaca37d81\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03GeneralPlotTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03GeneralPlotTests; 2026-10-04T11:03:15
+EXCEL_AFTER_SUITE: pid=21748; workingSet=154181632; privateBytes=136704000; cpu=11.359375
+EXCEL_AFTER_SUITE: pid=23476; workingSet=209666048; privateBytes=161046528; cpu=9928.515625
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad1.rejected
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad1.key
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad1.address
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad1.action
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ContourEnabled.bad1|Настройка Plot.ContourEnabled (лист PlotConfig, ячейка B126): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad1.recovery
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad2.rejected
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad2.key
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad2.address
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad2.action
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ContourEnabled.bad2|Настройка Plot.ContourEnabled (лист PlotConfig, ячейка B126): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad2.recovery
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad3.rejected
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad3.key
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad3.address
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad3.action
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ContourEnabled.bad3|Настройка Plot.ContourEnabled (лист PlotConfig, ячейка B126): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad3.recovery
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad4.rejected
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad4.key
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad4.address
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad4.action
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ContourEnabled.bad4|Настройка Plot.ContourEnabled (лист PlotConfig, ячейка B126) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p0.Plot.ContourEnabled.bad4.recovery
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad1.rejected
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad1.key
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad1.address
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad1.action
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad1|Настройка Plot.NeutralLineEnabled (лист PlotConfig, ячейка B121): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad1.recovery
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad2.rejected
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad2.key
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad2.address
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad2.action
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad2|Настройка Plot.NeutralLineEnabled (лист PlotConfig, ячейка B121): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad2.recovery
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad3.rejected
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad3.key
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad3.address
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad3.action
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad3|Настройка Plot.NeutralLineEnabled (лист PlotConfig, ячейка B121): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad3.recovery
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad4.rejected
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad4.key
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad4.address
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad4.action
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad4|Настройка Plot.NeutralLineEnabled (лист PlotConfig, ячейка B121) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p0.Plot.NeutralLineEnabled.bad4.recovery
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad1.rejected
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad1.key
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad1.address
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad1.action
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad1|Настройка Plot.LoadApplicationPointEnabled (лист PlotConfig, ячейка B123): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad1.recovery
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad2.rejected
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad2.key
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad2.address
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad2.action
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad2|Настройка Plot.LoadApplicationPointEnabled (лист PlotConfig, ячейка B123): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad2.recovery
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad3.rejected
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad3.key
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad3.address
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad3.action
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad3|Настройка Plot.LoadApplicationPointEnabled (лист PlotConfig, ячейка B123): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad3.recovery
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad4.rejected
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad4.key
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad4.address
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad4.action
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad4|Настройка Plot.LoadApplicationPointEnabled (лист PlotConfig, ячейка B123) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p0.Plot.LoadApplicationPointEnabled.bad4.recovery
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad1.rejected
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad1.key
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad1.address
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad1.action
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad1|Настройка Plot.ResultLabelsEnabled (лист PlotConfig, ячейка B119): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad1.recovery
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad2.rejected
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad2.key
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad2.address
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad2.action
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad2|Настройка Plot.ResultLabelsEnabled (лист PlotConfig, ячейка B119): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad2.recovery
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad3.rejected
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad3.key
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad3.address
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad3.action
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad3|Настройка Plot.ResultLabelsEnabled (лист PlotConfig, ячейка B119): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad3.recovery
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad4.rejected
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad4.key
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad4.address
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad4.action
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad4|Настройка Plot.ResultLabelsEnabled (лист PlotConfig, ячейка B119) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p0.Plot.ResultLabelsEnabled.bad4.recovery
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad1.rejected
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad1.key
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad1.address
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad1.action
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.LegendEnabled.bad1|Настройка Plot.LegendEnabled (лист PlotConfig, ячейка B127): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad1.recovery
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad2.rejected
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad2.key
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad2.address
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad2.action
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.LegendEnabled.bad2|Настройка Plot.LegendEnabled (лист PlotConfig, ячейка B127): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad2.recovery
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad3.rejected
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad3.key
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad3.address
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad3.action
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.LegendEnabled.bad3|Настройка Plot.LegendEnabled (лист PlotConfig, ячейка B127): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad3.recovery
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad4.rejected
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad4.key
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad4.address
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad4.action
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.LegendEnabled.bad4|Настройка Plot.LegendEnabled (лист PlotConfig, ячейка B127) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p0.Plot.LegendEnabled.bad4.recovery
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad1.rejected
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad1.key
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad1.address
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad1.action
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad1|Настройка Plot.PrincipalAxesMode (лист PlotConfig, ячейка B122): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad1.recovery
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad2.rejected
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad2.key
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad2.address
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad2.action
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad2|Настройка Plot.PrincipalAxesMode (лист PlotConfig, ячейка B122): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad2.recovery
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad3.rejected
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad3.key
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad3.address
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad3.action
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad3|Настройка Plot.PrincipalAxesMode (лист PlotConfig, ячейка B122): Режим главных осей не распознан. Выберите Transformed, Concrete или None.
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad3.recovery
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad4.rejected
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad4.key
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad4.address
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad4.action
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad4|Настройка Plot.PrincipalAxesMode (лист PlotConfig, ячейка B122) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p0.Plot.PrincipalAxesMode.bad4.recovery
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad1.rejected
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad1.key
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad1.address
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad1.action
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad1|Настройка Plot.ResultLabelSpacing (лист PlotConfig, ячейка B120): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad1.recovery
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad2.rejected
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad2.key
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad2.address
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad2.action
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad2|Настройка Plot.ResultLabelSpacing (лист PlotConfig, ячейка B120): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad2.recovery
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad3.rejected
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad3.key
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad3.address
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad3.action
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad3|Настройка Plot.ResultLabelSpacing (лист PlotConfig, ячейка B120): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad3.recovery
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad4.rejected
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad4.key
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad4.address
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad4.action
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad4|Настройка Plot.ResultLabelSpacing (лист PlotConfig, ячейка B120) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p0.Plot.ResultLabelSpacing.bad4.recovery
+OK: audit03.generalPlot.spacing.sign.p0.0
+OK: audit03.generalPlot.spacing.sign.p0.-1
+OK: audit03.generalPlot.spacing.smallPositive.p0
+OK: audit03.generalPlot.spacing.label.p0
+OK: audit03.generalPlot.spacing.inactive.p0
+OK: audit03.generalPlot.geometry.inactive.p0
+OK: audit03.generalPlot.neutral.off.p0
+OK: audit03.generalPlot.neutral.on.p0
+OK: audit03.generalPlot.load.off.p0
+OK: audit03.generalPlot.load.on.p0
+OK: audit03.generalPlot.axes.off.p0
+OK: audit03.generalPlot.axes.on.p0
+OK: audit03.generalPlot.toggle.p0.Plot.ContourEnabled.off
+OK: audit03.generalPlot.toggle.p0.Plot.ContourEnabled.on
+OK: audit03.generalPlot.toggle.p0.Plot.ResultLabelsEnabled.off
+OK: audit03.generalPlot.toggle.p0.Plot.ResultLabelsEnabled.on
+OK: audit03.generalPlot.toggle.p0.Plot.LegendEnabled.off
+OK: audit03.generalPlot.toggle.p0.Plot.LegendEnabled.on
+OK: audit03.generalPlot.missing.p0.Plot.ContourEnabled
+OK: audit03.generalPlot.missing.p0.Plot.NeutralLineEnabled
+OK: audit03.generalPlot.missing.p0.Plot.LoadApplicationPointEnabled
+OK: audit03.generalPlot.missing.p0.Plot.ResultLabelsEnabled
+OK: audit03.generalPlot.missing.p0.Plot.LegendEnabled
+OK: audit03.generalPlot.missing.p0.Plot.PrincipalAxesMode
+OK: audit03.generalPlot.missing.p0.Plot.ResultLabelSpacing
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad1.rejected
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad1.address
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad1.preserved
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad2.rejected
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad2.address
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad2.preserved
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad3.rejected
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad3.address
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad3.preserved
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad4.rejected
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad4.address
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowType.bad4.preserved
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad1.rejected
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad1.address
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad1.preserved
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad2.rejected
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad2.address
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad2.preserved
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad3.rejected
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad3.address
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad3.preserved
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad4.rejected
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad4.address
+OK: audit03.generalPlot.arrow.p0.Plot.Dimensions.ArrowSize.bad4.preserved
+OK: audit03.generalPlot.loadCase.p0.mode0.type8.rejected
+OK: audit03.generalPlot.loadCase.p0.mode0.type8.address
+OK: audit03.generalPlot.loadCase.p0.mode0.type8.empty
+OK: audit03.generalPlot.loadCase.p0.mode0.type8.rejected
+OK: audit03.generalPlot.loadCase.p0.mode0.type8.address
+OK: audit03.generalPlot.loadCase.p0.mode0.type8.empty
+OK: audit03.generalPlot.loadCase.p0.mode0.type10.rejected
+OK: audit03.generalPlot.loadCase.p0.mode0.type10.address
+OK: audit03.generalPlot.loadCase.p0.mode0.type10.empty
+OK: audit03.generalPlot.loadCase.p0.mode1.type8.inactive
+OK: audit03.generalPlot.loadCase.p0.mode1.type8.inactive
+OK: audit03.generalPlot.loadCase.p0.mode1.type10.inactive
+OK: audit03.generalPlot.loadCase.p0.mode2.type8.rejected
+OK: audit03.generalPlot.loadCase.p0.mode2.type8.address
+OK: audit03.generalPlot.loadCase.p0.mode2.type8.empty
+OK: audit03.generalPlot.loadCase.p0.mode2.type8.rejected
+OK: audit03.generalPlot.loadCase.p0.mode2.type8.address
+OK: audit03.generalPlot.loadCase.p0.mode2.type8.empty
+OK: audit03.generalPlot.loadCase.p0.mode2.type10.rejected
+OK: audit03.generalPlot.loadCase.p0.mode2.type10.address
+OK: audit03.generalPlot.loadCase.p0.mode2.type10.empty
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad1.rejected
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad1.key
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad1.address
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad1.action
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ContourEnabled.bad1|Настройка Plot.ContourEnabled (лист PlotConfig, ячейка CI921): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad1.recovery
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad2.rejected
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad2.key
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad2.address
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad2.action
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ContourEnabled.bad2|Настройка Plot.ContourEnabled (лист PlotConfig, ячейка CI921): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad2.recovery
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad3.rejected
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad3.key
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad3.address
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad3.action
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ContourEnabled.bad3|Настройка Plot.ContourEnabled (лист PlotConfig, ячейка CI921): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad3.recovery
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad4.rejected
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad4.key
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad4.address
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad4.action
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ContourEnabled.bad4|Настройка Plot.ContourEnabled (лист PlotConfig, ячейка CI921) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p1.Plot.ContourEnabled.bad4.recovery
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad1.rejected
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad1.key
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad1.address
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad1.action
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad1|Настройка Plot.NeutralLineEnabled (лист PlotConfig, ячейка CI916): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad1.recovery
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad2.rejected
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad2.key
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad2.address
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad2.action
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad2|Настройка Plot.NeutralLineEnabled (лист PlotConfig, ячейка CI916): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad2.recovery
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad3.rejected
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad3.key
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad3.address
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad3.action
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad3|Настройка Plot.NeutralLineEnabled (лист PlotConfig, ячейка CI916): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad3.recovery
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad4.rejected
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad4.key
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad4.address
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad4.action
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad4|Настройка Plot.NeutralLineEnabled (лист PlotConfig, ячейка CI916) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p1.Plot.NeutralLineEnabled.bad4.recovery
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad1.rejected
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad1.key
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad1.address
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad1.action
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad1|Настройка Plot.LoadApplicationPointEnabled (лист PlotConfig, ячейка CI918): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad1.recovery
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad2.rejected
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad2.key
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad2.address
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad2.action
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad2|Настройка Plot.LoadApplicationPointEnabled (лист PlotConfig, ячейка CI918): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad2.recovery
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad3.rejected
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad3.key
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad3.address
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad3.action
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad3|Настройка Plot.LoadApplicationPointEnabled (лист PlotConfig, ячейка CI918): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad3.recovery
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad4.rejected
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad4.key
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad4.address
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad4.action
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad4|Настройка Plot.LoadApplicationPointEnabled (лист PlotConfig, ячейка CI918) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p1.Plot.LoadApplicationPointEnabled.bad4.recovery
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad1.rejected
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad1.key
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad1.address
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad1.action
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad1|Настройка Plot.ResultLabelsEnabled (лист PlotConfig, ячейка CI914): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad1.recovery
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad2.rejected
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad2.key
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad2.address
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad2.action
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad2|Настройка Plot.ResultLabelsEnabled (лист PlotConfig, ячейка CI914): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad2.recovery
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad3.rejected
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad3.key
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad3.address
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad3.action
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad3|Настройка Plot.ResultLabelsEnabled (лист PlotConfig, ячейка CI914): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad3.recovery
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad4.rejected
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad4.key
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad4.address
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad4.action
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad4|Настройка Plot.ResultLabelsEnabled (лист PlotConfig, ячейка CI914) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p1.Plot.ResultLabelsEnabled.bad4.recovery
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad1.rejected
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad1.key
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad1.address
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad1.action
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.LegendEnabled.bad1|Настройка Plot.LegendEnabled (лист PlotConfig, ячейка CI922): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad1.recovery
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad2.rejected
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad2.key
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad2.address
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad2.action
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.LegendEnabled.bad2|Настройка Plot.LegendEnabled (лист PlotConfig, ячейка CI922): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad2.recovery
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad3.rejected
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad3.key
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad3.address
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad3.action
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.LegendEnabled.bad3|Настройка Plot.LegendEnabled (лист PlotConfig, ячейка CI922): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad3.recovery
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad4.rejected
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad4.key
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad4.address
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad4.action
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.LegendEnabled.bad4|Настройка Plot.LegendEnabled (лист PlotConfig, ячейка CI922) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p1.Plot.LegendEnabled.bad4.recovery
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad1.rejected
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad1.key
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad1.address
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad1.action
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad1|Настройка Plot.PrincipalAxesMode (лист PlotConfig, ячейка CI917): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad1.recovery
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad2.rejected
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad2.key
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad2.address
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad2.action
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad2|Настройка Plot.PrincipalAxesMode (лист PlotConfig, ячейка CI917): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad2.recovery
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad3.rejected
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad3.key
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad3.address
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad3.action
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad3|Настройка Plot.PrincipalAxesMode (лист PlotConfig, ячейка CI917): Режим главных осей не распознан. Выберите Transformed, Concrete или None.
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad3.recovery
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad4.rejected
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad4.key
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad4.address
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad4.action
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad4|Настройка Plot.PrincipalAxesMode (лист PlotConfig, ячейка CI917) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p1.Plot.PrincipalAxesMode.bad4.recovery
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad1.rejected
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad1.key
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad1.address
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad1.action
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad1.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad1|Настройка Plot.ResultLabelSpacing (лист PlotConfig, ячейка CI915): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad1.recovery
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad2.rejected
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad2.key
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad2.address
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad2.action
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad2.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad2|Настройка Plot.ResultLabelSpacing (лист PlotConfig, ячейка CI915): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad2.recovery
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad3.rejected
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad3.key
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad3.address
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad3.action
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad3.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad3|Настройка Plot.ResultLabelSpacing (лист PlotConfig, ячейка CI915): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad3.recovery
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad4.rejected
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad4.key
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad4.address
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad4.action
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad4.oldChartPreserved
+GENERAL_PLOT_ERROR: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad4|Настройка Plot.ResultLabelSpacing (лист PlotConfig, ячейка CI915) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalPlot.p1.Plot.ResultLabelSpacing.bad4.recovery
+OK: audit03.generalPlot.spacing.sign.p1.0
+OK: audit03.generalPlot.spacing.sign.p1.-1
+OK: audit03.generalPlot.spacing.smallPositive.p1
+OK: audit03.generalPlot.spacing.label.p1
+OK: audit03.generalPlot.spacing.inactive.p1
+OK: audit03.generalPlot.geometry.inactive.p1
+OK: audit03.generalPlot.neutral.off.p1
+OK: audit03.generalPlot.neutral.on.p1
+OK: audit03.generalPlot.load.off.p1
+OK: audit03.generalPlot.load.on.p1
+OK: audit03.generalPlot.axes.off.p1
+OK: audit03.generalPlot.axes.on.p1
+OK: audit03.generalPlot.toggle.p1.Plot.ContourEnabled.off
+OK: audit03.generalPlot.toggle.p1.Plot.ContourEnabled.on
+OK: audit03.generalPlot.toggle.p1.Plot.ResultLabelsEnabled.off
+OK: audit03.generalPlot.toggle.p1.Plot.ResultLabelsEnabled.on
+OK: audit03.generalPlot.toggle.p1.Plot.LegendEnabled.off
+OK: audit03.generalPlot.toggle.p1.Plot.LegendEnabled.on
+OK: audit03.generalPlot.missing.p1.Plot.ContourEnabled
+OK: audit03.generalPlot.missing.p1.Plot.NeutralLineEnabled
+OK: audit03.generalPlot.missing.p1.Plot.LoadApplicationPointEnabled
+OK: audit03.generalPlot.missing.p1.Plot.ResultLabelsEnabled
+OK: audit03.generalPlot.missing.p1.Plot.LegendEnabled
+OK: audit03.generalPlot.missing.p1.Plot.PrincipalAxesMode
+OK: audit03.generalPlot.missing.p1.Plot.ResultLabelSpacing
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad1.rejected
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad1.address
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad1.preserved
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad2.rejected
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad2.address
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad2.preserved
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad3.rejected
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad3.address
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad3.preserved
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad4.rejected
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad4.address
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowType.bad4.preserved
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad1.rejected
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad1.address
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad1.preserved
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad2.rejected
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad2.address
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad2.preserved
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad3.rejected
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad3.address
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad3.preserved
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad4.rejected
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad4.address
+OK: audit03.generalPlot.arrow.p1.Plot.Dimensions.ArrowSize.bad4.preserved
+OK: audit03.generalPlot.loadCase.p1.mode0.type8.rejected
+OK: audit03.generalPlot.loadCase.p1.mode0.type8.address
+OK: audit03.generalPlot.loadCase.p1.mode0.type8.empty
+OK: audit03.generalPlot.loadCase.p1.mode0.type8.rejected
+OK: audit03.generalPlot.loadCase.p1.mode0.type8.address
+OK: audit03.generalPlot.loadCase.p1.mode0.type8.empty
+OK: audit03.generalPlot.loadCase.p1.mode0.type10.rejected
+OK: audit03.generalPlot.loadCase.p1.mode0.type10.address
+OK: audit03.generalPlot.loadCase.p1.mode0.type10.empty
+OK: audit03.generalPlot.loadCase.p1.mode1.type8.inactive
+OK: audit03.generalPlot.loadCase.p1.mode1.type8.inactive
+OK: audit03.generalPlot.loadCase.p1.mode1.type10.inactive
+OK: audit03.generalPlot.loadCase.p1.mode2.type8.rejected
+OK: audit03.generalPlot.loadCase.p1.mode2.type8.address
+OK: audit03.generalPlot.loadCase.p1.mode2.type8.empty
+OK: audit03.generalPlot.loadCase.p1.mode2.type8.rejected
+OK: audit03.generalPlot.loadCase.p1.mode2.type8.address
+OK: audit03.generalPlot.loadCase.p1.mode2.type8.empty
+OK: audit03.generalPlot.loadCase.p1.mode2.type10.rejected
+OK: audit03.generalPlot.loadCase.p1.mode2.type10.address
+OK: audit03.generalPlot.loadCase.p1.mode2.type10.empty
+OK: audit03.generalPlot.arrows.Triangle.Small.line
+OK: audit03.generalPlot.arrows.Triangle.Small.style
+OK: audit03.generalPlot.arrows.Triangle.Small.length
+OK: audit03.generalPlot.arrows.Triangle.Small.width
+OK: audit03.generalPlot.arrows.Triangle.Medium.line
+OK: audit03.generalPlot.arrows.Triangle.Medium.style
+OK: audit03.generalPlot.arrows.Triangle.Medium.length
+OK: audit03.generalPlot.arrows.Triangle.Medium.width
+OK: audit03.generalPlot.arrows.Triangle.Wide.line
+OK: audit03.generalPlot.arrows.Triangle.Wide.style
+OK: audit03.generalPlot.arrows.Triangle.Wide.length
+OK: audit03.generalPlot.arrows.Triangle.Wide.width
+OK: audit03.generalPlot.arrows.Stealth.Small.line
+OK: audit03.generalPlot.arrows.Stealth.Small.style
+OK: audit03.generalPlot.arrows.Stealth.Small.length
+OK: audit03.generalPlot.arrows.Stealth.Small.width
+OK: audit03.generalPlot.arrows.Stealth.Medium.line
+OK: audit03.generalPlot.arrows.Stealth.Medium.style
+OK: audit03.generalPlot.arrows.Stealth.Medium.length
+OK: audit03.generalPlot.arrows.Stealth.Medium.width
+OK: audit03.generalPlot.arrows.Stealth.Wide.line
+OK: audit03.generalPlot.arrows.Stealth.Wide.style
+OK: audit03.generalPlot.arrows.Stealth.Wide.length
+OK: audit03.generalPlot.arrows.Stealth.Wide.width
+OK: audit03.generalPlot.arrows.Diamond.Small.line
+OK: audit03.generalPlot.arrows.Diamond.Small.style
+OK: audit03.generalPlot.arrows.Diamond.Small.length
+OK: audit03.generalPlot.arrows.Diamond.Small.width
+OK: audit03.generalPlot.arrows.Diamond.Medium.line
+OK: audit03.generalPlot.arrows.Diamond.Medium.style
+OK: audit03.generalPlot.arrows.Diamond.Medium.length
+OK: audit03.generalPlot.arrows.Diamond.Medium.width
+OK: audit03.generalPlot.arrows.Diamond.Wide.line
+OK: audit03.generalPlot.arrows.Diamond.Wide.style
+OK: audit03.generalPlot.arrows.Diamond.Wide.length
+OK: audit03.generalPlot.arrows.Diamond.Wide.width
+OK: audit03.generalPlot.arrows.Oval.Small.line
+OK: audit03.generalPlot.arrows.Oval.Small.style
+OK: audit03.generalPlot.arrows.Oval.Small.length
+OK: audit03.generalPlot.arrows.Oval.Small.width
+OK: audit03.generalPlot.arrows.Oval.Medium.line
+OK: audit03.generalPlot.arrows.Oval.Medium.style
+OK: audit03.generalPlot.arrows.Oval.Medium.length
+OK: audit03.generalPlot.arrows.Oval.Medium.width
+OK: audit03.generalPlot.arrows.Oval.Wide.line
+OK: audit03.generalPlot.arrows.Oval.Wide.style
+OK: audit03.generalPlot.arrows.Oval.Wide.length
+OK: audit03.generalPlot.arrows.Oval.Wide.width
+OK: audit03.generalPlot.arrows.Open.Small.line
+OK: audit03.generalPlot.arrows.Open.Small.style
+OK: audit03.generalPlot.arrows.Open.Small.length
+OK: audit03.generalPlot.arrows.Open.Small.width
+OK: audit03.generalPlot.arrows.Open.Medium.line
+OK: audit03.generalPlot.arrows.Open.Medium.style
+OK: audit03.generalPlot.arrows.Open.Medium.length
+OK: audit03.generalPlot.arrows.Open.Medium.width
+OK: audit03.generalPlot.arrows.Open.Wide.line
+OK: audit03.generalPlot.arrows.Open.Wide.style
+OK: audit03.generalPlot.arrows.Open.Wide.length
+OK: audit03.generalPlot.arrows.Open.Wide.width
+OK: audit03.generalPlot.chart.left; actual=41.; expected=41.
+OK: audit03.generalPlot.chart.top; actual=53.; expected=53.
+OK: audit03.generalPlot.chart.width; actual=700.; expected=700.
+OK: audit03.generalPlot.chart.height; actual=480.; expected=480.
+OK: audit03.generalPlot.ResultsUnchanged.equivalent; 
+OK: audit03.generalPlot.grouped.colorCount
+OK: audit03.generalPlot.grouped.color0
+OK: audit03.generalPlot.grouped.color1
+OK: audit03.generalPlot.grouped.color2
+OK: audit03.generalPlot.grouped.color3
+OK: audit03.generalPlot.grouped.color4
+OK: audit03.generalPlot.grouped.color5
+OK: audit03.generalPlot.grouped.color6
+OK: audit03.generalPlot.grouped.color7
+OK: audit03.generalPlot.grouped.color8
+OK: audit03.generalPlot.grouped.color9
+OK: audit03.generalPlot.grouped.color10
+OK: audit03.generalPlot.grouped.color11
+OK: audit03.generalPlot.grouped.color12
+OK: audit03.generalPlot.grouped.color13
+OK: audit03.generalPlot.grouped.color14
+OK: audit03.generalPlot.grouped.color15
+OK: audit03.generalPlot.grouped.color16
+OK: audit03.generalPlot.noSolve
+GENERAL_PLOT_CASES: variants=123; geometryFixtures=2; equilibriumCases=0
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8|Настройка Plot.Dimensions.Enabled (лист LayoutConfig, ячейка B133): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8|Настройка Plot.Dimensions.Enabled (лист LayoutConfig, ячейка B133): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8|Настройка Plot.Dimensions.Enabled (лист LayoutConfig, ячейка B133): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Enabled.bad10|Настройка Plot.Dimensions.Enabled (лист LayoutConfig, ячейка B133) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.Enabled.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8|Настройка Plot.Dimensions.TextHeight (лист LayoutConfig, ячейка B134): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8|Настройка Plot.Dimensions.TextHeight (лист LayoutConfig, ячейка B134): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8|Настройка Plot.Dimensions.TextHeight (лист LayoutConfig, ячейка B134): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad10|Настройка Plot.Dimensions.TextHeight (лист LayoutConfig, ячейка B134) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.TextHeight.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8|Настройка Plot.Dimensions.TextUnits (лист LayoutConfig, ячейка B135): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8|Настройка Plot.Dimensions.TextUnits (лист LayoutConfig, ячейка B135): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8|Настройка Plot.Dimensions.TextUnits (лист LayoutConfig, ячейка B135): Недопустимый вариант: "INVALID". Выберите из списка: mm, pt.
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad10|Настройка Plot.Dimensions.TextUnits (лист LayoutConfig, ячейка B135) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.TextUnits.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Offset.bad8|Настройка Plot.Dimensions.Offset (лист LayoutConfig, ячейка B136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Offset.bad8|Настройка Plot.Dimensions.Offset (лист LayoutConfig, ячейка B136): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Offset.bad8|Настройка Plot.Dimensions.Offset (лист LayoutConfig, ячейка B136): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Offset.bad10|Настройка Plot.Dimensions.Offset (лист LayoutConfig, ячейка B136) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.Offset.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8|Настройка Plot.Dimensions.LineWeight (лист LayoutConfig, ячейка B137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8|Настройка Plot.Dimensions.LineWeight (лист LayoutConfig, ячейка B137): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8|Настройка Plot.Dimensions.LineWeight (лист LayoutConfig, ячейка B137): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad10|Настройка Plot.Dimensions.LineWeight (лист LayoutConfig, ячейка B137) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.LineWeight.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8|Настройка Plot.Dimensions.ExtensionLineWeight (лист LayoutConfig, ячейка B138): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8|Настройка Plot.Dimensions.ExtensionLineWeight (лист LayoutConfig, ячейка B138): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8|Настройка Plot.Dimensions.ExtensionLineWeight (лист LayoutConfig, ячейка B138): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad10|Настройка Plot.Dimensions.ExtensionLineWeight (лист LayoutConfig, ячейка B138) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineWeight.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8|Настройка Plot.Dimensions.TextGap (лист LayoutConfig, ячейка B139): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8|Настройка Plot.Dimensions.TextGap (лист LayoutConfig, ячейка B139): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8|Настройка Plot.Dimensions.TextGap (лист LayoutConfig, ячейка B139): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.TextGap.bad10|Настройка Plot.Dimensions.TextGap (лист LayoutConfig, ячейка B139) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.TextGap.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Placement.bad8|Настройка Plot.Dimensions.Placement (лист LayoutConfig, ячейка B140): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Placement.bad8|Настройка Plot.Dimensions.Placement (лист LayoutConfig, ячейка B140): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Placement.bad8|Настройка Plot.Dimensions.Placement (лист LayoutConfig, ячейка B140): Недопустимый вариант: "INVALID". Выберите из списка: Outside, Inside.
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Placement.bad10|Настройка Plot.Dimensions.Placement (лист LayoutConfig, ячейка B140) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.Placement.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Color.bad8|Настройка Plot.Dimensions.Color (лист LayoutConfig, ячейка B141): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Color.bad8|Настройка Plot.Dimensions.Color (лист LayoutConfig, ячейка B141): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Color.bad8|Настройка Plot.Dimensions.Color (лист LayoutConfig, ячейка B141): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.Color.bad10|Настройка Plot.Dimensions.Color (лист LayoutConfig, ячейка B141) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.Color.bad10.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8|Настройка Plot.Dimensions.ExtensionLineColor (лист LayoutConfig, ячейка B142): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8|Настройка Plot.Dimensions.ExtensionLineColor (лист LayoutConfig, ячейка B142): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.key
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8|Настройка Plot.Dimensions.ExtensionLineColor (лист LayoutConfig, ячейка B142): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.recovery
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad10.rejected
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad10.key
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad10|Настройка Plot.Dimensions.ExtensionLineColor (лист LayoutConfig, ячейка B142) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.Dimensions.ExtensionLineColor.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8|Настройка Plot.RebarLabels.Enabled (лист LayoutConfig, ячейка B145): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8|Настройка Plot.RebarLabels.Enabled (лист LayoutConfig, ячейка B145): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8|Настройка Plot.RebarLabels.Enabled (лист LayoutConfig, ячейка B145): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad10|Настройка Plot.RebarLabels.Enabled (лист LayoutConfig, ячейка B145) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.Enabled.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8|Настройка Plot.RebarLabels.TextHeight (лист LayoutConfig, ячейка B146): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8|Настройка Plot.RebarLabels.TextHeight (лист LayoutConfig, ячейка B146): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8|Настройка Plot.RebarLabels.TextHeight (лист LayoutConfig, ячейка B146): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad10|Настройка Plot.RebarLabels.TextHeight (лист LayoutConfig, ячейка B146) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextHeight.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8|Настройка Plot.RebarLabels.TextUnits (лист LayoutConfig, ячейка B147): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8|Настройка Plot.RebarLabels.TextUnits (лист LayoutConfig, ячейка B147): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8|Настройка Plot.RebarLabels.TextUnits (лист LayoutConfig, ячейка B147): Недопустимый вариант: "INVALID". Выберите из списка: mm, pt.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad10|Настройка Plot.RebarLabels.TextUnits (лист LayoutConfig, ячейка B147) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextUnits.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8|Настройка Plot.RebarLabels.Offset (лист LayoutConfig, ячейка B148): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8|Настройка Plot.RebarLabels.Offset (лист LayoutConfig, ячейка B148): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8|Настройка Plot.RebarLabels.Offset (лист LayoutConfig, ячейка B148): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Offset.bad10|Настройка Plot.RebarLabels.Offset (лист LayoutConfig, ячейка B148) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.Offset.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8|Настройка Plot.RebarLabels.LineEnabled (лист LayoutConfig, ячейка B149): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8|Настройка Plot.RebarLabels.LineEnabled (лист LayoutConfig, ячейка B149): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8|Настройка Plot.RebarLabels.LineEnabled (лист LayoutConfig, ячейка B149): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad10|Настройка Plot.RebarLabels.LineEnabled (лист LayoutConfig, ячейка B149) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.LineEnabled.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8|Настройка Plot.RebarLabels.LineWeight (лист LayoutConfig, ячейка B150): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8|Настройка Plot.RebarLabels.LineWeight (лист LayoutConfig, ячейка B150): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8|Настройка Plot.RebarLabels.LineWeight (лист LayoutConfig, ячейка B150): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad10|Настройка Plot.RebarLabels.LineWeight (лист LayoutConfig, ячейка B150) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.LineWeight.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8|Настройка Plot.RebarLabels.TextGap (лист LayoutConfig, ячейка B151): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8|Настройка Plot.RebarLabels.TextGap (лист LayoutConfig, ячейка B151): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8|Настройка Plot.RebarLabels.TextGap (лист LayoutConfig, ячейка B151): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad10|Настройка Plot.RebarLabels.TextGap (лист LayoutConfig, ячейка B151) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.TextGap.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8|Настройка Plot.RebarLabels.Placement (лист LayoutConfig, ячейка B152): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8|Настройка Plot.RebarLabels.Placement (лист LayoutConfig, ячейка B152): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8|Настройка Plot.RebarLabels.Placement (лист LayoutConfig, ячейка B152): Недопустимый вариант: "INVALID". Выберите из списка: Outside, Inside.
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Placement.bad10|Настройка Plot.RebarLabels.Placement (лист LayoutConfig, ячейка B152) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.Placement.bad10.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Color.bad8|Настройка Plot.RebarLabels.Color (лист LayoutConfig, ячейка B153): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Color.bad8|Настройка Plot.RebarLabels.Color (лист LayoutConfig, ячейка B153): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Color.bad8|Настройка Plot.RebarLabels.Color (лист LayoutConfig, ячейка B153): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad8.recovery
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad10.rejected
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad10.key
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p0.Plot.RebarLabels.Color.bad10|Настройка Plot.RebarLabels.Color (лист LayoutConfig, ячейка B153) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p0.Plot.RebarLabels.Color.bad10.recovery
+OK: audit03.annotation.mutation.p0.Plot.Dimensions.TextHeight; actual=17.2; expected=17.2
+OK: audit03.annotation.sign.p0.Plot.Dimensions.TextHeight.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.Dimensions.TextHeight.-1.address
+OK: audit03.annotation.sign.p0.Plot.Dimensions.TextHeight.0.rejected
+OK: audit03.annotation.sign.p0.Plot.Dimensions.TextHeight.0.address
+OK: audit03.annotation.mutation.p0.Plot.RebarLabels.TextHeight; actual=17.2; expected=17.2
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.TextHeight.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.TextHeight.-1.address
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.TextHeight.0.rejected
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.TextHeight.0.address
+OK: audit03.annotation.mutation.p0.Plot.Dimensions.Offset; actual=172.; expected=172.
+OK: audit03.annotation.sign.p0.Plot.Dimensions.Offset.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.Dimensions.Offset.-1.address
+OK: audit03.annotation.sign.p0.Plot.Dimensions.Offset.0.zeroAllowed
+OK: audit03.annotation.mutation.p0.Plot.RebarLabels.Offset; actual=172.; expected=172.
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.Offset.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.Offset.-1.address
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.Offset.0.zeroAllowed
+OK: audit03.annotation.mutation.p0.Plot.Dimensions.LineWeight; actual=2.5; expected=2.5
+OK: audit03.annotation.sign.p0.Plot.Dimensions.LineWeight.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.Dimensions.LineWeight.-1.address
+OK: audit03.annotation.sign.p0.Plot.Dimensions.LineWeight.0.rejected
+OK: audit03.annotation.sign.p0.Plot.Dimensions.LineWeight.0.address
+OK: audit03.annotation.mutation.p0.Plot.Dimensions.ExtensionLineWeight; actual=1.25; expected=1.25
+OK: audit03.annotation.sign.p0.Plot.Dimensions.ExtensionLineWeight.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.Dimensions.ExtensionLineWeight.-1.address
+OK: audit03.annotation.sign.p0.Plot.Dimensions.ExtensionLineWeight.0.rejected
+OK: audit03.annotation.sign.p0.Plot.Dimensions.ExtensionLineWeight.0.address
+OK: audit03.annotation.mutation.p0.Plot.RebarLabels.LineWeight; actual=2.5; expected=2.5
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.LineWeight.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.LineWeight.-1.address
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.LineWeight.0.rejected
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.LineWeight.0.address
+OK: audit03.annotation.mutation.p0.Plot.Dimensions.TextGap; actual=182.75; expected=182.75
+OK: audit03.annotation.sign.p0.Plot.Dimensions.TextGap.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.Dimensions.TextGap.-1.address
+OK: audit03.annotation.sign.p0.Plot.Dimensions.TextGap.0.zeroAllowed
+OK: audit03.annotation.mutation.p0.Plot.RebarLabels.TextGap; actual=182.75; expected=182.75
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.TextGap.-1.rejected
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.TextGap.-1.address
+OK: audit03.annotation.sign.p0.Plot.RebarLabels.TextGap.0.zeroAllowed
+OK: audit03.annotation.p0.mm.Outside.count
+OK: audit03.annotation.p0.mm.Outside.dimension.x; actual=160.; expected=160.
+OK: audit03.annotation.p0.mm.Outside.dimension.y; actual=193.5; expected=193.5
+OK: audit03.annotation.p0.mm.Outside.dimension.end; actual=480.; expected=480.
+OK: audit03.annotation.p0.mm.Outside.font; actual=12.9; expected=12.9
+OK: audit03.annotation.p0.mm.Outside.textPlacement; actual=187.05; expected=187.05
+OK: audit03.annotation.p0.mm.Outside.rebarPlacement; actual=187.05; expected=187.05
+OK: audit03.annotation.p0.mm.Outside.black
+OK: audit03.annotation.p0.mm.Outside.extensionColor
+OK: audit03.annotation.p0.mm.Outside.lineWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p0.mm.Outside.extensionWeight; actual=0.75; expected=0.75
+OK: audit03.annotation.p0.mm.Outside.rebarWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p0.mm.Outside.rebarFont; actual=12.9; expected=12.9
+OK: audit03.annotation.p0.mm.Outside.arrows
+OK: audit03.annotation.p0.mm.Inside.count
+OK: audit03.annotation.p0.mm.Inside.dimension.x; actual=160.; expected=160.
+OK: audit03.annotation.p0.mm.Inside.dimension.y; actual=193.5; expected=193.5
+OK: audit03.annotation.p0.mm.Inside.dimension.end; actual=480.; expected=480.
+OK: audit03.annotation.p0.mm.Inside.font; actual=12.9; expected=12.9
+OK: audit03.annotation.p0.mm.Inside.textPlacement; actual=199.95; expected=199.95
+OK: audit03.annotation.p0.mm.Inside.rebarPlacement; actual=242.95; expected=242.95
+OK: audit03.annotation.p0.mm.Inside.black
+OK: audit03.annotation.p0.mm.Inside.extensionColor
+OK: audit03.annotation.p0.mm.Inside.lineWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p0.mm.Inside.extensionWeight; actual=0.75; expected=0.75
+OK: audit03.annotation.p0.mm.Inside.rebarWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p0.mm.Inside.rebarFont; actual=12.9; expected=12.9
+OK: audit03.annotation.p0.mm.Inside.arrows
+OK: audit03.annotation.p0.pt.Outside.count
+OK: audit03.annotation.p0.pt.Outside.dimension.x; actual=160.; expected=160.
+OK: audit03.annotation.p0.pt.Outside.dimension.y; actual=193.5; expected=193.5
+OK: audit03.annotation.p0.pt.Outside.dimension.end; actual=480.; expected=480.
+OK: audit03.annotation.p0.pt.Outside.font; actual=6.; expected=6.
+OK: audit03.annotation.p0.pt.Outside.textPlacement; actual=190.5; expected=190.5
+OK: audit03.annotation.p0.pt.Outside.rebarPlacement; actual=190.5; expected=190.5
+OK: audit03.annotation.p0.pt.Outside.black
+OK: audit03.annotation.p0.pt.Outside.extensionColor
+OK: audit03.annotation.p0.pt.Outside.lineWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p0.pt.Outside.extensionWeight; actual=0.75; expected=0.75
+OK: audit03.annotation.p0.pt.Outside.rebarWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p0.pt.Outside.rebarFont; actual=6.; expected=6.
+OK: audit03.annotation.p0.pt.Outside.arrows
+OK: audit03.annotation.p0.pt.Inside.count
+OK: audit03.annotation.p0.pt.Inside.dimension.x; actual=160.; expected=160.
+OK: audit03.annotation.p0.pt.Inside.dimension.y; actual=193.5; expected=193.5
+OK: audit03.annotation.p0.pt.Inside.dimension.end; actual=480.; expected=480.
+OK: audit03.annotation.p0.pt.Inside.font; actual=6.; expected=6.
+OK: audit03.annotation.p0.pt.Inside.textPlacement; actual=196.5; expected=196.5
+OK: audit03.annotation.p0.pt.Inside.rebarPlacement; actual=239.5; expected=239.5
+OK: audit03.annotation.p0.pt.Inside.black
+OK: audit03.annotation.p0.pt.Inside.extensionColor
+OK: audit03.annotation.p0.pt.Inside.lineWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p0.pt.Inside.extensionWeight; actual=0.75; expected=0.75
+OK: audit03.annotation.p0.pt.Inside.rebarWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p0.pt.Inside.rebarFont; actual=6.; expected=6.
+OK: audit03.annotation.p0.pt.Inside.arrows
+OK: audit03.annotation.noLeader.p0
+OK: audit03.annotation.groupsOff.p0
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8|Настройка Plot.Dimensions.Enabled (лист LayoutConfig, ячейка CI928): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8|Настройка Plot.Dimensions.Enabled (лист LayoutConfig, ячейка CI928): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8|Настройка Plot.Dimensions.Enabled (лист LayoutConfig, ячейка CI928): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Enabled.bad10|Настройка Plot.Dimensions.Enabled (лист LayoutConfig, ячейка CI928) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.Enabled.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8|Настройка Plot.Dimensions.TextHeight (лист LayoutConfig, ячейка CI929): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8|Настройка Plot.Dimensions.TextHeight (лист LayoutConfig, ячейка CI929): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8|Настройка Plot.Dimensions.TextHeight (лист LayoutConfig, ячейка CI929): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad10|Настройка Plot.Dimensions.TextHeight (лист LayoutConfig, ячейка CI929) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.TextHeight.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8|Настройка Plot.Dimensions.TextUnits (лист LayoutConfig, ячейка CI930): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8|Настройка Plot.Dimensions.TextUnits (лист LayoutConfig, ячейка CI930): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8|Настройка Plot.Dimensions.TextUnits (лист LayoutConfig, ячейка CI930): Недопустимый вариант: "INVALID". Выберите из списка: mm, pt.
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad10|Настройка Plot.Dimensions.TextUnits (лист LayoutConfig, ячейка CI930) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.TextUnits.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Offset.bad8|Настройка Plot.Dimensions.Offset (лист LayoutConfig, ячейка CI931): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Offset.bad8|Настройка Plot.Dimensions.Offset (лист LayoutConfig, ячейка CI931): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Offset.bad8|Настройка Plot.Dimensions.Offset (лист LayoutConfig, ячейка CI931): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Offset.bad10|Настройка Plot.Dimensions.Offset (лист LayoutConfig, ячейка CI931) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.Offset.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8|Настройка Plot.Dimensions.LineWeight (лист LayoutConfig, ячейка CI932): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8|Настройка Plot.Dimensions.LineWeight (лист LayoutConfig, ячейка CI932): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8|Настройка Plot.Dimensions.LineWeight (лист LayoutConfig, ячейка CI932): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad10|Настройка Plot.Dimensions.LineWeight (лист LayoutConfig, ячейка CI932) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.LineWeight.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8|Настройка Plot.Dimensions.ExtensionLineWeight (лист LayoutConfig, ячейка CI933): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8|Настройка Plot.Dimensions.ExtensionLineWeight (лист LayoutConfig, ячейка CI933): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8|Настройка Plot.Dimensions.ExtensionLineWeight (лист LayoutConfig, ячейка CI933): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad10|Настройка Plot.Dimensions.ExtensionLineWeight (лист LayoutConfig, ячейка CI933) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineWeight.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8|Настройка Plot.Dimensions.TextGap (лист LayoutConfig, ячейка CI934): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8|Настройка Plot.Dimensions.TextGap (лист LayoutConfig, ячейка CI934): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8|Настройка Plot.Dimensions.TextGap (лист LayoutConfig, ячейка CI934): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.TextGap.bad10|Настройка Plot.Dimensions.TextGap (лист LayoutConfig, ячейка CI934) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.TextGap.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Placement.bad8|Настройка Plot.Dimensions.Placement (лист LayoutConfig, ячейка CI935): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Placement.bad8|Настройка Plot.Dimensions.Placement (лист LayoutConfig, ячейка CI935): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Placement.bad8|Настройка Plot.Dimensions.Placement (лист LayoutConfig, ячейка CI935): Недопустимый вариант: "INVALID". Выберите из списка: Outside, Inside.
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Placement.bad10|Настройка Plot.Dimensions.Placement (лист LayoutConfig, ячейка CI935) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.Placement.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Color.bad8|Настройка Plot.Dimensions.Color (лист LayoutConfig, ячейка CI936): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Color.bad8|Настройка Plot.Dimensions.Color (лист LayoutConfig, ячейка CI936): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Color.bad8|Настройка Plot.Dimensions.Color (лист LayoutConfig, ячейка CI936): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.Color.bad10|Настройка Plot.Dimensions.Color (лист LayoutConfig, ячейка CI936) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.Color.bad10.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8|Настройка Plot.Dimensions.ExtensionLineColor (лист LayoutConfig, ячейка CI937): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8|Настройка Plot.Dimensions.ExtensionLineColor (лист LayoutConfig, ячейка CI937): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.key
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8|Настройка Plot.Dimensions.ExtensionLineColor (лист LayoutConfig, ячейка CI937): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.recovery
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad10.rejected
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad10.key
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad10|Настройка Plot.Dimensions.ExtensionLineColor (лист LayoutConfig, ячейка CI937) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.Dimensions.ExtensionLineColor.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8|Настройка Plot.RebarLabels.Enabled (лист LayoutConfig, ячейка CI940): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8|Настройка Plot.RebarLabels.Enabled (лист LayoutConfig, ячейка CI940): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8|Настройка Plot.RebarLabels.Enabled (лист LayoutConfig, ячейка CI940): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad10|Настройка Plot.RebarLabels.Enabled (лист LayoutConfig, ячейка CI940) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.Enabled.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8|Настройка Plot.RebarLabels.TextHeight (лист LayoutConfig, ячейка CI941): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8|Настройка Plot.RebarLabels.TextHeight (лист LayoutConfig, ячейка CI941): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8|Настройка Plot.RebarLabels.TextHeight (лист LayoutConfig, ячейка CI941): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad10|Настройка Plot.RebarLabels.TextHeight (лист LayoutConfig, ячейка CI941) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextHeight.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8|Настройка Plot.RebarLabels.TextUnits (лист LayoutConfig, ячейка CI942): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8|Настройка Plot.RebarLabels.TextUnits (лист LayoutConfig, ячейка CI942): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8|Настройка Plot.RebarLabels.TextUnits (лист LayoutConfig, ячейка CI942): Недопустимый вариант: "INVALID". Выберите из списка: mm, pt.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad10|Настройка Plot.RebarLabels.TextUnits (лист LayoutConfig, ячейка CI942) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextUnits.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8|Настройка Plot.RebarLabels.Offset (лист LayoutConfig, ячейка CI943): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8|Настройка Plot.RebarLabels.Offset (лист LayoutConfig, ячейка CI943): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8|Настройка Plot.RebarLabels.Offset (лист LayoutConfig, ячейка CI943): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Offset.bad10|Настройка Plot.RebarLabels.Offset (лист LayoutConfig, ячейка CI943) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.Offset.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8|Настройка Plot.RebarLabels.LineEnabled (лист LayoutConfig, ячейка CI944): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8|Настройка Plot.RebarLabels.LineEnabled (лист LayoutConfig, ячейка CI944): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8|Настройка Plot.RebarLabels.LineEnabled (лист LayoutConfig, ячейка CI944): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad10|Настройка Plot.RebarLabels.LineEnabled (лист LayoutConfig, ячейка CI944) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.LineEnabled.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8|Настройка Plot.RebarLabels.LineWeight (лист LayoutConfig, ячейка CI945): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8|Настройка Plot.RebarLabels.LineWeight (лист LayoutConfig, ячейка CI945): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8|Настройка Plot.RebarLabels.LineWeight (лист LayoutConfig, ячейка CI945): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad10|Настройка Plot.RebarLabels.LineWeight (лист LayoutConfig, ячейка CI945) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.LineWeight.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8|Настройка Plot.RebarLabels.TextGap (лист LayoutConfig, ячейка CI946): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8|Настройка Plot.RebarLabels.TextGap (лист LayoutConfig, ячейка CI946): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8|Настройка Plot.RebarLabels.TextGap (лист LayoutConfig, ячейка CI946): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad10|Настройка Plot.RebarLabels.TextGap (лист LayoutConfig, ячейка CI946) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.TextGap.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8|Настройка Plot.RebarLabels.Placement (лист LayoutConfig, ячейка CI947): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8|Настройка Plot.RebarLabels.Placement (лист LayoutConfig, ячейка CI947): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8|Настройка Plot.RebarLabels.Placement (лист LayoutConfig, ячейка CI947): Недопустимый вариант: "INVALID". Выберите из списка: Outside, Inside.
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Placement.bad10|Настройка Plot.RebarLabels.Placement (лист LayoutConfig, ячейка CI947) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.Placement.bad10.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Color.bad8|Настройка Plot.RebarLabels.Color (лист LayoutConfig, ячейка CI948): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Color.bad8|Настройка Plot.RebarLabels.Color (лист LayoutConfig, ячейка CI948): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Color.bad8|Настройка Plot.RebarLabels.Color (лист LayoutConfig, ячейка CI948): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad8.recovery
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad10.rejected
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad10.key
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad10.address
+ANNOTATION_ERROR: audit03.annotation.p1.Plot.RebarLabels.Color.bad10|Настройка Plot.RebarLabels.Color (лист LayoutConfig, ячейка CI948) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.annotation.p1.Plot.RebarLabels.Color.bad10.recovery
+OK: audit03.annotation.mutation.p1.Plot.Dimensions.TextHeight; actual=17.2; expected=17.2
+OK: audit03.annotation.sign.p1.Plot.Dimensions.TextHeight.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.Dimensions.TextHeight.-1.address
+OK: audit03.annotation.sign.p1.Plot.Dimensions.TextHeight.0.rejected
+OK: audit03.annotation.sign.p1.Plot.Dimensions.TextHeight.0.address
+OK: audit03.annotation.mutation.p1.Plot.RebarLabels.TextHeight; actual=17.2; expected=17.2
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.TextHeight.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.TextHeight.-1.address
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.TextHeight.0.rejected
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.TextHeight.0.address
+OK: audit03.annotation.mutation.p1.Plot.Dimensions.Offset; actual=172.; expected=172.
+OK: audit03.annotation.sign.p1.Plot.Dimensions.Offset.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.Dimensions.Offset.-1.address
+OK: audit03.annotation.sign.p1.Plot.Dimensions.Offset.0.zeroAllowed
+OK: audit03.annotation.mutation.p1.Plot.RebarLabels.Offset; actual=172.; expected=172.
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.Offset.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.Offset.-1.address
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.Offset.0.zeroAllowed
+OK: audit03.annotation.mutation.p1.Plot.Dimensions.LineWeight; actual=2.5; expected=2.5
+OK: audit03.annotation.sign.p1.Plot.Dimensions.LineWeight.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.Dimensions.LineWeight.-1.address
+OK: audit03.annotation.sign.p1.Plot.Dimensions.LineWeight.0.rejected
+OK: audit03.annotation.sign.p1.Plot.Dimensions.LineWeight.0.address
+OK: audit03.annotation.mutation.p1.Plot.Dimensions.ExtensionLineWeight; actual=1.25; expected=1.25
+OK: audit03.annotation.sign.p1.Plot.Dimensions.ExtensionLineWeight.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.Dimensions.ExtensionLineWeight.-1.address
+OK: audit03.annotation.sign.p1.Plot.Dimensions.ExtensionLineWeight.0.rejected
+OK: audit03.annotation.sign.p1.Plot.Dimensions.ExtensionLineWeight.0.address
+OK: audit03.annotation.mutation.p1.Plot.RebarLabels.LineWeight; actual=2.5; expected=2.5
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.LineWeight.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.LineWeight.-1.address
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.LineWeight.0.rejected
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.LineWeight.0.address
+OK: audit03.annotation.mutation.p1.Plot.Dimensions.TextGap; actual=182.75; expected=182.75
+OK: audit03.annotation.sign.p1.Plot.Dimensions.TextGap.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.Dimensions.TextGap.-1.address
+OK: audit03.annotation.sign.p1.Plot.Dimensions.TextGap.0.zeroAllowed
+OK: audit03.annotation.mutation.p1.Plot.RebarLabels.TextGap; actual=182.75; expected=182.75
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.TextGap.-1.rejected
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.TextGap.-1.address
+OK: audit03.annotation.sign.p1.Plot.RebarLabels.TextGap.0.zeroAllowed
+OK: audit03.annotation.p1.mm.Outside.count
+OK: audit03.annotation.p1.mm.Outside.dimension.x; actual=160.; expected=160.
+OK: audit03.annotation.p1.mm.Outside.dimension.y; actual=193.5; expected=193.5
+OK: audit03.annotation.p1.mm.Outside.dimension.end; actual=480.; expected=480.
+OK: audit03.annotation.p1.mm.Outside.font; actual=12.9; expected=12.9
+OK: audit03.annotation.p1.mm.Outside.textPlacement; actual=187.05; expected=187.05
+OK: audit03.annotation.p1.mm.Outside.rebarPlacement; actual=187.05; expected=187.05
+OK: audit03.annotation.p1.mm.Outside.black
+OK: audit03.annotation.p1.mm.Outside.extensionColor
+OK: audit03.annotation.p1.mm.Outside.lineWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p1.mm.Outside.extensionWeight; actual=0.75; expected=0.75
+OK: audit03.annotation.p1.mm.Outside.rebarWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p1.mm.Outside.rebarFont; actual=12.9; expected=12.9
+OK: audit03.annotation.p1.mm.Outside.arrows
+OK: audit03.annotation.p1.mm.Inside.count
+OK: audit03.annotation.p1.mm.Inside.dimension.x; actual=160.; expected=160.
+OK: audit03.annotation.p1.mm.Inside.dimension.y; actual=193.5; expected=193.5
+OK: audit03.annotation.p1.mm.Inside.dimension.end; actual=480.; expected=480.
+OK: audit03.annotation.p1.mm.Inside.font; actual=12.9; expected=12.9
+OK: audit03.annotation.p1.mm.Inside.textPlacement; actual=199.95; expected=199.95
+OK: audit03.annotation.p1.mm.Inside.rebarPlacement; actual=242.95; expected=242.95
+OK: audit03.annotation.p1.mm.Inside.black
+OK: audit03.annotation.p1.mm.Inside.extensionColor
+OK: audit03.annotation.p1.mm.Inside.lineWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p1.mm.Inside.extensionWeight; actual=0.75; expected=0.75
+OK: audit03.annotation.p1.mm.Inside.rebarWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p1.mm.Inside.rebarFont; actual=12.9; expected=12.9
+OK: audit03.annotation.p1.mm.Inside.arrows
+OK: audit03.annotation.p1.pt.Outside.count
+OK: audit03.annotation.p1.pt.Outside.dimension.x; actual=160.; expected=160.
+OK: audit03.annotation.p1.pt.Outside.dimension.y; actual=193.5; expected=193.5
+OK: audit03.annotation.p1.pt.Outside.dimension.end; actual=480.; expected=480.
+OK: audit03.annotation.p1.pt.Outside.font; actual=6.; expected=6.
+OK: audit03.annotation.p1.pt.Outside.textPlacement; actual=190.5; expected=190.5
+OK: audit03.annotation.p1.pt.Outside.rebarPlacement; actual=190.5; expected=190.5
+OK: audit03.annotation.p1.pt.Outside.black
+OK: audit03.annotation.p1.pt.Outside.extensionColor
+OK: audit03.annotation.p1.pt.Outside.lineWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p1.pt.Outside.extensionWeight; actual=0.75; expected=0.75
+OK: audit03.annotation.p1.pt.Outside.rebarWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p1.pt.Outside.rebarFont; actual=6.; expected=6.
+OK: audit03.annotation.p1.pt.Outside.arrows
+OK: audit03.annotation.p1.pt.Inside.count
+OK: audit03.annotation.p1.pt.Inside.dimension.x; actual=160.; expected=160.
+OK: audit03.annotation.p1.pt.Inside.dimension.y; actual=193.5; expected=193.5
+OK: audit03.annotation.p1.pt.Inside.dimension.end; actual=480.; expected=480.
+OK: audit03.annotation.p1.pt.Inside.font; actual=6.; expected=6.
+OK: audit03.annotation.p1.pt.Inside.textPlacement; actual=196.5; expected=196.5
+OK: audit03.annotation.p1.pt.Inside.rebarPlacement; actual=239.5; expected=239.5
+OK: audit03.annotation.p1.pt.Inside.black
+OK: audit03.annotation.p1.pt.Inside.extensionColor
+OK: audit03.annotation.p1.pt.Inside.lineWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p1.pt.Inside.extensionWeight; actual=0.75; expected=0.75
+OK: audit03.annotation.p1.pt.Inside.rebarWeight; actual=1.5; expected=1.5
+OK: audit03.annotation.p1.pt.Inside.rebarFont; actual=6.; expected=6.
+OK: audit03.annotation.p1.pt.Inside.arrows
+OK: audit03.annotation.noLeader.p1
+OK: audit03.annotation.groupsOff.p1
+OK: audit03.annotation.noSolve
+ANNOTATION_CASES: variants=206; layoutFixtures=1; equilibriumCases=0
+OK: audit03.generalPlot.enable.p0.mode0.disabled
+OK: audit03.generalPlot.enable.p0.mode0.preserved
+PLOT_DISABLED_ENTRYPOINT: audit03.generalPlot.enable.p0.mode0|
+OK: audit03.generalPlot.enable.p0.mode1.disabled
+OK: audit03.generalPlot.enable.p0.mode1.preserved
+PLOT_DISABLED_ENTRYPOINT: audit03.generalPlot.enable.p0.mode1|
+OK: audit03.generalPlot.enable.invalid.p0.mode0.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p0.mode0.type8.address
+OK: audit03.generalPlot.enable.invalid.p0.mode1.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p0.mode1.type8.address
+OK: audit03.generalPlot.enable.invalid.p0.mode0.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p0.mode0.type8.address
+OK: audit03.generalPlot.enable.invalid.p0.mode1.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p0.mode1.type8.address
+OK: audit03.generalPlot.enable.invalid.p0.mode0.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p0.mode0.type8.address
+OK: audit03.generalPlot.enable.invalid.p0.mode1.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p0.mode1.type8.address
+OK: audit03.generalPlot.enable.invalid.p0.mode0.type10.rejected
+OK: audit03.generalPlot.enable.invalid.p0.mode0.type10.address
+OK: audit03.generalPlot.enable.invalid.p0.mode1.type10.rejected
+OK: audit03.generalPlot.enable.invalid.p0.mode1.type10.address
+OK: audit03.generalPlot.enable.p1.mode0.disabled
+OK: audit03.generalPlot.enable.p1.mode0.preserved
+PLOT_DISABLED_ENTRYPOINT: audit03.generalPlot.enable.p1.mode0|
+OK: audit03.generalPlot.enable.p1.mode1.disabled
+OK: audit03.generalPlot.enable.p1.mode1.preserved
+PLOT_DISABLED_ENTRYPOINT: audit03.generalPlot.enable.p1.mode1|
+OK: audit03.generalPlot.enable.invalid.p1.mode0.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p1.mode0.type8.address
+OK: audit03.generalPlot.enable.invalid.p1.mode1.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p1.mode1.type8.address
+OK: audit03.generalPlot.enable.invalid.p1.mode0.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p1.mode0.type8.address
+OK: audit03.generalPlot.enable.invalid.p1.mode1.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p1.mode1.type8.address
+OK: audit03.generalPlot.enable.invalid.p1.mode0.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p1.mode0.type8.address
+OK: audit03.generalPlot.enable.invalid.p1.mode1.type8.rejected
+OK: audit03.generalPlot.enable.invalid.p1.mode1.type8.address
+OK: audit03.generalPlot.enable.invalid.p1.mode0.type10.rejected
+OK: audit03.generalPlot.enable.invalid.p1.mode0.type10.address
+OK: audit03.generalPlot.enable.invalid.p1.mode1.type10.rejected
+OK: audit03.generalPlot.enable.invalid.p1.mode1.type10.address
+OK: audit03.generalPlot.enable.recovery
+OK: audit03.generalPlot.enable.noSolve
+TOTAL_AUDIT03_GENERAL_PLOT: passed=1409; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a887daa88e44463e8dfcdc3eaca37d81\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03GeneralPlotTests; 2026-10-04T11:03:25
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True
