@@ -310,9 +310,11 @@ Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCas
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
 
-    Dim rowOffset As Long
-    For rowOffset = 11 To 1000
-        If StrComp(Trim$(SafeText(anchor.Offset(rowOffset, 0).Value2)), loadCase, vbTextCompare) = 0 Then
+    Dim rowOffset As Long, combinationID As String
+    For rowOffset = 11 To anchor.Worksheet.Rows.Count - anchor.Row
+        combinationID = Trim$(SafeText(anchor.Offset(rowOffset, 0).Value2))
+        If Len(combinationID) = 0 Then Exit For
+        If StrComp(combinationID, loadCase, vbTextCompare) = 0 Then
             ReadBatchSummaryComment = Trim$(SafeText(anchor.Offset(rowOffset, 1).Value2))
             Exit Function
         End If
@@ -416,6 +418,8 @@ End Sub
 ' rngNDMSectionGeometry хранит координаты и площади один раз, а
 ' rngNDMElementResults хранит Stress/Strain/PhysicalState по LoadCase.
 Private Sub ReadGeometryAndResults(ByVal workbook As Object)
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
     Dim geom As Variant
     geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
@@ -470,11 +474,11 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
         Dim elementID As String
         elementID = Trim$(CStr(geom(rowIndex, colID)))
         If Len(elementID) > 0 And resultMap.Exists(elementID) Then
-            AppendElement elementID, CStr(geom(rowIndex, colType)), OutputLengthToInternalByUnit(CDbl(geom(rowIndex, colX)), lengthUnit), _
-                OutputLengthToInternalByUnit(CDbl(geom(rowIndex, colY)), lengthUnit), OutputAreaToInternalByUnit(CDbl(geom(rowIndex, colArea)), areaUnit), _
-                OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colDiameter)), lengthUnit), CStr(geom(rowIndex, colShape)), _
-                OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colWidth)), lengthUnit), OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colHeight)), lengthUnit), _
-                SafeDouble(geom(rowIndex, colRotation)), resultMap(elementID)
+            AppendElement elementID, CStr(geom(rowIndex, colType)), OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colX), lengthUnit), _
+                OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colY), lengthUnit), OutputAreaToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colArea), areaUnit), _
+                OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colDiameter, StrComp(CStr(geom(rowIndex, colType)), "Concrete", vbTextCompare) = 0), lengthUnit), CStr(geom(rowIndex, colShape)), _
+                OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colWidth, True), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colHeight, True), lengthUnit), _
+                ReadGeometryNumber(geom, anchor, rowIndex, colRotation, True), resultMap(elementID)
         End If
     Next rowIndex
 End Sub
@@ -483,6 +487,8 @@ End Sub
 ' с нейтральным состоянием. Этот режим используется для AutoCAD-preview и для
 ' схемы без выбранного StateType, если геометрия уже есть в Results.
 Private Sub ReadGeometryPreview(ByVal workbook As Object)
+    Dim anchor As Object
+    Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
     Dim geom As Variant
     geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
@@ -509,14 +515,39 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
         Dim elementID As String
         elementID = Trim$(CStr(geom(rowIndex, colID)))
         If Len(elementID) > 0 Then
-            AppendElement elementID, CStr(geom(rowIndex, colType)), OutputLengthToInternalByUnit(CDbl(geom(rowIndex, colX)), lengthUnit), _
-                OutputLengthToInternalByUnit(CDbl(geom(rowIndex, colY)), lengthUnit), OutputAreaToInternalByUnit(CDbl(geom(rowIndex, colArea)), areaUnit), _
-                OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colDiameter)), lengthUnit), CStr(geom(rowIndex, colShape)), _
-                OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colWidth)), lengthUnit), OutputLengthToInternalByUnit(SafeDouble(geom(rowIndex, colHeight)), lengthUnit), _
-                SafeDouble(geom(rowIndex, colRotation)), neutralResult
+            AppendElement elementID, CStr(geom(rowIndex, colType)), OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colX), lengthUnit), _
+                OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colY), lengthUnit), OutputAreaToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colArea), areaUnit), _
+                OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colDiameter, StrComp(CStr(geom(rowIndex, colType)), "Concrete", vbTextCompare) = 0), lengthUnit), CStr(geom(rowIndex, colShape)), _
+                OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colWidth, True), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colHeight, True), lengthUnit), _
+                ReadGeometryNumber(geom, anchor, rowIndex, colRotation, True), neutralResult
         End If
     Next rowIndex
 End Sub
+
+' Проверяет численную геометрию до добавления элемента схемы. Пустой диаметр
+' бетона и отсутствующая оболочка допустимы; поврежденные ячейки не скрываются
+' как нулевые координаты/размеры. Адрес берется от текущего Results-якоря.
+Private Function ReadGeometryNumber(ByRef data As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, Optional ByVal allowBlank As Boolean = False) As Double
+    Dim value As Variant
+    value = data(row, column)
+    If IsError(value) Or IsNull(value) Then GoTo InvalidNumber
+    If VarType(value) = vbBoolean Or VarType(value) = vbDate Then GoTo InvalidNumber
+    If Len(Trim$(CStr(value))) = 0 Then
+        If allowBlank Then Exit Function
+        GoTo InvalidNumber
+    End If
+    If Not IsNumeric(value) Then GoTo InvalidNumber
+    On Error GoTo InvalidNumber
+    ReadGeometryNumber = CDbl(value)
+    Exit Function
+InvalidNumber:
+    Err.Raise vbObjectError + 4719, "CSectionPlotDataReader", _
+        "В сохраненной геометрии Results поле " & ResultHeaderBase(CStr(data(1, column))) & _
+        " содержит нечисловое значение: " & anchor.Worksheet.Name & "!" & _
+        anchor.Offset(row - 1, column - 1).Address(False, False) & _
+        ". Повторите импорт геометрии или расчет, чтобы восстановить корректный снимок."
+End Function
 
 ' Добавляет элемент схемы во внутренние массивы reader-а. Значение результата
 ' выбирается по текущему режиму визуализации: Stress или Strain.
@@ -670,6 +701,7 @@ Private Sub ResetReaderState()
     mLoadCaseComment = vbNullString
     mProfileId = vbNullString
     mStateType = vbNullString
+    mProfileCrackWidthEnabled = False
     mResultUnit = vbNullString
     mResultCaption = vbNullString
     mResultPrecision = 1
@@ -732,8 +764,10 @@ End Function
 
 ' Определяет ширину таблицы по непрерывной строке заголовков от якоря.
 Private Function AnchoredColumnCount(ByVal anchor As Object) As Long
-    Dim colOffset As Long
-    For colOffset = 0 To 255
+    Dim colOffset As Long, lastOffset As Long
+    lastOffset = anchor.Worksheet.Columns.Count - anchor.Column
+    If lastOffset > 255 Then lastOffset = 255
+    For colOffset = 0 To lastOffset
         If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
         AnchoredColumnCount = AnchoredColumnCount + 1
     Next colOffset
@@ -743,7 +777,7 @@ End Function
 ' конец данных; это соответствует формату всех Results-диапазонов.
 Private Function AnchoredRowCount(ByVal anchor As Object) As Long
     Dim rowOffset As Long
-    For rowOffset = 0 To 1048575 - anchor.Row
+    For rowOffset = 0 To anchor.Worksheet.Rows.Count - anchor.Row
         If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
         AnchoredRowCount = AnchoredRowCount + 1
     Next rowOffset

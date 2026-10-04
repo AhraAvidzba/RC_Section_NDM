@@ -1,5 +1,106 @@
 # Audit03: Комментарии К Актуальному Коду
 
+## Дополнение v204: Result-Owners И Рабочие Точки Диаграмм
+
+Во время замороженного full gate дополнительно полностью прочитаны
+CCrackResult, CCrackFormationResult, CCrackWidthResult, CCapacityResult,
+CStabilityResult, CMaterialDiagram и CPlotAnnotationLayout. У Plotter прочитаны
+вход Draw, предварительная валидация, оформление/overlay, margin, оси,
+форматирование и округление; остальные его методы этим чтением не приняты.
+
+- Crack aggregate собирает причины только из собственных leaf-meta в порядке
+  Formation/Current/Width/Longitudinal. Текстовое сравнение применяется к
+  дедупликации комментария, не к выбору статуса. Общий приоритет берется из
+  CResultStatusPolicy; все leaf-meta выдаются копиями.
+- Formation отличает подтвержденный NotCracked от отсутствующей точки:
+  успешный `CRITERION_NOT_REACHED` допускается без Pre/Post, а failed/search-bound
+  не считается доказанным отсутствием трещины. Freeze закрывает named-states;
+  SearchResult выдается отдельным контейнером, без копирования волокон.
+- Width сохраняет формульные числа и не запускает State solve. Пустой
+  calculator используется существующими orchestration/factory callers для
+  uncalculated meta. Само чтение такого API не является доказательством
+  пользовательского дефекта; допустимые factory callers проверены отдельно.
+- Capacity разделяет найденную точку и диагностическую пробу: vector,
+  utilization и CapacityState получают данные только при HasLimitPoint.
+  Ранние результаты сбрасывают прежние численные поля; meta/search выдаются
+  копиями. Крайняя арифметика модуля момента еще требует directed проверки.
+- StabilityResult хранит готовые числа и meta, без повторения формул СП.
+  SummaryReserve использует готовые применимые плоскости и завершенный статус.
+
+Конкретные D01-правки включены в следующий срез, а не объявлены выполненными:
+
+1. Комментарии `CMaterialDiagram.UltimateCompressionStrain/UltimateTensionStrain`
+   называют возвращаемое значение крайней точкой диаграммы, хотя код возвращает
+   физический предел, независимо от auxiliary extension. Убрать историческую
+   ссылку на удаленные Capacity.*Limit и объяснить настоящий контракт.
+2. `PointCount/PointStrain/PointStress` стоят под `ДЛЯ ТЕСТОВ`, но реально нужны
+   CNDMResultsWriter, CStateGuessBuilder и CMaterialModelProvider. Перенести
+   рабочий read-only API выше test constructors и исправить ложную подпись.
+   У четырех shortcut constructors оставить test-раздел и собственные комментарии.
+3. Подпись Freeze в WidthResult/StabilityResult говорит об общих named-states,
+   которых в этих классах нет. Комментарий должен описывать запрет fill/reset
+   именно их численного снимка, а не копировать пояснение Formation/Capacity.
+4. `GetStress` описать как действующий контракт материала, а не исторически
+   совместимое имя. Пояснение выбора правой касательной в FindSegmentIndex
+   сохранить по численному смыслу, без слов о прежней/новой реализации.
+
+В census v199 число MissingMethodComment=966 включает очевидные accessors:
+например 50 однооперационных getter-ов CSectionPlotDataReader. Это список
+кандидатов для смыслового разбора, не 966 подтвержденных нарушений. Не добавлять
+формальные комментарии каждой такой строке ради уменьшения метрики.
+
+Geometry snapshot directed v204 `1111/0`, actual export/source `105/105`;
+точные контрпримеры и ограничения описаны в
+`NDM_Audit03_Geometry_Snapshot_Review.md`. Full Off/On `78245/0` и `78256/0`,
+общие численные assertions с v199 совпали точно; structure/format/reopen gates
+данного среза завершены. Это не blanket D01/F07 acceptance.
+
+## Продолжение v204: Полный Plotter И Локальная Карта Вызовов
+
+После приведенной выше выборки прочитан весь CSectionPlotter, включая
+bucket-series, контур/нейтральную линию, reference bands, clipping,
+model-to-chart mapper и численные helpers. Это semantic reading,
+не runtime acceptance всех переключателей схемы.
+
+- Обе ветви геометрии используют сохраненный Results и один mapper;
+  bucket-series при Count > 5000 не заменяют численные значения Results.
+  Цвет зависит от PhysicalState, а не от пользовательского знака напряжений.
+- ConfigureEqualScale сохраняет одинаковый масштаб координат X/Y;
+  размеры аннотаций проходятся только для включенных групп. Повторные GetDouble
+  в AnnotationMargin не являются отдельным доказанным fallback-дефектом:
+  активные параметры ранее проверяет CPlotAnnotationLayout.
+- Draw удаляет только служебные Shapes со своим префиксом. Недоступный ZOrder
+  и декоративные Excel properties не меняют расчетный статус; допустимые
+  On Error Resume Next здесь нельзя автоматически объявлять дефектом F07.
+
+В следующем цельном срезе нужны directed negative/positive проверки:
+
+1. NeutralLine/LoadApplicationPoint/Contour/ResultLabels/Legend и
+   ResultLabelSpacing еще читаются через мягкие GetBoolean/GetDouble.
+   Проверить реальное активное влияние, ошибку с текущим адресом,
+   выключенные/geometry-only группы и сохранность прежней схемы при отказе.
+2. PlotPrincipalAxesMode читает пустой canonical selector через default и
+   рабочий alias PrincipalAxesEnabled. Проверить Config/migration contract
+   до удаления alias; не считать его нужным только по наличию метода.
+3. RoundToLong использует CLng(value + 0.5); нужно проверить actual VBA
+   и series/цветовые ступени на целых и полуцелых значениях. Исторические
+   численные expected не менять по одному предположению о rounding.
+4. ParseInvariantDouble при отказе CDbl принимает Val-prefix. Поврежденный
+   semantic sweep должен проверяться через настоящий reader/Draw/export,
+   с field/address/action, без выдуманного нового геометрического допущения.
+5. Очень маленький spacing и большие численные snapshot-поля требуют
+   проверки конечности выполнения/Long и Double arithmetic. Нельзя принимать
+   raw Overflow или бесконечный цикл за допустимый пользовательский результат.
+
+Локальная карта вызовов src/tests/tools не нашла вызывающих root-методов
+AddBoundaryEdge, CollectRectLineInterval, DrawLineIntervals,
+CollectRectLineIntersections, DrawModelRectangle и DrawPoint. Их private
+зависимости EdgeKey/FormatNumberInvariant/RoundTo, intersection helpers и
+SortIntervals/SwapDouble образуют недостижимые ветви. Удаление запланировано
+после frozen gate; этой записью удаление не заявляется. Публичный IsPointInside
+в ISectionGeometry и четырех implementers тоже не имеет проектных consumers;
+перед удалением необходимо согласованно обновить интерфейс и реализации.
+
 ## Содержательное Чтение Малых Владельцев v185
 
 Полностью прочитаны тела и соседние предусловия CSectionModelBuilder,

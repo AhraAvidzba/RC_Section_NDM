@@ -35,6 +35,7 @@ Private Const EXTENSION_WARNING_LAYER As String = "RC_NDM_Warnings"
 Private Const DEFAULT_CONTOUR_LAYER As String = "RC_NDM_Contour"
 Private Const CONTOUR_LAYER_COLOR_INDEX As Long = 4 ' AutoCAD ColorIndex 4 - голубой/cyan для нового слоя параметрического контура.
 Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001
+Private mSnapshotUnits As CUnitSystem ' Пересчет по явным единицам Results; не загружается из текущего Config.
 
 ' Экспортирует выбранное сохраненное НДС и его оформление в активный чертеж.
 ' Читает Results, профиль отображения и единицы; решатель не вызывается,
@@ -251,15 +252,15 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     For rowIndex = 2 To UBound(data, 1)
         If Len(Trim$(CStr(data(rowIndex, colID)))) > 0 Then
             If StrComp(CStr(data(rowIndex, colType)), "Concrete", vbTextCompare) = 0 Then
-                model.AddConcreteElement OutputLengthToInternalByUnit(CDbl(data(rowIndex, colX)), lengthUnit), OutputLengthToInternalByUnit(CDbl(data(rowIndex, colY)), lengthUnit), _
-                    OutputAreaToInternalByUnit(CDbl(data(rowIndex, colArea)), areaUnit), 1, vbNullString, vbNullString, _
-                    CStr(data(rowIndex, colShape)), OutputLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colWidth)))), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colHeight)))), lengthUnit), CDbl(Val(CStr(data(rowIndex, colRotation)))), _
-                    CStr(data(rowIndex, colComment)), OutputFourthPowerLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colLocalIx)))), fourthUnit), _
-                    OutputFourthPowerLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colLocalIy)))), fourthUnit), OutputFourthPowerLengthToInternalByUnit(CDbl(Val(CStr(data(rowIndex, colLocalIxy)))), fourthUnit)
+                model.AddConcreteElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colX), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colY), lengthUnit), _
+                    OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), 1, vbNullString, vbNullString, _
+                    CStr(data(rowIndex, colShape)), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colWidth, True), lengthUnit), _
+                    OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colHeight, True), lengthUnit), ReadGeometryNumber(data, anchor, rowIndex, colRotation, True), _
+                    CStr(data(rowIndex, colComment)), OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIx, True), fourthUnit), _
+                    OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIy, True), fourthUnit), OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIxy, True), fourthUnit)
             ElseIf StrComp(CStr(data(rowIndex, colType)), "Rebar", vbTextCompare) = 0 Then
-                model.AddRebarElement OutputLengthToInternalByUnit(CDbl(data(rowIndex, colX)), lengthUnit), OutputLengthToInternalByUnit(CDbl(data(rowIndex, colY)), lengthUnit), _
-                    OutputLengthToInternalByUnit(CDbl(data(rowIndex, colDiameter)), lengthUnit), OutputAreaToInternalByUnit(CDbl(data(rowIndex, colArea)), areaUnit), _
+                model.AddRebarElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colX), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colY), lengthUnit), _
+                    OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colDiameter), lengthUnit), OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), _
                     vbNullString, 1, vbNullString, _
                     vbNullString, CStr(data(rowIndex, colComment))
             End If
@@ -510,6 +511,32 @@ Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal 
     End If
 End Function
 
+' Читает численное поле готовой геометрии. Только разрешенная пустота означает
+' отсутствие оболочки/локальной инерции; обязательные координаты/A/диаметр,
+' текстовый префикс, Boolean и ошибка формулы не превращаются в ноль/число.
+' Диагностика указывает фактическую ячейку даже после переноса таблицы.
+Private Function ReadGeometryNumber(ByRef data As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, Optional ByVal allowBlank As Boolean = False) As Double
+    Dim value As Variant
+    value = data(row, column)
+    If IsError(value) Or IsNull(value) Then GoTo InvalidNumber
+    If VarType(value) = vbBoolean Or VarType(value) = vbDate Then GoTo InvalidNumber
+    If Len(Trim$(CStr(value))) = 0 Then
+        If allowBlank Then Exit Function
+        GoTo InvalidNumber
+    End If
+    If Not IsNumeric(value) Then GoTo InvalidNumber
+    On Error GoTo InvalidNumber
+    ReadGeometryNumber = CDbl(value)
+    Exit Function
+InvalidNumber:
+    Err.Raise vbObjectError + 4367, "ReadSectionGeometryFromResults", _
+        "В сохраненной геометрии Results поле " & ResultHeaderBase(CStr(data(1, column))) & _
+        " содержит нечисловое значение: " & anchor.Worksheet.Name & "!" & _
+        anchor.Offset(row - 1, column - 1).Address(False, False) & _
+        ". Повторите импорт геометрии или расчет, чтобы восстановить корректный снимок."
+End Function
+
 ' Определяет принадлежность named-state к трещинам для сообщения экспорта.
 ' Неизвестное имя не получает ложный crack-specific совет.
 Private Function IsCrackExportState(ByVal stateType As String) As Boolean
@@ -566,20 +593,6 @@ Private Function SafeBoolean(ByVal value As Variant) As Boolean
         Case "true", "yes", "да", "1"
             SafeBoolean = True
     End Select
-End Function
-
-' Переводит три вида сохраненных геометрических величин через CUnitSystem.
-' Без адаптера вход считается уже внутренним; это контракт вспомогательного API.
-Private Function OutputLengthToInternal(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    If units Is Nothing Then OutputLengthToInternal = value Else OutputLengthToInternal = units.OutputLengthToInternal(value)
-End Function
-
-Private Function OutputAreaToInternal(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    If units Is Nothing Then OutputAreaToInternal = value Else OutputAreaToInternal = units.OutputAreaToInternal(value)
-End Function
-
-Private Function OutputFourthPowerLengthToInternal(ByVal value As Double, ByVal units As CUnitSystem) As Double
-    If units Is Nothing Then OutputFourthPowerLengthToInternal = value Else OutputFourthPowerLengthToInternal = units.OutputFourthPowerLengthToInternal(value)
 End Function
 
 ' Разрешает Worst через сохраненную сводку/таблицы либо принимает точный LC ID.
@@ -668,15 +681,18 @@ End Function
 ' Геометрический snapshot явно хранит статус интерпретации оболочки.
 ' Допускает ShapeType в сохраненной таблице без GeometryInterpretationStatus.
 Private Function GeometryStatusColumn(ByRef data As Variant) As Long
-    On Error Resume Next
-    GeometryStatusColumn = ResultColumn(data, "GeometryInterpretationStatus")
-    If Err.Number = 0 And GeometryStatusColumn > 0 Then
-        On Error GoTo 0
-        Exit Function
-    End If
-    Err.Clear
-    GeometryStatusColumn = ResultColumn(data, "ShapeType")
-    On Error GoTo 0
+    Dim column As Long, header As String
+    For column = 1 To UBound(data, 2)
+        header = ResultHeaderBase(CStr(data(1, column)))
+        If StrComp(header, "GeometryInterpretationStatus", vbTextCompare) = 0 Or _
+                StrComp(header, "ShapeType", vbTextCompare) = 0 Then
+            GeometryStatusColumn = column
+            Exit Function
+        End If
+    Next column
+    Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
+        "В Results отсутствует столбец GeometryInterpretationStatus или ShapeType. " & _
+        "Повторите импорт геометрии или расчет, чтобы восстановить таблицу."
 End Function
 
 ' Отделяет имя колонки от единиц после запятой, чтобы смена output-единиц
@@ -711,8 +727,10 @@ End Function
 
 ' Определяет ширину таблицы по непрерывной строке заголовков.
 Private Function AnchoredColumnCount(ByVal anchor As Object) As Long
-    Dim colOffset As Long
-    For colOffset = 0 To 255
+    Dim colOffset As Long, lastOffset As Long
+    lastOffset = anchor.Worksheet.Columns.Count - anchor.Column
+    If lastOffset > 255 Then lastOffset = 255
+    For colOffset = 0 To lastOffset
         If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
         AnchoredColumnCount = AnchoredColumnCount + 1
     Next colOffset
@@ -722,7 +740,7 @@ End Function
 ' обязательный RunID/ElementID/AnnotationID в каждой строке данных.
 Private Function AnchoredRowCount(ByVal anchor As Object) As Long
     Dim rowOffset As Long
-    For rowOffset = 0 To 1048575 - anchor.Row
+    For rowOffset = 0 To anchor.Worksheet.Rows.Count - anchor.Row
         If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
         AnchoredRowCount = AnchoredRowCount + 1
     Next rowOffset
@@ -752,12 +770,14 @@ End Function
 
 ' Переводит длину из единицы, сохраненной в Results snapshot, во внутренние мм.
 Private Function OutputLengthToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
-    OutputLengthToInternalByUnit = value * LengthFactorToMmByUnit(unitText)
+    If mSnapshotUnits Is Nothing Then Set mSnapshotUnits = New CUnitSystem
+    OutputLengthToInternalByUnit = mSnapshotUnits.OutputLengthToInternal(value, unitText)
 End Function
 
 ' Переводит площадь из единицы, сохраненной в Results snapshot, во внутренние мм2.
 Private Function OutputAreaToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
-    OutputAreaToInternalByUnit = value * AreaFactorToMm2ByUnit(unitText)
+    If mSnapshotUnits Is Nothing Then Set mSnapshotUnits = New CUnitSystem
+    OutputAreaToInternalByUnit = mSnapshotUnits.OutputAreaToInternal(value, unitText)
 End Function
 
 ' Переводит собственные моменты инерции элемента из snapshot в мм4.
@@ -765,38 +785,16 @@ Private Function OutputFourthPowerLengthToInternalByUnit(ByVal value As Double, 
     Dim baseUnit As String
     baseUnit = Trim$(unitText)
     If Right$(baseUnit, 1) = "4" Then baseUnit = Left$(baseUnit, Len(baseUnit) - 1)
-    OutputFourthPowerLengthToInternalByUnit = value * LengthFactorToMmByUnit(baseUnit) ^ 4
-End Function
-
-' Возвращает масштаб сохраненной длины к миллиметрам. Неизвестная подпись
-' единицы прерывает экспорт, чтобы не построить чертеж с неверным размером.
-Private Function LengthFactorToMmByUnit(ByVal unitText As String) As Double
-    Select Case LCase$(Trim$(unitText))
-        Case "mm": LengthFactorToMmByUnit = 1#
-        Case "cm": LengthFactorToMmByUnit = 10#
-        Case "m": LengthFactorToMmByUnit = 1000#
-        Case Else: Err.Raise vbObjectError + 4362, "LengthFactorToMmByUnit", "В Results неизвестная единица длины: " & unitText
-    End Select
-End Function
-
-' Возвращает масштаб площади snapshot к мм2; принимает только известные
-' единицы площади и не угадывает масштаб по численному значению.
-Private Function AreaFactorToMm2ByUnit(ByVal unitText As String) As Double
-    Select Case LCase$(Trim$(unitText))
-        Case "mm2": AreaFactorToMm2ByUnit = 1#
-        Case "cm2": AreaFactorToMm2ByUnit = 100#
-        Case "m2": AreaFactorToMm2ByUnit = 1000000#
-        Case Else: Err.Raise vbObjectError + 4363, "AreaFactorToMm2ByUnit", "В Results неизвестная единица площади: " & unitText
-    End Select
+    If mSnapshotUnits Is Nothing Then Set mSnapshotUnits = New CUnitSystem
+    OutputFourthPowerLengthToInternalByUnit = mSnapshotUnits.OutputFourthPowerLengthToInternal(value, baseUnit)
 End Function
 
 ' Переводит кривизну из единицы, сохраненной в Results snapshot, во внутренние 1/мм.
 Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
-    Select Case LCase$(Trim$(unitText))
-        Case "1/mm": OutputCurvatureToInternalByUnit = value
-        Case "1/m": OutputCurvatureToInternalByUnit = value / 1000#
-        Case Else: Err.Raise vbObjectError + 4364, "OutputCurvatureToInternalByUnit", "В Results неизвестная единица кривизны: " & unitText
-    End Select
+    If Len(Trim$(unitText)) = 0 Then Err.Raise vbObjectError + 4364, "OutputCurvatureToInternalByUnit", _
+        "В Results не указана единица кривизны. Повторите расчет, чтобы восстановить снимок."
+    If mSnapshotUnits Is Nothing Then Set mSnapshotUnits = New CUnitSystem
+    OutputCurvatureToInternalByUnit = value / mSnapshotUnits.InternalCurvatureToOutput(1#, unitText)
 End Function
 
 ' Строит геометрию, подписи, оси и нулевую линию по готовому Results snapshot
@@ -1811,45 +1809,6 @@ Private Function ResultAnnotationLayerByPhysicalState(ByVal materialType As Stri
             ResultAnnotationLayerByPhysicalState = exportSettings.ConcreteCompressionLayer
         End If
     End If
-End Function
-
-' Читает обязательные численные N/Mx/My первой непустой строки таблицы.
-' Возвращает исходные пользовательские числа без пересчета единиц; этот
-' служебный вход не является повторным расчетом сохраненного Results state.
-Private Sub ReadFirstExportLoad(ByVal workbook As Object, ByRef nValue As Double, ByRef mxValue As Double, ByRef myValue As Double)
-    Dim source As Object
-    Set source = workbook.Names.Item("rngLoadCombinations").RefersToRange
-    Dim data As Variant
-    data = source.Value2
-
-    Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1)
-        If Not IsExportEmptyRow(data, rowIndex, UBound(data, 2)) Then
-            nValue = ReadExportRequiredDouble(data(rowIndex, 2), "N")
-            mxValue = ReadExportRequiredDouble(data(rowIndex, 3), "Mx")
-            myValue = ReadExportRequiredDouble(data(rowIndex, 4), "My")
-            Exit Sub
-        End If
-    Next rowIndex
-    Err.Raise vbObjectError + 4320, "ReadFirstExportLoad", "Не задано ни одного сочетания нагрузок."
-End Sub
-
-' Различает полностью пустую строку и строку с любым заданным значением.
-' Численный ноль не пропускается как отсутствие исходной нагрузки.
-Private Function IsExportEmptyRow(ByRef data As Variant, ByVal rowIndex As Long, ByVal columnCount As Long) As Boolean
-    Dim col As Long
-    For col = 1 To columnCount
-        If Len(Trim$(CStr(data(rowIndex, col)))) > 0 Then Exit Function
-    Next col
-    IsExportEmptyRow = True
-End Function
-
-' Возвращает обязательное число с отдельным сообщением для пустого поля
-' и нечислового значения; не подставляет ноль при ошибке ввода.
-Private Function ReadExportRequiredDouble(ByVal value As Variant, ByVal fieldName As String) As Double
-    If Len(Trim$(CStr(value))) = 0 Then Err.Raise vbObjectError + 4330, "ReadExportRequiredDouble", fieldName & " не заполнен."
-    If Not IsNumeric(value) Then Err.Raise vbObjectError + 4331, "ReadExportRequiredDouble", fieldName & " должен быть числом."
-    ReadExportRequiredDouble = CDbl(value)
 End Function
 
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double

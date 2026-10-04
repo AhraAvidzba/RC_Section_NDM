@@ -141,6 +141,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADImporterTreatsDrawingUnitsAsMillimeters stats
     TestAudit03InputAreaImportFilter stats
     TestAudit03ImportedSnapshotUnitChanges stats
+    TestAudit03GeometrySnapshotContract stats
     AppendLine stats, "RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions"
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
@@ -6831,6 +6832,262 @@ Restore:
     If Not target Is Nothing Then target.Formula = savedSettings
     If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
     On Error GoTo 0
+End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: ВОССТАНОВЛЕНИЕ ГЕОМЕТРИИ ====================
+
+' Проверяет публичное восстановление модели и reader схемы без AutoCAD/solve.
+' Временная книга содержит только заданные численные snapshots и закрывается
+' без сохранения; корректность размеров и инерций проверяется независимо.
+Public Function RunAudit03GeometrySnapshotTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03GeometrySnapshotContract stats
+    AppendLine stats, "TOTAL_AUDIT03_GEOMETRY_SNAPSHOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03GeometrySnapshotTests = stats.Report
+End Function
+
+' Проверяет дробные числа, mm/cm/m, поврежденные поля, перенос к последней
+' строке листа и комментарий LC за прежней границей 1000. Текущий Config не
+' может менять физическую геометрию, уже сохраненную с собственной размерностью.
+Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
+    Dim fixture As Object, sheet As Object, anchor As Object, properties As Object, source As Object
+    Dim data As Variant, prop(1 To 3, 1 To 4) As Variant, configuration(1 To 2, 1 To 3) As Variant
+    Dim results(1 To 3, 1 To 7) As Variant, operation As Variant
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, model As CSectionModel
+    Dim unitIndex As Long, position As Long, field As Variant, badValue As Variant, prefix As String, badIndex As Long
+    Dim units As Variant, factors As Variant, fields As Variant, badValues As Variant
+    Dim errorNumber As Long, description As String, solveCount As Long, row As Long, fieldName As Variant, cases As Long
+    Dim summary(1 To 1005, 1 To 2) As Variant, comments As Object, before As Variant, actual As Variant
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167)
+    Set sheet = fixture.Worksheets(1): sheet.Name = "Snapshot"
+    Set anchor = sheet.Range("A5")
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Snapshot!" & anchor.Address
+    Set properties = sheet.Range("R5")
+    prop(1, 1) = "LoadCase": prop(1, 2) = "Parameter": prop(1, 3) = "Value": prop(1, 4) = "Unit"
+    prop(2, 1) = "ALL": prop(2, 2) = "Bounds.MaxX": prop(2, 3) = 100#: prop(2, 4) = "mm"
+    prop(3, 1) = "LATE": prop(3, 2) = "ProfileId": prop(3, 3) = "PR1": prop(3, 4) = "-"
+    properties.Resize(3, 4).Value2 = prop
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Snapshot!" & properties.Address
+    configuration(1, 1) = "Параметр": configuration(1, 2) = "Значение": configuration(1, 3) = "Комментарий"
+    configuration(2, 1) = "Plot.LoadCase": configuration(2, 2) = "LATE"
+    sheet.Range("AO5").Resize(2, 3).Value2 = configuration
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("AO5").Resize(2, 3)
+    Set reader = New CSectionPlotDataReader
+    Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    sheet.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Value2 = source.Value2
+    For row = 2 To source.Rows.Count
+        If CStr(source.Cells(row, 2).Value2) = "Visualization.State" Then sheet.Range("AF5").Cells(row, 3).Value2 = "StrengthState"
+        If CStr(source.Cells(row, 2).Value2) = "Visualization.Quantity" Then sheet.Range("AF5").Cells(row, 3).Value2 = "Stress"
+    Next row
+    fixture.Names.Add Name:="rngCalculationProfiles", RefersTo:="=Snapshot!" & sheet.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Address
+    results(1, 1) = "LoadCase": results(1, 2) = "ProfileId": results(1, 3) = "StateType": results(1, 4) = "ElementID"
+    results(1, 5) = "Strain": results(1, 6) = "Stress, MPa": results(1, 7) = "PhysicalState"
+    results(2, 1) = "LATE": results(2, 2) = "PR1": results(2, 3) = "StrengthState": results(2, 4) = "C1"
+    results(2, 5) = -0.0001: results(2, 6) = -1.25: results(2, 7) = "Compression"
+    results(3, 1) = "LATE": results(3, 2) = "PR1": results(3, 3) = "StrengthState": results(3, 4) = "R1"
+    results(3, 5) = 0.000015: results(3, 6) = 2.75: results(3, 7) = "Tension"
+    sheet.Range("R15").Resize(3, 7).Value2 = results
+    fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Snapshot!$R$15"
+    units = Array("mm", "cm", "m"): factors = Array(1#, 10#, 1000#)
+    For position = 0 To 1
+        If position = 0 Then Set anchor = sheet.Range("A5") Else Set anchor = sheet.Cells(sheet.Rows.Count - 2, 1)
+        fixture.Names.Item("rngNDMSectionGeometry").RefersTo = "=Snapshot!" & anchor.Address
+        For unitIndex = 0 To 2
+            cases = cases + 1
+            data = Audit03GeometrySnapshotArray(CStr(units(unitIndex)), CDbl(factors(unitIndex)))
+            anchor.Resize(3, 15).Value2 = data
+            prefix = "audit03.geometrySnapshot." & CStr(units(unitIndex)) & ".position" & CStr(position)
+            Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
+            Audit03CheckRestoredGeometry stats, prefix & ".model", model
+            reader.LoadGeometryPreviewFromWorkbook fixture, settings
+            AssertTrue stats, prefix & ".plot.count", reader.Count = 2
+            If reader.Count = 2 Then
+                AssertClose stats, prefix & ".plot.width", reader.Width(1), 123.75, 0.000000001
+                AssertClose stats, prefix & ".plot.height", reader.Height(1), 87.5, 0.000000001
+                AssertClose stats, prefix & ".plot.rotation", reader.Rotation(1), 0.3125, 0.000000001
+                AssertClose stats, prefix & ".plot.rebarDiameter", reader.Diameter(2), 12.25, 0.000000001
+            End If
+            reader.LoadFromWorkbook fixture, settings
+            AssertTrue stats, prefix & ".state.count", reader.Count = 2
+            If reader.Count = 2 Then
+                AssertClose stats, prefix & ".state.concreteStress", reader.ResultValue(1), -1.25, 0#
+                AssertClose stats, prefix & ".state.rebarStress", reader.ResultValue(2), 2.75, 0#
+            End If
+        Next unitIndex
+    Next position
+    Set anchor = sheet.Range("A5")
+    fixture.Names.Item("rngNDMSectionGeometry").RefersTo = "=Snapshot!" & anchor.Address
+    data = Audit03GeometrySnapshotArray("mm", 1#)
+    fields = Array(3, 4, 5, 8, 9, 10, 11, 12, 13, 14)
+    badValues = Array("12oops", "abc", CVErr(2015), True)
+    For Each field In fields
+        If CLng(field) = 10 Then row = 2 Else row = 1
+        For badIndex = 0 To UBound(badValues)
+            cases = cases + 1
+            badValue = badValues(badIndex)
+            anchor.Resize(3, 15).Value2 = data
+            anchor.Offset(row, CLng(field) - 1).Value2 = badValue
+            prefix = "audit03.geometrySnapshot.invalid." & CStr(data(1, CLng(field))) & "." & CStr(badIndex)
+            fieldName = Split(CStr(data(1, CLng(field))), ",")
+            Audit03CaptureGeometrySnapshotError fixture, errorNumber, description
+            AssertTrue stats, prefix & ".rejected", errorNumber <> 0
+            AssertTrue stats, prefix & ".field", InStr(1, description, CStr(fieldName(0)), vbTextCompare) > 0
+            AssertTrue stats, prefix & ".address", InStr(1, description, "Snapshot!" & anchor.Offset(row, CLng(field) - 1).Address(False, False), vbTextCompare) > 0
+            AssertTrue stats, prefix & ".action", InStr(1, description, "Повторите", vbTextCompare) > 0
+            If CLng(field) < 12 Then
+                For Each operation In Array("Preview", "State")
+                    Audit03CapturePlotGeometryError fixture, settings, reader, errorNumber, description, CStr(operation) = "State"
+                    AssertTrue stats, prefix & ".plot." & CStr(operation) & ".rejected", errorNumber <> 0
+                    AssertTrue stats, prefix & ".plot." & CStr(operation) & ".field", InStr(1, description, CStr(fieldName(0)), vbTextCompare) > 0
+                    AssertTrue stats, prefix & ".plot." & CStr(operation) & ".address", InStr(1, description, "Snapshot!" & anchor.Offset(row, CLng(field) - 1).Address(False, False), vbTextCompare) > 0
+                    AssertTrue stats, prefix & ".plot." & CStr(operation) & ".action", InStr(1, description, "Повторите", vbTextCompare) > 0
+                Next operation
+            End If
+            anchor.Resize(3, 15).Value2 = data
+            Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
+            Audit03CheckRestoredGeometry stats, prefix & ".recovery", model
+        Next badIndex
+    Next field
+    For Each field In Array(3, 4, 5, 10)
+        cases = cases + 1
+        If CLng(field) = 10 Then row = 2 Else row = 1
+        anchor.Resize(3, 15).Value2 = data
+        anchor.Offset(row, CLng(field) - 1).ClearContents
+        prefix = "audit03.geometrySnapshot.requiredBlank." & CStr(data(1, CLng(field)))
+        Audit03CaptureGeometrySnapshotError fixture, errorNumber, description
+        AssertTrue stats, prefix & ".model", errorNumber = vbObjectError + 4367
+        Audit03CapturePlotGeometryError fixture, settings, reader, errorNumber, description
+        AssertTrue stats, prefix & ".preview", errorNumber = vbObjectError + 4719
+        Audit03CapturePlotGeometryError fixture, settings, reader, errorNumber, description, True
+        AssertTrue stats, prefix & ".state", errorNumber = vbObjectError + 4719
+    Next field
+    ' Пустые необязательные размеры/инерции остаются допустимым отсутствием
+    ' геометрической оболочки; это не текст, ошибочно распознанный как число.
+    anchor.Resize(3, 15).Value2 = data
+    cases = cases + 1
+    For Each field In Array(8, 9, 11, 12, 13, 14): anchor.Offset(1, CLng(field) - 1).ClearContents: Next field
+    Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
+    AssertTrue stats, "audit03.geometrySnapshot.optionalBlank", model.ConcreteCount = 1 And model.RebarCount = 1
+    anchor.Resize(3, 15).Value2 = data
+    cases = cases + 1
+    anchor.Offset(1, 7).NumberFormat = "@": anchor.Offset(1, 7).Value2 = "123.75"
+    Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
+    AssertClose stats, "audit03.geometrySnapshot.numericText", model.ConcreteWidth(1), 123.75, 0#
+    anchor.Offset(1, 7).NumberFormat = "General"
+    anchor.Resize(3, 15).Value2 = data
+    cases = cases + 1
+    anchor.Offset(0, 6).Value2 = "WrongShapeHeader"
+    Audit03CaptureGeometrySnapshotError fixture, errorNumber, description
+    AssertTrue stats, "audit03.geometrySnapshot.missingShape.controlled", errorNumber = vbObjectError + 4355
+    AssertTrue stats, "audit03.geometrySnapshot.missingShape.named", InStr(1, description, "GeometryInterpretationStatus", vbTextCompare) > 0
+    anchor.Offset(0, 6).Value2 = "ShapeType"
+    cases = cases + 1
+    Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
+    Audit03CheckRestoredGeometry stats, "audit03.geometrySnapshot.shapeAlias", model
+    anchor.Resize(3, 15).Value2 = data
+    Set comments = sheet.Range("R100")
+    fixture.Names.Add Name:="rngBatchSummary", RefersTo:="=Snapshot!" & comments.Address
+    For row = 1 To 1005
+        summary(row, 1) = "OTHER_" & CStr(row): summary(row, 2) = "Другой комментарий"
+    Next row
+    summary(1005, 1) = "LATE": summary(1005, 2) = "Комментарий позднего сочетания"
+    cases = cases + 1
+    comments.Offset(11, 0).Resize(1005, 2).Value2 = summary
+    before = anchor.Resize(3, 15).Value2
+    reader.LoadGeometryOnlyForMissingState fixture, settings, "Нет расчетного состояния в test fixture"
+    AssertTextEquals stats, "audit03.geometrySnapshot.lateComment", reader.LoadCaseComment, "Комментарий позднего сочетания"
+    actual = anchor.Resize(3, 15).Value2
+    AssertTrue stats, "audit03.geometrySnapshot.unchanged", Audit02SnapshotTablesEqual(before, actual)
+    ' Ширина таблицы тоже должна учитывать реальную границу листа, если
+    ' заголовок последнего поля расположен ровно в последнем столбце Excel.
+    Set anchor = sheet.Cells(5, sheet.Columns.Count - 14)
+    cases = cases + 1
+    fixture.Names.Item("rngNDMSectionGeometry").RefersTo = "=Snapshot!" & anchor.Address
+    anchor.Resize(3, 15).Value2 = data
+    Audit03CaptureGeometrySnapshotError fixture, errorNumber, description
+    AssertTrue stats, "audit03.geometrySnapshot.lastColumn.model", errorNumber = 0
+    Audit03CapturePlotGeometryError fixture, settings, reader, errorNumber, description
+    AssertTrue stats, "audit03.geometrySnapshot.lastColumn.plot", errorNumber = 0
+    AssertTrue stats, "audit03.geometrySnapshot.noSolve", SectionEquilibriumSolveCount() = solveCount
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.geometrySnapshot.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    AppendLine stats, "CASES_GEOMETRY_SNAPSHOT: independentGeometryFixtures=1; inputVariants=" & CStr(cases) & "; equilibriumCases=0"
+End Sub
+
+' Сохраняет ошибку preview через тот же экземпляр reader-а. После исправления
+' fixture этот reader должен загрузить данные заново без прежних элементов.
+Private Sub Audit03CapturePlotGeometryError(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
+        ByVal reader As CSectionPlotDataReader, ByRef number As Long, ByRef description As String, _
+        Optional ByVal readState As Boolean = False)
+    number = 0: description = vbNullString
+    On Error GoTo Failed
+    If readState Then reader.LoadFromWorkbook workbook, settings Else reader.LoadGeometryPreviewFromWorkbook workbook, settings
+    Exit Sub
+Failed:
+    number = Err.Number: description = Err.Description
+    Err.Clear
+End Sub
+
+' Задает дробные параметры для проверки сохранности в трех системах OUTPUT.
+' A и оболочка согласованы, I заданы отдельно для контроля восстановления;
+' это не live Region или инженерный solve. Масштаб fixture независим от reader-а.
+Private Function Audit03GeometrySnapshotArray(ByVal unit As String, ByVal factor As Double) As Variant
+    Dim data(1 To 3, 1 To 15) As Variant, headers As Variant, column As Long
+    headers = Array("ElementID", "MaterialType", "X, " & unit, "Y, " & unit, "Area, " & unit & "2", _
+        "MaterialID", "GeometryInterpretationStatus", "Width, " & unit, "Height, " & unit, _
+        "Diameter, " & unit, "Rotation, rad", "LocalIx, " & unit & "4", "LocalIy, " & unit & "4", "LocalIxy, " & unit & "4", "Comment")
+    For column = 1 To 15: data(1, column) = headers(column - 1): Next column
+    data(2, 1) = "C1": data(2, 2) = "Concrete": data(2, 3) = -23.125 / factor: data(2, 4) = 17.625 / factor
+    data(2, 5) = 10828.125 / factor ^ 2: data(2, 6) = 1: data(2, 7) = "Rectangle"
+    data(2, 8) = 123.75 / factor: data(2, 9) = 87.5 / factor: data(2, 10) = 0#: data(2, 11) = 0.3125
+    data(2, 12) = 654321.125 / factor ^ 4: data(2, 13) = 987654.375 / factor ^ 4: data(2, 14) = -23456.625 / factor ^ 4
+    data(2, 15) = "Дробные параметры Region"
+    data(3, 1) = "R1": data(3, 2) = "Rebar": data(3, 3) = 12.375 / factor: data(3, 4) = -8.125 / factor
+    data(3, 5) = 117.8581 / factor ^ 2: data(3, 6) = 1: data(3, 7) = "Circle": data(3, 10) = 12.25 / factor
+    data(3, 15) = "Дробная арматура"
+    Audit03GeometrySnapshotArray = data
+End Function
+
+' Сверяет расчетные числа модели, включая инерции с ненулевым signed Ixy.
+' Оболочка и площадь имеют разный смысл; сохраненные I не вычисляются заново.
+Private Sub Audit03CheckRestoredGeometry(ByRef stats As TUiTestStats, ByVal prefix As String, ByVal model As CSectionModel)
+    AssertTrue stats, prefix & ".concreteCount", model.ConcreteCount = 1
+    AssertTrue stats, prefix & ".rebarCount", model.RebarCount = 1
+    AssertClose stats, prefix & ".x", model.ConcreteX(1), -23.125, 0.000000001
+    AssertClose stats, prefix & ".y", model.ConcreteY(1), 17.625, 0.000000001
+    AssertClose stats, prefix & ".area", model.ConcreteArea(1), 10828.125, 0.000000001
+    AssertClose stats, prefix & ".width", model.ConcreteWidth(1), 123.75, 0.000000001
+    AssertClose stats, prefix & ".height", model.ConcreteHeight(1), 87.5, 0.000000001
+    AssertClose stats, prefix & ".rotation", model.ConcreteRotation(1), 0.3125, 0.000000001
+    AssertClose stats, prefix & ".ix", model.ConcreteLocalIx(1), 654321.125, 0.000000001
+    AssertClose stats, prefix & ".iy", model.ConcreteLocalIy(1), 987654.375, 0.000000001
+    AssertClose stats, prefix & ".ixy", model.ConcreteLocalIxy(1), -23456.625, 0.000000001
+    If model.RebarCount = 1 Then
+        AssertClose stats, prefix & ".rebarX", model.RebarX(1), 12.375, 0.000000001
+        AssertClose stats, prefix & ".rebarArea", model.RebarArea(1), 117.8581, 0.000000001
+        AssertClose stats, prefix & ".rebarDiameter", model.RebarDiameter(1), 12.25, 0.000000001
+    End If
+End Sub
+
+' Сохраняет фактическую ошибку публичного чтения, не интерпретируя ее текст.
+' Перехват локален test fixture и позволяет проверить recovery после ошибки.
+Private Sub Audit03CaptureGeometrySnapshotError(ByVal workbook As Object, ByRef number As Long, ByRef description As String)
+    Dim model As CSectionModel
+    number = 0: description = vbNullString
+    On Error GoTo Failed
+    Set model = ReadSectionGeometryFromResults(workbook, "AutoCADImport")
+    Exit Sub
+Failed:
+    number = Err.Number: description = Err.Description
+    Err.Clear
 End Sub
 
 

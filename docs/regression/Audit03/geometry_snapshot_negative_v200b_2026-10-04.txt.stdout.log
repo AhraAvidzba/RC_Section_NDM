@@ -1,0 +1,113 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_geometry_snapshot_negative_v200b.xlsm
+SOURCE_SHA256: F4B4F431B030A1329F74E1A7019F0C408E5E3EABCE455E4A5F223A6146C25F5B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8c5109e85d564ccab438f753ffe7f6a4\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.geometrySnapshot.mm.position1.model.rebarCount
+FAIL: audit03.geometrySnapshot.mm.position1.plot.count
+FAIL: audit03.geometrySnapshot.cm.position1.model.rebarCount
+FAIL: audit03.geometrySnapshot.cm.position1.plot.count
+FAIL: audit03.geometrySnapshot.m.position1.model.rebarCount
+FAIL: audit03.geometrySnapshot.m.position1.plot.count
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.0.rejected
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.0.field
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.0.address
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.0.action
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.1.rejected
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.1.field
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.1.address
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.1.action
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.2.rejected
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.2.field
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.2.address
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.2.action
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.3.rejected
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.3.field
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.3.address
+FAIL: audit03.geometrySnapshot.invalid.Width, mm.3.action
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.0.rejected
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.0.field
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.0.address
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.0.action
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.1.rejected
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.1.field
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.1.address
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.1.action
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.2.rejected
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.2.field
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.2.address
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.2.action
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.3.rejected
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.3.field
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.3.address
+FAIL: audit03.geometrySnapshot.invalid.Height, mm.3.action
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.0.rejected
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.0.field
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.0.address
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.0.action
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.1.rejected
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.1.field
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.1.address
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.1.action
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.2.rejected
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.2.field
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.2.address
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.2.action
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.3.rejected
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.3.field
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.3.address
+FAIL: audit03.geometrySnapshot.invalid.Rotation, rad.3.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.0.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.1.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.2.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIx, mm4.3.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.0.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.1.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.2.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIy, mm4.3.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.0.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.1.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.2.action
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.rejected
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.field
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.address
+FAIL: audit03.geometrySnapshot.invalid.LocalIxy, mm4.3.action
+FAIL: audit03.geometrySnapshot.numericText; actual=93.782068111522; expected=125.
+FAIL: audit03.geometrySnapshot.missingShape.controlled
+FAIL: audit03.geometrySnapshot.missingShape.named
+FAIL: audit03.geometrySnapshot.lateComment; actual=; expected=Комментарий позднего сочетания
+TOTAL_AUDIT03_GEOMETRY_SNAPSHOT: passed=440; failed=106
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

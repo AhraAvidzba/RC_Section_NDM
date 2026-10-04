@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_geometry_snapshot_v203.xlsm
+SOURCE_SHA256: D7AB07340546231CF6C85793F93A95BCB317A93FF14230A01ED6E0265AFC29FC
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c58d736973214ef6b4bf2cd8cb63f2c8\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_GEOMETRY_SNAPSHOT: passed=1111; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

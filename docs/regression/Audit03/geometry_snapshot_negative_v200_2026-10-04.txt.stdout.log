@@ -1,0 +1,8 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_geometry_snapshot_negative_v200.xlsm
+SOURCE_SHA256: 126B610F7AEDC4ECA0FA68A5D0A5D831C232DC8C563DEA655CFED65371AA187A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a4a9be4de2aa46a4a717a4986391fd64\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.geometrySnapshot.runtime; -2147217188; Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца.
+TOTAL_AUDIT03_GEOMETRY_SNAPSHOT: passed=0; failed=1
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

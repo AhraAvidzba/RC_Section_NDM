@@ -125,8 +125,10 @@ Public Function InternalFourthPowerLengthToOutput(ByVal value As Double) As Doub
 End Function
 
 ' Переводит величину L4 из OUTPUT-единиц обратно во внутренние мм4.
-Public Function OutputFourthPowerLengthToInternal(ByVal value As Double) As Double
-    OutputFourthPowerLengthToInternal = value * LengthFactorToMm(mOutputLength) ^ 4
+' Явная единица длины относится к сохраненному snapshot, не текущему Config.
+Public Function OutputFourthPowerLengthToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
+    If Len(savedUnit) = 0 Then savedUnit = mOutputLength
+    OutputFourthPowerLengthToInternal = value * LengthFactorToMm(savedUnit) ^ 4
 End Function
 
 ' Переводит продольную силу из INPUT-единиц во внутренние Н с учетом пользовательского знака N.

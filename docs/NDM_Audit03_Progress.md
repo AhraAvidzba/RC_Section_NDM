@@ -69,6 +69,52 @@
 
 ## Актуальная Точка Продолжения
 
+- Presentation/snapshot срез v199 зафиксирован `59987235128fce0661069239a43d675cf5bbca9c`.
+  Следующий цельный срез v200-v204 проверяет публичное восстановление импортной
+  геометрии и оба reader-режима без solve. Первый v200: 0/1 из-за ошибочной
+  двухколоночной структуры settings fixture; это не production failure.
+  v200b на прежнем production: 440/106, потеря последней строки, принятие
+  поврежденных чисел, raw/missing shape failure и потеря late LC comment.
+  v201: 566/1; единственный оставшийся test ожидал Width=125 при неизменной
+  Area и Height, поэтому модель правильно выбрала эквивалентную оболочку.
+  Numeric-text fixture теперь сохраняет исходные согласованные 123.75/87.5/Area;
+  физические алгоритмы не изменены. Расширенный negative v202: 811/158,
+  CVErr/Boolean/текст в обязательных полях, молчаливый ноль preview и выход
+  за последний столбец. Directed v203: 1111/0; model/preview/готовое State,
+  mm/cm/m, перенесенные якоря, ошибки с field/address/action, recovery,
+  late LC и noSolve/unchanged snapshot. Legacy numeric expected/tolerance
+  не менялись; новые ошибочные fixtures описаны отдельно.
+  CUnitSystem остается владельцем масштабов, module private factor tables
+  удалены. В модуле после call-map удалены три неиспользуемых unit wrappers
+  и ReadFirstExportLoad/его два private helper-а. Новых классов нет.
+  Frozen v204: directed 1111/0, 56 input variants и equilibriumCases=0.
+  Help failed=0: 1991 строка, 140 links, 118 shapes, 760 input records,
+  формулы/validation/PrintArea сохранены после reopen. Actual VBE/source
+  105/105, failed=0; SHA export
+  98303AB54F9425B3A68EA01A8B60DF26A6C790FF88B852A65197250421004E7B.
+  SHA книги 56FE63B390E00DFD820BDCDD9BF2A2034B8AC77226C81FC1E4F55E6259329FBE.
+  Подробный review: NDM_Audit03_Geometry_Snapshot_Review.md.
+  Full Off завершен 78245/0, все восемь suites, UI 56342/0;
+  source unchanged=True. С Off v199 точно совпали 17821 общих numeric
+  actual-values, missing=0/differences=0. Full On завершен 78256/0,
+  все восемь suites, UI 56342/0; source unchanged=True. С On v199b
+  точно совпали 17826 общих numeric actual-values, missing=0/differences=0.
+  Read-only структура 27/27; formatting 1003/0, 1002 адреса/deviations=0,
+  без применения исправлений. Palette 355/0; Results и actual status styles
+  совпали после save/reopen. Все gates среза завершены; actual export v204
+  перенесен в canonical VBA_All_Code.txt с тем же SHA. Census: 105 modules,
+  4387 methods, 1623 guard candidates; semantic acceptance Pending.
+  Следующий цельный срез: оставшийся general Plot/annotation/snapshot,
+  directed lifecycle/arithmetic и удаление доказанно мертвых private/API ветвей.
+  Конкретные кандидаты и ограничения записаны в Code_Comment_Review/Guard_Review;
+  не добавлять классы, не менять методику/legacy numerical expected.
+  Реестр остается
+  666/1064: этот snapshot срез не присваивает PASS оставшимся Config-полям.
+  Guard/lifecycle/arithmetic и полный self-audit по-прежнему открыты.
+  Локальный checkpoint только собственных source/tests/tools/docs/evidence
+  выполняется после этих gates, без push/destructive Git. Main output и ТЗ
+  сохранили исходные SHA; пользовательский Excel PID 23476 не использовался.
+
 - Rebar-срез v192 зафиксирован `4535c99cf4bb2e12056c8cb4479f294b76e7969f`.
   Продолжение v193-v199 проверяет существующие presentation/snapshot owners,
   без новых классов/расчетной методики. Negative v193: 280/120; исправленный
