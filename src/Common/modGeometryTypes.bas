@@ -71,6 +71,34 @@ Public Function GeomMin(ByVal A As Double, ByVal B As Double) As Double
     End If
 End Function
 
+' Читает signed sweep semantic-дуги целиком, без приема числового префикса.
+' Точка/запятая и десятичная E-нотация допустимы; локаль преобразования
+' берется у VBA, а не у Excel. Дуга меньше полного оборота: для окружности
+' существует CONTOUR_CIRCLE. Нулевой sweep сохраняет вырожденный отрезок.
+' Место ввода передает вызывающий reader; обращения к листам здесь нет.
+Public Function ReadContourArcSweep(ByVal value As Variant, ByVal inputLocation As String) As Double
+    On Error GoTo InvalidValue
+    If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
+    Dim text As String, index As Long, decimalSeparator As String
+    text = Replace$(Trim$(CStr(value)), ",", ".")
+    If Len(text) = 0 Then GoTo InvalidValue
+    If Len(text) - Len(Replace$(text, ".", vbNullString)) > 1 Then GoTo InvalidValue
+    For index = 1 To Len(text)
+        If InStr(1, "0123456789+-.Ee", Mid$(text, index, 1), vbBinaryCompare) = 0 Then GoTo InvalidValue
+    Next index
+    decimalSeparator = Mid$(CStr(0.5), 2, 1)
+    text = Replace$(text, ".", decimalSeparator)
+    If Not IsNumeric(text) Then GoTo InvalidValue
+    ReadContourArcSweep = CDbl(text)
+    If Abs(ReadContourArcSweep) >= 2# * GEOM_PI Then GoTo InvalidValue
+    Exit Function
+InvalidValue:
+    Err.Raise vbObjectError + 5283, "ReadContourArcSweep", _
+        "В сохраненном контуре поле Text (" & inputLocation & ") должно содержать угол дуги в радианах целиком: " & _
+        "десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. " & _
+        "Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка."
+End Function
+
 ' Считает запрошенные позиции активной линии до удаления геометрических дублей.
 ' Double исключает переполнение суммы рядов; EverySecondBar берет нечетные
 ' позиции первого ряда. Это техническая оценка счетчиков, не физический лимит

@@ -1,0 +1,449 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_contour_arc_positive_v222.xlsm
+SOURCE_SHA256: 683377A3719582DBEDE9FC54F74888A624FF3C926EE80A45CDD86ECA3B5B126B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_aae8536902d543fd8fff412f345a1f78\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03ContourArcTests =====
+SUITE_STARTED: RunAudit03ContourArcTests; 2026-10-04T12:45:32
+EXCEL_AFTER_SUITE: pid=23476; workingSet=209645568; privateBytes=160989184; cpu=9983.71875
+EXCEL_AFTER_SUITE: pid=27396; workingSet=151289856; privateBytes=112582656; cpu=3.984375
+OK: audit03.contourArc.p0.bad1.rejected
+OK: audit03.contourArc.p0.bad1.address
+OK: audit03.contourArc.p0.bad1.reason
+OK: audit03.contourArc.p0.bad1.empty
+OK: audit03.contourArc.p0.bad1.export
+OK: audit03.contourArc.p0.bad1.entrypoint
+OK: audit03.contourArc.p0.bad1.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad1|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad1.recovery
+OK: audit03.contourArc.p0.bad2.rejected
+OK: audit03.contourArc.p0.bad2.address
+OK: audit03.contourArc.p0.bad2.reason
+OK: audit03.contourArc.p0.bad2.empty
+OK: audit03.contourArc.p0.bad2.export
+OK: audit03.contourArc.p0.bad2.entrypoint
+OK: audit03.contourArc.p0.bad2.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad2|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad2.recovery
+OK: audit03.contourArc.p0.bad3.rejected
+OK: audit03.contourArc.p0.bad3.address
+OK: audit03.contourArc.p0.bad3.reason
+OK: audit03.contourArc.p0.bad3.empty
+OK: audit03.contourArc.p0.bad3.export
+OK: audit03.contourArc.p0.bad3.entrypoint
+OK: audit03.contourArc.p0.bad3.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad3|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad3.recovery
+OK: audit03.contourArc.p0.bad4.rejected
+OK: audit03.contourArc.p0.bad4.address
+OK: audit03.contourArc.p0.bad4.reason
+OK: audit03.contourArc.p0.bad4.empty
+OK: audit03.contourArc.p0.bad4.export
+OK: audit03.contourArc.p0.bad4.entrypoint
+OK: audit03.contourArc.p0.bad4.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad4|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad4.recovery
+OK: audit03.contourArc.p0.bad5.rejected
+OK: audit03.contourArc.p0.bad5.address
+OK: audit03.contourArc.p0.bad5.reason
+OK: audit03.contourArc.p0.bad5.empty
+OK: audit03.contourArc.p0.bad5.export
+OK: audit03.contourArc.p0.bad5.entrypoint
+OK: audit03.contourArc.p0.bad5.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad5|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad5.recovery
+OK: audit03.contourArc.p0.bad6.rejected
+OK: audit03.contourArc.p0.bad6.address
+OK: audit03.contourArc.p0.bad6.reason
+OK: audit03.contourArc.p0.bad6.empty
+OK: audit03.contourArc.p0.bad6.export
+OK: audit03.contourArc.p0.bad6.entrypoint
+OK: audit03.contourArc.p0.bad6.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad6|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad6.recovery
+OK: audit03.contourArc.p0.bad7.rejected
+OK: audit03.contourArc.p0.bad7.address
+OK: audit03.contourArc.p0.bad7.reason
+OK: audit03.contourArc.p0.bad7.empty
+OK: audit03.contourArc.p0.bad7.export
+OK: audit03.contourArc.p0.bad7.entrypoint
+OK: audit03.contourArc.p0.bad7.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad7|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad7.recovery
+OK: audit03.contourArc.p0.bad8.rejected
+OK: audit03.contourArc.p0.bad8.address
+OK: audit03.contourArc.p0.bad8.reason
+OK: audit03.contourArc.p0.bad8.empty
+OK: audit03.contourArc.p0.bad8.export
+OK: audit03.contourArc.p0.bad8.entrypoint
+OK: audit03.contourArc.p0.bad8.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad8|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad8.recovery
+OK: audit03.contourArc.p0.bad9.rejected
+OK: audit03.contourArc.p0.bad9.address
+OK: audit03.contourArc.p0.bad9.reason
+OK: audit03.contourArc.p0.bad9.empty
+OK: audit03.contourArc.p0.bad9.export
+OK: audit03.contourArc.p0.bad9.entrypoint
+OK: audit03.contourArc.p0.bad9.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad9|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad9.recovery
+OK: audit03.contourArc.p0.bad10.rejected
+OK: audit03.contourArc.p0.bad10.address
+OK: audit03.contourArc.p0.bad10.reason
+OK: audit03.contourArc.p0.bad10.empty
+OK: audit03.contourArc.p0.bad10.export
+OK: audit03.contourArc.p0.bad10.entrypoint
+OK: audit03.contourArc.p0.bad10.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad10|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad10.recovery
+OK: audit03.contourArc.p0.bad11.rejected
+OK: audit03.contourArc.p0.bad11.address
+OK: audit03.contourArc.p0.bad11.reason
+OK: audit03.contourArc.p0.bad11.empty
+OK: audit03.contourArc.p0.bad11.export
+OK: audit03.contourArc.p0.bad11.entrypoint
+OK: audit03.contourArc.p0.bad11.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad11|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad11.recovery
+OK: audit03.contourArc.p0.bad12.rejected
+OK: audit03.contourArc.p0.bad12.address
+OK: audit03.contourArc.p0.bad12.reason
+OK: audit03.contourArc.p0.bad12.empty
+OK: audit03.contourArc.p0.bad12.export
+OK: audit03.contourArc.p0.bad12.entrypoint
+OK: audit03.contourArc.p0.bad12.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad12|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad12.recovery
+OK: audit03.contourArc.p0.bad13.rejected
+OK: audit03.contourArc.p0.bad13.address
+OK: audit03.contourArc.p0.bad13.reason
+OK: audit03.contourArc.p0.bad13.empty
+OK: audit03.contourArc.p0.bad13.export
+OK: audit03.contourArc.p0.bad13.entrypoint
+OK: audit03.contourArc.p0.bad13.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad13|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad13.recovery
+OK: audit03.contourArc.p0.bad14.rejected
+OK: audit03.contourArc.p0.bad14.address
+OK: audit03.contourArc.p0.bad14.reason
+OK: audit03.contourArc.p0.bad14.empty
+OK: audit03.contourArc.p0.bad14.export
+OK: audit03.contourArc.p0.bad14.entrypoint
+OK: audit03.contourArc.p0.bad14.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad14|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad14.recovery
+OK: audit03.contourArc.p0.bad15.rejected
+OK: audit03.contourArc.p0.bad15.address
+OK: audit03.contourArc.p0.bad15.reason
+OK: audit03.contourArc.p0.bad15.empty
+OK: audit03.contourArc.p0.bad15.export
+OK: audit03.contourArc.p0.bad15.entrypoint
+OK: audit03.contourArc.p0.bad15.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad15|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad15.recovery
+OK: audit03.contourArc.p0.bad16.rejected
+OK: audit03.contourArc.p0.bad16.address
+OK: audit03.contourArc.p0.bad16.reason
+OK: audit03.contourArc.p0.bad16.empty
+OK: audit03.contourArc.p0.bad16.export
+OK: audit03.contourArc.p0.bad16.entrypoint
+OK: audit03.contourArc.p0.bad16.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad16|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad16.recovery
+OK: audit03.contourArc.p0.bad17.rejected
+OK: audit03.contourArc.p0.bad17.address
+OK: audit03.contourArc.p0.bad17.reason
+OK: audit03.contourArc.p0.bad17.empty
+OK: audit03.contourArc.p0.bad17.export
+OK: audit03.contourArc.p0.bad17.entrypoint
+OK: audit03.contourArc.p0.bad17.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad17|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad17.recovery
+OK: audit03.contourArc.p0.bad18.rejected
+OK: audit03.contourArc.p0.bad18.address
+OK: audit03.contourArc.p0.bad18.reason
+OK: audit03.contourArc.p0.bad18.empty
+OK: audit03.contourArc.p0.bad18.export
+OK: audit03.contourArc.p0.bad18.entrypoint
+OK: audit03.contourArc.p0.bad18.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad18|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad18.recovery
+OK: audit03.contourArc.p0.bad19.rejected
+OK: audit03.contourArc.p0.bad19.address
+OK: audit03.contourArc.p0.bad19.reason
+OK: audit03.contourArc.p0.bad19.empty
+OK: audit03.contourArc.p0.bad19.export
+OK: audit03.contourArc.p0.bad19.entrypoint
+OK: audit03.contourArc.p0.bad19.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad19|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad19.recovery
+OK: audit03.contourArc.p0.bad20.rejected
+OK: audit03.contourArc.p0.bad20.address
+OK: audit03.contourArc.p0.bad20.reason
+OK: audit03.contourArc.p0.bad20.empty
+OK: audit03.contourArc.p0.bad20.export
+OK: audit03.contourArc.p0.bad20.entrypoint
+OK: audit03.contourArc.p0.bad20.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad20|В сохраненном контуре поле Text (Results!I21) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p0.bad20.recovery
+OK: audit03.contourArc.valid.p0.1.570796326795.angle; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.valid.p0.1.570796326795.export
+OK: audit03.contourArc.valid.p0.1.570796326795.segments
+OK: audit03.contourArc.valid.p0.1.570796326795.exactValue2
+OK: audit03.contourArc.valid.p0.1,570796326795.angle; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.valid.p0.1,570796326795.export
+OK: audit03.contourArc.valid.p0.1,570796326795.segments
+OK: audit03.contourArc.valid.p0.1,570796326795.exactValue2
+OK: audit03.contourArc.valid.p0.+1.570796326795E0.angle; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.valid.p0.+1.570796326795E0.export
+OK: audit03.contourArc.valid.p0.+1.570796326795E0.segments
+OK: audit03.contourArc.valid.p0.+1.570796326795E0.exactValue2
+OK: audit03.contourArc.valid.p0.-1.570796326795.angle; actual=-1.570796326795; expected=-1.570796326795
+OK: audit03.contourArc.valid.p0.-1.570796326795.export
+OK: audit03.contourArc.valid.p0.-1.570796326795.segments
+OK: audit03.contourArc.valid.p0.-1.570796326795.exactValue2
+OK: audit03.contourArc.valid.p0.-.5.angle; actual=-0.5; expected=-0.5
+OK: audit03.contourArc.valid.p0.-.5.export
+OK: audit03.contourArc.valid.p0.-.5.segments
+OK: audit03.contourArc.valid.p0.-.5.exactValue2
+OK: audit03.contourArc.valid.p0..5.angle; actual=0.5; expected=0.5
+OK: audit03.contourArc.valid.p0..5.export
+OK: audit03.contourArc.valid.p0..5.segments
+OK: audit03.contourArc.valid.p0..5.exactValue2
+OK: audit03.contourArc.valid.p0.1E-3.angle; actual=0.001; expected=0.001
+OK: audit03.contourArc.valid.p0.1E-3.export
+OK: audit03.contourArc.valid.p0.1E-3.segments
+OK: audit03.contourArc.valid.p0.1E-3.exactValue2
+OK: audit03.contourArc.valid.p0.0.angle; actual=0; expected=0
+OK: audit03.contourArc.valid.p0.0.export
+OK: audit03.contourArc.valid.p0.0.segments
+OK: audit03.contourArc.valid.p0.0.exactValue2
+OK: audit03.contourArc.excelLocale.p0...1.570796326795; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.excelLocale.p0...1,570796326795; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.excelLocale.p0.,.1.570796326795; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.excelLocale.p0.,.1,570796326795; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.p1.bad1.rejected
+OK: audit03.contourArc.p1.bad1.address
+OK: audit03.contourArc.p1.bad1.reason
+OK: audit03.contourArc.p1.bad1.empty
+OK: audit03.contourArc.p1.bad1.export
+OK: audit03.contourArc.p1.bad1.entrypoint
+OK: audit03.contourArc.p1.bad1.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad1|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad1.recovery
+OK: audit03.contourArc.p1.bad2.rejected
+OK: audit03.contourArc.p1.bad2.address
+OK: audit03.contourArc.p1.bad2.reason
+OK: audit03.contourArc.p1.bad2.empty
+OK: audit03.contourArc.p1.bad2.export
+OK: audit03.contourArc.p1.bad2.entrypoint
+OK: audit03.contourArc.p1.bad2.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad2|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad2.recovery
+OK: audit03.contourArc.p1.bad3.rejected
+OK: audit03.contourArc.p1.bad3.address
+OK: audit03.contourArc.p1.bad3.reason
+OK: audit03.contourArc.p1.bad3.empty
+OK: audit03.contourArc.p1.bad3.export
+OK: audit03.contourArc.p1.bad3.entrypoint
+OK: audit03.contourArc.p1.bad3.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad3|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad3.recovery
+OK: audit03.contourArc.p1.bad4.rejected
+OK: audit03.contourArc.p1.bad4.address
+OK: audit03.contourArc.p1.bad4.reason
+OK: audit03.contourArc.p1.bad4.empty
+OK: audit03.contourArc.p1.bad4.export
+OK: audit03.contourArc.p1.bad4.entrypoint
+OK: audit03.contourArc.p1.bad4.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad4|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad4.recovery
+OK: audit03.contourArc.p1.bad5.rejected
+OK: audit03.contourArc.p1.bad5.address
+OK: audit03.contourArc.p1.bad5.reason
+OK: audit03.contourArc.p1.bad5.empty
+OK: audit03.contourArc.p1.bad5.export
+OK: audit03.contourArc.p1.bad5.entrypoint
+OK: audit03.contourArc.p1.bad5.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad5|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad5.recovery
+OK: audit03.contourArc.p1.bad6.rejected
+OK: audit03.contourArc.p1.bad6.address
+OK: audit03.contourArc.p1.bad6.reason
+OK: audit03.contourArc.p1.bad6.empty
+OK: audit03.contourArc.p1.bad6.export
+OK: audit03.contourArc.p1.bad6.entrypoint
+OK: audit03.contourArc.p1.bad6.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad6|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad6.recovery
+OK: audit03.contourArc.p1.bad7.rejected
+OK: audit03.contourArc.p1.bad7.address
+OK: audit03.contourArc.p1.bad7.reason
+OK: audit03.contourArc.p1.bad7.empty
+OK: audit03.contourArc.p1.bad7.export
+OK: audit03.contourArc.p1.bad7.entrypoint
+OK: audit03.contourArc.p1.bad7.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad7|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad7.recovery
+OK: audit03.contourArc.p1.bad8.rejected
+OK: audit03.contourArc.p1.bad8.address
+OK: audit03.contourArc.p1.bad8.reason
+OK: audit03.contourArc.p1.bad8.empty
+OK: audit03.contourArc.p1.bad8.export
+OK: audit03.contourArc.p1.bad8.entrypoint
+OK: audit03.contourArc.p1.bad8.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad8|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad8.recovery
+OK: audit03.contourArc.p1.bad9.rejected
+OK: audit03.contourArc.p1.bad9.address
+OK: audit03.contourArc.p1.bad9.reason
+OK: audit03.contourArc.p1.bad9.empty
+OK: audit03.contourArc.p1.bad9.export
+OK: audit03.contourArc.p1.bad9.entrypoint
+OK: audit03.contourArc.p1.bad9.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad9|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad9.recovery
+OK: audit03.contourArc.p1.bad10.rejected
+OK: audit03.contourArc.p1.bad10.address
+OK: audit03.contourArc.p1.bad10.reason
+OK: audit03.contourArc.p1.bad10.empty
+OK: audit03.contourArc.p1.bad10.export
+OK: audit03.contourArc.p1.bad10.entrypoint
+OK: audit03.contourArc.p1.bad10.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad10|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad10.recovery
+OK: audit03.contourArc.p1.bad11.rejected
+OK: audit03.contourArc.p1.bad11.address
+OK: audit03.contourArc.p1.bad11.reason
+OK: audit03.contourArc.p1.bad11.empty
+OK: audit03.contourArc.p1.bad11.export
+OK: audit03.contourArc.p1.bad11.entrypoint
+OK: audit03.contourArc.p1.bad11.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad11|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad11.recovery
+OK: audit03.contourArc.p1.bad12.rejected
+OK: audit03.contourArc.p1.bad12.address
+OK: audit03.contourArc.p1.bad12.reason
+OK: audit03.contourArc.p1.bad12.empty
+OK: audit03.contourArc.p1.bad12.export
+OK: audit03.contourArc.p1.bad12.entrypoint
+OK: audit03.contourArc.p1.bad12.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad12|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad12.recovery
+OK: audit03.contourArc.p1.bad13.rejected
+OK: audit03.contourArc.p1.bad13.address
+OK: audit03.contourArc.p1.bad13.reason
+OK: audit03.contourArc.p1.bad13.empty
+OK: audit03.contourArc.p1.bad13.export
+OK: audit03.contourArc.p1.bad13.entrypoint
+OK: audit03.contourArc.p1.bad13.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad13|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad13.recovery
+OK: audit03.contourArc.p1.bad14.rejected
+OK: audit03.contourArc.p1.bad14.address
+OK: audit03.contourArc.p1.bad14.reason
+OK: audit03.contourArc.p1.bad14.empty
+OK: audit03.contourArc.p1.bad14.export
+OK: audit03.contourArc.p1.bad14.entrypoint
+OK: audit03.contourArc.p1.bad14.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad14|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad14.recovery
+OK: audit03.contourArc.p1.bad15.rejected
+OK: audit03.contourArc.p1.bad15.address
+OK: audit03.contourArc.p1.bad15.reason
+OK: audit03.contourArc.p1.bad15.empty
+OK: audit03.contourArc.p1.bad15.export
+OK: audit03.contourArc.p1.bad15.entrypoint
+OK: audit03.contourArc.p1.bad15.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad15|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad15.recovery
+OK: audit03.contourArc.p1.bad16.rejected
+OK: audit03.contourArc.p1.bad16.address
+OK: audit03.contourArc.p1.bad16.reason
+OK: audit03.contourArc.p1.bad16.empty
+OK: audit03.contourArc.p1.bad16.export
+OK: audit03.contourArc.p1.bad16.entrypoint
+OK: audit03.contourArc.p1.bad16.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad16|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad16.recovery
+OK: audit03.contourArc.p1.bad17.rejected
+OK: audit03.contourArc.p1.bad17.address
+OK: audit03.contourArc.p1.bad17.reason
+OK: audit03.contourArc.p1.bad17.empty
+OK: audit03.contourArc.p1.bad17.export
+OK: audit03.contourArc.p1.bad17.entrypoint
+OK: audit03.contourArc.p1.bad17.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad17|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad17.recovery
+OK: audit03.contourArc.p1.bad18.rejected
+OK: audit03.contourArc.p1.bad18.address
+OK: audit03.contourArc.p1.bad18.reason
+OK: audit03.contourArc.p1.bad18.empty
+OK: audit03.contourArc.p1.bad18.export
+OK: audit03.contourArc.p1.bad18.entrypoint
+OK: audit03.contourArc.p1.bad18.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad18|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad18.recovery
+OK: audit03.contourArc.p1.bad19.rejected
+OK: audit03.contourArc.p1.bad19.address
+OK: audit03.contourArc.p1.bad19.reason
+OK: audit03.contourArc.p1.bad19.empty
+OK: audit03.contourArc.p1.bad19.export
+OK: audit03.contourArc.p1.bad19.entrypoint
+OK: audit03.contourArc.p1.bad19.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad19|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad19.recovery
+OK: audit03.contourArc.p1.bad20.rejected
+OK: audit03.contourArc.p1.bad20.address
+OK: audit03.contourArc.p1.bad20.reason
+OK: audit03.contourArc.p1.bad20.empty
+OK: audit03.contourArc.p1.bad20.export
+OK: audit03.contourArc.p1.bad20.entrypoint
+OK: audit03.contourArc.p1.bad20.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p1.bad20|В сохраненном контуре поле Text (Results!CP801) должно содержать угол дуги в радианах целиком: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+OK: audit03.contourArc.p1.bad20.recovery
+OK: audit03.contourArc.valid.p1.1.570796326795.angle; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.valid.p1.1.570796326795.export
+OK: audit03.contourArc.valid.p1.1.570796326795.segments
+OK: audit03.contourArc.valid.p1.1.570796326795.exactValue2
+OK: audit03.contourArc.valid.p1.1,570796326795.angle; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.valid.p1.1,570796326795.export
+OK: audit03.contourArc.valid.p1.1,570796326795.segments
+OK: audit03.contourArc.valid.p1.1,570796326795.exactValue2
+OK: audit03.contourArc.valid.p1.+1.570796326795E0.angle; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.valid.p1.+1.570796326795E0.export
+OK: audit03.contourArc.valid.p1.+1.570796326795E0.segments
+OK: audit03.contourArc.valid.p1.+1.570796326795E0.exactValue2
+OK: audit03.contourArc.valid.p1.-1.570796326795.angle; actual=-1.570796326795; expected=-1.570796326795
+OK: audit03.contourArc.valid.p1.-1.570796326795.export
+OK: audit03.contourArc.valid.p1.-1.570796326795.segments
+OK: audit03.contourArc.valid.p1.-1.570796326795.exactValue2
+OK: audit03.contourArc.valid.p1.-.5.angle; actual=-0.5; expected=-0.5
+OK: audit03.contourArc.valid.p1.-.5.export
+OK: audit03.contourArc.valid.p1.-.5.segments
+OK: audit03.contourArc.valid.p1.-.5.exactValue2
+OK: audit03.contourArc.valid.p1..5.angle; actual=0.5; expected=0.5
+OK: audit03.contourArc.valid.p1..5.export
+OK: audit03.contourArc.valid.p1..5.segments
+OK: audit03.contourArc.valid.p1..5.exactValue2
+OK: audit03.contourArc.valid.p1.1E-3.angle; actual=0.001; expected=0.001
+OK: audit03.contourArc.valid.p1.1E-3.export
+OK: audit03.contourArc.valid.p1.1E-3.segments
+OK: audit03.contourArc.valid.p1.1E-3.exactValue2
+OK: audit03.contourArc.valid.p1.0.angle; actual=0; expected=0
+OK: audit03.contourArc.valid.p1.0.export
+OK: audit03.contourArc.valid.p1.0.segments
+OK: audit03.contourArc.valid.p1.0.exactValue2
+OK: audit03.contourArc.excelLocale.p1...1.570796326795; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.excelLocale.p1...1,570796326795; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.excelLocale.p1.,.1.570796326795; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.excelLocale.p1.,.1,570796326795; actual=1.570796326795; expected=1.570796326795
+OK: audit03.contourArc.noSolve
+CONTOUR_ARC_CASES: variants=56; geometryFixtures=1; equilibriumCases=0
+TOTAL_AUDIT03_CONTOUR_ARC: passed=393; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_aae8536902d543fd8fff412f345a1f78\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03ContourArcTests; 2026-10-04T12:45:34
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

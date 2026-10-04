@@ -69,6 +69,27 @@
 
 ## Актуальная Точка Продолжения
 
+- AutoUpdate зафиксирован `4e25d63`. Следующий contour-arc срез v220-v223
+  устраняет прием числового префикса/нулевого fallback в двух parser-ах.
+  Negative v220 71/158; compile error собственного теста v221 и ошибочный
+  неквалифицированный macro v222 отделены от production findings в
+  NDM_Audit03_Contour_Arc_Review.md. Общий ReadContourArcSweep не обращается
+  к Excel; reader сохраняет готовый угол, AutoCAD проверяет дуги до записи.
+  Directed v222 393/0; frozen v223 presentation 2355/0, lifecycle 3929/0,
+  geometry 1158/0, unit/sign consumers 44/0, structure 27/27,
+  formatting 1003/0, palette/save-reopen 355/0, source unchanged=True.
+  Help 2005 rows/140 links/118 shapes, input/PrintArea сохранены.
+  Results before/after SHA 294BBE8FFB8EB1DEA5E09377A662DDB02388F07C8E8114F02353E000B5454F40;
+  styles 1EABA40A72D5A28392F11FC5D38F0D2B1E9B264FDFAD9F5514ACB9EE1A1E1132.
+  Book SHA 2A211839469722EE697E743941E7DF3EAFD938041E7D65954DB776101ED17A31;
+  actual export 111 components, SHA 8F270447E794FDFA5FBCE4C528A746335708509272F613A6792349A649CC501D,
+  canonical обновлен; source/export equality 106/106, failed=0.
+  Census 106/4419/1713, semantic Pending.
+  Numeric methodology/expected/tolerance не менялись; full Off/On v206
+  остается историческим gate, полный выпускной прогон обязателен.
+  Registry 666/1064 не изменен. Остальные metadata/headers, Excel guard,
+  extreme arithmetic, все Config/range/pairwise и финальная матрица открыты.
+
 - Metadata-срез зафиксирован `1400b3b42eb76cc75353ac503c1a60bdb9dda255`.
   Следующий AutoUpdate-срез v217-v219 подтверждает late flag validation,
   missing default и очистку выключенной схемы без named-state. Negative

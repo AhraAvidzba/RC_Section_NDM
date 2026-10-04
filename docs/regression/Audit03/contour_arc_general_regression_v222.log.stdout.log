@@ -1,0 +1,5 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_contour_arc_positive_v222.xlsm
+SOURCE_SHA256: 683377A3719582DBEDE9FC54F74888A624FF3C926EE80A45CDD86ECA3B5B126B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6a2f5c21415c490f80b23e6cf527cbe4\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+SCRIPT ERROR: Исключение при вызове "Run" с "1" аргументами: "Не удается выполнить макрос "'RC_Section_NDM.xlsm'!RunAudit03GeneralPlotTests". Возможно, этот макрос отсутствует в текущей книге либо все макросы отключены."

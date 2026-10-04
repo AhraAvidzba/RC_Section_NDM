@@ -410,3 +410,23 @@ Numerical solver/search/expected/tolerance не менялись, full On/Off о
 для финального release. Registry 666/1064 пока без новых blanket PASS.
 Остальные metadata, arc parsing, Excel guard и extreme arithmetic остаются
 открытыми; census 106/4415/1705 является индексом, не semantic acceptance.
+
+## Contour Arc v223
+
+Negative v220 71/158 подтвердил молчаливый Val-prefix/zero и late failure
+после очистки схемы. Общий helper читает Text целиком, допускает signed
+десятичную/E-запись и только дугу меньше полного оборота; CIRCLE остается
+отдельным типом. Reader атомарно готовит численный угол, plotter его не
+перечитывает; AutoCAD preflight выполняется до записи объектов.
+
+Directed 393/0, frozen presentation 2355/0, lifecycle 3929/0, geometry
+1158/0, units/export snapshot 44/0. Две позиции anchor, понятный адрес,
+сохранность Chart/Results, recovery и Excel separator override проверены.
+Structure 27/27, formatting 1003/0, help failed=0, palette/reopen 355/0.
+Собственная compile error v221 и неквалифицированный macro v222 не PASS;
+подробности и исходные журналы сохранены в Contour_Arc_Review.
+
+НДС/Search/expected/tolerance не менялись; полный On/Off оставлен для
+выпуска. Census 106/4419/1713 не заменяет semantic audit. Остальные
+metadata/header paths, Excel guard и extreme arithmetic еще открыты;
+фактическая DWG/пиксельная приемка не заявлена.

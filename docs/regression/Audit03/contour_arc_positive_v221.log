@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_contour_arc_positive_v221.xlsm
+SOURCE_SHA256: B3CF184027CCD390395A571BDB4260BAD8E37400E638DD371E029E1FFB66C01E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_612528c22b754ecd8cbdd2377d6773a0\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03ContourArcTests =====
+SUITE_STARTED: RunAudit03ContourArcTests; 2026-10-04T12:40:40
+WATCHDOG_FAILURE: timeout=240 sec; macro=RunAudit03ContourArcTests; test Excel terminated

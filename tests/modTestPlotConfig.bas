@@ -26,10 +26,140 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     TestAudit03PlotEnableContracts stats
     TestAudit03SnapshotMetadataContracts stats
     TestAudit03AutoPlotContracts stats
+    TestAudit03ContourArcContracts stats
     AppendLine stats, "TOTAL_AUDIT03_GENERAL_PLOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03GeneralPlotTests = stats.Report
 End Function
+
+' Проверяет углы дуг сохраненного контура через reader и настоящий preview.
+' Рисунок и Results принадлежат отдельной книге; ошибочный текст должен
+' отклоняться до очистки прежней схемы, а не превращаться в нулевую дугу.
+Public Function RunAudit03ContourArcTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03ContourArcContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_CONTOUR_ARC: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ContourArcTests = stats.Report
+End Function
+
+' Испытывает полное чтение Text, signed sweep и recovery после повреждения.
+' Для quarter-circle число хорд задано независимо: шаг схемы 5 градусов,
+' поэтому четверть окружности содержит 18 сегментов. НДС не решается.
+Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
+    Dim fixture As Object, config As Object, sheet As Object, source As Object, target As Object, anchor As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim addresses As Variant, name As Variant, bad As Variant, valid As Variant, shape As Object
+    Dim index As Long, position As Long, variantIndex As Long, code As Long, reason As String, prefix As String, exportText As String
+    Dim chart As Object, marker As Object, cell As Object, count As Long, cases As Long, solveCount As Long
+    Dim annotations(1 To 2, 1 To 10) As Variant, props(1 To 2, 1 To 4) As Variant, keys As Variant
+    Dim baseline As Variant, actual As Variant, expected As Variant, separator As Variant
+    Dim savedSeparators As Boolean, savedDecimal As String, savedThousands As String
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    savedSeparators = Application.UseSystemSeparators: savedDecimal = Application.DecimalSeparator: savedThousands = Application.ThousandsSeparator
+    Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "Config"
+    Set sheet = fixture.Worksheets.Add: sheet.Name = "Results": fixture.Worksheets.Add.Name = "Расчет"
+    addresses = Array("A5", "H5", "P5", "P25"): index = 0
+    For Each name In Array("rngSystemSettings", "rngPlotAnnotationSettings", "rngUnitSettings", "rngSignConventionSettings")
+        Set source = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        Set target = config.Range(CStr(addresses(index))).Resize(source.Rows.Count, source.Columns.Count)
+        target.NumberFormat = "@": target.Value2 = source.Value2
+        fixture.Names.Add Name:=CStr(name), RefersTo:="=Config!" & target.Address: index = index + 1
+    Next name
+    Audit03SetPlotSetting fixture.Names.Item("rngSystemSettings").RefersToRange, "Plot.Enabled", "Yes"
+    Audit03SetPlotSetting fixture.Names.Item("rngSystemSettings").RefersToRange, "Plot.ContourEnabled", "Yes"
+    sheet.Range("A5").Resize(3, 15).Value2 = Audit03GeometrySnapshotArray("mm", 1#)
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
+    props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
+    sheet.Range("R5").Resize(2, 4).Value2 = props
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$R$5"
+    keys = Array("AnnotationType", "AnnotationID", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
+    For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
+    annotations(2, 1) = "CONTOUR_ARC": annotations(2, 2) = "CONTOUR_ARC_1"
+    annotations(2, 3) = 100#: annotations(2, 4) = 0#: annotations(2, 5) = 0#: annotations(2, 6) = 100#
+    annotations(2, 7) = 0#: annotations(2, 8) = 0#: annotations(2, 9) = "1.570796326795": annotations(2, 10) = "mm"
+    fixture.Names.Add Name:="rngNDMSectionAnnotations", RefersTo:="=Results!$A$20"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook fixture
+    Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
+    Set chart = fixture.Worksheets.Item("Расчет").ChartObjects.Add(41#, 53#, 700#, 480#): chart.Name = "chtNDMSectionPlot"
+    For position = 0 To 1
+        If position = 0 Then Set anchor = sheet.Range("A20") Else Set anchor = sheet.Range("CH800")
+        anchor.Resize(2, 10).NumberFormat = "@": anchor.Resize(2, 10).Value2 = annotations
+        fixture.Names.Item("rngNDMSectionAnnotations").RefersTo = "=Results!" & anchor.Address
+        Set cell = anchor.Cells(2, 9): variantIndex = 0
+        For Each bad In Array("", "TODO", "1.25garbage", "1,25garbage", "1.2.3", "1,2,3", "1E", "--1", "&H1", CVErr(2015), "1E309", "1E300", "7", "-7", "$1", "1 000", "+.", "1e+1E-2", "True", True)
+            variantIndex = variantIndex + 1: cases = cases + 1: cell.Value2 = bad
+            prefix = "audit03.contourArc.p" & CStr(position) & ".bad" & CStr(variantIndex)
+            Audit03ReadLifecycleLoad reader, fixture, settings, 1, code, reason
+            AssertTrue stats, prefix & ".rejected", code <> 0
+            AssertTrue stats, prefix & ".address", InStr(1, reason, "Results!" & cell.Address(False, False), vbTextCompare) > 0
+            AssertTrue stats, prefix & ".reason", InStr(1, reason, "Text", vbTextCompare) > 0 And InStr(1, reason, "радиан", vbTextCompare) > 0
+            AssertTrue stats, prefix & ".empty", reader.Count = 0 And reader.AnnotationCount = 0
+            On Error Resume Next
+            Err.Clear: exportText = Audit03ReadContourArcSweepsForTests(fixture)
+            code = Err.Number: reason = Err.Description
+            On Error GoTo Failed
+            AssertTrue stats, prefix & ".export", code <> 0 And InStr(1, reason, "Results!" & cell.Address(False, False), vbTextCompare) > 0
+            Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_Audit03Sentinel"
+            On Error Resume Next
+            Err.Clear: UpdateSectionGeometryPreviewForWorkbook fixture
+            code = Err.Number: reason = Err.Description
+            On Error GoTo Failed
+            AssertTrue stats, prefix & ".entrypoint", code <> 0 And InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0
+            AssertTrue stats, prefix & ".chart", Audit03PlotShapeExists(chart, "Audit03Sentinel")
+            AppendLine stats, "CONTOUR_ARC_ERROR: " & prefix & "|" & reason
+            On Error Resume Next
+            chart.Chart.Shapes.Item("NDMPlot_Audit03Sentinel").Delete
+            On Error GoTo Failed
+            cell.Value2 = annotations(2, 9): reader.LoadGeometryPreviewFromWorkbook fixture, settings
+            AssertTrue stats, prefix & ".recovery", reader.Count = 2 And reader.AnnotationCount = 1
+        Next bad
+        expected = Array(1.570796326795, 1.570796326795, 1.570796326795, -1.570796326795, -0.5, 0.5, 0.001, 0#)
+        index = 0
+        For Each valid In Array("1.570796326795", "1,570796326795", "+1.570796326795E0", "-1.570796326795", "-.5", ".5", "1E-3", "0")
+            cases = cases + 1: cell.Value2 = valid: baseline = anchor.Resize(2, 10).Value2
+            reader.LoadGeometryPreviewFromWorkbook fixture, settings
+            plotter.Draw fixture, reader, settings
+            count = 0
+            For Each shape In chart.Chart.Shapes
+                If InStr(1, shape.Name, "ContourArcLine", vbTextCompare) > 0 Then count = count + 1
+            Next shape
+            prefix = "audit03.contourArc.valid.p" & CStr(position) & "." & CStr(valid)
+            AssertClose stats, prefix & ".angle", reader.AnnotationSweepAngle(1), CDbl(expected(index)), 0#
+            AssertTrue stats, prefix & ".export", Audit03ReadContourArcSweepsForTests(fixture) = "2|" & CStr(expected(index)) & vbLf
+            If InStr(1, CStr(valid), "570796", vbBinaryCompare) > 0 Then
+                AssertTrue stats, prefix & ".segments", count = 18
+            ElseIf CStr(valid) = "0" Then
+                AssertTrue stats, prefix & ".segments", count = 1
+            Else
+                AssertTrue stats, prefix & ".segments", count = 6
+            End If
+            actual = anchor.Resize(2, 10).Value2: Audit03ComparePlainSnapshot stats, prefix, baseline, actual, 1
+            index = index + 1
+        Next valid
+        For Each separator In Array(".", ",")
+            Application.UseSystemSeparators = False
+            If separator = "." Then Application.ThousandsSeparator = "," Else Application.ThousandsSeparator = "."
+            Application.DecimalSeparator = CStr(separator)
+            For Each valid In Array("1.570796326795", "1,570796326795")
+                cell.Value2 = valid: reader.LoadGeometryPreviewFromWorkbook fixture, settings
+                AssertClose stats, "audit03.contourArc.excelLocale.p" & CStr(position) & "." & CStr(separator) & "." & CStr(valid), reader.AnnotationSweepAngle(1), 1.570796326795, 0#
+            Next valid
+        Next separator
+        Application.DecimalSeparator = savedDecimal: Application.ThousandsSeparator = savedThousands: Application.UseSystemSeparators = savedSeparators
+    Next position
+    AssertTrue stats, "audit03.contourArc.noSolve", SectionEquilibriumSolveCount() = solveCount
+    AppendLine stats, "CONTOUR_ARC_CASES: variants=" & CStr(cases) & "; geometryFixtures=1; equilibriumCases=0"
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "audit03.contourArc.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    Application.DecimalSeparator = savedDecimal: Application.ThousandsSeparator = savedThousands: Application.UseSystemSeparators = savedSeparators
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
 
 ' Проверяет автоматическое обновление через настоящий workbook-сценарий.
 ' Отдельная полная копия книги сохраняет Config/Results исходного fixture;

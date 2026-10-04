@@ -807,6 +807,9 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         ByVal centroidX As Double, ByVal centroidY As Double, ByVal principalAngle As Double, _
         ByVal resultPrecision As Long, ByVal stateWarningText As String, ByRef exportSettings As TAutoCADExportSettings, _
         ByRef contourExportCount As Long)
+    ' Проверяем все углы до подключения и добавления объектов в чертеж.
+    Dim arcSweeps As Object
+    If exportSettings.ContourEnabled Then Set arcSweeps = ReadSavedContourArcSweeps(ThisWorkbook)
     Dim acad As Object
     Set acad = ConnectToRunningAutoCAD()
 
@@ -874,7 +877,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     ' Контур выводим после бетонных и арматурных объектов, чтобы он не
     ' оказался закрыт AutoCAD Region, созданными для волокон расчетной сетки.
     If exportSettings.ContourEnabled Then
-        contourExportCount = DrawParametricSectionContour(ThisWorkbook, ms, exportSettings.ContourLayer)
+        contourExportCount = DrawParametricSectionContour(ThisWorkbook, ms, exportSettings.ContourLayer, arcSweeps)
     End If
 
     DrawCentroidAxesAndLoadPoint ms, section, centroidX, centroidY, principalAngle, _
@@ -892,7 +895,13 @@ End Sub
 ' Здесь намеренно не восстанавливается контур по бетонным волокнам: для
 ' импортированной AutoCAD-сетки такой контур неизвестен, а значит экспорт
 ' должен пропустить его, а не рисовать приближенную оболочку.
-Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As Object, ByVal contourLayer As String) As Long
+Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms As Object, ByVal contourLayer As String, _
+        ByVal arcSweeps As Object) As Long
+    Dim tableName As Object
+    On Error Resume Next
+    Set tableName = workbook.Names.Item("rngNDMSectionAnnotations")
+    On Error GoTo 0
+    If tableName Is Nothing Then Exit Function
     Dim data As Variant
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
     If Not HasResultTableRows(data) Then Exit Function
@@ -903,7 +912,6 @@ Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms
     Dim colStartY As Long: colStartY = ResultColumn(data, "StartY")
     Dim colEndX As Long: colEndX = ResultColumn(data, "EndX")
     Dim colEndY As Long: colEndY = ResultColumn(data, "EndY")
-    Dim colText As Long: colText = ResultColumn(data, "Text")
     Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
     Dim defaultLengthUnit As String
     defaultLengthUnit = ResultsOutputLengthUnit(workbook)
@@ -955,7 +963,7 @@ Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), arcUnit), _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndX)), arcUnit), _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colEndY)), arcUnit), _
-                    Tan(ParseInvariantDouble(SafeText(data(rowIndex, colText))) / 4#)
+                    Tan(CDbl(arcSweeps.Item(CStr(rowIndex))) / 4#)
             Case "CONTOUR_CIRCLE"
                 If segCount > 0 Then
                     DrawParametricSectionContour = DrawParametricSectionContour + _
@@ -982,6 +990,30 @@ Private Function DrawParametricSectionContour(ByVal workbook As Object, ByVal ms
         DrawParametricSectionContour = DrawParametricSectionContour + _
             DrawContourSegmentPolyline(ms, contourLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount)
     End If
+End Function
+
+' Подготавливает численные углы semantic-дуг одним проходом до записи DWG.
+' Отсутствие необязательных аннотаций допустимо; ошибка Text не становится
+' нулевым bulge. Ключом служит строка прочитанной таблицы, а не AutoCAD handle.
+Private Function ReadSavedContourArcSweeps(ByVal workbook As Object) As Object
+    Dim result As Object, tableName As Object, anchor As Object, data As Variant
+    Set result = CreateObject("Scripting.Dictionary")
+    Set ReadSavedContourArcSweeps = result
+    On Error Resume Next
+    Set tableName = workbook.Names.Item("rngNDMSectionAnnotations")
+    On Error GoTo 0
+    If tableName Is Nothing Then Exit Function
+    Set anchor = tableName.RefersToRange
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
+    If Not HasResultTableRows(data) Then Exit Function
+    Dim colType As Long, colText As Long, rowIndex As Long
+    colType = ResultColumn(data, "AnnotationType"): colText = ResultColumn(data, "Text")
+    For rowIndex = 2 To UBound(data, 1)
+        If StrComp(Trim$(SafeText(data(rowIndex, colType))), "CONTOUR_ARC", vbTextCompare) = 0 Then
+            result.Add CStr(rowIndex), ReadContourArcSweep(data(rowIndex, colText), anchor.Parent.Name & "!" & _
+                anchor.Offset(rowIndex - 1, colText - 1).Address(False, False))
+        End If
+    Next rowIndex
 End Function
 
 ' Читает единицу длины последнего расчетного снимка. Для annotation-таблицы это
@@ -1142,15 +1174,6 @@ End Function
 ' Сравнивает соседние вершины контура в миллиметрах.
 Private Function PointsAreClose(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As Boolean
     PointsAreClose = (Abs(x1 - x2) <= CONTOUR_POINT_TOLERANCE And Abs(y1 - y2) <= CONTOUR_POINT_TOLERANCE)
-End Function
-
-' Читает число, сохраненное в Results с точкой как десятичным разделителем.
-Private Function ParseInvariantDouble(ByVal textValue As String) As Double
-    On Error Resume Next
-    ParseInvariantDouble = CDbl(Replace$(Trim$(textValue), ".", Application.DecimalSeparator))
-    If Err.Number = 0 Then Exit Function
-    Err.Clear
-    ParseInvariantDouble = Val(Replace$(Trim$(textValue), ",", "."))
 End Function
 
 ' Добавляет в AutoCAD заметное предупреждение под сечением.
@@ -1820,6 +1843,17 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
 End Function
 
 ' ============================== ДЛЯ ТЕСТОВ ==============================
+
+' Возвращает реальные подготовленные углы экспортного контура без AutoCAD.
+' Использует тот же preflight, который выполняется до изменения DWG; тест
+' проверяет парсинг/адрес ошибки, но не заявляет приемку фактической записи DWG.
+Public Function Audit03ReadContourArcSweepsForTests(ByVal workbook As Object) As String
+    Dim sweeps As Object, key As Variant
+    Set sweeps = ReadSavedContourArcSweeps(workbook)
+    For Each key In sweeps.Keys
+        Audit03ReadContourArcSweepsForTests = Audit03ReadContourArcSweepsForTests & CStr(key) & "|" & CStr(sweeps.Item(key)) & vbLf
+    Next key
+End Function
 
 ' Читает ровно тот snapshot, который используется при экспорте в AutoCAD,
 ' не создавая AutoCAD application и не запуская solver. Текст нужен только

@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_contour_arc_positive_v223.xlsm
+SOURCE_SHA256: 2A211839469722EE697E743941E7DF3EAFD938041E7D65954DB776101ED17A31
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e33c634aeaf744f5b1f4ef906628d33a\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_READ_LIFECYCLE: passed=3929; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

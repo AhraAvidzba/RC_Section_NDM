@@ -930,7 +930,7 @@ Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
             DrawContourArcAsLines data.AnnotationNormalX(i), data.AnnotationNormalY(i), _
                 data.AnnotationStartX(i), data.AnnotationStartY(i), _
                 data.AnnotationEndX(i), data.AnnotationEndY(i), _
-                ParseInvariantDouble(data.AnnotationText(i)), RGB(25, 25, 25), 1.7
+                data.AnnotationSweepAngle(i), RGB(25, 25, 25), 1.7
         End If
     Next i
 End Sub
@@ -1065,7 +1065,7 @@ Private Sub CollectContourIntersections(ByVal data As CSectionPlotDataReader, By
                 data.AnnotationStartY(i), data.AnnotationEndX(i), values, count
         ElseIf StrComp(data.AnnotationType(i), "CONTOUR_ARC", vbTextCompare) = 0 Then
             AddArcLineIntersectionT x0, y0, dirX, dirY, data.AnnotationNormalX(i), data.AnnotationNormalY(i), _
-                data.AnnotationStartX(i), data.AnnotationStartY(i), ParseInvariantDouble(data.AnnotationText(i)), values, count
+                data.AnnotationStartX(i), data.AnnotationStartY(i), data.AnnotationSweepAngle(i), values, count
         End If
     Next i
 End Sub
@@ -2336,15 +2336,6 @@ Private Function FormatPlotValue(ByVal value As Double, ByVal precision As Long)
         pattern = "0." & String$(precision, "0")
     End If
     FormatPlotValue = Replace$(Format$(value, pattern), ",", ".")
-End Function
-
-' Читает число с точкой как десятичным разделителем независимо от локали Excel.
-Private Function ParseInvariantDouble(ByVal textValue As String) As Double
-    On Error GoTo InvalidValue
-    ParseInvariantDouble = CDbl(Replace$(Trim$(textValue), ".", Application.DecimalSeparator))
-    Exit Function
-InvalidValue:
-    ParseInvariantDouble = Val(Replace$(Trim$(textValue), ",", "."))
 End Function
 
 ' Форматирует число компактно и независимо от локали для подписей схемы.

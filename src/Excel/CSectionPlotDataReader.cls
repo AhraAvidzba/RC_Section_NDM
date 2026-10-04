@@ -80,6 +80,7 @@ Private mAnnotationEndY() As Double ' Конец линии/размера в к
 Private mAnnotationNormalX() As Double ' Наружная нормаль semantic-аннотации.
 Private mAnnotationNormalY() As Double ' Наружная нормаль semantic-аннотации.
 Private mAnnotationText() As String ' Готовый текст подписи или размера.
+Private mAnnotationSweepAngle() As Double ' Проверенный signed sweep CONTOUR_ARC, рад; для остальных типов 0.
 Private mUnits As CUnitSystem ' Единый адаптер единиц самого snapshot; текущий Config не меняет сохраненные числа.
 
 ' Создает один адаптер для всего чтения, без отдельных объектов на каждый
@@ -697,6 +698,12 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             endY = ReadAnnotationNumber(data(rowIndex, colEndY), anchor, rowIndex, colEndY, "EndY")
             normalX = ReadAnnotationNumber(data(rowIndex, colNormalX), anchor, rowIndex, colNormalX, "OutsideNormalX")
             normalY = ReadAnnotationNumber(data(rowIndex, colNormalY), anchor, rowIndex, colNormalY, "OutsideNormalY")
+            Dim sweepAngle As Double
+            sweepAngle = 0#
+            If StrComp(annotationType, "CONTOUR_ARC", vbTextCompare) = 0 Then
+                sweepAngle = ReadContourArcSweep(data(rowIndex, colText), anchor.Parent.Name & "!" & _
+                    anchor.Offset(rowIndex - 1, colText - 1).Address(False, False))
+            End If
             textValue = ReadAnnotationText(data(rowIndex, colText), anchor, rowIndex, colText, "Text")
             mAnnotationCount = mAnnotationCount + 1
             ReDim Preserve mAnnotationType(1 To mAnnotationCount)
@@ -707,6 +714,7 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             ReDim Preserve mAnnotationNormalX(1 To mAnnotationCount)
             ReDim Preserve mAnnotationNormalY(1 To mAnnotationCount)
             ReDim Preserve mAnnotationText(1 To mAnnotationCount)
+            ReDim Preserve mAnnotationSweepAngle(1 To mAnnotationCount)
             mAnnotationType(mAnnotationCount) = annotationType
             mAnnotationStartX(mAnnotationCount) = OutputLengthToInternalByUnit(startX, lengthUnit)
             mAnnotationStartY(mAnnotationCount) = OutputLengthToInternalByUnit(startY, lengthUnit)
@@ -720,6 +728,7 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
                 mAnnotationNormalY(mAnnotationCount) = normalY
             End If
             mAnnotationText(mAnnotationCount) = textValue
+            mAnnotationSweepAngle(mAnnotationCount) = sweepAngle
         End If
     Next rowIndex
 End Sub
@@ -810,6 +819,7 @@ Private Sub ResetReaderState()
     Erase mAnnotationNormalX
     Erase mAnnotationNormalY
     Erase mAnnotationText
+    Erase mAnnotationSweepAngle
 End Sub
 
 ' Читает таблицу Results от именованного якоря, не полагаясь на CurrentRegion.
@@ -1154,4 +1164,6 @@ Public Property Get AnnotationEndY(ByVal index As Long) As Double: AnnotationEnd
 Public Property Get AnnotationNormalX(ByVal index As Long) As Double: AnnotationNormalX = mAnnotationNormalX(index): End Property
 Public Property Get AnnotationNormalY(ByVal index As Long) As Double: AnnotationNormalY = mAnnotationNormalY(index): End Property
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property
+' Отдает готовый проверенный угол; plotter не разбирает текст Results повторно.
+Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: AnnotationSweepAngle = mAnnotationSweepAngle(index): End Property
 
