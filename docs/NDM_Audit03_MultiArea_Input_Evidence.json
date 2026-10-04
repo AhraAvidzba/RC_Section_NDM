@@ -1,0 +1,74 @@
+{
+  "scope": "Directed input-structure evidence, not full Audit03 acceptance",
+  "baselineCommit": "91cdddb0",
+  "productionOwners": ["CSystemSettingsReader"],
+  "newClasses": 0,
+  "numericalModelChanged": false,
+  "expectedOrToleranceChanged": false,
+  "invalidCases": 24,
+  "tableFormats": 6,
+  "positionsPerFormat": 2,
+  "entrypointsPerPosition": 2,
+  "equilibriumCases": 0,
+  "setupFailures": {
+    "versions": [239, 240, 241, 242, 243, 244, 245],
+    "passedPerRun": 0,
+    "failedPerRun": 1,
+    "classification": "NotRun: union-name fixture creation/resolution, before reader assertions"
+  },
+  "frozenNegative": {
+    "version": 246,
+    "passed": 93,
+    "failed": 64,
+    "log": "docs/regression/Audit03/multi_area_negative_v246_2026-10-04.log",
+    "book": "docs/regression/Audit03/RC_Section_NDM_multi_area_negative_v246.xlsm",
+    "bookSha256": "02FE6D174C030658E6B0491FAB008C4DEB19AE65981566FBDFEC84943A335782"
+  },
+  "finalPositive": {
+    "version": 247,
+    "passed": 157,
+    "failed": 0,
+    "log": "docs/regression/Audit03/multi_area_positive_final_v247_2026-10-04.log",
+    "book": "docs/regression/Audit03/RC_Section_NDM_multi_area_positive_v247.xlsm",
+    "bookSha256": "9CAD0662A85E7971605C671FA15450DFCA0566A1BEB9184E91B5274F62CDCE86"
+  },
+  "neighborGates": {
+    "settingsTables": [581, 0],
+    "generalRun": [152, 0],
+    "unitSign": [588, 0],
+    "material": [1442, 0],
+    "plot": [3220, 0],
+    "structure": [27, 0]
+  },
+  "help": {
+    "failed": 0,
+    "rows": 2011,
+    "links": 140,
+    "shapes": 118,
+    "preservedInputs": 760,
+    "previousV238InputsEqual": true,
+    "actualContractCells": ["A25", "A26", "A27", "A28"]
+  },
+  "sourceExport": {
+    "actualComponents": 111,
+    "matchingModules": 106,
+    "sourceModules": 106,
+    "failed": 0,
+    "path": "docs/regression/Audit03/VBA_All_Code_multi_area_v247_2026-10-04.txt",
+    "sha256": "42597B91BB582BF74C4D00A4EC50F2786F658F0F0728C1878E5D4217A974A301"
+  },
+  "registry": {
+    "acceptedActiveFields": 707,
+    "inventoryFields": 1064,
+    "editableFields": 760,
+    "editablePending": 53,
+    "changedByThisCut": false,
+    "fullAcceptance": false
+  },
+  "fullEightSuiteOffOnRun": false,
+  "namedUnionAreasBranchVerified": false,
+  "namedUnionLimitation": "Excel RefersToRange does not resolve fixture union Names; direct Union.Range proves Value2 loss, workbook path proves unavailable-name handling",
+  "pixelUiAcceptance": false,
+  "actualDwgAcceptance": false,
+  "goalComplete": false
+}

@@ -1,0 +1,603 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_multi_area_positive_v247.xlsm
+SOURCE_SHA256: 9CAD0662A85E7971605C671FA15450DFCA0566A1BEB9184E91B5274F62CDCE86
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_45d19f9f7d97459a81c17204f0ad895b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestWorkbookInterface.RunAudit03UnitSignChoiceTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03UnitSignChoiceTests; 2026-10-04T15:31:22
+EXCEL_AFTER_SUITE: pid=23476; workingSet=216969216; privateBytes=168407040; cpu=17007.578125
+EXCEL_AFTER_SUITE: pid=25392; workingSet=148041728; privateBytes=111218688; cpu=7.84375
+OK: audit03.unitChoice.Units.Length.Input.validation
+OK: audit03.unitChoice.Units.Length.Input.mm.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Length.Input.mm.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Length.Input.mm.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Length.Input.mm.L4; actual=2.; expected=2.
+OK: audit03.unitChoice.Units.Length.Input.cm.value-123.456; actual=-1234.56; expected=-1234.56
+OK: audit03.unitChoice.Units.Length.Input.cm.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Length.Input.cm.value123.456; actual=1234.56; expected=1234.56
+OK: audit03.unitChoice.Units.Length.Input.cm.L4; actual=20000.; expected=20000.
+OK: audit03.unitChoice.Units.Length.Input.m.value-123.456; actual=-123456.; expected=-123456.
+OK: audit03.unitChoice.Units.Length.Input.m.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Length.Input.m.value123.456; actual=123456.; expected=123456.
+OK: audit03.unitChoice.Units.Length.Input.m.L4; actual=2000000000000.; expected=2000000000000.
+OK: audit03.unitChoice.Units.Length.Input.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Input.invalid.reason
+OK: audit03.unitChoice.Units.Length.Input.invalid.address
+OK: audit03.unitChoice.Units.Length.Input.invalid.action
+OK: audit03.unitChoice.Units.Length.Input.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Input.invalid.reason
+OK: audit03.unitChoice.Units.Length.Input.invalid.address
+OK: audit03.unitChoice.Units.Length.Input.invalid.action
+OK: audit03.unitChoice.Units.Length.Input.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Input.invalid.reason
+OK: audit03.unitChoice.Units.Length.Input.invalid.address
+OK: audit03.unitChoice.Units.Length.Input.invalid.action
+OK: audit03.unitChoice.Units.Length.Input.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Input.invalid.reason
+OK: audit03.unitChoice.Units.Length.Input.invalid.address
+OK: audit03.unitChoice.Units.Length.Input.invalid.action
+OK: audit03.unitChoice.Units.Length.Input.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Input.invalid.reason
+OK: audit03.unitChoice.Units.Length.Input.invalid.address
+OK: audit03.unitChoice.Units.Length.Input.invalid.action
+OK: audit03.unitChoice.Units.Length.Input.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Length.Input.invalid.reason
+OK: audit03.unitChoice.Units.Length.Input.invalid.address
+OK: audit03.unitChoice.Units.Length.Input.invalid.action
+OK: audit03.unitChoice.Units.Length.Input.recovery
+OK: audit03.unitChoice.Units.Length.Output.validation
+OK: audit03.unitChoice.Units.Length.Output.mm.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Length.Output.mm.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Length.Output.mm.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Length.Output.mm.reverseL4; actual=2.; expected=2.
+OK: audit03.unitChoice.Units.Length.Output.mm.L4; actual=2.; expected=2.
+OK: audit03.unitChoice.Units.Length.Output.cm.value-123.456; actual=-12.3456; expected=-12.3456
+OK: audit03.unitChoice.Units.Length.Output.cm.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Length.Output.cm.value123.456; actual=12.3456; expected=12.3456
+OK: audit03.unitChoice.Units.Length.Output.cm.reverseL4; actual=20000.; expected=20000.
+OK: audit03.unitChoice.Units.Length.Output.cm.L4; actual=0.0002; expected=0.0002
+OK: audit03.unitChoice.Units.Length.Output.m.value-123.456; actual=-0.123456; expected=-0.123456
+OK: audit03.unitChoice.Units.Length.Output.m.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Length.Output.m.value123.456; actual=0.123456; expected=0.123456
+OK: audit03.unitChoice.Units.Length.Output.m.reverseL4; actual=2000000000000.; expected=2000000000000.
+OK: audit03.unitChoice.Units.Length.Output.m.L4; actual=0.000000000002; expected=0.000000000002
+OK: audit03.unitChoice.Units.Length.Output.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Output.invalid.reason
+OK: audit03.unitChoice.Units.Length.Output.invalid.address
+OK: audit03.unitChoice.Units.Length.Output.invalid.action
+OK: audit03.unitChoice.Units.Length.Output.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Output.invalid.reason
+OK: audit03.unitChoice.Units.Length.Output.invalid.address
+OK: audit03.unitChoice.Units.Length.Output.invalid.action
+OK: audit03.unitChoice.Units.Length.Output.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Output.invalid.reason
+OK: audit03.unitChoice.Units.Length.Output.invalid.address
+OK: audit03.unitChoice.Units.Length.Output.invalid.action
+OK: audit03.unitChoice.Units.Length.Output.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Output.invalid.reason
+OK: audit03.unitChoice.Units.Length.Output.invalid.address
+OK: audit03.unitChoice.Units.Length.Output.invalid.action
+OK: audit03.unitChoice.Units.Length.Output.invalid.8.-2147216974
+OK: audit03.unitChoice.Units.Length.Output.invalid.reason
+OK: audit03.unitChoice.Units.Length.Output.invalid.address
+OK: audit03.unitChoice.Units.Length.Output.invalid.action
+OK: audit03.unitChoice.Units.Length.Output.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Length.Output.invalid.reason
+OK: audit03.unitChoice.Units.Length.Output.invalid.address
+OK: audit03.unitChoice.Units.Length.Output.invalid.action
+OK: audit03.unitChoice.Units.Length.Output.recovery
+OK: audit03.unitChoice.Units.Area.Input.validation
+OK: audit03.unitChoice.Units.Area.Input.mm2.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Area.Input.mm2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Area.Input.mm2.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Area.Input.cm2.value-123.456; actual=-12345.6; expected=-12345.6
+OK: audit03.unitChoice.Units.Area.Input.cm2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Area.Input.cm2.value123.456; actual=12345.6; expected=12345.6
+OK: audit03.unitChoice.Units.Area.Input.m2.value-123.456; actual=-123456000.; expected=-123456000.
+OK: audit03.unitChoice.Units.Area.Input.m2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Area.Input.m2.value123.456; actual=123456000.; expected=123456000.
+OK: audit03.unitChoice.Units.Area.Input.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Input.invalid.reason
+OK: audit03.unitChoice.Units.Area.Input.invalid.address
+OK: audit03.unitChoice.Units.Area.Input.invalid.action
+OK: audit03.unitChoice.Units.Area.Input.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Input.invalid.reason
+OK: audit03.unitChoice.Units.Area.Input.invalid.address
+OK: audit03.unitChoice.Units.Area.Input.invalid.action
+OK: audit03.unitChoice.Units.Area.Input.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Input.invalid.reason
+OK: audit03.unitChoice.Units.Area.Input.invalid.address
+OK: audit03.unitChoice.Units.Area.Input.invalid.action
+OK: audit03.unitChoice.Units.Area.Input.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Input.invalid.reason
+OK: audit03.unitChoice.Units.Area.Input.invalid.address
+OK: audit03.unitChoice.Units.Area.Input.invalid.action
+OK: audit03.unitChoice.Units.Area.Input.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Input.invalid.reason
+OK: audit03.unitChoice.Units.Area.Input.invalid.address
+OK: audit03.unitChoice.Units.Area.Input.invalid.action
+OK: audit03.unitChoice.Units.Area.Input.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Area.Input.invalid.reason
+OK: audit03.unitChoice.Units.Area.Input.invalid.address
+OK: audit03.unitChoice.Units.Area.Input.invalid.action
+OK: audit03.unitChoice.Units.Area.Input.recovery
+OK: audit03.unitChoice.Units.Area.Output.validation
+OK: audit03.unitChoice.Units.Area.Output.mm2.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Area.Output.mm2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Area.Output.mm2.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Area.Output.cm2.value-123.456; actual=-1.23456; expected=-1.23456
+OK: audit03.unitChoice.Units.Area.Output.cm2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Area.Output.cm2.value123.456; actual=1.23456; expected=1.23456
+OK: audit03.unitChoice.Units.Area.Output.m2.value-123.456; actual=-0.000123456; expected=-0.000123456
+OK: audit03.unitChoice.Units.Area.Output.m2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Area.Output.m2.value123.456; actual=0.000123456; expected=0.000123456
+OK: audit03.unitChoice.Units.Area.Output.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Output.invalid.reason
+OK: audit03.unitChoice.Units.Area.Output.invalid.address
+OK: audit03.unitChoice.Units.Area.Output.invalid.action
+OK: audit03.unitChoice.Units.Area.Output.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Output.invalid.reason
+OK: audit03.unitChoice.Units.Area.Output.invalid.address
+OK: audit03.unitChoice.Units.Area.Output.invalid.action
+OK: audit03.unitChoice.Units.Area.Output.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Output.invalid.reason
+OK: audit03.unitChoice.Units.Area.Output.invalid.address
+OK: audit03.unitChoice.Units.Area.Output.invalid.action
+OK: audit03.unitChoice.Units.Area.Output.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Output.invalid.reason
+OK: audit03.unitChoice.Units.Area.Output.invalid.address
+OK: audit03.unitChoice.Units.Area.Output.invalid.action
+OK: audit03.unitChoice.Units.Area.Output.invalid.8.-2147216973
+OK: audit03.unitChoice.Units.Area.Output.invalid.reason
+OK: audit03.unitChoice.Units.Area.Output.invalid.address
+OK: audit03.unitChoice.Units.Area.Output.invalid.action
+OK: audit03.unitChoice.Units.Area.Output.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Area.Output.invalid.reason
+OK: audit03.unitChoice.Units.Area.Output.invalid.address
+OK: audit03.unitChoice.Units.Area.Output.invalid.action
+OK: audit03.unitChoice.Units.Area.Output.recovery
+OK: audit03.unitChoice.Units.Force.Input.validation
+OK: audit03.unitChoice.Units.Force.Input.N.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Force.Input.N.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Force.Input.N.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Force.Input.kN.value-123.456; actual=-123456.; expected=-123456.
+OK: audit03.unitChoice.Units.Force.Input.kN.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Force.Input.kN.value123.456; actual=123456.; expected=123456.
+OK: audit03.unitChoice.Units.Force.Input.tf.value-123.456; actual=-1210689.7824; expected=-1210689.7824
+OK: audit03.unitChoice.Units.Force.Input.tf.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Force.Input.tf.value123.456; actual=1210689.7824; expected=1210689.7824
+OK: audit03.unitChoice.Units.Force.Input.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Input.invalid.reason
+OK: audit03.unitChoice.Units.Force.Input.invalid.address
+OK: audit03.unitChoice.Units.Force.Input.invalid.action
+OK: audit03.unitChoice.Units.Force.Input.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Input.invalid.reason
+OK: audit03.unitChoice.Units.Force.Input.invalid.address
+OK: audit03.unitChoice.Units.Force.Input.invalid.action
+OK: audit03.unitChoice.Units.Force.Input.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Input.invalid.reason
+OK: audit03.unitChoice.Units.Force.Input.invalid.address
+OK: audit03.unitChoice.Units.Force.Input.invalid.action
+OK: audit03.unitChoice.Units.Force.Input.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Input.invalid.reason
+OK: audit03.unitChoice.Units.Force.Input.invalid.address
+OK: audit03.unitChoice.Units.Force.Input.invalid.action
+OK: audit03.unitChoice.Units.Force.Input.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Input.invalid.reason
+OK: audit03.unitChoice.Units.Force.Input.invalid.address
+OK: audit03.unitChoice.Units.Force.Input.invalid.action
+OK: audit03.unitChoice.Units.Force.Input.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Force.Input.invalid.reason
+OK: audit03.unitChoice.Units.Force.Input.invalid.address
+OK: audit03.unitChoice.Units.Force.Input.invalid.action
+OK: audit03.unitChoice.Units.Force.Input.recovery
+OK: audit03.unitChoice.Units.Force.Output.validation
+OK: audit03.unitChoice.Units.Force.Output.N.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Force.Output.N.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Force.Output.N.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Force.Output.kN.value-123.456; actual=-0.123456; expected=-0.123456
+OK: audit03.unitChoice.Units.Force.Output.kN.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Force.Output.kN.value123.456; actual=0.123456; expected=0.123456
+OK: audit03.unitChoice.Units.Force.Output.tf.value-123.456; actual=-0.012589008479; expected=-0.012589008479
+OK: audit03.unitChoice.Units.Force.Output.tf.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Force.Output.tf.value123.456; actual=0.012589008479; expected=0.012589008479
+OK: audit03.unitChoice.Units.Force.Output.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Output.invalid.reason
+OK: audit03.unitChoice.Units.Force.Output.invalid.address
+OK: audit03.unitChoice.Units.Force.Output.invalid.action
+OK: audit03.unitChoice.Units.Force.Output.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Output.invalid.reason
+OK: audit03.unitChoice.Units.Force.Output.invalid.address
+OK: audit03.unitChoice.Units.Force.Output.invalid.action
+OK: audit03.unitChoice.Units.Force.Output.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Output.invalid.reason
+OK: audit03.unitChoice.Units.Force.Output.invalid.address
+OK: audit03.unitChoice.Units.Force.Output.invalid.action
+OK: audit03.unitChoice.Units.Force.Output.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Output.invalid.reason
+OK: audit03.unitChoice.Units.Force.Output.invalid.address
+OK: audit03.unitChoice.Units.Force.Output.invalid.action
+OK: audit03.unitChoice.Units.Force.Output.invalid.8.-2147216972
+OK: audit03.unitChoice.Units.Force.Output.invalid.reason
+OK: audit03.unitChoice.Units.Force.Output.invalid.address
+OK: audit03.unitChoice.Units.Force.Output.invalid.action
+OK: audit03.unitChoice.Units.Force.Output.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Force.Output.invalid.reason
+OK: audit03.unitChoice.Units.Force.Output.invalid.address
+OK: audit03.unitChoice.Units.Force.Output.invalid.action
+OK: audit03.unitChoice.Units.Force.Output.recovery
+OK: audit03.unitChoice.Units.Moment.Input.validation
+OK: audit03.unitChoice.Units.Moment.Input.N*mm.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Moment.Input.N*mm.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Moment.Input.N*mm.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Moment.Input.kN*m.value-123.456; actual=-123456000.; expected=-123456000.
+OK: audit03.unitChoice.Units.Moment.Input.kN*m.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Moment.Input.kN*m.value123.456; actual=123456000.; expected=123456000.
+OK: audit03.unitChoice.Units.Moment.Input.tf*m.value-123.456; actual=-1210689782.4; expected=-1210689782.4
+OK: audit03.unitChoice.Units.Moment.Input.tf*m.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Moment.Input.tf*m.value123.456; actual=1210689782.4; expected=1210689782.4
+OK: audit03.unitChoice.Units.Moment.Input.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Input.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Input.invalid.address
+OK: audit03.unitChoice.Units.Moment.Input.invalid.action
+OK: audit03.unitChoice.Units.Moment.Input.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Input.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Input.invalid.address
+OK: audit03.unitChoice.Units.Moment.Input.invalid.action
+OK: audit03.unitChoice.Units.Moment.Input.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Input.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Input.invalid.address
+OK: audit03.unitChoice.Units.Moment.Input.invalid.action
+OK: audit03.unitChoice.Units.Moment.Input.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Input.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Input.invalid.address
+OK: audit03.unitChoice.Units.Moment.Input.invalid.action
+OK: audit03.unitChoice.Units.Moment.Input.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Input.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Input.invalid.address
+OK: audit03.unitChoice.Units.Moment.Input.invalid.action
+OK: audit03.unitChoice.Units.Moment.Input.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Moment.Input.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Input.invalid.address
+OK: audit03.unitChoice.Units.Moment.Input.invalid.action
+OK: audit03.unitChoice.Units.Moment.Input.recovery
+OK: audit03.unitChoice.Units.Moment.Output.validation
+OK: audit03.unitChoice.Units.Moment.Output.N*mm.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Moment.Output.N*mm.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Moment.Output.N*mm.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Moment.Output.kN*m.value-123.456; actual=-0.000123456; expected=-0.000123456
+OK: audit03.unitChoice.Units.Moment.Output.kN*m.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Moment.Output.kN*m.value123.456; actual=0.000123456; expected=0.000123456
+OK: audit03.unitChoice.Units.Moment.Output.tf*m.value-123.456; actual=-0.000012589008; expected=-0.000012589008
+OK: audit03.unitChoice.Units.Moment.Output.tf*m.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Moment.Output.tf*m.value123.456; actual=0.000012589008; expected=0.000012589008
+OK: audit03.unitChoice.Units.Moment.Output.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Output.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Output.invalid.address
+OK: audit03.unitChoice.Units.Moment.Output.invalid.action
+OK: audit03.unitChoice.Units.Moment.Output.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Output.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Output.invalid.address
+OK: audit03.unitChoice.Units.Moment.Output.invalid.action
+OK: audit03.unitChoice.Units.Moment.Output.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Output.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Output.invalid.address
+OK: audit03.unitChoice.Units.Moment.Output.invalid.action
+OK: audit03.unitChoice.Units.Moment.Output.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Output.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Output.invalid.address
+OK: audit03.unitChoice.Units.Moment.Output.invalid.action
+OK: audit03.unitChoice.Units.Moment.Output.invalid.8.-2147216971
+OK: audit03.unitChoice.Units.Moment.Output.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Output.invalid.address
+OK: audit03.unitChoice.Units.Moment.Output.invalid.action
+OK: audit03.unitChoice.Units.Moment.Output.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Moment.Output.invalid.reason
+OK: audit03.unitChoice.Units.Moment.Output.invalid.address
+OK: audit03.unitChoice.Units.Moment.Output.invalid.action
+OK: audit03.unitChoice.Units.Moment.Output.recovery
+OK: audit03.unitChoice.Units.Stress.Input.validation
+OK: audit03.unitChoice.Units.Stress.Input.Pa.value-123.456; actual=-0.000123456; expected=-0.000123456
+OK: audit03.unitChoice.Units.Stress.Input.Pa.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Input.Pa.value123.456; actual=0.000123456; expected=0.000123456
+OK: audit03.unitChoice.Units.Stress.Input.kPa.value-123.456; actual=-0.123456; expected=-0.123456
+OK: audit03.unitChoice.Units.Stress.Input.kPa.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Input.kPa.value123.456; actual=0.123456; expected=0.123456
+OK: audit03.unitChoice.Units.Stress.Input.MPa.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Stress.Input.MPa.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Input.MPa.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Stress.Input.kgf/cm2.value-123.456; actual=-12.106897824; expected=-12.106897824
+OK: audit03.unitChoice.Units.Stress.Input.kgf/cm2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Input.kgf/cm2.value123.456; actual=12.106897824; expected=12.106897824
+OK: audit03.unitChoice.Units.Stress.Input.tf/m2.value-123.456; actual=-1.2106897824; expected=-1.2106897824
+OK: audit03.unitChoice.Units.Stress.Input.tf/m2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Input.tf/m2.value123.456; actual=1.2106897824; expected=1.2106897824
+OK: audit03.unitChoice.Units.Stress.Input.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Input.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Input.invalid.address
+OK: audit03.unitChoice.Units.Stress.Input.invalid.action
+OK: audit03.unitChoice.Units.Stress.Input.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Input.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Input.invalid.address
+OK: audit03.unitChoice.Units.Stress.Input.invalid.action
+OK: audit03.unitChoice.Units.Stress.Input.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Input.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Input.invalid.address
+OK: audit03.unitChoice.Units.Stress.Input.invalid.action
+OK: audit03.unitChoice.Units.Stress.Input.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Input.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Input.invalid.address
+OK: audit03.unitChoice.Units.Stress.Input.invalid.action
+OK: audit03.unitChoice.Units.Stress.Input.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Input.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Input.invalid.address
+OK: audit03.unitChoice.Units.Stress.Input.invalid.action
+OK: audit03.unitChoice.Units.Stress.Input.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Stress.Input.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Input.invalid.address
+OK: audit03.unitChoice.Units.Stress.Input.invalid.action
+OK: audit03.unitChoice.Units.Stress.Input.recovery
+OK: audit03.unitChoice.Units.Stress.Output.validation
+OK: audit03.unitChoice.Units.Stress.Output.Pa.value-123.456; actual=-123456000.; expected=-123456000.
+OK: audit03.unitChoice.Units.Stress.Output.Pa.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Output.Pa.value123.456; actual=123456000.; expected=123456000.
+OK: audit03.unitChoice.Units.Stress.Output.kPa.value-123.456; actual=-123456.; expected=-123456.
+OK: audit03.unitChoice.Units.Stress.Output.kPa.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Output.kPa.value123.456; actual=123456.; expected=123456.
+OK: audit03.unitChoice.Units.Stress.Output.MPa.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Stress.Output.MPa.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Output.MPa.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Stress.Output.kgf/cm2.value-123.456; actual=-1258.90084789403; expected=-1258.90084789403
+OK: audit03.unitChoice.Units.Stress.Output.kgf/cm2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Output.kgf/cm2.value123.456; actual=1258.90084789403; expected=1258.90084789403
+OK: audit03.unitChoice.Units.Stress.Output.tf/m2.value-123.456; actual=-12589.0084789403; expected=-12589.0084789403
+OK: audit03.unitChoice.Units.Stress.Output.tf/m2.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Stress.Output.tf/m2.value123.456; actual=12589.0084789403; expected=12589.0084789403
+OK: audit03.unitChoice.Units.Stress.Output.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Output.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Output.invalid.address
+OK: audit03.unitChoice.Units.Stress.Output.invalid.action
+OK: audit03.unitChoice.Units.Stress.Output.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Output.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Output.invalid.address
+OK: audit03.unitChoice.Units.Stress.Output.invalid.action
+OK: audit03.unitChoice.Units.Stress.Output.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Output.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Output.invalid.address
+OK: audit03.unitChoice.Units.Stress.Output.invalid.action
+OK: audit03.unitChoice.Units.Stress.Output.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Output.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Output.invalid.address
+OK: audit03.unitChoice.Units.Stress.Output.invalid.action
+OK: audit03.unitChoice.Units.Stress.Output.invalid.8.-2147216970
+OK: audit03.unitChoice.Units.Stress.Output.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Output.invalid.address
+OK: audit03.unitChoice.Units.Stress.Output.invalid.action
+OK: audit03.unitChoice.Units.Stress.Output.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Stress.Output.invalid.reason
+OK: audit03.unitChoice.Units.Stress.Output.invalid.address
+OK: audit03.unitChoice.Units.Stress.Output.invalid.action
+OK: audit03.unitChoice.Units.Stress.Output.recovery
+OK: audit03.unitChoice.Units.Curvature.Input.validation
+OK: audit03.unitChoice.Units.Curvature.Input.1/mm.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Curvature.Input.1/mm.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Curvature.Input.1/mm.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Curvature.Input.1/m.value-123.456; actual=-0.123456; expected=-0.123456
+OK: audit03.unitChoice.Units.Curvature.Input.1/m.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Curvature.Input.1/m.value123.456; actual=0.123456; expected=0.123456
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Input.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Input.recovery
+OK: audit03.unitChoice.Units.Curvature.Output.validation
+OK: audit03.unitChoice.Units.Curvature.Output.1/mm.value-123.456; actual=-123.456; expected=-123.456
+OK: audit03.unitChoice.Units.Curvature.Output.1/mm.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Curvature.Output.1/mm.value123.456; actual=123.456; expected=123.456
+OK: audit03.unitChoice.Units.Curvature.Output.1/m.value-123.456; actual=-123456.; expected=-123456.
+OK: audit03.unitChoice.Units.Curvature.Output.1/m.value0; actual=0.; expected=0.
+OK: audit03.unitChoice.Units.Curvature.Output.1/m.value123.456; actual=123456.; expected=123456.
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.8.-2147216969
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.10.-2147217195
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.reason
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.address
+OK: audit03.unitChoice.Units.Curvature.Output.invalid.action
+OK: audit03.unitChoice.Units.Curvature.Output.recovery
+OK: audit03.signChoice.Sign.N.User.validation
+OK: audit03.signChoice.N.output.0; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.N.User.input.0; actual=1206217.95; expected=1206217.95
+OK: audit03.signChoice.Sign.N.User.stressNotFlipped; actual=-12.; expected=-12.
+OK: audit03.signChoice.Sign.N.User.magnitudeNotFlipped; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.N.User.thresholdNotFlipped; actual=9806650.; expected=9806650.
+OK: audit03.signChoice.N.output.1; actual=-1.; expected=-1.
+OK: audit03.signChoice.Sign.N.User.input.1; actual=-1206217.95; expected=-1206217.95
+OK: audit03.signChoice.Sign.N.User.stressNotFlipped; actual=-12.; expected=-12.
+OK: audit03.signChoice.Sign.N.User.magnitudeNotFlipped; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.N.User.thresholdNotFlipped; actual=9806650.; expected=9806650.
+OK: audit03.signChoice.Sign.N.User.invalid.-2147216968
+OK: audit03.signChoice.Sign.N.User.invalid.reason
+OK: audit03.signChoice.Sign.N.User.invalid.address
+OK: audit03.signChoice.Sign.N.User.invalid.action
+OK: audit03.signChoice.Sign.N.User.invalid.-2147216968
+OK: audit03.signChoice.Sign.N.User.invalid.reason
+OK: audit03.signChoice.Sign.N.User.invalid.address
+OK: audit03.signChoice.Sign.N.User.invalid.action
+OK: audit03.signChoice.Sign.N.User.invalid.-2147216968
+OK: audit03.signChoice.Sign.N.User.invalid.reason
+OK: audit03.signChoice.Sign.N.User.invalid.address
+OK: audit03.signChoice.Sign.N.User.invalid.action
+OK: audit03.signChoice.Sign.N.User.invalid.-2147216968
+OK: audit03.signChoice.Sign.N.User.invalid.reason
+OK: audit03.signChoice.Sign.N.User.invalid.address
+OK: audit03.signChoice.Sign.N.User.invalid.action
+OK: audit03.signChoice.Sign.N.User.invalid.-2147216968
+OK: audit03.signChoice.Sign.N.User.invalid.reason
+OK: audit03.signChoice.Sign.N.User.invalid.address
+OK: audit03.signChoice.Sign.N.User.invalid.action
+OK: audit03.signChoice.Sign.N.User.invalid.-2147217195
+OK: audit03.signChoice.Sign.N.User.invalid.reason
+OK: audit03.signChoice.Sign.N.User.invalid.address
+OK: audit03.signChoice.Sign.N.User.invalid.action
+OK: audit03.signChoice.Sign.N.User.recovery
+OK: audit03.signChoice.Sign.Mx.User.validation
+OK: audit03.signChoice.Mx.output.0; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.Mx.User.input.0; actual=1206217950.; expected=1206217950.
+OK: audit03.signChoice.Sign.Mx.User.stressNotFlipped; actual=-12.; expected=-12.
+OK: audit03.signChoice.Sign.Mx.User.magnitudeNotFlipped; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.Mx.User.thresholdNotFlipped; actual=9806650.; expected=9806650.
+OK: audit03.signChoice.Mx.output.1; actual=-1.; expected=-1.
+OK: audit03.signChoice.Sign.Mx.User.input.1; actual=-1206217950.; expected=-1206217950.
+OK: audit03.signChoice.Sign.Mx.User.stressNotFlipped; actual=-12.; expected=-12.
+OK: audit03.signChoice.Sign.Mx.User.magnitudeNotFlipped; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.Mx.User.thresholdNotFlipped; actual=9806650.; expected=9806650.
+OK: audit03.signChoice.Sign.Mx.User.invalid.-2147216967
+OK: audit03.signChoice.Sign.Mx.User.invalid.reason
+OK: audit03.signChoice.Sign.Mx.User.invalid.address
+OK: audit03.signChoice.Sign.Mx.User.invalid.action
+OK: audit03.signChoice.Sign.Mx.User.invalid.-2147216967
+OK: audit03.signChoice.Sign.Mx.User.invalid.reason
+OK: audit03.signChoice.Sign.Mx.User.invalid.address
+OK: audit03.signChoice.Sign.Mx.User.invalid.action
+OK: audit03.signChoice.Sign.Mx.User.invalid.-2147216967
+OK: audit03.signChoice.Sign.Mx.User.invalid.reason
+OK: audit03.signChoice.Sign.Mx.User.invalid.address
+OK: audit03.signChoice.Sign.Mx.User.invalid.action
+OK: audit03.signChoice.Sign.Mx.User.invalid.-2147216967
+OK: audit03.signChoice.Sign.Mx.User.invalid.reason
+OK: audit03.signChoice.Sign.Mx.User.invalid.address
+OK: audit03.signChoice.Sign.Mx.User.invalid.action
+OK: audit03.signChoice.Sign.Mx.User.invalid.-2147216967
+OK: audit03.signChoice.Sign.Mx.User.invalid.reason
+OK: audit03.signChoice.Sign.Mx.User.invalid.address
+OK: audit03.signChoice.Sign.Mx.User.invalid.action
+OK: audit03.signChoice.Sign.Mx.User.invalid.-2147217195
+OK: audit03.signChoice.Sign.Mx.User.invalid.reason
+OK: audit03.signChoice.Sign.Mx.User.invalid.address
+OK: audit03.signChoice.Sign.Mx.User.invalid.action
+OK: audit03.signChoice.Sign.Mx.User.recovery
+OK: audit03.signChoice.Sign.My.User.validation
+OK: audit03.signChoice.My.output.0; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.My.User.input.0; actual=1206217950.; expected=1206217950.
+OK: audit03.signChoice.Sign.My.User.stressNotFlipped; actual=-12.; expected=-12.
+OK: audit03.signChoice.Sign.My.User.magnitudeNotFlipped; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.My.User.thresholdNotFlipped; actual=9806650.; expected=9806650.
+OK: audit03.signChoice.My.output.1; actual=-1.; expected=-1.
+OK: audit03.signChoice.Sign.My.User.input.1; actual=-1206217950.; expected=-1206217950.
+OK: audit03.signChoice.Sign.My.User.stressNotFlipped; actual=-12.; expected=-12.
+OK: audit03.signChoice.Sign.My.User.magnitudeNotFlipped; actual=1.; expected=1.
+OK: audit03.signChoice.Sign.My.User.thresholdNotFlipped; actual=9806650.; expected=9806650.
+OK: audit03.signChoice.Sign.My.User.invalid.-2147216966
+OK: audit03.signChoice.Sign.My.User.invalid.reason
+OK: audit03.signChoice.Sign.My.User.invalid.address
+OK: audit03.signChoice.Sign.My.User.invalid.action
+OK: audit03.signChoice.Sign.My.User.invalid.-2147216966
+OK: audit03.signChoice.Sign.My.User.invalid.reason
+OK: audit03.signChoice.Sign.My.User.invalid.address
+OK: audit03.signChoice.Sign.My.User.invalid.action
+OK: audit03.signChoice.Sign.My.User.invalid.-2147216966
+OK: audit03.signChoice.Sign.My.User.invalid.reason
+OK: audit03.signChoice.Sign.My.User.invalid.address
+OK: audit03.signChoice.Sign.My.User.invalid.action
+OK: audit03.signChoice.Sign.My.User.invalid.-2147216966
+OK: audit03.signChoice.Sign.My.User.invalid.reason
+OK: audit03.signChoice.Sign.My.User.invalid.address
+OK: audit03.signChoice.Sign.My.User.invalid.action
+OK: audit03.signChoice.Sign.My.User.invalid.-2147216966
+OK: audit03.signChoice.Sign.My.User.invalid.reason
+OK: audit03.signChoice.Sign.My.User.invalid.address
+OK: audit03.signChoice.Sign.My.User.invalid.action
+OK: audit03.signChoice.Sign.My.User.invalid.-2147217195
+OK: audit03.signChoice.Sign.My.User.invalid.reason
+OK: audit03.signChoice.Sign.My.User.invalid.address
+OK: audit03.signChoice.Sign.My.User.invalid.action
+OK: audit03.signChoice.Sign.My.User.recovery
+OK: audit03.unitSignMissing.Units.Length.Input.inputError
+OK: audit03.unitSignMissing.Units.Length.Input.reason
+OK: audit03.unitSignMissing.Units.Length.Input.inputError
+OK: audit03.unitSignMissing.Units.Length.Input.reason
+OK: audit03.unitSignMissing.Units.Length.Input.recovery
+OK: audit03.unitSignMissing.Units.Area.Input.inputError
+OK: audit03.unitSignMissing.Units.Area.Input.reason
+OK: audit03.unitSignMissing.Units.Area.Input.inputError
+OK: audit03.unitSignMissing.Units.Area.Input.reason
+OK: audit03.unitSignMissing.Units.Area.Input.recovery
+OK: audit03.unitSignMissing.Units.Force.Input.inputError
+OK: audit03.unitSignMissing.Units.Force.Input.reason
+OK: audit03.unitSignMissing.Units.Force.Input.inputError
+OK: audit03.unitSignMissing.Units.Force.Input.reason
+OK: audit03.unitSignMissing.Units.Force.Input.recovery
+OK: audit03.unitSignMissing.Units.Moment.Input.inputError
+OK: audit03.unitSignMissing.Units.Moment.Input.reason
+OK: audit03.unitSignMissing.Units.Moment.Input.inputError
+OK: audit03.unitSignMissing.Units.Moment.Input.reason
+OK: audit03.unitSignMissing.Units.Moment.Input.recovery
+OK: audit03.unitSignMissing.Units.Stress.Input.inputError
+OK: audit03.unitSignMissing.Units.Stress.Input.reason
+OK: audit03.unitSignMissing.Units.Stress.Input.inputError
+OK: audit03.unitSignMissing.Units.Stress.Input.reason
+OK: audit03.unitSignMissing.Units.Stress.Input.recovery
+OK: audit03.unitSignMissing.Units.Curvature.Input.inputError
+OK: audit03.unitSignMissing.Units.Curvature.Input.reason
+OK: audit03.unitSignMissing.Units.Curvature.Input.inputError
+OK: audit03.unitSignMissing.Units.Curvature.Input.reason
+OK: audit03.unitSignMissing.Units.Curvature.Input.recovery
+OK: audit03.unitSignMissing.Sign.N.User.inputError
+OK: audit03.unitSignMissing.Sign.N.User.reason
+OK: audit03.unitSignMissing.Sign.N.User.inputError
+OK: audit03.unitSignMissing.Sign.N.User.reason
+OK: audit03.unitSignMissing.Sign.N.User.recovery
+OK: audit03.unitSignMissing.Sign.Mx.User.inputError
+OK: audit03.unitSignMissing.Sign.Mx.User.reason
+OK: audit03.unitSignMissing.Sign.Mx.User.inputError
+OK: audit03.unitSignMissing.Sign.Mx.User.reason
+OK: audit03.unitSignMissing.Sign.Mx.User.recovery
+OK: audit03.unitSignMissing.Sign.My.User.inputError
+OK: audit03.unitSignMissing.Sign.My.User.reason
+OK: audit03.unitSignMissing.Sign.My.User.inputError
+OK: audit03.unitSignMissing.Sign.My.User.reason
+OK: audit03.unitSignMissing.Sign.My.User.recovery
+TOTAL_AUDIT03_UNIT_SIGN_CHOICES: passed=588; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_45d19f9f7d97459a81c17204f0ad895b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03UnitSignChoiceTests; 2026-10-04T15:31:26
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

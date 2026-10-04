@@ -1,0 +1,27 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_multi_area_negative_v242.xlsm
+SOURCE_SHA256: E27404C7C5E2B14D03CFA8BB489B33E0FDCDCC1E8494862C60EB16E2C3A11590
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a1ac7bcf4a3d4f8c854d1275070168d8\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestConfiguration.RunAudit03MultiAreaInputTests =====
+SUITE_STARTED: modTestConfiguration.RunAudit03MultiAreaInputTests; 2026-10-04T15:18:27
+EXCEL_AFTER_SUITE: pid=22476; workingSet=140333056; privateBytes=126939136; cpu=2.59375
+EXCEL_AFTER_SUITE: pid=23476; workingSet=216371200; privateBytes=167772160; cpu=17006.125
+MULTI_AREA_SETUP: copy rngUnitSettings
+MULTI_AREA_SETUP: copy rngSignConventionSettings
+MULTI_AREA_SETUP: copy rngConcreteMaterialParameters
+MULTI_AREA_SETUP: copy rngSteelMaterialParameters
+MULTI_AREA_SETUP: copy rngSystemSettings
+MULTI_AREA_SETUP: copy rngPlotAnnotationSettings
+MULTI_AREA_SETUP: union rngUnitSettings|$A$5:$D$11|$DA$1200:$DD$1201
+FAIL: audit03.multiArea.runtime.1004.В формуле, которую вы ввели, обнаружена ошибка. 
+
+•Убедитесь, что формула содержит все необходимые круглые скобки и аргументы.
+• Проверьте правильность ссылки на другой лист или книгу. 
+• Не используйте вне формул знак равенства (=) или минус (-) в начале текста. 
+TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=0; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a1ac7bcf4a3d4f8c854d1275070168d8\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestConfiguration.RunAudit03MultiAreaInputTests; 2026-10-04T15:18:27
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

@@ -1,0 +1,13 @@
+MULTI_AREA_SETUP: copy rngUnitSettings
+MULTI_AREA_SETUP: copy rngSignConventionSettings
+MULTI_AREA_SETUP: copy rngConcreteMaterialParameters
+MULTI_AREA_SETUP: copy rngSteelMaterialParameters
+MULTI_AREA_SETUP: copy rngSystemSettings
+MULTI_AREA_SETUP: copy rngPlotAnnotationSettings
+MULTI_AREA_SETUP: union rngUnitSettings|$A$5:$D$11|$DA$1200:$DD$1201
+FAIL: audit03.multiArea.runtime.1004.В формуле, которую вы ввели, обнаружена ошибка. 
+
+•Убедитесь, что формула содержит все необходимые круглые скобки и аргументы.
+• Проверьте правильность ссылки на другой лист или книгу. 
+• Не используйте вне формул знак равенства (=) или минус (-) в начале текста. 
+TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=0; failed=1

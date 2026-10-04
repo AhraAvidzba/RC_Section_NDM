@@ -1,0 +1,225 @@
+MULTI_AREA_SETUP: copy rngUnitSettings
+MULTI_AREA_SETUP: copy rngSignConventionSettings
+MULTI_AREA_SETUP: copy rngConcreteMaterialParameters
+MULTI_AREA_SETUP: copy rngSteelMaterialParameters
+MULTI_AREA_SETUP: copy rngSystemSettings
+MULTI_AREA_SETUP: copy rngPlotAnnotationSettings
+MULTI_AREA_SETUP: union rngUnitSettings|$A$5:$D$11|$DA$1200:$DD$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$A$5:$D$11,InputConfig!$DA$1200:$DD$1201
+OK: audit03.multiArea.p0.rngUnitSettings.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p0.rngUnitSettings|areas=2|returnedRows=7|firstAreaRows=7|secondAreaRows=2
+OK: audit03.multiArea.p0.rngUnitSettings.named.typed
+OK: audit03.multiArea.p0.rngUnitSettings.named.name
+OK: audit03.multiArea.p0.rngUnitSettings.named.reason
+OK: audit03.multiArea.p0.rngUnitSettings.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngUnitSettings.named|code=-2147217188|secondAreaRead=False|На листе Config недоступна обязательная таблица "Единицы измерения" (имя rngUnitSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p0.rngUnitSettings.range.typed
+OK: audit03.multiArea.p0.rngUnitSettings.range.address
+OK: audit03.multiArea.p0.rngUnitSettings.range.reason
+OK: audit03.multiArea.p0.rngUnitSettings.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngUnitSettings.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка A5) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p0.rngUnitSettings.named.recovery
+OK: audit03.multiArea.p0.rngUnitSettings.named.recoveryValue
+OK: audit03.multiArea.p0.rngUnitSettings.range.recovery
+OK: audit03.multiArea.p0.rngUnitSettings.range.recoveryValue
+MULTI_AREA_SETUP: union rngUnitSettings|$CH$800:$CK$806|$DA$1200:$DD$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$CH$800:$CK$806,InputConfig!$DA$1200:$DD$1201
+OK: audit03.multiArea.p1.rngUnitSettings.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p1.rngUnitSettings|areas=2|returnedRows=7|firstAreaRows=7|secondAreaRows=2
+OK: audit03.multiArea.p1.rngUnitSettings.named.typed
+OK: audit03.multiArea.p1.rngUnitSettings.named.name
+OK: audit03.multiArea.p1.rngUnitSettings.named.reason
+OK: audit03.multiArea.p1.rngUnitSettings.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngUnitSettings.named|code=-2147217188|secondAreaRead=False|На листе Config недоступна обязательная таблица "Единицы измерения" (имя rngUnitSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p1.rngUnitSettings.range.typed
+OK: audit03.multiArea.p1.rngUnitSettings.range.address
+OK: audit03.multiArea.p1.rngUnitSettings.range.reason
+OK: audit03.multiArea.p1.rngUnitSettings.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngUnitSettings.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка CH800) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p1.rngUnitSettings.named.recovery
+OK: audit03.multiArea.p1.rngUnitSettings.named.recoveryValue
+OK: audit03.multiArea.p1.rngUnitSettings.range.recovery
+OK: audit03.multiArea.p1.rngUnitSettings.range.recoveryValue
+MULTI_AREA_SETUP: union rngSignConventionSettings|$A$20:$C$23|$DA$1200:$DC$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$A$20:$C$23,InputConfig!$DA$1200:$DC$1201
+OK: audit03.multiArea.p0.rngSignConventionSettings.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p0.rngSignConventionSettings|areas=2|returnedRows=4|firstAreaRows=4|secondAreaRows=2
+OK: audit03.multiArea.p0.rngSignConventionSettings.named.typed
+OK: audit03.multiArea.p0.rngSignConventionSettings.named.name
+OK: audit03.multiArea.p0.rngSignConventionSettings.named.reason
+OK: audit03.multiArea.p0.rngSignConventionSettings.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngSignConventionSettings.named|code=-2147217188|secondAreaRead=False|На листе Config недоступна обязательная таблица "Система знаков" (имя rngSignConventionSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p0.rngSignConventionSettings.range.typed
+OK: audit03.multiArea.p0.rngSignConventionSettings.range.address
+OK: audit03.multiArea.p0.rngSignConventionSettings.range.reason
+OK: audit03.multiArea.p0.rngSignConventionSettings.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngSignConventionSettings.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка A20) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p0.rngSignConventionSettings.named.recovery
+OK: audit03.multiArea.p0.rngSignConventionSettings.named.recoveryValue
+OK: audit03.multiArea.p0.rngSignConventionSettings.range.recovery
+OK: audit03.multiArea.p0.rngSignConventionSettings.range.recoveryValue
+MULTI_AREA_SETUP: union rngSignConventionSettings|$CH$800:$CJ$803|$DA$1200:$DC$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$CH$800:$CJ$803,InputConfig!$DA$1200:$DC$1201
+OK: audit03.multiArea.p1.rngSignConventionSettings.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p1.rngSignConventionSettings|areas=2|returnedRows=4|firstAreaRows=4|secondAreaRows=2
+OK: audit03.multiArea.p1.rngSignConventionSettings.named.typed
+OK: audit03.multiArea.p1.rngSignConventionSettings.named.name
+OK: audit03.multiArea.p1.rngSignConventionSettings.named.reason
+OK: audit03.multiArea.p1.rngSignConventionSettings.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngSignConventionSettings.named|code=-2147217188|secondAreaRead=False|На листе Config недоступна обязательная таблица "Система знаков" (имя rngSignConventionSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p1.rngSignConventionSettings.range.typed
+OK: audit03.multiArea.p1.rngSignConventionSettings.range.address
+OK: audit03.multiArea.p1.rngSignConventionSettings.range.reason
+OK: audit03.multiArea.p1.rngSignConventionSettings.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngSignConventionSettings.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка CH800) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p1.rngSignConventionSettings.named.recovery
+OK: audit03.multiArea.p1.rngSignConventionSettings.named.recoveryValue
+OK: audit03.multiArea.p1.rngSignConventionSettings.range.recovery
+OK: audit03.multiArea.p1.rngSignConventionSettings.range.recoveryValue
+MULTI_AREA_SETUP: union rngConcreteMaterialParameters|$A$30:$F$37|$DA$1200:$DF$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$A$30:$F$37,InputConfig!$DA$1200:$DF$1201
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p0.rngConcreteMaterialParameters|areas=2|returnedRows=8|firstAreaRows=8|secondAreaRows=2
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.named.typed
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.named.name
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.named.reason
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngConcreteMaterialParameters.named|code=-2147217188|secondAreaRead=False|Таблица параметров материала (именованный диапазон rngConcreteMaterialParameters) недоступна. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.range.typed
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.range.address
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.range.reason
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngConcreteMaterialParameters.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка A30) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.named.recovery
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.named.recoveryValue
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.range.recovery
+OK: audit03.multiArea.p0.rngConcreteMaterialParameters.range.recoveryValue
+MULTI_AREA_SETUP: union rngConcreteMaterialParameters|$CH$800:$CM$807|$DA$1200:$DF$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$CH$800:$CM$807,InputConfig!$DA$1200:$DF$1201
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p1.rngConcreteMaterialParameters|areas=2|returnedRows=8|firstAreaRows=8|secondAreaRows=2
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.named.typed
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.named.name
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.named.reason
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngConcreteMaterialParameters.named|code=-2147217188|secondAreaRead=False|Таблица параметров материала (именованный диапазон rngConcreteMaterialParameters) недоступна. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.range.typed
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.range.address
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.range.reason
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngConcreteMaterialParameters.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка CH800) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.named.recovery
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.named.recoveryValue
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.range.recovery
+OK: audit03.multiArea.p1.rngConcreteMaterialParameters.range.recoveryValue
+MULTI_AREA_SETUP: union rngSteelMaterialParameters|$A$50:$F$55|$DA$1200:$DF$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$A$50:$F$55,InputConfig!$DA$1200:$DF$1201
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p0.rngSteelMaterialParameters|areas=2|returnedRows=6|firstAreaRows=6|secondAreaRows=2
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.named.typed
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.named.name
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.named.reason
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngSteelMaterialParameters.named|code=-2147217188|secondAreaRead=False|Таблица параметров материала (именованный диапазон rngSteelMaterialParameters) недоступна. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.range.typed
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.range.address
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.range.reason
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngSteelMaterialParameters.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка A50) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.named.recovery
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.named.recoveryValue
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.range.recovery
+OK: audit03.multiArea.p0.rngSteelMaterialParameters.range.recoveryValue
+MULTI_AREA_SETUP: union rngSteelMaterialParameters|$CH$800:$CM$805|$DA$1200:$DF$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$CH$800:$CM$805,InputConfig!$DA$1200:$DF$1201
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p1.rngSteelMaterialParameters|areas=2|returnedRows=6|firstAreaRows=6|secondAreaRows=2
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.named.typed
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.named.name
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.named.reason
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngSteelMaterialParameters.named|code=-2147217188|secondAreaRead=False|Таблица параметров материала (именованный диапазон rngSteelMaterialParameters) недоступна. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.range.typed
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.range.address
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.range.reason
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngSteelMaterialParameters.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка CH800) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.named.recovery
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.named.recoveryValue
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.range.recovery
+OK: audit03.multiArea.p1.rngSteelMaterialParameters.range.recoveryValue
+MULTI_AREA_SETUP: union rngSystemSettings|$H$5:$L$132|$DA$1200:$DE$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$H$5:$L$132,InputConfig!$DA$1200:$DE$1201
+OK: audit03.multiArea.p0.rngSystemSettings.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p0.rngSystemSettings|areas=2|returnedRows=128|firstAreaRows=128|secondAreaRows=2
+OK: audit03.multiArea.p0.rngSystemSettings.named.typed
+OK: audit03.multiArea.p0.rngSystemSettings.named.name
+OK: audit03.multiArea.p0.rngSystemSettings.named.reason
+OK: audit03.multiArea.p0.rngSystemSettings.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngSystemSettings.named|code=-2147217188|secondAreaRead=False|На листе Config недоступна обязательная таблица "Системные настройки" (имя rngSystemSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p0.rngSystemSettings.range.typed
+OK: audit03.multiArea.p0.rngSystemSettings.range.address
+OK: audit03.multiArea.p0.rngSystemSettings.range.reason
+OK: audit03.multiArea.p0.rngSystemSettings.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngSystemSettings.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка H5) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p0.rngSystemSettings.named.recovery
+OK: audit03.multiArea.p0.rngSystemSettings.named.recoveryValue
+OK: audit03.multiArea.p0.rngSystemSettings.range.recovery
+OK: audit03.multiArea.p0.rngSystemSettings.range.recoveryValue
+MULTI_AREA_SETUP: union rngSystemSettings|$CH$800:$CL$927|$DA$1200:$DE$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$CH$800:$CL$927,InputConfig!$DA$1200:$DE$1201
+OK: audit03.multiArea.p1.rngSystemSettings.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p1.rngSystemSettings|areas=2|returnedRows=128|firstAreaRows=128|secondAreaRows=2
+OK: audit03.multiArea.p1.rngSystemSettings.named.typed
+OK: audit03.multiArea.p1.rngSystemSettings.named.name
+OK: audit03.multiArea.p1.rngSystemSettings.named.reason
+OK: audit03.multiArea.p1.rngSystemSettings.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngSystemSettings.named|code=-2147217188|secondAreaRead=False|На листе Config недоступна обязательная таблица "Системные настройки" (имя rngSystemSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p1.rngSystemSettings.range.typed
+OK: audit03.multiArea.p1.rngSystemSettings.range.address
+OK: audit03.multiArea.p1.rngSystemSettings.range.reason
+OK: audit03.multiArea.p1.rngSystemSettings.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngSystemSettings.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка CH800) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p1.rngSystemSettings.named.recovery
+OK: audit03.multiArea.p1.rngSystemSettings.named.recoveryValue
+OK: audit03.multiArea.p1.rngSystemSettings.range.recovery
+OK: audit03.multiArea.p1.rngSystemSettings.range.recoveryValue
+MULTI_AREA_SETUP: union rngPlotAnnotationSettings|$A$70:$F$83|$DA$1200:$DF$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$A$70:$F$83,InputConfig!$DA$1200:$DF$1201
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p0.rngPlotAnnotationSettings|areas=2|returnedRows=14|firstAreaRows=14|secondAreaRows=2
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.named.typed
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.named.name
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.named.reason
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngPlotAnnotationSettings.named|code=-2147217188|secondAreaRead=False|На листе Config недоступна обязательная таблица "Подписи и размеры схемы" (имя rngPlotAnnotationSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.range.typed
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.range.address
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.range.reason
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p0.rngPlotAnnotationSettings.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка A70) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.named.recovery
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.named.recoveryValue
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.range.recovery
+OK: audit03.multiArea.p0.rngPlotAnnotationSettings.range.recoveryValue
+MULTI_AREA_SETUP: union rngPlotAnnotationSettings|$CH$800:$CM$813|$DA$1200:$DF$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$CH$800:$CM$813,InputConfig!$DA$1200:$DF$1201
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.fixture
+MULTI_AREA_VALUE2: audit03.multiArea.p1.rngPlotAnnotationSettings|areas=2|returnedRows=14|firstAreaRows=14|secondAreaRows=2
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.named.typed
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.named.name
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.named.reason
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.named.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngPlotAnnotationSettings.named|code=-2147217188|secondAreaRead=False|На листе Config недоступна обязательная таблица "Подписи и размеры схемы" (имя rngPlotAnnotationSettings). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги.
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.range.typed
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.range.address
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.range.reason
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.range.action
+MULTI_AREA_ERROR: audit03.multiArea.p1.rngPlotAnnotationSettings.range|code=-2147217188|secondAreaRead=False|Таблица настроек  (лист InputConfig, ячейка CH800) содержит несколько отдельных областей. Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей в диспетчере имен Excel; заголовок и все строки данных должны находиться в этой области.
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.named.recovery
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.named.recoveryValue
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.range.recovery
+OK: audit03.multiArea.p1.rngPlotAnnotationSettings.range.recoveryValue
+OK: audit03.multiArea.noSolve
+MULTI_AREA_CASES: blocks=6; positions=2; entrypoints=2; invalidCases=24; equilibriumCases=0
+TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=157; failed=0

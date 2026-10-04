@@ -82,18 +82,27 @@ Private Sub ValidateWorkbookUnitAndSignKeys()
     Next key
 End Sub
 
-' Подключает необязательный для reader диапазон, если он есть в книге.
-' Отсутствие имени не маскирует ошибки значений найденного диапазона;
-' обязательность конкретных материалных параметров проверяет их потребитель.
+' Подключает необязательный для reader диапазон, если его имя есть в книге.
+' Отсутствующая таблица допустима до запроса материала потребителем, но
+' существующее поврежденное имя не должно скрываться как отсутствие ввода.
 Private Sub AppendNamedSettingsRangeIfExists(ByVal workbook As Object, ByVal rangeName As String)
-    On Error GoTo MissingRange
+    On Error GoTo MissingName
+    Dim nameObject As Object
+    Set nameObject = workbook.Names.Item(rangeName)
+    On Error GoTo BrokenRange
     Dim settingsRange As Object
-    Set settingsRange = workbook.Names.Item(rangeName).RefersToRange
+    Set settingsRange = nameObject.RefersToRange
     On Error GoTo 0
     AppendSettingsRange settingsRange, rangeName
     Exit Sub
-MissingRange:
+MissingName:
     On Error GoTo 0
+    Exit Sub
+BrokenRange:
+    Err.Raise vbObjectError + 4316, "CSystemSettingsReader.LoadFromWorkbook", _
+        "Таблица параметров материала (именованный диапазон " & rangeName & ") недоступна. " & _
+        "Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей " & _
+        "в диспетчере имен Excel или используйте исправный шаблон книги."
 End Sub
 
 ' Находит все входные geometry-диапазоны Config и добавляет их настройки в общий словарь.
@@ -212,13 +221,23 @@ Public Property Get MigrationWarning() As String
     MigrationWarning = mMigrationWarning
 End Property
 
-' Добавляет один диапазон настроек; специальные геометрические таблицы сначала распознаются по шапке.
+' Добавляет одну непрерывную таблицу настроек; специальные геометрические
+' форматы распознаются по шапке. Несмежные области отвергаются до Value2:
+' иначе Excel возвращает только первую область и часть ввода теряется.
 Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal rangeName As String = vbNullString)
     If settingsRange Is Nothing Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
         "Таблица настроек Config не передана."
     mLoadingSheet = CStr(settingsRange.Worksheet.Name)
     mLoadingRow = settingsRange.Row
     mLoadingColumn = settingsRange.Column
+    Dim tableDescription As String
+    tableDescription = "Таблица настроек"
+    If Len(rangeName) > 0 Then tableDescription = tableDescription & " " & rangeName
+    If settingsRange.Areas.Count <> 1 Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+        tableDescription & " (" & InputCellLocation(1, 1) & _
+        ") содержит несколько отдельных областей. Восстановите ссылку на один непрерывный " & _
+        "прямоугольный диапазон со всей таблицей в диспетчере имен Excel; " & _
+        "заголовок и все строки данных должны находиться в этой области."
     Dim data As Variant
     data = settingsRange.Value2
     If Not IsArray(data) Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _

@@ -826,6 +826,116 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
+' ==================== ДЛЯ ТЕСТОВ: НЕСМЕЖНЫЕ ОБЛАСТИ CONFIG ====================
+
+' Проверяет, что чтение Config не пропускает часть несмежного Excel.Range.
+' Настоящие таблицы копируются в собственную книгу; отдельный entrypoint
+' позволяет сохранить отрицательный опыт до изменения production-reader-а.
+Public Function RunAudit03MultiAreaInputTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TConfigTestStats
+    CheckMultiAreaInputs stats
+    LogLine stats, "TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03MultiAreaInputTests = stats.Report
+End Function
+
+' Для каждого формата сохраняет полноценную первую область и добавляет
+' вторую с контрольной строкой. Прямой Union.Range проверяет отказ до Value2
+' и текущий адрес. Если Excel не разрешает созданное имя через RefersToRange,
+' workbook-reader должен сообщить о недоступной таблице, а не игнорировать
+' ее поврежденное имя. После восстановления проверяет оба entrypoint-а.
+Private Sub CheckMultiAreaInputs(ByRef stats As TConfigTestStats)
+    Dim fixture As Object, config As Object, source As Object, table As Object, tail As Object, combined As Object
+    Dim names As Variant, addresses As Variant, keys As Variant, baselines(0 To 5) As Variant, baseline As Variant
+    Dim settings As CSystemSettingsReader, index As Long, position As Long, code As Long, solveCount As Long
+    Dim reason As String, prefix As String, originalReference As String, data As Variant
+    On Error GoTo FailedRun
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "InputConfig"
+    names = Array("rngUnitSettings", "rngSignConventionSettings", "rngConcreteMaterialParameters", _
+        "rngSteelMaterialParameters", "rngSystemSettings", "rngPlotAnnotationSettings")
+    addresses = Array("A5", "A20", "A30", "A50", "H5", "A70")
+    keys = Array("Units.Length.Input", "Sign.N.User", "Concrete.Rb.ULS", "Steel.Rsc.ULS", _
+        "General.ExecutionReportEnabled", "Plot.RebarLabels.Enabled")
+    For index = 0 To UBound(names)
+        LogLine stats, "MULTI_AREA_SETUP: copy " & CStr(names(index))
+        Set source = ThisWorkbook.Names.Item(CStr(names(index))).RefersToRange
+        baselines(index) = source.Value2
+        Set table = config.Range(CStr(addresses(index))).Resize(source.Rows.Count, source.Columns.Count)
+        table.NumberFormat = "@": table.Value2 = baselines(index)
+        fixture.Names.Add Name:=CStr(names(index)), RefersTo:="='" & config.Name & "'!" & table.Address
+    Next index
+    Set settings = New CSystemSettingsReader
+    For index = 0 To UBound(names)
+        baseline = baselines(index): originalReference = fixture.Names.Item(CStr(names(index))).RefersTo
+        For position = 0 To 1
+            If position = 0 Then Set table = config.Range(CStr(addresses(index))).Resize(UBound(baseline, 1), UBound(baseline, 2)) Else Set table = config.Range("CH800").Resize(UBound(baseline, 1), UBound(baseline, 2))
+            table.NumberFormat = "@": table.Value2 = baseline
+            Set tail = config.Range("DA1200").Resize(2, UBound(baseline, 2)): tail.ClearContents
+            tail.Cells(1, 1).Value2 = "Параметр": tail.Cells(1, 2).Value2 = "Значение": tail.Cells(1, 3).Value2 = "Ед."
+            tail.Cells(2, 1).Value2 = "Audit03.MultiArea.Marker": tail.Cells(2, 2).Value2 = "SECOND_AREA"
+            LogLine stats, "MULTI_AREA_SETUP: union " & CStr(names(index)) & "|" & table.Address & "|" & tail.Address
+            fixture.Names.Item(CStr(names(index))).Delete
+            Set combined = Application.Union(table, tail)
+            combined.Name = CStr(names(index))
+            LogLine stats, "MULTI_AREA_SETUP: resolve " & fixture.Names.Item(CStr(names(index))).RefersTo
+            prefix = "audit03.multiArea.p" & CStr(position) & "." & CStr(names(index))
+            Check stats, prefix & ".fixture", combined.Areas.Count = 2
+            data = combined.Value2
+            LogLine stats, "MULTI_AREA_VALUE2: " & prefix & "|areas=" & CStr(combined.Areas.Count) & _
+                "|returnedRows=" & CStr(UBound(data, 1)) & "|firstAreaRows=" & CStr(table.Rows.Count) & _
+                "|secondAreaRows=" & CStr(tail.Rows.Count)
+            Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+            Check stats, prefix & ".named.typed", code = vbObjectError + 4316
+            Check stats, prefix & ".named.name", InStr(1, reason, CStr(names(index)), vbTextCompare) > 0
+            Check stats, prefix & ".named.reason", InStr(1, reason, "област", vbTextCompare) > 0 Or _
+                InStr(1, reason, "недоступ", vbTextCompare) > 0
+            Check stats, prefix & ".named.action", InStr(1, reason, "Восстановите", vbTextCompare) > 0 And _
+                InStr(1, reason, "диспетчере имен", vbTextCompare) > 0
+            LogLine stats, "MULTI_AREA_ERROR: " & prefix & ".named|code=" & CStr(code) & _
+                "|secondAreaRead=" & CStr(settings.HasKey("Audit03.MultiArea.Marker")) & "|" & reason
+            Audit03ReadMultiAreaRange settings, combined, code, reason
+            Check stats, prefix & ".range.typed", code = vbObjectError + 4316
+            Check stats, prefix & ".range.address", InStr(1, reason, config.Name, vbTextCompare) > 0 And _
+                InStr(1, reason, table.Cells(1, 1).Address(False, False), vbTextCompare) > 0
+            Check stats, prefix & ".range.reason", InStr(1, reason, "област", vbTextCompare) > 0
+            Check stats, prefix & ".range.action", InStr(1, reason, "один непрерывный прямоугольный", vbTextCompare) > 0
+            LogLine stats, "MULTI_AREA_ERROR: " & prefix & ".range|code=" & CStr(code) & _
+                "|secondAreaRead=" & CStr(settings.HasKey("Audit03.MultiArea.Marker")) & "|" & reason
+            fixture.Names.Item(CStr(names(index))).RefersTo = "='" & config.Name & "'!" & table.Address
+            Audit03ReadSettingsTable settings, fixture, CStr(keys(index)), code, reason
+            Check stats, prefix & ".named.recovery", code = 0
+            If code = 0 Then Check stats, prefix & ".named.recoveryValue", Len(settings.GetRequiredString(CStr(keys(index)))) > 0
+            Audit03ReadMultiAreaRange settings, table, code, reason
+            Check stats, prefix & ".range.recovery", code = 0
+            If code = 0 Then Check stats, prefix & ".range.recoveryValue", Len(settings.GetRequiredString(CStr(keys(index)))) > 0
+        Next position
+        fixture.Names.Item(CStr(names(index))).RefersTo = originalReference
+    Next index
+    Check stats, "audit03.multiArea.noSolve", SectionEquilibriumSolveCount() = solveCount
+    LogLine stats, "MULTI_AREA_CASES: blocks=6; positions=2; entrypoints=2; invalidCases=24; equilibriumCases=0"
+    GoTo Cleanup
+FailedRun:
+    Check stats, "audit03.multiArea.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
+' Сохраняет исходную ошибку автономного reader-а, не применяя defaults и
+' не вызывая расчетные consumers; повторный вызов проверяет очистку reader-а.
+Private Sub Audit03ReadMultiAreaRange(ByVal settings As CSystemSettingsReader, ByVal table As Object, _
+        ByRef code As Long, ByRef reason As String)
+    On Error Resume Next
+    Err.Clear
+    settings.LoadFromRange table
+    code = Err.Number: reason = Err.Description
+    Err.Clear
+    On Error GoTo 0
+End Sub
+
 ' ==================== ДЛЯ ТЕСТОВ: ОБЩИЕ НАСТРОЙКИ ЗАПУСКА ====================
 
 ' Проверяет реальные потребители флагов отчета и информационных сообщений.

@@ -1,0 +1,8 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_multi_area_negative_v241.xlsm
+SOURCE_SHA256: CD50F021CD8FE51B81CF4DE1CDD1926E8B69B4F2E4BAB016A729E76DB21C9327
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e69d3d0838e64c28ab7d17ad2ba4fbe4\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.multiArea.runtime.1004.Application-defined or object-defined error
+TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=0; failed=1
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

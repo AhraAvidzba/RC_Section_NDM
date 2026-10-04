@@ -1,0 +1,16 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_multi_area_negative_v240.xlsm
+SOURCE_SHA256: 84AB1C6C98EFF27E08B90DFF25BF68E9398E5DF2BFEF3D9330A4676A97E91663
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_95ba4b601d3b4503ba190e745a74436b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestConfiguration.RunAudit03MultiAreaInputTests =====
+SUITE_STARTED: modTestConfiguration.RunAudit03MultiAreaInputTests; 2026-10-04T15:15:51
+EXCEL_AFTER_SUITE: pid=23476; workingSet=216371200; privateBytes=167772160; cpu=17005.765625
+EXCEL_AFTER_SUITE: pid=27096; workingSet=138801152; privateBytes=109297664; cpu=2.546875
+FAIL: audit03.multiArea.runtime.1004.Application-defined or object-defined error
+TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=0; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_95ba4b601d3b4503ba190e745a74436b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestConfiguration.RunAudit03MultiAreaInputTests; 2026-10-04T15:15:52
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

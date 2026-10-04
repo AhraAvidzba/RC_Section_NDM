@@ -51,6 +51,10 @@ Public Function RunWorkbookInterfaceTests() As String
     stats.Report = stats.Report & modTestConfiguration.RunAudit03SettingsTableGuardTests(settingsTablePassed, settingsTableFailed)
     stats.Passed = stats.Passed + settingsTablePassed
     stats.Failed = stats.Failed + settingsTableFailed
+    Dim multiAreaPassed As Long, multiAreaFailed As Long
+    stats.Report = stats.Report & modTestConfiguration.RunAudit03MultiAreaInputTests(multiAreaPassed, multiAreaFailed)
+    stats.Passed = stats.Passed + multiAreaPassed
+    stats.Failed = stats.Failed + multiAreaFailed
     Dim generalRunPassed As Long, generalRunFailed As Long
     stats.Report = stats.Report & modTestConfiguration.RunAudit03GeneralRunConfigTests(generalRunPassed, generalRunFailed)
     stats.Passed = stats.Passed + generalRunPassed

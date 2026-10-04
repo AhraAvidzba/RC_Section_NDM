@@ -1,0 +1,8 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_multi_area_negative_v244.xlsm
+SOURCE_SHA256: D79961562BB72AA4C721EB0634DD254885D157C782D396F8618CF070CAFF3519
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1e4af79cbad04f7293694965d16eaac9\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.multiArea.runtime.1004.В формуле, которую вы ввели, обнаружена ошибка. 
+TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=0; failed=1
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

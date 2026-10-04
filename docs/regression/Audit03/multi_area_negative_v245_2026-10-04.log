@@ -1,0 +1,24 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_multi_area_negative_v245.xlsm
+SOURCE_SHA256: 55CA26219FAF584542F262556091E9B66A9EF8F001634B9DC4A071AE4E006A78
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_448b4b66c0984f4885afa0efb2404aa2\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestConfiguration.RunAudit03MultiAreaInputTests =====
+SUITE_STARTED: modTestConfiguration.RunAudit03MultiAreaInputTests; 2026-10-04T15:22:53
+EXCEL_AFTER_SUITE: pid=16940; workingSet=146710528; privateBytes=128524288; cpu=2.625
+EXCEL_AFTER_SUITE: pid=23476; workingSet=216379392; privateBytes=167780352; cpu=17006.59375
+MULTI_AREA_SETUP: copy rngUnitSettings
+MULTI_AREA_SETUP: copy rngSignConventionSettings
+MULTI_AREA_SETUP: copy rngConcreteMaterialParameters
+MULTI_AREA_SETUP: copy rngSteelMaterialParameters
+MULTI_AREA_SETUP: copy rngSystemSettings
+MULTI_AREA_SETUP: copy rngPlotAnnotationSettings
+MULTI_AREA_SETUP: union rngUnitSettings|$A$5:$D$11|$DA$1200:$DD$1201
+MULTI_AREA_SETUP: resolve =InputConfig!$A$5:$D$11,InputConfig!$DA$1200:$DD$1201
+FAIL: audit03.multiArea.runtime.1004.Application-defined or object-defined error
+TOTAL_AUDIT03_MULTI_AREA_INPUT: passed=0; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_448b4b66c0984f4885afa0efb2404aa2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestConfiguration.RunAudit03MultiAreaInputTests; 2026-10-04T15:22:53
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

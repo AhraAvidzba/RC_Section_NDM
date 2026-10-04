@@ -1,0 +1,188 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_multi_area_positive_v247.xlsm
+SOURCE_SHA256: 9CAD0662A85E7971605C671FA15450DFCA0566A1BEB9184E91B5274F62CDCE86
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a6bb18d0a4b04b6bbbbd96a1b19ea49f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestConfiguration.RunAudit03GeneralRunConfigTests =====
+SUITE_STARTED: modTestConfiguration.RunAudit03GeneralRunConfigTests; 2026-10-04T15:30:50
+EXCEL_AFTER_SUITE: pid=14400; workingSet=141991936; privateBytes=117002240; cpu=3.515625
+EXCEL_AFTER_SUITE: pid=23476; workingSet=216969216; privateBytes=168407040; cpu=17007.578125
+OK: audit03.generalRun.report.Yes.p0
+OK: audit03.generalRun.report.content.p0
+OK: audit03.generalRun.report.No.p0
+OK: audit03.generalRun.messages.valid.p0.Yes
+OK: audit03.generalRun.messages.effect.p0.Yes
+OK: audit03.generalRun.messages.valid.p0.No
+OK: audit03.generalRun.messages.effect.p0.No
+OK: audit03.generalRun.messages.valid.p0. TRUE 
+OK: audit03.generalRun.messages.effect.p0. TRUE 
+OK: audit03.generalRun.messages.valid.p0. FALSE 
+OK: audit03.generalRun.messages.effect.p0. FALSE 
+OK: audit03.generalRun.messages.valid.p0.1
+OK: audit03.generalRun.messages.effect.p0.1
+OK: audit03.generalRun.messages.valid.p0.0
+OK: audit03.generalRun.messages.effect.p0.0
+OK: audit03.generalRun.messages.valid.p0.Да
+OK: audit03.generalRun.messages.effect.p0.Да
+OK: audit03.generalRun.messages.valid.p0.Нет
+OK: audit03.generalRun.messages.effect.p0.Нет
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v0.rejected
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v0.typed
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v0.key
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v0.action
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v0.address
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v0.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v0|Настройка General.ExecutionReportEnabled (лист RunConfig, ячейка B7): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v1.rejected
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v1.typed
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v1.key
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v1.action
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v1.address
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v1.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v1|Настройка General.ExecutionReportEnabled (лист RunConfig, ячейка B7): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v2.rejected
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v2.typed
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v2.key
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v2.action
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v2.address
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v2.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v2|Настройка General.ExecutionReportEnabled (лист RunConfig, ячейка B7): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v3.rejected
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v3.typed
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v3.key
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v3.action
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v3.address
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v3.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v3|Настройка General.ExecutionReportEnabled (лист RunConfig, ячейка B7) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v4.rejected
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v4.typed
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v4.key
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v4.action
+OK: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v4.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.ExecutionReportEnabled.v4|Настройка General.ExecutionReportEnabled (лист Config, раздел "таблица исходных настроек"): Обязательное значение не задано. Восстановите строку General.ExecutionReportEnabled в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.recovery.p0.General.ExecutionReportEnabled
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v0.rejected
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v0.typed
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v0.key
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v0.action
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v0.address
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v0|Настройка General.NonCriticalMessagesEnabled (лист RunConfig, ячейка B8): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v1.rejected
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v1.typed
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v1.key
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v1.action
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v1.address
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v1|Настройка General.NonCriticalMessagesEnabled (лист RunConfig, ячейка B8): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v2.rejected
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v2.typed
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v2.key
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v2.action
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v2.address
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v2|Настройка General.NonCriticalMessagesEnabled (лист RunConfig, ячейка B8): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v3.rejected
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v3.typed
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v3.key
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v3.action
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v3.address
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v3|Настройка General.NonCriticalMessagesEnabled (лист RunConfig, ячейка B8) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v4.rejected
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v4.typed
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v4.key
+OK: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v4.action
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p0.General.NonCriticalMessagesEnabled.v4|Настройка General.NonCriticalMessagesEnabled (лист Config, раздел "таблица исходных настроек"): Обязательное значение не задано. Восстановите строку General.NonCriticalMessagesEnabled в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.recovery.p0.General.NonCriticalMessagesEnabled
+OK: audit03.generalRun.report.reinitialize.p0
+OK: audit03.generalRun.report.Yes.p1
+OK: audit03.generalRun.report.content.p1
+OK: audit03.generalRun.report.No.p1
+OK: audit03.generalRun.messages.valid.p1.Yes
+OK: audit03.generalRun.messages.effect.p1.Yes
+OK: audit03.generalRun.messages.valid.p1.No
+OK: audit03.generalRun.messages.effect.p1.No
+OK: audit03.generalRun.messages.valid.p1. TRUE 
+OK: audit03.generalRun.messages.effect.p1. TRUE 
+OK: audit03.generalRun.messages.valid.p1. FALSE 
+OK: audit03.generalRun.messages.effect.p1. FALSE 
+OK: audit03.generalRun.messages.valid.p1.1
+OK: audit03.generalRun.messages.effect.p1.1
+OK: audit03.generalRun.messages.valid.p1.0
+OK: audit03.generalRun.messages.effect.p1.0
+OK: audit03.generalRun.messages.valid.p1.Да
+OK: audit03.generalRun.messages.effect.p1.Да
+OK: audit03.generalRun.messages.valid.p1.Нет
+OK: audit03.generalRun.messages.effect.p1.Нет
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v0.rejected
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v0.typed
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v0.key
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v0.action
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v0.address
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v0.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v0|Настройка General.ExecutionReportEnabled (лист RunConfig, ячейка CI802): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v1.rejected
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v1.typed
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v1.key
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v1.action
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v1.address
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v1.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v1|Настройка General.ExecutionReportEnabled (лист RunConfig, ячейка CI802): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v2.rejected
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v2.typed
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v2.key
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v2.action
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v2.address
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v2.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v2|Настройка General.ExecutionReportEnabled (лист RunConfig, ячейка CI802): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v3.rejected
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v3.typed
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v3.key
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v3.action
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v3.address
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v3.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v3|Настройка General.ExecutionReportEnabled (лист RunConfig, ячейка CI802) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v4.rejected
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v4.typed
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v4.key
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v4.action
+OK: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v4.reset
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.ExecutionReportEnabled.v4|Настройка General.ExecutionReportEnabled (лист Config, раздел "таблица исходных настроек"): Обязательное значение не задано. Восстановите строку General.ExecutionReportEnabled в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.recovery.p1.General.ExecutionReportEnabled
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v0.rejected
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v0.typed
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v0.key
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v0.action
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v0.address
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v0|Настройка General.NonCriticalMessagesEnabled (лист RunConfig, ячейка CI803): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v1.rejected
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v1.typed
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v1.key
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v1.action
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v1.address
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v1|Настройка General.NonCriticalMessagesEnabled (лист RunConfig, ячейка CI803): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v2.rejected
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v2.typed
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v2.key
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v2.action
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v2.address
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v2|Настройка General.NonCriticalMessagesEnabled (лист RunConfig, ячейка CI803): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v3.rejected
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v3.typed
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v3.key
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v3.action
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v3.address
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v3|Настройка General.NonCriticalMessagesEnabled (лист RunConfig, ячейка CI803) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v4.rejected
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v4.typed
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v4.key
+OK: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v4.action
+GENERAL_RUN_ERROR: audit03.generalRun.invalid.p1.General.NonCriticalMessagesEnabled.v4|Настройка General.NonCriticalMessagesEnabled (лист Config, раздел "таблица исходных настроек"): Обязательное значение не задано. Восстановите строку General.NonCriticalMessagesEnabled в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.generalRun.recovery.p1.General.NonCriticalMessagesEnabled
+OK: audit03.generalRun.report.reinitialize.p1
+OK: audit03.generalRun.messages.noWorkbook
+OK: audit03.generalRun.noSolve
+GENERAL_RUN_CASES: positions=2; invalidVariants=20; equilibriumCases=0
+TOTAL_AUDIT03_GENERAL_RUN_CONFIG: passed=152; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a6bb18d0a4b04b6bbbbd96a1b19ea49f\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestConfiguration.RunAudit03GeneralRunConfigTests; 2026-10-04T15:30:51
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

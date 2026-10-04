@@ -69,6 +69,28 @@
 
 ## Актуальная Точка Продолжения
 
+- Общие флаги запуска зафиксированы `91cdddb0`. Multi-area срез v239-v247:
+  setup 0/1 v239-v245 сохранены как NotRun до assertions; frozen v246 93/64;
+  final v247 157/0. Реальный Union.Range показывает чтение только первой
+  области Value2. Reader отвергает его до потери строк, а существующее
+  поврежденное имя материала не игнорирует как отсутствующую optional-таблицу.
+  Шесть форматов, две позиции, 24 invalid cases, recovery/noSolve.
+  Settings tables 581/0, General run 152/0, Unit/Sign 588/0, Material 1442/0,
+  Plot 3220/0; structure 27/27. Help failed=0, 760 inputs сохранены после
+  save/reopen и между v238/v247; actual contract A25:A28. Source/export
+  106/106, 111 components. Book SHA
+  9CAD0662A85E7971605C671FA15450DFCA0566A1BEB9184E91B5274F62CDCE86;
+  export SHA 42597B91BB582BF74C4D00A4EC50F2786F658F0F0728C1878E5D4217A974A301.
+  Scope/ограничения: NDM_Audit03_MultiArea_Input_Review.md. Name.RefersToRange
+  в данной среде не разрешает union; фактический multi-area guard доказан
+  прямым Range, именованные сценарии проверяют ошибку недоступной таблицы.
+  Реестр неизменен: 707/1064, editable pending=53, fullAcceptance=False.
+  Main output/spec/user Excel сохранены; полный On/Off остается final gate.
+  Оценка всего аудита около 75%, остаток 14-22 активных часа, резерв до 28;
+  это взвешенная оценка, не доля формально закрытых требований.
+  Следом remaining Config/range/pairwise, geometry/metadata guards,
+  semantic review, финальные matrices/benchmarks/clean-update/release.
+
 - General Plot bridge зафиксирован `c0335b35`. Общие флаги запуска v236-v238:
   v236 setup failure/NotRun (неполный fixture); frozen negative v237 95/57;
   final v238 152/0. Report missing не подставляет No, selector сообщений
