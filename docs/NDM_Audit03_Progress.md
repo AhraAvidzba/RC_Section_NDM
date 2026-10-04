@@ -69,6 +69,30 @@
 
 ## Актуальная Точка Продолжения
 
+- Metadata-срез зафиксирован `1400b3b42eb76cc75353ac503c1a60bdb9dda255`.
+  Следующий AutoUpdate-срез v217-v219 подтверждает late flag validation,
+  missing default и очистку выключенной схемы без named-state. Negative
+  v217d 45/36; ошибки собственного fixture в v217/v217b/v217c отделены
+  в NDM_Audit03_Auto_Plot_Review.md. Production использует early required
+  Plot.Enabled и активный AutoUpdate; отключенный consumer не читается,
+  Chart сохраняется. Solver/search/expected/tolerance не менялись.
+  v218 directed 82/0, 20 variants, собственная полная копия, noSolve.
+  Frozen v219: general+metadata+auto 1962/0, imported-unit changes 228/0,
+  structure 27/27, formatting 1003/0, palette/reopen 355/0;
+  все source unchanged=True. Help 2004 rows/140 links/118 shapes, input/
+  formulas/validation/PrintArea сохранены. Results before/after SHA
+  E05C0BF950A1F5DA36E0BF42A1B9A7C7C68FBA4EA8006FC9B4F2470AC42B6C96,
+  styles 1EABA40A72D5A28392F11FC5D38F0D2B1E9B264FDFAD9F5514ACB9EE1A1E1132.
+  Book SHA 714394331AC3930418E8F21C785E7CDBCF2A9972D9513329F7886C2E5CBEF95F;
+  actual export 111 components, SHA
+  A3FC7805EBB2378C770388C12DA014E366942C492A8FF2F079A78DF6336211B3.
+  Source equality 106/106, failed=0; canonical содержит фактический
+  export. Census 106/4415/1705, semantic Pending. Full Off/On оставлен для
+  риска numerical изменений и финального release gate; v206 не переименован.
+  Registry 666/1064 пока не изменен: это directed consumer evidence,
+  не полная K03/range/pairwise приемка. Остальные metadata/arc parser,
+  Excel guard, extreme arithmetic и выпускная матрица остаются открытыми.
+
 - После checkpoint `ce232662e26477aeb481675706d0659aa5ef4784`
   выполнен metadata-срез v212-v216. Negative v212: 183/266; подтверждены
   зависимость координат/кривизн от порядка Output.*Unit, молчаливый False

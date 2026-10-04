@@ -25,10 +25,148 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     TestAudit03AnnotationLayoutContracts stats
     TestAudit03PlotEnableContracts stats
     TestAudit03SnapshotMetadataContracts stats
+    TestAudit03AutoPlotContracts stats
     AppendLine stats, "TOTAL_AUDIT03_GENERAL_PLOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03GeneralPlotTests = stats.Report
 End Function
+
+' Проверяет автоматическое обновление через настоящий workbook-сценарий.
+' Отдельная полная копия книги сохраняет Config/Results исходного fixture;
+' НДС-состояния не запрашиваются, счетчик solve не растет.
+Public Function RunAudit03AutoPlotTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03AutoPlotContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_AUTO_PLOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03AutoPlotTests = stats.Report
+End Function
+
+' Неверный активный выбор AutoUpdate отвергается до построения модели и
+' очистки Results. Общий Plot.Enabled=No не потребляет AutoUpdate и сохраняет
+' прежний Chart, в том числе если после запуска нет ни одного named-state.
+Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
+    Dim fixture As Object, config As Object, table As Object, cell As Object, profiles As Object, loads As Object
+    Dim chart As Object, marker As Object, baseline As Variant, bad As Variant, key As Variant
+    Dim path As String, row As Long, column As Long, profileColumn As Long, position As Long, cases As Long, mode As Long
+    Dim code As Long, reason As String, prefix As String, solveCount As Long, result As String
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    path = ThisWorkbook.Path & "\Audit03_AutoPlot_" & Format$(Now, "yyyymmdd_hhnnss") & ".xlsm"
+    ThisWorkbook.SaveCopyAs path
+    Set fixture = Application.Workbooks.Open(path, 0, False)
+    AssertTrue stats, "audit03.autoPlot.ownedCopy", StrComp(fixture.FullName, ThisWorkbook.FullName, vbTextCompare) <> 0
+    Set config = fixture.Worksheets.Item("Config")
+    Set table = fixture.Names.Item("rngSystemSettings").RefersToRange
+    Audit03SetPlotSetting table, "General.ExecutionReportEnabled", "No"
+    Audit03SetPlotSetting table, "Geometry.Type", "INVALID"
+    baseline = table.Value2
+    On Error Resume Next
+    Set chart = fixture.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    On Error GoTo Failed
+    If chart Is Nothing Then Set chart = fixture.Worksheets.Item("Расчет").ChartObjects.Add(41#, 53#, 700#, 480#)
+    chart.Name = "chtNDMSectionPlot"
+    Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_Audit03Sentinel"
+    fixture.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2 = "AUDIT03_PRESERVE"
+    For position = 0 To 1
+        If position = 1 Then Set table = config.Range("CH800").Resize(UBound(baseline, 1), UBound(baseline, 2))
+        table.NumberFormat = "@": table.Value2 = baseline
+        fixture.Names.Item("rngSystemSettings").RefersTo = "=Config!" & table.Address
+        For Each key In Array("Plot.Enabled", "Plot.AutoUpdateAfterCalculation")
+            For Each bad In Array("", "TODO", "INVALID", CVErr(2015))
+                cases = cases + 1: table.Value2 = baseline
+                Audit03SetPlotSetting table, "Plot.Enabled", "Yes"
+                Set cell = Audit03PlotSettingCell(table, CStr(key)): cell.Value2 = bad
+                Audit03CaptureCalculation fixture, code, reason, result
+                prefix = "audit03.autoPlot.invalid.p" & CStr(position) & "." & CStr(key) & ".v" & CStr(cases)
+                AssertTrue stats, prefix & ".rejected", code <> 0 And InStr(1, reason, CStr(key), vbTextCompare) > 0
+                AssertTrue stats, prefix & ".address", InStr(1, reason, "Config", vbTextCompare) > 0 And InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0
+                AssertTrue stats, prefix & ".snapshot", CStr(fixture.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2) = "AUDIT03_PRESERVE"
+                AssertTrue stats, prefix & ".chart", Audit03PlotShapeExists(chart, "Audit03Sentinel")
+                AppendLine stats, "AUTO_PLOT_ERROR: " & prefix & "|" & reason
+            Next bad
+        Next key
+        table.Value2 = baseline: Audit03SetPlotSetting table, "Plot.Enabled", "Yes"
+        Set cell = Audit03PlotSettingCell(table, "Plot.AutoUpdateAfterCalculation"): cell.Value2 = "Yes": cell.Offset(0, -1).Value2 = "Audit03.RemovedAutoUpdate"
+        Audit03CaptureCalculation fixture, code, reason, result
+        AssertTrue stats, "audit03.autoPlot.missing.p" & CStr(position), code <> 0 And InStr(1, reason, "Plot.AutoUpdateAfterCalculation", vbTextCompare) > 0
+        table.Value2 = baseline: Audit03SetPlotSetting table, "Plot.Enabled", "No"
+        Audit03SetPlotSetting table, "Plot.AutoUpdateAfterCalculation", CVErr(2015)
+        Audit03CaptureCalculation fixture, code, reason, result
+        AssertTrue stats, "audit03.autoPlot.inactive.p" & CStr(position), code <> 0 And InStr(1, reason, "Geometry.Type", vbTextCompare) > 0 And InStr(1, reason, "Plot.AutoUpdateAfterCalculation", vbTextCompare) = 0
+    Next position
+    ' Выполняем действительный stability-only запуск без НДС-состояний.
+    table.Value2 = baseline
+    Audit03SetPlotSetting table, "Geometry.Source", "Generated": Audit03SetPlotSetting table, "Geometry.Type", "Circle"
+    Audit03SetPlotSetting table, "Mesh.StepX", "100": Audit03SetPlotSetting table, "Mesh.StepY", "100"
+    Set profiles = fixture.Names.Item("rngCalculationProfiles").RefersToRange
+    For row = 1 To profiles.Rows.Count
+        For column = 3 To profiles.Columns.Count
+            If StrComp(Trim$(CStr(profiles.Cells(row, column).Value2)), "PR1", vbTextCompare) = 0 Then
+                profileColumn = column: Exit For
+            End If
+        Next column
+        If profileColumn > 0 Then Exit For
+    Next row
+    If profileColumn = 0 Then Err.Raise vbObjectError + 4250, "modTestPlotConfig", "В собственном fixture не найден ProfileId PR1."
+    For row = 2 To profiles.Rows.Count
+        Select Case CStr(profiles.Cells(row, 2).Value2)
+            Case "Calculation.Strength.DirectState", "Calculation.Strength.Capacity", "Calculation.Crack.Width"
+                profiles.Cells(row, profileColumn).Value2 = "No"
+            Case "Calculation.Stability.Enabled"
+                profiles.Cells(row, profileColumn).Value2 = "Yes"
+        End Select
+    Next row
+    Set loads = fixture.Names.Item("rngLoadCombinations").RefersToRange
+    loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).ClearContents
+    loads.Cells(2, 1).Value2 = "NO_STATE": loads.Cells(2, 2).Value2 = 1#: loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#
+    loads.Cells(2, 5).Value2 = "PR1": loads.Cells(2, 6).Value2 = "Auto"
+    For mode = 0 To 3
+        Audit03SetPlotSetting table, "Plot.Enabled", "Yes": Audit03SetPlotSetting table, "Plot.AutoUpdateAfterCalculation", "Yes"
+        Select Case mode
+            Case 0: Audit03SetPlotSetting table, "Plot.AutoUpdateAfterCalculation", "No"
+            Case 1: Audit03SetPlotSetting table, "Plot.Enabled", "No"
+            Case 2: Audit03SetPlotSetting table, "Plot.Enabled", "No": Audit03SetPlotSetting table, "Plot.AutoUpdateAfterCalculation", CVErr(2015)
+        End Select
+        If Not Audit03PlotShapeExists(chart, "Audit03Sentinel") Then
+            Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_Audit03Sentinel"
+        End If
+        cases = cases + 1: Audit03CaptureCalculation fixture, code, reason, result
+        prefix = "audit03.autoPlot.noState.mode" & CStr(mode)
+        AssertTrue stats, prefix & ".completed", code = 0
+        If code = 0 Then
+            reason = CStr(fixture.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 3).Value2)
+            AssertTrue stats, prefix & ".validProfile", reason = "OK" Or reason = "FAIL"
+        End If
+        If mode < 3 Then
+            AssertTrue stats, prefix & ".preserved", Audit03PlotShapeExists(chart, "Audit03Sentinel")
+        Else
+            AssertTrue stats, prefix & ".cleared", Not Audit03PlotShapeExists(chart, "Audit03Sentinel")
+        End If
+        AppendLine stats, "AUTO_PLOT_RUN: " & prefix & "|" & reason & "|" & result
+    Next mode
+    AssertTrue stats, "audit03.autoPlot.noSolve", SectionEquilibriumSolveCount() = solveCount
+    AppendLine stats, "AUTO_PLOT_CASES: variants=" & CStr(cases) & "; workbookFixtures=1; equilibriumCases=0"
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "audit03.autoPlot.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
+' Перехватывает workbook-ошибку без MsgBox; причины и реальные изменения
+' проверяет вызывающий тест, штатный расчет не подменяется fake-объектом.
+Private Sub Audit03CaptureCalculation(ByVal workbook As Object, ByRef code As Long, _
+        ByRef reason As String, ByRef result As String)
+    code = 0: reason = vbNullString: result = vbNullString
+    On Error GoTo Failed
+    result = RunSectionCalculationForWorkbook(workbook, False)
+    Exit Sub
+Failed:
+    code = Err.Number: reason = Err.Description
+    Err.Clear
+End Sub
 
 ' Проверяет метаданные сохраненного snapshot отдельно от расчетного ядра.
 ' Порядок строк, текущие Config units и перенос якоря не меняют координаты;

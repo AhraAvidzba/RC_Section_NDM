@@ -272,6 +272,12 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Источник геометрии", settings.GetRawString("Geometry.Source", "Generated")
     report.AddValue "Тип геометрии", settings.GetRawString("Geometry.Type", "-")
     report.AddValue "Профили расчета", "rngCalculationProfiles"
+
+    ' Проверяем активный выбор схемы до построения модели и очистки Results.
+    ' При общем No автоматическое обновление не является потребителем Config.
+    Dim plotEnabled As Boolean, autoUpdatePlot As Boolean
+    plotEnabled = settings.GetRequiredBoolean("Plot.Enabled")
+    If plotEnabled Then autoUpdatePlot = settings.GetRequiredBoolean("Plot.AutoUpdateAfterCalculation")
     
     Dim units As CUnitSystem
     Set units = New CUnitSystem
@@ -371,20 +377,19 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     ndmWriter.WriteResults workbook, section, materialProvider, batch, units
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
-    If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) And batch.StateAvailableCount > 0 Then
-        report.AddSection "Схема"
+    report.AddSection "Схема"
+    If Not plotEnabled Then
+        report.AddStep "Обновление схемы пропущено: Plot.Enabled = No. Существующая схема сохранена."
+    ElseIf Not autoUpdatePlot Then
+        report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
+    ElseIf batch.StateAvailableCount > 0 Then
         report.AddStep "Начато обновление схемы сечения по Results."
         UpdateSectionPlotForWorkbook workbook, False
         report.AddStep "Схема сечения обновлена по сохраненному снимку Results."
     Else
-        report.AddSection "Схема"
-        If settings.GetBoolean("Plot.AutoUpdateAfterCalculation", True) Then
-            ClearSectionPlotForNoData workbook, _
-                "Схема не обновлена: нет доступных расчетных состояний LC."
-            report.AddStep "Схема очищена: в Results нет доступных именованных расчетных состояний."
-        Else
-            report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
-        End If
+        ClearSectionPlotForNoData workbook, _
+            "Схема не обновлена: нет доступных расчетных состояний LC."
+        report.AddStep "Схема очищена: в Results нет доступных именованных расчетных состояний."
     End If
 
     Dim totalElapsedSeconds As Double

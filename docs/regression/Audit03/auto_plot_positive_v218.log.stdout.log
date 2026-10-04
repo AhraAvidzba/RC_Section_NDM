@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_auto_plot_positive_v218.xlsm
+SOURCE_SHA256: 99206A3EF4C80E66B94D366F746F1107D4D534842B2589B05D553D35FBF72423
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9617719dbaf84e5eb6b80d93e6df1962\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_AUTO_PLOT: passed=82; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

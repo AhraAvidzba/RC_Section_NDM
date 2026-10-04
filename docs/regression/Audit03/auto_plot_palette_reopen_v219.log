@@ -1,0 +1,480 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_auto_plot_positive_v219.xlsm
+SOURCE_SHA256: 714394331AC3930418E8F21C785E7CDBCF2A9972D9513329F7886C2E5CBEF95F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1006982712b842a0a911dfc17c747017\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03StatusPaletteTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03StatusPaletteTests; 2026-10-04T12:17:12
+EXCEL_AFTER_SUITE: pid=23476; workingSet=209686528; privateBytes=161046528; cpu=9935.671875
+EXCEL_AFTER_SUITE: pid=26012; workingSet=139780096; privateBytes=97120256; cpu=3.578125
+WIDTH_BEFORE: column=1; chars=15; points=82.5
+WIDTH_BEFORE: column=14; chars=10; points=56.25
+WIDTH_BEFORE: column=32; chars=10; points=56.25
+WIDTH_BEFORE: column=81; chars=10; points=56.25
+WIDTH_AFTER: column=1; chars=15; points=82.5
+WIDTH_AFTER: column=14; chars=10; points=56.25
+WIDTH_AFTER: column=32; chars=10; points=56.25
+WIDTH_AFTER: column=81; chars=10; points=56.25
+OK: batch.writer.fixedRow
+OK: batch.writer.noResultOverlap
+OK: batch.writer.rangeSize
+OK: batch.writer.strengthBlockPosition
+OK: batch.writer.crackBlockPosition
+OK: batch.writer.stabilityBlockPosition
+OK: batch.writer.meta.worstLabel
+OK: batch.writer.meta.worstValue
+OK: batch.writer.meta.solverCalls
+OK: batch.writer.meta.valuesCentered
+OK: batch.writer.header.statusGroup
+OK: batch.writer.header.reserveGroup
+OK: batch.writer.header.statusStrength
+OK: batch.writer.header.reserveStrength
+OK: batch.writer.header.centered
+OK: batch.writer.header.commentLeft
+OK: batch.writer.header.epsilon
+OK: batch.writer.header.sp63StatusPlaneMerge
+OK: batch.writer.header.sp63ReservePlaneMerge
+OK: batch.writer.header.id
+OK: batch.writer.header.idMergeRows
+OK: batch.writer.header.commentRow
+OK: batch.writer.worst.label
+OK: batch.writer.worst.commentDash
+OK: batch.writer.worst.resultCommentDash
+OK: batch.writer.worst.overallDash
+OK: batch.writer.worst.noNa
+OK: batch.writer.worst.bold
+OK: batch.writer.statusLegend.title
+OK: batch.writer.statusLegend.header
+OK: batch.writer.statusLegend.values
+OK: batch.writer.statusLegend.mergeOnlyTitle
+OK: batch.writer.statusLegend.noWrap
+OK: batch.writer.statusLegend.italicValues
+OK: batch.writer.statusLegend.colors
+OK: batch.writer.reserve.dataNotHeaderFill
+OK: batch.writer.worst.strain.combinationFound
+OK: batch.writer.worst.strain.reserve.bothNumeric
+OK: batch.writer.worst.strain.reserve; actual=23.654566819636; expected=23.654566819636
+OK: batch.writer.worst.capacity.combinationFound
+OK: batch.writer.worst.capacity.reserve.bothNumeric
+OK: batch.writer.worst.capacity.reserve; actual=9.761081549037; expected=9.761081549037
+OK: batch.writer.worst.crack.notApplicable
+OK: batch.writer.worst.longCrack.combinationFound
+OK: batch.writer.worst.longCrack.reserve.bothNumeric
+OK: batch.writer.worst.longCrack.reserve; actual=12.30931237624; expected=12.30931237624
+OK: batch.writer.worst.sp35p1eta.combinationFound
+OK: batch.writer.worst.sp35p1eta.reserve.bothNumeric
+OK: batch.writer.worst.sp35p1eta.reserve; actual=0.900052311686; expected=0.900052311686
+OK: batch.writer.worst.sp35p1table.notApplicable
+OK: batch.writer.worst.sp35p2eta.combinationFound
+OK: batch.writer.worst.sp35p2eta.reserve.bothNumeric
+OK: batch.writer.worst.sp35p2eta.reserve; actual=0.326769903983; expected=0.326769903983
+OK: batch.writer.worst.sp35p2table.notApplicable
+OK: batch.writer.worst.sp63p1.notApplicable
+OK: batch.writer.worst.sp63p2.notApplicable
+OK: batch.writer.data.firstId
+OK: batch.writer.data.capacityStatus
+OK: batch.writer.data.capacityReserve
+OK: batch.writer.data.statusColors
+OK: batch.writer.strength.statusColors
+OK: batch.writer.strength.absentZonesBlank
+OK: batch.writer.strength.presentTensionKept
+OK: batch.writer.crack.statusColors
+OK: batch.writer.crack.header.formationTitle
+OK: batch.writer.crack.header.crackedStateTitle
+OK: batch.writer.crack.header.title
+OK: batch.writer.crack.header.mcrcNote
+OK: batch.writer.crack.header.formationStatus
+OK: batch.writer.crack.header.state
+OK: batch.writer.crack.header.crackedStateStatus
+OK: batch.writer.crack.header.es
+OK: batch.writer.crack.header.normalStatusRu
+OK: batch.writer.crack.header.longStatusRu
+OK: batch.writer.crack.header.notesPlain
+OK: batch.writer.crack.header.notesFill
+OK: batch.writer.crack.availableRowsBorder
+OK: batch.writer.stability.statusColor
+OK: batch.writer.stability.header.summary
+OK: batch.writer.stability.header.statusWidth
+OK: batch.writer.stability.header.mainAxes
+OK: batch.writer.stability.header.noExtraTier
+OK: batch.writer.stability.header.sp35
+OK: batch.writer.stability.header.sp63
+OK: batch.writer.stability.header.notes
+OK: batch.writer.stability.header.notesPlain
+OK: batch.writer.stability.header.notesFill
+OK: batch.writer.stability.header.sp35NcrBranch
+OK: batch.writer.stability.header.sp63PlaneHeight
+OK: batch.writer.stability.header.sp35Ratio
+OK: batch.writer.stability.columnWidthA; actual=15.; expected=15.
+OK: batch.writer.stability.columnWidthN; actual=10.; expected=10.
+OK: batch.writer.stability.columnWidthAF; actual=10.; expected=10.
+OK: batch.writer.stability.columnWidthCC; actual=10.; expected=10.
+OK: batch.writer.columnPoints.1; actual=82.5; expected=82.5
+OK: batch.writer.columnPoints.14; actual=56.25; expected=56.25
+OK: batch.writer.columnPoints.32; actual=56.25; expected=56.25
+OK: batch.writer.columnPoints.81; actual=56.25; expected=56.25
+OK: batch.writer.stability.availableRowsBorder
+OK: batch.writer.stability.lowerRanges
+OK: batch.writer.reserve.W1.summaryRow
+OK: batch.writer.reserve.W1.strengthRow
+OK: batch.writer.reserve.W1.crackRow
+OK: batch.writer.reserve.W1.stabilityRow
+OK: batch.writer.reserve.W1.strain.bothNumeric
+OK: batch.writer.reserve.W1.strain; actual=23.654566819636; expected=23.654566819636
+OK: batch.writer.reserve.W1.capacity.bothNumeric
+OK: batch.writer.reserve.W1.capacity; actual=9.761081549037; expected=9.761081549037
+OK: batch.writer.reserve.W1.crack.bothNumeric
+OK: batch.writer.reserve.W1.crack; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.longCrack.bothNumeric
+OK: batch.writer.reserve.W1.longCrack; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp35p1eta.bothNumeric
+OK: batch.writer.reserve.W1.sp35p1eta; actual=0.900052311686; expected=0.900052311686
+OK: batch.writer.reserve.W1.sp35p1table.bothNumeric
+OK: batch.writer.reserve.W1.sp35p1table; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp35p2eta.bothNumeric
+OK: batch.writer.reserve.W1.sp35p2eta; actual=0.326769903983; expected=0.326769903983
+OK: batch.writer.reserve.W1.sp35p2table.bothNumeric
+OK: batch.writer.reserve.W1.sp35p2table; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp63p1.bothNumeric
+OK: batch.writer.reserve.W1.sp63p1; actual=0.; expected=0.
+OK: batch.writer.reserve.W1.sp63p2.bothNumeric
+OK: batch.writer.reserve.W1.sp63p2; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.summaryRow
+OK: batch.writer.reserve.W2.strengthRow
+OK: batch.writer.reserve.W2.crackRow
+OK: batch.writer.reserve.W2.stabilityRow
+OK: batch.writer.reserve.W2.strain.bothNumeric
+OK: batch.writer.reserve.W2.strain; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.capacity.bothNumeric
+OK: batch.writer.reserve.W2.capacity; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.crack.bothNumeric
+OK: batch.writer.reserve.W2.crack; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.longCrack.bothNumeric
+OK: batch.writer.reserve.W2.longCrack; actual=12.30931237624; expected=12.30931237624
+OK: batch.writer.reserve.W2.sp35p1eta.bothNumeric
+OK: batch.writer.reserve.W2.sp35p1eta; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp35p1table.bothNumeric
+OK: batch.writer.reserve.W2.sp35p1table; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp35p2eta.bothNumeric
+OK: batch.writer.reserve.W2.sp35p2eta; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp35p2table.bothNumeric
+OK: batch.writer.reserve.W2.sp35p2table; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp63p1.bothNumeric
+OK: batch.writer.reserve.W2.sp63p1; actual=0.; expected=0.
+OK: batch.writer.reserve.W2.sp63p2.bothNumeric
+OK: batch.writer.reserve.W2.sp63p2; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.summaryRow
+OK: batch.writer.reserve.WT.strengthRow
+OK: batch.writer.reserve.WT.crackRow
+OK: batch.writer.reserve.WT.stabilityRow
+OK: batch.writer.reserve.WT.strain.bothNumeric
+OK: batch.writer.reserve.WT.strain; actual=628.318530717959; expected=628.318530717959
+OK: batch.writer.reserve.WT.capacity.bothNumeric
+OK: batch.writer.reserve.WT.capacity; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.crack.bothNumeric
+OK: batch.writer.reserve.WT.crack; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.longCrack.bothNumeric
+OK: batch.writer.reserve.WT.longCrack; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp35p1eta.bothNumeric
+OK: batch.writer.reserve.WT.sp35p1eta; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp35p1table.bothNumeric
+OK: batch.writer.reserve.WT.sp35p1table; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp35p2eta.bothNumeric
+OK: batch.writer.reserve.WT.sp35p2eta; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp35p2table.bothNumeric
+OK: batch.writer.reserve.WT.sp35p2table; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp63p1.bothNumeric
+OK: batch.writer.reserve.WT.sp63p1; actual=0.; expected=0.
+OK: batch.writer.reserve.WT.sp63p2.bothNumeric
+OK: batch.writer.reserve.WT.sp63p2; actual=0.; expected=0.
+OK: audit03.palette.writer.rngBatchSummary.1.4
+PALETTE_WRITER: rngBatchSummary|cell=D13|status=FAIL|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.6
+PALETTE_WRITER: rngBatchSummary|cell=F13|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.7
+PALETTE_WRITER: rngBatchSummary|cell=G13|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.8
+PALETTE_WRITER: rngBatchSummary|cell=H13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.9
+PALETTE_WRITER: rngBatchSummary|cell=I13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.10
+PALETTE_WRITER: rngBatchSummary|cell=J13|status=FAIL|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.11
+PALETTE_WRITER: rngBatchSummary|cell=K13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.12
+PALETTE_WRITER: rngBatchSummary|cell=L13|status=FAIL|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.13
+PALETTE_WRITER: rngBatchSummary|cell=M13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.14
+PALETTE_WRITER: rngBatchSummary|cell=N13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.15
+PALETTE_WRITER: rngBatchSummary|cell=O13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.4
+PALETTE_WRITER: rngBatchSummary|cell=D14|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.6
+PALETTE_WRITER: rngBatchSummary|cell=F14|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.7
+PALETTE_WRITER: rngBatchSummary|cell=G14|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.8
+PALETTE_WRITER: rngBatchSummary|cell=H14|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.9
+PALETTE_WRITER: rngBatchSummary|cell=I14|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.10
+PALETTE_WRITER: rngBatchSummary|cell=J14|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.11
+PALETTE_WRITER: rngBatchSummary|cell=K14|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.12
+PALETTE_WRITER: rngBatchSummary|cell=L14|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.13
+PALETTE_WRITER: rngBatchSummary|cell=M14|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.14
+PALETTE_WRITER: rngBatchSummary|cell=N14|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.2.15
+PALETTE_WRITER: rngBatchSummary|cell=O14|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.4
+PALETTE_WRITER: rngBatchSummary|cell=D15|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.6
+PALETTE_WRITER: rngBatchSummary|cell=F15|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.7
+PALETTE_WRITER: rngBatchSummary|cell=G15|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.8
+PALETTE_WRITER: rngBatchSummary|cell=H15|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.9
+PALETTE_WRITER: rngBatchSummary|cell=I15|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.10
+PALETTE_WRITER: rngBatchSummary|cell=J15|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.11
+PALETTE_WRITER: rngBatchSummary|cell=K15|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.12
+PALETTE_WRITER: rngBatchSummary|cell=L15|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.13
+PALETTE_WRITER: rngBatchSummary|cell=M15|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.14
+PALETTE_WRITER: rngBatchSummary|cell=N15|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.3.15
+PALETTE_WRITER: rngBatchSummary|cell=O15|status=N/A|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.1.3
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=C49|status=OK|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.1.30
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=AD49|status=OK|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.1.49
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=AW49|status=OK|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.2.3
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=C50|status=N/A|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.2.30
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=AD50|status=N/A|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.2.49
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=AW50|status=N/A|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.3.3
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=C51|status=OK|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.3.30
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=AD51|status=OK|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.3.49
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=AW51|status=N/A|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.1.3
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=C85|status=N/A|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.2.3
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=C86|status=OK|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.2.19
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=S86|status=N/A|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.2.20
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=T86|status=N/A|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.2.23
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=W86|status=OK|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.2.45
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=AS86|status=N/A|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.2.49
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=AW86|status=OK|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.3.3
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=C87|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.3
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=C122|status=FAIL|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.38
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=AL122|status=FAIL|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.44
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=AR122|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.53
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BA122|status=FAIL|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.59
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BG122|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.72
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BT122|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.84
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=CF122|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.2.3
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=C123|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.2.38
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=AL123|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.2.44
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=AR123|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.2.53
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BA123|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.2.59
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BG123|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.2.72
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BT123|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.2.84
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=CF123|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.3.3
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=C124|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.3.38
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=AL124|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.3.44
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=AR124|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.3.53
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BA124|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.3.59
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BG124|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.3.72
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BT124|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.3.84
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=CF124|status=N/A|cf=0
+OK: audit03.palette.legend.7
+OK: audit03.palette.legend.8
+OK: audit03.palette.legend.9
+OK: audit03.palette.legend.10
+OK: audit03.palette.legend.11
+OK: audit03.palette.legend.12
+OK: audit03.palette.legend.13
+OK: audit03.palette.canonical.OK
+OK: audit03.palette.display.OK
+PALETTE_CELL: OK|fill=10411708|display=10411708|cf=0
+OK: audit03.palette.canonical.FAIL
+OK: audit03.palette.display.FAIL
+PALETTE_CELL: FAIL|fill=13549311|display=13549311|cf=0
+OK: audit03.palette.canonical.BaseFail
+OK: audit03.palette.display.BaseFail
+PALETTE_CELL: BaseFail|fill=13549311|display=13549311|cf=0
+OK: audit03.palette.canonical.NumFail
+OK: audit03.palette.display.NumFail
+PALETTE_CELL: NumFail|fill=4671487|display=4671487|cf=0
+OK: audit03.palette.canonical.InputErr
+OK: audit03.palette.display.InputErr
+PALETTE_CELL: InputErr|fill=10086143|display=10086143|cf=0
+OK: audit03.palette.canonical.CalcErr
+OK: audit03.palette.display.CalcErr
+PALETTE_CELL: CalcErr|fill=4671487|display=4671487|cf=0
+OK: audit03.palette.canonical.N/A
+OK: audit03.palette.display.N/A
+PALETTE_CELL: N/A|fill=15592941|display=15592941|cf=0
+OK: audit03.palette.unknownCalcErr
+OK: audit03.palette.emptyPolicy
+OK: audit03.palette.clearedCell
+OK: audit03.palette.transition.FAIL
+OK: audit03.palette.transition.OK
+OK: audit03.palette.transition.N/A
+OK: audit03.palette.detectsConditionalOverride
+OK: audit03.palette.overrideRemoved
+OK: audit03.palette.writer.rngBatchSummary.1.4
+PALETTE_WRITER: rngBatchSummary|cell=D13|status=FAIL|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.6
+PALETTE_WRITER: rngBatchSummary|cell=F13|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.7
+PALETTE_WRITER: rngBatchSummary|cell=G13|status=OK|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.8
+PALETTE_WRITER: rngBatchSummary|cell=H13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.9
+PALETTE_WRITER: rngBatchSummary|cell=I13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.10
+PALETTE_WRITER: rngBatchSummary|cell=J13|status=FAIL|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.11
+PALETTE_WRITER: rngBatchSummary|cell=K13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.12
+PALETTE_WRITER: rngBatchSummary|cell=L13|status=FAIL|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.13
+PALETTE_WRITER: rngBatchSummary|cell=M13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.14
+PALETTE_WRITER: rngBatchSummary|cell=N13|status=N/A|cf=0
+OK: audit03.palette.writer.rngBatchSummary.1.15
+PALETTE_WRITER: rngBatchSummary|cell=O13|status=N/A|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.1.3
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=C49|status=OK|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.1.30
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=AD49|status=OK|cf=0
+OK: audit03.palette.writer.rngStrengthSummaryAnchor.1.49
+PALETTE_WRITER: rngStrengthSummaryAnchor|cell=AW49|status=OK|cf=0
+OK: audit03.palette.writer.rngCrackSummaryAnchor.1.3
+PALETTE_WRITER: rngCrackSummaryAnchor|cell=C85|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.3
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=C122|status=FAIL|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.38
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=AL122|status=FAIL|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.44
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=AR122|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.53
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BA122|status=FAIL|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.59
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BG122|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.72
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=BT122|status=N/A|cf=0
+OK: audit03.palette.writer.rngStabilitySummaryAnchor.1.84
+PALETTE_WRITER: rngStabilitySummaryAnchor|cell=CF122|status=N/A|cf=0
+OK: audit03.palette.legend.7
+OK: audit03.palette.legend.8
+OK: audit03.palette.legend.9
+OK: audit03.palette.legend.10
+OK: audit03.palette.legend.11
+OK: audit03.palette.legend.12
+OK: audit03.palette.legend.13
+OK: audit03.palette.clear.rngBatchSummary.2.4
+OK: audit03.palette.clear.rngBatchSummary.2.6
+OK: audit03.palette.clear.rngBatchSummary.2.7
+OK: audit03.palette.clear.rngBatchSummary.2.8
+OK: audit03.palette.clear.rngBatchSummary.2.9
+OK: audit03.palette.clear.rngBatchSummary.2.10
+OK: audit03.palette.clear.rngBatchSummary.2.11
+OK: audit03.palette.clear.rngBatchSummary.2.12
+OK: audit03.palette.clear.rngBatchSummary.2.13
+OK: audit03.palette.clear.rngBatchSummary.2.14
+OK: audit03.palette.clear.rngBatchSummary.2.15
+OK: audit03.palette.clear.rngBatchSummary.3.4
+OK: audit03.palette.clear.rngBatchSummary.3.6
+OK: audit03.palette.clear.rngBatchSummary.3.7
+OK: audit03.palette.clear.rngBatchSummary.3.8
+OK: audit03.palette.clear.rngBatchSummary.3.9
+OK: audit03.palette.clear.rngBatchSummary.3.10
+OK: audit03.palette.clear.rngBatchSummary.3.11
+OK: audit03.palette.clear.rngBatchSummary.3.12
+OK: audit03.palette.clear.rngBatchSummary.3.13
+OK: audit03.palette.clear.rngBatchSummary.3.14
+OK: audit03.palette.clear.rngBatchSummary.3.15
+OK: audit03.palette.clear.rngStrengthSummaryAnchor.2.3
+OK: audit03.palette.clear.rngStrengthSummaryAnchor.2.30
+OK: audit03.palette.clear.rngStrengthSummaryAnchor.2.49
+OK: audit03.palette.clear.rngStrengthSummaryAnchor.3.3
+OK: audit03.palette.clear.rngStrengthSummaryAnchor.3.30
+OK: audit03.palette.clear.rngStrengthSummaryAnchor.3.49
+OK: audit03.palette.clear.rngCrackSummaryAnchor.2.3
+OK: audit03.palette.clear.rngCrackSummaryAnchor.2.19
+OK: audit03.palette.clear.rngCrackSummaryAnchor.2.20
+OK: audit03.palette.clear.rngCrackSummaryAnchor.2.23
+OK: audit03.palette.clear.rngCrackSummaryAnchor.2.45
+OK: audit03.palette.clear.rngCrackSummaryAnchor.2.49
+OK: audit03.palette.clear.rngCrackSummaryAnchor.3.3
+OK: audit03.palette.clear.rngCrackSummaryAnchor.3.19
+OK: audit03.palette.clear.rngCrackSummaryAnchor.3.20
+OK: audit03.palette.clear.rngCrackSummaryAnchor.3.23
+OK: audit03.palette.clear.rngCrackSummaryAnchor.3.45
+OK: audit03.palette.clear.rngCrackSummaryAnchor.3.49
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.2.3
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.2.38
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.2.44
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.2.53
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.2.59
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.2.72
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.2.84
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.3.3
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.3.38
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.3.44
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.3.53
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.3.59
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.3.72
+OK: audit03.palette.clear.rngStabilitySummaryAnchor.3.84
+TOTAL_AUDIT03_PALETTE: passed=355; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1006982712b842a0a911dfc17c747017\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03StatusPaletteTests; 2026-10-04T12:17:14
+RESULTS_SAVE_REOPEN: before=E05C0BF950A1F5DA36E0BF42A1B9A7C7C68FBA4EA8006FC9B4F2470AC42B6C96; after=E05C0BF950A1F5DA36E0BF42A1B9A7C7C68FBA4EA8006FC9B4F2470AC42B6C96; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1006982712b842a0a911dfc17c747017\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=1EABA40A72D5A28392F11FC5D38F0D2B1E9B264FDFAD9F5514ACB9EE1A1E1132; after=1EABA40A72D5A28392F11FC5D38F0D2B1E9B264FDFAD9F5514ACB9EE1A1E1132; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -391,3 +391,22 @@ synthetic geometry, noSolve и exact Results Value2/type invariant.
 Double guards или F07. AutoUpdate, Excel guard и semantic review остаются
 открытыми; census 106 modules/4412 methods/1700 guards - inspection index.
 Full numerical Off/On остается v206 и повторяется на окончательном release.
+
+## AutoUpdate v219
+
+Negative v217d 45/36 подтвердил late active flag validation/missing default
+и очистку Chart при Plot.Enabled=No без named-state. Новый fixture раньше
+имел ошибки профиля/двухстрочной шапки/колонки статуса; они отделены от
+production findings в NDM_Audit03_Auto_Plot_Review.md. Corrected fixture
+использует stability-only профиль и подтверждает отсутствие solve.
+
+Existing workbook-entrypoint проверяет Plot.Enabled и активный AutoUpdate
+до модели/очистки Results, выключенный флаг не потребляет. v218 82/0;
+final v219 general+metadata+auto 1962/0, imported units 228/0, structure
+27/27, formatting 1003/0, palette/save-reopen 355/0, source/export 106/106.
+Help 2004 rows/140 links/118 shapes и input/PrintArea сохранены.
+
+Numerical solver/search/expected/tolerance не менялись, full On/Off оставлен
+для финального release. Registry 666/1064 пока без новых blanket PASS.
+Остальные metadata, arc parsing, Excel guard и extreme arithmetic остаются
+открытыми; census 106/4415/1705 является индексом, не semantic acceptance.

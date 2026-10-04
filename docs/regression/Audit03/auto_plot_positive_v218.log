@@ -1,0 +1,118 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_auto_plot_positive_v218.xlsm
+SOURCE_SHA256: 99206A3EF4C80E66B94D366F746F1107D4D534842B2589B05D553D35FBF72423
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9617719dbaf84e5eb6b80d93e6df1962\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestPlotConfig.RunAudit03AutoPlotTests =====
+SUITE_STARTED: modTestPlotConfig.RunAudit03AutoPlotTests; 2026-10-04T12:07:35
+EXCEL_AFTER_SUITE: pid=20808; workingSet=162648064; privateBytes=113483776; cpu=8
+EXCEL_AFTER_SUITE: pid=23476; workingSet=209608704; privateBytes=160894976; cpu=9934.25
+OK: audit03.autoPlot.ownedCopy
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v1.rejected
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v1.address
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v1.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v1.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p0.Plot.Enabled.v1|Настройка Plot.Enabled (лист Config, ячейка B113): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v2.rejected
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v2.address
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v2.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v2.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p0.Plot.Enabled.v2|Настройка Plot.Enabled (лист Config, ячейка B113): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v3.rejected
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v3.address
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v3.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v3.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p0.Plot.Enabled.v3|Настройка Plot.Enabled (лист Config, ячейка B113): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v4.rejected
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v4.address
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v4.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.Enabled.v4.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p0.Plot.Enabled.v4|Настройка Plot.Enabled (лист Config, ячейка B113) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5.rejected
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5.address
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v5|Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка B114): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6.rejected
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6.address
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v6|Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка B114): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7.rejected
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7.address
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v7|Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка B114): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8.rejected
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8.address
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8.snapshot
+OK: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p0.Plot.AutoUpdateAfterCalculation.v8|Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка B114) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.autoPlot.missing.p0
+OK: audit03.autoPlot.inactive.p0
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v9.rejected
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v9.address
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v9.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v9.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p1.Plot.Enabled.v9|Настройка Plot.Enabled (лист Config, ячейка CI910): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v10.rejected
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v10.address
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v10.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v10.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p1.Plot.Enabled.v10|Настройка Plot.Enabled (лист Config, ячейка CI910): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v11.rejected
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v11.address
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v11.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v11.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p1.Plot.Enabled.v11|Настройка Plot.Enabled (лист Config, ячейка CI910): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v12.rejected
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v12.address
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v12.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.Enabled.v12.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p1.Plot.Enabled.v12|Настройка Plot.Enabled (лист Config, ячейка CI910) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13.rejected
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13.address
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v13|Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка CI911): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14.rejected
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14.address
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v14|Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка CI911): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15.rejected
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15.address
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v15|Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка CI911): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16.rejected
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16.address
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16.snapshot
+OK: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16.chart
+AUTO_PLOT_ERROR: audit03.autoPlot.invalid.p1.Plot.AutoUpdateAfterCalculation.v16|Настройка Plot.AutoUpdateAfterCalculation (лист Config, ячейка CI911) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.autoPlot.missing.p1
+OK: audit03.autoPlot.inactive.p1
+OK: audit03.autoPlot.noState.mode0.completed
+OK: audit03.autoPlot.noState.mode0.validProfile
+OK: audit03.autoPlot.noState.mode0.preserved
+AUTO_PLOT_RUN: audit03.autoPlot.noState.mode0|OK|Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: NO_STATE
+OK: audit03.autoPlot.noState.mode1.completed
+OK: audit03.autoPlot.noState.mode1.validProfile
+OK: audit03.autoPlot.noState.mode1.preserved
+AUTO_PLOT_RUN: audit03.autoPlot.noState.mode1|OK|Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: NO_STATE
+OK: audit03.autoPlot.noState.mode2.completed
+OK: audit03.autoPlot.noState.mode2.validProfile
+OK: audit03.autoPlot.noState.mode2.preserved
+AUTO_PLOT_RUN: audit03.autoPlot.noState.mode2|OK|Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: NO_STATE
+OK: audit03.autoPlot.noState.mode3.completed
+OK: audit03.autoPlot.noState.mode3.validProfile
+OK: audit03.autoPlot.noState.mode3.cleared
+AUTO_PLOT_RUN: audit03.autoPlot.noState.mode3|OK|Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: NO_STATE
+OK: audit03.autoPlot.noSolve
+AUTO_PLOT_CASES: variants=20; workbookFixtures=1; equilibriumCases=0
+TOTAL_AUDIT03_AUTO_PLOT: passed=82; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9617719dbaf84e5eb6b80d93e6df1962\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestPlotConfig.RunAudit03AutoPlotTests; 2026-10-04T12:07:41
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True
