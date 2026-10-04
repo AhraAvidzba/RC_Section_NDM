@@ -203,6 +203,14 @@ Public Function RunWorkbookInterfaceTests() As String
     TestRebarInputValidationDoesNotUseHiddenDefaults stats
     TestClearResultsKeepsInputs stats
 
+    ' Настройки CAD проверяются без подключения к приложению. Настоящий DWG
+    ' остается отдельным явным тестом с guard-ом собственных документов.
+    Dim autoCADPassed As Long, autoCADFailed As Long
+    AppendLine stats, "RUN: RunAudit03AutoCADConfigTests"
+    stats.Report = stats.Report & modTestAutoCADConfig.RunAudit03AutoCADConfigTests(autoCADPassed, autoCADFailed)
+    stats.Passed = stats.Passed + autoCADPassed
+    stats.Failed = stats.Failed + autoCADFailed
+
     AppendLine stats, "TOTAL_WORKBOOK_UI: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunWorkbookInterfaceTests = stats.Report

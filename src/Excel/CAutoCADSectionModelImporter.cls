@@ -267,7 +267,7 @@ Private Sub ReadCentralRegionInertia(ByVal entity As Object, ByVal area As Doubl
     Dim product As Variant
     product = entity.ProductOfInertia
     If Err.Number = 0 Then
-        localIxy = BestCentralProductOfInertia(product, area, xCoord, yCoord, units, localIx, localIy)
+        localIxy = CentralProductOfInertia(product, area, xCoord, yCoord, units)
     End If
     On Error GoTo 0
 
@@ -278,62 +278,21 @@ Private Sub ReadCentralRegionInertia(ByVal entity As Object, ByVal area As Doubl
     End If
 End Sub
 
-' Выбирает физически пригодный центральный Ixy из вариантов AutoCAD.
-' В разных версиях COM ProductOfInertia может приходить со знаком или уже в
-' центральном виде, поэтому проверяем несколько кандидатов и оставляем тот,
-' который дает положительно определенную локальную матрицу.
-Private Function BestCentralProductOfInertia(ByVal product As Variant, ByVal area As Double, _
-        ByVal xCoord As Double, ByVal yCoord As Double, ByVal units As CUnitSystem, _
-        ByVal localIx As Double, ByVal localIy As Double) As Double
-    Dim bestFound As Boolean
-    Dim bestValue As Double
-    Dim bestScore As Double
-    Dim shiftValue As Double
-    shiftValue = area * xCoord * yCoord
-    Dim inertiaScale As Double
-    inertiaScale = GeomMax(Sqr(Abs(localIx * localIy)), 1#)
-
-    Dim firstIndex As Long
-    If IsArray(product) Then
-        firstIndex = LBound(product)
-    Else
-        firstIndex = 0
-    End If
-
+' Преобразует XY-компоненту тензора AutoCAD в принятое ядром интегральное
+' произведение Ixy = integral((x-xc)*(y-yc)*dA). AutoCAD возвращает отрицательный
+' интеграл относительно начала координат: сначала меняем знак, затем снимаем
+' перенос A*xc*yc. Положительная определенность проверяется для всего тензора
+' вызывающим методом; она не позволяет выбирать знак или величину Ixy.
+Private Function CentralProductOfInertia(ByVal product As Variant, ByVal area As Double, _
+        ByVal xCoord As Double, ByVal yCoord As Double, ByVal units As CUnitSystem) As Double
     Dim rawValue As Double
     If IsArray(product) Then
-        rawValue = InputFourthPowerLength(CDbl(product(firstIndex)), units)
+        rawValue = InputFourthPowerLength(CDbl(product(LBound(product))), units)
     Else
         rawValue = InputFourthPowerLength(CDbl(product), units)
     End If
-
-    TestProductCandidate rawValue - shiftValue, localIx, localIy, bestFound, bestValue, bestScore
-    TestProductCandidate -rawValue - shiftValue, localIx, localIy, bestFound, bestValue, bestScore
-    TestProductCandidate rawValue + shiftValue, localIx, localIy, bestFound, bestValue, bestScore
-    TestProductCandidate -rawValue + shiftValue, localIx, localIy, bestFound, bestValue, bestScore
-    If Abs(shiftValue) <= 0.05 * inertiaScale Then
-        TestProductCandidate rawValue, localIx, localIy, bestFound, bestValue, bestScore
-    End If
-
-    If bestFound Then BestCentralProductOfInertia = bestValue
+    CentralProductOfInertia = -rawValue - area * xCoord * yCoord
 End Function
-
-' Кандидат Ixy пригоден, только если вся локальная матрица инерций физически
-' положительно определена. Минимальный по модулю Ixy обычно соответствует
-' центральной системе AutoCAD Region без паразитного переноса.
-Private Sub TestProductCandidate(ByVal candidateIxy As Double, ByVal localIx As Double, _
-        ByVal localIy As Double, ByRef bestFound As Boolean, _
-        ByRef bestValue As Double, ByRef bestScore As Double)
-    If Not IsPositiveDefiniteInertia(localIx, localIy, candidateIxy) Then Exit Sub
-
-    Dim scoreValue As Double
-    scoreValue = Abs(candidateIxy)
-    If Not bestFound Or scoreValue < bestScore Then
-        bestFound = True
-        bestValue = candidateIxy
-        bestScore = scoreValue
-    End If
-End Sub
 
 ' Для почти изотропного Region тензор инерции не задает направления.
 ' В этом единственном случае importer дешево берет угол первой прямой грани:

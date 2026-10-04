@@ -14,6 +14,7 @@ Private Type TCadStats
     Failed As Long
     Cases As Long ' Число независимых вызовов consumer-а, не assertions.
     Report As String
+    ProgressPath As String ' Только native CAD: журнал до завершения COM-вызова.
 End Type
 
 ' Выполняет проверки значений, отсутствующих строк и динамических адресов
@@ -42,6 +43,7 @@ Public Function RunAudit03AutoCADConfigTests(Optional ByRef passed As Long = 0, 
         CheckPresentation stats, system, position
         CheckImporter stats, system, position
         CheckCleanup stats, system, position
+        CheckSettingEffects stats, system, position
         CheckInvalidFields stats, system, position
         CheckLayerContracts stats, system, position
     Next position
@@ -195,11 +197,15 @@ Private Sub CheckImporter(ByRef stats As TCadStats, ByVal system As Object, ByVa
     CheckClose stats, prefix & ".concreteMm", model.ConcreteX(1), 20#
     CheckClose stats, prefix & ".steelMm", model.RebarX(1), 80#
     SetValue system, "AutoCAD.Import.ConcreteLayer", "AUDIT_IC2"
-    SetValue system, "AutoCAD.Import.RebarLayer", "AUDIT_IR2"
     Set model = importer.ImportConfiguredModelSpace(regions, Reader())
     CheckClose stats, prefix & ".changedConcrete", model.ConcreteX(1), 120#
+    CheckClose stats, prefix & ".concreteLayerKeepsSteel", model.RebarX(1), 80#
+    system.Formula = saved
+    SetValue system, "AutoCAD.Import.RebarLayer", "AUDIT_IR2"
+    Set model = importer.ImportConfiguredModelSpace(regions, Reader())
     CheckClose stats, prefix & ".changedSteel", model.RebarX(1), 180#
-    stats.Cases = stats.Cases + 2: system.Formula = saved
+    CheckClose stats, prefix & ".steelLayerKeepsConcrete", model.ConcreteX(1), 20#
+    stats.Cases = stats.Cases + 3: system.Formula = saved
 End Sub
 
 ' Рабочая очистка удаляет линии оформления, но сохраняет Region и чужие слои.
@@ -217,6 +223,44 @@ Private Sub CheckCleanup(ByRef stats As TCadStats, ByVal system As Object, ByVal
     Check stats, "autoCADConfig.cleanup.foreign." & CStr(position), Not foreign.Deleted
     Check stats, "autoCADConfig.cleanup.count." & CStr(position), deleted = 1
     stats.Cases = stats.Cases + 1
+End Sub
+
+' Меняет каждый экспортный слой и цвет независимо. Ожидается изменение
+' именно предназначенного поля оформления; чувствительность не доказывается
+' одним чтением default или сравнением полного snapshot с другим ID.
+Private Sub CheckSettingEffects(ByRef stats As TCadStats, ByVal system As Object, ByVal position As Long)
+    Dim saved As Variant, result As Object, keys As Variant, materials As Variant
+    Dim states As Variant, fields As Variant, i As Long, name As String
+    saved = system.Formula
+    keys = Array("Concrete", "Rebar", "Contour", "ConcreteTension", _
+        "ConcreteCompression", "RebarTension", "RebarCompression")
+    materials = Array("Concrete", "Rebar", "Concrete", "Concrete", "Concrete", "Rebar", "Rebar")
+    states = Array("Tension", "Tension", "Tension", "Tension", "Compression", "Tension", "Compression")
+    fields = Array("GeometryLayer", "GeometryLayer", "ContourLayer", _
+        "AnnotationLayer", "AnnotationLayer", "AnnotationLayer", "AnnotationLayer")
+    For i = 0 To UBound(keys)
+        name = "AUDIT_CHANGED_" & CStr(position) & "_" & CStr(i)
+        SetValue system, "AutoCAD.Layer." & CStr(keys(i)), name
+        Set result = Audit03AutoCADPresentationForTests(Reader(), CStr(materials(i)), CStr(states(i)), "E1", 1#, 2)
+        stats.Cases = stats.Cases + 1
+        Check stats, "autoCADConfig.effect." & CStr(position) & ".AutoCAD.Layer." & CStr(keys(i)), _
+            CStr(result(CStr(fields(i)))) = name
+        system.Formula = saved
+    Next i
+    keys = Array("ConcreteTension", "ConcreteCompression", "RebarTension", "RebarCompression", "Neutral")
+    materials = Array("Concrete", "Concrete", "Rebar", "Rebar", "Concrete")
+    states = Array("Tension", "Compression", "Tension", "Compression", "NearZero")
+    Dim color As Variant
+    For i = 0 To UBound(keys)
+        For Each color In Array(1, 255)
+            SetValue system, "AutoCAD.Color." & CStr(keys(i)), color
+            Set result = Audit03AutoCADPresentationForTests(Reader(), CStr(materials(i)), CStr(states(i)), "E1", 1#, 2)
+            stats.Cases = stats.Cases + 1
+            Check stats, "autoCADConfig.effect." & CStr(position) & ".AutoCAD.Color." & CStr(keys(i)) & "." & CStr(color), _
+                CLng(result("Color")) = CLng(color)
+            system.Formula = saved
+        Next color
+    Next i
 End Sub
 
 ' Невалидные поля проходят соответствующий consumer в двух положениях Config.
@@ -380,6 +424,18 @@ End Sub
 ' Возвращаемый отчет не зависит от доступности дополнительного файла progress.
 Private Sub LogLine(ByRef stats As TCadStats, ByVal line As String)
     stats.Report = stats.Report & line & vbCrLf
+    If Len(stats.ProgressPath) = 0 Then Exit Sub
+    Dim fileNumber As Integer
+    On Error GoTo ProgressUnavailable
+    fileNumber = FreeFile
+    Open stats.ProgressPath For Append As #fileNumber
+    Print #fileNumber, line
+    Close #fileNumber
+    Exit Sub
+ProgressUnavailable:
+    On Error Resume Next
+    If fileNumber > 0 Then Close #fileNumber
+    On Error GoTo 0
 End Sub
 
 ' Создает только собственный новый DWG в разрешенном каталоге; все проверки
@@ -395,6 +451,8 @@ Public Function RunAudit03RealAutoCADTests(ByVal drawingPath As String, ByVal ex
     If acad.Documents.Count <> 0 Then Err.Raise vbObjectError + 4499, "RunAudit03RealAutoCADTests", "В AutoCAD открыт чужой или предыдущий документ; тест его не изменяет."
     If InStr(1, drawingPath, "\docs\regression\Audit03\", vbTextCompare) = 0 Then Err.Raise vbObjectError + 4499, "RunAudit03RealAutoCADTests", "DWG должен находиться в каталоге Audit03."
     If Len(Dir$(drawingPath)) > 0 Then Err.Raise vbObjectError + 4499, "RunAudit03RealAutoCADTests", "Тестовый DWG уже существует; перезапись запрещена."
+    stats.ProgressPath = drawingPath & ".progress.txt"
+    LogLine stats, "REAL_STAGE: prepare workbook snapshot"
     Set system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     Set unitsRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
@@ -485,9 +543,15 @@ Public Function RunAudit03RealAutoCADTests(ByVal drawingPath As String, ByVal ex
     Check stats, "realAutoCAD.saved", Len(Dir$(drawingPath)) > 0
     LogLine stats, "REAL_DWG: " & doc.FullName & "|entities=" & CStr(doc.ModelSpace.Count)
     doc.Close False: Set doc = Nothing
-    Set doc = acad.Documents.Open(drawingPath): WaitForCAD acad
+    LogLine stats, "REAL_STAGE: reopen saved DWG"
+    Set doc = acad.Documents.Open(drawingPath)
+    LogLine stats, "REAL_STAGE: wait for reopened document"
+    WaitForCAD acad
+    LogLine stats, "REAL_STAGE: verify reopened regions"
     Check stats, "realAutoCAD.reopen.regions", CountEntities(doc, "AcDbRegion") = 9
     CheckNativeImport stats, doc, system
+    LogLine stats, "REAL_STAGE: independent central inertia probes"
+    CheckNativeRegionInertia stats, doc
     GoTo Restore
 FailedRun:
     stats.Failed = stats.Failed + 1
@@ -556,6 +620,85 @@ Private Sub CheckNativeImport(ByRef stats As TCadStats, ByVal doc As Object, ByV
         CheckClose stats, "realAutoCAD.import.rebarY." & CStr(i), Abs(model.RebarY(i)), 60#
     Next i
 End Sub
+
+' Проверяет центральные A/I настоящего повернутого Region независимо от
+' выбора кандидатов importer-а. Перенос по X/Y не меняет центральный тензор;
+' оба знака угла и произведения координат выявляют ошибочную эвристику Ixy.
+Private Sub CheckNativeRegionInertia(ByRef stats As TCadStats, ByVal doc As Object)
+    Dim angleSign As Long, position As Long, angle As Double, cx As Double, cy As Double
+    Dim expectedIx As Double, expectedIy As Double, expectedIxy As Double
+    Dim ix As Double, iy As Double, ixy As Double, model As CSectionModel
+    Dim importer As CAutoCADSectionModelImporter, region As Object, layerName As String
+    Dim raw As Variant, rawProduct As Double, prefix As String
+    Set importer = New CAutoCADSectionModelImporter
+    For angleSign = -1 To 1 Step 2
+        angle = CDbl(angleSign) * GEOM_PI / 6#
+        expectedIx = 2160000# * Cos(angle) ^ 2 + 8640000# * Sin(angle) ^ 2
+        expectedIy = 8640000# * Cos(angle) ^ 2 + 2160000# * Sin(angle) ^ 2
+        expectedIxy = (8640000# - 2160000#) * Sin(angle) * Cos(angle)
+        For position = 0 To 2
+            cx = 0#: cy = 0#
+            If position > 0 Then cx = 20#: cy = -10#
+            If position = 2 Then cy = 10#
+            layerName = "AUDIT_INERTIA_" & CStr(angleSign + 1) & "_" & CStr(position)
+            LogLine stats, "REAL_STAGE: create " & layerName
+            Audit03EnsureAutoCADLayerForTests doc, layerName, 7
+            Set region = NativeRectangleRegion(doc, 120#, 60#, angle, cx, cy)
+            region.Layer = layerName
+            raw = region.ProductOfInertia
+            If IsArray(raw) Then rawProduct = CDbl(raw(LBound(raw))) Else rawProduct = CDbl(raw)
+            prefix = "realAutoCAD.inertia." & CStr(angleSign) & "." & CStr(position)
+            LogLine stats, "REAL_INERTIA: " & prefix & "|cx=" & CStr(cx) & "; cy=" & CStr(cy) & _
+                "; rawProduct=" & NativeNumber(rawProduct) & "; expectedCentralIxy=" & NativeNumber(expectedIxy)
+            Set model = importer.ImportFromModelSpace(doc.ModelSpace, layerName, "AUDIT_R", "A400", 0#)
+            Check stats, prefix & ".count", model.ConcreteCount = 1
+            If model.ConcreteCount = 1 Then
+                model.ConcreteLocalInertiaComponents 1, ix, iy, ixy
+                CheckNativeInertiaClose stats, prefix & ".area", model.ConcreteArea(1), 7200#
+                CheckNativeInertiaClose stats, prefix & ".x", model.ConcreteX(1), cx
+                CheckNativeInertiaClose stats, prefix & ".y", model.ConcreteY(1), cy
+                CheckNativeInertiaClose stats, prefix & ".Ix", ix, expectedIx
+                CheckNativeInertiaClose stats, prefix & ".Iy", iy, expectedIy
+                CheckNativeInertiaClose stats, prefix & ".Ixy", ixy, expectedIxy
+            End If
+        Next position
+    Next angleSign
+End Sub
+
+' Создает тестовый прямоугольник по независимо повернутым четырем вершинам.
+' AddRegion получает замкнутый Polyline; временная исходная линия удаляется
+' только из собственного документа теста после создания Region.
+Private Function NativeRectangleRegion(ByVal doc As Object, ByVal width As Double, ByVal height As Double, _
+        ByVal angle As Double, ByVal cx As Double, ByVal cy As Double) As Object
+    Dim points(0 To 7) As Double, px As Variant, py As Variant, i As Long
+    px = Array(-width / 2#, width / 2#, width / 2#, -width / 2#)
+    py = Array(-height / 2#, -height / 2#, height / 2#, height / 2#)
+    For i = 0 To 3
+        points(2 * i) = cx + CDbl(px(i)) * Cos(angle) - CDbl(py(i)) * Sin(angle)
+        points(2 * i + 1) = cy + CDbl(px(i)) * Sin(angle) + CDbl(py(i)) * Cos(angle)
+    Next i
+    Dim line As Object, curves(0 To 0) As Object, regions As Variant
+    Set line = doc.ModelSpace.AddLightWeightPolyline(points)
+    line.Closed = True
+    Set curves(0) = line
+    regions = doc.ModelSpace.AddRegion(curves)
+    Set NativeRectangleRegion = regions(LBound(regions))
+    line.Delete
+End Function
+
+' Отделяет численную погрешность CAD-интеграции от инженерного расхождения.
+' Абсолютный допуск 1e-6 фиксирован до запуска и не меняет старые oracle ядра.
+Private Sub CheckNativeInertiaClose(ByRef stats As TCadStats, ByVal name As String, ByVal actual As Double, ByVal expected As Double)
+    LogLine stats, "AUTOCAD_INERTIA_NUMBER: " & name & "|actual=" & NativeNumber(actual) & _
+        "|expected=" & NativeNumber(expected) & "|tolerance=0.000001"
+    Check stats, name, Abs(actual - expected) <= 0.000001
+End Sub
+
+' Сохраняет значение CAD в журнале без зависимости от десятичного разделителя
+' Excel. Этот helper только форматирует диагностику, не округляет oracle.
+Private Function NativeNumber(ByVal value As Double) As String
+    NativeNumber = Replace$(CStr(value), ",", ".")
+End Function
 
 ' Проверяет текст именно экспортных подписей элементов; осевые подписи
 ' и маркеры нагрузки не включаются в количество восемь расчетных labels.

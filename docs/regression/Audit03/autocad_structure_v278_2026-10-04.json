@@ -1,0 +1,137 @@
+﻿[
+    {
+        "Check":  "Canonical print area names",
+        "Passed":  true,
+        "Details":  "CalculationSheetIndex=2; canonical=1; noncanonical=0; file not repaired"
+    },
+    {
+        "Check":  "Sheets Config/Справка/Расчет/Results",
+        "Passed":  true,
+        "Details":  "Config, Справка, Расчет, Results"
+    },
+    {
+        "Check":  "Required named ranges",
+        "Passed":  true,
+        "Details":  "Missing: "
+    },
+    {
+        "Check":  "Results ranges layout",
+        "Passed":  true,
+        "Details":  "batch=Results!R1C1:1 cols; strengthAnchor=R49C1; crackAnchor=R85C1; stabilityAnchor=R122C1; elements=R156C1; geometry=R156C12; properties=R156C29; annotations=R156C50; materialDiagrams=R156C37"
+    },
+    {
+        "Check":  "Stability duration loads range",
+        "Passed":  true,
+        "Details":  "Address=$P$37:$S$67"
+    },
+    {
+        "Check":  "SP35 table 7.21 range",
+        "Passed":  true,
+        "Details":  "Address=$AI$60:$AP$78; Rows=19; Columns=8"
+    },
+    {
+        "Check":  "No duplicate names",
+        "Passed":  true,
+        "Details":  "Duplicates: "
+    },
+    {
+        "Check":  "No obsolete named ranges",
+        "Passed":  true,
+        "Details":  "Present: "
+    },
+    {
+        "Check":  "Print area",
+        "Passed":  true,
+        "Details":  "PageSetup=; Xml=Расчет!$A$1:$AJ$60"
+    },
+    {
+        "Check":  "A4 portrait",
+        "Passed":  true,
+        "Details":  "PaperSize=9; Orientation=1"
+    },
+    {
+        "Check":  "Print scale for one-page blocks",
+        "Passed":  true,
+        "Details":  "Zoom=80; HBreaks=0"
+    },
+    {
+        "Check":  "Vertical page breaks",
+        "Passed":  true,
+        "Details":  "Columns: 19"
+    },
+    {
+        "Check":  "Load combinations table on Config O3",
+        "Passed":  true,
+        "Details":  "Sheet=Config; Row=3; Column=15"
+    },
+    {
+        "Check":  "Config settings table headers",
+        "Passed":  true,
+        "Details":  "Параметр | Значение | Ед. | Комментарий | Справка"
+    },
+    {
+        "Check":  "No duplicate Config keys",
+        "Passed":  true,
+        "Details":  "Duplicates: "
+    },
+    {
+        "Check":  "No obsolete Config settings",
+        "Passed":  true,
+        "Details":  "Present: "
+    },
+    {
+        "Check":  "Solver.Method default",
+        "Passed":  true,
+        "Details":  "Value=Newton"
+    },
+    {
+        "Check":  "Stability.Code default",
+        "Passed":  true,
+        "Details":  "Value=SP35"
+    },
+    {
+        "Check":  "Solver.Method validation list",
+        "Passed":  true,
+        "Details":  "Values=Newton, Secant"
+    },
+    {
+        "Check":  "Concrete material parameters",
+        "Passed":  true,
+        "Details":  "Rows=8; Columns=6"
+    },
+    {
+        "Check":  "Steel material parameters",
+        "Passed":  true,
+        "Details":  "Rows=6; Columns=6"
+    },
+    {
+        "Check":  "Calculation profiles",
+        "Passed":  true,
+        "Details":  "Rows=32; Columns=7"
+    },
+    {
+        "Check":  "Config right-side ranges vertical stack",
+        "Passed":  true,
+        "Details":  "rngUnitSettings=R3C8:R9; rngSignConventionSettings=R12C8:R15; rngSteelMaterialParameters=R18C8:R23; rngConcreteMaterialParameters=R26C8:R33; rngCalculationProfiles=R36C8:R67; rngPlotAnnotationSettings=R70C8:R83; rngCircleGeometry=R86C8:R95; rngRectSetGeometry=R98C8:R125; rngRoundedRectangleGeometry=R128C8:R149; rngHollowRectangleGeometry=R153C8:R180"
+    },
+    {
+        "Check":  "Load combinations table headers",
+        "Passed":  true,
+        "Details":  "CombinationID | N, tf | Mx, tf*m | My, tf*m | ProfileId | LoadPath | Comment"
+    },
+    {
+        "Check":  "Formulas allowed on workbook sheets",
+        "Passed":  true,
+        "Details":  "Excel formulas are allowed and preferred for transparent user-level calculations; VBA validation covers workbook structure."
+    },
+    {
+        "Check":  "Runtime Excel IO uses bulk ranges",
+        "Passed":  true,
+        "Details":  "Cells.Item matches: "
+    },
+    {
+        "Check":  "Source workbook unchanged",
+        "Passed":  true,
+        "Details":  "Before=F7B089CFFA296092FB357456A2D037AF90C18D6D26265E5DD12B85833BEEB635; After=F7B089CFFA296092FB357456A2D037AF90C18D6D26265E5DD12B85833BEEB635"
+    }
+]

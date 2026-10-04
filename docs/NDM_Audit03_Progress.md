@@ -21,7 +21,7 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v257: 731 активное поле из 1064, включая 17 Stability-параметров; из 760 editable полей 29 еще не приняты. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Адресная приемка v272: 740 активных полей из 1064, включая девять General/Geometry-параметров; из 760 editable полей 20 CAD-полей еще ожидают общий gate. Полный диапазон/pairwise, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
 | 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
 
 ## Карта Обязанностей
@@ -56,7 +56,7 @@
 | F08 | трассировка подготовлена, приемка продолжается | Per-ID реестр NDM_Audit03_Prior_Audit_Traceability.md; незавершенные K/T/D/UI/save-reopen пункты не получают PASS. |
 | A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
 | P01-P04 | в работе | 15 сценариев x 5 повторов x 2 версии; asymmetric: 94 solves/3874 iterations/20 retries/10 эквивалентных попыток. P02 численные и point-grid инварианты подтверждены; окончательный benchmark/разбор повторов впереди. |
-| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v257 содержит 1064 поля, 731 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
+| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v272 содержит 1064 поля, 740 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
 | T01-T05 | в работе | v68: все 13 форм, Light/Stress, Off/On, 52/52 chunks и 18 980 all-path cases, failed=0. Это приемка численного среза v68, не поздних Config/UI правок; selector variants/pairwise/high-risk tuples, независимые near-limit gates и финальный повтор на выпускном source впереди. |
 | D01-D02 | в работе | Comment-only ревизия export/writers/enum/workbook entrypoints выполнена частично; все остальные methods/tests и фактический help/Config/validation/links в clean/update впереди. |
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
@@ -69,6 +69,30 @@
 
 ## Актуальная Точка Продолжения
 
+- CAD checkpoint `d0fa6f9` сохранен. Следующий test-only срез импортирован в v274:
+  независимая смена семи слоев/пяти цветов, включение CAD Config в штатную
+  WorkbookUI suite и real Region 120x60 мм под +/-30 градусами в трех положениях.
+  Новый oracle сверяет центральные A/I и неизменность при переносе. Native
+  v275 447/4 подтвердил неправильный знак/модуль Ixy; в v276 эвристика
+  заменена однозначным -ProductXY-A*xc*yc, native повтор 451/0.
+  Полный eight-suite Off v272 завершен: 99109/0, watchdog exit=0,
+  source unchanged=True. Девять General-полей приняты через существующий merge:
+  registry_general_v272 содержит 740 active-reviewed, 20 editable pending.
+  Native v273/v274 остановлен watchdog из-за отсутствующего test-only helper;
+  COM CodePane установил точную строку. Это compile/NotRun, не исход Ixy.
+  В AutoCAD оставался только
+  собственный DWG с девятью Region; он проверен по пути/HWND и закрыт без записи.
+  v274 добавляет native progress и использует существующие четыре AUDIT_R
+  стержня в independent inertia fixture, чтобы соблюсти контракт importer-а.
+  Финальный directed Config v278 1317/0, 428 cases, независимые импортные слои.
+  Geometry 572/0; guide v277 failed=0, 760 inputs сохранены после reopen,
+  2079 rows/140 links/118 Shapes. Structure v278 27/27, source/export
+  108/108, failed=0. Двадцать per-key CAD evidence подготовлены, но
+  PendingFullRegression=True: следующий общий gate необходим для registry.
+  Основная output-книга и ТЗ сохраняют исходные SHA.
+  Другую Excel COM-job параллельно не запускать;
+  protected 23476 не использовать.
+
 - Реальный Autodesk AutoCAD 2023, не SOFiPLUS: CAD Config v271 1279/0,
   392 consumer-сценария в исходном и перенесенном Range; native DWG 409/0.
   Подтверждены mm export/import после смены текущих units/signs, фактические
@@ -77,8 +101,8 @@
   COM-регистрации не менялись. Guide/native v272: help failed=0, 760 inputs
   сохранены после reopen, structure 27/27, source/export 108/108. Новых классов
   нет. Review: NDM_Audit03_AutoCAD_Config_Review.md. Pixel capture возвращает
-  timeout и не считается PASS. Полный eight-suite Off v272 выполняется на
-  отдельной копии; registry v257 пока не продвинут. Пользовательский Excel
+  timeout и не считается PASS. Полный eight-suite Off v272 завершен;
+  registry продвинут только для девяти General-полей. Пользовательский Excel
   23476 и output-книга не затронуты; общий Audit03 не завершен.
 
 - Контроль после v263: полный eight-suite Off завершился, exit=1,

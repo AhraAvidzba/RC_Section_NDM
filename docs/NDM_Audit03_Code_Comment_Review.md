@@ -1,5 +1,34 @@
 # Audit03: Комментарии К Актуальному Коду
 
+## Дополнение CAD v272
+
+Прочитаны целиком CAutoCADSectionModelImporter и modAutoCADStressExport,
+включая draw/clip/contour/settings/cleanup и test entrypoints. Шапки и новые
+методы описывают фактический mm/snapshot/Config контракт; нормальные
+инженерные формулы не переносятся в writer. Connector не создает приложение
+и принимает только запущенный acad.exe, а не произвольный DWG OEM.
+
+Двадцать active CAD полей получили directed 1279/0 и native 409/0 с реальными
+Region/Layer/Text. Scope и ограничения в NDM_Audit03_AutoCAD_Config_Review.md.
+Pixel capture timeout не дает визуальный PASS. Новые helpers находятся под
+CAPS-разделом ДЛЯ ТЕСТОВ, новых classes нет.
+
+Read-only census: 108 modules, 4529 methods, 1840 guard candidates, 83 production
+classes, 964 methods без индивидуального комментария, шаблонных signatures=0.
+Ни один некомментированный кандидат не имеет более двух смысловых строк;
+это не автоматическая приемка всех accessors или остальных методов.
+Пять production expressions с Nothing и And/Or прочитаны: они объединяют
+только объектные/скалярные проверки, без разыменования отсутствующего объекта
+в другом операнде. Отдельные guards с LBound/UBound и неявными массивами
+по-прежнему требуют своей содержательной/численной приемки.
+
+Эвристика ReadCentralRegionInertia/BestCentralProductOfInertia проверена
+независимым native oracle: v275 447/4 подтвердил неверный знак/модуль Ixy.
+В v276 подбор кандидатов удален; комментарий объясняет знак COM-тензора
+и снятие переноса A*xc*yc. Native повтор 451/0, tolerance/oracle не изменены.
+Кандидат полностью внутреннего Opening в coarse mesh cell также остается
+открытым до отрицательного контрпримера. Чтение обоих мест не считается fix.
+
 ## Дополнение v204: Result-Owners И Рабочие Точки Диаграмм
 
 Во время замороженного full gate дополнительно полностью прочитаны

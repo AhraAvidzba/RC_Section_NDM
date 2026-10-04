@@ -82,11 +82,12 @@ Public Property Get MomentOfInertia() As Variant
     MomentOfInertia = result
 End Property
 
-' Возвращает произведение инерции в варианте, который после снятия переноса
-' дает mLocalIxy.
+' Повторяет XY-компоненту тензора настоящего Autodesk Region: отрицательный
+' интеграл x*y относительно начала координат. После смены знака и снятия
+' переноса importer должен получить сохраненный центральный mLocalIxy.
 Public Property Get ProductOfInertia() As Variant
     Dim result(0 To 0) As Double
-    result(0) = mLocalIxy + mArea * mX * mY
+    result(0) = -(mLocalIxy + mArea * mX * mY)
     ProductOfInertia = result
 End Property
 

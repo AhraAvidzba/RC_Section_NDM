@@ -126,11 +126,50 @@ ACI 1..255, слои и очистку, неактивный contour и сохр
 autocad_help_v272, autocad_structure_v272, autocad_source_contracts_v272.
 Основная пользовательская output-книга и ТЗ остались с исходными хешами.
 
-## Открытые Gates
+## Центральные Инерции Region v275-v276
 
-Текущий восьмисерийный Off regression запущен на независимой копии v272;
-его результат пока не присвоен. Registry остается v257, 29 editable полей
-не приняты до завершенного общего gate и присоединения поадресной трассировки.
+Дополнительный native тест создает прямоугольники 120x60 мм под углами
++/-30 градусов в трех положениях: (0,0), (20,-10), (20,10). Независимый
+oracle использует A=7200 мм2, собственные Ix=2160000/Iy=8640000 мм4
+и обычное преобразование тензора при повороте. Абсолютный допуск 1e-6 мм4
+зафиксирован до прогона; прежние expected/tolerance ядра не изменены.
+
+Замороженный production v275: 447/4, watchdog exit=1, source unchanged=True.
+Все четыре отказа относятся к Ixy. При +30 градусах ожидается
+2805922.30826158 мм4, но у Region в (0,0) получалось -2805922.30826158,
+а в (20,-10) всего 74077.6917384206 мм4. Реальный ProductOfInertia
+имеет знак отрицательной XY-компоненты тензора; выбор минимального модуля
+из нескольких положительно определенных кандидатов не восстанавливает Ixy.
+
+Импорт теперь использует однозначное преобразование:
+`Ixy_c = -ProductOfInertia(XY) - A*xc*yc`.
+Положительная определенность проверяется отдельно, не выбирает знак/значение.
+CFakeAcadRegion приведен к фактически наблюдаемому COM-контракту;
+его заданные центральные инерции и ожидаемые значения тестов не менялись.
+Удалены оба private helper-а эвристического подбора, новых классов нет.
+
+Native positive v276: 451/0, все шесть центральных тензоров совпали с oracle,
+DWG roundtrip также зеленый, source unchanged=True. Двадцать CAD Config-полей
+получили усиленный directed gate 1313/0, 426 consumer-сценариев:
+каждый слой и цвет изменяется независимо в двух положениях Range.
+
+Ранние v273/v274 остановились на отсутствующем test-only форматировщике
+журнала. COM CodePane показал конкретную выделенную строку. Это compile/NotRun,
+не numerical failure инерций; watchdog logs сохранены. v274 native progress
+сохранен отдельно и подтверждает достижение этапа перед inertia probes.
+
+Доказательства: autocad_real_inertia_frozen_v275,
+autocad_real_inertia_positive_v276, autocad_config_effects_v276;
+каждый журнал имеет terminal watchdog footer. Новая справка объясняет
+центральные инерции и независимость преобразования от знаков нагрузок.
+
+## Оставшаяся Приемка
+
+Восьмисерийный Off regression на независимой копии v272 завершен: 99109/0,
+watchdog exit=0, source unchanged=True. Приняты девять General-полей,
+registry_general_v272 содержит 740 active-reviewed из 1064 и 20 editable pending.
+CAD Config включен в WorkbookUI только в последующем test-only срезе;
+его full-gate и поадресная трассировка еще необходимы для двадцати CAD-полей.
 Ранее красный full Off v263 сохраняется как отрицательное доказательство.
 Directed green не подменяет final full On/Off, матрицу, benchmark и self-audit.
 
@@ -140,3 +179,27 @@ AutoCAD, включая открытый read-only presentation DWG. Текст�
 версии CAD и полный набор произвольных DWG не объявляются проверенными.
 AutoCAD.Application.24.2 успешно подключился к реальному acad.exe; OEM apps
 не используются. Audit03 в целом остается в работе.
+
+## Финальный Directed Срез v278
+
+Импортные слои теперь меняются независимо: смена ConcreteLayer сохраняет
+стержни, смена RebarLayer сохраняет бетон. Directed gate v278: 1317/0,
+428 consumer-сценариев, source unchanged=True. Геометрическая suite после
+исправления Ixy: 572/0, включая прежние expected и новые малые переносы.
+Guide v277: 2079 строк, 140 links, 118 Shapes, failed=0; input signature
+760 полей не изменилась после save/reopen. v278 добавляет только последний
+тест поверх этой справки; read-only structure v278: 27/27.
+
+SHA-256 v278 книги:
+F7B089CFFA296092FB357456A2D037AF90C18D6D26265E5DD12B85833BEEB635.
+Native export VBA_All_Code_autocad_v278_2026-10-04.txt:
+B9928F335B5AE7CF3A7E44F748E0FC908971896E13CB1710CC0AAC813FE933CB.
+Positive native DWG v276: DBD065B03DE47C3F65AEF4FAAD5028748401787D8CA19AACD7D502F09A3735B3;
+presentation: BB92E68928457F62E27EB70A6B75FE22A92A18D3B28CF5FE23C5077ED32032C4.
+
+NDM_Audit03_AutoCAD_Config_Evidence.json подготовлен с двадцатью
+per-key assertions; PendingFullRegression=True. До нового full gate
+эти двадцать полей не получают registry PASS. Early source-contract v276
+был запущен во время обновления canonical export и увидел старый test body;
+он сохранен как verification-order failure, не ошибка production/книги.
+Повторная проверка неподвижного export v278 завершена: 108/108, failed=0.

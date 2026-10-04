@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_autocad_inertia_frozen_v273.xlsm
+SOURCE_SHA256: 57EFCF09363DD7EEE0D8807B56DAB2B42515D68BA7C8FDE178DB832BBB3FECDE
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9d30d3587b6343c687505c189bae3e78\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestAutoCADConfig.RunAudit03RealAutoCADTests =====
+SUITE_STARTED: modTestAutoCADConfig.RunAudit03RealAutoCADTests; 2026-10-04T22:24:36
+WATCHDOG_FAILURE: timeout=120 sec; macro=modTestAutoCADConfig.RunAudit03RealAutoCADTests; test Excel terminated

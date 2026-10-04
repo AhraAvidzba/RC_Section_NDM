@@ -51,6 +51,7 @@ Public Function RunGeometryTests() As String
     TestAutoCADImporterRotatedRectangleBounds stats
     TestAutoCADImporterPrincipalInertiaBounds stats
     TestAutoCADImporterTranslatedRegionKeepsLocalGeometry stats
+    TestAudit03AutoCADSmallTranslationInertia stats
     TestAutoCADImporterSquareRegionReadsEdgeRotation stats
     TestAutoCADImporterAreaSquareFallback stats
     TestAutoCADImporterAreaSquareFallbackAverageRotation stats
@@ -406,6 +407,36 @@ Private Sub TestAutoCADImporterTranslatedRegionKeepsLocalGeometry(ByRef stats As
         model.ConcreteLocalIxy(2), farI1, farI2, farAngle
     AssertClose stats, "autocad.import.translated.i1", farI1, nearI1, 0.001
     AssertClose stats, "autocad.import.translated.i2", farI2, nearI2, 0.001
+End Sub
+
+' ДЛЯ ТЕСТОВ: сохраняет центральный тензор при малом переносе повернутого
+' прямоугольника. При таком переносе несколько ошибочных Ixy также дают
+' положительную матрицу, поэтому проверка только ее определенности недостаточна.
+Private Sub TestAudit03AutoCADSmallTranslationInertia(ByRef stats As TTestStats)
+    Dim signValue As Long, position As Long, angle As Double, cx As Double, cy As Double
+    Dim ix As Double, iy As Double, ixy As Double, space As Collection
+    Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, prefix As String
+    Set importer = New CAutoCADSectionModelImporter
+    For signValue = -1 To 1 Step 2
+        angle = CDbl(signValue) * GEOM_PI / 6#
+        RotatedLocalInertia 2160000#, 8640000#, angle, ix, iy, ixy
+        For position = 0 To 2
+            cx = 0#: cy = 0#
+            If position > 0 Then cx = 20#: cy = -10#
+            If position = 2 Then cy = 10#
+            Set space = New Collection
+            space.Add FakeRegion(7200#, cx, cy, ix, iy, ixy, "Concrete", "C1")
+            space.Add FakeRegion(100#, 0#, 0#, 1#, 1#, 0#, "Reinf", "R1")
+            Set model = importer.ImportFromModelSpace(space, "Concrete", "Reinf", "A400", 0#)
+            prefix = "audit03.autocad.smallTranslation." & CStr(signValue) & "." & CStr(position)
+            AssertClose stats, prefix & ".area", model.ConcreteArea(1), 7200#, 0.000001
+            AssertClose stats, prefix & ".x", model.ConcreteX(1), cx, 0.000001
+            AssertClose stats, prefix & ".y", model.ConcreteY(1), cy, 0.000001
+            AssertClose stats, prefix & ".Ix", model.ConcreteLocalIx(1), ix, 0.000001
+            AssertClose stats, prefix & ".Iy", model.ConcreteLocalIy(1), iy, 0.000001
+            AssertClose stats, prefix & ".Ixy", model.ConcreteLocalIxy(1), ixy, 0.000001
+        Next position
+    Next signValue
 End Sub
 
 ' Проверяет живой путь AutoCAD-import: почти изотропный Region получает угол

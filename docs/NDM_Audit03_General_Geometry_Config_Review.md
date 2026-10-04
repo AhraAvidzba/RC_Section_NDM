@@ -160,7 +160,24 @@ source_contracts/structure v264. Эти directed gates подтверждают 
   SHA-256: 60569C86E31F230B0C21B1DC78165F07EC817AC029C77F9E4E38B685EF71B191.
 - Native CodeModule export: VBA_All_Code_general_geometry_v264_2026-10-04.txt.
   SHA-256: 995A6DD3416333E2DD3B0E954FD47689C03F6A6F7B3DDB82720D072FF308CF54.
-  Текущий VBA_All_Code.txt содержит тот же экспорт реальной книги.
+  Это исторический экспорт данной v264; текущий VBA_All_Code.txt обновляется
+  экспортом последующих изолированных книг и не обязан совпадать с v264.
 - 112 native components, 83 production classes и прежние три test classes.
   Новые классы не добавлялись. Основная output-книга и ТЗ сохраняют baseline
   hashes, пользовательский Excel не использовался.
+
+## Общий Regression Gate v272
+
+Полный Off на неизменной копии v272 завершен: все восемь suites,
+99109 passed / 0 failed, watchdog exit=0, source unchanged=True.
+Отчет: `docs/regression/Audit03/full_off_autocad_v272_2026-10-04.txt`.
+Geometry 536/0, Material 2856/0, Section 1031/0, Capacity 3074/0,
+Crack 1532/0, Batch 25607/0, WorkbookUI 64434/0, RegressionBaseline 39/0.
+Отрицательный полный v263 сохранен и не переписан.
+
+Через штатный Merge-Audit03ConfigEvidence приняты девять General/Geometry
+полей: registry_general_v272 содержит 740 active-reviewed из 1064,
+20 editable CAD-полей остаются pending. Полный диапазон и выпускные gates
+по-прежнему открыты. Native DWG отдельно проверен на настоящем Autodesk
+AutoCAD 2023 (409/0); прежняя запись о недоступности CAD описывает только
+состояние на момент v264, не текущую среду.
