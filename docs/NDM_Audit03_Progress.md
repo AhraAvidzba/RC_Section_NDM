@@ -21,7 +21,7 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v192: 646 активных полей из 1064, включая 156 новых арматурных полей и 90 дополнительных нагрузок устойчивости; из 760 editable полей 114 еще не приняты. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v199: 666 активных полей из 1064, включая 20 profile presentation/description полей; из 760 editable полей 94 еще не приняты. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
 | 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
 
 ## Карта Обязанностей
@@ -56,7 +56,7 @@
 | F08 | трассировка подготовлена, приемка продолжается | Per-ID реестр NDM_Audit03_Prior_Audit_Traceability.md; незавершенные K/T/D/UI/save-reopen пункты не получают PASS. |
 | A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
 | P01-P04 | в работе | 15 сценариев x 5 повторов x 2 версии; asymmetric: 94 solves/3874 iterations/20 retries/10 эквивалентных попыток. P02 численные и point-grid инварианты подтверждены; окончательный benchmark/разбор повторов впереди. |
-| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v192 содержит 1064 поля, 646 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
+| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v199 содержит 1064 поля, 666 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
 | T01-T05 | в работе | v68: все 13 форм, Light/Stress, Off/On, 52/52 chunks и 18 980 all-path cases, failed=0. Это приемка численного среза v68, не поздних Config/UI правок; selector variants/pairwise/high-risk tuples, независимые near-limit gates и финальный повтор на выпускном source впереди. |
 | D01-D02 | в работе | Comment-only ревизия export/writers/enum/workbook entrypoints выполнена частично; все остальные methods/tests и фактический help/Config/validation/links в clean/update впереди. |
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
@@ -68,6 +68,45 @@
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
 
 ## Актуальная Точка Продолжения
+
+- Rebar-срез v192 зафиксирован `4535c99cf4bb2e12056c8cb4479f294b76e7969f`.
+  Продолжение v193-v199 проверяет существующие presentation/snapshot owners,
+  без новых классов/расчетной методики. Negative v193: 280/120; исправленный
+  snapshot-negative v195b: 293/130. Исходный v195 имел дефект test scope
+  CurrentRegion и не является snapshot-acceptance. v194 остановился до
+  assertions из-за двух неокончательно переименованных helper calls; они
+  исправлены, закрыт только собственный тестовый Excel.
+  v196: 677/2, обе ошибки missing Placement; тип named-table теперь выбирается
+  по имени, а не по наличию конкретной строки параметра. v197: 679/0,
+  105 counted cases; black RGB/строгий active input/выключенные группы/
+  moved Name/повреждение snapshot/recovery, noSolve/unchanged Results.
+  Настройки единиц snapshot делегированы существующему CUnitSystem, порядок
+  операций для кривизны и исходный текст аннотации сохранены.
+  Profile v198: 8740/0, 276 counted cases; значения всех элементов и настоящий
+  текст легенды для пяти states, обеих величин, precision 0..10 и PR1-PR4.
+  В final frozen v199 добавлены optional/error/recovery Profile.Description
+  и test сохранения пробелов текста. Help v199 failed=0: 1988 строк/140 links/
+  118 shapes, 760 inputs/формулы/validation/PrintArea сохранены после reopen.
+  SHA v199 C91FB920944A5977474C9947D431E2A4270CAA5656A41D5486117A85E54934B5.
+  Full Off завершен 77134/0, UI 55231/0. 13641 общих numeric actual-values
+  с Off v192 совпал точно, missing=0/differences=0. Первый On v199 не начал
+  suite из-за COM factory 80080005; это сбой запуска среды, source unchanged,
+  отрицательный лог сохранен. Повторный On v199b завершен 77145/0, все восемь
+  suites; 13646 общих numeric actual-values с On v192 совпали точно,
+  missing=0/differences=0. Structure повтор 27/27; formatting 1003/0,
+  1002 адреса/deviations=0 без исправления стилей. Palette/save-reopen 355/0:
+  Results и фактические статусные стили одинаковы до/после сохранения.
+  Actual read-only VBE/source 105/105, failed=0; export SHA
+  DFF5001EDDE14B983E70F491E91C1BE9189EC3F8DD172502F2D3627FCFFE4257.
+  Registry v199 после присоединения 20 profile presentation/description entries:
+  666/1064, editable pending=94 (73 system + 21 annotation), не blanket PASS.
+  Точный review: `NDM_Audit03_Presentation_Snapshot_Review.md`.
+  Census v199: 105 modules/4387 methods/1618 guards, semantic acceptance Pending.
+  Main output/spec неизменны; PID 23476 защищен. Gates этого среза завершены;
+  сначала локальный checkpoint собственных source/tests/tools/docs/evidence,
+  затем цельная проверка оставшегося general Plot/snapshot/AutoCAD/lifecycle
+  и guard-поведения. Кандидаты перечислены в Code_Comment_Review/Guard_Review;
+  их еще нужно подтвердить directed runtime, без новых классов/смены методики.
 
 - Принятый Search/State срез v185 зафиксирован checkpoint `0340524f`.
   Следующий цельный срез v186-v187 проверяет поадресное армирование всех

@@ -1,0 +1,5 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_presentation_all_v199.xlsm
+SOURCE_SHA256: C91FB920944A5977474C9947D431E2A4270CAA5656A41D5486117A85E54934B5
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c2425ee8874b448f93752783572f33db\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+SCRIPT ERROR: Не удалось получить фабрику класса COM для компонента с CLSID {00024500-0000-0000-C000-000000000046} из-за следующей ошибки: 80080005 Ошибка при выполнении приложения-сервера (Исключение из HRESULT: 0x80080005 (CO_E_SERVER_EXEC_FAILURE)).

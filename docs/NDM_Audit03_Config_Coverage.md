@@ -610,3 +610,29 @@ Evidence `NDM_Audit03_Circle_Rebar_Input_Evidence.json` использует р�
 53 effect и 524 input assertions и оба full gates. Эти восемь адресов уже
 были приняты ранее, поэтому счетчик 646 не увеличивается; исторические
 registry сохраняют исходные данные своего среза.
+
+## Профильное Представление v199
+
+После двух полных gates присоединены ровно 20 editable полей PR1-PR4:
+Description, Visualization.State, Quantity, StressPrecision и StrainPrecision.
+Описание проверено как metadata с blank/text/CVErr/recovery. Все пять states,
+Stress/Strain и precision 0..10 проверены через сохраненную плоскость/материалы,
+значения всех элементов и фактическую легенду реального Chart, без нового solve
+и без округления чисел Results. Полный missing/blank/error контракт selectors,
+pixel-приемка всех вариантов и high-risk pairwise еще не объявляются закрытыми.
+
+Directed v198: 8740/0, 276 counted cases. Frozen v199 включает description
+и сохранение пробелов аннотации: profile block 8784/0, 292 counted cases;
+presentation block 681/0, 105 counted cases. Full Off 77134/0, On v199b 77145/0,
+восемь suites каждый; 13641/13646 общих actual-values с v192 совпали точно.
+Source/VBE equality 105/105; Validate повтор 27/27; formatting 1003/0,
+deviations=0; palette/save-reopen 355/0. First On/structure COM-factory failures
+сохранены как ошибки запуска среды и не присваиваются численному result.
+
+Актуальный registry `config_behavior_registry_presentation_v199_2026-10-04`:
+666/1064 active-reviewed, fullAcceptance=False. Из 760 editable полей 94 еще
+не имеют активной поадресной приемки: 73 system и 21 annotation. Directed
+presentation-тест сам по себе не принимает эти 21 annotation-поле и не закрывает
+весь Config. Трассировка: `NDM_Audit03_Profile_Presentation_Evidence.json` и
+`NDM_Audit03_Presentation_Snapshot_Review.md`. Основная output-книга и final
+report остаются невыпущенными до полного DoD Audit03.

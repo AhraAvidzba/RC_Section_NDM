@@ -1,0 +1,9 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_presentation_v196.xlsm
+SOURCE_SHA256: DB8040510890EF489A4D5E74435B115AA60759C613BB0243558A698504B578A3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c832f992a3ef45ee893277afaed803b2\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: presentationConfig.Plot.RebarLabels.Placement.missingKey
+FAIL: presentationConfig.Plot.Dimensions.Placement.missingKey
+TOTAL_AUDIT03_PRESENTATION_CONFIG: passed=677; failed=2; cases=105
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

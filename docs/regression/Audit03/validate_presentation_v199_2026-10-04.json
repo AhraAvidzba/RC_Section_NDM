@@ -1,0 +1,17 @@
+﻿[
+    {
+        "Check":  "Canonical print area names",
+        "Passed":  true,
+        "Details":  "CalculationSheetIndex=2; canonical=1; noncanonical=0; file not repaired"
+    },
+    {
+        "Check":  "Validation runtime",
+        "Passed":  false,
+        "Details":  "Retrieving the COM class factory for component with CLSID {00024500-0000-0000-C000-000000000046} failed due to the following error: 80080005 Server execution failed (Exception from HRESULT: 0x80080005 (CO_E_SERVER_EXEC_FAILURE))."
+    },
+    {
+        "Check":  "Source workbook unchanged",
+        "Passed":  true,
+        "Details":  "Before=C91FB920944A5977474C9947D431E2A4270CAA5656A41D5486117A85E54934B5; After=C91FB920944A5977474C9947D431E2A4270CAA5656A41D5486117A85E54934B5"
+    }
+]

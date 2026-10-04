@@ -83,14 +83,18 @@ Public Function InputLengthToInternal(ByVal value As Double) As Double
     InputLengthToInternal = value * LengthFactorToMm(mInputLength)
 End Function
 
-' Переводит внутреннюю длину в пользовательские OUTPUT-единицы.
-Public Function InternalLengthToOutput(ByVal value As Double) As Double
-    InternalLengthToOutput = value / LengthFactorToMm(mOutputLength)
+' Переводит внутреннюю длину в OUTPUT-единицы. Явная единица нужна для
+' сохраненного Results, который может быть записан до изменения Config.
+Public Function InternalLengthToOutput(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
+    If Len(savedUnit) = 0 Then savedUnit = mOutputLength
+    InternalLengthToOutput = value / LengthFactorToMm(savedUnit)
 End Function
 
-' Переводит длину из OUTPUT-единиц обратно во внутренние мм.
-Public Function OutputLengthToInternal(ByVal value As Double) As Double
-    OutputLengthToInternal = value * LengthFactorToMm(mOutputLength)
+' Переводит длину из OUTPUT обратно в мм. При заданном savedUnit используется
+' единица самого snapshot, а не текущая пользовательская настройка.
+Public Function OutputLengthToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
+    If Len(savedUnit) = 0 Then savedUnit = mOutputLength
+    OutputLengthToInternal = value * LengthFactorToMm(savedUnit)
 End Function
 
 ' Переводит площадь из пользовательских INPUT-единиц во внутренние мм2.
@@ -103,9 +107,11 @@ Public Function InternalAreaToOutput(ByVal value As Double) As Double
     InternalAreaToOutput = value / AreaFactorToMm2(mOutputArea)
 End Function
 
-' Переводит площадь из OUTPUT-единиц обратно во внутренние мм2.
-Public Function OutputAreaToInternal(ByVal value As Double) As Double
-    OutputAreaToInternal = value * AreaFactorToMm2(mOutputArea)
+' Переводит площадь из OUTPUT обратно в мм2; явная savedUnit сохраняет
+' независимость чтения Results от последующей смены единиц Config.
+Public Function OutputAreaToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
+    If Len(savedUnit) = 0 Then savedUnit = mOutputArea
+    OutputAreaToInternal = value * AreaFactorToMm2(savedUnit)
 End Function
 
 ' Переводит величину размерности L4 из INPUT-единиц во внутренние мм4.
@@ -192,9 +198,11 @@ Public Function InputCurvatureToInternal(ByVal value As Double) As Double
     InputCurvatureToInternal = value * CurvatureFactorToInvMm(mInputCurvature)
 End Function
 
-' Переводит внутреннюю кривизну в OUTPUT-единицы.
-Public Function InternalCurvatureToOutput(ByVal value As Double) As Double
-    InternalCurvatureToOutput = value / CurvatureFactorToInvMm(mOutputCurvature)
+' Переводит внутреннюю кривизну в OUTPUT-единицы или в явную единицу snapshot.
+' Знак плоскости деформаций этим преобразованием не изменяется.
+Public Function InternalCurvatureToOutput(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
+    If Len(savedUnit) = 0 Then savedUnit = mOutputCurvature
+    InternalCurvatureToOutput = value / CurvatureFactorToInvMm(savedUnit)
 End Function
 
 ' Переводит кривизну из OUTPUT-единиц обратно во внутренние 1/мм.

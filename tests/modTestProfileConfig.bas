@@ -392,6 +392,7 @@ Private Sub TestProfileMetadata(ByRef stats As TProfileStats, ByVal source As Ob
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
     Dim profile As Long, catalog As CCalculationProfileCatalog, batch As CBatchSectionCalculator
     Dim caption As String, description As String, prefix As String, state As CSectionStateResult, data As Variant
+    Dim value As Variant, code As Long, reason As String, cell As Object
     For profile = 1 To 4
         ConfigureProfiles source
         EnableChecks source, profile, "Yes", "No", "No", "No"
@@ -411,17 +412,38 @@ Private Sub TestProfileMetadata(ByRef stats As TProfileStats, ByVal source As Ob
         CheckState stats, prefix & ".metadataState", state, section, provider, ExpectedSpec("Strength", "", "")
         CheckComments stats, prefix, batch, units
         stats.Cases = stats.Cases + 2
+        For Each value In Array(vbNullString, "  Пояснение профиля  ", "Произвольное пояснение: НДС и трещины")
+            SetProfileValue source, profile, "Profile.Description", value
+            Set catalog = New CCalculationProfileCatalog: catalog.LoadFromWorkbook ThisWorkbook
+            Check stats, prefix & ".Profile.Description.optional", catalog.ProfileById(caption).Description = Trim$(CStr(value))
+            Check stats, prefix & ".Profile.Description.nameStable", catalog.ProfileById(caption).ProfileId = "PR" & CStr(profile)
+            stats.Cases = stats.Cases + 1
+        Next value
+        Set cell = ProfileCell(source, profile, "Profile.Description"): cell.Value2 = CVErr(xlErrValue)
+        code = CatalogError(reason)
+        Check stats, prefix & ".Profile.Description.error.rejected", code <> 0
+        Check stats, prefix & ".Profile.Description.error.controlled", code <> 13 And code <> 6
+        Check stats, prefix & ".Profile.Description.error.key", InStr(1, reason, "Profile.Description", vbBinaryCompare) > 0
+        Check stats, prefix & ".Profile.Description.error.address", InStr(1, reason, cell.Worksheet.Name & "!" & cell.Address(False, False), vbBinaryCompare) > 0
+        SetProfileValue source, profile, "Profile.Description", description
+        code = CatalogError(reason): Check stats, prefix & ".Profile.Description.recovery", code = 0
+        stats.Cases = stats.Cases + 1
     Next profile
 End Sub
 
 ' Выбирает все пять named states и обе величины в реальном snapshot-reader-е.
-' Все допустимые точности 0..10 проверяются без пересчета и без округления Results.
+' Сверяет значения по плоскости/материалу, а точности 0..10 - по настоящему
+' тексту легенды Chart; схема не решает НДС и не округляет данные Results.
 Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Object, ByVal system As Object, _
         ByVal loads As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
     Dim profile As Long, stateName As Variant, quantity As Variant, precision As Long, prefix As String
     Dim batch As CBatchSectionCalculator, writer As CNDMResultsWriter, reader As CSectionPlotDataReader
     Dim state As CSectionStateResult, solves As Long, before As Variant, firstValue As Double
+    SetTableValue system, "Plot.LegendMode", "Common", 2
+    SetTableValue system, "Plot.LegendEnabled", "Yes", 2
+    SetTableValue system, "Plot.ResultLabelsEnabled", "Yes", 2
+    SetTableValue system, "Plot.ResultLabelSpacing", "50", 2
     For profile = 1 To 4
         ConfigureProfiles source
         EnableChecks source, profile, "Yes", "Yes", "Yes", "No"
@@ -445,6 +467,7 @@ Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Obje
                 Check stats, prefix & ".exists", Not state Is Nothing
                 If Not state Is Nothing Then
                     CheckClose stats, prefix & ".plane", reader.Epsilon0, state.Epsilon0, 0.000000000001
+                    CheckVisualizationValues stats, prefix, reader, state, section, provider, units
                 End If
                 firstValue = reader.ResultValue(1)
                 For precision = 0 To 10
@@ -452,6 +475,7 @@ Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Obje
                     Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
                     Check stats, prefix & ".precision" & CStr(precision), reader.ResultPrecision = precision
                     CheckClose stats, prefix & ".valueUnrounded" & CStr(precision), reader.ResultValue(1), firstValue, 0#
+                    CheckVisualizationLegend stats, prefix & ".precision" & CStr(precision), reader, settings
                 Next precision
                 stats.Cases = stats.Cases + 1
             Next quantity
@@ -1173,4 +1197,435 @@ Private Sub LogLine(ByRef stats As TProfileStats, ByVal value As String)
         Set stream = CreateObject("Scripting.FileSystemObject").OpenTextFile(ThisWorkbook.Path & "\RC_NDM_ui_test_progress.txt", 8, True, -1)
         stream.WriteLine Format$(Now, "yyyy-mm-dd hh:nn:ss") & " " & value: stream.Close
     End If
+End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: ОФОРМЛЕНИЕ И SNAPSHOT ====================
+
+' Проверяет настройки аннотаций через действительные ячейки и Chart.Shapes.
+' Численные Results создаются один раз; изменение оформления не запускает
+' равновесие и не меняет snapshot. Ошибочные и выключенные поля проверяются
+' раздельно, исходные таблицы и переадресованный Name восстанавливаются.
+Public Function RunAudit03PresentationConfigTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TProfileStats, names As Variant, saved(0 To 5) As Variant, i As Long
+    Dim annotations As Object, profiles As Object, system As Object, loads As Object
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
+    Dim provider As CMaterialModelProvider, batch As CBatchSectionCalculator, writer As CNDMResultsWriter
+    Dim reader As CSectionPlotDataReader, before As Variant, solves As Long, oldRef As String
+    Dim sheet As Object, oldAlerts As Boolean, restoreNumber As Long, restoreReason As String
+    On Error GoTo FailedRun
+    names = Array("rngPlotAnnotationSettings", "rngCalculationProfiles", "rngSystemSettings", _
+        "rngUnitSettings", "rngSignConventionSettings", "rngLoadCombinations")
+    For i = 0 To UBound(names): saved(i) = ThisWorkbook.Names.Item(CStr(names(i))).RefersToRange.Formula: Next i
+    oldRef = ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersTo
+    oldAlerts = Application.DisplayAlerts
+    Set annotations = ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersToRange
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Set system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    ConfigureProfiles profiles: EnableChecks profiles, 1, "Yes", "No", "No", "No"
+    ConfigureDurationUnits "N", "N*mm", "Tension", "+Y tension", "+X tension"
+    SetTableValue system, "Calculation.ZeroMomentPerDepth", "0", 2
+    SetTableValue system, "Load.ReferenceOffsetX", "0", 2: SetTableValue system, "Load.ReferenceOffsetY", "0", 2
+    SetTableValue system, "Plot.LoadCase", "PROFILE_CONFIG", 2
+    ConfigureAnnotationFixture annotations
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    BuildFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
+    section.Annotations.AddDimension "AuditDim", -100#, 0#, 100#, 0#, 0#, 1#, "AUDIT_DIM", 200#
+    section.Annotations.AddRebarLabel "AuditRebar", -80#, -60#, 80#, -60#, 0#, -1#, "AUDIT_REBAR"
+    SetLoad loads, 1, -50000#, 1000000#, 2000000#, "Auto"
+    Set batch = ExecuteFixture(section, provider, settings, units)
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, provider, batch, units
+    Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
+    before = ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2
+    solves = SectionEquilibriumSolveCount()
+    TestAnnotationLayoutValues stats, annotations
+    TestAnnotationInputMatrix stats, annotations, reader
+    TestAnnotationChartValues stats, annotations, reader
+    TestPresentationSnapshotIntegrity stats, reader
+    TestAnnotationRelocation stats, annotations, reader, sheet
+    Check stats, "presentationConfig.noSolve", SectionEquilibriumSolveCount() = solves
+    Check stats, "presentationConfig.snapshotUnchanged", TablesEqual(before, _
+        ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2)
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    LogLine stats, "FAIL: presentationConfig.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersTo = oldRef
+    For i = 0 To UBound(names)
+        Err.Clear: ThisWorkbook.Names.Item(CStr(names(i))).RefersToRange.Formula = saved(i)
+        If Err.Number <> 0 Then restoreNumber = Err.Number: restoreReason = Err.Description
+    Next i
+    If Not sheet Is Nothing Then Application.DisplayAlerts = False: sheet.Delete
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+    If restoreNumber <> 0 Then stats.Failed = stats.Failed + 1: LogLine stats, "FAIL: presentationConfig.restore; " & CStr(restoreNumber) & "; " & restoreReason
+    LogLine stats, "TOTAL_AUDIT03_PRESENTATION_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & "; cases=" & CStr(stats.Cases)
+    passed = stats.Passed: failed = stats.Failed: RunAudit03PresentationConfigTests = stats.Report
+End Function
+
+' Задает известную базу оформления в существующей двухколоночной таблице.
+' Символы "-" неприменимых полей не превращаются в пользовательские настройки.
+Private Sub ConfigureAnnotationFixture(ByVal source As Object)
+    Dim column As Long, field As Variant
+    For column = 2 To 3
+        For Each field In Array("Enabled", "LineEnabled"): AnnotationCell(source, CStr(field), column).Value2 = "Yes": Next field
+        AnnotationCell(source, "Placement", column).Value2 = "Outside"
+        AnnotationCell(source, "Offset", column).Value2 = 50#
+        AnnotationCell(source, "LineWeight", column).Value2 = 2#
+        AnnotationCell(source, "TextUnits", column).Value2 = "pt"
+        AnnotationCell(source, "TextHeight", column).Value2 = 13#
+        AnnotationCell(source, "TextGap", column).Value2 = 9#
+        AnnotationCell(source, "Color", column).Value2 = "20,30,90"
+    Next column
+    AnnotationCell(source, "LineEnabled", 3).Value2 = "-"
+    AnnotationCell(source, "ExtensionLineWeight", 2).Value2 = "-"
+    AnnotationCell(source, "ExtensionLineWeight", 3).Value2 = 1#
+    AnnotationCell(source, "ArrowType", 2).Value2 = "-": AnnotationCell(source, "ArrowType", 3).Value2 = "Triangle"
+    AnnotationCell(source, "ArrowSize", 2).Value2 = "-": AnnotationCell(source, "ArrowSize", 3).Value2 = "Medium"
+    AnnotationCell(source, "ExtensionLineColor", 2).Value2 = "-"
+    AnnotationCell(source, "ExtensionLineColor", 3).Value2 = "140,140,140"
+End Sub
+
+' Находит действительную входную ячейку аннотации, не используя ее адрес Config.
+Private Function AnnotationCell(ByVal source As Object, ByVal field As String, ByVal column As Long) As Object
+    Dim row As Long
+    For row = 2 To source.Rows.Count
+        If CStr(source.Cells(row, 1).Value2) = field Then Set AnnotationCell = source.Cells(row, column): Exit Function
+    Next row
+    Err.Raise vbObjectError + 4502, "AnnotationCell", "В таблице аннотаций нет " & field
+End Function
+
+' Независимые численные ожидания: масштаб модели 0.43 pt/mm, visual-scale=1.
+' Проверяются настоящий цвет 0, направление Inside, толщина и mm/pt, а также
+' повторная инициализация того же layout без накопления старых элементов.
+Private Sub TestAnnotationLayoutValues(ByRef stats As TProfileStats, ByVal source As Object)
+    Dim column As Long, color As Variant, height As Variant, layout As CPlotAnnotationLayout
+    Dim settings As CSystemSettingsReader, prefix As String, base As Long
+    For column = 2 To 3
+        For Each color In Array("0,0,0", "255,0,0", "0,255,0", "0,0,255")
+            ConfigureAnnotationFixture source
+            AnnotationCell(source, "Color", column).Value2 = color
+            AnnotationCell(source, "ExtensionLineColor", 3).Value2 = color
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set layout = New CPlotAnnotationLayout: layout.ConfigureFromSettings settings
+            layout.Initialize -500#, 500#, -500#, 500#, 0#, 0#, 640#, 430#, "mm"
+            layout.AddDimension -100#, 0#, 100#, 0#, 0#, 1#, "DIM"
+            layout.AddRebarLabel -100#, 0#, 100#, 0#, 0#, 1#, "REBAR"
+            Select Case CStr(color)
+                Case "0,0,0": base = 0
+                Case "255,0,0": base = 255
+                Case "0,255,0": base = 65280
+                Case "0,0,255": base = 16711680
+            End Select
+            prefix = "presentationConfig." & CStr(column) & ".Color." & CStr(color)
+            If column = 2 Then Check stats, prefix & ".text", layout.Color(6) = base Else Check stats, prefix & ".text", layout.Color(4) = base
+            Check stats, prefix & ".extension", layout.Color(1) = base And layout.Color(2) = base
+            CheckClose stats, prefix & ".lineWeight", layout.Weight(3), 2#, 0#
+            CheckClose stats, prefix & ".offset", layout.Y1(3), 193.5, 0.000000000001
+            layout.Initialize -500#, 500#, -500#, 500#, 0#, 0#, 640#, 430#, "mm"
+            Check stats, prefix & ".reset", layout.Count = 0
+            stats.Cases = stats.Cases + 1
+        Next color
+        For Each height In Array(13#, 20#)
+            ConfigureAnnotationFixture source
+            AnnotationCell(source, "TextHeight", column).Value2 = height
+            AnnotationCell(source, "TextUnits", column).Value2 = "mm"
+            AnnotationCell(source, "Placement", column).Value2 = "Inside"
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set layout = New CPlotAnnotationLayout: layout.ConfigureFromSettings settings
+            layout.Initialize -500#, 500#, -500#, 500#, 0#, 0#, 640#, 430#, "mm"
+            layout.AddDimension -100#, 0#, 100#, 0#, 0#, 1#, "DIM"
+            layout.AddRebarLabel -100#, 0#, 100#, 0#, 0#, 1#, "REBAR"
+            prefix = "presentationConfig." & CStr(column) & ".TextUnits.mm." & CStr(height)
+            If column = 2 Then base = 6 Else base = 4
+            CheckClose stats, prefix & ".font", layout.FontSize(base), CDbl(height) * 0.43, 0.000000000001
+            If column = 2 Then
+                Check stats, prefix & ".Inside", layout.Y1(6) > 215#
+            Else
+                Check stats, prefix & ".Inside", layout.Y1(4) > 184.5
+            End If
+            stats.Cases = stats.Cases + 1
+        Next height
+    Next column
+End Sub
+
+' Матрица всех применимых полей: пустота/текст/Excel-ошибка и особые границы.
+' Ошибка активного поля должна содержать key, текущую ячейку и исправление;
+' тот же ошибочный параметр выключенной группы не должен мешать схеме.
+Private Sub TestAnnotationInputMatrix(ByRef stats As TProfileStats, ByVal source As Object, ByVal reader As CSectionPlotDataReader)
+    Dim column As Long, field As Variant, value As Variant, invalids As Variant, cell As Object
+    Dim prefix As String, key As String, code As Long, reason As String, caseIndex As Long, savedKey As Variant
+    For column = 2 To 3
+        For Each field In Array("Enabled", "Placement", "Offset", "LineEnabled", "LineWeight", "ExtensionLineWeight", _
+                "TextUnits", "TextHeight", "TextGap", "ArrowType", "ArrowSize", "Color", "ExtensionLineColor")
+            ConfigureAnnotationFixture source
+            Set cell = AnnotationCell(source, CStr(field), column)
+            If CStr(cell.Value2) <> "-" Then
+                If column = 2 Then key = "Plot.RebarLabels." & CStr(field) Else key = "Plot.Dimensions." & CStr(field)
+                invalids = Array(vbNullString, "abc", CVErr(xlErrDiv0))
+                Select Case CStr(field)
+                    Case "Offset", "TextGap": invalids = Array(vbNullString, "abc", CVErr(xlErrDiv0), -1#)
+                    Case "TextHeight", "LineWeight", "ExtensionLineWeight": invalids = Array(vbNullString, "abc", CVErr(xlErrDiv0), -1#, 0#)
+                    Case "Color", "ExtensionLineColor": invalids = Array(vbNullString, "abc", CVErr(xlErrDiv0), "-1,2,3", "256,2,3", "1.5,2,3")
+                End Select
+                caseIndex = 0
+                For Each value In invalids
+                    ConfigureAnnotationFixture source: cell.Value2 = value
+                    prefix = "presentationConfig." & key & ".invalid" & CStr(caseIndex)
+                    LogLine stats, "RUN: " & prefix
+                    code = PresentationDrawError(reader, reason)
+                    Check stats, prefix & ".rejected", code <> 0
+                    If code <> 0 Then
+                        Check stats, prefix & ".controlled", code <> 6 And code <> 13 And code <> 9
+                        Check stats, prefix & ".key", InStr(1, reason, key, vbTextCompare) > 0
+                        Check stats, prefix & ".address", InStr(1, reason, "ячейка " & cell.Address(False, False), vbBinaryCompare) > 0
+                        Check stats, prefix & ".repair", InStr(1, reason, "Введите", vbTextCompare) > 0 Or InStr(1, reason, "Выберите", vbTextCompare) > 0 Or InStr(1, reason, "Исправьте", vbTextCompare) > 0
+                    End If
+                    If CStr(field) <> "Enabled" Then
+                        AnnotationCell(source, "Enabled", column).Value2 = "No"
+                        code = PresentationDrawError(reader, reason)
+                        Check stats, prefix & ".inactive", code = 0
+                    End If
+                    caseIndex = caseIndex + 1: stats.Cases = stats.Cases + 1
+                Next value
+                ConfigureAnnotationFixture source
+                savedKey = cell.Offset(0, 1 - column).Value2: cell.Offset(0, 1 - column).Value2 = "__MissingAnnotationField"
+                If CStr(field) <> "Enabled" Then
+                    If column = 2 Then AnnotationCell(source, "Enabled", 3).Value2 = "No" Else AnnotationCell(source, "Enabled", 2).Value2 = "No"
+                End If
+                code = PresentationDrawError(reader, reason)
+                Check stats, "presentationConfig." & key & ".missing", code <> 0
+                If code <> 0 Then Check stats, "presentationConfig." & key & ".missingKey", InStr(1, reason, CStr(field), vbTextCompare) > 0
+                cell.Offset(0, 1 - column).Value2 = savedKey
+                ConfigureAnnotationFixture source: code = PresentationDrawError(reader, reason)
+                Check stats, "presentationConfig." & key & ".recovery", code = 0
+            End If
+        Next field
+    Next column
+End Sub
+
+' Проверяет собственно Excel Shape, а не только accessor layout: черный цвет
+' не подменяется; Enabled и LineEnabled действительно убирают нужные элементы.
+Private Sub TestAnnotationChartValues(ByRef stats As TProfileStats, ByVal source As Object, ByVal reader As CSectionPlotDataReader)
+    Dim shape As Object, chart As Object, code As Long, reason As String, count As Long, arrows As Long
+    ConfigureAnnotationFixture source
+    AnnotationCell(source, "Color", 2).Value2 = "0,0,0": AnnotationCell(source, "Color", 3).Value2 = "0,0,0"
+    AnnotationCell(source, "ExtensionLineColor", 3).Value2 = "0,0,0"
+    code = PresentationDrawError(reader, reason): Check stats, "presentationConfig.Chart.black.draw", code = 0
+    If code <> 0 Then Exit Sub
+    Set chart = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects.Item("chtNDMSectionPlot").Chart
+    For Each shape In chart.Shapes
+        If InStr(1, shape.Name, "AnnotationLine", vbBinaryCompare) > 0 Then
+            count = count + 1: Check stats, "presentationConfig.Chart.black.line" & CStr(count), shape.Line.ForeColor.RGB = 0
+            If shape.Line.BeginArrowheadStyle <> 1 Then arrows = arrows + 1
+        End If
+    Next shape
+    Check stats, "presentationConfig.Chart.black.lines", count = 4
+    Check stats, "presentationConfig.Chart.black.arrows", arrows = 1
+    Check stats, "presentationConfig.Chart.black.image", chart.Export(ThisWorkbook.Path & "\Audit03_presentation_black.png", "PNG")
+    LogLine stats, "PLOT_IMAGE: " & ThisWorkbook.Path & "\Audit03_presentation_black.png"
+    AnnotationCell(source, "Enabled", 3).Value2 = "No": AnnotationCell(source, "LineEnabled", 2).Value2 = "No"
+    code = PresentationDrawError(reader, reason): Check stats, "presentationConfig.Chart.disabled.draw", code = 0
+    count = 0
+    For Each shape In chart.Shapes
+        If InStr(1, shape.Name, "AnnotationLine", vbBinaryCompare) > 0 Then count = count + 1
+    Next shape
+    Check stats, "presentationConfig.Chart.disabled.lines", count = 0
+    ConfigureAnnotationFixture source
+End Sub
+
+' Перемещает существующий Name и проверяет ошибку активного цвета по новому
+' адресу. Отрисовка не должна выдавать старый адрес или молча брать default.
+Private Sub TestAnnotationRelocation(ByRef stats As TProfileStats, ByVal source As Object, _
+        ByVal reader As CSectionPlotDataReader, ByRef sheet As Object)
+    Dim target As Object, cell As Object, code As Long, reason As String, oldRef As String
+    oldRef = ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersTo
+    ConfigureAnnotationFixture source
+    Set sheet = ThisWorkbook.Worksheets.Add: sheet.Name = "__AuditPlotInputs"
+    Set target = sheet.Cells(25, 60).Resize(source.Rows.Count, source.Columns.Count): target.Value2 = source.Value2
+    ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersTo = "='" & sheet.Name & "'!" & target.Address
+    Set cell = AnnotationCell(target, "Color", 3): cell.Value2 = "256,0,0"
+    code = PresentationDrawError(reader, reason)
+    Check stats, "presentationConfig.relocated.rejected", code <> 0
+    If code <> 0 Then
+        Check stats, "presentationConfig.relocated.sheet", InStr(1, reason, sheet.Name, vbBinaryCompare) > 0
+        Check stats, "presentationConfig.relocated.address", InStr(1, reason, "ячейка " & cell.Address(False, False), vbBinaryCompare) > 0
+    End If
+    ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersTo = oldRef
+End Sub
+
+' Запускает production-рисование по уже подготовленному snapshot. Код ошибки
+' сохраняется отдельно от текста: тест не выводит статус из комментария.
+Private Function PresentationDrawError(ByVal reader As CSectionPlotDataReader, ByRef reason As String) As Long
+    Dim settings As CSystemSettingsReader, plotter As CSectionPlotter
+    reason = vbNullString
+    On Error GoTo Failed
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set plotter = New CSectionPlotter: plotter.Draw ThisWorkbook, reader, settings
+    Exit Function
+Failed:
+    PresentationDrawError = Err.Number: reason = Err.Description
+End Function
+
+' Проверяет целостность реальных таблиц Results: недостающая обязательная
+' колонка и испорченная аннотация не выдаются за успешно прочитанную схему.
+' ShapeType остается допустимым именем колонки геометрии, пустая таблица
+' semantic-аннотаций не блокирует саму расчетную геометрию.
+Private Sub TestPresentationSnapshotIntegrity(ByRef stats As TProfileStats, ByRef reader As CSectionPlotDataReader)
+    Dim geometry As Object, annotations As Object, oldGeometry As Variant, oldAnnotations As Variant
+    Dim data As Variant, code As Long, reason As String, field As Variant, column As Long
+    Dim savedNumber As Long, savedReason As String
+    On Error GoTo Failed
+    Set geometry = PresentationSnapshotRange("rngNDMSectionGeometry", 15)
+    Set annotations = PresentationSnapshotRange("rngNDMSectionAnnotations", 13)
+    oldGeometry = geometry.Formula: oldAnnotations = annotations.Formula
+    data = geometry.Value2: data(1, 7) = "__MissingGeometryStatus": geometry.Value2 = data
+    code = PresentationReaderError(reader, reason)
+    Check stats, "presentationConfig.snapshot.geometryHeader.rejected", code <> 0
+    Check stats, "presentationConfig.snapshot.geometryHeader.controlled", code <> 9 And code <> 13 And code <> 6
+    If code <> 0 Then Check stats, "presentationConfig.snapshot.geometryHeader.reason", InStr(1, reason, "GeometryInterpretationStatus", vbBinaryCompare) > 0
+    data(1, 7) = "ShapeType": geometry.Value2 = data
+    code = PresentationReaderError(reader, reason): Check stats, "presentationConfig.snapshot.ShapeType", code = 0
+    geometry.Formula = oldGeometry
+    For Each field In Array("StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text")
+        data = annotations.Value2
+        column = PresentationColumn(data, CStr(field))
+        data(2, column) = CVErr(xlErrValue): annotations.Value2 = data
+        code = PresentationReaderError(reader, reason)
+        Check stats, "presentationConfig.snapshot.annotation." & CStr(field) & ".rejected", code <> 0
+        If code <> 0 Then
+            Check stats, "presentationConfig.snapshot.annotation." & CStr(field) & ".controlled", code <> 9 And code <> 13 And code <> 6
+            Check stats, "presentationConfig.snapshot.annotation." & CStr(field) & ".reason", InStr(1, reason, CStr(field), vbBinaryCompare) > 0
+            Check stats, "presentationConfig.snapshot.annotation." & CStr(field) & ".address", _
+                InStr(1, reason, annotations.Cells(2, column).Address(False, False), vbBinaryCompare) > 0
+        End If
+        annotations.Formula = oldAnnotations
+        code = PresentationReaderError(reader, reason)
+        Check stats, "presentationConfig.snapshot.annotation." & CStr(field) & ".recovery", code = 0
+        stats.Cases = stats.Cases + 1
+    Next field
+    data = annotations.Value2: column = PresentationColumn(data, "Text")
+    data(2, column) = "  Подпись с пробелами  ": annotations.Value2 = data
+    code = PresentationReaderError(reader, reason)
+    Check stats, "presentationConfig.snapshot.textWhitespace.reader", code = 0
+    If code = 0 Then Check stats, "presentationConfig.snapshot.textWhitespace.preserved", reader.AnnotationText(1) = "  Подпись с пробелами  "
+    annotations.Formula = oldAnnotations
+    data = annotations.Value2: data(1, 4) = "__MissingStartX": annotations.Value2 = data
+    code = PresentationReaderError(reader, reason)
+    Check stats, "presentationConfig.snapshot.annotationHeader.rejected", code <> 0
+    annotations.Formula = oldAnnotations
+    annotations.Offset(1, 0).Resize(annotations.Rows.Count - 1, annotations.Columns.Count).ClearContents
+    code = PresentationReaderError(reader, reason)
+    Check stats, "presentationConfig.snapshot.emptyAnnotations.reader", code = 0
+    If code = 0 Then Check stats, "presentationConfig.snapshot.emptyAnnotations.count", reader.AnnotationCount = 0
+    GoTo Restore
+Failed:
+    savedNumber = Err.Number: savedReason = Err.Description
+Restore:
+    On Error Resume Next
+    If Not geometry Is Nothing Then geometry.Formula = oldGeometry
+    If Not annotations Is Nothing Then annotations.Formula = oldAnnotations
+    On Error GoTo 0
+    If savedNumber <> 0 Then stats.Failed = stats.Failed + 1: LogLine stats, "FAIL: presentationConfig.snapshot.runtime; " & CStr(savedNumber) & "; " & savedReason
+    code = PresentationReaderError(reader, reason): Check stats, "presentationConfig.snapshot.recovery", code = 0
+End Sub
+
+' Ограничивает test-mutation собственным блоком от именованного якоря.
+' CurrentRegion здесь непригоден: соседние Results-блоки могут соприкасаться
+' служебными строками. Число колонок задано независимо по проверяемой схеме.
+Private Function PresentationSnapshotRange(ByVal name As String, ByVal columns As Long) As Object
+    Dim anchor As Object, rows As Long
+    Set anchor = ThisWorkbook.Names.Item(name).RefersToRange
+    rows = 1
+    Do While Len(CStr(anchor.Offset(rows, 0).Value2)) > 0: rows = rows + 1: Loop
+    Set PresentationSnapshotRange = anchor.Resize(rows, columns)
+End Function
+
+' Находит колонку самостоятельного test-oracle по буквальному заголовку.
+' Это не production ResultColumn и не общий helper, скрывающий ошибку decoder-а.
+Private Function PresentationColumn(ByRef data As Variant, ByVal header As String) As Long
+    Dim column As Long
+    For column = 1 To UBound(data, 2)
+        If CStr(data(1, column)) = header Then PresentationColumn = column: Exit Function
+    Next column
+    Err.Raise vbObjectError + 4503, "PresentationColumn", "В snapshot нет " & header
+End Function
+
+' Возвращает точную ошибку загрузки на новом reader-е и сохраняет объект для
+' проверки последующего восстановления; пользовательские настройки не меняет.
+Private Function PresentationReaderError(ByRef reader As CSectionPlotDataReader, ByRef reason As String) As Long
+    Dim settings As CSystemSettingsReader
+    reason = vbNullString
+    On Error GoTo Failed
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
+    Exit Function
+Failed:
+    PresentationReaderError = Err.Number: reason = Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: независимо вычисляет выбранную величину каждого элемента
+' из сохраненной плоскости и фактической диаграммы named-state. Reader не
+' может незаметно подменить Stress на Strain или взять другое состояние.
+Private Sub CheckVisualizationValues(ByRef stats As TProfileStats, ByVal prefix As String, _
+        ByVal reader As CSectionPlotDataReader, ByVal state As CSectionStateResult, _
+        ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, i As Long, bar As Long
+    Dim x As Double, y As Double, expected As Double, strain As Double, diagram As CMaterialDiagram
+    If state.ExtensionUsed Then
+        Set concrete = provider.ConcreteMaterialForEquilibriumFromSpec(state.MaterialSpec)
+        Set steel = provider.SteelMaterialForEquilibriumFromSpec(state.MaterialSpec)
+    Else
+        Set concrete = provider.ConcreteMaterialFromSpec(state.MaterialSpec)
+        Set steel = provider.SteelMaterialFromSpec(state.MaterialSpec)
+    End If
+    For i = 1 To reader.Count
+        If i <= section.ConcreteCount Then
+            x = section.ConcreteX(i): y = section.ConcreteY(i): Set diagram = concrete
+        Else
+            bar = i - section.ConcreteCount
+            x = section.RebarX(bar): y = section.RebarY(bar): Set diagram = steel
+        End If
+        strain = state.Epsilon0 + state.KappaX * y + state.KappaY * x
+        If reader.VisualizationQuantity = "Strain" Then
+            expected = strain
+        Else
+            expected = units.InternalStressToOutput(diagram.GetStress(strain))
+        End If
+        CheckClose stats, prefix & ".element" & CStr(i), reader.ResultValue(i), expected, 0.000000000001
+    Next i
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет именно текст растянутого края общей легенды, а не
+' случайное совпадение подписи нуля в Chart. Положение определяется
+' контрактом оформления; точность формируется независимым test-oracle.
+Private Sub CheckVisualizationLegend(ByRef stats As TProfileStats, ByVal prefix As String, _
+        ByVal reader As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
+    Dim plotter As CSectionPlotter, chartObject As Object, shape As Object, i As Long
+    Dim maximum As Double, foundValue As Boolean, foundText As Boolean, text As String, pattern As String
+    For i = 1 To reader.Count
+        If reader.PhysicalState(i) = "Tension" Then
+            If Not foundValue Or Abs(reader.ResultValue(i)) > Abs(maximum) Then maximum = reader.ResultValue(i)
+            foundValue = True
+        End If
+    Next i
+    Check stats, prefix & ".legendFixtureTension", foundValue
+    If Not foundValue Then Exit Sub
+    pattern = "0": If reader.ResultPrecision > 0 Then pattern = pattern & "." & String$(reader.ResultPrecision, "0")
+    text = Replace$(Format$(maximum, pattern), ",", ".")
+    Set plotter = New CSectionPlotter: plotter.Draw ThisWorkbook, reader, settings
+    Set chartObject = ThisWorkbook.Worksheets.Item("Расчет").ChartObjects.Item("chtNDMSectionPlot")
+    For Each shape In chartObject.Chart.Shapes
+        If Left$(shape.Name, Len("NDMPlot_Text")) = "NDMPlot_Text" Then
+            If Abs(shape.Left - (chartObject.Width - 118#)) < 0.01 And Abs(shape.Top - 174#) < 0.01 Then
+                foundText = True
+                Check stats, prefix & ".actualLegendText", CStr(shape.TextFrame.Characters().Text) = text
+            End If
+        End If
+    Next shape
+    Check stats, prefix & ".actualLegendPresent", foundText
 End Sub

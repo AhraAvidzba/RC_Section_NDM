@@ -133,6 +133,48 @@ Source/test v185 заморожен до его full gates; эти обнару�
 Pending и не маскируются зеленым census. Runtime-контрпример не заменяется
 статическим предположением.
 
+## AutoCAD Snapshot: Продолжение Ревизии v199
+
+Прочитан текущий CAutoCADSectionModelImporter: публичные входы, подготовка
+Config, обход Region, интерпретация A/I, временные Explode-объекты, array
+fixture и единицы. В modAutoCADStressExport прочитаны восстановление модели,
+выбор LC/profile/state, геометрические факторы единиц и test snapshot entrypoint.
+Остальные draw/настройки AutoCAD еще не объявляются полностью принятыми.
+
+- По коду длины/площади/инерции Region действительно трактуются как мм/мм2/мм4
+  независимо от текущих INPUT units. MinArea имеет другой контракт:
+  пользовательская INPUT Area переводится через CUnitSystem. Этот порог
+  применяется при новом импорте, не повторно к сохраненной модели при расчете.
+- BuildWorkbookSectionModel при Geometry.Source=AutoCAD вызывает публичный
+  ReadSectionGeometryFromResults. Поэтому восстановление snapshot влияет
+  не только на оформление DWG, но и на последующий расчет импортного сечения.
+- Width/Height/Rotation/LocalIx/LocalIy/LocalIxy сейчас читаются через
+  `Val(CStr(...))`. Val принимает числовой префикс поврежденной строки;
+  потенциальная потеря дроби зависит также от VBA locale. Нужен directed
+  numeric/error/recovery fixture на публичном восстановлении с независимыми
+  A/I/оболочкой. Locale-дефект в обычном full suite пока не заявлен воспроизведенным.
+- Private LengthFactorToMmByUnit/AreaFactorToMm2ByUnit/curvature/fourth-power
+  дублируют центральный адаптер. Следующий разрешенный срез должен делегировать
+  их существующему CUnitSystem, сохранив сохраненные единицы snapshot и порядок
+  арифметики. Это не разрешение повторно применить текущие Output units/signs.
+- ReadFirstExportLoad -> IsExportEmptyRow/ReadExportRequiredDouble не имеет
+  внешнего вызывающего метода по текущей карте src/tests. Невызываемые private
+  wrappers OutputLengthToInternal/OutputAreaToInternal/OutputFourthPowerLengthToInternal
+  тоже требуют окончательной карты перед удалением; source пока не изменяется.
+
+Existing imported-unit suite проверяет смену единиц до/после импорта, модель
+Results и активный расчет. Это не доказательство всех поврежденных snapshot
+полей либо live AutoCAD/DWG. Ограничение live AutoCAD сохраняется явно.
+
+Full Off v199 прошел 77134/0 и точное сравнение 13641 numeric actual-values.
+Первый On и read-only structural attempt не создали Excel.Application из-за
+80080005 в restricted execution. Повтор On v199b в отдельном собственном Excel
+завершен 77145/0, 13646 общих численных значений совпали точно. Structure 27/27,
+formatting 1003/0, palette/save-reopen 355/0 и actual VBE/source 105/105 прошли.
+Protected PID 23476 не используется. Сбой инфраструктуры не получает numerical
+result/status. Эти gates не закрывают описанные выше Pending-кандидаты AutoCAD,
+семантическую ревизию остальных методов или весь Audit03.
+
 ## Следующий Config Gate: Арматура И Неактивные Поля
 
 Прочитан настоящий путь modTestGeometryConfig.ReadGeometry ->

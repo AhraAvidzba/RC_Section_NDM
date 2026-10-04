@@ -13,9 +13,9 @@ Option Explicit
 ' Excel-схема расчетного сечения
 ' ==========================================================================
 ' CSectionPlotter рисует схему по данным, которые уже прочитал
-' CSectionPlotDataReader из листа Results. Он не запускает solver, не смотрит
-' текущие исходные данные Config и не пересчитывает единицы: схема всегда
-' показывает сохраненный результат последнего расчета.
+' CSectionPlotDataReader из листа Results. Он не запускает solver и не читает
+' текущие исходные данные геометрии или нагрузок. Из Config берется только
+' оформление; схема показывает сохраненный результат последнего расчета.
 '
 ' Расчетные элементы на обычных и средних сетках выводятся как Chart.Shapes:
 ' так сохраняется фактический размер каждого бетонного волокна и стержня, а
@@ -70,7 +70,6 @@ Private Const PLOT_FRAME_LEFT As Double = 28# ' Левый край рабоче
 Private Const PLOT_FRAME_TOP As Double = 36# ' Верхний край рабочей области схемы внутри Chart.
 Private Const PLOT_FRAME_WIDTH_MARGIN As Double = 180# ' Запас справа для легенд и подписей.
 Private Const PLOT_FRAME_HEIGHT_MARGIN As Double = 72# ' Запас снизу для предупреждений и подписи режима.
-Private Const AXIS_LABEL_DEFAULT_FONT_SIZE As Double = 7.5 ' Небольшой читаемый шрифт подписей глобальных осей X/Y по умолчанию.
 Private Const AXIS_LABEL_MARGIN As Double = 6# ' Отступ подписей осей от внутренней рамки построения.
 Private Const AXIS_LABEL_X_WIDTH As Double = 48# ' Ширина горизонтальной подписи "Ось X".
 Private Const AXIS_LABEL_Y_HEIGHT As Double = 48# ' Высота вертикальной подписи "Ось Y".
@@ -120,6 +119,14 @@ Private mElementShapeLayerEnabled As Boolean ' True - расчетные эле�
 Private mElementGroupingEnabled As Boolean ' True - включено укрупнение элементов для обхода лимитов/перегрузки Excel Chart.
 Private mAxisLabelsEnabled As Boolean ' Нужно ли выводить маленькие подписи глобальных осей X/Y.
 Private mAxisLabelFontSize As Double ' Размер шрифта подписей глобальных осей X/Y в пунктах Excel.
+Private mAnnotationLayout As CPlotAnnotationLayout ' Проверенные настройки и размещение аннотаций одного прохода Draw.
+Private mUnits As CUnitSystem ' Единицы переданной модели схемы, без повторного применения пользовательских знаков.
+
+' Создает единый адаптер визуальных длин/площадей. Физические значения уже
+' прочитаны из snapshot; таблицы коэффициентов единиц в plotter не дублируются.
+Private Sub Class_Initialize()
+    Set mUnits = New CUnitSystem
+End Sub
 
 ' Перестраивает схему по данным последнего расчета.
 ' Метод управляет порядком операций: подготовка chart, равный масштаб X/Y,
@@ -129,22 +136,31 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     If data Is Nothing Then Err.Raise vbObjectError + 4801, "CSectionPlotter", "Данные схемы не переданы."
     If settings Is Nothing Then Err.Raise vbObjectError + 4802, "CSectionPlotter", "Настройки Config не переданы."
 
+    ' Проверяем активное оформление до очистки существующей схемы.
+    Set mAnnotationLayout = New CPlotAnnotationLayout
+    mAnnotationLayout.ConfigureFromSettings settings
+    If mAnnotationLayout.DimensionsEnabled Then
+        mDimensionArrowType = settings.GetRequiredChoice("Plot.Dimensions.ArrowType", Array("Triangle", "Stealth", "Diamond", "Oval", "Open"))
+        mDimensionArrowSize = settings.GetRequiredChoice("Plot.Dimensions.ArrowSize", Array("Small", "Medium", "Wide"))
+    End If
+    mResultGradientEnabled = settings.GetRequiredBoolean("Plot.ResultGradient")
+    mLegendMode = settings.GetRequiredChoice("Plot.LegendMode", Array("Separate", "Common"))
+    mRebarCompressionColor = settings.GetRequiredRgbColor("Plot.Color.RebarCompression")
+    mRebarTensionColor = settings.GetRequiredRgbColor("Plot.Color.RebarTension")
+    If mLegendMode = "Separate" Then
+        mConcreteCompressionColor = settings.GetRequiredRgbColor("Plot.Color.ConcreteCompression")
+        mConcreteTensionColor = settings.GetRequiredRgbColor("Plot.Color.ConcreteTension")
+    End If
+    mAxisLabelsEnabled = settings.GetRequiredBoolean("Plot.AxisLabelsEnabled")
+    If mAxisLabelsEnabled Then
+        mAxisLabelFontSize = settings.GetRequiredDouble("Plot.AxisLabelsFontSize")
+        If mAxisLabelFontSize <= 0# Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
+            settings.InputErrorMessage("Plot.AxisLabelsFontSize", "Высота подписей осей должна быть больше нуля.", "Введите положительное число в пунктах Excel.")
+    End If
+
     Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
     Set mChart = mChartObject.Chart
-
     ClearLegacyWorksheetGeneratedShapes
-
-    mResultGradientEnabled = settings.GetBoolean("Plot.ResultGradient", True)
-    mDimensionArrowType = NormalizeArrowType(settings.GetString("Plot.Dimensions.ArrowType", "Triangle"))
-    mDimensionArrowSize = NormalizeArrowSize(settings.GetString("Plot.Dimensions.ArrowSize", "Wide"))
-    mLegendMode = NormalizeLegendMode(settings.GetString("Plot.LegendMode", "Separate"))
-    mRebarCompressionColor = ParseRgb(settings.GetString("Plot.Color.RebarCompression", "30,80,220"), RGB(30, 80, 220))
-    mRebarTensionColor = ParseRgb(settings.GetString("Plot.Color.RebarTension", "210,30,20"), RGB(210, 30, 20))
-    mConcreteCompressionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteCompression", "125,35,210"), RGB(125, 35, 210))
-    mConcreteTensionColor = ParseRgb(settings.GetString("Plot.Color.ConcreteTension", "0,155,85"), RGB(0, 155, 85))
-    mAxisLabelsEnabled = settings.GetBoolean("Plot.AxisLabelsEnabled", True)
-    mAxisLabelFontSize = settings.GetDouble("Plot.AxisLabelsFontSize", AXIS_LABEL_DEFAULT_FONT_SIZE)
-    If mAxisLabelFontSize <= 0# Then mAxisLabelFontSize = AXIS_LABEL_DEFAULT_FONT_SIZE
 
     mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
     mElementGroupingEnabled = Not mElementShapeLayerEnabled
@@ -298,7 +314,7 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
     If settings Is Nothing Then Exit Function
 
     Dim marginModel As Double
-    If settings.GetBoolean("Plot.Dimensions.Enabled", True) Then
+    If mAnnotationLayout.DimensionsEnabled Then
         marginModel = MaxDouble(marginModel, _
             LengthMmToModel(settings.GetDouble("Plot.Dimensions.Offset", 100#), lengthUnit) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextGap", 9#), _
@@ -306,7 +322,7 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
             AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextHeight", 13#), _
                 settings.GetString("Plot.Dimensions.TextUnits", "pt"), lengthUnit, rangeX, rangeY))
     End If
-    If settings.GetBoolean("Plot.RebarLabels.Enabled", True) Then
+    If mAnnotationLayout.RebarLabelsEnabled Then
         marginModel = MaxDouble(marginModel, _
             LengthMmToModel(settings.GetDouble("Plot.RebarLabels.Offset", 60#), lengthUnit) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextGap", 9#), _
@@ -321,7 +337,7 @@ End Function
 ' Переводит геометрический offset из миллиметров сечения в output-единицы
 ' сохраненного Results. Offset специально остается модельной величиной.
 Private Function LengthMmToModel(ByVal valueMm As Double, ByVal lengthUnit As String) As Double
-    LengthMmToModel = valueMm / LengthFactorToMm(lengthUnit)
+    LengthMmToModel = mUnits.InternalLengthToOutput(valueMm, lengthUnit)
 End Function
 
 ' Оценивает TextHeight/TextGap в координатах модели только для расширения
@@ -769,8 +785,7 @@ End Sub
 ' читаются только из snapshot Results.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)
     If settings.GetBoolean("Plot.ContourEnabled", True) Then DrawConcreteContour data
-    DrawShapeAnnotations data, settings, settings.GetBoolean("Plot.Dimensions.Enabled", True), _
-        settings.GetBoolean("Plot.RebarLabels.Enabled", True)
+    DrawShapeAnnotations data, settings, mAnnotationLayout.DimensionsEnabled, mAnnotationLayout.RebarLabelsEnabled
     If data.GeometryOnly Then
         DrawGeometryOnlyNote data
         Exit Sub
@@ -1408,8 +1423,7 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, ByVal set
     If Not dimensionsEnabled And Not rebarLabelsEnabled Then Exit Sub
 
     Dim layout As CPlotAnnotationLayout
-    Set layout = New CPlotAnnotationLayout
-    layout.ConfigureFromSettings settings
+    Set layout = mAnnotationLayout
     EnsurePlotAreaMetrics
     layout.Initialize mMinX, mMaxX, mMinY, mMaxY, mPlotLeft, mPlotTop, _
         mPlotWidth, mPlotHeight, data.LengthUnit
@@ -1464,26 +1478,6 @@ Private Sub RenderAnnotationLayout(ByVal layout As CPlotAnnotationLayout)
         End If
     Next i
 End Sub
-
-' Нормализует пользовательский тип стрелки размерной линии.
-Private Function NormalizeArrowType(ByVal value As String) As String
-    Select Case LCase$(Trim$(value))
-        Case "stealth": NormalizeArrowType = "Stealth"
-        Case "diamond": NormalizeArrowType = "Diamond"
-        Case "oval": NormalizeArrowType = "Oval"
-        Case "open": NormalizeArrowType = "Open"
-        Case Else: NormalizeArrowType = "Triangle"
-    End Select
-End Function
-
-' Нормализует пользовательский размер стрелки размерной линии.
-Private Function NormalizeArrowSize(ByVal value As String) As String
-    Select Case LCase$(Trim$(value))
-        Case "small": NormalizeArrowSize = "Small"
-        Case "medium": NormalizeArrowSize = "Medium"
-        Case Else: NormalizeArrowSize = "Wide"
-    End Select
-End Function
 
 ' Преобразует текстовую настройку стрелки в константу Office.
 Private Function DimensionArrowStyle() As Long
@@ -2289,28 +2283,8 @@ Private Function EquivalentLengthFromArea(ByVal areaValue As Double, ByVal areaU
     If areaValue <= 0# Then
         EquivalentLengthFromArea = 0#
     Else
-        EquivalentLengthFromArea = Sqr(areaValue * AreaFactorToMm2(areaUnit)) / LengthFactorToMm(lengthUnit)
+        EquivalentLengthFromArea = Sqr(mUnits.OutputAreaToInternal(areaValue, areaUnit)) / mUnits.OutputLengthToInternal(1#, lengthUnit)
     End If
-End Function
-
-' Возвращает множитель перевода указанной единицы длины в миллиметры.
-Private Function LengthFactorToMm(ByVal unitName As String) As Double
-    Select Case LCase$(Trim$(unitName))
-        Case "mm": LengthFactorToMm = 1#
-        Case "cm": LengthFactorToMm = 10#
-        Case "m": LengthFactorToMm = 1000#
-        Case Else: LengthFactorToMm = 1#
-    End Select
-End Function
-
-' Возвращает множитель перевода указанной единицы площади в мм2.
-Private Function AreaFactorToMm2(ByVal unitName As String) As Double
-    Select Case LCase$(Trim$(unitName))
-        Case "mm2": AreaFactorToMm2 = 1#
-        Case "cm2": AreaFactorToMm2 = 100#
-        Case "m2": AreaFactorToMm2 = 1000000#
-        Case Else: AreaFactorToMm2 = LengthFactorToMm(Replace$(LCase$(Trim$(unitName)), "2", "")) ^ 2
-    End Select
 End Function
 
 ' Возвращает русскую приставку заголовка схемы без зависимости от кодировки
@@ -2334,38 +2308,6 @@ Private Function PlotTitleText(ByVal data As CSectionPlotDataReader) As String
     End If
     PlotTitleText = PlotTitlePrefix() & data.LoadCase
     If Len(Trim$(data.LoadCaseComment)) > 0 Then PlotTitleText = PlotTitleText & " (" & data.LoadCaseComment & ")"
-End Function
-
-' Нормализует режим легенды: Common или Separate.
-Private Function NormalizeLegendMode(ByVal value As String) As String
-    Select Case LCase$(Trim$(value))
-        Case "common": NormalizeLegendMode = "Common"
-        Case "separate": NormalizeLegendMode = "Separate"
-        Case Else: NormalizeLegendMode = "Separate"
-    End Select
-End Function
-
-' Читает RGB-цвет из строки Config вида "r,g,b". При ошибке возвращает
-' безопасный default.
-Private Function ParseRgb(ByVal value As String, ByVal defaultColor As Long) As Long
-    Dim parts As Variant
-    parts = Split(Replace$(Trim$(value), ";", ","), ",")
-    If UBound(parts) <> 2 Then
-        ParseRgb = defaultColor
-        Exit Function
-    End If
-
-    On Error GoTo InvalidColor
-    Dim r As Long, g As Long, b As Long
-    r = CLng(Trim$(CStr(parts(0))))
-    g = CLng(Trim$(CStr(parts(1))))
-    b = CLng(Trim$(CStr(parts(2))))
-    If r < 0 Or r > 255 Or g < 0 Or g > 255 Or b < 0 Or b > 255 Then GoTo InvalidColor
-    ParseRgb = RGB(r, g, b)
-    Exit Function
-
-InvalidColor:
-    ParseRgb = defaultColor
 End Function
 
 ' Форматирует значение Stress/Strain с профильной точностью выбранной величины.

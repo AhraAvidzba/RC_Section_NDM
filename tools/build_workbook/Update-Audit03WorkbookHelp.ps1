@@ -145,6 +145,12 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'inactiveRebarFaceOffsets' ($body.Contains('as отключенной наружной грани не читается') -and $body.Contains('as выключенной наружной грани не читается') -and $body.Contains('ее as/t и параметры дополнительных рядов не читаются')) 'Rounded, Hollow and RectSet inactive face contracts are explicit'
     Assert-Help 'openingCoverStillRequired' ($body.Contains('Отступ as граней Opening нужен также для ограничения проекций соседних внутренних граней') -and $body.Contains('даже при отсутствии собственного ряда')) 'Opening cover retains a geometric consumer when its own row is disabled'
     Assert-Help 'notCrackedWidthIsNotComputedZero' ($body.Contains('Подтвержденный NotCracked исключает расчет ширины') -and $body.Contains('статус проверки N/A, численная ячейка a_crc остается пустой') -and $body.Contains('это отдельный случай, а не доказательство отсутствия трещины')) 'Uncomputed crack width is distinguished from a calculated zero'
+    Assert-Help 'activeAnnotationInputContract' ($body.Contains('Enabled обязателен для каждой группы') -and $body.Contains('При No ее параметры не читаются, включая ошибки формул')) 'Only active annotation parameters are required'
+    Assert-Help 'annotationBlackRgbContract' ($body.Contains('0,0,0 означает настоящий черный цвет, а не отсутствие настройки') -and $body.Contains('дробные компоненты не округляются')) 'Zero is a real color; invalid RGB is not silently repaired'
+    Assert-Help 'annotationVisualLimits' ($body.Contains('4–180 pt у размеров и 2–120 pt у арматуры') -and $body.Contains('5–28 pt для читаемости')) 'Screen clamps are disclosed, not physical geometry'
+    Assert-Help 'snapshotAnnotationInputContract' ($body.Contains('Отсутствующий или пустой необязательный блок аннотаций допустим') -and $body.Contains('ошибочное значение не превращается в ноль') -and $body.Contains('GeometryInterpretationStatus либо ShapeType')) 'Existing damaged snapshot requires repair, not a silent zero'
+    Assert-Help 'axisFontInputContract' ($body.Contains('При Plot.AxisLabelsEnabled=Yes значение обязательно и больше нуля') -and $body.Contains('При No высота подписей не читается')) 'Active axis font is required; disabled font is not read'
+    Assert-Help 'gradientDisabledStillUsesStateColor' ($body.Contains('No отключает градации интенсивности: работающие элементы получают один цвет')) 'No gradient does not mean no material color'
     $config = $Book.Worksheets.Item('Config')
     $count = 0
     foreach ($link in $config.Hyperlinks) {

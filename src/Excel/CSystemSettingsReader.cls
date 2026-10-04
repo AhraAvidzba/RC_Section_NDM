@@ -23,7 +23,7 @@ Option Explicit
 
 Private mKeys() As String ' Имена настроек Config: Solver.Method, Capacity.SolutionStrategy и т.п.
 Private mValues() As String ' Значения, которые ввел пользователь или подставили формулы таблицы.
-Private mValueErrors() As String ' Отложенные ошибки геометрических ячеек: выдаются при чтении активного параметра, не заменяются default.
+Private mValueErrors() As String ' Отложенные ошибки геометрии/оформления: выдаются при чтении активного параметра, не заменяются default.
 Private mDefaults() As String ' Значения по умолчанию из таблицы Config.
 Private mSources() As String ' Комментарий/источник строки для диагностики.
 Private mLocations() As String ' Лист, адрес и видимый столбец прочитанного значения; только диагностика ввода.
@@ -57,7 +57,7 @@ Private Sub AppendRequiredNamedSettingsRange(ByVal workbook As Object, ByVal ran
     On Error GoTo MissingRange
     Set settingsRange = workbook.Names.Item(rangeName).RefersToRange
     On Error GoTo 0
-    AppendSettingsRange settingsRange
+    AppendSettingsRange settingsRange, rangeName
     Exit Sub
 MissingRange:
     Err.Raise vbObjectError + 4316, "CSystemSettingsReader.LoadFromWorkbook", _
@@ -213,7 +213,7 @@ Public Property Get MigrationWarning() As String
 End Property
 
 ' Добавляет один диапазон настроек; специальные геометрические таблицы сначала распознаются по шапке.
-Private Sub AppendSettingsRange(ByVal settingsRange As Object)
+Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal rangeName As String = vbNullString)
     If settingsRange Is Nothing Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
         "Таблица настроек Config не передана."
     mLoadingSheet = CStr(settingsRange.Worksheet.Name)
@@ -227,6 +227,15 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
         "Таблица настроек Config должна содержать заголовок, строки данных и минимум три столбца."
     Dim columnCount As Long
     columnCount = UBound(data, 2)
+
+    ' Named-таблица сохраняет свой тип даже после утраты строки параметра.
+    ' Иначе отсутствие Placement превращало все поля в чужую scalar-таблицу.
+    If StrComp(rangeName, "rngPlotAnnotationSettings", vbTextCompare) = 0 Then
+        If columnCount < 5 Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
+            "Таблица аннотаций схемы на листе " & mLoadingSheet & " имеет неполную структуру. Восстановите колонки параметров, арматуры, размеров, единиц и комментария."
+        AppendPlotAnnotationSettings data
+        Exit Sub
+    End If
 
     If IsHollowRectangleSettingsRange(data) Then
         AppendHollowRectangleSettings data
@@ -276,7 +285,9 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object)
                 sourceValue = vbNullString
             End If
             If IsGeometrySettingKey(keyValue) Then
-                AppendGeometryValue data, keyValue, rowIndex, 2, sourceValue
+                AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
+            ElseIf Left$(keyValue, 5) = "Plot." Then
+                AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
             Else
                 AppendSetting keyValue, _
                     ConfigCellText(data(rowIndex, 2), "значение", rowIndex, keyValue, False, 2), _
@@ -440,24 +451,29 @@ Private Sub AppendPlotAnnotationSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         Dim settingName As String
-        settingName = Trim$(CStr(data(rowIndex, 1)))
+        settingName = ConfigCellText(data(rowIndex, 1), "параметр аннотации", rowIndex, vbNullString, False, 1)
         If Len(settingName) > 0 And Left$(settingName, 1) <> "[" Then
-            AppendPlotAnnotationValue "Plot.RebarLabels." & settingName, _
-                ConfigCellText(data(rowIndex, 2), "арматура", rowIndex, "Plot.RebarLabels." & settingName, False, 2), _
-                Trim$(CStr(data(rowIndex, 5))), rowIndex, 2
-            AppendPlotAnnotationValue "Plot.Dimensions." & settingName, _
-                ConfigCellText(data(rowIndex, 3), "размеры", rowIndex, "Plot.Dimensions." & settingName, False, 3), _
-                Trim$(CStr(data(rowIndex, 5))), rowIndex, 3
+            AppendPlotAnnotationValue data, "Plot.RebarLabels." & settingName, rowIndex, 2
+            AppendPlotAnnotationValue data, "Plot.Dimensions." & settingName, rowIndex, 3
         End If
     Next rowIndex
 End Sub
 
-' Добавляет применимый параметр аннотации с текущим адресом ячейки.
-' Пустота и "-" в неприменимых полях таблицы не создают отдельную настройку.
-Private Sub AppendPlotAnnotationValue(ByVal keyValue As String, ByVal settingValue As String, _
-        ByVal commentValue As String, ByVal rowIndex As Long, ByVal columnIndex As Long)
-    If Len(settingValue) = 0 Or settingValue = "-" Then Exit Sub
-    AppendSetting keyValue, settingValue, settingValue, commentValue, rowIndex, columnIndex
+' Добавляет только применимое поле таблицы аннотаций. Пустое применимое поле
+' сохраняет адрес и остается ошибкой активного потребителя; неподдерживаемые
+' сочетания колонки и параметра не становятся настройками даже при ошибке ячейки.
+Private Sub AppendPlotAnnotationValue(ByRef data As Variant, ByVal keyValue As String, _
+        ByVal rowIndex As Long, ByVal columnIndex As Long)
+    Dim settingName As String
+    settingName = Trim$(CStr(data(rowIndex, 1)))
+    If columnIndex = 2 Then
+        Select Case settingName
+            Case "ExtensionLineWeight", "ExtensionLineColor", "ArrowType", "ArrowSize": Exit Sub
+        End Select
+    ElseIf settingName = "LineEnabled" Then
+        Exit Sub
+    End If
+    AppendDeferredInputValue data, keyValue, rowIndex, columnIndex, Trim$(CStr(data(rowIndex, 5)))
 End Sub
 
 ' Загружает INPUT/INTERNAL/OUTPUT единицы в общий словарь настроек.
@@ -549,12 +565,12 @@ Private Sub AppendHollowRectangleSettings(ByRef data As Variant)
 
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendGeometryValue data, "HollowRectangle.H", valueRow, 1
-    AppendGeometryValue data, "HollowRectangle.B", valueRow, 2
-    AppendGeometryValue data, "HollowRectangle.R", valueRow, 3
-    AppendGeometryValue data, "HollowRectangle.OpeningH", valueRow, 4
-    AppendGeometryValue data, "HollowRectangle.OpeningB", valueRow, 5
-    AppendGeometryValue data, "HollowRectangle.OpeningR", valueRow, 6
+    AppendDeferredInputValue data, "HollowRectangle.H", valueRow, 1
+    AppendDeferredInputValue data, "HollowRectangle.B", valueRow, 2
+    AppendDeferredInputValue data, "HollowRectangle.R", valueRow, 3
+    AppendDeferredInputValue data, "HollowRectangle.OpeningH", valueRow, 4
+    AppendDeferredInputValue data, "HollowRectangle.OpeningB", valueRow, 5
+    AppendDeferredInputValue data, "HollowRectangle.OpeningR", valueRow, 6
 
     Dim mainHeaderRow As Long
     mainHeaderRow = FindRowWithCaption(data, "Грань", 1, geometryHeaderRow + 1)
@@ -574,7 +590,7 @@ Private Sub AppendHollowRectangleCommonSettings(ByRef data As Variant, ByVal geo
                 StrComp(keyValue, "HollowRectangle.InnerOffsetY", vbTextCompare) = 0 Then
             Dim sourceValue As String
             If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
-            AppendGeometryValue data, keyValue, rowIndex, 2, sourceValue
+            AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
         End If
     Next rowIndex
 End Sub
@@ -589,12 +605,12 @@ Private Sub AppendHollowRectangleMainRebars(ByRef data As Variant, ByVal mainHea
         Dim faceKey As String
         faceKey = HollowRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
         If Len(faceKey) = 0 Then Exit For
-        AppendGeometryValue data, "HollowRectangle." & faceKey & ".as", rowIndex, 2, Trim$(CStr(data(rowIndex, 6)))
-        AppendGeometryValue data, "HollowRectangle." & faceKey & ".d", rowIndex, 3, Trim$(CStr(data(rowIndex, 6)))
+        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".as", rowIndex, 2, Trim$(CStr(data(rowIndex, 6)))
+        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".d", rowIndex, 3, Trim$(CStr(data(rowIndex, 6)))
         If Left$(faceKey, 8) <> "Opening." Then
             Dim countKey As String
             countKey = "HollowRectangle." & faceKey & ".n"
-            AppendGeometryValue data, countKey, rowIndex, 4, Trim$(CStr(data(rowIndex, 6)))
+            AppendDeferredInputValue data, countKey, rowIndex, 4, Trim$(CStr(data(rowIndex, 6)))
         End If
     Next rowIndex
 End Sub
@@ -606,12 +622,12 @@ Private Sub AppendHollowRectangleExtraRebars(ByRef data As Variant, ByVal extraH
         Dim faceKey As String
         faceKey = HollowRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
         If Len(faceKey) = 0 Then Exit For
-        AppendGeometryValue data, "HollowRectangle." & faceKey & ".d_2row", rowIndex, 2, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "HollowRectangle." & faceKey & ".loc_2row", rowIndex, 3, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "HollowRectangle." & faceKey & ".bind_2row", rowIndex, 4, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "HollowRectangle." & faceKey & ".d_3row", rowIndex, 5, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "HollowRectangle." & faceKey & ".loc_3row", rowIndex, 6, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "HollowRectangle." & faceKey & ".bind_3row", rowIndex, 7, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".d_2row", rowIndex, 2, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".loc_2row", rowIndex, 3, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".bind_2row", rowIndex, 4, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".d_3row", rowIndex, 5, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".loc_3row", rowIndex, 6, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".bind_3row", rowIndex, 7, Trim$(CStr(data(rowIndex, 9)))
     Next rowIndex
 End Sub
 
@@ -658,20 +674,20 @@ Private Sub AppendRoundedRectangleFaceSettings(ByRef data As Variant)
 
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendGeometryValue data, "RoundedRectangle.B", valueRow, 2
-    AppendGeometryValue data, "RoundedRectangle.H", valueRow, 3
+    AppendDeferredInputValue data, "RoundedRectangle.B", valueRow, 2
+    AppendDeferredInputValue data, "RoundedRectangle.H", valueRow, 3
 
     Dim sideHeaderRow As Long
     sideHeaderRow = FindRowWithCaption(data, "слева", 2, geometryHeaderRow + 1)
     If sideHeaderRow > 0 And UBound(data, 1) >= sideHeaderRow + 4 Then
-        AppendGeometryValue data, "RoundedRectangle.Left.Type", sideHeaderRow + 1, 2
-        AppendGeometryValue data, "RoundedRectangle.Right.Type", sideHeaderRow + 1, 3
-        AppendGeometryValue data, "RoundedRectangle.Left.W", sideHeaderRow + 2, 2
-        AppendGeometryValue data, "RoundedRectangle.Right.W", sideHeaderRow + 2, 3
-        AppendGeometryValue data, "RoundedRectangle.Left.R1", sideHeaderRow + 3, 2
-        AppendGeometryValue data, "RoundedRectangle.Right.R1", sideHeaderRow + 3, 3
-        AppendGeometryValue data, "RoundedRectangle.Left.R2", sideHeaderRow + 4, 2
-        AppendGeometryValue data, "RoundedRectangle.Right.R2", sideHeaderRow + 4, 3
+        AppendDeferredInputValue data, "RoundedRectangle.Left.Type", sideHeaderRow + 1, 2
+        AppendDeferredInputValue data, "RoundedRectangle.Right.Type", sideHeaderRow + 1, 3
+        AppendDeferredInputValue data, "RoundedRectangle.Left.W", sideHeaderRow + 2, 2
+        AppendDeferredInputValue data, "RoundedRectangle.Right.W", sideHeaderRow + 2, 3
+        AppendDeferredInputValue data, "RoundedRectangle.Left.R1", sideHeaderRow + 3, 2
+        AppendDeferredInputValue data, "RoundedRectangle.Right.R1", sideHeaderRow + 3, 3
+        AppendDeferredInputValue data, "RoundedRectangle.Left.R2", sideHeaderRow + 4, 2
+        AppendDeferredInputValue data, "RoundedRectangle.Right.R2", sideHeaderRow + 4, 3
     End If
 
     Dim mainHeaderRow As Long
@@ -700,9 +716,9 @@ Private Sub AppendRoundedRectangleMainRebars(ByRef data As Variant, ByVal mainHe
         Dim faceKey As String
         faceKey = RoundedRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
         If Len(faceKey) = 0 Then Exit For
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".as", rowIndex, 2, Trim$(CStr(data(rowIndex, 6)))
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".d", rowIndex, 3, Trim$(CStr(data(rowIndex, 6)))
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".n", rowIndex, 4, Trim$(CStr(data(rowIndex, 6)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".as", rowIndex, 2, Trim$(CStr(data(rowIndex, 6)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".d", rowIndex, 3, Trim$(CStr(data(rowIndex, 6)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".n", rowIndex, 4, Trim$(CStr(data(rowIndex, 6)))
     Next rowIndex
 End Sub
 
@@ -713,12 +729,12 @@ Private Sub AppendRoundedRectangleExtraRebars(ByRef data As Variant, ByVal extra
         Dim faceKey As String
         faceKey = RoundedRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
         If Len(faceKey) = 0 Then Exit For
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".d_2row", rowIndex, 2, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".loc_2row", rowIndex, 3, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".bind_2row", rowIndex, 4, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".d_3row", rowIndex, 5, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".loc_3row", rowIndex, 6, Trim$(CStr(data(rowIndex, 9)))
-        AppendGeometryValue data, "RoundedRectangle." & faceKey & ".bind_3row", rowIndex, 7, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".d_2row", rowIndex, 2, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".loc_2row", rowIndex, 3, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".bind_2row", rowIndex, 4, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".d_3row", rowIndex, 5, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".loc_3row", rowIndex, 6, Trim$(CStr(data(rowIndex, 9)))
+        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".bind_3row", rowIndex, 7, Trim$(CStr(data(rowIndex, 9)))
     Next rowIndex
 End Sub
 
@@ -788,27 +804,27 @@ Private Sub AppendRectSetFaceSettings(ByRef data As Variant)
         Dim faceName As String
         col = faceColumns(i)
         faceName = faceNames(i)
-        AppendGeometryValue data, "RectSet." & faceName, 2, col, Trim$(CStr(data(2, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".as_1", 3, col, Trim$(CStr(data(3, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".as_2", 4, col, Trim$(CStr(data(4, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".d_1", 5, col, Trim$(CStr(data(5, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".d_2", 6, col, Trim$(CStr(data(6, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".n_1", 7, col, Trim$(CStr(data(7, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".n_2", 8, col, Trim$(CStr(data(8, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".StartOffset1", 9, col, Trim$(CStr(data(9, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".EndOffset1", 10, col, Trim$(CStr(data(10, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".StartOffset2", 11, col, Trim$(CStr(data(11, 7)))
-        AppendGeometryValue data, "RectSet." & faceName & ".EndOffset2", 12, col, Trim$(CStr(data(12, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName, 2, col, Trim$(CStr(data(2, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".as_1", 3, col, Trim$(CStr(data(3, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".as_2", 4, col, Trim$(CStr(data(4, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".d_1", 5, col, Trim$(CStr(data(5, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".d_2", 6, col, Trim$(CStr(data(6, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".n_1", 7, col, Trim$(CStr(data(7, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".n_2", 8, col, Trim$(CStr(data(8, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".StartOffset1", 9, col, Trim$(CStr(data(9, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".EndOffset1", 10, col, Trim$(CStr(data(10, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".StartOffset2", 11, col, Trim$(CStr(data(11, 7)))
+        AppendDeferredInputValue data, "RectSet." & faceName & ".EndOffset2", 12, col, Trim$(CStr(data(12, 7)))
         If UBound(data, 1) >= 19 Then
-            AppendGeometryValue data, "RectSet." & faceName & ".d_2row_1", 14, col, Trim$(CStr(data(14, 7)))
-            AppendGeometryValue data, "RectSet." & faceName & ".d_2row_2", 15, col, Trim$(CStr(data(15, 7)))
-            AppendGeometryValue data, "RectSet." & faceName & ".d_3row_1", 16, col, Trim$(CStr(data(16, 7)))
-            AppendGeometryValue data, "RectSet." & faceName & ".d_3row_2", 17, col, Trim$(CStr(data(17, 7)))
-            AppendGeometryValue data, "RectSet." & faceName & ".loc_2row", 18, col, Trim$(CStr(data(18, 7)))
-            AppendGeometryValue data, "RectSet." & faceName & ".loc_3row", 19, col, Trim$(CStr(data(19, 7)))
+            AppendDeferredInputValue data, "RectSet." & faceName & ".d_2row_1", 14, col, Trim$(CStr(data(14, 7)))
+            AppendDeferredInputValue data, "RectSet." & faceName & ".d_2row_2", 15, col, Trim$(CStr(data(15, 7)))
+            AppendDeferredInputValue data, "RectSet." & faceName & ".d_3row_1", 16, col, Trim$(CStr(data(16, 7)))
+            AppendDeferredInputValue data, "RectSet." & faceName & ".d_3row_2", 17, col, Trim$(CStr(data(17, 7)))
+            AppendDeferredInputValue data, "RectSet." & faceName & ".loc_2row", 18, col, Trim$(CStr(data(18, 7)))
+            AppendDeferredInputValue data, "RectSet." & faceName & ".loc_3row", 19, col, Trim$(CStr(data(19, 7)))
             If UBound(data, 1) >= 21 Then
-                AppendGeometryValue data, "RectSet." & faceName & ".bind_2row", 20, col, Trim$(CStr(data(20, 7)))
-                AppendGeometryValue data, "RectSet." & faceName & ".bind_3row", 21, col, Trim$(CStr(data(21, 7)))
+                AppendDeferredInputValue data, "RectSet." & faceName & ".bind_2row", 20, col, Trim$(CStr(data(20, 7)))
+                AppendDeferredInputValue data, "RectSet." & faceName & ".bind_3row", 21, col, Trim$(CStr(data(21, 7)))
             End If
         End If
     Next i
@@ -824,7 +840,7 @@ Private Sub AppendRectSetCommonSettings(ByRef data As Variant, ByVal geometryHea
                 StrComp(keyValue, "RectSet.UpperOffsetX", vbTextCompare) = 0 Then
             Dim sourceValue As String
             If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
-            AppendGeometryValue data, keyValue, rowIndex, 2, sourceValue
+            AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
         End If
     Next rowIndex
 End Sub
@@ -834,10 +850,10 @@ End Sub
 Private Sub AppendRectSetSectionedSettings(ByRef data As Variant, Optional ByVal geometryHeaderRow As Long = 2)
     Dim valueRow As Long
     valueRow = geometryHeaderRow + 1
-    AppendGeometryValue data, "RectSet.H1", valueRow, 1
-    AppendGeometryValue data, "RectSet.B1", valueRow, 2
-    AppendGeometryValue data, "RectSet.H2", valueRow, 3
-    AppendGeometryValue data, "RectSet.B2", valueRow, 4
+    AppendDeferredInputValue data, "RectSet.H1", valueRow, 1
+    AppendDeferredInputValue data, "RectSet.B1", valueRow, 2
+    AppendDeferredInputValue data, "RectSet.H2", valueRow, 3
+    AppendDeferredInputValue data, "RectSet.B2", valueRow, 4
 
     Dim faceNames(1 To 8) As String
     Dim sideIndexes(1 To 8) As Long
@@ -848,22 +864,22 @@ Private Sub AppendRectSetSectionedSettings(ByRef data As Variant, Optional ByVal
     For i = 1 To 8
         Dim rowIndex As Long
         rowIndex = geometryHeaderRow + 3 + i
-        AppendGeometryValue data, "RectSet." & faceNames(i) & ".as_" & CStr(sideIndexes(i)), rowIndex, 2, Trim$(CStr(data(rowIndex, 8)))
-        AppendGeometryValue data, "RectSet." & faceNames(i) & ".d_" & CStr(sideIndexes(i)), rowIndex, 3, Trim$(CStr(data(rowIndex, 8)))
-        AppendGeometryValue data, "RectSet." & faceNames(i) & ".n_" & CStr(sideIndexes(i)), rowIndex, 4, Trim$(CStr(data(rowIndex, 8)))
-        AppendGeometryValue data, "RectSet." & faceNames(i) & ".StartOffset" & CStr(sideIndexes(i)), rowIndex, 5, Trim$(CStr(data(rowIndex, 8)))
-        AppendGeometryValue data, "RectSet." & faceNames(i) & ".EndOffset" & CStr(sideIndexes(i)), rowIndex, 6, Trim$(CStr(data(rowIndex, 8)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".as_" & CStr(sideIndexes(i)), rowIndex, 2, Trim$(CStr(data(rowIndex, 8)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".d_" & CStr(sideIndexes(i)), rowIndex, 3, Trim$(CStr(data(rowIndex, 8)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".n_" & CStr(sideIndexes(i)), rowIndex, 4, Trim$(CStr(data(rowIndex, 8)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".StartOffset" & CStr(sideIndexes(i)), rowIndex, 5, Trim$(CStr(data(rowIndex, 8)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".EndOffset" & CStr(sideIndexes(i)), rowIndex, 6, Trim$(CStr(data(rowIndex, 8)))
 
         Dim extraRow As Long
         extraRow = geometryHeaderRow + 13 + i
-        AppendGeometryValue data, "RectSet." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), extraRow, 2, Trim$(CStr(data(extraRow, 9)))
-        AppendGeometryValue data, "RectSet." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), extraRow, 5, Trim$(CStr(data(extraRow, 9)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), extraRow, 2, Trim$(CStr(data(extraRow, 9)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), extraRow, 5, Trim$(CStr(data(extraRow, 9)))
         If sideIndexes(i) = 1 Then
             ValidateRectSetSharedSelectors data, extraRow, faceNames(i)
-            AppendGeometryValue data, "RectSet." & faceNames(i) & ".loc_2row", extraRow, 3, Trim$(CStr(data(extraRow, 9)))
-            AppendGeometryValue data, "RectSet." & faceNames(i) & ".bind_2row", extraRow, 4, Trim$(CStr(data(extraRow, 9)))
-            AppendGeometryValue data, "RectSet." & faceNames(i) & ".loc_3row", extraRow, 6, Trim$(CStr(data(extraRow, 9)))
-            AppendGeometryValue data, "RectSet." & faceNames(i) & ".bind_3row", extraRow, 7, Trim$(CStr(data(extraRow, 9)))
+            AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".loc_2row", extraRow, 3, Trim$(CStr(data(extraRow, 9)))
+            AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".bind_2row", extraRow, 4, Trim$(CStr(data(extraRow, 9)))
+            AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".loc_3row", extraRow, 6, Trim$(CStr(data(extraRow, 9)))
+            AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".bind_3row", extraRow, 7, Trim$(CStr(data(extraRow, 9)))
         End If
     Next i
 End Sub
@@ -922,19 +938,19 @@ Private Sub FillRectSetSectionedFaceOrder(ByRef faceNames() As String, ByRef sid
     faceNames(8) = "B2": sideIndexes(8) = 2
 End Sub
 
-' Сохраняет значение размерной или управляющей ячейки геометрии вместе с
-' фактическим адресом. Ошибка формулы сохраняется отдельно до обращения
-' активного потребителя: чужая форма и выключенные ряды не мешают расчету,
-' но чтение ошибочного значения никогда не возвращает пустоту или default.
-Private Sub AppendGeometryValue(ByRef data As Variant, ByVal key As String, _
+' Сохраняет значение геометрии или оформления вместе с фактическим адресом.
+' Ошибка формулы выдается при обращении активного потребителя: чужая форма,
+' выключенный ряд или группа аннотаций не мешают основному расчету, но чтение
+' ошибочного параметра никогда не возвращает пустоту или default.
+Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String, _
         ByVal rowIndex As Long, ByVal columnIndex As Long, Optional ByVal source As String = vbNullString)
     Dim value As String, valueError As String
     If IsError(data(rowIndex, columnIndex)) Then
         valueError = "Настройка " & key & " (" & InputCellLocation(rowIndex, columnIndex) & _
-            ") содержит ошибку Excel в колонке ""значение геометрии"". " & _
+            ") содержит ошибку Excel в колонке ""значение"". " & _
             "Исправьте формулу или введите допустимое значение вместо ошибки Excel."
     Else
-        value = ConfigCellText(data(rowIndex, columnIndex), "значение геометрии", rowIndex, key, False, columnIndex)
+        value = ConfigCellText(data(rowIndex, columnIndex), "значение", rowIndex, key, False, columnIndex)
     End If
     AppendSetting key, value, value, source, rowIndex, columnIndex, valueError
 End Sub
@@ -1011,6 +1027,7 @@ Private Function InputSettingsSection(ByVal key As String) As String
         Case Left$(key, 7) = "Solver.": sectionName = "настройки решателя"
         Case Left$(key, 9) = "Capacity.": sectionName = "настройки несущей способности"
         Case Left$(key, 15) = "AutoCAD.Import.": sectionName = "импорт геометрии из AutoCAD"
+        Case Left$(key, 5) = "Plot.": sectionName = "оформление Excel-схемы"
         Case Left$(key, 7) = "Circle.", Left$(key, 6) = "Rebar.": sectionName = "круглое сечение"
         Case Left$(key, 8) = "RectSet.": sectionName = "RectSet-сечение"
         Case Left$(key, 17) = "RoundedRectangle.": sectionName = "скругленный прямоугольник"
@@ -1201,6 +1218,38 @@ Public Function GetBoolean(ByVal key As String, Optional ByVal defaultValue As B
             Err.Raise vbObjectError + 4314, "CSystemSettingsReader.GetBoolean", _
                 InputErrorMessage(key, "Значение переключателя не распознано.", "Выберите Yes или No.")
     End Select
+End Function
+
+' Требует присутствующее значение переключателя и сохраняет утвержденные
+' aliases Yes/No. Потерянная строка и пустая ячейка не выбирают default.
+Public Function GetRequiredBoolean(ByVal key As String) As Boolean
+    Call GetRequiredString(key)
+    GetRequiredBoolean = GetBoolean(key)
+End Function
+
+' Читает пользовательский RGB без округления и молчаливой подстановки цвета.
+' Каналы должны быть целыми 0..255; настоящий черный цвет возвращается как 0.
+' Общая диагностика хранит фактический адрес, в том числе после переноса Name.
+Public Function GetRequiredRgbColor(ByVal key As String) As Long
+    Dim textValue As String, parts As Variant, channels(0 To 2) As Long
+    Dim index As Long, value As Double
+    textValue = GetRequiredString(key)
+    On Error GoTo InvalidColor
+    parts = Split(Replace$(textValue, ";", ","), ",")
+    If UBound(parts) <> 2 Then GoTo InvalidColor
+    For index = 0 To 2
+        If Len(Trim$(CStr(parts(index)))) = 0 Then GoTo InvalidColor
+        value = CDbl(Trim$(CStr(parts(index))))
+        If value < 0# Or value > 255# Then GoTo InvalidColor
+        If value <> Fix(value) Then GoTo InvalidColor
+        channels(index) = CLng(value)
+    Next index
+    GetRequiredRgbColor = RGB(channels(0), channels(1), channels(2))
+    Exit Function
+InvalidColor:
+    Err.Raise vbObjectError + 4316, "CSystemSettingsReader.GetRequiredRgbColor", _
+        InputErrorMessage(key, "Цвет RGB задан неверно: """ & textValue & """.", _
+            "Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.")
 End Function
 
 ' Возвращает комментарий/источник настройки для диагностических сообщений.

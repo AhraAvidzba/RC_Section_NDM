@@ -80,6 +80,13 @@ Private mAnnotationEndY() As Double ' Конец линии/размера в к
 Private mAnnotationNormalX() As Double ' Наружная нормаль semantic-аннотации.
 Private mAnnotationNormalY() As Double ' Наружная нормаль semantic-аннотации.
 Private mAnnotationText() As String ' Готовый текст подписи или размера.
+Private mUnits As CUnitSystem ' Единый адаптер единиц самого snapshot; текущий Config не меняет сохраненные числа.
+
+' Создает один адаптер для всего чтения, без отдельных объектов на каждый
+' элемент. Единицы передаются из Results явно, пользовательские знаки уже применены.
+Private Sub Class_Initialize()
+    Set mUnits = New CUnitSystem
+End Sub
 
 ' Загружает все данные, необходимые для Excel-схемы.
 ' Метод намеренно читает расчетные значения только из Results. Из Config
@@ -555,7 +562,13 @@ End Sub
 ' Если таблица отсутствует или пуста, схема все равно строится: для AutoCAD
 ' import это нормальный сценарий, потому что характерные грани могут быть неизвестны.
 Private Sub ReadAnnotations(ByVal workbook As Object)
-    On Error GoTo NoAnnotations
+    ' Отсутствие необязательного Name отличается от повреждения его данных.
+    Dim tableName As Object, anchor As Object
+    On Error Resume Next
+    Set tableName = workbook.Names.Item("rngNDMSectionAnnotations")
+    On Error GoTo 0
+    If tableName Is Nothing Then Exit Sub
+    Set anchor = tableName.RefersToRange
     Dim data As Variant
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
     If Not HasRows(data) Then Exit Sub
@@ -573,10 +586,19 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         Dim annotationType As String
-        annotationType = Trim$(CStr(data(rowIndex, colType)))
+        annotationType = Trim$(ReadAnnotationText(data(rowIndex, colType), anchor, rowIndex, colType, "AnnotationType"))
         If Len(annotationType) > 0 Then
             Dim lengthUnit As String
             lengthUnit = AnnotationLengthUnit(data, rowIndex, colUnit, mSnapshotLengthUnit)
+            Dim startX As Double, startY As Double, endX As Double, endY As Double
+            Dim normalX As Double, normalY As Double, textValue As String
+            startX = ReadAnnotationNumber(data(rowIndex, colStartX), anchor, rowIndex, colStartX, "StartX")
+            startY = ReadAnnotationNumber(data(rowIndex, colStartY), anchor, rowIndex, colStartY, "StartY")
+            endX = ReadAnnotationNumber(data(rowIndex, colEndX), anchor, rowIndex, colEndX, "EndX")
+            endY = ReadAnnotationNumber(data(rowIndex, colEndY), anchor, rowIndex, colEndY, "EndY")
+            normalX = ReadAnnotationNumber(data(rowIndex, colNormalX), anchor, rowIndex, colNormalX, "OutsideNormalX")
+            normalY = ReadAnnotationNumber(data(rowIndex, colNormalY), anchor, rowIndex, colNormalY, "OutsideNormalY")
+            textValue = ReadAnnotationText(data(rowIndex, colText), anchor, rowIndex, colText, "Text")
             mAnnotationCount = mAnnotationCount + 1
             ReDim Preserve mAnnotationType(1 To mAnnotationCount)
             ReDim Preserve mAnnotationStartX(1 To mAnnotationCount)
@@ -587,22 +609,53 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             ReDim Preserve mAnnotationNormalY(1 To mAnnotationCount)
             ReDim Preserve mAnnotationText(1 To mAnnotationCount)
             mAnnotationType(mAnnotationCount) = annotationType
-            mAnnotationStartX(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colStartX)), lengthUnit)
-            mAnnotationStartY(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colStartY)), lengthUnit)
-            mAnnotationEndX(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colEndX)), lengthUnit)
-            mAnnotationEndY(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colEndY)), lengthUnit)
+            mAnnotationStartX(mAnnotationCount) = OutputLengthToInternalByUnit(startX, lengthUnit)
+            mAnnotationStartY(mAnnotationCount) = OutputLengthToInternalByUnit(startY, lengthUnit)
+            mAnnotationEndX(mAnnotationCount) = OutputLengthToInternalByUnit(endX, lengthUnit)
+            mAnnotationEndY(mAnnotationCount) = OutputLengthToInternalByUnit(endY, lengthUnit)
             If StrComp(annotationType, "CONTOUR_ARC", vbTextCompare) = 0 Then
-                mAnnotationNormalX(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colNormalX)), lengthUnit)
-                mAnnotationNormalY(mAnnotationCount) = OutputLengthToInternalByUnit(SafeDouble(data(rowIndex, colNormalY)), lengthUnit)
+                mAnnotationNormalX(mAnnotationCount) = OutputLengthToInternalByUnit(normalX, lengthUnit)
+                mAnnotationNormalY(mAnnotationCount) = OutputLengthToInternalByUnit(normalY, lengthUnit)
             Else
-                mAnnotationNormalX(mAnnotationCount) = SafeDouble(data(rowIndex, colNormalX))
-                mAnnotationNormalY(mAnnotationCount) = SafeDouble(data(rowIndex, colNormalY))
+                mAnnotationNormalX(mAnnotationCount) = normalX
+                mAnnotationNormalY(mAnnotationCount) = normalY
             End If
-            mAnnotationText(mAnnotationCount) = CStr(data(rowIndex, colText))
+            mAnnotationText(mAnnotationCount) = textValue
         End If
     Next rowIndex
-NoAnnotations:
 End Sub
+
+' Читает координату/нормаль сохраненной аннотации без подмены ошибки нулем.
+' Число 0 корректно; пустое или нечисловое обязательное значение требует
+' повторного получения snapshot либо исправления указанной ячейки Results.
+Private Function ReadAnnotationNumber(ByVal value As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, ByVal field As String) As Double
+    If IsError(value) Then GoTo InvalidValue
+    If IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
+    If Not IsNumeric(value) Then GoTo InvalidValue
+    On Error GoTo InvalidValue
+    ReadAnnotationNumber = CDbl(value)
+    Exit Function
+InvalidValue:
+    Err.Raise vbObjectError + 4718, "CSectionPlotDataReader", AnnotationInputMessage(anchor, row, column, field)
+End Function
+
+' Пустой текст допустим для линии или контура, но ошибка Excel/Null не является
+' пустой подписью. Аннотация с такой ошибкой не выдается как успешно прочитанная.
+Private Function ReadAnnotationText(ByVal value As Variant, ByVal anchor As Object, _
+        ByVal row As Long, ByVal column As Long, ByVal field As String) As String
+    If IsError(value) Or IsNull(value) Then Err.Raise vbObjectError + 4718, _
+        "CSectionPlotDataReader", AnnotationInputMessage(anchor, row, column, field)
+    ReadAnnotationText = CStr(value)
+End Function
+
+' Указывает фактическую ячейку snapshot по текущему именованному якорю;
+' перенос Results-блока не оставляет старый жестко заданный адрес ошибки.
+Private Function AnnotationInputMessage(ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal field As String) As String
+    AnnotationInputMessage = "В сохраненной аннотации Results поле " & field & " (" & _
+        anchor.Parent.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False) & _
+        ") содержит недопустимое значение. Исправьте данные или повторите расчет/импорт для восстановления снимка."
+End Function
 
 ' Сбрасывает внутренние массивы перед новым чтением Results.
 ' Reader может переиспользоваться тестами, поэтому нельзя оставлять элементы
@@ -797,18 +850,20 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
     Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", "В Results не найден столбец: " & headerName
 End Function
 
-' Читает GeometryInterpretationStatus; если этого столбца нет в сохраненном
-' Results, допускает ShapeType как входной формат ранее записанного снимка.
+' Читает статус интерпретации оболочки по двум допустимым именам колонки.
+' Отсутствие обоих заголовков является повреждением snapshot, а не индексом 0.
 Private Function GeometryStatusColumn(ByRef data As Variant) As Long
-    On Error Resume Next
-    GeometryStatusColumn = ResultColumn(data, "GeometryInterpretationStatus")
-    If Err.Number = 0 And GeometryStatusColumn > 0 Then
-        On Error GoTo 0
-        Exit Function
-    End If
-    Err.Clear
-    GeometryStatusColumn = ResultColumn(data, "ShapeType")
-    On Error GoTo 0
+    Dim column As Long, header As String
+    For column = 1 To UBound(data, 2)
+        header = ResultHeaderBase(CStr(data(1, column)))
+        If StrComp(header, "GeometryInterpretationStatus", vbTextCompare) = 0 Or _
+                StrComp(header, "ShapeType", vbTextCompare) = 0 Then
+            GeometryStatusColumn = column
+            Exit Function
+        End If
+    Next column
+    Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
+        "В сохраненной геометрии Results отсутствует обязательный столбец GeometryInterpretationStatus или ShapeType. Повторите расчет/импорт для восстановления снимка."
 End Function
 
 ' Возвращает имя столбца без единицы измерения.
@@ -846,56 +901,19 @@ End Function
 
 ' Переводит длину из единицы, сохраненной в Results, во внутренние мм.
 Private Function OutputLengthToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
-    OutputLengthToInternalByUnit = value * LengthFactorToMmByUnit(unitText)
+    OutputLengthToInternalByUnit = mUnits.OutputLengthToInternal(value, unitText)
 End Function
 
 ' Переводит площадь из единицы, сохраненной в Results, во внутренние мм2.
 Private Function OutputAreaToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
-    OutputAreaToInternalByUnit = value * AreaFactorToMm2ByUnit(unitText)
+    OutputAreaToInternalByUnit = mUnits.OutputAreaToInternal(value, unitText)
 End Function
 
 ' Переводит кривизну из единицы Results во внутренние 1/мм, чтобы нейтральная
 ' линия строилась в той же системе, что и координаты схемы.
 Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double
-    Select Case LCase$(Trim$(unitText))
-        Case "1/mm"
-            OutputCurvatureToInternalByUnit = value
-        Case "1/m"
-            OutputCurvatureToInternalByUnit = value / 1000#
-        Case Else
-            Err.Raise vbObjectError + 4715, "CSectionPlotDataReader", _
-                "В Results неизвестная единица кривизны: " & unitText
-    End Select
-End Function
-
-' Возвращает множитель перевода длины в мм.
-Private Function LengthFactorToMmByUnit(ByVal unitText As String) As Double
-    Select Case LCase$(Trim$(unitText))
-        Case "mm"
-            LengthFactorToMmByUnit = 1#
-        Case "cm"
-            LengthFactorToMmByUnit = 10#
-        Case "m"
-            LengthFactorToMmByUnit = 1000#
-        Case Else
-            Err.Raise vbObjectError + 4716, "CSectionPlotDataReader", _
-                "В Results неизвестная единица длины: " & unitText
-    End Select
-End Function
-
-' Возвращает множитель перевода площади в мм2.
-Private Function AreaFactorToMm2ByUnit(ByVal unitText As String) As Double
-    Select Case LCase$(Trim$(unitText))
-        Case "mm2"
-            AreaFactorToMm2ByUnit = 1#
-        Case "cm2"
-            AreaFactorToMm2ByUnit = 100#
-        Case "m2"
-            AreaFactorToMm2ByUnit = 1000000#
-        Case Else
-            Err.Raise vbObjectError + 4717, "CSectionPlotDataReader", _
-                "В Results неизвестная единица площади: " & unitText
-    End Select
+    ' Деление сохраняет прежний порядок операций для 1/m, без нового округления.
+    OutputCurvatureToInternalByUnit = value / mUnits.InternalCurvatureToOutput(1#, unitText)
 End Function
 
 Public Property Get Count() As Long: Count = mCount: End Property

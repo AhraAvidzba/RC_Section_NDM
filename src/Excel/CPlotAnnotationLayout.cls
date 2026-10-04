@@ -18,30 +18,27 @@ Option Explicit
 '
 ' Его задача ниже по pipeline: перевести модельные координаты сечения в
 ' координаты Chart, применить общие визуальные отступы, масштаб текста,
-' стрелки и простую защиту от наложения подписей.
+' стрелки. Выбор зоны/арматуры и расчетные данные остаются у верхних слоев.
 
 Private Const ITEM_LINE As String = "LINE" ' Готовый layout-элемент линии для Chart.Shapes.
 Private Const ITEM_TEXT As String = "TEXT" ' Готовый layout-элемент текстовой подписи для Chart.Shapes.
 
-Private mMinX As Double ' Левая граница расчетной модели в output-единицах Results.
-Private mMaxX As Double ' Правая граница расчетной модели в output-единицах Results.
-Private mMinY As Double ' Нижняя граница расчетной модели в output-единицах Results.
-Private mMaxY As Double ' Верхняя граница расчетной модели в output-единицах Results.
+Private mMinX As Double ' Левая граница в единицах модели, переданных в Initialize; reader передает мм.
+Private mMaxX As Double ' Правая граница в тех же единицах модели.
+Private mMinY As Double ' Нижняя граница в тех же единицах модели.
+Private mMaxY As Double ' Верхняя граница в тех же единицах модели.
 Private mPlotLeft As Double ' Левый край внутренней PlotArea внутри Chart.
 Private mPlotTop As Double ' Верхний край внутренней PlotArea внутри Chart.
 Private mPlotWidth As Double ' Фактическая ширина PlotArea, по которой строится transform.
 Private mPlotHeight As Double ' Фактическая высота PlotArea, по которой строится transform.
-Private mScaleX As Double ' Количество chart-points на одну output-единицу по X.
-Private mScaleY As Double ' Количество chart-points на одну output-единицу по Y.
-Private mLengthUnitFactorToMm As Double ' Сколько миллиметров содержит одна output-единица длины Results.
+Private mScaleX As Double ' Количество chart-points на одну единицу модели по X.
+Private mScaleY As Double ' Количество chart-points на одну единицу модели по Y.
+Private mLengthUnitFactorToMm As Double ' Пересчет единицы переданной модели в мм через CUnitSystem.
 Private mVisualScale As Double ' Общий масштаб оформления относительно базового размера Chart.
 Private mDimensionFontSize As Double ' Итоговый размер текста размеров в points.
 Private mRebarFontSize As Double ' Итоговый размер текста групповых подписей арматуры в points.
 Private mDimensionBaseGap As Double ' Отступ размерной линии от своей anchor-линии в points.
 Private mRebarBaseGap As Double ' Отступ подписи арматуры от линии осей арматуры в points.
-Private mDimensionLaneGap As Double ' Дополнительный шаг lane при конфликте размерных подписей.
-Private mRebarLaneGap As Double ' Дополнительный шаг lane при конфликте подписей арматуры.
-Private mBoxPadding As Double ' Запас вокруг текстового bbox для простой проверки пересечений.
 Private mDimensionLineWeight As Double ' Толщина основной размерной линии.
 Private mExtensionLineWeight As Double ' Толщина выносных линий размера.
 Private mRebarLineWeight As Double ' Толщина линии-выноски под групповой подписью арматуры.
@@ -62,6 +59,8 @@ Private mRebarLineEnabled As Boolean ' Рисовать ли короткую л
 Private mDimensionColor As Long ' Цвет размерных линий и текста.
 Private mDimensionExtensionColor As Long ' Цвет выносных линий размеров.
 Private mRebarColor As Long ' Цвет подписей арматуры и их линий.
+Private mDimensionsEnabled As Boolean ' Активна ли группа размеров; выключенные параметры не читаются.
+Private mRebarLabelsEnabled As Boolean ' Активна ли группа подписей арматуры.
 
 Private mCount As Long ' Число готовых layout-элементов, которые затем создаст CSectionPlotter.
 Private mKind() As String ' Тип layout-элемента: линия или текст.
@@ -77,36 +76,65 @@ Private mBold() As Boolean ' Нужно ли делать текст полуж�
 Private mArrowheads() As Boolean ' Нужно ли добавить стрелки с обеих сторон линии.
 Private mFontSize() As Double ' Размер шрифта конкретной текстовой подписи.
 
-Private mOccupiedCount As Long ' Сколько текстовых прямоугольников уже занято.
-Private mOccLeft() As Double ' Левые границы занятых bbox.
-Private mOccTop() As Double ' Верхние границы занятых bbox.
-Private mOccRight() As Double ' Правые границы занятых bbox.
-Private mOccBottom() As Double ' Нижние границы занятых bbox.
-
 ' ------------------------------
 ' Настройки оформления
 ' ------------------------------
-' Читает только визуальные параметры схемы. Смысл аннотаций уже должен быть
-' сформирован выше: геометрией и rebar builders.
-Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)
-    mDimensionTextHeightBase = settings.GetDouble("Plot.Dimensions.TextHeight", 13#)
-    mRebarTextHeightBase = settings.GetDouble("Plot.RebarLabels.TextHeight", 13#)
-    mDimensionTextUnits = NormalizeTextUnits(settings.GetString("Plot.Dimensions.TextUnits", "pt"))
-    mRebarTextUnits = NormalizeTextUnits(settings.GetString("Plot.RebarLabels.TextUnits", "pt"))
-    mDimensionBaseGapBase = settings.GetDouble("Plot.Dimensions.Offset", 100#)
-    mRebarBaseGapBase = settings.GetDouble("Plot.RebarLabels.Offset", 60#)
-    mDimensionLineWeightBase = settings.GetDouble("Plot.Dimensions.LineWeight", 1.75)
-    mExtensionLineWeightBase = settings.GetDouble("Plot.Dimensions.ExtensionLineWeight", 0.85)
-    mRebarLineWeightBase = settings.GetDouble("Plot.RebarLabels.LineWeight", 1.35)
-    mDimensionTextGapBase = settings.GetDouble("Plot.Dimensions.TextGap", 9#)
-    mRebarTextGapBase = settings.GetDouble("Plot.RebarLabels.TextGap", 9#)
-    mDimensionPlacement = NormalizePlacement(settings.GetString("Plot.Dimensions.Placement", "Outside"))
-    mRebarPlacement = NormalizePlacement(settings.GetString("Plot.RebarLabels.Placement", "Outside"))
-    mRebarLineEnabled = settings.GetBoolean("Plot.RebarLabels.LineEnabled", True)
-    mDimensionColor = ParseRgb(settings.GetString("Plot.Dimensions.Color", "20,30,90"), RGB(20, 30, 90))
-    mDimensionExtensionColor = ParseRgb(settings.GetString("Plot.Dimensions.ExtensionLineColor", "140,140,140"), RGB(140, 140, 140))
-    mRebarColor = ParseRgb(settings.GetString("Plot.RebarLabels.Color", "20,30,90"), RGB(20, 30, 90))
+' Задает базовое оформление для самостоятельного layout без Config.
+' При ConfigureFromSettings эти значения не подменяют обязательный ввод;
+' настоящий черный RGB=0 сохраняется и не служит признаком отсутствия цвета.
+Private Sub Class_Initialize()
+    mDimensionsEnabled = True: mRebarLabelsEnabled = True
+    mDimensionTextHeightBase = 13#: mRebarTextHeightBase = 13#
+    mDimensionTextUnits = "mm": mRebarTextUnits = "mm"
+    mDimensionBaseGapBase = 100#: mRebarBaseGapBase = 60#
+    mDimensionLineWeightBase = 1.75: mExtensionLineWeightBase = 0.85: mRebarLineWeightBase = 1.35
+    mDimensionTextGapBase = 9#: mRebarTextGapBase = 9#
+    mDimensionPlacement = "Outside": mRebarPlacement = "Outside": mRebarLineEnabled = True
+    mDimensionColor = RGB(20, 30, 90): mDimensionExtensionColor = RGB(140, 140, 140): mRebarColor = RGB(20, 30, 90)
 End Sub
+
+' Читает только визуальные параметры схемы. Смысл аннотаций уже должен быть
+' сформирован выше. Обязательные активные значения проверяются без defaults;
+' выключенная группа не читает свои параметры, в том числе ошибочные формулы.
+Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)
+    If settings Is Nothing Then Err.Raise vbObjectError + 4810, "CPlotAnnotationLayout", "Настройки оформления схемы не переданы."
+    mDimensionsEnabled = settings.GetRequiredBoolean("Plot.Dimensions.Enabled")
+    mRebarLabelsEnabled = settings.GetRequiredBoolean("Plot.RebarLabels.Enabled")
+    If mDimensionsEnabled Then
+        mDimensionTextHeightBase = AnnotationNumber(settings, "Plot.Dimensions.TextHeight", False)
+        mDimensionTextUnits = settings.GetRequiredChoice("Plot.Dimensions.TextUnits", Array("mm", "pt"))
+        mDimensionBaseGapBase = AnnotationNumber(settings, "Plot.Dimensions.Offset", True)
+        mDimensionLineWeightBase = AnnotationNumber(settings, "Plot.Dimensions.LineWeight", False)
+        mExtensionLineWeightBase = AnnotationNumber(settings, "Plot.Dimensions.ExtensionLineWeight", False)
+        mDimensionTextGapBase = AnnotationNumber(settings, "Plot.Dimensions.TextGap", True)
+        mDimensionPlacement = settings.GetRequiredChoice("Plot.Dimensions.Placement", Array("Outside", "Inside"))
+        mDimensionColor = settings.GetRequiredRgbColor("Plot.Dimensions.Color")
+        mDimensionExtensionColor = settings.GetRequiredRgbColor("Plot.Dimensions.ExtensionLineColor")
+    End If
+    If mRebarLabelsEnabled Then
+        mRebarTextHeightBase = AnnotationNumber(settings, "Plot.RebarLabels.TextHeight", False)
+        mRebarTextUnits = settings.GetRequiredChoice("Plot.RebarLabels.TextUnits", Array("mm", "pt"))
+        mRebarBaseGapBase = AnnotationNumber(settings, "Plot.RebarLabels.Offset", True)
+        mRebarLineEnabled = settings.GetRequiredBoolean("Plot.RebarLabels.LineEnabled")
+        If mRebarLineEnabled Then mRebarLineWeightBase = AnnotationNumber(settings, "Plot.RebarLabels.LineWeight", False)
+        mRebarTextGapBase = AnnotationNumber(settings, "Plot.RebarLabels.TextGap", True)
+        mRebarPlacement = settings.GetRequiredChoice("Plot.RebarLabels.Placement", Array("Outside", "Inside"))
+        mRebarColor = settings.GetRequiredRgbColor("Plot.RebarLabels.Color")
+    End If
+End Sub
+
+' Проверяет знак обязательной визуальной величины до расчетов Chart.
+' Нулевой Offset/TextGap допустим; высота текста и толщина должны быть >0.
+Private Function AnnotationNumber(ByVal settings As CSystemSettingsReader, ByVal key As String, ByVal allowZero As Boolean) As Double
+    Dim value As Double
+    value = settings.GetRequiredDouble(key)
+    If value < 0# Or (value = 0# And Not allowZero) Then
+        Dim correction As String
+        If allowZero Then correction = "Введите число не меньше нуля." Else correction = "Введите положительное число."
+        Err.Raise vbObjectError + 4811, "CPlotAnnotationLayout", settings.InputErrorMessage(key, "Недопустимый размер оформления.", correction)
+    End If
+    AnnotationNumber = value
+End Function
 
 ' ------------------------------
 ' Геометрия Chart
@@ -125,6 +153,7 @@ Public Sub Initialize(ByVal minX As Double, ByVal maxX As Double, ByVal minY As 
     mPlotTop = plotTop
     mPlotWidth = plotWidth
     mPlotHeight = plotHeight
+    mCount = 0
     If mMaxX = mMinX Then mMaxX = mMinX + 1#
     If mMaxY = mMinY Then mMaxY = mMinY + 1#
     mScaleX = mPlotWidth / (mMaxX - mMinX)
@@ -141,28 +170,10 @@ Private Sub InitializeVisualMetrics(ByVal plotWidth As Double, ByVal plotHeight 
     sy = plotHeight / 430#
     mVisualScale = ClampDouble(MinDouble(sx, sy), 0.65, 1.8)
 
-    If mDimensionTextHeightBase <= 0# Then mDimensionTextHeightBase = 13#
-    If mRebarTextHeightBase <= 0# Then mRebarTextHeightBase = 13#
-    If mDimensionBaseGapBase <= 0# Then mDimensionBaseGapBase = 100#
-    If mRebarBaseGapBase <= 0# Then mRebarBaseGapBase = 60#
-    If mDimensionLineWeightBase <= 0# Then mDimensionLineWeightBase = 1.75
-    If mExtensionLineWeightBase <= 0# Then mExtensionLineWeightBase = 0.85
-    If mRebarLineWeightBase <= 0# Then mRebarLineWeightBase = 1.35
-    If mDimensionTextGapBase <= 0# Then mDimensionTextGapBase = 9#
-    If mRebarTextGapBase <= 0# Then mRebarTextGapBase = 9#
-    If Len(mDimensionPlacement) = 0 Then mDimensionPlacement = "Outside"
-    If Len(mRebarPlacement) = 0 Then mRebarPlacement = "Outside"
-    If mDimensionColor = 0 Then mDimensionColor = RGB(20, 30, 90)
-    If mDimensionExtensionColor = 0 Then mDimensionExtensionColor = RGB(140, 140, 140)
-    If mRebarColor = 0 Then mRebarColor = RGB(20, 30, 90)
-
     mDimensionFontSize = ClampDouble(TextMetricToChartPoints(mDimensionTextHeightBase, mDimensionTextUnits), 5#, 28#)
     mRebarFontSize = ClampDouble(TextMetricToChartPoints(mRebarTextHeightBase, mRebarTextUnits), 5#, 28#)
     mDimensionBaseGap = ClampDouble(ModelMmToChartPoints(mDimensionBaseGapBase), 4#, 180#)
     mRebarBaseGap = ClampDouble(ModelMmToChartPoints(mRebarBaseGapBase), 2#, 120#)
-    mDimensionLaneGap = 24# * mVisualScale
-    mRebarLaneGap = 18# * mVisualScale
-    mBoxPadding = 5# * mVisualScale
     mDimensionLineWeight = mDimensionLineWeightBase * mVisualScale
     mExtensionLineWeight = mExtensionLineWeightBase * mVisualScale
     mRebarLineWeight = mRebarLineWeightBase * mVisualScale
@@ -175,6 +186,7 @@ End Sub
 ' Layout сам ставит выносные линии, основную линию со стрелками и текст.
 Public Sub AddDimension(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
         ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String)
+    If Not mDimensionsEnabled Then Exit Sub
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
     dirY = endY - startY
@@ -208,7 +220,6 @@ Public Sub AddDimension(ByVal startX As Double, ByVal startY As Double, ByVal en
     AddLine ModelToChartX(endX), ModelToChartY(endY), ex, ey, mDimensionExtensionColor, mExtensionLineWeight, False
     AddLine sx, sy, ex, ey, mDimensionColor, mDimensionLineWeight, True
     AddText textLeft, textTop, textWidth, textHeight, textValue, rotation, mDimensionColor, True, mDimensionFontSize
-    AddOccupied textLeft, textTop, textWidth, textHeight
 End Sub
 
 ' ------------------------------
@@ -218,6 +229,7 @@ End Sub
 ' подпись центрируется относительно группы арматуры, а не относительно Bounds.
 Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
         ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String)
+    If Not mRebarLabelsEnabled Then Exit Sub
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
     dirY = endY - startY
@@ -257,7 +269,6 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
             anchorPxX + dirPxX * halfLength, anchorPxY + dirPxY * halfLength, mRebarColor, mRebarLineWeight, False
     End If
     AddText textLeft, textTop, textWidth, textHeight, textValue, rotation, mRebarColor, True, mRebarFontSize
-    AddOccupied textLeft, textTop, textWidth, textHeight
 End Sub
 
 ' Определяет bbox текста размера вокруг середины размерной линии. TextGap
@@ -318,30 +329,6 @@ Private Function AnnotationRotation(ByVal dirX As Double, ByVal dirY As Double) 
     If Abs(dirY) > Abs(dirX) Then AnnotationRotation = 90# Else AnnotationRotation = 0#
 End Function
 
-' Приводит пользовательское Placement к двум поддерживаемым вариантам.
-Private Function NormalizePlacement(ByVal value As String) As String
-    If StrComp(Trim$(value), "Inside", vbTextCompare) = 0 Then
-        NormalizePlacement = "Inside"
-    Else
-        NormalizePlacement = "Outside"
-    End If
-End Function
-
-' Приводит настройку единиц текста к двум понятным режимам.
-' В режиме mm TextHeight/TextGap задаются в реальных
-' миллиметрах сечения и зависят от масштаба модели. pt задает обычные
-' Excel points и удобен, когда нужен одинаковый визуальный размер текста
-' для сечений разных габаритов.
-Private Function NormalizeTextUnits(ByVal value As String) As String
-    Dim normalized As String
-    normalized = LCase$(Trim$(value))
-    If normalized = "pt" Then
-        NormalizeTextUnits = "pt"
-    Else
-        NormalizeTextUnits = "mm"
-    End If
-End Function
-
 ' При Inside разворачивает наружную нормаль внутрь сечения. Так одна и та же
 ' semantic-аннотация может рисоваться по обе стороны своей anchor-линии.
 Private Sub ApplyPlacement(ByRef normalPxX As Double, ByRef normalPxY As Double, ByVal placement As String)
@@ -350,19 +337,6 @@ Private Sub ApplyPlacement(ByRef normalPxX As Double, ByRef normalPxY As Double,
         normalPxY = -normalPxY
     End If
 End Sub
-
-' Читает цвет из строки вида "R,G,B". При ошибке возвращается fallback, чтобы
-' неверная настройка оформления не останавливала расчет.
-Private Function ParseRgb(ByVal textValue As String, ByVal fallbackColor As Long) As Long
-    On Error GoTo Failed
-    Dim parts As Variant
-    parts = Split(Trim$(textValue), ",")
-    If UBound(parts) <> 2 Then GoTo Failed
-    ParseRgb = RGB(CLng(Trim$(CStr(parts(0)))), CLng(Trim$(CStr(parts(1)))), CLng(Trim$(CStr(parts(2)))))
-    Exit Function
-Failed:
-    ParseRgb = fallbackColor
-End Function
 
 ' Нормализует модельный вектор. Если annotation пришла с нулевой нормалью или
 ' нулевым направлением, используется fallback, чтобы layout не делил на ноль.
@@ -435,12 +409,9 @@ End Function
 ' Показывает, сколько мм содержится в одной output-единице длины Results.
 ' Это нужно, если Results был записан не в мм, а например в метрах.
 Private Function LengthFactorToMm(ByVal unitName As String) As Double
-    Select Case LCase$(Trim$(unitName))
-        Case "mm": LengthFactorToMm = 1#
-        Case "cm": LengthFactorToMm = 10#
-        Case "m": LengthFactorToMm = 1000#
-        Case Else: LengthFactorToMm = 1#
-    End Select
+    Dim units As CUnitSystem
+    Set units = New CUnitSystem
+    LengthFactorToMm = units.OutputLengthToInternal(1#, unitName)
 End Function
 
 ' Добавляет линию в список layout-элементов; фактический Shape создаст plotter.
@@ -490,42 +461,6 @@ Private Sub AppendItem(ByVal kind As String, ByVal x1 As Double, ByVal y1 As Dou
     mFontSize(mCount) = fontSize
 End Sub
 
-' Проверяет пересечение нового текстового bbox с уже занятыми подписями.
-' Алгоритм намеренно простой: он защищает от очевидных наложений, но не
-' пытается быть полноценным CAD-layout engine.
-Private Function Collides(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
-        ByVal heightValue As Double) As Boolean
-    Dim paddedLeft As Double, paddedTop As Double, paddedRight As Double, paddedBottom As Double
-    paddedLeft = leftPos - mBoxPadding
-    paddedTop = topPos - mBoxPadding
-    paddedRight = leftPos + widthValue + mBoxPadding
-    paddedBottom = topPos + heightValue + mBoxPadding
-
-    Dim i As Long
-    For i = 1 To mOccupiedCount
-        If paddedLeft < mOccRight(i) And paddedRight > mOccLeft(i) And _
-                paddedTop < mOccBottom(i) And paddedBottom > mOccTop(i) Then
-            Collides = True
-            Exit Function
-        End If
-    Next i
-End Function
-
-' Запоминает bbox уже поставленной подписи, чтобы следующие подписи могли
-' сдвинуться на свободный lane.
-Private Sub AddOccupied(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
-        ByVal heightValue As Double)
-    mOccupiedCount = mOccupiedCount + 1
-    ReDim Preserve mOccLeft(1 To mOccupiedCount)
-    ReDim Preserve mOccTop(1 To mOccupiedCount)
-    ReDim Preserve mOccRight(1 To mOccupiedCount)
-    ReDim Preserve mOccBottom(1 To mOccupiedCount)
-    mOccLeft(mOccupiedCount) = leftPos - mBoxPadding
-    mOccTop(mOccupiedCount) = topPos - mBoxPadding
-    mOccRight(mOccupiedCount) = leftPos + widthValue + mBoxPadding
-    mOccBottom(mOccupiedCount) = topPos + heightValue + mBoxPadding
-End Sub
-
 ' Ограничивает визуальные величины диапазоном, в котором они остаются читаемыми.
 Private Function ClampDouble(ByVal value As Double, ByVal minValue As Double, ByVal maxValue As Double) As Double
     If value < minValue Then
@@ -566,3 +501,5 @@ Public Property Get Bold(ByVal index As Long) As Boolean: Bold = mBold(index): E
 Public Property Get Arrowheads(ByVal index As Long) As Boolean: Arrowheads = mArrowheads(index): End Property
 Public Property Get FontSize(ByVal index As Long) As Double: FontSize = mFontSize(index): End Property
 Public Property Get VisualScale() As Double: VisualScale = mVisualScale: End Property
+Public Property Get DimensionsEnabled() As Boolean: DimensionsEnabled = mDimensionsEnabled: End Property
+Public Property Get RebarLabelsEnabled() As Boolean: RebarLabelsEnabled = mRebarLabelsEnabled: End Property
