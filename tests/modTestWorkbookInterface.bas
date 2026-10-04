@@ -212,6 +212,7 @@ Public Function RunLargeSnapshotPlotStressTest() As String
     Dim t0 As Double
     t0 = Timer
 
+    TestAudit03ExcelGuardContracts stats
     TestLargeSnapshotPlotStress stats
 
     AppendLine stats, "TOTAL_LARGE_SNAPSHOT_PLOT: passed=" & CStr(stats.Passed) & _
@@ -7351,6 +7352,94 @@ End Sub
 Public Function RunAudit03GeneralPlotTests() As String
     RunAudit03GeneralPlotTests = modTestPlotConfig.RunAudit03GeneralPlotTests()
 End Function
+
+' ==================== ДЛЯ ТЕСТОВ: СОСТОЯНИЕ EXCEL.APPLICATION ====================
+
+' Проверяет восстановление настоящего отдельного Excel.Application, включая
+' реальный отказ Calculation setter без открытых книг. Fake-классы и
+' пользовательский экземпляр Excel не используются.
+Public Function RunAudit03ExcelGuardTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03ExcelGuardContracts stats
+    AppendLine stats, "TOTAL_AUDIT03_EXCEL_GUARD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ExcelGuardTests = stats.Report
+End Function
+
+' Восемь сочетаний Boolean и три режима пересчета проверяются через тот же
+' guard, что используется workbook-сценарием. После failed Enter проверяем
+' состояние сразу, затем явный Restore, повторный Enter и деструктор.
+Private Sub TestAudit03ExcelGuardContracts(ByRef stats As TUiTestStats)
+    Dim otherExcel As Object, book As Object, guard As CExcelAppStateGuard, owned As Boolean
+    Dim mode As Variant, flags As Long, screen As Boolean, events As Boolean, alerts As Boolean
+    Dim code As Long, source As String, reason As String, nativeCode As Long, nativeSource As String, nativeReason As String
+    Dim prefix As String, solveCount As Long
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set otherExcel = CreateObject("Excel.Application")
+    owned = (otherExcel.Hwnd <> Application.Hwnd)
+    If Not owned Then Err.Raise 5, "TestAudit03ExcelGuardContracts", "Не создан отдельный Excel.Application для теста."
+    otherExcel.Visible = False
+    AssertTrue stats, "audit03.excelGuard.emptyApplication", otherExcel.Workbooks.Count = 0
+    On Error Resume Next
+    Err.Clear: otherExcel.Calculation = xlCalculationManual
+    nativeCode = Err.Number: nativeSource = Err.Source: nativeReason = Err.Description
+    On Error GoTo Failed
+    AssertTrue stats, "audit03.excelGuard.nativeFault", nativeCode <> 0
+    Set guard = New CExcelAppStateGuard
+    For flags = 0 To 7
+        screen = ((flags And 1) <> 0): events = ((flags And 2) <> 0): alerts = ((flags And 4) <> 0)
+        otherExcel.ScreenUpdating = screen: otherExcel.EnableEvents = events: otherExcel.DisplayAlerts = alerts
+        On Error Resume Next
+        Err.Clear: guard.Enter otherExcel
+        code = Err.Number: source = Err.Source: reason = Err.Description
+        On Error GoTo Failed
+        prefix = "audit03.excelGuard.failure.f" & CStr(flags)
+        AssertTrue stats, prefix & ".originalError", code = nativeCode And source = nativeSource And reason = nativeReason
+        AssertTrue stats, prefix & ".immediateScreen", otherExcel.ScreenUpdating = screen
+        AssertTrue stats, prefix & ".immediateEvents", otherExcel.EnableEvents = events
+        AssertTrue stats, prefix & ".immediateAlerts", otherExcel.DisplayAlerts = alerts
+        guard.Restore
+        AssertTrue stats, prefix & ".restore", otherExcel.ScreenUpdating = screen And otherExcel.EnableEvents = events And otherExcel.DisplayAlerts = alerts
+        AppendLine stats, "EXCEL_GUARD_ERROR: " & prefix & "|code=" & CStr(code) & "|source=" & source & "|" & reason
+        ' Возвращаем fixture в заданное состояние и при negative реализации.
+        otherExcel.ScreenUpdating = screen: otherExcel.EnableEvents = events: otherExcel.DisplayAlerts = alerts
+    Next flags
+    Set book = otherExcel.Workbooks.Add(-4167)
+    For Each mode In Array(xlCalculationAutomatic, xlCalculationManual, xlCalculationSemiautomatic)
+        For flags = 0 To 7
+            screen = ((flags And 1) <> 0): events = ((flags And 2) <> 0): alerts = ((flags And 4) <> 0)
+            otherExcel.Calculation = mode
+            otherExcel.ScreenUpdating = screen: otherExcel.EnableEvents = events: otherExcel.DisplayAlerts = alerts
+            prefix = "audit03.excelGuard.success.m" & CStr(mode) & ".f" & CStr(flags)
+            guard.Enter otherExcel
+            AssertTrue stats, prefix & ".entered", Not otherExcel.ScreenUpdating And Not otherExcel.EnableEvents And Not otherExcel.DisplayAlerts And otherExcel.Calculation = xlCalculationManual
+            guard.Enter otherExcel
+            guard.Restore
+            AssertTrue stats, prefix & ".restored", otherExcel.ScreenUpdating = screen And otherExcel.EnableEvents = events And otherExcel.DisplayAlerts = alerts And otherExcel.Calculation = mode
+            guard.Restore
+            AssertTrue stats, prefix & ".idempotent", otherExcel.ScreenUpdating = screen And otherExcel.EnableEvents = events And otherExcel.DisplayAlerts = alerts And otherExcel.Calculation = mode
+            guard.Enter otherExcel: Set guard = Nothing
+            AssertTrue stats, prefix & ".terminate", otherExcel.ScreenUpdating = screen And otherExcel.EnableEvents = events And otherExcel.DisplayAlerts = alerts And otherExcel.Calculation = mode
+            Set guard = New CExcelAppStateGuard
+        Next flags
+    Next mode
+    AssertTrue stats, "audit03.excelGuard.noSolve", SectionEquilibriumSolveCount() = solveCount
+    AppendLine stats, "EXCEL_GUARD_CASES: failedEnterVariants=8; validEnterVariants=24; equilibriumCases=0"
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "audit03.excelGuard.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not guard Is Nothing Then guard.Restore
+    Set guard = Nothing
+    If owned Then
+        otherExcel.DisplayAlerts = False
+        If Not book Is Nothing Then book.Close False
+        otherExcel.Quit
+    End If
+    Set book = Nothing: Set otherExcel = Nothing
+    On Error GoTo 0
+End Sub
 
 
 

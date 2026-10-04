@@ -1,0 +1,26 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_excel_guard_negative_v224.xlsm
+SOURCE_SHA256: F0E38B55F97A2396528A938C50FC91346F4D17F6522BD8022D53ED9C6274CEF2
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2e2b03dfc60d4e75a27a708bce3f9c88\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.excelGuard.failure.f1.immediateScreen
+FAIL: audit03.excelGuard.failure.f1.restore
+FAIL: audit03.excelGuard.failure.f2.immediateEvents
+FAIL: audit03.excelGuard.failure.f2.restore
+FAIL: audit03.excelGuard.failure.f3.immediateScreen
+FAIL: audit03.excelGuard.failure.f3.immediateEvents
+FAIL: audit03.excelGuard.failure.f3.restore
+FAIL: audit03.excelGuard.failure.f4.immediateAlerts
+FAIL: audit03.excelGuard.failure.f4.restore
+FAIL: audit03.excelGuard.failure.f5.immediateScreen
+FAIL: audit03.excelGuard.failure.f5.immediateAlerts
+FAIL: audit03.excelGuard.failure.f5.restore
+FAIL: audit03.excelGuard.failure.f6.immediateEvents
+FAIL: audit03.excelGuard.failure.f6.immediateAlerts
+FAIL: audit03.excelGuard.failure.f6.restore
+FAIL: audit03.excelGuard.failure.f7.immediateScreen
+FAIL: audit03.excelGuard.failure.f7.immediateEvents
+FAIL: audit03.excelGuard.failure.f7.immediateAlerts
+FAIL: audit03.excelGuard.failure.f7.restore
+TOTAL_AUDIT03_EXCEL_GUARD: passed=120; failed=19
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

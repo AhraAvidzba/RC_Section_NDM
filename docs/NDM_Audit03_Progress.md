@@ -69,6 +69,22 @@
 
 ## Актуальная Точка Продолжения
 
+- Contour-arc срез зафиксирован `53761e9b`. Следующий Excel guard срез
+  v224-v225 подтвердил реальный отказ последнего setter-а на собственном
+  пустом Application: negative 120/19, positive 139/0, 32 варианта, noSolve.
+  Enter теперь восстанавливает измененные настройки сразу и сохраняет
+  исходную COM-ошибку. Presentation 2355/0, structure 27/27,
+  palette/reopen 355/0; source unchanged=True. Actual export 111 components,
+  book SHA 2FB1A9D7399C99FA75CB297703389F22856E5A086F8D844065128309ECC66091,
+  export SHA 9B0EA15BE930E5A43CD28EF29DD0CEE45600693C6A06C86F79FD0DEA5C83BD60.
+  Source/export equality 106/106, failed=0, новые классы не добавлялись.
+  Scope/evidence: NDM_Audit03_Excel_Guard_Review.md. Census 106/4421/1721
+  является индексом; registry 666/1064 не изменен. Help/formatting не
+  менялись, их адресный gate не перезаписывался. Полный On/Off оставлен
+  для риска numerical изменений и окончательного release gate.
+  Следом: extreme arithmetic CLinearSystem3x3, оставшиеся metadata/header
+  paths, semantic comments, все Config/range/pairwise и финальная матрица.
+
 - AutoUpdate зафиксирован `4e25d63`. Следующий contour-arc срез v220-v223
   устраняет прием числового префикса/нулевого fallback в двух parser-ах.
   Negative v220 71/158; compile error собственного теста v221 и ошибочный

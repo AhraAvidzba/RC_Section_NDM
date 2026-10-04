@@ -1,0 +1,164 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_excel_guard_negative_v224.xlsm
+SOURCE_SHA256: F0E38B55F97A2396528A938C50FC91346F4D17F6522BD8022D53ED9C6274CEF2
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2e2b03dfc60d4e75a27a708bce3f9c88\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== RunAudit03ExcelGuardTests =====
+SUITE_STARTED: RunAudit03ExcelGuardTests; 2026-10-04T13:00:45
+EXCEL_AFTER_SUITE: pid=12952; workingSet=139313152; privateBytes=93622272; cpu=2.828125
+EXCEL_AFTER_SUITE: pid=19080; workingSet=113344512; privateBytes=71983104; cpu=6.4375
+EXCEL_AFTER_SUITE: pid=23476; workingSet=211636224; privateBytes=163663872; cpu=10758.328125
+OK: audit03.excelGuard.emptyApplication
+OK: audit03.excelGuard.nativeFault
+OK: audit03.excelGuard.failure.f0.originalError
+OK: audit03.excelGuard.failure.f0.immediateScreen
+OK: audit03.excelGuard.failure.f0.immediateEvents
+OK: audit03.excelGuard.failure.f0.immediateAlerts
+OK: audit03.excelGuard.failure.f0.restore
+EXCEL_GUARD_ERROR: audit03.excelGuard.failure.f0|code=1004|source=Microsoft Excel|Нельзя установить свойство Calculation класса Application
+OK: audit03.excelGuard.failure.f1.originalError
+FAIL: audit03.excelGuard.failure.f1.immediateScreen
+OK: audit03.excelGuard.failure.f1.immediateEvents
+OK: audit03.excelGuard.failure.f1.immediateAlerts
+FAIL: audit03.excelGuard.failure.f1.restore
+EXCEL_GUARD_ERROR: audit03.excelGuard.failure.f1|code=1004|source=Microsoft Excel|Нельзя установить свойство Calculation класса Application
+OK: audit03.excelGuard.failure.f2.originalError
+OK: audit03.excelGuard.failure.f2.immediateScreen
+FAIL: audit03.excelGuard.failure.f2.immediateEvents
+OK: audit03.excelGuard.failure.f2.immediateAlerts
+FAIL: audit03.excelGuard.failure.f2.restore
+EXCEL_GUARD_ERROR: audit03.excelGuard.failure.f2|code=1004|source=Microsoft Excel|Нельзя установить свойство Calculation класса Application
+OK: audit03.excelGuard.failure.f3.originalError
+FAIL: audit03.excelGuard.failure.f3.immediateScreen
+FAIL: audit03.excelGuard.failure.f3.immediateEvents
+OK: audit03.excelGuard.failure.f3.immediateAlerts
+FAIL: audit03.excelGuard.failure.f3.restore
+EXCEL_GUARD_ERROR: audit03.excelGuard.failure.f3|code=1004|source=Microsoft Excel|Нельзя установить свойство Calculation класса Application
+OK: audit03.excelGuard.failure.f4.originalError
+OK: audit03.excelGuard.failure.f4.immediateScreen
+OK: audit03.excelGuard.failure.f4.immediateEvents
+FAIL: audit03.excelGuard.failure.f4.immediateAlerts
+FAIL: audit03.excelGuard.failure.f4.restore
+EXCEL_GUARD_ERROR: audit03.excelGuard.failure.f4|code=1004|source=Microsoft Excel|Нельзя установить свойство Calculation класса Application
+OK: audit03.excelGuard.failure.f5.originalError
+FAIL: audit03.excelGuard.failure.f5.immediateScreen
+OK: audit03.excelGuard.failure.f5.immediateEvents
+FAIL: audit03.excelGuard.failure.f5.immediateAlerts
+FAIL: audit03.excelGuard.failure.f5.restore
+EXCEL_GUARD_ERROR: audit03.excelGuard.failure.f5|code=1004|source=Microsoft Excel|Нельзя установить свойство Calculation класса Application
+OK: audit03.excelGuard.failure.f6.originalError
+OK: audit03.excelGuard.failure.f6.immediateScreen
+FAIL: audit03.excelGuard.failure.f6.immediateEvents
+FAIL: audit03.excelGuard.failure.f6.immediateAlerts
+FAIL: audit03.excelGuard.failure.f6.restore
+EXCEL_GUARD_ERROR: audit03.excelGuard.failure.f6|code=1004|source=Microsoft Excel|Нельзя установить свойство Calculation класса Application
+OK: audit03.excelGuard.failure.f7.originalError
+FAIL: audit03.excelGuard.failure.f7.immediateScreen
+FAIL: audit03.excelGuard.failure.f7.immediateEvents
+FAIL: audit03.excelGuard.failure.f7.immediateAlerts
+FAIL: audit03.excelGuard.failure.f7.restore
+EXCEL_GUARD_ERROR: audit03.excelGuard.failure.f7|code=1004|source=Microsoft Excel|Нельзя установить свойство Calculation класса Application
+OK: audit03.excelGuard.success.m-4105.f0.entered
+OK: audit03.excelGuard.success.m-4105.f0.restored
+OK: audit03.excelGuard.success.m-4105.f0.idempotent
+OK: audit03.excelGuard.success.m-4105.f0.terminate
+OK: audit03.excelGuard.success.m-4105.f1.entered
+OK: audit03.excelGuard.success.m-4105.f1.restored
+OK: audit03.excelGuard.success.m-4105.f1.idempotent
+OK: audit03.excelGuard.success.m-4105.f1.terminate
+OK: audit03.excelGuard.success.m-4105.f2.entered
+OK: audit03.excelGuard.success.m-4105.f2.restored
+OK: audit03.excelGuard.success.m-4105.f2.idempotent
+OK: audit03.excelGuard.success.m-4105.f2.terminate
+OK: audit03.excelGuard.success.m-4105.f3.entered
+OK: audit03.excelGuard.success.m-4105.f3.restored
+OK: audit03.excelGuard.success.m-4105.f3.idempotent
+OK: audit03.excelGuard.success.m-4105.f3.terminate
+OK: audit03.excelGuard.success.m-4105.f4.entered
+OK: audit03.excelGuard.success.m-4105.f4.restored
+OK: audit03.excelGuard.success.m-4105.f4.idempotent
+OK: audit03.excelGuard.success.m-4105.f4.terminate
+OK: audit03.excelGuard.success.m-4105.f5.entered
+OK: audit03.excelGuard.success.m-4105.f5.restored
+OK: audit03.excelGuard.success.m-4105.f5.idempotent
+OK: audit03.excelGuard.success.m-4105.f5.terminate
+OK: audit03.excelGuard.success.m-4105.f6.entered
+OK: audit03.excelGuard.success.m-4105.f6.restored
+OK: audit03.excelGuard.success.m-4105.f6.idempotent
+OK: audit03.excelGuard.success.m-4105.f6.terminate
+OK: audit03.excelGuard.success.m-4105.f7.entered
+OK: audit03.excelGuard.success.m-4105.f7.restored
+OK: audit03.excelGuard.success.m-4105.f7.idempotent
+OK: audit03.excelGuard.success.m-4105.f7.terminate
+OK: audit03.excelGuard.success.m-4135.f0.entered
+OK: audit03.excelGuard.success.m-4135.f0.restored
+OK: audit03.excelGuard.success.m-4135.f0.idempotent
+OK: audit03.excelGuard.success.m-4135.f0.terminate
+OK: audit03.excelGuard.success.m-4135.f1.entered
+OK: audit03.excelGuard.success.m-4135.f1.restored
+OK: audit03.excelGuard.success.m-4135.f1.idempotent
+OK: audit03.excelGuard.success.m-4135.f1.terminate
+OK: audit03.excelGuard.success.m-4135.f2.entered
+OK: audit03.excelGuard.success.m-4135.f2.restored
+OK: audit03.excelGuard.success.m-4135.f2.idempotent
+OK: audit03.excelGuard.success.m-4135.f2.terminate
+OK: audit03.excelGuard.success.m-4135.f3.entered
+OK: audit03.excelGuard.success.m-4135.f3.restored
+OK: audit03.excelGuard.success.m-4135.f3.idempotent
+OK: audit03.excelGuard.success.m-4135.f3.terminate
+OK: audit03.excelGuard.success.m-4135.f4.entered
+OK: audit03.excelGuard.success.m-4135.f4.restored
+OK: audit03.excelGuard.success.m-4135.f4.idempotent
+OK: audit03.excelGuard.success.m-4135.f4.terminate
+OK: audit03.excelGuard.success.m-4135.f5.entered
+OK: audit03.excelGuard.success.m-4135.f5.restored
+OK: audit03.excelGuard.success.m-4135.f5.idempotent
+OK: audit03.excelGuard.success.m-4135.f5.terminate
+OK: audit03.excelGuard.success.m-4135.f6.entered
+OK: audit03.excelGuard.success.m-4135.f6.restored
+OK: audit03.excelGuard.success.m-4135.f6.idempotent
+OK: audit03.excelGuard.success.m-4135.f6.terminate
+OK: audit03.excelGuard.success.m-4135.f7.entered
+OK: audit03.excelGuard.success.m-4135.f7.restored
+OK: audit03.excelGuard.success.m-4135.f7.idempotent
+OK: audit03.excelGuard.success.m-4135.f7.terminate
+OK: audit03.excelGuard.success.m2.f0.entered
+OK: audit03.excelGuard.success.m2.f0.restored
+OK: audit03.excelGuard.success.m2.f0.idempotent
+OK: audit03.excelGuard.success.m2.f0.terminate
+OK: audit03.excelGuard.success.m2.f1.entered
+OK: audit03.excelGuard.success.m2.f1.restored
+OK: audit03.excelGuard.success.m2.f1.idempotent
+OK: audit03.excelGuard.success.m2.f1.terminate
+OK: audit03.excelGuard.success.m2.f2.entered
+OK: audit03.excelGuard.success.m2.f2.restored
+OK: audit03.excelGuard.success.m2.f2.idempotent
+OK: audit03.excelGuard.success.m2.f2.terminate
+OK: audit03.excelGuard.success.m2.f3.entered
+OK: audit03.excelGuard.success.m2.f3.restored
+OK: audit03.excelGuard.success.m2.f3.idempotent
+OK: audit03.excelGuard.success.m2.f3.terminate
+OK: audit03.excelGuard.success.m2.f4.entered
+OK: audit03.excelGuard.success.m2.f4.restored
+OK: audit03.excelGuard.success.m2.f4.idempotent
+OK: audit03.excelGuard.success.m2.f4.terminate
+OK: audit03.excelGuard.success.m2.f5.entered
+OK: audit03.excelGuard.success.m2.f5.restored
+OK: audit03.excelGuard.success.m2.f5.idempotent
+OK: audit03.excelGuard.success.m2.f5.terminate
+OK: audit03.excelGuard.success.m2.f6.entered
+OK: audit03.excelGuard.success.m2.f6.restored
+OK: audit03.excelGuard.success.m2.f6.idempotent
+OK: audit03.excelGuard.success.m2.f6.terminate
+OK: audit03.excelGuard.success.m2.f7.entered
+OK: audit03.excelGuard.success.m2.f7.restored
+OK: audit03.excelGuard.success.m2.f7.idempotent
+OK: audit03.excelGuard.success.m2.f7.terminate
+OK: audit03.excelGuard.noSolve
+EXCEL_GUARD_CASES: failedEnterVariants=8; validEnterVariants=24; equilibriumCases=0
+TOTAL_AUDIT03_EXCEL_GUARD: passed=120; failed=19
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2e2b03dfc60d4e75a27a708bce3f9c88\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunAudit03ExcelGuardTests; 2026-10-04T13:00:51
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

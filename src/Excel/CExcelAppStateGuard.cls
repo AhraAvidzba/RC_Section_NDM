@@ -26,12 +26,14 @@ Private mCalculation As Variant ' Исходный режим пересчета
 ' Включает быстрый режим для переданного Excel.Application.
 ' Метод сохраняет исходные настройки до первого изменения, чтобы Restore
 ' мог вернуть пользователю ровно то состояние Excel, которое было до запуска
-' расчета NDM.
+' расчета NDM. Отказ любого setter-а сразу возвращает уже измененные поля
+' и передает исходную COM-ошибку вызывающему коду без подмены.
 Public Sub Enter(ByVal excelApplication As Object)
     If excelApplication Is Nothing Then Err.Raise vbObjectError + 4180, "CExcelAppStateGuard.Enter", "Excel.Application не передан."
 
     If mActive Then Restore
 
+    On Error GoTo Failed
     Set mApplication = excelApplication
 
     mScreenUpdating = mApplication.ScreenUpdating
@@ -39,11 +41,19 @@ Public Sub Enter(ByVal excelApplication As Object)
     mDisplayAlerts = mApplication.DisplayAlerts
     mCalculation = mApplication.Calculation
 
+    ' Снимок полон: с этого момента восстановление нужно даже при partial Enter.
+    mActive = True
     mApplication.ScreenUpdating = False
     mApplication.EnableEvents = False
     mApplication.DisplayAlerts = False
     mApplication.Calculation = XL_CALCULATION_MANUAL
-    mActive = True
+    Exit Sub
+Failed:
+    Dim errorNumber As Long, errorSource As String, errorDescription As String
+    errorNumber = Err.Number: errorSource = Err.Source: errorDescription = Err.Description
+    Restore
+    Set mApplication = Nothing
+    Err.Raise errorNumber, errorSource, errorDescription
 End Sub
 
 ' Возвращает Excel.Application в состояние, которое было перед Enter.

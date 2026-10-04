@@ -430,3 +430,19 @@ Structure 27/27, formatting 1003/0, help failed=0, palette/reopen 355/0.
 выпуска. Census 106/4419/1713 не заменяет semantic audit. Остальные
 metadata/header paths, Excel guard и extreme arithmetic еще открыты;
 фактическая DWG/пиксельная приемка не заявлена.
+
+## Excel.Application v225
+
+Реальный последний setter Enter на отдельном пустом Excel воспроизвел
+оставленные выключенными события/экран/предупреждения: negative 120/19.
+Признак восстановления теперь устанавливается до первого изменения,
+rollback выполняется сразу, исходная COM-ошибка не подменяется.
+
+Positive 139/0: восемь failed Enter и 24 valid Enter варианта, повторный
+вход, явное восстановление, деструктор, noSolve. Presentation 2355/0,
+structure 27/27, palette/save-reopen 355/0, source unchanged=True.
+Новых classes и пользовательских Excel-сессий нет. Детали/хеши/границы
+сохранены в NDM_Audit03_Excel_Guard_Review.md. Full On/Off не повторен для
+локального интерфейсного изменения; финальный gate остается обязательным.
+Census 106/4421/1721 не заменяет semantic review; extreme arithmetic,
+остальные metadata/header paths и весь F07 еще не объявлены завершенными.
