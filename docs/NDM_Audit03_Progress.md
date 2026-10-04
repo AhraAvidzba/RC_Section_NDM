@@ -21,7 +21,7 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v199: 666 активных полей из 1064, включая 20 profile presentation/description полей; из 760 editable полей 94 еще не приняты. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Текущая адресная приемка v230: 687 активных полей из 1064, включая 21 активную ячейку компактной таблицы аннотаций; из 760 editable полей 73 еще не приняты. Полный диапазон/pairwise, остальные поля, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
 | 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
 
 ## Карта Обязанностей
@@ -56,7 +56,7 @@
 | F08 | трассировка подготовлена, приемка продолжается | Per-ID реестр NDM_Audit03_Prior_Audit_Traceability.md; незавершенные K/T/D/UI/save-reopen пункты не получают PASS. |
 | A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
 | P01-P04 | в работе | 15 сценариев x 5 повторов x 2 версии; asymmetric: 94 solves/3874 iterations/20 retries/10 эквивалентных попыток. P02 численные и point-grid инварианты подтверждены; окончательный benchmark/разбор повторов впереди. |
-| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v199 содержит 1064 поля, 666 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
+| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v230 содержит 1064 поля, 687 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
 | T01-T05 | в работе | v68: все 13 форм, Light/Stress, Off/On, 52/52 chunks и 18 980 all-path cases, failed=0. Это приемка численного среза v68, не поздних Config/UI правок; selector variants/pairwise/high-risk tuples, независимые near-limit gates и финальный повтор на выпускном source впереди. |
 | D01-D02 | в работе | Comment-only ревизия export/writers/enum/workbook entrypoints выполнена частично; все остальные methods/tests и фактический help/Config/validation/links в clean/update впереди. |
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
@@ -68,6 +68,18 @@
 Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
 
 ## Актуальная Точка Продолжения
+
+- Linear-arithmetic зафиксирован `0258a89`. Annotation Config bridge v230:
+  directed 425/0, общий presentation 2780/0, structure 27/27. Все 21 активные
+  ячейки настоящей таблицы прошли reader -> layout; стрелки также настоящий
+  Chart.Shape. Две позиции диапазона, 210 вариантов, текущие адреса ошибок,
+  noSolve. Source/export 106/106; реестр 687/1064, editable pending=73,
+  fullAcceptance=False. Книга SHA B756C108DC1560B85F85752C3817BAB5313C4B6AADCB69ED54E0634A010CDA3E,
+  export SHA 75F671D851A64FC8D39F54BBF66F535F85626B9B8CEDF2D589FC20E08C093C20.
+  Подробности NDM_Audit03_Annotation_Config_Review.md. Production не менялся;
+  полный On/Off не повторялся согласно разрешению пользователя. Следом:
+  реальные header/key/comment ошибки reader-а, оставшиеся Config/range/
+  pairwise, semantic review, финальная матрица и выпускной полный gate.
 
 - Excel guard зафиксирован `f7db003`. Следующий linear-arithmetic срез
   v226-v229 убирает неиспользуемое вычисление determinant, масштабирует

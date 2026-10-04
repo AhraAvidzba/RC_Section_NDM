@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_annotation_bridge_v230.xlsm
+SOURCE_SHA256: B756C108DC1560B85F85752C3817BAB5313C4B6AADCB69ED54E0634A010CDA3E
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f235dc1c942d4ad2b3749a76d2fd5ce9\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_NAMED_ANNOTATION: passed=425; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

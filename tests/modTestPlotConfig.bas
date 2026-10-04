@@ -27,6 +27,7 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     TestAudit03SnapshotMetadataContracts stats
     TestAudit03AutoPlotContracts stats
     TestAudit03ContourArcContracts stats
+    TestAudit03NamedAnnotationSettings stats
     AppendLine stats, "TOTAL_AUDIT03_GENERAL_PLOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03GeneralPlotTests = stats.Report
@@ -157,6 +158,171 @@ Failed:
 Cleanup:
     On Error Resume Next
     Application.DecimalSeparator = savedDecimal: Application.ThousandsSeparator = savedThousands: Application.UseSystemSeparators = savedSeparators
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
+' ==================== ДЛЯ ТЕСТОВ: ЯЧЕЙКИ КОМПАКТНОЙ ТАБЛИЦЫ АННОТАЦИЙ ====================
+
+' Проверяет настоящий named-range adapter, а не только готовый словарь.
+' Стандартные ячейки двух групп поступают через LoadFromWorkbook в layout
+' и реальный Chart; исходная книга и расчетные результаты не изменяются.
+Public Function RunAudit03NamedAnnotationTests() As String
+    Dim stats As TUiTestStats
+    TestAudit03NamedAnnotationSettings stats
+    AppendLine stats, "TOTAL_AUDIT03_NAMED_ANNOTATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03NamedAnnotationTests = stats.Report
+End Function
+
+' Возвращает применимую ячейку исходной компактной таблицы по runtime-key.
+' Названия RebarLabels/Dimensions переводятся только тестовой картой;
+' production reader проверяется независимо через реальную ссылку имени.
+Private Function Audit03NamedAnnotationCell(ByVal table As Object, ByVal settingKey As String) As Object
+    Dim parts As Variant, row As Long, column As Long
+    parts = Split(settingKey, ".")
+    If CStr(parts(1)) = "RebarLabels" Then column = 2 Else column = 3
+    For row = 2 To table.Rows.Count
+        If CStr(table.Cells(row, 1).Value2) = CStr(parts(2)) Then
+            Set Audit03NamedAnnotationCell = table.Cells(row, column): Exit Function
+        End If
+    Next row
+    Err.Raise 5, "Audit03NamedAnnotationCell", "В исходной таблице нет параметра " & settingKey
+End Function
+
+' Все 21 применимое поле меняется в настоящей таблице Config. Две позиции
+' именованного диапазона проверяют адрес ошибок и независимость от layout
+' листа. Численные эффекты заданы независимо в points при фиксированном
+' transform; стрелки дополнительно проверяются у настоящих Chart.Shape.
+Private Sub TestAudit03NamedAnnotationSettings(ByRef stats As TUiTestStats)
+    Dim fixture As Object, config As Object, sheet As Object, source As Object, table As Object, target As Object
+    Dim settings As CSystemSettingsReader, layout As CPlotAnnotationLayout, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim keys As Variant, changed As Variant, addresses As Variant, name As Variant, key As Variant, groupName As Variant, bad As Variant
+    Dim baseline As Variant, geometry As Variant, annotations(1 To 2, 1 To 10) As Variant, props(1 To 2, 1 To 4) As Variant
+    Dim index As Long, position As Long, cases As Long, solveCount As Long, itemIndex As Long, fieldName As String, parts As Variant
+    Dim cell As Object, chart As Object, marker As Object, shape As Object, code As Long, reason As String, prefix As String, measured As Double
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "Config"
+    Set sheet = fixture.Worksheets.Add: sheet.Name = "Results": fixture.Worksheets.Add.Name = "Расчет"
+    addresses = Array("A5", "H5", "P5", "P25"): index = 0
+    For Each name In Array("rngSystemSettings", "rngPlotAnnotationSettings", "rngUnitSettings", "rngSignConventionSettings")
+        Set source = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        Set target = config.Range(CStr(addresses(index))).Resize(source.Rows.Count, source.Columns.Count)
+        target.NumberFormat = "@": target.Value2 = source.Value2
+        fixture.Names.Add Name:=CStr(name), RefersTo:="=Config!" & target.Address: index = index + 1
+    Next name
+    Set table = fixture.Names.Item("rngPlotAnnotationSettings").RefersToRange
+    For Each groupName In Array("Dimensions", "RebarLabels")
+        Audit03NamedAnnotationCell(table, "Plot." & CStr(groupName) & ".Enabled").Value2 = "Yes"
+        Audit03NamedAnnotationCell(table, "Plot." & CStr(groupName) & ".TextHeight").Value2 = 6#
+        Audit03NamedAnnotationCell(table, "Plot." & CStr(groupName) & ".TextGap").Value2 = 3#
+        Audit03NamedAnnotationCell(table, "Plot." & CStr(groupName) & ".Offset").Value2 = 10#
+        Audit03NamedAnnotationCell(table, "Plot." & CStr(groupName) & ".LineWeight").Value2 = 1.5
+        Audit03NamedAnnotationCell(table, "Plot." & CStr(groupName) & ".Color").Value2 = "0,0,0"
+        Audit03NamedAnnotationCell(table, "Plot." & CStr(groupName) & ".TextUnits").Value2 = "mm"
+        Audit03NamedAnnotationCell(table, "Plot." & CStr(groupName) & ".Placement").Value2 = "Outside"
+    Next groupName
+    Audit03NamedAnnotationCell(table, "Plot.Dimensions.ExtensionLineWeight").Value2 = 0.75
+    Audit03NamedAnnotationCell(table, "Plot.Dimensions.ExtensionLineColor").Value2 = "1,2,3"
+    Audit03NamedAnnotationCell(table, "Plot.Dimensions.ArrowType").Value2 = "Triangle"
+    Audit03NamedAnnotationCell(table, "Plot.Dimensions.ArrowSize").Value2 = "Medium"
+    Audit03NamedAnnotationCell(table, "Plot.RebarLabels.LineEnabled").Value2 = "Yes"
+    baseline = table.Value2
+    Set settings = New CSystemSettingsReader: Set layout = New CPlotAnnotationLayout
+    Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
+    geometry = Audit03GeometrySnapshotArray("mm", 1#): sheet.Range("A5").Resize(3, 15).Value2 = geometry
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
+    props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
+    sheet.Range("R5").Resize(2, 4).Value2 = props
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$R$5"
+    keys = Array("AnnotationType", "AnnotationID", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
+    For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
+    annotations(2, 1) = "DIMENSION": annotations(2, 2) = "BRIDGE_DIM": annotations(2, 3) = -50#: annotations(2, 4) = 0#
+    annotations(2, 5) = 50#: annotations(2, 6) = 0#: annotations(2, 7) = 0#: annotations(2, 8) = 1#: annotations(2, 9) = "DIM": annotations(2, 10) = "mm"
+    sheet.Range("A20").Resize(2, 10).Value2 = annotations
+    fixture.Names.Add Name:="rngNDMSectionAnnotations", RefersTo:="=Results!$A$20"
+    keys = Array("Plot.Dimensions.Enabled", "Plot.RebarLabels.Enabled", "Plot.Dimensions.Placement", "Plot.RebarLabels.Placement", _
+        "Plot.Dimensions.Offset", "Plot.RebarLabels.Offset", "Plot.RebarLabels.LineEnabled", "Plot.Dimensions.LineWeight", _
+        "Plot.RebarLabels.LineWeight", "Plot.Dimensions.ExtensionLineWeight", "Plot.Dimensions.TextUnits", "Plot.RebarLabels.TextUnits", _
+        "Plot.Dimensions.TextHeight", "Plot.RebarLabels.TextHeight", "Plot.Dimensions.TextGap", "Plot.RebarLabels.TextGap", _
+        "Plot.Dimensions.Color", "Plot.RebarLabels.Color", "Plot.Dimensions.ExtensionLineColor", "Plot.Dimensions.ArrowType", "Plot.Dimensions.ArrowSize")
+    changed = Array("No", "No", "Inside", "Inside", 20#, 20#, "No", 2.5, 2.5, 1.25, "pt", "pt", _
+        8#, 8#, 5#, 5#, "17,34,51", "17,34,51", "51,34,17", "Open", "Wide")
+    For position = 0 To 1
+        If position = 0 Then Set table = config.Range("H5").Resize(UBound(baseline, 1), UBound(baseline, 2)) Else Set table = config.Range("CH800").Resize(UBound(baseline, 1), UBound(baseline, 2))
+        table.NumberFormat = "@": table.Value2 = baseline
+        fixture.Names.Item("rngPlotAnnotationSettings").RefersTo = "=Config!" & table.Address
+        For index = 0 To UBound(keys)
+            cases = cases + 1: table.Value2 = baseline
+            key = keys(index): Set cell = Audit03NamedAnnotationCell(table, CStr(key)): cell.Value2 = changed(index)
+            settings.LoadFromWorkbook fixture
+            prefix = "audit03.namedAnnotation.p" & CStr(position) & "." & CStr(key)
+            AssertTrue stats, prefix & ".transmitted", settings.GetRequiredString(CStr(key)) = CStr(changed(index))
+            layout.ConfigureFromSettings settings
+            layout.Initialize -100#, 100#, -100#, 100#, 0#, 0#, 640#, 430#, "mm"
+            layout.AddDimension -50#, 0#, 50#, 0#, 0#, 1#, "DIM"
+            layout.AddRebarLabel -50#, 0#, 50#, 0#, 0#, 1#, "REBAR"
+            parts = Split(CStr(key), "."): fieldName = CStr(parts(2))
+            If CStr(parts(1)) = "Dimensions" Then itemIndex = 4 Else itemIndex = 6
+            Select Case fieldName
+                Case "Enabled"
+                    If CStr(parts(1)) = "Dimensions" Then measured = 2# Else measured = 4#
+                    AssertTrue stats, prefix & ".effect", layout.Count = CLng(measured)
+                Case "LineEnabled": AssertTrue stats, prefix & ".effect", layout.Count = 5
+                Case "Placement"
+                    If itemIndex = 4 Then measured = 199.95 Else measured = 242.95
+                    AssertClose stats, prefix & ".effect", layout.Y1(itemIndex) + layout.Y2(itemIndex) / 2#, measured, 0.000000001
+                Case "Offset": AssertClose stats, prefix & ".effect", layout.Y1(itemIndex - 1), 172#, 0.000000001
+                Case "LineWeight": AssertClose stats, prefix & ".effect", layout.Weight(itemIndex - 1), 2.5, 0#
+                Case "ExtensionLineWeight": AssertClose stats, prefix & ".effect", layout.Weight(1), 1.25, 0#
+                Case "TextUnits": AssertClose stats, prefix & ".effect", layout.FontSize(itemIndex), 6#, 0.000000001
+                Case "TextHeight": AssertClose stats, prefix & ".effect", layout.FontSize(itemIndex), 17.2, 0.000000001
+                Case "TextGap": AssertClose stats, prefix & ".effect", layout.Y1(itemIndex) + layout.Y2(itemIndex) / 2#, 182.75, 0.000000001
+                Case "Color": AssertTrue stats, prefix & ".effect", layout.Color(itemIndex - 1) = RGB(17, 34, 51) And layout.Color(itemIndex) = RGB(17, 34, 51)
+                Case "ExtensionLineColor": AssertTrue stats, prefix & ".effect", layout.Color(1) = RGB(51, 34, 17)
+                Case "ArrowType", "ArrowSize"
+                    reader.LoadGeometryPreviewFromWorkbook fixture, settings: plotter.Draw fixture, reader, settings
+                    Set chart = fixture.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot"): Set marker = Nothing
+                    For Each shape In chart.Chart.Shapes
+                        If InStr(1, shape.Name, "AnnotationLine", vbTextCompare) > 0 Then
+                            If shape.Line.BeginArrowheadStyle > 1 Then Set marker = shape: Exit For
+                        End If
+                    Next shape
+                    AssertTrue stats, prefix & ".line", Not marker Is Nothing
+                    If Not marker Is Nothing Then
+                        If fieldName = "ArrowType" Then
+                            AssertTrue stats, prefix & ".effect", marker.Line.BeginArrowheadStyle = 6 And marker.Line.EndArrowheadStyle = 6
+                        Else
+                            AssertTrue stats, prefix & ".effect", marker.Line.BeginArrowheadLength = 3 And marker.Line.BeginArrowheadWidth = 3
+                        End If
+                    End If
+            End Select
+            For Each bad In Array("", "TODO", "INVALID", CVErr(2015))
+                cases = cases + 1: table.Value2 = baseline: cell.Value2 = bad
+                settings.LoadFromWorkbook fixture
+                On Error Resume Next
+                Err.Clear
+                If fieldName = "ArrowType" Or fieldName = "ArrowSize" Then
+                    reader.LoadGeometryPreviewFromWorkbook fixture, settings: plotter.Draw fixture, reader, settings
+                Else
+                    layout.ConfigureFromSettings settings
+                End If
+                code = Err.Number: reason = Err.Description
+                On Error GoTo Failed
+                AssertTrue stats, prefix & ".bad" & CStr(VarType(bad)) & ".rejected", code <> 0
+                AssertTrue stats, prefix & ".bad" & CStr(VarType(bad)) & ".address", InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0 And InStr(1, reason, "Config", vbTextCompare) > 0
+                AppendLine stats, "NAMED_ANNOTATION_ERROR: " & prefix & "|" & reason
+            Next bad
+        Next index
+    Next position
+    AssertTrue stats, "audit03.namedAnnotation.noSolve", SectionEquilibriumSolveCount() = solveCount
+    AppendLine stats, "NAMED_ANNOTATION_CASES: fields=21; positions=2; variants=" & CStr(cases) & "; equilibriumCases=0"
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "audit03.namedAnnotation.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
 End Sub
