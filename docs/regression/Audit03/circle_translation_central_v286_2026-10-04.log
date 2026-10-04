@@ -1,0 +1,155 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_circle_translation_v286.xlsm
+SOURCE_SHA256: 0B73B83CA737BA8EAB54F169047D5F0A5B8B60253EE38A7EB5AE3C99F9E0ED32
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_299351149e7d46d59f02d4697930dd53\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestAutoCADConfig.RunAudit03CircleTranslationStateTests =====
+SUITE_STARTED: modTestAutoCADConfig.RunAudit03CircleTranslationStateTests; 2026-10-04T23:41:51
+EXCEL_AFTER_SUITE: pid=23476; workingSet=221896704; privateBytes=173789184; cpu=17465.515625
+EXCEL_AFTER_SUITE: pid=28572; workingSet=142163968; privateBytes=99397632; cpu=3.828125
+AUTOCAD_SNAPSHOT: 
+AUTOCAD_SNAPSHOT: 
+OK: autoCADConfig.snapshot.state1
+OK: autoCADConfig.snapshot.state2
+OK: audit03.circleTranslation.Newton.0.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Newton.0|status=OK; internal=4; code=4; comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; eps0=-2.29775692182689E-05; kx=0; ky=0; targetN=-1000; targetMx=0; targetMy=0
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Newton.0
+
+OK: audit03.circleTranslation.Newton.0.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.N|actual=-1000|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.Mx|actual=1.77635683940025E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.My|actual=1.77635683940025E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.My
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.centerStrain|actual=-2.29775692182689E-05|expected=-2.29775692182689E-05|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.centerStrain
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.kx|actual=0|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.kx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.ky|actual=0|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.ky
+OK: audit03.circleTranslation.Newton.20.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Newton.20|status=OK; internal=4; code=4; comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; eps0=-2.29775692182693E-05; kx=0; ky=1.80618372662908E-20; targetN=-1000; targetMx=0; targetMy=-20000
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Newton.20
+
+OK: audit03.circleTranslation.Newton.20.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.N|actual=-1000|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.20.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.Mx|actual=1.06581410364015E-14|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.20.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.My|actual=-20000|expected=-20000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.20.My
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.centerStrain|actual=-2.29775692182689E-05|expected=-2.29775692182689E-05|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.20.centerStrain
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.kx|actual=0|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.20.kx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.ky|actual=1.80618372662908E-20|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.20.ky
+OK: audit03.circleTranslation.Newton.400.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Newton.400|status=OK; internal=4; code=4; comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; eps0=-2.29775692182518E-05; kx=0; ky=-4.27518716943508E-20; targetN=-1000; targetMx=0; targetMy=-400000
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Newton.400
+
+OK: audit03.circleTranslation.Newton.400.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.400.N|actual=-1000|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.400.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.400.Mx|actual=-1.77635683940025E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.400.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.400.My|actual=-400000|expected=-400000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.400.My
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.400.centerStrain|actual=-2.29775692182689E-05|expected=-2.29775692182689E-05|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.400.centerStrain
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.400.kx|actual=0|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.400.kx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.400.ky|actual=-4.27518716943508E-20|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.400.ky
+OK: audit03.circleTranslation.Newton.10000.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Newton.10000|status=OK; internal=4; code=4; comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; eps0=-2.29775691323509E-05; kx=0; ky=-8.59180053891096E-18; targetN=-1000; targetMx=0; targetMy=-10000000
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Newton.10000
+
+OK: audit03.circleTranslation.Newton.10000.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.10000.N|actual=-1000|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.10000.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.10000.Mx|actual=-5.32907051820075E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.10000.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.10000.My|actual=-10000000|expected=-10000000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.10000.My
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.10000.centerStrain|actual=-2.29775692182689E-05|expected=-2.29775692182689E-05|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.10000.centerStrain
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.10000.kx|actual=0|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.10000.kx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.10000.ky|actual=-8.59180053891096E-18|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.10000.ky
+OK: audit03.circleTranslation.Secant.0.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Secant.0|status=OK; internal=4; code=4; comment=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.; eps0=-2.29775692182675E-05; kx=-4.75937059629804E-23; ky=-4.75937059629804E-23; targetN=-1000; targetMx=0; targetMy=0
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Secant.0
+
+OK: audit03.circleTranslation.Secant.0.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.N|actual=-999.999999999939|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.Mx|actual=7.105427357601E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.My|actual=7.105427357601E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.My
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.centerStrain|actual=-2.29775692182675E-05|expected=-2.29775692182675E-05|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.centerStrain
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.kx|actual=-4.75937059629804E-23|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.kx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.ky|actual=-4.75937059629804E-23|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.ky
+OK: audit03.circleTranslation.Secant.20.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Secant.20|status=OK; internal=4; code=4; comment=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.; eps0=-2.29775692181593E-05; kx=-4.75937059630364E-23; ky=-5.40877458906546E-18; targetN=-1000; targetMx=0; targetMy=-20000
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Secant.20
+
+OK: audit03.circleTranslation.Secant.20.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.N|actual=-999.999999999939|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.20.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.Mx|actual=-7.105427357601E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.20.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.My|actual=-19999.9999999991|expected=-20000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.20.My
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.centerStrain|actual=-2.29775692182675E-05|expected=-2.29775692182675E-05|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.20.centerStrain
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.kx|actual=-4.75937059630364E-23|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.20.kx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.ky|actual=-5.40877458906546E-18|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.20.ky
+OK: audit03.circleTranslation.Secant.400.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Secant.400|status=OK; internal=4; code=4; comment=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.; eps0=-2.29775692248786E-05; kx=-4.75937059698272E-23; ky=1.65277410386735E-17; targetN=-1000; targetMx=0; targetMy=-400000
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Secant.400
+
+OK: audit03.circleTranslation.Secant.400.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.400.N|actual=-999.999999999939|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.400.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.400.Mx|actual=1.06581410364015E-14|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.400.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.400.My|actual=-399999.999999974|expected=-400000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.400.My
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.400.centerStrain|actual=-2.29775692182675E-05|expected=-2.29775692182675E-05|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.400.centerStrain
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.400.kx|actual=-4.75937059698272E-23|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.400.kx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.400.ky|actual=1.65277410386735E-17|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.400.ky
+OK: audit03.circleTranslation.Secant.10000.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Secant.10000|status=OK; internal=4; code=4; comment=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.; eps0=-2.29775561866595E-05; kx=-4.75936444200327E-23; ky=-1.3031607969273E-15; targetN=-1000; targetMx=0; targetMy=-10000000
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Secant.10000
+
+OK: audit03.circleTranslation.Secant.10000.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.10000.N|actual=-999.999999999939|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.10000.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.10000.Mx|actual=-3.5527136788005E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.10000.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.10000.My|actual=-9999999.99999948|expected=-10000000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.10000.My
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.10000.centerStrain|actual=-2.29775692182675E-05|expected=-2.29775692182675E-05|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.10000.centerStrain
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.10000.kx|actual=-4.75936444200327E-23|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.10000.kx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.10000.ky|actual=-1.3031607969273E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.10000.ky
+TOTAL_CIRCLE_TRANSLATION: passed=66; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_299351149e7d46d59f02d4697930dd53\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestAutoCADConfig.RunAudit03CircleTranslationStateTests; 2026-10-04T23:41:53
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

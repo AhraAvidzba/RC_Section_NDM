@@ -972,12 +972,15 @@ Private Sub PrepareNativeImportedSnapshot(ByRef stats As TCadStats, ByVal system
         ByVal model As CSectionModel, ByVal prefix As String)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim batch As CBatchSectionCalculator, catalog As CCalculationProfileCatalog, writer As CNDMResultsWriter
+    Dim referenceX As Double, referenceY As Double
     SetValue system, "AutoCAD.Export.CombinationID", "CAD_SHAPE"
     Set settings = Reader(): Set units = New CUnitSystem: units.LoadFromSettings settings
     Set provider = New CMaterialModelProvider: provider.Initialize settings, units
     Set catalog = New CCalculationProfileCatalog: catalog.LoadFromWorkbook ThisWorkbook
     Set batch = New CBatchSectionCalculator: batch.Initialize model, provider
     Set batch.ProfileCatalog = catalog: batch.ApplySettings settings, units
+    CalculateConcreteSectionCentroid model, referenceX, referenceY
+    batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.AddCombination "CAD_SHAPE", -1000#, 0#, 0#, "PR1", "Native imported shape", "Auto"
     batch.Execute
     LogLine stats, "REAL_SHAPE_STATE: " & prefix & "|" & batch.ResultAt(1).OverallMeta.ResultComment
@@ -1081,6 +1084,86 @@ Private Sub CheckNativeRectangleEdges(ByRef stats As TCadStats, ByVal prefix As 
     copy.Delete
     Check stats, prefix & ".rectangle.fourEdges", count = 4
 End Sub
+
+' Проверяет одно и то же центральное сжатие круга при переносе координат модели.
+' Использует те же настоящие Config/profile/Batch, что native shape-тест;
+' точка нагрузки задается бетонным центром, как в пользовательском сценарии.
+' Журнал сохраняет target и фактический результат, включая причину отказа.
+Public Function RunAudit03CircleTranslationStateTests() As String
+    Dim stats As TCadStats, system As Object, profiles As Object, saved As Variant, savedProfiles As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim catalog As CCalculationProfileCatalog, batch As CBatchSectionCalculator, model As CSectionModel
+    Dim state As CSectionStateResult, report As CExecutionReport, method As Variant, center As Variant
+    Dim i As Long, j As Long, area As Double, prefix As String, result As CCombinationResult
+    Dim referenceX As Double, referenceY As Double, baselineStrain As Double
+    On Error GoTo FailedRun
+    Set system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    saved = system.Formula: savedProfiles = profiles.Formula
+    ConfigureFixture system: PrepareResults stats, system, profiles
+    SetValue system, "General.ExecutionReportEnabled", "Yes"
+    For Each method In Array("Newton", "Secant")
+        SetValue system, "Solver.Method", CStr(method)
+        For Each center In Array(0#, 20#, 400#, 10000#)
+            prefix = "audit03.circleTranslation." & CStr(method) & "." & NativeNumber(CDbl(center))
+            Set model = New CSectionModel: model.SourceType = "AutoCADImport"
+            area = GEOM_PI * 400#
+            model.AddConcreteElement CDbl(center), 0#, area, 1, "circle", "CIRCLE", "Region", _
+                0#, 0#, 0#, vbNullString, GEOM_PI * 20# ^ 4 / 4#, GEOM_PI * 20# ^ 4 / 4#, 0#
+            For i = -1 To 1 Step 2
+                For j = -1 To 1 Step 2
+                    model.AddRebarElement CDbl(center) + 5# * i, 5# * j, Sqr(16# / GEOM_PI), 4#, "A400"
+                Next j
+            Next i
+            Set settings = Reader(): Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+            Set catalog = New CCalculationProfileCatalog: catalog.LoadFromWorkbook ThisWorkbook
+            Set report = New CExecutionReport: report.Initialize ThisWorkbook, settings
+            Set batch = New CBatchSectionCalculator: batch.Initialize model, provider
+            Set batch.ExecutionReport = report: Set batch.ProfileCatalog = catalog
+            batch.ApplySettings settings, units
+            CalculateConcreteSectionCentroid model, referenceX, referenceY
+            batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
+            batch.AddCombination "CAD_CIRCLE", -1000#, 0#, 0#, "PR1", "Translation invariant circle", "Auto"
+            batch.Execute
+            Set result = batch.ResultAt(1)
+            Set state = result.StrengthResult.DirectState.StateResult
+            Check stats, prefix & ".statePresent", Not state Is Nothing
+            If state Is Nothing Then Err.Raise vbObjectError + 4499, "RunAudit03CircleTranslationStateTests", "Не возвращен диагностический State."
+            LogLine stats, "CIRCLE_TRANSLATION_RESULT: " & prefix & "|status=" & result.StrengthResult.DirectState.Status & _
+                "; internal=" & CStr(state.InternalStatus) & "; code=" & CStr(state.ResultCode) & _
+                "; comment=" & state.ResultMeta.ResultComment & "; eps0=" & NativeNumber(state.Epsilon0) & _
+                "; kx=" & NativeNumber(state.KappaX) & "; ky=" & NativeNumber(state.KappaY) & _
+                "; targetN=" & NativeNumber(state.TargetN) & "; targetMx=" & NativeNumber(state.TargetMx) & _
+                "; targetMy=" & NativeNumber(state.TargetMy)
+            LogLine stats, "CIRCLE_TRANSLATION_DIAGNOSTIC: " & prefix & vbCrLf & state.DiagnosticLog
+            Check stats, prefix & ".success", state.InternalStatus = rsSuccess
+            If state.Converged Then
+                CheckNativeInertiaClose stats, prefix & ".N", state.Nint, -1000#
+                CheckNativeInertiaClose stats, prefix & ".Mx", state.Mxint, 0#
+                CheckNativeInertiaClose stats, prefix & ".My", state.Myint, -1000# * CDbl(center)
+                If CDbl(center) = 0# Then baselineStrain = state.Epsilon0
+                CheckNativeInertiaClose stats, prefix & ".centerStrain", _
+                    state.Epsilon0 + state.KappaY * CDbl(center), baselineStrain
+                CheckNativeInertiaClose stats, prefix & ".kx", state.KappaX, 0#
+                CheckNativeInertiaClose stats, prefix & ".ky", state.KappaY, 0#
+            End If
+        Next center
+    Next method
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1: LogLine stats, "FAIL: audit03.circleTranslation.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo FailedRestore
+    If Not system Is Nothing Then system.Formula = saved
+    If Not profiles Is Nothing Then profiles.Formula = savedProfiles
+    GoTo Finish
+FailedRestore:
+    stats.Failed = stats.Failed + 1: LogLine stats, "FAIL: audit03.circleTranslation.restore; " & Err.Description
+Finish:
+    LogLine stats, "TOTAL_CIRCLE_TRANSLATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CircleTranslationStateTests = stats.Report
+End Function
 
 ' Проверяет текст именно экспортных подписей элементов; осевые подписи
 ' и маркеры нагрузки не включаются в количество восемь расчетных labels.

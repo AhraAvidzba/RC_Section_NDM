@@ -1,0 +1,87 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_circle_translation_v285.xlsm
+SOURCE_SHA256: FB66020BCD776A077DFAA16326FCDF45640EAFB3C6D490509FFED983F34F5ECD
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d022ef1d3f9745b59f0b19baaf619669\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestAutoCADConfig.RunAudit03CircleTranslationStateTests =====
+SUITE_STARTED: modTestAutoCADConfig.RunAudit03CircleTranslationStateTests; 2026-10-04T23:35:18
+EXCEL_AFTER_SUITE: pid=14212; workingSet=140476416; privateBytes=97558528; cpu=3.765625
+EXCEL_AFTER_SUITE: pid=23476; workingSet=221786112; privateBytes=173637632; cpu=17465.46875
+AUTOCAD_SNAPSHOT: 
+AUTOCAD_SNAPSHOT: 
+OK: autoCADConfig.snapshot.state1
+OK: autoCADConfig.snapshot.state2
+OK: audit03.circleTranslation.Newton.0.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Newton.0|status=OK; internal=4; code=4; comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; eps0=-2.29775692182689E-05; kx=0; ky=0
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Newton.0
+
+OK: audit03.circleTranslation.Newton.0.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.N|actual=-1000|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.Mx|actual=1.77635683940025E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.0.My|actual=1.77635683940025E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.0.My
+OK: audit03.circleTranslation.Newton.20.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Newton.20|status=OK; internal=4; code=4; comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; eps0=-5.16591197483932E-03; kx=-2.15485145465219E-21; ky=2.57052164241562E-04
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Newton.20
+
+OK: audit03.circleTranslation.Newton.20.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.N|actual=-1000|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.20.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.Mx|actual=3.41060513164848E-13|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Newton.20.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Newton.20.My|actual=-3.01270119962282E-11|expected=-20000|tolerance=0.000001
+FAIL: audit03.circleTranslation.Newton.20.My
+OK: audit03.circleTranslation.Newton.400.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Newton.400|status=NumFail; internal=6; code=10; comment=Подбор шага решения не смог уменьшить невязку равновесия.; eps0=-0.001625; kx=-5.55455014287375E-27; ky=4.06246091158159E-06
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Newton.400
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=176.779885511427; residualMx=0.; residualMy=-301952.045795429
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Не удалось решить касательную систему: Матрица вырождена.; residualN=176.779885511427; residualMx=0.; residualMy=-301952.045795429
+
+FAIL: audit03.circleTranslation.Newton.400.success
+OK: audit03.circleTranslation.Newton.10000.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Newton.10000|status=NumFail; internal=6; code=10; comment=Не удалось решить касательную систему: Проверка невязки линейной системы не пройдена.; eps0=0; kx=0; ky=0
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Newton.10000
+
+FAIL: audit03.circleTranslation.Newton.10000.success
+OK: audit03.circleTranslation.Secant.0.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Secant.0|status=OK; internal=4; code=4; comment=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.; eps0=-2.29775692182675E-05; kx=-4.75937059629804E-23; ky=-4.75937059629804E-23
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Secant.0
+
+OK: audit03.circleTranslation.Secant.0.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.N|actual=-999.999999999939|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.Mx|actual=7.105427357601E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.0.My|actual=7.105427357601E-15|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.0.My
+OK: audit03.circleTranslation.Secant.20.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Secant.20|status=OK; internal=4; code=4; comment=Равновесие найдено методом Secant со ступенчатым приложением нагрузки.; eps0=-5.16591197483932E-03; kx=3.24180432761749E-21; ky=2.57052164241562E-04
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Secant.20
+
+OK: audit03.circleTranslation.Secant.20.success
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.N|actual=-1000|expected=-1000|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.20.N
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.Mx|actual=3.41060513164848E-13|expected=0|tolerance=0.000001
+OK: audit03.circleTranslation.Secant.20.Mx
+AUTOCAD_INERTIA_NUMBER: audit03.circleTranslation.Secant.20.My|actual=-6.37783159618266E-11|expected=-20000|tolerance=0.000001
+FAIL: audit03.circleTranslation.Secant.20.My
+OK: audit03.circleTranslation.Secant.400.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Secant.400|status=NumFail; internal=6; code=10; comment=Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки 1.; eps0=-0.039125; kx=4.42854901552605E-20; ky=9.78072427279298E-05
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Secant.400
+directStateRetry=directStateActiveSet / direct target; result=failed; stop=Равновесие не найдено: система Secant не решилась после перезапуска. Матрица вырождена.; residualN=176.779885511427; residualMx=0.; residualMy=-301952.045795429
+directStateRetry=directStateActiveSet / direct target without line search; result=failed; stop=Равновесие не найдено: система Secant не решилась после перезапуска. Матрица вырождена.; residualN=176.779885511427; residualMx=0.; residualMy=-301952.045795429
+
+FAIL: audit03.circleTranslation.Secant.400.success
+OK: audit03.circleTranslation.Secant.10000.statePresent
+CIRCLE_TRANSLATION_RESULT: audit03.circleTranslation.Secant.10000|status=NumFail; internal=6; code=10; comment=Равновесие не найдено: система Secant не решилась после перезапуска. Проверка невязки линейной системы не пройдена.; eps0=0; kx=0; ky=0
+CIRCLE_TRANSLATION_DIAGNOSTIC: audit03.circleTranslation.Secant.10000
+
+FAIL: audit03.circleTranslation.Secant.10000.success
+TOTAL_CIRCLE_TRANSLATION: passed=24; failed=6
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d022ef1d3f9745b59f0b19baaf619669\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestAutoCADConfig.RunAudit03CircleTranslationStateTests; 2026-10-04T23:35:20
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True
