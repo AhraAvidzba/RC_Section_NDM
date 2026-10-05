@@ -587,6 +587,9 @@ try {
 
     $systemRanges = Add-SystemSettings $system
     Add-SettingsInstructions $workbook $system $instructions
+    # Hyperlink-стиль Excel может сбросить рамку ячейки Подробнее.
+    # Финальную обводку делаем после добавления всех ссылок Config.
+    Apply-ConfigNamedRangeBorders $workbook
     $system.Range("A1:U80").Font.Name = "Arial"
     $system.Range("A1:U80").Font.Size = 9
     $system.Columns.Item(1).ColumnWidth = 34

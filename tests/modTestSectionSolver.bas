@@ -175,22 +175,22 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "RectSet.H1.n_1", "RectSet.H1.n_2", _
         "RectSet.H1.StartOffset1", "RectSet.H1.EndOffset1", _
         "RectSet.H1.StartOffset2", "RectSet.H1.EndOffset2", _
-        "RectSet.H1.d_2row_1", "RectSet.H1.d_2row_2", "RectSet.H1.d_3row_1", "RectSet.H1.d_3row_2", "RectSet.H1.loc_2row", "RectSet.H1.loc_3row", _
+        "RectSet.H1.d_2row_1", "RectSet.H1.d_2row_2", "RectSet.H1.d_3row_1", "RectSet.H1.d_3row_2", "RectSet.H1.loc_2row_1", "RectSet.H1.loc_3row_1", _
         "RectSet.H2.as_1", "RectSet.H2.as_2", "RectSet.H2.d_1", "RectSet.H2.d_2", _
         "RectSet.H2.n_1", "RectSet.H2.n_2", _
         "RectSet.H2.StartOffset1", "RectSet.H2.EndOffset1", _
         "RectSet.H2.StartOffset2", "RectSet.H2.EndOffset2", _
-        "RectSet.H2.d_2row_1", "RectSet.H2.d_2row_2", "RectSet.H2.d_3row_1", "RectSet.H2.d_3row_2", "RectSet.H2.loc_2row", "RectSet.H2.loc_3row", _
+        "RectSet.H2.d_2row_1", "RectSet.H2.d_2row_2", "RectSet.H2.d_3row_1", "RectSet.H2.d_3row_2", "RectSet.H2.loc_2row_1", "RectSet.H2.loc_3row_1", _
         "RectSet.B1.as_1", "RectSet.B1.as_2", "RectSet.B1.d_1", "RectSet.B1.d_2", _
         "RectSet.B1.n_1", "RectSet.B1.n_2", _
         "RectSet.B1.StartOffset1", "RectSet.B1.EndOffset1", _
         "RectSet.B1.StartOffset2", "RectSet.B1.EndOffset2", _
-        "RectSet.B1.d_2row_1", "RectSet.B1.d_2row_2", "RectSet.B1.d_3row_1", "RectSet.B1.d_3row_2", "RectSet.B1.loc_2row", "RectSet.B1.loc_3row", _
+        "RectSet.B1.d_2row_1", "RectSet.B1.d_2row_2", "RectSet.B1.d_3row_1", "RectSet.B1.d_3row_2", "RectSet.B1.loc_2row_1", "RectSet.B1.loc_3row_1", _
         "RectSet.B2.as_1", "RectSet.B2.as_2", "RectSet.B2.d_1", "RectSet.B2.d_2", _
         "RectSet.B2.n_1", "RectSet.B2.n_2", _
         "RectSet.B2.StartOffset1", "RectSet.B2.EndOffset1", _
         "RectSet.B2.StartOffset2", "RectSet.B2.EndOffset2", _
-        "RectSet.B2.d_2row_1", "RectSet.B2.d_2row_2", "RectSet.B2.d_3row_1", "RectSet.B2.d_3row_2", "RectSet.B2.loc_2row", "RectSet.B2.loc_3row")
+        "RectSet.B2.d_2row_1", "RectSet.B2.d_2row_2", "RectSet.B2.d_3row_1", "RectSet.B2.d_3row_2", "RectSet.B2.loc_2row_1", "RectSet.B2.loc_3row_1")
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _

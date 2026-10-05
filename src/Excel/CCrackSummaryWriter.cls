@@ -398,7 +398,9 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
 
     If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _
             LongitudinalStatusText(batch, index, policy) = policy.NotApplicable And _
-            Not HasCrackFormationData(batch, index) Then
+            Not HasCrackFormationData(batch, index) And _
+            Not batch.ResultAt(index).CrackCurrentStateMeta.Applies And _
+            Not batch.ResultAt(index).CrackFormationMeta.Applies Then
         Exit Sub
     End If
 
@@ -679,10 +681,21 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_PRE_CRACK_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_POST_CRACK_STATUS
+        ApplyFormationStatusCell target, HEADER_ROWS + rowOffset
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_CRACK_STATE_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_ACRC_STATUS
         ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_LONG_STATUS
     Next i
+End Sub
+
+' Применяет общую палитру к исходу поиска трещинообразования. Cracked и
+' NotCracked описывают наличие трещины, а не успешность проверки; они не
+' передаются в нормализатор внешних статусов и остаются без статусной заливки.
+Private Sub ApplyFormationStatusCell(ByVal target As Object, ByVal rowIndex As Long)
+    Dim text As String
+    text = CStr(target.Cells(rowIndex, COL_FORMATION_STATE).Value2)
+    If text = "Cracked" Or text = "NotCracked" Then Exit Sub
+    ApplyStatusCell target, rowIndex, COL_FORMATION_STATE
 End Sub
 
 ' Красит одну статусную ячейку detailed-блока, оставляя числовые поля без статусной заливки.

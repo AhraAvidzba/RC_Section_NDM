@@ -1,14 +1,14 @@
 ﻿# Обновляет справку только в изолированной Audit03-книге. Проверяет фактический
 # лист, ссылки и неизменность input-значений/формул/validation. Подписи единиц
 # контрольных диаграмм связываются с INPUT Stress. По явному флагу
-# объединяет повторные общие селекторы RectSet с отчетом прежних значений;
+# разделяет настройки противоположных граней RectSet, сохраняя прежний выбор;
 # не подтверждает
 # нормативную трассировку либо пиксельную визуальную приемку.
 param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
     [Parameter(Mandatory=$true)][string]$ReportPath,
     [string]$RegistryPath = 'docs/regression/Audit03/config_field_registry_2026-10-02.csv',
-    [switch]$UpdateRectSetSharedSelectors
+    [switch]$UpdateRectSetIndependentSelectors
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
@@ -51,7 +51,7 @@ function Get-InputSignature([object]$Book) {
 }
 
 # Хеширует зафиксированные input-records. Отдельный вызов нужен только для
-# явно согласованного центрирования общих RectSet-селекторов; их значения,
+# явно согласованного центрирования RectSet-селекторов; их значения,
 # формулы, validation и number format остаются в неизменном строгом сравнении.
 function Get-InputRecordsSignature([object[]]$Records) {
     $payload = ConvertTo-Json -InputObject $Records -Depth 8 -Compress
@@ -103,20 +103,19 @@ function Get-PrintAreaSignature([object[]]$Areas) {
     return (@($records | Sort-Object -Unique) -join "`n")
 }
 
-# Проверяет реальные объединения и единственный dropdown каждой общей
-# настройки. Нижняя ячейка больше не является отдельным вводом; все остальные
-# input-поля остаются в строгой проверке сохранности значений и validation.
-function Test-RectSetSharedLayout([object]$Book) {
+# Проверяет отсутствие объединений и отдельный dropdown каждой грани.
+# Все 32 ячейки являются независимыми пользовательскими вводами.
+function Test-RectSetIndependentLayout([object]$Book) {
     $target = $Book.Names.Item('rngRectSetGeometry').RefersToRange
     foreach ($firstRow in @(21, 23, 25, 27)) {
         foreach ($column in @(3, 4, 6, 7)) {
             $first = $target.Cells.Item($firstRow, $column)
             $second = $target.Cells.Item(($firstRow + 1), $column)
-            $expected = $first.Resize(2, 1).Address()
-            Assert-Help ("rectset.merge."+$first.Address()) ($first.MergeCells -and $first.MergeArea.Address() -eq $expected) $expected
-            Assert-Help ("rectset.dropdown."+$first.Address()) ($first.Validation.Type -eq 3 -and $first.Validation.InCellDropdown) ([string]$first.Validation.Formula1)
-            Assert-Help ("rectset.followerEmpty."+$second.Address()) ($null -eq $second.Value2) 'Shared selector has no second value'
-            Assert-Help ("rectset.centered."+$first.Address()) ($first.HorizontalAlignment -eq -4108 -and $first.VerticalAlignment -eq -4108) 'Shared input is centered'
+            foreach ($cell in @($first, $second)) {
+                Assert-Help ("rectset.unmerged."+$cell.Address()) (-not $cell.MergeCells) 'Independent physical side'
+                Assert-Help ("rectset.dropdown."+$cell.Address()) ($cell.Validation.Type -eq 3 -and $cell.Validation.InCellDropdown) ([string]$cell.Validation.Formula1)
+                Assert-Help ("rectset.centered."+$cell.Address()) ($cell.HorizontalAlignment -eq -4108 -and $cell.VerticalAlignment -eq -4108) 'Independent input is centered'
+            }
         }
     }
 }
@@ -153,7 +152,7 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'profileBooleanInputContract' ($body.Contains('Все четыре переключателя Calculation.* обязательны')) 'Explicit invalid value is not No'
     Assert-Help 'subdivisionsInputContract' ($body.Contains('Mesh.BoundarySubdivisions')) 'Mesh setting has help'
     Assert-Help 'worstCriterionInputContract' ($body.Contains('неизвестное значение этого критерия') -and $body.Contains('InputErr')) 'Invalid criterion cannot silently select another check'
-    Assert-Help 'rectsetCommonSelectors' ($body.Contains('общие для двух сторон каждой грани H1, B1, H2 или B2')) 'One common selector, separate diameters'
+    Assert-Help 'rectsetIndependentSelectors' ($body.Contains('задаются независимо в каждой строке физической грани') -and $body.Contains('Выбор одной грани не изменяет противоположную')) 'Separate selectors for each physical side'
     Assert-Help 'unitChoiceInputContract' ($body.Contains('Пустой выбор, TODO или неподдержанная единица являются ошибкой Config')) 'Explicit invalid units do not become defaults'
     Assert-Help 'autoCADExportAlwaysMillimetres' ($body.Contains('Геометрия экспортируется в AutoCAD всегда в миллиметрах') -and $body.Contains('одна единица AutoCAD соответствует 1 мм')) 'AutoCAD export scale is fixed, not OUTPUT length'
     Assert-Help 'autoCADExportUnitsException' ($body.Contains('экспорт в AutoCAD всегда выполняется в мм независимо от OUTPUT') -and $body.Contains('это не меняет единицы напряжений')) 'Units help distinguishes geometry scale and result labels'
@@ -172,6 +171,8 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'inactiveRebarFaceOffsets' ($body.Contains('as отключенной наружной грани не читается') -and $body.Contains('as выключенной наружной грани не читается') -and $body.Contains('ее as/t и параметры дополнительных рядов не читаются')) 'Rounded, Hollow and RectSet inactive face contracts are explicit'
     Assert-Help 'openingCoverStillRequired' ($body.Contains('Отступ as граней Opening нужен также для ограничения проекций соседних внутренних граней') -and $body.Contains('даже при отсутствии собственного ряда')) 'Opening cover retains a geometric consumer when its own row is disabled'
     Assert-Help 'notCrackedWidthIsNotComputedZero' ($body.Contains('Подтвержденный NotCracked исключает расчет ширины') -and $body.Contains('статус проверки N/A, численная ячейка a_crc остается пустой') -and $body.Contains('это отдельный случай, а не доказательство отсутствия трещины')) 'Uncomputed crack width is distinguished from a calculated zero'
+    Assert-Help 'notCrackedCurrentLoadIsNotFailedFutureProbe' ($body.Contains('Если допустимое равновесие при λ = 1 не достигает критерия образования трещины') -and $body.Contains('текущее сочетание остается NotCracked')) 'A physically invalid larger probe does not fail a proven uncracked current load'
+    Assert-Help 'fixedPathNotCrackedIsSuccess' ($body.Contains('является успешной проверкой NotCracked, в том числе для фиксированного пути') -and -not $body.Contains('либо для фиксированного пути доказана недостижимость нужного критерия')) 'Confirmed absence of a normal crack is not BaseFail'
     Assert-Help 'activeAnnotationInputContract' ($body.Contains('Enabled обязателен для каждой группы') -and $body.Contains('При No ее параметры не читаются, включая ошибки формул')) 'Only active annotation parameters are required'
     Assert-Help 'annotationBlackRgbContract' ($body.Contains('0,0,0 означает настоящий черный цвет, а не отсутствие настройки') -and $body.Contains('дробные компоненты не округляются')) 'Zero is a real color; invalid RGB is not silently repaired'
     Assert-Help 'annotationVisualLimits' ($body.Contains('4–180 pt у размеров и 2–120 pt у арматуры') -and $body.Contains('5–28 pt для читаемости')) 'Screen clamps are disclosed, not physical geometry'
@@ -202,7 +203,7 @@ try {
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 3
     $book = $excel.Workbooks.Open($bookPath)
-    if ($UpdateRectSetSharedSelectors) {
+    if ($UpdateRectSetIndependentSelectors) {
         $fullBefore = Get-InputSignature $book
         $target = $book.Names.Item('rngRectSetGeometry').RefersToRange
         $followers = @{}
@@ -217,7 +218,7 @@ try {
         }
         $originalCount = $fields.Count
         $fields = @($fields | Where-Object { -not $followers.ContainsKey($_.Address) })
-        $lines.Add("RECTSET_PRESERVATION_SCOPE: originalFields=$originalCount; unchangedFields=$($fields.Count); sharedFollowers=16; fullBefore=$fullBefore")
+        $lines.Add("RECTSET_PRESERVATION_SCOPE: originalFields=$originalCount; unchangedFields=$($fields.Count); secondSides=16; fullBefore=$fullBefore")
         $before = Get-InputSignature $book
         $beforeRecords = @($script:lastInputRecords)
         $lines.Add("RECTSET_UNCHANGED_FIELDS_ORIGINAL: signature=$before")
@@ -231,14 +232,14 @@ try {
             }
         }
         $before = Get-InputRecordsSignature $beforeRecords
-        $migration = @(Set-RectSetSharedSelectorLayout $target)
+        $migration = @(Set-RectSetIndependentSelectorLayout $target)
         foreach ($record in $migration) {
-            $lines.Add('RECTSET_SHARED_SELECTOR: '+(ConvertTo-Json $record -Compress))
+            $lines.Add('RECTSET_INDEPENDENT_SELECTOR: '+(ConvertTo-Json $record -Compress))
         }
         Assert-Help 'rectset.migrationRecords' ($migration.Count -eq 16) "count=$($migration.Count)"
-        Test-RectSetSharedLayout $book
+        Test-RectSetIndependentLayout $book
         $layoutOnce = Get-InputSignature $book
-        Set-RectSetSharedSelectorLayout $target | Out-Null
+        Set-RectSetIndependentSelectorLayout $target | Out-Null
         Assert-Help 'rectset.layoutIdempotent' ($layoutOnce -eq (Get-InputSignature $book)) "signature=$layoutOnce"
     } else {
         $before = Get-InputSignature $book
@@ -248,6 +249,7 @@ try {
         $lines.Add('SYSTEM_UNIT_CAPTION: '+(ConvertTo-Json $record -Compress))
     }
     Add-SettingsInstructions $book $book.Worksheets.Item('Config') $book.Worksheets.Item('Справка')
+    Apply-ConfigNamedRangeBorders $book
     Update-MaterialControlUnitCaptions $book
     $after = Get-InputSignature $book
     $afterRecords = @($script:lastInputRecords)
@@ -267,7 +269,7 @@ try {
     $book = $excel.Workbooks.Open($bookPath)
     $reopened = Get-InputSignature $book
     Assert-Help 'inputsSaveReopen' ($before -eq $reopened) "before=$before; reopened=$reopened"
-    if ($UpdateRectSetSharedSelectors) { Test-RectSetSharedLayout $book }
+    if ($UpdateRectSetIndependentSelectors) { Test-RectSetIndependentLayout $book }
     Test-ActualHelp $book
     $lines.Add("TOTAL_AUDIT03_HELP: failed=$script:failed")
 } catch {

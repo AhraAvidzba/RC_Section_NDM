@@ -1,0 +1,5 @@
+﻿PASS: warning dialog, OK button response = 1
+PASS: information dialog, OK button response = 1
+PASS: no calculations or worksheets were changed; workbook opened read-only
+Components: 114
+Office: 16.0

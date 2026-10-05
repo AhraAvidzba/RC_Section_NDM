@@ -61,13 +61,18 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
 End Function
 
 ' Подготавливает две стороны одной грани, читая только активные параметры.
-' В Rectangle нижние грани не читаются вообще. Общие selectors ряда нужны,
-' когда этот ряд существует хотя бы на одной стороне; as/t активной линии
+' В Rectangle нижние грани не читаются вообще. Положение и привязка ряда
+' читаются отдельно для каждой активной стороны; as/t активной линии
 ' обязательны, а пустые диаметры и счетчики означают отсутствие арматуры.
 Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByVal faceName As String, Optional ByVal active As Boolean = True) As Variant
-    Dim values(0 To 17) As Variant, side As Long, prefix As String, key As String, label As String
-    values(14) = "Stacked": values(15) = "Stacked": values(16) = "EachBar": values(17) = "EachBar"
+    Dim values(0 To 21) As Variant, side As Long, prefix As String, key As String, label As String
+    Dim selectorOffset As Long ' Каждая сторона хранит собственные положение и привязку обоих рядов.
+    For side = 1 To 2
+        selectorOffset = 14 + 4 * (side - 1)
+        values(selectorOffset) = "Stacked": values(selectorOffset + 1) = "Stacked"
+        values(selectorOffset + 2) = "EachBar": values(selectorOffset + 3) = "EachBar"
+    Next side
     If Not active Then
         ReadFaceSettingsFromConfig = values
         Exit Function
@@ -91,17 +96,33 @@ Private Function ReadFaceSettingsFromConfig(ByVal settings As CSystemSettingsRea
             values(2 * side + 5) = ReadConfiguredOffset(settings, units, prefix & "EndOffset" & CStr(side), label)
             values(side + 9) = OptionalDiameterFromSettings(settings, units, prefix & "d_2row_" & CStr(side), 3180)
             values(side + 11) = OptionalDiameterFromSettings(settings, units, prefix & "d_3row_" & CStr(side), 3180)
+            selectorOffset = 14 + 4 * (side - 1)
+            If values(side + 9) > 0# Then
+                values(selectorOffset) = ReadConfiguredRowSelector(settings, prefix & "loc_2row_" & CStr(side), Array("Stacked", "SideBySide"), label, 2)
+                values(selectorOffset + 2) = ReadConfiguredRowSelector(settings, prefix & "bind_2row_" & CStr(side), Array("EachBar", "EverySecondBar"), label, 2)
+            End If
+            If values(side + 11) > 0# Then
+                values(selectorOffset + 1) = ReadConfiguredRowSelector(settings, prefix & "loc_3row_" & CStr(side), Array("Stacked", "SideBySide"), label, 3)
+                values(selectorOffset + 3) = ReadConfiguredRowSelector(settings, prefix & "bind_3row_" & CStr(side), Array("EachBar", "EverySecondBar"), label, 3)
+            End If
         End If
     Next side
-    If values(10) > 0# Or values(11) > 0# Then
-        values(14) = settings.GetRequiredChoice(prefix & "loc_2row", Array("Stacked", "SideBySide"))
-        values(16) = settings.GetRequiredChoice(prefix & "bind_2row", Array("EachBar", "EverySecondBar"))
-    End If
-    If values(12) > 0# Or values(13) > 0# Then
-        values(15) = settings.GetRequiredChoice(prefix & "loc_3row", Array("Stacked", "SideBySide"))
-        values(17) = settings.GetRequiredChoice(prefix & "bind_3row", Array("EachBar", "EverySecondBar"))
-    End If
     ReadFaceSettingsFromConfig = values
+End Function
+
+' Читает обязательный выбор активного ряда и дополняет адресную ошибку
+' физическим названием грани и ряда. Код исходной ошибки сохраняется;
+' недопустимый выбор не подменяется настройкой противоположной стороны.
+Private Function ReadConfiguredRowSelector(ByVal settings As CSystemSettingsReader, ByVal key As String, _
+        ByVal choices As Variant, ByVal lineLabel As String, ByVal rowNumber As Long) As String
+    On Error GoTo Failed
+    ReadConfiguredRowSelector = settings.GetRequiredChoice(key, choices)
+    Exit Function
+Failed:
+    Dim number As Long, description As String, rowLabel As String
+    number = Err.Number: description = Err.Description
+    If rowNumber = 2 Then rowLabel = "второй ряд" Else rowLabel = "третий ряд"
+    Err.Raise number, "CRectSetRebarLayoutBuilder", lineLabel & ", " & rowLabel & ": " & description
 End Function
 
 ' Читает обязательный отступ активной линии и сохраняет адрес при отрицательном
@@ -613,13 +634,13 @@ Private Function FaceLineSettings(ByVal faceSettings As Variant, ByVal lineIndex
     If lineIndex = 1 Then
         FaceLineSettings = Array(FaceAs1(faceSettings), FaceCount1(faceSettings), FaceDiameter1(faceSettings), _
             FaceStartOffset1(faceSettings), FaceEndOffset1(faceSettings), _
-            FaceRow2Diameter1(faceSettings), FaceRow3Diameter1(faceSettings), FaceRow2Location(faceSettings), FaceRow3Location(faceSettings), _
-            FaceRow2Binding(faceSettings), FaceRow3Binding(faceSettings))
+            FaceRow2Diameter1(faceSettings), FaceRow3Diameter1(faceSettings), FaceRow2Location(faceSettings, 1), FaceRow3Location(faceSettings, 1), _
+            FaceRow2Binding(faceSettings, 1), FaceRow3Binding(faceSettings, 1))
     Else
         FaceLineSettings = Array(FaceAs2(faceSettings), FaceCount2(faceSettings), FaceDiameter2(faceSettings), _
             FaceStartOffset2(faceSettings), FaceEndOffset2(faceSettings), _
-            FaceRow2Diameter2(faceSettings), FaceRow3Diameter2(faceSettings), FaceRow2Location(faceSettings), FaceRow3Location(faceSettings), _
-            FaceRow2Binding(faceSettings), FaceRow3Binding(faceSettings))
+            FaceRow2Diameter2(faceSettings), FaceRow3Diameter2(faceSettings), FaceRow2Location(faceSettings, 2), FaceRow3Location(faceSettings, 2), _
+            FaceRow2Binding(faceSettings, 2), FaceRow3Binding(faceSettings, 2))
     End If
 End Function
 
@@ -697,32 +718,36 @@ Private Function FaceRow3Diameter2(ByVal faceSettings As Variant) As Double
     FaceRow3Diameter2 = CDbl(faceSettings(LBound(faceSettings) + 13))
 End Function
 
-' Возвращает общий способ размещения второго ряда для грани.
-Private Function FaceRow2Location(ByVal faceSettings As Variant) As String
+' Возвращает способ размещения второго ряда только выбранной стороны.
+Private Function FaceRow2Location(ByVal faceSettings As Variant, ByVal lineIndex As Long) As String
     FaceRow2Location = "Stacked"
-    If UBound(faceSettings) - LBound(faceSettings) < 14 Then Exit Function
-    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 14)))) > 0 Then FaceRow2Location = Trim$(CStr(faceSettings(LBound(faceSettings) + 14)))
+    Dim offset As Long: offset = 14 + 4 * (lineIndex - 1)
+    If UBound(faceSettings) - LBound(faceSettings) < offset Then Exit Function
+    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + offset)))) > 0 Then FaceRow2Location = Trim$(CStr(faceSettings(LBound(faceSettings) + offset)))
 End Function
 
-' Возвращает общий способ размещения третьего ряда для грани.
-Private Function FaceRow3Location(ByVal faceSettings As Variant) As String
+' Возвращает способ размещения третьего ряда только выбранной стороны.
+Private Function FaceRow3Location(ByVal faceSettings As Variant, ByVal lineIndex As Long) As String
     FaceRow3Location = "Stacked"
-    If UBound(faceSettings) - LBound(faceSettings) < 15 Then Exit Function
-    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 15)))) > 0 Then FaceRow3Location = Trim$(CStr(faceSettings(LBound(faceSettings) + 15)))
+    Dim offset As Long: offset = 15 + 4 * (lineIndex - 1)
+    If UBound(faceSettings) - LBound(faceSettings) < offset Then Exit Function
+    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + offset)))) > 0 Then FaceRow3Location = Trim$(CStr(faceSettings(LBound(faceSettings) + offset)))
 End Function
 
-' Возвращает правило привязки второго ряда для грани.
-Private Function FaceRow2Binding(ByVal faceSettings As Variant) As String
+' Возвращает правило привязки второго ряда выбранной стороны.
+Private Function FaceRow2Binding(ByVal faceSettings As Variant, ByVal lineIndex As Long) As String
     FaceRow2Binding = "EachBar"
-    If UBound(faceSettings) - LBound(faceSettings) < 16 Then Exit Function
-    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 16)))) > 0 Then FaceRow2Binding = Trim$(CStr(faceSettings(LBound(faceSettings) + 16)))
+    Dim offset As Long: offset = 16 + 4 * (lineIndex - 1)
+    If UBound(faceSettings) - LBound(faceSettings) < offset Then Exit Function
+    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + offset)))) > 0 Then FaceRow2Binding = Trim$(CStr(faceSettings(LBound(faceSettings) + offset)))
 End Function
 
-' Возвращает правило привязки третьего ряда для грани.
-Private Function FaceRow3Binding(ByVal faceSettings As Variant) As String
+' Возвращает правило привязки третьего ряда выбранной стороны.
+Private Function FaceRow3Binding(ByVal faceSettings As Variant, ByVal lineIndex As Long) As String
     FaceRow3Binding = "EachBar"
-    If UBound(faceSettings) - LBound(faceSettings) < 17 Then Exit Function
-    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + 17)))) > 0 Then FaceRow3Binding = Trim$(CStr(faceSettings(LBound(faceSettings) + 17)))
+    Dim offset As Long: offset = 17 + 4 * (lineIndex - 1)
+    If UBound(faceSettings) - LBound(faceSettings) < offset Then Exit Function
+    If Len(Trim$(CStr(faceSettings(LBound(faceSettings) + offset)))) > 0 Then FaceRow3Binding = Trim$(CStr(faceSettings(LBound(faceSettings) + offset)))
 End Function
 
 ' Выбирает следующую позицию первого ряда, начиная с ближайшей к середине линии.

@@ -23,14 +23,14 @@ Public Sub RunSectionCalculation()
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
     If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Then
-        MsgBox message, vbExclamation, "RC Section NDM"
+        ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
     ElseIf informationEnabled Then
-        MsgBox message, vbInformation, "RC Section NDM"
+        ShowWorkbookMessage message, vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
 Failed:
-    MsgBox "Расчет не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage "Расчет не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
 ' Выполняет кнопку очистки Results без изменения Config и таблицы нагрузок.
@@ -42,12 +42,12 @@ Public Sub ClearSectionResults()
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     ClearSectionResultsForWorkbook ThisWorkbook
     If informationEnabled Then
-        MsgBox "Результаты и диагностика очищены. Исходные данные не изменены.", vbInformation, "RC Section NDM"
+        ShowWorkbookMessage "Результаты и диагностика очищены. Исходные данные не изменены.", vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
 Failed:
-    MsgBox "Не удалось очистить результаты: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage "Не удалось очистить результаты: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
 ' Обновляет схему по сохраненному Results и сообщает об ошибке пользователю.
@@ -58,12 +58,12 @@ Public Sub UpdateSectionPlot()
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     UpdateSectionPlotForWorkbook ThisWorkbook
     If informationEnabled Then
-        MsgBox "Схема сечения обновлена по последнему расчетному снимку Results.", vbInformation, "RC Section NDM"
+        ShowWorkbookMessage "Схема сечения обновлена по последнему расчетному снимку Results.", vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
 Failed:
-    MsgBox "Схема не обновлена: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage "Схема не обновлена: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
 ' Запускает импорт Region из активного AutoCAD в сохраненную модель Results.
@@ -74,11 +74,11 @@ Public Sub ImportGeometryFromAutoCAD()
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     Dim message As String
     message = ImportGeometryFromAutoCADForWorkbook(ThisWorkbook)
-    If informationEnabled Then MsgBox message, vbInformation, "RC Section NDM"
+    If informationEnabled Then ShowWorkbookMessage message, vbInformation, "RC Section NDM"
     Exit Sub
 
 Failed:
-    MsgBox "Импорт геометрии из AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage "Импорт геометрии из AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
 ' Читает выбранное состояние Results и перерисовывает схему указанной книги.
@@ -775,7 +775,7 @@ Private Function ResultsOutputLayoutMessage(ByVal combinationCount As Long, ByVa
         vbCrLf & CStr(issues.Count + 1) & ") Либо на листе Config уменьшите число строк в rngLoadCombinations."
 End Function
 
-' Собирает список действий компактным нумерованным перечнем для MsgBox.
+' Собирает список действий компактным нумерованным перечнем для итогового окна.
 Private Function NumberedCollectionLines(ByVal items As Collection) As String
     Dim lines As String
     Dim i As Long

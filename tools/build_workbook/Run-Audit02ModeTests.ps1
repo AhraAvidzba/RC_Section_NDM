@@ -134,7 +134,7 @@ function Get-ResultsStatusStyleHash([object]$Book) {
     $blocks = @(
         @{name='rngBatchSummary'; offset=12; columns=@(4,6,7,8,9,10,11,12,13,14,15)},
         @{name='rngStrengthSummaryAnchor'; offset=0; columns=@(3,30,49)},
-        @{name='rngCrackSummaryAnchor'; offset=0; columns=@(3,19,20,23,45,49)},
+        @{name='rngCrackSummaryAnchor'; offset=0; columns=@(3,19,20,21,23,45,49)},
         @{name='rngStabilitySummaryAnchor'; offset=0; columns=@(3,38,44,53,59,72,84)}
     )
     foreach ($block in $blocks) {

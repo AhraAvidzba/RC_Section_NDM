@@ -184,6 +184,7 @@ Public Function RunBatchCalculationTests() As String
     TestInvalidCombinationFromNamedRange stats
     AppendLine stats, "RUN: TestBatchSummaryWriter"
     TestBatchSummaryWriter stats
+    TestFormationStatusFormatting stats
     AppendLine stats, "RUN: TestBatchSummaryPreservesSourceRowGaps"
     TestBatchSummaryPreservesSourceRowGaps stats
     AppendLine stats, "RUN: TestBatchSummaryRowsUseAvailableLoadRange"
@@ -5165,6 +5166,114 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     AssertTrue stats, "audit02.currentCache.stateOK", second.CurrentStateMeta.InternalStatus = rsSuccess
 End Sub
 
+' ДЛЯ ТЕСТОВ: сравнивает чистое сжатие с той же силой и малым моментом
+' на сохраненной пользовательской геометрии. Записывает машинные причины
+' и деформации текущего НДС; перегрузка не подменяется успешным статусом.
+Public Function RunCrackCompressionParityTests() As String
+    Dim stats As TBatchTestStats, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim materials As CMaterialModelProvider, section As CSectionModel, profiles As CCalculationProfileCatalog
+    Dim batch As CBatchSectionCalculator, result As CCombinationResult, state As CSectionStateResult
+    Dim policy As CResultStatusPolicy, load As Variant, moment As Variant, path As Variant, i As Long, prefix As String
+    Dim systemRange As Object, savedSystem As Variant, writer As CBatchResultWriter, anchor As Object
+    Dim executionReport As CExecutionReport
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    savedSystem = systemRange.Formula
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set materials = New CMaterialModelProvider: materials.Initialize settings, units
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set batch = New CBatchSectionCalculator: batch.Initialize section, materials
+    Set executionReport = New CExecutionReport: executionReport.Initialize ThisWorkbook, settings
+    Set batch.ExecutionReport = executionReport
+    Set batch.ProfileCatalog = profiles
+    batch.ApplySettings settings, units
+    Audit03ApplyLoadReferenceForTests section, settings, units, batch
+    Set policy = New CResultStatusPolicy
+    For Each load In Array(10#, 100#, 2000#)
+        For Each moment In Array(0#, 0.001, 1#)
+            For Each path In Array("Auto", "LambdaN", "LambdaNMxy")
+                prefix = "COMP_" & FormatNumberInvariant(CDbl(load)) & "_" & FormatNumberInvariant(CDbl(moment)) & "_" & CStr(path)
+                batch.AddCombination prefix, -CDbl(load) * 9806.65, CDbl(moment) * TEST_TF_M_IN_NMM, 0#, _
+                    "PR2", "Парное сравнение чистого сжатия и малого момента", CStr(path)
+            Next path
+        Next moment
+    Next load
+    batch.Execute
+    For i = 1 To batch.Count
+        Set result = batch.ResultAt(i)
+        Set state = result.StateRepository.FindState(sstCrackedState)
+        prefix = batch.CombinationID(i)
+        AppendLine stats, "COMPRESSION_PARITY: " & prefix & "|overall=" & policy.ExternalStatus(result.OverallMeta) & _
+            "|current=" & policy.ExternalStatus(result.CrackCurrentStateMeta) & _
+            "|internal=" & CStr(result.CrackCurrentStateMeta.InternalStatus) & _
+            "|code=" & CStr(result.CrackCurrentStateMeta.ResultCode) & _
+            "|formation=" & policy.ExternalStatus(result.CrackFormationMeta) & _
+            "|notCracked=" & CStr(result.CrackResult.Formation.ConfirmedNotCracked) & _
+            "|reason=" & result.CrackCurrentStateMeta.ResultComment
+        If Not state Is Nothing Then
+            AppendLine stats, "COMPRESSION_STATE: " & prefix & "|converged=" & CStr(state.Converged) & _
+                "|physical=" & CStr(state.WithinPhysicalRange) & "|extension=" & CStr(state.ExtensionUsed) & _
+                "|eps0=" & FormatNumberInvariant(state.Epsilon0) & _
+                "|minConcrete=" & FormatNumberInvariant(state.MinConcreteStrain) & _
+                "|maxConcrete=" & FormatNumberInvariant(state.MaxConcreteStrain)
+        End If
+        AssertTrue stats, "compressionParity.statePresent." & prefix, Not state Is Nothing
+    Next i
+    Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch, units, section
+    For i = 1 To batch.Count
+        Set result = batch.ResultAt(i)
+        Set state = result.StateRepository.FindState(sstCrackedState)
+        prefix = batch.CombinationID(i)
+        If state Is Nothing Then
+            AssertTrue stats, prefix & ".missingStateNumericalFailure", result.CrackCurrentStateMeta.InternalStatus = rsNumericalFailure
+            AssertTrue stats, prefix & ".missingStateWidthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
+            AssertTrue stats, prefix & ".missingStateLongitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
+            AssertEquals stats, prefix & ".missingStateOverall", policy.ExternalStatus(result.OverallMeta), "NumFail"
+            GoTo CheckComments
+        End If
+        If state.Converged And state.WithinPhysicalRange Then
+            AssertTrue stats, prefix & ".currentSuccess", result.CrackCurrentStateMeta.InternalStatus = rsSuccess
+            AssertTrue stats, prefix & ".notCracked", result.CrackResult.Formation.ConfirmedNotCracked
+            AssertTrue stats, prefix & ".widthNotApplicable", result.CrackWidthMeta.InternalStatus = rsNotApplicable
+            AssertTrue stats, prefix & ".noWidthFormula", Not result.CrackWidthMeta.Calculated
+            AssertTrue stats, prefix & ".noPsiFallbackWarning", InStr(1, result.CrackWidthMeta.ResultComment, "psi_s принят равным 1", vbTextCompare) = 0
+            If Abs(state.TargetN) <= 100# * 9806.65 Then
+                AssertEquals stats, prefix & ".overallOK", policy.ExternalStatus(result.OverallMeta), "OK"
+            End If
+        Else
+            If state.Converged Then
+                AssertTrue stats, prefix & ".physicalFailureRetained", result.CrackCurrentStateMeta.InternalStatus = rsCheckFailed
+                AssertEquals stats, prefix & ".overallFail", policy.ExternalStatus(result.OverallMeta), "FAIL"
+            Else
+                AssertTrue stats, prefix & ".numericalFailureRetained", result.CrackCurrentStateMeta.InternalStatus = rsNumericalFailure
+                AssertEquals stats, prefix & ".overallNumFail", policy.ExternalStatus(result.OverallMeta), "NumFail"
+            End If
+            AssertTrue stats, prefix & ".widthBlocked", result.CrackWidthMeta.InternalStatus = rsBlockedByDependency
+            AssertTrue stats, prefix & ".longitudinalBlocked", result.LongitudinalCrackMeta.InternalStatus = rsBlockedByDependency
+        End If
+CheckComments:
+        Audit03CheckResultComments stats, batch, i
+        Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+        AssertEquals stats, prefix & ".currentOutput", CStr(anchor.Offset(i - 1, 22).Value2), policy.ExternalStatus(result.CrackCurrentStateMeta)
+        AssertEquals stats, prefix & ".widthOutput", CStr(anchor.Offset(i - 1, 44).Value2), policy.ExternalStatus(result.CrackWidthMeta)
+        AssertEquals stats, prefix & ".overallOutput", CStr(anchor.Offset(i - 1, 2).Value2), policy.ExternalStatus(result.CrackSummaryMeta)
+        If prefix = "COMP_100._0._Auto" Then _
+            AppendLine stats, "COMPRESSION_DIAGNOSTIC: " & prefix & vbCrLf & result.CrackResult.Formation.DiagnosticLog
+    Next i
+    GoTo Finished
+Failed:
+    AssertTrue stats, "compressionParity.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    On Error GoTo 0
+    RunCrackCompressionParityTests = stats.Report & "TOTAL_CRACK_COMPRESSION_PARITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
 ' ДЛЯ ТЕСТОВ: запускает существующую проверку полного вывода отдельно от
 ' остальных suites, чтобы отличить изменение ширины от накопленного контекста Excel.
 Public Function RunAudit03BatchSummaryWidthDiagnosticTests(Optional ByRef passed As Long = 0, _
@@ -7090,6 +7199,7 @@ End Function
 Public Function RunAudit03StatusPaletteTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
+    TestFormationStatusFormatting stats
     TestBatchSummaryWriter stats
     Audit03CheckWriterPalette stats, 3, False
 
@@ -7167,7 +7277,7 @@ Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows
         Select Case CStr(block)
             Case "rngBatchSummary": firstRow = firstRow + 12: columns = Array(4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             Case "rngStrengthSummaryAnchor": columns = Array(3, 30, 49)
-            Case "rngCrackSummaryAnchor": columns = Array(3, 19, 20, 23, 45, 49)
+            Case "rngCrackSummaryAnchor": columns = Array(3, 19, 20, 21, 23, 45, 49)
             Case "rngStabilitySummaryAnchor": columns = Array(3, 38, 44, 53, 59, 72, 84)
         End Select
         For rowIndex = 1 To rows
@@ -7178,7 +7288,7 @@ Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows
                     If clearedRows Then
                         AssertTrue stats, "audit03.palette.clear." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
                             cell.Interior.ColorIndex = -4142 And cell.DisplayFormat.Interior.ColorIndex = -4142
-                    ElseIf Len(statusText) > 0 Then
+                    ElseIf Len(statusText) > 0 And statusText <> "Cracked" And statusText <> "NotCracked" Then
                         AssertTrue stats, "audit03.palette.writer." & CStr(block) & "." & CStr(rowIndex) & "." & CStr(column), _
                             StatusCellHasExpectedFill(anchor.Worksheet, cell.Row, cell.Column)
                         AppendLine stats, "PALETTE_WRITER: " & CStr(block) & "|cell=" & cell.Address(False, False) & _
@@ -7196,6 +7306,7 @@ Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows
         Next rowIndex
     End If
 End Sub
+
 
 ' ======================================================================
 ' ДЛЯ ТЕСТОВ: AUDIT03 RESULT COMMENT COMPOSITION
@@ -9474,4 +9585,68 @@ Restore:
 RestoreFailed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: audit03.formationReport.restore; " & CStr(Err.Number) & "; " & Err.Description
+End Sub
+
+' ================== ДЛЯ ТЕСТОВ: ОКРАСКА ИСХОДА FORMATION ==================
+
+' Запускает настоящий writer для BaseFail и двух признаков образования
+' трещины. Внешний статус получает общую палитру, а Cracked/NotCracked
+' остаются без заливки ошибки. Численные статусы и текст не меняются.
+Public Function RunFormationStatusFormattingTests() As String
+    Dim stats As TBatchTestStats
+    TestFormationStatusFormatting stats
+    RunFormationStatusFormattingTests = stats.Report & "TOTAL_FORMATION_FORMATTING: passed=" & _
+        CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' Возвращает Config после трех нагрузок; цикл записи одного batch не
+' запускает повторно равновесие и проверяет отсутствие старой заливки.
+Private Sub TestFormationStatusFormatting(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim settings As CSystemSettingsReader, batch As CBatchSectionCalculator, writer As CCrackSummaryWriter
+    Dim cell As Object, anchor As Object, index As Long, statuses As Variant, solveCount As Long
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    SetSystemSetting "General.DiagramExtension", "Yes"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+    batch.AddCombination "FORMATION_BASE", 100000#, 10000000#, 0#, "PR2", "Постоянный момент уже образует трещину", "LambdaN"
+    batch.AddCombination "FORMATION_CRACKED", 200000#, 0#, 0#, "PR2", "Образовавшаяся трещина", "Auto"
+    batch.AddCombination "FORMATION_NOT_CRACKED", -90000#, 0#, 0#, "PR2", "Нет нормальной трещины", "Auto"
+    batch.Execute
+    solveCount = batch.SolverCallCount
+    Set writer = New CCrackSummaryWriter
+    statuses = Array("BaseFail", "Cracked", "NotCracked")
+    For index = 1 To 2
+        writer.WriteSummary ThisWorkbook, batch
+        Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+        Dim row As Long
+        For row = 1 To 3
+            Set cell = anchor.Offset(row - 1, 20)
+            AssertEquals stats, "formation.format.status." & CStr(row), CStr(cell.Value2), CStr(statuses(row - 1))
+            If row = 1 Then
+                AssertTrue stats, "formation.format.baseFail.fill." & CStr(index), _
+                    StatusCellHasExpectedFill(cell.Worksheet, cell.Row, cell.Column)
+            Else
+                AssertTrue stats, "formation.format.domainLabel.neutral." & CStr(row) & "." & CStr(index), _
+                    cell.Interior.ColorIndex = xlColorIndexNone And cell.DisplayFormat.Interior.ColorIndex = xlColorIndexNone
+            End If
+        Next row
+    Next index
+    AssertTrue stats, "formation.format.noExtraSolve", batch.SolverCallCount = solveCount
+    GoTo Restore
+Failed:
+    AssertTrue stats, "formation.format.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
 End Sub

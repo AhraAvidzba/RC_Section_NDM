@@ -173,7 +173,7 @@ Public Function RunAudit03RelocatedInputTests(Optional ByRef passed As Long = 0,
                 End If
                 stats.Cases = stats.Cases + 1
             Next field
-            If index = 8 Then TestRelocatedSharedSelectors stats, target, position
+            If index = 8 Then TestRelocatedRectSetSelectors stats, target, position
             ThisWorkbook.Names.Item(CStr(names(index))).RefersTo = refs(index)
         Next position
     Next index
@@ -202,29 +202,43 @@ Restore:
     RunAudit03RelocatedInputTests = stats.Report
 End Function
 
-' Проверяет конфликт двух общих выборов и ошибку формулы во второй строке.
-' Адреса обоих вводов берутся из перемещенной таблицы; исходные значения
-' восстанавливаются после каждой пробы, до перехода к следующей паре граней.
-Private Sub TestRelocatedSharedSelectors(ByRef stats As TProfileStats, ByVal source As Object, ByVal position As Long)
+' Проверяет независимые выборы и ошибки формул обеих физических граней.
+' Адрес ввода берется из перемещенной таблицы; другая грань не подменяет
+' ошибочное значение, а исходные настройки восстанавливаются после пробы.
+Private Sub TestRelocatedRectSetSelectors(ByRef stats As TProfileStats, ByVal source As Object, ByVal position As Long)
     Dim face As Variant, column As Variant, row As Long, first As Object, second As Object
     Dim savedFirst As Variant, savedSecond As Variant, code As Long, reason As String, prefix As String
+    Dim settings As CSystemSettingsReader, choices As Variant, tail As String, key As String, value As String, side As Long, cell As Object
     row = CaptionRow(source, "H1", 1) + 14
     For Each face In Array("H1", "B1", "H2", "B2")
         For Each column In Array(3, 4, 6, 7)
             Set first = source.Cells(row, CLng(column)): Set second = source.Cells(row + 1, CLng(column))
             savedFirst = first.Value2: savedSecond = second.Value2
-            prefix = "relocated.shared.p" & CStr(position) & "." & CStr(face) & ".c" & CStr(column)
-            first.Value2 = "FIRST_CHOICE": second.Value2 = "SECOND_CHOICE"
-            code = SettingsLoadError(reason)
-            Check stats, prefix & ".conflictRejected", code = vbObjectError + 4317
-            Check stats, prefix & ".firstAddress", InStr(1, reason, "ячейка " & first.Address(False, False), vbBinaryCompare) > 0
-            Check stats, prefix & ".secondAddress", InStr(1, reason, "ячейка " & second.Address(False, False), vbBinaryCompare) > 0
-            Check stats, prefix & ".sheet", InStr(1, reason, source.Worksheet.Name, vbBinaryCompare) > 0
-            first.Value2 = savedFirst: second.Value2 = CVErr(xlErrDiv0)
-            code = SettingsLoadError(reason)
-            Check stats, prefix & ".formulaRejected", code <> 0
-            Check stats, prefix & ".formulaAddress", InStr(1, reason, "ячейка " & second.Address(False, False), vbBinaryCompare) > 0
-            Check stats, prefix & ".formulaSheet", InStr(1, reason, source.Worksheet.Name, vbBinaryCompare) > 0
+            prefix = "relocated.rectset.p" & CStr(position) & "." & CStr(face) & ".c" & CStr(column)
+            Select Case CLng(column)
+                Case 3: tail = "loc_2row": choices = Array("Stacked", "SideBySide")
+                Case 4: tail = "bind_2row": choices = Array("EachBar", "EverySecondBar")
+                Case 6: tail = "loc_3row": choices = Array("Stacked", "SideBySide")
+                Case 7: tail = "bind_3row": choices = Array("EachBar", "EverySecondBar")
+            End Select
+            first.Value2 = choices(0): second.Value2 = choices(1)
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            key = "RectSet." & CStr(face) & "." & tail
+            Check stats, prefix & ".firstIndependent", settings.GetRequiredChoice(key & "_1", choices) = choices(0)
+            Check stats, prefix & ".secondIndependent", settings.GetRequiredChoice(key & "_2", choices) = choices(1)
+            For side = 1 To 2
+                Set cell = source.Cells(row + side - 1, CLng(column))
+                cell.Value2 = CVErr(xlErrDiv0)
+                Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+                On Error Resume Next
+                value = settings.GetRequiredChoice(key & "_" & CStr(side), choices)
+                code = Err.Number: reason = Err.Description: Err.Clear
+                On Error GoTo 0
+                Check stats, prefix & ".formulaRejected." & CStr(side), code <> 0
+                Check stats, prefix & ".formulaAddress." & CStr(side), InStr(1, reason, "ячейка " & cell.Address(False, False), vbBinaryCompare) > 0
+                Check stats, prefix & ".formulaSheet." & CStr(side), InStr(1, reason, source.Worksheet.Name, vbBinaryCompare) > 0
+                first.Value2 = choices(0): second.Value2 = choices(1)
+            Next side
             first.Value2 = savedFirst: second.Value2 = savedSecond
             stats.Cases = stats.Cases + 1
         Next column

@@ -893,12 +893,15 @@ Private Sub AppendRectSetFaceSettings(ByRef data As Variant)
             AppendDeferredInputValue data, "RectSet." & faceName & ".d_2row_2", 15, col, Trim$(CStr(data(15, 7)))
             AppendDeferredInputValue data, "RectSet." & faceName & ".d_3row_1", 16, col, Trim$(CStr(data(16, 7)))
             AppendDeferredInputValue data, "RectSet." & faceName & ".d_3row_2", 17, col, Trim$(CStr(data(17, 7)))
-            AppendDeferredInputValue data, "RectSet." & faceName & ".loc_2row", 18, col, Trim$(CStr(data(18, 7)))
-            AppendDeferredInputValue data, "RectSet." & faceName & ".loc_3row", 19, col, Trim$(CStr(data(19, 7)))
-            If UBound(data, 1) >= 21 Then
-                AppendDeferredInputValue data, "RectSet." & faceName & ".bind_2row", 20, col, Trim$(CStr(data(20, 7)))
-                AppendDeferredInputValue data, "RectSet." & faceName & ".bind_3row", 21, col, Trim$(CStr(data(21, 7)))
-            End If
+            Dim side As Long
+            For side = 1 To 2
+                AppendDeferredInputValue data, "RectSet." & faceName & ".loc_2row_" & CStr(side), 18, col, Trim$(CStr(data(18, 7)))
+                AppendDeferredInputValue data, "RectSet." & faceName & ".loc_3row_" & CStr(side), 19, col, Trim$(CStr(data(19, 7)))
+                If UBound(data, 1) >= 21 Then
+                    AppendDeferredInputValue data, "RectSet." & faceName & ".bind_2row_" & CStr(side), 20, col, Trim$(CStr(data(20, 7)))
+                    AppendDeferredInputValue data, "RectSet." & faceName & ".bind_3row_" & CStr(side), 21, col, Trim$(CStr(data(21, 7)))
+                End If
+            Next side
         End If
     Next i
 End Sub
@@ -947,55 +950,12 @@ Private Sub AppendRectSetSectionedSettings(ByRef data As Variant, Optional ByVal
         extraRow = geometryHeaderRow + 13 + i
         AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), extraRow, 2, Trim$(CStr(data(extraRow, 9)))
         AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), extraRow, 5, Trim$(CStr(data(extraRow, 9)))
-        If sideIndexes(i) = 1 Then
-            ValidateRectSetSharedSelectors data, extraRow, faceNames(i)
-            AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".loc_2row", extraRow, 3, Trim$(CStr(data(extraRow, 9)))
-            AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".bind_2row", extraRow, 4, Trim$(CStr(data(extraRow, 9)))
-            AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".loc_3row", extraRow, 6, Trim$(CStr(data(extraRow, 9)))
-            AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".bind_3row", extraRow, 7, Trim$(CStr(data(extraRow, 9)))
-        End If
+        ' Каждый ввод относится только к физической грани, указанной в этой строке.
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".loc_2row_" & CStr(sideIndexes(i)), extraRow, 3, Trim$(CStr(data(extraRow, 9)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".bind_2row_" & CStr(sideIndexes(i)), extraRow, 4, Trim$(CStr(data(extraRow, 9)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".loc_3row_" & CStr(sideIndexes(i)), extraRow, 6, Trim$(CStr(data(extraRow, 9)))
+        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".bind_3row_" & CStr(sideIndexes(i)), extraRow, 7, Trim$(CStr(data(extraRow, 9)))
     Next i
-End Sub
-
-' Проверяет общие для пары граней параметры дополнительных рядов RectSet.
-' Повторное значение во второй строке допускается только совпадающее с первой;
-' пустая служебная ячейка или "-" не задает отдельный выбор. Конфликт нельзя
-' молча проигнорировать, поскольку независимый выбор по сторонам не поддержан.
-Private Sub ValidateRectSetSharedSelectors(ByRef data As Variant, ByVal firstRow As Long, ByVal faceName As String)
-    Dim column As Variant, firstValue As String, secondValue As String, parameterName As String
-    Dim faceLabel As String, key As String
-    Select Case UCase$(faceName)
-        Case "H1": faceLabel = "вертикальных граней верхнего прямоугольника (H1)"
-        Case "B1": faceLabel = "горизонтальных граней верхнего прямоугольника (B1)"
-        Case "H2": faceLabel = "вертикальных граней нижнего прямоугольника (H2)"
-        Case "B2": faceLabel = "горизонтальных граней нижнего прямоугольника (B2)"
-        Case Else: faceLabel = "граней " & faceName
-    End Select
-    For Each column In Array(3, 4, 6, 7)
-        Select Case CLng(column)
-            Case 3: parameterName = "положение второго ряда": key = "loc_2row"
-            Case 4: parameterName = "привязка второго ряда к первому": key = "bind_2row"
-            Case 6: parameterName = "положение третьего ряда": key = "loc_3row"
-            Case 7: parameterName = "привязка третьего ряда к первому": key = "bind_3row"
-        End Select
-        key = "RectSet." & faceName & "." & key
-        ' Ошибку формулы основной ячейки проверит активный потребитель ряда.
-        ' Проверка противоречивого отдельного ввода второй стороны сохраняется.
-        If Not IsError(data(firstRow, CLng(column))) Then
-            firstValue = ConfigCellText(data(firstRow, CLng(column)), parameterName, firstRow, key, False, CLng(column))
-            secondValue = ConfigCellText(data(firstRow + 1, CLng(column)), parameterName, firstRow + 1, key, False, CLng(column))
-            If Len(secondValue) > 0 And secondValue <> "-" Then
-                If StrComp(firstValue, secondValue, vbTextCompare) <> 0 Then
-                    Err.Raise vbObjectError + 4317, "CSystemSettingsReader", _
-                        "В таблице RectSet для " & faceLabel & " параметр """ & _
-                        parameterName & """ задан по-разному в двух строках (" & _
-                        InputCellLocation(firstRow, CLng(column)) & "; " & _
-                        InputCellLocation(firstRow + 1, CLng(column)) & "). Это общий выбор для пары сторон; " & _
-                        "укажите его в первой строке, а во второй оставьте тот же выбор или пустое значение."
-                End If
-            End If
-        End If
-    Next column
 End Sub
 
 ' Задает порядок строк в секционной таблице RectSet.

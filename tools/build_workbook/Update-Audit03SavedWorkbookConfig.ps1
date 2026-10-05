@@ -1,5 +1,5 @@
 ﻿# Обновляет только согласованные блоки Config в изолированной сохраненной
-# книге: LoadPath, контрольные формулы, общие селекторы RectSet,
+# книге: LoadPath, контрольные формулы, независимые селекторы граней RectSet,
 # проектные комментарии и актуальные списки выбора из проверенного каталога.
 # Не удаляет строки листа и не подставляет defaults вместо пользовательских
 # нагрузок. Все остальные значения/формулы проверяются до save и после reopen.
@@ -34,6 +34,7 @@ foreach ($range in $template.NamedRanges) { $templateRanges[$range.Name] = $rang
 $registeredCells = @{}
 foreach ($field in $fields) { $registeredCells[$field.Address.Split('!')[1]] = $true }
 $validationPlans = New-Object 'System.Collections.Generic.List[object]'
+$staticLists = @{}
 $commentPlans = New-Object 'System.Collections.Generic.List[object]'
 
 # Регистрирует только ячейки явно утвержденного преобразования. Остальная
@@ -104,8 +105,9 @@ function Get-MigrationCell([string]$Block, [string]$Address, [string]$Key = '') 
 }
 
 # Читает допустимые значения из census реально собранной книги. Короткие
-# неизменяемые enum-списки переносятся как literal validation; динамические
-# списки ID/профилей сохраняют ссылки на исходные пользовательские таблицы.
+# enum-списки остаются вертикальными диапазонами: inline-строки зависят от
+# локального разделителя Excel. Динамические списки ID/профилей сохраняют
+# ссылки на исходные пользовательские таблицы, без подстановки чужих ID.
 function Prepare-CatalogValidation {
     foreach ($field in @($fields | Where-Object Role -eq 'UserInput')) {
         $address = $field.Address.Split('!')[1]
@@ -137,10 +139,48 @@ function Prepare-CatalogValidation {
             $source = $config.Range($formula.Substring(1))
             if ($source.Rows.Count -ne $options.Count -or $source.Columns.Count -ne 1) { throw "Некорректная длина динамического списка $($field.Id)." }
         } else {
-            $formula = $options.ToArray() -join ','
-            if ($formula.Length -gt 255 -or @($options | Where-Object { $_.Contains(',') }).Count -gt 0) {
-                throw "Enum-список $($field.Id) нельзя перенести без изменения его смысла."
+            if (-not $staticLists.ContainsKey($reference)) {
+                $sourceRange = $null
+                # Адреса скрытых списков менялись между версиями шаблона.
+                # Используем существующий источник только при точном совпадении
+                # содержимого; иначе выбираем новый свободный скрытый столбец.
+                foreach ($candidate in @([string]$cell.Validation.Formula1, '=' + $reference)) {
+                    if ($candidate -notmatch '^=\$?[A-Z]+\$?[0-9]+:\$?[A-Z]+\$?[0-9]+$') { continue }
+                    $candidateRange = $config.Range($candidate.Substring(1))
+                    if ($candidateRange.Columns.Count -ne 1 -or $candidateRange.Rows.Count -ne $options.Count -or
+                        -not [bool]$candidateRange.EntireColumn.Hidden) { continue }
+                    $matchesOptions = $true
+                    for ($r = 1; $r -le $candidateRange.Rows.Count; $r++) {
+                        $sourceCell = $candidateRange.Cells.Item($r, 1)
+                        if ($sourceCell.HasFormula -or [string]$sourceCell.Value2 -cne $options[$r - 1]) { $matchesOptions = $false; break }
+                    }
+                    if ($matchesOptions) { $sourceRange = $candidateRange; break }
+                }
+                if ($null -eq $sourceRange) {
+                    if ($script:nextListColumn -gt $config.Columns.Count) { throw 'Нет свободного столбца для служебных списков Config.' }
+                    $sourceRange = $config.Cells.Item(1, $script:nextListColumn).Resize($options.Count, 1)
+                    $script:nextListColumn++
+                    $sourceRange.EntireColumn.Hidden = $true
+                }
+                foreach ($name in $templateRanges.Keys) {
+                    $inputRange = $book.Names.Item($name).RefersToRange
+                    if ($sourceRange.Row -le ($inputRange.Row + $inputRange.Rows.Count - 1) -and
+                        $inputRange.Row -le ($sourceRange.Row + $sourceRange.Rows.Count - 1) -and
+                        $sourceRange.Column -le ($inputRange.Column + $inputRange.Columns.Count - 1) -and
+                        $inputRange.Column -le ($sourceRange.Column + $sourceRange.Columns.Count - 1)) {
+                        throw "Служебный список $($field.Id) пересекает таблицу $name."
+                    }
+                }
+                for ($r = 1; $r -le $sourceRange.Rows.Count; $r++) {
+                    $sourceCell = $sourceRange.Cells.Item($r, 1)
+                    if ($sourceCell.HasFormula -or $registeredCells.ContainsKey($sourceCell.Address($false, $false))) {
+                        throw "Источник списка $($field.Id) содержит пользовательский ввод или формулу."
+                    }
+                }
+                Add-MigrationRange $sourceRange
+                $staticLists[$reference] = [pscustomobject]@{ Range=$sourceRange; Options=$options.ToArray() }
             }
+            $formula = '=' + $staticLists[$reference].Range.Address($true, $true)
         }
         $validationPlans.Add([pscustomobject]@{ Id=$field.Id; Cell=$cell; Address=$cell.Address(); Formula=$formula; Dynamic=$dynamic;
             Options=$options.ToArray(); IgnoreBlank=($field.Block -eq 'rngLoadCombinations' -and $field.Id -like '*LoadPath*') })
@@ -178,14 +218,64 @@ function Prepare-CatalogComments {
     }
 }
 
+# Передает Variant в Excel через IDispatch без преобразования числа в строку.
+# Адаптер PowerShell может закэшировать строковый тип Value2 по предыдущему
+# варианту списка; прямой setter сохраняет тип при проверке и восстановлении.
+function Set-MigrationCellProperty([object]$Cell, [string]$Property, [object]$Value) {
+    $Cell.GetType().InvokeMember($Property, [Reflection.BindingFlags]::SetProperty, $null,
+        $Cell, [object[]]@($Value)) | Out-Null
+}
+
+# Обновляет только существующий блок справки RectSet по его заголовку.
+# Число строк сверяется до записи: соседние инструкции и ссылки не сдвигаются.
+function Update-RectSetSettingsGuide {
+    $item = @(Get-SettingsInstructionCatalog | Where-Object Key -eq 'RectSetGeometry')
+    if ($item.Count -ne 1) { throw 'Не найден единственный раздел справки RectSet.' }
+    $guide = $book.Worksheets.Item('Справка')
+    $title = $guide.Cells.Find($item[0].Title, $guide.Cells.Item(1, 1), -4163, 1, 1, 1, $false, $false, $false)
+    if ($null -eq $title -or $title.Column -ne 1) { throw 'Не найден заголовок справки RectSet.' }
+    $count = $item[0].Lines.Count
+    if ([string]$guide.Cells.Item($title.Row + $count, 1).Value2 -ne [string]$count) {
+        throw 'Размер существующего раздела справки RectSet не соответствует каталогу.'
+    }
+    for ($i = 0; $i -lt $count; $i++) {
+        $guide.Cells.Item($title.Row + 1 + $i, 2).Value2 = $item[0].Lines[$i]
+    }
+    $lines.Add("RECTSET_GUIDE_UPDATED: row=$($title.Row); paragraphs=$count")
+}
+
 # Проверяет смысл всех перенесенных списков после записи и reopen. Для
 # динамических списков проверяются сохраненные ссылки, а не чужие default ID.
 function Test-MigratedValidation {
+    $checked = @{}
     foreach ($plan in $validationPlans) {
         $cell = $config.Range($plan.Address)
         if ([int]$cell.Validation.Type -ne 3 -or [string]$cell.Validation.Formula1 -cne $plan.Formula -or
             [bool]$cell.Validation.IgnoreBlank -ne $plan.IgnoreBlank -or -not [bool]$cell.Validation.InCellDropdown) {
             throw "После миграции изменилась validation $($plan.Id) в $($cell.Address())."
+        }
+        if (-not $plan.Formula.StartsWith('=')) { throw "Список $($plan.Id) не имеет ссылочного источника." }
+        if (-not $checked.ContainsKey($plan.Formula)) {
+            $source = $config.Range($plan.Formula.Substring(1))
+            if ($source.Columns.Count -ne 1 -or $source.Rows.Count -ne $plan.Options.Count) {
+                throw "Неверный размер источника списка $($plan.Id)."
+            }
+            $saved = $cell.GetType().InvokeMember('Formula', [Reflection.BindingFlags]::GetProperty, $null, $cell, $null)
+            try {
+                for ($r = 1; $r -le $source.Rows.Count; $r++) {
+                    $value = $source.Cells.Item($r, 1).Value2
+                    if (-not $plan.Dynamic -and [string]$value -cne $plan.Options[$r - 1]) {
+                        throw "Изменился вариант $r списка $($plan.Id)."
+                    }
+                    if (-not [string]::IsNullOrWhiteSpace([string]$value)) {
+                        Set-MigrationCellProperty $cell 'Value2' $value
+                        if (-not [bool]$cell.Validation.Value) { throw "Excel не принимает отдельный вариант $r списка $($plan.Id)." }
+                    }
+                }
+                Set-MigrationCellProperty $cell 'Value2' '__INVALID_DROPDOWN_OPTION__'
+                if ([bool]$cell.Validation.Value) { throw "Список $($plan.Id) допускает постороннее значение." }
+            } finally { Set-MigrationCellProperty $cell 'Formula' $saved }
+            $checked[$plan.Formula] = $true
         }
     }
 }
@@ -199,6 +289,7 @@ try {
     $book = $excel.Workbooks.Open($path)
     $config = $book.Worksheets.Item('Config')
     $bounds = $config.UsedRange.Address()
+    $script:nextListColumn = $config.UsedRange.Column + $config.UsedRange.Columns.Count
     $settings = $book.Names.Item('rngSystemSettings').RefersToRange
     $loads = $book.Names.Item('rngLoadCombinations').RefersToRange
     if ($loads.Columns.Count -lt 7 -or $loads.Rows.Count -lt 2) { throw 'Нет полного блока сочетаний с колонкой пути.' }
@@ -241,10 +332,20 @@ try {
     $before = Get-PreservedConfigSignature $config $bounds
     if ($VerifyIdempotence) { $allBefore = Get-PreservedConfigSignature $config $bounds $true }
 
-    # Конфликт общих RectSet-настроек проверяет штатный helper до их изменения.
-    foreach ($record in @(Set-RectSetSharedSelectorLayout $rect)) {
-        $lines.Add('RECTSET_SHARED_SELECTOR: ' + (ConvertTo-Json $record -Compress))
+    # Прежние объединения разделяем без потери общего выбора; независимый
+    # ввод сохраняется отдельно для каждой физической грани.
+    foreach ($record in @(Set-RectSetIndependentSelectorLayout $rect)) {
+        $first = $config.Range($record.SharedAddress)
+        $second = $config.Range($record.Address)
+        if ([string]$first.Formula -cne [string]$record.SharedFormula) { throw 'Изменился прежний ввод первой грани RectSet.' }
+        $expectedSecond = $record.PreviousFormula
+        if ($record.WasMerged) { $expectedSecond = $record.SharedFormula }
+        if ([string]$second.Formula -cne [string]$expectedSecond -or $first.MergeCells -or $second.MergeCells) {
+            throw 'Разделение селекторов RectSet изменило настройку или сохранило объединение.'
+        }
+        $lines.Add('RECTSET_INDEPENDENT_SELECTOR: ' + (ConvertTo-Json $record -Compress))
     }
+    Update-RectSetSettingsGuide
     if ($null -ne $obsolete) { $obsolete.Validation.Delete(); $obsolete.ClearContents() }
     $loads.Cells.Item(1, 6).Value2 = 'LoadPath'
     for ($r = 1; $r -le $options.Count; $r++) { $list.Cells.Item($r, 1).Value2 = $options[$r - 1] }
@@ -253,6 +354,11 @@ try {
     $paths.Validation.Add(3, 1, 1, ('=' + $list.Address($true, $true)))
     $paths.Validation.IgnoreBlank = $true
     $paths.Validation.InCellDropdown = $true
+    foreach ($staticList in $staticLists.Values) {
+        for ($r = 1; $r -le $staticList.Options.Count; $r++) {
+            $staticList.Range.Cells.Item($r, 1).Value2 = $staticList.Options[$r - 1]
+        }
+    }
     Add-MaterialDiagramControlTables $config ($title.Row + 1) $title.Column
     foreach ($plan in $validationPlans) {
         $plan.Cell.Validation.Delete()
@@ -267,6 +373,7 @@ try {
     Apply-ConfigUserInputAlignment $book
     Apply-ConfigCommentColumnAlignment $book
     Apply-ConfigShortColumnAlignment $book
+    Apply-ConfigNamedRangeBorders $book
     if ($loadBefore -cne (Get-LoadInputSignature $loads)) { throw 'Миграция изменила исходные сочетания.' }
     $after = Get-PreservedConfigSignature $config $bounds
     if ($before -ne $after) { throw 'Изменились значения или формулы вне разрешенных блоков миграции.' }

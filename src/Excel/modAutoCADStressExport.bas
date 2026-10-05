@@ -83,7 +83,7 @@ Public Sub ExportSectionStressToAutoCAD()
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, resultPrecision, stateWarningText, exportSettings, _
         contourExportCount
     If informationEnabled Then
-        MsgBox "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
+        ShowWorkbookMessage "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
             "; стержней арматуры: " & CStr(section.RebarCount) & _
             "; контурных полилиний: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
             "; сочетание: " & combinationID & _
@@ -94,7 +94,7 @@ Public Sub ExportSectionStressToAutoCAD()
     Exit Sub
 
 Failed:
-    MsgBox "Экспорт в AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage "Экспорт в AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
 ' Очищает активный чертеж AutoCAD от объектов оформления, созданных NDM-export.
@@ -126,14 +126,14 @@ Public Sub ClearAutoCADDrawing()
     doc.Regen 1
 
     If informationEnabled Then
-        MsgBox "Чертеж AutoCAD очищен от объектов оформления RC Section NDM." & vbCrLf & _
+        ShowWorkbookMessage "Чертеж AutoCAD очищен от объектов оформления RC Section NDM." & vbCrLf & _
             "Удалено объектов: " & CStr(deletedCount) & "." & vbCrLf & _
             "Геометрия бетона и арматуры оставлена без изменений.", vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
 Failed:
-    MsgBox "Очистка чертежа AutoCAD не выполнена: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage "Очистка чертежа AutoCAD не выполнена: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
 ' Собирает перечень слоев, которые относятся к оформлению, а не к геометрии.

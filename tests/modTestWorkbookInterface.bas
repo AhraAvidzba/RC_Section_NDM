@@ -37,6 +37,8 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestSingleCombinationSkipsBlankRows"
     TestSingleCombinationSkipsBlankRows stats
     TestLoadCombinationRangeMinimumRows stats
+    TestConfigDropdownChoices stats
+    TestConfigSettingsRightBorder stats
     AppendLine stats, "RUN: TestAudit03ReaderContract"
     TestAudit03ReaderContract stats
     AppendLine stats, "RUN: TestAudit03InputContracts; " & Audit02ExcelMemory()
@@ -80,9 +82,10 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestAudit03InputUnitConsumers; " & Audit02ExcelMemory()
     TestAudit03InputUnitConsumers stats
     AppendLine stats, "RUN: Audit03 RectSet selectors; " & Audit02ExcelMemory()
-    TestAudit03RectSetSharedSelectors stats
-    TestAudit03RectSetSharedSelectorLayout stats
-    TestAudit03RectSetSharedSelectorEffects stats
+    TestRectSetIndependentSelectors stats
+    TestRectSetIndependentSelectorLayout stats
+    TestRectSetIndependentSelectorEffects stats
+    TestRectSetIndependentThirdRows stats
     Dim circleConfigPassed As Long, circleConfigFailed As Long
     AppendLine stats, "RUN: Audit03 Circle Config; " & Audit02ExcelMemory()
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03CircleConfigTests(circleConfigPassed, circleConfigFailed)
@@ -2983,14 +2986,14 @@ Private Function RectSetSettingAddress(ByVal key As String, ByRef rowIndex As Lo
         rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 5
     ElseIf StrComp(key, "RectSet." & faceName & ".d_3row_2", vbTextCompare) = 0 Then
         rowIndex = RectSetExtraRow(faceName, 2): columnIndex = 5
-    ElseIf StrComp(key, "RectSet." & faceName & ".loc_2row", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 3
-    ElseIf StrComp(key, "RectSet." & faceName & ".loc_3row", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 6
-    ElseIf StrComp(key, "RectSet." & faceName & ".bind_2row", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 4
-    ElseIf StrComp(key, "RectSet." & faceName & ".bind_3row", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 7
+    ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".loc_2row_", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 3
+    ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".loc_3row_", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 6
+    ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".bind_2row_", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 4
+    ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".bind_3row_", vbTextCompare) = 0 Then
+        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 7
     Else
         Exit Function
     End If
@@ -4008,10 +4011,14 @@ Private Sub ClearUserRectSetExtraRows()
         SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_2row_2", vbNullString
         SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_3row_1", vbNullString
         SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_3row_2", vbNullString
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_2row", "Stacked"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_3row", "Stacked"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_2row", "EachBar"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_3row", "EachBar"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_2row_1", "Stacked"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_3row_1", "Stacked"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_2row_1", "EachBar"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_3row_1", "EachBar"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_2row_2", "Stacked"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_3row_2", "Stacked"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_2row_2", "EachBar"
+        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_3row_2", "EachBar"
     Next i
 End Sub
 
@@ -5240,77 +5247,61 @@ Failed:
     AppendLine stats, "FAIL: " & prefix & ".runtime; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
-' ДЛЯ ТЕСТОВ: отдельный gate общего выбора положения/привязки рядов RectSet.
-' Проверяет настоящий табличный формат на временном листе, не меняя Config.
-Public Function RunAudit03RectSetSharedSelectorTests() As String
+' ДЛЯ ТЕСТОВ: адресный gate независимых настроек дополнительных рядов RectSet.
+' Проверяет чтение, списки, влияние на одну грань и ошибки активного ввода.
+Public Function RunRectSetIndependentSelectorTests() As String
     Dim stats As TUiTestStats
-    TestAudit03RectSetSharedSelectors stats
-    TestAudit03RectSetSharedSelectorLayout stats
-    TestAudit03RectSetSharedSelectorEffects stats
-    AppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
-    RunAudit03RectSetSharedSelectorTests = stats.Report
+    TestRectSetIndependentSelectors stats
+    TestRectSetIndependentSelectorLayout stats
+    TestRectSetIndependentSelectorEffects stats
+    TestRectSetIndependentThirdRows stats
+    AppendLine stats, "TOTAL_RECTSET_INDEPENDENT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunRectSetIndependentSelectorTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: четыре пары граней и четыре общих селектора не допускают двух
-' различных значений. Совпадающая пара читается, конфликт должен отклоняться
-' с адресной причиной, а не молча теряться при разворачивании таблицы в keys.
-Private Sub TestAudit03RectSetSharedSelectors(ByRef stats As TUiTestStats)
-    Dim sheet As Object, target As Object, source As Object
-    Dim settings As CSystemSettingsReader, face As Variant, column As Variant
-    Dim topRow As Long, pairIndex As Long, key As String, prefix As String
-    Dim original As String, conflicting As String, tail As String
-    Dim number As Long, description As String, savedAlerts As Boolean
+' ДЛЯ ТЕСТОВ: разные значения противоположных граней сохраняются как отдельные
+' ключи. Никакой выбор первой строки не подменяет значение второй строки.
+Private Sub TestRectSetIndependentSelectors(ByRef stats As TUiTestStats)
+    Dim sheet As Object, target As Object, source As Object, settings As CSystemSettingsReader
+    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, side As Long
+    Dim firstValue As String, secondValue As String, tail As String, key As String
+    Dim savedAlerts As Boolean
     On Error GoTo Failed
     savedAlerts = Application.DisplayAlerts
     Set source = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
     Set sheet = ThisWorkbook.Worksheets.Add
     Set target = sheet.Range("A1").Resize(source.Rows.Count, source.Columns.Count)
     target.Value2 = source.Value2
-    pairIndex = 0
     For Each face In Array("H1", "B1", "H2", "B2")
         topRow = 21 + pairIndex * 2
         For Each column In Array(3, 4, 6, 7)
+            tail = RectSetSelectorTail(CLng(column))
             If CLng(column) = 3 Or CLng(column) = 6 Then
-                original = "Stacked": conflicting = "SideBySide"
-                If CLng(column) = 3 Then tail = "loc_2row" Else tail = "loc_3row"
+                firstValue = "Stacked": secondValue = "SideBySide"
             Else
-                original = "EachBar": conflicting = "EverySecondBar"
-                If CLng(column) = 4 Then tail = "bind_2row" Else tail = "bind_3row"
+                firstValue = "EachBar": secondValue = "EverySecondBar"
             End If
+            target.Cells(topRow, CLng(column)).Value2 = firstValue
+            target.Cells(topRow + 1, CLng(column)).Value2 = secondValue
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromRange target
             key = "RectSet." & CStr(face) & "." & tail
-            prefix = "audit03.rectset.shared." & CStr(face) & "." & tail
-            target.Cells(topRow, CLng(column)).Value2 = original
-            target.Cells(topRow + 1, CLng(column)).Value2 = original
-            Set settings = New CSystemSettingsReader
-            settings.LoadFromRange target
-            AssertTextEquals stats, prefix & ".matching", settings.GetString(key), original
-            target.Cells(topRow + 1, CLng(column)).ClearContents
-            settings.LoadFromRange target
-            AssertTextEquals stats, prefix & ".emptyFollower", settings.GetString(key), original
-            target.Cells(topRow + 1, CLng(column)).Value2 = "-"
-            settings.LoadFromRange target
-            AssertTextEquals stats, prefix & ".inactiveFollower", settings.GetString(key), original
-            target.Cells(topRow + 1, CLng(column)).Value2 = conflicting
-            On Error Resume Next
-            settings.LoadFromRange target
-            number = Err.Number: description = Err.Description
-            Err.Clear
-            On Error GoTo Failed
-            AssertTrue stats, prefix & ".conflictCode", number = vbObjectError + 4317
-            AssertTrue stats, prefix & ".conflictReason", _
-                InStr(1, description, CStr(face), vbTextCompare) > 0 And _
-                InStr(1, description, "общ", vbTextCompare) > 0
-            target.Cells(topRow, CLng(column)).Value2 = conflicting
-            Set settings = New CSystemSettingsReader
-            settings.LoadFromRange target
-            AssertTextEquals stats, prefix & ".alternative", settings.GetString(key), conflicting
+            AssertTextEquals stats, key & ".first", settings.GetString(key & "_1"), firstValue
+            AssertTextEquals stats, key & ".second", settings.GetString(key & "_2"), secondValue
+            For side = 1 To 2
+                target.Cells(topRow + side - 1, CLng(column)).ClearContents
+                settings.LoadFromRange target
+                AssertTextEquals stats, key & ".empty" & CStr(side), settings.GetString(key & "_" & CStr(side)), vbNullString
+                target.Cells(topRow, CLng(column)).Value2 = firstValue
+                target.Cells(topRow + 1, CLng(column)).Value2 = secondValue
+            Next side
         Next column
         pairIndex = pairIndex + 1
     Next face
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.rectset.shared.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    AppendLine stats, "FAIL: rectset.independent.reader; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     Application.DisplayAlerts = False
@@ -5319,13 +5310,12 @@ Restore:
     On Error GoTo 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: в фактическом Config каждая из шестнадцати общих настроек
-' представлена объединением двух строк с одним списком и одним значением.
-' Чтение полной книги должно возвращать значение верхней ячейки объединения.
-Private Sub TestAudit03RectSetSharedSelectorLayout(ByRef stats As TUiTestStats)
-    Dim target As Object, first As Object, second As Object, settings As CSystemSettingsReader
-    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long
-    Dim key As String, tail As String, prefix As String
+' ДЛЯ ТЕСТОВ: все 32 селектора фактического Config не объединены, имеют
+' вертикальный список выбора и читаются по адресу своей физической грани.
+Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
+    Dim target As Object, cell As Object, settings As CSystemSettingsReader
+    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, side As Long
+    Dim key As String, prefix As String
     On Error GoTo Failed
     Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
     Set settings = New CSystemSettingsReader
@@ -5333,122 +5323,125 @@ Private Sub TestAudit03RectSetSharedSelectorLayout(ByRef stats As TUiTestStats)
     For Each face In Array("H1", "B1", "H2", "B2")
         topRow = 21 + pairIndex * 2
         For Each column In Array(3, 4, 6, 7)
-            Select Case CLng(column)
-                Case 3: tail = "loc_2row"
-                Case 4: tail = "bind_2row"
-                Case 6: tail = "loc_3row"
-                Case 7: tail = "bind_3row"
-            End Select
-            key = "RectSet." & CStr(face) & "." & tail
-            prefix = "audit03.rectset.layout." & CStr(face) & "." & tail
-            Set first = target.Cells(topRow, CLng(column))
-            Set second = target.Cells(topRow + 1, CLng(column))
-            AssertTrue stats, prefix & ".mergedPair", first.MergeCells And _
-                first.MergeArea.Address = first.Resize(2, 1).Address
-            AssertTrue stats, prefix & ".oneValue", IsEmpty(second.Value2)
-            AssertTrue stats, prefix & ".dropdown", first.Validation.Type = 3 And first.Validation.InCellDropdown
-            AssertTextEquals stats, prefix & ".reader", settings.GetString(key), CStr(first.Value2)
+            For side = 1 To 2
+                key = "RectSet." & CStr(face) & "." & RectSetSelectorTail(CLng(column)) & "_" & CStr(side)
+                prefix = "rectset.independent.layout." & key
+                Set cell = target.Cells(topRow + side - 1, CLng(column))
+                AssertTrue stats, prefix & ".unmerged", Not cell.MergeCells
+                AssertTrue stats, prefix & ".dropdown", cell.Validation.Type = 3 And cell.Validation.InCellDropdown
+                AssertTrue stats, prefix & ".rangeList", Left$(cell.Validation.Formula1, 1) = "="
+                AssertTrue stats, prefix & ".centered", cell.HorizontalAlignment = xlCenter And cell.VerticalAlignment = xlCenter
+                AssertTextEquals stats, prefix & ".reader", settings.GetString(key), CStr(cell.Value2)
+            Next side
         Next column
         pairIndex = pairIndex + 1
     Next face
     Exit Sub
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.rectset.layout.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    AppendLine stats, "FAIL: rectset.independent.layout; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
-' ДЛЯ ТЕСТОВ: каждый общий selector проходит Range -> reader -> builder.
-' Одна активная пара сторон имеет по три основных стержня. Привязка через
-' один должна убрать два дополнительных стержня, положение должно сдвинуть
-' все шесть дополнительных стержней; при выключенном ряде оба выбора не влияют.
-Private Sub TestAudit03RectSetSharedSelectorEffects(ByRef stats As TUiTestStats)
+' ДЛЯ ТЕСТОВ: меняем каждый из 32 селекторов через Range -> reader -> builder.
+' Меняются только три дополнительных стержня выбранной стороны; шесть
+' стержней противоположной стороны сохраняют координаты и диаметры.
+' Ошибочный/пустой активный ввод дает адресную ошибку, отключенный не читается.
+Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
     Dim source As Object, sheet As Object, target As Object, settings As CSystemSettingsReader
     Dim units As CUnitSystem, builder As CRectSetRebarLayoutBuilder
     Dim baseline As CRebarLayout, changed As CRebarLayout, inactive As CRebarLayout
-    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long
-    Dim mainRow As Long, row As Long, i As Long, diameterColumn As Long
-    Dim prefix As String, original As String, alternative As String
-    Dim changedBars As Long, same As Boolean, savedAlerts As Boolean
+    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, mainRow As Long
+    Dim row As Long, i As Long, side As Long, selectedRow As Long, diameterColumn As Long
+    Dim prefix As String, alternative As String, original As String, changedBars As Long
+    Dim oppositeStart As Long, number As Long, reason As String, savedAlerts As Boolean
+    Dim invalid As Variant
     On Error GoTo Failed
     savedAlerts = Application.DisplayAlerts
     Set source = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
     Set sheet = ThisWorkbook.Worksheets.Add
     Set target = sheet.Range("A1").Resize(source.Rows.Count, source.Columns.Count)
-    Set units = New CUnitSystem
-    units.InitializeDefaults
+    Set units = New CUnitSystem: units.InitializeDefaults
     Set builder = New CRectSetRebarLayoutBuilder
     For Each face In Array("H1", "B1", "H2", "B2")
-        topRow = 21 + pairIndex * 2
-        mainRow = 11 + pairIndex * 2
+        topRow = 21 + pairIndex * 2: mainRow = 11 + pairIndex * 2
         For Each column In Array(3, 4, 6, 7)
-            target.Value2 = source.Value2
-            target.Cells(3, 2).Value2 = "LSection"
-            target.Cells(4, 2).Value2 = 0#
-            target.Cells(8, 1).Value2 = 300#: target.Cells(8, 2).Value2 = 200#
-            target.Cells(8, 3).Value2 = 200#: target.Cells(8, 4).Value2 = 500#
-            For row = 11 To 18
-                target.Cells(row, 3).Value2 = 0#: target.Cells(row, 4).Value2 = 0
-            Next row
-            For row = 21 To 28
-                target.Cells(row, 2).Value2 = 0#: target.Cells(row, 5).Value2 = 0#
-                If (row Mod 2) = 1 Then
+            For side = 1 To 2
+                target.Value2 = source.Value2
+                target.Cells(3, 2).Value2 = "LSection": target.Cells(4, 2).Value2 = 0#
+                target.Cells(8, 1).Value2 = 300#: target.Cells(8, 2).Value2 = 200#
+                target.Cells(8, 3).Value2 = 200#: target.Cells(8, 4).Value2 = 500#
+                For row = 11 To 18
+                    target.Cells(row, 3).Value2 = 0#: target.Cells(row, 4).Value2 = 0
+                Next row
+                For row = 21 To 28
+                    target.Cells(row, 2).Value2 = 0#: target.Cells(row, 5).Value2 = 0#
                     target.Cells(row, 3).Value2 = "Stacked": target.Cells(row, 6).Value2 = "Stacked"
                     target.Cells(row, 4).Value2 = "EachBar": target.Cells(row, 7).Value2 = "EachBar"
+                Next row
+                For row = mainRow To mainRow + 1
+                    target.Cells(row, 2).Value2 = 20#
+                    target.Cells(row, 3).Value2 = 10#: target.Cells(row, 4).Value2 = 3
+                    target.Cells(row, 5).Value2 = 30#: target.Cells(row, 6).Value2 = 30#
+                Next row
+                If CLng(column) <= 4 Then diameterColumn = 2 Else diameterColumn = 5
+                target.Cells(topRow, diameterColumn).Value2 = 8#
+                target.Cells(topRow + 1, diameterColumn).Value2 = 8#
+                selectedRow = topRow + side - 1
+                If CLng(column) = 3 Or CLng(column) = 6 Then
+                    original = "Stacked": alternative = "SideBySide"
                 Else
-                    target.Cells(row, 3).ClearContents: target.Cells(row, 6).ClearContents
-                    target.Cells(row, 4).ClearContents: target.Cells(row, 7).ClearContents
+                    original = "EachBar": alternative = "EverySecondBar"
                 End If
-            Next row
-            For row = mainRow To mainRow + 1
-                target.Cells(row, 2).Value2 = 20#
-                target.Cells(row, 3).Value2 = 10#: target.Cells(row, 4).Value2 = 3
-                target.Cells(row, 5).Value2 = 30#: target.Cells(row, 6).Value2 = 30#
-            Next row
-            If CLng(column) <= 4 Then diameterColumn = 2 Else diameterColumn = 5
-            target.Cells(topRow, diameterColumn).Value2 = 8#
-            target.Cells(topRow + 1, diameterColumn).Value2 = 8#
-            If CLng(column) = 3 Or CLng(column) = 6 Then
-                original = "Stacked": alternative = "SideBySide"
-            Else
-                original = "EachBar": alternative = "EverySecondBar"
-            End If
-            prefix = "audit03.rectset.effect." & CStr(face) & ".column" & CStr(column)
-            Set settings = New CSystemSettingsReader
-            settings.LoadFromRange target
-            Set baseline = builder.BuildFromSettings(settings, units)
-            AssertTrue stats, prefix & ".baseline", baseline.Count = 12
-            target.Cells(topRow, CLng(column)).Value2 = alternative
-            settings.LoadFromRange target
-            Set changed = builder.BuildFromSettings(settings, units)
-            If CLng(column) = 3 Or CLng(column) = 6 Then
-                changedBars = 0
-                For i = 1 To baseline.Count
-                    If Abs(baseline.X(i) - changed.X(i)) + Abs(baseline.Y(i) - changed.Y(i)) > 0.00000001 Then changedBars = changedBars + 1
+                prefix = "rectset.independent.effect." & CStr(face) & "." & CStr(column) & "." & CStr(side)
+                Set settings = New CSystemSettingsReader: settings.LoadFromRange target
+                Set baseline = builder.BuildFromSettings(settings, units)
+                AssertTrue stats, prefix & ".baseline", baseline.Count = 12
+                target.Cells(selectedRow, CLng(column)).Value2 = alternative
+                settings.LoadFromRange target
+                Set changed = builder.BuildFromSettings(settings, units)
+                If CLng(column) = 3 Or CLng(column) = 6 Then
+                    changedBars = 0
+                    For i = 1 To baseline.Count
+                        If Abs(baseline.X(i) - changed.X(i)) + Abs(baseline.Y(i) - changed.Y(i)) > 0.00000001 Then changedBars = changedBars + 1
+                    Next i
+                    AssertTrue stats, prefix & ".oneSideMoved", changedBars = 3 And changed.Count = 12
+                Else
+                    AssertTrue stats, prefix & ".oneSideBound", changed.Count = 11
+                End If
+                If side = 1 Then oppositeStart = 7 Else oppositeStart = 1
+                For i = oppositeStart To oppositeStart + 5
+                    AssertTrue stats, prefix & ".opposite" & CStr(i), RectSetLayoutContainsBar(changed, baseline, i)
                 Next i
-                AssertTrue stats, prefix & ".bothSidesMoved", changedBars = 6 And changed.Count = 12
-            Else
-                AssertTrue stats, prefix & ".bothSidesBound", changed.Count = 10
-            End If
-            target.Cells(topRow, diameterColumn).Value2 = 0#
-            target.Cells(topRow + 1, diameterColumn).Value2 = 0#
-            settings.LoadFromRange target
-            Set inactive = builder.BuildFromSettings(settings, units)
-            AssertTrue stats, prefix & ".inactiveCount", inactive.Count = 6
-            target.Cells(topRow, CLng(column)).Value2 = original
-            settings.LoadFromRange target
-            Set changed = builder.BuildFromSettings(settings, units)
-            same = (changed.Count = inactive.Count)
-            For i = 1 To inactive.Count
-                If Abs(inactive.X(i) - changed.X(i)) + Abs(inactive.Y(i) - changed.Y(i)) > 0.00000001 Then same = False
-            Next i
-            AssertTrue stats, prefix & ".inactiveCoordinates", same
+                For Each invalid In Array(vbNullString, "InvalidChoice", CVErr(xlErrDiv0))
+                    target.Cells(selectedRow, CLng(column)).Value2 = invalid
+                    settings.LoadFromRange target
+                    On Error Resume Next
+                    Set changed = builder.BuildFromSettings(settings, units)
+                    number = Err.Number: reason = Err.Description: Err.Clear
+                    On Error GoTo Failed
+                    AssertTrue stats, prefix & ".invalidRejected." & TypeName(invalid), number <> 0
+                    AssertTrue stats, prefix & ".invalidAddress." & TypeName(invalid), _
+                        InStr(1, reason, "ячейка " & target.Cells(selectedRow, CLng(column)).Address(False, False), vbBinaryCompare) > 0
+                Next invalid
+                target.Cells(selectedRow, diameterColumn).Value2 = 0#
+                settings.LoadFromRange target
+                Set inactive = builder.BuildFromSettings(settings, units)
+                AssertTrue stats, prefix & ".inactiveIgnored", inactive.Count = 9
+                target.Cells(selectedRow, CLng(column)).Value2 = original
+                settings.LoadFromRange target
+                Set changed = builder.BuildFromSettings(settings, units)
+                AssertTrue stats, prefix & ".inactiveSameCount", changed.Count = inactive.Count
+                For i = 1 To inactive.Count
+                    AssertTrue stats, prefix & ".inactiveSame" & CStr(i), RectSetLayoutContainsBar(changed, inactive, i)
+                Next i
+            Next side
         Next column
         pairIndex = pairIndex + 1
     Next face
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: audit03.rectset.effect.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    AppendLine stats, "FAIL: rectset.independent.effect; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
     Application.DisplayAlerts = False
@@ -5456,6 +5449,54 @@ Restore:
     Application.DisplayAlerts = savedAlerts
     On Error GoTo 0
 End Sub
+
+' ДЛЯ ТЕСТОВ: третий ряд учитывает направление и диаметр второго ряда только
+' собственной стороны. Совпадение направлений справа не вызывает перескок
+' слева, где направления различаются; последующее изменение слева изолировано.
+Private Sub TestRectSetIndependentThirdRows(ByRef stats As TUiTestStats)
+    Dim builder As CRectSetRebarLayoutBuilder, layout As CRebarLayout, changed As CRebarLayout
+    Dim face As Variant, emptyFace As Variant
+    On Error GoTo Failed
+    Set builder = New CRectSetRebarLayoutBuilder
+    emptyFace = Array(50#, 50#, 20#, 20#, 0, 0, 100#, 100#, 100#, 100#)
+    face = Array(50#, 50#, 20#, 20#, 1, 1, 100#, 100#, 100#, 100#, 18#, 22#, 28#, 34#, _
+        "SideBySide", "Stacked", "EachBar", "EachBar", "Stacked", "Stacked", "EachBar", "EachBar")
+    Set layout = builder.Build(200#, 300#, 0#, 0#, 0#, 0#, face, emptyFace, emptyFace, emptyFace, "Rebar", 0#, "Rectangle")
+    AssertTrue stats, "rectset.thirdRows.count", layout.Count = 6
+    AssertTrue stats, "rectset.thirdRows.leftNoSkip", Abs(layout.X(3) - layout.X(1) - 24#) < 0.00000001
+    AssertTrue stats, "rectset.thirdRows.rightSkip", Abs(layout.X(4) - layout.X(6) - 49#) < 0.00000001
+    face(15) = "SideBySide"
+    Set changed = builder.Build(200#, 300#, 0#, 0#, 0#, 0#, face, emptyFace, emptyFace, emptyFace, "Rebar", 0#, "Rectangle")
+    AssertTrue stats, "rectset.thirdRows.leftSkip", Abs(Abs(changed.Y(3) - changed.Y(1)) - 42#) < 0.00000001
+    AssertTrue stats, "rectset.thirdRows.rightUnchanged", RectSetLayoutContainsBar(changed, layout, 6)
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: rectset.thirdRows; " & CStr(Err.Number) & "; " & Err.Description
+End Sub
+
+' ДЛЯ ТЕСТОВ: связывает столбец пользовательской таблицы с независимым ключом.
+Private Function RectSetSelectorTail(ByVal column As Long) As String
+    Select Case column
+        Case 3: RectSetSelectorTail = "loc_2row"
+        Case 4: RectSetSelectorTail = "bind_2row"
+        Case 6: RectSetSelectorTail = "loc_3row"
+        Case 7: RectSetSelectorTail = "bind_3row"
+    End Select
+End Function
+
+' ДЛЯ ТЕСТОВ: ищет исходный стержень в новой раскладке без зависимости от
+' перенумерации после изменения привязки дополнительных рядов.
+Private Function RectSetLayoutContainsBar(ByVal actual As CRebarLayout, ByVal original As CRebarLayout, ByVal index As Long) As Boolean
+    Dim i As Long
+    For i = 1 To actual.Count
+        If Abs(actual.X(i) - original.X(index)) + Abs(actual.Y(i) - original.Y(index)) + _
+                Abs(actual.Diameter(i) - original.Diameter(index)) < 0.00000001 Then
+            RectSetLayoutContainsBar = True
+            Exit Function
+        End If
+    Next i
+End Function
 
 ' ДЛЯ ТЕСТОВ: запускает поведенческую проверку всех пятнадцати пользовательских
 ' селекторов единиц/знаков через фактический Config, включая ошибку и recovery.
@@ -7543,14 +7584,96 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
+' ================== ДЛЯ ТЕСТОВ: СПИСКИ И РАМКА CONFIG ==================
 
+' Проверяет действующие списки в сохраненной книге, а не только формулы
+' validation из сборщика. Каждое значение источника должно приниматься
+' Excel как отдельный вариант; исходная формула ячейки возвращается сразу.
+Public Function RunConfigPresentationTests() As String
+    Dim stats As TUiTestStats
+    TestConfigDropdownChoices stats
+    TestConfigSettingsRightBorder stats
+    TestRectSetIndependentSelectorLayout stats
+    RunConfigPresentationTests = stats.Report & "TOTAL_CONFIG_PRESENTATION: passed=" & _
+        CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
 
+' Проверяет все list-ячейки Config и по одному представителю каждого
+' источника. Ссылочные списки не зависят от локального разделителя Excel;
+' проверка Validation.Value выявляет ситуацию, когда вся строка стала пунктом.
+Private Sub TestConfigDropdownChoices(ByRef stats As TUiTestStats)
+    Dim sheet As Object, cells As Object, cell As Object, source As Object, optionCell As Object
+    Dim checked As Object, formula As String, prefix As String, saved As Variant
+    Dim sample As Object, options As Long, lists As Long, targets As Long
+    On Error GoTo Failed
+    Set sheet = ThisWorkbook.Worksheets.Item("Config")
+    Set cells = sheet.Cells.SpecialCells(xlCellTypeAllValidation)
+    Set checked = CreateObject("Scripting.Dictionary")
+    For Each cell In cells.Cells
+        If cell.MergeCells Then
+            If cell.Address <> cell.MergeArea.Cells(1, 1).Address Then GoTo NextCell
+        End If
+        If cell.Validation.Type = xlValidateList Then
+            targets = targets + 1
+            formula = CStr(cell.Validation.Formula1)
+            prefix = "config.dropdown." & cell.Address(False, False)
+            AssertTrue stats, prefix & ".rangeSource", Left$(formula, 1) = "="
+            AssertTrue stats, prefix & ".visible", cell.Validation.InCellDropdown
+            If Left$(formula, 1) = "=" And Not checked.Exists(formula) Then
+                checked.Add formula, True
+                Set source = sheet.Range(Mid$(formula, 2))
+                AssertTrue stats, prefix & ".vertical", source.Columns.Count = 1
+                Set sample = cell
+                saved = sample.Formula
+                options = 0
+                For Each optionCell In source.Cells
+                    If Not IsError(optionCell.Value2) Then
+                        If Len(CStr(optionCell.Value2)) > 0 Then
+                            options = options + 1
+                            sample.Value2 = optionCell.Value2
+                            AssertTrue stats, prefix & ".accepts." & CStr(options), sample.Validation.Value
+                        End If
+                    Else
+                        AssertTrue stats, prefix & ".sourceError", False
+                    End If
+                Next optionCell
+                sample.Value2 = "__INVALID_DROPDOWN_OPTION__"
+                AssertTrue stats, prefix & ".rejectsUnknown", Not sample.Validation.Value
+                sample.Formula = saved
+                Set sample = Nothing
+                AssertTrue stats, prefix & ".notEmpty", options > 0
+                lists = lists + 1
+            End If
+        End If
+NextCell:
+    Next cell
+    AssertTrue stats, "config.dropdown.targetsPresent", targets > 0
+    AppendLine stats, "CONFIG_DROPDOWNS: targets=" & CStr(targets) & "; rangeSources=" & CStr(lists)
+    Exit Sub
+Failed:
+    Dim code As Long, reason As String
+    code = Err.Number: reason = Err.Description
+    On Error Resume Next
+    If Not sample Is Nothing Then sample.Formula = saved
+    On Error GoTo 0
+    AssertTrue stats, "config.dropdown.runtime." & CStr(code) & "." & reason, False
+End Sub
 
-
-
-
-
-
-
-
-
+' Проверяет правую грань каждой строки общей таблицы, включая последнюю
+' колонку Справка. Адреса берутся из имени, а не из фиксированных букв/строк.
+Private Sub TestConfigSettingsRightBorder(ByRef stats As TUiTestStats)
+    Dim settings As Object, cell As Object, row As Long
+    On Error GoTo Failed
+    Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    For row = 1 To settings.Rows.Count
+        Set cell = settings.Cells(row, settings.Columns.Count)
+        If cell.MergeCells Then Set cell = cell.MergeArea
+        AssertTrue stats, "config.settings.rightBorder." & CStr(row), _
+            cell.Borders(xlEdgeRight).LineStyle = xlDash And _
+            cell.Borders(xlEdgeRight).Weight = xlThin And _
+            cell.Borders(xlEdgeRight).Color = RGB(0, 0, 0)
+    Next row
+    Exit Sub
+Failed:
+    AssertTrue stats, "config.settings.rightBorder.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub

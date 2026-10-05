@@ -564,7 +564,8 @@ Private Sub TestCrackFormationNoCrackDoesNotBuildPostState(ByRef stats As TCrack
     AssertTrue stats, "crack.noCrack.notFormed", Not crack.CrackFormed
     AssertTrue stats, "crack.noCrack.criterion", _
         crack.FormationResult.ResultMeta.ResultCode = rcCriterionNotReached
-    AssertTrue stats, "crack.noCrack.fixedPhysicalFailure", crack.FormationResult.ResultMeta.InternalStatus = rsCheckFailed
+    AssertTrue stats, "crack.noCrack.fixedPathSuccess", crack.FormationResult.ResultMeta.InternalStatus = rsSuccess
+    AssertTrue stats, "crack.noCrack.confirmed", crack.FormationResult.ConfirmedNotCracked
     AssertTrue stats, "crack.noCrack.widthNotApplicable", crack.CrackWidthInternalStatus = rsNotApplicable
     AssertTrue stats, "crack.noCrack.noBeforeState", crack.FormationResult.PreCrackState Is Nothing
     AssertTrue stats, "crack.noCrack.noPostState", crack.FormationResult.PostCrackState Is Nothing

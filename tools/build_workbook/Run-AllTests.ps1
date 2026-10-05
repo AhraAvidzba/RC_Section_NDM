@@ -1,7 +1,8 @@
 ﻿# служебный PowerShell-скрипт поддерживает сборку, проверку или обновление Excel-книги проекта.
 
 param(
-    [string]$ReportPath = "docs/regression/Stage01_AllTests_Report.txt"
+    [string]$ReportPath = "docs/regression/Stage01_AllTests_Report.txt",
+    [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm"
 )
 
 $ErrorActionPreference = "Stop"
@@ -33,7 +34,14 @@ foreach ($script in $scripts) {
     $lines.Add("===== $script =====")
     try {
         $global:LASTEXITCODE = 0
-        $output = & $path 2>&1 | Out-String -Stream
+        # Все runners принимают WorkbookPath; изолированная сборка проходит
+        # тот же набор без перезаписи пользовательской рабочей книги.
+        $arguments = @{ WorkbookPath = $WorkbookPath }
+        if ($script -eq 'Run-RegressionBaselineTests.ps1' -and
+            $ReportPath -ne 'docs/regression/Stage01_AllTests_Report.txt') {
+            $arguments.ReportPath = $ReportPath + '.baseline.txt'
+        }
+        $output = & $path @arguments 2>&1 | Out-String -Stream
         $scriptExitCode = $global:LASTEXITCODE
         foreach ($line in $output) {
             $text = [string]$line

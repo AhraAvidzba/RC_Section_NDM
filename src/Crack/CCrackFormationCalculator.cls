@@ -84,7 +84,8 @@ Private mAred As Double ' Площадь приведенного сечения
 Private mCentralTensionBranch As Boolean ' True, если сработала отдельная ветка центрального растяжения.
 Private mInputLoadState As CSectionLoadState ' Единый нормализованный LC с пользовательской точкой приложения.
 Private mActiveSearchLoadPath As CLoadPathDescriptor ' Общий описатель конкретной траектории текущей search-session.
-Private mRequestedLoadPath As String ' Исходный выбор LC; физическое отсутствие точки для Auto и фиксированного пути трактуется раздельно.
+Private mRequestedLoadPath As String ' Исходный выбор LC; нужен для нулевого Auto-сочетания и восстановления настройки после поиска.
+Private mCurrentLoadBelowFormationCriterion As Boolean ' На этом пути lambda=1 имеет допустимое равновесие без достижения критерия трещины.
 Private mSearchReferenceX As Double ' Центр, относительно которого проверяется осевая составляющая выбранного пути, мм.
 Private mSearchReferenceY As Double ' Центр, относительно которого проверяется осевая составляющая выбранного пути, мм.
 
@@ -188,6 +189,7 @@ Private Sub ClearResult()
     Set mInputLoadState = Nothing
     Set mActiveSearchLoadPath = Nothing
     mRequestedLoadPath = vbNullString
+    mCurrentLoadBelowFormationCriterion = False
     mSearchReferenceX = 0#
     mSearchReferenceY = 0#
 End Sub
@@ -1458,7 +1460,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         probeN, probeMx, probeMy, True)
     If FormationSearchStoppedTerminally() Then Exit Function
     If SolverFormationResidual(section, solver, residual) Then
-        If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then Exit Function
+        If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual, lambdaValue) Then Exit Function
         AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
         ProbeLoadScalingFormation = True
         Exit Function
@@ -1473,7 +1475,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
             probeN, probeMx, probeMy, True)
         If FormationSearchStoppedTerminally() Then Exit Function
         If SolverFormationResidual(section, solver, residual) Then
-            If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then Exit Function
+            If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual, lambdaValue) Then Exit Function
             AppendLoadScalingProbeDiagnostic lambdaValue, residual, True
             ProbeLoadScalingFormation = True
             Exit Function
@@ -1494,7 +1496,7 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
             If FormationSearchStoppedTerminally() Then Exit Function
             ProbeLoadScalingFormation = SolverFormationResidual(section, solver, residual)
             If ProbeLoadScalingFormation Then
-                If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual) Then
+                If FormationProbeBlockedByPhysicalLimit(section, solver, concreteMaterial, steelMaterial, residual, lambdaValue) Then
                     ProbeLoadScalingFormation = False
                     Exit Function
                 End If
@@ -1698,22 +1700,45 @@ Private Sub SetFormationNumericalFailure(ByVal reason As String)
     SetFormationResult rsNumericalFailure, rcNumericalFailure, reason
 End Sub
 
-' Проба с равновесием, вышедшая за другой физический предел до критерия
-' трещины, не является допустимой нижней стороной crack-скобки. Причина
-' остается инженерным отказом, а не численной несходимостью следующей пробы.
+' Проба за другим физическим пределом не является допустимой стороной скобки.
+' Если на этом же пути lambda=1 уже имеет допустимое равновесие ниже критерия,
+' отказ большей нагрузки не отменяет отсутствие трещины в текущем сочетании.
+' Без такого доказательства сохраняется физический отказ поиска, а не NumFail.
 Private Function FormationProbeBlockedByPhysicalLimit(ByVal section As CSectionModel, _
         ByVal solver As CSectionSolver, ByVal concreteMaterial As CMaterialDiagram, _
-        ByVal steelMaterial As CMaterialDiagram, ByVal residual As Double) As Boolean
+        ByVal steelMaterial As CMaterialDiagram, ByVal residual As Double, _
+        Optional ByVal lambdaValue As Double = -1#) As Boolean
     If solver Is Nothing Then Exit Function
     If Not solver.Converged Then Exit Function
     If residual >= 0# Then Exit Function
     Dim runner As CStateSolutionRunner
     Set runner = New CStateSolutionRunner
-    If runner.StateWithinPhysicalRange(section, solver, concreteMaterial, steelMaterial) Then Exit Function
-    mConverged = False
+    If runner.StateWithinPhysicalRange(section, solver, concreteMaterial, steelMaterial) Then
+        If lambdaValue = 1# Then mCurrentLoadBelowFormationCriterion = True
+        Exit Function
+    End If
+    AppendDiagnostic "formationPhysicalProbe: lambda=" & FormatNumberInvariant(lambdaValue) & _
+        "; concreteMin=" & FormatNumberInvariant(solver.MinConcreteStrain) & _
+        "; concreteMax=" & FormatNumberInvariant(solver.MaxConcreteStrain) & _
+        "; concretePhysicalMin=" & FormatNumberInvariant(concreteMaterial.PhysicalCompressionStrain) & _
+        "; concretePhysicalMax=" & FormatNumberInvariant(concreteMaterial.PhysicalTensionStrain) & _
+        "; steelMin=" & FormatNumberInvariant(solver.MinSteelStrain) & _
+        "; steelMax=" & FormatNumberInvariant(solver.MaxSteelStrain) & _
+        "; steelPhysicalMin=" & FormatNumberInvariant(steelMaterial.PhysicalCompressionStrain) & _
+        "; steelPhysicalMax=" & FormatNumberInvariant(steelMaterial.PhysicalTensionStrain)
     mCrackFormed = False
-    SetFormationResult rsCheckFailed, rcPhysicalLimitExceeded, _
-        "При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования."
+    If lambdaValue > 1# And mCurrentLoadBelowFormationCriterion Then
+        mConverged = True
+        SetFormationResult rsSuccessWithWarning, rcCrackNotFormed, _
+            "При заданной нагрузке нормальная трещина не образуется: равновесие найдено в физических пределах, " & _
+            "предельная растягивающая деформация бетона не достигнута. При увеличении нагрузки по пути " & _
+            CrackFormationPathDisplayName() & " другой физический предел достигнут раньше образования трещины; " & _
+            "точка трещинообразования на этом пути не определена."
+    Else
+        mConverged = False
+        SetFormationResult rsCheckFailed, rcPhysicalLimitExceeded, _
+            "При поиске образования трещины физический предел бетона или арматуры достигнут раньше порога трещинообразования."
+    End If
     FormationProbeBlockedByPhysicalLimit = True
 End Function
 
@@ -1739,19 +1764,14 @@ End Function
 
 
 ' Сохраняет подтвержденную недостижимость критерия трещинообразования
-' на выбранной траектории. Для Auto это корректный физический исход,
-' для явно заданного пути - отказ выбранного поиска, но не NumFail.
+' на выбранной траектории. Это корректный физический исход как для Auto,
+' так и для явно заданного пути, а не отказ текущего сочетания или NumFail.
 ' Найденный порог за текущей нагрузкой обрабатывается отдельно.
 Private Sub FinishNoCrack(ByVal reason As String)
     mConverged = True
     mCrackFormed = False
     mStopReason = reason
-    If mRequestedLoadPath <> CRACK_PATH_AUTO And Len(mRequestedLoadPath) > 0 Then
-        mConverged = False
-        SetFormationResult rsCheckFailed, rcCriterionNotReached, reason
-    ElseIf mFormationInternalStatus = rsUnset Then
-        SetFormationResult rsSuccess, rcCriterionNotReached, reason
-    End If
+    SetFormationResult rsSuccess, rcCriterionNotReached, reason
     AppendDiagnostic reason
 End Sub
 
@@ -2056,6 +2076,7 @@ End Function
 ' всю цепочку переключения путей.
 Private Sub ClearFormationAttemptState()
     mConverged = False
+    mCurrentLoadBelowFormationCriterion = False
     mStopReason = vbNullString
     mCrackFormed = False
     mFormationInternalStatus = rsUnset
