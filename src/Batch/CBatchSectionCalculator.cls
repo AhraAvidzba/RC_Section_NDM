@@ -12,10 +12,10 @@ Option Explicit
 ' ==========================================================================
 ' Пакетный расчет сочетаний нагрузок
 ' ==========================================================================
-' CBatchSectionCalculator запускает один и тот же расчетный набор для всех LC:
-' прямое НДС, несущую способность для 1 группы и трещины для 2 группы. Класс
-' хранит результаты каждого сочетания в массивах, чтобы writer мог потом
-' выгрузить сводку и Results без повторного обращения к solver-ам.
+' CBatchSectionCalculator выполняет для каждого LC расчеты, включенные его
+' профилем: прямое НДС, несущую способность, устойчивость и трещины. Класс
+' хранит исходные строки и готовые typed results каждого сочетания, чтобы
+' writer мог выгрузить сводку и Results без повторного обращения к solver-ам.
 '
 ' Здесь нет чтения Excel-ячеек и нет генерации геометрии. На вход уже должны
 ' прийти CSectionModel, материалы и нормализованные усилия N + Mx + My.
@@ -250,8 +250,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Dim formationOptions As CCrackFormationCalculator
     Set formationOptions = New CCrackFormationCalculator
     mCrackFormationSolutionStrategy = formationOptions.NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
-    mWorstCombinationCriterion = NormalizeWorstCombinationCriterion( _
-        settings.GetRawString("General.WorstCombinationCriterion", mWorstCombinationCriterion))
+    mWorstCombinationCriterion = settings.GetRequiredChoice("General.WorstCombinationCriterion", _
+        Array("StrengthStrain", "StrengthCapacity", "Cracks", "Stability"))
     mCrackTensionZoneMode = settings.GetRequiredString("SLS.Crack.TensionZoneMode")
     mCrackCoverDistanceMode = settings.GetRequiredString("SLS.Crack.CoverDistanceMode")
     mCrackPhi1 = settings.GetRequiredDouble("SLS.Crack.Phi1")
@@ -481,7 +481,7 @@ Public Sub AddCombination(ByVal combinationID As String, ByVal nValue As Double,
 End Sub
 
 ' Сохраняет строку LC с ошибкой ввода, чтобы пользователь увидел ее в отчете.
-' Такие сочетания не передаются в solver, но отображаются как InvalidInput.
+' Такие сочетания не передаются в solver, но отображаются как InputErr.
 Public Sub AddInvalidCombination(ByVal combinationID As String, ByVal profileId As String, _
         ByVal comment As String, ByVal reason As String, Optional ByVal loadPathText As String = vbNullString, _
         Optional ByVal sourceDataOffset As Long = 0)
@@ -1371,9 +1371,9 @@ End Function
 
 
 
-' Добавляет в компактный batch-журнал причину несходимости трещин.
-' Подробный txt-отчет пишет тот же DiagnosticLog отдельно, а здесь строка
-' нужна unit/regression-тестам и пользователю, когда общий статус только NumFail.
+' Добавляет в компактный batch-журнал причину отказа подготовки или расчета
+' трещин. Подробный txt-отчет пишет DiagnosticLog отдельно; эта строка сохраняет
+' исходную причину этапа для диагностики и regression-тестов.
 Private Sub AppendCrackDiagnostic(ByVal index As Long, ByVal crack As CCrackWidthCalculator)
     If crack Is Nothing Then Exit Sub
 
@@ -1453,7 +1453,7 @@ End Sub
 
 ' Передает в CCapacityCalculator настройки поиска несущей и внутреннего
 ' равновесия. Материальные пределы calculator берет из построенных диаграмм
-' для конкретного профиля, поэтому batch больше не настраивает CCapacitySolver.
+' для конкретного профиля; batch передает только общие параметры запуска.
 Private Sub ConfigureCapacityCalculator(ByVal calculator As CCapacityCalculator)
     calculator.ConfigureSearch mCapacityInitialLambda, mCapacitySolutionStrategy, _
         mCapacitySearchMethod, mCapacityMaxLambda, mCapacityToleranceLambda, _
@@ -1464,26 +1464,6 @@ Private Sub ConfigureCapacityCalculator(ByVal calculator As CCapacityCalculator)
         mSolverDampingInitial, mSolverMinLineSearchAlpha, mSolverMaxDeltaEpsilon0, _
         mSolverMaxDeltaKappa, mSolverSecantMaxRestarts, mSolverSecantMinStepNorm, _
         DetailedDiagnosticsEnabled()
-End Sub
-
-' Настраивает runner прямого НДС общими solver-параметрами batch-расчета.
-' Здесь остается только передача настроек; сама логика initial guess, retry
-' и extension живет в CStateSolutionRunner.
-Private Sub ConfigureStateRunner(ByVal runner As CStateSolutionRunner)
-    runner.LoadSteps = mSolverLoadSteps
-    runner.SolverMethod = mSolverMethod
-    runner.MaxIterations = mSolverMaxIterations
-    runner.ToleranceN = mSolverToleranceN
-    runner.ToleranceMx = mSolverToleranceMx
-    runner.ToleranceMy = mSolverToleranceMy
-    runner.LineSearchEnabled = mSolverLineSearchEnabled
-    runner.DampingInitial = mSolverDampingInitial
-    runner.MinLineSearchAlpha = mSolverMinLineSearchAlpha
-    runner.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    runner.MaxDeltaKappa = mSolverMaxDeltaKappa
-    runner.SecantMaxRestarts = mSolverSecantMaxRestarts
-    runner.SecantMinStepNorm = mSolverSecantMinStepNorm
-    runner.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
 ' Создает provider именованных НДС для одного LC и подключает к нему repository
@@ -1660,26 +1640,9 @@ Private Sub ReportBlock(ByVal title As String, ByVal body As String)
     mReport.AddDiagnosticBlock title, body
 End Sub
 
-' Утилитарный максимум без WorksheetFunction, чтобы не тащить Excel в hot path.
-Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
-    If a > b Then MaxDouble = a Else MaxDouble = b
-End Function
-
-' Утилитарный минимум без WorksheetFunction; используется в расчетном слое,
-' где нельзя вводить лишнюю зависимость от Excel-объектов.
-Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
-    If a < b Then MinDouble = a Else MinDouble = b
-End Function
-
-' Утилитарный максимум для Long без WorksheetFunction и без неявного Variant.
-Private Function MaxLong(ByVal a As Long, ByVal b As Long) As Long
-    If a > b Then MaxLong = a Else MaxLong = b
-End Function
-
-' Выбирает худшее сочетание для batch summary и режима Worst.
-' По пользовательскому требованию Worst относится именно к прочности: после
-' отказа от пользовательского StrainSafetyFactor выбор идет по запасу
-' найденного предельного момента, а трещины остаются отдельной проверкой.
+' Выбирает governing-сочетание прочностного раздела по минимальному
+' положительному запасу несущей. Общий пользовательский Worst определяется
+' отдельно, по General.WorstCombinationCriterion.
 Private Function IsBetterGoverningCandidate(ByVal candidateIndex As Long, ByVal currentIndex As Long) As Boolean
     Dim candidateSafety As Double
     Dim currentSafety As Double
@@ -1696,9 +1659,8 @@ Private Function IsBetterGoverningCandidate(ByVal candidateIndex As Long, ByVal 
 End Function
 
 ' Возвращает прочностной запас LC как найденный множитель lambda.
-' Для LoadPath это единая величина для lambda*Mx,
-' lambda*My, lambda*Mxy, lambda*N и lambda*NMxy; отдельные отношения Nult/N или Mult/Mxy больше
-' не нужны для выбора Worst.
+' Для любого LoadPath множитель одинаково характеризует запас выбранной
+' траектории: lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy.
 Private Function StrengthSafetyFactorForGoverning(ByVal index As Long) As Double
     StrengthSafetyFactorForGoverning = mResults(index).StrengthResult.Capacity.ReserveFactor
 End Function
@@ -1763,26 +1725,6 @@ Private Function IsBetterWorstCandidate(ByVal candidateIndex As Long, ByVal curr
         currentSafety = mResults(currentIndex).ReserveForCriterion(mWorstCombinationCriterion)
         IsBetterWorstCandidate = (currentSafety <= 0# Or candidateSafety < currentSafety)
     End If
-End Function
-
-' Проверяет критерий Worst на границе чтения Config. Неизвестное или явно
-' пустое значение запрещает запуск LC как ошибочная настройка, без подмены
-' другим критерием. После успешного чтения поле содержит каноническое имя.
-Private Function NormalizeWorstCombinationCriterion(ByVal rawValue As String) As String
-    Select Case LCase$(Trim$(rawValue))
-        Case "strengthstrain"
-            NormalizeWorstCombinationCriterion = "StrengthStrain"
-        Case "strengthcapacity"
-            NormalizeWorstCombinationCriterion = "StrengthCapacity"
-        Case "cracks"
-            NormalizeWorstCombinationCriterion = "Cracks"
-        Case "stability"
-            NormalizeWorstCombinationCriterion = "Stability"
-        Case Else
-            Err.Raise vbObjectError + 3908, "CBatchSectionCalculator.ApplySettings", _
-                "Настройка General.WorstCombinationCriterion должна быть StrengthStrain, " & _
-                "StrengthCapacity, Cracks или Stability. Прочитано: """ & rawValue & """."
-    End Select
 End Function
 
 ' Форматирует число с точкой как десятичным разделителем для диагностической строки.
@@ -2161,9 +2103,8 @@ End Property
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Эти свойства раскрывают промежуточные численные данные batch-расчета,
-' которые удобны regression-тестам: отдельно проверяются lambda capacity
-' и факт сходимости прямого НДС.
+' Повторный запуск crack workflow проверяет изоляцию сохраненного снимка
+' от последующего изменения рабочего calculator и повторного использования.
 
 ' Повторяет production-маршрут до публикации всего LC и возвращает первый
 ' неизменяемый crack-result для сравнения. Repository остается рабочим:

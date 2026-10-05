@@ -30,6 +30,17 @@ $excel = $null
 $workbook = $null
 $failed = $false
 
+# Определяет PID только созданного COM-экземпляра Excel по его окну.
+# Watchdog использует этот идентификатор, не затрагивая пользовательские книги.
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class AuditExcelProcessIdentity {
+    [DllImport("user32.dll")]
+    public static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+}
+'@
+
 # Сохраняет ход прогона до COM-вызова: при зависании видно последнюю suite,
 # а уже завершенные проверки не теряются вместе с тестовым процессом Excel.
 function Save-Progress {
@@ -169,6 +180,12 @@ try {
     $lines.Add("GLOBAL_MODE: $SettingKey=$Mode; explicit-On tests retain their setup")
     Save-Progress
     $excel = New-Object -ComObject Excel.Application
+    [uint32]$testExcelProcessId = 0
+    [void][AuditExcelProcessIdentity]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd, [ref]$testExcelProcessId)
+    if ($testExcelProcessId -eq 0) { throw 'Не удалось определить собственный тестовый процесс Excel.' }
+    $testExcelProcess = Get-Process -Id $testExcelProcessId
+    $lines.Add("TEST_EXCEL_PROCESS: id=$testExcelProcessId; startTicks=$($testExcelProcess.StartTime.ToUniversalTime().Ticks)")
+    Save-Progress
     $excel.Visible = [bool]$Visible
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 1
@@ -203,6 +220,11 @@ try {
             throw "Перед suite $macro не сохранено требуемое значение $Mode."
         }
         $macroName = "'RC_Section_NDM.xlsm'!$macro"
+        # Фоновый тестовый Excel не должен прерывать VBA из-за Escape в другом
+        # приложении. Excel сбрасывает этот режим после idle, поэтому задаем его
+        # перед каждым Run; зависание по-прежнему ограничивает внешний watchdog.
+        $excel.EnableCancelKey = 0
+        $lines.Add('TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only')
         if ($MacroArgument2) { $result = [string]$excel.Run($macroName, $MacroArgument1, $MacroArgument2) }
         elseif ($MacroArgument1) { $result = [string]$excel.Run($macroName, $MacroArgument1) }
         else { $result = [string]$excel.Run($macroName) }

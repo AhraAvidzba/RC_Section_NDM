@@ -210,9 +210,9 @@ Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section A
     mWidthInternalStatus = rsUnset
     mWidthResultCode = rcNone
     If formation.CentralTensionBranch Then
-        CalculateCentralTension currentSolver, section, materialProvider, 0#, 0#, 0#, loadStateForClassification
+        CalculateCentralTension currentSolver, section, materialProvider, loadStateForClassification
     Else
-        CalculateGeneralBending currentSolver, section, materialProvider, 0#, 0#, 0#, loadStateForClassification
+        CalculateGeneralBending currentSolver, section, materialProvider, loadStateForClassification
     End If
 End Sub
 
@@ -256,8 +256,7 @@ End Sub
 ' Здесь нет нейтральной линии, поэтому Abt принимается равной всей площади
 ' бетона, а As - всей продольной арматуре, которая растянута в текущем НДС.
 Private Sub CalculateCentralTension(ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
-        ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal materialProvider As CMaterialModelProvider, _
         ByVal loadStateForClassification As CSectionLoadState)
     mCentralTensionBranch = True
     mPhi3 = ResolvePhi3(loadStateForClassification)
@@ -279,8 +278,8 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionStateResult, 
     mAs = SelectedRebarArea(section, selected)
     CompleteCrackFormula currentSolver, section, materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected
     If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
-    If Not FinalizeWithPsiMode(section, materialProvider, currentSolver, selected, _
-            targetN, targetMx, targetMy, "Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона.") Then Exit Sub
+    If Not FinalizeWithPsiMode(section, materialProvider, selected, _
+            "Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона.") Then Exit Sub
 End Sub
 
 
@@ -289,8 +288,7 @@ End Sub
 ' Все геометрические величины строятся в координате s вдоль нормали к
 ' нейтральной линии, направленной в сторону растяжения.
 Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
-        ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByVal materialProvider As CMaterialModelProvider, _
         ByVal loadStateForClassification As CSectionLoadState)
     mPhi3 = ResolvePhi3(loadStateForClassification)
 
@@ -302,7 +300,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
     ' его нужно классифицировать по текущему НДС, а не делить на нулевую кривизну.
     If normK <= NEAR_ZERO_STRAIN Then
         If currentSolver.Epsilon0 > NEAR_ZERO_STRAIN Then
-            CalculateCentralTension currentSolver, section, materialProvider, targetN, targetMx, targetMy, loadStateForClassification
+            CalculateCentralTension currentSolver, section, materialProvider, loadStateForClassification
         Else
             FinishNoCrack "В текущем равномерном поле деформаций нет растянутой зоны для расчета раскрытия трещины."
         End If
@@ -362,8 +360,8 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
 
     CompleteCrackFormula currentSolver, section, materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected
     If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
-    If Not FinalizeWithPsiMode(section, materialProvider, currentSolver, selected, _
-            targetN, targetMx, targetMy, "Расчет выполнен для произвольного сечения по общей НДМ-ветке.") Then Exit Sub
+    If Not FinalizeWithPsiMode(section, materialProvider, selected, _
+            "Расчет выполнен для произвольного сечения по общей НДМ-ветке.") Then Exit Sub
 End Sub
 
 
@@ -402,8 +400,7 @@ End Sub
 ' lambda_crc и состояния PreCrackState/PostCrackState берутся из предварительной
 ' проверки образования, если она их получила. Повторный поиск здесь не выполняется.
 Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
-        ByVal currentSolver As CSectionStateResult, ByRef selected() As Boolean, _
-        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByRef selected() As Boolean, _
         ByVal finalReason As String) As Boolean
     If mFallbackPsi1 Then
         mPsiS = 1#
@@ -1039,7 +1036,7 @@ Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = N
     If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackWidthCalculator", "Steel.Es должен быть положительным для расчета трещин."
 End Sub
 
-' Сохраняет прежний машинный номер ошибки инженерной настройки. Reader
+' Сохраняет согласованный машинный номер ошибки инженерной настройки. Reader
 ' добавляет место ввода, но не принимает решение о допустимости коэффициента;
 ' автономный API без reader получает тот же ключ и понятное исправление.
 Private Sub RaiseInvalidSetting(ByVal errorCode As Long, ByVal key As String, _

@@ -227,11 +227,92 @@ shape/builders и передает нормализованные размеры
     до Long/массивов. Plot reader переводит сохраненные units, а не текущий
     Config, и очищает частичный снимок при отказе.
     В CMaterialDiagram описание UltimateCompressionStrain/UltimateTensionStrain
-    неточно называет физический предел крайней точкой диаграммы и содержит
-    историческую ссылку на удаленные настройки; нужна comment-only правка.
-    Private MaxDouble Capacity adapter не имеет callers; удаление рассматривается
-    в рамках A05 после сверки актуального source, не как новая архитектура.
+    неточно называло физический предел крайней точкой диаграммы и содержало
+    историческую ссылку на удаленные настройки; выполнена comment-only правка.
+    Private MaxDouble Capacity adapter не имеет callers и удален в рамках A05
+    после сверки актуального source, не как новая архитектура.
     Это чтение не заменяет mutation/extreme/финальные runtime gates.
+30. Полностью прочитан `CMaterialModelProvider`: физические пределы отдельно
+    передаются расширенной диаграмме, cache разделяет физическую и equilibrium
+    роль, reinitialization меняет Revision. Уточнена шапка: Excel читает
+    CSystemSettingsReader, а provider получает его нормализованный payload.
+    Диаграммы выдаются общей ссылкой и по соглашению используются read-only,
+    но InitializeFromArrays публичен; программная мутация выданной диаграммы
+    требует отдельного directed теста A03 перед выводом о достаточности
+    защиты общего material cache. Численные snapshot-поля State при этом
+    непосредственно диаграмму не хранят; два разных контракта не смешиваются.
+31. Полностью прочитаны `CStrengthSummaryWriter`, `CStabilitySummaryWriter`,
+    `CBatchResultWriter`, `CPlotAnnotationLayout`, `CGeometryHollowRectangle`
+    и `CGeometryRectSet`. Подробные комментарии берутся из своих result-subtrees,
+    а сводка из готового OverallMeta; writer не анализирует solver-текст для
+    выбора статуса. Раскладка аннотаций отвечает только за визуальные координаты,
+    не меняя расчетные данные. HollowRectangle отделяет Opening и бетонное
+    кольцо, RectSet использует только активные прямоугольники. Уточнены две
+    comment-only подписи: Batch передает section подробному strength writer,
+    IsPointInside является текущим запросом общего geometry-интерфейса.
+32. Для A03 подготовлен отдельный reproducer опубликованной material-ссылки:
+    40 вариантов (два материала, Off/On, physical/equilibrium, purpose/spec API)
+    и самостоятельная повторная инициализация. Production-защита еще не
+    изменена, runtime не выполнен: широкая матрица v320 занимает Excel COM.
+    Expected codes/условия этого нового теста не относятся к прежним численным
+    эталонам. После освобождения COM нужна отрицательная fixture с production v320.
+33. Полностью прочитан `CSectionPlotter`: геометрия читается из Results,
+    повернутые оболочки используют сохраненный угол, а нейтральная линия
+    строится через действующий contour-intersection pipeline. Глобальный поиск
+    подтвердил отсутствие callers у 13 private-методов старой отрисовки
+    границ/интервалов; удалены только эти методы и два неиспользуемых поля
+    extrema. Рабочая геометрия, цвета, углы и вычисление легенды не менялись.
+    Полностью прочитанные annotation owners перечислены явно:
+    `CCircleAnnotationBuilder`, `CRectSetAnnotationBuilder`,
+    `CRoundedRectAnnotationBuilder`, `CHollowRectAnnotationBuilder`,
+    `CRebarGroupAnnotationBuilder`. Это не повтор native или pixel UI gate.
+34. Полностью прочитан `CBatchSectionCalculator`: владелец входных строк,
+    порядка активных профильных проверок, shared context и governing selection,
+    не формул или search-циклов. Устойчивость не прерывает остальные запросы;
+    current-state сохраняет собственную typed причину, итог crack subtree
+    упаковывается один раз. Удалены четыре невызванных private helpers;
+    действующий ConfigureStateProvider сохранен. Комментарии governing/Worst,
+    invalid input, диагностики и тестового повторного workflow уточнены.
+    У General.WorstCombinationCriterion пока нет адреса ошибки в собственном
+    normalizer; существующий directed тест усилен проверкой реальной ячейки.
+    Runtime negative еще не выполнен; центральный required-choice consumer
+    рассматривается только после него, не как уже принятая правка.
+35. Полностью прочитаны `CLoadMultiplierSearch`, `CSectionSolver` и
+    `CCrackWidthCalculator`. Search удерживает обе solver-точки скобки,
+    проверяет представимость шага и сохраняет terminal причины callback-а;
+    solver отделяет равновесие от EvaluateStrainPlane. Width использует только
+    готовые State, выбирает зону/арматуру до чистой численной формулы и не
+    выполняет solve. Из его private подготовки удалены неиспользуемые N/Mx/My
+    и currentSolver-параметры, которым передавались нули/нечитавшаяся ссылка.
+    DiagnosticsEnabled solver-а перенесен из тестового раздела к production
+    настройкам: его использует обычный txt-report. Численные выражения и
+    критерии не менялись; эти изменения еще требуют общей build/runtime gate.
+36. Code census рабочего среза v321: 108 modules, 4564 methods, 1913 guards,
+    83 production classes, suspected templates=0. Среди production-кандидатов
+    без отдельной подписи нет методов длиннее двух смысловых строк.
+    После семантического чтения исправлены оставшиеся исторические подписи
+    material reader, Steel validation, runner retry, Search request/adapters
+    и Results presentation. Census остается фильтром, а не автоматическим
+    PASS всех guards; окончательная актуальность source/VBE и тестов еще
+    проверяется после завершения занятого broad COM job.
+
+37. Чтение реальных комментариев completed broad v320 обнаружило оформление
+    `lambda = 2000.,` и техническую формулировку критерия в сообщении
+    SEARCH_BOUND_REACHED. Исправлен ответственный CCrackLimitSearchProblem:
+    целое число не получает конечную точку, критерий назван условием
+    образования нормальной трещины. Ни Search-математика, ни typed code,
+    ни внешний статус не изменены. Existing search-bound тест усилен двумя
+    assertions; negative/positive runtime еще не выполнены. Writer не
+    исправляет комментарий и не назначает статус по тексту.
+
+38. Directed negatives v321 завершены: publication 165/236, Worst 71/20,
+    Crack 2155/2. На clean v322 positives соответственно 401/0, 91/0,
+    2157/0, source unchanged=True; Worst сохраняет Results после reopen.
+    Материальная защита проверяет 40 вариантов обоих API и ролей: изменение
+    общей ссылки запрещено до очистки данных; самостоятельная диаграмма
+    допускает повторную загрузку. Worst использует существующий reader,
+    отдельный private normalizer удален. Никакой численный допуск или узел
+    диаграммы этим срезом не изменен; полные финальные gates еще идут.
 
 ## Приемочные Gates
 

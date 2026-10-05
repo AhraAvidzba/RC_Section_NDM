@@ -28,6 +28,7 @@ Private mSegmentTangent() As Double ' Заранее рассчитанный н
 Private mSegmentIntercept() As Double ' Свободный член sigma = E_t * epsilon + b для быстрого расчета stress.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова расчетных методов до загрузки точек.
+Private mFrozen As Boolean ' Опубликованный provider-ом материал больше не допускает изменения общей ссылки.
 Private mPhysicalCompressionStrain As Double ' Физический сжатый предел; extension-точки его не меняют.
 Private mPhysicalTensionStrain As Double ' Физический растянутый предел, если у диаграммы есть растянутая ветвь.
 Private mHasPhysicalTensionLimit As Boolean ' False для диаграмм, где растянутый бетон принят с нулевым сопротивлением без eps-лимита.
@@ -47,6 +48,8 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
         Optional ByVal physicalCompressionStrain As Variant, Optional ByVal physicalTensionStrain As Variant, _
         Optional ByVal hasCompressionExtension As Boolean = False, Optional ByVal hasTensionExtension As Boolean = False, _
         Optional ByVal compressionExtensionStartStrain As Variant, Optional ByVal tensionExtensionStartStrain As Variant)
+    If mFrozen Then Err.Raise vbObjectError + 3114, "CMaterialDiagram.InitializeFromArrays", _
+        "Опубликованная диаграмма материала не может быть изменена. Для другой модели создайте новую диаграмму через CMaterialModelProvider."
     On Error GoTo Failed
     ' Ошибочная повторная загрузка не оставляет доступным прежний материал.
     mInitialized = False
@@ -107,6 +110,14 @@ Failed:
     Err.Raise errorNumber, errorSource, errorDescription
 End Sub
 
+' Закрепляет готовую диаграмму перед публикацией общей ссылки. Повторная
+' инициализация такого объекта запрещена; самостоятельные диаграммы до
+' публикации можно переинициализировать. Provider создает новую версию сам.
+Friend Sub Freeze()
+    EnsureInitialized
+    mFrozen = True
+End Sub
+
 ' Проверяет наличие всех используемых индексов до копирования точек.
 ' Дополнительные индексы за пределами 1..pointCount допустимы и не читаются.
 Private Sub ValidateInputArray(ByRef values() As Double, ByVal pointCount As Long, ByVal valueName As String)
@@ -123,15 +134,16 @@ End Sub
 ' ------------------------------
 ' Доступ к расчетным пределам диаграммы
 ' ------------------------------
-' Возвращает крайнюю сжатую точку диаграммы. Capacity использует ее как
-' предельную сжатую деформацию, потому что отдельные Capacity.*Limit удалены.
+' Возвращает физическую предельную деформацию сжатия для инженерных
+' проверок. Техническая крайняя точка продолжения диаграммы ее не изменяет.
 Public Property Get UltimateCompressionStrain() As Double
     EnsureInitialized
     UltimateCompressionStrain = mPhysicalCompressionStrain
 End Property
 
-' Возвращает крайнюю растянутую точку диаграммы. Если диаграмма не имеет
-' положительной ветви, предел растяжения равен нулю и не участвует в проверке.
+' Возвращает физическую предельную деформацию растяжения, без технического
+' продолжения. Если растянутая ветвь не работает, предел равен нулю и не
+' участвует в инженерной проверке.
 Public Property Get UltimateTensionStrain() As Double
     EnsureInitialized
     If mHasPhysicalTensionLimit Then UltimateTensionStrain = mPhysicalTensionStrain

@@ -238,3 +238,21 @@ comments и crack data; неуспешные старые версии оста�
 full Off/On gates. Доступные данные согласованности также не доказывают,
 что всякий численный failure является неизбежным: pairwise/near-limit и
 окончательная приемка всей Audit03 продолжаются.
+
+## Актуальная Широкая Матрица v320
+
+Завершены 52/52 Light/Stress runs на 13 формах, по 12 вариантов Capacity/
+Formation и двум effective Extension-режимам. Это 22776 путевых случаев
+и отдельно 957531/0 assertions. Каждый принятый run завершил watchdog,
+Results save/reopen и проверку неизменности source. Source SHA:
+`CACB7F261AA3117BDD7C09340A41E65AD95E43F575A619F29789E9DA06EC5871`.
+Manifest: `load_matrix_final_v320_runs_2026-10-05.csv`; доказательства и
+точный accepted-log список: `load_matrix_final_v320_acceptance_2026-10-05.json`.
+
+Первые 50 runs принадлежат v320; последние ImportedFixture/Stress/Off/On
+повторены как v320c на той же побайтово неизменной книге. Прерванный VBA-run
+v320 и не запустившийся COM v320b сохранены, не получают PASS и не являются
+расчетными NumFail. Это актуальная численная матрица, но не замена release,
+полных финальных suites, benchmark и self-audit. Последующий v322 меняет
+только защиту публикации, адресное сообщение и presentation-текст;
+его отдельные directed/full gates подтверждаются собственными журналами.

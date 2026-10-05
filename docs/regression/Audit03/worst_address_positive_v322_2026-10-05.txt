@@ -1,0 +1,109 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_publication_positive_v322.xlsm
+SOURCE_SHA256: E4BD39C8B304EFA2169CF3A89361B081DF2BC3AD632F22D0848952E55F8E8E0B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e29f68463920481290e44d326be3b7cc\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03WorstCriterionConfigTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03WorstCriterionConfigTests; 2026-10-05T09:34:42
+EXCEL_AFTER_SUITE: pid=23476; workingSet=224841728; privateBytes=175783936; cpu=18355.21875
+EXCEL_AFTER_SUITE: pid=31652; workingSet=149430272; privateBytes=103084032; cpu=5.421875
+OK: audit03.worst.StrengthStrain.active
+OK: audit03.worst.StrengthStrain.selection
+OK: audit03.worst.StrengthStrain.key
+OK: audit03.worst.StrengthStrain.written
+OK: audit03.worst.StrengthCapacity.active
+OK: audit03.worst.StrengthCapacity.selection
+OK: audit03.worst.StrengthCapacity.key
+OK: audit03.worst.StrengthCapacity.written
+OK: audit03.worst.Cracks.active
+OK: audit03.worst.Cracks.selection
+OK: audit03.worst.Cracks.key
+OK: audit03.worst.Cracks.written
+OK: audit03.worst.Stability.active
+OK: audit03.worst.Stability.selection
+OK: audit03.worst.Stability.key
+OK: audit03.worst.Stability.written
+OK: audit03.worst.distinctChoices
+WORST_CHOICES: StrengthStrain=S2; StrengthCapacity=S2; Cracks=C2; Stability=S2; 
+OK: audit03.worst.invalid.WrongCriterion.status.1
+OK: audit03.worst.invalid.WrongCriterion.reason.1
+OK: audit03.worst.invalid.WrongCriterion.location.1
+OK: audit03.worst.invalid.WrongCriterion.status.2
+OK: audit03.worst.invalid.WrongCriterion.reason.2
+OK: audit03.worst.invalid.WrongCriterion.location.2
+OK: audit03.worst.invalid.WrongCriterion.status.3
+OK: audit03.worst.invalid.WrongCriterion.reason.3
+OK: audit03.worst.invalid.WrongCriterion.location.3
+OK: audit03.worst.invalid.WrongCriterion.status.4
+OK: audit03.worst.invalid.WrongCriterion.reason.4
+OK: audit03.worst.invalid.WrongCriterion.location.4
+OK: audit03.worst.invalid.WrongCriterion.noSolve
+OK: audit03.worst.invalid.WrongCriterion.recovery
+OK: audit03.worst.invalid..status.1
+OK: audit03.worst.invalid..reason.1
+OK: audit03.worst.invalid..location.1
+OK: audit03.worst.invalid..status.2
+OK: audit03.worst.invalid..reason.2
+OK: audit03.worst.invalid..location.2
+OK: audit03.worst.invalid..status.3
+OK: audit03.worst.invalid..reason.3
+OK: audit03.worst.invalid..location.3
+OK: audit03.worst.invalid..status.4
+OK: audit03.worst.invalid..reason.4
+OK: audit03.worst.invalid..location.4
+OK: audit03.worst.invalid..noSolve
+OK: audit03.worst.invalid..recovery
+OK: audit03.worst.invalid. .status.1
+OK: audit03.worst.invalid. .reason.1
+OK: audit03.worst.invalid. .location.1
+OK: audit03.worst.invalid. .status.2
+OK: audit03.worst.invalid. .reason.2
+OK: audit03.worst.invalid. .location.2
+OK: audit03.worst.invalid. .status.3
+OK: audit03.worst.invalid. .reason.3
+OK: audit03.worst.invalid. .location.3
+OK: audit03.worst.invalid. .status.4
+OK: audit03.worst.invalid. .reason.4
+OK: audit03.worst.invalid. .location.4
+OK: audit03.worst.invalid. .noSolve
+OK: audit03.worst.invalid. .recovery
+OK: audit03.worst.invalid.TODO.status.1
+OK: audit03.worst.invalid.TODO.reason.1
+OK: audit03.worst.invalid.TODO.location.1
+OK: audit03.worst.invalid.TODO.status.2
+OK: audit03.worst.invalid.TODO.reason.2
+OK: audit03.worst.invalid.TODO.location.2
+OK: audit03.worst.invalid.TODO.status.3
+OK: audit03.worst.invalid.TODO.reason.3
+OK: audit03.worst.invalid.TODO.location.3
+OK: audit03.worst.invalid.TODO.status.4
+OK: audit03.worst.invalid.TODO.reason.4
+OK: audit03.worst.invalid.TODO.location.4
+OK: audit03.worst.invalid.TODO.noSolve
+OK: audit03.worst.invalid.TODO.recovery
+OK: audit03.worst.invalid.0.status.1
+OK: audit03.worst.invalid.0.reason.1
+OK: audit03.worst.invalid.0.location.1
+OK: audit03.worst.invalid.0.status.2
+OK: audit03.worst.invalid.0.reason.2
+OK: audit03.worst.invalid.0.location.2
+OK: audit03.worst.invalid.0.status.3
+OK: audit03.worst.invalid.0.reason.3
+OK: audit03.worst.invalid.0.location.3
+OK: audit03.worst.invalid.0.status.4
+OK: audit03.worst.invalid.0.reason.4
+OK: audit03.worst.invalid.0.location.4
+OK: audit03.worst.invalid.0.noSolve
+OK: audit03.worst.invalid.0.recovery
+OK: audit03.worst.invalid.formula1/0.readerError
+OK: audit03.worst.invalid.formula1/0.readerReason
+OK: audit03.worst.invalid.formula1/0.readerLocation
+OK: audit03.worst.invalid.formula1/0.recovery
+TOTAL: passed=91; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e29f68463920481290e44d326be3b7cc\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03WorstCriterionConfigTests; 2026-10-05T09:34:46
+RESULTS_SAVE_REOPEN: before=B3E74BEB0685E8FA0AB9E7C9019D72156FECBB09F7677A6697C2A7207C3D628A; after=B3E74BEB0685E8FA0AB9E7C9019D72156FECBB09F7677A6697C2A7207C3D628A; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e29f68463920481290e44d326be3b7cc\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=902DDCC27CDC98BFD24F2CBAD4A2283464123E453FA485D5F64A0E79A8B3C6C0; after=902DDCC27CDC98BFD24F2CBAD4A2283464123E453FA485D5F64A0E79A8B3C6C0; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

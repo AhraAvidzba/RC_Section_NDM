@@ -4,7 +4,7 @@ Option Explicit
 ' ==========================================================================
 ' Тесты диаграмм материалов
 ' ==========================================================================
-' Проверяется целевая упрощенная архитектура:
+' Проверяются действующие обязанности material-слоя:
 ' - CMaterialDiagram хранит готовые точки и выполняет только интерполяцию;
 ' - CMaterialModelProvider выбирает расчетный режим, I/II ГПС, TwoLine/ThreeLine
 '   и строит точки диаграмм из параметров бетона и арматуры.
@@ -39,6 +39,7 @@ Public Function RunMaterialDiagramTests() As String
     TestAudit03DiagramArrayInputs stats
     TestAudit03MaterialConfigBehavior stats
     TestAudit03MaterialControlUnits stats
+    TestAudit03PublishedMaterialDiagrams stats
 
     AppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -950,4 +951,124 @@ Public Function RunAudit03MaterialControlUnitsTests() As String
     TestAudit03MaterialControlUnits stats
     AppendLine stats, "TOTAL_MATERIAL_CONTROL_UNITS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03MaterialControlUnitsTests = stats.Report
+End Function
+
+' ==================== ДЛЯ ТЕСТОВ: НЕИЗМЕННОСТЬ ВЫДАННЫХ ДИАГРАММ ====================
+
+' Проверяет публикацию физической и равновесной диаграмм через оба API
+' provider-а. Повторная загрузка общей ссылки не должна изменять материал
+' при прежней Revision; самостоятельная непубликованная диаграмма остается
+' пригодной для повторной инициализации.
+Public Function RunAudit03PublishedMaterialDiagramTests() As String
+    Dim stats As TMaterialTestStats
+    TestAudit03PublishedMaterialDiagrams stats
+    AppendLine stats, "TOTAL_PUBLISHED_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03PublishedMaterialDiagramTests = stats.Report
+End Function
+
+' Проверяет каждый вариант на новом provider-е: неуспешная попытка мутации
+' одного объекта не может влиять на последующие независимые случаи.
+Private Sub TestAudit03PublishedMaterialDiagrams(ByRef stats As TMaterialTestStats)
+    On Error GoTo Failed
+    Dim extension As Variant, purpose As Variant, profileApi As Long, equilibrium As Long, steel As Long
+    Dim provider As CMaterialModelProvider, diagram As CMaterialDiagram, again As CMaterialDiagram
+    Dim spec As CMaterialModelSpec, prefix As String, signature As String, revision As Long
+    Dim strains() As Double, stresses() As Double, i As Long, errorNumber As Long, description As String
+    Dim beforeStress As Double, physicalCompression As Double, physicalTension As Double
+    For Each extension In Array(False, True)
+        For Each purpose In Array(cpStrength, cpMcrc, cpCrackedNDS)
+            For profileApi = 0 To 1
+                For equilibrium = 0 To 1
+                    ' Formation использует только физическую диаграмму.
+                    If equilibrium = 0 Or CLng(purpose) <> cpMcrc Then
+                        For steel = 0 To 1
+                            Set provider = TestProvider(diagramExtensionEnabled:=CBool(extension))
+                            Set spec = New CMaterialModelSpec
+                            If CLng(purpose) = cpStrength Then
+                                spec.Initialize "ULS(I)", "TwoLine", "Ignore", "TwoLine"
+                            ElseIf CLng(purpose) = cpMcrc Then
+                                spec.Initialize "SLS(II)", "ThreeLine", "UseDiagram", "TwoLine"
+                            Else
+                                spec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
+                            End If
+                            Set diagram = Audit03PublishedDiagram(provider, CLng(purpose), spec, _
+                                profileApi <> 0, equilibrium <> 0, steel <> 0)
+                            prefix = "audit03.publishedMaterial." & CStr(extension) & "." & CStr(purpose) & _
+                                "." & CStr(profileApi) & "." & CStr(equilibrium) & "." & CStr(steel)
+                            signature = Audit03MaterialDiagramSignature(diagram)
+                            revision = provider.Revision
+                            beforeStress = diagram.GetStress(-0.0005)
+                            physicalCompression = diagram.PhysicalCompressionStrain
+                            physicalTension = diagram.PhysicalTensionStrain
+                            ReDim strains(1 To diagram.PointCount)
+                            ReDim stresses(1 To diagram.PointCount)
+                            For i = 1 To diagram.PointCount
+                                strains(i) = diagram.PointStrain(i)
+                                stresses(i) = 2# * diagram.PointStress(i)
+                            Next i
+                            description = vbNullString
+                            errorNumber = Audit03CapturePublishedDiagramMutation(diagram, strains, stresses, description)
+                            AssertTrue stats, prefix & ".mutationRejected", errorNumber = vbObjectError + 3114
+                            AssertTrue stats, prefix & ".readableReason", InStr(1, description, "измен", vbTextCompare) > 0
+                            AssertTrue stats, prefix & ".pointsUnchanged", signature = Audit03MaterialDiagramSignature(diagram)
+                            AssertClose stats, prefix & ".stressUnchanged", diagram.GetStress(-0.0005), beforeStress, 0#
+                            AssertClose stats, prefix & ".compressionUnchanged", diagram.PhysicalCompressionStrain, physicalCompression, 0#
+                            AssertClose stats, prefix & ".tensionUnchanged", diagram.PhysicalTensionStrain, physicalTension, 0#
+                            AssertTrue stats, prefix & ".revisionUnchanged", provider.Revision = revision
+                            Set again = Audit03PublishedDiagram(provider, CLng(purpose), spec, _
+                                profileApi <> 0, equilibrium <> 0, steel <> 0)
+                            AssertTrue stats, prefix & ".nextConsumerUnchanged", signature = Audit03MaterialDiagramSignature(again)
+                            provider.InitializeFromParameters TestConcreteParameters(), TestSteelParameters(), _
+                                diagramExtensionEnabled:=CBool(extension)
+                            AssertTrue stats, prefix & ".reinitializeChangesRevision", provider.Revision > revision
+                            AssertTrue stats, prefix & ".oldReferenceUnchanged", signature = Audit03MaterialDiagramSignature(diagram)
+                        Next steel
+                    End If
+                Next equilibrium
+            Next profileApi
+        Next purpose
+    Next extension
+
+    Set diagram = New CMaterialDiagram
+    diagram.Initialize 0.00175, 350#, 0.025
+    diagram.Initialize 0.002, 400#, 0.03
+    AssertClose stats, "audit03.publishedMaterial.standaloneReinitialize", diagram.GetStress(0.01), 400#, 0#
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.publishedMaterial.runtime; " & CStr(Err.Number) & "; " & Err.Description
+End Sub
+
+' Получает материал тем же публичным маршрутом, что соответствующий
+' потребитель; helper не создает свою копию и не изменяет returned reference.
+Private Function Audit03PublishedDiagram(ByVal provider As CMaterialModelProvider, ByVal purpose As ECalculationPurpose, _
+        ByVal spec As CMaterialModelSpec, ByVal profileApi As Boolean, ByVal equilibrium As Boolean, _
+        ByVal steel As Boolean) As CMaterialDiagram
+    If profileApi Then
+        If steel Then
+            If equilibrium Then Set Audit03PublishedDiagram = provider.SteelMaterialForEquilibriumFromSpec(spec) Else Set Audit03PublishedDiagram = provider.SteelMaterialFromSpec(spec)
+        Else
+            If equilibrium Then Set Audit03PublishedDiagram = provider.ConcreteMaterialForEquilibriumFromSpec(spec) Else Set Audit03PublishedDiagram = provider.ConcreteMaterialFromSpec(spec)
+        End If
+    Else
+        If steel Then
+            If equilibrium Then Set Audit03PublishedDiagram = provider.SteelMaterialForEquilibrium(purpose) Else Set Audit03PublishedDiagram = provider.SteelMaterial(purpose)
+        Else
+            If equilibrium Then Set Audit03PublishedDiagram = provider.ConcreteMaterialForEquilibrium(purpose) Else Set Audit03PublishedDiagram = provider.ConcreteMaterial(purpose)
+        End If
+    End If
+End Function
+
+' Перехватывает только ожидаемый отказ повторной инициализации и возвращает
+' его исходную причину; валидные массивы умышленно задают другой материал.
+Private Function Audit03CapturePublishedDiagramMutation(ByVal diagram As CMaterialDiagram, _
+        ByRef strains() As Double, ByRef stresses() As Double, ByRef description As String) As Long
+    On Error GoTo Rejected
+    diagram.InitializeFromArrays strains, stresses, UBound(strains), _
+        diagram.PhysicalCompressionStrain, diagram.PhysicalTensionStrain, _
+        diagram.HasCompressionExtension, diagram.HasTensionExtension
+    Exit Function
+Rejected:
+    Audit03CapturePublishedDiagramMutation = Err.Number
+    description = Err.Description
 End Function

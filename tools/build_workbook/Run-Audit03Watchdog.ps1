@@ -18,7 +18,6 @@ $source = (Resolve-Path -LiteralPath $SourceWorkbook).Path
 $hash = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
 $report = Join-Path $root $ReportPath
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $report) | Out-Null
-$beforeExcel = @(Get-Process EXCEL -ErrorAction SilentlyContinue | ForEach-Object { $_.Id })
 
 # Кавычки сохраняют пробелы в известных путях аргументов дочернего PowerShell.
 function Quote-ProcessArgument([string]$Value) {
@@ -60,9 +59,17 @@ $process = Start-Process -FilePath (Join-Path $PSHOME "powershell.exe") `
 $null = $process.Handle
 if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
     Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
-    foreach ($excel in @(Get-Process EXCEL -ErrorAction SilentlyContinue)) {
-        if ($beforeExcel -notcontains $excel.Id) {
-            Stop-Process -Id $excel.Id -Force -ErrorAction SilentlyContinue
+    # Закрываем только PID, явно записанный дочерним runner-ом. Время старта
+    # защищает от повторного использования PID; новые пользовательские окна
+    # Excel никогда не входят в область очистки этого watchdog.
+    $identity = Get-Content -LiteralPath $report -Encoding UTF8 -ErrorAction SilentlyContinue |
+        Where-Object { $_ -match '^TEST_EXCEL_PROCESS: id=(\d+); startTicks=(\d+)$' } | Select-Object -First 1
+    if ($identity -match '^TEST_EXCEL_PROCESS: id=(\d+); startTicks=(\d+)$') {
+        $testExcelProcessId = [int]$Matches[1]
+        $startTicks = [long]$Matches[2]
+        $excel = Get-Process -Id $testExcelProcessId -ErrorAction SilentlyContinue
+        if ($excel -and $excel.ProcessName -eq 'EXCEL' -and $excel.StartTime.ToUniversalTime().Ticks -eq $startTicks) {
+            Stop-Process -Id $testExcelProcessId -Force -ErrorAction SilentlyContinue
         }
     }
     Add-Content -LiteralPath $report -Encoding UTF8 -Value "WATCHDOG_FAILURE: timeout=$TimeoutSeconds sec; macro=$Macro; test Excel terminated"

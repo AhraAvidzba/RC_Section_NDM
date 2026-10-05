@@ -541,6 +541,10 @@ Private Sub TestCrackFormationSearchBoundKeepsTechnicalCode(ByRef stats As TCrac
         crack.FormationResult.ResultMeta.InternalStatus = rsCheckFailed
     AssertTrue stats, "crack.searchBound.resultCode", _
         crack.FormationResult.ResultMeta.ResultCode = rcSearchBoundReached
+    AssertTrue stats, "crack.searchBound.readableInteger", _
+        InStr(1, crack.FormationResult.ResultMeta.ResultComment, ".,", vbBinaryCompare) = 0
+    AssertTrue stats, "crack.searchBound.readableCriterion", _
+        InStr(1, crack.FormationResult.ResultMeta.ResultComment, "условие образования нормальной трещины", vbTextCompare) > 0
     AssertTrue stats, "crack.searchBound.noPostState", crack.FormationResult.PostCrackState Is Nothing
     AssertCrackCalculatorNotNumFail stats, "crack.searchBound.widthNotNumFail", crack
 End Sub

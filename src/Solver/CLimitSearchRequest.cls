@@ -125,7 +125,7 @@ End Sub
 ' Заполняет request уже готовой доменной задачей LimitSearch.
 ' Этот вход используется контрактными тестами с callback-объектом,
 ' созданным снаружи. Он не заменяет строгие доменные
-' фабрики Capacity/CrackFormation: те по-прежнему проверяют обязательные
+' фабрики Capacity/CrackFormation: они проверяют обязательные
 ' материалы и расчетную модель.
 Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
         ByVal resultKind As EResultKind, ByVal solutionStrategy As String, _

@@ -1,0 +1,416 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_publication_positive_v322.xlsm
+SOURCE_SHA256: E4BD39C8B304EFA2169CF3A89361B081DF2BC3AD632F22D0848952E55F8E8E0B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a9f823d739d1409f8c1d2c4ef5d1d9ae\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestMaterialDiagrams.RunAudit03PublishedMaterialDiagramTests =====
+SUITE_STARTED: modTestMaterialDiagrams.RunAudit03PublishedMaterialDiagramTests; 2026-10-05T09:34:32
+EXCEL_AFTER_SUITE: pid=7084; workingSet=135413760; privateBytes=92565504; cpu=2.953125
+EXCEL_AFTER_SUITE: pid=23476; workingSet=224804864; privateBytes=175710208; cpu=18354.984375
+OK: audit03.publishedMaterial.False.1.0.0.0.mutationRejected
+OK: audit03.publishedMaterial.False.1.0.0.0.readableReason
+OK: audit03.publishedMaterial.False.1.0.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.1.0.0.0.stressUnchanged; actual=-5.166666666667; expected=-5.166666666667; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.0.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.1.0.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.1.0.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.1.0.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.1.0.0.1.mutationRejected
+OK: audit03.publishedMaterial.False.1.0.0.1.readableReason
+OK: audit03.publishedMaterial.False.1.0.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.1.0.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.1.0.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.1.0.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.1.0.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.1.0.1.0.mutationRejected
+OK: audit03.publishedMaterial.False.1.0.1.0.readableReason
+OK: audit03.publishedMaterial.False.1.0.1.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.1.0.1.0.stressUnchanged; actual=-5.166666666667; expected=-5.166666666667; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.1.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.1.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.1.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.1.0.1.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.1.0.1.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.1.0.1.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.1.0.1.1.mutationRejected
+OK: audit03.publishedMaterial.False.1.0.1.1.readableReason
+OK: audit03.publishedMaterial.False.1.0.1.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.1.0.1.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.1.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.1.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.1.0.1.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.1.0.1.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.1.0.1.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.1.0.1.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.1.1.0.0.mutationRejected
+OK: audit03.publishedMaterial.False.1.1.0.0.readableReason
+OK: audit03.publishedMaterial.False.1.1.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.1.1.0.0.stressUnchanged; actual=-5.166666666667; expected=-5.166666666667; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.0.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.1.1.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.1.1.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.1.1.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.1.1.0.1.mutationRejected
+OK: audit03.publishedMaterial.False.1.1.0.1.readableReason
+OK: audit03.publishedMaterial.False.1.1.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.1.1.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.1.1.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.1.1.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.1.1.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.1.1.1.0.mutationRejected
+OK: audit03.publishedMaterial.False.1.1.1.0.readableReason
+OK: audit03.publishedMaterial.False.1.1.1.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.1.1.1.0.stressUnchanged; actual=-5.166666666667; expected=-5.166666666667; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.1.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.1.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.1.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.1.1.1.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.1.1.1.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.1.1.1.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.1.1.1.1.mutationRejected
+OK: audit03.publishedMaterial.False.1.1.1.1.readableReason
+OK: audit03.publishedMaterial.False.1.1.1.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.1.1.1.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.1.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.1.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.1.1.1.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.1.1.1.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.1.1.1.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.1.1.1.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.2.0.0.0.mutationRejected
+OK: audit03.publishedMaterial.False.2.0.0.0.readableReason
+OK: audit03.publishedMaterial.False.2.0.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.2.0.0.0.stressUnchanged; actual=-13.718146718147; expected=-13.718146718147; absDiff=0.
+OK: audit03.publishedMaterial.False.2.0.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.2.0.0.0.tensionUnchanged; actual=0.00015; expected=0.00015; absDiff=0.
+OK: audit03.publishedMaterial.False.2.0.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.2.0.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.2.0.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.2.0.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.2.0.0.1.mutationRejected
+OK: audit03.publishedMaterial.False.2.0.0.1.readableReason
+OK: audit03.publishedMaterial.False.2.0.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.2.0.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.2.0.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.2.0.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.2.0.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.2.0.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.2.0.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.2.0.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.2.1.0.0.mutationRejected
+OK: audit03.publishedMaterial.False.2.1.0.0.readableReason
+OK: audit03.publishedMaterial.False.2.1.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.2.1.0.0.stressUnchanged; actual=-13.718146718147; expected=-13.718146718147; absDiff=0.
+OK: audit03.publishedMaterial.False.2.1.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.2.1.0.0.tensionUnchanged; actual=0.00015; expected=0.00015; absDiff=0.
+OK: audit03.publishedMaterial.False.2.1.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.2.1.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.2.1.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.2.1.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.2.1.0.1.mutationRejected
+OK: audit03.publishedMaterial.False.2.1.0.1.readableReason
+OK: audit03.publishedMaterial.False.2.1.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.2.1.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.2.1.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.2.1.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.2.1.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.2.1.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.2.1.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.2.1.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.3.0.0.0.mutationRejected
+OK: audit03.publishedMaterial.False.3.0.0.0.readableReason
+OK: audit03.publishedMaterial.False.3.0.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.3.0.0.0.stressUnchanged; actual=-7.333333333333; expected=-7.333333333333; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.0.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.3.0.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.3.0.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.3.0.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.3.0.0.1.mutationRejected
+OK: audit03.publishedMaterial.False.3.0.0.1.readableReason
+OK: audit03.publishedMaterial.False.3.0.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.3.0.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.3.0.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.3.0.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.3.0.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.3.0.1.0.mutationRejected
+OK: audit03.publishedMaterial.False.3.0.1.0.readableReason
+OK: audit03.publishedMaterial.False.3.0.1.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.3.0.1.0.stressUnchanged; actual=-7.333333333333; expected=-7.333333333333; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.1.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.1.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.1.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.3.0.1.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.3.0.1.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.3.0.1.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.3.0.1.1.mutationRejected
+OK: audit03.publishedMaterial.False.3.0.1.1.readableReason
+OK: audit03.publishedMaterial.False.3.0.1.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.3.0.1.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.1.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.1.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.3.0.1.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.3.0.1.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.3.0.1.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.3.0.1.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.3.1.0.0.mutationRejected
+OK: audit03.publishedMaterial.False.3.1.0.0.readableReason
+OK: audit03.publishedMaterial.False.3.1.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.3.1.0.0.stressUnchanged; actual=-7.333333333333; expected=-7.333333333333; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.0.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.3.1.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.3.1.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.3.1.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.3.1.0.1.mutationRejected
+OK: audit03.publishedMaterial.False.3.1.0.1.readableReason
+OK: audit03.publishedMaterial.False.3.1.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.3.1.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.3.1.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.3.1.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.3.1.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.3.1.1.0.mutationRejected
+OK: audit03.publishedMaterial.False.3.1.1.0.readableReason
+OK: audit03.publishedMaterial.False.3.1.1.0.pointsUnchanged
+OK: audit03.publishedMaterial.False.3.1.1.0.stressUnchanged; actual=-7.333333333333; expected=-7.333333333333; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.1.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.1.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.1.0.revisionUnchanged
+OK: audit03.publishedMaterial.False.3.1.1.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.3.1.1.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.3.1.1.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.False.3.1.1.1.mutationRejected
+OK: audit03.publishedMaterial.False.3.1.1.1.readableReason
+OK: audit03.publishedMaterial.False.3.1.1.1.pointsUnchanged
+OK: audit03.publishedMaterial.False.3.1.1.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.1.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.1.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.False.3.1.1.1.revisionUnchanged
+OK: audit03.publishedMaterial.False.3.1.1.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.False.3.1.1.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.False.3.1.1.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.1.0.0.0.mutationRejected
+OK: audit03.publishedMaterial.True.1.0.0.0.readableReason
+OK: audit03.publishedMaterial.True.1.0.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.1.0.0.0.stressUnchanged; actual=-5.166666666667; expected=-5.166666666667; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.0.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.1.0.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.1.0.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.1.0.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.1.0.0.1.mutationRejected
+OK: audit03.publishedMaterial.True.1.0.0.1.readableReason
+OK: audit03.publishedMaterial.True.1.0.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.1.0.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.1.0.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.1.0.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.1.0.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.1.0.1.0.mutationRejected
+OK: audit03.publishedMaterial.True.1.0.1.0.readableReason
+OK: audit03.publishedMaterial.True.1.0.1.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.1.0.1.0.stressUnchanged; actual=-5.166666666667; expected=-5.166666666667; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.1.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.1.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.1.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.1.0.1.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.1.0.1.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.1.0.1.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.1.0.1.1.mutationRejected
+OK: audit03.publishedMaterial.True.1.0.1.1.readableReason
+OK: audit03.publishedMaterial.True.1.0.1.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.1.0.1.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.1.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.1.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.1.0.1.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.1.0.1.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.1.0.1.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.1.0.1.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.1.1.0.0.mutationRejected
+OK: audit03.publishedMaterial.True.1.1.0.0.readableReason
+OK: audit03.publishedMaterial.True.1.1.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.1.1.0.0.stressUnchanged; actual=-5.166666666667; expected=-5.166666666667; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.0.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.1.1.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.1.1.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.1.1.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.1.1.0.1.mutationRejected
+OK: audit03.publishedMaterial.True.1.1.0.1.readableReason
+OK: audit03.publishedMaterial.True.1.1.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.1.1.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.1.1.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.1.1.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.1.1.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.1.1.1.0.mutationRejected
+OK: audit03.publishedMaterial.True.1.1.1.0.readableReason
+OK: audit03.publishedMaterial.True.1.1.1.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.1.1.1.0.stressUnchanged; actual=-5.166666666667; expected=-5.166666666667; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.1.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.1.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.1.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.1.1.1.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.1.1.1.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.1.1.1.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.1.1.1.1.mutationRejected
+OK: audit03.publishedMaterial.True.1.1.1.1.readableReason
+OK: audit03.publishedMaterial.True.1.1.1.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.1.1.1.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.1.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.1.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.1.1.1.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.1.1.1.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.1.1.1.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.1.1.1.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.2.0.0.0.mutationRejected
+OK: audit03.publishedMaterial.True.2.0.0.0.readableReason
+OK: audit03.publishedMaterial.True.2.0.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.2.0.0.0.stressUnchanged; actual=-13.718146718147; expected=-13.718146718147; absDiff=0.
+OK: audit03.publishedMaterial.True.2.0.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.2.0.0.0.tensionUnchanged; actual=0.00015; expected=0.00015; absDiff=0.
+OK: audit03.publishedMaterial.True.2.0.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.2.0.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.2.0.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.2.0.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.2.0.0.1.mutationRejected
+OK: audit03.publishedMaterial.True.2.0.0.1.readableReason
+OK: audit03.publishedMaterial.True.2.0.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.2.0.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.2.0.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.2.0.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.2.0.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.2.0.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.2.0.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.2.0.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.2.1.0.0.mutationRejected
+OK: audit03.publishedMaterial.True.2.1.0.0.readableReason
+OK: audit03.publishedMaterial.True.2.1.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.2.1.0.0.stressUnchanged; actual=-13.718146718147; expected=-13.718146718147; absDiff=0.
+OK: audit03.publishedMaterial.True.2.1.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.2.1.0.0.tensionUnchanged; actual=0.00015; expected=0.00015; absDiff=0.
+OK: audit03.publishedMaterial.True.2.1.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.2.1.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.2.1.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.2.1.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.2.1.0.1.mutationRejected
+OK: audit03.publishedMaterial.True.2.1.0.1.readableReason
+OK: audit03.publishedMaterial.True.2.1.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.2.1.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.2.1.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.2.1.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.2.1.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.2.1.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.2.1.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.2.1.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.3.0.0.0.mutationRejected
+OK: audit03.publishedMaterial.True.3.0.0.0.readableReason
+OK: audit03.publishedMaterial.True.3.0.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.3.0.0.0.stressUnchanged; actual=-7.333333333333; expected=-7.333333333333; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.0.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.3.0.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.3.0.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.3.0.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.3.0.0.1.mutationRejected
+OK: audit03.publishedMaterial.True.3.0.0.1.readableReason
+OK: audit03.publishedMaterial.True.3.0.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.3.0.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.3.0.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.3.0.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.3.0.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.3.0.1.0.mutationRejected
+OK: audit03.publishedMaterial.True.3.0.1.0.readableReason
+OK: audit03.publishedMaterial.True.3.0.1.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.3.0.1.0.stressUnchanged; actual=-7.333333333333; expected=-7.333333333333; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.1.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.1.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.1.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.3.0.1.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.3.0.1.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.3.0.1.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.3.0.1.1.mutationRejected
+OK: audit03.publishedMaterial.True.3.0.1.1.readableReason
+OK: audit03.publishedMaterial.True.3.0.1.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.3.0.1.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.1.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.1.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.3.0.1.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.3.0.1.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.3.0.1.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.3.0.1.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.3.1.0.0.mutationRejected
+OK: audit03.publishedMaterial.True.3.1.0.0.readableReason
+OK: audit03.publishedMaterial.True.3.1.0.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.3.1.0.0.stressUnchanged; actual=-7.333333333333; expected=-7.333333333333; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.0.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.0.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.0.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.3.1.0.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.3.1.0.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.3.1.0.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.3.1.0.1.mutationRejected
+OK: audit03.publishedMaterial.True.3.1.0.1.readableReason
+OK: audit03.publishedMaterial.True.3.1.0.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.3.1.0.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.0.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.0.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.0.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.3.1.0.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.3.1.0.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.3.1.0.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.3.1.1.0.mutationRejected
+OK: audit03.publishedMaterial.True.3.1.1.0.readableReason
+OK: audit03.publishedMaterial.True.3.1.1.0.pointsUnchanged
+OK: audit03.publishedMaterial.True.3.1.1.0.stressUnchanged; actual=-7.333333333333; expected=-7.333333333333; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.1.0.compressionUnchanged; actual=-0.0035; expected=-0.0035; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.1.0.tensionUnchanged; actual=0.; expected=0.; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.1.0.revisionUnchanged
+OK: audit03.publishedMaterial.True.3.1.1.0.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.3.1.1.0.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.3.1.1.0.oldReferenceUnchanged
+OK: audit03.publishedMaterial.True.3.1.1.1.mutationRejected
+OK: audit03.publishedMaterial.True.3.1.1.1.readableReason
+OK: audit03.publishedMaterial.True.3.1.1.1.pointsUnchanged
+OK: audit03.publishedMaterial.True.3.1.1.1.stressUnchanged; actual=-100.; expected=-100.; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.1.1.compressionUnchanged; actual=-0.025; expected=-0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.1.1.tensionUnchanged; actual=0.025; expected=0.025; absDiff=0.
+OK: audit03.publishedMaterial.True.3.1.1.1.revisionUnchanged
+OK: audit03.publishedMaterial.True.3.1.1.1.nextConsumerUnchanged
+OK: audit03.publishedMaterial.True.3.1.1.1.reinitializeChangesRevision
+OK: audit03.publishedMaterial.True.3.1.1.1.oldReferenceUnchanged
+OK: audit03.publishedMaterial.standaloneReinitialize; actual=400.; expected=400.; absDiff=0.
+TOTAL_PUBLISHED_MATERIAL: passed=401; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a9f823d739d1409f8c1d2c4ef5d1d9ae\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestMaterialDiagrams.RunAudit03PublishedMaterialDiagramTests; 2026-10-05T09:34:32
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

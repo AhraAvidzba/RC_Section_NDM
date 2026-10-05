@@ -31,8 +31,8 @@ Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequ
         ByVal previousPathComments As String)
 End Sub
 
-' Подключает уже настроенный CCapacitySolver. Настройки материалов, допусков и
-' solver-а остаются ровно там же, где были до выделения adapter-а.
+' Подключает настроенный CCapacitySolver как источник проб и получатель
+' результата общего Search. Адаптер не меняет материалы или solver-options.
 Public Sub Initialize(ByVal capacitySolver As CCapacitySolver)
     If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4240, "CCapacityLimitSearchProblem", _
         "Не передан расчетчик несущей способности."
@@ -495,10 +495,6 @@ Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, B
     mCapacity.LimitSearchMergeCapacityFallback firstLimitState, firstStopReason, _
         firstDiagnostics, firstAttemptMessage, transitionMessage, successMessage, firstSearchExecuted
 End Sub
-
-Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
-    If a > b Then MaxDouble = a Else MaxDouble = b
-End Function
 
 ' Форматирует число для диагностического журнала с точкой как разделителем.
 Private Function FormatNumberInvariant(ByVal value As Double) As String

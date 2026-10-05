@@ -69,6 +69,31 @@
 
 ## Актуальная Точка Продолжения
 
+- Повтор final Off v322b завершен 2026-10-05 в 10:28: все восемь suites,
+  `107541/0`, watchdog exit=0, source unchanged=True. Geometry 604, Material
+  4353, Solver 1492, Capacity 3562, Crack 2157, Batch 29580, UI 65754,
+  Baseline 39. `full_numbers_v313_v322b_2026-10-05.json` подтверждает точное
+  совпадение 20639 общих чисел, missing=0, differences=0.
+  Final On v322 запущен после отдельного help gate, session 39460;
+  до его завершения общий выпуск не принят. Фоновый mode-runner перед каждым Run
+  отключает Escape только своего Excel; watchdog остается активным.
+  Windows/UI инструменты после пользовательского Escape не вызываются.
+  Пользовательский Excel PID 33212, открытый позднее, не затрагивается.
+  Watchdog теперь закрывает только PID своего COM-экземпляра по Hwnd и
+  совпадающему времени старта, а не все новые процессы Excel.
+  Saved Config migration дополнена переносом enum validation и проектных
+  комментариев из фактического clean v322 census по именованным блокам/ключам.
+  Динамические списки LC/профилей и исходные значения сохраняются; новые
+  static списки не берут defaults вместо ввода. Изолированная release_v323
+  скопирована с исходной книги при проверенном исходном SHA. Source refresh,
+  три последовательных Config migrations и readonly census завершены.
+  262 validation, 208 проектных комментариев; исходные LC paths и комментарии
+  пользователя сохранены. Strict idempotence сравнивает весь Config.Formula:
+  `BA5AE1DC773E12C2AC5A4403A31AAC863B776F0F4762AE1264EAAA6D034755B2`.
+  Save/reopen=True. Fresh registry: 1064 поля, включая 760 UserInput.
+  Help update/reopen: failed=0, 140 ссылок, 2093 строки, 118 shapes,
+  пользовательские вводы и Print_Area сохранены. Formatting/Validate,
+  итоговый расчет сохраненной копии и source equality еще предстоят.
 - Frozen v318 включает пять comment-only annotation правок поверх принятого
   v317. Book SHA `C3F258A528B105CA60324E95D8F7C7203AC9E6E24808C3D6406453D142A6F6ED`;
   actual VBE 113 компонентов, SourceContracts `108/108`, failed=0, export SHA
@@ -88,9 +113,67 @@
   source unchanged=True; все прежние 19 internal failures устранены.
   Broad job 57970 продолжает остальные блоки; полный итог еще не принят.
   Матрица не принята; checkpoint не является выпуском Audit03.
+- Checkpoint `e315f8e` содержит tiny Base, negative v319, positive v320,
+  точные сравнения 1029 чисел и первый завершенный broad chunk. После него
+  изменены комментарии, удалены невызванные private helpers Plotter/Batch/
+  Capacity adapter и неиспользуемые параметры private подготовки Width.
+  Подготовлены directed тест защиты опубликованных диаграмм и адресные
+  assertions Worst; runtime negative/fix/positive пока не исполнены.
+  Broad job 57970 завершил 50 chunks: все Light и все Stress, кроме
+  ImportedFixture/Stress/Off и On; 22200 независимых путевых случаев,
+  failures=0, Results save-reopen=True и source unchanged=True.
+  ImportedFixture/Stress/Off остановился на диалоге VBA «Code execution has
+  been interrupted» и завершился COM Run error, не расчетным NumFail.
+  Отрицательный/неполный v320 журнал сохранен. Первая повторная попытка
+  v320b не запустила Excel: CO_E_SERVER_EXEC_FAILURE 0x80080005.
+  Повтор v320c через собственный разрешенный COM-процесс завершил Off/On
+  (по 288 случаев, failed=0, save-reopen/source unchanged=True).
+  Итог: 52/52 PASS, 22776 путевых случаев, 957531/0 assertions.
+  Manifest и независимая сводка: load_matrix_final_v320_runs_2026-10-05.csv
+  и load_matrix_final_v320_acceptance_2026-10-05.json. Неполный v320
+  и не запустившийся v320b не подменены положительными журналами.
+  Frozen v320 не менялся; comment/dead-code cleanup не входит в его книгу
+  и еще должен пройти общую build/runtime приемку. Semantic Review пункты
+  33-36 фиксируют прочитанные контракты и границы новых pending тестов.
+- Negative fixture v321 содержит production v320 и только усиленные тесты.
+  Publication: 165/236, Worst: 71/20, Crack: 2155/2; все три закончились
+  штатно с exit=1 и source unchanged=True, не на compile/runtime dialog.
+  Подтвержденные дефекты исправлены в существующих владельцах: provider
+  закрепляет общую диаграмму, InitializeFromArrays отвергает ее мутацию
+  до очистки прежних данных; Worst использует центральный required-choice
+  reader с динамическим адресом; Formation adapter исправляет свой текст.
+  Clean build v322 завершен. Directed positives: 401/0, 91/0, 2157/0,
+  exit=0 и source unchanged=True. Worst Results save-reopen=True.
+  Read-only actual VBE: 113 компонентов, source unchanged=True, book SHA
+  `E4BD39C8B304EFA2169CF3A89361B081DF2BC3AD632F22D0848952E55F8E8E0B`.
+  SourceContracts v322 завершен: 108/108, failed=0; export SHA
+  `C90692D595403E6F78EC16DD3F2C5781BE3BACD1D014B0B49B29E3366062E9E0`.
+  Full Off job 6040 остановлен после сообщения Computer Use о физической
+  Escape пользователем. Только собственный тестовый Excel PID 31880 закрыт;
+  пользовательский PID 23476 не затронут. Частичный Batch progress сохранен
+  рядом с full_off_publication_positive_v322_2026-10-05.txt; этот full run
+  не принят, exit=1 не является расчетной несходимостью. On не запускался.
+  При продолжении повторить full Off с новым именем v322b и затем On;
+  52-блочную численную матрицу повторять не требуется без изменения ее логики.
+  Подготовлен Update-Audit03SavedWorkbookConfig.ps1 для изолированной
+  миграции без удаления строк и без изменения сочетаний; проверен только
+  PowerShell parser. Runtime/reopen/idempotence и согласованность всей
+  validation обновленной книги еще не приняты. Не публиковать его результат
+  без этих gates. Clean census/registry v322: 1064 поля, 84 validation,
+  source unchanged=True; это структурная сверка, не blanket acceptance.
+  Затем обязательны
+  окончательные восемь suites Off/On, source/VBE equality, benchmark,
+  clean/update help/validation/styles/save-reopen и финальный self-audit.
+  Исправление текста SEARCH_BOUND_REACHED уже в source: понятное условие
+  трещинообразования и число lambda без точки перед запятой. Два новых
+  assertions прежнего Crack search-bound теста прошли на v322.
+  Углы квадрата/круга подтверждены native AutoCAD v284/v286 (1023/0,
+  22 shape cases), включая известный нулевой угол, среднее через двойной
+  угол, +/-89 градусов и отсутствие подходящих соседей. Соответствующий
+  контракт находится в действующей справке AutoCAD.Import.ConcreteLayer.
 - Checkpoint `fb364ab` содержит Ultimate diagnostics, Stability length-range,
   accepted v317/v318 source evidence и comment-only annotation правки.
-  Позднее исправление tiny Base пока находится в dirty-tree.
+  Позднее исправление tiny Base уже зафиксировано в `e315f8e`.
   Checkpoint `4d89bac8` содержит проверенный v313-срез, полный Off и exact
   comparison, а также 62-group selector evidence. Основной output и ТЗ
   сохраняют прежние SHA; посторонние untracked файлы не включены.

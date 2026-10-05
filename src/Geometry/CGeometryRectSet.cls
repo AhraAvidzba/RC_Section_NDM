@@ -170,7 +170,8 @@ Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ContainsPoint = insideLower Or insideUpper
 End Function
 
-' Совместимый псевдоним для интерфейса ISectionGeometry.
+' Отвечает на альтернативный запрос попадания точки общего интерфейса
+' геометрий с той же проверкой активных прямоугольников.
 Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     IsPointInside = ContainsPoint(X, Y)
 End Function

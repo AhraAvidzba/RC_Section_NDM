@@ -6515,7 +6515,8 @@ Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix
     Next i
     AssertTrue stats, prefix & ".russianReason", hasRussian
     AssertTrue stats, prefix & ".readable", InStr(1, meta.ResultComment, "..") = 0 And _
-        InStr(1, meta.ResultComment, "?") = 0 And InStr(1, meta.ResultComment, "SP35-mixed") = 0
+        InStr(1, meta.ResultComment, ".,") = 0 And InStr(1, meta.ResultComment, "?") = 0 And _
+        InStr(1, meta.ResultComment, "SP35-mixed") = 0
     Dim machinePrefix As Variant, hasMachinePrefix As Boolean
     For Each machinePrefix In Array("NumericalFailure:", "InvalidInput:", "InvalidConfiguration:", "InternalError:", "InputError:")
         If StrComp(Left$(Trim$(meta.ResultComment), Len(CStr(machinePrefix))), CStr(machinePrefix), vbTextCompare) = 0 Then _
@@ -7875,6 +7876,8 @@ Private Sub TestAudit03WorstCriterionConfig(ByRef stats As TBatchTestStats)
             AssertTrue stats, prefix & ".readerError", readError = vbObjectError + 4309
             AssertTrue stats, prefix & ".readerReason", _
                 InStr(1, readReason, "General.WorstCombinationCriterion", vbTextCompare) > 0
+            AssertTrue stats, prefix & ".readerLocation", _
+                InStr(1, readReason, criterionCell.Address(False, False), vbTextCompare) > 0
         Else
             batch.ApplySettings settings, units
             batch.Execute
@@ -7882,6 +7885,8 @@ Private Sub TestAudit03WorstCriterionConfig(ByRef stats As TBatchTestStats)
                 AssertEquals stats, prefix & ".status." & CStr(i), batch.ResultAt(i).Status, "InputErr"
                 AssertTrue stats, prefix & ".reason." & CStr(i), _
                     InStr(1, batch.ResultAt(i).OverallMeta.ResultComment, "General.WorstCombinationCriterion", vbTextCompare) > 0
+                AssertTrue stats, prefix & ".location." & CStr(i), _
+                    InStr(1, batch.ResultAt(i).OverallMeta.ResultComment, criterionCell.Address(False, False), vbTextCompare) > 0
             Next i
             AssertTrue stats, prefix & ".noSolve", batch.SolverCallCount = 0
         End If

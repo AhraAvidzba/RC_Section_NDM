@@ -86,8 +86,6 @@ Private mPlotTop As Double ' Зафиксированная верхняя гр�
 Private mPlotWidth As Double ' Зафиксированная ширина PlotArea; не перечитывается во время отрисовки.
 Private mPlotHeight As Double ' Зафиксированная высота PlotArea; не перечитывается во время отрисовки.
 Private mPlotMetricsCaptured As Boolean ' True после снимка PlotArea для текущего прохода отрисовки.
-Private mResultMin As Double ' Минимальное значение выбранной визуальной величины среди рабочих элементов.
-Private mResultMax As Double ' Максимальное значение выбранной визуальной величины среди рабочих элементов.
 Private mCompressionMaxAbs As Double ' Максимальный модуль сжатия для общей легенды.
 Private mCompressionValueAtMaxAbs As Double ' Знаковое значение, подписываемое у края шкалы сжатия.
 Private mTensionMaxAbs As Double ' Максимальный модуль растяжения для общей легенды.
@@ -414,7 +412,6 @@ End Sub
 ' Определяет диапазон значений Stress/Strain для окраски элементов и легенды.
 ' Неактивный растянутый бетон исключается, чтобы "нет" не расширяло шкалу.
 Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
-    Dim found As Boolean
     Dim i As Long
     mHasCompression = False
     mHasTension = False
@@ -424,15 +421,6 @@ Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
     ResetMaterialLegendRanges
     For i = 1 To data.Count
         If StrComp(data.PhysicalState(i), "InactiveTensionConcrete", vbTextCompare) <> 0 Then
-            If Not found Then
-                mResultMin = data.ResultValue(i)
-                mResultMax = data.ResultValue(i)
-                found = True
-            Else
-                mResultMin = MinDouble(mResultMin, data.ResultValue(i))
-                mResultMax = MaxDouble(mResultMax, data.ResultValue(i))
-            End If
-
             If StrComp(data.PhysicalState(i), "Compression", vbTextCompare) = 0 Then
                 RegisterResultMagnitude data.ResultValue(i), mCompressionMaxAbs, mCompressionValueAtMaxAbs, mHasCompression
                 RegisterMaterialLegendMagnitude data.MaterialType(i), True, data.ResultValue(i)
@@ -444,10 +432,6 @@ Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)
             End If
         End If
     Next i
-    If Not found Or Abs(mResultMax - mResultMin) < 0.000000000001 Then
-        mResultMin = -1#
-        mResultMax = 1#
-    End If
 End Sub
 
 ' Очищает накопленные пределы раздельной легенды бетона и арматуры.
@@ -507,8 +491,8 @@ Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     buckets.CompareMode = vbTextCompare
 
     Dim i As Long
-    ' Пространственная сетка подписей не зависит от ElementID. В каждой ячейке выбирается
-    ' ближайшее бетонное волокно к центру ячейки, чтобы подписи распределялись равномерно.
+    ' Объединяем одинаково оформленные элементы в одну Chart series;
+    ' координаты и расчетные значения отдельных элементов не меняются.
     For i = 1 To data.Count
         Dim key As String
         key = ElementBucketKey(data, i)
@@ -977,27 +961,6 @@ Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Doub
     Next i
 End Sub
 
-' Добавляет ребро прямоугольного элемента в набор границ.
-' Если соседний элемент уже добавил обратное ребро, оно удаляется: внутренние
-' границы сетки не должны становиться наружным контуром.
-Private Sub AddBoundaryEdge(ByVal edges As Object, ByVal x1 As Double, ByVal y1 As Double, _
-        ByVal x2 As Double, ByVal y2 As Double)
-    Dim key As String, reverseKey As String
-    key = EdgeKey(x1, y1, x2, y2)
-    reverseKey = EdgeKey(x2, y2, x1, y1)
-    If edges.Exists(reverseKey) Then
-        edges.Remove reverseKey
-    ElseIf Not edges.Exists(key) Then
-        edges.Add key, Array(x1, y1, x2, y2)
-    End If
-End Sub
-
-' Формирует устойчивый текстовый ключ ребра с округлением координат.
-Private Function EdgeKey(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As String
-    EdgeKey = FormatNumberInvariant(RoundTo(x1, 6)) & ":" & FormatNumberInvariant(RoundTo(y1, 6)) & "|" & _
-        FormatNumberInvariant(RoundTo(x2, 6)) & ":" & FormatNumberInvariant(RoundTo(y2, 6))
-End Function
-
 ' Строит нейтральную линию по сохраненной плоскости деформаций LC.
 ' Линия обрезается по semantic-контуру, а если контура нет - по условному
 ' контуру бетонных элементов.
@@ -1216,167 +1179,6 @@ Private Sub AddUniqueLineT(ByVal t As Double, ByRef values() As Double, ByRef co
     If count >= UBound(values) Then ReDim Preserve values(1 To UBound(values) + 16)
     count = count + 1
     values(count) = t
-End Sub
-
-' Находит интервал прохождения линии через эквивалентный прямоугольник элемента.
-' Этот путь нужен только для приближенной обрезки по сетке.
-Private Sub CollectRectLineInterval(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
-        ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal dirX As Double, ByVal dirY As Double, _
-        ByVal intervals As Collection)
-    Dim w As Double, h As Double
-    w = ConcreteElementWidth(data, index)
-    h = ConcreteElementHeight(data, index)
-
-    Dim x1 As Double, x2 As Double, y1 As Double, y2 As Double
-    x1 = data.X(index) - w / 2#
-    x2 = data.X(index) + w / 2#
-    y1 = data.Y(index) - h / 2#
-    y2 = data.Y(index) + h / 2#
-
-    Dim values(1 To 8) As Double
-    Dim count As Long
-    AddRectLineIntersectionValue a, b, c, dirX, dirY, x1, y1, x2, y1, values, count
-    AddRectLineIntersectionValue a, b, c, dirX, dirY, x2, y1, x2, y2, values, count
-    AddRectLineIntersectionValue a, b, c, dirX, dirY, x2, y2, x1, y2, values, count
-    AddRectLineIntersectionValue a, b, c, dirX, dirY, x1, y2, x1, y1, values, count
-    If count < 2 Then Exit Sub
-
-    Dim minT As Double, maxT As Double, i As Long
-    minT = values(1)
-    maxT = values(1)
-    For i = 2 To count
-        minT = MinDouble(minT, values(i))
-        maxT = MaxDouble(maxT, values(i))
-    Next i
-    If maxT > minT Then intervals.Add Array(minT, maxT)
-End Sub
-
-' Добавляет одну координату пересечения линии со стороной прямоугольника элемента.
-Private Sub AddRectLineIntersectionValue(ByVal a As Double, ByVal b As Double, ByVal c As Double, _
-        ByVal dirX As Double, ByVal dirY As Double, ByVal sx As Double, ByVal sy As Double, _
-        ByVal ex As Double, ByVal ey As Double, ByRef values() As Double, ByRef count As Long)
-    Dim denom As Double
-    denom = a * (ex - sx) + b * (ey - sy)
-    If Abs(denom) < 0.000000000001 Then Exit Sub
-
-    Dim u As Double
-    u = -(a * sx + b * sy + c) / denom
-    If u < -0.0000001 Or u > 1.0000001 Then Exit Sub
-
-    Dim x As Double, y As Double, t As Double
-    x = sx + u * (ex - sx)
-    y = sy + u * (ey - sy)
-    t = x * dirX + y * dirY
-
-    Dim i As Long
-    For i = 1 To count
-        If Abs(values(i) - t) < 0.0000001 Then Exit Sub
-    Next i
-    count = count + 1
-    values(count) = t
-End Sub
-
-' Рисует заранее найденные интервалы расчетной линии.
-' Близкие интервалы объединяются, чтобы линия выглядела цельной на грубой сетке.
-Private Sub DrawLineIntervals(ByVal intervals As Collection, ByVal x0 As Double, ByVal y0 As Double, _
-        ByVal dirX As Double, ByVal dirY As Double, ByVal colorValue As Long, ByVal weight As Double, _
-        ByVal suffix As String)
-    If intervals Is Nothing Then Exit Sub
-    If intervals.Count <= 0 Then Exit Sub
-
-    Dim starts() As Double, ends() As Double
-    ReDim starts(1 To intervals.Count)
-    ReDim ends(1 To intervals.Count)
-
-    Dim i As Long
-    For i = 1 To intervals.Count
-        Dim item As Variant
-        item = intervals.Item(i)
-        starts(i) = CDbl(item(0))
-        ends(i) = CDbl(item(1))
-    Next i
-    SortIntervals starts, ends
-
-    Dim gapTol As Double
-    gapTol = MaxDouble(mMaxX - mMinX, mMaxY - mMinY) * 0.004
-
-    Dim curStart As Double, curEnd As Double
-    curStart = starts(1)
-    curEnd = ends(1)
-    For i = 2 To UBound(starts)
-        If starts(i) <= curEnd + gapTol Then
-            curEnd = MaxDouble(curEnd, ends(i))
-        Else
-            DrawModelLine x0 + curStart * dirX, y0 + curStart * dirY, _
-                x0 + curEnd * dirX, y0 + curEnd * dirY, colorValue, weight, suffix
-            curStart = starts(i)
-            curEnd = ends(i)
-        End If
-    Next i
-    DrawModelLine x0 + curStart * dirX, y0 + curStart * dirY, _
-        x0 + curEnd * dirX, y0 + curEnd * dirY, colorValue, weight, suffix
-End Sub
-
-' Сортирует интервалы по начальной координате вдоль расчетной линии.
-Private Sub SortIntervals(ByRef starts() As Double, ByRef ends() As Double)
-    Dim i As Long, j As Long
-    For i = LBound(starts) To UBound(starts) - 1
-        For j = i + 1 To UBound(starts)
-            If starts(j) < starts(i) Then
-                SwapDouble starts(i), starts(j)
-                SwapDouble ends(i), ends(j)
-            End If
-        Next j
-    Next i
-End Sub
-
-' Меняет местами два числа при сортировке интервалов.
-Private Sub SwapDouble(ByRef a As Double, ByRef b As Double)
-    Dim t As Double
-    t = a
-    a = b
-    b = t
-End Sub
-
-' Собирает min/max параметр линии внутри прямоугольного элемента.
-Private Sub CollectRectLineIntersections(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
-        ByVal a As Double, ByVal b As Double, ByVal c As Double, ByVal dirX As Double, ByVal dirY As Double, _
-        ByRef minT As Double, ByRef maxT As Double, ByRef found As Boolean)
-    Dim w As Double, h As Double
-    w = ConcreteElementWidth(data, index)
-    h = ConcreteElementHeight(data, index)
-
-    Dim x1 As Double, x2 As Double, y1 As Double, y2 As Double
-    x1 = data.X(index) - w / 2#
-    x2 = data.X(index) + w / 2#
-    y1 = data.Y(index) - h / 2#
-    y2 = data.Y(index) + h / 2#
-
-    AddRectLineIntersection a, b, c, dirX, dirY, x1, y1, x2, y1, minT, maxT, found
-    AddRectLineIntersection a, b, c, dirX, dirY, x2, y1, x2, y2, minT, maxT, found
-    AddRectLineIntersection a, b, c, dirX, dirY, x2, y2, x1, y2, minT, maxT, found
-    AddRectLineIntersection a, b, c, dirX, dirY, x1, y2, x1, y1, minT, maxT, found
-End Sub
-
-' Обновляет min/max параметр линии по пересечению с одной стороной прямоугольника.
-Private Sub AddRectLineIntersection(ByVal a As Double, ByVal b As Double, ByVal c As Double, _
-        ByVal dirX As Double, ByVal dirY As Double, ByVal sx As Double, ByVal sy As Double, _
-        ByVal ex As Double, ByVal ey As Double, ByRef minT As Double, ByRef maxT As Double, ByRef found As Boolean)
-    Dim denom As Double
-    denom = a * (ex - sx) + b * (ey - sy)
-    If Abs(denom) < 0.000000000001 Then Exit Sub
-
-    Dim u As Double
-    u = -(a * sx + b * sy + c) / denom
-    If u < -0.0000001 Or u > 1.0000001 Then Exit Sub
-
-    Dim x As Double, y As Double, t As Double
-    x = sx + u * (ex - sx)
-    y = sy + u * (ey - sy)
-    t = x * dirX + y * dirY
-    If t < minT Then minT = t
-    If t > maxT Then maxT = t
-    found = True
 End Sub
 
 ' Рисует выбранные главные центральные оси: бетонного или приведенного сечения.
@@ -1896,25 +1698,6 @@ Private Sub BringShapeToFront(ByVal shapeObject As Object)
     On Error GoTo 0
 End Sub
 
-' Рисует прямоугольный элемент в координатах модели как Shape.
-Private Function DrawModelRectangle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal fillColor As Long, ByVal lineColor As Long, ByVal weight As Double, ByVal suffix As String) As Object
-    Dim leftPos As Double, topPos As Double, widthValue As Double, heightValue As Double
-    leftPos = ModelToChartX(MinDouble(x1, x2))
-    topPos = ModelToChartY(MaxDouble(y1, y2))
-    widthValue = Abs(ModelToChartX(x2) - ModelToChartX(x1))
-    heightValue = Abs(ModelToChartY(y2) - ModelToChartY(y1))
-    If widthValue <= 0# Or heightValue <= 0# Then Exit Function
-
-    Dim rectShape As Object
-    Set rectShape = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, leftPos, topPos, widthValue, heightValue)
-    rectShape.Name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.Count)
-    rectShape.Fill.ForeColor.RGB = fillColor
-    rectShape.Line.ForeColor.RGB = lineColor
-    rectShape.Line.Weight = weight
-    Set DrawModelRectangle = rectShape
-End Function
-
 ' Рисует прямоугольник с центром и поворотом в координатах модели.
 ' Excel Shape вращается уже в координатах экрана, поэтому знак угла меняется:
 ' в расчетной модели Y направлена вверх, а в координатах листа Excel - вниз.
@@ -1947,7 +1730,7 @@ Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal cente
 End Function
 
 ' Рисует овал/круг в координатах модели как Shape.
-' Нужен для semantic-контура круга; сами арматурные стержни рисуются series.
+' Нужен для кругового контура и для стержней в поэлементном Shape-режиме.
 Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, ByVal filled As Boolean, _
         Optional ByVal fillColor As Long = -1) As Object
@@ -1971,22 +1754,6 @@ Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     End If
     Set DrawModelOval = ovalShape
 End Function
-
-' Рисует одиночную Shape-точку.
-' Сейчас расчетные точки предпочтительно рисуются series; метод оставлен для
-' специальных декоративных объектов, если им нужен Shape-контракт.
-Private Sub DrawPoint(ByVal xCoord As Double, ByVal yCoord As Double, ByVal sizeValue As Double, _
-        ByVal colorValue As Long, ByVal labelText As String, ByVal shapeType As Long)
-    Dim leftPos As Double, topPos As Double
-    leftPos = ModelToChartX(xCoord) - sizeValue / 2#
-    topPos = ModelToChartY(yCoord) - sizeValue / 2#
-    Dim pointShape As Object
-    Set pointShape = mChart.Shapes.AddShape(shapeType, leftPos, topPos, sizeValue, sizeValue)
-    pointShape.Name = SHAPE_PREFIX & "Point" & labelText
-    pointShape.Fill.ForeColor.RGB = colorValue
-    pointShape.Line.ForeColor.RGB = RGB(0, 0, 0)
-    If Len(labelText) > 0 Then DrawTextAt xCoord, yCoord, labelText, 1#, 0#, RGB(30, 30, 30), True
-End Sub
 
 ' Рисует одиночный служебный маркер как Shape поверх сетки.
 ' Положение считается централизованно через ModelToChartX/Y.
@@ -2336,22 +2103,6 @@ Private Function FormatPlotValue(ByVal value As Double, ByVal precision As Long)
         pattern = "0." & String$(precision, "0")
     End If
     FormatPlotValue = Replace$(Format$(value, pattern), ",", ".")
-End Function
-
-' Форматирует число компактно и независимо от локали для подписей схемы.
-Private Function FormatNumberInvariant(ByVal value As Double) As String
-    Dim textValue As String
-    textValue = Replace$(Format$(value, "0.######"), ",", ".")
-    Do While InStr(1, textValue, ".", vbTextCompare) > 0 And Right$(textValue, 1) = "0"
-        textValue = Left$(textValue, Len(textValue) - 1)
-    Loop
-    If Right$(textValue, 1) = "." Then textValue = Left$(textValue, Len(textValue) - 1)
-    FormatNumberInvariant = textValue
-End Function
-
-' Округляет значение для подписей и вспомогательных размеров.
-Private Function RoundTo(ByVal value As Double, ByVal digits As Long) As Double
-    RoundTo = Round(value, digits)
 End Function
 
 ' Округляет неотрицательный размер маркера или номер цветовой ступени.

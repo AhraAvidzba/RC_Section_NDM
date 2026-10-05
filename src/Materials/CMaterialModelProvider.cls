@@ -12,8 +12,8 @@ Option Explicit
 ' ==========================================================================
 ' ЕДИНАЯ ТОЧКА ПОЛУЧЕНИЯ РАСЧЕТНЫХ ДИАГРАММ МАТЕРИАЛОВ
 ' ==========================================================================
-' Provider получает исходные параметры бетона и арматуры, читает режимы
-' расчетов с листа Config и строит готовые CMaterialDiagram для физических
+' Provider получает нормализованные параметры через CSystemSettingsReader
+' и строит готовые CMaterialDiagram для физических
 ' целей Strength, CrackInitiation и CrackedNDS. В этом классе остается выбор
 ' I/II ГПС, сопротивлений R/Rser, типа TwoLine/ThreeLine и режима
 ' растянутого бетона.
@@ -263,6 +263,7 @@ Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() A
     Dim diagram As CMaterialDiagram
     Set diagram = New CMaterialDiagram
     diagram.InitializeFromArrays strains, stresses, pointCount
+    diagram.Freeze
     Set DiagramFromArrays = diagram
 End Function
 
@@ -319,6 +320,7 @@ Private Function DiagramWithExtension(ByVal baseDiagram As CMaterialDiagram, _
     diagram.InitializeFromArrays eps, sig, count, _
         baseDiagram.PhysicalCompressionStrain, baseDiagram.PhysicalTensionStrain, _
         extraCompression, extraTension, compressionStart, tensionStart
+    diagram.Freeze
     Set DiagramWithExtension = diagram
     Exit Function
 

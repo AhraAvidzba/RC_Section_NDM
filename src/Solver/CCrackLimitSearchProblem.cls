@@ -13,7 +13,7 @@ Option Explicit
 ' Адаптер CrackFormation для общего LimitSearch
 ' ==========================================================================
 ' Класс прячет CCrackFormationCalculator за общим ILimitSearchProblem. Доменный
-' калькулятор по-прежнему хранит критерий образования трещины, Pre/Post-state и
+' калькулятор хранит критерий образования трещины, Pre/Post-state и
 ' crack-диагностику, но общий search обращается к нему только через контракт.
 
 Implements ILimitSearchProblem
@@ -273,7 +273,7 @@ Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
     mCrack.LimitSearchSetCrackFormationSearchBoundReached _
         "Поиск трещинообразования достиг технической границы lambda = " & _
         FormatNumberInvariant(mCrack.LimitSearchCrackBracketLimit) & _
-        ", но критерий eps_bt,ult не был достигнут. Это не доказывает отсутствие трещины."
+        ", но условие образования нормальной трещины не выполнено. Это не доказывает отсутствие трещины."
 End Sub
 
 ' Объясняет, на какой lambda равновесие не подтверждено при построении скобки.
@@ -382,7 +382,10 @@ Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, B
         Optional ByVal firstSearchExecuted As Boolean = False)
 End Sub
 
-' Форматирует lambda для диагностического журнала с точкой как разделителем.
+' Форматирует lambda для журнала и инженерного комментария. У целого числа
+' убирает пустой десятичный разделитель перед последующей пунктуацией.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
+    If Right$(FormatNumberInvariant, 1) = "." Then _
+        FormatNumberInvariant = Left$(FormatNumberInvariant, Len(FormatNumberInvariant) - 1)
 End Function

@@ -76,7 +76,7 @@ Private Sub Validate(Optional ByVal settings As CSystemSettingsReader = Nothing)
     RequirePositive settings, "Steel.ThreeLine.Esc2", mThreeLineEsc2, 3210
 End Sub
 
-' Проверяет физически положительный параметр арматуры и сохраняет прежний
+' Проверяет физически положительный параметр арматуры и сохраняет согласованный
 ' машинный код. Адрес нужной сжатой/растянутой ячейки добавляется Excel-reader-ом.
 Private Sub RequirePositive(ByVal settings As CSystemSettingsReader, ByVal key As String, _
         ByVal value As Double, ByVal errorCode As Long)

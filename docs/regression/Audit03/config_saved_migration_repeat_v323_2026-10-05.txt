@@ -1,0 +1,22 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\release_v323\RC_Section_NDM.xlsm; SHA256=A3929AB0A734AC53FF513D94685666ABCD7B3E0ED4E832A1C176EE580982310E
+RECTSET_SHARED_SELECTOR: {"Address":"$J$119","SharedAddress":"$J$118","PreviousValue":null,"PreviousFormula":"","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$119","SharedAddress":"$K$118","PreviousValue":null,"PreviousFormula":"","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$119","SharedAddress":"$M$118","PreviousValue":null,"PreviousFormula":"","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$119","SharedAddress":"$N$118","PreviousValue":null,"PreviousFormula":"","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$121","SharedAddress":"$J$120","PreviousValue":null,"PreviousFormula":"","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$121","SharedAddress":"$K$120","PreviousValue":null,"PreviousFormula":"","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$121","SharedAddress":"$M$120","PreviousValue":null,"PreviousFormula":"","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$121","SharedAddress":"$N$120","PreviousValue":null,"PreviousFormula":"","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$123","SharedAddress":"$J$122","PreviousValue":null,"PreviousFormula":"","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$123","SharedAddress":"$K$122","PreviousValue":null,"PreviousFormula":"","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$123","SharedAddress":"$M$122","PreviousValue":null,"PreviousFormula":"","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$123","SharedAddress":"$N$122","PreviousValue":null,"PreviousFormula":"","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$125","SharedAddress":"$J$124","PreviousValue":null,"PreviousFormula":"","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$125","SharedAddress":"$K$124","PreviousValue":null,"PreviousFormula":"","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$125","SharedAddress":"$M$124","PreviousValue":null,"PreviousFormula":"","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$125","SharedAddress":"$N$124","PreviousValue":null,"PreviousFormula":"","SharedValue":"EachBar","HadConflict":false}
+CATALOG_VALIDATION: count=262; static choices updated; dynamic references preserved
+CATALOG_COMMENTS: count=208; load-case user comments preserved
+CONFIG_PRESERVED: True; bounds=$A$1:$EM$501; approvedCells=555; signature=E0B7EFCFA2D01CF1C9DCDA205CC152B0CB008050A9435360927D9653013C1C53
+LOAD_INPUTS_PRESERVED: True; blank/explicit paths retained; six validation choices
+CONFIG_SAVE_REOPEN: True

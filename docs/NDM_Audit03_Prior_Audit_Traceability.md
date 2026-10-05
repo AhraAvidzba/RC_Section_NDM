@@ -98,7 +98,7 @@
 | Q05 | Старые 28 directed rows в Audit02 progress; F29/N29 | Повторенные тесты PASS; новая Audit03 K/T матрица Pending, старый счетчик не подменяет ее. |
 | Q06 | Все T01-T08/A01-A06 строки выше | directed runtime PASS; ограничения отмечены по строкам. |
 | Q07 | Все восемь suites F29/N29; negative reproducer logs | PASS текущего среза; финальная отдельная clean build Pending. |
-| Q08 | P4; saved snapshot tests; A03 publication | runtime PASS перечисленного; actual DWG/пиксельный UI unavailable, итоговая performance/reopen Pending. |
+| Q08 | P4; saved snapshot tests; A03 publication; native AutoCAD v284/v286 | runtime PASS перечисленного; настоящий AutoCAD shape roundtrip 1023/0, 22 случая. Пиксельная приемка Excel и итоговая performance/reopen еще Pending. |
 | D01 | Code census / Config census / current architecture owners | Содержательный D01/D02 review и итоговая help-книга Pending. |
 | D02 | General permission != use != physical limit, material tests | Runtime PASS; фактическая итоговая справка/validation Pending. |
 | W01 | df10412f baseline, hashes original book/spec/export | PASS; пользовательская output-книга не менялась. |

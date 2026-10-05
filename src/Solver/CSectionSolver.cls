@@ -17,9 +17,9 @@ Option Explicit
 ' затем материалы возвращают напряжения, а из них собираются внутренние
 ' усилия Nint, Mxint и Myint.
 '
-' Здесь нет поиска несущей способности и нет чтения Excel. Capacity solver
-' только вызывает этот класс с разными усилиями, а пользовательские единицы
-' заранее переводятся во внутренние мм, Н, Н*мм, МПа и 1/мм.
+' Здесь нет поиска предельного состояния и нет чтения Excel. Общий pipeline
+' НДС и adapters предельного поиска задают этому классу усилия или плоскость;
+' пользовательские единицы заранее переводятся в мм, Н, Н*мм, МПа и 1/мм.
 
 Private mConverged As Boolean ' True, если равновесие достигнуто в заданных допусках по N/Mx/My.
 Private mStopReason As String ' Русское пояснение итога; машинная причина хранится отдельно в mFailureCode.
@@ -1340,6 +1340,12 @@ Public Property Let MaxDeltaKappa(ByVal value As Double)
     mMaxDeltaKappa = value
 End Property
 
+' Включает подробный журнал при пользовательском txt-отчете и диагностических
+' тестах. Отключение журнала не меняет численные шаги и критерии равновесия.
+Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
+    mDiagnosticsEnabled = value
+End Property
+
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
@@ -1362,10 +1368,6 @@ End Property
 
 Public Property Get MatrixRestartCount() As Long
     MatrixRestartCount = mMatrixRestartCount
-End Property
-
-Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
-    mDiagnosticsEnabled = value
 End Property
 
 

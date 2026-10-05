@@ -11,10 +11,9 @@ param(
 )
 $ErrorActionPreference = "Stop"
 # Внешний процесс ограничивает COM-вызовы: compile dialog или зависание не
-# оставляет бесконечный benchmark. Закрываются только новые test Excel PID.
+# оставляет бесконечный benchmark. Закрывается только собственный test Excel PID.
 if (-not $InternalWorker) {
     $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
-    $beforeExcel = @(Get-Process EXCEL -ErrorAction SilentlyContinue | ForEach-Object { $_.Id })
     $report = [IO.Path]::GetFullPath($ReportPath)
     $quoted = @($PSCommandPath, $BaselineWorkbook, $CurrentWorkbook, $ReportPath)
     if (@($quoted | Where-Object { $_.Contains('"') }).Count) { throw 'Unsupported quote in benchmark path.' }
@@ -31,7 +30,18 @@ if (-not $InternalWorker) {
     $null = $process.Handle
     if (-not $process.WaitForExit(1800000)) {
         Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
-        Get-Process EXCEL -ErrorAction SilentlyContinue | Where-Object { $beforeExcel -notcontains $_.Id } | Stop-Process -Force
+        # Чужие Excel-процессы не затрагиваются, даже если открылись во время
+        # benchmark. Сверяем также время старта, чтобы исключить повторный PID.
+        $identity = Get-Content -LiteralPath $report -Encoding UTF8 -ErrorAction SilentlyContinue |
+            Where-Object { $_ -match '^TEST_EXCEL_PROCESS: id=(\d+); startTicks=(\d+)$' } | Select-Object -First 1
+        if ($identity -match '^TEST_EXCEL_PROCESS: id=(\d+); startTicks=(\d+)$') {
+            $testExcelProcessId = [int]$Matches[1]
+            $startTicks = [long]$Matches[2]
+            $testExcel = Get-Process -Id $testExcelProcessId -ErrorAction SilentlyContinue
+            if ($testExcel -and $testExcel.ProcessName -eq 'EXCEL' -and $testExcel.StartTime.ToUniversalTime().Ticks -eq $startTicks) {
+                Stop-Process -Id $testExcelProcessId -Force -ErrorAction SilentlyContinue
+            }
+        }
         Add-Content -LiteralPath $report -Encoding UTF8 -Value 'WATCHDOG_FAILURE: benchmark exceeded 1800 seconds.'
         exit 1
     }
@@ -50,6 +60,17 @@ $excel = $null
 $book = $null
 $lines.Add("ENVIRONMENT|date=$([DateTime]::Now.ToString('s'))|powershell=$($PSVersionTable.PSVersion)|os=$([Environment]::OSVersion)|repeats=$Repeats")
 $lines.Add("GIT|$(& git rev-parse HEAD)|dirty=$([bool](& git status --porcelain))")
+
+# Определяет идентификатор только собственного COM-экземпляра для безопасной
+# очистки по таймауту; это не контроль пользовательского Excel.
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class AuditBenchmarkExcelIdentity {
+    [DllImport("user32.dll")]
+    public static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+}
+'@
 
 # Короткий совместимый доступ к журналу не должен прерывать расчет при чтении
 # прогресса. Повторяется только конфликт sharing/lock; другие I/O ошибки видимы.
@@ -157,6 +178,12 @@ End Function
 
 try {
     $excel = New-Object -ComObject Excel.Application
+    [uint32]$testExcelProcessId = 0
+    [void][AuditBenchmarkExcelIdentity]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd, [ref]$testExcelProcessId)
+    if ($testExcelProcessId -eq 0) { throw 'Не удалось определить собственный Excel benchmark-а.' }
+    $testExcelProcess = Get-Process -Id $testExcelProcessId
+    $lines.Add("TEST_EXCEL_PROCESS: id=$testExcelProcessId; startTicks=$($testExcelProcess.StartTime.ToUniversalTime().Ticks)")
+    Save-PerformanceReport
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 1
@@ -409,6 +436,7 @@ End Sub
                 if ($case.StartsWith("batch_")) { $module = "modTestBatchCalculation" }
                 $lines.Add("START|$label|run=$run|case=$case")
                 Save-PerformanceReport
+                $excel.EnableCancelKey = 0
                 $result = [string]$excel.Run("'$($book.Name)'!$module.RunAudit03PerfCase", $case)
                 $lines.Add("PERF|$label|run=$run|$result")
                 if ($result -match 'failed=([1-9][0-9]*)|RUNTIME ERROR') { $failed = $true }

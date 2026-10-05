@@ -115,9 +115,9 @@ Public Function RequiredSummaryOutputRowsForWorkbook(ByVal workbook As Object, B
 End Function
 
 ' Записывает rngBatchSummary одним массивом и оформляет блоки.
-' section нужен для геометрических величин h/x: в блоке деформаций они
-' относятся к фактическому LC, а в блоке предельного момента - только к
-' найденному capacity-состоянию. Если section не передан, эти поля пустые.
+' Подробные разделы передаются их writer-ам. Необязательный section нужен
+' CStrengthSummaryWriter для геометрических величин текущего и предельного
+' НДС; сама сводка не вычисляет геометрию и инженерные результаты.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal section As CSectionModel = Nothing)
     On Error GoTo Failed

@@ -299,11 +299,11 @@ Private Function CanRetrySolver(ByVal solver As CSectionSolver) As Boolean
 End Function
 
 ' Повторяет прямой solve от active-set плоскости для общего случая N+M.
-' Первый штатный старт сохраняется прежним; этот retry включается только после
+' Сначала используется штатный старт; этот retry включается только после
 ' несходимости. Старт на полной нагрузке отличается от применения такой же
 ' плоскости при ступенчатом нагружении и не должен блокироваться его флагом. Так
-' внецентренное растяжение/сжатие получает тот же устойчивый старт, который уже
-' помогал чистому изгибу, без изменения результата успешно сходящихся LC.
+' чистый изгиб и внецентренное растяжение/сжатие используют один механизм
+' подготовки плоскости, а успешно сошедшиеся LC не запускают этот retry.
 Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -394,7 +394,7 @@ Private Sub ApplyInitialGuess(ByVal section As CSectionModel, _
     If Abs(targetN) > NEAR_ZERO Then Exit Sub
     ' Квадраты безопасны только в малой окрестности нуля. Если хотя бы
     ' одна компонента больше допуска, норма заведомо ненулевая; ее вычислять
-    ' не нужно. Сам допуск и поведение малых нагрузок остаются прежними.
+    ' не нужно. Внутри малой окрестности применяется евклидова норма момента.
     If Abs(targetMx) <= NEAR_ZERO And Abs(targetMy) <= NEAR_ZERO Then
         If Sqr(targetMx * targetMx + targetMy * targetMy) <= NEAR_ZERO Then Exit Sub
     End If

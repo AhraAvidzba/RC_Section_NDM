@@ -1009,7 +1009,7 @@ End Sub
 
 ' Оформляет один Results-диапазон как самостоятельную таблицу.
 ' Заголовок ставится прямо над якорем, а чтение Results ниже выполняется
-' явным anchored-reader-ом, поэтому внешний вид больше не зависит от CurrentRegion.
+' reader-ом по именованному якорю и размерам блока, без зависимости от CurrentRegion.
 Private Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)
     Dim tableRange As Object
     Set tableRange = target.Resize(rowCount, columnCount)

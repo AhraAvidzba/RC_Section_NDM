@@ -1,0 +1,23 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\release_v323\RC_Section_NDM.xlsm; SHA256=F19344FC5970FA0B51A88EA1B97EBDEB35E0146A1F27DFF7435ACC1FDDE66C26
+REMOVED_SETTING: {"previous":["SLS.Crack.InitiationLoadPath","Auto","-","Путь поиска образования нормальной трещины: Auto пробует λ*Mxy, затем λ*N, затем λ*NMxy; ручные режимы фиксируют один путь.","Подробнее"],"address":"$A$76:$E$76"}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$119","SharedAddress":"$J$118","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$119","SharedAddress":"$K$118","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$119","SharedAddress":"$M$118","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$119","SharedAddress":"$N$118","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$121","SharedAddress":"$J$120","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$121","SharedAddress":"$K$120","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$121","SharedAddress":"$M$120","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$121","SharedAddress":"$N$120","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$123","SharedAddress":"$J$122","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$123","SharedAddress":"$K$122","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$123","SharedAddress":"$M$122","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$123","SharedAddress":"$N$122","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$J$125","SharedAddress":"$J$124","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$K$125","SharedAddress":"$K$124","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$M$125","SharedAddress":"$M$124","PreviousValue":"Stacked","PreviousFormula":"Stacked","SharedValue":"Stacked","HadConflict":false}
+RECTSET_SHARED_SELECTOR: {"Address":"$N$125","SharedAddress":"$N$124","PreviousValue":"EachBar","PreviousFormula":"EachBar","SharedValue":"EachBar","HadConflict":false}
+CATALOG_VALIDATION: count=262; static choices updated; dynamic references preserved
+CATALOG_COMMENTS: count=208; load-case user comments preserved
+CONFIG_PRESERVED: True; bounds=$A$1:$EM$501; approvedCells=560; signature=988803CE203BA45DC9527BEDBAA45375015291378B13CA34A3723EE932A6931E
+LOAD_INPUTS_PRESERVED: True; blank/explicit paths retained; six validation choices
+CONFIG_SAVE_REOPEN: True
