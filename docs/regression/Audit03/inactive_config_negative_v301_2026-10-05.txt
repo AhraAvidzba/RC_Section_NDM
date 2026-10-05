@@ -1,0 +1,923 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_sp35_reproducer_v301.xlsm
+SOURCE_SHA256: 7C643834FB7A11952C19AFB5DAD81FDEB0E6207B897DDAFFECD927F241A96196
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_958726069e6c4742b6390b080a9854f6\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03InactiveConfigCellTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03InactiveConfigCellTests; 2026-10-05T03:35:56
+EXCEL_AFTER_SUITE: pid=21660; workingSet=140791808; privateBytes=94572544; cpu=4.859375
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222285824; privateBytes=174063616; cpu=17914.875
+OK: audit03.inactive.count
+OK: audit03.inactive.baseline
+OK: audit03.inactive.J29.0.accepted
+OK: audit03.inactive.J29.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.J29.0|error=
+OK: audit03.inactive.J29.1.accepted
+OK: audit03.inactive.J29.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.J29.1|error=
+FAIL: audit03.inactive.J29.2.accepted
+FAIL: audit03.inactive.J29.2.samePayload; actual=; expected=Units.Length.Input=mm
+Units.Length.Internal=mm
+Units.Length.Output=m
+Units.Area.Input=mm2
+Units.Area.Internal=mm2
+Units.Area.Output=m2
+Units.Force.Input=tf
+Units.Force.Internal=N
+Units.Force.Output=tf
+Units.Moment.Input=tf*m
+Units.Moment.Internal=N*mm
+Units.Moment.Output=tf*m
+Units.Stress.Input=MPa
+Units.Stress.Internal=MPa
+Units.Stress.Output=MPa
+Units.Curvature.Input=1/mm
+Units.Curvature.Internal=1/mm
+Units.Curvature.Output=1/mm
+Sign.N.User=Compression
+Sign.N.Internal=Tension
+Sign.Mx.User=+Y tension
+Sign.Mx.Internal=+Y tension
+Sign.My.User=+X tension
+Sign.My.Internal=+X tension
+General.ExecutionReportEnabled=Yes
+General.NonCriticalMessagesEnabled=Yes
+General.WorstCombinationCriterion=StrengthCapacity
+General.DiagramExtension=No
+Calculation.ZeroMomentPerDepth=0.0005
+Geometry.Source=Generated
+Geometry.Type=RectSet
+Mesh.StepX=50
+Mesh.StepY=50
+Mesh.BoundarySubdivisions=1
+Load.ReferenceOffsetX=0
+Load.ReferenceOffsetY=0
+Solver.Method=Newton
+Solver.MaxIterations=80
+Solver.LoadSteps=1
+Solver.ToleranceN=0.0001
+Solver.ToleranceMx=0.0001
+Solver.ToleranceMy=0.0001
+Solver.LineSearchEnabled=Yes
+Solver.DampingInitial=1
+Solver.MinLineSearchAlpha=0.03125
+Solver.MaxDeltaEpsilon0=0.0005
+Solver.MaxDeltaKappa=0.00001
+Solver.SecantMaxRestarts=2
+Solver.SecantMinStepNorm=0.000000000001
+Capacity.SolutionStrategy=Auto
+Capacity.SolverMaxIterations=60
+Capacity.ToleranceStrain=0.00001
+Capacity.MaxLambda=1024
+Capacity.SearchMethod=Bisection
+Capacity.InitialLambda=1
+Capacity.ToleranceLambda=0.01
+Capacity.MaxRetries=0
+Capacity.BaseLoadSteps=1
+Stability.Code=SP35
+Stability.ElementLength=8000
+Stability.Mu1=2
+Stability.Mu2=2
+Stability.SystemType=Determinate
+Stability.ZeroMomentEccentricitySign1=1
+Stability.ZeroMomentEccentricitySign2=1
+Stability.AccidentalEccentricityMode=AutoWithμL
+Stability.AccidentalEccentricityUser1=10
+Stability.AccidentalEccentricityUser2=10
+Stability.AccidentalEccentricityPlanes=OnlyMomentPlane
+Stability.PhiLMode=Auto
+Stability.SP63.Ks=0.7
+Stability.SP63.DeltaEMin=0.15
+Stability.SP63.DeltaEMax=1.5
+Stability.SP35.PhiP=1
+Stability.SP35.NOverNcrLimit=0.7
+SLS.Crack.Allowable=0.3
+SLS.Crack.InitiationSolutionStrategy=Auto
+SLS.Crack.TensionZoneMode=Effective
+SLS.Crack.CoverDistanceMode=GlobalExtreme
+SLS.Crack.Phi1=1.4
+SLS.Crack.Phi2=0.5
+SLS.Crack.Phi3Mode=Auto
+SLS.Crack.Phi3=1
+SLS.Crack.PsiMode=AlwaysCalc
+SLS.Crack.SigmaSCrcAveragingMode=AllSelected
+SLS.Crack.PsiS=1
+AutoCAD.Export.CombinationID=Worst
+AutoCAD.Export.NeutralLineEnabled=Yes
+AutoCAD.Export.PrincipalAxesMode=Transformed
+AutoCAD.Export.LoadPointEnabled=Yes
+AutoCAD.Export.ContourEnabled=Yes
+AutoCAD.Export.LabelMode=NamesAndValues
+AutoCAD.Layer.Concrete=Concrete
+AutoCAD.Layer.Rebar=Reinf
+AutoCAD.Layer.Contour=RC_NDM_Contour
+AutoCAD.Layer.ConcreteTension=Anno_Concrete_Tension
+AutoCAD.Layer.ConcreteCompression=Anno_Concrete_Compression
+AutoCAD.Layer.RebarTension=Anno_Rebar_Tension
+AutoCAD.Layer.RebarCompression=Anno_Rebar_Compression
+AutoCAD.Color.ConcreteTension=9
+AutoCAD.Color.ConcreteCompression=5
+AutoCAD.Color.RebarTension=1
+AutoCAD.Color.RebarCompression=6
+AutoCAD.Color.Neutral=8
+AutoCAD.Import.ConcreteLayer=Concrete
+AutoCAD.Import.RebarLayer=Reinf
+AutoCAD.Import.MinArea=0.000001
+Plot.Enabled=Yes
+Plot.AutoUpdateAfterCalculation=Yes
+Plot.LoadCase=Worst
+Plot.ResultGradient=Yes
+Plot.ResultLabelsEnabled=No
+Plot.ResultLabelSpacing=100
+Plot.NeutralLineEnabled=Yes
+Plot.PrincipalAxesMode=Transformed
+Plot.LoadApplicationPointEnabled=Yes
+Plot.AxisLabelsEnabled=Yes
+Plot.AxisLabelsFontSize=7.5
+Plot.ContourEnabled=Yes
+Plot.LegendEnabled=Yes
+Plot.LegendMode=Separate
+Plot.Color.RebarCompression=30,80,220
+Plot.Color.RebarTension=210,30,20
+Plot.Color.ConcreteCompression=125,35,210
+Plot.Color.ConcreteTension=0,155,85
+Concrete.Rb.ULS=15.5
+Concrete.Rbt.ULS=1.1
+Concrete.Rb.SLS=22
+Concrete.Rbt.SLS=1.8
+Concrete.Rb.mc2=14.6
+Concrete.Eb=32500
+Concrete.Ebt=32500
+Concrete.Eb1Red=0.0015
+Concrete.Ebt1Red=0.00008
+Concrete.Eb0=0.002
+Concrete.Ebt0=0.0001
+Concrete.Eb2=0.0035
+Concrete.Ebt2=0.00015
+Steel.Rsc.ULS=350
+Steel.Rs.ULS=350
+Steel.Rsc.SLS=390
+Steel.Rs.SLS=390
+Steel.Esc=200000
+Steel.Es=200000
+Steel.TwoLine.Esc2=0.025
+Steel.TwoLine.Es2=0.025
+Steel.ThreeLine.Esc2=0.015
+Steel.ThreeLine.Es2=0.015
+Plot.RebarLabels.Enabled=Yes
+Plot.Dimensions.Enabled=Yes
+Plot.RebarLabels.Placement=Outside
+Plot.Dimensions.Placement=Outside
+Plot.RebarLabels.Offset=60
+Plot.Dimensions.Offset=100
+Plot.RebarLabels.LineEnabled=Yes
+Plot.RebarLabels.LineWeight=1.35
+Plot.Dimensions.LineWeight=1.75
+Plot.Dimensions.ExtensionLineWeight=0.85
+Plot.RebarLabels.TextUnits=pt
+Plot.Dimensions.TextUnits=pt
+Plot.RebarLabels.TextHeight=13
+Plot.Dimensions.TextHeight=13
+Plot.RebarLabels.TextGap=9
+Plot.Dimensions.TextGap=9
+Plot.Dimensions.ArrowType=Triangle
+Plot.Dimensions.ArrowSize=Medium
+Plot.RebarLabels.Color=20,30,90
+Plot.Dimensions.Color=20,30,90
+Plot.Dimensions.ExtensionLineColor=140,140,140
+Circle.Diameter=300
+Rebar.AxisDistance=40
+Rebar.Count=8
+Rebar.Diameter=20
+Дополнительные ряды арматуры=
+Rebar.Diameter2=
+Rebar.Diameter3=
+Rebar.Loc2row=Stacked
+Rebar.Loc3row=Stacked
+HollowRectangle.InnerOffsetX=0
+HollowRectangle.InnerOffsetY=0
+HollowRectangle.H=800
+HollowRectangle.B=500
+HollowRectangle.R=180
+HollowRectangle.OpeningH=500
+HollowRectangle.OpeningB=200
+HollowRectangle.OpeningR=30
+HollowRectangle.H.Left.as=40
+HollowRectangle.H.Left.d=20
+HollowRectangle.H.Left.n=6
+HollowRectangle.H.Right.as=40
+HollowRectangle.H.Right.d=20
+HollowRectangle.H.Right.n=6
+HollowRectangle.B.Top.as=40
+HollowRectangle.B.Top.d=20
+HollowRectangle.B.Top.n=8
+HollowRectangle.B.Bottom.as=40
+HollowRectangle.B.Bottom.d=20
+HollowRectangle.B.Bottom.n=8
+HollowRectangle.Opening.H.Left.as=40
+HollowRectangle.Opening.H.Left.d=20
+HollowRectangle.Opening.H.Right.as=40
+HollowRectangle.Opening.H.Right.d=20
+HollowRectangle.Opening.B.Top.as=40
+HollowRectangle.Opening.B.Top.d=20
+HollowRectangle.Opening.B.Bottom.as=40
+HollowRectangle.Opening.B.Bottom.d=20
+HollowRectangle.H.Left.d_2row=
+HollowRectangle.H.Left.loc_2row=Stacked
+HollowRectangle.H.Left.bind_2row=EachBar
+HollowRectangle.H.Left.d_3row=
+HollowRectangle.H.Left.loc_3row=Stacked
+HollowRectangle.H.Left.bind_3row=EachBar
+HollowRectangle.H.Right.d_2row=
+HollowRectangle.H.Right.loc_2row=Stacked
+HollowRectangle.H.Right.bind_2row=EachBar
+HollowRectangle.H.Right.d_3row=
+HollowRectangle.H.Right.loc_3row=Stacked
+HollowRectangle.H.Right.bind_3row=EachBar
+HollowRectangle.B.Top.d_2row=
+HollowRectangle.B.Top.loc_2row=Stacked
+HollowRectangle.B.Top.bind_2row=EachBar
+HollowRectangle.B.Top.d_3row=
+HollowRectangle.B.Top.loc_3row=Stacked
+HollowRectangle.B.Top.bind_3row=EachBar
+HollowRectangle.B.Bottom.d_2row=
+HollowRectangle.B.Bottom.loc_2row=Stacked
+HollowRectangle.B.Bottom.bind_2row=EachBar
+HollowRectangle.B.Bottom.d_3row=
+HollowRectangle.B.Bottom.loc_3row=Stacked
+HollowRectangle.B.Bottom.bind_3row=EachBar
+HollowRectangle.Opening.H.Left.d_2row=
+HollowRectangle.Opening.H.Left.loc_2row=Stacked
+HollowRectangle.Opening.H.Left.bind_2row=EachBar
+HollowRectangle.Opening.H.Left.d_3row=
+HollowRectangle.Opening.H.Left.loc_3row=Stacked
+HollowRectangle.Opening.H.Left.bind_3row=EachBar
+HollowRectangle.Opening.H.Right.d_2row=
+HollowRectangle.Opening.H.Right.loc_2row=Stacked
+HollowRectangle.Opening.H.Right.bind_2row=EachBar
+HollowRectangle.Opening.H.Right.d_3row=
+HollowRectangle.Opening.H.Right.loc_3row=Stacked
+HollowRectangle.Opening.H.Right.bind_3row=EachBar
+HollowRectangle.Opening.B.Top.d_2row=
+HollowRectangle.Opening.B.Top.loc_2row=Stacked
+HollowRectangle.Opening.B.Top.bind_2row=EachBar
+HollowRectangle.Opening.B.Top.d_3row=
+HollowRectangle.Opening.B.Top.loc_3row=Stacked
+HollowRectangle.Opening.B.Top.bind_3row=EachBar
+HollowRectangle.Opening.B.Bottom.d_2row=
+HollowRectangle.Opening.B.Bottom.loc_2row=Stacked
+HollowRectangle.Opening.B.Bottom.bind_2row=EachBar
+HollowRectangle.Opening.B.Bottom.d_3row=
+HollowRectangle.Opening.B.Bottom.loc_3row=Stacked
+HollowRectangle.Opening.B.Bottom.bind_3row=EachBar
+RectSet.SectionType=LSection
+RectSet.UpperOffsetX=0
+RectSet.H1=550
+RectSet.B1=250
+RectSet.H2=250
+RectSet.B2=600
+RectSet.H1.as_1=40
+RectSet.H1.d_1=32
+RectSet.H1.n_1=5
+RectSet.H1.StartOffset1=80
+RectSet.H1.EndOffset1=80
+RectSet.H1.d_2row_1=
+RectSet.H1.d_3row_1=
+RectSet.H1.loc_2row=Stacked
+RectSet.H1.bind_2row=EachBar
+RectSet.H1.loc_3row=Stacked
+RectSet.H1.bind_3row=EachBar
+RectSet.H1.as_2=40
+RectSet.H1.d_2=32
+RectSet.H1.n_2=5
+RectSet.H1.StartOffset2=80
+RectSet.H1.EndOffset2=80
+RectSet.H1.d_2row_2=
+RectSet.H1.d_3row_2=
+RectSet.B1.as_1=40
+RectSet.B1.d_1=32
+RectSet.B1.n_1=2
+RectSet.B1.StartOffset1=80
+RectSet.B1.EndOffset1=80
+RectSet.B1.d_2row_1=
+RectSet.B1.d_3row_1=
+RectSet.B1.loc_2row=Stacked
+RectSet.B1.bind_2row=EachBar
+RectSet.B1.loc_3row=Stacked
+RectSet.B1.bind_3row=EachBar
+RectSet.B1.as_2=40
+RectSet.B1.d_2=32
+RectSet.B1.n_2=2
+RectSet.B1.StartOffset2=80
+RectSet.B1.EndOffset2=80
+RectSet.B1.d_2row_2=
+RectSet.B1.d_3row_2=
+RectSet.H2.as_1=40
+RectSet.H2.d_1=32
+RectSet.H2.n_1=2
+RectSet.H2.StartOffset1=80
+RectSet.H2.EndOffset1=80
+RectSet.H2.d_2row_1=
+RectSet.H2.d_3row_1=
+RectSet.H2.loc_2row=Stacked
+RectSet.H2.bind_2row=EachBar
+RectSet.H2.loc_3row=Stacked
+RectSet.H2.bind_3row=EachBar
+RectSet.H2.as_2=40
+RectSet.H2.d_2=32
+RectSet.H2.n_2=2
+RectSet.H2.StartOffset2=80
+RectSet.H2.EndOffset2=80
+RectSet.H2.d_2row_2=
+RectSet.H2.d_3row_2=
+RectSet.B2.as_1=40
+RectSet.B2.d_1=32
+RectSet.B2.n_1=5
+RectSet.B2.StartOffset1=80
+RectSet.B2.EndOffset1=80
+RectSet.B2.d_2row_1=
+RectSet.B2.d_3row_1=
+RectSet.B2.loc_2row=Stacked
+RectSet.B2.bind_2row=EachBar
+RectSet.B2.loc_3row=Stacked
+RectSet.B2.bind_3row=EachBar
+RectSet.B2.as_2=40
+RectSet.B2.d_2=32
+RectSet.B2.n_2=5
+RectSet.B2.StartOffset2=80
+RectSet.B2.EndOffset2=80
+RectSet.B2.d_2row_2=
+RectSet.B2.d_3row_2=
+RoundedRectangle.B=800
+RoundedRectangle.H=250
+RoundedRectangle.Left.Type=Simple
+RoundedRectangle.Right.Type=Tapered
+RoundedRectangle.Left.W=0
+RoundedRectangle.Right.W=150
+RoundedRectangle.Left.R1=40
+RoundedRectangle.Right.R1=40
+RoundedRectangle.Left.R2=0
+RoundedRectangle.Right.R2=80
+RoundedRectangle.H.Left.as=40
+RoundedRectangle.H.Left.d=32
+RoundedRectangle.H.Left.n=5
+RoundedRectangle.H.Right.as=40
+RoundedRectangle.H.Right.d=32
+RoundedRectangle.H.Right.n=5
+RoundedRectangle.B.Top.as=40
+RoundedRectangle.B.Top.d=32
+RoundedRectangle.B.Top.n=8
+RoundedRectangle.B.Bottom.as=40
+RoundedRectangle.B.Bottom.d=32
+RoundedRectangle.B.Bottom.n=8
+RoundedRectangle.H.Left.d_2row=
+RoundedRectangle.H.Left.loc_2row=Stacked
+RoundedRectangle.H.Left.bind_2row=EachBar
+RoundedRectangle.H.Left.d_3row=
+RoundedRectangle.H.Left.loc_3row=Stacked
+RoundedRectangle.H.Left.bind_3row=EachBar
+RoundedRectangle.H.Right.d_2row=
+RoundedRectangle.H.Right.loc_2row=Stacked
+RoundedRectangle.H.Right.bind_2row=EachBar
+RoundedRectangle.H.Right.d_3row=
+RoundedRectangle.H.Right.loc_3row=Stacked
+RoundedRectangle.H.Right.bind_3row=EachBar
+RoundedRectangle.B.Top.d_2row=
+RoundedRectangle.B.Top.loc_2row=Stacked
+RoundedRectangle.B.Top.bind_2row=EachBar
+RoundedRectangle.B.Top.d_3row=
+RoundedRectangle.B.Top.loc_3row=Stacked
+RoundedRectangle.B.Top.bind_3row=EachBar
+RoundedRectangle.B.Bottom.d_2row=
+RoundedRectangle.B.Bottom.loc_2row=Stacked
+RoundedRectangle.B.Bottom.bind_2row=EachBar
+RoundedRectangle.B.Bottom.d_3row=
+RoundedRectangle.B.Bottom.loc_3row=Stacked
+RoundedRectangle.B.Bottom.bind_3row=EachBar
+
+INACTIVE_CONFIG: audit03.inactive.J29.2|error=-2147217195: Настройка Concrete.Rb.mc2 (лист Config, ячейка J29) содержит ошибку Excel в колонке "Растяжение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.inactive.J29.3.accepted
+OK: audit03.inactive.J29.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.J29.3|error=
+FAIL: audit03.inactive.J29.4.accepted
+FAIL: audit03.inactive.J29.4.samePayload; actual=; expected=Units.Length.Input=mm
+Units.Length.Internal=mm
+Units.Length.Output=m
+Units.Area.Input=mm2
+Units.Area.Internal=mm2
+Units.Area.Output=m2
+Units.Force.Input=tf
+Units.Force.Internal=N
+Units.Force.Output=tf
+Units.Moment.Input=tf*m
+Units.Moment.Internal=N*mm
+Units.Moment.Output=tf*m
+Units.Stress.Input=MPa
+Units.Stress.Internal=MPa
+Units.Stress.Output=MPa
+Units.Curvature.Input=1/mm
+Units.Curvature.Internal=1/mm
+Units.Curvature.Output=1/mm
+Sign.N.User=Compression
+Sign.N.Internal=Tension
+Sign.Mx.User=+Y tension
+Sign.Mx.Internal=+Y tension
+Sign.My.User=+X tension
+Sign.My.Internal=+X tension
+General.ExecutionReportEnabled=Yes
+General.NonCriticalMessagesEnabled=Yes
+General.WorstCombinationCriterion=StrengthCapacity
+General.DiagramExtension=No
+Calculation.ZeroMomentPerDepth=0.0005
+Geometry.Source=Generated
+Geometry.Type=RectSet
+Mesh.StepX=50
+Mesh.StepY=50
+Mesh.BoundarySubdivisions=1
+Load.ReferenceOffsetX=0
+Load.ReferenceOffsetY=0
+Solver.Method=Newton
+Solver.MaxIterations=80
+Solver.LoadSteps=1
+Solver.ToleranceN=0.0001
+Solver.ToleranceMx=0.0001
+Solver.ToleranceMy=0.0001
+Solver.LineSearchEnabled=Yes
+Solver.DampingInitial=1
+Solver.MinLineSearchAlpha=0.03125
+Solver.MaxDeltaEpsilon0=0.0005
+Solver.MaxDeltaKappa=0.00001
+Solver.SecantMaxRestarts=2
+Solver.SecantMinStepNorm=0.000000000001
+Capacity.SolutionStrategy=Auto
+Capacity.SolverMaxIterations=60
+Capacity.ToleranceStrain=0.00001
+Capacity.MaxLambda=1024
+Capacity.SearchMethod=Bisection
+Capacity.InitialLambda=1
+Capacity.ToleranceLambda=0.01
+Capacity.MaxRetries=0
+Capacity.BaseLoadSteps=1
+Stability.Code=SP35
+Stability.ElementLength=8000
+Stability.Mu1=2
+Stability.Mu2=2
+Stability.SystemType=Determinate
+Stability.ZeroMomentEccentricitySign1=1
+Stability.ZeroMomentEccentricitySign2=1
+Stability.AccidentalEccentricityMode=AutoWithμL
+Stability.AccidentalEccentricityUser1=10
+Stability.AccidentalEccentricityUser2=10
+Stability.AccidentalEccentricityPlanes=OnlyMomentPlane
+Stability.PhiLMode=Auto
+Stability.SP63.Ks=0.7
+Stability.SP63.DeltaEMin=0.15
+Stability.SP63.DeltaEMax=1.5
+Stability.SP35.PhiP=1
+Stability.SP35.NOverNcrLimit=0.7
+SLS.Crack.Allowable=0.3
+SLS.Crack.InitiationSolutionStrategy=Auto
+SLS.Crack.TensionZoneMode=Effective
+SLS.Crack.CoverDistanceMode=GlobalExtreme
+SLS.Crack.Phi1=1.4
+SLS.Crack.Phi2=0.5
+SLS.Crack.Phi3Mode=Auto
+SLS.Crack.Phi3=1
+SLS.Crack.PsiMode=AlwaysCalc
+SLS.Crack.SigmaSCrcAveragingMode=AllSelected
+SLS.Crack.PsiS=1
+AutoCAD.Export.CombinationID=Worst
+AutoCAD.Export.NeutralLineEnabled=Yes
+AutoCAD.Export.PrincipalAxesMode=Transformed
+AutoCAD.Export.LoadPointEnabled=Yes
+AutoCAD.Export.ContourEnabled=Yes
+AutoCAD.Export.LabelMode=NamesAndValues
+AutoCAD.Layer.Concrete=Concrete
+AutoCAD.Layer.Rebar=Reinf
+AutoCAD.Layer.Contour=RC_NDM_Contour
+AutoCAD.Layer.ConcreteTension=Anno_Concrete_Tension
+AutoCAD.Layer.ConcreteCompression=Anno_Concrete_Compression
+AutoCAD.Layer.RebarTension=Anno_Rebar_Tension
+AutoCAD.Layer.RebarCompression=Anno_Rebar_Compression
+AutoCAD.Color.ConcreteTension=9
+AutoCAD.Color.ConcreteCompression=5
+AutoCAD.Color.RebarTension=1
+AutoCAD.Color.RebarCompression=6
+AutoCAD.Color.Neutral=8
+AutoCAD.Import.ConcreteLayer=Concrete
+AutoCAD.Import.RebarLayer=Reinf
+AutoCAD.Import.MinArea=0.000001
+Plot.Enabled=Yes
+Plot.AutoUpdateAfterCalculation=Yes
+Plot.LoadCase=Worst
+Plot.ResultGradient=Yes
+Plot.ResultLabelsEnabled=No
+Plot.ResultLabelSpacing=100
+Plot.NeutralLineEnabled=Yes
+Plot.PrincipalAxesMode=Transformed
+Plot.LoadApplicationPointEnabled=Yes
+Plot.AxisLabelsEnabled=Yes
+Plot.AxisLabelsFontSize=7.5
+Plot.ContourEnabled=Yes
+Plot.LegendEnabled=Yes
+Plot.LegendMode=Separate
+Plot.Color.RebarCompression=30,80,220
+Plot.Color.RebarTension=210,30,20
+Plot.Color.ConcreteCompression=125,35,210
+Plot.Color.ConcreteTension=0,155,85
+Concrete.Rb.ULS=15.5
+Concrete.Rbt.ULS=1.1
+Concrete.Rb.SLS=22
+Concrete.Rbt.SLS=1.8
+Concrete.Rb.mc2=14.6
+Concrete.Eb=32500
+Concrete.Ebt=32500
+Concrete.Eb1Red=0.0015
+Concrete.Ebt1Red=0.00008
+Concrete.Eb0=0.002
+Concrete.Ebt0=0.0001
+Concrete.Eb2=0.0035
+Concrete.Ebt2=0.00015
+Steel.Rsc.ULS=350
+Steel.Rs.ULS=350
+Steel.Rsc.SLS=390
+Steel.Rs.SLS=390
+Steel.Esc=200000
+Steel.Es=200000
+Steel.TwoLine.Esc2=0.025
+Steel.TwoLine.Es2=0.025
+Steel.ThreeLine.Esc2=0.015
+Steel.ThreeLine.Es2=0.015
+Plot.RebarLabels.Enabled=Yes
+Plot.Dimensions.Enabled=Yes
+Plot.RebarLabels.Placement=Outside
+Plot.Dimensions.Placement=Outside
+Plot.RebarLabels.Offset=60
+Plot.Dimensions.Offset=100
+Plot.RebarLabels.LineEnabled=Yes
+Plot.RebarLabels.LineWeight=1.35
+Plot.Dimensions.LineWeight=1.75
+Plot.Dimensions.ExtensionLineWeight=0.85
+Plot.RebarLabels.TextUnits=pt
+Plot.Dimensions.TextUnits=pt
+Plot.RebarLabels.TextHeight=13
+Plot.Dimensions.TextHeight=13
+Plot.RebarLabels.TextGap=9
+Plot.Dimensions.TextGap=9
+Plot.Dimensions.ArrowType=Triangle
+Plot.Dimensions.ArrowSize=Medium
+Plot.RebarLabels.Color=20,30,90
+Plot.Dimensions.Color=20,30,90
+Plot.Dimensions.ExtensionLineColor=140,140,140
+Circle.Diameter=300
+Rebar.AxisDistance=40
+Rebar.Count=8
+Rebar.Diameter=20
+Дополнительные ряды арматуры=
+Rebar.Diameter2=
+Rebar.Diameter3=
+Rebar.Loc2row=Stacked
+Rebar.Loc3row=Stacked
+HollowRectangle.InnerOffsetX=0
+HollowRectangle.InnerOffsetY=0
+HollowRectangle.H=800
+HollowRectangle.B=500
+HollowRectangle.R=180
+HollowRectangle.OpeningH=500
+HollowRectangle.OpeningB=200
+HollowRectangle.OpeningR=30
+HollowRectangle.H.Left.as=40
+HollowRectangle.H.Left.d=20
+HollowRectangle.H.Left.n=6
+HollowRectangle.H.Right.as=40
+HollowRectangle.H.Right.d=20
+HollowRectangle.H.Right.n=6
+HollowRectangle.B.Top.as=40
+HollowRectangle.B.Top.d=20
+HollowRectangle.B.Top.n=8
+HollowRectangle.B.Bottom.as=40
+HollowRectangle.B.Bottom.d=20
+HollowRectangle.B.Bottom.n=8
+HollowRectangle.Opening.H.Left.as=40
+HollowRectangle.Opening.H.Left.d=20
+HollowRectangle.Opening.H.Right.as=40
+HollowRectangle.Opening.H.Right.d=20
+HollowRectangle.Opening.B.Top.as=40
+HollowRectangle.Opening.B.Top.d=20
+HollowRectangle.Opening.B.Bottom.as=40
+HollowRectangle.Opening.B.Bottom.d=20
+HollowRectangle.H.Left.d_2row=
+HollowRectangle.H.Left.loc_2row=Stacked
+HollowRectangle.H.Left.bind_2row=EachBar
+HollowRectangle.H.Left.d_3row=
+HollowRectangle.H.Left.loc_3row=Stacked
+HollowRectangle.H.Left.bind_3row=EachBar
+HollowRectangle.H.Right.d_2row=
+HollowRectangle.H.Right.loc_2row=Stacked
+HollowRectangle.H.Right.bind_2row=EachBar
+HollowRectangle.H.Right.d_3row=
+HollowRectangle.H.Right.loc_3row=Stacked
+HollowRectangle.H.Right.bind_3row=EachBar
+HollowRectangle.B.Top.d_2row=
+HollowRectangle.B.Top.loc_2row=Stacked
+HollowRectangle.B.Top.bind_2row=EachBar
+HollowRectangle.B.Top.d_3row=
+HollowRectangle.B.Top.loc_3row=Stacked
+HollowRectangle.B.Top.bind_3row=EachBar
+HollowRectangle.B.Bottom.d_2row=
+HollowRectangle.B.Bottom.loc_2row=Stacked
+HollowRectangle.B.Bottom.bind_2row=EachBar
+HollowRectangle.B.Bottom.d_3row=
+HollowRectangle.B.Bottom.loc_3row=Stacked
+HollowRectangle.B.Bottom.bind_3row=EachBar
+HollowRectangle.Opening.H.Left.d_2row=
+HollowRectangle.Opening.H.Left.loc_2row=Stacked
+HollowRectangle.Opening.H.Left.bind_2row=EachBar
+HollowRectangle.Opening.H.Left.d_3row=
+HollowRectangle.Opening.H.Left.loc_3row=Stacked
+HollowRectangle.Opening.H.Left.bind_3row=EachBar
+HollowRectangle.Opening.H.Right.d_2row=
+HollowRectangle.Opening.H.Right.loc_2row=Stacked
+HollowRectangle.Opening.H.Right.bind_2row=EachBar
+HollowRectangle.Opening.H.Right.d_3row=
+HollowRectangle.Opening.H.Right.loc_3row=Stacked
+HollowRectangle.Opening.H.Right.bind_3row=EachBar
+HollowRectangle.Opening.B.Top.d_2row=
+HollowRectangle.Opening.B.Top.loc_2row=Stacked
+HollowRectangle.Opening.B.Top.bind_2row=EachBar
+HollowRectangle.Opening.B.Top.d_3row=
+HollowRectangle.Opening.B.Top.loc_3row=Stacked
+HollowRectangle.Opening.B.Top.bind_3row=EachBar
+HollowRectangle.Opening.B.Bottom.d_2row=
+HollowRectangle.Opening.B.Bottom.loc_2row=Stacked
+HollowRectangle.Opening.B.Bottom.bind_2row=EachBar
+HollowRectangle.Opening.B.Bottom.d_3row=
+HollowRectangle.Opening.B.Bottom.loc_3row=Stacked
+HollowRectangle.Opening.B.Bottom.bind_3row=EachBar
+RectSet.SectionType=LSection
+RectSet.UpperOffsetX=0
+RectSet.H1=550
+RectSet.B1=250
+RectSet.H2=250
+RectSet.B2=600
+RectSet.H1.as_1=40
+RectSet.H1.d_1=32
+RectSet.H1.n_1=5
+RectSet.H1.StartOffset1=80
+RectSet.H1.EndOffset1=80
+RectSet.H1.d_2row_1=
+RectSet.H1.d_3row_1=
+RectSet.H1.loc_2row=Stacked
+RectSet.H1.bind_2row=EachBar
+RectSet.H1.loc_3row=Stacked
+RectSet.H1.bind_3row=EachBar
+RectSet.H1.as_2=40
+RectSet.H1.d_2=32
+RectSet.H1.n_2=5
+RectSet.H1.StartOffset2=80
+RectSet.H1.EndOffset2=80
+RectSet.H1.d_2row_2=
+RectSet.H1.d_3row_2=
+RectSet.B1.as_1=40
+RectSet.B1.d_1=32
+RectSet.B1.n_1=2
+RectSet.B1.StartOffset1=80
+RectSet.B1.EndOffset1=80
+RectSet.B1.d_2row_1=
+RectSet.B1.d_3row_1=
+RectSet.B1.loc_2row=Stacked
+RectSet.B1.bind_2row=EachBar
+RectSet.B1.loc_3row=Stacked
+RectSet.B1.bind_3row=EachBar
+RectSet.B1.as_2=40
+RectSet.B1.d_2=32
+RectSet.B1.n_2=2
+RectSet.B1.StartOffset2=80
+RectSet.B1.EndOffset2=80
+RectSet.B1.d_2row_2=
+RectSet.B1.d_3row_2=
+RectSet.H2.as_1=40
+RectSet.H2.d_1=32
+RectSet.H2.n_1=2
+RectSet.H2.StartOffset1=80
+RectSet.H2.EndOffset1=80
+RectSet.H2.d_2row_1=
+RectSet.H2.d_3row_1=
+RectSet.H2.loc_2row=Stacked
+RectSet.H2.bind_2row=EachBar
+RectSet.H2.loc_3row=Stacked
+RectSet.H2.bind_3row=EachBar
+RectSet.H2.as_2=40
+RectSet.H2.d_2=32
+RectSet.H2.n_2=2
+RectSet.H2.StartOffset2=80
+RectSet.H2.EndOffset2=80
+RectSet.H2.d_2row_2=
+RectSet.H2.d_3row_2=
+RectSet.B2.as_1=40
+RectSet.B2.d_1=32
+RectSet.B2.n_1=5
+RectSet.B2.StartOffset1=80
+RectSet.B2.EndOffset1=80
+RectSet.B2.d_2row_1=
+RectSet.B2.d_3row_1=
+RectSet.B2.loc_2row=Stacked
+RectSet.B2.bind_2row=EachBar
+RectSet.B2.loc_3row=Stacked
+RectSet.B2.bind_3row=EachBar
+RectSet.B2.as_2=40
+RectSet.B2.d_2=32
+RectSet.B2.n_2=5
+RectSet.B2.StartOffset2=80
+RectSet.B2.EndOffset2=80
+RectSet.B2.d_2row_2=
+RectSet.B2.d_3row_2=
+RoundedRectangle.B=800
+RoundedRectangle.H=250
+RoundedRectangle.Left.Type=Simple
+RoundedRectangle.Right.Type=Tapered
+RoundedRectangle.Left.W=0
+RoundedRectangle.Right.W=150
+RoundedRectangle.Left.R1=40
+RoundedRectangle.Right.R1=40
+RoundedRectangle.Left.R2=0
+RoundedRectangle.Right.R2=80
+RoundedRectangle.H.Left.as=40
+RoundedRectangle.H.Left.d=32
+RoundedRectangle.H.Left.n=5
+RoundedRectangle.H.Right.as=40
+RoundedRectangle.H.Right.d=32
+RoundedRectangle.H.Right.n=5
+RoundedRectangle.B.Top.as=40
+RoundedRectangle.B.Top.d=32
+RoundedRectangle.B.Top.n=8
+RoundedRectangle.B.Bottom.as=40
+RoundedRectangle.B.Bottom.d=32
+RoundedRectangle.B.Bottom.n=8
+RoundedRectangle.H.Left.d_2row=
+RoundedRectangle.H.Left.loc_2row=Stacked
+RoundedRectangle.H.Left.bind_2row=EachBar
+RoundedRectangle.H.Left.d_3row=
+RoundedRectangle.H.Left.loc_3row=Stacked
+RoundedRectangle.H.Left.bind_3row=EachBar
+RoundedRectangle.H.Right.d_2row=
+RoundedRectangle.H.Right.loc_2row=Stacked
+RoundedRectangle.H.Right.bind_2row=EachBar
+RoundedRectangle.H.Right.d_3row=
+RoundedRectangle.H.Right.loc_3row=Stacked
+RoundedRectangle.H.Right.bind_3row=EachBar
+RoundedRectangle.B.Top.d_2row=
+RoundedRectangle.B.Top.loc_2row=Stacked
+RoundedRectangle.B.Top.bind_2row=EachBar
+RoundedRectangle.B.Top.d_3row=
+RoundedRectangle.B.Top.loc_3row=Stacked
+RoundedRectangle.B.Top.bind_3row=EachBar
+RoundedRectangle.B.Bottom.d_2row=
+RoundedRectangle.B.Bottom.loc_2row=Stacked
+RoundedRectangle.B.Bottom.bind_2row=EachBar
+RoundedRectangle.B.Bottom.d_3row=
+RoundedRectangle.B.Bottom.loc_3row=Stacked
+RoundedRectangle.B.Bottom.bind_3row=EachBar
+
+INACTIVE_CONFIG: audit03.inactive.J29.4|error=-2147217195: Настройка Concrete.Rb.mc2 (лист Config, ячейка J29) содержит ошибку Excel в колонке "Растяжение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.inactive.J74.0.accepted
+OK: audit03.inactive.J74.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.J74.0|error=
+OK: audit03.inactive.J74.1.accepted
+OK: audit03.inactive.J74.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.J74.1|error=
+OK: audit03.inactive.J74.2.accepted
+OK: audit03.inactive.J74.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.J74.2|error=
+OK: audit03.inactive.J74.3.accepted
+OK: audit03.inactive.J74.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.J74.3|error=
+OK: audit03.inactive.J74.4.accepted
+OK: audit03.inactive.J74.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.J74.4|error=
+OK: audit03.inactive.I76.0.accepted
+OK: audit03.inactive.I76.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.I76.0|error=
+OK: audit03.inactive.I76.1.accepted
+OK: audit03.inactive.I76.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.I76.1|error=
+OK: audit03.inactive.I76.2.accepted
+OK: audit03.inactive.I76.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.I76.2|error=
+OK: audit03.inactive.I76.3.accepted
+OK: audit03.inactive.I76.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.I76.3|error=
+OK: audit03.inactive.I76.4.accepted
+OK: audit03.inactive.I76.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.I76.4|error=
+OK: audit03.inactive.I80.0.accepted
+OK: audit03.inactive.I80.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.I80.0|error=
+OK: audit03.inactive.I80.1.accepted
+OK: audit03.inactive.I80.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.I80.1|error=
+OK: audit03.inactive.I80.2.accepted
+OK: audit03.inactive.I80.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.I80.2|error=
+OK: audit03.inactive.I80.3.accepted
+OK: audit03.inactive.I80.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.I80.3|error=
+OK: audit03.inactive.I80.4.accepted
+OK: audit03.inactive.I80.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.I80.4|error=
+OK: audit03.inactive.I81.0.accepted
+OK: audit03.inactive.I81.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.I81.0|error=
+OK: audit03.inactive.I81.1.accepted
+OK: audit03.inactive.I81.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.I81.1|error=
+OK: audit03.inactive.I81.2.accepted
+OK: audit03.inactive.I81.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.I81.2|error=
+OK: audit03.inactive.I81.3.accepted
+OK: audit03.inactive.I81.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.I81.3|error=
+OK: audit03.inactive.I81.4.accepted
+OK: audit03.inactive.I81.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.I81.4|error=
+OK: audit03.inactive.I83.0.accepted
+OK: audit03.inactive.I83.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.I83.0|error=
+OK: audit03.inactive.I83.1.accepted
+OK: audit03.inactive.I83.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.I83.1|error=
+OK: audit03.inactive.I83.2.accepted
+OK: audit03.inactive.I83.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.I83.2|error=
+OK: audit03.inactive.I83.3.accepted
+OK: audit03.inactive.I83.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.I83.3|error=
+OK: audit03.inactive.I83.4.accepted
+OK: audit03.inactive.I83.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.I83.4|error=
+OK: audit03.inactive.K167.0.accepted
+OK: audit03.inactive.K167.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.K167.0|error=
+OK: audit03.inactive.K167.1.accepted
+OK: audit03.inactive.K167.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.K167.1|error=
+OK: audit03.inactive.K167.2.accepted
+OK: audit03.inactive.K167.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.K167.2|error=
+OK: audit03.inactive.K167.3.accepted
+OK: audit03.inactive.K167.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.K167.3|error=
+OK: audit03.inactive.K167.4.accepted
+OK: audit03.inactive.K167.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.K167.4|error=
+OK: audit03.inactive.K168.0.accepted
+OK: audit03.inactive.K168.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.K168.0|error=
+OK: audit03.inactive.K168.1.accepted
+OK: audit03.inactive.K168.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.K168.1|error=
+OK: audit03.inactive.K168.2.accepted
+OK: audit03.inactive.K168.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.K168.2|error=
+OK: audit03.inactive.K168.3.accepted
+OK: audit03.inactive.K168.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.K168.3|error=
+OK: audit03.inactive.K168.4.accepted
+OK: audit03.inactive.K168.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.K168.4|error=
+OK: audit03.inactive.K169.0.accepted
+OK: audit03.inactive.K169.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.K169.0|error=
+OK: audit03.inactive.K169.1.accepted
+OK: audit03.inactive.K169.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.K169.1|error=
+OK: audit03.inactive.K169.2.accepted
+OK: audit03.inactive.K169.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.K169.2|error=
+OK: audit03.inactive.K169.3.accepted
+OK: audit03.inactive.K169.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.K169.3|error=
+OK: audit03.inactive.K169.4.accepted
+OK: audit03.inactive.K169.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.K169.4|error=
+OK: audit03.inactive.K170.0.accepted
+OK: audit03.inactive.K170.0.samePayload
+INACTIVE_CONFIG: audit03.inactive.K170.0|error=
+OK: audit03.inactive.K170.1.accepted
+OK: audit03.inactive.K170.1.samePayload
+INACTIVE_CONFIG: audit03.inactive.K170.1|error=
+OK: audit03.inactive.K170.2.accepted
+OK: audit03.inactive.K170.2.samePayload
+INACTIVE_CONFIG: audit03.inactive.K170.2|error=
+OK: audit03.inactive.K170.3.accepted
+OK: audit03.inactive.K170.3.samePayload
+INACTIVE_CONFIG: audit03.inactive.K170.3|error=
+OK: audit03.inactive.K170.4.accepted
+OK: audit03.inactive.K170.4.samePayload
+INACTIVE_CONFIG: audit03.inactive.K170.4|error=
+TOTAL_AUDIT03_INACTIVE_CONFIG: fields=10; passed=98; failed=4
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_958726069e6c4742b6390b080a9854f6\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03InactiveConfigCellTests; 2026-10-05T03:35:59
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

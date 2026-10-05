@@ -1,0 +1,2015 @@
+{
+  "Factors": [
+    {
+      "Name": "Shape",
+      "Values": [
+        "CircleUneven",
+        "RectL",
+        "RoundedMixed",
+        "HollowOffset"
+      ]
+    },
+    {
+      "Name": "Extension",
+      "Values": [
+        "No",
+        "Yes"
+      ]
+    },
+    {
+      "Name": "CapacityStrategy",
+      "Values": [
+        "Auto",
+        "UltimateStrain",
+        "LoadMultiplier"
+      ]
+    },
+    {
+      "Name": "FormationStrategy",
+      "Values": [
+        "Auto",
+        "UltimateStrain",
+        "LoadMultiplier"
+      ]
+    },
+    {
+      "Name": "SearchMethod",
+      "Values": [
+        "Bisection",
+        "Brent",
+        "Secant"
+      ]
+    },
+    {
+      "Name": "SolverMethod",
+      "Values": [
+        "Newton",
+        "Secant"
+      ]
+    },
+    {
+      "Name": "ConcreteDiagram",
+      "Values": [
+        "TwoLine",
+        "ThreeLine"
+      ]
+    },
+    {
+      "Name": "SteelDiagram",
+      "Values": [
+        "TwoLine",
+        "ThreeLine"
+      ]
+    },
+    {
+      "Name": "StrengthTension",
+      "Values": [
+        "Ignore",
+        "UseDiagram"
+      ]
+    },
+    {
+      "Name": "PsiMode",
+      "Values": [
+        "User",
+        "Auto",
+        "AlwaysCalc"
+      ]
+    }
+  ],
+  "RequiredPairs": 302,
+  "CoveredPairs": 302,
+  "HighRiskQuads": 48,
+  "CaseCount": 62,
+  "RuntimeAcceptance": "NotRun",
+  "Cases": [
+    {
+      "Id": "Selector_001",
+      "Indices": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_002",
+      "Indices": [
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_003",
+      "Indices": [
+        0,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_004",
+      "Indices": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_005",
+      "Indices": [
+        0,
+        0,
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_006",
+      "Indices": [
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_007",
+      "Indices": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_008",
+      "Indices": [
+        0,
+        1,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_009",
+      "Indices": [
+        0,
+        1,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_010",
+      "Indices": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_011",
+      "Indices": [
+        0,
+        1,
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_012",
+      "Indices": [
+        0,
+        1,
+        2,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_013",
+      "Indices": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_014",
+      "Indices": [
+        1,
+        0,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_015",
+      "Indices": [
+        1,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_016",
+      "Indices": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_017",
+      "Indices": [
+        1,
+        0,
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_018",
+      "Indices": [
+        1,
+        0,
+        2,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_019",
+      "Indices": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_020",
+      "Indices": [
+        1,
+        1,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_021",
+      "Indices": [
+        1,
+        1,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_022",
+      "Indices": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_023",
+      "Indices": [
+        1,
+        1,
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_024",
+      "Indices": [
+        1,
+        1,
+        2,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_025",
+      "Indices": [
+        2,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_026",
+      "Indices": [
+        2,
+        0,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_027",
+      "Indices": [
+        2,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_028",
+      "Indices": [
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_029",
+      "Indices": [
+        2,
+        0,
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_030",
+      "Indices": [
+        2,
+        0,
+        2,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_031",
+      "Indices": [
+        2,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_032",
+      "Indices": [
+        2,
+        1,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_033",
+      "Indices": [
+        2,
+        1,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_034",
+      "Indices": [
+        2,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_035",
+      "Indices": [
+        2,
+        1,
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_036",
+      "Indices": [
+        2,
+        1,
+        2,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_037",
+      "Indices": [
+        3,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_038",
+      "Indices": [
+        3,
+        0,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_039",
+      "Indices": [
+        3,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_040",
+      "Indices": [
+        3,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_041",
+      "Indices": [
+        3,
+        0,
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_042",
+      "Indices": [
+        3,
+        0,
+        2,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_043",
+      "Indices": [
+        3,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_044",
+      "Indices": [
+        3,
+        1,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_045",
+      "Indices": [
+        3,
+        1,
+        1,
+        2,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_046",
+      "Indices": [
+        3,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_047",
+      "Indices": [
+        3,
+        1,
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_048",
+      "Indices": [
+        3,
+        1,
+        2,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "HighRisk:Shape-Extension-CapacityStrategy-StrengthTension"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_049",
+      "Indices": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_050",
+      "Indices": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_051",
+      "Indices": [
+        2,
+        1,
+        1,
+        0,
+        2,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_052",
+      "Indices": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_053",
+      "Indices": [
+        0,
+        1,
+        0,
+        2,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_054",
+      "Indices": [
+        2,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_055",
+      "Indices": [
+        2,
+        1,
+        2,
+        2,
+        2,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_056",
+      "Indices": [
+        3,
+        0,
+        0,
+        1,
+        2,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_057",
+      "Indices": [
+        0,
+        1,
+        1,
+        2,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_058",
+      "Indices": [
+        1,
+        0,
+        2,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_059",
+      "Indices": [
+        2,
+        1,
+        0,
+        1,
+        2,
+        1,
+        0,
+        1,
+        0,
+        2
+      ],
+      "Values": {
+        "Shape": "RoundedMixed",
+        "Extension": "Yes",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "AlwaysCalc"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_060",
+      "Indices": [
+        3,
+        0,
+        1,
+        2,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "Values": {
+        "Shape": "HollowOffset",
+        "Extension": "No",
+        "CapacityStrategy": "UltimateStrain",
+        "FormationStrategy": "LoadMultiplier",
+        "SearchMethod": "Bisection",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_061",
+      "Indices": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "Values": {
+        "Shape": "CircleUneven",
+        "Extension": "Yes",
+        "CapacityStrategy": "LoadMultiplier",
+        "FormationStrategy": "Auto",
+        "SearchMethod": "Brent",
+        "SolverMethod": "Secant",
+        "ConcreteDiagram": "TwoLine",
+        "SteelDiagram": "ThreeLine",
+        "StrengthTension": "UseDiagram",
+        "PsiMode": "User"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    },
+    {
+      "Id": "Selector_062",
+      "Indices": [
+        1,
+        0,
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "Values": {
+        "Shape": "RectL",
+        "Extension": "No",
+        "CapacityStrategy": "Auto",
+        "FormationStrategy": "UltimateStrain",
+        "SearchMethod": "Secant",
+        "SolverMethod": "Newton",
+        "ConcreteDiagram": "ThreeLine",
+        "SteelDiagram": "TwoLine",
+        "StrengthTension": "Ignore",
+        "PsiMode": "Auto"
+      },
+      "Scopes": [
+        "Pairwise"
+      ],
+      "RuntimeStatus": "NotRun"
+    }
+  ],
+  "FixedContracts": [
+    "CrackInitiation.ConcreteTension=UseDiagram",
+    "CrackedState.ConcreteTension=Ignore",
+    "Each case must execute all six Capacity and six Formation load paths",
+    "This plan does not replace Light/Stress 13-shape matrix or near-limit gates"
+  ]
+}

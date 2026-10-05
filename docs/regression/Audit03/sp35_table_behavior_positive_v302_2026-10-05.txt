@@ -1,0 +1,988 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_table_validation_v302.xlsm
+SOURCE_SHA256: EE4F2C42BAF806CAE4F6C3312FA6B3FB0514C35B22979268450DDACF1C81EF2F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_eb25f136c12440a49b529c1adecd18d5\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03SP35TableBehaviorTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03SP35TableBehaviorTests; 2026-10-05T03:49:06
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222343168; privateBytes=174116864; cpu=17915
+EXCEL_AFTER_SUITE: pid=24508; workingSet=146464768; privateBytes=99725312; cpu=7.515625
+OK: audit03.table.behavior.2.1.baselineValid
+OK: audit03.table.behavior.2.1.baselineM; actual=0.81; expected=0.81
+OK: audit03.table.behavior.2.1.baselineL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.1.referenceM; actual=0.81; expected=0.81
+OK: audit03.table.behavior.2.1.referenceL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.1.referenceNult; actual=2855260.08672945; expected=2855260.08672945
+SP35_BEHAVIOR: audit03.table.behavior.2.1|cell=AI61|reference=True|phiM=0.81|phiL=1.
+OK: audit03.table.behavior.2.2.baselineValid
+OK: audit03.table.behavior.2.2.baselineM; actual=0.81; expected=0.81
+OK: audit03.table.behavior.2.2.baselineL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.2.referenceM; actual=0.81; expected=0.81
+OK: audit03.table.behavior.2.2.referenceL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.2.referenceNult; actual=2855260.08672945; expected=2855260.08672945
+SP35_BEHAVIOR: audit03.table.behavior.2.2|cell=AJ61|reference=True|phiM=0.81|phiL=1.
+OK: audit03.table.behavior.2.3.baseline; actual=1.0225; expected=1.0225
+OK: audit03.table.behavior.2.3.inputValid
+OK: audit03.table.behavior.2.3.changedWeight; actual=1.023571428571; expected=1.023571428571
+OK: audit03.table.behavior.2.3.active
+SP35_BEHAVIOR: audit03.table.behavior.2.3|cell=AK61|reference=False|phiM=1.023571428571|phiL=1.011785714286
+OK: audit03.table.behavior.2.4.baselineValid
+OK: audit03.table.behavior.2.4.baselineM; actual=0.95; expected=0.95
+OK: audit03.table.behavior.2.4.baselineL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.4.activeM; actual=0.975; expected=0.975
+OK: audit03.table.behavior.2.4.unaffectedL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.2.4|cell=AL61|reference=False|phiM=0.975|phiL=1.
+OK: audit03.table.behavior.2.5.baselineValid
+OK: audit03.table.behavior.2.5.baselineM; actual=0.9; expected=0.9
+OK: audit03.table.behavior.2.5.baselineL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.5.activeM; actual=0.95; expected=0.95
+OK: audit03.table.behavior.2.5.unaffectedL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.2.5|cell=AM61|reference=False|phiM=0.95|phiL=1.
+OK: audit03.table.behavior.2.6.baselineValid
+OK: audit03.table.behavior.2.6.baselineM; actual=0.81; expected=0.81
+OK: audit03.table.behavior.2.6.baselineL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.6.activeM; actual=0.86; expected=0.86
+OK: audit03.table.behavior.2.6.unaffectedL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.2.6|cell=AN61|reference=False|phiM=0.86|phiL=1.
+OK: audit03.table.behavior.2.7.baselineValid
+OK: audit03.table.behavior.2.7.baselineM; actual=0.75; expected=0.75
+OK: audit03.table.behavior.2.7.baselineL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.7.activeM; actual=0.775; expected=0.775
+OK: audit03.table.behavior.2.7.unaffectedL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.2.7|cell=AO61|reference=False|phiM=0.775|phiL=1.
+OK: audit03.table.behavior.2.8.baselineValid
+OK: audit03.table.behavior.2.8.baselineM; actual=0.81; expected=0.81
+OK: audit03.table.behavior.2.8.baselineL; actual=1.; expected=1.
+OK: audit03.table.behavior.2.8.activeL; actual=1.05; expected=1.05
+OK: audit03.table.behavior.2.8.unaffectedM; actual=0.81; expected=0.81
+OK: audit03.table.behavior.2.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.2.8|cell=AP61|reference=False|phiM=0.81|phiL=1.05
+OK: audit03.table.behavior.3.1.baselineValid
+OK: audit03.table.behavior.3.1.baselineM; actual=0.77; expected=0.77
+OK: audit03.table.behavior.3.1.baselineL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.1.referenceM; actual=0.77; expected=0.77
+OK: audit03.table.behavior.3.1.referenceL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.1.referenceNult; actual=2563205.14194836; expected=2563205.14194836
+SP35_BEHAVIOR: audit03.table.behavior.3.1|cell=AI62|reference=True|phiM=0.77|phiL=0.84
+OK: audit03.table.behavior.3.2.baselineValid
+OK: audit03.table.behavior.3.2.baselineM; actual=0.77; expected=0.77
+OK: audit03.table.behavior.3.2.baselineL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.2.referenceM; actual=0.77; expected=0.77
+OK: audit03.table.behavior.3.2.referenceL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.2.referenceNult; actual=2563205.14194836; expected=2563205.14194836
+SP35_BEHAVIOR: audit03.table.behavior.3.2|cell=AJ62|reference=True|phiM=0.77|phiL=0.84
+OK: audit03.table.behavior.3.3.baseline; actual=1.0325; expected=1.0325
+OK: audit03.table.behavior.3.3.inputValid
+OK: audit03.table.behavior.3.3.changedWeight; actual=1.034; expected=1.034
+OK: audit03.table.behavior.3.3.active
+SP35_BEHAVIOR: audit03.table.behavior.3.3|cell=AK62|reference=False|phiM=1.034|phiL=1.017
+OK: audit03.table.behavior.3.4.baselineValid
+OK: audit03.table.behavior.3.4.baselineM; actual=0.93; expected=0.93
+OK: audit03.table.behavior.3.4.baselineL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.4.activeM; actual=0.955; expected=0.955
+OK: audit03.table.behavior.3.4.unaffectedL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.3.4|cell=AL62|reference=False|phiM=0.955|phiL=0.84
+OK: audit03.table.behavior.3.5.baselineValid
+OK: audit03.table.behavior.3.5.baselineM; actual=0.86; expected=0.86
+OK: audit03.table.behavior.3.5.baselineL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.5.activeM; actual=0.91; expected=0.91
+OK: audit03.table.behavior.3.5.unaffectedL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.3.5|cell=AM62|reference=False|phiM=0.91|phiL=0.84
+OK: audit03.table.behavior.3.6.baselineValid
+OK: audit03.table.behavior.3.6.baselineM; actual=0.77; expected=0.77
+OK: audit03.table.behavior.3.6.baselineL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.6.activeM; actual=0.82; expected=0.82
+OK: audit03.table.behavior.3.6.unaffectedL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.3.6|cell=AN62|reference=False|phiM=0.82|phiL=0.84
+OK: audit03.table.behavior.3.7.baselineValid
+OK: audit03.table.behavior.3.7.baselineM; actual=0.71; expected=0.71
+OK: audit03.table.behavior.3.7.baselineL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.7.activeM; actual=0.735; expected=0.735
+OK: audit03.table.behavior.3.7.unaffectedL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.3.7|cell=AO62|reference=False|phiM=0.735|phiL=0.84
+OK: audit03.table.behavior.3.8.baselineValid
+OK: audit03.table.behavior.3.8.baselineM; actual=0.77; expected=0.77
+OK: audit03.table.behavior.3.8.baselineL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.3.8.activeL; actual=0.89; expected=0.89
+OK: audit03.table.behavior.3.8.unaffectedM; actual=0.77; expected=0.77
+OK: audit03.table.behavior.3.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.3.8|cell=AP62|reference=False|phiM=0.77|phiL=0.89
+OK: audit03.table.behavior.4.1.baselineValid
+OK: audit03.table.behavior.4.1.baselineM; actual=0.74; expected=0.74
+OK: audit03.table.behavior.4.1.baselineL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.1.referenceM; actual=0.74; expected=0.74
+OK: audit03.table.behavior.4.1.referenceL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.1.referenceNult; actual=2437847.92586999; expected=2437847.92586999
+SP35_BEHAVIOR: audit03.table.behavior.4.1|cell=AI63|reference=True|phiM=0.74|phiL=0.79
+OK: audit03.table.behavior.4.2.baselineValid
+OK: audit03.table.behavior.4.2.baselineM; actual=0.74; expected=0.74
+OK: audit03.table.behavior.4.2.baselineL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.2.referenceM; actual=0.74; expected=0.74
+OK: audit03.table.behavior.4.2.referenceL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.2.referenceNult; actual=2437847.92586999; expected=2437847.92586999
+SP35_BEHAVIOR: audit03.table.behavior.4.2|cell=AJ63|reference=True|phiM=0.74|phiL=0.79
+OK: audit03.table.behavior.4.3.baseline; actual=1.0425; expected=1.0425
+OK: audit03.table.behavior.4.3.inputValid
+OK: audit03.table.behavior.4.3.changedWeight; actual=1.043461538462; expected=1.043461538462
+OK: audit03.table.behavior.4.3.active
+SP35_BEHAVIOR: audit03.table.behavior.4.3|cell=AK63|reference=False|phiM=1.043461538462|phiL=1.021730769231
+OK: audit03.table.behavior.4.4.baselineValid
+OK: audit03.table.behavior.4.4.baselineM; actual=0.89; expected=0.89
+OK: audit03.table.behavior.4.4.baselineL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.4.activeM; actual=0.915; expected=0.915
+OK: audit03.table.behavior.4.4.unaffectedL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.4.4|cell=AL63|reference=False|phiM=0.915|phiL=0.79
+OK: audit03.table.behavior.4.5.baselineValid
+OK: audit03.table.behavior.4.5.baselineM; actual=0.83; expected=0.83
+OK: audit03.table.behavior.4.5.baselineL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.5.activeM; actual=0.88; expected=0.88
+OK: audit03.table.behavior.4.5.unaffectedL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.4.5|cell=AM63|reference=False|phiM=0.88|phiL=0.79
+OK: audit03.table.behavior.4.6.baselineValid
+OK: audit03.table.behavior.4.6.baselineM; actual=0.74; expected=0.74
+OK: audit03.table.behavior.4.6.baselineL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.6.activeM; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.6.unaffectedL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.4.6|cell=AN63|reference=False|phiM=0.79|phiL=0.79
+OK: audit03.table.behavior.4.7.baselineValid
+OK: audit03.table.behavior.4.7.baselineM; actual=0.68; expected=0.68
+OK: audit03.table.behavior.4.7.baselineL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.7.activeM; actual=0.705; expected=0.705
+OK: audit03.table.behavior.4.7.unaffectedL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.4.7|cell=AO63|reference=False|phiM=0.705|phiL=0.79
+OK: audit03.table.behavior.4.8.baselineValid
+OK: audit03.table.behavior.4.8.baselineM; actual=0.74; expected=0.74
+OK: audit03.table.behavior.4.8.baselineL; actual=0.79; expected=0.79
+OK: audit03.table.behavior.4.8.activeL; actual=0.84; expected=0.84
+OK: audit03.table.behavior.4.8.unaffectedM; actual=0.74; expected=0.74
+OK: audit03.table.behavior.4.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.4.8|cell=AP63|reference=False|phiM=0.74|phiL=0.84
+OK: audit03.table.behavior.5.1.baselineValid
+OK: audit03.table.behavior.5.1.baselineM; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.1.baselineL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.1.referenceM; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.1.referenceL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.1.referenceNult; actual=2233095.38881865; expected=2233095.38881865
+SP35_BEHAVIOR: audit03.table.behavior.5.1|cell=AI64|reference=True|phiM=0.7|phiL=0.7
+OK: audit03.table.behavior.5.2.baselineValid
+OK: audit03.table.behavior.5.2.baselineM; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.2.baselineL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.2.referenceM; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.2.referenceL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.2.referenceNult; actual=2233095.38881865; expected=2233095.38881865
+SP35_BEHAVIOR: audit03.table.behavior.5.2|cell=AJ64|reference=True|phiM=0.7|phiL=0.7
+OK: audit03.table.behavior.5.3.baseline; actual=1.0525; expected=1.0525
+OK: audit03.table.behavior.5.3.inputValid
+OK: audit03.table.behavior.5.3.changedWeight; actual=1.054; expected=1.054
+OK: audit03.table.behavior.5.3.active
+SP35_BEHAVIOR: audit03.table.behavior.5.3|cell=AK64|reference=False|phiM=1.054|phiL=1.027
+OK: audit03.table.behavior.5.4.baselineValid
+OK: audit03.table.behavior.5.4.baselineM; actual=0.845; expected=0.845
+OK: audit03.table.behavior.5.4.baselineL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.4.activeM; actual=0.87; expected=0.87
+OK: audit03.table.behavior.5.4.unaffectedL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.5.4|cell=AL64|reference=False|phiM=0.87|phiL=0.7
+OK: audit03.table.behavior.5.5.baselineValid
+OK: audit03.table.behavior.5.5.baselineM; actual=0.79; expected=0.79
+OK: audit03.table.behavior.5.5.baselineL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.5.activeM; actual=0.84; expected=0.84
+OK: audit03.table.behavior.5.5.unaffectedL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.5.5|cell=AM64|reference=False|phiM=0.84|phiL=0.7
+OK: audit03.table.behavior.5.6.baselineValid
+OK: audit03.table.behavior.5.6.baselineM; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.6.baselineL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.6.activeM; actual=0.75; expected=0.75
+OK: audit03.table.behavior.5.6.unaffectedL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.5.6|cell=AN64|reference=False|phiM=0.75|phiL=0.7
+OK: audit03.table.behavior.5.7.baselineValid
+OK: audit03.table.behavior.5.7.baselineM; actual=0.64; expected=0.64
+OK: audit03.table.behavior.5.7.baselineL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.7.activeM; actual=0.665; expected=0.665
+OK: audit03.table.behavior.5.7.unaffectedL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.5.7|cell=AO64|reference=False|phiM=0.665|phiL=0.7
+OK: audit03.table.behavior.5.8.baselineValid
+OK: audit03.table.behavior.5.8.baselineM; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.8.baselineL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.8.activeL; actual=0.75; expected=0.75
+OK: audit03.table.behavior.5.8.unaffectedM; actual=0.7; expected=0.7
+OK: audit03.table.behavior.5.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.5.8|cell=AP64|reference=False|phiM=0.7|phiL=0.75
+OK: audit03.table.behavior.6.1.baselineValid
+OK: audit03.table.behavior.6.1.baselineM; actual=0.66; expected=0.66
+OK: audit03.table.behavior.6.1.baselineL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.1.referenceM; actual=0.66; expected=0.66
+OK: audit03.table.behavior.6.1.referenceL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.1.referenceNult; actual=2089417.49575398; expected=2089417.49575398
+SP35_BEHAVIOR: audit03.table.behavior.6.1|cell=AI65|reference=True|phiM=0.66|phiL=0.65
+OK: audit03.table.behavior.6.2.baselineValid
+OK: audit03.table.behavior.6.2.baselineM; actual=0.66; expected=0.66
+OK: audit03.table.behavior.6.2.baselineL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.2.referenceM; actual=0.66; expected=0.66
+OK: audit03.table.behavior.6.2.referenceL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.2.referenceNult; actual=2089417.49575398; expected=2089417.49575398
+SP35_BEHAVIOR: audit03.table.behavior.6.2|cell=AJ65|reference=True|phiM=0.66|phiL=0.65
+OK: audit03.table.behavior.6.3.baseline; actual=1.0625; expected=1.0625
+OK: audit03.table.behavior.6.3.inputValid
+OK: audit03.table.behavior.6.3.changedWeight; actual=1.063835616438; expected=1.063835616438
+OK: audit03.table.behavior.6.3.active
+SP35_BEHAVIOR: audit03.table.behavior.6.3|cell=AK65|reference=False|phiM=1.063835616438|phiL=1.031917808219
+OK: audit03.table.behavior.6.4.baselineValid
+OK: audit03.table.behavior.6.4.baselineM; actual=0.805; expected=0.805
+OK: audit03.table.behavior.6.4.baselineL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.4.activeM; actual=0.83; expected=0.83
+OK: audit03.table.behavior.6.4.unaffectedL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.6.4|cell=AL65|reference=False|phiM=0.83|phiL=0.65
+OK: audit03.table.behavior.6.5.baselineValid
+OK: audit03.table.behavior.6.5.baselineM; actual=0.75; expected=0.75
+OK: audit03.table.behavior.6.5.baselineL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.5.activeM; actual=0.8; expected=0.8
+OK: audit03.table.behavior.6.5.unaffectedL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.6.5|cell=AM65|reference=False|phiM=0.8|phiL=0.65
+OK: audit03.table.behavior.6.6.baselineValid
+OK: audit03.table.behavior.6.6.baselineM; actual=0.66; expected=0.66
+OK: audit03.table.behavior.6.6.baselineL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.6.activeM; actual=0.71; expected=0.71
+OK: audit03.table.behavior.6.6.unaffectedL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.6.6|cell=AN65|reference=False|phiM=0.71|phiL=0.65
+OK: audit03.table.behavior.6.7.baselineValid
+OK: audit03.table.behavior.6.7.baselineM; actual=0.605; expected=0.605
+OK: audit03.table.behavior.6.7.baselineL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.7.activeM; actual=0.63; expected=0.63
+OK: audit03.table.behavior.6.7.unaffectedL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.6.7|cell=AO65|reference=False|phiM=0.63|phiL=0.65
+OK: audit03.table.behavior.6.8.baselineValid
+OK: audit03.table.behavior.6.8.baselineM; actual=0.66; expected=0.66
+OK: audit03.table.behavior.6.8.baselineL; actual=0.65; expected=0.65
+OK: audit03.table.behavior.6.8.activeL; actual=0.7; expected=0.7
+OK: audit03.table.behavior.6.8.unaffectedM; actual=0.66; expected=0.66
+OK: audit03.table.behavior.6.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.6.8|cell=AP65|reference=False|phiM=0.66|phiL=0.7
+OK: audit03.table.behavior.7.1.baselineValid
+OK: audit03.table.behavior.7.1.baselineM; actual=0.62; expected=0.62
+OK: audit03.table.behavior.7.1.baselineL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.1.referenceM; actual=0.62; expected=0.62
+OK: audit03.table.behavior.7.1.referenceL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.1.referenceNult; actual=1877314.08958313; expected=1877314.08958313
+SP35_BEHAVIOR: audit03.table.behavior.7.1|cell=AI66|reference=True|phiM=0.62|phiL=0.56
+OK: audit03.table.behavior.7.2.baselineValid
+OK: audit03.table.behavior.7.2.baselineM; actual=0.62; expected=0.62
+OK: audit03.table.behavior.7.2.baselineL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.2.referenceM; actual=0.62; expected=0.62
+OK: audit03.table.behavior.7.2.referenceL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.2.referenceNult; actual=1877314.08958313; expected=1877314.08958313
+SP35_BEHAVIOR: audit03.table.behavior.7.2|cell=AJ66|reference=True|phiM=0.62|phiL=0.56
+OK: audit03.table.behavior.7.3.baseline; actual=1.0725; expected=1.0725
+OK: audit03.table.behavior.7.3.inputValid
+OK: audit03.table.behavior.7.3.changedWeight; actual=1.074; expected=1.074
+OK: audit03.table.behavior.7.3.active
+SP35_BEHAVIOR: audit03.table.behavior.7.3|cell=AK66|reference=False|phiM=1.074|phiL=1.037
+OK: audit03.table.behavior.7.4.baselineValid
+OK: audit03.table.behavior.7.4.baselineM; actual=0.765; expected=0.765
+OK: audit03.table.behavior.7.4.baselineL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.4.activeM; actual=0.79; expected=0.79
+OK: audit03.table.behavior.7.4.unaffectedL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.7.4|cell=AL66|reference=False|phiM=0.79|phiL=0.56
+OK: audit03.table.behavior.7.5.baselineValid
+OK: audit03.table.behavior.7.5.baselineM; actual=0.71; expected=0.71
+OK: audit03.table.behavior.7.5.baselineL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.5.activeM; actual=0.76; expected=0.76
+OK: audit03.table.behavior.7.5.unaffectedL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.7.5|cell=AM66|reference=False|phiM=0.76|phiL=0.56
+OK: audit03.table.behavior.7.6.baselineValid
+OK: audit03.table.behavior.7.6.baselineM; actual=0.62; expected=0.62
+OK: audit03.table.behavior.7.6.baselineL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.6.activeM; actual=0.67; expected=0.67
+OK: audit03.table.behavior.7.6.unaffectedL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.7.6|cell=AN66|reference=False|phiM=0.67|phiL=0.56
+OK: audit03.table.behavior.7.7.baselineValid
+OK: audit03.table.behavior.7.7.baselineM; actual=0.565; expected=0.565
+OK: audit03.table.behavior.7.7.baselineL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.7.activeM; actual=0.59; expected=0.59
+OK: audit03.table.behavior.7.7.unaffectedL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.7.7|cell=AO66|reference=False|phiM=0.59|phiL=0.56
+OK: audit03.table.behavior.7.8.baselineValid
+OK: audit03.table.behavior.7.8.baselineM; actual=0.62; expected=0.62
+OK: audit03.table.behavior.7.8.baselineL; actual=0.56; expected=0.56
+OK: audit03.table.behavior.7.8.activeL; actual=0.61; expected=0.61
+OK: audit03.table.behavior.7.8.unaffectedM; actual=0.62; expected=0.62
+OK: audit03.table.behavior.7.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.7.8|cell=AP66|reference=False|phiM=0.62|phiL=0.61
+OK: audit03.table.behavior.8.1.baselineValid
+OK: audit03.table.behavior.8.1.baselineM; actual=0.57; expected=0.57
+OK: audit03.table.behavior.8.1.baselineL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.1.referenceM; actual=0.57; expected=0.57
+OK: audit03.table.behavior.8.1.referenceL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.1.referenceNult; actual=1643533.66666076; expected=1643533.66666076
+SP35_BEHAVIOR: audit03.table.behavior.8.1|cell=AI67|reference=True|phiM=0.57|phiL=0.47
+OK: audit03.table.behavior.8.2.baselineValid
+OK: audit03.table.behavior.8.2.baselineM; actual=0.57; expected=0.57
+OK: audit03.table.behavior.8.2.baselineL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.2.referenceM; actual=0.57; expected=0.57
+OK: audit03.table.behavior.8.2.referenceL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.2.referenceNult; actual=1643533.66666076; expected=1643533.66666076
+SP35_BEHAVIOR: audit03.table.behavior.8.2|cell=AJ67|reference=True|phiM=0.57|phiL=0.47
+OK: audit03.table.behavior.8.3.baseline; actual=1.0825; expected=1.0825
+OK: audit03.table.behavior.8.3.inputValid
+OK: audit03.table.behavior.8.3.changedWeight; actual=1.084; expected=1.084
+OK: audit03.table.behavior.8.3.active
+SP35_BEHAVIOR: audit03.table.behavior.8.3|cell=AK67|reference=False|phiM=1.084|phiL=1.042
+OK: audit03.table.behavior.8.4.baselineValid
+OK: audit03.table.behavior.8.4.baselineM; actual=0.725; expected=0.725
+OK: audit03.table.behavior.8.4.baselineL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.4.activeM; actual=0.75; expected=0.75
+OK: audit03.table.behavior.8.4.unaffectedL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.8.4|cell=AL67|reference=False|phiM=0.75|phiL=0.47
+OK: audit03.table.behavior.8.5.baselineValid
+OK: audit03.table.behavior.8.5.baselineM; actual=0.67; expected=0.67
+OK: audit03.table.behavior.8.5.baselineL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.5.activeM; actual=0.72; expected=0.72
+OK: audit03.table.behavior.8.5.unaffectedL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.8.5|cell=AM67|reference=False|phiM=0.72|phiL=0.47
+OK: audit03.table.behavior.8.6.baselineValid
+OK: audit03.table.behavior.8.6.baselineM; actual=0.57; expected=0.57
+OK: audit03.table.behavior.8.6.baselineL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.6.activeM; actual=0.62; expected=0.62
+OK: audit03.table.behavior.8.6.unaffectedL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.8.6|cell=AN67|reference=False|phiM=0.62|phiL=0.47
+OK: audit03.table.behavior.8.7.baselineValid
+OK: audit03.table.behavior.8.7.baselineM; actual=0.525; expected=0.525
+OK: audit03.table.behavior.8.7.baselineL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.7.activeM; actual=0.55; expected=0.55
+OK: audit03.table.behavior.8.7.unaffectedL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.8.7|cell=AO67|reference=False|phiM=0.55|phiL=0.47
+OK: audit03.table.behavior.8.8.baselineValid
+OK: audit03.table.behavior.8.8.baselineM; actual=0.57; expected=0.57
+OK: audit03.table.behavior.8.8.baselineL; actual=0.47; expected=0.47
+OK: audit03.table.behavior.8.8.activeL; actual=0.52; expected=0.52
+OK: audit03.table.behavior.8.8.unaffectedM; actual=0.57; expected=0.57
+OK: audit03.table.behavior.8.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.8.8|cell=AP67|reference=False|phiM=0.57|phiL=0.52
+OK: audit03.table.behavior.9.1.baselineValid
+OK: audit03.table.behavior.9.1.baselineM; actual=0.52; expected=0.52
+OK: audit03.table.behavior.9.1.baselineL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.1.referenceM; actual=0.52; expected=0.52
+OK: audit03.table.behavior.9.1.referenceL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.1.referenceNult; actual=1462660.32840595; expected=1462660.32840595
+SP35_BEHAVIOR: audit03.table.behavior.9.1|cell=AI68|reference=True|phiM=0.52|phiL=0.41
+OK: audit03.table.behavior.9.2.baselineValid
+OK: audit03.table.behavior.9.2.baselineM; actual=0.52; expected=0.52
+OK: audit03.table.behavior.9.2.baselineL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.2.referenceM; actual=0.52; expected=0.52
+OK: audit03.table.behavior.9.2.referenceL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.2.referenceNult; actual=1462660.32840595; expected=1462660.32840595
+SP35_BEHAVIOR: audit03.table.behavior.9.2|cell=AJ68|reference=True|phiM=0.52|phiL=0.41
+OK: audit03.table.behavior.9.3.baseline; actual=1.0925; expected=1.0925
+OK: audit03.table.behavior.9.3.inputValid
+OK: audit03.table.behavior.9.3.changedWeight; actual=1.093513513514; expected=1.093513513514
+OK: audit03.table.behavior.9.3.active
+SP35_BEHAVIOR: audit03.table.behavior.9.3|cell=AK68|reference=False|phiM=1.093513513514|phiL=1.046756756757
+OK: audit03.table.behavior.9.4.baselineValid
+OK: audit03.table.behavior.9.4.baselineM; actual=0.66; expected=0.66
+OK: audit03.table.behavior.9.4.baselineL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.4.activeM; actual=0.685; expected=0.685
+OK: audit03.table.behavior.9.4.unaffectedL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.9.4|cell=AL68|reference=False|phiM=0.685|phiL=0.41
+OK: audit03.table.behavior.9.5.baselineValid
+OK: audit03.table.behavior.9.5.baselineM; actual=0.6; expected=0.6
+OK: audit03.table.behavior.9.5.baselineL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.5.activeM; actual=0.65; expected=0.65
+OK: audit03.table.behavior.9.5.unaffectedL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.9.5|cell=AM68|reference=False|phiM=0.65|phiL=0.41
+OK: audit03.table.behavior.9.6.baselineValid
+OK: audit03.table.behavior.9.6.baselineM; actual=0.52; expected=0.52
+OK: audit03.table.behavior.9.6.baselineL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.6.activeM; actual=0.57; expected=0.57
+OK: audit03.table.behavior.9.6.unaffectedL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.9.6|cell=AN68|reference=False|phiM=0.57|phiL=0.41
+OK: audit03.table.behavior.9.7.baselineValid
+OK: audit03.table.behavior.9.7.baselineM; actual=0.475; expected=0.475
+OK: audit03.table.behavior.9.7.baselineL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.7.activeM; actual=0.5; expected=0.5
+OK: audit03.table.behavior.9.7.unaffectedL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.9.7|cell=AO68|reference=False|phiM=0.5|phiL=0.41
+OK: audit03.table.behavior.9.8.baselineValid
+OK: audit03.table.behavior.9.8.baselineM; actual=0.52; expected=0.52
+OK: audit03.table.behavior.9.8.baselineL; actual=0.41; expected=0.41
+OK: audit03.table.behavior.9.8.activeL; actual=0.46; expected=0.46
+OK: audit03.table.behavior.9.8.unaffectedM; actual=0.52; expected=0.52
+OK: audit03.table.behavior.9.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.9.8|cell=AP68|reference=False|phiM=0.52|phiL=0.46
+OK: audit03.table.behavior.10.1.baselineValid
+OK: audit03.table.behavior.10.1.baselineM; actual=0.47; expected=0.47
+OK: audit03.table.behavior.10.1.baselineL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.1.referenceM; actual=0.47; expected=0.47
+OK: audit03.table.behavior.10.1.referenceL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.1.referenceNult; actual=1214674.67080768; expected=1214674.67080768
+SP35_BEHAVIOR: audit03.table.behavior.10.1|cell=AI69|reference=True|phiM=0.47|phiL=0.32
+OK: audit03.table.behavior.10.2.baselineValid
+OK: audit03.table.behavior.10.2.baselineM; actual=0.47; expected=0.47
+OK: audit03.table.behavior.10.2.baselineL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.2.referenceM; actual=0.47; expected=0.47
+OK: audit03.table.behavior.10.2.referenceL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.2.referenceNult; actual=1214674.67080768; expected=1214674.67080768
+SP35_BEHAVIOR: audit03.table.behavior.10.2|cell=AJ69|reference=True|phiM=0.47|phiL=0.32
+OK: audit03.table.behavior.10.3.baseline; actual=1.1025; expected=1.1025
+OK: audit03.table.behavior.10.3.inputValid
+OK: audit03.table.behavior.10.3.changedWeight; actual=1.104; expected=1.104
+OK: audit03.table.behavior.10.3.active
+SP35_BEHAVIOR: audit03.table.behavior.10.3|cell=AK69|reference=False|phiM=1.104|phiL=1.052
+OK: audit03.table.behavior.10.4.baselineValid
+OK: audit03.table.behavior.10.4.baselineM; actual=0.61; expected=0.61
+OK: audit03.table.behavior.10.4.baselineL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.4.activeM; actual=0.635; expected=0.635
+OK: audit03.table.behavior.10.4.unaffectedL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.10.4|cell=AL69|reference=False|phiM=0.635|phiL=0.32
+OK: audit03.table.behavior.10.5.baselineValid
+OK: audit03.table.behavior.10.5.baselineM; actual=0.55; expected=0.55
+OK: audit03.table.behavior.10.5.baselineL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.5.activeM; actual=0.6; expected=0.6
+OK: audit03.table.behavior.10.5.unaffectedL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.10.5|cell=AM69|reference=False|phiM=0.6|phiL=0.32
+OK: audit03.table.behavior.10.6.baselineValid
+OK: audit03.table.behavior.10.6.baselineM; actual=0.47; expected=0.47
+OK: audit03.table.behavior.10.6.baselineL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.6.activeM; actual=0.52; expected=0.52
+OK: audit03.table.behavior.10.6.unaffectedL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.10.6|cell=AN69|reference=False|phiM=0.52|phiL=0.32
+OK: audit03.table.behavior.10.7.baselineValid
+OK: audit03.table.behavior.10.7.baselineM; actual=0.425; expected=0.425
+OK: audit03.table.behavior.10.7.baselineL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.7.activeM; actual=0.45; expected=0.45
+OK: audit03.table.behavior.10.7.unaffectedL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.10.7|cell=AO69|reference=False|phiM=0.45|phiL=0.32
+OK: audit03.table.behavior.10.8.baselineValid
+OK: audit03.table.behavior.10.8.baselineM; actual=0.47; expected=0.47
+OK: audit03.table.behavior.10.8.baselineL; actual=0.32; expected=0.32
+OK: audit03.table.behavior.10.8.activeL; actual=0.37; expected=0.37
+OK: audit03.table.behavior.10.8.unaffectedM; actual=0.47; expected=0.47
+OK: audit03.table.behavior.10.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.10.8|cell=AP69|reference=False|phiM=0.47|phiL=0.37
+OK: audit03.table.behavior.11.1.baselineValid
+OK: audit03.table.behavior.11.1.baselineM; actual=0.44; expected=0.44
+OK: audit03.table.behavior.11.1.baselineL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.1.referenceM; actual=0.44; expected=0.44
+OK: audit03.table.behavior.11.1.referenceL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.1.referenceNult; actual=1017144.89759856; expected=1017144.89759856
+SP35_BEHAVIOR: audit03.table.behavior.11.1|cell=AI70|reference=True|phiM=0.44|phiL=0.25
+OK: audit03.table.behavior.11.2.baselineValid
+OK: audit03.table.behavior.11.2.baselineM; actual=0.44; expected=0.44
+OK: audit03.table.behavior.11.2.baselineL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.2.referenceM; actual=0.44; expected=0.44
+OK: audit03.table.behavior.11.2.referenceL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.2.referenceNult; actual=1017144.89759856; expected=1017144.89759856
+SP35_BEHAVIOR: audit03.table.behavior.11.2|cell=AJ70|reference=True|phiM=0.44|phiL=0.25
+OK: audit03.table.behavior.11.3.baseline; actual=1.1125; expected=1.1125
+OK: audit03.table.behavior.11.3.inputValid
+OK: audit03.table.behavior.11.3.changedWeight; actual=1.114; expected=1.114
+OK: audit03.table.behavior.11.3.active
+SP35_BEHAVIOR: audit03.table.behavior.11.3|cell=AK70|reference=False|phiM=1.114|phiL=1.057
+OK: audit03.table.behavior.11.4.baselineValid
+OK: audit03.table.behavior.11.4.baselineM; actual=0.565; expected=0.565
+OK: audit03.table.behavior.11.4.baselineL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.4.activeM; actual=0.59; expected=0.59
+OK: audit03.table.behavior.11.4.unaffectedL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.11.4|cell=AL70|reference=False|phiM=0.59|phiL=0.25
+OK: audit03.table.behavior.11.5.baselineValid
+OK: audit03.table.behavior.11.5.baselineM; actual=0.51; expected=0.51
+OK: audit03.table.behavior.11.5.baselineL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.5.activeM; actual=0.56; expected=0.56
+OK: audit03.table.behavior.11.5.unaffectedL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.11.5|cell=AM70|reference=False|phiM=0.56|phiL=0.25
+OK: audit03.table.behavior.11.6.baselineValid
+OK: audit03.table.behavior.11.6.baselineM; actual=0.44; expected=0.44
+OK: audit03.table.behavior.11.6.baselineL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.6.activeM; actual=0.49; expected=0.49
+OK: audit03.table.behavior.11.6.unaffectedL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.11.6|cell=AN70|reference=False|phiM=0.49|phiL=0.25
+OK: audit03.table.behavior.11.7.baselineValid
+OK: audit03.table.behavior.11.7.baselineM; actual=0.395; expected=0.395
+OK: audit03.table.behavior.11.7.baselineL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.7.activeM; actual=0.42; expected=0.42
+OK: audit03.table.behavior.11.7.unaffectedL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.11.7|cell=AO70|reference=False|phiM=0.42|phiL=0.25
+OK: audit03.table.behavior.11.8.baselineValid
+OK: audit03.table.behavior.11.8.baselineM; actual=0.44; expected=0.44
+OK: audit03.table.behavior.11.8.baselineL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.11.8.activeL; actual=0.3; expected=0.3
+OK: audit03.table.behavior.11.8.unaffectedM; actual=0.44; expected=0.44
+OK: audit03.table.behavior.11.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.11.8|cell=AP70|reference=False|phiM=0.44|phiL=0.3
+OK: audit03.table.behavior.12.1.baselineValid
+OK: audit03.table.behavior.12.1.baselineM; actual=0.43; expected=0.43
+OK: audit03.table.behavior.12.1.baselineL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.1.referenceM; actual=0.43; expected=0.43
+OK: audit03.table.behavior.12.1.referenceL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.1.referenceNult; actual=870957.838722919; expected=870957.838722919
+SP35_BEHAVIOR: audit03.table.behavior.12.1|cell=AI71|reference=True|phiM=0.43|phiL=0.2
+OK: audit03.table.behavior.12.2.baselineValid
+OK: audit03.table.behavior.12.2.baselineM; actual=0.43; expected=0.43
+OK: audit03.table.behavior.12.2.baselineL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.2.referenceM; actual=0.43; expected=0.43
+OK: audit03.table.behavior.12.2.referenceL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.2.referenceNult; actual=870957.838722919; expected=870957.838722919
+SP35_BEHAVIOR: audit03.table.behavior.12.2|cell=AJ71|reference=True|phiM=0.43|phiL=0.2
+OK: audit03.table.behavior.12.3.baseline; actual=1.1225; expected=1.1225
+OK: audit03.table.behavior.12.3.inputValid
+OK: audit03.table.behavior.12.3.changedWeight; actual=1.123846153846; expected=1.123846153846
+OK: audit03.table.behavior.12.3.active
+SP35_BEHAVIOR: audit03.table.behavior.12.3|cell=AK71|reference=False|phiM=1.123846153846|phiL=1.061923076923
+OK: audit03.table.behavior.12.4.baselineValid
+OK: audit03.table.behavior.12.4.baselineM; actual=0.535; expected=0.535
+OK: audit03.table.behavior.12.4.baselineL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.4.activeM; actual=0.56; expected=0.56
+OK: audit03.table.behavior.12.4.unaffectedL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.12.4|cell=AL71|reference=False|phiM=0.56|phiL=0.2
+OK: audit03.table.behavior.12.5.baselineValid
+OK: audit03.table.behavior.12.5.baselineM; actual=0.49; expected=0.49
+OK: audit03.table.behavior.12.5.baselineL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.5.activeM; actual=0.54; expected=0.54
+OK: audit03.table.behavior.12.5.unaffectedL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.12.5|cell=AM71|reference=False|phiM=0.54|phiL=0.2
+OK: audit03.table.behavior.12.6.baselineValid
+OK: audit03.table.behavior.12.6.baselineM; actual=0.43; expected=0.43
+OK: audit03.table.behavior.12.6.baselineL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.6.activeM; actual=0.48; expected=0.48
+OK: audit03.table.behavior.12.6.unaffectedL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.12.6|cell=AN71|reference=False|phiM=0.48|phiL=0.2
+OK: audit03.table.behavior.12.7.baselineValid
+OK: audit03.table.behavior.12.7.baselineM; actual=0.385; expected=0.385
+OK: audit03.table.behavior.12.7.baselineL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.7.activeM; actual=0.41; expected=0.41
+OK: audit03.table.behavior.12.7.unaffectedL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.12.7|cell=AO71|reference=False|phiM=0.41|phiL=0.2
+OK: audit03.table.behavior.12.8.baselineValid
+OK: audit03.table.behavior.12.8.baselineM; actual=0.43; expected=0.43
+OK: audit03.table.behavior.12.8.baselineL; actual=0.2; expected=0.2
+OK: audit03.table.behavior.12.8.activeL; actual=0.25; expected=0.25
+OK: audit03.table.behavior.12.8.unaffectedM; actual=0.43; expected=0.43
+OK: audit03.table.behavior.12.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.12.8|cell=AP71|reference=False|phiM=0.43|phiL=0.25
+OK: audit03.table.behavior.13.1.baselineValid
+OK: audit03.table.behavior.13.1.baselineM; actual=0.39; expected=0.39
+OK: audit03.table.behavior.13.1.baselineL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.1.referenceM; actual=0.39; expected=0.39
+OK: audit03.table.behavior.13.1.referenceL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.1.referenceNult; actual=723870.920843032; expected=723870.920843032
+SP35_BEHAVIOR: audit03.table.behavior.13.1|cell=AI72|reference=True|phiM=0.39|phiL=0.16
+OK: audit03.table.behavior.13.2.baselineValid
+OK: audit03.table.behavior.13.2.baselineM; actual=0.39; expected=0.39
+OK: audit03.table.behavior.13.2.baselineL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.2.referenceM; actual=0.39; expected=0.39
+OK: audit03.table.behavior.13.2.referenceL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.2.referenceNult; actual=723870.920843032; expected=723870.920843032
+SP35_BEHAVIOR: audit03.table.behavior.13.2|cell=AJ72|reference=True|phiM=0.39|phiL=0.16
+OK: audit03.table.behavior.13.3.baseline; actual=1.1325; expected=1.1325
+OK: audit03.table.behavior.13.3.inputValid
+OK: audit03.table.behavior.13.3.changedWeight; actual=1.134; expected=1.134
+OK: audit03.table.behavior.13.3.active
+SP35_BEHAVIOR: audit03.table.behavior.13.3|cell=AK72|reference=False|phiM=1.134|phiL=1.067
+OK: audit03.table.behavior.13.4.baselineValid
+OK: audit03.table.behavior.13.4.baselineM; actual=0.49; expected=0.49
+OK: audit03.table.behavior.13.4.baselineL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.4.activeM; actual=0.515; expected=0.515
+OK: audit03.table.behavior.13.4.unaffectedL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.13.4|cell=AL72|reference=False|phiM=0.515|phiL=0.16
+OK: audit03.table.behavior.13.5.baselineValid
+OK: audit03.table.behavior.13.5.baselineM; actual=0.45; expected=0.45
+OK: audit03.table.behavior.13.5.baselineL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.5.activeM; actual=0.5; expected=0.5
+OK: audit03.table.behavior.13.5.unaffectedL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.13.5|cell=AM72|reference=False|phiM=0.5|phiL=0.16
+OK: audit03.table.behavior.13.6.baselineValid
+OK: audit03.table.behavior.13.6.baselineM; actual=0.39; expected=0.39
+OK: audit03.table.behavior.13.6.baselineL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.6.activeM; actual=0.44; expected=0.44
+OK: audit03.table.behavior.13.6.unaffectedL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.13.6|cell=AN72|reference=False|phiM=0.44|phiL=0.16
+OK: audit03.table.behavior.13.7.baselineValid
+OK: audit03.table.behavior.13.7.baselineM; actual=0.355; expected=0.355
+OK: audit03.table.behavior.13.7.baselineL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.7.activeM; actual=0.38; expected=0.38
+OK: audit03.table.behavior.13.7.unaffectedL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.13.7|cell=AO72|reference=False|phiM=0.38|phiL=0.16
+OK: audit03.table.behavior.13.8.baselineValid
+OK: audit03.table.behavior.13.8.baselineM; actual=0.39; expected=0.39
+OK: audit03.table.behavior.13.8.baselineL; actual=0.16; expected=0.16
+OK: audit03.table.behavior.13.8.activeL; actual=0.21; expected=0.21
+OK: audit03.table.behavior.13.8.unaffectedM; actual=0.39; expected=0.39
+OK: audit03.table.behavior.13.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.13.8|cell=AP72|reference=False|phiM=0.39|phiL=0.21
+OK: audit03.table.behavior.14.1.baselineValid
+OK: audit03.table.behavior.14.1.baselineM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.14.1.baselineL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.1.referenceM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.14.1.referenceL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.1.referenceNult; actual=643131.471979771; expected=643131.471979771
+SP35_BEHAVIOR: audit03.table.behavior.14.1|cell=AI73|reference=True|phiM=0.36|phiL=0.14
+OK: audit03.table.behavior.14.2.baselineValid
+OK: audit03.table.behavior.14.2.baselineM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.14.2.baselineL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.2.referenceM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.14.2.referenceL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.2.referenceNult; actual=643131.471979771; expected=643131.471979771
+SP35_BEHAVIOR: audit03.table.behavior.14.2|cell=AJ73|reference=True|phiM=0.36|phiL=0.14
+OK: audit03.table.behavior.14.3.baseline; actual=1.1425; expected=1.1425
+OK: audit03.table.behavior.14.3.inputValid
+OK: audit03.table.behavior.14.3.changedWeight; actual=1.143333333333; expected=1.143333333333
+OK: audit03.table.behavior.14.3.active
+SP35_BEHAVIOR: audit03.table.behavior.14.3|cell=AK73|reference=False|phiM=1.143333333333|phiL=1.071666666667
+OK: audit03.table.behavior.14.4.baselineValid
+OK: audit03.table.behavior.14.4.baselineM; actual=0.445; expected=0.445
+OK: audit03.table.behavior.14.4.baselineL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.4.activeM; actual=0.47; expected=0.47
+OK: audit03.table.behavior.14.4.unaffectedL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.14.4|cell=AL73|reference=False|phiM=0.47|phiL=0.14
+OK: audit03.table.behavior.14.5.baselineValid
+OK: audit03.table.behavior.14.5.baselineM; actual=0.41; expected=0.41
+OK: audit03.table.behavior.14.5.baselineL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.5.activeM; actual=0.46; expected=0.46
+OK: audit03.table.behavior.14.5.unaffectedL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.14.5|cell=AM73|reference=False|phiM=0.46|phiL=0.14
+OK: audit03.table.behavior.14.6.baselineValid
+OK: audit03.table.behavior.14.6.baselineM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.14.6.baselineL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.6.activeM; actual=0.41; expected=0.41
+OK: audit03.table.behavior.14.6.unaffectedL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.14.6|cell=AN73|reference=False|phiM=0.41|phiL=0.14
+OK: audit03.table.behavior.14.7.baselineValid
+OK: audit03.table.behavior.14.7.baselineM; actual=0.335; expected=0.335
+OK: audit03.table.behavior.14.7.baselineL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.7.activeM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.14.7.unaffectedL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.14.7|cell=AO73|reference=False|phiM=0.36|phiL=0.14
+OK: audit03.table.behavior.14.8.baselineValid
+OK: audit03.table.behavior.14.8.baselineM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.14.8.baselineL; actual=0.14; expected=0.14
+OK: audit03.table.behavior.14.8.activeL; actual=0.19; expected=0.19
+OK: audit03.table.behavior.14.8.unaffectedM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.14.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.14.8|cell=AP73|reference=False|phiM=0.36|phiL=0.19
+OK: audit03.table.behavior.15.1.baselineValid
+OK: audit03.table.behavior.15.1.baselineM; actual=0.31; expected=0.31
+OK: audit03.table.behavior.15.1.baselineL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.1.referenceM; actual=0.31; expected=0.31
+OK: audit03.table.behavior.15.1.referenceL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.1.referenceNult; actual=482410.850546189; expected=482410.850546189
+SP35_BEHAVIOR: audit03.table.behavior.15.1|cell=AI74|reference=True|phiM=0.31|phiL=0.1
+OK: audit03.table.behavior.15.2.baselineValid
+OK: audit03.table.behavior.15.2.baselineM; actual=0.31; expected=0.31
+OK: audit03.table.behavior.15.2.baselineL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.2.referenceM; actual=0.31; expected=0.31
+OK: audit03.table.behavior.15.2.referenceL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.2.referenceNult; actual=482410.850546189; expected=482410.850546189
+SP35_BEHAVIOR: audit03.table.behavior.15.2|cell=AJ74|reference=True|phiM=0.31|phiL=0.1
+OK: audit03.table.behavior.15.3.baseline; actual=1.1525; expected=1.1525
+OK: audit03.table.behavior.15.3.inputValid
+OK: audit03.table.behavior.15.3.changedWeight; actual=1.154; expected=1.154
+OK: audit03.table.behavior.15.3.active
+SP35_BEHAVIOR: audit03.table.behavior.15.3|cell=AK74|reference=False|phiM=1.154|phiL=1.077
+OK: audit03.table.behavior.15.4.baselineValid
+OK: audit03.table.behavior.15.4.baselineM; actual=0.395; expected=0.395
+OK: audit03.table.behavior.15.4.baselineL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.4.activeM; actual=0.42; expected=0.42
+OK: audit03.table.behavior.15.4.unaffectedL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.15.4|cell=AL74|reference=False|phiM=0.42|phiL=0.1
+OK: audit03.table.behavior.15.5.baselineValid
+OK: audit03.table.behavior.15.5.baselineM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.15.5.baselineL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.5.activeM; actual=0.41; expected=0.41
+OK: audit03.table.behavior.15.5.unaffectedL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.15.5|cell=AM74|reference=False|phiM=0.41|phiL=0.1
+OK: audit03.table.behavior.15.6.baselineValid
+OK: audit03.table.behavior.15.6.baselineM; actual=0.31; expected=0.31
+OK: audit03.table.behavior.15.6.baselineL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.6.activeM; actual=0.36; expected=0.36
+OK: audit03.table.behavior.15.6.unaffectedL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.15.6|cell=AN74|reference=False|phiM=0.36|phiL=0.1
+OK: audit03.table.behavior.15.7.baselineValid
+OK: audit03.table.behavior.15.7.baselineM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.15.7.baselineL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.7.activeM; actual=0.305; expected=0.305
+OK: audit03.table.behavior.15.7.unaffectedL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.15.7|cell=AO74|reference=False|phiM=0.305|phiL=0.1
+OK: audit03.table.behavior.15.8.baselineValid
+OK: audit03.table.behavior.15.8.baselineM; actual=0.31; expected=0.31
+OK: audit03.table.behavior.15.8.baselineL; actual=0.1; expected=0.1
+OK: audit03.table.behavior.15.8.activeL; actual=0.15; expected=0.15
+OK: audit03.table.behavior.15.8.unaffectedM; actual=0.31; expected=0.31
+OK: audit03.table.behavior.15.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.15.8|cell=AP74|reference=False|phiM=0.31|phiL=0.15
+OK: audit03.table.behavior.16.1.baselineValid
+OK: audit03.table.behavior.16.1.baselineM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.16.1.baselineL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.1.referenceM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.16.1.referenceL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.1.referenceNult; actual=396994.735789982; expected=396994.735789982
+SP35_BEHAVIOR: audit03.table.behavior.16.1|cell=AI75|reference=True|phiM=0.28|phiL=0.08
+OK: audit03.table.behavior.16.2.baselineValid
+OK: audit03.table.behavior.16.2.baselineM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.16.2.baselineL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.2.referenceM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.16.2.referenceL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.2.referenceNult; actual=396994.735789982; expected=396994.735789982
+SP35_BEHAVIOR: audit03.table.behavior.16.2|cell=AJ75|reference=True|phiM=0.28|phiL=0.08
+OK: audit03.table.behavior.16.3.baseline; actual=1.1625; expected=1.1625
+OK: audit03.table.behavior.16.3.inputValid
+OK: audit03.table.behavior.16.3.changedWeight; actual=1.164; expected=1.164
+OK: audit03.table.behavior.16.3.active
+SP35_BEHAVIOR: audit03.table.behavior.16.3|cell=AK75|reference=False|phiM=1.164|phiL=1.082
+OK: audit03.table.behavior.16.4.baselineValid
+OK: audit03.table.behavior.16.4.baselineM; actual=0.35; expected=0.35
+OK: audit03.table.behavior.16.4.baselineL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.4.activeM; actual=0.375; expected=0.375
+OK: audit03.table.behavior.16.4.unaffectedL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.16.4|cell=AL75|reference=False|phiM=0.375|phiL=0.08
+OK: audit03.table.behavior.16.5.baselineValid
+OK: audit03.table.behavior.16.5.baselineM; actual=0.32; expected=0.32
+OK: audit03.table.behavior.16.5.baselineL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.5.activeM; actual=0.37; expected=0.37
+OK: audit03.table.behavior.16.5.unaffectedL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.16.5|cell=AM75|reference=False|phiM=0.37|phiL=0.08
+OK: audit03.table.behavior.16.6.baselineValid
+OK: audit03.table.behavior.16.6.baselineM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.16.6.baselineL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.6.activeM; actual=0.33; expected=0.33
+OK: audit03.table.behavior.16.6.unaffectedL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.16.6|cell=AN75|reference=False|phiM=0.33|phiL=0.08
+OK: audit03.table.behavior.16.7.baselineValid
+OK: audit03.table.behavior.16.7.baselineM; actual=0.26; expected=0.26
+OK: audit03.table.behavior.16.7.baselineL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.7.activeM; actual=0.285; expected=0.285
+OK: audit03.table.behavior.16.7.unaffectedL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.16.7|cell=AO75|reference=False|phiM=0.285|phiL=0.08
+OK: audit03.table.behavior.16.8.baselineValid
+OK: audit03.table.behavior.16.8.baselineM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.16.8.baselineL; actual=0.08; expected=0.08
+OK: audit03.table.behavior.16.8.activeL; actual=0.13; expected=0.13
+OK: audit03.table.behavior.16.8.unaffectedM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.16.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.16.8|cell=AP75|reference=False|phiM=0.28|phiL=0.13
+OK: audit03.table.behavior.17.1.baselineValid
+OK: audit03.table.behavior.17.1.baselineM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.17.1.baselineL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.1.referenceM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.17.1.referenceL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.1.referenceNult; actual=348921.154502914; expected=348921.154502914
+SP35_BEHAVIOR: audit03.table.behavior.17.1|cell=AI76|reference=True|phiM=0.25|phiL=0.07
+OK: audit03.table.behavior.17.2.baselineValid
+OK: audit03.table.behavior.17.2.baselineM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.17.2.baselineL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.2.referenceM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.17.2.referenceL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.2.referenceNult; actual=348921.154502914; expected=348921.154502914
+SP35_BEHAVIOR: audit03.table.behavior.17.2|cell=AJ76|reference=True|phiM=0.25|phiL=0.07
+OK: audit03.table.behavior.17.3.baseline; actual=1.1725; expected=1.1725
+OK: audit03.table.behavior.17.3.inputValid
+OK: audit03.table.behavior.17.3.changedWeight; actual=1.174; expected=1.174
+OK: audit03.table.behavior.17.3.active
+SP35_BEHAVIOR: audit03.table.behavior.17.3|cell=AK76|reference=False|phiM=1.174|phiL=1.087
+OK: audit03.table.behavior.17.4.baselineValid
+OK: audit03.table.behavior.17.4.baselineM; actual=0.32; expected=0.32
+OK: audit03.table.behavior.17.4.baselineL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.4.activeM; actual=0.345; expected=0.345
+OK: audit03.table.behavior.17.4.unaffectedL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.17.4|cell=AL76|reference=False|phiM=0.345|phiL=0.07
+OK: audit03.table.behavior.17.5.baselineValid
+OK: audit03.table.behavior.17.5.baselineM; actual=0.29; expected=0.29
+OK: audit03.table.behavior.17.5.baselineL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.5.activeM; actual=0.34; expected=0.34
+OK: audit03.table.behavior.17.5.unaffectedL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.17.5|cell=AM76|reference=False|phiM=0.34|phiL=0.07
+OK: audit03.table.behavior.17.6.baselineValid
+OK: audit03.table.behavior.17.6.baselineM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.17.6.baselineL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.6.activeM; actual=0.3; expected=0.3
+OK: audit03.table.behavior.17.6.unaffectedL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.17.6|cell=AN76|reference=False|phiM=0.3|phiL=0.07
+OK: audit03.table.behavior.17.7.baselineValid
+OK: audit03.table.behavior.17.7.baselineM; actual=0.23; expected=0.23
+OK: audit03.table.behavior.17.7.baselineL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.7.activeM; actual=0.255; expected=0.255
+OK: audit03.table.behavior.17.7.unaffectedL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.17.7|cell=AO76|reference=False|phiM=0.255|phiL=0.07
+OK: audit03.table.behavior.17.8.baselineValid
+OK: audit03.table.behavior.17.8.baselineM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.17.8.baselineL; actual=0.07; expected=0.07
+OK: audit03.table.behavior.17.8.activeL; actual=0.12; expected=0.12
+OK: audit03.table.behavior.17.8.unaffectedM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.17.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.17.8|cell=AP76|reference=False|phiM=0.25|phiL=0.12
+OK: audit03.table.behavior.18.1.baselineValid
+OK: audit03.table.behavior.18.1.baselineM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.18.1.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.1.referenceM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.18.1.referenceL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.1.referenceNult; actual=306253.081895129; expected=306253.081895129
+SP35_BEHAVIOR: audit03.table.behavior.18.1|cell=AI77|reference=True|phiM=0.24|phiL=0.06
+OK: audit03.table.behavior.18.2.baselineValid
+OK: audit03.table.behavior.18.2.baselineM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.18.2.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.2.referenceM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.18.2.referenceL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.2.referenceNult; actual=306253.081895129; expected=306253.081895129
+SP35_BEHAVIOR: audit03.table.behavior.18.2|cell=AJ77|reference=True|phiM=0.24|phiL=0.06
+OK: audit03.table.behavior.18.3.baseline; actual=1.1825; expected=1.1825
+OK: audit03.table.behavior.18.3.inputValid
+OK: audit03.table.behavior.18.3.changedWeight; actual=1.182500018753; expected=1.182500018753
+OK: audit03.table.behavior.18.3.active
+SP35_BEHAVIOR: audit03.table.behavior.18.3|cell=AK77|reference=False|phiM=1.182500018753|phiL=1.091250009376
+OK: audit03.table.behavior.18.4.baselineValid
+OK: audit03.table.behavior.18.4.baselineM; actual=0.305; expected=0.305
+OK: audit03.table.behavior.18.4.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.4.activeM; actual=0.33; expected=0.33
+OK: audit03.table.behavior.18.4.unaffectedL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.18.4|cell=AL77|reference=False|phiM=0.33|phiL=0.06
+OK: audit03.table.behavior.18.5.baselineValid
+OK: audit03.table.behavior.18.5.baselineM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.18.5.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.5.activeM; actual=0.33; expected=0.33
+OK: audit03.table.behavior.18.5.unaffectedL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.18.5|cell=AM77|reference=False|phiM=0.33|phiL=0.06
+OK: audit03.table.behavior.18.6.baselineValid
+OK: audit03.table.behavior.18.6.baselineM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.18.6.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.6.activeM; actual=0.29; expected=0.29
+OK: audit03.table.behavior.18.6.unaffectedL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.18.6|cell=AN77|reference=False|phiM=0.29|phiL=0.06
+OK: audit03.table.behavior.18.7.baselineValid
+OK: audit03.table.behavior.18.7.baselineM; actual=0.225; expected=0.225
+OK: audit03.table.behavior.18.7.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.7.activeM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.18.7.unaffectedL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.18.7|cell=AO77|reference=False|phiM=0.25|phiL=0.06
+OK: audit03.table.behavior.18.8.baselineValid
+OK: audit03.table.behavior.18.8.baselineM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.18.8.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.18.8.activeL; actual=0.11; expected=0.11
+OK: audit03.table.behavior.18.8.unaffectedM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.18.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.18.8|cell=AP77|reference=False|phiM=0.24|phiL=0.11
+OK: audit03.table.behavior.19.1.baselineValid
+OK: audit03.table.behavior.19.1.baselineM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.19.1.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.1.referenceM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.19.1.referenceL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.1.referenceNult; actual=306253.081895129; expected=306253.081895129
+SP35_BEHAVIOR: audit03.table.behavior.19.1|cell=AI78|reference=True|phiM=0.24|phiL=0.06
+OK: audit03.table.behavior.19.2.baselineValid
+OK: audit03.table.behavior.19.2.baselineM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.19.2.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.2.referenceM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.19.2.referenceL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.2.referenceNult; actual=306253.081895129; expected=306253.081895129
+SP35_BEHAVIOR: audit03.table.behavior.19.2|cell=AJ78|reference=True|phiM=0.24|phiL=0.06
+OK: audit03.table.behavior.19.3.baseline; actual=1.1875; expected=1.1875
+OK: audit03.table.behavior.19.3.inputValid
+OK: audit03.table.behavior.19.3.changedWeight; actual=1.186; expected=1.186
+OK: audit03.table.behavior.19.3.active
+SP35_BEHAVIOR: audit03.table.behavior.19.3|cell=AK78|reference=False|phiM=1.186|phiL=1.093
+OK: audit03.table.behavior.19.4.baselineValid
+OK: audit03.table.behavior.19.4.baselineM; actual=0.305; expected=0.305
+OK: audit03.table.behavior.19.4.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.4.activeM; actual=0.33; expected=0.33
+OK: audit03.table.behavior.19.4.unaffectedL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.4.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.19.4|cell=AL78|reference=False|phiM=0.33|phiL=0.06
+OK: audit03.table.behavior.19.5.baselineValid
+OK: audit03.table.behavior.19.5.baselineM; actual=0.28; expected=0.28
+OK: audit03.table.behavior.19.5.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.5.activeM; actual=0.33; expected=0.33
+OK: audit03.table.behavior.19.5.unaffectedL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.5.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.19.5|cell=AM78|reference=False|phiM=0.33|phiL=0.06
+OK: audit03.table.behavior.19.6.baselineValid
+OK: audit03.table.behavior.19.6.baselineM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.19.6.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.6.activeM; actual=0.29; expected=0.29
+OK: audit03.table.behavior.19.6.unaffectedL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.6.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.19.6|cell=AN78|reference=False|phiM=0.29|phiL=0.06
+OK: audit03.table.behavior.19.7.baselineValid
+OK: audit03.table.behavior.19.7.baselineM; actual=0.225; expected=0.225
+OK: audit03.table.behavior.19.7.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.7.activeM; actual=0.25; expected=0.25
+OK: audit03.table.behavior.19.7.unaffectedL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.7.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.19.7|cell=AO78|reference=False|phiM=0.25|phiL=0.06
+OK: audit03.table.behavior.19.8.baselineValid
+OK: audit03.table.behavior.19.8.baselineM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.19.8.baselineL; actual=0.06; expected=0.06
+OK: audit03.table.behavior.19.8.activeL; actual=0.11; expected=0.11
+OK: audit03.table.behavior.19.8.unaffectedM; actual=0.24; expected=0.24
+OK: audit03.table.behavior.19.8.forceChanged
+SP35_BEHAVIOR: audit03.table.behavior.19.8|cell=AP78|reference=False|phiM=0.24|phiL=0.11
+OK: audit03.table.all144
+TOTAL_AUDIT03_SP35_BEHAVIOR: fields=144; passed=829; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_eb25f136c12440a49b529c1adecd18d5\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03SP35TableBehaviorTests; 2026-10-05T03:49:11
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

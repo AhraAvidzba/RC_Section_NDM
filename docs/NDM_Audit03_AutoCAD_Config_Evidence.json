@@ -4,8 +4,8 @@
   "PositiveGate": "TOTAL_AUTOCAD_CONFIG: passed=1317; failed=0",
   "SupplementaryReport": "docs/regression/Audit03/autocad_real_shapes_final_v284_2026-10-04.log",
   "SupplementaryGate": "TOTAL_REAL_AUTOCAD: passed=1023; failed=0",
-  "FullReports": ["docs/regression/Audit03/full_off_autocad_shapes_v284_2026-10-04.txt"],
-  "PendingFullRegression": true,
+  "FullReports": ["docs/regression/Audit03/full_off_clean_controls_v300_2026-10-05.txt", "docs/regression/Audit03/full_on_clean_controls_v300_2026-10-05.txt"],
+  "PendingFullRegression": false,
   "Consumer": "CSystemSettingsReader -> сохраненный Results snapshot / фактическое оформление modAutoCADStressExport / CAutoCADSectionModelImporter / Region-safe cleanup. Config-тест встроен в WorkbookUI; native DWG отдельно проверяет guarded собственный Autodesk документ, mm, цвета, подписи и save/reopen без solve.",
   "TestId": "modTestAutoCADConfig.RunAudit03AutoCADConfigTests + RunAudit03RealAutoCADTests + modTestWorkbookInterface.RunWorkbookInterfaceTests",
   "Entries": [

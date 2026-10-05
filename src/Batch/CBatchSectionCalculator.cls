@@ -125,6 +125,7 @@ Private mStabilitySP63DeltaEMax As Double ' Верхняя защита delta_e 
 Private mStabilitySP35PhiP As Double ' Коэффициент phi_p; для ненапрягаемой арматуры по умолчанию 1.
 Private mStabilitySP35NOverNcrLimit As Double ' Ограничение N/Ncr для ветви СП 35.
 Private mStabilitySP35Table721 As Variant ' Таблица 7.21 СП 35, прочитанная с Config.
+Private mStabilitySP35TableInputError As String ' Причина неверной таблицы с актуальным адресом; применяется только в табличной ветви СП 35.
 Private mStabilityLoadCount As Long ' Число строк постоянных/длительных нагрузок для устойчивости.
 Private mStabilityLoadCombinationID() As String ' LC, к которому относится строка длительных нагрузок.
 Private mStabilityLoadN() As Double ' N от постоянных или постоянных+длительных нагрузок, Н.
@@ -464,9 +465,11 @@ Public Sub AddInvalidStabilityDurationLoad(ByVal combinationID As String, ByVal 
 End Sub
 
 ' Принимает таблицу 7.21 СП 35 из Config. Таблица нужна только при выборе
-' Stability.Code = SP35 и не должна быть зашита константами в код класса.
-Public Sub SetSP35Table721(ByVal tableData As Variant)
+' табличной ветви СП 35. Excel-слой может передать адресную причину ошибки;
+' классификацию и решение о применимости сохраняет calculator.
+Public Sub SetSP35Table721(ByVal tableData As Variant, Optional ByVal inputError As String = vbNullString)
     mStabilitySP35Table721 = tableData
+    mStabilitySP35TableInputError = inputError
 End Sub
 
 ' Добавляет корректно прочитанное сочетание нагрузок.
@@ -868,7 +871,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
         mStabilityAccidentalEccentricityUser1, mStabilityAccidentalEccentricityUser2, _
         mStabilitySP63Ks, mStabilitySP63DeltaEMin, _
         mStabilitySP63DeltaEMax, mStabilitySP35PhiP, _
-        mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mMomentZeroFilter
+        mStabilitySP35NOverNcrLimit, mStabilitySP35Table721, mMomentZeroFilter, mStabilitySP35TableInputError
 
     Dim stabilityMeta As CResultMeta
     Set stabilityMeta = stability.ResultMeta

@@ -60,6 +60,25 @@ NumFail равновесия. Только временное отключени
 
 ## Оставшиеся Gates
 
+### Дополнение F07 v304-v306
+
+Frozen runner v304 воспроизвел 48 runtime overflow при конечных моментах
+1e160/1e308 и N=0: обе схемы Newton/Secant, Extension Off/On, шесть направлений.
+После каждой большой нагрузки обычное сжатие успешно восстанавливалось.
+Причина находится до solve: ApplyInitialGuess вычислял Mx^2 + My^2.
+
+Guard теперь вычисляет эту норму только когда обе компоненты не больше
+исходного NEAR_ZERO. В остальных случаях норма заведомо выше допуска,
+поэтому квадрат не нужен. Допуск, старые ожидаемые числа и физические
+критерии не менялись. Directed positive v305 `336/0`, полный Solver `1367/0`;
+stable v306 сохраняет ту же правку без экспериментального изменения psi.
+Batch v306 `28725/0`, Results/status-style save-reopen=True. Это конкретный
+закрытый overflow, не blanket приемка любых произвольных Double-сценариев.
+
+Actual export/source v306 `108/108`, failed=0. Последующие comment-only
+и восстановленные исторические test assertions перечислены в Progress;
+им нужна следующая фактическая build, а не декларация equality старой книги.
+
 UI v294 не принят: все 72 unit/sign варианта прошли со стабильной памятью,
 но следующий 120-вариантный InputUnit-блок вновь оформлял активный Results.
 Он воспроизвел рост и был остановлен только в собственном PID 20156;
@@ -79,8 +98,11 @@ Actual help и source/VBE equality v299 завершены: 760 пользова
 Изменены только подписи единиц таблицы/графиков; physical points и прямые
 численные формулы не изменены. Подробности в Progress и двух directed logs.
 
-Новая полная clean build v300 завершена; полный eight-suite Off выполняется.
-Затем нужны On, actual clean/update acceptance, актуальная широкая матрица,
+Новая полная clean build v300 и eight-suite Off завершены: `101701/0`,
+все восемь suites, watchdog exit=0, source unchanged=True. Actual read-only
+VBE export сверяет 108/108 source modules. Полный On завершен `101712/0`,
+все восемь suites, watchdog exit=0, source unchanged=True.
+Затем нужны actual clean/update acceptance, актуальная широкая матрица,
 Config coverage, benchmark и final self-audit. До завершения этих проверок
 Audit03 целиком не получает PASS. Census v300 имеет 4560 methods и 1877 guards;
 он остается инвентаризацией, а не автоматическим semantic PASS всех тел.

@@ -1,0 +1,547 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_table_runner_v306.xlsm
+SOURCE_SHA256: 792233E6FDEB200364A7AA4036F88BD9CBE0C44EC3A5EA6BCB888FD323D3BD5C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c3363e0a02164d4680b6ef8627885f93\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03UserPsiFallbackTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03UserPsiFallbackTests; 2026-10-05T04:23:39
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222326784; privateBytes=174055424; cpu=17916.765625
+EXCEL_AFTER_SUITE: pid=28524; workingSet=155582464; privateBytes=109649920; cpu=4.515625
+OK: audit03.userPsiFallback.PSI_User_Mx.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_User_Mx.noPoint
+OK: audit03.userPsiFallback.PSI_User_Mx.current
+OK: audit03.userPsiFallback.PSI_User_Mx.widthCalculated
+OK: audit03.userPsiFallback.PSI_User_Mx.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_User_Mx.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_User_Mx.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_User_Mx.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_User_Mx.formationUnavailableWarning
+META: audit03.comments.PSI_User_Mx.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_User_Mx.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_User_Mx.capacity.russianReason
+OK: audit03.comments.PSI_User_Mx.capacity.readable
+OK: audit03.comments.PSI_User_Mx.capacity.noMachinePrefix
+META: audit03.comments.PSI_User_Mx.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_User_Mx.formation.reasonPresent
+OK: audit03.comments.PSI_User_Mx.formation.russianReason
+OK: audit03.comments.PSI_User_Mx.formation.readable
+OK: audit03.comments.PSI_User_Mx.formation.noMachinePrefix
+OK: audit03.comments.PSI_User_Mx.formation.ownSubtree
+META: audit03.comments.PSI_User_Mx.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_User_Mx.current.russianReason
+OK: audit03.comments.PSI_User_Mx.current.readable
+OK: audit03.comments.PSI_User_Mx.current.noMachinePrefix
+META: audit03.comments.PSI_User_Mx.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_User_Mx.width.reasonPresent
+OK: audit03.comments.PSI_User_Mx.width.russianReason
+OK: audit03.comments.PSI_User_Mx.width.readable
+OK: audit03.comments.PSI_User_Mx.width.noMachinePrefix
+OK: audit03.comments.PSI_User_Mx.width.ownSubtree
+META: audit03.comments.PSI_User_Mx.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_User_Mx.longitudinal.russianReason
+OK: audit03.comments.PSI_User_Mx.longitudinal.readable
+OK: audit03.comments.PSI_User_Mx.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_User_Mx.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_User_Mx.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_User_Mx.formulaNoNumFail
+OK: audit03.comments.PSI_User_Mx.strengthNoCrack
+OK: audit03.comments.PSI_User_Mx.crackNoCapacity
+OK: audit03.comments.PSI_User_Mx.overallComposition
+OK: audit03.comments.PSI_User_Mx.batchOutput
+OK: audit03.comments.PSI_User_Mx.strengthOutput
+OK: audit03.comments.PSI_User_Mx.crackOutput
+OK: audit03.comments.PSI_User_Mx.stabilityOutput
+OUTPUT: audit03.comments.PSI_User_Mx|strength=|crack=Трещинообразование: Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_User_Mx|psi=1.|formation=Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_User_My.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_User_My.noPoint
+OK: audit03.userPsiFallback.PSI_User_My.current
+OK: audit03.userPsiFallback.PSI_User_My.widthCalculated
+OK: audit03.userPsiFallback.PSI_User_My.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_User_My.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_User_My.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_User_My.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_User_My.formationUnavailableWarning
+META: audit03.comments.PSI_User_My.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_User_My.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_User_My.capacity.russianReason
+OK: audit03.comments.PSI_User_My.capacity.readable
+OK: audit03.comments.PSI_User_My.capacity.noMachinePrefix
+META: audit03.comments.PSI_User_My.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_User_My.formation.reasonPresent
+OK: audit03.comments.PSI_User_My.formation.russianReason
+OK: audit03.comments.PSI_User_My.formation.readable
+OK: audit03.comments.PSI_User_My.formation.noMachinePrefix
+OK: audit03.comments.PSI_User_My.formation.ownSubtree
+META: audit03.comments.PSI_User_My.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_User_My.current.russianReason
+OK: audit03.comments.PSI_User_My.current.readable
+OK: audit03.comments.PSI_User_My.current.noMachinePrefix
+META: audit03.comments.PSI_User_My.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_User_My.width.reasonPresent
+OK: audit03.comments.PSI_User_My.width.russianReason
+OK: audit03.comments.PSI_User_My.width.readable
+OK: audit03.comments.PSI_User_My.width.noMachinePrefix
+OK: audit03.comments.PSI_User_My.width.ownSubtree
+META: audit03.comments.PSI_User_My.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_User_My.longitudinal.russianReason
+OK: audit03.comments.PSI_User_My.longitudinal.readable
+OK: audit03.comments.PSI_User_My.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_User_My.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_User_My.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_User_My.formulaNoNumFail
+OK: audit03.comments.PSI_User_My.strengthNoCrack
+OK: audit03.comments.PSI_User_My.crackNoCapacity
+OK: audit03.comments.PSI_User_My.overallComposition
+OK: audit03.comments.PSI_User_My.batchOutput
+OK: audit03.comments.PSI_User_My.strengthOutput
+OK: audit03.comments.PSI_User_My.crackOutput
+OK: audit03.comments.PSI_User_My.stabilityOutput
+OUTPUT: audit03.comments.PSI_User_My|strength=|crack=Трещинообразование: Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_User_My|psi=1.|formation=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_User_Mxy.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_User_Mxy.noPoint
+OK: audit03.userPsiFallback.PSI_User_Mxy.current
+OK: audit03.userPsiFallback.PSI_User_Mxy.widthCalculated
+OK: audit03.userPsiFallback.PSI_User_Mxy.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_User_Mxy.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_User_Mxy.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_User_Mxy.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_User_Mxy.formationUnavailableWarning
+META: audit03.comments.PSI_User_Mxy.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_User_Mxy.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_User_Mxy.capacity.russianReason
+OK: audit03.comments.PSI_User_Mxy.capacity.readable
+OK: audit03.comments.PSI_User_Mxy.capacity.noMachinePrefix
+META: audit03.comments.PSI_User_Mxy.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_User_Mxy.formation.reasonPresent
+OK: audit03.comments.PSI_User_Mxy.formation.russianReason
+OK: audit03.comments.PSI_User_Mxy.formation.readable
+OK: audit03.comments.PSI_User_Mxy.formation.noMachinePrefix
+OK: audit03.comments.PSI_User_Mxy.formation.ownSubtree
+META: audit03.comments.PSI_User_Mxy.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_User_Mxy.current.russianReason
+OK: audit03.comments.PSI_User_Mxy.current.readable
+OK: audit03.comments.PSI_User_Mxy.current.noMachinePrefix
+META: audit03.comments.PSI_User_Mxy.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_User_Mxy.width.reasonPresent
+OK: audit03.comments.PSI_User_Mxy.width.russianReason
+OK: audit03.comments.PSI_User_Mxy.width.readable
+OK: audit03.comments.PSI_User_Mxy.width.noMachinePrefix
+OK: audit03.comments.PSI_User_Mxy.width.ownSubtree
+META: audit03.comments.PSI_User_Mxy.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_User_Mxy.longitudinal.russianReason
+OK: audit03.comments.PSI_User_Mxy.longitudinal.readable
+OK: audit03.comments.PSI_User_Mxy.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_User_Mxy.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_User_Mxy.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_User_Mxy.formulaNoNumFail
+OK: audit03.comments.PSI_User_Mxy.strengthNoCrack
+OK: audit03.comments.PSI_User_Mxy.crackNoCapacity
+OK: audit03.comments.PSI_User_Mxy.overallComposition
+OK: audit03.comments.PSI_User_Mxy.batchOutput
+OK: audit03.comments.PSI_User_Mxy.strengthOutput
+OK: audit03.comments.PSI_User_Mxy.crackOutput
+OK: audit03.comments.PSI_User_Mxy.stabilityOutput
+OUTPUT: audit03.comments.PSI_User_Mxy|strength=|crack=Трещинообразование: Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_User_Mxy|psi=1.|formation=Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_User_Auto.hasUsableFormation
+OK: audit03.userPsiFallback.PSI_User_Auto.current
+OK: audit03.userPsiFallback.PSI_User_Auto.widthCalculated
+OK: audit03.userPsiFallback.PSI_User_Auto.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_User_Auto.psi; actual=0.25; expected=0.25
+OK: audit03.userPsiFallback.PSI_User_Auto.formula; actual=0.066845076099; expected=0.066845076099
+OK: audit03.userPsiFallback.PSI_User_Auto.userPsiPreserved; actual=0.25; expected=0.25
+OK: audit03.userPsiFallback.PSI_User_Auto.userNoFallbackWarning
+META: audit03.comments.PSI_User_Auto.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_User_Auto.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_User_Auto.capacity.russianReason
+OK: audit03.comments.PSI_User_Auto.capacity.readable
+OK: audit03.comments.PSI_User_Auto.capacity.noMachinePrefix
+META: audit03.comments.PSI_User_Auto.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.PSI_User_Auto.formation.russianReason
+OK: audit03.comments.PSI_User_Auto.formation.readable
+OK: audit03.comments.PSI_User_Auto.formation.noMachinePrefix
+META: audit03.comments.PSI_User_Auto.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_User_Auto.current.russianReason
+OK: audit03.comments.PSI_User_Auto.current.readable
+OK: audit03.comments.PSI_User_Auto.current.noMachinePrefix
+META: audit03.comments.PSI_User_Auto.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.comments.PSI_User_Auto.width.russianReason
+OK: audit03.comments.PSI_User_Auto.width.readable
+OK: audit03.comments.PSI_User_Auto.width.noMachinePrefix
+META: audit03.comments.PSI_User_Auto.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_User_Auto.longitudinal.russianReason
+OK: audit03.comments.PSI_User_Auto.longitudinal.readable
+OK: audit03.comments.PSI_User_Auto.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_User_Auto.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_User_Auto.formulaNoNumFail
+OK: audit03.comments.PSI_User_Auto.strengthNoCrack
+OK: audit03.comments.PSI_User_Auto.crackNoCapacity
+OK: audit03.comments.PSI_User_Auto.overallComposition
+OK: audit03.comments.PSI_User_Auto.batchOutput
+OK: audit03.comments.PSI_User_Auto.strengthOutput
+OK: audit03.comments.PSI_User_Auto.crackOutput
+OK: audit03.comments.PSI_User_Auto.stabilityOutput
+OUTPUT: audit03.comments.PSI_User_Auto|strength=|crack=|stability=|batch=
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_User_Auto|psi=0.25|formation=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.userPsiFallback.PSI_Auto_Mx.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_Auto_Mx.noPoint
+OK: audit03.userPsiFallback.PSI_Auto_Mx.current
+OK: audit03.userPsiFallback.PSI_Auto_Mx.widthCalculated
+OK: audit03.userPsiFallback.PSI_Auto_Mx.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_Auto_Mx.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_Auto_Mx.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_Auto_Mx.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_Auto_Mx.formationUnavailableWarning
+META: audit03.comments.PSI_Auto_Mx.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_Auto_Mx.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_Auto_Mx.capacity.russianReason
+OK: audit03.comments.PSI_Auto_Mx.capacity.readable
+OK: audit03.comments.PSI_Auto_Mx.capacity.noMachinePrefix
+META: audit03.comments.PSI_Auto_Mx.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_Auto_Mx.formation.reasonPresent
+OK: audit03.comments.PSI_Auto_Mx.formation.russianReason
+OK: audit03.comments.PSI_Auto_Mx.formation.readable
+OK: audit03.comments.PSI_Auto_Mx.formation.noMachinePrefix
+OK: audit03.comments.PSI_Auto_Mx.formation.ownSubtree
+META: audit03.comments.PSI_Auto_Mx.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_Auto_Mx.current.russianReason
+OK: audit03.comments.PSI_Auto_Mx.current.readable
+OK: audit03.comments.PSI_Auto_Mx.current.noMachinePrefix
+META: audit03.comments.PSI_Auto_Mx.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_Auto_Mx.width.reasonPresent
+OK: audit03.comments.PSI_Auto_Mx.width.russianReason
+OK: audit03.comments.PSI_Auto_Mx.width.readable
+OK: audit03.comments.PSI_Auto_Mx.width.noMachinePrefix
+OK: audit03.comments.PSI_Auto_Mx.width.ownSubtree
+META: audit03.comments.PSI_Auto_Mx.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_Auto_Mx.longitudinal.russianReason
+OK: audit03.comments.PSI_Auto_Mx.longitudinal.readable
+OK: audit03.comments.PSI_Auto_Mx.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_Auto_Mx.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_Auto_Mx.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_Auto_Mx.formulaNoNumFail
+OK: audit03.comments.PSI_Auto_Mx.strengthNoCrack
+OK: audit03.comments.PSI_Auto_Mx.crackNoCapacity
+OK: audit03.comments.PSI_Auto_Mx.overallComposition
+OK: audit03.comments.PSI_Auto_Mx.batchOutput
+OK: audit03.comments.PSI_Auto_Mx.strengthOutput
+OK: audit03.comments.PSI_Auto_Mx.crackOutput
+OK: audit03.comments.PSI_Auto_Mx.stabilityOutput
+OUTPUT: audit03.comments.PSI_Auto_Mx|strength=|crack=Трещинообразование: Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_Auto_Mx|psi=1.|formation=Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_Auto_My.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_Auto_My.noPoint
+OK: audit03.userPsiFallback.PSI_Auto_My.current
+OK: audit03.userPsiFallback.PSI_Auto_My.widthCalculated
+OK: audit03.userPsiFallback.PSI_Auto_My.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_Auto_My.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_Auto_My.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_Auto_My.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_Auto_My.formationUnavailableWarning
+META: audit03.comments.PSI_Auto_My.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_Auto_My.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_Auto_My.capacity.russianReason
+OK: audit03.comments.PSI_Auto_My.capacity.readable
+OK: audit03.comments.PSI_Auto_My.capacity.noMachinePrefix
+META: audit03.comments.PSI_Auto_My.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_Auto_My.formation.reasonPresent
+OK: audit03.comments.PSI_Auto_My.formation.russianReason
+OK: audit03.comments.PSI_Auto_My.formation.readable
+OK: audit03.comments.PSI_Auto_My.formation.noMachinePrefix
+OK: audit03.comments.PSI_Auto_My.formation.ownSubtree
+META: audit03.comments.PSI_Auto_My.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_Auto_My.current.russianReason
+OK: audit03.comments.PSI_Auto_My.current.readable
+OK: audit03.comments.PSI_Auto_My.current.noMachinePrefix
+META: audit03.comments.PSI_Auto_My.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_Auto_My.width.reasonPresent
+OK: audit03.comments.PSI_Auto_My.width.russianReason
+OK: audit03.comments.PSI_Auto_My.width.readable
+OK: audit03.comments.PSI_Auto_My.width.noMachinePrefix
+OK: audit03.comments.PSI_Auto_My.width.ownSubtree
+META: audit03.comments.PSI_Auto_My.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_Auto_My.longitudinal.russianReason
+OK: audit03.comments.PSI_Auto_My.longitudinal.readable
+OK: audit03.comments.PSI_Auto_My.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_Auto_My.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_Auto_My.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_Auto_My.formulaNoNumFail
+OK: audit03.comments.PSI_Auto_My.strengthNoCrack
+OK: audit03.comments.PSI_Auto_My.crackNoCapacity
+OK: audit03.comments.PSI_Auto_My.overallComposition
+OK: audit03.comments.PSI_Auto_My.batchOutput
+OK: audit03.comments.PSI_Auto_My.strengthOutput
+OK: audit03.comments.PSI_Auto_My.crackOutput
+OK: audit03.comments.PSI_Auto_My.stabilityOutput
+OUTPUT: audit03.comments.PSI_Auto_My|strength=|crack=Трещинообразование: Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_Auto_My|psi=1.|formation=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.noPoint
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.current
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.widthCalculated
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_Auto_Mxy.formationUnavailableWarning
+META: audit03.comments.PSI_Auto_Mxy.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_Auto_Mxy.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_Auto_Mxy.capacity.russianReason
+OK: audit03.comments.PSI_Auto_Mxy.capacity.readable
+OK: audit03.comments.PSI_Auto_Mxy.capacity.noMachinePrefix
+META: audit03.comments.PSI_Auto_Mxy.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_Auto_Mxy.formation.reasonPresent
+OK: audit03.comments.PSI_Auto_Mxy.formation.russianReason
+OK: audit03.comments.PSI_Auto_Mxy.formation.readable
+OK: audit03.comments.PSI_Auto_Mxy.formation.noMachinePrefix
+OK: audit03.comments.PSI_Auto_Mxy.formation.ownSubtree
+META: audit03.comments.PSI_Auto_Mxy.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_Auto_Mxy.current.russianReason
+OK: audit03.comments.PSI_Auto_Mxy.current.readable
+OK: audit03.comments.PSI_Auto_Mxy.current.noMachinePrefix
+META: audit03.comments.PSI_Auto_Mxy.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_Auto_Mxy.width.reasonPresent
+OK: audit03.comments.PSI_Auto_Mxy.width.russianReason
+OK: audit03.comments.PSI_Auto_Mxy.width.readable
+OK: audit03.comments.PSI_Auto_Mxy.width.noMachinePrefix
+OK: audit03.comments.PSI_Auto_Mxy.width.ownSubtree
+META: audit03.comments.PSI_Auto_Mxy.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_Auto_Mxy.longitudinal.russianReason
+OK: audit03.comments.PSI_Auto_Mxy.longitudinal.readable
+OK: audit03.comments.PSI_Auto_Mxy.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_Auto_Mxy.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_Auto_Mxy.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_Auto_Mxy.formulaNoNumFail
+OK: audit03.comments.PSI_Auto_Mxy.strengthNoCrack
+OK: audit03.comments.PSI_Auto_Mxy.crackNoCapacity
+OK: audit03.comments.PSI_Auto_Mxy.overallComposition
+OK: audit03.comments.PSI_Auto_Mxy.batchOutput
+OK: audit03.comments.PSI_Auto_Mxy.strengthOutput
+OK: audit03.comments.PSI_Auto_Mxy.crackOutput
+OK: audit03.comments.PSI_Auto_Mxy.stabilityOutput
+OUTPUT: audit03.comments.PSI_Auto_Mxy|strength=|crack=Трещинообразование: Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_Auto_Mxy|psi=1.|formation=Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_Auto_Auto.hasUsableFormation
+OK: audit03.userPsiFallback.PSI_Auto_Auto.current
+OK: audit03.userPsiFallback.PSI_Auto_Auto.widthCalculated
+OK: audit03.userPsiFallback.PSI_Auto_Auto.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_Auto_Auto.automaticPsiRange
+OK: audit03.userPsiFallback.PSI_Auto_Auto.formula; actual=0.267380304394; expected=0.267380304394
+META: audit03.comments.PSI_Auto_Auto.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_Auto_Auto.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_Auto_Auto.capacity.russianReason
+OK: audit03.comments.PSI_Auto_Auto.capacity.readable
+OK: audit03.comments.PSI_Auto_Auto.capacity.noMachinePrefix
+META: audit03.comments.PSI_Auto_Auto.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.PSI_Auto_Auto.formation.russianReason
+OK: audit03.comments.PSI_Auto_Auto.formation.readable
+OK: audit03.comments.PSI_Auto_Auto.formation.noMachinePrefix
+META: audit03.comments.PSI_Auto_Auto.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_Auto_Auto.current.russianReason
+OK: audit03.comments.PSI_Auto_Auto.current.readable
+OK: audit03.comments.PSI_Auto_Auto.current.noMachinePrefix
+META: audit03.comments.PSI_Auto_Auto.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Auto psi_s: первая проверка выполнена с psi_s=1.
+OK: audit03.comments.PSI_Auto_Auto.width.russianReason
+OK: audit03.comments.PSI_Auto_Auto.width.readable
+OK: audit03.comments.PSI_Auto_Auto.width.noMachinePrefix
+META: audit03.comments.PSI_Auto_Auto.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_Auto_Auto.longitudinal.russianReason
+OK: audit03.comments.PSI_Auto_Auto.longitudinal.readable
+OK: audit03.comments.PSI_Auto_Auto.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_Auto_Auto.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_Auto_Auto.formulaNoNumFail
+OK: audit03.comments.PSI_Auto_Auto.strengthNoCrack
+OK: audit03.comments.PSI_Auto_Auto.crackNoCapacity
+OK: audit03.comments.PSI_Auto_Auto.overallComposition
+OK: audit03.comments.PSI_Auto_Auto.batchOutput
+OK: audit03.comments.PSI_Auto_Auto.strengthOutput
+OK: audit03.comments.PSI_Auto_Auto.crackOutput
+OK: audit03.comments.PSI_Auto_Auto.stabilityOutput
+OUTPUT: audit03.comments.PSI_Auto_Auto|strength=|crack=|stability=|batch=
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_Auto_Auto|psi=1.|formation=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Auto psi_s: первая проверка выполнена с psi_s=1.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.noPoint
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.current
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.widthCalculated
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx.formationUnavailableWarning
+META: audit03.comments.PSI_AlwaysCalc_Mx.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_AlwaysCalc_Mx.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_AlwaysCalc_Mx.capacity.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mx.capacity.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mx.capacity.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Mx.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_AlwaysCalc_Mx.formation.reasonPresent
+OK: audit03.comments.PSI_AlwaysCalc_Mx.formation.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mx.formation.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mx.formation.noMachinePrefix
+OK: audit03.comments.PSI_AlwaysCalc_Mx.formation.ownSubtree
+META: audit03.comments.PSI_AlwaysCalc_Mx.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_AlwaysCalc_Mx.current.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mx.current.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mx.current.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Mx.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_AlwaysCalc_Mx.width.reasonPresent
+OK: audit03.comments.PSI_AlwaysCalc_Mx.width.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mx.width.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mx.width.noMachinePrefix
+OK: audit03.comments.PSI_AlwaysCalc_Mx.width.ownSubtree
+META: audit03.comments.PSI_AlwaysCalc_Mx.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_AlwaysCalc_Mx.longitudinal.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mx.longitudinal.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mx.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Mx.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_AlwaysCalc_Mx.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_AlwaysCalc_Mx.formulaNoNumFail
+OK: audit03.comments.PSI_AlwaysCalc_Mx.strengthNoCrack
+OK: audit03.comments.PSI_AlwaysCalc_Mx.crackNoCapacity
+OK: audit03.comments.PSI_AlwaysCalc_Mx.overallComposition
+OK: audit03.comments.PSI_AlwaysCalc_Mx.batchOutput
+OK: audit03.comments.PSI_AlwaysCalc_Mx.strengthOutput
+OK: audit03.comments.PSI_AlwaysCalc_Mx.crackOutput
+OK: audit03.comments.PSI_AlwaysCalc_Mx.stabilityOutput
+OUTPUT: audit03.comments.PSI_AlwaysCalc_Mx|strength=|crack=Трещинообразование: Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_AlwaysCalc_Mx|psi=1.|formation=Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.noPoint
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.current
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.widthCalculated
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_My.formationUnavailableWarning
+META: audit03.comments.PSI_AlwaysCalc_My.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_AlwaysCalc_My.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_AlwaysCalc_My.capacity.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_My.capacity.readable
+OK: audit03.comments.PSI_AlwaysCalc_My.capacity.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_My.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_AlwaysCalc_My.formation.reasonPresent
+OK: audit03.comments.PSI_AlwaysCalc_My.formation.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_My.formation.readable
+OK: audit03.comments.PSI_AlwaysCalc_My.formation.noMachinePrefix
+OK: audit03.comments.PSI_AlwaysCalc_My.formation.ownSubtree
+META: audit03.comments.PSI_AlwaysCalc_My.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_AlwaysCalc_My.current.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_My.current.readable
+OK: audit03.comments.PSI_AlwaysCalc_My.current.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_My.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_AlwaysCalc_My.width.reasonPresent
+OK: audit03.comments.PSI_AlwaysCalc_My.width.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_My.width.readable
+OK: audit03.comments.PSI_AlwaysCalc_My.width.noMachinePrefix
+OK: audit03.comments.PSI_AlwaysCalc_My.width.ownSubtree
+META: audit03.comments.PSI_AlwaysCalc_My.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_AlwaysCalc_My.longitudinal.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_My.longitudinal.readable
+OK: audit03.comments.PSI_AlwaysCalc_My.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_My.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_AlwaysCalc_My.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_AlwaysCalc_My.formulaNoNumFail
+OK: audit03.comments.PSI_AlwaysCalc_My.strengthNoCrack
+OK: audit03.comments.PSI_AlwaysCalc_My.crackNoCapacity
+OK: audit03.comments.PSI_AlwaysCalc_My.overallComposition
+OK: audit03.comments.PSI_AlwaysCalc_My.batchOutput
+OK: audit03.comments.PSI_AlwaysCalc_My.strengthOutput
+OK: audit03.comments.PSI_AlwaysCalc_My.crackOutput
+OK: audit03.comments.PSI_AlwaysCalc_My.stabilityOutput
+OUTPUT: audit03.comments.PSI_AlwaysCalc_My|strength=|crack=Трещинообразование: Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_AlwaysCalc_My|psi=1.|formation=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.formationInvalidInput
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.noPoint
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.current
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.widthCalculated
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.psi; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.formula; actual=0.267380304394; expected=0.267380304394
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.formationUnavailablePsi1; actual=1.; expected=1.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy.formationUnavailableWarning
+META: audit03.comments.PSI_AlwaysCalc_Mxy.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_AlwaysCalc_Mxy.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.capacity.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.capacity.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.capacity.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Mxy.formation|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.formation.reasonPresent
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.formation.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.formation.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.formation.noMachinePrefix
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.formation.ownSubtree
+META: audit03.comments.PSI_AlwaysCalc_Mxy.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.current.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.current.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.current.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Mxy.width|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.width.reasonPresent
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.width.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.width.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.width.noMachinePrefix
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.width.ownSubtree
+META: audit03.comments.PSI_AlwaysCalc_Mxy.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.longitudinal.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.longitudinal.readable
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Mxy.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.formationUnavailableLongitudinalIndependent
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.formulaNoNumFail
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.strengthNoCrack
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.crackNoCapacity
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.overallComposition
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.batchOutput
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.strengthOutput
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.crackOutput
+OK: audit03.comments.PSI_AlwaysCalc_Mxy.stabilityOutput
+OUTPUT: audit03.comments.PSI_AlwaysCalc_Mxy|strength=|crack=Трещинообразование: Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.|stability=|batch=Трещинообразование: Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.; Ширина трещин: Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_AlwaysCalc_Mxy|psi=1.|formation=Для пути λ*Mxy в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Предупреждение: пригодное состояние сразу после образования трещины недоступно; psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания.
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Auto.hasUsableFormation
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Auto.current
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Auto.widthCalculated
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Auto.longitudinalIndependent
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Auto.automaticPsiRange
+OK: audit03.userPsiFallback.PSI_AlwaysCalc_Auto.formula; actual=0.139403828281; expected=0.139403828281
+META: audit03.comments.PSI_AlwaysCalc_Auto.direct|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+META: audit03.comments.PSI_AlwaysCalc_Auto.capacity|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=Проверка несущей способности не запрошена профилем.
+OK: audit03.comments.PSI_AlwaysCalc_Auto.capacity.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Auto.capacity.readable
+OK: audit03.comments.PSI_AlwaysCalc_Auto.capacity.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Auto.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.PSI_AlwaysCalc_Auto.formation.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Auto.formation.readable
+OK: audit03.comments.PSI_AlwaysCalc_Auto.formation.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Auto.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.PSI_AlwaysCalc_Auto.current.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Auto.current.readable
+OK: audit03.comments.PSI_AlwaysCalc_Auto.current.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Auto.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.comments.PSI_AlwaysCalc_Auto.width.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Auto.width.readable
+OK: audit03.comments.PSI_AlwaysCalc_Auto.width.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Auto.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.PSI_AlwaysCalc_Auto.longitudinal.russianReason
+OK: audit03.comments.PSI_AlwaysCalc_Auto.longitudinal.readable
+OK: audit03.comments.PSI_AlwaysCalc_Auto.longitudinal.noMachinePrefix
+META: audit03.comments.PSI_AlwaysCalc_Auto.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.PSI_AlwaysCalc_Auto.formulaNoNumFail
+OK: audit03.comments.PSI_AlwaysCalc_Auto.strengthNoCrack
+OK: audit03.comments.PSI_AlwaysCalc_Auto.crackNoCapacity
+OK: audit03.comments.PSI_AlwaysCalc_Auto.overallComposition
+OK: audit03.comments.PSI_AlwaysCalc_Auto.batchOutput
+OK: audit03.comments.PSI_AlwaysCalc_Auto.strengthOutput
+OK: audit03.comments.PSI_AlwaysCalc_Auto.crackOutput
+OK: audit03.comments.PSI_AlwaysCalc_Auto.stabilityOutput
+OUTPUT: audit03.comments.PSI_AlwaysCalc_Auto|strength=|crack=|stability=|batch=
+USER_PSI_FALLBACK: audit03.userPsiFallback.PSI_AlwaysCalc_Auto|psi=0.521369098582|formation=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.|width=Расчет выполнен для центрального растяжения; Abt принята по всей площади бетона. Psi_s рассчитан по состоянию сразу после образования трещины.
+TOTAL_AUDIT03_USER_PSI_FALLBACK: passed=422; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c3363e0a02164d4680b6ef8627885f93\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03UserPsiFallbackTests; 2026-10-05T04:23:42
+RESULTS_SAVE_REOPEN: before=BE7EB95323253F197BD55521A04B1E96B97B4E8BC53582467D5030A14BCB170A; after=BE7EB95323253F197BD55521A04B1E96B97B4E8BC53582467D5030A14BCB170A; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c3363e0a02164d4680b6ef8627885f93\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=60D2300EF4D268C0C0ED306369B5ED99BDFA3FA14CA3896EDC69536D5A086B45; after=60D2300EF4D268C0C0ED306369B5ED99BDFA3FA14CA3896EDC69536D5A086B45; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

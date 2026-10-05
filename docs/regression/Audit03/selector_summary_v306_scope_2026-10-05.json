@@ -1,0 +1,20 @@
+﻿{
+    "IndependentPathCases":  144,
+    "FullSelectorAcceptance":  false,
+    "Completed":  [
+                      {
+                          "Id":  "Selector_001",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_001_v306_scope_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_002",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_002_v306_scope_2026-10-05.txt"
+                      }
+                  ],
+    "SourceUnchanged":  true,
+    "OriginalSourceSHA256":  "792233E6FDEB200364A7AA4036F88BD9CBE0C44EC3A5EA6BCB888FD323D3BD5C",
+    "CaseCount":  2,
+    "MatrixSHA256":  "51DFE76453896EDA9B9D2B588AA8C3407BBB58C7887698A086BD5AB53DDF2FF5"
+}

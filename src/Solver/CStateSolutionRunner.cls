@@ -392,7 +392,12 @@ Private Sub ApplyInitialGuess(ByVal section As CSectionModel, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal solver As CSectionSolver)
     If Abs(targetN) > NEAR_ZERO Then Exit Sub
-    If Sqr(targetMx * targetMx + targetMy * targetMy) <= NEAR_ZERO Then Exit Sub
+    ' Квадраты безопасны только в малой окрестности нуля. Если хотя бы
+    ' одна компонента больше допуска, норма заведомо ненулевая; ее вычислять
+    ' не нужно. Сам допуск и поведение малых нагрузок остаются прежними.
+    If Abs(targetMx) <= NEAR_ZERO And Abs(targetMy) <= NEAR_ZERO Then
+        If Sqr(targetMx * targetMx + targetMy * targetMy) <= NEAR_ZERO Then Exit Sub
+    End If
 
     Dim concreteDiagram As CMaterialDiagram
     Dim steelDiagram As CMaterialDiagram

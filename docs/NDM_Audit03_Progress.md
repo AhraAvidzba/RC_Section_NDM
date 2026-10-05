@@ -21,8 +21,8 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Все 13 форм и 52 all-path runs v68 приняты для того численного среза. Адресная приемка v272: 740 активных полей из 1064, включая девять General/Geometry-параметров; из 760 editable полей 20 CAD-полей еще ожидают общий gate. Полный диапазон/pairwise, комментарии всех методов, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
-| 6. Независимая приемка и выпуск | не начато | Полная отдельная сборка, все suites Off/On, config/edge/benchmarks/snapshots, все три audits, final report, source/book/export equality. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Directed evidence union v306 связывает все 1064 адреса со своими runtime-доказательствами, включая 760 активных вводимых полей и 20 CAD-полей. Selector scope v306: 144 path cases без ошибок. Все 13 форм и 52 all-path runs v68 приняты для прежнего численного среза. Полный диапазон/pairwise, semantic review, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
+| 6. Независимая приемка и выпуск | в работе | Полная clean build v300, eight-suite Off 101701/0, On 101712/0 и actual source/VBE equality 108/108 завершены. Config/edge/benchmarks, все три audits и final self-audit остаются отдельными незакрытыми gates. |
 
 ## Карта Обязанностей
 
@@ -52,11 +52,11 @@
 | F04 | directed runtime PASS, workflow приемка продолжается | SetResult обеспечивает lifecycle для not-requested/not-applicable/blocked/validation; ранние missing/internal factories передают False. Matrix 172/0: десять исходов x attempted, clone/reset и result factories; повторные реальные LC еще входят в расширенную приемку. |
 | F05 | directed runtime PASS, расширенная приемка впереди | Физический отказ, BaseFail, numerical failure, blocked Width/Longitudinal, отсутствие трещины: actual writers всех путей. Исправлена передача успешного StopReason в blocked reason. Save/reopen/report/остальные формы еще впереди. |
 | F06 | основные directed runtime PASS, полный аудит продолжается | Baseline adjacent-Double Bisection budget=0 завис до watchdog; исправленный generic matrix 114/0, real Capacity tol=1e-18/budget=0 завершен за 58 probes без ложной точки. Остальные Ultimate/recovery call paths еще проверяются. |
-| F07 | в работе | Исправлены Nothing guard в stability, Split bounds в plotter и два unsafe test guards. Статическая проверка IIf/array call paths выполнена частично; окончательная приемка не заявлена. |
+| F07 | в работе | Исправлены Nothing guard в stability, Split bounds в plotter и два unsafe test guards. Новый overflow начальной нормы момента в runner: negative v304 48/48, positive v305 336/0, Solver suite 1367/0. IIf/array/optional call paths продолжают semantic review; окончательная приемка не заявлена. |
 | F08 | трассировка подготовлена, приемка продолжается | Per-ID реестр NDM_Audit03_Prior_Audit_Traceability.md; незавершенные K/T/D/UI/save-reopen пункты не получают PASS. |
 | A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
 | P01-P04 | в работе | 15 сценариев x 5 повторов x 2 версии; asymmetric: 94 solves/3874 iterations/20 retries/10 эквивалентных попыток. P02 численные и point-grid инварианты подтверждены; окончательный benchmark/разбор повторов впереди. |
-| K01-K04 | структурный реестр в работе; поведенческая приемка впереди | Исходный read-only census фактической книги: 35617 ячеек, 14 диапазонов, 72 validation, 1065 полей и 241 default из каталога. Актуальный реестр v272 содержит 1064 поля, 740 active-reviewed; pending metadata не получает PASS. Полный behavior/active-inactive/mutation sensitivity/isolation еще не завершен. |
+| K01-K04 | directed coverage завершено; расширенная приемка в работе | Актуальный census v302: 35617 ячеек, 14 диапазонов, 84 validation, 1064 поля. Combined evidence v306: 760 active inputs, 104 controls, 108 active SP35 cells, 36 reference cells, 30 derived IDs, 16 merged followers, десять inactive cells. Все 1064 адреса имеют directed runtime evidence; full-range/pairwise/mutation/final-release acceptance остается False. |
 | T01-T05 | в работе | v68: все 13 форм, Light/Stress, Off/On, 52/52 chunks и 18 980 all-path cases, failed=0. Это приемка численного среза v68, не поздних Config/UI правок; selector variants/pairwise/high-risk tuples, независимые near-limit gates и финальный повтор на выпускном source впереди. |
 | D01-D02 | в работе | Comment-only ревизия export/writers/enum/workbook entrypoints выполнена частично; все остальные methods/tests и фактический help/Config/validation/links в clean/update впереди. |
 | UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
@@ -69,6 +69,114 @@
 
 ## Актуальная Точка Продолжения
 
+- Batch v306 завершен `28725/0`, elapsed 635.3867 с; Results и status/style
+  save-reopen=True, watchdog exit=0, source unchanged=True. Actual VBE
+  export `VBA_All_Code_table_runner_v306_2026-10-05.txt` SHA
+  `0AEB19AF93C889994AC195C2B5D279D947937331A090EEA31683FE88AF1A114C`:
+  108/108 source modules, failed=0, 83 production + 3 test classes.
+  Read-only structure 27/27. После этой сверки в source восстановлены пять
+  прежних численных psi assertions общего helper и их warning assertions;
+  новые typed/mode проверки не удалялись. Числа 2259 общих assertions
+  совпали точно с v300, differences=0; пять пропущенных ID относятся именно
+  к этому восстановлению. Первое сравнение ошибочно использовало весь
+  eight-suite log вместо Batch scope; оба неполных comparison artifacts
+  сохранены и не объявлены PASS. Следующая build/full gate должна подтвердить
+  восстановленные ID. В LongitudinalResult исправлен только чужой текст
+  Freeze о named-state; он не хранится этим result. Эти две правки source
+  еще не входят в фактический v306 export; численная production-модель та же.
+- Full selector v306_full выполняется последовательно на изолированных
+  копиях v306. 62 planned cases / 4464 path cases принимаются только после
+  общего completed gate. Не запускать одновременно другую Excel COM-job.
+- Combined registry `config_directed_evidence_combined_v306_2026-10-05`
+  содержит ровно 1064/1064 адреса. При объединении сверены FieldId, адрес,
+  роль, знаменатель, существование evidence-файлов и отсутствие дублей;
+  SavedValue, формулы и structural metadata не заменялись старыми views.
+  760 активных вводов имеют статус FullRangeReviewNotComplete, поэтому
+  100% адресного directed coverage не является 100% выполнения Audit03.
+  Selector_001/002 v306_scope: 144 независимых path cases, failed=0,
+  save/reopen=True, source unchanged=True. FullSelectorAcceptance=False:
+  остальные 60 cases структурного плана еще не приняты runtime.
+- Stable source v306 сохраняет утвержденную методику psi и содержит только
+  подтвержденные production-правки SP35/неприменимой клетки/guard runner.
+  Книга `RC_Section_NDM_table_runner_v306.xlsm` SHA
+  `792233E6FDEB200364A7AA4036F88BD9CBE0C44EC3A5EA6BCB888FD323D3BD5C`.
+  Directed psi contract `422/0`: 12 реальных batch cases трех PsiMode,
+  unavailable Formation -> Width с 1/warning, available Formation -> User
+  0.25; продольные при чистом растяжении корректно N/A, не blocked.
+  Results/style save-reopen=True. Внешний selector checker теперь проверяет
+  typed formationDataAvailable, а не ошибочно требует User=0.8 при fallback.
+  Состояние исходной пользовательской книги и ТЗ сохраняет baseline SHA.
+- F07 runner negative v304: `48/48` (48 overflow, 48 успешных recovery).
+  При N=0 предварительная норма M переполнялась для конечных 1e160/1e308.
+  Исправление вычисляет квадраты только в малой окрестности нуля; исходный
+  допуск сохранен точно. Positive v305 `336/0`; полный SectionSolver
+  `1367/0`. Экспериментальное изменение psi в книге v305 не относится к
+  этому тесту и отсутствует в stable source v306.
+  Registry `config_table_evidence_v302_2026-10-05` адресно принимает 144
+  table cells и десять inactive consumers; denominator=1064 сохраняется.
+  Helper отвергает failed v301 без создания positive artifact. Full range,
+  selector, финальная матрица/benchmark/full release еще не завершены.
+- Срез v302-v303, 2026-10-05: SP35 negative v301 `1189/432` и
+  inactive-cell negative `98/4` подтвердили ошибки входного контроля.
+  Исправлены только активная табличная ветвь SP35 и чтение неприменимой
+  растянутой клетки Rb,mc2. Четыре directed gates v302: `1621/0`, `829/0`,
+  `102/0`, `105/0`; 576 actual numbers точно совпали с baseline, differences=0.
+  Ошибочная ячейка после переноса named range меняет адрес AN64 -> CM1404;
+  подробный комментарий/summary и отсутствие State solve проверены.
+  Actual VBE v302: 108/108 source modules, failed=0, структура 27/27.
+  Подробности и hashes: `NDM_Audit03_SP35_Table_Review_2026-10-05.md`.
+  Эти правки включены в Batch suite; новый полный выпускной прогон впереди.
+- Selector_001 v302_scopeb выполняет 72 path cases, VBA `3136/0`, но
+  внешний checker отклонил отчет. Исправлен его CRLF regex; отдельно
+  подтверждены три calculated Width с User=0.8, фактическим psi=1 и
+  неудачным Formation при допустимом Current. Отрицательное доказательство:
+  `user_psi_negative_v302_2026-10-05.json`. Здесь есть противоречие
+  договоренностей: текущий repository AGENTS требует fallback=1 во всех
+  режимах при неудаче Formation, тогда как User в других условиях сохраняет
+  введенный коэффициент. У пользователя запрошено уточнение именно этого
+  случая; новую семантику до ответа не объявлять принятой и не коммитить.
+  Локальный эксперимент v303 переставлял User перед fallback; он сохранен
+  только в отдельной книге. Его runtime `324/9` содержит девять неверных
+  assertions теста о Calculated продольных при чистом растяжении (правильно
+  N/A). Эксперимент откатан только в собственных новых source-изменениях;
+  текущий production и help сохраняют согласованный AGENTS fallback.
+  Наличие psi=1 в этих трех случаях само по себе не объявлять defect.
+- Срез v300, 2026-10-05: полный eight-suite Off завершен штатно,
+  `101701/0`: Geometry 604, Material 3952, Solver 1031, Capacity 3074,
+  Crack 1591, Batch 25656, WorkbookUI 65754, Baseline 39. Журнал
+  `full_off_clean_controls_v300_2026-10-05.txt` содержит все восемь
+  SUITE_FINISHED, watchdog exit=0 и source unchanged=True. Собственный
+  Excel процесса Off закрыт; protected PID 23476 не изменялся.
+  Полный On также завершен в отдельной read-only fixture: `101712/0`,
+  Batch `25667/0`, WorkbookUI `65754/0`, восемь SUITE_FINISHED,
+  watchdog exit=0 и source unchanged=True. Job `69061` закрыта;
+  журнал `full_on_clean_controls_v300_2026-10-05.txt`.
+- Actual read-only VBE export clean v300 сверяет 108/108 source modules,
+  failed=0, 83 production + 3 test classes. Новый экспорт
+  `VBA_All_Code_clean_controls_v300_2026-10-05.txt` SHA
+  `A1DE66F299909A5D2975DA8C1B288D653F8114C7CE115058A14A20914A4C1388`.
+  Книга не сохранялась и ее SHA остается F04F651233929506DCECA448C0530D2176D0FDAD4899C470DF6CF93264B26626.
+- Config metadata actual gate v300b `209/0`: все 30 duration ID formulas
+  следуют сочетаниям, включая измененный ID, blank и перенос именованного
+  диапазона в CH1200; 16 merged followers и десять N/A labels проверены
+  отдельно от пользовательских входных полей. VBA отключен, source unchanged.
+  Первый setup v300 `93/1` сохранен: COM не принял передачу Object[,] через
+  Value2. Helper теперь копирует диапазон через Range.Copy. Это ошибка
+  тестовой подготовки, не дефект production и не NumFail равновесия.
+  Данный gate не принимает нормативные 144 клетки или поведение consumers
+  по одним только N/A labels.
+- Selector interaction plan v300 содержит 62 cases, все 302 пары десяти
+  факторов и 48 явных high-risk сочетаний shape/extension/capacity strategy/
+  strength tension. Это только структурное покрытие: runtime еще не выполнен.
+  Каждая case должна пройти все 12 load paths на существующем matrix entrypoint;
+  полная Light/Stress матрица 13 форм остается самостоятельным gate.
+- Metadata evidence v300 адресно связано со свежим census 1064 полей:
+  приняты 30 derived IDs и 16 merged followers. Десять N/A labels имеют
+  только подтвержденное оформление; их inactive-consumer gate не присвоен.
+  Helper отверг прежний failed report и не создал положительного output.
+  Isolated SP35 fragment v301 и отрицательные журналы сохранены; последующие
+  production-исправления и directed runtime v302 описаны выше. Metadata
+  evidence не подменяет этот отдельный численный/consumer gate.
 - Срез v299-v300, 2026-10-05: отдельный полный WorkbookUI v295 завершен
   `65754/0`, elapsed 1551.935 с, watchdog exit=0 и source unchanged=True.
   Results SHA после save/reopen

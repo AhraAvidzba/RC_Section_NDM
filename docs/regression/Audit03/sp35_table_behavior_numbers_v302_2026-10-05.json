@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/sp35_table_behavior_baseline_v301_2026-10-05.txt",
+  "CurrentReport": "docs/regression/Audit03/sp35_table_behavior_positive_v302_2026-10-05.txt",
+  "BaselineSHA256": "DE0A0D145862BB35B0A0B51B89F4EF4EC8E572CA79D7679AE5DA756BB1C23285",
+  "CurrentSHA256": "E4B5EAA15940DBF2FDE23472DC3D4B34398B142098CCFEA9EC1458EA96279390",
+  "BaselineNumericAssertions": 576,
+  "CurrentNumericAssertions": 576,
+  "Compared": 576,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

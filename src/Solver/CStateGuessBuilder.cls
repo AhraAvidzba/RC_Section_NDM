@@ -31,8 +31,9 @@ Option Explicit
 ' касательная жесткость и Newton/Secant снова получает управляемую матрицу.
 '
 ' Это не меняет физический результат и не повышает несущую способность:
-' CSectionSolver затем заново решает полное равновесие, а batch-слой отдельно
-' помечает найденное состояние как FAIL, если оно вышло за физическую диаграмму.
+' CSectionSolver затем заново решает полное равновесие. State сохраняет
+' отдельный признак выхода за физическую диаграмму; инженерный потребитель
+' оценивает допустимость, а общая policy формирует внешний статус.
 
 Private Const STATE_NEAR_ZERO As Double = 0.000000000001 ' Допуск для почти нулевой стартовой плоскости.
 Private Const EXTENSION_START_FACTOR As Double = 1.02 ' Небольшой заход за физический eps_ult для старта повторного solve в extension.
@@ -105,7 +106,7 @@ Public Function BuildForExtensionState(ByVal section As CSectionModel, _
 End Function
 
 ' Возвращает число независимых вариантов стартовой плоскости.
-' Batch-слой использует это, чтобы не останавливаться на первом варианте,
+' CStateSolutionRunner использует это, чтобы не останавливаться на первом варианте,
 ' если сам повторный solve на нем численно не сошелся.
 Public Property Get ExtensionAttemptCount() As Long
     ExtensionAttemptCount = EXTENSION_GUESS_ATTEMPTS
@@ -469,7 +470,7 @@ Private Function TryBuildUniformExtensionShift(ByVal failedService As CSectionSo
     TryBuildUniformExtensionShift = True
 End Function
 
-' Последний мягкий fallback: сохраняем форму несошедшегося состояния и только
+' Дополнительный мягкий старт: сохраняем форму несошедшегося состояния и только
 ' масштабируем ее до ближайшего physical limit. Это менее точная оценка, чем
 ' линейная система по активным extension-ветвям, но она часто лучше нуля.
 Private Function TryBuildScaledFailedState(ByVal failedService As CSectionSolver, _

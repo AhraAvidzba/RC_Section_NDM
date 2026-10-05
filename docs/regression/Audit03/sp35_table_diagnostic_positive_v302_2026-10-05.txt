@@ -1,0 +1,126 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_table_validation_v302.xlsm
+SOURCE_SHA256: EE4F2C42BAF806CAE4F6C3312FA6B3FB0514C35B22979268450DDACF1C81EF2F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7c6a5b3901f94117a93bfc6dd3ec78f3\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03SP35TableDiagnosticTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03SP35TableDiagnosticTests; 2026-10-05T03:50:26
+EXCEL_AFTER_SUITE: pid=16492; workingSet=157257728; privateBytes=114241536; cpu=3.875
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222310400; privateBytes=174043136; cpu=17915.15625
+OK: audit03.table.order.duplicate.3
+OK: audit03.table.order.duplicateLocation.3
+OK: audit03.table.order.descending.3
+OK: audit03.table.order.duplicate.4
+OK: audit03.table.order.duplicateLocation.4
+OK: audit03.table.order.descending.4
+OK: audit03.table.order.duplicate.5
+OK: audit03.table.order.duplicateLocation.5
+OK: audit03.table.order.descending.5
+OK: audit03.table.order.duplicate.6
+OK: audit03.table.order.duplicateLocation.6
+OK: audit03.table.order.descending.6
+OK: audit03.table.order.duplicate.7
+OK: audit03.table.order.duplicateLocation.7
+OK: audit03.table.order.descending.7
+OK: audit03.table.order.duplicate.8
+OK: audit03.table.order.duplicateLocation.8
+OK: audit03.table.order.descending.8
+OK: audit03.table.order.duplicate.9
+OK: audit03.table.order.duplicateLocation.9
+OK: audit03.table.order.descending.9
+OK: audit03.table.order.duplicate.10
+OK: audit03.table.order.duplicateLocation.10
+OK: audit03.table.order.descending.10
+OK: audit03.table.order.duplicate.11
+OK: audit03.table.order.duplicateLocation.11
+OK: audit03.table.order.descending.11
+OK: audit03.table.order.duplicate.12
+OK: audit03.table.order.duplicateLocation.12
+OK: audit03.table.order.descending.12
+OK: audit03.table.order.duplicate.13
+OK: audit03.table.order.duplicateLocation.13
+OK: audit03.table.order.descending.13
+OK: audit03.table.order.duplicate.14
+OK: audit03.table.order.duplicateLocation.14
+OK: audit03.table.order.descending.14
+OK: audit03.table.order.duplicate.15
+OK: audit03.table.order.duplicateLocation.15
+OK: audit03.table.order.descending.15
+OK: audit03.table.order.duplicate.16
+OK: audit03.table.order.duplicateLocation.16
+OK: audit03.table.order.descending.16
+OK: audit03.table.order.duplicate.17
+OK: audit03.table.order.duplicateLocation.17
+OK: audit03.table.order.descending.17
+OK: audit03.table.order.duplicate.18
+OK: audit03.table.order.duplicateLocation.18
+OK: audit03.table.order.descending.18
+OK: audit03.table.order.duplicate.19
+OK: audit03.table.order.duplicateLocation.19
+OK: audit03.table.order.descending.19
+OK: audit03.table.referenceIgnored.2
+OK: audit03.table.referenceIgnored.3
+OK: audit03.table.referenceIgnored.4
+OK: audit03.table.referenceIgnored.5
+OK: audit03.table.referenceIgnored.6
+OK: audit03.table.referenceIgnored.7
+OK: audit03.table.referenceIgnored.8
+OK: audit03.table.referenceIgnored.9
+OK: audit03.table.referenceIgnored.10
+OK: audit03.table.referenceIgnored.11
+OK: audit03.table.referenceIgnored.12
+OK: audit03.table.referenceIgnored.13
+OK: audit03.table.referenceIgnored.14
+OK: audit03.table.referenceIgnored.15
+OK: audit03.table.referenceIgnored.16
+OK: audit03.table.referenceIgnored.17
+OK: audit03.table.referenceIgnored.18
+OK: audit03.table.referenceIgnored.19
+OK: audit03.table.diagnostic.0.address
+OK: audit03.table.diagnostic.0.correction
+OK: audit03.table.diagnostic.0.status
+OK: audit03.table.diagnostic.0.exactComment
+OK: audit03.table.diagnostic.0.etaIgnoresTable
+OK: audit03.table.diagnostic.0.sp63IgnoresTable
+OK: audit03.table.diagnostic.0.tensionIgnoresTable
+OK: audit03.table.diagnostic.0.batchStatus
+OK: audit03.table.diagnostic.0.batchExactComment
+OK: audit03.table.diagnostic.0.writer
+OK: audit03.table.diagnostic.0.summaryWriter
+META: audit03.table.diagnostic.0|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Таблица 7.21 СП 35, Config!AN64: Коэффициент phi_m при ec/r = 0.5 должен быть числом больше нуля. Заполните ячейку корректным коэффициентом.
+OK: audit03.table.diagnostic.0.reasonPresent
+OK: audit03.table.diagnostic.0.russianReason
+OK: audit03.table.diagnostic.0.readable
+OK: audit03.table.diagnostic.0.noMachinePrefix
+OK: audit03.table.diagnostic.0.ownSubtree
+OK: audit03.table.diagnostic.0.noStateSolve
+SP35_DIAGNOSTIC: audit03.table.diagnostic.0|cell=Config!AN64|comment=Таблица 7.21 СП 35, Config!AN64: Коэффициент phi_m при ec/r = 0.5 должен быть числом больше нуля. Заполните ячейку корректным коэффициентом.
+OK: audit03.table.diagnostic.1.address
+OK: audit03.table.diagnostic.1.correction
+OK: audit03.table.diagnostic.1.status
+OK: audit03.table.diagnostic.1.exactComment
+OK: audit03.table.diagnostic.1.etaIgnoresTable
+OK: audit03.table.diagnostic.1.sp63IgnoresTable
+OK: audit03.table.diagnostic.1.tensionIgnoresTable
+OK: audit03.table.diagnostic.1.batchStatus
+OK: audit03.table.diagnostic.1.batchExactComment
+OK: audit03.table.diagnostic.1.writer
+OK: audit03.table.diagnostic.1.summaryWriter
+META: audit03.table.diagnostic.1|status=rsInvalidInput|code=INVALID_INPUT|applies=True|calculated=False|comment=Таблица 7.21 СП 35, Config!CM1404: Коэффициент phi_m при ec/r = 0.5 должен быть числом больше нуля. Заполните ячейку корректным коэффициентом.
+OK: audit03.table.diagnostic.1.reasonPresent
+OK: audit03.table.diagnostic.1.russianReason
+OK: audit03.table.diagnostic.1.readable
+OK: audit03.table.diagnostic.1.noMachinePrefix
+OK: audit03.table.diagnostic.1.ownSubtree
+OK: audit03.table.diagnostic.1.noStateSolve
+SP35_DIAGNOSTIC: audit03.table.diagnostic.1|cell=Config!CM1404|comment=Таблица 7.21 СП 35, Config!CM1404: Коэффициент phi_m при ec/r = 0.5 должен быть числом больше нуля. Заполните ячейку корректным коэффициентом.
+OK: audit03.table.missingName
+OK: audit03.table.recovery
+TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=105; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7c6a5b3901f94117a93bfc6dd3ec78f3\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03SP35TableDiagnosticTests; 2026-10-05T03:50:28
+RESULTS_SAVE_REOPEN: before=9630894557A1C1145325CBBD6E0AFD641FD2D3572C9FAF5EDDD2293D6F131C9E; after=9630894557A1C1145325CBBD6E0AFD641FD2D3572C9FAF5EDDD2293D6F131C9E; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7c6a5b3901f94117a93bfc6dd3ec78f3\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=8BBB9692392C892E33E8E17B60142675480837DC5DE2E019D3A49C96DD8D88F7; after=8BBB9692392C892E33E8E17B60142675480837DC5DE2E019D3A49C96DD8D88F7; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

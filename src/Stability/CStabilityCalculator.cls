@@ -93,6 +93,7 @@ Private mCalculationStarted As Boolean ' Выполнялась собствен
 Private mInternalError As Boolean ' Нарушение программного контракта или неожиданный runtime-отказ, не ошибка пользователя.
 Private mCheckPassed As Boolean ' Итог проверки по выбранной ветви.
 Private mStopReason As String ' Подробная внутренняя причина, если расчет не выполнен.
+Private mSP35TableInputError As String ' Адресная причина из Excel-слоя; не влияет на ветви, которым таблица не нужна.
 Private mDesignN As Double ' Продольная сила после фильтра; знак сохраняется как во внутреннем ядре.
 Private mDesignMx As Double ' Mx после учета случайного эксцентриситета и eta.
 Private mDesignMy As Double ' My после учета случайного эксцентриситета и eta.
@@ -224,9 +225,11 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
         ByVal sp63Ks As Double, ByVal sp63DeltaEMin As Double, _
         ByVal sp63DeltaEMax As Double, ByVal sp35PhiP As Double, _
         ByVal sp35NOverNcrLimit As Double, ByVal sp35Table721 As Variant, _
-        Optional ByVal momentFilter As CMomentZeroFilter = Nothing)
+        Optional ByVal momentFilter As CMomentZeroFilter = Nothing, _
+        Optional ByVal sp35TableInputError As String = vbNullString)
     On Error GoTo Failed
     Clear
+    mSP35TableInputError = sp35TableInputError
     mCode = NormalizeCode(codeText)
     ValidateSettings codeText, elementLength, mu1, mu2, systemType, zeroMomentSign1, zeroMomentSign2, _
         phiLMode, accidentalMode, accidentalPlanes, accidentalUserValue1, accidentalUserValue2, _
@@ -319,6 +322,7 @@ Private Sub Clear()
     mInputValid = True
     mCheckPassed = False
     mStopReason = vbNullString
+    mSP35TableInputError = vbNullString
     mDesignN = 0#: mDesignMx = 0#: mDesignMy = 0#
     mPrincipalAngleRad = 0#
     mSustainedN = 0#
@@ -424,7 +428,6 @@ Private Sub PreparePlanes(ByVal section As CSectionModel, ByVal props As CSectio
         (applyBothPlanes Or Not hasMomentVector Or Abs(plane2.Moment) > SMALL_VALUE)
 End Sub
 
-' Назначает случайный и начальный эксцентриситет для одной главной плоскости.
 ' Применяет общий инженерный фильтр к моментам одной главной плоскости.
 ' Сравнение выполняется по бетонному габариту именно этой плоскости, поэтому
 ' после поворота осей случайный остаток M1/M2 не меняет ветвь устойчивости.
@@ -721,7 +724,6 @@ Private Sub CalculateSP35TablePlane(ByVal concreteArea As Double, ByVal totalSte
     plane.BranchName = "SP35-table"
 End Sub
 
-' Ветвь СП 35 через eta и Ncr для ec/r > 1.
 ' Возвращает бетонную площадь для формулы Nult табличной ветви СП 35.
 ' Приведенное сечение уже строится через (n - 1)As и этим определяет центр,
 ' оси и ядровое расстояние. Здесь работает другая нормативная поправка:
@@ -1042,14 +1044,17 @@ End Function
 ' для нескольких ec/r и табличный phi_l. Расчет использует l0/i и phi-колонки.
 Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As Double, ByVal q As Double, _
         ByRef phiM As Double, ByRef phiL As Double)
-    If IsEmpty(table721) Then RaiseInput "Для СП 35 нужна таблица 7.21 на Config."
+    If Len(mSP35TableInputError) > 0 Then RaiseInput mSP35TableInputError
+
+    Dim invalidRow As Long, invalidColumn As Long, reason As String
+    If Not TryValidateSP35Table721(table721, invalidRow, invalidColumn, reason) Then
+        If invalidRow > 0 Then reason = "Строка " & CStr(invalidRow) & ", колонка " & _
+            CStr(invalidColumn) & ": " & reason
+        RaiseInput "Таблица 7.21 СП 35: " & reason
+    End If
 
     Dim rowCount As Long
-    Dim columnCount As Long
-    On Error GoTo InvalidTable
     rowCount = UBound(table721, 1)
-    columnCount = UBound(table721, 2)
-    If rowCount < 2 Or columnCount < 8 Then GoTo InvalidTable
 
     Dim lowerRow As Long
     Dim upperRow As Long
@@ -1073,11 +1078,85 @@ Private Sub InterpolateSP35Table(ByVal table721 As Variant, ByVal slenderness As
     End If
     phiM = phiMLower + t * (phiMUpper - phiMLower)
     phiL = phiLLower + t * (phiLUpper - phiLLower)
-    Exit Sub
-
-InvalidTable:
-    RaiseInput "Таблица 7.21 СП 35 должна содержать числовые колонки l0/b, l0/d, l0/i, phi_m(0), phi_m(0.25), phi_m(0.5), phi_m(1), phi_l."
 End Sub
+
+' Проверяет расчетные колонки таблицы без обращения к Excel и без скрытых
+' нормативных defaults. Возвращает первую неверную строку/колонку для адресной
+' диагностики вызывающего слоя. Две справочные колонки l0/b и l0/d не читаются.
+' Положительность phi и возрастающие узлы защищают интерполяцию и предельную
+' силу; дополнительные ограничения вроде phi <= 1 здесь не навязываются.
+Public Function TryValidateSP35Table721(ByVal table721 As Variant, ByRef invalidRow As Long, _
+        ByRef invalidColumn As Long, ByRef reason As String) As Boolean
+    invalidRow = 0: invalidColumn = 0: reason = vbNullString
+    If Not IsArray(table721) Then
+        reason = "Не передана таблица. Восстановите именованный диапазон rngSP35Table721 на Config."
+        Exit Function
+    End If
+    On Error GoTo InvalidStructure
+    Dim rowCount As Long, columnCount As Long, firstValue As Variant
+    rowCount = UBound(table721, 1): columnCount = UBound(table721, 2)
+    If LBound(table721, 1) <> 1 Or LBound(table721, 2) <> 1 Or _
+            rowCount < 2 Or columnCount < 8 Then GoTo InvalidStructure
+    firstValue = table721(2, 3)
+    On Error GoTo 0
+
+    Dim row As Long, column As Long, value As Double, previousNode As Double
+    For row = 2 To rowCount
+        For column = 3 To 8
+            invalidRow = row: invalidColumn = column
+            If Not SP35TablePositiveNumber(table721(row, column), value) Then
+                If column = 3 Then
+                    reason = "Гибкость l0/i должна быть числом больше нуля. Исправьте значение в таблице."
+                Else
+                    reason = "Коэффициент " & SP35TableColumnName(column) & _
+                        " должен быть числом больше нуля. Заполните ячейку корректным коэффициентом."
+                End If
+                Exit Function
+            End If
+            If column = 3 Then
+                If row > 2 And value <= previousNode Then
+                    reason = "Узлы l0/i должны строго возрастать сверху вниз. Исправьте эту строку или предыдущий узел."
+                    Exit Function
+                End If
+                previousNode = value
+            End If
+        Next column
+    Next row
+    invalidRow = 0: invalidColumn = 0
+    TryValidateSP35Table721 = True
+    Exit Function
+InvalidStructure:
+    invalidRow = 0: invalidColumn = 0
+    reason = "Нужен единый прямоугольный диапазон с заголовком, строками данных и восемью колонками: " & _
+        "l0/b, l0/d, l0/i, phi_m(0), phi_m(0.25), phi_m(0.5), phi_m(1), phi_l. Восстановите структуру таблицы."
+End Function
+
+' Отличает пустоту, ошибку формулы и нечисловое значение от допустимого
+' положительного коэффициента. Числовые строки остаются допустимыми;
+' логические значения и даты не трактуются как инженерные числа.
+Private Function SP35TablePositiveNumber(ByVal rawValue As Variant, ByRef value As Double) As Boolean
+    On Error GoTo InvalidValue
+    If IsError(rawValue) Or IsEmpty(rawValue) Or IsNull(rawValue) Then Exit Function
+    If IsObject(rawValue) Or IsArray(rawValue) Then Exit Function
+    If VarType(rawValue) = vbBoolean Or VarType(rawValue) = vbDate Then Exit Function
+    If Not IsNumeric(rawValue) Then Exit Function
+    value = CDbl(rawValue)
+    SP35TablePositiveNumber = (value > 0#)
+    Exit Function
+InvalidValue:
+End Function
+
+' Называет неверный коэффициент по заголовку таблицы, чтобы сообщение
+' оставалось понятным и при автономном расчете без Excel-адреса.
+Private Function SP35TableColumnName(ByVal column As Long) As String
+    Select Case column
+        Case 4: SP35TableColumnName = "phi_m при ec/r = 0"
+        Case 5: SP35TableColumnName = "phi_m при ec/r = 0.25"
+        Case 6: SP35TableColumnName = "phi_m при ec/r = 0.5"
+        Case 7: SP35TableColumnName = "phi_m при ec/r = 1"
+        Case 8: SP35TableColumnName = "phi_l"
+    End Select
+End Function
 
 ' Находит соседние строки таблицы по гибкости.
 Private Sub FindBoundingRows(ByVal tableData As Variant, ByVal rowCount As Long, ByVal slenderness As Double, _

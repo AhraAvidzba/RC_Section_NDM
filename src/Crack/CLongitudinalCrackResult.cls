@@ -81,8 +81,8 @@ Public Property Get ReserveFactor() As Double
 End Property
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Повторный вызов безопасен. Заполнение численных полей и meta после этого
+' запрещено; сам результат не хранит named-state и не меняет его жизненный цикл.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     mFrozen = True

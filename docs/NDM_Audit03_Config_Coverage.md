@@ -696,3 +696,53 @@ benchmarks, help/UI/clean-update и self-audit обязательны до вы�
 Трассировка: `NDM_Audit03_Stability_Config_Review.md` и
 `NDM_Audit03_Stability_Config_Evidence.json`. Основная пользовательская книга
 и входное ТЗ не заменялись; Audit03 не объявляется завершенным этим срезом.
+
+## Служебные И Табличные Поля v300-v302
+
+Свежий census clean v302 сохраняет 1064 уникальных адреса и 84 validation:
+760 UserInput, 144 SP35 table values, 104 diagram controls, 30 derived IDs,
+16 merged followers и десять NotApplicable cells. Ни одна из этих групп не
+исключена из знаменателя. Поадресные evidence views пока отдельные; наличие
+runtime evidence не означает full-range/pairwise/final-release acceptance.
+
+- Actual metadata v300b `209/0`: 30 ID-formulas следуют LC, включая blank и
+  перенос named range; 16 followers имеют один ввод/validation у merged anchor.
+- Diagram controls v299 `1096/0` и полный v300 Off/On подтверждают пять Stress
+  INPUT units, 52 physical-provider points, 88 direct formulas и 16 zeros.
+  Это 104 производные контрольные клетки, не независимые настройки solver.
+- SP35 v302: 144 адресных behavior cases `829/0`, 540 invalid variants
+  `1621/0`, node order/missing-name/relocation/comment/save-reopen `105/0`.
+  36 reference cells не меняют расчета; 108 активных table cells проверены
+  по независимой интерполяции. 576 чисел точно совпали с frozen baseline.
+  Normative trace отдельна: positive validation не утверждает произвольный
+  положительный phi как нормативно допустимый.
+- Ten inactive cells v302 `102/0`: число/text/CVErr/Empty/NA formula не входят
+  в normalized payload. Исправлено прежнее чтение ошибки Rb,mc2.Tension.
+
+Views: `config_metadata_evidence_v300_2026-10-05`,
+`config_controls_evidence_v300_2026-10-05`,
+`config_cad_controls_evidence_v300_2026-10-05`,
+`config_table_evidence_v302_2026-10-05` (JSON/CSV в regression/Audit03).
+Каждый helper отвергает incomplete/failed runtime. Актуальные final
+matrices/full suites остаются отдельными незавершенными gates.
+
+## Единый Directed Evidence Registry v306
+
+`config_directed_evidence_combined_v306_2026-10-05.json/.csv` объединяет
+ровно 1064 уникальных поля актуального registry без изменения его SavedValue,
+формул или структурных признаков. Сверены идентификаторы, адреса, роли,
+единый знаменатель и существование каждого файла runtime evidence.
+
+| Группа | Число | Граница Подтвержденного |
+| --- | ---: | --- |
+| Active inputs | 760 | Активный directed effect и соответствующие invalid/isolation gates; полный диапазон и все взаимодействия еще не приняты. |
+| Diagram controls | 104 | Прямые формулы, provider points, пять INPUT Stress units и подписи. |
+| Active SP35 table cells | 108 | Адресные эффекты, independent interpolation, invalid variants и динамические адреса. |
+| Reference SP35 cells | 36 | Не меняют расчет; не трактуются как активные phi. |
+| Derived IDs | 30 | Следуют LC, включая blank и перенос named range. |
+| Merged followers | 16 | Единственный ввод и validation у anchor. |
+| Inactive consumers | 10 | Неприменимые значения не вмешиваются в normalized payload. |
+
+Итого directed address coverage: 1064/1064. `FullAcceptance=False`
+сохранен явно: selector runtime, широкая актуальная матрица, full-range,
+mutation sensitivity, release/update/self-audit не подменяются этой суммой.

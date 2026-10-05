@@ -16,6 +16,10 @@ Option Explicit
 ' в один CSectionModel. Это тонкий адаптер: он не решает равновесие, не читает
 ' Excel и не создает semantic-аннотации конкретной формы сам по себе.
 
+' Переносит сгенерированные волокна с коэффициентом заполнения и их местными
+' инерциями в единый расчетный model, затем добавляет готовую арматуру.
+' Новая модель получает собственные расчетные имена; builder не меняет сетку
+' или layout и не выполняет расчет НДС.
 Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         Optional ByVal sourceType As String = "Generated") As CSectionModel
     If mesh Is Nothing Then Err.Raise vbObjectError + 5250, "CSectionModelBuilder", "Сетка бетонных элементов не передана."

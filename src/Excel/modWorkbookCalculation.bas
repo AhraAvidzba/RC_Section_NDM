@@ -349,7 +349,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Прочитано сочетаний", CStr(batch.Count)
     report.AddBlock "Список сочетаний", CombinationListForReport(batch, units)
     LoadStabilityDurationLoadsFromWorkbook workbook, batch, units
-    batch.SetSP35Table721 ReadSP35Table721FromWorkbook(workbook)
+    Dim sp35Table As Variant, sp35TableInputError As String
+    sp35Table = ReadSP35Table721FromWorkbook(workbook, sp35TableInputError)
+    batch.SetSP35Table721 sp35Table, sp35TableInputError
     report.AddStep "Прочитаны нагрузки и таблицы для расчета устойчивости."
 
     report.AddSection "Точка приложения нагрузки"
@@ -1067,19 +1069,42 @@ Private Sub RecordDurationTableError(ByVal batch As CBatchSectionCalculator, ByV
     For Each id In activeIDs.Keys: batch.AddInvalidStabilityDurationLoad CStr(id), reason: Next id
 End Sub
 
-' Возвращает таблицу 7.21 СП 35 как обычный массив Variant. Дальше она живет
-' только в памяти и передается в CStabilityCalculator через batch.
-Private Function ReadSP35Table721FromWorkbook(ByVal workbook As Object) As Variant
+' Возвращает таблицу 7.21 СП 35 как массив и причину неверного ввода.
+' Инженерную допустимость проверяет calculator, а Excel-слой добавляет адрес
+' фактического named range. Ошибка передается через batch и применяется только
+' тогда, когда выбранной плоскости действительно нужна табличная ветвь СП 35.
+Public Function ReadSP35Table721FromWorkbook(ByVal workbook As Object, ByRef inputError As String) As Variant
+    inputError = vbNullString
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4135, _
+        "ReadSP35Table721FromWorkbook", "Для чтения таблицы СП 35 не передана книга."
     On Error GoTo MissingRange
-    If workbook Is Nothing Then Exit Function
-
     Dim range As Object
     Set range = workbook.Names.Item("rngSP35Table721").RefersToRange
     On Error GoTo 0
-    ReadSP35Table721FromWorkbook = range.Value2
+    If range.Areas.Count <> 1 Then
+        inputError = "Таблица 7.21 СП 35: rngSP35Table721 должен ссылаться на один прямоугольный диапазон. Исправьте имя диапазона."
+        Exit Function
+    End If
+
+    Dim data As Variant, validator As CStabilityCalculator
+    Dim row As Long, column As Long, reason As String, address As String
+    data = range.Value2
+    Set validator = New CStabilityCalculator
+    If Not validator.TryValidateSP35Table721(data, row, column, reason) Then
+        address = range.Worksheet.Name & "!"
+        If row > 0 And column > 0 Then
+            address = address & range.Cells(row, column).Address(False, False)
+        Else
+            address = address & range.Address(False, False)
+        End If
+        inputError = "Таблица 7.21 СП 35, " & address & ": " & reason
+    End If
+    ReadSP35Table721FromWorkbook = data
     Exit Function
 
 MissingRange:
+    inputError = "Не найден диапазон rngSP35Table721 с таблицей 7.21 СП 35. " & _
+        "Восстановите именованный диапазон таблицы на Config; резервные коэффициенты не используются."
 End Function
 
 ' Возвращает центр тяжести бетонной части сечения.

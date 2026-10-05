@@ -407,7 +407,11 @@ Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)
         Dim tensionValue As String
         Dim commentValue As String
         compressionValue = ConfigCellText(data(rowIndex, 2), "Сжатие", rowIndex, rowKey, False, 2)
-        tensionValue = ConfigCellText(data(rowIndex, 3), "Растяжение", rowIndex, rowKey, False, 3)
+        tensionValue = vbNullString
+        ' Rb,mc2 относится только к сжатию; неприменимая клетка растяжения
+        ' не является входным параметром, даже если в ней ошибочная формула.
+        If StrComp(rowKey, "Concrete.Rb.mc2", vbTextCompare) <> 0 Then _
+            tensionValue = ConfigCellText(data(rowIndex, 3), "Растяжение", rowIndex, rowKey, False, 3)
         If UBound(data, 2) >= 5 Then commentValue = ConfigCellText(data(rowIndex, 5), "комментарий", rowIndex, rowKey, True, 5)
 
         Select Case LCase$(rowKey)

@@ -164,6 +164,7 @@ End Sub
 ' Тестовый/подготовленный путь импорта бетонных Region из массива значений.
 ' Он повторяет контракт живого импорта, но позволяет regression-тестам
 ' проверять CSectionModel без запуска AutoCAD.
+' ДЛЯ ТЕСТОВ
 Private Sub AddConcreteRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, ByVal minArea As Double)
     If Not HasArrayRows(regions) Then Exit Sub
 
@@ -183,6 +184,7 @@ End Sub
 
 ' Тестовый/подготовленный путь импорта арматурных Region из массива значений.
 ' Используется только для локальных проверок чтения snapshot-подобных данных.
+' ДЛЯ ТЕСТОВ
 Private Sub AddRebarRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, _
         ByVal steelClass As String, ByVal minArea As Double)
     If Not HasArrayRows(regions) Then Exit Sub
@@ -394,6 +396,7 @@ End Sub
 ' Проверяет явно переданную прямоугольную оболочку в тестовых/подготовленных
 ' массивах. Live AutoCAD import не использует BoundingBox и не попадает сюда
 ' с вычисленными Width/Height.
+' ДЛЯ ТЕСТОВ
 Private Function HasExplicitRectangleGeometry(ByVal area As Double, ByVal width As Double, _
         ByVal height As Double) As Boolean
     If area <= GEOM_TOLERANCE Or width <= GEOM_TOLERANCE Or height <= GEOM_TOLERANCE Then Exit Function
@@ -450,6 +453,7 @@ End Sub
 ' Проверяет, что двумерный Variant действительно содержит хотя бы одну строку.
 ' Нужен тестовому импорту из массивов, где пустой массив не должен падать на
 ' LBound/UBound до валидации модели.
+' ДЛЯ ТЕСТОВ
 Private Function HasArrayRows(ByVal values As Variant) As Boolean
     On Error GoTo NoRows
     Dim firstRow As Long
@@ -463,6 +467,7 @@ End Function
 ' Безопасно читает числовую ячейку подготовленного массива Region.
 ' Отсутствующая, пустая или выходящая за границы колонка трактуется как 0,
 ' чтобы тестовые массивы могли задавать только нужные поля.
+' ДЛЯ ТЕСТОВ
 Private Function OptionalRegionDouble(ByVal values As Variant, ByVal rowIndex As Long, _
         ByVal colIndex As Long) As Double
     On Error GoTo MissingValue
@@ -477,6 +482,7 @@ End Function
 ' Безопасно читает текстовую ячейку подготовленного массива Region.
 ' Отсутствующие поля превращаются в пустую строку, например когда source handle
 ' не нужен конкретному regression-тесту.
+' ДЛЯ ТЕСТОВ
 Private Function OptionalRegionString(ByVal values As Variant, ByVal rowIndex As Long, _
         ByVal colIndex As Long) As String
     On Error GoTo MissingValue

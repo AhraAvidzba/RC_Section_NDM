@@ -47,6 +47,7 @@ Public Function RunSectionSolverTests() As String
     TestAudit03TypedStateFailures stats
     TestAudit03RetryAttemptSession stats
     TestAudit03ExtremeStateInputs stats
+    TestAudit03ExtremeRunnerStates stats
     TestAudit03SolverSettingEffects stats
     TestAudit03InputCurvatureBinding stats
 
@@ -1804,3 +1805,89 @@ Public Function RunAudit03LinearSystemBenchmark() As String
     Next repetition
     RunAudit03LinearSystemBenchmark = report & "TOTAL_AUDIT03_LINEAR_BENCHMARK: passed=5; failed=0"
 End Function
+
+' ============================== ДЛЯ ТЕСТОВ: БОЛЬШИЕ МОМЕНТЫ RUNNER ==============================
+' ДЛЯ ТЕСТОВ: проходит обычный pipeline прямого НДС при N=0, где начальная
+' плоскость раньше требовала вычислить Mx^2 + My^2. Конечные нагрузки вне
+' возможностей диаграммы должны дать typed численный отказ, а не overflow VBA.
+Public Function RunAudit03ExtremeRunnerTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TSectionSolverTestStats
+    TestAudit03ExtremeRunnerStates stats
+    AppendLine stats, "TOTAL_AUDIT03_EXTREME_RUNNER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03ExtremeRunnerTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: обе схемы равновесия, Off/On и шесть направлений чистого изгиба.
+' Ошибка отдельной попытки сохраняется и не останавливает остальные варианты;
+' после большого запроса тот же runner обязан решить обычное сжатие.
+Private Sub TestAudit03ExtremeRunnerStates(ByRef stats As TSectionSolverTestStats)
+    Dim section As CSectionModel, concreteParameters As CConcreteMaterialParameters
+    Dim steelParameters As CSteelMaterialParameters, materials As CMaterialModelProvider
+    Dim spec As CMaterialModelSpec, concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Dim runner As CStateSolutionRunner, solver As CSectionSolver, state As CSectionStateResult
+    Dim extended As Variant, method As Variant, magnitude As Variant, direction As Long
+    Dim mx As Double, my As Double, errorCode As Long, reason As String, prefix As String, magnitudeName As String
+    On Error GoTo Failed
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
+    Set concreteParameters = New CConcreteMaterialParameters
+    concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Set steelParameters = New CSteelMaterialParameters
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Set spec = New CMaterialModelSpec
+    spec.Initialize "ULS(I)", "ThreeLine", "Ignore", "TwoLine"
+    For Each extended In Array(False, True)
+        Set materials = New CMaterialModelProvider
+        materials.InitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=CBool(extended)
+        Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
+        Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
+        For Each method In Array("Newton", "Secant")
+            For Each magnitude In Array(1E+160, 1E+308)
+                If CDbl(magnitude) = 1E+160 Then magnitudeName = "1e160" Else magnitudeName = "1e308"
+                For direction = 0 To 5
+                    mx = 0#: my = 0#
+                    Select Case direction
+                        Case 0: mx = CDbl(magnitude)
+                        Case 1: mx = -CDbl(magnitude)
+                        Case 2: my = CDbl(magnitude)
+                        Case 3: my = -CDbl(magnitude)
+                        Case 4: mx = CDbl(magnitude): my = -CDbl(magnitude)
+                        Case 5: mx = -CDbl(magnitude): my = CDbl(magnitude)
+                    End Select
+                    prefix = "audit03.extremeRunner." & CStr(extended) & "." & CStr(method) & "." & _
+                        magnitudeName & "." & CStr(direction)
+                    Set runner = New CStateSolutionRunner
+                    runner.SolverMethod = CStr(method): runner.LoadSteps = 1
+                    runner.MaxIterations = 3: runner.DiagnosticsEnabled = False
+                    On Error Resume Next
+                    Err.Clear
+                    runner.Solve section, concrete, steel, 0#, mx, my, CBool(extended)
+                    errorCode = Err.Number: reason = Err.Description
+                    On Error GoTo Failed
+                    AssertTrue stats, prefix & ".noRuntimeError", errorCode = 0
+                    Set solver = runner.ResultSolver
+                    If errorCode = 0 Then
+                        AssertTrue stats, prefix & ".hasAttempt", Not solver Is Nothing
+                        If Not solver Is Nothing Then
+                            AssertTrue stats, prefix & ".notConverged", Not solver.Converged
+                            Set state = New CSectionStateResult
+                            state.InitializeFromSolver sstStrengthState, cpStrength, spec, solver, False, False, runner.SolverCallCount
+                            AssertTrue stats, prefix & ".numericFailure", state.InternalStatus = rsNumericalFailure
+                            AssertTrue stats, prefix & ".noPhysicalState", Not state.WithinPhysicalRange
+                            AssertTrue stats, prefix & ".reasonPresent", Len(state.ResultMeta.ResultComment) > 0
+                        End If
+                    End If
+                    AppendLine stats, "EXTREME_RUNNER: " & prefix & "|error=" & CStr(errorCode) & "|" & reason
+                    runner.MaxIterations = 80
+                    runner.Solve section, concrete, steel, -50000#, 0#, 0#, CBool(extended)
+                    AssertTrue stats, prefix & ".recovers", runner.Converged
+                Next direction
+            Next magnitude
+        Next method
+    Next extended
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.extremeRunner.runtime; " & CStr(Err.Number) & "; " & Err.Description
+End Sub

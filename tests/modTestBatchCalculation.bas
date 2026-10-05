@@ -252,6 +252,22 @@ Public Function RunBatchCalculationTests() As String
     stats.Passed = stats.Passed + searchPassed
     stats.Failed = stats.Failed + searchFailed
 
+    AppendLine stats, "RUN: RunAudit03SP35TableInvalidReproducer"
+    stats.Report = stats.Report & RunAudit03SP35TableInvalidReproducer(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
+    AppendLine stats, "RUN: RunAudit03SP35TableBehaviorTests"
+    stats.Report = stats.Report & RunAudit03SP35TableBehaviorTests(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
+    AppendLine stats, "RUN: RunAudit03InactiveConfigCellTests"
+    stats.Report = stats.Report & RunAudit03InactiveConfigCellTests(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
+    AppendLine stats, "RUN: RunAudit03SP35TableDiagnosticTests"
+    stats.Report = stats.Report & RunAudit03SP35TableDiagnosticTests(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
+    AppendLine stats, "RUN: RunAudit03UserPsiFallbackTests"
+    stats.Report = stats.Report & RunAudit03UserPsiFallbackTests(searchPassed, searchFailed)
+    stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
+
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability
@@ -5006,6 +5022,95 @@ Public Function RunAudit02ResultMetaStress() As String
         FormatNumberInvariant(Timer - started) & "; status=" & statusText & "; comment=" & commentText
 End Function
 
+' ============================== ДЛЯ ТЕСТОВ: PSI ПРИ НЕУДАЧЕ FORMATION ==============================
+' ДЛЯ ТЕСТОВ: воспроизводит отсутствие точки Formation при допустимом текущем
+' НДС. Нулевая масштабируемая компонента дает typed InputErr выбранного пути,
+' но не блокирует Width/Longitudinal. Действующий контракт при недоступной
+' точке принимает единицу во всех режимах; дополнительный путь Auto проверяет
+' сохранение User, когда пригодная точка действительно найдена.
+Public Function RunAudit03UserPsiFallbackTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, mode As Variant, path As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, batch As CBatchSectionCalculator
+    Dim result As CCombinationResult, width As CCrackWidthResult, writer As CBatchResultWriter
+    Dim policy As CResultStatusPolicy, prefix As String, index As Long, expectedPsi As Double
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetSystemSetting "General.DiagramExtension", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "SLS.Crack.PsiS", "0.25"
+    Set policy = New CResultStatusPolicy
+    Set writer = New CBatchResultWriter
+    For Each mode In Array("User", "Auto", "AlwaysCalc")
+        SetSystemSetting "SLS.Crack.PsiMode", CStr(mode)
+        Set settings = New CSystemSettingsReader
+        settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem
+        units.LoadFromSettings settings
+        Set batch = BuildBatchCalculator(False)
+        batch.ApplySettings settings, units
+        For Each path In Array("Mx", "My", "Mxy")
+            batch.AddCombination "PSI_" & CStr(mode) & "_" & CStr(path), 200000#, 0#, 0#, _
+                "PR2", "Проверка коэффициента при недоступной точке образования.", CStr(path)
+        Next path
+        batch.AddCombination "PSI_" & CStr(mode) & "_Auto", 200000#, 0#, 0#, _
+            "PR2", "Проверка коэффициента при доступной точке образования.", "Auto"
+        batch.Execute
+        writer.WriteSummary ThisWorkbook, batch, units
+        For index = 1 To batch.Count
+            Set result = batch.ResultAt(index)
+            Set width = result.CrackResult.Width
+            prefix = "audit03.userPsiFallback." & batch.CombinationID(index)
+            If index <= 3 Then
+                AssertTrue stats, prefix & ".formationInvalidInput", result.CrackFormationMeta.InternalStatus = rsInvalidInput
+                AssertTrue stats, prefix & ".noPoint", Not result.CrackResult.Formation.HasLimitPoint
+            Else
+                AssertTrue stats, prefix & ".hasUsableFormation", Audit03HasUsableFormationData(result)
+            End If
+            AssertEquals stats, prefix & ".current", policy.ExternalStatus(result.CrackCurrentStateMeta), "OK"
+            AssertTrue stats, prefix & ".widthCalculated", result.CrackWidthMeta.Calculated
+            AssertTrue stats, prefix & ".longitudinalIndependent", result.LongitudinalCrackMeta.InternalStatus = rsNotApplicable
+            If index <= 3 Or CStr(mode) = "User" Then
+                If index = 4 Then expectedPsi = 0.25 Else expectedPsi = 1#
+                AssertClose stats, prefix & ".psi", width.PsiS, expectedPsi, 0#
+            Else
+                expectedPsi = width.PsiS
+                AssertTrue stats, prefix & ".automaticPsiRange", expectedPsi >= 0# And expectedPsi <= 1#
+            End If
+            AssertClose stats, prefix & ".formula", width.CrackWidth, _
+                width.Phi1 * width.Phi2 * width.Phi3 * expectedPsi * width.SigmaS / width.SteelEs * width.CrackSpacing, 0.000000000001
+            Audit03CheckAppliedPsiMode stats, result, settings, prefix
+            Audit03CheckResultComments stats, batch, index
+            AppendLine stats, "USER_PSI_FALLBACK: " & prefix & "|psi=" & FormatNumberInvariant(width.PsiS) & _
+                "|formation=" & result.CrackFormationMeta.ResultComment & "|width=" & result.CrackWidthMeta.ResultComment
+        Next index
+    Next mode
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.userPsiFallback.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo RestoreFailed
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+Finish:
+    AppendLine stats, "TOTAL_AUDIT03_USER_PSI_FALLBACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03UserPsiFallbackTests = stats.Report
+    Exit Function
+RestoreFailed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.userPsiFallback.restore; " & CStr(Err.Number) & "; " & Err.Description
+    Resume Finish
+End Function
+
 
 ' ДЛЯ ТЕСТОВ: проверяет комментарии и четыре блока вывода готового batch.
 ' Позволяет отдельному Config-набору использовать те же проверки subtree,
@@ -6896,6 +7001,7 @@ Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal resul
     Dim width As CCrackWidthResult
     Set width = result.CrackResult.Width
     AppendLine stats, "MATRIX_CRACK_DATA: " & prefix & "|calculated=" & CStr(width.ResultMeta.Calculated) & _
+        "|formationDataAvailable=" & CStr(Audit03HasUsableFormationData(result)) & _
         "|sigmaS=" & FormatNumberInvariant(width.SigmaS) & "|sigmaSCrc=" & FormatNumberInvariant(width.SigmaSCrc) & _
         "|psi=" & FormatNumberInvariant(width.PsiS) & "|Abt=" & FormatNumberInvariant(width.Abt) & _
         "|As=" & FormatNumberInvariant(width.AsTension) & "|ds=" & FormatNumberInvariant(width.DsEquivalent) & _
@@ -6904,8 +7010,44 @@ Private Sub Audit03CheckMatrixStates(ByRef stats As TBatchTestStats, ByVal resul
     If width.ResultMeta.Calculated Then
         AssertTrue stats, prefix & ".psiUpperBound", result.CrackResult.Width.PsiS <= 1#
         AssertTrue stats, prefix & ".widthNonnegative", result.CrackResult.Width.CrackWidth >= 0#
+        Audit03CheckAppliedPsiMode stats, result, settings, prefix
     End If
 End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет фактически использованный psi, а не только успех
+' формулы. При пригодной точке User сохраняет ввод; недоступная Formation/Post
+' дает принятый консервативный fallback. NotCracked сюда не попадает: формула
+' не вызывается, и отдельные тесты проверяют сохранность исходного PsiS.
+Private Sub Audit03CheckAppliedPsiMode(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
+        ByVal settings As CSystemSettingsReader, ByVal prefix As String)
+    If Not result.CrackWidthMeta.Calculated Then Exit Sub
+    If Not Audit03HasUsableFormationData(result) Then
+        AssertClose stats, prefix & ".formationUnavailablePsi1", result.CrackResult.Width.PsiS, 1#, 0#
+        AssertTrue stats, prefix & ".formationUnavailableWarning", _
+            InStr(1, result.CrackWidthMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
+    ElseIf StrComp(settings.GetRequiredString("SLS.Crack.PsiMode"), "User", vbTextCompare) = 0 Then
+        AssertClose stats, prefix & ".userPsiPreserved", result.CrackResult.Width.PsiS, _
+            settings.GetRequiredDouble("SLS.Crack.PsiS"), 0#
+        AssertTrue stats, prefix & ".userNoFallbackWarning", _
+            InStr(1, result.CrackWidthMeta.ResultComment, "psi_s принят равным 1", vbTextCompare) = 0
+    End If
+End Sub
+
+' ДЛЯ ТЕСТОВ: устанавливает доступность численных данных по typed результату
+' и физическому Post, без чтения текста комментария или назначения статуса.
+' Это независимый oracle входных условий для проверки фактически примененного psi.
+Private Function Audit03HasUsableFormationData(ByVal result As CCombinationResult) As Boolean
+    Dim formation As CCrackFormationResult, postState As CSectionStateResult
+    Set formation = result.CrackResult.Formation
+    If Not formation.HasLimitPoint Then Exit Function
+    If formation.ResultMeta.InternalStatus <> rsSuccess And formation.ResultMeta.InternalStatus <> rsSuccessWithWarning Then Exit Function
+    If formation.CrackFormed Then
+        Set postState = formation.PostCrackState
+        If postState Is Nothing Then Exit Function
+        If Not postState.Converged Or Not postState.WithinPhysicalRange Then Exit Function
+    End If
+    Audit03HasUsableFormationData = True
+End Function
 
 ' Читает UTF-16 отчет настоящего report-owner, не подменяя его текст тестовым.
 Private Function Audit03ReadUnicodeFile(ByVal path As String) As String
@@ -8805,3 +8947,430 @@ Restore:
     If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
     On Error GoTo 0
 End Sub
+
+' ========================== ДЛЯ ТЕСТОВ: AUDIT03 SP35 TABLE ==========================
+
+' Проверяет реальные 18 строк таблицы Config во всех расчетных колонках.
+' Варианты выполняются в существующем test module и возвращают исходные
+' формулы таблицы; нормативные defaults не подменяются результатами теста.
+Public Function RunAudit03SP35TableInvalidReproducer(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TBatchTestStats, tableRange As Object, saved As Variant
+    Dim section As CSectionModel, provider As CMaterialModelProvider
+    Dim props As CSectionPropertiesCalculator, row As Long, column As Long
+    Dim invalidIndex As Long, data As Variant, calc As CStabilityCalculator
+    Dim policy As CResultStatusPolicy
+    Dim slenderness As Double, q As Double, value As Variant, prefix As String
+    On Error GoTo Failed
+    Set tableRange = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange
+    saved = tableRange.Formula
+    Set section = BuildCircleStabilitySection(500#, 4, 12#)
+    Set provider = TestMaterialProvider()
+    Set policy = New CResultStatusPolicy
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateTransformedByModuli section, 32500#, 200000#
+    AssertTrue stats, "audit03.table.shape", tableRange.Rows.Count = 19 And tableRange.Columns.Count = 8
+    For row = 2 To tableRange.Rows.Count
+        For column = 3 To 8
+            For invalidIndex = 0 To 4
+                tableRange.Formula = saved
+                data = tableRange.Value2
+                slenderness = CDbl(data(row, 3))
+                Select Case column
+                    Case 4: q = 0.125
+                    Case 5: q = 0.25
+                    Case 6: q = 0.5
+                    Case 7: q = 0.75
+                    Case Else: q = 0.5
+                End Select
+                Select Case invalidIndex
+                    Case 0: value = Empty
+                    Case 1: value = "abc"
+                    Case 2: value = CVErr(2015)
+                    Case 3: value = 0#
+                    Case 4: value = -1#
+                End Select
+                tableRange.Cells(row, column).Value2 = value
+                data = tableRange.Value2
+                Set calc = Audit03SP35TableProbe(section, provider, props, data, slenderness, q)
+                prefix = "audit03.table.invalid." & CStr(row) & "." & CStr(column) & "." & CStr(invalidIndex)
+                AssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
+                AssertTrue stats, prefix & ".notNumFail", calc.ResultMeta.InternalStatus <> rsNumericalFailure
+                AssertTrue stats, prefix & ".comment", Len(calc.ResultMeta.ResultComment) > 0
+                AppendLine stats, "SP35_INVALID: " & prefix & "|cell=" & tableRange.Cells(row, column).Address(False, False) & _
+                    "|status=" & policy.ExternalStatus(calc.ResultMeta) & "|comment=" & calc.ResultMeta.ResultComment
+            Next invalidIndex
+        Next column
+    Next row
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.table.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo RestoreFailed
+    If IsArray(saved) Then tableRange.Formula = saved
+Finish:
+    AppendLine stats, "TOTAL_AUDIT03_SP35_INVALID: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03SP35TableInvalidReproducer = stats.Report
+    Exit Function
+RestoreFailed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.table.restore; " & CStr(Err.Number) & "; " & Err.Description
+    Resume Finish
+End Function
+
+' Проверяет наблюдаемый смысл каждой из 144 ячеек. Узлы и коэффициенты
+' проверяются раздельно: по точным табличным значениям и независимым весам
+' интерполяции; две справочные колонки не должны вмешиваться в расчет.
+Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TBatchTestStats, tableRange As Object, saved As Variant, original As Variant
+    Dim section As CSectionModel, provider As CMaterialModelProvider, props As CSectionPropertiesCalculator
+    Dim row As Long, column As Long, j As Long, data As Variant, calc As CStabilityCalculator
+    Dim baseline As CStabilityCalculator, q As Double, node As Double, prefix As String
+    Dim expectedM As Double, expectedL As Double, weight As Double, delta As Double
+    Dim previous As Double, nextNode As Double, shift As Double, query As Double, expected As Double
+    Dim covered As Long
+    On Error GoTo Failed
+    Set tableRange = ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange
+    saved = tableRange.Formula: original = tableRange.Value2
+    Set section = BuildCircleStabilitySection(500#, 4, 12#)
+    Set provider = TestMaterialProvider()
+    Set props = New CSectionPropertiesCalculator
+    props.CalculateTransformedByModuli section, 32500#, 200000#
+    For row = 2 To tableRange.Rows.Count
+        node = CDbl(original(row, 3))
+        For column = 1 To 8
+            tableRange.Formula = saved
+            prefix = "audit03.table.behavior." & CStr(row) & "." & CStr(column)
+            q = 0.5: weight = 0#: delta = 0.05
+            Select Case column
+                Case 4: q = 0.125: weight = 0.5
+                Case 5: q = 0.25: weight = 1#
+                Case 6: q = 0.5: weight = 1#
+                Case 7: q = 0.75: weight = 0.5
+            End Select
+            If column = 3 Then
+                ' Только диагностические phi делают все узлы наблюдаемыми,
+                ' включая последнюю строку с одинаковыми штатными phi.
+                ' Сами l0/i читаются из настоящей таблицы Config.
+                data = tableRange.Value2
+                For j = 2 To UBound(data, 1)
+                    data(j, 4) = 1# + j * 0.01: data(j, 5) = data(j, 4)
+                    data(j, 6) = data(j, 4): data(j, 7) = data(j, 4)
+                    data(j, 8) = 1# + j * 0.005
+                Next j
+                If row < UBound(data, 1) Then
+                    nextNode = CDbl(original(row + 1, 3))
+                    If row = 2 Then previous = 0# Else previous = CDbl(original(row - 1, 3))
+                    shift = 0.25 * GeomMin(node - previous, nextNode - node)
+                    query = node + 0.25 * (nextNode - node)
+                    expected = CDbl(data(row, 4)) + 0.25 * 0.01
+                    Set baseline = Audit03SP35TableProbe(section, provider, props, data, query, q)
+                    AssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
+                    data(row, 3) = node - shift
+                    expected = CDbl(data(row, 4)) + (query - (node - shift)) / (nextNode - (node - shift)) * 0.01
+                Else
+                    previous = CDbl(original(row - 1, 3))
+                    shift = 0.25 * (node - previous)
+                    query = previous + 0.75 * (node - previous)
+                    expected = CDbl(data(row - 1, 4)) + 0.75 * 0.01
+                    Set baseline = Audit03SP35TableProbe(section, provider, props, data, query, q)
+                    AssertClose stats, prefix & ".baseline", baseline.PhiM1, expected, 0.00000001
+                    data(row, 3) = node + shift
+                    expected = CDbl(data(row - 1, 4)) + (query - previous) / (node + shift - previous) * 0.01
+                End If
+                tableRange.Cells(row, column).Value2 = data(row, column)
+                Set calc = Audit03SP35TableProbe(section, provider, props, data, query, q)
+                AssertTrue stats, prefix & ".inputValid", calc.InputValid
+                AssertClose stats, prefix & ".changedWeight", calc.PhiM1, expected, 0.00000001
+                AssertTrue stats, prefix & ".active", Abs(calc.PhiM1 - baseline.PhiM1) > 0.000000001
+            Else
+                Set baseline = Audit03SP35TableProbe(section, provider, props, original, node, q)
+                expectedM = Audit03TableNodePhiM(original, row, q)
+                expectedL = CDbl(original(row, 8))
+                AssertTrue stats, prefix & ".baselineValid", baseline.InputValid
+                AssertClose stats, prefix & ".baselineM", baseline.PhiM1, expectedM, 0.00000001
+                AssertClose stats, prefix & ".baselineL", baseline.PhiLTable1, expectedL, 0.00000001
+                If column < 3 Then
+                    tableRange.Cells(row, column).Value2 = CDbl(original(row, column)) * 1.25
+                Else
+                    tableRange.Cells(row, column).Value2 = CDbl(original(row, column)) + delta
+                End If
+                data = tableRange.Value2
+                Set calc = Audit03SP35TableProbe(section, provider, props, data, node, q)
+                If column < 3 Then
+                    AssertClose stats, prefix & ".referenceM", calc.PhiM1, expectedM, 0.00000001
+                    AssertClose stats, prefix & ".referenceL", calc.PhiLTable1, expectedL, 0.00000001
+                    AssertClose stats, prefix & ".referenceNult", calc.Nultimate1, baseline.Nultimate1, 0.000001
+                ElseIf column = 8 Then
+                    AssertClose stats, prefix & ".activeL", calc.PhiLTable1, expectedL + delta, 0.00000001
+                    AssertClose stats, prefix & ".unaffectedM", calc.PhiM1, expectedM, 0.00000001
+                    AssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
+                Else
+                    AssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + weight * delta, 0.00000001
+                    AssertClose stats, prefix & ".unaffectedL", calc.PhiLTable1, expectedL, 0.00000001
+                    AssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
+                End If
+            End If
+            AppendLine stats, "SP35_BEHAVIOR: " & prefix & "|cell=" & tableRange.Cells(row, column).Address(False, False) & _
+                "|reference=" & CStr(column < 3) & "|phiM=" & FormatNumberInvariant(calc.PhiM1) & _
+                "|phiL=" & FormatNumberInvariant(calc.PhiLTable1)
+            covered = covered + 1
+        Next column
+    Next row
+    AssertTrue stats, "audit03.table.all144", covered = 144
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.table.behavior.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo RestoreFailed
+    If IsArray(saved) Then tableRange.Formula = saved
+Finish:
+    AppendLine stats, "TOTAL_AUDIT03_SP35_BEHAVIOR: fields=" & CStr(covered) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03SP35TableBehaviorTests = stats.Report
+    Exit Function
+RestoreFailed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.table.behavior.restore; " & CStr(Err.Number) & "; " & Err.Description
+    Resume Finish
+End Function
+
+' Независимый oracle в конкретном узле l0/i: простые веса между четырьмя
+' заданными q. Он не читает actual из calculator и не вызывает Search/State.
+Private Function Audit03TableNodePhiM(ByVal data As Variant, ByVal row As Long, ByVal q As Double) As Double
+    If q = 0.125 Then
+        Audit03TableNodePhiM = 0.5 * (CDbl(data(row, 4)) + CDbl(data(row, 5)))
+    ElseIf q = 0.25 Then
+        Audit03TableNodePhiM = CDbl(data(row, 5))
+    ElseIf q = 0.5 Then
+        Audit03TableNodePhiM = CDbl(data(row, 6))
+    ElseIf q = 0.75 Then
+        Audit03TableNodePhiM = 0.5 * (CDbl(data(row, 6)) + CDbl(data(row, 7)))
+    Else
+        Err.Raise vbObjectError + 4498, "Audit03TableNodePhiM", "Не задан независимый тестовый oracle для q."
+    End If
+End Function
+
+' Проверяет десять явно неприменимых клеток Config через настоящий reader.
+' Адреса ищутся внутри именованных таблиц по применимым колонкам и маркеру,
+' а не по координатам шаблона. Изменение подписи не должно создавать новый
+' параметр или менять нормализованный payload для downstream consumers.
+Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TBatchTestStats, fields As New Collection, range As Object, cell As Object
+    Dim name As Variant, row As Long, column As Long, baseline As String, actual As String
+    Dim errorText As String, saved As Variant, invalidIndex As Long, prefix As String
+    Dim hasSavedCell As Boolean
+    On Error GoTo Failed
+    For Each name In Array("rngConcreteMaterialParameters", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry")
+        Set range = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        For row = 2 To range.Rows.Count
+            For column = 2 To 4
+                If (CStr(name) = "rngConcreteMaterialParameters" And column = 3) Or _
+                        (CStr(name) = "rngPlotAnnotationSettings" And column <= 3) Or _
+                        (CStr(name) = "rngHollowRectangleGeometry" And column = 4) Then
+                    Set cell = range.Cells(row, column)
+                    If VarType(cell.Value2) = vbString Then
+                        If CStr(cell.Value2) = "-" Then fields.Add cell
+                    End If
+                End If
+            Next column
+        Next row
+    Next name
+    AssertTrue stats, "audit03.inactive.count", fields.Count = 10
+    AssertTrue stats, "audit03.inactive.baseline", Audit03TryConfigPayload(baseline, errorText)
+    For Each cell In fields
+        saved = cell.Formula: hasSavedCell = True
+        For invalidIndex = 0 To 4
+            Select Case invalidIndex
+                Case 0: cell.Value2 = 777#
+                Case 1: cell.Value2 = "abc"
+                Case 2: cell.Value2 = CVErr(2015)
+                Case 3: cell.Value2 = Empty
+                Case 4: cell.Formula = "=NA()"
+            End Select
+            prefix = "audit03.inactive." & cell.Address(False, False) & "." & CStr(invalidIndex)
+            AssertTrue stats, prefix & ".accepted", Audit03TryConfigPayload(actual, errorText)
+            AssertEquals stats, prefix & ".samePayload", actual, baseline
+            AppendLine stats, "INACTIVE_CONFIG: " & prefix & "|error=" & errorText
+            cell.Formula = saved
+        Next invalidIndex
+        hasSavedCell = False
+    Next cell
+    GoTo Finish
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.inactive.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    If hasSavedCell Then cell.Formula = saved
+Finish:
+    AppendLine stats, "TOTAL_AUDIT03_INACTIVE_CONFIG: fields=" & CStr(fields.Count) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03InactiveConfigCellTests = stats.Report
+End Function
+
+' Читает actual Config и возвращает все нормализованные ключи/значения.
+' Отдельная ошибка возвращается без потери исходной причины. Состояния НДС
+' не решаются: неизменность полного reader payload проверяет неактивность.
+Private Function Audit03TryConfigPayload(ByRef payload As String, ByRef errorText As String) As Boolean
+    Dim settings As CSystemSettingsReader, index As Long, key As String
+    payload = vbNullString: errorText = vbNullString
+    On Error GoTo Failed
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    For index = 1 To settings.KeyCount
+        key = settings.KeyAt(index)
+        payload = payload & key & "=" & settings.GetRawString(key) & vbLf
+    Next index
+    Audit03TryConfigPayload = True
+    Exit Function
+Failed:
+    errorText = CStr(Err.Number) & ": " & Err.Description
+    payload = vbNullString
+End Function
+
+' Создает инженерную проверку на заданном узле гибкости. Обе главные
+' плоскости имеют одинаковые l0/i и ec/r; доля постоянной силы 0.5 делает
+' табличный phi_l активным. Только готовая геометрия и массив идут в core.
+Private Function Audit03SP35TableProbe(ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal props As CSectionPropertiesCalculator, _
+        ByVal table As Variant, ByVal slenderness As Double, ByVal q As Double, _
+        Optional ByVal tableInputError As String = vbNullString, Optional ByVal code As String = "SP35", _
+        Optional ByVal nValue As Double = -100000#) As CStabilityCalculator
+    Dim calc As CStabilityCalculator, core1 As Double, core2 As Double
+    Set calc = New CStabilityCalculator
+    core1 = props.PrincipalPlaneCoreDistance(section, 1, True, False)
+    core2 = props.PrincipalPlaneCoreDistance(section, 2, True, False)
+    calc.Calculate section, provider, mvsULS, code, nValue, 0#, 0#, -50000#, 0#, 0#, _
+        slenderness * props.PrincipalRadius1, 1#, props.PrincipalRadius2 / props.PrincipalRadius1, _
+        "Determinate", 1#, 1#, "Auto", "User", "BothPlanes", q * core1, q * core2, _
+        0.7, 0.15, 1.5, 1#, 0.7, table, Nothing, tableInputError
+    Set Audit03SP35TableProbe = calc
+End Function
+
+' Проверяет порядок узлов, неактивные ветви и адресную диагностику реального
+' named range до и после переноса. Ошибка проходит calculator -> typed result
+' -> подробный writer и batch summary без изменения текста в writer-е.
+' Временный диапазон и все исходные настройки восстанавливаются после теста.
+Public Function RunAudit03SP35TableDiagnosticTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TBatchTestStats, original As Object, target As Object, relocated As Object, tableName As Object
+    Dim savedTable As Variant, savedName As String, systemRange As Object, profileRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, data As Variant, validator As CStabilityCalculator
+    Dim section As CSectionModel, provider As CMaterialModelProvider, props As CSectionPropertiesCalculator
+    Dim badRow As Long, badColumn As Long, row As Long, position As Long, reason As String, expectedCell As String
+    Dim calc As CStabilityCalculator, batch As CBatchSectionCalculator, settings As CSystemSettingsReader
+    Dim policy As CResultStatusPolicy, result As CCombinationResult, writer As CBatchResultWriter, prefix As String
+    On Error GoTo Failed
+    Set tableName = ThisWorkbook.Names.Item("rngSP35Table721")
+    Set original = tableName.RefersToRange: savedName = tableName.RefersTo: savedTable = original.Formula
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    Set validator = New CStabilityCalculator: Set policy = New CResultStatusPolicy
+    Set section = BuildCircleStabilitySection(500#, 4, 12#): Set provider = TestMaterialProvider()
+    Set props = New CSectionPropertiesCalculator: props.CalculateTransformedByModuli section, 32500#, 200000#
+
+    For row = 3 To original.Rows.Count
+        data = original.Value2: data(row, 3) = data(row - 1, 3)
+        AssertTrue stats, "audit03.table.order.duplicate." & CStr(row), _
+            Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
+        AssertTrue stats, "audit03.table.order.duplicateLocation." & CStr(row), badRow = row And badColumn = 3
+        data(row, 3) = 0.5 * CDbl(data(row - 1, 3))
+        AssertTrue stats, "audit03.table.order.descending." & CStr(row), _
+            Not validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
+    Next row
+    For row = 2 To original.Rows.Count
+        data = original.Value2: data(row, 1) = CVErr(2015): data(row, 2) = Empty
+        AssertTrue stats, "audit03.table.referenceIgnored." & CStr(row), _
+            validator.TryValidateSP35Table721(data, badRow, badColumn, reason)
+    Next row
+
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    SetSystemSetting "Stability.Code", "SP35"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1": SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", "5"
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", "5"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    For position = 0 To 1
+        original.Formula = savedTable
+        If position = 0 Then
+            Set target = original
+        Else
+            Set relocated = original.Worksheet.Range("CH1400").Resize(original.Rows.Count, original.Columns.Count)
+            original.Copy relocated: Set target = relocated
+            tableName.RefersTo = "='" & Replace$(original.Worksheet.Name, "'", "''") & "'!" & target.Address
+        End If
+        target.Cells(5, 6).Value2 = CVErr(2015)
+        data = ReadSP35Table721FromWorkbook(ThisWorkbook, reason)
+        prefix = "audit03.table.diagnostic." & CStr(position)
+        expectedCell = target.Worksheet.Name & "!" & target.Cells(5, 6).Address(False, False)
+        AssertTrue stats, prefix & ".address", InStr(1, reason, expectedCell, vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".correction", InStr(1, reason, "Заполните ячейку", vbBinaryCompare) > 0
+        Set calc = Audit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason)
+        AssertEquals stats, prefix & ".status", policy.ExternalStatus(calc.ResultMeta), "InputErr"
+        AssertEquals stats, prefix & ".exactComment", calc.ResultMeta.ResultComment, reason
+        Set calc = Audit03SP35TableProbe(section, provider, props, data, 35#, 2#, reason)
+        AssertTrue stats, prefix & ".etaIgnoresTable", calc.InputValid
+        Set calc = Audit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason, "SP63")
+        AssertTrue stats, prefix & ".sp63IgnoresTable", calc.InputValid
+        Set calc = Audit03SP35TableProbe(section, provider, props, data, 35#, 0.5, reason, "SP35", 100000#)
+        AssertEquals stats, prefix & ".tensionIgnoresTable", policy.ExternalStatus(calc.ResultMeta), "N/A"
+
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+        batch.SetSP35Table721 data, reason
+        batch.AddCombination "TABLE_INVALID", -120000#, 0#, 0#, "PR1", vbNullString
+        batch.Execute: Set result = batch.ResultAt(1)
+        AssertEquals stats, prefix & ".batchStatus", result.StabilityResult.Status, "InputErr"
+        AssertEquals stats, prefix & ".batchExactComment", result.StabilityMeta.ResultComment, reason
+        Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch
+        AssertEquals stats, prefix & ".writer", _
+            CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(0, 1).Value2), reason
+        AssertEquals stats, prefix & ".summaryWriter", _
+            CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 2).Value2), result.OverallMeta.ResultComment
+        Audit03CheckMetaComment stats, prefix, result.StabilityMeta, result.OverallMeta
+        AssertTrue stats, prefix & ".noStateSolve", batch.SolverCallCount = 0
+        AppendLine stats, "SP35_DIAGNOSTIC: " & prefix & "|cell=" & expectedCell & "|comment=" & reason
+    Next position
+    tableName.Delete: Set tableName = Nothing
+    data = ReadSP35Table721FromWorkbook(ThisWorkbook, reason)
+    AssertTrue stats, "audit03.table.missingName", IsEmpty(data) And InStr(1, reason, "rngSP35Table721", vbBinaryCompare) > 0
+    ThisWorkbook.Names.Add "rngSP35Table721", savedName
+    Set tableName = ThisWorkbook.Names.Item("rngSP35Table721")
+    original.Formula = savedTable
+    data = ReadSP35Table721FromWorkbook(ThisWorkbook, reason)
+    AssertEquals stats, "audit03.table.recovery", reason, vbNullString
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.table.diagnostic.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo RestoreFailed
+    If Len(savedName) > 0 Then
+        If tableName Is Nothing Then ThisWorkbook.Names.Add "rngSP35Table721", savedName
+        ThisWorkbook.Names.Item("rngSP35Table721").RefersTo = savedName
+    End If
+    If IsArray(savedTable) Then original.Formula = savedTable
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    If Not relocated Is Nothing Then relocated.Clear
+Finish:
+    AppendLine stats, "TOTAL_AUDIT03_SP35_DIAGNOSTIC: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03SP35TableDiagnosticTests = stats.Report
+    Exit Function
+RestoreFailed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.table.diagnostic.restore; " & CStr(Err.Number) & "; " & Err.Description
+    Resume Finish
+End Function
