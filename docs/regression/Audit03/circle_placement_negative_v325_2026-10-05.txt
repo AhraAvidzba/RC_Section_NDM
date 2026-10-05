@@ -1,0 +1,88 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_circle_placement_negative_v325.xlsm
+SOURCE_SHA256: 8C8D3E6009268C67C794A2A3FEC0CFC92384CA54A356D799A9B7C5796D34B671
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9ee804dea1a74351ac5f811e5371fdd9\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=35776; startTicks=639267855901856223
+===== modTestGeometry.RunAudit03CirclePlacementAddressTests =====
+SUITE_STARTED: modTestGeometry.RunAudit03CirclePlacementAddressTests; 2026-10-05T11:26:33
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=35776; workingSet=147451904; privateBytes=107687936; cpu=3.484375
+OK: audit03.circle.placementAddress.E10.2.Stacked.sameCode
+OK: audit03.circle.placementAddress.E10.2.Stacked.noLayout
+FAIL: audit03.circle.placementAddress.E10.2.Stacked.sheet
+FAIL: audit03.circle.placementAddress.E10.2.Stacked.diameter2
+FAIL: audit03.circle.placementAddress.E10.2.Stacked.diameter3
+FAIL: audit03.circle.placementAddress.E10.2.Stacked.axis
+FAIL: audit03.circle.placementAddress.E10.2.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.2.Stacked; Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения.
+OK: audit03.circle.placementAddress.E10.2.Stacked.recovery
+OK: audit03.circle.placementAddress.E10.2.SideBySide.sameCode
+OK: audit03.circle.placementAddress.E10.2.SideBySide.noLayout
+FAIL: audit03.circle.placementAddress.E10.2.SideBySide.sheet
+FAIL: audit03.circle.placementAddress.E10.2.SideBySide.diameter2
+FAIL: audit03.circle.placementAddress.E10.2.SideBySide.diameter3
+FAIL: audit03.circle.placementAddress.E10.2.SideBySide.axis
+FAIL: audit03.circle.placementAddress.E10.2.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.2.SideBySide; Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения.
+OK: audit03.circle.placementAddress.E10.2.SideBySide.recovery
+OK: audit03.circle.placementAddress.E10.3.Stacked.sameCode
+OK: audit03.circle.placementAddress.E10.3.Stacked.noLayout
+FAIL: audit03.circle.placementAddress.E10.3.Stacked.sheet
+FAIL: audit03.circle.placementAddress.E10.3.Stacked.diameter2
+FAIL: audit03.circle.placementAddress.E10.3.Stacked.diameter3
+FAIL: audit03.circle.placementAddress.E10.3.Stacked.axis
+FAIL: audit03.circle.placementAddress.E10.3.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.3.Stacked; Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения.
+OK: audit03.circle.placementAddress.E10.3.Stacked.recovery
+OK: audit03.circle.placementAddress.E10.3.SideBySide.sameCode
+OK: audit03.circle.placementAddress.E10.3.SideBySide.noLayout
+FAIL: audit03.circle.placementAddress.E10.3.SideBySide.sheet
+FAIL: audit03.circle.placementAddress.E10.3.SideBySide.diameter2
+FAIL: audit03.circle.placementAddress.E10.3.SideBySide.diameter3
+FAIL: audit03.circle.placementAddress.E10.3.SideBySide.axis
+FAIL: audit03.circle.placementAddress.E10.3.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.3.SideBySide; Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения.
+OK: audit03.circle.placementAddress.E10.3.SideBySide.recovery
+OK: audit03.circle.placementAddress.BH800.2.Stacked.sameCode
+OK: audit03.circle.placementAddress.BH800.2.Stacked.noLayout
+FAIL: audit03.circle.placementAddress.BH800.2.Stacked.sheet
+FAIL: audit03.circle.placementAddress.BH800.2.Stacked.diameter2
+FAIL: audit03.circle.placementAddress.BH800.2.Stacked.diameter3
+FAIL: audit03.circle.placementAddress.BH800.2.Stacked.axis
+FAIL: audit03.circle.placementAddress.BH800.2.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.2.Stacked; Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения.
+OK: audit03.circle.placementAddress.BH800.2.Stacked.recovery
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.sameCode
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.noLayout
+FAIL: audit03.circle.placementAddress.BH800.2.SideBySide.sheet
+FAIL: audit03.circle.placementAddress.BH800.2.SideBySide.diameter2
+FAIL: audit03.circle.placementAddress.BH800.2.SideBySide.diameter3
+FAIL: audit03.circle.placementAddress.BH800.2.SideBySide.axis
+FAIL: audit03.circle.placementAddress.BH800.2.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.2.SideBySide; Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения.
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.recovery
+OK: audit03.circle.placementAddress.BH800.3.Stacked.sameCode
+OK: audit03.circle.placementAddress.BH800.3.Stacked.noLayout
+FAIL: audit03.circle.placementAddress.BH800.3.Stacked.sheet
+FAIL: audit03.circle.placementAddress.BH800.3.Stacked.diameter2
+FAIL: audit03.circle.placementAddress.BH800.3.Stacked.diameter3
+FAIL: audit03.circle.placementAddress.BH800.3.Stacked.axis
+FAIL: audit03.circle.placementAddress.BH800.3.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.3.Stacked; Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения.
+OK: audit03.circle.placementAddress.BH800.3.Stacked.recovery
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.sameCode
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.noLayout
+FAIL: audit03.circle.placementAddress.BH800.3.SideBySide.sheet
+FAIL: audit03.circle.placementAddress.BH800.3.SideBySide.diameter2
+FAIL: audit03.circle.placementAddress.BH800.3.SideBySide.diameter3
+FAIL: audit03.circle.placementAddress.BH800.3.SideBySide.axis
+FAIL: audit03.circle.placementAddress.BH800.3.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.3.SideBySide; Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения.
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.recovery
+TOTAL_CIRCLE_PLACEMENT_ADDRESSES: passed=24; failed=40
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9ee804dea1a74351ac5f811e5371fdd9\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometry.RunAudit03CirclePlacementAddressTests; 2026-10-05T11:26:34
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

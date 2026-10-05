@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/full_on_clean_controls_v300_2026-10-05.txt",
+  "CurrentReport": "docs/regression/Audit03/full_on_publication_positive_v322_2026-10-05.txt",
+  "BaselineSHA256": "CEDAD1842EFC1B02C670829BB9A5A9AC027CDFF21372B3E913410BD2B51C8194",
+  "CurrentSHA256": "FE5CADD5FFF629B9CD0C22BB935255D1B6D046E59131FAC7ECF6EE9CFA0E22B8",
+  "BaselineNumericAssertions": 20027,
+  "CurrentNumericAssertions": 20898,
+  "Compared": 20027,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

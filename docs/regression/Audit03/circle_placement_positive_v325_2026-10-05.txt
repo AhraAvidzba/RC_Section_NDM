@@ -1,0 +1,88 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\release_clean_v325\RC_Section_NDM.xlsm
+SOURCE_SHA256: 9E94853253FB13C8CC278AA2B33B4E8FA1ABBDC72CDA0D67F69F7802AF071DA5
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_18ea043ec9df487db902f37142090658\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=31756; startTicks=639267857170477315
+===== modTestGeometry.RunAudit03CirclePlacementAddressTests =====
+SUITE_STARTED: modTestGeometry.RunAudit03CirclePlacementAddressTests; 2026-10-05T11:28:42
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=31756; workingSet=154198016; privateBytes=120479744; cpu=5.1875
+OK: audit03.circle.placementAddress.E10.2.Stacked.sameCode
+OK: audit03.circle.placementAddress.E10.2.Stacked.noLayout
+OK: audit03.circle.placementAddress.E10.2.Stacked.sheet
+OK: audit03.circle.placementAddress.E10.2.Stacked.diameter2
+OK: audit03.circle.placementAddress.E10.2.Stacked.diameter3
+OK: audit03.circle.placementAddress.E10.2.Stacked.axis
+OK: audit03.circle.placementAddress.E10.2.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.2.Stacked; Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. Настройка Rebar.Diameter2 (лист Лист1, ячейка F16): Диаметр второго ряда. Проверьте размер и расположение ряда. Настройка Rebar.Diameter3 (лист Лист1, ячейка F17): Диаметр третьего ряда. Проверьте размер и расположение ряда. Настройка Rebar.AxisDistance (лист Лист1, ячейка F12): Отступ оси первого ряда от поверхности бетона. При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.
+OK: audit03.circle.placementAddress.E10.2.Stacked.recovery
+OK: audit03.circle.placementAddress.E10.2.SideBySide.sameCode
+OK: audit03.circle.placementAddress.E10.2.SideBySide.noLayout
+OK: audit03.circle.placementAddress.E10.2.SideBySide.sheet
+OK: audit03.circle.placementAddress.E10.2.SideBySide.diameter2
+OK: audit03.circle.placementAddress.E10.2.SideBySide.diameter3
+OK: audit03.circle.placementAddress.E10.2.SideBySide.axis
+OK: audit03.circle.placementAddress.E10.2.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.2.SideBySide; Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. Настройка Rebar.Diameter2 (лист Лист1, ячейка F16): Диаметр второго ряда. Проверьте размер и расположение ряда. Настройка Rebar.Diameter3 (лист Лист1, ячейка F17): Диаметр третьего ряда. Проверьте размер и расположение ряда. Настройка Rebar.AxisDistance (лист Лист1, ячейка F12): Отступ оси первого ряда от поверхности бетона. При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.
+OK: audit03.circle.placementAddress.E10.2.SideBySide.recovery
+OK: audit03.circle.placementAddress.E10.3.Stacked.sameCode
+OK: audit03.circle.placementAddress.E10.3.Stacked.noLayout
+OK: audit03.circle.placementAddress.E10.3.Stacked.sheet
+OK: audit03.circle.placementAddress.E10.3.Stacked.diameter2
+OK: audit03.circle.placementAddress.E10.3.Stacked.diameter3
+OK: audit03.circle.placementAddress.E10.3.Stacked.axis
+OK: audit03.circle.placementAddress.E10.3.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.3.Stacked; Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. Настройка Rebar.Diameter2 (лист Лист1, ячейка F16): Диаметр второго ряда. Проверьте размер и расположение ряда. Настройка Rebar.Diameter3 (лист Лист1, ячейка F17): Диаметр третьего ряда. Проверьте размер и расположение ряда. Настройка Rebar.AxisDistance (лист Лист1, ячейка F12): Отступ оси первого ряда от поверхности бетона. При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.
+OK: audit03.circle.placementAddress.E10.3.Stacked.recovery
+OK: audit03.circle.placementAddress.E10.3.SideBySide.sameCode
+OK: audit03.circle.placementAddress.E10.3.SideBySide.noLayout
+OK: audit03.circle.placementAddress.E10.3.SideBySide.sheet
+OK: audit03.circle.placementAddress.E10.3.SideBySide.diameter2
+OK: audit03.circle.placementAddress.E10.3.SideBySide.diameter3
+OK: audit03.circle.placementAddress.E10.3.SideBySide.axis
+OK: audit03.circle.placementAddress.E10.3.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.3.SideBySide; Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. Настройка Rebar.Diameter2 (лист Лист1, ячейка F16): Диаметр второго ряда. Проверьте размер и расположение ряда. Настройка Rebar.Diameter3 (лист Лист1, ячейка F17): Диаметр третьего ряда. Проверьте размер и расположение ряда. Настройка Rebar.AxisDistance (лист Лист1, ячейка F12): Отступ оси первого ряда от поверхности бетона. При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.
+OK: audit03.circle.placementAddress.E10.3.SideBySide.recovery
+OK: audit03.circle.placementAddress.BH800.2.Stacked.sameCode
+OK: audit03.circle.placementAddress.BH800.2.Stacked.noLayout
+OK: audit03.circle.placementAddress.BH800.2.Stacked.sheet
+OK: audit03.circle.placementAddress.BH800.2.Stacked.diameter2
+OK: audit03.circle.placementAddress.BH800.2.Stacked.diameter3
+OK: audit03.circle.placementAddress.BH800.2.Stacked.axis
+OK: audit03.circle.placementAddress.BH800.2.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.2.Stacked; Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. Настройка Rebar.Diameter2 (лист Лист1, ячейка BI806): Диаметр второго ряда. Проверьте размер и расположение ряда. Настройка Rebar.Diameter3 (лист Лист1, ячейка BI807): Диаметр третьего ряда. Проверьте размер и расположение ряда. Настройка Rebar.AxisDistance (лист Лист1, ячейка BI802): Отступ оси первого ряда от поверхности бетона. При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.
+OK: audit03.circle.placementAddress.BH800.2.Stacked.recovery
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.sameCode
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.noLayout
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.sheet
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.diameter2
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.diameter3
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.axis
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.2.SideBySide; Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. Настройка Rebar.Diameter2 (лист Лист1, ячейка BI806): Диаметр второго ряда. Проверьте размер и расположение ряда. Настройка Rebar.Diameter3 (лист Лист1, ячейка BI807): Диаметр третьего ряда. Проверьте размер и расположение ряда. Настройка Rebar.AxisDistance (лист Лист1, ячейка BI802): Отступ оси первого ряда от поверхности бетона. При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.recovery
+OK: audit03.circle.placementAddress.BH800.3.Stacked.sameCode
+OK: audit03.circle.placementAddress.BH800.3.Stacked.noLayout
+OK: audit03.circle.placementAddress.BH800.3.Stacked.sheet
+OK: audit03.circle.placementAddress.BH800.3.Stacked.diameter2
+OK: audit03.circle.placementAddress.BH800.3.Stacked.diameter3
+OK: audit03.circle.placementAddress.BH800.3.Stacked.axis
+OK: audit03.circle.placementAddress.BH800.3.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.3.Stacked; Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. Настройка Rebar.Diameter2 (лист Лист1, ячейка BI806): Диаметр второго ряда. Проверьте размер и расположение ряда. Настройка Rebar.Diameter3 (лист Лист1, ячейка BI807): Диаметр третьего ряда. Проверьте размер и расположение ряда. Настройка Rebar.AxisDistance (лист Лист1, ячейка BI802): Отступ оси первого ряда от поверхности бетона. При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.
+OK: audit03.circle.placementAddress.BH800.3.Stacked.recovery
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.sameCode
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.noLayout
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.sheet
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.diameter2
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.diameter3
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.axis
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.3.SideBySide; Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. Настройка Rebar.Diameter2 (лист Лист1, ячейка BI806): Диаметр второго ряда. Проверьте размер и расположение ряда. Настройка Rebar.Diameter3 (лист Лист1, ячейка BI807): Диаметр третьего ряда. Проверьте размер и расположение ряда. Настройка Rebar.AxisDistance (лист Лист1, ячейка BI802): Отступ оси первого ряда от поверхности бетона. При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.recovery
+TOTAL_CIRCLE_PLACEMENT_ADDRESSES: passed=64; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_18ea043ec9df487db902f37142090658\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometry.RunAudit03CirclePlacementAddressTests; 2026-10-05T11:28:44
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -224,7 +224,7 @@ Public Function StressAtStrain(ByVal strain As Double) As Double
     End If
 End Function
 
-' Совместимое имя для существующего solver API.
+' Возвращает напряжение по деформации через общий material API решателей.
 Public Function GetStress(ByVal strain As Double) As Double
     GetStress = StressAtStrain(strain)
 End Function

@@ -56,8 +56,23 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         If row2 > 0# Then loc2 = settings.GetRequiredChoice("Rebar.Loc2row", Array("Stacked", "SideBySide"))
         If row3 > 0# Then loc3 = settings.GetRequiredChoice("Rebar.Loc3row", Array("Stacked", "SideBySide"))
     End If
+    On Error GoTo BuildFailed
     Set BuildFromSettings = Build(diameter, centerX, centerY, axisDistance, barCount, barDiameter, _
         REBAR_STEEL_CLASS, row2, row3, loc2, loc3)
+    Exit Function
+
+BuildFailed:
+    Dim errorNumber As Long, errorSource As String, errorDescription As String
+    errorNumber = Err.Number: errorSource = Err.Source: errorDescription = Err.Description
+    If errorNumber = vbObjectError + 3159 Then
+        ' Низкоуровневое размещение не знает Excel-адресов. Входной адаптер
+        ' добавляет места возможной коррекции, не меняя критерий и код отказа.
+        errorDescription = "Стержень одного из дополнительных рядов не помещается внутри круглого бетонного сечения. " & _
+            settings.InputErrorMessage("Rebar.Diameter2", "Диаметр второго ряда.", "Проверьте размер и расположение ряда.") & " " & _
+            settings.InputErrorMessage("Rebar.Diameter3", "Диаметр третьего ряда.", "Проверьте размер и расположение ряда.") & " " & _
+            settings.InputErrorMessage("Rebar.AxisDistance", "Отступ оси первого ряда от поверхности бетона.", "При необходимости увеличьте отступ или уменьшите диаметры дополнительных стержней.")
+    End If
+    Err.Raise errorNumber, errorSource, errorDescription
 End Function
 
 ' Читает существующую строку диаметра: пустота/TODO выключают ряд. Потерянная

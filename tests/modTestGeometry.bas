@@ -69,6 +69,7 @@ Public Function RunGeometryTests() As String
     TestPerformance stats
     TestAudit03GeometryLifecycle stats
     TestAudit03CircleCountGuard stats
+    TestAudit03CirclePlacementAddresses stats
 
     AppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunGeometryTests = stats.Report
@@ -2576,6 +2577,98 @@ Private Sub TestAudit03CircleCountGuard(ByRef stats As TTestStats)
     Set layout = builder.Build(1000#, 0#, 0#, 50#, 1073741824, 0#, "Rebar", 16#, 12#)
     AssertTrue stats, "audit03.circle.countGuard.disabledBase", layout.Count = 0
     AssertClose stats, "audit03.circle.countGuard.disabledRadius", builder.AxisRadius, 0#, 0#
+End Sub
+
+' Проверяет адресный контекст невозможного дополнительного ряда через
+' настоящий reader и временно перемещенный rngCircleGeometry. Геометрический
+' код отказа сохраняется; после ошибки тот же builder строит допустимый ряд.
+Public Function RunAudit03CirclePlacementAddressTests() As String
+    Dim stats As TTestStats
+    TestAudit03CirclePlacementAddresses stats
+    AppendLine stats, "TOTAL_CIRCLE_PLACEMENT_ADDRESSES: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03CirclePlacementAddressTests = stats.Report
+End Function
+
+' Меняет только собственную временную таблицу. Исходный Name, активный лист
+' и режим предупреждений восстанавливаются при успехе и при runtime-ошибке.
+Private Sub TestAudit03CirclePlacementAddresses(ByRef stats As TTestStats)
+    Dim originalRefersTo As String, previousSheet As Object, sheet As Object, source As Object, target As Object
+    Dim alerts As Boolean, position As Variant, rowNumber As Long, additionalRow As Long, location As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CCircleRebarLayoutBuilder
+    Dim layout As CRebarLayout, key As String, prefix As String, errorNumber As Long, errorDescription As String
+    Dim diameter2Address As String, diameter3Address As String, axisAddress As String
+    On Error GoTo FailedRun
+    originalRefersTo = ThisWorkbook.Names.Item("rngCircleGeometry").RefersTo
+    Set source = ThisWorkbook.Names.Item("rngCircleGeometry").RefersToRange
+    Set previousSheet = ThisWorkbook.ActiveSheet
+    alerts = ThisWorkbook.Application.DisplayAlerts
+    Set sheet = ThisWorkbook.Worksheets.Add
+    Set units = New CUnitSystem: units.InitializeDefaults
+    Set builder = New CCircleRebarLayoutBuilder
+    For Each position In Array("E10", "BH800")
+        Set target = sheet.Range(CStr(position)).Resize(source.Rows.Count, source.Columns.Count)
+        target.Formula = source.Formula
+        For rowNumber = 1 To target.Rows.Count
+            key = CStr(target.Cells(rowNumber, 1).Value2)
+            Select Case key
+                Case "Circle.Diameter": target.Cells(rowNumber, 2).Value2 = 300#
+                Case "Rebar.AxisDistance"
+                    target.Cells(rowNumber, 2).Value2 = 20#
+                    axisAddress = target.Cells(rowNumber, 2).Address(False, False)
+                Case "Rebar.Count": target.Cells(rowNumber, 2).Value2 = 8
+                Case "Rebar.Diameter": target.Cells(rowNumber, 2).Value2 = 20#
+                Case "Rebar.Diameter2": diameter2Address = target.Cells(rowNumber, 2).Address(False, False)
+                Case "Rebar.Diameter3": diameter3Address = target.Cells(rowNumber, 2).Address(False, False)
+            End Select
+        Next rowNumber
+        ThisWorkbook.Names.Item("rngCircleGeometry").RefersTo = "='" & sheet.Name & "'!" & target.Address
+        For additionalRow = 2 To 3
+            For Each location In Array("Stacked", "SideBySide")
+                For rowNumber = 1 To target.Rows.Count
+                    key = CStr(target.Cells(rowNumber, 1).Value2)
+                    Select Case key
+                        Case "Rebar.Diameter2": target.Cells(rowNumber, 2).Value2 = 10#
+                        Case "Rebar.Diameter3": target.Cells(rowNumber, 2).Value2 = 0#
+                        Case "Rebar.Loc2row", "Rebar.Loc3row": target.Cells(rowNumber, 2).Value2 = CStr(location)
+                    End Select
+                    If key = "Rebar.Diameter" & CStr(additionalRow) Then target.Cells(rowNumber, 2).Value2 = 1000#
+                Next rowNumber
+                Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+                Set layout = Nothing: errorNumber = 0: errorDescription = vbNullString
+                On Error Resume Next
+                Set layout = builder.BuildFromSettings(settings, units)
+                errorNumber = Err.Number: errorDescription = Err.Description: Err.Clear
+                On Error GoTo FailedRun
+                prefix = "audit03.circle.placementAddress." & CStr(position) & "." & CStr(additionalRow) & "." & CStr(location)
+                AssertTrue stats, prefix & ".sameCode", errorNumber = vbObjectError + 3159
+                AssertTrue stats, prefix & ".noLayout", layout Is Nothing
+                AssertTrue stats, prefix & ".sheet", InStr(1, errorDescription, sheet.Name, vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".diameter2", InStr(1, errorDescription, diameter2Address, vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".diameter3", InStr(1, errorDescription, diameter3Address, vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".axis", InStr(1, errorDescription, axisAddress, vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".action", InStr(1, errorDescription, "уменьшите", vbTextCompare) > 0
+                AppendLine stats, "CIRCLE_PLACEMENT_ERROR: " & prefix & "; " & errorDescription
+                For rowNumber = 1 To target.Rows.Count
+                    If CStr(target.Cells(rowNumber, 1).Value2) = "Rebar.Diameter" & CStr(additionalRow) Then target.Cells(rowNumber, 2).Value2 = 10#
+                Next rowNumber
+                settings.LoadFromWorkbook ThisWorkbook
+                Set layout = builder.BuildFromSettings(settings, units)
+                AssertTrue stats, prefix & ".recovery", layout.Count = 8 * additionalRow
+            Next location
+        Next additionalRow
+    Next position
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.circle.placementAddress.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Len(originalRefersTo) > 0 Then ThisWorkbook.Names.Item("rngCircleGeometry").RefersTo = originalRefersTo
+    If Not previousSheet Is Nothing Then previousSheet.Activate
+    ThisWorkbook.Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    ThisWorkbook.Application.DisplayAlerts = alerts
+    On Error GoTo 0
 End Sub
 
 ' Сопоставляет прогретую и заново созданную геометрию по сетке точек после

@@ -69,6 +69,37 @@
 
 ## Актуальная Точка Продолжения
 
+- Clean v325 и обновленная исходная пользовательская копия release_v323
+  приняты по source/VBE equality: `108/108`, 113 компонентов, failed=0.
+  Чистая SHA `9E94853253FB13C8CC278AA2B33B4E8FA1ABBDC72CDA0D67F69F7802AF071DA5`.
+  После обычного расчета одного сохраненного сочетания updated SHA
+  `4329E66CF11DAD41DD52CFD31B1CFE694921D519D58F139F4B5E8A635109D7C6`;
+  весь Config.Value/Formula неизменен, отчет сохранен, макрос завершен.
+  Clean/update Validate `27/27` каждая, formatting `1003/0` каждая,
+  deviations=0; help `2828` cells и merges совпадают. Updated palette `357/0`,
+  Results/style save-reopen equal=True. Адресный Circle negative `24/40`,
+  positive `64/0`, полный Geometry Off/On по `668/0`.
+  Final On v322 завершен `107552/0`, восемь suites, source unchanged=True.
+  Все 20027 общих чисел On с v300 совпали точно. С baseline df10412f
+  сравнение Off/On сохраняет все 3273 numeric IDs, но имеет 111 отличий;
+  это отдельная точная диагностическая сверка, НЕ exact-PASS. Причины
+  включают retained physical Brent point в прежнем lambda tolerance 0.01,
+  улучшенный solve, согласованный psi fallback и одно изменение ширины столбца.
+  Финальный отчет обязан раскрыть эти отличия, не объявлять всю baseline
+  арифметику побайтово тождественной.
+  Текущий следующий F07-кандидат: квадрат представимой расчетной длины.
+  Сначала усилить прежний Config test и воспроизвести на frozen v325,
+  только затем менять prevalidation при подтвержденном отказе.
+- Checkpoint `3a8b2554`: frozen material publication, обязательный Worst,
+  понятный search-bound comment, final Off v322b и сохраненная Config migration.
+  После него изменены только `CCircleRebarLayoutBuilder.BuildFromSettings`
+  (адресный контекст прежней ошибки 3159), комментарий material API и
+  направленный тест перемещения rngCircleGeometry. Математика размещения,
+  диаграмм, search и допуски не менялись. Новая ветка еще не принята:
+  требуется negative на v322 с обновленным тестом, positive на свежей clean
+  build, Geometry Off/On и source/VBE equality.
+  Финальный benchmark, clean/update formatting/validation, обычный расчет
+  сохраненной книги и final report остаются обязательными gates.
 - Повтор final Off v322b завершен 2026-10-05 в 10:28: все восемь suites,
   `107541/0`, watchdog exit=0, source unchanged=True. Geometry 604, Material
   4353, Solver 1492, Capacity 3562, Crack 2157, Batch 29580, UI 65754,
