@@ -69,6 +69,22 @@
 
 ## Актуальная Точка Продолжения
 
+- Checkpoint адресной диагностики Circle: `57429e8`. После него расширен
+  прежний Stability Config test: реальные большие/малые L и mu через
+  Config/batch/writer, две методики, два знака N и два положения Name.
+  Frozen v327 negative завершен `1640/336`, exit=1, source unchanged=True.
+  Выявлены ложный FAIL от обнуленного Ncr, технический `Overflow` и отсутствие
+  адресов. Первичный full negative v326 достиг `9164/156`, но watchdog 300 с
+  остановил последующую reopen-проверку: весь run остается NotPassed.
+  Подтвержденная правка F07 находится в существующем prevalidation:
+  проверяются конечность и положительная представимость квадрата l0.
+  При ошибке сохраняются typed InputErr, оба динамических адреса и действие;
+  физические формулы/допуски не меняются. Справка уточняет технический,
+  не нормативный предел. Clean build v328 завершен. Directed range Off/On
+  дают по 2072/0. Полный Stability Config v328 завершен 10016/0,
+  watchdog exit=0, source unchanged=True, Results/style save-reopen=True.
+  Далее clean/update help/source gates и финальный benchmark; после этого
+  итоговая трассировка, self-audit и публикация сохраненной пользовательской книги.
 - Clean v325 и обновленная исходная пользовательская копия release_v323
   приняты по source/VBE equality: `108/108`, 113 компонентов, failed=0.
   Чистая SHA `9E94853253FB13C8CC278AA2B33B4E8FA1ABBDC72CDA0D67F69F7802AF071DA5`.

@@ -1428,7 +1428,7 @@ End Function
 ' главные плоскости, активные/неактивные ветви, длины в разных единицах,
 ' ошибки и восстановление. Именованная таблица испытывается также после переноса.
 Public Function RunAudit03StabilityConfigTests(Optional ByRef passed As Long = 0, _
-        Optional ByRef failed As Long = 0) As String
+        Optional ByRef failed As Long = 0, Optional ByVal lengthRangeOnly As Boolean = False) As String
     Dim stats As TConfigTestStats, originalRange As Object, table As Object, movedRange As Object
     Dim unitRange As Object, profileRange As Object, savedName As String, position As Long
     Dim savedSystem As Variant, savedMoved As Variant, savedUnits As Variant, savedProfiles As Variant
@@ -1455,15 +1455,17 @@ Public Function RunAudit03StabilityConfigTests(Optional ByRef passed As Long = 0
         If position = 1 Then Set table = originalRange Else Set table = movedRange
         table.Formula = configured
         ThisWorkbook.Names.Item("rngSystemSettings").RefersTo = "=" & table.Address(True, True, 1, True)
-        CheckStabilityConfigEffects stats, table, configured, position, section, provider, units
-        CheckStabilityConfigSP35 stats, table, configured, position, section, provider, units
-        CheckStabilityConfigIsolation stats, table, configured, position, section, provider, units
-        CheckStabilityConfigInput stats, table, configured, position, section, provider, units
+        If Not lengthRangeOnly Then
+            CheckStabilityConfigEffects stats, table, configured, position, section, provider, units
+            CheckStabilityConfigSP35 stats, table, configured, position, section, provider, units
+            CheckStabilityConfigIsolation stats, table, configured, position, section, provider, units
+            CheckStabilityConfigInput stats, table, configured, position, section, provider, units
+        End If
         CheckStabilityLengthRange stats, table, configured, position, section, provider, units
-        CheckStabilityConfigUnits stats, table, configured, unitRange, configuredUnits, position, section, provider, units
+        If Not lengthRangeOnly Then CheckStabilityConfigUnits stats, table, configured, unitRange, configuredUnits, position, section, provider, units
         profileRange.Formula = configuredProfiles
     Next position
-    CheckStabilityStandaloneInput stats, section, provider
+    If Not lengthRangeOnly Then CheckStabilityStandaloneInput stats, section, provider
     GoTo Restore
 FailedRun:
     Check stats, "audit03.stabilityConfig.runtime." & CStr(Err.Number) & "." & Err.Description, False
@@ -1478,6 +1480,13 @@ Restore:
     LogLine stats, "TOTAL_AUDIT03_STABILITY_CONFIG: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03StabilityConfigTests = stats.Report
+End Function
+
+' Запускает только крайние пары расчетной длины, сохраняя те же настоящие
+' Config/reader/batch/writer и восстановление, что и полный Config-набор.
+Public Function RunAudit03StabilityLengthRangeTests() As String
+    Dim passed As Long, failed As Long
+    RunAudit03StabilityLengthRangeTests = RunAudit03StabilityConfigTests(passed, failed, True)
 End Function
 
 ' Фиксирует исходные значения до серии: длинный круг с обеими моментными
@@ -2119,8 +2128,8 @@ End Function
 
 ' ==================== ДЛЯ ТЕСТОВ: ДИАПАЗОН РАСЧЕТНОЙ ДЛИНЫ ====================
 
-' Конечные L и mu могут дать непредставимое произведение. Проверяет реальный
-' Config -> batch -> writer для обеих методик, сжатия/растяжения и переноса
+' Конечные L и mu могут дать непредставимое произведение или его квадрат.
+' Проверяет Config -> batch -> writer для обеих методик, сжатия/растяжения и переноса
 ' именованной таблицы; ошибка должна показывать оба адреса до запуска расчета.
 Private Sub CheckStabilityLengthRange(ByRef stats As TConfigTestStats, ByVal table As Object, _
         ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
@@ -2129,16 +2138,26 @@ Private Sub CheckStabilityLengthRange(ByRef stats As TConfigTestStats, ByVal tab
     Dim batch As CBatchSectionCalculator, meta As CResultMeta, message As String
     For Each code In Array("SP63", "SP35")
         For Each force In Array(-10000#, 10000#)
-            For scenario = 1 To 3
+            For scenario = 1 To 9
                 table.Formula = configured
                 SetValue table, "Stability.Code", CStr(code)
                 muKey = "Stability.Mu1"
-                If scenario = 3 Then muKey = "Stability.Mu2"
+                If scenario = 3 Or scenario = 6 Or scenario = 9 Then muKey = "Stability.Mu2"
                 If scenario = 1 Then
                     SetValue table, "Stability.ElementLength", 1E+308
                     SetValue table, muKey, 2#
-                Else
+                ElseIf scenario <= 3 Then
                     SetValue table, muKey, 1E+308
+                ElseIf scenario = 4 Then
+                    SetValue table, "Stability.ElementLength", 1E+200
+                    SetValue table, muKey, 1#
+                ElseIf scenario <= 6 Then
+                    SetValue table, muKey, 1E+200
+                ElseIf scenario = 7 Then
+                    SetValue table, "Stability.ElementLength", 1E-200
+                    SetValue table, muKey, 1#
+                Else
+                    SetValue table, muKey, 1E-200
                 End If
                 prefix = "audit03.stabilityLengthRange.p" & CStr(position) & "." & CStr(code) & _
                     ".N" & CStr(force) & ".s" & CStr(scenario)
@@ -2153,7 +2172,11 @@ Private Sub CheckStabilityLengthRange(ByRef stats As TConfigTestStats, ByVal tab
                 Check stats, prefix & ".lengthCell", InStr(1, message, _
                     ValueCell(table, "Stability.ElementLength", 2).Address(False, False), vbTextCompare) > 0
                 Check stats, prefix & ".muCell", InStr(1, message, ValueCell(table, muKey, 2).Address(False, False), vbTextCompare) > 0
-                Check stats, prefix & ".action", InStr(1, message, "Уменьшите", vbTextCompare) > 0
+                If scenario <= 6 Then
+                    Check stats, prefix & ".action", InStr(1, message, "Уменьшите", vbTextCompare) > 0
+                Else
+                    Check stats, prefix & ".action", InStr(1, message, "Увеличьте", vbTextCompare) > 0
+                End If
                 Check stats, prefix & ".localized", InStr(1, message, "Overflow", vbTextCompare) = 0
                 LogLine stats, "STABILITY_LENGTH_RANGE: " & prefix & "|" & message
             Next scenario

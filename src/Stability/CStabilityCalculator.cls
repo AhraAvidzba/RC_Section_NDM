@@ -212,28 +212,39 @@ Public Sub ValidateSettings(ByVal codeText As String, ByVal elementLength As Dou
         "Предельное отношение N/Ncr должно быть положительным.", "Введите число больше нуля.", settings
 End Sub
 
-' Проверяет представимость произведения двух уже положительных INPUT-значений.
+' Проверяет представимость расчетной длины и ее положительного квадрата.
 ' Это техническая граница арифметики, не нормативный предел длины или mu.
-' При переполнении сообщает обе участвующие ячейки до геометрии и расчета.
+' При переполнении или обнулении сообщает обе ячейки до геометрии и расчета.
 Private Sub ValidateEffectiveLengthRange(ByVal elementLength As Double, ByVal mu As Double, _
         ByVal muKey As String, ByVal settings As CSystemSettingsReader)
     On Error GoTo ArithmeticFailed
-    Dim effectiveLength As Double
+    Dim effectiveLength As Double, squaredLength As Double
+    Dim reason As String, correction As String, message As String
+    reason = "Произведение длины элемента L и коэффициента расчетной длины выходит за допустимый диапазон арифметики."
     effectiveLength = elementLength * mu
+    reason = "Квадрат расчетной длины l0 = mu·L выходит за допустимый диапазон арифметики."
+    squaredLength = effectiveLength * effectiveLength
+    ' Excel может оставить бесконечность без VBA-ошибки; проверяем значение,
+    ' а не полагаемся только на обработчик переполнения.
+    If squaredLength <> squaredLength Or squaredLength > 1.797693134862315E+308 Then GoTo RangeFailed
+    If squaredLength <= 0# Then
+        reason = "Расчетная длина l0 = mu·L слишком мала: ее квадрат округляется до нуля в арифметике программы."
+        correction = "Увеличьте длину L или коэффициент " & muKey & "; проверьте INPUT-единицу длины."
+        GoTo RangeFailed
+    End If
     Exit Sub
 ArithmeticFailed:
     Dim number As Long, description As String
     number = Err.Number: description = Err.Description
     Err.Clear
     If number <> 6 Then Err.Raise number, "CStabilityCalculator", description
-    Dim reason As String, correction As String, message As String
-    reason = "Произведение длины элемента L и коэффициента расчетной длины выходит за допустимый диапазон арифметики."
-    correction = "Уменьшите длину L или коэффициент " & muKey & "; проверьте INPUT-единицу длины."
+RangeFailed:
+    If Len(correction) = 0 Then correction = "Уменьшите длину L или коэффициент " & muKey & "; проверьте INPUT-единицу длины."
     If settings Is Nothing Then
         message = "Настройки Stability.ElementLength и " & muKey & ": " & reason & " " & correction
     Else
         message = settings.InputErrorMessage("Stability.ElementLength", reason, correction) & " " & _
-            settings.InputErrorMessage(muKey, "Этот коэффициент участвует в том же произведении L·mu.", vbNullString)
+            settings.InputErrorMessage(muKey, "Этот коэффициент участвует в расчетной длине l0 = mu·L и ее квадрате.", vbNullString)
     End If
     RaiseInput message
 End Sub

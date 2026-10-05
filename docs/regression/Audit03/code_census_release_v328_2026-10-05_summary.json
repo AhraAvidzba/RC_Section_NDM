@@ -1,0 +1,10 @@
+{
+  "Date": "2026-10-05T12:13:09",
+  "Modules": 108,
+  "Methods": 4567,
+  "Guards": 1915,
+  "MissingMethodComment": 962,
+  "SuspectedTemplateMethods": 0,
+  "SemanticReview": "Pending",
+  "ProductionClasses": 83
+}
