@@ -943,11 +943,10 @@ End Property
 
 
 
-' Пытается найти lambda_crc прямым решением по предельной растягивающей
-' деформации бетона. Для lambda*Mxy используется специализированная система
-' с фиксированным N и направлением момента; для остальных путей - общая
-' load-path система Offset + lambda*Base. Обе ветки являются одним и тем же
-' методом UltimateStrain с разной формой траектории нагрузки.
+' Ищет lambda_crc по предельной растягивающей деформации бетона общим
+' UltimateStrain Newton на траектории Offset + lambda*Base. Сначала проверяет
+' постоянную часть пути, затем пробует общий старт и, при численной неудаче,
+' старт от полного НДС CrackInitiation без изменения физического критерия.
 Private Function CalculateLambdaCrcByUltimateStrain(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -1025,9 +1024,11 @@ End Function
 
 
 
-' Возвращает True, когда результат прямого поиска уже окончательный и Auto
-' не должен переходить к LoadMultiplier: это физическое отсутствие трещины,
-' fallback с psi_s=1 или ошибка входных данных.
+' Возвращает True, когда результат текущей численной попытки окончательный:
+' подтверждено отсутствие трещины, получен физический отказ либо выявлена
+' терминальная ошибка данных, конфигурации или программы. UltimateStrain
+' не повторяется через LoadMultiplier; дальнейший Auto-перебор путей
+' остается ответственностью общего координатора Search.
 Private Function FormationSearchStoppedTerminally() As Boolean
     FormationSearchStoppedTerminally = (mConverged And Not mCrackFormed) Or _
         mFormationPathFallbackPsi1 Or _
@@ -1409,9 +1410,9 @@ End Function
 
 
 
-' Берет Rbt,ser, Eb, eps_bt0, eps_bt2 и Es из поставщика материалов.
-' Эти значения больше не являются отдельными настройками crack-класса:
-' они должны совпадать с диаграммами, которыми реально решается НДС.
+' Берет Rbt,ser, Eb, eps_bt0, eps_bt2 и Es из выбранных спецификаций
+' поставщика материалов. Критерий трещинообразования использует те же
+' параметры, по которым построены активные диаграммы его НДС.
 Private Sub ApplyMaterialProviderProperties(ByVal materialProvider As CMaterialModelProvider)
     If Not mCrackInitiationSpec Is Nothing Then
         mConcreteRbtSer = materialProvider.ConcreteTensionResistanceFromSpec(mCrackInitiationSpec)
@@ -1545,8 +1546,21 @@ End Function
 Private Function LoadScalingProbeGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal probeN As Double, ByVal probeMx As Double, ByVal probeMy As Double) As CSectionSolver
-    If Sqr(probeMx * probeMx + probeMy * probeMy) <= _
-            MaxDouble(mSolverToleranceMx, mSolverToleranceMy) Then Exit Function
+    Dim momentTolerance As Double
+    momentTolerance = MaxDouble(mSolverToleranceMx, mSolverToleranceMy)
+    ' Большая компонента заведомо выходит из окрестности нулевого момента.
+    ' В обычном диапазоне сохраняем исходный порядок вычисления нормы;
+    ' масштабирование нужно только там, где сами квадраты непредставимы.
+    If Abs(probeMx) <= momentTolerance And Abs(probeMy) <= momentTolerance Then
+        Dim momentScale As Double
+        momentScale = MaxDouble(Abs(probeMx), Abs(probeMy))
+        If momentScale <= 1E+150 Then
+            If Sqr(probeMx * probeMx + probeMy * probeMy) <= momentTolerance Then Exit Function
+        Else
+            If Sqr((probeMx / momentScale) ^ 2 + (probeMy / momentScale) ^ 2) <= _
+                    momentTolerance / momentScale Then Exit Function
+        End If
+    End If
 
     Dim guessBuilder As CStateGuessBuilder
     Set guessBuilder = New CStateGuessBuilder
@@ -1722,9 +1736,10 @@ End Function
 
 
 
-' Помечает расчет как корректно завершенный без раскрытой трещины.
-' Это не численная ошибка: заданное состояние либо не растягивает арматуру,
-' либо еще не достигло момента образования трещины.
+' Сохраняет подтвержденную недостижимость критерия трещинообразования
+' на выбранной траектории. Для Auto это корректный физический исход,
+' для явно заданного пути - отказ выбранного поиска, но не NumFail.
+' Найденный порог за текущей нагрузкой обрабатывается отдельно.
 Private Sub FinishNoCrack(ByVal reason As String)
     mConverged = True
     mCrackFormed = False
@@ -1861,10 +1876,9 @@ End Sub
 ' относительно нужного расчетного центра и не повторяет геометрию приложения
 ' нагрузки.
 '
-' Кривизны solver-а здесь сознательно не используются. Если при таком LC
-' появляется заметная кривизна, это уже ошибка в переносе нагрузок, сетке или
-' тестовом сценарии; она должна ловиться регрессионными проверками, а не
-' менять расчетную ветку в рабочей книге.
+' Классификация зависит от заданных усилий и расчетной точки отсчета,
+' а не от кривизн стартовой или найденной плоскости solver-а. Поэтому
+' изменение численного старта не переключает инженерную ветку расчета.
 Private Function IsCentralTensionState(ByVal loadStateForClassification As CSectionLoadState, _
         ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As Boolean
     IsCentralTensionState = loadStateForClassification.IsCentralTensionAbout( _
@@ -1917,23 +1931,9 @@ End Function
 
 
 
-' Суммарная площадь бетона модели.
-Private Function TotalConcreteArea(ByVal section As CSectionModel) As Double
-    Dim i As Long
-    For i = 1 To section.ConcreteCount
-        TotalConcreteArea = TotalConcreteArea + section.ConcreteArea(i)
-    Next i
-End Function
 
 
 
-' Суммарная площадь арматуры модели.
-Private Function TotalRebarArea(ByVal section As CSectionModel) As Double
-    Dim i As Long
-    For i = 1 To section.RebarCount
-        TotalRebarArea = TotalRebarArea + section.RebarArea(i)
-    Next i
-End Function
 
 
 
@@ -2092,10 +2092,6 @@ End Function
 
 
 
-' Утилитарный минимум без WorksheetFunction в расчетном ядре трещин.
-Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
-    If a < b Then MinDouble = a Else MinDouble = b
-End Function
 
 
 

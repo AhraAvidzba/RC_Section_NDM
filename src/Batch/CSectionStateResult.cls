@@ -436,8 +436,8 @@ Private Function ResultKindFromStateType(ByVal stateType As ESectionStateType) A
 End Function
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Повторный вызов безопасен. Плоскость, усилия, признаки и meta этого НДС
+' больше нельзя перезаполнить через сохраненную ссылку на state.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     mFrozen = True

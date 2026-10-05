@@ -55,6 +55,7 @@ Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: line search не
 Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: направленный отказ callback-а.
 Private mUltimateCalls As Long ' ДЛЯ ТЕСТОВ: число оценок невязки Newton.
 Private mFailureCode As ESolverFailureCode ' ДЛЯ ТЕСТОВ: точная причина остановки.
+Private mFailureReason As String ' ДЛЯ ТЕСТОВ: последняя причина callback-а отдельно от общего журнала.
 Private mMultiplierScenario As Long ' ДЛЯ ТЕСТОВ: управляемый отказ конкретного callback-а LoadMultiplier.
 Private mFallbackCalls As Long ' ДЛЯ ТЕСТОВ: терминальная ошибка запрещает резервную финализацию.
 
@@ -91,6 +92,7 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mUltimateScenario = 0
     mUltimateCalls = 0
     mFailureCode = sfcNone
+    mFailureReason = vbNullString
     mMultiplierScenario = 0
     mFallbackCalls = 0
 End Sub
@@ -624,6 +626,7 @@ End Function
 ' Сохраняет typed failure общего Newton независимо от display-строк и текста.
 Private Sub ILimitSearchProblem_SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
     mFailureCode = failureCode
+    mFailureReason = reason
     mConverged = False
     mLimitState = PROBE_NUMFAIL
     If failureCode = sfcInvalidConfiguration Or failureCode = sfcInvalidInput Then mLimitState = PROBE_INPUTERR
@@ -658,6 +661,12 @@ End Property
 
 Public Property Get FailureCode() As ESolverFailureCode
     FailureCode = mFailureCode
+End Property
+
+' ДЛЯ ТЕСТОВ: возвращает именно аргумент последнего SetFailure. Это позволяет
+' обнаружить потерю причины, даже если прежний текст остался в DiagnosticLog.
+Public Property Get FailureReason() As String
+    FailureReason = mFailureReason
 End Property
 
 ' ДЛЯ ТЕСТОВ: отказы до пробы, при расширении, внутри скобки и в финализации

@@ -180,8 +180,8 @@ Private Function IsReusablePhysicalState(ByVal stateResult As CSectionStateResul
 End Function
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Закрывает каждый сохраненный named-state и состав repository без
+' копирования сетки. Повторный вызов безопасен; Store/reset затем запрещены.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     Dim state As CSectionStateResult

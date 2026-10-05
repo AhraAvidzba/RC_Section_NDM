@@ -172,8 +172,28 @@ Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProbl
         ByVal stage As String, ByVal errorNumber As Long, ByVal description As String)
     If context.StoppedTerminally Then Exit Sub
     Dim failureCode As ESolverFailureCode
-    If errorNumber = 6 Then failureCode = sfcNumericalFailure Else failureCode = sfcInternalError
-    context.SetFailure failureCode, stage & " не выполнен: " & description
+    Dim reason As String
+    context.AppendDiagnostic "loadMultiplierRuntimeError=" & CStr(errorNumber) & "; stage=" & stage & _
+        "; description=" & description
+    If errorNumber = 6 Or errorNumber = 11 Then
+        failureCode = sfcNumericalFailure
+        reason = stage & ": не удалось вычислить численный шаг; число выходит за допустимый диапазон арифметики."
+    Else
+        failureCode = sfcInternalError
+        reason = stage & ": внутренняя ошибка вычислений. Подробности сохранены в диагностическом журнале."
+    End If
+    ' Стандартное сообщение VBA уже объяснено по-русски выше. Явную причину
+    ' callback-а сохраняем: она содержит контекст задачи, которого нет у Search.
+    ' Сравнение текста влияет только на представление, не на typed failure.
+    Dim standardDescription As String
+    ' Error$(n) при активном Err может вернуть явно заданный Description.
+    ' Код и исходный текст уже сохранены аргументами и в журнале.
+    Err.Clear
+    If errorNumber >= 0 And errorNumber <= 65535 Then standardDescription = Error$(errorNumber)
+    If Len(description) > 0 And StrComp(description, standardDescription, vbBinaryCompare) <> 0 Then
+        reason = reason & " Причина: " & description
+    End If
+    context.SetFailure failureCode, reason
 End Sub
 
 ' Запускает выбранный одномерный метод внутри уже найденной физической скобки.

@@ -1,0 +1,11 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_formation_guard_v313.xlsm
+SOURCE_SHA256: E5F304C016C32A02305221660ECE39E1F932FEABB5363C7659E5D60041B44D56
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f365a2db63bc4e26920bff196601982e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+SCRIPT ERROR: Аргументы macro/save-reopen допускаются только для одной явно выбранной проверки.
+SCRIPT_ERROR_CONTEXT: macro=; exceptionType=System.Management.Automation.RuntimeException
+SCRIPT_ERROR_POSITION: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1:194 знак:9
++         throw "Аргументы macro/save-reopen допускаются только для одн ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SCRIPT_ERROR_STACK: в <ScriptBlock>, C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1: строка 194
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

@@ -402,8 +402,8 @@ Public Property Get ReserveFactor() As Double
 End Property
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Закрывает сохраненное CapacityState вместе с предельными числами и meta.
+' Если точки нет, НДС не создается; повторный вызов безопасен.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mStateResult Is Nothing Then mStateResult.Freeze

@@ -273,7 +273,7 @@ Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ContainsPoint = PointInContour(X, Y)
 End Function
 
-' Совместимый псевдоним для интерфейса ISectionGeometry.
+' Возвращает ту же проверку области через предусмотренное имя интерфейса.
 Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
     IsPointInside = ContainsPoint(X, Y)
 End Function

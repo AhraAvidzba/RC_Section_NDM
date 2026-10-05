@@ -195,6 +195,7 @@ Public Function RunBatchCalculationTests() As String
     TestAudit03BatchInputMessages stats
     TestAudit03NotCrackedBatchOutput stats
     TestAudit03NotCrackedInputValidation stats
+    TestAudit03FormationReportNarrative stats
     TestAudit03CrackSpacingWarning stats
     AppendLine stats, "RUN: TestResultMetaStatusDictionary"
     TestResultMetaStatusDictionary stats
@@ -5022,6 +5023,7 @@ Public Function RunAudit02ResultMetaStress() As String
         FormatNumberInvariant(Timer - started) & "; status=" & statusText & "; comment=" & commentText
 End Function
 
+
 ' ============================== ДЛЯ ТЕСТОВ: PSI ПРИ НЕУДАЧЕ FORMATION ==============================
 ' ДЛЯ ТЕСТОВ: воспроизводит отсутствие точки Formation при допустимом текущем
 ' НДС. Нулевая масштабируемая компонента дает typed InputErr выбранного пути,
@@ -9374,3 +9376,90 @@ RestoreFailed:
     AppendLine stats, "FAIL: audit03.table.diagnostic.restore; " & CStr(Err.Number) & "; " & Err.Description
     Resume Finish
 End Function
+
+' ================== ДЛЯ ТЕСТОВ: ПОЯСНЕНИЯ FORMATION В ОТЧЕТЕ ==================
+
+' Проверяет реальный Batch -> Formation -> execution report для отсутствия
+' трещины, найденной точки и непригодного фиксированного пути. Отчет не должен
+' обещать psi=1 до результата Width или описывать прежний выбор Auto.
+Public Function RunAudit03FormationReportTests() As String
+    Dim stats As TBatchTestStats
+    TestAudit03FormationReportNarrative stats
+    RunAudit03FormationReportTests = stats.Report & "TOTAL_AUDIT03_FORMATION_REPORT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' Восстанавливает Config после четырех сценариев. Результат и исходный
+' комментарий Formation сравниваются с фактически сохраненным txt-файлом;
+' проверка чтения отчета не вызывает дополнительный solve.
+Private Sub TestAudit03FormationReportNarrative(ByRef stats As TBatchTestStats)
+    Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
+    Dim section As CSectionModel, settings As CSystemSettingsReader, batch As CBatchSectionCalculator
+    Dim report As CExecutionReport, formation As CCrackFormationResult, result As CCombinationResult
+    Dim loads As Variant, paths As Variant, i As Long, prefix As String, body As String, solves As Long
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    SetSystemSetting "General.DiagramExtension", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "SLS.Crack.PsiMode", "User"
+    SetSystemSetting "SLS.Crack.PsiS", "0.25"
+    SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
+    SetProfileValue "Calculation.Strength.DirectState", "PR2", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR2", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR2", "Yes"
+    Set section = BuildCircleStabilitySection(300#, 8, 20#)
+    loads = Array(-90000#, 1000#, 200000#, 100000#)
+    paths = Array("Auto", "Auto", "Auto", "LambdaMx")
+    For i = LBound(loads) To UBound(loads)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set report = New CExecutionReport: report.Initialize ThisWorkbook, settings
+        Set batch = New CBatchSectionCalculator
+        batch.Initialize section, TestMaterialProvider(False)
+        Set batch.ProfileCatalog = TestProfileCatalog()
+        batch.ApplySettings settings: Set batch.ExecutionReport = report
+        batch.AddCombination "REPORT_FORMATION_" & CStr(i), CDbl(loads(i)), 0#, 0#, "PR2", vbNullString, CStr(paths(i))
+        batch.Execute
+        Set result = batch.ResultAt(1): Set formation = result.CrackResult.Formation
+        solves = SectionEquilibriumSolveCount()
+        report.Save "Проверка пояснений результата Formation"
+        body = Audit03ReadUnicodeFile(report.FilePath)
+        prefix = "audit03.formationReport." & CStr(i)
+        AssertTrue stats, prefix & ".noAdditionalSolve", SectionEquilibriumSolveCount() = solves
+        AssertTrue stats, prefix & ".originalReason", InStr(1, body, formation.ResultMeta.ResultComment, vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".noPrematurePsi", InStr(1, body, "для ширины используется", vbTextCompare) = 0
+        AssertTrue stats, prefix & ".noObsoleteAuto", InStr(1, body, "Если путь дает только резервный результат", vbTextCompare) = 0
+        If CStr(paths(i)) = "Auto" Then
+            AssertTrue stats, prefix & ".singleComponentAuto", InStr(1, body, "При одной составляющей нагрузки", vbTextCompare) > 0
+        End If
+        If i = 0 Then
+            AssertTrue stats, prefix & ".confirmedWithoutPoint", formation.ConfirmedNotCracked And Not formation.HasLimitPoint
+            AssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
+            AssertTrue stats, prefix & ".absenceExplanation", InStr(1, body, "проверка ширины не выполняется", vbTextCompare) > 0
+        ElseIf i = 1 Then
+            AssertTrue stats, prefix & ".confirmedWithPoint", formation.ConfirmedNotCracked And formation.HasLimitPoint
+            AssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
+        ElseIf i = 2 Then
+            AssertTrue stats, prefix & ".foundPoint", formation.HasLimitPoint And formation.CrackFormed
+            AssertTrue stats, prefix & ".pointExplanation", InStr(1, body, "принята точка по пути", vbTextCompare) > 0
+        Else
+            AssertTrue stats, prefix & ".unavailable", Not formation.HasLimitPoint And Not formation.ConfirmedNotCracked
+            AssertTrue stats, prefix & ".separateResults", InStr(1, body, "приведены в отдельных результатах трещин", vbTextCompare) > 0
+        End If
+        AppendLine stats, "FORMATION_REPORT: " & prefix & "|confirmedNotCracked=" & CStr(formation.ConfirmedNotCracked) & _
+            "|point=" & CStr(formation.HasLimitPoint) & "|comment=" & formation.ResultMeta.ResultComment
+    Next i
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.formationReport.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo RestoreFailed
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    Exit Sub
+RestoreFailed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: audit03.formationReport.restore; " & CStr(Err.Number) & "; " & Err.Description
+End Sub

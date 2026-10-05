@@ -22,6 +22,20 @@ PASS по census. Основная книга пользователя не из
 
 ## Включено В Оставшиеся Проверки
 
+Read-only сравнение actual VBE v286 и v313 подтверждает неизменность тел
+`CSectionModel`, `modAutoCADStressExport`, `CUnitSystem` и `CNDMResultsWriter`.
+У `CAutoCADSectionModelImporter` совпадают все 379 непустых строк кода;
+различаются только комментарии. Native evidence углов квадратов/кругов
+`1023/0` и translation `66/0` сохраняет актуальность для этого pipeline.
+Это не приемка остальных численных правок v313 или пиксельного UI.
+
+Полностью прочитаны также `ISectionGeometry` и `CSectionTypeRegistry`:
+интерфейс описывает только бетонную форму; registry выбирает существующие
+shape/builders и передает нормализованные размеры через `CUnitSystem`.
+Геометрия и раскладка конкретных форм остаются у их владельцев. Настройки
+неактивных нижних/скошенных частей не читаются как обязательные активные
+параметры. Это семантическая проверка границы, не новый runtime gate.
+
 1. `rngSP35Table721`: адресные directed gates v302 завершены `1621/0`,
    `829/0`, `105/0`; 576 чисел совпали точно с baseline. Колонки `l0/b` и
    `l0/d` справочные; `l0/i` и пять phi-колонок расчетные. Порядок узлов,
@@ -76,6 +90,92 @@ PASS по census. Основная книга пользователя не из
     108 modules, 4575 methods, 1896 guards; все 267 production-кандидатов без
     индивидуального комментария имеют не более двух смысловых строк.
     Это не доказательство semantic PASS всех остальных методов.
+12. Прочитаны полностью `CSectionStateResult`, `CUltimateStrainSearch`,
+    `CCrackLimitSearchProblem`, `CSectionPropertiesCalculator` и
+    `CExecutionReport`. Общий UltimateStrain сохраняет одну Newton/line-search
+    реализацию, а callback отвечает за физический критерий и финализацию.
+    SectionProperties использует реальные локальные инерции импортированных
+    элементов, а не их прямоугольную оболочку; изотропность всего сечения
+    не смешивается с направлением грани отдельного квадратного элемента.
+13. После checkpoint `49d1bd80` исправлены только неверные описания Freeze
+    в State/Repository/Direct/Strength/Crack/Formation/Width/Capacity/Combination:
+    комментарии теперь перечисляют фактически замораживаемые данные и дочерние
+    объекты. Уточнены шапка общего UltimateStrain и полный список LoadPath
+    в request. Эти правки не меняют исполняемый алгоритм.
+14. В `CExecutionReport` подтверждено устаревшее описание Auto и преждевременное
+    обещание psi=1 при `CRITERION_NOT_REACHED`. Теперь report описывает общий
+    выбор пути по составляющим нагрузки, различает `ConfirmedNotCracked` и
+    неудачу поиска и не назначает коэффициент или warning за Width. В summary
+    расшифровка BaseFail больше не ограничена несущей: постоянная часть пути
+    может не пройти и критерий Formation. Добавлен реальный четырехсценарный
+    Batch/report regression v307 завершен `28/0`: четыре реальных сценария,
+    сохранение исходной причины, отсутствие преждевременного psi-warning и
+    дополнительного solve; Results/style save-reopen=True, exit=0.
+15. Прочитаны полностью `CBatchResultWriter`, `CStrengthSummaryWriter` и
+    `CStabilitySummaryWriter`: блочная запись массивов, source-row placement,
+    relocation anchors, единый display/palette, собственный subtree-комментарий
+    и отсутствие изменения ширины столбцов. У двух подробных writer-ов убраны
+    три случайно приставленные строки комментария к соседнему методу; значения
+    и поведение форматирования при этом не изменялись. Чтение не заменяет
+    окончательную runtime/UI/save-reopen приемку выпускной книги.
+16. Полностью разобран `CCapacitySolver`: обычные probes через общий runner,
+    терминальные typed причины, четыре знаковых material limits, финализация
+    только подтвержденной плоскости, локальный точный cache только сошедшихся
+    проб и сброс session. Удален private `ValidateCapacityInputs`, для которого
+    поиск по src/tests подтвердил отсутствие call sites; оба метода используют
+    `ValidateLoadPathCapacityInputs`. Уточнены комментарии о shared Search,
+    автономных defaults, удержанной пробе и технической границе 1e100.
+    Численные выражения, критерии, expected values и допуски не изменены.
+17. Полностью прочитан `CCrackFormationCalculator`: общая траектория,
+    shared Newton/LoadMultiplier, terminal typed failures, локальные probes,
+    named Pre/Post через provider и подтверждение физического состояния.
+    Исправлены описания единого UltimateStrain и завершения поиска; удалены
+    private TotalConcreteArea/TotalRebarArea/MinDouble без call sites.
+    Обычные численные выражения и критерии не менялись. Квадраты крайне
+    больших моментов в подготовке стартов остаются кандидатом направленного
+    F07-теста, а не объявленным дефектом или автоматически принятым guard.
+18. Полностью прочитаны `modWorkbookCalculation`, `CGeometryRoundedRectangle`,
+    `CHollowRectRebarLayoutBuilder`, `CRoundedRectRebarLayoutBuilder` и
+    `CRectSetRebarLayoutBuilder`. Расчет AutoCAD использует snapshot Results;
+    пользовательские offsets привязаны к центру бетона, ошибки чтения таблиц
+    получают фактические адреса. Builders валидируют геометрию и счетчики
+    до размещения, а private path helpers получают подготовленные массивы.
+    Смысл offset-нормали Opening отделен от наружной грани. Чтение не заменяет
+    крайние Double/array fixtures или финальные geometry/Config runtime gates.
+19. Повтор SourceContracts со стандартными аргументами использовал старый
+    canonical export, а не актуальную книгу: matchingModules=80/108,
+    failed=28. Артефакт `source_contracts_2026-10-02.txt` сохранен как
+    отрицательная проверка актуальности экспорта; это не 28 новых расчетных
+    отказов. На v307 нужен read-only VBE export и повтор с явным ExportPath.
+20. Крайние Formation-входы сначала прошли слабый v308 gate `444/0`;
+    усиленный тест на той же production-книге v309 дал `468/96` и доказал
+    переполнение проверки нулевого момента до solve и английскую причину
+    в ResultComment. Подробный negative/fix контракт записан в
+    `NDM_Audit03_Formation_Extreme_Review_2026-10-05.md`. Положительный gate
+    v310 завершен `564/0`; обычные критерии и допуски не менялись.
+
+21. Полностью прочитаны `CSectionLoadState`, `CSectionAnnotations`,
+    `CCrackSummaryWriter`, `CLimitSearchCoordinator`, `CLoadPathVector`,
+    `CLoadPathDescriptor`, `CLoadPathMath`, `CLimitSearchResult` и
+    `CStabilityResult`. Общий выбор Auto отделен от критериев; Search хранит
+    принятую точку и точную причину, а не публикует промежуточные probes.
+    ResultMeta отдельно нормализует lifecycle ранней валидации. Утверждение
+    о потерянной шапке ширины после merge не подтвердилось: actual saved
+    Results содержит текст в AO82 и объединение AO82:AS82; Es в AO84.
+    Это чтение OpenXML, не пиксельная приемка.
+22. Глобальный поиск src/tests/tools подтвердил отсутствие callers у
+    `AggregateExternalStatus`; `AggregateMeta` вызывают только три assertions.
+    Production уже использует `WorstResultMeta` и `ExternalStatus`. Удаление
+    этих неиспользуемых оберток и private Merge остается планируемой частью
+    A03/A05, а не выполненным изменением. В `CStabilityResult.Freeze`
+    обнаружен чужой комментарий о named-state; исполняемый метод корректен.
+23. `CUltimateStrainSearch.ReportArithmeticOrContractFailure` требует
+    directed проверки стандартных VBA 6/9/11 и точного SetFailure reason:
+    нынешние custom-Russian fixtures не доказывают локализацию стандартного
+    сообщения. Ошибка деления на ноль классифицируется этим helper-ом как
+    internal, в отличие от действующего численного LoadMultiplier boundary.
+    Новые negative/positive gates еще не выполнены; изменение статуса по тексту
+    или правка expected values вместо исправления helper-а недопустимы.
 
 ## Приемочные Gates
 
@@ -85,3 +185,10 @@ export сверяет 108/108 source modules без изменения книг�
 `101712/0`, также восемь suites и source unchanged=True;
 затем нужны остальные clean/update/Config/selector/matrix/benchmark/
 self-audit gates. Audit03 не завершен.
+
+Full Off formation guard v313: все восемь suites, `105798/0`, exit=0,
+source unchanged=True. Сравнение с full Off v300: `20022` общих численных
+assertions совпали точно, пропущенных ID нет. Журнал и сравнение сохранены
+как `full_off_formation_guard_v313b_2026-10-05.txt` и
+`full_numbers_v300_v313_2026-10-05.json`. Это проверенный checkpoint,
+не окончательная приемка Audit03 или еще не выполненных правок Ultimate.

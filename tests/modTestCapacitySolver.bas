@@ -2588,6 +2588,12 @@ Private Sub TestAudit03MultiplierTypedFaults(ByRef stats As TCapacityTestStats)
                     AssertTrue stats, prefix & ".typedCause", fake.FailureCode = expectedFailure
                     AssertTrue stats, prefix & ".comment", InStr(1, result.Meta.ResultComment, _
                         "Контрольный отказ LoadMultiplier, сценарий " & CStr(scenario), vbBinaryCompare) > 0
+                    If scenario = 1 Or scenario = 2 Or scenario = 3 Or scenario = 13 Or scenario = 14 Or scenario = 16 Then
+                        AssertTrue stats, prefix & ".exactCallbackReason", InStr(1, fake.FailureReason, _
+                            "Контрольный отказ LoadMultiplier, сценарий " & CStr(scenario), vbBinaryCompare) > 0
+                        AssertTrue stats, prefix & ".rawRuntimeDiagnostic", _
+                            InStr(1, result.DiagnosticLog, "loadMultiplierRuntimeError=", vbBinaryCompare) > 0
+                    End If
                     If scenario = 13 Or scenario = 14 Then
                         AssertTrue stats, prefix & ".notCalculated", Not result.Meta.Calculated And Not result.SearchExecuted
                     ElseIf expectedStatus = rsInvalidInput Or expectedStatus = rsInvalidConfiguration Then

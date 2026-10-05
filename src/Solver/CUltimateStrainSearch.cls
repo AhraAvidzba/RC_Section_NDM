@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Адаптер поиска UltimateStrain
+' Общий поиск предельной плоскости UltimateStrain
 ' ==========================================================================
 ' Класс выполняет прямой поиск по предельной деформации и переиспользует общий
 ' Newton/line-search цикл для Capacity и CrackFormation. Если для силовой
@@ -81,8 +81,8 @@ Private Function ExecuteCapacityFallbackToLoadMultiplier(ByVal request As CLimit
 End Function
 
 ' Выполняет ветку UltimateStrain для поиска образования нормальной трещины.
-' Низкоуровневый расчет остается в crack-domain контексте: там находятся
-' критерий eps_bt,ult, сохранение PreCrackState/PostCrackState и диагностика.
+' Инженерный критерий eps_bt,ult, сохранение PreCrackState/PostCrackState и
+' диагностика принадлежат Formation; численный Newton-цикл общий с Capacity.
 Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4211, "CUltimateStrainSearch", "Не передан запрос limit-search."
 

@@ -21,7 +21,7 @@
 | 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
 | 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
 | 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Directed evidence union v306 связывает все 1064 адреса со своими runtime-доказательствами, включая 760 активных вводимых полей и 20 CAD-полей. Selector scope v306: 144 path cases без ошибок. Все 13 форм и 52 all-path runs v68 приняты для прежнего численного среза. Полный диапазон/pairwise, semantic review, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
+| 5. Config/краевые нагрузки/документация/UI | в работе | Directed evidence union v306 связывает все 1064 адреса со своими runtime-доказательствами, включая 760 активных вводимых полей и 20 CAD-полей. Полная selector matrix v306: 62/62 группы, 4464 path cases, 302 пары и 48 рискованных четверок, без failures. Все 13 форм и 52 all-path runs v68 приняты для прежнего численного среза. Полный диапазон/mutation, semantic review, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
 | 6. Независимая приемка и выпуск | в работе | Полная clean build v300, eight-suite Off 101701/0, On 101712/0 и actual source/VBE equality 108/108 завершены. Config/edge/benchmarks, все три audits и final self-audit остаются отдельными незакрытыми gates. |
 
 ## Карта Обязанностей
@@ -69,6 +69,59 @@
 
 ## Актуальная Точка Продолжения
 
+- Native CAD shape evidence v286 `1023/0` и circle translation `66/0`
+  проверены повторным чтением журналов. Actual VBE v286/v313 совпадает
+  у четырех модулей pipeline; у импортера совпадают все 379 строк кода,
+  отличаются только комментарии. Квадрат сохраняет направление грани,
+  включая угол 0; круг получает doubled-angle среднее других элементов.
+  Подробные случаи и пределы приемки описаны в AutoCAD Config Review.
+- Полный Off v313b завершен: все восемь suites, `105798/0`, exit=0,
+  source unchanged=True. Geometry `604/0`, Material `3952/0`, Solver
+  `1367/0`, Capacity `3146/0`, Crack `2155/0`, Batch `28781/0`,
+  WorkbookUI `65754/0`, Baseline `39/0`. Job 91907 закрыт; созданный
+  тестом Excel завершен, существующий пользовательский PID 23476 не тронут.
+  Exact comparison v300/v313: `20022` общих численных assertions,
+  missing=0, differences=0; все пять восстановленных psi-ID присутствуют.
+  Report `full_numbers_v300_v313_2026-10-05.json`, Passed=True.
+
+- v313 typed callback gate `1398/0` подтверждает точную последнюю причину,
+  raw diagnostics и recovery. Actual source/VBE `108/108`, failed=0,
+  113 компонентов, 83 production + 3 test classes. Book SHA
+  `E5F304C016C32A02305221660ECE39E1F932FEABB5363C7659E5D60041B44D56`,
+  actual export SHA `CADB87FC791EF0FA3CE98A42494CE7C541790213B0127044FDC3BCB233F03410`.
+  Полный Off выполнен на этом неподвижном срезе. Первый
+  v313 full setup ошибочно передал save-reopen флаги multi-suite runner-у;
+  он завершился до любой suite и не объявляется расчетным отказом/PASS.
+  Повтор `full_off_formation_guard_v313b_2026-10-05.txt` не содержит этих
+  аргументов. Отдельные save-reopen gates сохранены в directed tests/matrix.
+- v310 Formation extremes `564/0`: 72 входа, 24 отдельные probes и шесть
+  recovery; Results/style save-reopen=True. Actual VBE 113 components,
+  source equality 108/108, failed=0. Общий fault gate v310 `1326/0` был
+  усилен наблюдением последнего SetFailure отдельно от DiagnosticLog:
+  v311/v312 `1362/36` подтвердили потерю custom-причины. Уточнение Err-контекста
+  вошло в build v313 и подтверждено positive gate `1398/0`.
+- v307 report gate `28/0`: четыре реальных Batch/report сценария, без
+  дополнительного solve, Results/style save-reopen=True. Новый F07 Formation
+  reproducer v309 на frozen production подтвердил `468/96`: 24 overflow до
+  State solve и 48 английских ResultComment. Guard стартового момента и
+  typed русская диагностика общего Search исправлены; положительный gate
+  v310 завершен `564/0`. Доказательства и границы описаны в
+  `NDM_Audit03_Formation_Extreme_Review_2026-10-05.md`.
+- Checkpoint `49d1bd80` фиксирует SP35/input/runner срез и его доказательства.
+  После него уточнены комментарии Freeze/общего Search и request без изменения
+  численного алгоритма. При semantic review найден устаревший текст execution
+  report о выборе Auto и безусловном psi=1: presentation исправлена; реальный
+  четырехсценарный Batch/report regression добавлен в существующий тестовый
+  модуль и полный Batch. BaseFail legend описывает постоянную часть общего
+  пути, не только Capacity. Build v307 и directed gate `28/0` завершены;
+  actual export v313 включает эти поздние правки.
+- Дополнительно полностью разобраны Formation, workbook entrypoints,
+  Rounded geometry и три rebar builders. Убраны четыре невызванных private
+  helper-а (один Capacity validator и три Formation area/min helpers);
+  численные критерии и выражения в действующих методах не изменены.
+  SourceContracts со стандартным старым canonical export дал ожидаемую
+  несогласованность 80/108, failed=28. Этот negative artifact не является
+  приемкой текущего source; следующий gate обязан использовать actual v307.
 - Batch v306 завершен `28725/0`, elapsed 635.3867 с; Results и status/style
   save-reopen=True, watchdog exit=0, source unchanged=True. Actual VBE
   export `VBA_All_Code_table_runner_v306_2026-10-05.txt` SHA
@@ -84,9 +137,12 @@
   восстановленные ID. В LongitudinalResult исправлен только чужой текст
   Freeze о named-state; он не хранится этим result. Эти две правки source
   еще не входят в фактический v306 export; численная production-модель та же.
-- Full selector v306_full выполняется последовательно на изолированных
-  копиях v306. 62 planned cases / 4464 path cases принимаются только после
-  общего completed gate. Не запускать одновременно другую Excel COM-job.
+- Full selector v306_full завершен на изолированных копиях v306:
+  62/62 groups, 4464 независимых path cases, FullSelectorAcceptance=True,
+  source unchanged=True, exit=0. Summary сохранен в
+  `selector_summary_v306_full_2026-10-05.json`. Все 302 пары факторов и 48
+  high-risk tuples плана получили runtime evidence. Это приемка selector
+  матрицы v306, не замена отдельных broad-load, full-range и release gates.
 - Combined registry `config_directed_evidence_combined_v306_2026-10-05`
   содержит ровно 1064/1064 адреса. При объединении сверены FieldId, адрес,
   роль, знаменатель, существование evidence-файлов и отсутствие дублей;
@@ -94,8 +150,9 @@
   760 активных вводов имеют статус FullRangeReviewNotComplete, поэтому
   100% адресного directed coverage не является 100% выполнения Audit03.
   Selector_001/002 v306_scope: 144 независимых path cases, failed=0,
-  save/reopen=True, source unchanged=True. FullSelectorAcceptance=False:
-  остальные 60 cases структурного плана еще не приняты runtime.
+  save/reopen=True, source unchanged=True. Исторический scope gate имел
+  FullSelectorAcceptance=False; окончательная приемка всех 62 groups
+  зафиксирована отдельным full summary выше.
 - Stable source v306 сохраняет утвержденную методику psi и содержит только
   подтвержденные production-правки SP35/неприменимой клетки/guard runner.
   Книга `RC_Section_NDM_table_runner_v306.xlsm` SHA

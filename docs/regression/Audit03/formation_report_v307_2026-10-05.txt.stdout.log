@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_report_semantic_v307.xlsm
+SOURCE_SHA256: C16605ABA6E6CE209C2CD54D66C9F6AFAD957221D22BB61B20432DFDC72678C3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1a0147eb3f28488d8a4fc191eccc49bb\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_FORMATION_REPORT: passed=28; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

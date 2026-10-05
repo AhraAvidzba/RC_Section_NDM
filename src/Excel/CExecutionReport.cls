@@ -581,19 +581,19 @@ End Sub
 Public Sub ReportCrackFormationSearchStart(ByVal formationPath As String)
     If Not mEnabled Then Exit Sub
     If StrComp(formationPath, "Auto", vbTextCompare) = 0 Then
-        AddStep "Трещинообразование: режим Auto. Программа пробует пути по порядку: " & _
-            ChrW$(&H3BB) & "*Mxy, затем " & ChrW$(&H3BB) & "*N, затем " & _
-            ChrW$(&H3BB) & "*NMxy. Если путь дает только резервный результат с " & _
-            ChrW$(&H3C8) & "s = 1 без найденной точки образования трещины, программа переходит к следующему пути."
+        AddStep "Трещинообразование: режим Auto. При одной составляющей нагрузки используется путь по этой составляющей: " & _
+            "N, Mx, My или совместный Mxy. При N + M сначала масштабируется момент, затем при неудаче поиска " & _
+            "пробуются пути по N и NMxy. Найденный предел при множителе меньше 1 не запускает другой путь; " & _
+            "ошибки входа и настройки не маскируются повторным поиском."
     Else
         AddStep "Трещинообразование: используется фиксированный путь " & formationPath & _
             "; Auto-перебор других путей не выполняется."
     End If
 End Sub
 
-' Поясняет итог выбора пути образования трещины для текущего LC. Это не заменяет
-' DiagnosticLog solver-а, а переводит ключевой результат Auto/резервного
-' нормальный инженерный язык прямо в отчете.
+' Поясняет только готовый итог Formation, не назначая применимость Width или psi.
+' Подтвержденное отсутствие трещины отличает от неудачи поиска; сведения о реально
+' использованном коэффициенте и предупреждения принадлежат результату Width.
 Public Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
     If Not mEnabled Then Exit Sub
     If crack Is Nothing Then Exit Sub
@@ -601,15 +601,14 @@ Public Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
     If crack.HasLimitPoint Then
         AddStep "Трещинообразование: принята точка по пути " & _
             crack.FormationMethod & ". По этой точке записаны Ncrc/Mxy,crc и состояния PreCrackState/PostCrackState, если они применимы."
+    ElseIf crack.ConfirmedNotCracked Then
+        AddStep "Трещинообразование: подтверждено отсутствие нормальной трещины при заданной нагрузке; " & _
+            "проверка ширины не выполняется. " & crack.ResultMeta.ResultComment
     ElseIf crack.ResultMeta.InternalStatus = rsNotApplicable Then
         AddStep "Трещинообразование: поиск пороговой точки не требуется. " & crack.ResultMeta.ResultComment
-    ElseIf crack.ResultMeta.ResultCode = rcCriterionNotReached Then
-        AddStep "Трещинообразование: на выбранном пути критерий образования трещины не достигается. " & _
-            "Если ширина применима к допустимому текущему НДС, она рассчитывается с " & ChrW$(&H3C8) & "s = 1 и предупреждением."
     Else
         AddStep "Трещинообразование: пригодная точка образования не получена; причина сохранена в результате поиска и диагностике ниже. " & _
-            "Это не блокирует ширину и продольные трещины по допустимому текущему НДС; для ширины используется " & _
-            ChrW$(&H3C8) & "s = 1 с предупреждением."
+            "Применимость дальнейших проверок, использованный коэффициент и предупреждения приведены в отдельных результатах трещин."
     End If
 End Sub
 

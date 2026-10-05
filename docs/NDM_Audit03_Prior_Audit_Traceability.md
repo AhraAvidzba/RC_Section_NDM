@@ -112,6 +112,10 @@
 
 Excel runtime, COM-чтение, DisplayFormat и сохранение доступны. Native
 accessibility вернул null, native screenshot завершился timeout; это не PASS
-визуального оформления. Настоящий AutoCAD/DWG runtime не подтвержден в этой
-среде. Подготовленные импортные fixtures проверяют расчетную модель, но не
-заменяют live AutoCAD export. Финальный отчет обязан сохранить эти ограничения.
+визуального оформления. Историческое ограничение по CAD снято отдельными
+native gates: настоящий Autodesk AutoCAD 2023 подтвердил импорт/экспорт
+Region и запись DWG. Shape roundtrip v284/v286 `1023/0`, 22 случая, включая
+квадрат по грани и круг по среднему остальных ориентированных элементов.
+Подробные ограничения, независимые oracle и файлы evidence сохранены в
+`NDM_Audit03_AutoCAD_Config_Review.md`. Эти native gates не заменяют
+финальные release/self-audit и пиксельную проверку оформления Excel.

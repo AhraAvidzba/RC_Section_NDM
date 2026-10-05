@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_Selector_a2effeb6fce746429b75597488b52f67\Selector_059.xlsm
+SOURCE_SHA256: F54EEC3C29802F73554D6216AA31F4AD18ED7748130CC755A648CD1C68AFF489
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2da9b6340c4c4e14ad57a537809bb6a7\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL_AUDIT03_LOAD_MATRIX: shape=RoundedMixed; family=Selector; independentCases=72; passed=3046; failed=0
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

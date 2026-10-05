@@ -151,8 +151,8 @@ Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean,
 End Sub
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Закрывает также вложенное НДС без копирования сетки. Повторный вызов
+' безопасен; сохраненная ссылка не позволяет перезаполнить direct result.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mState Is Nothing Then mState.Freeze

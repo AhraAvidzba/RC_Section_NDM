@@ -1,0 +1,48 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_report_semantic_v307.xlsm
+SOURCE_SHA256: C16605ABA6E6CE209C2CD54D66C9F6AFAD957221D22BB61B20432DFDC72678C3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1a0147eb3f28488d8a4fc191eccc49bb\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestBatchCalculation.RunAudit03FormationReportTests =====
+SUITE_STARTED: modTestBatchCalculation.RunAudit03FormationReportTests; 2026-10-05T05:21:37
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222367744; privateBytes=174059520; cpu=18024.578125
+EXCEL_AFTER_SUITE: pid=26048; workingSet=145707008; privateBytes=102981632; cpu=3.171875
+OK: audit03.formationReport.0.noAdditionalSolve
+OK: audit03.formationReport.0.originalReason
+OK: audit03.formationReport.0.noPrematurePsi
+OK: audit03.formationReport.0.noObsoleteAuto
+OK: audit03.formationReport.0.singleComponentAuto
+OK: audit03.formationReport.0.confirmedWithoutPoint
+OK: audit03.formationReport.0.noWidth
+OK: audit03.formationReport.0.absenceExplanation
+FORMATION_REPORT: audit03.formationReport.0|confirmedNotCracked=True|point=False|comment=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.
+OK: audit03.formationReport.1.noAdditionalSolve
+OK: audit03.formationReport.1.originalReason
+OK: audit03.formationReport.1.noPrematurePsi
+OK: audit03.formationReport.1.noObsoleteAuto
+OK: audit03.formationReport.1.singleComponentAuto
+OK: audit03.formationReport.1.confirmedWithPoint
+OK: audit03.formationReport.1.noWidth
+FORMATION_REPORT: audit03.formationReport.1|confirmedNotCracked=True|point=True|comment=Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы.
+OK: audit03.formationReport.2.noAdditionalSolve
+OK: audit03.formationReport.2.originalReason
+OK: audit03.formationReport.2.noPrematurePsi
+OK: audit03.formationReport.2.noObsoleteAuto
+OK: audit03.formationReport.2.singleComponentAuto
+OK: audit03.formationReport.2.foundPoint
+OK: audit03.formationReport.2.pointExplanation
+FORMATION_REPORT: audit03.formationReport.2|confirmedNotCracked=False|point=True|comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.formationReport.3.noAdditionalSolve
+OK: audit03.formationReport.3.originalReason
+OK: audit03.formationReport.3.noPrematurePsi
+OK: audit03.formationReport.3.noObsoleteAuto
+OK: audit03.formationReport.3.unavailable
+OK: audit03.formationReport.3.separateResults
+FORMATION_REPORT: audit03.formationReport.3|confirmedNotCracked=False|point=False|comment=Для пути λ*Mx в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+TOTAL_AUDIT03_FORMATION_REPORT: passed=28; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1a0147eb3f28488d8a4fc191eccc49bb\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunAudit03FormationReportTests; 2026-10-05T05:21:38
+RESULTS_SAVE_REOPEN: before=9C94ACB36F3FB2AECA520E4F5A4E07CB40C3C1E1ABD72E74576E2FEB2281E38D; after=9C94ACB36F3FB2AECA520E4F5A4E07CB40C3C1E1ABD72E74576E2FEB2281E38D; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1a0147eb3f28488d8a4fc191eccc49bb\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=01E8F0949A735857C2EFBBB46916247AF70F2BFA4077FBD9F776684AFE845152; after=01E8F0949A735857C2EFBBB46916247AF70F2BFA4077FBD9F776684AFE845152; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

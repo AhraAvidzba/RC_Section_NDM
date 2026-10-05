@@ -217,8 +217,8 @@ Public Property Get Converged() As Boolean
 End Property
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Закрывает найденные PreCrackState/PostCrackState вместе с Formation.
+' Отсутствующие состояния не создаются; повторный вызов безопасен.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mPreCrackState Is Nothing Then mPreCrackState.Freeze

@@ -56,6 +56,7 @@ Public Function RunCrackWidthTests() As String
     TestAudit03FormationSearchLifecycle stats
     TestAudit03FormationResidualContracts stats
     TestAudit03FormationAdapterFailures stats
+    TestAudit03ExtremeFormationInputs stats
     AppendLine stats, "TOTAL_CRACK: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
     RunCrackWidthTests = stats.Report
@@ -1697,3 +1698,112 @@ Public Function RunAudit03FormationAdapterFailuresTests() As String
 Failed:
     RunAudit03FormationAdapterFailuresTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
+
+' ==================== ДЛЯ ТЕСТОВ: КОНЕЧНЫЕ ЭКСТРЕМАЛЬНЫЕ МОМЕНТЫ ====================
+
+' Возвращает отдельный протокол Formation для больших конечных Double.
+' Проверяет завершение и typed-результат, но не обещает сходимость за пределами
+' диаграммы и не требует искусственной точки трещинообразования.
+Public Function RunAudit03ExtremeFormationTests() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestAudit03ExtremeFormationInputs stats
+    AppendLine stats, "TOTAL_AUDIT03_EXTREME_FORMATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03ExtremeFormationTests = stats.Report
+    Exit Function
+Failed:
+    RunAudit03ExtremeFormationTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: Off/On, три стратегии и шесть направлений моментного вектора.
+' После каждого набора тот же calculator решает обычный LC: большой запрос
+' не должен оставлять чужую причину отказа или разрушать следующий расчет.
+Private Sub TestAudit03ExtremeFormationInputs(ByRef stats As TCrackTestStats)
+    Dim section As CSectionModel, setupSolver As CSectionSolver
+    Set setupSolver = SolveServiceState(section, -20000#, -15000000#, 0#)
+    Dim steelParameters As CSteelMaterialParameters, provider As CMaterialModelProvider
+    Set steelParameters = New CSteelMaterialParameters
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Dim extended As Variant, strategy As Variant, magnitude As Variant, direction As Long
+    Dim calculator As CCrackFormationCalculator, load As CSectionLoadState
+    Dim result As CCrackFormationResult, mx As Double, my As Double, prefix As String
+    Dim errorNumber As Long, errorDescription As String
+    Dim vector As CLoadPathVector, concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Dim probeSolver As CSectionSolver, functionValue As Double, probeState As String, evaluated As Boolean
+    For Each extended In Array(False, True)
+        Set provider = New CMaterialModelProvider
+        provider.InitializeFromParameters TestConcreteParameters(), steelParameters, diagramExtensionEnabled:=CBool(extended)
+        For Each strategy In Array("UltimateStrain", "LoadMultiplier", "Auto")
+            Set calculator = New CCrackFormationCalculator
+            calculator.CrackFormationPath = "Auto"
+            calculator.CrackFormationSolutionStrategy = CStr(strategy)
+            calculator.SolverLoadSteps = 1: calculator.SolverMaxIterations = 3
+            For Each magnitude In Array(1E+160, 1E+308)
+                For direction = 0 To 5
+                    mx = 0#: my = 0#
+                    Select Case direction
+                        Case 0: mx = CDbl(magnitude)
+                        Case 1: mx = -CDbl(magnitude)
+                        Case 2: my = CDbl(magnitude)
+                        Case 3: my = -CDbl(magnitude)
+                        Case 4: mx = CDbl(magnitude): my = -CDbl(magnitude)
+                        Case 5: mx = -CDbl(magnitude): my = CDbl(magnitude)
+                    End Select
+                    prefix = "audit03.extremeFormation." & CStr(extended) & "." & CStr(strategy) & "." & _
+                        CStr(magnitude) & "." & CStr(direction)
+                    Set load = New CSectionLoadState
+                    load.Initialize -20000#, mx, my, 0#, 0#
+                    Set result = Nothing
+                    On Error Resume Next
+                    Err.Clear
+                    Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
+                        TestCrackInitiationSpec(), -20000#, mx, my, load, 0#, 0#)
+                    errorNumber = Err.Number: errorDescription = Err.Description
+                    On Error GoTo 0
+                    AssertTrue stats, prefix & ".noRuntimeError", errorNumber = 0
+                    AssertTrue stats, prefix & ".hasResult", Not result Is Nothing
+                    If Not result Is Nothing Then
+                        AssertTrue stats, prefix & ".notInternalError", result.ResultMeta.InternalStatus <> rsInternalError
+                        AssertTrue stats, prefix & ".reasonPresent", Len(Trim$(result.ResultMeta.ResultComment)) > 0
+                        AssertTrue stats, prefix & ".localizedReason", _
+                            InStr(1, result.ResultMeta.ResultComment, "Overflow", vbTextCompare) = 0 And _
+                            InStr(1, result.ResultMeta.ResultComment, "Object variable", vbTextCompare) = 0
+                        If Not result.HasLimitPoint Then
+                            AssertTrue stats, prefix & ".noPreState", result.PreCrackState Is Nothing
+                            AssertTrue stats, prefix & ".noPostState", result.PostCrackState Is Nothing
+                        End If
+                        AppendLine stats, "EXTREME_FORMATION_RESULT: " & prefix & "|status=" & _
+                            CStr(result.ResultMeta.InternalStatus) & "|code=" & CStr(result.ResultMeta.ResultCode) & _
+                            "|comment=" & result.ResultMeta.ResultComment
+                    End If
+                    AppendLine stats, "EXTREME_FORMATION_CALL: " & prefix & "|error=" & CStr(errorNumber) & "|" & errorDescription
+                    If CStr(strategy) = "LoadMultiplier" Then
+                        Set vector = New CLoadPathVector
+                        vector.Initialize -20000#, 0#, 0#, mx, 0#, my
+                        Set concrete = provider.ConcreteMaterialForEquilibriumFromSpec(TestCrackInitiationSpec())
+                        Set steel = provider.SteelMaterialForEquilibriumFromSpec(TestCrackInitiationSpec())
+                        Set probeSolver = Nothing: probeState = vbNullString
+                        On Error Resume Next
+                        Err.Clear
+                        evaluated = calculator.LimitSearchEvaluateCrackFormationLoadMultiplier(section, concrete, steel, _
+                            vector, Nothing, 1#, functionValue, probeState, probeSolver)
+                        errorNumber = Err.Number: errorDescription = Err.Description
+                        On Error GoTo 0
+                        AssertTrue stats, prefix & ".directProbeNoRuntimeError", errorNumber = 0
+                        AssertTrue stats, prefix & ".directProbeAttempt", Not probeSolver Is Nothing
+                        AppendLine stats, "EXTREME_FORMATION_PROBE: " & prefix & "|error=" & CStr(errorNumber) & _
+                            "|evaluated=" & CStr(evaluated) & "|" & errorDescription
+                    End If
+                Next direction
+            Next magnitude
+            calculator.SolverLoadSteps = 8: calculator.SolverMaxIterations = 100
+            load.Initialize -20000#, -15000000#, 0#, 0#, 0#
+            Set result = calculator.CheckFormation(section, provider, TestCrackedStateSpec(), _
+                TestCrackInitiationSpec(), -20000#, -15000000#, 0#, load, 0#, 0#)
+            prefix = "audit03.extremeFormation.recovery." & CStr(extended) & "." & CStr(strategy)
+            AssertTrue stats, prefix & ".success", result.ResultMeta.InternalStatus = rsSuccess Or _
+                result.ResultMeta.InternalStatus = rsSuccessWithWarning
+            AssertTrue stats, prefix & ".point", result.HasLimitPoint
+        Next strategy
+    Next extended
+End Sub

@@ -334,7 +334,6 @@ Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSyste
     ApplyHeaderSubscripts target
 End Sub
 
-' Заполняет обозначения одной плоскости СП 35.
 ' Формирует заголовок запаса для ветви СП 35 ec > r.
 ' В нем показывается не условное k, а фактический лимит N/Ncr,
 ' заданный пользователем в Stability.SP35.NOverNcrLimit.
@@ -406,7 +405,6 @@ Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalcul
     target.Offset(HEADER_ROWS, 0).Resize(dataRows, TOTAL_COLUMNS).Value2 = data
 End Sub
 
-' Заполняет одну строку LC: общий итог, общие исходные величины и выбранный блок СП.
 ' Возвращает позицию LC внутри data-части подробной таблицы.
 ' Основной поток читает offset из rngLoadCombinations; прямые тесты без offset продолжают выводиться компактно.
 Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal dataRows As Long) As Long
@@ -431,7 +429,7 @@ Private Function MetaComment(ByVal meta As CResultMeta) As String
     MetaComment = meta.ResultComment
 End Function
 
-' Заполняет одну строку устойчивости готовыми результатами и своим комментарием.
+' Заполняет строку готовыми величинами и комментарием результата устойчивости.
 ' Подробные числовые поля доступны только завершенной проверке; активная ветвь
 ' СП 35/СП 63 выбирается по сохраненному результату, без повторения формул.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _

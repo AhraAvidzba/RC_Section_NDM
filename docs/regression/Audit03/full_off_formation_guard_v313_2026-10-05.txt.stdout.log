@@ -1,0 +1,5 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_formation_guard_v313.xlsm
+SOURCE_SHA256: E5F304C016C32A02305221660ECE39E1F932FEABB5363C7659E5D60041B44D56
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f365a2db63bc4e26920bff196601982e\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+SCRIPT ERROR: Аргументы macro/save-reopen допускаются только для одной явно выбранной проверки.

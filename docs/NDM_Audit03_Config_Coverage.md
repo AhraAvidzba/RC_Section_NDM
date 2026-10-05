@@ -746,3 +746,13 @@ matrices/full suites остаются отдельными незавершен�
 Итого directed address coverage: 1064/1064. `FullAcceptance=False`
 сохранен явно: selector runtime, широкая актуальная матрица, full-range,
 mutation sensitivity, release/update/self-audit не подменяются этой суммой.
+
+## Матрица Селекторов v306
+
+Полный runner завершил 62/62 группы: 4464 независимых путевых случая,
+302 покрытые пары и 48 рискованных четверок. Машинная сводка:
+`docs/regression/Audit03/selector_summary_v306_full_2026-10-05.json`;
+`FullSelectorAcceptance=True`, source unchanged=True, exit=0.
+Приемка относится к перечисленным селекторам/нагрузкам и численному срезу
+v306. Она не означает исчерпывающую проверку всех Double, замену mutation
+gates или полную приемку Audit03; общий `FullAcceptance=False` сохраняется.

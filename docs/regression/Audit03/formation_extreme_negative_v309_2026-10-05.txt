@@ -1,0 +1,749 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_formation_extreme_negative_v309.xlsm
+SOURCE_SHA256: 670E5DD16B433CA247982CCD87796E162646379D6FACB62CD93DDE1C59B48921
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7c5a230abdf145cd960dfd7ec529781a\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCrackWidth.RunAudit03ExtremeFormationTests =====
+SUITE_STARTED: modTestCrackWidth.RunAudit03ExtremeFormationTests; 2026-10-05T05:28:26
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222371840; privateBytes=174055424; cpu=18024.75
+EXCEL_AFTER_SUITE: pid=25084; workingSet=144109568; privateBytes=97288192; cpu=5.46875
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.0|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.1|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.2|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.2|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.3|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.3|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.4|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.5|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.0|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.1|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.2|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.2|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.3|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.3|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.4|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.5|error=0|
+OK: audit03.extremeFormation.recovery.False.UltimateStrain.success
+OK: audit03.extremeFormation.recovery.False.UltimateStrain.point
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.0|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.0|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.1|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.1|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.2|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.2|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.2|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.3|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.3|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.3|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.4|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.4|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.5|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.5|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.0|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.0|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.1|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.1|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.2|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.2|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.2|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.3|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.3|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.3|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.4|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.4|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.reasonPresent
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.5|error=0|
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.5|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.recovery.False.LoadMultiplier.success
+OK: audit03.extremeFormation.recovery.False.LoadMultiplier.point
+OK: audit03.extremeFormation.False.Auto.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.0.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.0.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.0.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+160.0.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.0.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.0|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.1.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.1.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.1.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+160.1.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.1.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.1|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.2.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.2.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.2.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+160.2.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.2.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.2|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.2|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.3.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.3.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.3.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+160.3.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.3.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.3|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.3|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.4.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.4.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.4.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+160.4.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.4.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.4|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.5.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.5.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.5.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+160.5.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.5.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.5|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.0.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.0.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.0.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+308.0.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.0.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.0|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.1.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.1.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.1.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+308.1.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.1.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.1|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.2.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.2.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.2.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+308.2.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.2.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.2|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.2|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.3.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.3.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.3.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+308.3.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.3.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.3|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.3|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.4.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.4.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.4.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+308.4.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.4.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.4|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.5.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.5.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.5.reasonPresent
+FAIL: audit03.extremeFormation.False.Auto.1E+308.5.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.5.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.5|error=0|
+OK: audit03.extremeFormation.recovery.False.Auto.success
+OK: audit03.extremeFormation.recovery.False.Auto.point
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.0|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.1|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.2|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.2|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.3|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.3|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.4|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.5|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.0|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.1|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.2|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.2|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.3|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.3|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.4|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.5|error=0|
+OK: audit03.extremeFormation.recovery.True.UltimateStrain.success
+OK: audit03.extremeFormation.recovery.True.UltimateStrain.point
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.0|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.0|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.1|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.1|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.2|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.2|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.2|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.3|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.3|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.3|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.4|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.4|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.5|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.5|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.0|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.0|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.1|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.1|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.2|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.2|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.2|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.3|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.3|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.3|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.4|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.4|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.reasonPresent
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.5|error=0|
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.directProbeNoRuntimeError
+FAIL: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.5|error=6|evaluated=False|Overflow
+OK: audit03.extremeFormation.recovery.True.LoadMultiplier.success
+OK: audit03.extremeFormation.recovery.True.LoadMultiplier.point
+OK: audit03.extremeFormation.True.Auto.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.0.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.0.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.0.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+160.0.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.0.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.0|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.1.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.1.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.1.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+160.1.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.1.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.1|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.2.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.2.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.2.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+160.2.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.2.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.2|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.2|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.3.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.3.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.3.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+160.3.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.3.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.3|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.3|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.4.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.4.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.4.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+160.4.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.4.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.4|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.5.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.5.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.5.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+160.5.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.5.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.5|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.0.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.0.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.0.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+308.0.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.0.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.0|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.1.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.1.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.1.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+308.1.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.1.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.1|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.2.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.2.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.2.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+308.2.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.2.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.2|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.2|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.3.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.3.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.3.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+308.3.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.3.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.3|status=6|code=10|comment=Путь λ*My: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.3|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.4.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.4.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.4.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+308.4.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.4.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.4|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.5.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.5.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.5.reasonPresent
+FAIL: audit03.extremeFormation.True.Auto.1E+308.5.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.5.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow Путь λ*N: Поиск предельного множителя нагрузки не выполнен: Overflow Итоговый путь λ*NMxy: Расширение интервала предельного множителя нагрузки не выполнен: Overflow
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.5|error=0|
+OK: audit03.extremeFormation.recovery.True.Auto.success
+OK: audit03.extremeFormation.recovery.True.Auto.point
+TOTAL_AUDIT03_EXTREME_FORMATION: passed=468; failed=96
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7c5a230abdf145cd960dfd7ec529781a\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCrackWidth.RunAudit03ExtremeFormationTests; 2026-10-05T05:28:29
+RESULTS_SAVE_REOPEN: before=9C94ACB36F3FB2AECA520E4F5A4E07CB40C3C1E1ABD72E74576E2FEB2281E38D; after=9C94ACB36F3FB2AECA520E4F5A4E07CB40C3C1E1ABD72E74576E2FEB2281E38D; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7c5a230abdf145cd960dfd7ec529781a\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=01E8F0949A735857C2EFBBB46916247AF70F2BFA4077FBD9F776684AFE845152; after=01E8F0949A735857C2EFBBB46916247AF70F2BFA4077FBD9F776684AFE845152; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_formation_extreme_v310.xlsm
+SOURCE_SHA256: B26ACECBB3ACC86C3CDDB42867A6C8A6FB0C64E31912A4F358C1C838E40E40E4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_9cfec8402b784d1e9bf13de89ec1b346\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_AUDIT03_MULTIPLIER_TYPED: passed=1326; failed=0
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

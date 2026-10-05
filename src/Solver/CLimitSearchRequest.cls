@@ -36,7 +36,7 @@ Private mMyBase As Double ' Масштабируемая часть My.
 Private mForceOnly As Boolean ' True, если выбранная capacity-траектория масштабирует только N.
 Private mPureAxialForMethod As Boolean ' True, если после переноса к расчетному центру траектория остается чисто осевой.
 Private mResultKind As EResultKind ' Инженерный смысл поиска: capacity, crack formation и т.п.
-Private mCrackFormationPath As String ' Auto, LambdaMxy, LambdaN или LambdaNMxy для образования трещины.
+Private mCrackFormationPath As String ' Текущий общий путь LambdaMx/My/Mxy/N/NMxy; при низкоуровневом запросе допустим Auto.
 Private mTargetN As Double ' Полная N текущего сочетания для служебных стартов CrackFormation.
 Private mTargetMx As Double ' Полный Mx текущего сочетания во внутренней системе координат.
 Private mTargetMy As Double ' Полный My текущего сочетания во внутренней системе координат.

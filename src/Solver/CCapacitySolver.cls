@@ -12,10 +12,11 @@ Option Explicit
 ' ==========================================================================
 ' Поиск несущей способности сечения
 ' ==========================================================================
-' Класс определяет предельное состояние поверх готового решателя равновесия.
-' Само равновесие epsilon0/kappaX/kappaY всегда ищет CSectionSolver, а здесь
-' решается внешняя задача: какой предельный множитель или какая предельная
-' плоскость деформаций соответствует заданному N + Mx + My.
+' Класс готовит strength-критерий, стартовые плоскости и итог несущей способности.
+' Численные циклы выполняют общие CLoadMultiplierSearch/CUltimateStrainSearch.
+' Обычные пробные НДС решает CStateSolutionRunner; для предельной плоскости
+' общий Search использует оценку усилий CSectionSolver и доменные невязки.
+' Локальные пробные точки не публикуются как конечные named states.
 '
 ' На вход класса передается универсальная траектория нагрузки:
 ' N = N0 + lambda*Nbase, Mx = Mx0 + lambda*Mxbase, My = My0 + lambda*Mybase.
@@ -104,8 +105,9 @@ Private mProbeCacheSolver(1 To PROBE_CACHE_SIZE) As CSectionSolver ' Solver-со
 ' ------------------------------
 ' Настройки по умолчанию
 ' ------------------------------
-' Эти значения используются в модульных тестах и как запасной набор, если
-' книга еще не передала настройки с листа Config.
+' Начальные значения предназначены для автономного API и модульных тестов.
+' Пользовательский Batch получает обязательные настройки через calculator;
+' отсутствующий или неверный ввод книги не заменяется этим набором.
 Private Sub Class_Initialize()
     mConcreteCompressionLimit = -0.0035
     mConcreteTensionLimit = 0.00015
@@ -781,8 +783,9 @@ Public Function LimitSearchReduceCapacityLambdaAfterNumericalFailure(ByVal lowLa
     LimitSearchReduceCapacityLambdaAfterNumericalFailure = ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
 End Function
 
-' Сохраняет последний acceptable-result для чисто осевой силовой траектории,
-' если физический предел не удалось отделить численно.
+' Проверяет предельную плоскость силовой траектории из удержанного старта.
+' Одна последняя acceptable-проба без подтверждения усилий и физического
+' предела не становится успешным результатом несущей способности.
 Public Sub LimitSearchAcceptPureAxialRetainedCapacity(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector)
@@ -1194,28 +1197,6 @@ Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, 
         SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным."
     Else
         ValidateLoadPathCapacityInputs = True
-    End If
-End Function
-
-' Проверяет модель, материалы и ненулевой масштабируемый вектор момента
-' для поиска при фиксированной продольной силе. Отказ сохраняется typed:
-' ошибка модели/ввода/настройки не подменяется численной несходимостью.
-Private Function ValidateCapacityInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
-        ByVal steelMaterial As Object, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
-    If section Is Nothing Then
-        SetInternalError "Модель сечения не передана расчетчику несущей способности."
-    ElseIf section.ConcreteCount <= 0 Then
-        SetInvalidInput "В модели сечения нет бетонных элементов."
-    ElseIf concreteMaterial Is Nothing Then
-        SetInternalError "Материал бетона не передан расчетчику несущей способности."
-    ElseIf steelMaterial Is Nothing Then
-        SetInternalError "Материал арматуры не передан расчетчику несущей способности."
-    ElseIf Sqr(mxBase * mxBase + myBase * myBase) <= 0.000000001 Then
-        SetInvalidInput "Базовый вектор момента должен быть ненулевым."
-    ElseIf mSolverMaxIterations <= 0 Then
-        SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным."
-    Else
-        ValidateCapacityInputs = True
     End If
 End Function
 
@@ -1663,9 +1644,9 @@ Private Function ClassifyNumericalFailure(ByVal failureCode As ESolverFailureCod
     End Select
 End Function
 
-' Запоминает последнюю сходящуюся lambda-точку. Она используется как warm-start
-' для следующих lambda и как fallback, если верхняя физическая граница не
-' найдена из-за численной несходимости.
+' Запоминает найденную допустимую lambda-точку для warm-start и финализации
+' подтвержденной физической скобки. Если верхняя граница не найдена, эта точка
+' остается диагностикой или стартом, а не готовой несущей способностью.
 Private Sub RecordAcceptableState(ByVal solver As CSectionSolver, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
     Set mLastAcceptableSolver = solver
     mLastAcceptableN = nValue
@@ -1673,9 +1654,9 @@ Private Sub RecordAcceptableState(ByVal solver As CSectionSolver, ByVal nValue A
     mLastAcceptableMy = myValue
 End Sub
 
-' Уменьшает верхнюю границу lambda после NumericalFailure. Если интервал уже
-' слишком мал, поиск возвращает последнюю acceptable-точку вместо того, чтобы
-' выдавать неустойчивый физический предел.
+' Уменьшает верхнюю границу lambda после численной неудачи. Если интервал уже
+' слишком мал, сохраняет последнюю сходящуюся точку для диагностики, не объявляя
+' физический предел установленным. Общий Search сохраняет неуспешный исход.
 Private Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, ByVal highLambda As Double, ByVal probeState As String) As Double
     Dim reduced As Double
     reduced = lowLambda + (highLambda - lowLambda) / 2#
@@ -1717,7 +1698,9 @@ Private Function NormalizedSearchMethod() As String
     End Select
 End Function
 
-' Проверяет, что число конечно и пригодно для дальнейшей арифметики.
+' Проверяет техническую пригодность числа для дальнейшей арифметики Search.
+' Граница 1e100 ограничивает промежуточные произведения, а не физический
+' диапазон диаграммы и не означает доказанного предельного состояния.
 Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     If value <> value Then Exit Function
     If Abs(value) > 1E+100 Then Exit Function

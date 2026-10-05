@@ -1,0 +1,320 @@
+﻿{
+    "IndependentPathCases":  4464,
+    "FullSelectorAcceptance":  true,
+    "Completed":  [
+                      {
+                          "Id":  "Selector_001",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_001_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_002",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_002_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_003",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_003_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_004",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_004_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_005",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_005_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_006",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_006_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_007",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_007_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_008",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_008_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_009",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_009_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_010",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_010_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_011",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_011_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_012",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_012_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_013",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_013_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_014",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_014_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_015",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_015_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_016",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_016_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_017",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_017_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_018",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_018_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_019",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_019_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_020",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_020_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_021",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_021_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_022",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_022_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_023",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_023_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_024",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_024_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_025",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_025_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_026",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_026_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_027",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_027_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_028",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_028_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_029",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_029_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_030",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_030_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_031",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_031_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_032",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_032_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_033",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_033_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_034",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_034_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_035",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_035_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_036",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_036_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_037",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_037_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_038",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_038_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_039",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_039_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_040",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_040_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_041",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_041_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_042",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_042_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_043",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_043_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_044",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_044_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_045",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_045_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_046",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_046_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_047",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_047_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_048",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_048_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_049",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_049_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_050",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_050_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_051",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_051_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_052",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_052_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_053",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_053_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_054",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_054_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_055",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_055_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_056",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_056_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_057",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_057_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_058",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_058_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_059",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_059_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_060",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_060_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_061",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_061_v306_full_2026-10-05.txt"
+                      },
+                      {
+                          "Id":  "Selector_062",
+                          "Reused":  false,
+                          "Report":  "docs/regression/Audit03/selector_Selector_062_v306_full_2026-10-05.txt"
+                      }
+                  ],
+    "SourceUnchanged":  true,
+    "OriginalSourceSHA256":  "792233E6FDEB200364A7AA4036F88BD9CBE0C44EC3A5EA6BCB888FD323D3BD5C",
+    "CaseCount":  62,
+    "MatrixSHA256":  "51DFE76453896EDA9B9D2B588AA8C3407BBB58C7887698A086BD5AB53DDF2FF5"
+}

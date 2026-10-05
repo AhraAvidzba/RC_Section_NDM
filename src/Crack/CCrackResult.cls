@@ -176,8 +176,8 @@ Private Sub AppendDependentComment(ByVal meta As CResultMeta, ByRef comment As S
 End Sub
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Закрывает Formation, Width и Longitudinal вместе с их агрегатом, не
+' пересчитывая проверки. Повторный вызов безопасен для общих ссылок workflow.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mFormation Is Nothing Then mFormation.Freeze

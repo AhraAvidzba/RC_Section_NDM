@@ -346,8 +346,8 @@ Friend Sub SetDiagramExtensionEnabled(ByVal value As Boolean)
 End Sub
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Закрывает все три расчетных поддерева и repository данного LC. Общие
+' State-ссылки не дублируются; повторный вызов безопасен для публикации.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mStrengthResult Is Nothing Then mStrengthResult.Freeze

@@ -124,8 +124,8 @@ Public Sub MergeDirectMeta(ByVal meta As CResultMeta)
 End Sub
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
-' Повторный вызов безопасен; общие ссылки на named-state остаются теми же,
-' но их fill/reset API больше не могут изменить опубликованный результат.
+' Закрывает direct-state и capacity поддеревья вместе с агрегатом прочности.
+' Повторный вызов безопасен; вычисленные данные остаются в своих владельцах.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mDirectState Is Nothing Then mDirectState.Freeze

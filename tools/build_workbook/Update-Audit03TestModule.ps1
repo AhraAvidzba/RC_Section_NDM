@@ -1,5 +1,6 @@
-# Imports a standard test module into an isolated Audit03 fixture.
-# Production code is not replaced, so the same reproducer can test old behavior.
+# Обновляет тестовый модуль в изолированной Audit03-книге, не меняя production.
+# Для существующего CTestLimitSearchProblem разрешена замена тела, но не
+# создание нового класса: так усиленный reproducer проверяет прежний Search.
 param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
     [string]$TestModule = 'modTestBatchCalculation',
@@ -11,9 +12,18 @@ $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $bookPath = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Audit03')) + [IO.Path]::DirectorySeparatorChar
 if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) { throw 'Only isolated Audit03 fixtures may be modified.' }
-if ($TestModule -notmatch '^modTest[A-Za-z0-9]+$') { throw 'Expected a standard test module.' }
-$source = Join-Path $root ("tests/$TestModule.bas")
-$body = ([IO.File]::ReadAllText($source, [Text.Encoding]::UTF8) -split '\r?\n' | Where-Object { $_ -notmatch '^Attribute VB_' }) -join "`r`n"
+$isTestClass = $TestModule -eq 'CTestLimitSearchProblem'
+if (-not $isTestClass -and $TestModule -notmatch '^modTest[A-Za-z0-9]+$') { throw 'Expected an approved test module.' }
+$extension = if ($isTestClass) { 'cls' } else { 'bas' }
+$source = Join-Path $root ("tests/$TestModule.$extension")
+$sourceLines = [IO.File]::ReadAllText($source, [Text.Encoding]::UTF8) -split '\r?\n'
+if ($isTestClass) {
+    $start = [Array]::IndexOf($sourceLines, 'Option Explicit')
+    if ($start -lt 0) { throw 'Test class must have Option Explicit.' }
+    $body = ($sourceLines | Select-Object -Skip $start) -join "`r`n"
+} else {
+    $body = ($sourceLines | Where-Object { $_ -notmatch '^Attribute VB_' }) -join "`r`n"
+}
 $printAreas = @(Get-WorkbookPrintAreas $bookPath)
 $excel = $null
 $book = $null
@@ -28,10 +38,12 @@ try {
         if ($candidate.Name -eq $TestModule) { $component = $candidate; break }
     }
     if ($null -eq $component) {
+        if ($isTestClass) { throw 'The approved test class must already exist in the fixture.' }
         $component = $book.VBProject.VBComponents.Add(1)
         $component.Name = $TestModule
     }
-    if ($component.Type -ne 1) { throw 'Only standard test modules may be replaced.' }
+    $expectedType = if ($isTestClass) { 2 } else { 1 }
+    if ($component.Type -ne $expectedType) { throw 'Unexpected test component type.' }
     $module = $component.CodeModule
     if ($module.CountOfLines -gt 0) { $module.DeleteLines(1, $module.CountOfLines) }
     $module.AddFromString($body)
