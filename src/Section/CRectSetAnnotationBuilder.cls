@@ -17,6 +17,8 @@ Option Explicit
 ' CPlotDimension и CPlotRebarLabel, но не решает, как эти подписи будут
 ' разведены по lanes на листе.
 
+' Заменяет аннотации модели контуром, размерами активных прямоугольников
+' и подписями арматуры. Расчетное сечение и его НДС здесь не пересчитываются.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5300, "CRectSetAnnotationBuilder", "Модель сечения не передана."
     If geometry Is Nothing Then Err.Raise vbObjectError + 5301, "CRectSetAnnotationBuilder", "Геометрия RectSet-сечения не передана."

@@ -246,6 +246,12 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
     mSearchExecuted = True
+    Select Case mUltimateScenario
+        Case 18: Err.Raise 6
+        Case 19: Err.Raise 9
+        Case 20: Err.Raise 6, "CTestLimitSearchProblem", "Тестовое переполнение стартовой плоскости."
+        Case 21: Err.Raise 9, "CTestLimitSearchProblem", "Тестовое нарушение подготовки стартовой плоскости."
+    End Select
     eps0 = mUltimateInitialEps: kx = 0#: ky = 0#
 End Sub
 
@@ -275,6 +281,14 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
                 Err.Raise 9, "CTestLimitSearchProblem", "Тестовое нарушение программного контракта."
             Case 11
                 Err.Raise 6, "CTestLimitSearchProblem", "Тестовое переполнение численной операции."
+            Case 14
+                Err.Raise 6
+            Case 15
+                Err.Raise 9
+            Case 16
+                Err.Raise 11
+            Case 17
+                Err.Raise 11, "CTestLimitSearchProblem", "Тестовое деление на ноль."
         End Select
     End If
     rPath1 = kx

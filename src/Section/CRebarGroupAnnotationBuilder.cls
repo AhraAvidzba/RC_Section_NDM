@@ -16,6 +16,8 @@ Option Explicit
 ' 6Ø32 или 6Ø32 + 3Ø20. Он не ищет стержни по координатам: принадлежность
 ' к грани должна прийти от конкретного rebar builder-а.
 
+' Дополняет существующие аннотации подписями по готовым смысловым группам
+' и диаметрам. Контуры не очищает, принадлежность стержней к граням не меняет.
 Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars As CRebarLayout)
     If annotations Is Nothing Then Err.Raise vbObjectError + 5290, "CRebarGroupAnnotationBuilder", "Коллекция аннотаций не передана."
     If rebars Is Nothing Then Exit Sub

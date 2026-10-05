@@ -176,6 +176,8 @@ Public Sub ValidateSettings(ByVal codeText As String, ByVal elementLength As Dou
         "Коэффициент расчетной длины плоскости 1 должен быть положительным.", "Задайте число больше нуля.", settings
     If mu2 <= 0# Then RaiseSettingInput "Stability.Mu2", _
         "Коэффициент расчетной длины плоскости 2 должен быть положительным.", "Задайте число больше нуля.", settings
+    ValidateEffectiveLengthRange elementLength, mu1, "Stability.Mu1", settings
+    ValidateEffectiveLengthRange elementLength, mu2, "Stability.Mu2", settings
     If StrComp(Trim$(systemType), SYSTEM_DETERMINATE, vbTextCompare) <> 0 And _
             StrComp(Trim$(systemType), SYSTEM_INDETERMINATE, vbTextCompare) <> 0 Then _
         RaiseSettingInput "Stability.SystemType", "Неизвестная расчетная схема.", _
@@ -208,6 +210,32 @@ Public Sub ValidateSettings(ByVal codeText As String, ByVal elementLength As Dou
         "Коэффициент должен быть положительным.", "Введите число больше нуля.", settings
     If sp35NOverNcrLimit <= 0# Then RaiseSettingInput "Stability.SP35.NOverNcrLimit", _
         "Предельное отношение N/Ncr должно быть положительным.", "Введите число больше нуля.", settings
+End Sub
+
+' Проверяет представимость произведения двух уже положительных INPUT-значений.
+' Это техническая граница арифметики, не нормативный предел длины или mu.
+' При переполнении сообщает обе участвующие ячейки до геометрии и расчета.
+Private Sub ValidateEffectiveLengthRange(ByVal elementLength As Double, ByVal mu As Double, _
+        ByVal muKey As String, ByVal settings As CSystemSettingsReader)
+    On Error GoTo ArithmeticFailed
+    Dim effectiveLength As Double
+    effectiveLength = elementLength * mu
+    Exit Sub
+ArithmeticFailed:
+    Dim number As Long, description As String
+    number = Err.Number: description = Err.Description
+    Err.Clear
+    If number <> 6 Then Err.Raise number, "CStabilityCalculator", description
+    Dim reason As String, correction As String, message As String
+    reason = "Произведение длины элемента L и коэффициента расчетной длины выходит за допустимый диапазон арифметики."
+    correction = "Уменьшите длину L или коэффициент " & muKey & "; проверьте INPUT-единицу длины."
+    If settings Is Nothing Then
+        message = "Настройки Stability.ElementLength и " & muKey & ": " & reason & " " & correction
+    Else
+        message = settings.InputErrorMessage("Stability.ElementLength", reason, correction) & " " & _
+            settings.InputErrorMessage(muKey, "Этот коэффициент участвует в том же произведении L·mu.", vbNullString)
+    End If
+    RaiseInput message
 End Sub
 
 ' Выполняет расчет по выбранному нормативному блоку и возвращает расчетные

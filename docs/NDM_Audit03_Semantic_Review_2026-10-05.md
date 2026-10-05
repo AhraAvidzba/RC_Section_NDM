@@ -166,16 +166,41 @@ shape/builders и передает нормализованные размеры
 22. Глобальный поиск src/tests/tools подтвердил отсутствие callers у
     `AggregateExternalStatus`; `AggregateMeta` вызывают только три assertions.
     Production уже использует `WorstResultMeta` и `ExternalStatus`. Удаление
-    этих неиспользуемых оберток и private Merge остается планируемой частью
-    A03/A05, а не выполненным изменением. В `CStabilityResult.Freeze`
-    обнаружен чужой комментарий о named-state; исполняемый метод корректен.
+    этих неиспользуемых оберток и private Merge выполнено в рамках A03/A05.
+    Три assertions переведены на действующий typed API с прежними ID/expected;
+    v315 result/writer/policy gate `3641/0`. В `CStabilityResult.Freeze`
+    исправлен чужой комментарий о named-state; исполняемый метод не менялся.
 23. `CUltimateStrainSearch.ReportArithmeticOrContractFailure` требует
     directed проверки стандартных VBA 6/9/11 и точного SetFailure reason:
     нынешние custom-Russian fixtures не доказывают локализацию стандартного
     сообщения. Ошибка деления на ноль классифицируется этим helper-ом как
     internal, в отличие от действующего численного LoadMultiplier boundary.
-    Новые negative/positive gates еще не выполнены; изменение статуса по тексту
-    или правка expected values вместо исправления helper-а недопустимы.
+    Negative v314 `674/82` подтвердил проблему; positive v315 `756/0` проверил
+    исправление helper-а, точную callback-причину и recovery. Новые cases
+    дополняют прежние, не ослабляют expected values/допуски.
+24. Полностью прочитаны `CMaterialModelSpec`, `CLinearConcreteMaterial`,
+    `CLinearSteelMaterial` и `CMomentZeroFilter`. Spec очищает completeness
+    до разбора и клонирует нормализованную модель; filter не смешивается
+    с solver tolerance. У линейного тестового бетона уточнена шапка: в нем
+    нет физических ограничений, вопреки прежнему описанию. Исправлены только
+    комментарии и единицы полей линейных fixtures, не формула E*epsilon.
+25. Полностью прочитаны `CSectionModelBuilder`, `CRebarLayout` и пять
+    annotation builders: Circle, RectSet, RoundedRectangle, HollowRectangle
+    и RebarGroup. Builder переносит подготовленные геометрические данные
+    в единую модель; layout хранит массивы и смысловые группы, а не Excel.
+    Shape-аннотации заменяют прежний визуальный снимок; RebarGroup только
+    дополняет его подписями существующих групп. Этот побочный эффект пока
+    был не описан у трех Build и AddRebarLabels; выполнена comment-only правка.
+    Наблюдение не означает повторной runtime/CAD приемки.
+26. Устойчивость: negative v316 `8492/180` подтвердил ошибку технического
+    диапазона L*mu: generic английский Overflow при сжатии и пропуск
+    невалидной пары при растяжении. 24 случая и восемь recovery проверяются
+    в исходном и перемещенном диапазонах. Новый preflight ограничен самим
+    переполнением произведения, не задает нормативной верхней границы.
+    Positive v317 завершен `8720/0`, Results/style save-reopen=True,
+    source unchanged=True. Все 266 численных assertions обычного Stability
+    из full v313 совпали точно. Остальные экстремальные арифметические
+    выражения не объявляются автоматически проверенными этим gate.
 
 ## Приемочные Gates
 

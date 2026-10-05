@@ -3961,6 +3961,12 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     AssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 23).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.es", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 41).Value2) = "Es, MPa"
+    AssertTrue stats, "batch.writer.crack.header.widthTitle", _
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 41).Value2) = "ширина раскрытия нормальных трещин"
+    AssertTrue stats, "batch.writer.crack.header.widthMerge", _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 41).MergeArea.Column = 41 And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 41).MergeArea.Columns.Count = 5 And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 41).MergeArea.Rows.Count = 1
     AssertTrue stats, "batch.writer.crack.header.normalStatusRu", _
         CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 45).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.longStatusRu", _
@@ -4715,12 +4721,13 @@ Private Sub TestResultMetaAggregateSkipsNotApplicable(ByRef stats As TBatchTestS
     Set failedMeta = New CResultMeta
     failedMeta.SetResult rsCheckFailed, rcCheckFailed, rkCrackWidth, vbNullString
 
-    AssertEquals stats, "resultMeta.aggregate.okWithNA", _
-        policy.AggregateMeta(directMeta, skippedMeta, Nothing), "OK"
-    AssertEquals stats, "resultMeta.aggregate.failWithNA", _
-        policy.AggregateMeta(directMeta, skippedMeta, failedMeta), "FAIL"
-    AssertEquals stats, "resultMeta.aggregate.onlyNA", _
-        policy.AggregateMeta(skippedMeta, Nothing, Nothing), "N/A"
+    Dim aggregate As CResultMeta
+    Set aggregate = policy.WorstResultMeta(rkGeneric, directMeta, skippedMeta, Nothing)
+    AssertEquals stats, "resultMeta.aggregate.okWithNA", policy.ExternalStatus(aggregate), "OK"
+    Set aggregate = policy.WorstResultMeta(rkGeneric, directMeta, skippedMeta, failedMeta)
+    AssertEquals stats, "resultMeta.aggregate.failWithNA", policy.ExternalStatus(aggregate), "FAIL"
+    Set aggregate = policy.WorstResultMeta(rkGeneric, skippedMeta, Nothing, Nothing)
+    AssertEquals stats, "resultMeta.aggregate.onlyNA", policy.ExternalStatus(aggregate), "N/A"
 End Sub
 
 ' Проверяет финальный result-tree: display вычисляется из канонической meta,

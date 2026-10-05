@@ -16,6 +16,8 @@ Option Explicit
 ' tapered-части и групповые подписи арматуры. Он не строит расчетную сетку и
 ' не принимает решений по NDM: это только semantic-слой для Results/схемы.
 
+' Заменяет аннотации модели точным контуром, размерами и подписями арматуры.
+' Передает внутренние координаты визуальному слою, не изменяя сетку или НДС.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5305, "CRoundedRectAnnotationBuilder", "Модель сечения не передана."
     If geometry Is Nothing Then Err.Raise vbObjectError + 5306, "CRoundedRectAnnotationBuilder", "Геометрия скругленного прямоугольника не передана."

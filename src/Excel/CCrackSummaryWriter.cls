@@ -415,7 +415,6 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     PutLongitudinalData data, rowIndex, batch, index, units, policy
 End Sub
 
-' Записывает данные проверки стадии образования нормальной трещины.
 ' Возвращает позицию LC внутри data-части подробной таблицы.
 ' Основной поток читает offset из rngLoadCombinations; прямые тесты без offset продолжают выводиться компактно.
 Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal dataRows As Long) As Long

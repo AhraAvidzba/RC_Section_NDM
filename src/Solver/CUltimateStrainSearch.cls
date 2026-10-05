@@ -356,14 +356,35 @@ Private Sub LimitUltimateIncrement(ByVal context As ILimitSearchProblem, ByRef d
     dKy = dKy * scaleFactor
 End Sub
 
-' Переполнение численной арифметики не означает физический предел. Другие
-' неожиданные VBA-ошибки относятся к программному контракту и дают CalcErr.
+' Переполнение или деление на ноль в численном шаге не означают физический
+' предел. Другие VBA-ошибки относятся к программному контракту; исходные
+' номер/текст сохраняются в журнале, а пользователь получает русскую причину.
 Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProblem, _
         ByVal stage As String, ByVal errorNumber As Long, ByVal description As String)
     If context.StoppedTerminally Then Exit Sub
     Dim failureCode As ESolverFailureCode
-    If errorNumber = 6 Then failureCode = sfcNumericalFailure Else failureCode = sfcInternalError
-    context.SetFailure failureCode, stage & " не выполнен: " & description
+    Dim reason As String
+    context.AppendDiagnostic "ultimateRuntimeError=" & CStr(errorNumber) & "; stage=" & stage & _
+        "; description=" & description
+    If errorNumber = 6 Or errorNumber = 11 Then
+        failureCode = sfcNumericalFailure
+        reason = stage & ": не удалось вычислить численный шаг; число выходит за допустимый диапазон арифметики."
+    Else
+        failureCode = sfcInternalError
+        reason = stage & ": внутренняя ошибка вычислений. Подробности сохранены в диагностическом журнале."
+    End If
+    ' Стандартное сообщение уже объяснено по-русски. Явно заданная причина
+    ' callback-а содержит его контекст и сохраняется без изменения; текст
+    ' используется только для представления, не для назначения статуса.
+    Dim standardDescription As String
+    ' При активном Err функция Error$(n) может вернуть custom Description.
+    ' Номер и исходная причина уже сохранены аргументами и журналом.
+    Err.Clear
+    If errorNumber >= 0 And errorNumber <= 65535 Then standardDescription = Error$(errorNumber)
+    If Len(description) > 0 And StrComp(description, standardDescription, vbBinaryCompare) <> 0 Then
+        reason = reason & " Причина: " & description
+    End If
+    context.SetFailure failureCode, reason
 End Sub
 
 ' Проверяет конечное число перед численным шагом; расчёт не зависит от Excel.

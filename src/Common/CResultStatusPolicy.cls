@@ -113,23 +113,8 @@ Public Function ToUserStatus(ByVal statusText As String) As String
     End Select
 End Function
 
-' Агрегирует несколько meta-результатов в худший внешний статус LC.
-' N/A не ухудшает итог и не перебивает реальные результаты.
-Public Function AggregateMeta(ByVal directMeta As CResultMeta, ByVal capacityMeta As CResultMeta, _
-        ByVal crackMeta As CResultMeta, Optional ByVal longitudinalMeta As CResultMeta = Nothing, _
-        Optional ByVal stabilityMeta As CResultMeta = Nothing) As String
-    Dim resultStatus As String
-    resultStatus = STATUS_NA
-    If Not directMeta Is Nothing Then resultStatus = Merge(resultStatus, ExternalStatus(directMeta))
-    If Not capacityMeta Is Nothing Then resultStatus = Merge(resultStatus, ExternalStatus(capacityMeta))
-    If Not crackMeta Is Nothing Then resultStatus = Merge(resultStatus, ExternalStatus(crackMeta))
-    If Not longitudinalMeta Is Nothing Then resultStatus = Merge(resultStatus, ExternalStatus(longitudinalMeta))
-    If Not stabilityMeta Is Nothing Then resultStatus = Merge(resultStatus, ExternalStatus(stabilityMeta))
-    AggregateMeta = resultStatus
-End Function
-
-' Выбирает худший готовый typed результат тем же единственным приоритетом,
-' что и display-агрегация. Сохраняет точный код/диагностику выбранной причины
+' Выбирает худший готовый typed результат по единому приоритету Overall.
+' Сохраняет точный код/диагностику выбранной причины
 ' и независимый snapshot; комментарий уже подготовлен владельцем поддерева.
 Public Function WorstResultMeta(ByVal fallbackKind As EResultKind, _
         ParamArray metas() As Variant) As CResultMeta
@@ -160,22 +145,6 @@ Public Function WorstResultMeta(ByVal fallbackKind As EResultKind, _
     Set WorstResultMeta = result
 End Function
 
-' Агрегирует уже внешние display-статусы там, где формат Results хранит их
-' плоскими строковыми полями. Этот метод не выводит внутренний смысл из текста,
-' а только выбирает худший из утвержденных внешних статусов.
-Public Function AggregateExternalStatus(ByVal directStateStatus As String, ByVal capacityStatus As String, _
-        ByVal crackStatus As String, Optional ByVal longitudinalCrackStatus As String = vbNullString, _
-        Optional ByVal stabilityStatus As String = vbNullString) As String
-    Dim resultStatus As String
-    resultStatus = STATUS_NA
-    resultStatus = Merge(resultStatus, directStateStatus)
-    resultStatus = Merge(resultStatus, capacityStatus)
-    resultStatus = Merge(resultStatus, crackStatus)
-    resultStatus = Merge(resultStatus, longitudinalCrackStatus)
-    resultStatus = Merge(resultStatus, stabilityStatus)
-    AggregateExternalStatus = resultStatus
-End Function
-
 ' True для расчетов, которые дали физически интерпретируемый результат.
 Public Function IsFinished(ByVal statusText As String) As Boolean
     statusText = ToUserStatus(statusText)
@@ -201,21 +170,6 @@ End Function
 ' источником статуса; для этого используется CResultMeta.
 Public Function IsInvalid(ByVal statusText As String) As Boolean
     IsInvalid = (ToUserStatus(statusText) = STATUS_INPUTERR)
-End Function
-
-' Объединяет два внешних статуса по единому приоритету.
-Private Function Merge(ByVal currentStatus As String, ByVal candidateStatus As String) As String
-    candidateStatus = ToUserStatus(candidateStatus)
-    currentStatus = ToUserStatus(currentStatus)
-    If candidateStatus = STATUS_NA Then
-        Merge = currentStatus
-    ElseIf currentStatus = STATUS_NA Then
-        Merge = candidateStatus
-    ElseIf StatusPriority(candidateStatus) > StatusPriority(currentStatus) Then
-        Merge = candidateStatus
-    Else
-        Merge = currentStatus
-    End If
 End Function
 
 ' Численный приоритет нужен только для выбора худшего OverallStatus.

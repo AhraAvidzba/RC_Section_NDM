@@ -1459,6 +1459,7 @@ Public Function RunAudit03StabilityConfigTests(Optional ByRef passed As Long = 0
         CheckStabilityConfigSP35 stats, table, configured, position, section, provider, units
         CheckStabilityConfigIsolation stats, table, configured, position, section, provider, units
         CheckStabilityConfigInput stats, table, configured, position, section, provider, units
+        CheckStabilityLengthRange stats, table, configured, position, section, provider, units
         CheckStabilityConfigUnits stats, table, configured, unitRange, configuredUnits, position, section, provider, units
         profileRange.Formula = configuredProfiles
     Next position
@@ -2115,3 +2116,55 @@ Public Function RunAudit03CapacityRetryRangeTests() As String
     LogLine stats, "TOTAL_CAPACITY_RETRY_RANGE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03CapacityRetryRangeTests = stats.Report
 End Function
+
+' ==================== ДЛЯ ТЕСТОВ: ДИАПАЗОН РАСЧЕТНОЙ ДЛИНЫ ====================
+
+' Конечные L и mu могут дать непредставимое произведение. Проверяет реальный
+' Config -> batch -> writer для обеих методик, сжатия/растяжения и переноса
+' именованной таблицы; ошибка должна показывать оба адреса до запуска расчета.
+Private Sub CheckStabilityLengthRange(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByRef configured As Variant, ByVal position As Long, ByVal section As CSectionModel, _
+        ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)
+    Dim code As Variant, force As Variant, scenario As Long, muKey As String, prefix As String
+    Dim batch As CBatchSectionCalculator, meta As CResultMeta, message As String
+    For Each code In Array("SP63", "SP35")
+        For Each force In Array(-10000#, 10000#)
+            For scenario = 1 To 3
+                table.Formula = configured
+                SetValue table, "Stability.Code", CStr(code)
+                muKey = "Stability.Mu1"
+                If scenario = 3 Then muKey = "Stability.Mu2"
+                If scenario = 1 Then
+                    SetValue table, "Stability.ElementLength", 1E+308
+                    SetValue table, muKey, 2#
+                Else
+                    SetValue table, muKey, 1E+308
+                End If
+                prefix = "audit03.stabilityLengthRange.p" & CStr(position) & "." & CStr(code) & _
+                    ".N" & CStr(force) & ".s" & CStr(scenario)
+                Set batch = StabilityConfigRun(stats, prefix, section, provider, units, CDbl(force), 0#, 0#)
+                Set meta = batch.ResultAt(1).StabilityMeta
+                message = batch.ResultAt(1).OverallMeta.ResultComment
+                Check stats, prefix & ".inputErr", batch.ResultAt(1).Status = "InputErr"
+                Check stats, prefix & ".notCalculated", Not meta.Calculated
+                Check stats, prefix & ".noStateSolve", batch.SolverCallCount = 0
+                Check stats, prefix & ".lengthKey", InStr(1, message, "Stability.ElementLength", vbBinaryCompare) > 0
+                Check stats, prefix & ".muKey", InStr(1, message, muKey, vbBinaryCompare) > 0
+                Check stats, prefix & ".lengthCell", InStr(1, message, _
+                    ValueCell(table, "Stability.ElementLength", 2).Address(False, False), vbTextCompare) > 0
+                Check stats, prefix & ".muCell", InStr(1, message, ValueCell(table, muKey, 2).Address(False, False), vbTextCompare) > 0
+                Check stats, prefix & ".action", InStr(1, message, "Уменьшите", vbTextCompare) > 0
+                Check stats, prefix & ".localized", InStr(1, message, "Overflow", vbTextCompare) = 0
+                LogLine stats, "STABILITY_LENGTH_RANGE: " & prefix & "|" & message
+            Next scenario
+            table.Formula = configured
+            SetValue table, "Stability.Code", CStr(code)
+            Set batch = StabilityConfigRun(stats, "audit03.stabilityLengthRange.recovery.p" & CStr(position) & _
+                "." & CStr(code) & ".N" & CStr(force), section, provider, units)
+            Check stats, "audit03.stabilityLengthRange.recovery.p" & CStr(position) & "." & CStr(code) & ".N" & CStr(force), _
+                batch.ResultAt(1).StabilityMeta.Calculated And batch.ResultAt(1).Status <> "InputErr" And _
+                batch.ResultAt(1).Status <> "CalcErr" And batch.ResultAt(1).Status <> "NumFail"
+        Next force
+    Next code
+    table.Formula = configured
+End Sub

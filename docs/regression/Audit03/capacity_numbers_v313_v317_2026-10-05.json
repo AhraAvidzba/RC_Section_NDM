@@ -1,0 +1,13 @@
+{
+  "BaselineReport": "docs/regression/Audit03/capacity_scope_from_full_v313_2026-10-05.txt",
+  "CurrentReport": "docs/regression/Audit03/capacity_stability_length_v317_2026-10-05.txt",
+  "BaselineSHA256": "E14E1CCB8E96F59F4AF022206FB491EEC8248B7EA300D4407F942EB788F8EA6E",
+  "CurrentSHA256": "57699C4C1057D512B2D6D9A86F2D05F2613D224037EDF26C249DA4BA1C74CFD9",
+  "BaselineNumericAssertions": 601,
+  "CurrentNumericAssertions": 641,
+  "Compared": 601,
+  "Missing": [],
+  "Differences": [],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": true
+}

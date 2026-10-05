@@ -16,7 +16,8 @@ Option Explicit
 ' размерные линии и групповые подписи арматуры. Расчетные волокна, материалы и
 ' solver-ы здесь не создаются: это только слой визуализации/AutoCAD export.
 
-' Формирует все аннотации для последнего расчетного снимка.
+' Заменяет аннотации модели наружным контуром, контуром отверстия, размерами
+' и подписями арматуры; бетонная сетка и расчетное НДС не изменяются.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5315, "CHollowRectAnnotationBuilder", "Модель сечения не передана."
     If geometry Is Nothing Then Err.Raise vbObjectError + 5316, "CHollowRectAnnotationBuilder", "Геометрия HollowRectangle не передана."

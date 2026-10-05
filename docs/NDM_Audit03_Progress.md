@@ -69,6 +69,45 @@
 
 ## Актуальная Точка Продолжения
 
+- Frozen v318 включает пять comment-only annotation правок поверх принятого
+  v317. Book SHA `C3F258A528B105CA60324E95D8F7C7203AC9E6E24808C3D6406453D142A6F6ED`;
+  actual VBE 113 компонентов, SourceContracts `108/108`, failed=0, export SHA
+  `6FFCF225A8B788055092C59631E49EA3F7E25FDE321D094C3F80F027C4E6C7BE`.
+  Широкая матрица запущена целиком в job 2639: 13 форм x Light/Stress x Off/On,
+  52 chunks и ожидаемые 22776 путевых случаев. Пока она не завершена,
+  ее нельзя объявлять PASS; checkpoint не является выпуском Audit03.
+- Checkpoint `4d89bac8` содержит проверенный v313-срез, полный Off и exact
+  comparison, а также 62-group selector evidence. Основной output и ТЗ
+  сохраняют прежние SHA; посторонние untracked файлы не включены.
+- Ultimate diagnostics: negative v314 `674/82`; positive v315 `756/0`,
+  source unchanged=True, Results/style save-reopen=True. Двадцать runtime
+  callback-попыток выявили отсутствие raw code/stage/Description, десять
+  standard messages не были локализованы; для деления на ноль ошибочно
+  назначался internal failure. Recovery на тех же объектах успешен.
+  Исправлен общий error-boundary, не Newton-критерии или допуски.
+- Result/policy/writer v315 `3641/0`, source unchanged=True, filled Results
+  и status/style save-reopen=True. Два невызванных production API policy
+  удалены; три прежних assertions используют WorstResultMeta -> ExternalStatus
+  с теми же ID/expected. Новые header/merge assertions тоже прошли.
+  Actual source equality v317 подтвержден для всех 108 модулей; после этой
+  сверки добавлены только поясняющие комментарии пяти annotation builders.
+- Stability length-range negative v316 завершен `8492/180`, exit=1,
+  source unchanged=True, Results/style save-reopen=True. Это 24 invalid
+  случая в двух положениях диапазона, двух СП и двух знаках N, а не 180
+  независимых дефектов. Сжатие давало `Устойчивость: Overflow` без ключа/
+  адреса; растяжение ошибочно оставалось N/A. В source добавлен технический
+  preflight произведения положительных L/mu и подробная адресная ошибка
+  обоих полей. Positive v317 завершен `8720/0`, exit=0, source unchanged=True,
+  Results/style save-reopen=True. Все 266 численных assertions обычного
+  Stability из full v313 совпали точно. Нормативных ограничений и нового
+  класса нет; границы проверки описаны в Stability Length Review.
+- Capacity на v317 завершен `3562/0`; все 601 численное значение из full
+  v313 совпало точно, missing=0, differences=0. Actual read-only VBE
+  содержит 113 компонентов, SourceContracts `108/108`, failed=0;
+  export SHA `07EE4068254EBB213CD4C85FA74FF533AB862BA1611B6FF61FC978A82AE5E43D`.
+  Все jobs этого среза закрыты. Пять поздних comment-only annotation
+  изменений требуют следующего frozen build, не нового численного критерия.
+
 - Native CAD shape evidence v286 `1023/0` и circle translation `66/0`
   проверены повторным чтением журналов. Actual VBE v286/v313 совпадает
   у четырех модулей pipeline; у импортера совпадают все 379 строк кода,

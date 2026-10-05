@@ -2194,7 +2194,7 @@ End Function
 Private Sub TestAudit03UltimateGuards(ByRef stats As TCapacityTestStats)
     Dim kind As Variant, scenario As Long
     For Each kind In Array(rkCapacity, rkCrackFormation)
-        For scenario = 1 To 13
+        For scenario = 1 To 21
             TestAudit03UltimateGuardCase stats, CLng(kind), scenario
         Next scenario
     Next kind
@@ -2234,8 +2234,8 @@ Private Sub TestAudit03UltimateGuardCase(ByRef stats As TCapacityTestStats, _
     Dim expectedFailure As ESolverFailureCode
     expectedFailure = sfcInvalidConfiguration
     Select Case scenario
-        Case 6, 11: expectedFailure = sfcNumericalFailure
-        Case 8, 10, 13: expectedFailure = sfcInternalError
+        Case 6, 11, 14, 16, 17, 18, 20: expectedFailure = sfcNumericalFailure
+        Case 8, 10, 13, 15, 19, 21: expectedFailure = sfcInternalError
         Case 9: expectedFailure = sfcSingularTangent
     End Select
     AssertTrue stats, prefix & ".typedCause", problem.FailureCode = expectedFailure
@@ -2244,6 +2244,8 @@ Private Sub TestAudit03UltimateGuardCase(ByRef stats As TCapacityTestStats, _
     If scenario <= 5 Or scenario = 13 Then AssertTrue stats, prefix & ".noNumericalAttempt", problem.UltimateCalls = 0
     If scenario = 6 Then AssertTrue stats, prefix & ".stagnationReason", InStr(problem.DiagnosticLog, "представимого шага Double") > 0
     If scenario >= 7 And scenario <= 11 Then AssertTrue stats, prefix & ".failedProbeNotOverwritten", problem.UltimateCalls = 2
+    If scenario >= 14 And scenario <= 17 Then AssertTrue stats, prefix & ".failedProbeNotOverwritten", problem.UltimateCalls = 2
+    If scenario >= 18 Then AssertTrue stats, prefix & ".failedGuessNotRetried", problem.UltimateCalls = 0
     Dim callback As ILimitSearchProblem
     Set callback = problem
     Dim request As CLimitSearchRequest
@@ -2253,14 +2255,57 @@ Private Sub TestAudit03UltimateGuardCase(ByRef stats As TCapacityTestStats, _
     Set result = callback.BuildResult(request, False)
     Dim expectedMeta As CResultMeta
     Set expectedMeta = New CResultMeta
-    expectedMeta.SetSolverFailure expectedFailure, kind, "Контроль typed-причины.", (problem.UltimateCalls > 0)
+    expectedMeta.SetSolverFailure expectedFailure, kind, "Контроль typed-причины.", _
+        (problem.UltimateCalls > 0 Or scenario >= 18)
     AssertTrue stats, prefix & ".status", result.Meta.InternalStatus = expectedMeta.InternalStatus
     AssertTrue stats, prefix & ".code", result.Meta.ResultCode = expectedMeta.ResultCode
     AssertTrue stats, prefix & ".resultKind", result.Meta.ResultKind = kind
     AssertTrue stats, prefix & ".noPhysicalPoint", Not result.HasLimitPoint
     AssertTrue stats, prefix & ".lifecycle", result.Meta.Calculated = expectedMeta.Calculated
     AssertTrue stats, prefix & ".reason", Len(result.Meta.ResultComment) > 0
+    ' Последний SetFailure проверяется независимо от fake-result, который
+    ' включает весь DiagnosticLog и мог бы скрыть потерю исходной причины.
+    Dim callbackReason As String, runtimeCode As Long, standardDescription As String
+    Select Case scenario
+        Case 10: callbackReason = "Тестовое нарушение программного контракта.": runtimeCode = 9
+        Case 11: callbackReason = "Тестовое переполнение численной операции.": runtimeCode = 6
+        Case 14, 18: runtimeCode = 6
+        Case 15, 19: runtimeCode = 9
+        Case 16: runtimeCode = 11
+        Case 17: callbackReason = "Тестовое деление на ноль.": runtimeCode = 11
+        Case 20: callbackReason = "Тестовое переполнение стартовой плоскости.": runtimeCode = 6
+        Case 21: callbackReason = "Тестовое нарушение подготовки стартовой плоскости.": runtimeCode = 9
+    End Select
+    If runtimeCode > 0 Then
+        AssertTrue stats, prefix & ".rawRuntimeCode", _
+            InStr(1, problem.DiagnosticLog, "ultimateRuntimeError=" & CStr(runtimeCode), vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".rawRuntimeStage", InStr(1, problem.DiagnosticLog, "; stage=", vbBinaryCompare) > 0
+        If Len(callbackReason) > 0 Then
+            AssertTrue stats, prefix & ".exactCallbackReason", InStr(1, problem.FailureReason, callbackReason, vbBinaryCompare) > 0
+            AssertTrue stats, prefix & ".rawCallbackReason", InStr(1, problem.DiagnosticLog, "; description=" & callbackReason, vbBinaryCompare) > 0
+        Else
+            Err.Clear
+            standardDescription = Error$(runtimeCode)
+            AssertTrue stats, prefix & ".rawStandardReason", _
+                InStr(1, problem.DiagnosticLog, "; description=" & standardDescription, vbBinaryCompare) > 0
+            If expectedFailure = sfcNumericalFailure Then
+                AssertTrue stats, prefix & ".localizedReason", InStr(1, problem.FailureReason, "диапазон арифметики", vbTextCompare) > 0
+            Else
+                AssertTrue stats, prefix & ".localizedReason", InStr(1, problem.FailureReason, "внутренняя ошибка вычислений", vbTextCompare) > 0
+            End If
+        End If
+    End If
     AppendLine stats, "COMMENT: " & prefix & "; calls=" & CStr(problem.UltimateCalls) & "; " & result.Meta.ResultComment
+    ' Новый запуск на той же задаче обязан сбросить failure и стартовые guards;
+    ' успешная линейная система не наследует причину предыдущей остановки.
+    problem.Configure "Bisection", 1.25, 0.000000001, 20, resultKind:=kind
+    If path Is Nothing Then Set path = New CLoadPathVector
+    path.Initialize 0#, 1#, 0#, 0#, 0#, 0#
+    AssertTrue stats, prefix & ".recovery", search.RunNewton(problem, Nothing, Nothing, Nothing, path, Nothing, "Тестовый поиск не сошелся.")
+    Set result = callback.BuildResult(request, True)
+    AssertTrue stats, prefix & ".recoveryStatus", result.Succeeded And result.Meta.InternalStatus = rsSuccess
+    AssertClose stats, prefix & ".recoveryLambda", result.LambdaUltimate, 1.25, 0.00000001
+    AssertTrue stats, prefix & ".recoveryReasonCleared", problem.FailureCode = sfcNone And Len(problem.FailureReason) = 0
     SaveAudit03SearchProgress stats, "DONE: " & prefix
     Exit Sub
 Failed:

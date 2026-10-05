@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_stability_length_v317.xlsm
+SOURCE_SHA256: 3D8415C808656582883CE374B9526C97044927E7775B6EDBF43955AFF9AB86E4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_810adf7f10fc4fb98491b5c81a36fc7a\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TOTAL_CAPACITY: passed=3562; failed=0; elapsedSec=44.501953125
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True
