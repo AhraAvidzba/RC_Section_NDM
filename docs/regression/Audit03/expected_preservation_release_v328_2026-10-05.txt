@@ -1,0 +1,15 @@
+CHANGED|modTestBatchCalculation.bas|TestBatchSummaryWriter|"batch.writer.stability.columnWidthA"|1|oldExpected=10#|newExpected=widthsBefore(0)|oldTolerance=0.01|newTolerance=0#
+CHANGED|modTestBatchCalculation.bas|TestBatchSummaryWriter|"batch.writer.stability.columnWidthAF"|1|oldExpected=10#|newExpected=widthsBefore(2)|oldTolerance=0.01|newTolerance=0#
+CHANGED|modTestBatchCalculation.bas|TestBatchSummaryWriter|"batch.writer.stability.columnWidthCC"|1|oldExpected=10#|newExpected=widthsBefore(3)|oldTolerance=0.01|newTolerance=0#
+CHANGED|modTestBatchCalculation.bas|TestBatchSummaryWriter|"batch.writer.stability.columnWidthN"|1|oldExpected=10#|newExpected=widthsBefore(1)|oldTolerance=0.01|newTolerance=0#
+FILE|modTestBatchCalculation.bas|baseline=102|current=165
+FILE|modTestCapacitySolver.bas|baseline=33|current=36
+CHANGED|modTestCrackWidth.bas|TestAudit02PsiSignedInputsAndFallbackModes|prefix & ".value"|1|oldExpected=0.65|newExpected=1#|oldTolerance=0#|newTolerance=0#
+MISSING|modTestCrackWidth.bas|TestAudit02PsiSignedInputsAndFallbackModes|prefix & ".value"|2
+FILE|modTestCrackWidth.bas|baseline=51|current=58
+FILE|modTestGeometry.bas|baseline=212|current=239
+FILE|modTestMaterialDiagrams.bas|baseline=64|current=74
+FILE|modTestRegressionBaseline.bas|baseline=10|current=10
+FILE|modTestSectionSolver.bas|baseline=32|current=58
+FILE|modTestWorkbookInterface.bas|baseline=38|current=102
+TOTAL_EXPECTED_PRESERVATION: unchanged=536; reviewedApiOnly=0; changedOrMissing=6; originalTestProcedures=277

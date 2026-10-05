@@ -1,0 +1,278 @@
+{
+  "Date": "2026-10-05T13:52:23.5658687+03:00",
+  "ImplementationCommit": "ca289196d9fea5410625ba39158add81259dec17",
+  "SourceDigest": "B1E19FBE958B3295344D9464522C99F65051D1EF9336CCF555855D58AFAA604F",
+  "SourceModulesVerified": 108,
+  "ProductionClasses": 83,
+  "TestClasses": 3,
+  "SourceFilesChangedAfterFreeze": 0,
+  "FullSuites": [
+    {
+      "Mode": "Off",
+      "Suites": 8,
+      "Passed": 108901,
+      "Failed": 0,
+      "Completed": true,
+      "SourceUnchanged": true,
+      "Report": "docs\\regression\\Audit03\\full_off_release_v328b_2026-10-05.txt"
+    },
+    {
+      "Mode": "On",
+      "Suites": 8,
+      "Passed": 108912,
+      "Failed": 0,
+      "Completed": true,
+      "SourceUnchanged": true,
+      "Report": "docs\\regression\\Audit03\\full_on_release_v328_2026-10-05.txt"
+    }
+  ],
+  "NumericComparisons": [
+    {
+      "Mode": "off",
+      "LatestExactCompared": 20893,
+      "LatestDifferences": 0,
+      "BaselineCompared": 3273,
+      "BaselineDifferences": 111,
+      "BaselineRawExactPassed": false,
+      "SameReviewedDifferencesAsV322": true
+    },
+    {
+      "Mode": "on",
+      "LatestExactCompared": 20898,
+      "LatestDifferences": 0,
+      "BaselineCompared": 3273,
+      "BaselineDifferences": 111,
+      "BaselineRawExactPassed": false,
+      "SameReviewedDifferencesAsV322": true
+    }
+  ],
+  "ExpectedPreservation": {
+    "Original": 542,
+    "ReviewedExceptions": 6,
+    "OriginalTestProcedures": 277,
+    "Unchanged": 536,
+    "RawExactPassed": false
+  },
+  "Config": {
+    "UserInput": 760,
+    "CurrentContractPending": 0,
+    "MinimumK02Accepted": true,
+    "NormativeTable": 144,
+    "Fields": 1064,
+    "ExhaustiveClaim": false
+  },
+  "Matrices": {
+    "SelectorPathCases": 4464,
+    "SelectorGroups": 62,
+    "BroadAssertionsPassed": 957531,
+    "BroadRuns": 52,
+    "ResultsSaveReopen": true,
+    "BroadFailed": 0
+  },
+  "Benchmark": {
+    "Groups": 32,
+    "Measurements": 160,
+    "Failed": 0,
+    "Repeats": 5
+  },
+  "VBA": {
+    "ComparedLines": 85838,
+    "StringAndCommentCasePreserved": true,
+    "StrictRawByteEquality": false,
+    "UnexplainedChanges": 0,
+    "SourceModules": 108,
+    "IdentifierCaseOnlyLines": 877,
+    "Components": 113
+  },
+  "PublishedFiles": [
+    {
+      "AcceptedSource": "docs/regression/Audit03/release_v323/RC_Section_NDM.xlsm",
+      "Published": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "903B61AFCA932580E542173BFA294CFE5BDFA78FE8155D33D3A00B961D83B306",
+      "BytesEqual": true
+    },
+    {
+      "AcceptedSource": "docs/regression/Audit03/release_v323/RC_Section_NDM_execution_report.txt",
+      "Published": "workbook/output/RC_Section_NDM_execution_report.txt",
+      "SHA256": "3D8C82FC8737ADEAF5B55BABEA1DE44E381F30DFDA9FE9EEEF576F3EFF986B29",
+      "BytesEqual": true
+    },
+    {
+      "AcceptedSource": "docs/regression/Audit03/VBA_All_Code_saved_release_v328_2026-10-05.txt",
+      "Published": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "69A5D2C7226D6C8A032FEB65B97D10EA9C282ADADC4B06D30AD0F736A5376B59",
+      "BytesEqual": true
+    }
+  ],
+  "PublishedValidate": {
+    "Passed": 27,
+    "Failed": 0
+  },
+  "PriorAuditRequirementsReviewed": 70,
+  "DefinitionOfDoneReviewed": 15,
+  "SemanticReview": "Scope/owners/limitations reviewed in Final Report and linked reviews; this receipt checks evidence integrity, not automatic semantic acceptance by counters",
+  "NativeCAD": {
+    "SquareEdgeAngle": true,
+    "Product": "Autodesk AutoCAD 2023",
+    "CircleDoubledAngleMean": true,
+    "TranslationPassed": 66,
+    "ShapePassed": 1023
+  },
+  "Limitations": {
+    "ExcelPixelQACompleted": false,
+    "SP35CrackWidthImplemented": false,
+    "FinalNormativeCertification": false,
+    "ExhaustiveDoubleOrCartesianTesting": false
+  },
+  "Evidence": [
+    {
+      "Path": "docs/NDM_Audit03_Code_Comment_Review.md",
+      "SHA256": "7FCDD4C0B2F5C7BC2D93BF570ED44905CEECB3F15FC437FD8944C086AF7D6BEE"
+    },
+    {
+      "Path": "docs/NDM_Audit03_Final_Config_Review.md",
+      "SHA256": "D2AAC7223C5E8E767DFB49DC832F063B46D93202692C35A0FD2EB15BB3F44F84"
+    },
+    {
+      "Path": "docs/NDM_Audit03_Final_Numerical_Comparison.md",
+      "SHA256": "21357F4811322E76AD19021E67E0F744DBC7E4EF8763A54EE25C1B192969E4E7"
+    },
+    {
+      "Path": "docs/NDM_Audit03_Final_Report.md",
+      "SHA256": "926CF6AB2C8390D92DA713B967DB0480DB016235EC20A2F77E4174A2938DAB8E"
+    },
+    {
+      "Path": "docs/NDM_Audit03_Implementation_Spec_2026-10-01.md",
+      "SHA256": "F3B32621FD3D6BDFF0313B76599EDD5D93F637971A5F91818902FF4418118E98"
+    },
+    {
+      "Path": "docs/NDM_Audit03_Prior_Audit_Traceability.md",
+      "SHA256": "C6C800F00E396E23EA02562D5C990494FC0295C5DF6AED971D832E090776090B"
+    },
+    {
+      "Path": "docs/NDM_Audit03_Progress.md",
+      "SHA256": "A1F8477FED99DE5BBF482974A9C589009A33FDF1B1963F029C0095D50CA4A258"
+    },
+    {
+      "Path": "docs/NDM_Audit03_Semantic_Review_2026-10-05.md",
+      "SHA256": "AE3A039BFEAF3779F3B0FFE2087A2EA45F1302B0F1B7E97A788E9738FAECD03D"
+    },
+    {
+      "Path": "docs/regression/Audit03/VBA_All_Code_release_clean_v328_2026-10-05.txt",
+      "SHA256": "8F4909BD2C0DC89481D9988131E23BAAABC863BB7B4A44F87A7860F6A4532BB1"
+    },
+    {
+      "Path": "docs/regression/Audit03/VBA_All_Code_saved_release_v328_2026-10-05.txt",
+      "SHA256": "69A5D2C7226D6C8A032FEB65B97D10EA9C282ADADC4B06D30AD0F736A5376B59"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\autocad_real_shapes_central_v286_2026-10-04.log",
+      "SHA256": "C55B783D93CB7B05B66AE0224BA2792393FFC00073DF3B4F598713F2CB8C68A5"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\circle_translation_central_v286_2026-10-04.log",
+      "SHA256": "664E0E81CF810D3BCC3C313C3D75B571FDDE0563EC364DA60E54FD7DB89859E1"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\config_final_evidence_v328_2026-10-05.csv",
+      "SHA256": "4A514D300847F8BBA7EDA2B97734939EE16B5ED61698C0BFB6658EC3DA4FCA5E"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\config_final_evidence_v328_2026-10-05.json",
+      "SHA256": "7410BD2A3DC62152CAD2D6993A40D9772CFB2D965D40952D591DF4D966D29805"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\expected_preservation_release_v328_2026-10-05.txt",
+      "SHA256": "1C8608AFFF8CD59BC54FB6AF4BADE0D02F6445A64AFB15F1BE252E5E8A78D089"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\full_numbers_baseline_off_v328_2026-10-05.json",
+      "SHA256": "F00F10C35E1425B782AB3ED785445D28896D0F13C0448E81526F6515FBD63476"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\full_numbers_baseline_on_v328_2026-10-05.json",
+      "SHA256": "B41E212BC4E11A9E19F07803D4158C4CE6EC4B28E9F714FFE19E0104E7E286F2"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\full_numbers_off_v322_v328_2026-10-05.json",
+      "SHA256": "D94D1E78721819A70922FCD194A25CCF9EC06D1DBFB46515CC8611ADF3093BA6"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\full_numbers_on_v322_v328_2026-10-05.json",
+      "SHA256": "646BA00C4E331BDF74737C3A6C100FDBB38E84F745415431436B874FC74AC023"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\full_off_release_v328b_2026-10-05.txt",
+      "SHA256": "5FAF78A40F4B4DDBEEA4635C745D54D7AB6ED9BCF0431A0488A2D40F847114D0"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\full_on_release_v328_2026-10-05.txt",
+      "SHA256": "F11739915D31E2E553D9184F3040106097F69ABFEC9E84D22713BB59F849E48A"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\load_matrix_final_v320_acceptance_2026-10-05.json",
+      "SHA256": "4EA6A5FA697B9DFDD285BDFBD75D1441811B83BEB87D8FE17626FCA466A0D65C"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\performance_final_v328_2026-10-05_records.json",
+      "SHA256": "7F845B1F9279B7806AC0B7810AD035BD872071CA9BBD958EC8B5DBA0EA60422B"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\performance_final_v328_2026-10-05_summary.json",
+      "SHA256": "41587282F60F517718ADA05D18CDAB817203909E1BDB07F08281D42A3F6656FA"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\performance_final_v328_2026-10-05.txt",
+      "SHA256": "D48DD6CA724EB81B662832B643A1F53970CB88207D860B6112CFA06925DFABC2"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\publication_release_v328_2026-10-05.json",
+      "SHA256": "34EE374D28284B08F8CEDB934A588AEB09FC289AF7FEB18419FD68A5E917AF53"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\release_source_manifest_v328_2026-10-05.json",
+      "SHA256": "D76981222C145F4A8507AB9574A8864F7A43112CB511FBAD611F570953D19DCC"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\release_vba_full_equality_v328_2026-10-05.json",
+      "SHA256": "6BD7519D96D2D7E484338E88E15B8E201161483D714C4E81A519CB8868108104"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\release_vba_raw_comparison_v328_2026-10-05.json",
+      "SHA256": "38C09DDD00796D4117743D1FEC98A0C35EE82557BB3AC37ED2F37866C6CFF387"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\saved_user_calculation_release_v328_2026-10-05.txt",
+      "SHA256": "194B7B2A3847B3D963AC3F84641724F199996F99D97E8993CC8CFF450AD78F38"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\selector_summary_v306_full_2026-10-05.json",
+      "SHA256": "5F21A13FD32052B3B3E70A50CEB239D3DF4D65D2778FA45C7227699217BDA612"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\source_contracts_release_clean_v328_2026-10-05.txt",
+      "SHA256": "008DAB1F55B953AFFFEEF2A1DABEBE16DCBD94028751F0E8E24BCC058553B06B"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\source_contracts_saved_release_v328_2026-10-05.txt",
+      "SHA256": "8007742A8874B9E03E5296CDFA58B9856822FCB6084391D3268559964FCDA8BA"
+    },
+    {
+      "Path": "docs\\regression\\Audit03\\validate_published_release_v328_2026-10-05.json",
+      "SHA256": "36026FC6E720B196ABCD62622796CDC937E4679308E3671A23FC96531DA495D3"
+    },
+    {
+      "Path": "workbook/output/RC_Section_NDM_execution_report.txt",
+      "SHA256": "3D8C82FC8737ADEAF5B55BABEA1DE44E381F30DFDA9FE9EEEF576F3EFF986B29"
+    },
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "903B61AFCA932580E542173BFA294CFE5BDFA78FE8155D33D3A00B961D83B306"
+    },
+    {
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "69A5D2C7226D6C8A032FEB65B97D10EA9C282ADADC4B06D30AD0F736A5376B59"
+    }
+  ],
+  "RequiredAuditGatesComplete": true
+}

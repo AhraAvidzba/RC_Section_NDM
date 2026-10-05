@@ -1,0 +1,7 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\release_v323\RC_Section_NDM.xlsm; BEFORE_SHA256=C10680D30482B695254724CFC554B165A11D9F58E98E63957A64C41670F55513
+CALCULATION_MESSAGE: Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: 1
+Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_FinalSnapshot_1e9c91b8ccca4a12baf39295303e22e8\RC_Section_NDM_execution_report.txt
+CONFIG_VALUES_AND_FORMULAS_UNCHANGED: True
+EXECUTION_REPORT_SAVED: True
+AFTER_SHA256: 903B61AFCA932580E542173BFA294CFE5BDFA78FE8155D33D3A00B961D83B306
+FINAL_SNAPSHOT_SAVED: True

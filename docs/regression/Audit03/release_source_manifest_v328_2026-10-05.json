@@ -1,0 +1,441 @@
+{
+  "SourceCommit": "ca289196d9fea5410625ba39158add81259dec17",
+  "SourceDigest": "B1E19FBE958B3295344D9464522C99F65051D1EF9336CCF555855D58AFAA604F",
+  "SourceModules": 108,
+  "ProductionClasses": 83,
+  "TestClasses": 3,
+  "Files": [
+    {
+      "Path": "src/Batch/CBatchSectionCalculator.cls",
+      "SHA256": "FA8F62F78B5D2D4CB2AEE14ED783EDD6BF7D5CA4ABEC9288C3B1D27743D0991D"
+    },
+    {
+      "Path": "src/Batch/CCalculationProfile.cls",
+      "SHA256": "FA39D1E969A82075EEF39B05D39BD45150BC7051EBF42D24590773F38D6D098E"
+    },
+    {
+      "Path": "src/Batch/CCalculationProfileCatalog.cls",
+      "SHA256": "372A2C29CE52F3A5B4AE77EB611E1E261390627658163C73006AE0B2E8E903FB"
+    },
+    {
+      "Path": "src/Batch/CCombinationResult.cls",
+      "SHA256": "3D1B00330F812B1D5AD7629FA6996FB5629FB619ED2D93D873414E3B377E41A4"
+    },
+    {
+      "Path": "src/Batch/CDirectStateResult.cls",
+      "SHA256": "E3312EA6C88CC4BAF4D3B2B6E0BC6F91EFE69837F2257D92C31978BAFD98489B"
+    },
+    {
+      "Path": "src/Batch/CSectionStateResult.cls",
+      "SHA256": "66D9E54C81762BFD3B67F19EFD2AF4D78E770532EE279496EB61BB3E610BFCB0"
+    },
+    {
+      "Path": "src/Batch/CStateProvider.cls",
+      "SHA256": "3D2FA9259C4CEA61317D886C322D9088EE0FF5FC4B402A3A33444A3AC370BA8D"
+    },
+    {
+      "Path": "src/Batch/CStateRepository.cls",
+      "SHA256": "33EC9D9703F57E20F826187A0358C97E911D02034E65881D88D9B99B617E1CE2"
+    },
+    {
+      "Path": "src/Batch/CStateRequest.cls",
+      "SHA256": "76BF9E4B977AA9C41AD8ECBEEA387F406C0A6B44E829C307625E2E2E4AF91229"
+    },
+    {
+      "Path": "src/Batch/CStrengthResult.cls",
+      "SHA256": "D1BD4151F569732DAC2CE338E96085E2D4754FD90A0CEF3D20AE589C6A2FF6CE"
+    },
+    {
+      "Path": "src/Common/CLoadPathDescriptor.cls",
+      "SHA256": "BB61F542C289FCB0F69310B2981C6C691AD05A7F9D57872EDCE588EB25FC89CE"
+    },
+    {
+      "Path": "src/Common/CLoadPathMath.cls",
+      "SHA256": "FA03647094FEA413891DEA8E0441E1A17EE3D4564B6D95FFB7FF9867241B7CFB"
+    },
+    {
+      "Path": "src/Common/CLoadPathVector.cls",
+      "SHA256": "33576248D6A0D1699C45F793DCDA3187B4FC6FC84BE800FB4ABBEDE697AA0728"
+    },
+    {
+      "Path": "src/Common/CMomentZeroFilter.cls",
+      "SHA256": "E5E0A389BBDCEF72D9BEB386E41C012D807D9439E3AEDAECA5AE9A5519CE328B"
+    },
+    {
+      "Path": "src/Common/CResultMeta.cls",
+      "SHA256": "0689FE1510A0DB6E374841B9D8CCC02BC39F64544CE5212D67F53FE8285D2926"
+    },
+    {
+      "Path": "src/Common/CResultStatusPolicy.cls",
+      "SHA256": "7A4D0C18C8D0765B1319E2CC027CA043C3903E13B8625339E54A25F0FDC527F2"
+    },
+    {
+      "Path": "src/Common/CSectionLoadState.cls",
+      "SHA256": "0AFB61553CF94EA3D002F85E853661C0862183AA9ACFA69BC222D2AADAA149CC"
+    },
+    {
+      "Path": "src/Common/modCalculationPurpose.bas",
+      "SHA256": "927584FDA512C7CAB12B2DF739E216FC7D99839A26135776BF3B939EE1834834"
+    },
+    {
+      "Path": "src/Common/modGeometryTypes.bas",
+      "SHA256": "230183980CA367106E5975AC46EA7710697C11AD4BC72EEF6FA9D3EDE18C3145"
+    },
+    {
+      "Path": "src/Common/modResultStatus.bas",
+      "SHA256": "EEF4D41F525DD52F3F92C859E386ECD1967AF7F647552A883584939068A46A5D"
+    },
+    {
+      "Path": "src/Common/modSolverWorkStats.bas",
+      "SHA256": "BE87D36EE713029D9485C3FA6F7FFB7DA56DB29D69A280E8888E462780FD5476"
+    },
+    {
+      "Path": "src/Crack/CCrackFormationCalculator.cls",
+      "SHA256": "D72CB5D7FDA4B7FFF9BF2D9C53B3D121D7C3082698D245D78C2C8A2C77A23147"
+    },
+    {
+      "Path": "src/Crack/CCrackFormationResult.cls",
+      "SHA256": "9F0419323C231BD1701CAE93EF4B73891729A2F5863ADE9CC4FC8D1C39B18BED"
+    },
+    {
+      "Path": "src/Crack/CCrackResult.cls",
+      "SHA256": "EAF054F698B14F704358245681655371A5A08766C437D964D243BD60F8D3920D"
+    },
+    {
+      "Path": "src/Crack/CCrackWidthCalculator.cls",
+      "SHA256": "7B4EC9EF3AF2D2CF93A13E2D21454619CC301FF9D56A911EA7F31E9AE7B4FB68"
+    },
+    {
+      "Path": "src/Crack/CCrackWidthResult.cls",
+      "SHA256": "02874C042A787CDB56DB6971C40D115A5E6B7CB3DC419743C9428D8304A1085E"
+    },
+    {
+      "Path": "src/Crack/CLongitudinalCrackCalculator.cls",
+      "SHA256": "59D20154D5DFD9AC25FE9BF6CE687674D22D7FA27532CBD73E27A47F6F8F5625"
+    },
+    {
+      "Path": "src/Crack/CLongitudinalCrackResult.cls",
+      "SHA256": "95B5B1143D048E525BF97EBCCE84C5511B35ACC4D50B99160528FBBB68FBCD67"
+    },
+    {
+      "Path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "SHA256": "E112A1F25EA653A274ED04CA823AA585E28AD782DC96AA7D6B4602FA4E122704"
+    },
+    {
+      "Path": "src/Excel/CBatchResultWriter.cls",
+      "SHA256": "A57087F9200A363C35B17B433475D644BEE3DD3701B96153DDD24671609E3EC4"
+    },
+    {
+      "Path": "src/Excel/CCrackSummaryWriter.cls",
+      "SHA256": "8FEFC95CBC96B8BD129B9A5A9C6FC0002E8988DE115B4FDD90625C88FB35585D"
+    },
+    {
+      "Path": "src/Excel/CExcelAppStateGuard.cls",
+      "SHA256": "954BEAA21E2AE1DCC25940D8D239EE9E168A11709B80F8C0576A165D3E63E994"
+    },
+    {
+      "Path": "src/Excel/CExecutionReport.cls",
+      "SHA256": "C600F8D21C57EC05840AA605AAB9669035E5EC74EC18DA0B7603C7F5DBE14B1A"
+    },
+    {
+      "Path": "src/Excel/CLoadCombinationReader.cls",
+      "SHA256": "B5AA5A4CC1E190177002A28CAE0637B80C2BFF335B400D0B8CDB363CC1BEA19E"
+    },
+    {
+      "Path": "src/Excel/CNDMResultsWriter.cls",
+      "SHA256": "72A9EA1030E5D4C2AC4189F09F08540CD946E7E6971618FD8E3616664DDA04E9"
+    },
+    {
+      "Path": "src/Excel/CPlotAnnotationLayout.cls",
+      "SHA256": "2835926D1E2A4F72E17DCCC1C8E85923B0EFB6B8B796A3D2B8A41AA603F4C815"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotDataReader.cls",
+      "SHA256": "1866215F24681DD4D57727B5CCBF8B354518147DB24F14AFDA7A4BC181567C89"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotter.cls",
+      "SHA256": "CA869E448531957EC01ECCF706F95B24E6A3548AF081164383767C3BC4074299"
+    },
+    {
+      "Path": "src/Excel/CSectionTypeRegistry.cls",
+      "SHA256": "EAA38049B366F9491C0784B38227A8399E91ABA4ECED3CB94C21A6A73D402AF7"
+    },
+    {
+      "Path": "src/Excel/CStabilitySummaryWriter.cls",
+      "SHA256": "631AB24470FFE0355977D4D3523391E48E981AAC43DBEC92F6C70E10BD9FE92E"
+    },
+    {
+      "Path": "src/Excel/CStrengthSummaryWriter.cls",
+      "SHA256": "5A43F7E28A747038A5A2400B5274C48E2F843E5BB954D556133B87F15C83FC2E"
+    },
+    {
+      "Path": "src/Excel/CSystemSettingsReader.cls",
+      "SHA256": "0944DF330580598969E2CAA756E7ABEF8AB3CDE9D7B341A26AC97099EBC04EE8"
+    },
+    {
+      "Path": "src/Excel/CUnitSystem.cls",
+      "SHA256": "DA35F7B5F81CF05C53C97D6FE47BE3C756CE4BB497C034BAB9F799A38E2960BE"
+    },
+    {
+      "Path": "src/Excel/modAutoCADStressExport.bas",
+      "SHA256": "A5CABB5220A155709BC4445FFF989517D25300131B73164703484B6266C34881"
+    },
+    {
+      "Path": "src/Excel/modStatusFormatting.bas",
+      "SHA256": "BD4F75CBDFC5C644973B28A7AD9D1FC000A9E7AC27E3F0BE304B6C457ED855A8"
+    },
+    {
+      "Path": "src/Excel/modWorkbookCalculation.bas",
+      "SHA256": "9B105C259CC393897D3B2B37C7ED7D72723C900EC8D1C7743A8DBBE025AFBE61"
+    },
+    {
+      "Path": "src/Geometry/CFiberMeshBuilder.cls",
+      "SHA256": "CEAF1DAB1C674300DA6CC7ADF11410652F27E4E7A38F14FE8225426C449272E5"
+    },
+    {
+      "Path": "src/Geometry/CGeometryCircle.cls",
+      "SHA256": "F582153FCAD9BC79526062185BAF8FCED9B58ABB0FB0A8401FC830DB35FA2F95"
+    },
+    {
+      "Path": "src/Geometry/CGeometryHollowRectangle.cls",
+      "SHA256": "AE025985B467A1AE6E9028C098DAA7B29B210F3F97527A1D2390510C38364106"
+    },
+    {
+      "Path": "src/Geometry/CGeometryRectSet.cls",
+      "SHA256": "1ACF29336B595BCC5E28AD3F1312090AC7189FEDA44CA24238503892994F4B88"
+    },
+    {
+      "Path": "src/Geometry/CGeometryRoundedRectangle.cls",
+      "SHA256": "E451A973277E7BA27F333746D60A8936915E16DA0E017E35E93EDEAC8C7F6CCF"
+    },
+    {
+      "Path": "src/Interfaces/ILimitSearchProblem.cls",
+      "SHA256": "CCC77B4828672EBD892C5C15C99938020EC5A8DAA397DAE5407A1E8999E8DC98"
+    },
+    {
+      "Path": "src/Interfaces/ISectionGeometry.cls",
+      "SHA256": "61A36A8893D23F11BF90F8591AAAA06C994C2FB621CABBBCAF3A24866699F562"
+    },
+    {
+      "Path": "src/Materials/CConcreteMaterialParameters.cls",
+      "SHA256": "3E62AD9BAFACC2E42C0E7544E68F187CE9F2ACC251A8B8FAECDC16F9DE58C404"
+    },
+    {
+      "Path": "src/Materials/CLinearConcreteMaterial.cls",
+      "SHA256": "37AEDC8719DE60002869E7F01EE0683960E8BB0525CF300E69BAFC3C73548634"
+    },
+    {
+      "Path": "src/Materials/CLinearSteelMaterial.cls",
+      "SHA256": "04D154F65821E537A63FAD4D901D985920603C5DBD13E1ED66E36BD424B89A4D"
+    },
+    {
+      "Path": "src/Materials/CMaterialDiagram.cls",
+      "SHA256": "B06512203166F3B75043F682C4DFF8F873626DA9477892D5C4AD46E20110D404"
+    },
+    {
+      "Path": "src/Materials/CMaterialModelProvider.cls",
+      "SHA256": "3B9987AE29AB079EC45D4855D961B94AF63D59CE481C2184C213653DADC2B432"
+    },
+    {
+      "Path": "src/Materials/CMaterialModelSpec.cls",
+      "SHA256": "9C3F0519A3360FA918F376F6CCE28CCFA5E9D6A4003C9C1B8C00390EDAEE849D"
+    },
+    {
+      "Path": "src/Materials/CSteelMaterialParameters.cls",
+      "SHA256": "99B8BD96918996ECAD34113225DAFA74BEE2DAEBEFDF70AC40B798A11B5611E1"
+    },
+    {
+      "Path": "src/Section/CCircleAnnotationBuilder.cls",
+      "SHA256": "834B64CD5800A69D858914F2BD333B6A9501A6458AD080FABC5347A20C65A986"
+    },
+    {
+      "Path": "src/Section/CCircleRebarLayoutBuilder.cls",
+      "SHA256": "F662A90D1889747ACBF582599A24AC5E8C4DCDAA283E1FC494AE3954472435F2"
+    },
+    {
+      "Path": "src/Section/CHollowRectAnnotationBuilder.cls",
+      "SHA256": "31A2155B0D08B278E638526C5DF867BA79878EECE0F64F2801FD52347E0D65CD"
+    },
+    {
+      "Path": "src/Section/CHollowRectRebarLayoutBuilder.cls",
+      "SHA256": "AB2290C5307C58A3F4C1148D3742A4DD4C10583AEBDD228FA8FE6D5ADEA8A59D"
+    },
+    {
+      "Path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "SHA256": "2A178556A3D16975CDAD15CF2DE84443E848E92DE45CD993180297B9DE150440"
+    },
+    {
+      "Path": "src/Section/CRebarLayout.cls",
+      "SHA256": "0A744E41E4A1C660B856B292F4C377CB537DAF4325A3A77396EFF20B23E129D9"
+    },
+    {
+      "Path": "src/Section/CRectSetAnnotationBuilder.cls",
+      "SHA256": "9376ACC3BAA996B46A5BA336425B5F574A18439584B00795D219A4ECC6648B36"
+    },
+    {
+      "Path": "src/Section/CRectSetRebarLayoutBuilder.cls",
+      "SHA256": "677CFC3C745E42A16F7FFAD50428833C4A778303884EE826CA17726B8E9AB3BA"
+    },
+    {
+      "Path": "src/Section/CRoundedRectAnnotationBuilder.cls",
+      "SHA256": "CE35F87C72D52003012CBC76A756D9817C47524A48541171B949AAB1011ECE17"
+    },
+    {
+      "Path": "src/Section/CRoundedRectRebarLayoutBuilder.cls",
+      "SHA256": "F26BBF85D16503867D2C4BFC68FB34D418644E67F2008BE68E23BEC68D12D64B"
+    },
+    {
+      "Path": "src/Section/CSectionAnnotations.cls",
+      "SHA256": "6743DB032B58C8ECD25C999B83B6FBC82A322EFC4AECB63261427DA6A08D7D2C"
+    },
+    {
+      "Path": "src/Section/CSectionModel.cls",
+      "SHA256": "9124F6671D2F0BA034CCC9DBC5640AD180EFD035DF44D1F8106623E4FE4297D9"
+    },
+    {
+      "Path": "src/Section/CSectionModelBuilder.cls",
+      "SHA256": "867F3858CA05B1F514459C787BC520A6CBD5F3AD92D8DDDF4809EA235B62F157"
+    },
+    {
+      "Path": "src/Section/CSectionPropertiesCalculator.cls",
+      "SHA256": "194B620A629D95DA325F3AEA628308A43897B3DA9081623D4F2E12A2BD78FCD4"
+    },
+    {
+      "Path": "src/Solver/CCapacityCalculator.cls",
+      "SHA256": "7475B701E2ACAACC3CF283A629342953F34E71BC64B6FDC22E8E458206EDFAA7"
+    },
+    {
+      "Path": "src/Solver/CCapacityLimitSearchProblem.cls",
+      "SHA256": "BEFBE39F228DC8DF5F3A329DF8A9EDB1B8F051C308EA2E4A2A472859D2E5AEFA"
+    },
+    {
+      "Path": "src/Solver/CCapacityResult.cls",
+      "SHA256": "94BFC253F653C2E4B8CE231BAE761703674E7DB35D168AE3793B11BB8F491844"
+    },
+    {
+      "Path": "src/Solver/CCapacitySolver.cls",
+      "SHA256": "7AB79D68922689500B49255B6B0B6D898077A26D8C4DD027CCF145EB06242625"
+    },
+    {
+      "Path": "src/Solver/CCrackLimitSearchProblem.cls",
+      "SHA256": "CDD35A9E1D2061B4CD494C40251AF458F762471748CC2A4CA605AE845E2DE7FD"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchCoordinator.cls",
+      "SHA256": "7C95D013DF4757C5C619DB47578E9366503F42503F142D1D2563B1095B93EADA"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchRequest.cls",
+      "SHA256": "AD8C3041AC1C7DE08C1B895946016EB063F4B97C7C7E3E4FD22D2070A445F124"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchResult.cls",
+      "SHA256": "48FBACC20E7D32A6978AAE1BF98F6D7DC0EF883F1A49932286EF4CE1806321CA"
+    },
+    {
+      "Path": "src/Solver/CLinearSystem3x3.cls",
+      "SHA256": "AD30FF660EE60945ED3CBCF398251AFD87302ED535996049ED693F0B9909C684"
+    },
+    {
+      "Path": "src/Solver/CLoadMultiplierSearch.cls",
+      "SHA256": "B69DBB47CB865EEE8319013C30684311AF750A8512CE17F9F12916988F973CD1"
+    },
+    {
+      "Path": "src/Solver/CSectionSolver.cls",
+      "SHA256": "22E1DEC50FF2E7DE2CEC3EEF75180B278BE8F184859E1E499A02DC4F5B8EE241"
+    },
+    {
+      "Path": "src/Solver/CStateGuessBuilder.cls",
+      "SHA256": "0694423EDEE6BEDA24478EAB0BF1F9B3E7A2AE495BA046D83542646DF59619EB"
+    },
+    {
+      "Path": "src/Solver/CStateSolutionRunner.cls",
+      "SHA256": "B6067D54BC730A927E58B94563979A9AC4B6B83E817806A1FBBDD77FABD79B00"
+    },
+    {
+      "Path": "src/Solver/CUltimateStrainSearch.cls",
+      "SHA256": "5F281747ABA04972A7035281B314A7B13B15B7971586B761DABE33F9769E43FC"
+    },
+    {
+      "Path": "src/Stability/CStabilityCalculator.cls",
+      "SHA256": "F6B47D5FEC92E3E671E1908B6B3C96113F02EF3390D8F26A6A262621DF540964"
+    },
+    {
+      "Path": "src/Stability/CStabilityResult.cls",
+      "SHA256": "E5711043EA314F0631C3340FB48650CC5C91CD3759920E268B736857783D5C7C"
+    },
+    {
+      "Path": "tests/CFakeAcadLine.cls",
+      "SHA256": "B187CC7C867540AD8418BF4F8886252E1103C684E286D47292ECC46704877FDA"
+    },
+    {
+      "Path": "tests/CFakeAcadRegion.cls",
+      "SHA256": "B6A884A72E95BBB88A5300DFBE0FDACEB624BC439F4B95F3DD0FB275AC3127A9"
+    },
+    {
+      "Path": "tests/CTestLimitSearchProblem.cls",
+      "SHA256": "038034A322547AF13847AEE828245159425E6E9AC6826B22AB6BE8101A519AD8"
+    },
+    {
+      "Path": "tests/modTestAutoCADConfig.bas",
+      "SHA256": "E5C6BD16819F6A33E3BA13E09A60D337EEF93203BA61D4082F37494ACB44FB91"
+    },
+    {
+      "Path": "tests/modTestBatchCalculation.bas",
+      "SHA256": "8DFEE67937CE524254665A0AEDD8C09EA6A11DB5058F4FBD7AE63A5DE33B35E6"
+    },
+    {
+      "Path": "tests/modTestCapacitySolver.bas",
+      "SHA256": "F285F13454554B3BB26ED5757D006DAA5250074F842F554F9C68B0936D62E5E2"
+    },
+    {
+      "Path": "tests/modTestConfiguration.bas",
+      "SHA256": "A3C5FF326DBF322E93B11CF16F9668B100234CE2AC46687861588AC91CD47061"
+    },
+    {
+      "Path": "tests/modTestCrackWidth.bas",
+      "SHA256": "1C2D638955CCF2906C53595CFF827EFEF948B2A6AB793828962F9E0A69A8277F"
+    },
+    {
+      "Path": "tests/modTestGeneralGeometryConfig.bas",
+      "SHA256": "E06CA0733D4018ECFA9C17469F0E9F5A6CD76AB3436BFD92DE97D7612A959D75"
+    },
+    {
+      "Path": "tests/modTestGeometry.bas",
+      "SHA256": "5E43F7280C55EC0140D05C52B62567F0C50CB2919DFE6103965EB01AF6C8FFE0"
+    },
+    {
+      "Path": "tests/modTestGeometryConfig.bas",
+      "SHA256": "7C611494F9109C43E1D6CFF6DB4FCEDAA566A6E9643B6A8B3863AF36479D4A69"
+    },
+    {
+      "Path": "tests/modTestLoadTableConfig.bas",
+      "SHA256": "CE8D47D4964798825C8BE8741AB7A586602AA11E028B136C09164EAE0A70B580"
+    },
+    {
+      "Path": "tests/modTestMaterialDiagrams.bas",
+      "SHA256": "8736E61246257C79A2A056D0080EFC2F0A575B1A265FB8758144B64290FA6AF7"
+    },
+    {
+      "Path": "tests/modTestPlotConfig.bas",
+      "SHA256": "BE234E07BF81AE6E57A411B4C9F122BC4B652DF6C11A65F770000729CA8A9134"
+    },
+    {
+      "Path": "tests/modTestProfileConfig.bas",
+      "SHA256": "6E3DE257E5D5E2525F73C0ECF3F65C7BDB1E4FAAF3E54F6925A7565D8A0FC1C3"
+    },
+    {
+      "Path": "tests/modTestRegressionBaseline.bas",
+      "SHA256": "934CCC3C1B867E9B91E01C8D9F4D4837C4E3ED6D1C2D049BCA37C1E06D3A279C"
+    },
+    {
+      "Path": "tests/modTestSectionSolver.bas",
+      "SHA256": "3EF495A1CA20FEE55DB74A0CDD43539CAA988B54590A09ECBF8FD92DFDA31286"
+    },
+    {
+      "Path": "tests/modTestWorkbookInterface.bas",
+      "SHA256": "3ADCE01063FC0FB515A833AB3194A71D7B4B341C750658835FA42BE92E2C6F29"
+    }
+  ]
+}

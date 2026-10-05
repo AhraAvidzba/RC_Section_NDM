@@ -1,0 +1,680 @@
+{
+  "BaselineReport": "docs/regression/Audit03/baseline_off_2026-10-01.txt",
+  "CurrentReport": "docs/regression/Audit03/full_off_release_v328b_2026-10-05.txt",
+  "BaselineSHA256": "36E0CB744C6A71C456E506B1D0C3549EA934114B92E533A880DDB0019595D323",
+  "CurrentSHA256": "5FAF78A40F4B4DDBEEA4635C745D54D7AB6ED9BCF0431A0488A2D40F847114D0",
+  "BaselineNumericAssertions": 3273,
+  "CurrentNumericAssertions": 20893,
+  "Compared": 3273,
+  "Missing": [],
+  "Differences": [
+    {
+      "Assertion": "section.secant.equilibrium.N#1",
+      "Baseline": "-300000.00000003",
+      "Current": "-300000.000000014",
+      "AbsoluteDifference": 1.594889909029007E-08
+    },
+    {
+      "Assertion": "section.secant.equilibrium.Mx#1",
+      "Baseline": "-20000000.0000012",
+      "Current": "-20000000.0000053",
+      "AbsoluteDifference": 4.101544618606567E-06
+    },
+    {
+      "Assertion": "section.secant.equilibrium.My#1",
+      "Baseline": "-11999999.9999957",
+      "Current": "-12000000.0000025",
+      "AbsoluteDifference": 6.800517439842224E-06
+    },
+    {
+      "Assertion": "secant.compare.n_mx.N#1",
+      "Baseline": "-150000.000000008",
+      "Current": "-150000.000000013",
+      "AbsoluteDifference": 5.005858838558197E-09
+    },
+    {
+      "Assertion": "secant.compare.n_mx.Mx#1",
+      "Baseline": "-8000000.",
+      "Current": "-8000000.00000047",
+      "AbsoluteDifference": 4.7031790018081665E-07
+    },
+    {
+      "Assertion": "secant.compare.n_mx.My#1",
+      "Baseline": "0.000000134993",
+      "Current": "-0.000000046024",
+      "AbsoluteDifference": 1.8101699999999999E-07
+    },
+    {
+      "Assertion": "secant.compare.n_mx_my.N#1",
+      "Baseline": "-149999.99999999",
+      "Current": "-149999.999999998",
+      "AbsoluteDifference": 8.003553375601768E-09
+    },
+    {
+      "Assertion": "secant.compare.n_mx_my.Mx#1",
+      "Baseline": "-8000000.00000064",
+      "Current": "-8000000.00000037",
+      "AbsoluteDifference": 2.7008354663848877E-07
+    },
+    {
+      "Assertion": "secant.compare.n_mx_my.My#1",
+      "Baseline": "-5999999.99999917",
+      "Current": "-5999999.99999986",
+      "AbsoluteDifference": 6.901100277900696E-07
+    },
+    {
+      "Assertion": "secant.compare.circle.N#1",
+      "Baseline": "-120000.000000008",
+      "Current": "-120000.000000022",
+      "AbsoluteDifference": 1.3998942449688911E-08
+    },
+    {
+      "Assertion": "secant.compare.circle.Mx#1",
+      "Baseline": "-4999999.99999882",
+      "Current": "-5000000.00000006",
+      "AbsoluteDifference": 1.239590346813202E-06
+    },
+    {
+      "Assertion": "secant.compare.circle.My#1",
+      "Baseline": "-0.000000013395",
+      "Current": "0.000000001102",
+      "AbsoluteDifference": 1.4497E-08
+    },
+    {
+      "Assertion": "capacity.tfDefaults.Secant.lambda#1",
+      "Baseline": "3.106208325658",
+      "Current": "3.101447439063",
+      "AbsoluteDifference": 0.00476088659500018
+    },
+    {
+      "Assertion": "capacity.pathMatrix.my.brent.equilibrium.N#1",
+      "Baseline": "-119996.377987669",
+      "Current": "-120000.",
+      "AbsoluteDifference": 3.622012331004953
+    },
+    {
+      "Assertion": "capacity.pathMatrix.my.brent.equilibrium.Mx#1",
+      "Baseline": "0.00000000064",
+      "Current": "-0.000000001164",
+      "AbsoluteDifference": 1.804E-09
+    },
+    {
+      "Assertion": "capacity.pathMatrix.my.brent.equilibrium.My#1",
+      "Baseline": "-48831199.435572",
+      "Current": "-48825456.5172983",
+      "AbsoluteDifference": 5742.918273694813
+    },
+    {
+      "Assertion": "capacity.pathMatrix.my.brent.myUltimate#1",
+      "Baseline": "-48835456.5172983",
+      "Current": "-48825456.5172983",
+      "AbsoluteDifference": 10000.0
+    },
+    {
+      "Assertion": "rectset.n.tension.brent.equilibrium.N#1",
+      "Baseline": "7479374.49807119",
+      "Current": "7469567.84807119",
+      "AbsoluteDifference": 9806.650000000373
+    },
+    {
+      "Assertion": "rectset.n.tension.brent.equilibrium.Mx#1",
+      "Baseline": "2365758672.75947",
+      "Current": "2362656786.72687",
+      "AbsoluteDifference": 3101886.032599926
+    },
+    {
+      "Assertion": "rectset.n.tension.brent.equilibrium.My#1",
+      "Baseline": "1617821222.95236",
+      "Current": "1615700001.91975",
+      "AbsoluteDifference": 2121221.0326099396
+    },
+    {
+      "Assertion": "rectset.n.tension.brent.nUltimate#1",
+      "Baseline": "7479374.49807119",
+      "Current": "7469567.84807119",
+      "AbsoluteDifference": 9806.650000000373
+    },
+    {
+      "Assertion": "rectset.n.tension.brent.mxUltimate#1",
+      "Baseline": "2365758672.75947",
+      "Current": "2362656786.72687",
+      "AbsoluteDifference": 3101886.032599926
+    },
+    {
+      "Assertion": "rectset.n.tension.brent.myUltimate#1",
+      "Baseline": "1617821222.95235",
+      "Current": "1615700001.91975",
+      "AbsoluteDifference": 2121221.032599926
+    },
+    {
+      "Assertion": "crack.alwaysCalc.pass.widthFormula#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.alwaysCalc.pass.utilization#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.sigmaCrcMode.allSelected.widthFormula#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.sigmaCrcMode.allSelected.utilization#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.auto.fail.widthFormula#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.auto.fail.utilization#1",
+      "Baseline": "1338.5806072536",
+      "Current": "1338.58063151258",
+      "AbsoluteDifference": 2.4258980147351394E-05
+    },
+    {
+      "Assertion": "crack.auto.pureMx.widthFormula#1",
+      "Baseline": "0.150903530526",
+      "Current": "0.15090354696",
+      "AbsoluteDifference": 1.6433999994180937E-08
+    },
+    {
+      "Assertion": "crack.auto.pureMx.utilization#1",
+      "Baseline": "1509.03530526346",
+      "Current": "1509.03546959501",
+      "AbsoluteDifference": 0.00016433154996775556
+    },
+    {
+      "Assertion": "crack.auto.pureMy.widthFormula#1",
+      "Baseline": "0.068784054628",
+      "Current": "0.068784578847",
+      "AbsoluteDifference": 5.242190000004365E-07
+    },
+    {
+      "Assertion": "crack.auto.pureMy.utilization#1",
+      "Baseline": "687.840546281966",
+      "Current": "687.845788470674",
+      "AbsoluteDifference": 0.0052421887080527085
+    },
+    {
+      "Assertion": "crack.auto.pureMxy.widthFormula#1",
+      "Baseline": "0.128222487931",
+      "Current": "0.128223231956",
+      "AbsoluteDifference": 7.440249999990378E-07
+    },
+    {
+      "Assertion": "crack.auto.pureMxy.utilization#1",
+      "Baseline": "1282.22487931036",
+      "Current": "1282.23231955923",
+      "AbsoluteDifference": 0.007440248870125288
+    },
+    {
+      "Assertion": "crack.auto.mcrcFixedN.low.widthFormula#1",
+      "Baseline": "0.083842242372",
+      "Current": "0.083842948823",
+      "AbsoluteDifference": 7.064510000043267E-07
+    },
+    {
+      "Assertion": "crack.auto.mcrcFixedN.low.utilization#1",
+      "Baseline": "838.422423721216",
+      "Current": "838.429488230231",
+      "AbsoluteDifference": 0.007064509014981013
+    },
+    {
+      "Assertion": "crack.auto.mcrcFixedN.high.widthFormula#1",
+      "Baseline": "0.183935224734",
+      "Current": "0.183935225605",
+      "AbsoluteDifference": 8.709999943512514E-10
+    },
+    {
+      "Assertion": "crack.auto.mcrcFixedN.high.utilization#1",
+      "Baseline": "1839.35224733961",
+      "Current": "1839.35225605328",
+      "AbsoluteDifference": 8.713670013094088E-06
+    },
+    {
+      "Assertion": "crack.auto.mcrcFixedN.mcrcInvariant#1",
+      "Baseline": "8343868.59707438",
+      "Current": "8344089.60756165",
+      "AbsoluteDifference": 221.01048726961017
+    },
+    {
+      "Assertion": "crack.auto.mcrcFixedN.lambdaLowMoment#1",
+      "Baseline": "8343868.59707438",
+      "Current": "8344089.60756165",
+      "AbsoluteDifference": 221.01048726961017
+    },
+    {
+      "Assertion": "crack.auto.mcrcFixedN.lambdaHighMoment#1",
+      "Baseline": "8343868.59707854",
+      "Current": "8343868.86969828",
+      "AbsoluteDifference": 0.27261973917484283
+    },
+    {
+      "Assertion": "crack.path.mxy.widthFormula#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.path.mxy.utilization#1",
+      "Baseline": "1338.5806072536",
+      "Current": "1338.58063151258",
+      "AbsoluteDifference": 2.4258980147351394E-05
+    },
+    {
+      "Assertion": "crack.path.nmxy.widthFormula#1",
+      "Baseline": "0.131351003693",
+      "Current": "0.131350983982",
+      "AbsoluteDifference": 1.9710999998867607E-08
+    },
+    {
+      "Assertion": "crack.path.nmxy.utilization#1",
+      "Baseline": "1313.51003693244",
+      "Current": "1313.50983981587",
+      "AbsoluteDifference": 0.00019711657000698324
+    },
+    {
+      "Assertion": "crack.path.nmxy.nScaled#1",
+      "Baseline": "-10565.5573022593",
+      "Current": "-10565.5803262824",
+      "AbsoluteDifference": 0.023024023099424085
+    },
+    {
+      "Assertion": "crack.path.nmxy.mScaled#1",
+      "Baseline": "7924167.9766945",
+      "Current": "7924185.24471177",
+      "AbsoluteDifference": 17.268017269670963
+    },
+    {
+      "Assertion": "crack.cache.first.widthFormula#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.cache.first.utilization#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.cache.second.widthFormula#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.cache.second.utilization#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858063151",
+      "AbsoluteDifference": 2.4259999842346502E-09
+    },
+    {
+      "Assertion": "crack.auto.oneSign.widthFormula#1",
+      "Baseline": "0.053157069558",
+      "Current": "0.053157069547",
+      "AbsoluteDifference": 1.09999995223653E-11
+    },
+    {
+      "Assertion": "crack.auto.oneSign.utilization#1",
+      "Baseline": "531.570695582997",
+      "Current": "531.570695473283",
+      "AbsoluteDifference": 1.0971405117743416E-07
+    },
+    {
+      "Assertion": "audit02.formation.aboveCurrent.pointLambda#1",
+      "Baseline": "8.343868597078",
+      "Current": "8.343869263353",
+      "AbsoluteDifference": 6.662749996166895E-07
+    },
+    {
+      "Assertion": "audit02.formation.aboveCurrent.pointMoment#1",
+      "Baseline": "8343868.59707777",
+      "Current": "8343869.26335304",
+      "AbsoluteDifference": 0.6662752702832222
+    },
+    {
+      "Assertion": "audit02.formationOnly.snapshot#1",
+      "Baseline": "0.556257906472",
+      "Current": "0.556257957067",
+      "AbsoluteDifference": 5.059499996740158E-08
+    },
+    {
+      "Assertion": "audit02.psi.fallback.User.value#1",
+      "Baseline": "0.65",
+      "Current": "1.",
+      "AbsoluteDifference": 0.35
+    },
+    {
+      "Assertion": "batch.writer.stability.columnWidthA#1",
+      "Baseline": "10.",
+      "Current": "15.",
+      "AbsoluteDifference": 5.0
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.TargetMx#1",
+      "Baseline": "-8343868.5970754",
+      "Current": "-8343868.59782243",
+      "AbsoluteDifference": 0.0007470296695828438
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.TargetMy#1",
+      "Baseline": "0.000000000003",
+      "Current": "0.",
+      "AbsoluteDifference": 3E-12
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.Nint#1",
+      "Baseline": "-20000.0000000001",
+      "Current": "-20000.0000167924",
+      "AbsoluteDifference": 1.6792302631074563E-05
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.Mxint#1",
+      "Baseline": "-8343868.5970754",
+      "Current": "-8343868.59782243",
+      "AbsoluteDifference": 0.0007470296695828438
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.Myint#1",
+      "Baseline": "0.000000000149",
+      "Current": "0.000000000588",
+      "AbsoluteDifference": 4.3900000000000003E-10
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.sigmaBmin#1",
+      "Baseline": "-4.277202976601",
+      "Current": "-4.277202977153",
+      "AbsoluteDifference": 5.520002233083687E-10
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.sigmaSmin#1",
+      "Baseline": "-16.934374238981",
+      "Current": "-16.93437424181",
+      "AbsoluteDifference": 2.8290010334330873E-09
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.sigmaSmax#1",
+      "Baseline": "20.613125152204",
+      "Current": "20.613125151638",
+      "AbsoluteDifference": 5.660005797381018E-10
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.ResidualN#1",
+      "Baseline": "-0.000000000106",
+      "Current": "-0.000016792361",
+      "AbsoluteDifference": 1.6792255E-05
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PreCrackState.ResidualMy#1",
+      "Baseline": "0.000000000146",
+      "Current": "0.000000000588",
+      "AbsoluteDifference": 4.42E-10
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.TargetMx#1",
+      "Baseline": "-8343868.5970754",
+      "Current": "-8343868.59782243",
+      "AbsoluteDifference": 0.0007470296695828438
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.TargetMy#1",
+      "Baseline": "0.000000000003",
+      "Current": "0.",
+      "AbsoluteDifference": 3E-12
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.Mxint#1",
+      "Baseline": "-8343868.5970754",
+      "Current": "-8343868.59782242",
+      "AbsoluteDifference": 0.0007470203563570976
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.Myint#1",
+      "Baseline": "0.000000000135",
+      "Current": "0.000000000226",
+      "AbsoluteDifference": 9.1E-11
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.sigmaBmin#1",
+      "Baseline": "-4.37134146601",
+      "Current": "-4.371341466389",
+      "AbsoluteDifference": 3.7899994254075864E-10
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.sigmaSmin#1",
+      "Baseline": "-30.966336536636",
+      "Current": "-30.966336539002",
+      "AbsoluteDifference": 2.3660007286707696E-09
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.sigmaSmax#1",
+      "Baseline": "83.605124553751",
+      "Current": "83.605124562571",
+      "AbsoluteDifference": 8.82000961155427E-09
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.ResidualN#1",
+      "Baseline": "0.000000000011",
+      "Current": "-0.000000000036",
+      "AbsoluteDifference": 4.7E-11
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.ResidualMx#1",
+      "Baseline": "-0.000000000931",
+      "Current": "0.000000002794",
+      "AbsoluteDifference": 3.7250000000000003E-09
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.PostCrackState.ResidualMy#1",
+      "Baseline": "0.000000000131",
+      "Current": "0.000000000226",
+      "AbsoluteDifference": 9.499999999999998E-11
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.Formation.lambda#1",
+      "Baseline": "0.556257906472",
+      "Current": "0.556257906521",
+      "AbsoluteDifference": 4.900002625873867E-11
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.Formation.Mcrc#1",
+      "Baseline": "8343868.5970754",
+      "Current": "8343868.59782243",
+      "AbsoluteDifference": 0.0007470296695828438
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.Width.acrc#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858060715",
+      "AbsoluteDifference": 1.000000082740371E-11
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.Width.sigmaSCrc#1",
+      "Baseline": "83.605124553751",
+      "Current": "83.605124562571",
+      "AbsoluteDifference": 8.82000961155427E-09
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.Width.psi#1",
+      "Baseline": "0.588397942259",
+      "Current": "0.588397942216",
+      "AbsoluteDifference": 4.300004796675694E-11
+    },
+    {
+      "Assertion": "audit02.pair.0.SLS_BEND.Width.util#1",
+      "Baseline": "0.446193535751",
+      "Current": "0.446193535718",
+      "AbsoluteDifference": 3.2999991628201997E-11
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.TargetMx#1",
+      "Baseline": "-8343868.5970754",
+      "Current": "-8343868.59782243",
+      "AbsoluteDifference": 0.0007470296695828438
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.TargetMy#1",
+      "Baseline": "0.000000000003",
+      "Current": "0.",
+      "AbsoluteDifference": 3E-12
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.Nint#1",
+      "Baseline": "-20000.0000000001",
+      "Current": "-20000.0000167924",
+      "AbsoluteDifference": 1.6792302631074563E-05
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.Mxint#1",
+      "Baseline": "-8343868.5970754",
+      "Current": "-8343868.59782243",
+      "AbsoluteDifference": 0.0007470296695828438
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.Myint#1",
+      "Baseline": "0.000000000149",
+      "Current": "0.000000000588",
+      "AbsoluteDifference": 4.3900000000000003E-10
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.sigmaBmin#1",
+      "Baseline": "-4.277202976601",
+      "Current": "-4.277202977153",
+      "AbsoluteDifference": 5.520002233083687E-10
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.sigmaSmin#1",
+      "Baseline": "-16.934374238981",
+      "Current": "-16.93437424181",
+      "AbsoluteDifference": 2.8290010334330873E-09
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.sigmaSmax#1",
+      "Baseline": "20.613125152204",
+      "Current": "20.613125151638",
+      "AbsoluteDifference": 5.660005797381018E-10
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.ResidualN#1",
+      "Baseline": "-0.000000000106",
+      "Current": "-0.000016792361",
+      "AbsoluteDifference": 1.6792255E-05
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PreCrackState.ResidualMy#1",
+      "Baseline": "0.000000000146",
+      "Current": "0.000000000588",
+      "AbsoluteDifference": 4.42E-10
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.TargetMx#1",
+      "Baseline": "-8343868.5970754",
+      "Current": "-8343868.59782243",
+      "AbsoluteDifference": 0.0007470296695828438
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.TargetMy#1",
+      "Baseline": "0.000000000003",
+      "Current": "0.",
+      "AbsoluteDifference": 3E-12
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.Mxint#1",
+      "Baseline": "-8343868.5970754",
+      "Current": "-8343868.59782242",
+      "AbsoluteDifference": 0.0007470203563570976
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.Myint#1",
+      "Baseline": "0.000000000135",
+      "Current": "0.000000000226",
+      "AbsoluteDifference": 9.1E-11
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.sigmaBmin#1",
+      "Baseline": "-4.37134146601",
+      "Current": "-4.371341466389",
+      "AbsoluteDifference": 3.7899994254075864E-10
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.sigmaSmin#1",
+      "Baseline": "-30.966336536636",
+      "Current": "-30.966336539002",
+      "AbsoluteDifference": 2.3660007286707696E-09
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.sigmaSmax#1",
+      "Baseline": "83.605124553751",
+      "Current": "83.605124562571",
+      "AbsoluteDifference": 8.82000961155427E-09
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.ResidualN#1",
+      "Baseline": "0.000000000011",
+      "Current": "-0.000000000036",
+      "AbsoluteDifference": 4.7E-11
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.ResidualMx#1",
+      "Baseline": "-0.000000000931",
+      "Current": "0.000000002794",
+      "AbsoluteDifference": 3.7250000000000003E-09
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.PostCrackState.ResidualMy#1",
+      "Baseline": "0.000000000131",
+      "Current": "0.000000000226",
+      "AbsoluteDifference": 9.499999999999998E-11
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.Formation.lambda#1",
+      "Baseline": "0.556257906472",
+      "Current": "0.556257906521",
+      "AbsoluteDifference": 4.900002625873867E-11
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.Formation.Mcrc#1",
+      "Baseline": "8343868.5970754",
+      "Current": "8343868.59782243",
+      "AbsoluteDifference": 0.0007470296695828438
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.Width.acrc#1",
+      "Baseline": "0.133858060725",
+      "Current": "0.133858060715",
+      "AbsoluteDifference": 1.000000082740371E-11
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.Width.sigmaSCrc#1",
+      "Baseline": "83.605124553751",
+      "Current": "83.605124562571",
+      "AbsoluteDifference": 8.82000961155427E-09
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.Width.psi#1",
+      "Baseline": "0.588397942259",
+      "Current": "0.588397942216",
+      "AbsoluteDifference": 4.300004796675694E-11
+    },
+    {
+      "Assertion": "audit02.pair.1.SLS_BEND.Width.util#1",
+      "Baseline": "0.446193535751",
+      "Current": "0.446193535718",
+      "AbsoluteDifference": 3.2999991628201997E-11
+    }
+  ],
+  "AcceptanceScope": "Exact numeric actual-values in shared assertion IDs; no new tolerance",
+  "Passed": false
+}

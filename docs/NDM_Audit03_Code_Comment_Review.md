@@ -1,5 +1,34 @@
 # Audit03: Комментарии К Актуальному Коду
 
+## Итоговое Уточнение v328, 2026-10-05
+
+Исторические разделы ниже сохраняют область чтения на дату своего среза.
+Итоговый census v328 содержит 108 модулей, 4567 методов и 1915 guard-кандидатов.
+У всех заголовков есть русский текст; шаблонных подписей нет. У production
+нет некомментированных методов длиннее двух смысловых строк. Исключения
+915 production-accessors отдельно разобраны: 9 пустых interface getters,
+844 однострочных и 62 двухстрочных очевидных getter/setter/guard wrappers.
+Счетчик не является автоматическим доказательством всех алгоритмов.
+
+Дополнительно сверены заголовки и конкретный смысл подписей восьми test owners,
+не названных в прежних Review MD: `CFakeAcadLine`, `CTestLimitSearchProblem`,
+`modTestCapacitySolver`, `modTestCrackWidth`, `modTestGeneralGeometryConfig`,
+`modTestMaterialDiagrams`, `modTestRegressionBaseline`,
+`modTestWorkbookInterface`. Fake Line описывает только Line/слой/Delete;
+generic fake problem отделяет искусственную линейную функцию от железобетонной
+физики. Подписи tests различают equilibrium, physical limit, lifecycle,
+active/inactive, изоляцию Config, typed failures и presentation readback.
+Они не обещают native DWG там, где используется fake Region, или pixel QA
+там, где читаются COM properties. Numeric assertions сохраняют actual/expected
+и исходный допуск. Прежний test-ID с именем FormulaCalculator обозначает
+проверку чистых методов Width, не возвращает удаленный класс в архитектуру.
+
+Все production owners рассматриваются совместно с
+`NDM_Audit03_Semantic_Review_2026-10-05.md` и профильными Review MD;
+направленные отрицательные контрпримеры перечислены там отдельно. Итоговые
+full gates, source/VBE equality и границы приемки фиксируются в Final Report,
+не выводятся из количества комментариев или отсутствия слова TODO.
+
 ## Дополнение CAD v272
 
 Прочитаны целиком CAutoCADSectionModelImporter и modAutoCADStressExport,

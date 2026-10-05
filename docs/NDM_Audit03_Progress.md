@@ -1,6 +1,8 @@
 # NDM Audit03 Progress
 
 Дата начала: 2026-10-01. Цель: полное выполнение Audit03, не только план.
+Дата завершения: 2026-10-05. Все шесть этапов и обязательные пункты DoD
+завершены; доказательства и честные ограничения в `NDM_Audit03_Final_Report.md`.
 
 ## Baseline И Входные Данные
 
@@ -8,7 +10,7 @@
 - Ветка: `codex/material-diagram-architecture`.
 - Входной dirty-tree: только новый пользовательский `docs/NDM_Audit03_Implementation_Spec_2026-10-01.md`; сохранить без изменения.
 - SHA-256 ТЗ: `F3B32621FD3D6BDFF0313B76599EDD5D93F637971A5F91818902FF4418118E98`.
-- SHA-256 output-книги: `AAF5D4FAF06197F01966463DE85BA813EB4216B455AA8504B2DE4F0BA717C012`.
+- SHA-256 исходной output-книги baseline: `AAF5D4FAF06197F01966463DE85BA813EB4216B455AA8504B2DE4F0BA717C012`.
 - SHA-256 экспорта: `51C20ABF981EB9AD569F23648E8ABE846E7ECE05637D8043098C155BC8F6F185`; совпадает с Audit03 и отчетом Audit02.
 - Классы: 85 production + 3 test. Новые `.cls` запрещены; запланированы два конкретных объединения до 83 + 3.
 - Безопасная baseline-копия: `%TEMP%/RC_NDM_Audit03_Baseline_df10412f`; не переключать текущий checkout.
@@ -18,11 +20,11 @@
 | Этап | Статус | Выход И Gate |
 | --- | --- | --- |
 | 1. Контрольная точка и карта проверок | завершен | Baseline build и Off/On 6745/0; 103 исходных модуля сверены с VBE. Фактические Config/help/class inventories, карта владельцев и F-reproducers сохранены; user Config неизменен. Это подготовительный этап, не итоговая приемка остальных этапов. |
-| 2. Корректность входа, поиска и метаданных | в работе | F01/F02/F03 и основные F06 контрпримеры имеют runtime evidence; F04/F05/F07 и окончательная приемка еще не завершены. |
-| 3. Упрощение архитектуры | в работе | A01/A02 и перенос агрегации A03 имеют runtime evidence. Один итог crack workflow, изоляция Search и комментарии всех путей проверены; окончательная проверка всех классов/consumers A03-A05 продолжается. |
-| 4. Измеряемая оптимизация | в работе | P01/P03 benchmark v6: 160 измерений, 0 ошибок, exact duplicates 10 -> 0; P02 сохраняет 3600 волокон и точную pi. Финальная повторная приемка на выпускном исходнике еще нужна. |
-| 5. Config/краевые нагрузки/документация/UI | в работе | Directed evidence union v306 связывает все 1064 адреса со своими runtime-доказательствами, включая 760 активных вводимых полей и 20 CAD-полей. Полная selector matrix v306: 62/62 группы, 4464 path cases, 302 пары и 48 рискованных четверок, без failures. Все 13 форм и 52 all-path runs v68 приняты для прежнего численного среза. Полный диапазон/mutation, semantic review, выпускной help/UI и актуальный повтор матрицы еще открыты; это не blanket PASS. |
-| 6. Независимая приемка и выпуск | в работе | Полная clean build v300, eight-suite Off 101701/0, On 101712/0 и actual source/VBE equality 108/108 завершены. Config/edge/benchmarks, все три audits и final self-audit остаются отдельными незакрытыми gates. |
+| 2. Корректность входа, поиска и метаданных | завершен | F01-F07 directed negatives/positives, lifecycle/typed faults/recovery; latest full Off/On 108901/0 и 108912/0. Технические отказы не становятся physical limits. |
+| 3. Упрощение архитектуры | завершен | Два согласованных объединения, 83+3 classes; один словарь, canonical subtrees, отдельные Formation/Width/Longitudinal и общие numerical loops. Source contracts 108/108 и publication tests. |
+| 4. Измеряемая оптимизация | завершен | Финальный v328: 160 измерений, 16 сценариев, пять повторов, failed=0. Exact duplicate attempts 10 -> 0; Hollow сохраняет 3600 fibers; время и его границы раскрыты в Final Report. |
+| 5. Config/краевые нагрузки/документация/UI | завершен | Final registry 1064 поля; 760 UserInput и 144 table cells отдельно. MATRIX 52/52, 22776 paths, 957531/0; SELECTOR 62/62, 4464 paths, пары/четверки/mutations. Native CAD 1023/0 и 66/0; clean/update help/format/palette/reopen и семантический review. Пиксельная QA не заявлена. |
+| 6. Независимая приемка и выпуск | завершен | Fresh v328 build, eight-suite Off/On, exact latest numeric comparison, 70 per-ID требований прежних audits, self-audit всех 15 DoD. Проверенная пользовательская книга/report/actual VBA опубликованы, исходные вводы сохранены. |
 
 ## Карта Обязанностей
 
@@ -42,33 +44,92 @@
 | Geometry classes | Валидация/подготовленные характеристики при мутации, ContainsPoint без повторной дорогой подготовки. |
 | Writers / CExecutionReport | Размещение, units, presentation, готовые comments/status; не исполняют инженерную проверку. |
 
-## Реестр Требований
+## Итоговый Реестр Требований
 
 | ID | Статус | Доказательство / Следующий Объем |
 | --- | --- | --- |
-| F01 | directed runtime PASS | Реальные Range 5/6/7/9 и 4-column rejection; negative/positive_v3 logs. |
-| F02 | directed runtime PASS, расширение покрытия впереди | abc N/M, формулы/CVErr, numeric string, Empty/zero/space, tiny в двух системах единиц, overflow и последующий LC; требуется полный output/comment matrix и отдельный Null путь. |
-| F03 | directed runtime PASS, расширение проверки продолжается | Provider -> runner -> state: 73/0; real Capacity typed failures/precision: 54/0; Formation terminal config: 64/0. Срез v185: LoadMultiplier fault/recovery 1326/0, Formation residual 450/0, два missing-state fixtures по 71/0; full Off/On 60259/0 и 60270/0, directed save/reopen 355/0. Старые численные expected/tolerance не менялись. |
-| F04 | directed runtime PASS, workflow приемка продолжается | SetResult обеспечивает lifecycle для not-requested/not-applicable/blocked/validation; ранние missing/internal factories передают False. Matrix 172/0: десять исходов x attempted, clone/reset и result factories; повторные реальные LC еще входят в расширенную приемку. |
-| F05 | directed runtime PASS, расширенная приемка впереди | Физический отказ, BaseFail, numerical failure, blocked Width/Longitudinal, отсутствие трещины: actual writers всех путей. Исправлена передача успешного StopReason в blocked reason. Save/reopen/report/остальные формы еще впереди. |
-| F06 | основные directed runtime PASS, полный аудит продолжается | Baseline adjacent-Double Bisection budget=0 завис до watchdog; исправленный generic matrix 114/0, real Capacity tol=1e-18/budget=0 завершен за 58 probes без ложной точки. Остальные Ultimate/recovery call paths еще проверяются. |
-| F07 | в работе | Исправлены Nothing guard в stability, Split bounds в plotter и два unsafe test guards. Новый overflow начальной нормы момента в runner: negative v304 48/48, positive v305 336/0, Solver suite 1367/0. IIf/array/optional call paths продолжают semantic review; окончательная приемка не заявлена. |
-| F08 | трассировка подготовлена, приемка продолжается | Per-ID реестр NDM_Audit03_Prior_Audit_Traceability.md; незавершенные K/T/D/UI/save-reopen пункты не получают PASS. |
-| A01-A05 | в работе | 83 + 3 classes; A01/A02 и текущий A03/A04 срез с actual writers прошли full Off v13. Crack/Strength сами собирают свои итоги; общий приоритет без дублей; shared named-state сохранен. Полная acceptance всех остальных классов и A05 еще впереди. |
-| P01-P04 | в работе | 15 сценариев x 5 повторов x 2 версии; asymmetric: 94 solves/3874 iterations/20 retries/10 эквивалентных попыток. P02 численные и point-grid инварианты подтверждены; окончательный benchmark/разбор повторов впереди. |
-| K01-K04 | directed coverage завершено; расширенная приемка в работе | Актуальный census v302: 35617 ячеек, 14 диапазонов, 84 validation, 1064 поля. Combined evidence v306: 760 active inputs, 104 controls, 108 active SP35 cells, 36 reference cells, 30 derived IDs, 16 merged followers, десять inactive cells. Все 1064 адреса имеют directed runtime evidence; full-range/pairwise/mutation/final-release acceptance остается False. |
-| T01-T05 | в работе | v68: все 13 форм, Light/Stress, Off/On, 52/52 chunks и 18 980 all-path cases, failed=0. Это приемка численного среза v68, не поздних Config/UI правок; selector variants/pairwise/high-risk tuples, независимые near-limit gates и финальный повтор на выпускном source впереди. |
-| D01-D02 | в работе | Comment-only ревизия export/writers/enum/workbook entrypoints выполнена частично; все остальные methods/tests и фактический help/Config/validation/links в clean/update впереди. |
-| UI01 | directed COM PASS, выпускная приемка впереди | v39 Off/On: 351/0; семь статусов, DisplayFormat, чувствительность к чужому CF, очистка старых строк и сохранность оформления после save/reopen. Проверка clean/update итоговой книги еще предстоит. |
-| W01 | в работе | Git/base/spec/hash/progress сохранены; checkpoints без push/destructive Git. |
+| F01 | завершен | Настоящие Range 5/6/7/9, неверная структура, source slots; latest suites. |
+| F02 | завершен | Blank/zero/CVErr/text/numeric string/tiny/overflow, units/signs и следующий LC; все output blocks/comments. Null не выдается за поддерживаемое содержимое реальной Excel cell. |
+| F03 | завершен | Typed State/Search причины, terminal failures и recovery, отсутствие false physical/reusable State; direct/Capacity/Formation paths. |
+| F04 | завершен | Applies/Calculated/SearchExecuted/Converged/HasLimitPoint раздельны; early validation, analytic branch, clone/reset/retry/следующий LC. |
+| F05 | завершен | Русские причины владельцев, subtree/dedup/order, настоящие writers и save/reopen на широкой матрице. |
+| F06 | завершен | Bisection/Brent/Secant/Ultimate representability/stagnation/budget/recovery; только проверенный final root/bracket. |
+| F07 | завершен в проверенной области | Semantic guard review и реальные negatives/positives: Nothing/arrays/optional, norms/residuals, counts/retries, Excel state, mesh Opening, L0². Не обещается перебор всех Double. |
+| F08 | завершен | Все 70 требований Audit01/Audit02 имеют актуальную per-ID строку и evidence. |
+| A01-A05 | завершен | Два merges, 83+3 classes; один словарь, canonical immutable publication, общие Search/State, пассивные writers, без дробления монолитов. |
+| P01-P04 | завершен | Final v328 benchmark 160 измерений, five repeats, failed=0; model/counter/physical invariants и границы времени раскрыты. |
+| K01-K04 | завершен, минимум K02 | Final поадресный registry 1064, все 760 UserInput плюс 144 table cells и служебные роли; Current ReviewedContract Pending/NotRun=0. Каждый selector/Boolean и active numerical effect, границы/invalid/inactive, mutations и изоляция. Не exhaustive Double/Cartesian. |
+| T01-T05 | завершен | MATRIX v320: 52/52, 13 форм, 949 form/load fixtures, 22776 paths, 957531/0; SELECTOR 62/62 и независимые near-limit/native gates; финальные Off/On текущего source. |
+| D01-D02 | завершен | Содержательные owner/method comments, accessor exceptions, actual source/VBE, clean/update help/validation/links и Config signatures. |
+| UI01 | завершен, actual COM | Семь DisplayFormat/CF цветов, transitions/clear/legend и Results/style reopen. Пиксельная QA Excel не выполнена и не заявлена. |
+| W01 | завершен | Baseline/spec/user guards, scoped checkpoints и final artifacts; нет push/destructive Git/отката чужих изменений. |
 
-Историческая поадресная приемка v95 сохраняет denominator 1065; адресно
+Историческая поадресная приемка v95 ниже сохраняет denominator 1065; адресно
 принято 79 активных полей (13 Solver, 23 Material, 15 Unit/Sign, 1 Worst,
 16 общих RectSet selectors, 1 AutoCAD MinArea, 10 Crack). Остальные 986 адресов не получают blanket PASS.
-Срезы metadata/full-range/downstream и K03 остаются отдельными задачами.
+На момент v95 metadata/full-range/downstream и K03 оставались отдельными
+задачами; их итоговая приемка v328 приведена выше и в Final Config Review.
 
-## Актуальная Точка Продолжения
+## Итоговая Точка
 
+- Production checkpoint: `ca289196d9fea5410625ba39158add81259dec17`;
+  source manifest digest `B1E19FBE958B3295344D9464522C99F65051D1EF9336CCF555855D58AFAA604F`.
+- Off `108901/0`, On `108912/0`, по восемь suites, оба source unchanged.
+  Latest exact comparison: 20893/20898 общих чисел, differences/missing=0.
+  Baseline: по 3273 ID, те же 111 разобранных отличий; raw exact gate exit=1
+  не скрыт. Expected-preservation: 536 unchanged из 542, шесть согласованных
+  exceptions и все 277 прежних Test-процедур; не ложный raw PASS.
+- Config final JSON/CSV: 1064 уникальных поля, Current contracts без Pending;
+  760 UserInput, 144 table cells, minimum K02, не exhaustive claim.
+- Actual clean/update source: 108/108, 113 components. Full txt comparison:
+  85838 строк, только дата и 877 VBE identifier-case строк отличаются;
+  string/comment case сохранен, необъясненных различий нет.
+- Публикация: main user book SHA `903B61AFCA932580E542173BFA294CFE5BDFA78FE8155D33D3A00B961D83B306`,
+  actual txt SHA `69A5D2C7226D6C8A032FEB65B97D10EA9C282ADADC4B06D30AD0F736A5376B59`.
+  Execution report и три byte-equality proof в publication receipt. Main
+  output read-only Validate `27/27`, источник неизменен. Baseline AAF-копия
+  и неизмененный Audit03 spec сохранены.
+- Final Report содержит 15 DoD receipts, per-ID 70 требований прежних audits,
+  пять-repeat benchmark, MATRIX/SELECTOR/native/reopen и честные ограничения.
+  Будущая ветка Width СП35 и нормативная сертификация не добавлены в эту цель.
+- Final self-audit receipt: `final_self_audit_release_v328_2026-10-05.json`;
+  повторно проверены 37 evidence hashes, все 108 source SHA и publication.
+  Содержательный review не подменяется этой проверкой целостности.
+
+## История Срезов И Продолжений
+
+Следующие записи сохраняют временные Pending и планы конкретного среза.
+Они не являются открытыми TODO выпускного v328; итоговая область выше.
+
+- Заключительный full Off v328b завершен `108901/0`, все восемь suites,
+  watchdog exit=0, source unchanged=True. Geometry 668, Material 4353,
+  Solver 1492, Capacity 3562, Crack 2157, Batch 30876, UI 65754, Baseline 39.
+  `full_numbers_off_v322_v328_2026-10-05.json`: 20893 общих чисел совпали
+  точно, missing/differences=0. Baseline -> v328 Off: 3273 ID, 111 отличий;
+  набор значений и отличий в точности такой же, как у принятого v322.
+  Final full On v328 идет в собственном Excel, session 76593. После него:
+  численная сверка On, final Config evidence, prior-audit closure, self-audit,
+  публикация обновленной пользовательской копии и scoped release commit.
+  Дополнительно уточнены роли итогового реестра: 760 обычных UserInput и
+  144 нормативные клетки учитываются отдельно; derived/control/reference/
+  merged followers не названы обязательным пользовательским вводом.
+- Выпускной исходник заморожен checkpoint `ca28919`; после него production
+  не меняется. Benchmark v328 завершен: 160 измерений, 32 группы, пять
+  повторов, failed=0, источники неизменны. Asymmetric 94 -> 84 solves,
+  duplicates 10 -> 0, время 15.246 -> 15.199 с; Hollow mesh (3600 fibers)
+  10.027 -> 0.117 с; batch write 0.789 -> 0.328 с. Не заявляется общий
+  процент ускорения или измеримая точность нулевых packaging timers.
+  Обновленная пользовательская копия после обычного расчета одного LC
+  сохраняет весь Config.Value/Formula, SHA 903B61AFCA932580E542173BFA294CFE5BDFA78FE8155D33D3A00B961D83B306.
+  Clean/update Help 2828 cells/merges equal, formatting по 1003/0,
+  Validate по 27/27 (первая sandbox COM попытка сохранена как NotPassed),
+  palette updated 357/0 и Results/style reopen equal.
+  Clean actual source equality 108/108, 113 components; saved equality идет.
+  Final full Off v328b запущен без single-macro reopen flags. Первая команда
+  v328 остановилась до suites по явному input guard test runner-а: эти
+  флаги разрешены только одному macro, не всем восьми. Это NotRun/setup,
+  не NumFail расчетного ядра. Далее full On, final Config evidence,
+  prior-audit closure, self-audit, publish и scoped release commit.
 - Checkpoint адресной диагностики Circle: `57429e8`. После него расширен
   прежний Stability Config test: реальные большие/малые L и mu через
   Config/batch/writer, две методики, два знака N и два положения Name.

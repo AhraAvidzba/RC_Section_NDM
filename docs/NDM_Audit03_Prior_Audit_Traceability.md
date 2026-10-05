@@ -1,6 +1,8 @@
 # Audit03: Повторная Трассировка Audit01 И Audit02
 
-Дата: 2026-10-02. Это текущий реестр доказательств, не финальное закрытие Audit03.
+Исходный реестр: 2026-10-02. Финальная приемка: 2026-10-05, раздел
+«Итоговая По-ID Сверка v328» ниже: все 70 требований двух прежних аудитов.
+Начальные таблицы и их Pending сохраняются как история, не как текущие TODO.
 Исторические отчеты не изменены. Новые контрпримеры F01-F07 и publication/P01/P02
 проверяются отдельно, даже если прежний тест остается зеленым.
 
@@ -16,7 +18,8 @@
 Все runtime-логи получены в Excel COM на отдельных копиях; source unchanged=True.
 Обычный Off не отменяет явно указанный On внутри исторического fixture.
 `runtime PASS` означает конкретный перечисленный тест, а не автоматический
-семантический PASS всего требования. Указанные Pending-гейты еще обязательны.
+семантический PASS всего требования. Указанные здесь Pending-гейты были
+обязательны на дату исходного реестра; итоговые доказательства приведены ниже.
 
 ## Первый Аудит
 
@@ -119,3 +122,120 @@ Region и запись DWG. Shape roundtrip v284/v286 `1023/0`, 22 случая,
 Подробные ограничения, независимые oracle и файлы evidence сохранены в
 `NDM_Audit03_AutoCAD_Config_Review.md`. Эти native gates не заменяют
 финальные release/self-audit и пиксельную проверку оформления Excel.
+
+## Итоговая По-ID Сверка v328, 2026-10-05
+
+Финальный выпуск принят: full Off `108901/0`, full On `108912/0`, по восемь
+suites, watchdog exit=0 и source unchanged. Исторические Pending выше
+сохраняют значение на дату того среза. Все 70 строк ниже проверены текущими
+runtime/source/directed/native/reopen evidence в явно указанной области.
+Глобальный self-audit и контролируемая публикация завершены в Final Report.
+Владельцы и Test-ID находятся в соответствующих исторических строках выше.
+
+Обозначения актуальных доказательств:
+
+- F328/N328: `full_off_release_v328b_2026-10-05.txt` /
+  `full_on_release_v328_2026-10-05.txt`, восемь штатных suites.
+- SC328: `source_contracts_release_clean_v328_2026-10-05.txt` и
+  `source_contracts_saved_release_v328_2026-10-05.txt`, по 108/108, failed=0.
+- MATRIX: `load_matrix_final_v320_acceptance_2026-10-05.json`, 52 принятых
+  runs, 13 форм, 949 form/load fixtures, 22776 path cases, 957531/0.
+- SELECTOR: `selector_summary_v306_full_2026-10-05.json`, 62 группы,
+  4464 path cases, 302 пары, 48 рискованных четверок; пять negative mutations.
+- CONFIG: `config_final_evidence_v328_2026-10-05.json` и
+  `NDM_Audit03_Final_Config_Review.md`, точный минимум K02, не exhaustive Double.
+- PUB: material publication v322 401/0, 40 API/role/permission вариантов;
+  каноническая snapshot/publication матрица и F328/N328.
+- NUM: `full_numbers_off_v322_v328_2026-10-05.json` и парный On;
+  `NDM_Audit03_Final_Numerical_Comparison.md`, исходные допуски и 111 разобранных отличий.
+- BOOK: clean/update Validate по 27/27, formatting по 1003/0, Help 2828 cells
+  и одинаковые merges, palette/reopen 357/0, обычный расчет сохраненной копии.
+- PERF: `performance_final_v328_2026-10-05.txt` и records/summary, 160 измерений,
+  пять повторов, failed=0, корректный df10412f baseline.
+- CAD: native shapes v286 1023/0, 22 случая; translation v286 66/0.
+- REVIEW: Semantic/Code Comment/Guard и семейные Review MD, actual source manifest v328.
+
+Имена raw-файлов относятся к `docs/regression/Audit03/`; Review MD к `docs/`.
+Отсутствующая пиксельная QA не подменяется COM. Поздние v322/v325/v328
+publication/адресные/технические guards не меняют принятую математику MATRIX;
+их собственные negatives/positives и полные suites перечислены в Final Report.
+
+### Audit01: Все 14 Пунктов
+
+| ID | Проверенный Контракт | Актуальное Доказательство |
+| --- | --- | --- |
+| T01 | Secant финализирует проверенный root, не прежнюю нижнюю границу. | F328/N328, Search arithmetic directed, NUM. |
+| T02 | Exhausted iteration budget не создает найденный предел. | F328/N328; соседние Double, budget=0 и Ultimate-stagnation directed. |
+| T03 | Неподтвержденный initial solve остается numerical failure; BaseFail требует подтвержденного physical criterion. | F328/N328, On/Off offset-pair tests, MATRIX. |
+| T04 | SEARCH_BOUND_REACHED сохраняет технический смысл, не превращается в найденный physical limit. | F328/N328; Crack bound positive 2157/0, русская причина без двойной пунктуации. |
+| T05 | Доказанное отсутствие трещины не создает Post; найденный порог после LC дает NotCracked. | F328/N328, Formation gate/lifecycle tests, MATRIX. |
+| T06 | Cache-hit восстанавливает solver snapshot без LastRunner и нового heavy solve. | F328/N328, currentCache/cacheHitWithoutLastRunner, PERF. |
+| T07 | Failed solve не возвращается reusable; новый warm-start/retry допускается, context/revision проверяются. | F328/N328, retry-session 22/0, PUB, REVIEW. |
+| T08 | Crack aggregate содержит primary current-state failure и правильное поддерево комментариев. | F328/N328, MATRIX, ResultComment Review, BOOK. |
+| A01 | Общие LoadMultiplier/UltimateStrain loops действительно едины; domain adapters не содержат второго search. | SC328, F328/N328, REVIEW. |
+| A02 | Probe равновесия проходит общий State pipeline; неуспех не становится physical failure. | F328/N328, typed-fault/recovery tests, PERF. |
+| A03 | Formation самостоятельна, Width не исполняет Formation/Search. | SC328, independentFormation tests, REVIEW. |
+| A04 | Search/state/meta/spec publication изолирована от дальнейшего live solver/context. | PUB, F328/N328, named-state/repository tests. |
+| A05 | Writers выводят готовое свое поддерево; batch объединяет все разделы, без solver-text mapping. | MATRIX, BOOK, SC328, ResultComment Review. |
+| A06 | Один display-словарь, typed codes и владелец комментариев; палитра отдельно. | SC328, F328/N328, palette BOOK, REVIEW. |
+
+### Audit02: Все 56 Пунктов
+
+| ID | Проверенный Контракт | Актуальное Доказательство |
+| --- | --- | --- |
+| R01 | Повтор CurrentCrackedState использует сохраненное НДС и дает ту же ширину без нового solve. | F328/N328, PERF crack-cache. |
+| R02 | MaxLambda/последний интервал/representability проверяются без фиктивной конечной точки. | F328/N328, Search arithmetic и real Capacity precision. |
+| R03 | Несошедшаяся probe не подтверждает physical failure; следующий корректный retry не блокируется. | F328/N328, typed faults, retry-session, MATRIX. |
+| R04 | Generic Search работает через общий callback-контракт для обоих критериев. | SC328, fake linear problem и реальные Capacity/Formation tests. |
+| R05 | Formation имеет собственный вход/контекст/result и не скрыта в Width. | SC328, F328/N328 independentFormation, REVIEW. |
+| R06 | Evaluated plane не равна подтвержденному равновесию; lifecycle flags независимы. | F328/N328, F04 lifecycle matrices, typed State tests. |
+| R07 | Числа принадлежат canonical results, aggregate/reset не оставляют второй изменяемый flat source. | SC328, PUB, F328/N328. |
+| R08 | Пределы растяжения/сжатия стали выбираются по знаку для обоих search approaches. | F328/N328, asymmetricSteelLimits и limit-state tests, NUM. |
+| R09 | Nothing/array/optional/Double guards имеют проверенный контракт и точную причину отказа. | REVIEW, directed negatives/positives F07, F328/N328. |
+| A01 | Новых классов нет; выполнены два согласованных объединения. | SC328, manifest: 85 -> 83 production, прежние 3 test classes. |
+| A02 | Batch остается orchestration/context/governing, не новым calculator/search монолитом. | REVIEW, SC328, F328/N328, source-line explanation в Final Report. |
+| A03 | Formation/Width/Longitudinal разделены; pure numeric Width methods не получают State/status. | SC328, F328/N328 pure-formula/independentFormation, REVIEW. |
+| A04 | Capacity adapter задает criterion/spec/path, общий State runner решает обычную probe. | F328/N328, SELECTOR, REVIEW. |
+| A05 | Bisection/Brent/Secant/Ultimate общие для двух domains, с общими безопасными шагами. | SC328, F328/N328, directed stagnation/fault/recovery. |
+| A06 | CLimitSearchResult не читает live Formation/solver после публикации. | PUB, F328/N328 diagnosticSnapshot. |
+| A07 | Published API не меняет прежние numerical/meta/material snapshots при новом запуске. | PUB, SC328, F328/N328, material revision tests. |
+| A08 | Writers пассивны; допустима арифметика представления, не инженерный verdict. | REVIEW, SC328, MATRIX, BOOK. |
+| E01 | Канонический General.DiagramExtension един; alias имеет только узкую migration-роль. | F328/N328 readerMigration, CONFIG, SC328. |
+| E02 | Обновление сохраняет пользовательские values/formulas/LC, priority и повторяемость migration. | saved Config migration/idempotence v323, BOOK, сохраненный обычный расчет v328. |
+| E03 | Permission передается всем разрешенным State/Search roles, не меняя physical criterion. | F328/N328, MATRIX, SELECTOR, extreme On equilibrium 192 cases. |
+| E04 | Ignore не оживляет tensile concrete; extension продолжает только активные ветви. | Material F328/N328, physicalDiagramPairs, CONFIG. |
+| E05 | Физические узлы/плато/strain limits сохранены, контроля таблицы недостаточно без provider. | Material F328/N328, 23 input x 16 spec tests, NUM. |
+| E06 | Техническая outer range и overflow определяются явно, не расширяют capacity произвольно. | Material/State F328/N328; +/-10 сверхтехнические cases и safe outer-limit tests. |
+| E07 | Permission/ExtensionUsed/Converged/WithinPhysicalRange различаются; промежуточный extension не всегда означает конечный outside-state. | F328/N328 extendedInitialGuessPhysicalFinal, MATRIX, BOOK. |
+| E08 | Auxiliary state не подается в неподходящую инженерную формулу; primary cause и blocked dependents согласованы. | F328/N328, F03/F04, MATRIX, ResultComment Review. |
+| E09 | Обе стратегии используют один физический критерий и sign-specific limits. | Capacity/Crack F328/N328, SELECTOR, NUM. |
+| E10 | Обычный Off сохраняет explicit-On исторические fixtures и восстанавливает effective mode. | F328/N328 GLOBAL_MODE/MODE_AFTER_SUITE, CONFIG isolation. |
+| S01 | InternalStatus/ResultCode -> одна CResultStatusPolicy -> ExternalStatus, без назначения по comment text. | SC328, F328/N328 dictionary/aggregation, REVIEW. |
+| S02 | Initial offset: BaseFail только при подтвержденном превышении, NumFail при численном неуспехе. | F328/N328 initialOffsetOnOff/offsetPair, MATRIX. |
+| S03 | Fixed/Auto Formation различают постоянную часть, смену пути и консервативный fallback. | F328/N328, MATRIX все 12 путевых вариантов, typed terminal tests. |
+| S04 | CRITERION_NOT_REACHED не смешан с SEARCH_BOUND_REACHED; NotCracked не вызывается из failed поиска. | F328/N328 FormationOutcome/FormationGate/bound tests. |
+| S05 | Current state сохраняет фактическую typed причину; Width/Longitudinal получают blocked, не новый NumFail. | F328/N328, MATRIX, BOOK, F03 directed. |
+| S06 | User/Auto/AlwaysCalc, signed sigma_s,crc и его усреднение имеют явные текущие правила. | Crack F328/N328, CONFIG, UserPsiFallback 440/0; отсутствующий Formation -> 1, confirmed NotCracked сохраняет User. |
+| S07 | Подробные comments только своего subtree; summary все разделы, dedup и логический порядок. | MATRIX, ResultComment Review, F328/N328, BOOK. |
+| C01 | State pipeline общий; material stress/tangent API не заменяется локальной доменной формулой. | SC328, F328/N328, REVIEW. |
+| C02 | Reuse key учитывает context/revision/spec/permission/admissibility/tolerances, не warm-start policy. | F328/N328 repositoryContextAndRetry, REVIEW, PUB. |
+| C03 | Named repository отдельно от локального search cache; failed attempts допускают новый solve. | F328/N328, retry-session 22/0, PERF, SC328. |
+| C04 | Converged/EvaluatedPlane сами по себе не доказывают физическую пригодность State. | F328/N328 evaluatedPlane/current/offsetPair, MATRIX. |
+| C05 | Saved Results имеет свои units/signs/role metadata; смена Config не делает скрытый import или solve. | F328/N328, imported snapshot unit-change 228/0, CAD, BOOK. |
+| C06 | Initialize/Clear/clone/новый LC не переносят прежние flags/errors/result numbers. | F328/N328, read lifecycle, PUB, MATRIX. |
+| Q01 | Корректный baseline df10412f воспроизведен до исправлений и сохранен. | baseline Off/On по 6745/0, baseline source equality 103/103, hashes в Progress. |
+| Q02 | Прежние численные expected/tolerance не подогнаны; направления исправленного поведения раскрыты. | NUM; 536 неизменных из 542 AssertClose, два согласованных Psi и четыре ColumnWidth exceptions; все 277 Test-процедур сохранены. |
+| Q03 | Explicit-On setup исторических tests сохранен, глобальный Off не маскируется. | F328/N328, mode-after-suite, CONFIG. |
+| Q04 | On/Off внутри physical range сопоставлены численно; failures не сравниваются только итоговой строкой. | F328/N328, MATRIX, SELECTOR, NUM. |
+| Q05 | Прежние directed gates повторены, новая Config/нагрузочная область не заменена старым счетчиком. | F328/N328, CONFIG, MATRIX, SELECTOR. |
+| Q06 | Все 14 требований Audit01 имеют отдельную строку, владельца и evidence. | Итоговая таблица Audit01 выше, SC328, F328/N328. |
+| Q07 | Финальная clean build содержит актуальный source, все восемь suites выполняются. | clean v328 build/SC328, F328/N328, BOOK. |
+| Q08 | Performance, native CAD, снимки и save/reopen реально проверены в заявленных границах. | PERF, CAD, BOOK, MATRIX; пиксельная QA Excel не заявлена. |
+| D01 | Действующие owners/comments описывают реальный код, не прежнюю/будущую архитектуру. | REVIEW, census 108/4567, два class merges, SC328; не автоматический PASS по счетчику. |
+| D02 | Справка/Config/validation/links совпадают с текущими Extension/paths/units/physical contracts. | BOOK, CONFIG, actual Help comparison v328, REVIEW. |
+| W01 | Baseline/spec/user hashes и чужие данные сохранены, исходный audit MD не изменен. | Progress/Final Report, saved Config guards, controlled publication. |
+| W02 | Progress/ownership/evidence дают восстановление после compaction, решения сохранены. | Progress и семейные Review MD, final CONFIG/manifest. |
+| W03 | Scoped checkpoints сделаны после конкретных gates, не вместо приемки. | git log до ca28919; negative/positive/raw reports не переписаны. |
+| W04 | Нет push/destructive Git/отката чужих изменений; Excel cleanup ограничен собственным PID/startTicks. | Git diff/status/log, watchdog и исходные workbook hashes. |
+| W05 | Узкий зеленый тест не объявляет весь goal завершенным; выполнены все шесть этапов DoD. | Final Report self-audit после завершения F328/N328 и publication. |
+| W06 | Source/checked user book/VBE export/report согласованы и опубликованы. | Final Report identification, final publication receipt и scoped release commit. |

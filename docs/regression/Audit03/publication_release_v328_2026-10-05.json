@@ -1,0 +1,29 @@
+{
+  "Date": "2026-10-05T13:30:12",
+  "ImplementationCommit": "ca289196d9fea5410625ba39158add81259dec17",
+  "OriginalOutputSHA256": "AAF5D4FAF06197F01966463DE85BA813EB4216B455AA8504B2DE4F0BA717C012",
+  "OriginalBackup": "C:/Users/avidzba/AppData/Local/Temp/RC_NDM_Audit03_Baseline_df10412f/workbook/output/RC_Section_NDM.xlsm",
+  "UserValuesPreservedReport": "docs/regression/Audit03/saved_user_calculation_release_v328_2026-10-05.txt",
+  "SourceManifestChanged": 0,
+  "PublishedFiles": [
+    {
+      "AcceptedSource": "docs/regression/Audit03/release_v323/RC_Section_NDM.xlsm",
+      "Published": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "903B61AFCA932580E542173BFA294CFE5BDFA78FE8155D33D3A00B961D83B306",
+      "BytesEqual": true
+    },
+    {
+      "AcceptedSource": "docs/regression/Audit03/release_v323/RC_Section_NDM_execution_report.txt",
+      "Published": "workbook/output/RC_Section_NDM_execution_report.txt",
+      "SHA256": "3D8C82FC8737ADEAF5B55BABEA1DE44E381F30DFDA9FE9EEEF576F3EFF986B29",
+      "BytesEqual": true
+    },
+    {
+      "AcceptedSource": "docs/regression/Audit03/VBA_All_Code_saved_release_v328_2026-10-05.txt",
+      "Published": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "69A5D2C7226D6C8A032FEB65B97D10EA9C282ADADC4B06D30AD0F736A5376B59",
+      "BytesEqual": true
+    }
+  ],
+  "Published": true
+}

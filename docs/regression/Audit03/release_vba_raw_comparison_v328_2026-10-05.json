@@ -1,0 +1,10 @@
+{
+  "Clean": "docs/regression/Audit03/VBA_All_Code_release_clean_v328_2026-10-05.txt",
+  "Updated": "docs/regression/Audit03/VBA_All_Code_saved_release_v328_2026-10-05.txt",
+  "CleanComponents": 113,
+  "UpdatedComponents": 113,
+  "OnlyDateExcluded": true,
+  "FullExportBodyEqual": false,
+  "CleanSHA256": "8F4909BD2C0DC89481D9988131E23BAAABC863BB7B4A44F87A7860F6A4532BB1",
+  "UpdatedSHA256": "69A5D2C7226D6C8A032FEB65B97D10EA9C282ADADC4B06D30AD0F736A5376B59"
+}
