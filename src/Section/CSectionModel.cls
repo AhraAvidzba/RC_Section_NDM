@@ -15,7 +15,8 @@ Option Explicit
 ' CSectionModel - это единственный формат геометрии, который видит расчетное
 ' ядро. Неважно, пришла сетка из встроенного генератора или из AutoCAD import:
 ' ниже по цепочке solver получает один и тот же набор бетонных элементов,
-' стержней арматуры и semantic-аннотаций для вывода.
+' стержней арматуры и достоверных outer/opening. Размерные аннотации
+' хранятся отдельно и не определяют исходную расчетную геометрию.
 '
 ' Важно: расчетные имена элементов C1/R1 создаются здесь. Генераторы
 ' геометрии и импорт из AutoCAD не должны придумывать собственный формат имен
@@ -60,7 +61,9 @@ Private mRebarComment() As String ' Диагностическая заметк�
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 
 Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сформированные генератором сечения.
+Private mContours As CSectionContours ' Достоверные outer/opening, принадлежащие исходной геометрии.
 Private mRevision As Long ' Версия расчетной геометрии для scoped-инвалидации reusable НДС.
+Private mObservedContourRevision As Long ' Последняя учтенная версия достоверного outer/opening.
 
 Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допуск, при котором главные локальные I считаются изотропными.
 Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
@@ -104,6 +107,7 @@ Public Sub Clear()
     mRebarCount = 0
 
     Set mAnnotations = New CSectionAnnotations
+    Set mContours = New CSectionContours
 End Sub
 
 Public Property Let SourceType(ByVal value As String)
@@ -188,6 +192,12 @@ End Sub
 ' Возвращает версию геометрии без копирования волокон. Она меняется только
 ' при изменении модели, а не при чтении границ или расчетных характеристик.
 Public Property Get Revision() As Long
+    If Not mContours Is Nothing Then
+        If mContours.Revision <> mObservedContourRevision Then
+            mObservedContourRevision = mContours.Revision
+            mRevision = mRevision + 1
+        End If
+    End If
     Revision = mRevision
 End Property
 
@@ -784,6 +794,12 @@ End Property
 Public Property Get Annotations() As CSectionAnnotations
     If mAnnotations Is Nothing Then Set mAnnotations = New CSectionAnnotations
     Set Annotations = mAnnotations
+End Property
+
+' Возвращает исходные границы материала отдельно от аннотаций и расчетных областей.
+Public Property Get Contours() As CSectionContours
+    If mContours Is Nothing Then Set mContours = New CSectionContours
+    Set Contours = mContours
 End Property
 
 ' Возвращает число сохраненных аннотаций без создания коллекции.

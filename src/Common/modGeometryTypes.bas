@@ -20,6 +20,20 @@ Public Type TPoint2D
     Y As Double
 End Type
 
+' Аналитическая ориентированная граница области: бетон находится слева при
+' обходе outer против часовой стрелки и opening по часовой стрелке.
+' Sweep=0 обозначает отрезок; ненулевой Sweep хранит signed угол дуги.
+Public Type TRegionEdge
+    X1 As Double
+    Y1 As Double
+    X2 As Double
+    Y2 As Double
+    CenterX As Double
+    CenterY As Double
+    Sweep As Double
+    LoopID As Long ' Номер замкнутого кольца в готовом геометрическом снимке.
+End Type
+
 Public Type TFiber
     X As Double
     Y As Double

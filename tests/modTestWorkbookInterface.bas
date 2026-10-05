@@ -359,6 +359,12 @@ Private Sub TestRebarInputValidationDoesNotUseHiddenDefaults(ByRef stats As TUiT
     PrepareCircleInput
 End Sub
 
+' ДЛЯ ТЕСТОВ: заданные имена опциональных контуров отсутствуют в fixture;
+' импорт расчетной сетки должен продолжать работать без дополнительных слоев.
+Private Function Audit03AbsentContourLayers() As Collection
+    Set Audit03AbsentContourLayers = New Collection
+End Function
+
 ' Собирает модель через тот же путь, которым пользуется кнопка расчета:
 ' Config -> CSystemSettingsReader -> CUnitSystem -> CSectionTypeRegistry.
 Private Function BuildCurrentWorkbookSection() As CSectionModel
@@ -1221,9 +1227,9 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
     AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
     AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 29
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 37
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 50
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 39
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 47
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 60
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -6392,7 +6398,7 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
             settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem
             units.LoadFromSettings settings
-            Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, units)
+            Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, units, Audit03AbsentContourLayers())
             prefix = "audit03.inputArea.unit" & CStr(unitIndex) & ".case" & CStr(caseIndex)
             AssertTrue stats, prefix & ".concreteCount", section.ConcreteCount = expectedConcrete
             AssertTrue stats, prefix & ".rebarCount", section.RebarCount = expectedRebar
@@ -6404,7 +6410,7 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
                 AssertTrue stats, prefix & ".inclusiveBoundary", section.RebarSourceHandle(1) = "R2"
                 AssertClose stats, prefix & ".boundaryArea", section.RebarArea(1), 25#, 0.000001
                 AssertClose stats, prefix & ".boundaryX", section.RebarX(1), 1000#, 0.000001
-                Set section = importer.ImportConfiguredModelSpace(modelSpace, settings)
+                Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, Nothing, Audit03AbsentContourLayers())
                 AssertTrue stats, prefix & ".implicitUnitsRead", section.ConcreteCount = expectedConcrete And section.RebarCount = expectedRebar
                 If unitIndex > 0 Then
                     Set disconnected = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", rawValue, units)
@@ -6477,7 +6483,7 @@ Private Sub Audit03CaptureImportError(ByVal modelSpace As Object, ByRef errorNum
     Set units = New CUnitSystem
     units.LoadFromSettings settings
     Set importer = New CAutoCADSectionModelImporter
-    Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, units)
+    Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, units, Audit03AbsentContourLayers())
     Exit Sub
 Failed:
     errorNumber = Err.Number: description = Err.Description
@@ -6712,7 +6718,7 @@ Private Function Audit03ImportSnapshotFixture(ByVal settings As CSystemSettingsR
         modelSpace.Add region
     Next i
     Set importer = New CAutoCADSectionModelImporter
-    Set Audit03ImportSnapshotFixture = importer.ImportConfiguredModelSpace(modelSpace, settings, units)
+    Set Audit03ImportSnapshotFixture = importer.ImportConfiguredModelSpace(modelSpace, settings, units, Audit03AbsentContourLayers())
 End Function
 
 ' ====================== ДЛЯ ТЕСТОВ: ПОНЯТНЫЕ ОШИБКИ CONFIG ======================

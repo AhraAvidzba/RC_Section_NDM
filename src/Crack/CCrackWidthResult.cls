@@ -45,6 +45,11 @@ Private mEffectiveZoneDepth As Double ' Принятая высота зоны �
 Private mCentralTensionBranch As Boolean ' True для ветки центрального растяжения.
 Private mStopReason As String ' Пользовательская причина остановки/итога.
 Private mDiagnosticLog As String ' Техническая диагностика подготовки данных и формулы.
+Private mInteractionRegion As CConcreteRegion ' Аналитический снимок той же области, площадь которой вошла в Abt/Ar.
+Private mStandardCode As String ' Методика действительно выполненной формулы ширины.
+Private mSP35Data As CSP35CrackData ' Закрытые для изменения якорные данные с реальными стержнями всех рядов.
+Private mSP35CriticalCandidate As Long ' Индекс максимальной ширины в сохраненных якорных данных.
+Private mSP35Radius As Double, mSP35PsiCm As Double ' Радиус армирования в мм и размерный psi в см.
 
 ' Создает нейтральный not-applicable результат до заполнения.
 Private Sub Class_Initialize()
@@ -55,7 +60,8 @@ End Sub
 ' Копирует все подготовленные crack-width величины из calculator-а.
 ' Downstream-слой работает с отдельным result-объектом и ResultMeta, не
 ' обращаясь к внутренним временным полям calculator-а.
-Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal meta As CResultMeta)
+Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal meta As CResultMeta, _
+        Optional ByVal combinationID As String = vbNullString)
     AssertWritable
     ResetData
     If meta Is Nothing Then
@@ -90,6 +96,14 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal 
     mCentralTensionBranch = crack.CentralTensionBranch
     mStopReason = crack.StopReason
     mDiagnosticLog = crack.DiagnosticLog
+    Set mInteractionRegion = crack.InteractionRegion
+    mStandardCode = crack.StandardCode
+    Set mSP35Data = crack.SP35Data
+    mSP35CriticalCandidate = crack.SP35CriticalCandidate
+    mSP35Radius = crack.SP35ReinforcementRadius: mSP35PsiCm = crack.SP35PsiCm
+    Dim anchorID As String
+    If mSP35CriticalCandidate > 0 Then anchorID = "G" & CStr(mSP35Data.CandidateAnchorGroup(mSP35CriticalCandidate))
+    If Not mInteractionRegion Is Nothing Then mInteractionRegion.SetOwner combinationID, mStandardCode, anchorID
 End Sub
 
 ' Возвращает копию meta формульного расчета ширины или его блокировки.
@@ -194,6 +208,33 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+' Отдает самостоятельную копию конечных колец результата для сериализации.
+' Writer/экспортер не восстанавливают область из Abt и не выполняют clipping.
+Public Property Get InteractionRegion() As CConcreteRegion
+    If Not mInteractionRegion Is Nothing Then Set InteractionRegion = mInteractionRegion.Clone
+End Property
+
+' Возвращают собственный снимок методики и критического расчета без поиска
+' НДС или геометрии. SP35Data уже заморожен владельцем подготовки и формулы.
+Public Property Get StandardCode() As String
+    StandardCode = mStandardCode
+End Property
+Public Property Get SP35Data() As CSP35CrackData
+    Set SP35Data = mSP35Data
+End Property
+Public Property Get SP35CriticalCandidate() As Long
+    SP35CriticalCandidate = mSP35CriticalCandidate
+End Property
+Public Property Get SP35ReinforcementRadius() As Double
+    SP35ReinforcementRadius = mSP35Radius
+End Property
+Public Property Get SP35PsiCm() As Double
+    SP35PsiCm = mSP35PsiCm
+End Property
+Public Property Get CriticalAnchorGroupID() As String
+    If mSP35CriticalCandidate > 0 Then CriticalAnchorGroupID = "G" & CStr(mSP35Data.CandidateAnchorGroup(mSP35CriticalCandidate))
+End Property
+
 ' Возвращает запас только завершенной проверки с ненулевой шириной.
 ' Неприменимый или заблокированный расчет не получает вымышленный запас.
 Public Property Get ReserveFactor() As Double
@@ -231,6 +272,9 @@ Private Sub ResetData()
     mCentralTensionBranch = False
     mStopReason = vbNullString
     mDiagnosticLog = vbNullString
+    Set mInteractionRegion = Nothing
+    mStandardCode = vbNullString: Set mSP35Data = Nothing
+    mSP35CriticalCandidate = 0: mSP35Radius = 0#: mSP35PsiCm = 0#
 End Sub
 
 ' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.

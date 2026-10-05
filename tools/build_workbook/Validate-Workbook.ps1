@@ -196,9 +196,9 @@ try {
             ($stabilitySummaryAnchorRange.Row -eq 122) -and ($stabilitySummaryAnchorRange.Column -eq 1) -and
             ($elementResultsRange.Row -eq 156) -and ($elementResultsRange.Column -eq 1) -and
             ($geometryResultsRange.Row -eq 156) -and ($geometryResultsRange.Column -eq 12) -and
-            ($sectionPropertiesRange.Row -eq 156) -and ($sectionPropertiesRange.Column -eq 29) -and
-            ($materialDiagramsRange.Row -eq 156) -and ($materialDiagramsRange.Column -eq 37) -and
-            ($sectionAnnotationsRange.Row -eq 156) -and ($sectionAnnotationsRange.Column -eq 50)
+            ($sectionPropertiesRange.Row -eq 156) -and ($sectionPropertiesRange.Column -eq 39) -and
+            ($materialDiagramsRange.Row -eq 156) -and ($materialDiagramsRange.Column -eq 47) -and
+            ($sectionAnnotationsRange.Row -eq 156) -and ($sectionAnnotationsRange.Column -eq 60)
         ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column):$($batchSummaryRange.Columns.Count) cols; strengthAnchor=R$($strengthSummaryAnchorRange.Row)C$($strengthSummaryAnchorRange.Column); crackAnchor=R$($crackSummaryAnchorRange.Row)C$($crackSummaryAnchorRange.Column); stabilityAnchor=R$($stabilitySummaryAnchorRange.Row)C$($stabilitySummaryAnchorRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
         Add-Check $checks "Stability duration loads range" (
             ($stabilityLoadsRange.Worksheet.Name -eq "Config") -and

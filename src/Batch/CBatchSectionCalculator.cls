@@ -70,6 +70,9 @@ Private mTransformedReferenceX(1 To 2) As Double ' X центра приведе
 Private mTransformedReferenceY(1 To 2) As Double ' Y центра приведенного сечения, мм.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
+Private mCrackStandardCode As String ' Общий выбор SP63/SP35, независимый от Stability.Code.
+Private mCrackSP35GroupGap As Double, mCrackSP35RowTolerance As Double ' Настройки длин после CUnitSystem, мм.
+Private mCrackSP35DiameterMode As String, mCrackSP35RadiusMode As String, mCrackSP35RebarProfile As String
 Private mCrackPsiMode As String ' User, Auto или AlwaysCalc: как определять psi_s для нормальных трещин.
 Private mCrackSigmaSCrcAveragingMode As String ' Как усреднять sigma_s,crc при уточнении psi_s по PostCrackState.
 Private mCrackPhi1 As Double ' Пользовательский коэффициент phi1 для формулы раскрытия.
@@ -149,6 +152,9 @@ Private Sub Class_Initialize()
     EnsureStabilityLoadCapacity INITIAL_COMBINATION_CAPACITY
 
     mCrackAllowable = 0.3
+    mCrackStandardCode = "SP63"
+    mCrackSP35GroupGap = 10#: mCrackSP35RowTolerance = 50#
+    mCrackSP35DiameterMode = "Max": mCrackSP35RadiusMode = "D6": mCrackSP35RebarProfile = "Periodic"
     mCrackPsiMode = "AlwaysCalc"
     mCrackSigmaSCrcAveragingMode = "AllSelected"
     mCrackPhi1 = 1.4
@@ -241,9 +247,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Dim conversionKey As String ' Настройка текущего пересчета единиц для точной диагностики переполнения.
     ' Значения таблицы трещин обязательны: очистка ячейки или потерянный key
     ' не должны незаметно менять методику на начальные значения calculator-а.
+    mCrackStandardCode = settings.GetRequiredChoice("SLS.Crack.Code", Array("SP63", "SP35"))
     mCrackAllowable = settings.GetRequiredDouble("SLS.Crack.Allowable")
-    mCrackPsiMode = settings.GetRequiredString("SLS.Crack.PsiMode")
-    mCrackSigmaSCrcAveragingMode = settings.GetRequiredString("SLS.Crack.SigmaSCrcAveragingMode")
     mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
     ' Formation владеет допустимыми путями и стратегиями; до любого solve
     ' проверяем пользовательский выбор с адресной диагностикой reader-а.
@@ -252,13 +257,23 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mCrackFormationSolutionStrategy = formationOptions.NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
     mWorstCombinationCriterion = settings.GetRequiredChoice("General.WorstCombinationCriterion", _
         Array("StrengthStrain", "StrengthCapacity", "Cracks", "Stability"))
-    mCrackTensionZoneMode = settings.GetRequiredString("SLS.Crack.TensionZoneMode")
-    mCrackCoverDistanceMode = settings.GetRequiredString("SLS.Crack.CoverDistanceMode")
-    mCrackPhi1 = settings.GetRequiredDouble("SLS.Crack.Phi1")
-    mCrackPhi2 = settings.GetRequiredDouble("SLS.Crack.Phi2")
-    mCrackPhi3Mode = settings.GetRequiredString("SLS.Crack.Phi3Mode")
-    mCrackPhi3 = settings.GetRequiredDouble("SLS.Crack.Phi3")
-    mCrackPsiS = settings.GetRequiredDouble("SLS.Crack.PsiS")
+    If mCrackStandardCode = "SP35" Then
+        mCrackSP35GroupGap = settings.GetRequiredDouble("SLS.Crack.SP35.GroupGapTolerance")
+        mCrackSP35RowTolerance = settings.GetRequiredDouble("SLS.Crack.SP35.RowTolerance")
+        mCrackSP35DiameterMode = settings.GetRequiredChoice("SLS.Crack.SP35.RadiusDiameterMode", Array("Max", "Min", "Average"))
+        mCrackSP35RadiusMode = settings.GetRequiredChoice("SLS.Crack.SP35.InteractionRadiusMode", Array("D3", "D5", "D6"))
+        mCrackSP35RebarProfile = settings.GetRequiredChoice("SLS.Crack.SP35.RebarProfile", Array("Periodic", "Smooth"))
+    Else
+        mCrackPsiMode = settings.GetRequiredString("SLS.Crack.PsiMode")
+        mCrackSigmaSCrcAveragingMode = settings.GetRequiredString("SLS.Crack.SigmaSCrcAveragingMode")
+        mCrackTensionZoneMode = settings.GetRequiredString("SLS.Crack.TensionZoneMode")
+        mCrackCoverDistanceMode = settings.GetRequiredString("SLS.Crack.CoverDistanceMode")
+        mCrackPhi1 = settings.GetRequiredDouble("SLS.Crack.Phi1")
+        mCrackPhi2 = settings.GetRequiredDouble("SLS.Crack.Phi2")
+        mCrackPhi3Mode = settings.GetRequiredString("SLS.Crack.Phi3Mode")
+        mCrackPhi3 = settings.GetRequiredDouble("SLS.Crack.Phi3")
+        mCrackPsiS = settings.GetRequiredDouble("SLS.Crack.PsiS")
+    End If
     mZeroMomentPerDepth = settings.GetRequiredDouble("Calculation.ZeroMomentPerDepth")
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
@@ -306,6 +321,12 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     If Not units Is Nothing Then
         conversionKey = "SLS.Crack.Allowable"
         mCrackAllowable = units.InputLengthToInternal(mCrackAllowable)
+        If mCrackStandardCode = "SP35" Then
+            conversionKey = "SLS.Crack.SP35.GroupGapTolerance"
+            mCrackSP35GroupGap = units.InputLengthToInternal(mCrackSP35GroupGap)
+            conversionKey = "SLS.Crack.SP35.RowTolerance"
+            mCrackSP35RowTolerance = units.InputLengthToInternal(mCrackSP35RowTolerance)
+        End If
         conversionKey = "Stability.ElementLength"
         mStabilityElementLength = units.InputLengthToInternal(mStabilityElementLength)
         conversionKey = "Stability.AccidentalEccentricityUser1"
@@ -1292,9 +1313,9 @@ Private Sub StoreCrackAggregateSnapshot(ByVal index As Long, ByVal crack As CCra
     Dim widthResult As CCrackWidthResult
     Set widthResult = New CCrackWidthResult
     If widthMeta Is Nothing Then
-        widthResult.InitializeFromCalculator crack, crack.ResultMeta
+        widthResult.InitializeFromCalculator crack, crack.ResultMeta, mInputs(index).CombinationID
     Else
-        widthResult.InitializeFromCalculator crack, widthMeta
+        widthResult.InitializeFromCalculator crack, widthMeta, mInputs(index).CombinationID
     End If
 
     Dim crackResult As CCrackResult
@@ -1500,6 +1521,12 @@ End Sub
 ' режимов/коэффициентов остается у Width; ни solver-options, ни поиск НДС
 ' через этот метод не передаются. Текущее состояние получает отдельный runner.
 Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
+    crack.StandardCode = mCrackStandardCode
+    crack.SP35GroupGapTolerance = mCrackSP35GroupGap
+    crack.SP35RowTolerance = mCrackSP35RowTolerance
+    crack.SP35RadiusDiameterMode = mCrackSP35DiameterMode
+    crack.SP35InteractionRadiusMode = mCrackSP35RadiusMode
+    crack.SP35RebarProfile = mCrackSP35RebarProfile
     crack.AllowableCrackWidth = mCrackAllowable
     crack.PsiMode = mCrackPsiMode
     crack.SigmaSCrcAveragingMode = mCrackSigmaSCrcAveragingMode

@@ -1,0 +1,36 @@
+﻿OK: SP35.readyPlane.confirmed
+OK: SP35.pipeline.calculated
+OK: SP35.pipeline.criticalWidth; actual=8.31384387633061E-02; expected=8.31384387633061E-02
+OK: SP35.pipeline.criticalSigmaNotMaximum; actual=80; expected=80
+OK: SP35.pipeline.criticalArea; actual=19200; expected=19200
+OK: SP35.pipeline.criticalRr; actual=1920; expected=1920
+OK: SP35.pipeline.criticalCandidate
+OK: SP35.pipeline.actualBar
+OK: SP35.pipeline.noPsiSFallbackWarning
+OK: SP35.pipeline.formationCausePreserved
+OK: SP35.pipeline.noSolverCalls
+OK: SP35.result.owner
+OK: SP35.result.criticalAnchor
+OK: SP35.result.revision
+OK: SP35.result.sameArea; actual=19200; expected=19200
+OK: SP35.result.fiveBoundaryProbes
+OK: SP35.result.probeSnapshotIndependent; actual=100; expected=100
+OK: SP35.result.allCandidateWidths; actual=7.99737769521985E-02; expected=7.99737769521985E-02
+OK: SP35.result.dataFrozen
+OK: SP35.result.formulaDataFrozen
+OK: SP35.pipeline.exceeded
+OK: SP35.pipeline.failureComment
+OK: SP35.result.notChangedByNewCalculation; actual=8.31384387633061E-02; expected=8.31384387633061E-02
+OK: SP35.pipeline.smooth; actual=0.2688; expected=0.2688
+OK: SP35.pipeline.missingStateBlocked
+OK: SP35.pipeline.noOldRegion
+OK: SP35.readyPlane.confirmed
+OK: SP35.central.calculated
+OK: SP35.central.twoOpenings.netArea; actual=152400; expected=152400
+OK: SP35.central.actualDiaSum; actual=40; expected=40
+OK: SP35.central.width; actual=0.146394159719574; expected=0.146394159719574
+OK: SP35.readyPlane.confirmed
+OK: SP35.compressed.notApplicable
+OK: SP35.compressed.noOldArea
+TOTAL_SP35_PIPELINE: passed=34; failed=0
+

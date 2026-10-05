@@ -14,10 +14,10 @@ Option Explicit
 ' ==========================================================================
 ' Builder знает смысл верхнего и нижнего прямоугольников: общий габарит,
 ' размеры активных прямоугольников и линии арматуры. Он формирует
-' CPlotDimension и CPlotRebarLabel, но не решает, как эти подписи будут
-' разведены по lanes на листе.
+' исходный контур в model.Contours и размерные/арматурные аннотации отдельно.
+' Визуальное размещение подписей на листе не относится к ответственности builder-а.
 
-' Заменяет аннотации модели контуром, размерами активных прямоугольников
+' Заменяет исходный контур модели, размеры активных прямоугольников
 ' и подписями арматуры. Расчетное сечение и его НДС здесь не пересчитываются.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5300, "CRectSetAnnotationBuilder", "Модель сечения не передана."
@@ -26,8 +26,9 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations
     annotations.Clear
+    model.Contours.Clear
 
-    AddContour annotations, geometry
+    AddContour model.Contours, geometry
     AddDimensions annotations, geometry
 
     Dim rebarLabels As CRebarGroupAnnotationBuilder
@@ -36,7 +37,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
 End Sub
 
 ' Добавляет внешний контур RectSet как набор прямых semantic-сегментов.
-Private Sub AddContour(ByVal annotations As CSectionAnnotations, ByVal geometry As ISectionGeometry)
+Private Sub AddContour(ByVal contours As CSectionContours, ByVal geometry As ISectionGeometry)
     Dim px() As Double
     Dim py() As Double
     geometry.GetExtremePoints px, py
@@ -49,7 +50,7 @@ Private Sub AddContour(ByVal annotations As CSectionAnnotations, ByVal geometry 
         Else
             nextIndex = i + 1
         End If
-        annotations.AddContourLine "CONTOUR_LINE_" & CStr(i), px(i), py(i), px(nextIndex), py(nextIndex)
+        contours.AddContourLine "CONTOUR_LINE_" & CStr(i), px(i), py(i), px(nextIndex), py(nextIndex)
     Next i
 End Sub
 

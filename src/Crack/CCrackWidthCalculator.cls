@@ -78,6 +78,19 @@ Private mEffectiveZoneDepth As Double ' Глубина зоны Abt, реаль�
 Private mCentralTensionBranch As Boolean ' True, если сработала отдельная ветка центрального растяжения.
 Private mFormation As CCrackFormationResult ' Единственный источник стадии образования трещины.
 Private mFallbackPsi1 As Boolean ' Нет пригодной точки образования/состояния Post; ширина считается консервативно по текущему НДС.
+Private mPsiFallbackReason As String ' Предупреждение только о коэффициенте, действительно использованном в формуле.
+Private mPostHasSelectedTension As Boolean ' В Post есть положительное напряжение хотя бы одного выбранного текущим НДС стержня.
+Private mGeometryQuery As CSectionGeometryQuery ' Один общий geometry session на подготовку ширины.
+Private mInteractionRegion As CConcreteRegion ' Та же конечная область, площадь которой принята в формуле Abt.
+Private mStandardCode As String ' SP63 или SP35: только выбор формулы ширины, не модели НДС.
+Private mSP35GroupGapTolerance As Double ' Чистый зазор объединения реальных стержней, мм.
+Private mSP35RowTolerance As Double ' Максимальная ширина ряда по нормали к Н.О., мм.
+Private mSP35RadiusDiameterMode As String ' Max/Min/Average только для геометрических радиусов.
+Private mSP35InteractionRadiusMode As String ' D3/D5/D6: нормативный множитель диаметра.
+Private mSP35RebarProfile As String ' Periodic/Smooth выбирает формулу psi СП 35.
+Private mSP35Data As CSP35CrackData ' Готовый неизменяемый снимок всех якорных расчетов.
+Private mSP35CriticalCandidate As Long ' Кандидат с максимальным раскрытием, не с максимальной площадью.
+Private mSP35Radius As Double, mSP35PsiCm As Double ' Rr в мм; размерный psi в см, не psi_s СП 63.
 
 
 ' ------------------------------
@@ -86,6 +99,10 @@ Private mFallbackPsi1 As Boolean ' Нет пригодной точки обра
 ' Значения соответствуют текущей принятой постановке: длительное раскрытие,
 ' эффективная зона СП и пользовательские коэффициенты с нормативными defaults.
 Private Sub Class_Initialize()
+    mStandardCode = "SP63"
+    mSP35GroupGapTolerance = 10#: mSP35RowTolerance = 50#
+    mSP35RadiusDiameterMode = "Max": mSP35InteractionRadiusMode = "D6"
+    mSP35RebarProfile = "Periodic"
     mAllowableCrackWidth = 0.3
     mPsiMode = PSI_MODE_ALWAYS_CALC
     mSigmaSCrcAveragingMode = SIGMA_S_CRC_AVERAGE_ALL_SELECTED
@@ -136,6 +153,12 @@ Private Sub ClearResult()
     mCentralTensionBranch = False
     Set mFormation = Nothing
     mFallbackPsi1 = False
+    mPsiFallbackReason = vbNullString
+    mPostHasSelectedTension = False
+    Set mGeometryQuery = Nothing
+    Set mInteractionRegion = Nothing
+    Set mSP35Data = Nothing
+    mSP35CriticalCandidate = 0: mSP35Radius = 0#: mSP35PsiCm = 0#
 End Sub
 
 
@@ -209,7 +232,11 @@ Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section A
     mStopReason = vbNullString
     mWidthInternalStatus = rsUnset
     mWidthResultCode = rcNone
-    If formation.CentralTensionBranch Then
+    Set mGeometryQuery = New CSectionGeometryQuery
+    mGeometryQuery.Initialize section
+    If mStandardCode = "SP35" Then
+        CalculateSP35 currentSolver, section, materialProvider.SteelMaterialFromSpec(mCrackedStateSpec)
+    ElseIf formation.CentralTensionBranch Then
         CalculateCentralTension currentSolver, section, materialProvider, loadStateForClassification
     Else
         CalculateGeneralBending currentSolver, section, materialProvider, loadStateForClassification
@@ -232,22 +259,114 @@ End Property
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
 
+    mStandardCode = settings.GetRequiredChoice("SLS.Crack.Code", Array("SP63", "SP35"))
     mAllowableCrackWidth = settings.GetRequiredDouble("SLS.Crack.Allowable")
-    mPsiMode = settings.GetRequiredString("SLS.Crack.PsiMode")
-    mSigmaSCrcAveragingMode = settings.GetRequiredString("SLS.Crack.SigmaSCrcAveragingMode")
-    mTensionZoneMode = settings.GetRequiredString("SLS.Crack.TensionZoneMode")
-    mCoverMode = settings.GetRequiredString("SLS.Crack.CoverDistanceMode")
-    mPhi1Input = settings.GetRequiredDouble("SLS.Crack.Phi1")
-    mPhi2Input = settings.GetRequiredDouble("SLS.Crack.Phi2")
-    mPhi3Mode = settings.GetRequiredString("SLS.Crack.Phi3Mode")
-    mPhi3Input = settings.GetRequiredDouble("SLS.Crack.Phi3")
-    mPsiSInput = settings.GetRequiredDouble("SLS.Crack.PsiS")
-
+    If mStandardCode = "SP35" Then
+        mSP35GroupGapTolerance = settings.GetRequiredDouble("SLS.Crack.SP35.GroupGapTolerance")
+        mSP35RowTolerance = settings.GetRequiredDouble("SLS.Crack.SP35.RowTolerance")
+        mSP35RadiusDiameterMode = settings.GetRequiredChoice("SLS.Crack.SP35.RadiusDiameterMode", Array("Max", "Min", "Average"))
+        mSP35InteractionRadiusMode = settings.GetRequiredChoice("SLS.Crack.SP35.InteractionRadiusMode", Array("D3", "D5", "D6"))
+        mSP35RebarProfile = settings.GetRequiredChoice("SLS.Crack.SP35.RebarProfile", Array("Periodic", "Smooth"))
+    Else
+        mPsiMode = settings.GetRequiredString("SLS.Crack.PsiMode")
+        mSigmaSCrcAveragingMode = settings.GetRequiredString("SLS.Crack.SigmaSCrcAveragingMode")
+        mTensionZoneMode = settings.GetRequiredString("SLS.Crack.TensionZoneMode")
+        mCoverMode = settings.GetRequiredString("SLS.Crack.CoverDistanceMode")
+        mPhi1Input = settings.GetRequiredDouble("SLS.Crack.Phi1")
+        mPhi2Input = settings.GetRequiredDouble("SLS.Crack.Phi2")
+        mPhi3Mode = settings.GetRequiredString("SLS.Crack.Phi3Mode")
+        mPhi3Input = settings.GetRequiredDouble("SLS.Crack.Phi3")
+        mPsiSInput = settings.GetRequiredDouble("SLS.Crack.PsiS")
+    End If
 
     If Not units Is Nothing Then
         mAllowableCrackWidth = units.InputLengthToInternal(mAllowableCrackWidth)
+        If mStandardCode = "SP35" Then
+            mSP35GroupGapTolerance = units.InputLengthToInternal(mSP35GroupGapTolerance)
+            mSP35RowTolerance = units.InputLengthToInternal(mSP35RowTolerance)
+        End If
     End If
     ValidateSettings settings
+End Sub
+
+' Готовит численные данные СП 35 по существующему текущему НДС и выбирает
+' максимальное раскрытие среди доступных якорей. Ни Formation, ни Post здесь
+' не пересчитываются; psi_s СП 63 и его предупреждения в этой ветке не нужны.
+Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal section As CSectionModel, ByVal steelMaterial As Object)
+    On Error GoTo Failed
+    Dim gradient As Double, central As Boolean
+    gradient = Sqr(currentState.KappaX * currentState.KappaX + currentState.KappaY * currentState.KappaY)
+    central = mCentralTensionBranch Or (gradient <= NEAR_ZERO_STRAIN And currentState.Epsilon0 > NEAR_ZERO_STRAIN)
+    Set mSP35Data = New CSP35CrackData
+    mSP35Data.Prepare section, currentState.Epsilon0, currentState.KappaX, currentState.KappaY, steelMaterial, _
+        mSP35GroupGapTolerance, mSP35RowTolerance, mSP35RadiusDiameterMode, mSP35InteractionRadiusMode, central
+    mCentralTensionBranch = central
+
+    ' Формула получает только площадь, реальные диаметры, напряжение и Es.
+    Dim i As Long, radius As Double, psiCm As Double, width As Double, region As CConcreteRegion
+    For i = 1 To mSP35Data.CandidateCount
+        If mSP35Data.CandidateAvailable(i) Then
+            Set region = mSP35Data.CandidateRegion(i)
+            radius = SP35ReinforcementRadiusFromData(region.Area, mSP35Data.CandidateBetaDiameterSum(i))
+            psiCm = SP35PsiFromData(radius, mSP35RebarProfile)
+            width = SP35CrackWidthFromData(mSP35Data.CandidateSigmaS(i), mSteelEs, psiCm)
+            mSP35Data.StoreFormulaResult i, radius, psiCm, width
+            If mSP35CriticalCandidate = 0 Or width > mCrackWidth Then
+                mSP35CriticalCandidate = i: mCrackWidth = width
+                mSP35Radius = radius: mSP35PsiCm = psiCm
+                Set mInteractionRegion = region
+            End If
+            AppendDiagnostic "СП 35: якорь G" & CStr(mSP35Data.CandidateAnchorGroup(i)) & _
+                "; Ar=" & FormatNumberInvariant(region.Area) & "; Rr=" & FormatNumberInvariant(radius) & _
+                "; psi (см)=" & FormatNumberInvariant(psiCm) & "; a_cr (мм)=" & FormatNumberInvariant(width)
+        End If
+    Next i
+    mSP35Data.Freeze
+    If mSP35CriticalCandidate = 0 Then
+        FinishNoCrack "В текущем НДС нет пригодной растянутой арматуры и области взаимодействия для раскрытия по СП 35."
+        Exit Sub
+    End If
+
+    ' Сохраняем именно критическую область и ее состав, а не усреднение якорей.
+    mAbt = mInteractionRegion.Area: mSigmaS = mSP35Data.CandidateSigmaS(mSP35CriticalCandidate)
+    Dim rows As Variant, members As Variant, group As Long, j As Long, bar As Long
+    rows = mSP35Data.CandidateRows(mSP35CriticalCandidate)
+    For i = LBound(rows, 1) To UBound(rows, 1)
+        group = CLng(rows(i, 1)): members = mSP35Data.GroupMembers(group)
+        For j = LBound(members) To UBound(members)
+            bar = CLng(members(j))
+            mTensionRebarCount = mTensionRebarCount + 1: mAs = mAs + mSP35Data.BarArea(bar)
+            If Len(mTensionRebarIds) > 0 Then mTensionRebarIds = mTensionRebarIds & ", "
+            mTensionRebarIds = mTensionRebarIds & mSP35Data.BarID(bar)
+        Next j
+    Next i
+    bar = mSP35Data.CandidateStressBar(mSP35CriticalCandidate)
+    mMaxSteelStrain = mSP35Data.BarStrain(bar): mMaxSteelStress = mSigmaS
+    mFormulaCalculated = True: mCrackFormed = True: mConverged = True
+    mUtilization = UtilizationFromData(mCrackWidth, mAllowableCrackWidth)
+    Dim reason As String
+    reason = "СП 35: раскрытие проверено по текущему НДС; критическая группа G" & _
+        CStr(mSP35Data.CandidateAnchorGroup(mSP35CriticalCandidate)) & ", напряжение стержня " & mSP35Data.BarID(bar) & "."
+    If mCrackWidth > mAllowableCrackWidth Then
+        SetWidthResult rsCheckFailed, rcCrackWidthExceeded, _
+            "Раскрытие нормальной трещины " & FormatNumberInvariant(mCrackWidth) & " мм превышает допускаемое " & _
+            FormatNumberInvariant(mAllowableCrackWidth) & " мм. " & reason
+    Else
+        SetWidthResult rsSuccess, rcCheckPassed, reason
+    End If
+    Exit Sub
+Failed:
+    Dim failureNumber As Long, failureReason As String
+    failureNumber = Err.Number: failureReason = Err.Description
+    mConverged = False: mFormulaCalculated = False: mCrackFormed = False
+    Set mInteractionRegion = Nothing: Set mSP35Data = Nothing
+    mSP35CriticalCandidate = 0: mCrackWidth = 0#: mUtilization = 0#
+    Select Case failureNumber
+        Case vbObjectError + 5510, vbObjectError + 5401, vbObjectError + 3780 To vbObjectError + 3785
+            SetWidthResult rsInvalidInput, rcInvalidInput, "Для раскрытия по СП 35: " & failureReason
+        Case Else
+            SetWidthResult rsInternalError, rcInternalError, "Не удалось подготовить раскрытие по СП 35: " & failureReason
+    End Select
 End Sub
 
 
@@ -274,7 +393,8 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionStateResult, 
         Exit Sub
     End If
 
-    mAbt = TotalConcreteArea(section)
+    Set mInteractionRegion = mGeometryQuery.ConcreteDomain
+    mAbt = mInteractionRegion.Area
     mAs = SelectedRebarArea(section, selected)
     CompleteCrackFormula currentSolver, section, materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected
     If mStopReason <> vbNullString And Not mCrackFormed Then Exit Sub
@@ -343,8 +463,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
         Exit Sub
     End If
 
-    mAbt = ConcreteAreaInZone(currentSolver, section, nx, ny, zoneLowerS, _
-        StrComp(mTensionZoneMode, "FullTension", vbTextCompare) = 0)
+    mAbt = ConcreteAreaInZone(nx, ny, zoneLowerS)
     If mAbt <= 0# Then
         FinishNoCrack "В расчетную растянутую зону не попали бетонные элементы."
         Exit Sub
@@ -395,6 +514,9 @@ End Sub
 ' Если пригодная точка образования отсутствует, любой режим использует
 ' psi_s = 1 с предупреждением; текущий НДС остается обязательным.
 ' При доступной точке User использует заданный пользователем psi_s.
+' Если выбранная арматура в готовом Post не растянута, уточнять коэффициент
+' по этому состоянию нельзя: при текущем растяжении все режимы используют
+' psi_s=1 с предупреждением, но формула ширины продолжает выполняться.
 ' Auto сначала делает проверку с psi_s = 1 и уточняет коэффициент только при
 ' непрохождении. AlwaysCalc сразу пытается применить уточненный psi_s. Точка
 ' lambda_crc и состояния PreCrackState/PostCrackState берутся из предварительной
@@ -402,10 +524,20 @@ End Sub
 Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByRef selected() As Boolean, _
         ByVal finalReason As String) As Boolean
+    If Not mFallbackPsi1 And Not mFormation.FallbackPsi1 Then
+        CaptureSigmaSCrcIfAvailable section, materialProvider, selected
+        If Not mPostHasSelectedTension Then
+            mFallbackPsi1 = True
+            mPsiFallbackReason = "Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); " & _
+                "psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС."
+        End If
+    End If
     If mFallbackPsi1 Then
         mPsiS = 1#
-        FinalizeWidth finalReason & " Предупреждение: пригодное состояние сразу после образования трещины недоступно; " & _
+        If Len(mPsiFallbackReason) = 0 Then mPsiFallbackReason = _
+            "Предупреждение: пригодное состояние сразу после образования трещины недоступно; " & _
             "psi_s принят равным 1, уменьшение раскрытия не применяется. Расчет выполнен по НДС заданного сочетания."
+        FinalizeWidth finalReason & " " & mPsiFallbackReason
         FinalizeWithPsiMode = mConverged
         Exit Function
     End If
@@ -518,6 +650,15 @@ Private Sub CaptureSigmaSCrcIfAvailable(ByVal section As CSectionModel, _
     If Not postState.Converged Then Exit Sub
     If Not postState.WithinPhysicalRange Then Exit Sub
 
+    Dim i As Long, steelMaterial As CMaterialDiagram, strain As Double
+    Set steelMaterial = materialProvider.SteelMaterialFromSpec(mCrackedStateSpec)
+    For i = 1 To section.RebarCount
+        If selected(i) Then
+            strain = postState.Epsilon0 + postState.KappaX * section.RebarY(i) + postState.KappaY * section.RebarX(i)
+            If steelMaterial.GetStress(strain) > NEAR_ZERO_STRESS Then mPostHasSelectedTension = True
+        End If
+    Next i
+
     mSigmaSCrc = AverageSelectedSteelStress(postState.Epsilon0, postState.KappaX, postState.KappaY, section, _
         materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected, False, IncludeCompressedStressForSigmaSCrc())
 End Sub
@@ -573,6 +714,68 @@ End Function
 Public Function UtilizationFromData(ByVal crackWidthValue As Double, ByVal allowableCrackWidth As Double) As Double
     If allowableCrackWidth <= 0# Then Exit Function
     UtilizationFromData = crackWidthValue / allowableCrackWidth
+End Function
+
+' ------------------------------ ЧИСТЫЕ ФОРМУЛЫ СП 35 ------------------------------
+' [SP35] П. 7.110, пособие (4.310): радиус армирования во внутренних мм.
+' Зона и состав групп уже подготовлены вне формулы; здесь нет геометрии,
+' выбора арматуры, State, Search, статусов или комментариев результата.
+Public Function SP35ReinforcementRadiusFromData(ByVal interactionArea As Double, ByVal betaDiameterSum As Double) As Double
+    If interactionArea < 0# Or betaDiameterSum <= 0# Then _
+        Err.Raise vbObjectError + 3780, "CCrackWidthCalculator", _
+            "Для радиуса армирования площадь должна быть неотрицательной, а сумма диаметров с коэффициентами сцепления - положительной."
+    SP35ReinforcementRadiusFromData = interactionArea / betaDiameterSum
+End Function
+
+' [SP35] П. 7.109, пособие (4.308)-(4.309): psi имеет размерность см.
+' Нормативные коэффициенты используют Rr в см; входной радиус хранится в мм.
+' Строка профиля уже проверена слоем настроек, неизвестный вариант не заменяется.
+Public Function SP35PsiFromData(ByVal reinforcementRadiusMm As Double, ByVal rebarProfile As String) As Double
+    If reinforcementRadiusMm < 0# Then Err.Raise vbObjectError + 3781, "CCrackWidthCalculator", "Радиус армирования не может быть отрицательным."
+    Dim radiusCm As Double
+    radiusCm = reinforcementRadiusMm / 10#
+    Select Case LCase$(Trim$(rebarProfile))
+        Case "periodic": SP35PsiFromData = 1.5 * Sqr(radiusCm)
+        Case "smooth": SP35PsiFromData = 0.35 * radiusCm
+        Case Else
+            Err.Raise vbObjectError + 3782, "CCrackWidthCalculator", "Для формулы СП 35 профиль арматуры должен быть Periodic или Smooth."
+    End Select
+End Function
+
+' [SP35] П. 7.105, пособие (4.306): a_cr=(sigma_s/Es)*psi.
+' Напряжение и модуль заданы в одинаковых МПа; psi в см, результат в мм.
+' Максимальное напряжение якоря и соответствующий модуль выбираются до вызова.
+Public Function SP35CrackWidthFromData(ByVal sigmaS As Double, ByVal steelEs As Double, ByVal psiCm As Double) As Double
+    If sigmaS < 0# Or steelEs <= 0# Or psiCm < 0# Then _
+        Err.Raise vbObjectError + 3783, "CCrackWidthCalculator", _
+            "Для формулы СП 35 напряжение и коэффициент раскрытия должны быть неотрицательными, а модуль арматуры - положительным."
+    SP35CrackWidthFromData = (sigmaS / steelEs) * psiCm * 10#
+End Function
+
+' [SP35] Табл. 7.26: beta для одиночных, сдвоенных и строенных стержней.
+' [NDM] Для связной группы из четырех и более обычных стержней согласованно
+' сохраняется beta=0.75; эта интерпретация должна отмечаться в справке.
+Public Function SP35GroupBetaFromData(ByVal barCount As Long) As Double
+    Select Case barCount
+        Case 1: SP35GroupBetaFromData = 1#
+        Case 2: SP35GroupBetaFromData = 0.85
+        Case Is >= 3: SP35GroupBetaFromData = 0.75
+        Case Else
+            Err.Raise vbObjectError + 3784, "CCrackWidthCalculator", "Группа армирования СП 35 должна содержать хотя бы один стержень."
+    End Select
+End Function
+
+' [SP35] Возвращает только согласованный нормативный множитель радиуса.
+' Выбор диаметра Max/Min/Average и геометрические ограничения принадлежат
+' подготовке области, а не этой численной операции.
+Public Function SP35InteractionMultiplierFromData(ByVal radiusMode As String) As Double
+    Select Case LCase$(Trim$(radiusMode))
+        Case "d3": SP35InteractionMultiplierFromData = 3#
+        Case "d5": SP35InteractionMultiplierFromData = 5#
+        Case "d6": SP35InteractionMultiplierFromData = 6#
+        Case Else
+            Err.Raise vbObjectError + 3785, "CCrackWidthCalculator", "Радиус взаимодействия СП 35 должен быть D3, D5 или D6."
+    End Select
 End Function
 
 ' Публикует машинный итог только формульного этапа. Получение Formation/State
@@ -705,9 +908,7 @@ Private Function LocalConcreteCoverForRebar(ByVal section As CSectionModel, ByVa
         Exit Function
     End If
 
-    Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    LocalConcreteCoverForRebar = props.ConcreteCoverFromPointAlongDirection(section, _
+    LocalConcreteCoverForRebar = mGeometryQuery.ConcreteCoverFromPointAlongDirection( _
         section.RebarX(rebarIndex), section.RebarY(rebarIndex), nx, ny)
 End Function
 
@@ -717,8 +918,8 @@ End Function
 ' FullTension берет всю фактически растянутую часть до нейтральной линии.
 ' Effective задает нормативную глубину h_bt = min(max(x_t, 2a), 0.5h).
 ' Если фактическая растянутая зона x_t меньше 2a, полоса может геометрически
-' зайти за нейтральную линию. Для Abt это намеренно учитывается: бетонные КЭ
-' выбираются по попаданию центра в полосу h_bt, а не по знаку текущей деформации.
+' зайти за нейтральную линию. Для Abt это намеренно учитывается: готовая область
+' отсекается по полосе h_bt, а не по знаку деформации центра бетонного КЭ.
 ' Арматура As остается только растянутой, потому что sigma_s в формуле раскрытия
 ' относится к работающей растянутой арматуре между трещинами.
 Private Function TensionZoneLowerBound(ByVal st As Double, ByVal sc As Double, ByVal neutralS As Double) As Double
@@ -737,20 +938,12 @@ End Function
 
 
 
-' Суммирует площадь бетонных КЭ, чьи центры попали в расчетную растянутую
-' зону. Частичные площади намеренно не считаются: это принятое дискретное
-' приближение текущей НДМ-модели.
-Private Function ConcreteAreaInZone(ByVal solver As CSectionStateResult, ByVal section As CSectionModel, _
-        ByVal nx As Double, ByVal ny As Double, ByVal lowerS As Double, _
-        ByVal requireTensionStrain As Boolean) As Double
-    Dim i As Long
-    For i = 1 To section.ConcreteCount
-        If Not requireTensionStrain Or ConcreteStrain(solver, section, i) > 0# Then
-            If Projection(section.ConcreteX(i), section.ConcreteY(i), nx, ny) >= lowerS - NEAR_ZERO_STRAIN Then
-                ConcreteAreaInZone = ConcreteAreaInZone + section.ConcreteArea(i)
-            End If
-        End If
-    Next i
+' Отсекает фактическую бетонную область по нормативной границе зоны СП 63.
+' Площадь частичных элементов и отверстий принадлежит общему движку; эта же
+' конечная область сохраняется для Results и экспорта, без второго построения.
+Private Function ConcreteAreaInZone(ByVal nx As Double, ByVal ny As Double, ByVal lowerS As Double) As Double
+    Set mInteractionRegion = mGeometryQuery.ClipHalfPlane(mGeometryQuery.ConcreteDomain, nx, ny, lowerS)
+    ConcreteAreaInZone = mInteractionRegion.Area
 End Function
 
 
@@ -764,7 +957,7 @@ Private Sub SelectRebarsInZone(ByVal solver As CSectionStateResult, ByVal sectio
     Dim i As Long
     For i = 1 To section.RebarCount
         If RebarStrain(solver, section, i) > 0# Then
-            If Projection(section.RebarX(i), section.RebarY(i), nx, ny) >= lowerS - NEAR_ZERO_STRAIN Then
+            If mGeometryQuery.ContainsPoint(mInteractionRegion, section.RebarX(i), section.RebarY(i)) Then
                 selected(i) = True
                 mTensionRebarCount = mTensionRebarCount + 1
             End If
@@ -774,16 +967,12 @@ End Sub
 
 
 
-' Внешняя растянутая поверхность берется через общий геометрический калькулятор.
-' Для сгенерированной сетки используются реальные размеры бетонных КЭ, а для
-' импортированных Region без габаритов сохраняется общий fallback: сначала
-' эквивалентный прямоугольник по A/I, затем квадрат той же площади. Та же
-' логика используется устойчивостью.
+' Крайние проекции трещин берутся из общей конечной бетонной области.
+' Достоверный контур имеет приоритет; fallback трассирует границы КЭ.
+' Устойчивость продолжает использовать прежние дискретные проекции properties.
 Private Sub ProjectionBoundsByConcreteContour(ByVal section As CSectionModel, _
         ByVal nx As Double, ByVal ny As Double, ByRef st As Double, ByRef sc As Double)
-    Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateProjection section, nx, ny, False, sc, st
+    mGeometryQuery.ProjectionBounds mGeometryQuery.ConcreteDomain, nx, ny, sc, st
 End Sub
 
 
@@ -982,6 +1171,16 @@ End Function
 ' потребитель проверяется до выхода NotCracked. При переданном reader ошибка
 ' содержит фактический адрес Config. Метод не решает НДС и не меняет результат.
 Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = Nothing)
+    Select Case UCase$(Trim$(mStandardCode))
+        Case "SP63", "SP35": mStandardCode = UCase$(Trim$(mStandardCode))
+        Case Else: RaiseInvalidSetting 3786, "SLS.Crack.Code", "Неизвестная методика ширины трещин.", "Выберите SP63 или SP35.", settings
+    End Select
+    If mAllowableCrackWidth <= 0# Then RaiseInvalidSetting 3710, "SLS.Crack.Allowable", "Допустимая ширина должна быть положительной.", "Введите ширину больше нуля в единицах INPUT Length.", settings
+    If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackWidthCalculator", "Steel.Es должен быть положительным для расчета трещин."
+    If mStandardCode = "SP35" Then
+        ValidateSP35Settings settings
+        Exit Sub
+    End If
     Select Case LCase$(Trim$(mPsiMode))
         Case "user", "manual", "fixed1", "unity"
             mPsiMode = PSI_MODE_USER
@@ -1036,6 +1235,28 @@ Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = N
     If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackWidthCalculator", "Steel.Es должен быть положительным для расчета трещин."
 End Sub
 
+' Проверяет только применяемые настройки СП 35 с адресами reader-а. Выбор
+' диаметра не заменяет реальные диаметры в сумме beta*nd, допуски уже в мм.
+Private Sub ValidateSP35Settings(ByVal settings As CSystemSettingsReader)
+    If mSP35GroupGapTolerance < 0# Then RaiseInvalidSetting 3787, "SLS.Crack.SP35.GroupGapTolerance", "Чистый зазор не может быть отрицательным.", "Введите неотрицательную длину в единицах INPUT Length.", settings
+    If mSP35RowTolerance < 0# Then RaiseInvalidSetting 3788, "SLS.Crack.SP35.RowTolerance", "Допуск ряда не может быть отрицательным.", "Введите неотрицательную длину в единицах INPUT Length.", settings
+    Select Case LCase$(Trim$(mSP35RadiusDiameterMode))
+        Case "max": mSP35RadiusDiameterMode = "Max"
+        Case "min": mSP35RadiusDiameterMode = "Min"
+        Case "average": mSP35RadiusDiameterMode = "Average"
+        Case Else: RaiseInvalidSetting 3789, "SLS.Crack.SP35.RadiusDiameterMode", "Неизвестный способ выбора диаметра радиуса.", "Выберите Max, Min или Average.", settings
+    End Select
+    Select Case UCase$(Trim$(mSP35InteractionRadiusMode))
+        Case "D3", "D5", "D6": mSP35InteractionRadiusMode = UCase$(Trim$(mSP35InteractionRadiusMode))
+        Case Else: RaiseInvalidSetting 3790, "SLS.Crack.SP35.InteractionRadiusMode", "Неизвестный радиус взаимодействия.", "Выберите D3, D5 или D6.", settings
+    End Select
+    Select Case LCase$(Trim$(mSP35RebarProfile))
+        Case "periodic": mSP35RebarProfile = "Periodic"
+        Case "smooth": mSP35RebarProfile = "Smooth"
+        Case Else: RaiseInvalidSetting 3791, "SLS.Crack.SP35.RebarProfile", "Неизвестный профиль арматуры.", "Выберите Periodic или Smooth.", settings
+    End Select
+End Sub
+
 ' Сохраняет согласованный машинный номер ошибки инженерной настройки. Reader
 ' добавляет место ввода, но не принимает решение о допустимости коэффициента;
 ' автономный API без reader получает тот же ключ и понятное исправление.
@@ -1059,7 +1280,7 @@ Private Sub ValidateInputs(ByVal currentSolver As CSectionStateResult, ByVal sec
     If Not currentSolver.Converged Then Err.Raise vbObjectError + 3701, "CCrackWidthCalculator", "Результат решателя сечения не сошелся."
     If section Is Nothing Then Err.Raise vbObjectError + 3702, "CCrackWidthCalculator", "Модель расчетного сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3703, "CCrackWidthCalculator", "В модели расчетного сечения нет бетонных элементов."
-    If section.RebarCount <= 0 Then Err.Raise vbObjectError + 3704, "CCrackWidthCalculator", "В модели расчетного сечения нет арматурных элементов."
+    If section.RebarCount <= 0 And mStandardCode <> "SP35" Then Err.Raise vbObjectError + 3704, "CCrackWidthCalculator", "В модели расчетного сечения нет арматурных элементов."
     If materialProvider Is Nothing Then Err.Raise vbObjectError + 3705, "CCrackWidthCalculator", "Поставщик материалов не передан."
 End Sub
 
@@ -1231,6 +1452,50 @@ End Property
 
 Public Property Get SigmaSCrc() As Double
     SigmaSCrc = mSigmaSCrc
+End Property
+
+' Возвращает конечную расчетную область, а не ее повторное построение.
+' Копия защищает снимок calculator-а от изменения downstream-потребителем.
+Public Property Get InteractionRegion() As CConcreteRegion
+    If Not mInteractionRegion Is Nothing Then Set InteractionRegion = mInteractionRegion.Clone
+End Property
+
+' Снимок СП 35 закрыт для изменения; writer получает все ряды и якорные числа.
+Public Property Get SP35Data() As CSP35CrackData
+    Set SP35Data = mSP35Data
+End Property
+Public Property Get SP35CriticalCandidate() As Long
+    SP35CriticalCandidate = mSP35CriticalCandidate
+End Property
+Public Property Get SP35ReinforcementRadius() As Double
+    SP35ReinforcementRadius = mSP35Radius
+End Property
+Public Property Get SP35PsiCm() As Double
+    SP35PsiCm = mSP35PsiCm
+End Property
+
+' Настройки методики применяются только при следующем Calculate, не меняя
+' готовый result-tree. Численные длины автономного API задаются во внутренних мм.
+Public Property Get StandardCode() As String
+    StandardCode = mStandardCode
+End Property
+Public Property Let StandardCode(ByVal value As String)
+    mStandardCode = value
+End Property
+Public Property Let SP35GroupGapTolerance(ByVal value As Double)
+    mSP35GroupGapTolerance = value
+End Property
+Public Property Let SP35RowTolerance(ByVal value As Double)
+    mSP35RowTolerance = value
+End Property
+Public Property Let SP35RadiusDiameterMode(ByVal value As String)
+    mSP35RadiusDiameterMode = value
+End Property
+Public Property Let SP35InteractionRadiusMode(ByVal value As String)
+    mSP35InteractionRadiusMode = value
+End Property
+Public Property Let SP35RebarProfile(ByVal value As String)
+    mSP35RebarProfile = value
 End Property
 
 

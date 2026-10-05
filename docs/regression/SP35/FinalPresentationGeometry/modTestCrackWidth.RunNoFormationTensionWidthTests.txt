@@ -1,0 +1,470 @@
+﻿SIGMA_CRC_CURRENT: N=-132000.|Mx=5500000.|converged=True|physical=True|currentSteelTension=False|maxSteelStrain=-0.000026578778|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.1|N=-132000.|Mx=5500000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.2|N=-132000.|Mx=5500000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.3|N=-132000.|Mx=5500000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.4|N=-132000.|Mx=5500000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.5|N=-132000.|Mx=5500000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.6|N=-132000.|Mx=5500000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_CURRENT: N=-132000.|Mx=7700000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.000042431474|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.7|N=-132000.|Mx=7700000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.8|N=-132000.|Mx=7700000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.9|N=-132000.|Mx=7700000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.10|N=-132000.|Mx=7700000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.11|N=-132000.|Mx=7700000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.12|N=-132000.|Mx=7700000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_CURRENT: N=-132000.|Mx=11000000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.00019206373|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.13|N=-132000.|Mx=11000000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.14|N=-132000.|Mx=11000000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.15|N=-132000.|Mx=11000000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.16|N=-132000.|Mx=11000000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.17|N=-132000.|Mx=11000000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.18|N=-132000.|Mx=11000000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_CURRENT: N=-132000.|Mx=15400000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.000430211854|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.19|N=-132000.|Mx=15400000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=86.042370805635|sigmaSCrc=61.636966940308|psi=0.426915215253|comment=Раскрытие нормальной трещины 0.051425916155 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.19.psiRange
+OK: audit03.sigmaCrc.boundary.19.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.20|N=-132000.|Mx=15400000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=86.042370805635|sigmaSCrc=61.636966940308|psi=0.426915215253|comment=Раскрытие нормальной трещины 0.051425916155 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.20.psiRange
+OK: audit03.sigmaCrc.boundary.20.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.20.tensionOnlyNonnegative
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.21|N=-132000.|Mx=15400000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=86.042370805635|sigmaSCrc=61.636966940308|psi=0.426915215253|comment=Раскрытие нормальной трещины 0.051425916155 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.21.psiRange
+OK: audit03.sigmaCrc.boundary.21.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.22|N=-132000.|Mx=15400000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=86.042370805635|sigmaSCrc=61.636966940308|psi=0.426915215253|comment=Раскрытие нормальной трещины 0.051425916155 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.22.psiRange
+OK: audit03.sigmaCrc.boundary.22.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.22.tensionOnlyNonnegative
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.23|N=-132000.|Mx=15400000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=86.042370805635|sigmaSCrc=61.636966940308|psi=0.65|comment=Раскрытие нормальной трещины 0.078298557433 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.sigmaCrc.boundary.23.psiRange
+OK: audit03.sigmaCrc.boundary.23.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.24|N=-132000.|Mx=15400000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=86.042370805635|sigmaSCrc=61.636966940308|psi=0.65|comment=Раскрытие нормальной трещины 0.078298557433 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.sigmaCrc.boundary.24.psiRange
+OK: audit03.sigmaCrc.boundary.24.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.24.tensionOnlyNonnegative
+SIGMA_CRC_CURRENT: N=-330000.|Mx=13750000.|converged=True|physical=True|currentSteelTension=False|maxSteelStrain=-0.000066446945|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.25|N=-330000.|Mx=13750000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.26|N=-330000.|Mx=13750000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.27|N=-330000.|Mx=13750000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.28|N=-330000.|Mx=13750000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.29|N=-330000.|Mx=13750000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.30|N=-330000.|Mx=13750000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_CURRENT: N=-330000.|Mx=19250000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.000106078686|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.31|N=-330000.|Mx=19250000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.32|N=-330000.|Mx=19250000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.33|N=-330000.|Mx=19250000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.34|N=-330000.|Mx=19250000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.35|N=-330000.|Mx=19250000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.36|N=-330000.|Mx=19250000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_CURRENT: N=-330000.|Mx=27500000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.000480159325|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.37|N=-330000.|Mx=27500000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=96.031865009152|sigmaSCrc=34.267596783332|psi=0.714531448243|comment=Раскрытие нормальной трещины 0.096064902615 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.37.psiRange
+OK: audit03.sigmaCrc.boundary.37.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.38|N=-330000.|Mx=27500000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=96.031865009152|sigmaSCrc=34.267596783332|psi=0.714531448243|comment=Раскрытие нормальной трещины 0.096064902615 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.38.psiRange
+OK: audit03.sigmaCrc.boundary.38.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.38.tensionOnlyNonnegative
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.39|N=-330000.|Mx=27500000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=96.031865009152|sigmaSCrc=34.267596783332|psi=0.714531448243|comment=Раскрытие нормальной трещины 0.096064902615 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.39.psiRange
+OK: audit03.sigmaCrc.boundary.39.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.40|N=-330000.|Mx=27500000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=96.031865009152|sigmaSCrc=34.267596783332|psi=0.714531448243|comment=Раскрытие нормальной трещины 0.096064902615 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.40.psiRange
+OK: audit03.sigmaCrc.boundary.40.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.40.tensionOnlyNonnegative
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.41|N=-330000.|Mx=27500000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=96.031865009152|sigmaSCrc=34.267596783332|psi=0.65|comment=Раскрытие нормальной трещины 0.087388997158 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.sigmaCrc.boundary.41.psiRange
+OK: audit03.sigmaCrc.boundary.41.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.42|N=-330000.|Mx=27500000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=96.031865009152|sigmaSCrc=34.267596783332|psi=0.65|comment=Раскрытие нормальной трещины 0.087388997158 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.sigmaCrc.boundary.42.psiRange
+OK: audit03.sigmaCrc.boundary.42.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.42.tensionOnlyNonnegative
+SIGMA_CRC_CURRENT: N=-330000.|Mx=38500000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.001075529635|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.43|N=-330000.|Mx=38500000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=215.105927014087|sigmaSCrc=34.267596784029|psi=0.872555452991|comment=Раскрытие нормальной трещины 0.262768589422 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.43.psiRange
+OK: audit03.sigmaCrc.boundary.43.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.44|N=-330000.|Mx=38500000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=215.105927014087|sigmaSCrc=34.267596784029|psi=0.872555452991|comment=Раскрытие нормальной трещины 0.262768589422 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.44.psiRange
+OK: audit03.sigmaCrc.boundary.44.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.44.tensionOnlyNonnegative
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.45|N=-330000.|Mx=38500000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=215.105927014087|sigmaSCrc=34.267596784029|psi=0.872555452991|comment=Раскрытие нормальной трещины 0.262768589422 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.45.psiRange
+OK: audit03.sigmaCrc.boundary.45.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.46|N=-330000.|Mx=38500000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=215.105927014087|sigmaSCrc=34.267596784029|psi=0.872555452991|comment=Раскрытие нормальной трещины 0.262768589422 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s рассчитан по состоянию сразу после образования трещины.
+OK: audit03.sigmaCrc.boundary.46.psiRange
+OK: audit03.sigmaCrc.boundary.46.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.46.tensionOnlyNonnegative
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.47|N=-330000.|Mx=38500000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=215.105927014087|sigmaSCrc=34.267596784029|psi=0.65|comment=Раскрытие нормальной трещины 0.195746393583 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.sigmaCrc.boundary.47.psiRange
+OK: audit03.sigmaCrc.boundary.47.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.48|N=-330000.|Mx=38500000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=215.105927014087|sigmaSCrc=34.267596784029|psi=0.65|comment=Раскрытие нормальной трещины 0.195746393583 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Psi_s принят из настройки SLS.Crack.PsiS.
+OK: audit03.sigmaCrc.boundary.48.psiRange
+OK: audit03.sigmaCrc.boundary.48.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.48.tensionOnlyNonnegative
+SIGMA_CRC_CURRENT: N=-528000.|Mx=22000000.|converged=True|physical=True|currentSteelTension=False|maxSteelStrain=-0.000106315112|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.49|N=-528000.|Mx=22000000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.50|N=-528000.|Mx=22000000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.51|N=-528000.|Mx=22000000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.52|N=-528000.|Mx=22000000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.53|N=-528000.|Mx=22000000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.54|N=-528000.|Mx=22000000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+SIGMA_CRC_CURRENT: N=-528000.|Mx=30800000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.000169725897|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.55|N=-528000.|Mx=30800000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=33.945179392802|sigmaSCrc=-5.833595888521|psi=1.|comment=Раскрытие нормальной трещины 0.045381361994 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.55.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.55.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.55.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.55.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.55.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.55.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.55.noPostTension.formula; actual=0.045381361994; expected=0.045381361994; absDiff=0.
+OK: audit03.sigmaCrc.boundary.55.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.55.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.55.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.55.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.55.psiRange
+OK: audit03.sigmaCrc.boundary.55.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.55.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.55.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.56|N=-528000.|Mx=30800000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=33.945179392802|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.045381361994 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.56.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.56.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.56.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.56.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.56.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.56.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.56.noPostTension.formula; actual=0.045381361994; expected=0.045381361994; absDiff=0.
+OK: audit03.sigmaCrc.boundary.56.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.56.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.56.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.56.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.56.psiRange
+OK: audit03.sigmaCrc.boundary.56.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.56.tensionOnlyNonnegative
+OK: audit03.sigmaCrc.boundary.56.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.56.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.57|N=-528000.|Mx=30800000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=33.945179392802|sigmaSCrc=-5.833595888521|psi=1.|comment=Раскрытие нормальной трещины 0.045381361994 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.57.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.57.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.57.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.57.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.57.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.57.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.57.noPostTension.formula; actual=0.045381361994; expected=0.045381361994; absDiff=0.
+OK: audit03.sigmaCrc.boundary.57.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.57.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.57.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.57.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.57.psiRange
+OK: audit03.sigmaCrc.boundary.57.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.57.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.57.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.58|N=-528000.|Mx=30800000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=33.945179392802|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.045381361994 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.58.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.58.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.58.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.58.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.58.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.58.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.58.noPostTension.formula; actual=0.045381361994; expected=0.045381361994; absDiff=0.
+OK: audit03.sigmaCrc.boundary.58.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.58.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.58.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.58.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.58.psiRange
+OK: audit03.sigmaCrc.boundary.58.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.58.tensionOnlyNonnegative
+OK: audit03.sigmaCrc.boundary.58.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.58.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.59|N=-528000.|Mx=30800000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=33.945179392802|sigmaSCrc=-5.833595888521|psi=1.|comment=Раскрытие нормальной трещины 0.045381361994 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.59.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.59.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.59.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.59.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.59.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.59.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.59.noPostTension.formula; actual=0.045381361994; expected=0.045381361994; absDiff=0.
+OK: audit03.sigmaCrc.boundary.59.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.59.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.59.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.59.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.59.psiRange
+OK: audit03.sigmaCrc.boundary.59.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.60|N=-528000.|Mx=30800000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=33.945179392802|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.045381361994 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.60.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.60.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.60.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.60.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.60.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.60.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.60.noPostTension.formula; actual=0.045381361994; expected=0.045381361994; absDiff=0.
+OK: audit03.sigmaCrc.boundary.60.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.60.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.60.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.60.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.60.psiRange
+OK: audit03.sigmaCrc.boundary.60.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.60.tensionOnlyNonnegative
+SIGMA_CRC_CURRENT: N=-528000.|Mx=44000000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.000824636123|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.61|N=-528000.|Mx=44000000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=164.927224568973|sigmaSCrc=-5.833595888474|psi=1.|comment=Раскрытие нормальной трещины 0.230898114397 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.61.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.61.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.61.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.61.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.61.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.61.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.61.noPostTension.formula; actual=0.230898114397; expected=0.230898114397; absDiff=0.
+OK: audit03.sigmaCrc.boundary.61.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.61.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.61.noPostTension.regionArea; actual=25825.6449979293; expected=25825.6449979293; absDiff=0.
+OK: audit03.sigmaCrc.boundary.61.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.61.psiRange
+OK: audit03.sigmaCrc.boundary.61.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.61.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.61.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.62|N=-528000.|Mx=44000000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=164.927224568973|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.230898114397 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.62.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.62.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.62.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.62.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.62.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.62.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.62.noPostTension.formula; actual=0.230898114397; expected=0.230898114397; absDiff=0.
+OK: audit03.sigmaCrc.boundary.62.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.62.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.62.noPostTension.regionArea; actual=25825.6449979293; expected=25825.6449979293; absDiff=0.
+OK: audit03.sigmaCrc.boundary.62.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.62.psiRange
+OK: audit03.sigmaCrc.boundary.62.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.62.tensionOnlyNonnegative
+OK: audit03.sigmaCrc.boundary.62.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.62.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.63|N=-528000.|Mx=44000000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=164.927224568973|sigmaSCrc=-5.833595888474|psi=1.|comment=Раскрытие нормальной трещины 0.230898114397 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.63.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.63.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.63.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.63.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.63.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.63.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.63.noPostTension.formula; actual=0.230898114397; expected=0.230898114397; absDiff=0.
+OK: audit03.sigmaCrc.boundary.63.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.63.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.63.noPostTension.regionArea; actual=25825.6449979293; expected=25825.6449979293; absDiff=0.
+OK: audit03.sigmaCrc.boundary.63.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.63.psiRange
+OK: audit03.sigmaCrc.boundary.63.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.63.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.63.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.64|N=-528000.|Mx=44000000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=164.927224568973|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.230898114397 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.64.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.64.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.64.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.64.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.64.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.64.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.64.noPostTension.formula; actual=0.230898114397; expected=0.230898114397; absDiff=0.
+OK: audit03.sigmaCrc.boundary.64.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.64.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.64.noPostTension.regionArea; actual=25825.6449979293; expected=25825.6449979293; absDiff=0.
+OK: audit03.sigmaCrc.boundary.64.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.64.psiRange
+OK: audit03.sigmaCrc.boundary.64.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.64.tensionOnlyNonnegative
+OK: audit03.sigmaCrc.boundary.64.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.64.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.65|N=-528000.|Mx=44000000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=164.927224568973|sigmaSCrc=-5.833595888474|psi=1.|comment=Раскрытие нормальной трещины 0.230898114397 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.65.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.65.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.65.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.65.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.65.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.65.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.65.noPostTension.formula; actual=0.230898114397; expected=0.230898114397; absDiff=0.
+OK: audit03.sigmaCrc.boundary.65.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.65.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.65.noPostTension.regionArea; actual=25825.6449979293; expected=25825.6449979293; absDiff=0.
+OK: audit03.sigmaCrc.boundary.65.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.65.psiRange
+OK: audit03.sigmaCrc.boundary.65.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.66|N=-528000.|Mx=44000000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=164.927224568973|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.230898114397 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.66.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.66.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.66.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.66.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.66.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.66.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.66.noPostTension.formula; actual=0.230898114397; expected=0.230898114397; absDiff=0.
+OK: audit03.sigmaCrc.boundary.66.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.66.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.66.noPostTension.regionArea; actual=25825.6449979293; expected=25825.6449979293; absDiff=0.
+OK: audit03.sigmaCrc.boundary.66.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.66.psiRange
+OK: audit03.sigmaCrc.boundary.66.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.66.tensionOnlyNonnegative
+SIGMA_CRC_CURRENT: N=-528000.|Mx=61600000.|converged=True|physical=False|currentSteelTension=True|maxSteelStrain=0.010251732133|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_CURRENT: N=-792000.|Mx=33000000.|converged=True|physical=True|currentSteelTension=False|maxSteelStrain=-0.000157498646|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.67|N=-792000.|Mx=33000000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.67.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.67.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.67.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.67.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.68|N=-792000.|Mx=33000000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.68.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.68.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.68.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.68.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.69|N=-792000.|Mx=33000000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.69.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.69.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.69.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.69.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.70|N=-792000.|Mx=33000000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.70.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.70.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.70.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.70.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.71|N=-792000.|Mx=33000000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.71.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.71.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.71.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.71.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.72|N=-792000.|Mx=33000000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.72.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.72.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.72.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.72.noCurrentTension.noPsiWarning
+SIGMA_CRC_CURRENT: N=-792000.|Mx=46200000.|converged=True|physical=True|currentSteelTension=True|maxSteelStrain=0.000392699144|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.73|N=-792000.|Mx=46200000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=78.539828822599|sigmaSCrc=-50.330438486164|psi=1.|comment=Раскрытие нормальной трещины 0.105000016688 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.73.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.73.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.73.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.73.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.73.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.73.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.73.noPostTension.formula; actual=0.105000016688; expected=0.105000016688; absDiff=0.
+OK: audit03.sigmaCrc.boundary.73.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.73.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.73.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.73.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.73.psiRange
+OK: audit03.sigmaCrc.boundary.73.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.73.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.73.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.74|N=-792000.|Mx=46200000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=78.539828822599|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.105000016688 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.74.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.74.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.74.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.74.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.74.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.74.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.74.noPostTension.formula; actual=0.105000016688; expected=0.105000016688; absDiff=0.
+OK: audit03.sigmaCrc.boundary.74.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.74.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.74.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.74.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.74.psiRange
+OK: audit03.sigmaCrc.boundary.74.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.74.tensionOnlyNonnegative
+OK: audit03.sigmaCrc.boundary.74.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.74.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.75|N=-792000.|Mx=46200000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=78.539828822599|sigmaSCrc=-50.330438486164|psi=1.|comment=Раскрытие нормальной трещины 0.105000016688 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.75.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.75.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.75.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.75.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.75.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.75.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.75.noPostTension.formula; actual=0.105000016688; expected=0.105000016688; absDiff=0.
+OK: audit03.sigmaCrc.boundary.75.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.75.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.75.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.75.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.75.psiRange
+OK: audit03.sigmaCrc.boundary.75.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.75.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.75.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.76|N=-792000.|Mx=46200000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=78.539828822599|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.105000016688 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.76.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.76.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.76.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.76.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.76.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.76.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.76.noPostTension.formula; actual=0.105000016688; expected=0.105000016688; absDiff=0.
+OK: audit03.sigmaCrc.boundary.76.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.76.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.76.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.76.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.76.psiRange
+OK: audit03.sigmaCrc.boundary.76.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.76.tensionOnlyNonnegative
+OK: audit03.sigmaCrc.boundary.76.nonpositivePsiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.76.nonpositiveReason
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.77|N=-792000.|Mx=46200000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=True|sigmaS=78.539828822599|sigmaSCrc=-50.330438486164|psi=1.|comment=Раскрытие нормальной трещины 0.105000016688 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.77.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.77.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.77.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.77.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.77.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.77.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.77.noPostTension.formula; actual=0.105000016688; expected=0.105000016688; absDiff=0.
+OK: audit03.sigmaCrc.boundary.77.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.77.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.77.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.77.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.77.psiRange
+OK: audit03.sigmaCrc.boundary.77.widthNotNumerical
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.78|N=-792000.|Mx=46200000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=True|sigmaS=78.539828822599|sigmaSCrc=0.|psi=1.|comment=Раскрытие нормальной трещины 0.105000016688 мм превышает допускаемое 0.00000001 мм. Расчет выполнен для произвольного сечения по общей НДМ-ветке. Предупреждение: в состоянии образования трещины выбранная арматура не растянута (напряжения неположительные); psi_s принят равным 1, уменьшение раскрытия не применяется. Ширина рассчитана по растянутой арматуре текущего НДС.
+OK: audit03.sigmaCrc.boundary.78.noPostTension.widthCalculated
+OK: audit03.sigmaCrc.boundary.78.noPostTension.widthReady
+OK: audit03.sigmaCrc.boundary.78.noPostTension.currentSigmaPositive
+OK: audit03.sigmaCrc.boundary.78.noPostTension.notNA
+OK: audit03.sigmaCrc.boundary.78.noPostTension.psiOne; actual=1.; expected=1.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.78.noPostTension.warning
+OK: audit03.sigmaCrc.boundary.78.noPostTension.formula; actual=0.105000016688; expected=0.105000016688; absDiff=0.
+OK: audit03.sigmaCrc.boundary.78.noPostTension.resultComment
+OK: audit03.sigmaCrc.boundary.78.noPostTension.resultRegion
+OK: audit03.sigmaCrc.boundary.78.noPostTension.regionArea; actual=24000.; expected=24000.; absDiff=0.
+OK: audit03.sigmaCrc.boundary.78.noPostTension.regionOwner
+OK: audit03.sigmaCrc.boundary.78.psiRange
+OK: audit03.sigmaCrc.boundary.78.widthNotNumerical
+OK: audit03.sigmaCrc.boundary.78.tensionOnlyNonnegative
+SIGMA_CRC_CURRENT: N=-792000.|Mx=66000000.|converged=True|physical=False|currentSteelTension=True|maxSteelStrain=0.008056756635|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_CURRENT: N=-792000.|Mx=92400000.|converged=True|physical=False|currentSteelTension=True|maxSteelStrain=0.096466567687|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_CURRENT: N=-990000.|Mx=41250000.|converged=True|physical=True|currentSteelTension=False|maxSteelStrain=-0.000115005574|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.79|N=-990000.|Mx=41250000.|psiMode=AlwaysCalc|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.79.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.79.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.79.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.79.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.80|N=-990000.|Mx=41250000.|psiMode=AlwaysCalc|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.80.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.80.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.80.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.80.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.81|N=-990000.|Mx=41250000.|psiMode=Auto|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.81.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.81.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.81.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.81.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.82|N=-990000.|Mx=41250000.|psiMode=Auto|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.82.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.82.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.82.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.82.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.83|N=-990000.|Mx=41250000.|psiMode=User|averaging=AllSelected|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.83.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.83.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.83.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.83.noCurrentTension.noPsiWarning
+SIGMA_CRC_BOUNDARY: audit03.sigmaCrc.boundary.84|N=-990000.|Mx=41250000.|psiMode=User|averaging=TensionOnly|point=True|widthCalculated=False|sigmaS=0.|sigmaSCrc=0.|psi=0.65|comment=В расчетной растянутой зоне не найдено растянутой арматуры.
+OK: audit03.sigmaCrc.boundary.84.noCurrentTension.notCalculated
+OK: audit03.sigmaCrc.boundary.84.noCurrentTension.notApplicable
+OK: audit03.sigmaCrc.boundary.84.noCurrentTension.psiUnchanged; actual=0.65; expected=0.65; absDiff=0.
+OK: audit03.sigmaCrc.boundary.84.noCurrentTension.noPsiWarning
+SIGMA_CRC_CURRENT: N=-990000.|Mx=57750000.|converged=True|physical=False|currentSteelTension=True|maxSteelStrain=0.001623117577|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_CURRENT: N=-990000.|Mx=82500000.|converged=True|physical=False|currentSteelTension=True|maxSteelStrain=0.028972697101|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+SIGMA_CRC_CURRENT: N=-990000.|Mx=115500000.|converged=True|physical=False|currentSteelTension=True|maxSteelStrain=0.15230757756|reason=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.sigmaCrc.boundary.actualPreparedNonpositive
+OK: sp35.sp63.noPostTension.actualReadyFormation
+OK: sp35.sp63.noPostTension.noCurrentTensionControl
+SIGMA_CRC_BOUNDARY_COUNTS: calculatedVariants=84|nonpositivePrepared=12|noPostTensionWithCurrentTension=18|noCurrentTension=12
+TOTAL_NO_FORMATION_TENSION: passed=363; failed=0
+

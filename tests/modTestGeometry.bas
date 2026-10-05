@@ -173,7 +173,7 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     Dim annotationBuilder As CCircleAnnotationBuilder
     Set annotationBuilder = New CCircleAnnotationBuilder
     annotationBuilder.Build model, geom, circleBars
-    AssertTrue stats, "annotation.model.count", model.AnnotationCount = 3
+    AssertTrue stats, "annotation.model.count", model.AnnotationCount = 2 And model.Contours.Count = 1
     AssertTrue stats, "annotation.model.rebarLabel", HasSectionAnnotation(model, "REBAR_ANNOTATION", "REBAR_Circle")
 End Sub
 
@@ -2294,12 +2294,12 @@ End Function
 Private Function HasSectionAnnotationIDPrefix(ByVal model As CSectionModel, ByVal annotationIDPrefix As String) As Boolean
     If model Is Nothing Then Exit Function
 
-    Dim annotations As CSectionAnnotations
-    Set annotations = model.Annotations
+    Dim annotations As CSectionContours
+    Set annotations = model.Contours
 
     Dim i As Long
     For i = 1 To annotations.Count
-        If InStr(1, annotations.AnnotationID(i), annotationIDPrefix, vbTextCompare) = 1 Then
+        If InStr(1, annotations.ContourID(i), annotationIDPrefix, vbTextCompare) = 1 Then
             HasSectionAnnotationIDPrefix = True
             Exit Function
         End If
@@ -2310,12 +2310,12 @@ End Function
 Private Function CountSectionAnnotationType(ByVal model As CSectionModel, ByVal annotationType As String) As Long
     If model Is Nothing Then Exit Function
 
-    Dim annotations As CSectionAnnotations
-    Set annotations = model.Annotations
+    Dim annotations As CSectionContours
+    Set annotations = model.Contours
 
     Dim i As Long
     For i = 1 To annotations.Count
-        If StrComp(annotations.AnnotationType(i), annotationType, vbTextCompare) = 0 Then
+        If StrComp(annotations.SegmentType(i), annotationType, vbTextCompare) = 0 Then
             CountSectionAnnotationType = CountSectionAnnotationType + 1
         End If
     Next i

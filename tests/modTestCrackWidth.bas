@@ -1404,7 +1404,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: сначала находит допустимый CurrentCrackedState общим runner-ом.
 ' Только затем Formation и Width проверяются в обоих режимах psi/усреднения;
 ' физически непригодный текущий state не используется как вход формулы.
-Private Sub TestAudit03SigmaSCrcBoundary(ByRef stats As TCrackTestStats)
+Private Sub TestAudit03SigmaSCrcBoundary(ByRef stats As TCrackTestStats, Optional ByVal includeUser As Boolean = False)
     Dim section As CSectionModel
     Set section = Audit03SigmaBoundarySection()
     Dim provider As CMaterialModelProvider
@@ -1412,7 +1412,11 @@ Private Sub TestAudit03SigmaSCrcBoundary(ByRef stats As TCrackTestStats)
     Dim spec As CMaterialModelSpec
     Set spec = TestCrackedStateSpec()
     Dim nFactor As Variant, eccentricityFactor As Variant, psiMode As Variant, averagingMode As Variant
-    Dim nValue As Double, mxValue As Double, cases As Long, nonpositiveCases As Long
+    Dim nValue As Double, mxValue As Double, cases As Long, nonpositiveCases As Long, noPostTensionCases As Long
+    Dim noCurrentTensionCases As Long ' Отрицательный контроль: при отсутствии текущего растяжения формула не нужна.
+    Dim modes As Variant
+    modes = Array("AlwaysCalc", "Auto")
+    If includeUser Then modes = Array("AlwaysCalc", "Auto", "User")
     For Each nFactor In Array(0.1, 0.25, 0.4, 0.6, 0.75)
         For Each eccentricityFactor In Array(1.25, 1.75, 2.5, 3.5)
             nValue = -CDbl(nFactor) * 60000# * 22#
@@ -1424,14 +1428,16 @@ Private Sub TestAudit03SigmaSCrcBoundary(ByRef stats As TCrackTestStats)
                 provider.SteelMaterialForEquilibriumFromSpec(spec), nValue, mxValue, 0#, True
             AppendLine stats, "SIGMA_CRC_CURRENT: N=" & FormatNumberInvariant(nValue) & _
                 "|Mx=" & FormatNumberInvariant(mxValue) & "|converged=" & CStr(runner.Converged) & _
-                "|physical=" & CStr(runner.WithinPhysicalRange) & "|reason=" & runner.StopReason
+                "|physical=" & CStr(runner.WithinPhysicalRange) & _
+                "|currentSteelTension=" & CStr(runner.ResultSolver.HasSteelTension) & _
+                "|maxSteelStrain=" & FormatNumberInvariant(runner.ResultSolver.MaxSteelStrain) & "|reason=" & runner.StopReason
             If runner.Converged And runner.WithinPhysicalRange Then
-                For Each psiMode In Array("AlwaysCalc", "Auto")
+                For Each psiMode In modes
                     For Each averagingMode In Array("AllSelected", "TensionOnly")
                         Dim crack As CCrackWidthCalculator
                         Set crack = CalculateCrack(runner.ResultSolver, section, nValue, mxValue, 0#, _
                             CStr(psiMode), "Effective", allowable:=0.00000001, _
-                            sigmaSCrcAveragingMode:=CStr(averagingMode))
+                            sigmaSCrcAveragingMode:=CStr(averagingMode), psiSValue:=0.65)
                         cases = cases + 1
                         Dim prefix As String
                         prefix = "audit03.sigmaCrc.boundary." & CStr(cases)
@@ -1441,12 +1447,45 @@ Private Sub TestAudit03SigmaSCrcBoundary(ByRef stats As TCrackTestStats)
                             "|widthCalculated=" & CStr(crack.ResultMeta.Calculated) & "|sigmaS=" & FormatNumberInvariant(crack.SigmaS) & _
                             "|sigmaSCrc=" & FormatNumberInvariant(crack.SigmaSCrc) & "|psi=" & FormatNumberInvariant(crack.PsiS) & _
                             "|comment=" & crack.ResultMeta.ResultComment
+                        If includeUser And crack.FormationResult.HasLimitPoint And crack.FormationResult.CrackFormed Then
+                            If Not crack.FormationResult.PostCrackState.HasSteelTension Then
+                                If runner.ResultSolver.HasSteelTension Then
+                                    noPostTensionCases = noPostTensionCases + 1
+                                    AssertTrue stats, prefix & ".noPostTension.widthCalculated", crack.ResultMeta.Calculated
+                                    AssertTrue stats, prefix & ".noPostTension.widthReady", crack.Converged
+                                    AssertTrue stats, prefix & ".noPostTension.currentSigmaPositive", crack.SigmaS > 0#
+                                    AssertTrue stats, prefix & ".noPostTension.notNA", crack.ResultMeta.InternalStatus <> rsNotApplicable
+                                    AssertClose stats, prefix & ".noPostTension.psiOne", crack.PsiS, 1#, 0#
+                                    AssertTrue stats, prefix & ".noPostTension.warning", InStr(1, crack.ResultMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
+                                    AssertClose stats, prefix & ".noPostTension.formula", crack.CrackWidth, _
+                                        crack.Phi1 * crack.Phi2 * crack.Phi3 * crack.SigmaS / crack.SteelEs * crack.CrackSpacing, 0.000000001
+                                    Dim widthResult As CCrackWidthResult, region As CConcreteRegion
+                                    Set widthResult = New CCrackWidthResult
+                                    widthResult.InitializeFromCalculator crack, crack.ResultMeta, prefix
+                                    AssertTrue stats, prefix & ".noPostTension.resultComment", _
+                                        widthResult.ResultMeta.ResultComment = crack.ResultMeta.ResultComment
+                                    Set region = widthResult.InteractionRegion
+                                    AssertTrue stats, prefix & ".noPostTension.resultRegion", Not region Is Nothing
+                                    If Not region Is Nothing Then
+                                        AssertClose stats, prefix & ".noPostTension.regionArea", region.Area, crack.Abt, 0#
+                                        AssertTrue stats, prefix & ".noPostTension.regionOwner", region.OwnerID = prefix
+                                    End If
+                                Else
+                                    noCurrentTensionCases = noCurrentTensionCases + 1
+                                    AssertTrue stats, prefix & ".noCurrentTension.notCalculated", Not crack.ResultMeta.Calculated
+                                    AssertTrue stats, prefix & ".noCurrentTension.notApplicable", crack.ResultMeta.InternalStatus = rsNotApplicable
+                                    AssertClose stats, prefix & ".noCurrentTension.psiUnchanged", crack.PsiS, 0.65, 0#
+                                    AssertTrue stats, prefix & ".noCurrentTension.noPsiWarning", _
+                                        InStr(1, crack.ResultMeta.ResultComment, "psi_s принят равным 1", vbTextCompare) = 0
+                                End If
+                            End If
+                        End If
                         If crack.FormationResult.HasLimitPoint And crack.ResultMeta.Calculated Then
                             AssertTrue stats, prefix & ".psiRange", crack.PsiS >= 0# And crack.PsiS <= 1#
                             AssertTrue stats, prefix & ".widthNotNumerical", crack.ResultMeta.InternalStatus <> rsNumericalFailure
                             If CStr(averagingMode) = "TensionOnly" Then _
                                 AssertTrue stats, prefix & ".tensionOnlyNonnegative", crack.SigmaSCrc >= 0#
-                            If crack.SigmaSCrc <= 0.000000001 Then
+                            If crack.SigmaSCrc <= 0.000000001 And CStr(psiMode) <> "User" Then
                                 nonpositiveCases = nonpositiveCases + 1
                                 AssertClose stats, prefix & ".nonpositivePsiOne", crack.PsiS, 1#, 0.000000000001
                                 AssertTrue stats, prefix & ".nonpositiveReason", _
@@ -1459,8 +1498,13 @@ Private Sub TestAudit03SigmaSCrcBoundary(ByRef stats As TCrackTestStats)
         Next eccentricityFactor
     Next nFactor
     AssertTrue stats, "audit03.sigmaCrc.boundary.actualPreparedNonpositive", nonpositiveCases > 0
+    If includeUser Then
+        AssertTrue stats, "sp35.sp63.noPostTension.actualReadyFormation", noPostTensionCases > 0
+        AssertTrue stats, "sp35.sp63.noPostTension.noCurrentTensionControl", noCurrentTensionCases > 0
+    End If
     AppendLine stats, "SIGMA_CRC_BOUNDARY_COUNTS: calculatedVariants=" & CStr(cases) & _
-        "|nonpositivePrepared=" & CStr(nonpositiveCases)
+        "|nonpositivePrepared=" & CStr(nonpositiveCases) & "|noPostTensionWithCurrentTension=" & CStr(noPostTensionCases) & _
+        "|noCurrentTension=" & CStr(noCurrentTensionCases)
 End Sub
 
 ' ДЛЯ ТЕСТОВ: стержни находятся глубже крайнего бетонного волокна.
@@ -1812,3 +1856,18 @@ Private Sub TestAudit03ExtremeFormationInputs(ByRef stats As TCrackTestStats)
         Next strategy
     Next extended
 End Sub
+
+' ============================== ДЛЯ ТЕСТОВ: POST БЕЗ РАСТЯЖЕНИЯ АРМАТУРЫ ==============================
+' ДЛЯ ТЕСТОВ: проверяет дополнение цели СП 35 на настоящих Pre/Post/current
+' состояниях. Нет растяжения в Post, но текущая арматура растянута: все режимы
+' получают psi_s=1, выполненную формулу и предупреждение, а не N/A/NumFail.
+Public Function RunNoFormationTensionWidthTests() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestAudit03SigmaSCrcBoundary stats, True
+    AppendLine stats, "TOTAL_NO_FORMATION_TENSION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunNoFormationTensionWidthTests = stats.Report
+    Exit Function
+Failed:
+    RunNoFormationTensionWidthTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function

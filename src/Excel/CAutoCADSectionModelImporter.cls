@@ -25,6 +25,13 @@ Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допу
 Private Const EXPLICIT_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.02 ' Допуск только для тестовых/подготовленных данных с уже известными Width/Height.
 
 Private mEdgeProbeCount As Long ' ДЛЯ ТЕСТОВ: сколько раз импорт обращался к Explode за углом простой грани.
+Private mImportComment As String ' Диагностика достоверных контуров, сформированная ответственным importer-ом.
+
+' Возвращает пояснение последнего успешного импорта контуров для сообщения
+' Excel. Writer и оболочка кнопки не угадывают, был ли слой пустым.
+Public Property Get ImportComment() As String
+    ImportComment = mImportComment
+End Property
 
 ' Читает активный документ AutoCAD через COM и запускает общий импорт
 ' ModelSpace. Метод остается тонкой оболочкой: проверяет доступность AutoCAD,
@@ -42,7 +49,7 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
     If doc Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", _
         "AutoCAD открыт, но активный чертеж не найден. Откройте или создайте чертеж и повторите импорт."
 
-    Set ImportFromActiveDocument = ImportConfiguredModelSpace(doc.ModelSpace, settings, units)
+    Set ImportFromActiveDocument = ImportConfiguredModelSpace(doc.ModelSpace, settings, units, doc.Layers)
 End Function
 
 ' Подготавливает параметры импорта из прочитанного Config и передает ModelSpace
@@ -50,7 +57,7 @@ End Function
 ' в мм2; координаты и геометрические свойства самих Region уже заданы в мм.
 ' Получение активного документа остается только в ImportFromActiveDocument.
 Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal settings As CSystemSettingsReader, _
-        Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
+        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal drawingLayers As Object = Nothing) As CSectionModel
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
     Dim concreteLayer As String, rebarLayer As String
     concreteLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Import.ConcreteLayer")
@@ -73,8 +80,13 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     On Error GoTo InvalidMinimumArea
     minArea = importUnits.InputAreaToInternal(minArea)
     On Error GoTo 0
+    ' Эти два поля опциональны по контракту. Старый чертеж/Config без них
+    ' сохраняет прежний импорт; непустое имя уже требует строгой проверки.
+    Dim contourLayer As String, openingLayer As String
+    contourLayer = OptionalContourLayer(settings, "AutoCAD.Common.SectionContourLayer")
+    openingLayer = OptionalContourLayer(settings, "AutoCAD.Common.OpeningContourLayer")
     Set ImportConfiguredModelSpace = ImportFromModelSpace(modelSpace, _
-        concreteLayer, rebarLayer, REBAR_STEEL_CLASS, minArea, importUnits)
+        concreteLayer, rebarLayer, REBAR_STEEL_CLASS, minArea, importUnits, contourLayer, openingLayer, drawingLayers)
     Exit Function
 InvalidMinimumArea:
     Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
@@ -87,7 +99,9 @@ End Function
 ' пригодный для того же расчетного pipeline, что и встроенные генераторы.
 ' После чтения всей сетки назначает средний угол оболочкам без направления грани.
 Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteLayer As String, _
-        ByVal rebarLayer As String, ByVal steelClass As String, ByVal minArea As Double, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
+        ByVal rebarLayer As String, ByVal steelClass As String, ByVal minArea As Double, Optional ByVal units As CUnitSystem = Nothing, _
+        Optional ByVal contourLayer As String = "", Optional ByVal openingLayer As String = "", Optional ByVal drawingLayers As Object = Nothing) As CSectionModel
+    mImportComment = vbNullString
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
     If Len(Trim$(concreteLayer)) = 0 Or Len(Trim$(rebarLayer)) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
         "Не заданы слои импорта. Укажите отдельный слой бетонных Region и отдельный слой арматурных Region."
@@ -112,7 +126,159 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
 
     ValidateImportedModel model
     model.ApplyAverageRotationToEquivalentAreaFallbacks
+    ImportMaterialContours model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers
     Set ImportFromModelSpace = model
+End Function
+
+' Собирает опциональные достоверные контуры до возврата новой модели.
+' Сначала проверяются все объекты и opening, затем готовая область целиком
+' публикуется как semantic-геометрия. Ошибка не оставляет частичный импорт.
+Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpace As Object, _
+        ByVal concreteLayer As String, ByVal rebarLayer As String, ByVal contourLayer As String, _
+        ByVal openingLayer As String, ByVal drawingLayers As Object)
+    If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then Exit Sub
+    ValidateContourLayerMapping concreteLayer, rebarLayer, contourLayer, openingLayer
+    If drawingLayers Is Nothing Then
+        On Error Resume Next
+        Set drawingLayers = modelSpace.Document.Layers
+        On Error GoTo 0
+    End If
+    If drawingLayers Is Nothing Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
+        "Не удалось проверить слои достоверных контуров AutoCAD. Передайте коллекцию Layers активного чертежа."
+    contourLayer = ExistingContourLayer(drawingLayers, contourLayer)
+    openingLayer = ExistingContourLayer(drawingLayers, openingLayer)
+    If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then Exit Sub
+
+    Dim outerEntities As Collection, openingEntities As Collection, entity As Object
+    Set outerEntities = New Collection: Set openingEntities = New Collection
+    ' Copy/Explode временно меняют ModelSpace. Собираем исходные ссылки
+    ' заранее, чтобы не менять коллекцию во время ее обхода.
+    For Each entity In modelSpace
+        If Len(contourLayer) > 0 And SameLayer(CStr(entity.Layer), contourLayer) Then outerEntities.Add entity
+        If Len(openingLayer) > 0 And SameLayer(CStr(entity.Layer), openingLayer) Then openingEntities.Add entity
+    Next entity
+    Dim originalOuter As Collection, originalOpenings As Collection, exportedOnly As Boolean
+    Set originalOuter = OriginalContours(outerEntities)
+    Set originalOpenings = OriginalContours(openingEntities)
+    exportedOnly = (originalOuter.Count = 0 And originalOpenings.Count = 0)
+    If Not exportedOnly Then
+        Set outerEntities = originalOuter
+        Set openingEntities = originalOpenings
+    End If
+    If Len(contourLayer) > 0 And outerEntities.Count = 0 Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
+        "На слое '" & contourLayer & "' нет объектов внешнего контура. Проверьте AutoCAD.Common.SectionContourLayer на Config."
+    Dim query As CSectionGeometryQuery, reader As CAutoCADContourReader, regions As Collection
+    Dim domain As CConcreteRegion, opening As CConcreteRegion, i As Long, j As Long, commentText As String, openings As Collection
+    Set query = New CSectionGeometryQuery: Set reader = New CAutoCADContourReader
+    Set openings = New Collection
+    If exportedOnly And outerEntities.Count > 0 Then
+        Set domain = ReadExportedMaterialContours(outerEntities, openingEntities, reader, query)
+    ElseIf outerEntities.Count > 0 Then
+        Set regions = New Collection
+        For Each entity In outerEntities: regions.Add reader.ReadRegion(entity): Next entity
+        Set domain = query.MergeDisjointRegions(regions)
+    Else
+        query.Initialize model
+        Set domain = query.ConcreteDomain
+    End If
+    If Not exportedOnly Or outerEntities.Count = 0 Then
+    For Each entity In openingEntities
+        Set opening = reader.ReadRegion(entity)
+        If outerEntities.Count = 0 Then
+            For j = 1 To opening.LoopCount
+                If query.LoopIsOpening(opening, j) Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
+                    "Внутри Region отверстия есть отдельная бетонная часть, но наружный контур не задан. На AutoCAD.Common.SectionContourLayer разместите наружный Region с вырезанным отверстием и отдельный Region этой бетонной части."
+            Next j
+        End If
+        Set domain = query.SubtractContainedRegion(domain, opening)
+        openings.Add opening
+    Next entity
+    End If
+    For i = 1 To model.RebarCount
+        If Not query.ContainsPoint(domain, model.RebarX(i), model.RebarY(i), True) Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
+            "Арматура " & model.RebarID(i) & " находится вне импортированного бетонного контура или в отверстии. Проверьте слои и координаты исходных объектов."
+    Next i
+    commentText = "Достоверный контур AutoCAD: реальные линии/дуги и внутренние кольца; координаты в мм."
+    If Len(openingLayer) > 0 And openingEntities.Count = 0 Then commentText = commentText & _
+        " На заданном слое отверстий '" & openingLayer & "' объектов нет; дополнительные opening не заданы."
+    If outerEntities.Count > 0 Then
+        model.Contours.AddMaterialRegion domain, "MATERIAL", commentText
+    Else
+        ' Только заданные opening не превращают прежнюю оболочку сетки
+        ' в достоверный outer. Это важно для выбора якорных групп СП 35.
+        For i = 1 To openings.Count
+            model.Contours.AddMaterialRegion openings(i), "OPENING_SOURCE_" & CStr(i), commentText, True
+        Next i
+    End If
+    mImportComment = mImportComment & commentText
+End Sub
+
+' Пустое опциональное поле допустимо, но TODO и ошибка Excel не равны
+' отсутствию запроса. Непустое имя проходит тот же валидатор, что слои сетки.
+Private Function OptionalContourLayer(ByVal settings As CSystemSettingsReader, ByVal key As String) As String
+    If Len(Trim$(settings.GetRawString(key))) = 0 Then Exit Function
+    OptionalContourLayer = RequiredAutoCADLayerName(settings, key)
+End Function
+
+' Не позволяет использовать один слой сразу для расчетных Region и
+' достоверных границ: это неоднозначный вход, а не повод менять роль объекта.
+Private Sub ValidateContourLayerMapping(ByVal concreteLayer As String, ByVal rebarLayer As String, _
+        ByVal contourLayer As String, ByVal openingLayer As String)
+    Dim layers As Variant, i As Long, j As Long
+    layers = Array(concreteLayer, rebarLayer, contourLayer, openingLayer)
+    For i = 0 To UBound(layers)
+        If Len(CStr(layers(i))) > 0 Then
+            For j = 0 To i - 1
+                If Len(CStr(layers(j))) > 0 And SameLayer(CStr(layers(i)), CStr(layers(j))) Then _
+                    Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", "Слои бетона, арматуры, внешнего контура и отверстий должны иметь разные имена. Исправьте AutoCAD.Common/Import на Config."
+            Next j
+        End If
+    Next i
+End Sub
+
+' Возвращает имя только существующего дополнительного слоя. Отсутствие
+' слоя допустимо: его имя можно заранее сохранить для других чертежей.
+Private Function ExistingContourLayer(ByVal layers As Object, ByVal layerName As String) As String
+    If Len(layerName) = 0 Then Exit Function
+    Dim layer As Object
+    On Error Resume Next
+    Set layer = layers.Item(layerName)
+    On Error GoTo 0
+    If layer Is Nothing Then
+        mImportComment = mImportComment & "Дополнительный слой '" & layerName & "' отсутствует в чертеже; контуры с него не импортировались. "
+    Else
+        ExistingContourLayer = layerName
+    End If
+End Function
+
+' На общем слое исходники имеют приоритет над ранее экспортированными
+' копиями. В новом чертеже без исходников допускается импорт самого вывода.
+Private Function OriginalContours(ByVal entities As Collection) As Collection
+    Dim originals As Collection, entity As Object
+    Set originals = New Collection
+    For Each entity In entities
+        If Not IsNDMContourOutput(entity) Then originals.Add entity
+    Next entity
+    Set OriginalContours = originals
+End Function
+
+' Собирает собственный экспорт обратно в одну область: отдельный бетон
+' внутри проема остается материалом, а не пересечением двух полных outer.
+' Общий geometry-query проверяет все реальные сегменты и вложенность.
+Private Function ReadExportedMaterialContours(ByVal outers As Collection, ByVal openings As Collection, _
+        ByVal reader As CAutoCADContourReader, ByVal query As CSectionGeometryQuery) As CConcreteRegion
+    Dim raw() As TRegionEdge, one() As TRegionEdge, count As Long, oneCount As Long
+    Dim entity As Object, region As CConcreteRegion, group As Long, entities As Collection, i As Long
+    For group = 0 To 1
+        If group = 0 Then Set entities = outers Else Set entities = openings
+        For Each entity In entities
+            Set region = reader.ReadRegion(entity): region.CopyEdges one, oneCount
+            ReDim Preserve raw(1 To count + oneCount)
+            For i = 1 To oneCount: LSet raw(count + i) = one(i): Next i
+            count = count + oneCount
+        Next entity
+    Next group
+    Set ReadExportedMaterialContours = query.BoundaryRegion(raw, count, "ValidatedAutoCADExportContours")
 End Function
 
 ' Читает один бетонный Region из AutoCAD: площадь, центр тяжести, реальные

@@ -47,7 +47,6 @@ Private mPrincipalRadius2 As Double ' Радиус инерции по глав�
 Private mLastCalculationSeconds As Double ' Время последнего расчета свойств для диагностики производительности.
 
 Private Const PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE As Double = 0.000001 ' Допуск для почти круговых/изотропных сечений.
-Private Const PROJECTION_INTERVAL_TOLERANCE As Double = 0.000001 ' Допуск склейки соседних КЭ на луче, мм.
 
 ' Считает геометрические характеристики только бетонной части сечения.
 ' Такой расчет не зависит от диаграмм материалов и продольной арматуры. Он
@@ -219,77 +218,16 @@ End Function
 ' берет глобальную опорную линию всего сечения: он проходит лучом через
 ' конкретную точку, поэтому подходит для a_s в расчете трещин у несимметричных
 ' сечений и косой нейтральной линии.
-' Возвращает -1, если точка/луч не попали в дискретный бетонный контур.
+' Делегирует пересечение общему движку трещин: достоверные контуры имеют
+' приоритет, неизвестная граница берется по КЭ. Возвращает -1 вне материала.
 Public Function ConcreteCoverFromPointAlongDirection(ByVal section As CSectionModel, _
         ByVal pointX As Double, ByVal pointY As Double, _
         ByVal directionX As Double, ByVal directionY As Double) As Double
-    If section Is Nothing Then Err.Raise vbObjectError + 2220, "CSectionPropertiesCalculator", "Модель сечения не передана."
-    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2221, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
-
-    Dim normValue As Double
-    normValue = Sqr(directionX * directionX + directionY * directionY)
-    If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2222, "CSectionPropertiesCalculator", "Направление до бетонной границы имеет нулевую длину."
-
-    Dim nx As Double
-    Dim ny As Double
-    nx = directionX / normValue
-    ny = directionY / normValue
-
-    Dim intervalStart() As Double
-    Dim intervalEnd() As Double
-    ReDim intervalStart(1 To section.ConcreteCount)
-    ReDim intervalEnd(1 To section.ConcreteCount)
-
-    Dim intervalCount As Long
-    Dim i As Long
-    For i = 1 To section.ConcreteCount
-        Dim tMin As Double
-        Dim tMax As Double
-        If ConcreteRayInterval(section, i, pointX, pointY, nx, ny, tMin, tMax) Then
-            If tMax >= -PROJECTION_INTERVAL_TOLERANCE Then
-                intervalCount = intervalCount + 1
-                intervalStart(intervalCount) = tMin
-                intervalEnd(intervalCount) = tMax
-            End If
-        End If
-    Next i
-
-    If intervalCount = 0 Then
-        ConcreteCoverFromPointAlongDirection = -1#
-        Exit Function
-    End If
-
-    Dim hasSeed As Boolean
-    Dim currentEnd As Double
-    For i = 1 To intervalCount
-        If intervalStart(i) <= PROJECTION_INTERVAL_TOLERANCE And _
-                intervalEnd(i) >= -PROJECTION_INTERVAL_TOLERANCE Then
-            If Not hasSeed Or intervalEnd(i) > currentEnd Then currentEnd = intervalEnd(i)
-            hasSeed = True
-        End If
-    Next i
-
-    If Not hasSeed Then
-        ConcreteCoverFromPointAlongDirection = -1#
-        Exit Function
-    End If
-
-    ' Склеиваем соседние интервалы вдоль луча, пока не встретим первый реальный
-    ' выход из бетонной области. Дальние несвязанные части Г-сечения дальше по
-    ' лучу не должны увеличивать a_s.
-    Dim changed As Boolean
-    Do
-        changed = False
-        For i = 1 To intervalCount
-            If intervalStart(i) <= currentEnd + PROJECTION_INTERVAL_TOLERANCE And _
-                    intervalEnd(i) > currentEnd Then
-                currentEnd = intervalEnd(i)
-                changed = True
-            End If
-        Next i
-    Loop While changed
-
-    ConcreteCoverFromPointAlongDirection = GeomMax(currentEnd, 0#)
+    Dim query As CSectionGeometryQuery
+    Set query = New CSectionGeometryQuery
+    query.Initialize section
+    ConcreteCoverFromPointAlongDirection = query.ConcreteCoverFromPointAlongDirection( _
+        pointX, pointY, directionX, directionY)
 End Function
 
 ' Возвращает суммарную площадь продольной арматуры.
@@ -549,88 +487,6 @@ End Sub
 Private Function ConcreteHalfProjection(ByVal section As CSectionModel, ByVal index As Long, _
         ByVal axisX As Double, ByVal axisY As Double) As Double
     ConcreteHalfProjection = section.ConcreteBoundaryHalfProjection(index, axisX, axisY)
-End Function
-
-' Возвращает прямоугольник, которым бетонный КЭ участвует в пересечениях с
-' лучом. Интерпретация Rectangle/Equivalent rectangle/Equivalent square
-' находится в CSectionModel, чтобы схема, AutoCAD и расчетные габариты
-' использовали одну и ту же оболочку.
-Private Function ConcreteProjectionRectangle(ByVal section As CSectionModel, ByVal index As Long, _
-        ByRef widthValue As Double, ByRef heightValue As Double, _
-        ByRef angleValue As Double) As Boolean
-    ConcreteProjectionRectangle = section.ConcreteBoundaryRectangle(index, widthValue, heightValue, angleValue)
-End Function
-
-' Находит интервал параметра t, на котором луч P + t*n проходит внутри
-' расчетного прямоугольника бетонного элемента.
-Private Function ConcreteRayInterval(ByVal section As CSectionModel, ByVal index As Long, _
-        ByVal pointX As Double, ByVal pointY As Double, ByVal directionX As Double, _
-        ByVal directionY As Double, ByRef tMin As Double, ByRef tMax As Double) As Boolean
-    Dim widthValue As Double
-    Dim heightValue As Double
-    Dim angleValue As Double
-    If Not ConcreteProjectionRectangle(section, index, widthValue, heightValue, angleValue) Then Exit Function
-
-    ConcreteRayInterval = RectangleRayInterval(pointX, pointY, _
-        section.ConcreteX(index), section.ConcreteY(index), _
-        widthValue, heightValue, angleValue, directionX, directionY, tMin, tMax)
-End Function
-
-' Пересекает луч с повернутым прямоугольником через clipping по двум локальным
-' координатам. t измеряется в мм, потому что direction нормирован.
-Private Function RectangleRayInterval(ByVal pointX As Double, ByVal pointY As Double, _
-        ByVal centerX As Double, ByVal centerY As Double, ByVal widthValue As Double, _
-        ByVal heightValue As Double, ByVal angleValue As Double, _
-        ByVal directionX As Double, ByVal directionY As Double, _
-        ByRef tMin As Double, ByRef tMax As Double) As Boolean
-    Dim ux As Double
-    Dim uy As Double
-    Dim vx As Double
-    Dim vy As Double
-    ux = Cos(angleValue)
-    uy = Sin(angleValue)
-    vx = -uy
-    vy = ux
-
-    Dim dx As Double
-    Dim dy As Double
-    dx = pointX - centerX
-    dy = pointY - centerY
-
-    tMin = -1E+100
-    tMax = 1E+100
-    If Not ClipRectangleRayCoordinate(dx * ux + dy * uy, _
-            directionX * ux + directionY * uy, widthValue / 2#, tMin, tMax) Then Exit Function
-    If Not ClipRectangleRayCoordinate(dx * vx + dy * vy, _
-            directionX * vx + directionY * vy, heightValue / 2#, tMin, tMax) Then Exit Function
-
-    RectangleRayInterval = (tMin <= tMax + PROJECTION_INTERVAL_TOLERANCE)
-End Function
-
-' Сужает интервал t одним условием |coord + t*dir| <= halfSize.
-Private Function ClipRectangleRayCoordinate(ByVal coord As Double, ByVal dirCoord As Double, _
-        ByVal halfSize As Double, ByRef tMin As Double, ByRef tMax As Double) As Boolean
-    If halfSize <= GEOM_TOLERANCE Then Exit Function
-
-    If Abs(dirCoord) <= GEOM_TOLERANCE Then
-        ClipRectangleRayCoordinate = (Abs(coord) <= halfSize + PROJECTION_INTERVAL_TOLERANCE)
-        Exit Function
-    End If
-
-    Dim t1 As Double
-    Dim t2 As Double
-    Dim tmp As Double
-    t1 = (-halfSize - coord) / dirCoord
-    t2 = (halfSize - coord) / dirCoord
-    If t1 > t2 Then
-        tmp = t1
-        t1 = t2
-        t2 = tmp
-    End If
-
-    tMin = GeomMax(tMin, t1)
-    tMax = GeomMin(tMax, t2)
-    ClipRectangleRayCoordinate = (tMin <= tMax + PROJECTION_INTERVAL_TOLERANCE)
 End Function
 
 ' Собственная инерция круглого стержня через его площадь: I = A^2/(4*pi).

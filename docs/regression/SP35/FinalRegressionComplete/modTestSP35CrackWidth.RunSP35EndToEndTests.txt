@@ -1,0 +1,296 @@
+﻿RESULT: E2E.SP63.N; status=OK; comment=
+OK: E2E.SP63.N.current.present
+STATE: E2E.SP63.N; N=500000; Mx=0; My=0; eps0=6.36619772367581E-04; kx=1.70156513501358E-22; ky=4.72000518848974E-23
+OK: E2E.SP63.N.current.converged
+OK: E2E.SP63.N.equilibrium.N
+OK: E2E.SP63.N.equilibrium.Mx
+OK: E2E.SP63.N.equilibrium.My
+OK: E2E.SP63.N.target.Mx
+OK: E2E.SP63.N.target.My
+OK: E2E.SP63.N.central.noNA
+OK: E2E.SP63.N.width.calculated; 
+OK: E2E.SP63.N.width.formulaStatus
+OK: E2E.SP63.N.width.standard
+OK: E2E.SP63.N.psi.bounded
+OK: E2E.SP63.N.width.independentFormula; delta=0
+OK: E2E.SP63.N.region.present
+OK: E2E.SP63.N.region.sameArea
+OK: E2E.SP63.N.region.areaBounds
+OK: E2E.SP63.N.region.owner
+OK: E2E.SP63.N.central.tension
+OK: E2E.SP63.N.central.area
+OK: E2E.SP63.N.central.sigma
+OK: E2E.SP63.N.strength.success
+OK: E2E.SP63.N.capacity.success
+RESULT: E2E.SP63.M; status=OK; comment=
+OK: E2E.SP63.M.current.present
+STATE: E2E.SP63.M; N=0; Mx=120000000; My=0; eps0=4.32054634500357E-04; kx=6.57634746774274E-06; ky=-7.12167742855695E-23
+OK: E2E.SP63.M.current.converged
+OK: E2E.SP63.M.equilibrium.N
+OK: E2E.SP63.M.equilibrium.Mx
+OK: E2E.SP63.M.equilibrium.My
+OK: E2E.SP63.M.target.Mx
+OK: E2E.SP63.M.target.My
+OK: E2E.SP63.M.width.calculated; 
+OK: E2E.SP63.M.width.formulaStatus
+OK: E2E.SP63.M.width.standard
+OK: E2E.SP63.M.psi.bounded
+OK: E2E.SP63.M.width.independentFormula; delta=0
+OK: E2E.SP63.M.region.present
+OK: E2E.SP63.M.region.sameArea
+OK: E2E.SP63.M.region.areaBounds
+OK: E2E.SP63.M.region.owner
+OK: E2E.SP63.M.strength.success
+OK: E2E.SP63.M.capacity.success
+RESULT: E2E.SP63.N_M; status=OK; comment=
+OK: E2E.SP63.N_M.current.present
+STATE: E2E.SP63.N_M; N=-100000; Mx=121333333.333333; My=-1333333.33333333; eps0=3.50145839381855E-04; kx=6.28925011952967E-06; ky=-5.1773706635125E-08
+OK: E2E.SP63.N_M.current.converged
+OK: E2E.SP63.N_M.equilibrium.N
+OK: E2E.SP63.N_M.equilibrium.Mx
+OK: E2E.SP63.N_M.equilibrium.My
+OK: E2E.SP63.N_M.target.Mx
+OK: E2E.SP63.N_M.target.My
+OK: E2E.SP63.N_M.width.calculated; 
+OK: E2E.SP63.N_M.width.formulaStatus
+OK: E2E.SP63.N_M.width.standard
+OK: E2E.SP63.N_M.psi.bounded
+OK: E2E.SP63.N_M.width.independentFormula; delta=0
+OK: E2E.SP63.N_M.region.present
+OK: E2E.SP63.N_M.region.sameArea
+OK: E2E.SP63.N_M.region.areaBounds
+OK: E2E.SP63.N_M.region.owner
+OK: E2E.SP63.N_M.strength.success
+OK: E2E.SP63.N_M.capacity.success
+RESULT: E2E.SP63.Mx_My; status=OK; comment=
+OK: E2E.SP63.Mx_My.current.present
+STATE: E2E.SP63.Mx_My; N=0; Mx=80000000; My=60000000; eps0=3.19055585168672E-04; kx=4.36195256546965E-06; ky=2.4105841663314E-06
+OK: E2E.SP63.Mx_My.current.converged
+OK: E2E.SP63.Mx_My.equilibrium.N
+OK: E2E.SP63.Mx_My.equilibrium.Mx
+OK: E2E.SP63.Mx_My.equilibrium.My
+OK: E2E.SP63.Mx_My.target.Mx
+OK: E2E.SP63.Mx_My.target.My
+OK: E2E.SP63.Mx_My.width.calculated; 
+OK: E2E.SP63.Mx_My.width.formulaStatus
+OK: E2E.SP63.Mx_My.width.standard
+OK: E2E.SP63.Mx_My.psi.bounded
+OK: E2E.SP63.Mx_My.width.independentFormula; delta=0
+OK: E2E.SP63.Mx_My.region.present
+OK: E2E.SP63.Mx_My.region.sameArea
+OK: E2E.SP63.Mx_My.region.areaBounds
+OK: E2E.SP63.Mx_My.region.owner
+OK: E2E.SP63.Mx_My.strength.success
+OK: E2E.SP63.Mx_My.capacity.success
+RESULT: E2E.SP63.N_Mx_My; status=OK; comment=
+OK: E2E.SP63.N_Mx_My.current.present
+STATE: E2E.SP63.N_Mx_My; N=-100000; Mx=81333333.3333333; My=61333333.3333333; eps0=2.39004096327555E-04; kx=4.11838759706369E-06; ky=2.35510802445637E-06
+OK: E2E.SP63.N_Mx_My.current.converged
+OK: E2E.SP63.N_Mx_My.equilibrium.N
+OK: E2E.SP63.N_Mx_My.equilibrium.Mx
+OK: E2E.SP63.N_Mx_My.equilibrium.My
+OK: E2E.SP63.N_Mx_My.target.Mx
+OK: E2E.SP63.N_Mx_My.target.My
+OK: E2E.SP63.N_Mx_My.width.calculated; 
+OK: E2E.SP63.N_Mx_My.width.formulaStatus
+OK: E2E.SP63.N_Mx_My.width.standard
+OK: E2E.SP63.N_Mx_My.psi.bounded
+OK: E2E.SP63.N_Mx_My.width.independentFormula; delta=0
+OK: E2E.SP63.N_Mx_My.region.present
+OK: E2E.SP63.N_Mx_My.region.sameArea
+OK: E2E.SP63.N_Mx_My.region.areaBounds
+OK: E2E.SP63.N_Mx_My.region.owner
+OK: E2E.SP63.N_Mx_My.strength.success
+OK: E2E.SP63.N_Mx_My.capacity.success
+RESULT: E2E.SP63.N_COMPRESSION; status=OK; comment=
+OK: E2E.SP63.N_COMPRESSION.current.present
+STATE: E2E.SP63.N_COMPRESSION; N=-200000; Mx=2666666.66666667; My=-2666666.66666667; eps0=-6.50518845020681E-05; kx=6.55064062970324E-08; ky=-5.86395155389479E-08
+OK: E2E.SP63.N_COMPRESSION.current.converged
+OK: E2E.SP63.N_COMPRESSION.equilibrium.N
+OK: E2E.SP63.N_COMPRESSION.equilibrium.Mx
+OK: E2E.SP63.N_COMPRESSION.equilibrium.My
+OK: E2E.SP63.N_COMPRESSION.target.Mx
+OK: E2E.SP63.N_COMPRESSION.target.My
+OK: E2E.SP63.N_COMPRESSION.compression.noWidth
+OK: E2E.SP63.N_COMPRESSION.compression.noPsiWarning
+OK: E2E.SP63.N_COMPRESSION.strength.success
+OK: E2E.SP63.N_COMPRESSION.capacity.success
+OK: E2E.writer.SP63.1.comment
+OK: E2E.writer.SP63.2.comment
+OK: E2E.writer.SP63.3.comment
+OK: E2E.writer.SP63.4.comment
+OK: E2E.writer.SP63.5.comment
+OK: E2E.writer.SP63.6.comment
+RESULT: E2E.SP35.N; status=OK; comment=
+OK: E2E.SP35.N.current.present
+STATE: E2E.SP35.N; N=500000; Mx=0; My=0; eps0=6.36619772367581E-04; kx=1.70156513501358E-22; ky=4.72000518848974E-23
+OK: E2E.SP35.N.current.converged
+OK: E2E.SP35.N.equilibrium.N
+OK: E2E.SP35.N.equilibrium.Mx
+OK: E2E.SP35.N.equilibrium.My
+OK: E2E.SP35.N.target.Mx
+OK: E2E.SP35.N.target.My
+OK: E2E.SP35.N.central.noNA
+OK: E2E.SP35.N.width.calculated; 
+OK: E2E.SP35.N.width.formulaStatus
+OK: E2E.SP35.N.width.standard
+OK: E2E.SP35.N.groups.present
+OK: E2E.SP35.N.noSP63Warning
+OK: E2E.SP35.N.width.independentFormula; delta=0
+OK: E2E.SP35.N.region.present
+OK: E2E.SP35.N.region.sameArea
+OK: E2E.SP35.N.region.areaBounds
+OK: E2E.SP35.N.region.owner
+OK: E2E.SP35.N.central.tension
+OK: E2E.SP35.N.central.area
+OK: E2E.SP35.N.central.sigma
+OK: E2E.SP35.N.strength.success
+OK: E2E.SP35.N.capacity.success
+OK: E2E.SP35.N.strength.unchanged
+OK: E2E.SP35.N.capacity.statusUnchanged
+OK: E2E.SP35.N.capacity.lambdaUnchanged; actual=2.7421875; expected=2.7421875
+OK: E2E.SP35.N.stability.statusUnchanged
+OK: E2E.SP35.N.stability.Ncr1Unchanged; actual=0; expected=0
+OK: E2E.SP35.N.stability.Ncr2Unchanged; actual=0; expected=0
+OK: E2E.SP35.N.stability.designNUnchanged; actual=500000; expected=500000
+RESULT: E2E.SP35.M; status=OK; comment=
+OK: E2E.SP35.M.current.present
+STATE: E2E.SP35.M; N=0; Mx=120000000; My=0; eps0=4.32054634500357E-04; kx=6.57634746774274E-06; ky=-7.12167742855695E-23
+OK: E2E.SP35.M.current.converged
+OK: E2E.SP35.M.equilibrium.N
+OK: E2E.SP35.M.equilibrium.Mx
+OK: E2E.SP35.M.equilibrium.My
+OK: E2E.SP35.M.target.Mx
+OK: E2E.SP35.M.target.My
+OK: E2E.SP35.M.width.calculated; 
+OK: E2E.SP35.M.width.formulaStatus
+OK: E2E.SP35.M.width.standard
+OK: E2E.SP35.M.groups.present
+OK: E2E.SP35.M.multiRow.present
+OK: E2E.SP35.M.noSP63Warning
+OK: E2E.SP35.M.width.independentFormula; delta=2.77555756156289E-17
+OK: E2E.SP35.M.region.present
+OK: E2E.SP35.M.region.sameArea
+OK: E2E.SP35.M.region.areaBounds
+OK: E2E.SP35.M.region.owner
+OK: E2E.SP35.M.strength.success
+OK: E2E.SP35.M.capacity.success
+OK: E2E.SP35.M.strength.unchanged
+OK: E2E.SP35.M.capacity.statusUnchanged
+OK: E2E.SP35.M.capacity.lambdaUnchanged; actual=1.62714909425384; expected=1.62714909425384
+OK: E2E.SP35.M.stability.statusUnchanged
+OK: E2E.SP35.M.stability.Ncr1Unchanged; actual=0; expected=0
+OK: E2E.SP35.M.stability.Ncr2Unchanged; actual=0; expected=0
+OK: E2E.SP35.M.stability.designNUnchanged; actual=0; expected=0
+RESULT: E2E.SP35.N_M; status=OK; comment=
+OK: E2E.SP35.N_M.current.present
+STATE: E2E.SP35.N_M; N=-100000; Mx=121333333.333333; My=-1333333.33333333; eps0=3.50145839381855E-04; kx=6.28925011952967E-06; ky=-5.1773706635125E-08
+OK: E2E.SP35.N_M.current.converged
+OK: E2E.SP35.N_M.equilibrium.N
+OK: E2E.SP35.N_M.equilibrium.Mx
+OK: E2E.SP35.N_M.equilibrium.My
+OK: E2E.SP35.N_M.target.Mx
+OK: E2E.SP35.N_M.target.My
+OK: E2E.SP35.N_M.width.calculated; 
+OK: E2E.SP35.N_M.width.formulaStatus
+OK: E2E.SP35.N_M.width.standard
+OK: E2E.SP35.N_M.groups.present
+OK: E2E.SP35.N_M.noSP63Warning
+OK: E2E.SP35.N_M.width.independentFormula; delta=0
+OK: E2E.SP35.N_M.region.present
+OK: E2E.SP35.N_M.region.sameArea
+OK: E2E.SP35.N_M.region.areaBounds
+OK: E2E.SP35.N_M.region.owner
+OK: E2E.SP35.N_M.strength.success
+OK: E2E.SP35.N_M.capacity.success
+OK: E2E.SP35.N_M.strength.unchanged
+OK: E2E.SP35.N_M.capacity.statusUnchanged
+OK: E2E.SP35.N_M.capacity.lambdaUnchanged; actual=1.67235464312826; expected=1.67235464312826
+OK: E2E.SP35.N_M.stability.statusUnchanged
+OK: E2E.SP35.N_M.stability.Ncr1Unchanged; actual=334661009.919209; expected=334661009.919209
+OK: E2E.SP35.N_M.stability.Ncr2Unchanged; actual=128046922.3222; expected=128046922.3222
+OK: E2E.SP35.N_M.stability.designNUnchanged; actual=-100000; expected=-100000
+RESULT: E2E.SP35.Mx_My; status=OK; comment=
+OK: E2E.SP35.Mx_My.current.present
+STATE: E2E.SP35.Mx_My; N=0; Mx=80000000; My=60000000; eps0=3.19055585168672E-04; kx=4.36195256546965E-06; ky=2.4105841663314E-06
+OK: E2E.SP35.Mx_My.current.converged
+OK: E2E.SP35.Mx_My.equilibrium.N
+OK: E2E.SP35.Mx_My.equilibrium.Mx
+OK: E2E.SP35.Mx_My.equilibrium.My
+OK: E2E.SP35.Mx_My.target.Mx
+OK: E2E.SP35.Mx_My.target.My
+OK: E2E.SP35.Mx_My.width.calculated; 
+OK: E2E.SP35.Mx_My.width.formulaStatus
+OK: E2E.SP35.Mx_My.width.standard
+OK: E2E.SP35.Mx_My.groups.present
+OK: E2E.SP35.Mx_My.noSP63Warning
+OK: E2E.SP35.Mx_My.width.independentFormula; delta=0
+OK: E2E.SP35.Mx_My.region.present
+OK: E2E.SP35.Mx_My.region.sameArea
+OK: E2E.SP35.Mx_My.region.areaBounds
+OK: E2E.SP35.Mx_My.region.owner
+OK: E2E.SP35.Mx_My.strength.success
+OK: E2E.SP35.Mx_My.capacity.success
+OK: E2E.SP35.Mx_My.strength.unchanged
+OK: E2E.SP35.Mx_My.capacity.statusUnchanged
+OK: E2E.SP35.Mx_My.capacity.lambdaUnchanged; actual=1.91076665960315; expected=1.91076665960315
+OK: E2E.SP35.Mx_My.stability.statusUnchanged
+OK: E2E.SP35.Mx_My.stability.Ncr1Unchanged; actual=0; expected=0
+OK: E2E.SP35.Mx_My.stability.Ncr2Unchanged; actual=0; expected=0
+OK: E2E.SP35.Mx_My.stability.designNUnchanged; actual=0; expected=0
+RESULT: E2E.SP35.N_Mx_My; status=OK; comment=
+OK: E2E.SP35.N_Mx_My.current.present
+STATE: E2E.SP35.N_Mx_My; N=-100000; Mx=81333333.3333333; My=61333333.3333333; eps0=2.39004096327555E-04; kx=4.11838759706369E-06; ky=2.35510802445637E-06
+OK: E2E.SP35.N_Mx_My.current.converged
+OK: E2E.SP35.N_Mx_My.equilibrium.N
+OK: E2E.SP35.N_Mx_My.equilibrium.Mx
+OK: E2E.SP35.N_Mx_My.equilibrium.My
+OK: E2E.SP35.N_Mx_My.target.Mx
+OK: E2E.SP35.N_Mx_My.target.My
+OK: E2E.SP35.N_Mx_My.width.calculated; 
+OK: E2E.SP35.N_Mx_My.width.formulaStatus
+OK: E2E.SP35.N_Mx_My.width.standard
+OK: E2E.SP35.N_Mx_My.groups.present
+OK: E2E.SP35.N_Mx_My.noSP63Warning
+OK: E2E.SP35.N_Mx_My.width.independentFormula; delta=0
+OK: E2E.SP35.N_Mx_My.region.present
+OK: E2E.SP35.N_Mx_My.region.sameArea
+OK: E2E.SP35.N_Mx_My.region.areaBounds
+OK: E2E.SP35.N_Mx_My.region.owner
+OK: E2E.SP35.N_Mx_My.strength.success
+OK: E2E.SP35.N_Mx_My.capacity.success
+OK: E2E.SP35.N_Mx_My.strength.unchanged
+OK: E2E.SP35.N_Mx_My.capacity.statusUnchanged
+OK: E2E.SP35.N_Mx_My.capacity.lambdaUnchanged; actual=1.9336769858229; expected=1.9336769858229
+OK: E2E.SP35.N_Mx_My.stability.statusUnchanged
+OK: E2E.SP35.N_Mx_My.stability.Ncr1Unchanged; actual=163587866.966994; expected=163587866.966994
+OK: E2E.SP35.N_Mx_My.stability.Ncr2Unchanged; actual=128046922.3222; expected=128046922.3222
+OK: E2E.SP35.N_Mx_My.stability.designNUnchanged; actual=-100000; expected=-100000
+RESULT: E2E.SP35.N_COMPRESSION; status=OK; comment=
+OK: E2E.SP35.N_COMPRESSION.current.present
+STATE: E2E.SP35.N_COMPRESSION; N=-200000; Mx=2666666.66666667; My=-2666666.66666667; eps0=-6.50518845020681E-05; kx=6.55064062970324E-08; ky=-5.86395155389479E-08
+OK: E2E.SP35.N_COMPRESSION.current.converged
+OK: E2E.SP35.N_COMPRESSION.equilibrium.N
+OK: E2E.SP35.N_COMPRESSION.equilibrium.Mx
+OK: E2E.SP35.N_COMPRESSION.equilibrium.My
+OK: E2E.SP35.N_COMPRESSION.target.Mx
+OK: E2E.SP35.N_COMPRESSION.target.My
+OK: E2E.SP35.N_COMPRESSION.compression.noWidth
+OK: E2E.SP35.N_COMPRESSION.compression.noPsiWarning
+OK: E2E.SP35.N_COMPRESSION.strength.success
+OK: E2E.SP35.N_COMPRESSION.capacity.success
+OK: E2E.SP35.N_COMPRESSION.strength.unchanged
+OK: E2E.SP35.N_COMPRESSION.capacity.statusUnchanged
+OK: E2E.SP35.N_COMPRESSION.capacity.lambdaUnchanged; actual=53.8566748335375; expected=53.8566748335375
+OK: E2E.SP35.N_COMPRESSION.stability.statusUnchanged
+OK: E2E.SP35.N_COMPRESSION.stability.Ncr1Unchanged; actual=334661009.919209; expected=334661009.919209
+OK: E2E.SP35.N_COMPRESSION.stability.Ncr2Unchanged; actual=299120065.274415; expected=299120065.274415
+OK: E2E.SP35.N_COMPRESSION.stability.designNUnchanged; actual=-200000; expected=-200000
+OK: E2E.writer.SP35.1.comment
+OK: E2E.writer.SP35.2.comment
+OK: E2E.writer.SP35.3.comment
+OK: E2E.writer.SP35.4.comment
+OK: E2E.writer.SP35.5.comment
+OK: E2E.writer.SP35.6.comment
+TOTAL_SP35_END_TO_END: passed=270; failed=0
+

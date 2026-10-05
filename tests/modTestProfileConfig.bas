@@ -1494,7 +1494,7 @@ Private Sub TestPresentationSnapshotIntegrity(ByRef stats As TProfileStats, ByRe
     Dim data As Variant, code As Long, reason As String, field As Variant, column As Long
     Dim savedNumber As Long, savedReason As String
     On Error GoTo Failed
-    Set geometry = PresentationSnapshotRange("rngNDMSectionGeometry", 15)
+    Set geometry = PresentationSnapshotRange("rngNDMSectionGeometry", 25)
     Set annotations = PresentationSnapshotRange("rngNDMSectionAnnotations", 13)
     oldGeometry = geometry.Formula: oldAnnotations = annotations.Formula
     data = geometry.Value2: data(1, 7) = "__MissingGeometryStatus": geometry.Value2 = data

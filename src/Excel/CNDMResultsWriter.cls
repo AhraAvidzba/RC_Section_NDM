@@ -26,13 +26,13 @@ Option Explicit
 ' CStrengthSummaryWriter.
 
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' LC-зависимые результаты named-state: RunID, LoadCase, ProfileId, StateType, ElementID, MaterialType, Strain, Stress, PhysicalState.
-Private Const GEOMETRY_COLUMNS As Long = 15 ' Постоянная геометрия элементов, записанная один раз на расчетный снимок.
+Private Const GEOMETRY_COLUMNS As Long = 25 ' Элементы и исходные outer/opening в одном постоянном снимке.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
-Private Const ANNOTATION_COLUMNS As Long = 13 ' Semantic-аннотации схемы: размеры, контур, групповые подписи арматуры.
+Private Const ANNOTATION_COLUMNS As Long = 22 ' Аннотации и принадлежность готовой области трещин; старые поля 1..13 сохранены.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Каталог уникальных точек диаграмм, переданных solver-ам.
 Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
 Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Дополнительный зазор сводной подписи арматуры AutoCAD над бетонным габаритом.
-Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 69 ' Строки общих свойств сечения до LC-зависимых блоков.
+Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 70 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 13 ' Строки metadata одного сохраненного named-state.
 Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Общая синяя строка находится на две строки выше нижних snapshot-якорей.
@@ -95,7 +95,7 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     WriteSectionProperties workbook, section, materialProvider, batch, runID, units
     WriteMaterialDiagrams workbook, materialProvider, batch, runID, units
     EnsureAutoCADImportAnnotations section
-    WriteSectionAnnotations workbook, section, runID, units
+    WriteSectionAnnotations workbook, section, runID, units, batch
 End Sub
 
 ' Записывает на Results только импортированную геометрию без расчетных LC.
@@ -285,7 +285,7 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
     Set target = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + section.ConcreteCount + section.RebarCount
+    rowCount = 1 + section.ConcreteCount + section.RebarCount + section.Contours.Count
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To GEOMETRY_COLUMNS)
@@ -337,8 +337,32 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         rowIndex = rowIndex + 1
     Next i
 
+    ' Исходные контуры не являются результатом отдельного сочетания. Их точные
+    ' примитивы записываются рядом с элементами, а не в таблицу аннотаций.
+    Dim contours As CSectionContours
+    Set contours = section.Contours
+    For i = 1 To contours.Count
+        data(rowIndex, 1) = runID
+        data(rowIndex, 2) = contours.ContourID(i)
+        data(rowIndex, 3) = "Contour"
+        data(rowIndex, 4) = OutputLength(contours.StartX(i), units)
+        data(rowIndex, 5) = OutputLength(contours.StartY(i), units)
+        data(rowIndex, 7) = contours.SegmentType(i)
+        data(rowIndex, 15) = contours.Comment(i)
+        data(rowIndex, 16) = OutputLength(contours.EndX(i), units)
+        data(rowIndex, 17) = OutputLength(contours.EndY(i), units)
+        data(rowIndex, 18) = OutputLength(contours.CenterX(i), units)
+        data(rowIndex, 19) = OutputLength(contours.CenterY(i), units)
+        data(rowIndex, 20) = OutputLength(contours.Radius(i), units)
+        data(rowIndex, 21) = contours.SweepAngle(i)
+        data(rowIndex, 22) = contours.LoopID(i)
+        data(rowIndex, 23) = contours.LoopRole(i)
+        data(rowIndex, 24) = contours.SourceID(i)
+        data(rowIndex, 25) = OutputLengthUnit(units)
+        rowIndex = rowIndex + 1
+    Next i
     target.Resize(rowCount, GEOMETRY_COLUMNS).Value2 = data
-    FormatResultsBlock target, rowCount, GEOMETRY_COLUMNS, "Расчетная геометрия элементов"
+    FormatResultsBlock target, rowCount, GEOMETRY_COLUMNS, "Геометрия сечения: элементы и исходные контуры"
 End Sub
 
 ' ------------------------------
@@ -390,6 +414,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.Revision, "-", "Версия геометрии, к которой относятся состояния и расчетные области этого снимка."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetX."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetY."
     PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов расчетной модели."
@@ -915,7 +940,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim data() As Variant
-    ReDim data(1 To 43, 1 To SECTION_PROPERTY_COLUMNS)
+    ReDim data(1 To 44, 1 To SECTION_PROPERTY_COLUMNS)
     PutSectionPropertyHeaders data
 
     Dim rowIndex As Long
@@ -929,6 +954,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinY", OutputLength(minY, units), OutputLengthUnit(units), "Минимальный Y бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.Revision, "-", "Версия геометрии сохраненного снимка."
 
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = New CSectionPropertiesCalculator
@@ -948,10 +974,10 @@ End Sub
 ' ------------------------------
 ' Semantic-аннотации схемы
 ' ------------------------------
-' Эти строки отвечают не за расчет, а за оформление последнего рассчитанного
-' сечения: контуры, размеры и групповые подписи арматуры.
+' Записывает оформление сечения и готовые LC-зависимые области трещин.
+' Исходные outer/opening находятся только в геометрическом snapshot.
 Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal runID As Variant, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal units As CUnitSystem, Optional ByVal batch As CBatchSectionCalculator = Nothing)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
 
@@ -960,6 +986,18 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
 
     Dim rowCount As Long
     rowCount = 1 + annotations.Count
+    Dim regions As Collection, region As CConcreteRegion, combination As CCombinationResult, i As Long
+    Set regions = New Collection
+    If Not batch Is Nothing Then
+        For i = 1 To batch.Count
+            Set combination = batch.ResultAt(i)
+            Set region = combination.CrackResult.Width.InteractionRegion
+            If Not region Is Nothing Then
+                regions.Add region
+                rowCount = rowCount + region.SegmentCount + region.BoundaryProbeCount
+            End If
+        Next i
+    End If
     If rowCount < 1 Then rowCount = 1
 
     Dim data() As Variant
@@ -969,10 +1007,14 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
     Dim rowIndex As Long
     rowIndex = 2
 
-    Dim i As Long
     For i = 1 To annotations.Count
         PutAnnotationRow data, rowIndex, runID, annotations, i, units
     Next i
+
+    For Each region In regions
+        PutCrackRegionRows data, rowIndex, runID, region, units
+        PutCrackBoundaryProbeRows data, rowIndex, runID, region, units
+    Next region
 
     target.Resize(rowCount, ANNOTATION_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, ANNOTATION_COLUMNS, "Аннотации схемы"
@@ -1201,6 +1243,16 @@ Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSyst
     data(1, 13) = "LocalIy, " & OutputLengthUnit(units) & "4"
     data(1, 14) = "LocalIxy, " & OutputLengthUnit(units) & "4"
     data(1, 15) = "Comment"
+    data(1, 16) = "EndX, " & OutputLengthUnit(units)
+    data(1, 17) = "EndY, " & OutputLengthUnit(units)
+    data(1, 18) = "CenterX, " & OutputLengthUnit(units)
+    data(1, 19) = "CenterY, " & OutputLengthUnit(units)
+    data(1, 20) = "Radius, " & OutputLengthUnit(units)
+    data(1, 21) = "SweepAngle, rad"
+    data(1, 22) = "LoopID"
+    data(1, 23) = "LoopRole"
+    data(1, 24) = "SourceID"
+    data(1, 25) = "Unit"
 End Sub
 
 ' Формирует заголовки таблицы общих и LC-зависимых свойств сечения.
@@ -1228,6 +1280,73 @@ Private Sub PutAnnotationHeaders(ByRef data() As Variant)
     data(1, 11) = "Value"
     data(1, 12) = "Unit"
     data(1, 13) = "Comment"
+    data(1, 14) = "CombinationID"
+    data(1, 15) = "Standard"
+    data(1, 16) = "AnchorID"
+    data(1, 17) = "LoopID"
+    data(1, 18) = "LoopRole"
+    data(1, 19) = "SectionRevision"
+    data(1, 20) = "RegionArea"
+    data(1, 21) = "AreaUnit"
+    data(1, 22) = "GeometrySource"
+End Sub
+
+' Сериализует готовый result-region без повторного построения или отбора
+' арматуры. Все кольца, включая любое число opening, имеют отдельный LoopID;
+' тип CRACK_REGION_* никогда не используется как исходный material-contour.
+Private Sub PutCrackRegionRows(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
+        ByVal region As CConcreteRegion, ByVal units As CUnitSystem)
+    Dim i As Long, loopID As Long, x1 As Double, y1 As Double, x2 As Double, y2 As Double
+    Dim cx As Double, cy As Double, sweep As Double
+    For i = 1 To region.SegmentCount
+        region.GetSegment i, x1, y1, x2, y2, cx, cy, sweep, loopID
+        data(rowIndex, 1) = runID
+        data(rowIndex, 2) = "CRACK_REGION_LINE"
+        data(rowIndex, 3) = "CRACK_" & region.OwnerID & "_" & region.Standard & "_" & CStr(loopID) & "_" & CStr(i)
+        data(rowIndex, 4) = OutputLength(x1, units): data(rowIndex, 5) = OutputLength(y1, units)
+        data(rowIndex, 6) = OutputLength(x2, units): data(rowIndex, 7) = OutputLength(y2, units)
+        If Abs(sweep) > 0.0000000001 Then
+            data(rowIndex, 2) = "CRACK_REGION_ARC"
+            data(rowIndex, 8) = OutputLength(cx, units): data(rowIndex, 9) = OutputLength(cy, units)
+            data(rowIndex, 10) = Replace$(Trim$(Str$(sweep)), ",", ".")
+        End If
+        data(rowIndex, 12) = OutputLengthUnit(units)
+        data(rowIndex, 13) = "Граница сохраненной расчетной области нормальных трещин."
+        data(rowIndex, 14) = region.OwnerID: data(rowIndex, 15) = region.Standard
+        data(rowIndex, 16) = region.AnchorID: data(rowIndex, 17) = loopID
+        data(rowIndex, 18) = "OUTER"
+        If region.LoopIsOpening(loopID) Then data(rowIndex, 18) = "OPENING"
+        data(rowIndex, 19) = region.SectionRevision
+        data(rowIndex, 20) = OutputArea(region.Area, units): data(rowIndex, 21) = OutputAreaUnit(units)
+        data(rowIndex, 22) = region.Source
+        rowIndex = rowIndex + 1
+    Next i
+End Sub
+
+' Записывает уже полученные P/Q отдельно от контурных сегментов. Эти строки
+' не образуют кольца и не используются для повторного вычисления площади;
+' отсутствующий локальный интервал сохраняется явно, а не заменяется нулями.
+Private Sub PutCrackBoundaryProbeRows(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
+        ByVal region As CConcreteRegion, ByVal units As CUnitSystem)
+    Dim probes As Variant, i As Long
+    probes = region.BoundaryProbes
+    For i = 1 To region.BoundaryProbeCount
+        data(rowIndex, 1) = runID: data(rowIndex, 2) = "CRACK_PROBE"
+        data(rowIndex, 3) = "CRACK_PROBE_" & region.OwnerID & "_" & region.Standard & "_" & CStr(i)
+        data(rowIndex, 10) = "P" & CStr(i) & "/Q" & CStr(i)
+        data(rowIndex, 11) = i: data(rowIndex, 12) = OutputLengthUnit(units)
+        data(rowIndex, 13) = "Локальный интервал материала не найден; переход через проем не выполняется."
+        If CBool(probes(i, 1)) Then
+            data(rowIndex, 4) = OutputLength(CDbl(probes(i, 4)), units): data(rowIndex, 5) = OutputLength(CDbl(probes(i, 5)), units)
+            data(rowIndex, 6) = OutputLength(CDbl(probes(i, 2)), units): data(rowIndex, 7) = OutputLength(CDbl(probes(i, 3)), units)
+            data(rowIndex, 13) = "Готовые внешняя P и внутренняя Q границы локального интервала материала."
+        End If
+        data(rowIndex, 14) = region.OwnerID: data(rowIndex, 15) = region.Standard: data(rowIndex, 16) = region.AnchorID
+        data(rowIndex, 19) = region.SectionRevision
+        data(rowIndex, 20) = OutputArea(region.Area, units): data(rowIndex, 21) = OutputAreaUnit(units)
+        data(rowIndex, 22) = region.Source
+        rowIndex = rowIndex + 1
+    Next i
 End Sub
 
 ' Добавляет одну строку свойства сечения в массив rngNDMSectionProperties.

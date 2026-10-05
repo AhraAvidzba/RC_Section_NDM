@@ -233,6 +233,8 @@ Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) A
         "Бетонных Region: " & CStr(section.ConcreteCount) & "; арматурных Region: " & _
         CStr(section.RebarCount) & "." & vbCrLf & _
         "На схеме показаны только импортированные элементы для визуального контроля."
+    If Len(importer.ImportComment) > 0 Then ImportGeometryFromAutoCADForWorkbook = _
+        ImportGeometryFromAutoCADForWorkbook & vbCrLf & importer.ImportComment
 End Function
 
 ' Возвращает пользовательское решение о показе обычных информационных окон.
@@ -558,7 +560,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
     estimatedStateCount = EstimatedNamedStateCountForOutput(batch, profiles)
     elementCount = section.ConcreteCount + section.RebarCount
     ValidateSnapshotOutputLayout issues, workbook, ws, ndmWriter, elementCount, _
-        estimatedStateCount, batch.Count, section.AnnotationCount, SNAPSHOT_GAP_COLUMNS
+        estimatedStateCount, batch.Count, section.AnnotationCount, section.Contours.Count, SNAPSHOT_GAP_COLUMNS
 
     If issues.Count > 0 Then
         Err.Raise vbObjectError + 4163, "ValidateResultsOutputLayout", _
@@ -623,7 +625,7 @@ End Function
 Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workbook As Object, _
         ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
-        ByVal annotationCount As Long, ByVal requiredGapColumns As Long)
+        ByVal annotationCount As Long, ByVal contourCount As Long, ByVal requiredGapColumns As Long)
     Dim names(1 To 5) As String
     Dim rows(1 To 5) As Long
     Dim cols(1 To 5) As Long
@@ -634,7 +636,7 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
     names(5) = "rngNDMSectionAnnotations"
 
     rows(1) = ndmWriter.EstimatedElementResultRows(elementCount, estimatedStateCount)
-    rows(2) = 1 + elementCount
+    rows(2) = 1 + elementCount + contourCount
     rows(3) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
     rows(4) = 1 + MaxLong(1, estimatedStateCount) * 14
     rows(5) = 1 + MaxLong(2, annotationCount)

@@ -534,7 +534,9 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
     For rowIndex = 2 To UBound(geom, 1)
         Dim elementID As String
         elementID = Trim$(CStr(geom(rowIndex, colID)))
-        If Len(elementID) > 0 And resultMap.Exists(elementID) Then
+        If Len(elementID) > 0 And resultMap.Exists(elementID) And _
+                (StrComp(CStr(geom(rowIndex, colType)), "Concrete", vbTextCompare) = 0 Or _
+                StrComp(CStr(geom(rowIndex, colType)), "Rebar", vbTextCompare) = 0) Then
             AppendElement elementID, CStr(geom(rowIndex, colType)), OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colX), lengthUnit), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colY), lengthUnit), OutputAreaToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colArea), areaUnit), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colDiameter, StrComp(CStr(geom(rowIndex, colType)), "Concrete", vbTextCompare) = 0), lengthUnit), CStr(geom(rowIndex, colShape)), _
@@ -575,7 +577,8 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     For rowIndex = 2 To UBound(geom, 1)
         Dim elementID As String
         elementID = Trim$(CStr(geom(rowIndex, colID)))
-        If Len(elementID) > 0 Then
+        If Len(elementID) > 0 And (StrComp(CStr(geom(rowIndex, colType)), "Concrete", vbTextCompare) = 0 Or _
+                StrComp(CStr(geom(rowIndex, colType)), "Rebar", vbTextCompare) = 0) Then
             AppendElement elementID, CStr(geom(rowIndex, colType)), OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colX), lengthUnit), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colY), lengthUnit), OutputAreaToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colArea), areaUnit), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(geom, anchor, rowIndex, colDiameter, StrComp(CStr(geom(rowIndex, colType)), "Concrete", vbTextCompare) = 0), lengthUnit), CStr(geom(rowIndex, colShape)), _
@@ -662,6 +665,7 @@ End Sub
 ' Если таблица отсутствует или пуста, схема все равно строится: для AutoCAD
 ' import это нормальный сценарий, потому что характерные грани могут быть неизвестны.
 Private Sub ReadAnnotations(ByVal workbook As Object)
+    ReadMaterialContours workbook
     ' Отсутствие необязательного Name отличается от повреждения его данных.
     Dim tableName As Object, anchor As Object
     On Error Resume Next
@@ -687,7 +691,7 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
     For rowIndex = 2 To UBound(data, 1)
         Dim annotationType As String
         annotationType = Trim$(ReadAnnotationText(data(rowIndex, colType), anchor, rowIndex, colType, "AnnotationType"))
-        If Len(annotationType) > 0 Then
+        If Len(annotationType) > 0 And Left$(UCase$(annotationType), 8) <> "CONTOUR_" Then
             Dim lengthUnit As String
             lengthUnit = ReadSnapshotUnit(data(rowIndex, colUnit), "Length", mSnapshotLengthUnit, "mm", anchor, rowIndex, colUnit, "Unit", True)
             Dim startX As Double, startY As Double, endX As Double, endY As Double
@@ -731,6 +735,33 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             mAnnotationSweepAngle(mAnnotationCount) = sweepAngle
         End If
     Next rowIndex
+End Sub
+
+' Добавляет исходные контуры в готовые render-массивы схемы. Это адаптация
+' представления, а не повторное хранение контуров в result-аннотациях.
+Private Sub ReadMaterialContours(ByVal workbook As Object)
+    Dim contours As CSectionContours, i As Long
+    Set contours = ReadSavedSectionContours(workbook)
+    For i = 1 To contours.Count
+        mAnnotationCount = mAnnotationCount + 1
+        ReDim Preserve mAnnotationType(1 To mAnnotationCount)
+        ReDim Preserve mAnnotationStartX(1 To mAnnotationCount)
+        ReDim Preserve mAnnotationStartY(1 To mAnnotationCount)
+        ReDim Preserve mAnnotationEndX(1 To mAnnotationCount)
+        ReDim Preserve mAnnotationEndY(1 To mAnnotationCount)
+        ReDim Preserve mAnnotationNormalX(1 To mAnnotationCount)
+        ReDim Preserve mAnnotationNormalY(1 To mAnnotationCount)
+        ReDim Preserve mAnnotationText(1 To mAnnotationCount)
+        ReDim Preserve mAnnotationSweepAngle(1 To mAnnotationCount)
+        mAnnotationType(mAnnotationCount) = contours.SegmentType(i)
+        mAnnotationStartX(mAnnotationCount) = contours.StartX(i)
+        mAnnotationStartY(mAnnotationCount) = contours.StartY(i)
+        mAnnotationEndX(mAnnotationCount) = contours.EndX(i)
+        mAnnotationEndY(mAnnotationCount) = contours.EndY(i)
+        mAnnotationNormalX(mAnnotationCount) = contours.CenterX(i)
+        mAnnotationNormalY(mAnnotationCount) = contours.CenterY(i)
+        mAnnotationSweepAngle(mAnnotationCount) = contours.SweepAngle(i)
+    Next i
 End Sub
 
 ' Читает координату/нормаль сохраненной аннотации без подмены ошибки нулем.

@@ -1,0 +1,150 @@
+﻿OK: AcDbRegion.area; actual=8000; expected=8000
+OK: AcDbRegion.actualEdges
+OK: AcDbRegion.outer
+OK: AcDbRegion.sourceKept
+OK: AcDbRegion.copyDeleted
+OK: AcDbRegion.pieceDeleted
+OK: AcDbRegion.pieceDeleted
+OK: AcDbRegion.pieceDeleted
+OK: AcDbRegion.pieceDeleted
+OK: AcDbPolyline.area; actual=8000; expected=8000
+OK: AcDbPolyline.actualEdges
+OK: AcDbPolyline.outer
+OK: AcDbPolyline.sourceKept
+OK: AcDbPolyline.copyDeleted
+OK: AcDbPolyline.pieceDeleted
+OK: AcDbPolyline.pieceDeleted
+OK: AcDbPolyline.pieceDeleted
+OK: AcDbPolyline.pieceDeleted
+OK: AcDb2dPolyline.area; actual=8000; expected=8000
+OK: AcDb2dPolyline.actualEdges
+OK: AcDb2dPolyline.outer
+OK: AcDb2dPolyline.sourceKept
+OK: AcDb2dPolyline.copyDeleted
+OK: AcDb2dPolyline.pieceDeleted
+OK: AcDb2dPolyline.pieceDeleted
+OK: AcDb2dPolyline.pieceDeleted
+OK: AcDb2dPolyline.pieceDeleted
+OK: nested.area; actual=8843.36293856408; expected=8843.36293856408
+OK: nested.threeLoops
+OK: nested.oneOpening
+OK: nested.holeExcluded
+OK: nested.islandIncluded
+OK: nested.outerIncluded
+OK: nested.sourceKept
+OK: invalid.1.error
+OK: invalid.1.context
+OK: invalid.1.sourceKept
+OK: invalid.1.copyDeleted
+OK: invalid.2.error
+OK: invalid.2.context
+OK: invalid.2.sourceKept
+OK: invalid.2.copyDeleted
+OK: invalid.3.error
+OK: invalid.3.context
+OK: invalid.3.sourceKept
+OK: invalid.4.error
+OK: invalid.4.context
+OK: invalid.4.sourceKept
+OK: invalid.5.error
+OK: invalid.5.context
+OK: invalid.5.sourceKept
+OK: invalid.6.error
+OK: invalid.6.context
+OK: invalid.6.sourceKept
+OK: invalid.7.error
+OK: invalid.7.context
+OK: invalid.7.sourceKept
+OK: invalid.7.copyDeleted
+OK: invalid.8.error
+OK: invalid.8.context
+OK: invalid.8.sourceKept
+OK: invalid.8.copyDeleted
+OK: import.domain; actual=8743.36293856408; expected=8743.36293856408
+OK: import.mechanicalAreaKept; actual=10000; expected=10000
+OK: import.holeKept
+OK: import.sourceKept
+OK: import.emptyOpeningExplained
+OK: multiple.0.area; actual=9700; expected=9700
+OK: multiple.0.threeLoops
+OK: multiple.0.bothExcluded
+OK: multiple.0.material
+OK: multiple.0.sourceKept
+OK: multiple.meshOuterNotAuthoritative
+OK: multiple.0.duplicateRejected
+OK: multiple.0.oldModelKept
+OK: multiple.0.oldAreaKept
+OK: multiple.1.area; actual=9700; expected=9700
+OK: multiple.1.threeLoops
+OK: multiple.1.bothExcluded
+OK: multiple.1.material
+OK: multiple.1.sourceKept
+OK: multiple.1.duplicateRejected
+OK: multiple.1.oldModelKept
+OK: multiple.1.oldAreaKept
+OK: fiveOpenings.area; actual=9750; expected=9750
+OK: fiveOpenings.sixLoops
+OK: fiveOpenings.excluded.1
+OK: fiveOpenings.excluded.2
+OK: fiveOpenings.excluded.3
+OK: fiveOpenings.excluded.4
+OK: fiveOpenings.excluded.5
+OK: fiveOpenings.snapshotArea; actual=9750; expected=9750
+OK: fiveOpenings.snapshotLoops
+OK: optional.absentLayers.meshKept
+OK: optional.absentLayers.comment
+OK: separateConcrete.area; actual=6800; expected=6800
+OK: separateConcrete.threeContours
+OK: separateConcrete.material
+OK: separateConcrete.void
+OK: separateConcrete.sourcesKept
+OK: separateConcrete.openingAbsent
+OK: exportOnly.separateConcrete.area; actual=6800; expected=6800
+OK: exportOnly.separateConcrete.threeContours
+OK: exportOnly.separateConcrete.material
+OK: snapshot.0.area; actual=9607.30091830128; expected=9607.30091830128
+OK: snapshot.0.threeLoops
+OK: snapshot.0.holes
+OK: snapshot.0.material
+OK: snapshot.0.mechanicalArea; actual=10000; expected=10000
+OK: snapshot.0.mechanicalInertia
+OK: snapshot.0.authoritative
+OK: snapshot.0.contoursInGeometry
+OK: snapshot.0.explicitRole
+OK: snapshot.0.noSourceAnnotations
+OK: snapshot.0.invalidCoordinate
+OK: snapshot.1.area; actual=9607.30091830128; expected=9607.30091830128
+OK: snapshot.1.threeLoops
+OK: snapshot.1.holes
+OK: snapshot.1.material
+OK: snapshot.1.mechanicalArea; actual=10000; expected=10000
+OK: snapshot.1.mechanicalInertia
+OK: snapshot.1.authoritative
+OK: snapshot.1.contoursInGeometry
+OK: snapshot.1.explicitRole
+OK: snapshot.1.noSourceAnnotations
+OK: snapshot.1.invalidCoordinate
+OK: snapshot.2.area; actual=9607.30091830128; expected=9607.30091830128
+OK: snapshot.2.threeLoops
+OK: snapshot.2.holes
+OK: snapshot.2.material
+OK: snapshot.2.mechanicalArea; actual=10000; expected=10000
+OK: snapshot.2.mechanicalInertia
+OK: snapshot.2.meshFallback
+OK: snapshot.2.contoursInGeometry
+OK: snapshot.2.explicitRole
+OK: snapshot.2.noSourceAnnotations
+OK: snapshot.2.invalidCoordinate
+OK: snapshot.3.area; actual=9607.30091830128; expected=9607.30091830128
+OK: snapshot.3.threeLoops
+OK: snapshot.3.holes
+OK: snapshot.3.material
+OK: snapshot.3.mechanicalArea; actual=10000; expected=10000
+OK: snapshot.3.mechanicalInertia
+OK: snapshot.3.meshFallback
+OK: snapshot.3.contoursInGeometry
+OK: snapshot.3.explicitRole
+OK: snapshot.3.noSourceAnnotations
+OK: snapshot.3.invalidCoordinate
+TOTAL_AUTOCAD_CONTOURS: passed=148; failed=0
+

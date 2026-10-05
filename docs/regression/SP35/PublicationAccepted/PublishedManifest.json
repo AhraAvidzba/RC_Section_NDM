@@ -1,0 +1,23 @@
+{
+  "PublishedAt": "2026-10-06T00:10:05+03:00",
+  "SourceSHA256": "23818B5602EACD74C117A7535BCD19EE9657AD40DC80B9FCE3E4DA059050584F",
+  "InputCellsPreserved": 934,
+  "ValidationPassed": 27,
+  "Artifacts": [
+    {
+      "File": "RC_Section_NDM.xlsm",
+      "SHA256": "7BF2E41C81654CF4B14467FE9A67CEB149F588545DC1DD23A3036825BED55748",
+      "Bytes": 5587032
+    },
+    {
+      "File": "VBA_All_Code.txt",
+      "SHA256": "3E2EF1D6A7C772889BC3E3FCC90386F77B911840ED65B8248A713F5B27772E50",
+      "Bytes": 5578062
+    },
+    {
+      "File": "RC_Section_NDM_execution_report.txt",
+      "SHA256": "5A4665DCD3AFBA293C9EB09FF3A71406883D3BC75C213EBCC296F6776C5A2F46",
+      "Bytes": 442622
+    }
+  ]
+}

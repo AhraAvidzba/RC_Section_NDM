@@ -12,9 +12,10 @@ Option Explicit
 ' ==========================================================================
 ' Контейнер semantic-аннотаций рассчитанного сечения
 ' ==========================================================================
-' Здесь хранятся не расчетные результаты, а смысловые подсказки для вывода:
-' контур, характерные размеры и групповые подписи арматуры. Аннотации задаются
-' в координатах модели и позже сериализуются в rngNDMSectionAnnotations.
+' Здесь хранятся размеры и групповые подписи арматуры. Writer дополняет их
+' LC-зависимыми расчетными областями трещин в rngNDMSectionAnnotations.
+' Исходные outer/opening принадлежат CSectionContours и геометрическому
+' снимку, поэтому не смешиваются с оформлением или результатами проверок.
 
 Private mType() As String
 Private mAnnotationID() As String
@@ -57,6 +58,8 @@ Public Sub AddAnnotation(ByVal annotationType As String, ByVal annotationID As S
         ByVal commentValue As String)
     If Len(Trim$(annotationType)) = 0 Then Err.Raise vbObjectError + 5280, "CSectionAnnotations", "Тип аннотации не задан."
     If Len(Trim$(annotationID)) = 0 Then Err.Raise vbObjectError + 5281, "CSectionAnnotations", "ID аннотации не задан."
+    If Left$(UCase$(Trim$(annotationType)), 8) = "CONTOUR_" Then Err.Raise vbObjectError + 5280, _
+        "CSectionAnnotations", "Исходный контур должен храниться в CSectionModel.Contours, а не в аннотациях."
 
     mCount = mCount + 1
     ReDim Preserve mType(1 To mCount)
@@ -86,26 +89,7 @@ Public Sub AddAnnotation(ByVal annotationType As String, ByVal annotationID As S
     mComment(mCount) = commentValue
 End Sub
 
-' Добавляет прямой сегмент параметрического контура сечения.
-Public Sub AddContourLine(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
-        ByVal endX As Double, ByVal endY As Double, Optional ByVal commentValue As String = "Сегмент контура параметрического сечения.")
-    AddAnnotation "CONTOUR_LINE", annotationID, startX, startY, endX, endY, 0#, 0#, vbNullString, 0#, "Length", commentValue
-End Sub
 
-' Добавляет круговой контур для параметрического круглого сечения.
-Public Sub AddContourCircle(ByVal annotationID As String, ByVal centerX As Double, ByVal centerY As Double, _
-        ByVal radius As Double, Optional ByVal commentValue As String = "Контур круглого параметрического сечения.")
-    AddAnnotation "CONTOUR_CIRCLE", annotationID, centerX, centerY, radius, 0#, 0#, 0#, vbNullString, radius, "Length", commentValue
-End Sub
-
-' Добавляет дуговой сегмент контура. Начало/конец задают фактическую дугу,
-' NormalX/NormalY хранят центр окружности, а Text - signed sweep в радианах.
-Public Sub AddContourArc(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
-        ByVal endX As Double, ByVal endY As Double, ByVal centerX As Double, ByVal centerY As Double, _
-        ByVal radius As Double, ByVal sweepAngle As Double, Optional ByVal commentValue As String = "Дуга контура параметрического сечения.")
-    AddAnnotation "CONTOUR_ARC", annotationID, startX, startY, endX, endY, centerX, centerY, _
-        FormatAnnotationNumber(sweepAngle), radius, "Length", commentValue
-End Sub
 
 ' Добавляет размерную линию с числовым значением в единицах длины модели.
 Public Sub AddDimension(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
@@ -190,9 +174,3 @@ End Property
 Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Индекс аннотации вне допустимого диапазона."
 End Sub
-
-' Форматирует служебные числовые параметры аннотаций независимо от системной
-' десятичной запятой Excel/Windows.
-Private Function FormatAnnotationNumber(ByVal value As Double) As String
-    FormatAnnotationNumber = Replace$(Format$(value, "0.############"), ",", ".")
-End Function

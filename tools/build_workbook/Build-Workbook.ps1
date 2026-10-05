@@ -641,9 +641,9 @@ try {
     Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$122'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$156'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$156'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AC$156'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AK$156'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$AX$156'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AM$156'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AU$156'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BH$156'
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

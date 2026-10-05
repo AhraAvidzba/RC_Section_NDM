@@ -14,9 +14,10 @@ Option Explicit
 ' ==========================================================================
 ' Builder записывает в Results точный внешний контур, контур Opening, основные
 ' размерные линии и групповые подписи арматуры. Расчетные волокна, материалы и
-' solver-ы здесь не создаются: это только слой визуализации/AutoCAD export.
+' solver-ы здесь не создаются. Outer/opening заполняют model.Contours,
+' размерные линии и подписи заполняют отдельный контейнер Annotations.
 
-' Заменяет аннотации модели наружным контуром, контуром отверстия, размерами
+' Заменяет исходные наружный контур и отверстие, а также отдельные размеры
 ' и подписями арматуры; бетонная сетка и расчетное НДС не изменяются.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5315, "CHollowRectAnnotationBuilder", "Модель сечения не передана."
@@ -25,6 +26,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations
     annotations.Clear
+    model.Contours.Clear
 
     ' Аннотации HollowRectangle требуют именно concrete geometry этого типа:
     ' наружная и внутренняя петли контура нужны AutoCAD export и Excel-схеме.
@@ -36,8 +38,8 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
 
     ' Контуры пишутся первыми, затем размерные линии и подписи групп арматуры.
     ' Такой порядок удобен для чтения Results и не влияет на расчетную модель.
-    AddContourLoop annotations, hollow, False, "OUTER", "наружного контура"
-    AddContourLoop annotations, hollow, True, "OPENING", "внутреннего контура Opening"
+    AddContourLoop model.Contours, hollow, False, "OUTER", "наружного контура"
+    AddContourLoop model.Contours, hollow, True, "OPENING", "внутреннего контура Opening"
     AddDimensions annotations, hollow
 
     Dim rebarLabels As CRebarGroupAnnotationBuilder
@@ -45,9 +47,9 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     rebarLabels.AddRebarLabels annotations, rebars
 End Sub
 
-' Добавляет одну замкнутую петлю контура. Суффикс OUTER/OPENING нужен AutoCAD
-' export, чтобы не пытаться сшить наружный контур и отверстие одной полилинией.
-Private Sub AddContourLoop(ByVal annotations As CSectionAnnotations, ByVal hollow As CGeometryHollowRectangle, _
+' Добавляет замкнутое кольцо с явными ключом и ролью Outer/Opening, чтобы
+' query и export не смешивали наружную границу с отверстием.
+Private Sub AddContourLoop(ByVal contours As CSectionContours, ByVal hollow As CGeometryHollowRectangle, _
         ByVal openingLoop As Boolean, ByVal loopName As String, ByVal commentPart As String)
     Dim segmentType() As String
     Dim startX() As Double, startY() As Double
@@ -57,18 +59,18 @@ Private Sub AddContourLoop(ByVal annotations As CSectionAnnotations, ByVal hollo
     Dim segmentCount As Long
     hollow.GetContourSegments openingLoop, segmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
 
-    ' Каждая дуга и линия получает отдельную semantic-аннотацию. Позже plotter и
-    ' AutoCAD export сами решают, как визуально отрисовать эти сегменты.
+    ' Сохраняем точные сегменты исходной геометрии. Plotter и AutoCAD export
+    ' получают их из geometry snapshot, а не из результата расчета трещин.
     Dim i As Long
     For i = 1 To segmentCount
         If StrComp(segmentType(i), "ARC", vbTextCompare) = 0 Then
-            annotations.AddContourArc "CONTOUR_" & loopName & "_ARC_" & CStr(i), _
+            contours.AddContourArc "CONTOUR_" & loopName & "_ARC_" & CStr(i), _
                 startX(i), startY(i), endX(i), endY(i), centerX(i), centerY(i), radiusValue(i), sweepAngle(i), _
-                "Дуга " & commentPart & " HollowRectangle."
+                "Дуга " & commentPart & " HollowRectangle.", loopName, IIf(openingLoop, "Opening", "Outer")
         Else
-            annotations.AddContourLine "CONTOUR_" & loopName & "_LINE_" & CStr(i), _
+            contours.AddContourLine "CONTOUR_" & loopName & "_LINE_" & CStr(i), _
                 startX(i), startY(i), endX(i), endY(i), _
-                "Прямой участок " & commentPart & " HollowRectangle."
+                "Прямой участок " & commentPart & " HollowRectangle.", loopName, IIf(openingLoop, "Opening", "Outer")
         End If
     Next i
 End Sub

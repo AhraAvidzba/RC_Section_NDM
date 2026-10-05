@@ -106,10 +106,10 @@ Private Sub PrepareResults(ByRef stats As TCadStats, ByVal system As Object, ByV
             section.AddRebarElement 60# * x, 60# * y, 16#, GEOM_PI * 64#, "A400", elementIndex
         Next y
     Next x
-    section.Annotations.AddContourLine "CAD_BOTTOM", -100#, -100#, 100#, -100#
-    section.Annotations.AddContourLine "CAD_RIGHT", 100#, -100#, 100#, 100#
-    section.Annotations.AddContourLine "CAD_TOP", 100#, 100#, -100#, 100#
-    section.Annotations.AddContourLine "CAD_LEFT", -100#, 100#, -100#, -100#
+    section.Contours.AddContourLine "CAD_BOTTOM", -100#, -100#, 100#, -100#
+    section.Contours.AddContourLine "CAD_RIGHT", 100#, -100#, 100#, 100#
+    section.Contours.AddContourLine "CAD_TOP", 100#, 100#, -100#, 100#
+    section.Contours.AddContourLine "CAD_LEFT", -100#, 100#, -100#, -100#
     Set provider = New CMaterialModelProvider: provider.Initialize settings, units
     Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
     Dim catalog As CCalculationProfileCatalog
@@ -191,18 +191,18 @@ Private Sub CheckImporter(ByRef stats As TCadStats, ByVal system As Object, ByVa
     Dim model As CSectionModel, importer As CAutoCADSectionModelImporter, regions As Collection
     Dim settings As CSystemSettingsReader, prefix As String, saved As Variant
     saved = system.Formula: Set regions = ImportRegions(): Set importer = New CAutoCADSectionModelImporter
-    Set settings = Reader(): Set model = importer.ImportConfiguredModelSpace(regions, settings)
+    Set settings = Reader(): Set model = importer.ImportConfiguredModelSpace(regions, settings, Nothing, EmptyContourLayers())
     prefix = "autoCADConfig.import." & CStr(position)
     Check stats, prefix & ".counts", model.ConcreteCount = 1 And model.RebarCount = 1
     CheckClose stats, prefix & ".concreteMm", model.ConcreteX(1), 20#
     CheckClose stats, prefix & ".steelMm", model.RebarX(1), 80#
     SetValue system, "AutoCAD.Import.ConcreteLayer", "AUDIT_IC2"
-    Set model = importer.ImportConfiguredModelSpace(regions, Reader())
+    Set model = importer.ImportConfiguredModelSpace(regions, Reader(), Nothing, EmptyContourLayers())
     CheckClose stats, prefix & ".changedConcrete", model.ConcreteX(1), 120#
     CheckClose stats, prefix & ".concreteLayerKeepsSteel", model.RebarX(1), 80#
     system.Formula = saved
     SetValue system, "AutoCAD.Import.RebarLayer", "AUDIT_IR2"
-    Set model = importer.ImportConfiguredModelSpace(regions, Reader())
+    Set model = importer.ImportConfiguredModelSpace(regions, Reader(), Nothing, EmptyContourLayers())
     CheckClose stats, prefix & ".changedSteel", model.RebarX(1), 180#
     CheckClose stats, prefix & ".steelLayerKeepsConcrete", model.ConcreteX(1), 20#
     stats.Cases = stats.Cases + 3: system.Formula = saved
@@ -240,10 +240,13 @@ Private Sub CheckSettingEffects(ByRef stats As TCadStats, ByVal system As Object
         "AnnotationLayer", "AnnotationLayer", "AnnotationLayer", "AnnotationLayer")
     For i = 0 To UBound(keys)
         name = "AUDIT_CHANGED_" & CStr(position) & "_" & CStr(i)
-        SetValue system, "AutoCAD.Layer." & CStr(keys(i)), name
+        Dim settingKey As String
+        settingKey = "AutoCAD.Layer." & CStr(keys(i))
+        If CStr(keys(i)) = "Contour" Then settingKey = "AutoCAD.Common.SectionContourLayer"
+        SetValue system, settingKey, name
         Set result = Audit03AutoCADPresentationForTests(Reader(), CStr(materials(i)), CStr(states(i)), "E1", 1#, 2)
         stats.Cases = stats.Cases + 1
-        Check stats, "autoCADConfig.effect." & CStr(position) & ".AutoCAD.Layer." & CStr(keys(i)), _
+        Check stats, "autoCADConfig.effect." & CStr(position) & "." & settingKey, _
             CStr(result(CStr(fields(i)))) = name
         system.Formula = saved
     Next i
@@ -315,7 +318,7 @@ Private Sub CheckLayerContracts(ByRef stats As TCadStats, ByVal system As Object
     Check stats, "autoCADConfig.import.sameLayer." & CStr(position), InStr(1, reason, "совпадают", vbTextCompare) > 0
     system.Formula = saved
     SetValue system, "AutoCAD.Export.ContourEnabled", "No"
-    SetValue system, "AutoCAD.Layer.Contour", "bad/name"
+    SetValue system, "AutoCAD.Common.SectionContourLayer", "bad/name"
     Check stats, "autoCADConfig.contour.inactive." & CStr(position), Len(ConsumeError(stats, "AutoCAD.Export.ContourEnabled")) = 0
     system.Formula = saved
     SetValue system, "AutoCAD.Color.RebarTension", "TODO"
@@ -337,7 +340,7 @@ Private Function ConsumeError(ByRef stats As TCadStats, ByVal key As String) As 
     On Error GoTo Rejected
     If Left$(key, 15) = "AutoCAD.Import." Then
         Set importer = New CAutoCADSectionModelImporter
-        Set model = importer.ImportConfiguredModelSpace(ImportRegions(), Reader())
+        Set model = importer.ImportConfiguredModelSpace(ImportRegions(), Reader(), Nothing, EmptyContourLayers())
     ElseIf key = "AutoCAD.Export.CombinationID" Then
         text = Audit02ReadExportSnapshotForTests(ThisWorkbook)
     Else
@@ -352,7 +355,7 @@ End Function
 Private Function CadKeys() As Variant
     CadKeys = Array("AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
         "AutoCAD.Export.PrincipalAxesMode", "AutoCAD.Export.LoadPointEnabled", "AutoCAD.Export.ContourEnabled", _
-        "AutoCAD.Export.LabelMode", "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", "AutoCAD.Layer.Contour", _
+        "AutoCAD.Export.LabelMode", "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", "AutoCAD.Common.SectionContourLayer", _
         "AutoCAD.Layer.ConcreteTension", "AutoCAD.Layer.ConcreteCompression", "AutoCAD.Layer.RebarTension", "AutoCAD.Layer.RebarCompression", _
         "AutoCAD.Color.ConcreteTension", "AutoCAD.Color.ConcreteCompression", "AutoCAD.Color.RebarTension", "AutoCAD.Color.RebarCompression", _
         "AutoCAD.Color.Neutral", "AutoCAD.Import.ConcreteLayer", "AutoCAD.Import.RebarLayer")
@@ -377,6 +380,12 @@ End Function
 ' Читает текущую привязку Config; перенесенная таблица не кешируется.
 Private Function Reader() As CSystemSettingsReader
     Set Reader = New CSystemSettingsReader: Reader.LoadFromWorkbook ThisWorkbook
+End Function
+
+' ДЛЯ ТЕСТОВ: в fixture нет дополнительных слоев контуров. Их заданные
+' имена не отменяют импорт Region сетки из собственных четырех слоев.
+Private Function EmptyContourLayers() As Collection
+    Set EmptyContourLayers = New Collection
 End Function
 
 ' Ищет ключ и возвращает настоящую ячейку для изменения и проверки адреса.

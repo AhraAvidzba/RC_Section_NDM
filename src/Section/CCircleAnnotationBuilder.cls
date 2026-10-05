@@ -14,9 +14,10 @@ Option Explicit
 ' ==========================================================================
 ' Builder знает, какие размеры и подписи имеют смысл именно для Circle:
 ' внешний контур круга, диаметр и групповая подпись арматуры по окружности.
-' Он передает только model-координаты; Excel Chart здесь не участвует.
+' Контур сохраняется в model.Contours, размеры и подписи - в Annotations.
+' Передаются внутренние координаты; Excel Chart здесь не участвует.
 
-' Заменяет аннотации модели контуром круга, диаметром и подписями арматуры.
+' Заменяет исходный контур круга и отдельно его размерные аннотации.
 ' Координаты остаются внутренними; расчетная геометрия и НДС не изменяются.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5295, "CCircleAnnotationBuilder", "Модель сечения не передана."
@@ -25,6 +26,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations
     annotations.Clear
+    model.Contours.Clear
 
     Dim centerX As Double
     Dim centerY As Double
@@ -33,7 +35,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     centerY = 0.5 * (geometry.MinY + geometry.MaxY)
     radius = 0.5 * GeomMin(geometry.MaxX - geometry.MinX, geometry.MaxY - geometry.MinY)
 
-    annotations.AddContourCircle "CONTOUR_CIRCLE", centerX, centerY, radius
+    model.Contours.AddContourCircle "CONTOUR_CIRCLE", centerX, centerY, radius
     annotations.AddDimension "DIM_CIRCLE_D", geometry.MinX, geometry.MinY, geometry.MinX, geometry.MaxY, _
         -1#, 0#, "D", geometry.MaxY - geometry.MinY, "Диаметр параметрического круглого сечения."
 

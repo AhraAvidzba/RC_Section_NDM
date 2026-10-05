@@ -1,0 +1,70 @@
+﻿OK: SP35.groups.transitive
+OK: SP35.groups.noCompressedOrZero
+OK: SP35.groups.centerX; actual=1.80938221878813E-16; expected=0
+OK: SP35.groups.centerY; actual=350; expected=350
+OK: SP35.groups.betaDiameterSum; actual=45; expected=45
+OK: SP35.groups.sigmaActual; actual=100; expected=100
+OK: SP35.groups.area
+OK: SP35.groups.sameSideAndRowDiameter; actual=20; expected=20
+OK: SP35.groups.rowTopology
+OK: SP35.central.oneCandidate
+OK: SP35.central.allConcrete
+OK: SP35.central.allTensionBars
+OK: SP35.mixed.Max.oneGroup
+OK: SP35.mixed.Max.weightedCenter; actual=20; expected=20
+OK: SP35.mixed.Max.sideDiameter; actual=20; expected=20
+OK: SP35.mixed.Max.rowDiameter; actual=20; expected=20
+OK: SP35.mixed.Max.actualDiameters; actual=25.5; expected=25.5
+OK: SP35.mixed.Max.area
+OK: SP35.mixed.Min.oneGroup
+OK: SP35.mixed.Min.weightedCenter; actual=20; expected=20
+OK: SP35.mixed.Min.sideDiameter; actual=10; expected=10
+OK: SP35.mixed.Min.rowDiameter; actual=10; expected=10
+OK: SP35.mixed.Min.actualDiameters; actual=25.5; expected=25.5
+OK: SP35.mixed.Min.area
+OK: SP35.mixed.Average.oneGroup
+OK: SP35.mixed.Average.weightedCenter; actual=20; expected=20
+OK: SP35.mixed.Average.sideDiameter; actual=15; expected=15
+OK: SP35.mixed.Average.rowDiameter; actual=15; expected=15
+OK: SP35.mixed.Average.actualDiameters; actual=25.5; expected=25.5
+OK: SP35.mixed.Average.area
+OK: SP35.rows.0.twoGroups
+OK: SP35.rows.0.referenceDiameter; actual=20; expected=20
+OK: SP35.rows.0.area
+OK: SP35.rows.incomplete.referenceSecond
+OK: SP35.rows.incomplete.sum; actual=55; expected=55
+OK: SP35.rows.1.twoGroups
+OK: SP35.rows.1.referenceDiameter; actual=20; expected=20
+OK: SP35.rows.1.area
+OK: SP35.rows.excluded.renumbered
+OK: SP35.rows.excluded.notAnAnchor
+OK: SP35.rows.excluded.sum; actual=45; expected=45
+OK: SP35.openings.twoHoles.area
+OK: SP35.openings.noOppositeWall
+OK: SP35.openings.firstHole
+OK: SP35.openings.secondHole
+OK: SP35.openings.secondShadow
+OK: SP35.openings.fiveBaseNormals
+OK: SP35.openings.nearestQ
+OK: SP35.openings.outerP
+OK: SP35.openings.betweenProbesStillClipped
+OK: SP35.openings.actualIncludedSum; actual=20; expected=20
+OK: SP35.openings.central.fullNetArea
+OK: SP35.openings.central.noArtificialProbes
+OK: SP35.openings.central.allRebars; actual=40; expected=40
+OK: SP35.rotation.area
+OK: SP35.rotation.sigma
+OK: SP35.rotation.betaDiameterSum; actual=45; expected=45
+OK: SP35.groupGap.9.9
+OK: SP35.groupGap.10
+OK: SP35.groupGap.10.1
+OK: SP35.rowTolerance.49.9
+OK: SP35.rowTolerance.50
+OK: SP35.rowTolerance.50.1
+OK: SP35.snapshot.members
+OK: SP35.snapshot.nominalDiameter; actual=20; expected=20
+OK: SP35.noTension.noCandidates
+OK: SP35.invalidTolerance.explained
+OK: SP35.invalidTolerance.noOldCandidates
+TOTAL_SP35_PREPARATION: passed=68; failed=0
+
