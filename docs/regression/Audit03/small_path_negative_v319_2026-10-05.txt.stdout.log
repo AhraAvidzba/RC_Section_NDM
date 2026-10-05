@@ -1,0 +1,27 @@
+SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_small_path_negative_v319.xlsm
+SOURCE_SHA256: D9C1A7BED5E004AFD13976E0130A4886E0602FAA47F5B1FA4F3E6E8C6F6DC7C0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_ab438d974efc4f5bad7459796de55412\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+FAIL: audit03.smallPath.1.0.000000001.-1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.2.0.000000001.-1.anchor
+FAIL: audit03.smallPath.2.0.000000001.-1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.3.0.000000001.-1.anchor
+FAIL: audit03.smallPath.3.0.000000001.-1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.1.0.000000001.1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.2.0.000000001.1.anchor
+FAIL: audit03.smallPath.2.0.000000001.1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.3.0.000000001.1.anchor
+FAIL: audit03.smallPath.3.0.000000001.1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.1.0.000000000001.-1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.2.0.000000000001.-1.anchor
+FAIL: audit03.smallPath.2.0.000000000001.-1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.3.0.000000000001.-1.anchor
+FAIL: audit03.smallPath.3.0.000000000001.-1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.1.0.000000000001.1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.2.0.000000000001.1.anchor
+FAIL: audit03.smallPath.2.0.000000000001.1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+FAIL: audit03.smallPath.3.0.000000000001.1.anchor
+FAIL: audit03.smallPath.3.0.000000000001.1.runtime; -2147217663; Траектория нагружения не содержит ненулевой опорной компоненты N.
+TOTAL_AUDIT03_SMALL_LOAD_PATH: passed=81; failed=20
+MODE_AFTER_SUITE: No
+SOURCE_UNCHANGED: True

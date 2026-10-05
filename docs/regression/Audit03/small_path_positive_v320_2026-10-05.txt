@@ -1,0 +1,140 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_small_path_v320.xlsm
+SOURCE_SHA256: CACB7F261AA3117BDD7C09340A41E65AD95E43F575A619F29789E9DA06EC5871
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4d94afa3c77544d8bf904c4fee9487fd\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestSectionSolver.RunAudit03SmallLoadPathTests =====
+SUITE_STARTED: modTestSectionSolver.RunAudit03SmallLoadPathTests; 2026-10-05T07:07:59
+EXCEL_AFTER_SUITE: pid=22764; workingSet=134213632; privateBytes=90861568; cpu=2.859375
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222560256; privateBytes=174313472; cpu=18231.71875
+OK: audit03.smallPath.1.1000000..-1.anchor
+OK: audit03.smallPath.1.1000000..-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.1000000..-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.1000000..-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.1000000..-1.anchor
+OK: audit03.smallPath.2.1000000..-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.1000000..-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.1000000..-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.1000000..-1.anchor
+OK: audit03.smallPath.3.1000000..-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.1000000..-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.1000000..-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.1000000..1.anchor
+OK: audit03.smallPath.1.1000000..1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.1000000..1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.1000000..1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.1000000..1.anchor
+OK: audit03.smallPath.2.1000000..1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.1000000..1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.1000000..1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.1000000..1.anchor
+OK: audit03.smallPath.3.1000000..1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.1000000..1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.1000000..1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.001.-1.anchor
+OK: audit03.smallPath.1.0.001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.0.001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.001.-1.anchor
+OK: audit03.smallPath.2.0.001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.0.001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.001.-1.anchor
+OK: audit03.smallPath.3.0.001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.0.001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.001.1.anchor
+OK: audit03.smallPath.1.0.001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.0.001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.001.1.anchor
+OK: audit03.smallPath.2.0.001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.0.001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.001.1.anchor
+OK: audit03.smallPath.3.0.001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.0.001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000001.-1.anchor
+OK: audit03.smallPath.1.0.000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.0.000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000001.-1.anchor
+OK: audit03.smallPath.2.0.000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.0.000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000001.-1.anchor
+OK: audit03.smallPath.3.0.000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.0.000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000001.1.anchor
+OK: audit03.smallPath.1.0.000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.0.000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000001.1.anchor
+OK: audit03.smallPath.2.0.000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.0.000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000001.1.anchor
+OK: audit03.smallPath.3.0.000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.0.000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000000001.-1.anchor
+OK: audit03.smallPath.1.0.000000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.0.000000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000000001.-1.anchor
+OK: audit03.smallPath.2.0.000000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.0.000000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000000001.-1.anchor
+OK: audit03.smallPath.3.0.000000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.0.000000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000000001.1.anchor
+OK: audit03.smallPath.1.0.000000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.0.000000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000000001.1.anchor
+OK: audit03.smallPath.2.0.000000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.0.000000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000000001.1.anchor
+OK: audit03.smallPath.3.0.000000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.0.000000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000000000001.-1.anchor
+OK: audit03.smallPath.1.0.000000000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.0.000000000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000000000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000000000001.-1.anchor
+OK: audit03.smallPath.2.0.000000000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.0.000000000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000000000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000000000001.-1.anchor
+OK: audit03.smallPath.3.0.000000000001.-1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.0.000000000001.-1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000000000001.-1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000000000001.1.anchor
+OK: audit03.smallPath.1.0.000000000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.1.0.000000000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.1.0.000000000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000000000001.1.anchor
+OK: audit03.smallPath.2.0.000000000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.2.0.000000000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.2.0.000000000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000000000001.1.anchor
+OK: audit03.smallPath.3.0.000000000001.1.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.3.0.000000000001.1.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.3.0.000000000001.1.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.recovery.anchor
+OK: audit03.smallPath.recovery.lambda; actual=2.; expected=2.; absDiff=0.
+OK: audit03.smallPath.recovery.r1; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.recovery.r2; actual=0.; expected=0.; absDiff=0.
+OK: audit03.smallPath.zeroBaseControlled
+TOTAL_AUDIT03_SMALL_LOAD_PATH: passed=125; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4d94afa3c77544d8bf904c4fee9487fd\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunAudit03SmallLoadPathTests; 2026-10-05T07:08:00
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

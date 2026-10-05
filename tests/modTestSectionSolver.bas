@@ -43,6 +43,7 @@ Public Function RunSectionSolverTests() As String
     TestAudit02StateSnapshotIsolation stats
     TestAudit02AbsentStressSign stats
     TestAudit02LoadPathResidualScaling stats
+    TestAudit03SmallLoadPathComponents stats
     TestAudit02ExtendedInitialGuessPhysicalFinal stats
     TestAudit03TypedStateFailures stats
     TestAudit03RetryAttemptSession stats
@@ -1212,6 +1213,68 @@ End Sub
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
+' Проверяет общую lambda-математику отдельно от solver tolerance: маленькая
+' ненулевая Base-компонента остается частью пути. Ошибка отдельного случая
+' сохраняется в отчете, чтобы проверить все знаки и последующее восстановление.
+Public Function RunAudit03SmallLoadPathTests() As String
+    Dim stats As TSectionSolverTestStats
+    TestAudit03SmallLoadPathComponents stats
+    AppendLine stats, "TOTAL_AUDIT03_SMALL_LOAD_PATH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAudit03SmallLoadPathTests = stats.Report
+End Function
+
+' Проверяет N/Mx/My разных масштабов при одних допусках, затем повторяет
+' обычный путь на том же helper-е. Полностью нулевой Base остается ошибкой API.
+Private Sub TestAudit03SmallLoadPathComponents(ByRef stats As TSectionSolverTestStats)
+    Dim math As CLoadPathMath, magnitude As Variant, signValue As Variant, component As Long
+    Set math = New CLoadPathMath
+    math.Configure 5#, 5000#, 5000#
+    For Each magnitude In Array(1000000#, 0.001, 0.000001, 0.000000001, 0.000000000001)
+        For Each signValue In Array(-1#, 1#)
+            For component = 1 To 3
+                CheckAudit03SmallLoadPath stats, math, component, CDbl(magnitude) * CDbl(signValue), _
+                    "audit03.smallPath." & CStr(component) & "." & FormatNumberInvariant(CDbl(magnitude)) & "." & CStr(signValue)
+            Next component
+        Next signValue
+    Next magnitude
+    CheckAudit03SmallLoadPath stats, math, 2, 1000000#, "audit03.smallPath.recovery"
+    Dim path As CLoadPathVector, errorNumber As Long, value As Double
+    Set path = New CLoadPathVector
+    path.Initialize 0#, 0#, 0#, 0#, 0#, 0#
+    On Error Resume Next
+    value = math.Lambda(0#, 0#, 0#, path)
+    errorNumber = Err.Number
+    Err.Clear
+    On Error GoTo 0
+    AssertTrue stats, "audit03.smallPath.zeroBaseControlled", errorNumber = vbObjectError + 3841
+End Sub
+
+' Удвоенные усилия лежат точно на lambda=2; независимые невязки должны быть
+' нулевыми, а выбор опоры не может перейти к отсутствующей N-компоненте.
+Private Sub CheckAudit03SmallLoadPath(ByRef stats As TSectionSolverTestStats, ByVal math As CLoadPathMath, _
+        ByVal component As Long, ByVal baseValue As Double, ByVal prefix As String)
+    On Error GoTo Failed
+    Dim path As CLoadPathVector, nBase As Double, mxBase As Double, myBase As Double
+    Dim lambdaValue As Double, r1 As Double, r2 As Double
+    Select Case component
+        Case 1: nBase = baseValue
+        Case 2: mxBase = baseValue
+        Case 3: myBase = baseValue
+    End Select
+    Set path = New CLoadPathVector
+    path.Initialize 0#, nBase, 0#, mxBase, 0#, myBase
+    AssertTrue stats, prefix & ".anchor", math.AnchorComponent(path) = component
+    lambdaValue = math.Lambda(2# * nBase, 2# * mxBase, 2# * myBase, path)
+    AssertClose stats, prefix & ".lambda", lambdaValue, 2#, 0#
+    math.BuildResiduals 2# * nBase, 2# * mxBase, 2# * myBase, path, lambdaValue, r1, r2
+    AssertClose stats, prefix & ".r1", r1, 0#, 0#
+    AssertClose stats, prefix & ".r2", r2, 0#, 0#
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: " & prefix & ".runtime; " & CStr(Err.Number) & "; " & Err.Description
+End Sub
+
 ' Проверяет память только идентичных численных retries. Иные старты/options,
 ' новое сечение/материалы, новая session и успех не блокируются прежней неудачей.
 Public Function RunAudit03RetryAttemptSessionTests() As String

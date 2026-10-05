@@ -27,7 +27,7 @@ Private mDescription As String ' Короткое описание для пол
 Private mStrengthDirectState As Boolean ' Запрошено StrengthState.
 Private mStrengthCapacity As Boolean ' Запрошена несущая способность.
 Private mCrackWidth As Boolean ' Запрошен расчет раскрытия нормальных трещин.
-Private mStabilityEnabled As Boolean ' Запрошен фильтр продольного изгиба/устойчивости перед НДМ.
+Private mStabilityEnabled As Boolean ' Запрошена устойчивость; ее отказ не отменяет остальные проверки сочетания.
 Private mStabilityValueSet As EMaterialValueSet ' Набор характеристик материала для устойчивости без диаграмм.
 Private mHasStabilityValueSet As Boolean ' True, если строка MaterialModel.Stability.ValueSet задана в профиле.
 Private mStrengthSpec As CMaterialModelSpec ' Материальная модель прочности.

@@ -73,10 +73,25 @@
   v317. Book SHA `C3F258A528B105CA60324E95D8F7C7203AC9E6E24808C3D6406453D142A6F6ED`;
   actual VBE 113 компонентов, SourceContracts `108/108`, failed=0, export SHA
   `6FFCF225A8B788055092C59631E49EA3F7E25FDE321D094C3F80F027C4E6C7BE`.
-  Широкая матрица запущена целиком в job 2639: 13 форм x Light/Stress x Off/On,
-  52 chunks и ожидаемые 22776 путевых случаев. Пока она не завершена,
-  ее нельзя объявлять PASS; checkpoint не является выпуском Audit03.
-- Checkpoint `4d89bac8` содержит проверенный v313-срез, полный Off и exact
+  Широкая матрица job 2639 остановилась на первом chunk CircleSym/Light/Off:
+  588 случаев, `24160/57`. В 19 случаях Formation вернул internal failure
+  из-за потери маленькой Base-компоненты. Negative общего helper-а v319
+  подтвердил `81/20`. Порог осевой классификации больше не передается
+  общей математике пути; по умолчанию Base отличается от нуля точно,
+  без изменения solver tolerance. Positive v320: helper `125/0`, Solver
+  `1492/0`, Capacity `3562/0`, Crack `2155/0`; exit=0 и source unchanged=True.
+  Все 1029 общих численных assertions этих трех suites совпали точно с v313.
+  Actual VBE export: 113 компонентов, book SHA
+  `CACB7F261AA3117BDD7C09340A41E65AD95E43F575A619F29789E9DA06EC5871`.
+  SourceContracts завершен `108/108`, failed=0. Первый broad v320 блок
+  CircleSym/Light/Off завершен: 588 случаев, `24293/0`, Results save-reopen=True,
+  source unchanged=True; все прежние 19 internal failures устранены.
+  Broad job 57970 продолжает остальные блоки; полный итог еще не принят.
+  Матрица не принята; checkpoint не является выпуском Audit03.
+- Checkpoint `fb364ab` содержит Ultimate diagnostics, Stability length-range,
+  accepted v317/v318 source evidence и comment-only annotation правки.
+  Позднее исправление tiny Base пока находится в dirty-tree.
+  Checkpoint `4d89bac8` содержит проверенный v313-срез, полный Off и exact
   comparison, а также 62-group selector evidence. Основной output и ТЗ
   сохраняют прежние SHA; посторонние untracked файлы не включены.
 - Ultimate diagnostics: negative v314 `674/82`; positive v315 `756/0`,

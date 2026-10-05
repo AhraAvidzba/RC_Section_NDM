@@ -1,0 +1,1487 @@
+SUITE_STARTED: modTestSectionSolver.RunSectionSolverTests; 2026-10-05T05:44:42
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222478336; privateBytes=174239744; cpu=18024.9375
+EXCEL_AFTER_SUITE: pid=24372; workingSet=175845376; privateBytes=136544256; cpu=15.90625
+OK: settings.concrete.Eb; actual=32500.; expected=32500.; absDiff=0.
+OK: settings.steel.Es; actual=200000.; expected=200000.; absDiff=0.
+OK: settings.profiles.present
+OK: settings.material.strengthTensionIgnored; actual=0.; expected=0.; absDiff=0.
+OK: settings.material.mcrcTensionEnabled
+OK: settings.catalog.loaded
+OK: settings.catalog.noDuplicateKeys
+OK: settings.key.Units.Length.Input
+OK: settings.key.Units.Length.Internal
+OK: settings.key.Units.Length.Output
+OK: settings.key.Units.Area.Input
+OK: settings.key.Units.Area.Internal
+OK: settings.key.Units.Area.Output
+OK: settings.key.Units.Force.Input
+OK: settings.key.Units.Force.Internal
+OK: settings.key.Units.Force.Output
+OK: settings.key.Units.Moment.Input
+OK: settings.key.Units.Moment.Internal
+OK: settings.key.Units.Moment.Output
+OK: settings.key.Units.Stress.Input
+OK: settings.key.Units.Stress.Internal
+OK: settings.key.Units.Stress.Output
+OK: settings.key.Units.Curvature.Input
+OK: settings.key.Units.Curvature.Internal
+OK: settings.key.Units.Curvature.Output
+OK: settings.key.Sign.N.User
+OK: settings.key.Sign.N.Internal
+OK: settings.key.Sign.Mx.User
+OK: settings.key.Sign.Mx.Internal
+OK: settings.key.Sign.My.User
+OK: settings.key.Sign.My.Internal
+OK: settings.key.General.ExecutionReportEnabled
+OK: settings.key.General.NonCriticalMessagesEnabled
+OK: settings.key.Calculation.ZeroMomentPerDepth
+OK: settings.key.Geometry.Source
+OK: settings.key.Geometry.Type
+OK: settings.key.RectSet.B1
+OK: settings.key.RectSet.H1
+OK: settings.key.RectSet.B2
+OK: settings.key.RectSet.H2
+OK: settings.key.Mesh.StepX
+OK: settings.key.Mesh.StepY
+OK: settings.key.Mesh.BoundarySubdivisions
+OK: settings.key.Load.ReferenceOffsetX
+OK: settings.key.Load.ReferenceOffsetY
+OK: settings.key.RectSet.H1.as_1
+OK: settings.key.RectSet.H1.as_2
+OK: settings.key.RectSet.H1.d_1
+OK: settings.key.RectSet.H1.d_2
+OK: settings.key.RectSet.H1.n_1
+OK: settings.key.RectSet.H1.n_2
+OK: settings.key.RectSet.H1.StartOffset1
+OK: settings.key.RectSet.H1.EndOffset1
+OK: settings.key.RectSet.H1.StartOffset2
+OK: settings.key.RectSet.H1.EndOffset2
+OK: settings.key.RectSet.H1.d_2row_1
+OK: settings.key.RectSet.H1.d_2row_2
+OK: settings.key.RectSet.H1.d_3row_1
+OK: settings.key.RectSet.H1.d_3row_2
+OK: settings.key.RectSet.H1.loc_2row
+OK: settings.key.RectSet.H1.loc_3row
+OK: settings.key.RectSet.H2.as_1
+OK: settings.key.RectSet.H2.as_2
+OK: settings.key.RectSet.H2.d_1
+OK: settings.key.RectSet.H2.d_2
+OK: settings.key.RectSet.H2.n_1
+OK: settings.key.RectSet.H2.n_2
+OK: settings.key.RectSet.H2.StartOffset1
+OK: settings.key.RectSet.H2.EndOffset1
+OK: settings.key.RectSet.H2.StartOffset2
+OK: settings.key.RectSet.H2.EndOffset2
+OK: settings.key.RectSet.H2.d_2row_1
+OK: settings.key.RectSet.H2.d_2row_2
+OK: settings.key.RectSet.H2.d_3row_1
+OK: settings.key.RectSet.H2.d_3row_2
+OK: settings.key.RectSet.H2.loc_2row
+OK: settings.key.RectSet.H2.loc_3row
+OK: settings.key.RectSet.B1.as_1
+OK: settings.key.RectSet.B1.as_2
+OK: settings.key.RectSet.B1.d_1
+OK: settings.key.RectSet.B1.d_2
+OK: settings.key.RectSet.B1.n_1
+OK: settings.key.RectSet.B1.n_2
+OK: settings.key.RectSet.B1.StartOffset1
+OK: settings.key.RectSet.B1.EndOffset1
+OK: settings.key.RectSet.B1.StartOffset2
+OK: settings.key.RectSet.B1.EndOffset2
+OK: settings.key.RectSet.B1.d_2row_1
+OK: settings.key.RectSet.B1.d_2row_2
+OK: settings.key.RectSet.B1.d_3row_1
+OK: settings.key.RectSet.B1.d_3row_2
+OK: settings.key.RectSet.B1.loc_2row
+OK: settings.key.RectSet.B1.loc_3row
+OK: settings.key.RectSet.B2.as_1
+OK: settings.key.RectSet.B2.as_2
+OK: settings.key.RectSet.B2.d_1
+OK: settings.key.RectSet.B2.d_2
+OK: settings.key.RectSet.B2.n_1
+OK: settings.key.RectSet.B2.n_2
+OK: settings.key.RectSet.B2.StartOffset1
+OK: settings.key.RectSet.B2.EndOffset1
+OK: settings.key.RectSet.B2.StartOffset2
+OK: settings.key.RectSet.B2.EndOffset2
+OK: settings.key.RectSet.B2.d_2row_1
+OK: settings.key.RectSet.B2.d_2row_2
+OK: settings.key.RectSet.B2.d_3row_1
+OK: settings.key.RectSet.B2.d_3row_2
+OK: settings.key.RectSet.B2.loc_2row
+OK: settings.key.RectSet.B2.loc_3row
+OK: settings.key.Concrete.Rb.ULS
+OK: settings.key.Concrete.Rbt.ULS
+OK: settings.key.Concrete.Rb.SLS
+OK: settings.key.Concrete.Rbt.SLS
+OK: settings.key.Concrete.Rb.mc2
+OK: settings.key.Concrete.Eb
+OK: settings.key.Concrete.Ebt
+OK: settings.key.Concrete.Eb1Red
+OK: settings.key.Concrete.Ebt1Red
+OK: settings.key.Concrete.Eb0
+OK: settings.key.Concrete.Ebt0
+OK: settings.key.Concrete.Eb2
+OK: settings.key.Concrete.Ebt2
+OK: settings.key.Steel.Rsc.ULS
+OK: settings.key.Steel.Rs.ULS
+OK: settings.key.Steel.Rsc.SLS
+OK: settings.key.Steel.Rs.SLS
+OK: settings.key.Steel.Esc
+OK: settings.key.Steel.Es
+OK: settings.key.Steel.TwoLine.Esc2
+OK: settings.key.Steel.TwoLine.Es2
+OK: settings.key.Steel.ThreeLine.Esc2
+OK: settings.key.Steel.ThreeLine.Es2
+OK: settings.key.Solver.Method
+OK: settings.key.Solver.MaxIterations
+OK: settings.key.Solver.LoadSteps
+OK: settings.key.General.DiagramExtension
+OK: settings.key.Solver.ToleranceN
+OK: settings.key.Solver.ToleranceMx
+OK: settings.key.Solver.ToleranceMy
+OK: settings.key.Solver.LineSearchEnabled
+OK: settings.key.Solver.DampingInitial
+OK: settings.key.Solver.MinLineSearchAlpha
+OK: settings.key.Solver.MaxDeltaEpsilon0
+OK: settings.key.Solver.MaxDeltaKappa
+OK: settings.key.Solver.SecantMaxRestarts
+OK: settings.key.Solver.SecantMinStepNorm
+OK: settings.key.Capacity.SolutionStrategy
+OK: settings.key.Capacity.SearchMethod
+OK: settings.key.Capacity.InitialLambda
+OK: settings.key.Capacity.MaxLambda
+OK: settings.key.Capacity.ToleranceLambda
+OK: settings.key.Capacity.ToleranceStrain
+OK: settings.key.Capacity.MaxRetries
+OK: settings.key.Capacity.BaseLoadSteps
+OK: settings.key.Capacity.SolverMaxIterations
+OK: settings.key.SLS.Crack.Allowable
+OK: settings.key.SLS.Crack.InitiationSolutionStrategy
+OK: settings.key.SLS.Crack.Phi1
+OK: settings.key.SLS.Crack.Phi2
+OK: settings.key.SLS.Crack.Phi3Mode
+OK: settings.key.SLS.Crack.Phi3
+OK: settings.key.SLS.Crack.PsiMode
+OK: settings.key.SLS.Crack.SigmaSCrcAveragingMode
+OK: settings.key.SLS.Crack.PsiS
+OK: settings.key.SLS.Crack.TensionZoneMode
+OK: settings.key.SLS.Crack.CoverDistanceMode
+OK: settings.key.AutoCAD.Export.CombinationID
+OK: settings.key.AutoCAD.Export.NeutralLineEnabled
+OK: settings.key.AutoCAD.Export.PrincipalAxesMode
+OK: settings.key.AutoCAD.Export.LoadPointEnabled
+OK: settings.key.AutoCAD.Export.ContourEnabled
+OK: settings.key.AutoCAD.Export.LabelMode
+OK: settings.key.AutoCAD.Layer.Concrete
+OK: settings.key.AutoCAD.Layer.Rebar
+OK: settings.key.AutoCAD.Layer.Contour
+OK: settings.key.AutoCAD.Layer.ConcreteTension
+OK: settings.key.AutoCAD.Layer.ConcreteCompression
+OK: settings.key.AutoCAD.Layer.RebarTension
+OK: settings.key.AutoCAD.Layer.RebarCompression
+OK: settings.key.AutoCAD.Color.ConcreteTension
+OK: settings.key.AutoCAD.Color.ConcreteCompression
+OK: settings.key.AutoCAD.Color.RebarTension
+OK: settings.key.AutoCAD.Color.RebarCompression
+OK: settings.key.AutoCAD.Color.Neutral
+OK: settings.key.AutoCAD.Import.ConcreteLayer
+OK: settings.key.AutoCAD.Import.RebarLayer
+OK: settings.key.AutoCAD.Import.MinArea
+OK: settings.key.Plot.Enabled
+OK: settings.key.Plot.AutoUpdateAfterCalculation
+OK: settings.key.Plot.LoadCase
+OK: settings.key.Plot.ResultGradient
+OK: settings.key.Plot.ResultLabelsEnabled
+OK: settings.key.Plot.ResultLabelSpacing
+OK: settings.key.Plot.NeutralLineEnabled
+OK: settings.key.Plot.PrincipalAxesMode
+OK: settings.key.Plot.LoadApplicationPointEnabled
+OK: settings.key.Plot.AxisLabelsEnabled
+OK: settings.key.Plot.AxisLabelsFontSize
+OK: settings.key.Plot.ContourEnabled
+OK: settings.key.Plot.LegendEnabled
+OK: settings.key.Plot.RebarLabels.Enabled
+OK: settings.key.Plot.Dimensions.Enabled
+OK: settings.key.Plot.RebarLabels.Placement
+OK: settings.key.Plot.Dimensions.Placement
+OK: settings.key.Plot.RebarLabels.Offset
+OK: settings.key.Plot.Dimensions.Offset
+OK: settings.key.Plot.RebarLabels.TextUnits
+OK: settings.key.Plot.Dimensions.TextUnits
+OK: settings.key.Plot.RebarLabels.TextHeight
+OK: settings.key.Plot.Dimensions.TextHeight
+OK: settings.key.Plot.RebarLabels.TextGap
+OK: settings.key.Plot.Dimensions.TextGap
+OK: settings.key.Plot.RebarLabels.LineEnabled
+OK: settings.key.Plot.Dimensions.ArrowType
+OK: settings.key.Plot.Dimensions.ArrowSize
+OK: settings.removed.Capacity.Enabled
+OK: settings.removed.Capacity.CalculateMx
+OK: settings.removed.Capacity.CalculateMy
+OK: settings.removed.Capacity.CalculateMxy
+OK: settings.removed.Mesh.BoundaryMode
+OK: settings.removed.Mesh.Step
+OK: settings.removed.Circle.Radius
+OK: settings.removed.Batch.MaxCombinations
+OK: settings.removed.Batch.Diagnostics
+OK: settings.removed.Materials.SourceStatus
+OK: settings.removed.Concrete.Diagram
+OK: settings.removed.Steel.Diagram
+OK: settings.removed.Concrete.Point1.Eps
+OK: settings.removed.Concrete.Point1.Stress
+OK: settings.removed.Concrete.Point2.Eps
+OK: settings.removed.Concrete.Point2.Stress
+OK: settings.removed.Concrete.Point3.Eps
+OK: settings.removed.Concrete.Point3.Stress
+OK: settings.removed.Steel.Point1.Eps
+OK: settings.removed.Steel.Point1.Stress
+OK: settings.removed.Steel.Point2.Eps
+OK: settings.removed.Steel.Point2.Stress
+OK: settings.removed.Steel.Point3.Eps
+OK: settings.removed.Steel.Point3.Stress
+OK: settings.removed.Solver.DiagnosticsEnabled
+OK: settings.removed.Circle.CenterX
+OK: settings.removed.Circle.CenterY
+OK: settings.removed.RectSet.OriginX
+OK: settings.removed.RectSet.OriginY
+OK: settings.removed.Plot.DimensionsEnabled
+OK: settings.removed.Plot.RebarLabelsEnabled
+OK: settings.removed.Plot.PrincipalAxesEnabled
+OK: settings.removed.Plot.CentroidEnabled
+OK: settings.removed.AutoCAD.Export.PrincipalAxesEnabled
+OK: settings.removed.Concrete.TensionMode
+OK: settings.removed.Capacity.ConcreteCompressionLimit
+OK: settings.removed.Capacity.ConcreteTensionLimit
+OK: settings.removed.Capacity.SteelStrainLimit
+OK: settings.removed.Concrete.Class
+OK: settings.removed.Steel.RebarProfile
+OK: settings.removed.Calculation.Mode
+OK: settings.removed.Capacity.CalculationScope
+OK: settings.removed.SLS.Crack.Enabled
+OK: settings.removed.AutoCAD.Export.ResultType
+OK: settings.removed.Plot.ResultType
+OK: settings.removed.Diagram.Strength.Concrete
+OK: settings.removed.Diagram.Strength.ConcreteTension
+OK: settings.removed.Diagram.Strength.Steel
+OK: settings.removed.Diagram.Mcrc.Concrete
+OK: settings.removed.Diagram.Mcrc.ConcreteTension
+OK: settings.removed.Diagram.Mcrc.Steel
+OK: settings.removed.Diagram.CrackedNDS.Concrete
+OK: settings.removed.Diagram.CrackedNDS.ConcreteTension
+OK: settings.removed.Diagram.CrackedNDS.Steel
+OK: settings.range.rngUnitSettings
+OK: settings.range.rngSignConventionSettings
+OK: settings.range.rngConcreteMaterialParameters
+OK: settings.range.rngSteelMaterialParameters
+OK: settings.range.rngCalculationProfiles
+OK: settings.range.rngCircleGeometry
+OK: settings.range.rngRoundedRectangleGeometry
+OK: settings.range.rngHollowRectangleGeometry
+OK: settings.range.rngRectSetGeometry
+OK: settings.range.rngNDMSectionProperties
+OK: settings.range.rngNDMSectionAnnotations
+OK: settings.range.rngNDMMaterialDiagrams
+OK: settings.range.removed.SolverSettings
+OK: settings.range.removed.CapacitySettings
+OK: settings.range.removed.ConcreteDiagram
+OK: settings.range.removed.SteelDiagram
+OK: settings.range.removed.GeometrySettings
+OK: settings.range.removed.OutputSettings
+OK: settings.range.removed.AutoCADSettings
+OK: settings.range.removed.rngMainInput
+OK: settings.range.removed.rngRebarInput
+OK: settings.range.removed.rngConcreteDiagramPoints
+OK: settings.range.removed.rngSteelDiagramPoints
+OK: settings.range.removed.rngCalculationDiagramSettings
+OK: units.length.mm.m; actual=0.025; expected=0.025; absDiff=0.
+OK: units.force.tf.toN.compression; actual=-9806.65; expected=-9806.65; absDiff=0.
+OK: units.force.N.toUser.compression; actual=1.; expected=1.; absDiff=0.
+OK: units.moment.tfm.toNmm; actual=9806650.; expected=9806650.; absDiff=0.
+OK: units.moment.Nmm.toUser; actual=1.; expected=1.; absDiff=0.
+OK: units.momentPerLength.defaultZero; actual=4903.325; expected=4903.325; absDiff=0.
+OK: units.loadcase.N.example; actual=-294199.5; expected=-294199.5; absDiff=0.
+OK: units.loadcase.Mx.example; actual=1470997500.; expected=1470997500.; absDiff=0.
+OK: linsys.solve
+OK: linsys.x1; actual=1.; expected=1.; absDiff=0.
+OK: linsys.x2; actual=-2.; expected=-2.; absDiff=0.
+OK: linsys.x3; actual=-2.; expected=-2.; absDiff=0.
+OK: linsys.residual
+OK: linsys.singular
+OK: audit03.linear.diagonal.1E+110.-1.noRuntimeError
+OK: audit03.linear.diagonal.1E+110.-1.solved
+OK: audit03.linear.diagonal.1E+110.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+110.-1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+110.-1.noRuntimeError
+OK: audit03.linear.permuted.1E+110.-1.solved
+OK: audit03.linear.permuted.1E+110.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+110.-1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+110.1.noRuntimeError
+OK: audit03.linear.diagonal.1E+110.1.solved
+OK: audit03.linear.diagonal.1E+110.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+110.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+110.1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+110.1.noRuntimeError
+OK: audit03.linear.permuted.1E+110.1.solved
+OK: audit03.linear.permuted.1E+110.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+110.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+110.1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+200.-1.noRuntimeError
+OK: audit03.linear.diagonal.1E+200.-1.solved
+OK: audit03.linear.diagonal.1E+200.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+200.-1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+200.-1.noRuntimeError
+OK: audit03.linear.permuted.1E+200.-1.solved
+OK: audit03.linear.permuted.1E+200.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+200.-1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+200.1.noRuntimeError
+OK: audit03.linear.diagonal.1E+200.1.solved
+OK: audit03.linear.diagonal.1E+200.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+200.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+200.1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+200.1.noRuntimeError
+OK: audit03.linear.permuted.1E+200.1.solved
+OK: audit03.linear.permuted.1E+200.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+200.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+200.1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+307.-1.noRuntimeError
+OK: audit03.linear.diagonal.1E+307.-1.solved
+OK: audit03.linear.diagonal.1E+307.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+307.-1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+307.-1.noRuntimeError
+OK: audit03.linear.permuted.1E+307.-1.solved
+OK: audit03.linear.permuted.1E+307.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+307.-1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+307.1.noRuntimeError
+OK: audit03.linear.diagonal.1E+307.1.solved
+OK: audit03.linear.diagonal.1E+307.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+307.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+307.1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+307.1.noRuntimeError
+OK: audit03.linear.permuted.1E+307.1.solved
+OK: audit03.linear.permuted.1E+307.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+307.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+307.1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+308.-1.noRuntimeError
+OK: audit03.linear.diagonal.1E+308.-1.solved
+OK: audit03.linear.diagonal.1E+308.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+308.-1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+308.-1.noRuntimeError
+OK: audit03.linear.permuted.1E+308.-1.solved
+OK: audit03.linear.permuted.1E+308.-1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.-1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.-1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+308.-1|solved=True|error=0|
+OK: audit03.linear.diagonal.1E+308.1.noRuntimeError
+OK: audit03.linear.diagonal.1E+308.1.solved
+OK: audit03.linear.diagonal.1E+308.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.diagonal.1E+308.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.diagonal.1E+308.1|solved=True|error=0|
+OK: audit03.linear.permuted.1E+308.1.noRuntimeError
+OK: audit03.linear.permuted.1E+308.1.solved
+OK: audit03.linear.permuted.1E+308.1.x1; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.1.x2; actual=-1.; expected=-1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.1.x3; actual=1.; expected=1.; absDiff=0.
+OK: audit03.linear.permuted.1E+308.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.permuted.1E+308.1|solved=True|error=0|
+OK: audit03.linear.rhsNorm.-1.noRuntimeError
+OK: audit03.linear.rhsNorm.-1.solved
+OK: audit03.linear.rhsNorm.-1.vector
+OK: audit03.linear.rhsNorm.-1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.rhsNorm.-1|solved=True|error=0|
+OK: audit03.linear.rhsNorm.1.noRuntimeError
+OK: audit03.linear.rhsNorm.1.solved
+OK: audit03.linear.rhsNorm.1.vector
+OK: audit03.linear.rhsNorm.1.residual; actual=0.; expected=0.; absDiff=0.
+LINEAR_SCALE: audit03.linear.rhsNorm.1|solved=True|error=0|
+OK: audit03.linear.unrepresentable.noRuntimeError
+OK: audit03.linear.unrepresentable.failed
+OK: audit03.linear.unrepresentable.reason
+LINEAR_OVERFLOW: division|error=0||Не удалось вычислить поправку линейной системы: число выходит за допустимый диапазон арифметики.
+OK: audit03.linear.elimination.noRuntimeError
+OK: audit03.linear.elimination.failed
+OK: audit03.linear.elimination.reason
+LINEAR_OVERFLOW: elimination|error=0||Не удалось вычислить поправку линейной системы: число выходит за допустимый диапазон арифметики.
+OK: audit03.linear.recovery
+OK: audit03.linear.recovery.x1; actual=1.; expected=1.; absDiff=0.
+LINEAR_CASES: validSystems=18; arithmeticFailures=2; nonlinearCases=0
+OK: audit03.linear.typed.large
+OK: audit03.linear.typed.large.x1; actual=0.333333333333; expected=0.333333333333; absDiff=0.
+OK: audit03.linear.typed.large.x2; actual=0.333333333333; expected=0.333333333333; absDiff=0.
+OK: audit03.linear.typed.large.residual
+OK: audit03.linear.typed.large.code
+OK: audit03.linear.typed.singular
+OK: audit03.linear.typed.singular.code
+OK: audit03.linear.typed.overflow
+OK: audit03.linear.typed.overflow.code
+OK: audit03.linear.typed.overflow.vector
+OK: audit03.linear.typed.recovery
+OK: audit03.linear.typed.recovery.code
+OK: audit03.linear.largeTangent.1E+110.noRuntimeError
+OK: audit03.linear.largeTangent.1E+110.converged
+OK: audit03.linear.largeTangent.1E+110.code
+OK: audit03.linear.largeTangent.1E+110.N; actual=249999.999999999; expected=250000.; relDiff=0.
+OK: audit03.linear.largeTangent.1E+110.Mx; actual=120000000.; expected=120000000.; relDiff=0.
+OK: audit03.linear.largeTangent.1E+110.My; actual=-80000000.; expected=-80000000.; relDiff=0.
+LARGE_TANGENT_STATE: audit03.linear.largeTangent.1E+110|iterations=2|Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.linear.largeTangent.1E+200.noRuntimeError
+OK: audit03.linear.largeTangent.1E+200.converged
+OK: audit03.linear.largeTangent.1E+200.code
+OK: audit03.linear.largeTangent.1E+200.N; actual=250000.; expected=250000.; relDiff=0.
+OK: audit03.linear.largeTangent.1E+200.Mx; actual=120000000.; expected=120000000.; relDiff=0.
+OK: audit03.linear.largeTangent.1E+200.My; actual=-80000000.; expected=-80000000.; relDiff=0.
+LARGE_TANGENT_STATE: audit03.linear.largeTangent.1E+200|iterations=2|Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: section.linear.converged
+OK: section.linear.eps0; actual=0.000416666667; expected=0.000416666667; relDiff=0.0000000008
+OK: section.linear.kappaX; actual=0.000242424242; expected=0.000242424242; relDiff=0.00000000175
+OK: section.linear.kappaY; actual=-0.000040100251; expected=-0.000040100251; relDiff=0.000000009312
+OK: section.linear.N; actual=250000.; expected=250000.; relDiff=0.
+OK: section.linear.Mx; actual=120000000.; expected=120000000.; relDiff=0.
+OK: section.linear.My; actual=-80000000.; expected=-80000000.; relDiff=0.
+OK: section.rebar.converged
+OK: section.rebar.eps0; actual=0.00061453123; expected=0.00061453123; relDiff=0.000000000469
+OK: section.rebar.kappaX; actual=0.000130953764; expected=0.000130953764; relDiff=0.000000002401
+OK: section.rebar.kappaY; actual=0.000025325048; expected=0.000025325048; relDiff=0.000000002479
+OK: section.rebar.N; actual=500000.; expected=500000.; relDiff=0.
+OK: section.rebar.Mx; actual=90000000.; expected=90000000.; relDiff=0.
+OK: section.rebar.My; actual=70000000.; expected=70000000.; relDiff=0.
+OK: section.diagramCompression.converged
+OK: section.diagramCompression.epsNegative
+OK: section.diagramCompression.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: section.diagramCompression.kappaY; actual=0.; expected=0.; absDiff=0.
+OK: section.diagramCompression.N; actual=-100000.; expected=-100000.; relDiff=0.
+OK: section.diagramCompression.Mx; actual=-0.000000000095; expected=0.; absDiff=0.000000000095
+OK: section.diagramCompression.My; actual=-0.000000000004; expected=0.; absDiff=0.000000000004
+OK: section.diagramRebar.converged
+OK: section.diagramRebar.N; actual=-300000.000000001; expected=-300000.; relDiff=0.
+OK: section.diagramRebar.Mx; actual=-20000000.; expected=-20000000.; relDiff=0.
+OK: section.diagramRebar.My; actual=-0.00000000195; expected=0.; absDiff=0.00000000195
+OK: section.diagramRebar.steps
+OK: section.diagnostics.converged
+OK: section.diagnostics.iterations
+OK: section.diagnostics.log
+OK: section.secant.branch
+OK: section.secant.converged
+OK: section.secant.noNewtonCalls
+OK: section.newton.calls
+OK: section.secant.equilibrium.N; actual=-300000.000000014; expected=-300000.; relDiff=0.
+OK: section.secant.equilibrium.Mx; actual=-20000000.0000053; expected=-20000000.; relDiff=0.
+OK: section.secant.equilibrium.My; actual=-12000000.0000025; expected=-12000000.; relDiff=0.
+OK: section.secant.eps0MatchesNewton; actual=-0.000270585091; expected=-0.000270585091; relDiff=0.
+OK: section.secant.kappaXMatchesNewton; actual=-0.000008562532; expected=-0.000008562532; relDiff=0.
+OK: section.secant.kappaYMatchesNewton; actual=-0.000002386771; expected=-0.000002386771; relDiff=0.
+OK: section.secant.differentIterations
+OK: section.secant.diagnostics
+OK: section.secant.broydenDiagnostics
+OK: secant.compare.compression.newton.converged
+OK: secant.compare.compression.secant.converged
+OK: secant.compare.compression.secant.noNewtonCalls
+OK: secant.compare.compression.eps0; actual=-0.000161290323; expected=-0.000161290323; relDiff=0.
+OK: secant.compare.compression.N; actual=-99999.9999999719; expected=-100000.; relDiff=0.
+OK: secant.compare.compression.Mx; actual=0.000000071217; expected=0.; absDiff=0.000000071217
+OK: secant.compare.compression.My; actual=-0.000000042077; expected=0.; absDiff=0.000000042077
+COMPARE_SOLVER|secant.compare.compression|NewtonIterations=10|SecantIterations=10|SecantForceEvaluations=47|SecantNewtonCalls=0|SecantRestarts=0
+OK: secant.compare.n_mx.newton.converged
+OK: secant.compare.n_mx.secant.converged
+OK: secant.compare.n_mx.secant.noNewtonCalls
+OK: secant.compare.n_mx.eps0; actual=-0.000194412442; expected=-0.000194412442; relDiff=0.
+OK: secant.compare.n_mx.N; actual=-150000.000000013; expected=-150000.; relDiff=0.
+OK: secant.compare.n_mx.Mx; actual=-8000000.00000047; expected=-8000000.; relDiff=0.
+OK: secant.compare.n_mx.My; actual=-0.000000046024; expected=0.; absDiff=0.000000046024
+COMPARE_SOLVER|secant.compare.n_mx|NewtonIterations=12|SecantIterations=15|SecantForceEvaluations=57|SecantNewtonCalls=0|SecantRestarts=0
+OK: secant.compare.n_my.newton.converged
+OK: secant.compare.n_my.secant.converged
+OK: secant.compare.n_my.secant.noNewtonCalls
+OK: secant.compare.n_my.eps0; actual=-0.000241935484; expected=-0.000241935484; relDiff=0.
+OK: secant.compare.n_my.N; actual=-150000.; expected=-150000.; relDiff=0.
+OK: secant.compare.n_my.Mx; actual=0.000000395064; expected=0.; absDiff=0.000000395064
+OK: secant.compare.n_my.My; actual=-5999999.99999905; expected=-6000000.; relDiff=0.
+COMPARE_SOLVER|secant.compare.n_my|NewtonIterations=10|SecantIterations=10|SecantForceEvaluations=47|SecantNewtonCalls=0|SecantRestarts=0
+OK: secant.compare.n_mx_my.newton.converged
+OK: secant.compare.n_mx_my.secant.converged
+OK: secant.compare.n_mx_my.secant.noNewtonCalls
+OK: secant.compare.n_mx_my.eps0; actual=-0.000145778915; expected=-0.000145778915; relDiff=0.
+OK: secant.compare.n_mx_my.N; actual=-149999.999999998; expected=-150000.; relDiff=0.
+OK: secant.compare.n_mx_my.Mx; actual=-8000000.00000037; expected=-8000000.; relDiff=0.
+OK: secant.compare.n_mx_my.My; actual=-5999999.99999986; expected=-6000000.; relDiff=0.
+COMPARE_SOLVER|secant.compare.n_mx_my|NewtonIterations=14|SecantIterations=16|SecantForceEvaluations=59|SecantNewtonCalls=0|SecantRestarts=0
+OK: secant.compare.circle.newton.converged
+OK: secant.compare.circle.secant.converged
+OK: secant.compare.circle.secant.noNewtonCalls
+OK: secant.compare.circle.eps0; actual=-0.000163825196; expected=-0.000163825196; relDiff=0.
+OK: secant.compare.circle.N; actual=-120000.000000022; expected=-120000.; relDiff=0.
+OK: secant.compare.circle.Mx; actual=-5000000.00000006; expected=-5000000.; relDiff=0.
+OK: secant.compare.circle.My; actual=0.000000001102; expected=0.; absDiff=0.000000001102
+COMPARE_SOLVER|secant.compare.circle|NewtonIterations=11|SecantIterations=13|SecantForceEvaluations=54|SecantNewtonCalls=0|SecantRestarts=0
+OK: section.method.invalidInput
+OK: section.method.invalidMessage
+OK: section.method.invalidCode
+OK: section.method.emptyInput
+OK: section.method.emptyMessage
+OK: section.method.emptyCode
+OK: settings.solverMethod.defaultNewton
+OK: section.systemMethod.newtonBranch
+OK: audit02.plane.evaluationNotSolve
+OK: audit02.plane.wrongTargetRejected
+OK: audit02.plane.actualTargetConfirmed
+OK: audit02.plane.sameStrain; actual=-0.0001; expected=-0.0001; absDiff=0.
+OK: audit02.plane.noHeavySolve
+OK: audit02.migration.reader.legacyNo.loaded
+OK: audit02.migration.reader.legacyNo.value
+OK: audit02.migration.reader.legacyNo.legacyRemoved
+OK: audit02.migration.reader.legacyNo.warning
+OK: audit02.migration.reader.legacyNo.neighbor
+OK: audit02.migration.reader.canonicalNo.loaded
+OK: audit02.migration.reader.canonicalNo.value
+OK: audit02.migration.reader.canonicalNo.legacyRemoved
+OK: audit02.migration.reader.canonicalNo.warning
+OK: audit02.migration.reader.canonicalNo.neighbor
+OK: audit02.migration.reader.bothConflict.loaded
+OK: audit02.migration.reader.bothConflict.value
+OK: audit02.migration.reader.bothConflict.legacyRemoved
+OK: audit02.migration.reader.bothConflict.warning
+OK: audit02.migration.reader.bothConflict.neighbor
+OK: audit02.migration.reader.bothEquivalent.loaded
+OK: audit02.migration.reader.bothEquivalent.value
+OK: audit02.migration.reader.bothEquivalent.legacyRemoved
+OK: audit02.migration.reader.bothEquivalent.warning
+OK: audit02.migration.reader.bothEquivalent.neighbor
+OK: audit02.migration.reader.missing.loaded
+OK: audit02.migration.reader.missing.value
+OK: audit02.migration.reader.missing.legacyRemoved
+OK: audit02.migration.reader.missing.warning
+OK: audit02.migration.reader.missing.neighbor
+OK: audit02.migration.reader.invalidCanonical.inputError
+OK: audit02.migration.reader.emptyCanonical.inputError
+OK: audit02.migration.reader.invalidLegacy.inputError
+OK: audit02.stateSnapshot.equilibrium
+OK: audit02.stateSnapshot.inputSpec
+OK: audit02.stateSnapshot.returnedSpec
+OK: audit02.stateSnapshot.requestKey
+OK: audit02.stateSnapshot.returnedMeta
+OK: audit02.stateSnapshot.strain; actual=-0.0001; expected=-0.0001; absDiff=0.
+OK: audit02.stateSnapshot.force; actual=-65000.; expected=-65000.; absDiff=0.
+OK: audit02.stateSnapshot.extremum; actual=-0.0001; expected=-0.0001; absDiff=0.
+OK: audit02.stateSnapshot.noSolve
+OK: audit02.stateSnapshot.emptyStatus
+OK: audit02.stateSnapshot.emptyCode
+OK: audit02.stressSign.noCompression; actual=0.; expected=0.; absDiff=0.
+OK: audit02.stressSign.tension; actual=3.25; expected=3.25; absDiff=0.
+OK: audit02.stressSign.noSteelCompression; actual=0.; expected=0.; absDiff=0.
+OK: audit02.stressSign.noSteelTension; actual=0.; expected=0.; absDiff=0.
+OK: audit02.stressSign.noTension; actual=0.; expected=0.; absDiff=0.
+OK: audit02.stressSign.compression; actual=-3.25; expected=-3.25; absDiff=0.
+OK: audit02.pathResidual.zeroMx; actual=10000000000.; expected=10000000000.; absDiff=0.
+OK: audit02.pathResidual.zeroMy; actual=-10000000000.; expected=-10000000000.; absDiff=0.
+OK: audit02.pathResidual.mxLinear; actual=20000000000.; expected=20000000000.; absDiff=0.
+OK: audit02.pathResidual.myLinear; actual=-20000000000.; expected=-20000000000.; absDiff=0.
+OK: audit02.finalFlags.initialEquilibrium
+OK: audit02.finalFlags.initialExtended
+OK: audit02.finalFlags.converged
+OK: audit02.finalFlags.physical
+OK: audit02.finalFlags.notExtended
+OK: audit02.finalFlags.force; actual=-50000.; expected=-50000.; absDiff=0.
+OK: audit03.state.failure.1.exists
+OK: audit03.state.failure.1.status
+OK: audit03.state.failure.1.code
+OK: audit03.state.failure.1.display
+OK: audit03.state.failure.1.comment
+COMMENT: audit03.state.failure.1; Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+OK: audit03.state.failure.1.notConverged
+OK: audit03.state.failure.1.notReusable
+OK: audit03.state.failure.1.oneAttempt
+OK: audit03.state.failure.1.notCalculated
+OK: audit03.state.failure.1.stored
+OK: audit03.state.failure.1.snapshotCode
+OK: audit03.state.failure.1.snapshotComment
+OK: audit03.state.failure.1.newAttemptSuccess
+OK: audit03.state.failure.1.notReused
+OK: audit03.state.failure.1.successReusable
+OK: audit03.state.failure.1.successSnapshot
+OK: audit03.state.failure.2.exists
+OK: audit03.state.failure.2.status
+OK: audit03.state.failure.2.code
+OK: audit03.state.failure.2.display
+OK: audit03.state.failure.2.comment
+COMMENT: audit03.state.failure.2; Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.state.failure.2.notConverged
+OK: audit03.state.failure.2.notReusable
+OK: audit03.state.failure.2.attempted
+OK: audit03.state.failure.2.calculated
+OK: audit03.state.failure.2.stored
+OK: audit03.state.failure.2.snapshotCode
+OK: audit03.state.failure.2.snapshotComment
+OK: audit03.state.failure.3.exists
+OK: audit03.state.failure.3.status
+OK: audit03.state.failure.3.code
+OK: audit03.state.failure.3.display
+OK: audit03.state.failure.3.comment
+COMMENT: audit03.state.failure.3; Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.state.failure.3.notConverged
+OK: audit03.state.failure.3.notReusable
+OK: audit03.state.failure.3.attempted
+OK: audit03.state.failure.3.calculated
+OK: audit03.state.failure.3.stored
+OK: audit03.state.failure.3.snapshotCode
+OK: audit03.state.failure.3.snapshotComment
+OK: audit03.state.failure.4.exists
+OK: audit03.state.failure.4.status
+OK: audit03.state.failure.4.code
+OK: audit03.state.failure.4.display
+OK: audit03.state.failure.4.comment
+COMMENT: audit03.state.failure.4; Расчетное состояние не получено: не подключена модель сечения или поставщик материалов.
+OK: audit03.state.failure.4.notConverged
+OK: audit03.state.failure.4.notReusable
+OK: audit03.state.failure.4.noAttempt
+OK: audit03.state.failure.4.notCalculated
+OK: audit03.state.failure.5.exists
+OK: audit03.state.failure.5.status
+OK: audit03.state.failure.5.code
+OK: audit03.state.failure.5.display
+OK: audit03.state.failure.5.comment
+COMMENT: audit03.state.failure.5; В модели сечения нет бетонных элементов.
+OK: audit03.state.failure.5.notConverged
+OK: audit03.state.failure.5.notReusable
+OK: audit03.state.failure.5.oneAttempt
+OK: audit03.state.failure.5.notCalculated
+OK: audit03.state.failure.5.stored
+OK: audit03.state.failure.5.snapshotCode
+OK: audit03.state.failure.5.snapshotComment
+OK: audit03.state.failure.6.exists
+OK: audit03.state.failure.6.status
+OK: audit03.state.failure.6.code
+OK: audit03.state.failure.6.display
+OK: audit03.state.failure.6.comment
+COMMENT: audit03.state.failure.6; Solver.MaxIterations должен быть положительным.
+OK: audit03.state.failure.6.notConverged
+OK: audit03.state.failure.6.notReusable
+OK: audit03.state.failure.6.oneAttempt
+OK: audit03.state.failure.6.notCalculated
+OK: audit03.state.failure.6.stored
+OK: audit03.state.failure.6.snapshotCode
+OK: audit03.state.failure.6.snapshotComment
+OK: audit03.state.failure.7.exists
+OK: audit03.state.failure.7.status
+OK: audit03.state.failure.7.code
+OK: audit03.state.failure.7.display
+OK: audit03.state.failure.7.comment
+COMMENT: audit03.state.failure.7; Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial.
+OK: audit03.state.failure.7.notConverged
+OK: audit03.state.failure.7.notReusable
+OK: audit03.state.failure.7.oneAttempt
+OK: audit03.state.failure.7.notCalculated
+OK: audit03.state.failure.7.stored
+OK: audit03.state.failure.7.snapshotCode
+OK: audit03.state.failure.7.snapshotComment
+OK: audit03.state.failure.8.exists
+OK: audit03.state.failure.8.status
+OK: audit03.state.failure.8.code
+OK: audit03.state.failure.8.display
+OK: audit03.state.failure.8.comment
+COMMENT: audit03.state.failure.8; Solver.DampingInitial должен быть больше 0 и не больше 1.
+OK: audit03.state.failure.8.notConverged
+OK: audit03.state.failure.8.notReusable
+OK: audit03.state.failure.8.oneAttempt
+OK: audit03.state.failure.8.notCalculated
+OK: audit03.state.failure.8.stored
+OK: audit03.state.failure.8.snapshotCode
+OK: audit03.state.failure.8.snapshotComment
+OK: audit03.state.failure.9.exists
+OK: audit03.state.failure.9.status
+OK: audit03.state.failure.9.code
+OK: audit03.state.failure.9.display
+OK: audit03.state.failure.9.comment
+COMMENT: audit03.state.failure.9; Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial.
+OK: audit03.state.failure.9.notConverged
+OK: audit03.state.failure.9.notReusable
+OK: audit03.state.failure.9.oneAttempt
+OK: audit03.state.failure.9.notCalculated
+OK: audit03.state.failure.9.stored
+OK: audit03.state.failure.9.snapshotCode
+OK: audit03.state.failure.9.snapshotComment
+OK: audit03.state.failure.10.exists
+OK: audit03.state.failure.10.status
+OK: audit03.state.failure.10.code
+OK: audit03.state.failure.10.display
+OK: audit03.state.failure.10.comment
+COMMENT: audit03.state.failure.10; Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.
+OK: audit03.state.failure.10.notConverged
+OK: audit03.state.failure.10.notReusable
+OK: audit03.state.failure.10.oneAttempt
+OK: audit03.state.failure.10.notCalculated
+OK: audit03.state.failure.10.stored
+OK: audit03.state.failure.10.snapshotCode
+OK: audit03.state.failure.10.snapshotComment
+OK: audit03.state.failure.11.exists
+OK: audit03.state.failure.11.status
+OK: audit03.state.failure.11.code
+OK: audit03.state.failure.11.display
+OK: audit03.state.failure.11.comment
+COMMENT: audit03.state.failure.11; Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.
+OK: audit03.state.failure.11.notConverged
+OK: audit03.state.failure.11.notReusable
+OK: audit03.state.failure.11.oneAttempt
+OK: audit03.state.failure.11.notCalculated
+OK: audit03.state.failure.11.stored
+OK: audit03.state.failure.11.snapshotCode
+OK: audit03.state.failure.11.snapshotComment
+OK: audit03.retry.firstFailure
+OK: audit03.retry.firstSolve
+OK: audit03.retry.sameFailure
+OK: audit03.retry.sameNoSolve
+OK: audit03.retry.noDisabledDiagnostic
+OK: audit03.retry.newPlane
+OK: audit03.retry.newTarget
+OK: audit03.retry.newTolerance
+OK: audit03.retry.newSteps
+OK: audit03.retry.newLineSearch
+OK: audit03.retry.newSession
+OK: audit03.retry.canRecover
+OK: audit03.retry.recoverySolve
+OK: audit03.retry.successNotFailureCache
+OK: audit03.retry.successSolvedAgain
+OK: audit03.retry.configurationNotCached
+OK: audit03.retry.otherContextClosesSession
+OK: audit03.retry.otherMaterialClosesSession
+OK: audit03.retry.revisionClosesSession
+OK: audit03.retry.boundedScalarMemory
+OK: audit03.retry.lastAttemptRetained
+OK: audit03.retry.evictedAttemptCanRun
+OK: audit03.extreme.Newton.shift=False.extension=False.notConverged
+OK: audit03.extreme.Newton.shift=False.extension=False.numericCause
+OK: audit03.extreme.Newton.shift=False.extension=False.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=False.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=1|comment=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extreme.Newton.shift=False.extension=False.stateNumeric
+OK: audit03.extreme.Newton.shift=False.extension=False.displayNumFail
+OK: audit03.extreme.Newton.shift=False.extension=False.notPhysical
+OK: audit03.extreme.Newton.shift=False.extension=False.normalRecovers
+OK: audit03.extreme.Newton.shift=False.extension=True.notConverged
+OK: audit03.extreme.Newton.shift=False.extension=True.numericCause
+OK: audit03.extreme.Newton.shift=False.extension=True.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=False.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=1|comment=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extreme.Newton.shift=False.extension=True.stateNumeric
+OK: audit03.extreme.Newton.shift=False.extension=True.displayNumFail
+OK: audit03.extreme.Newton.shift=False.extension=True.notPhysical
+OK: audit03.extreme.Newton.shift=False.extension=True.normalRecovers
+OK: audit03.extreme.Newton.shift=True.extension=False.notConverged
+OK: audit03.extreme.Newton.shift=True.extension=False.numericCause
+OK: audit03.extreme.Newton.shift=True.extension=False.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=True.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=1|comment=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extreme.Newton.shift=True.extension=False.stateNumeric
+OK: audit03.extreme.Newton.shift=True.extension=False.displayNumFail
+OK: audit03.extreme.Newton.shift=True.extension=False.notPhysical
+OK: audit03.extreme.Newton.shift=True.extension=False.normalRecovers
+OK: audit03.extreme.Newton.shift=True.extension=True.notConverged
+OK: audit03.extreme.Newton.shift=True.extension=True.numericCause
+OK: audit03.extreme.Newton.shift=True.extension=True.reason
+EXTREME_CASE: audit03.extreme.Newton.shift=True.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=1|comment=Достигнут лимит итераций на ступени нагрузки 1.
+OK: audit03.extreme.Newton.shift=True.extension=True.stateNumeric
+OK: audit03.extreme.Newton.shift=True.extension=True.displayNumFail
+OK: audit03.extreme.Newton.shift=True.extension=True.notPhysical
+OK: audit03.extreme.Newton.shift=True.extension=True.normalRecovers
+OK: audit03.extreme.Secant.shift=False.extension=False.notConverged
+OK: audit03.extreme.Secant.shift=False.extension=False.numericCause
+OK: audit03.extreme.Secant.shift=False.extension=False.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=False.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=2|comment=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extreme.Secant.shift=False.extension=False.stateNumeric
+OK: audit03.extreme.Secant.shift=False.extension=False.displayNumFail
+OK: audit03.extreme.Secant.shift=False.extension=False.notPhysical
+OK: audit03.extreme.Secant.shift=False.extension=False.normalRecovers
+OK: audit03.extreme.Secant.shift=False.extension=True.notConverged
+OK: audit03.extreme.Secant.shift=False.extension=True.numericCause
+OK: audit03.extreme.Secant.shift=False.extension=True.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=False.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=2|comment=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extreme.Secant.shift=False.extension=True.stateNumeric
+OK: audit03.extreme.Secant.shift=False.extension=True.displayNumFail
+OK: audit03.extreme.Secant.shift=False.extension=True.notPhysical
+OK: audit03.extreme.Secant.shift=False.extension=True.normalRecovers
+OK: audit03.extreme.Secant.shift=True.extension=False.notConverged
+OK: audit03.extreme.Secant.shift=True.extension=False.numericCause
+OK: audit03.extreme.Secant.shift=True.extension=False.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=True.extension=False|N=-1e308|Mx=1e308|My=-1e308|failureCode=2|comment=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extreme.Secant.shift=True.extension=False.stateNumeric
+OK: audit03.extreme.Secant.shift=True.extension=False.displayNumFail
+OK: audit03.extreme.Secant.shift=True.extension=False.notPhysical
+OK: audit03.extreme.Secant.shift=True.extension=False.normalRecovers
+OK: audit03.extreme.Secant.shift=True.extension=True.notConverged
+OK: audit03.extreme.Secant.shift=True.extension=True.numericCause
+OK: audit03.extreme.Secant.shift=True.extension=True.reason
+EXTREME_CASE: audit03.extreme.Secant.shift=True.extension=True|N=-1e308|Mx=1e308|My=-1e308|failureCode=2|comment=Равновесие не найдено: матрица чувствительности Secant вырождена или ее численная оценка не представима.
+OK: audit03.extreme.Secant.shift=True.extension=True.stateNumeric
+OK: audit03.extreme.Secant.shift=True.extension=True.displayNumFail
+OK: audit03.extreme.Secant.shift=True.extension=True.notPhysical
+OK: audit03.extreme.Secant.shift=True.extension=True.normalRecovers
+OK: audit03.extremeRunner.False.Newton.1e160.0.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e160.0.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e160.0.notConverged
+OK: audit03.extremeRunner.False.Newton.1e160.0.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e160.0.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e160.0.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e160.0|error=0|
+OK: audit03.extremeRunner.False.Newton.1e160.0.recovers
+OK: audit03.extremeRunner.False.Newton.1e160.1.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e160.1.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e160.1.notConverged
+OK: audit03.extremeRunner.False.Newton.1e160.1.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e160.1.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e160.1.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e160.1|error=0|
+OK: audit03.extremeRunner.False.Newton.1e160.1.recovers
+OK: audit03.extremeRunner.False.Newton.1e160.2.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e160.2.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e160.2.notConverged
+OK: audit03.extremeRunner.False.Newton.1e160.2.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e160.2.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e160.2.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e160.2|error=0|
+OK: audit03.extremeRunner.False.Newton.1e160.2.recovers
+OK: audit03.extremeRunner.False.Newton.1e160.3.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e160.3.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e160.3.notConverged
+OK: audit03.extremeRunner.False.Newton.1e160.3.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e160.3.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e160.3.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e160.3|error=0|
+OK: audit03.extremeRunner.False.Newton.1e160.3.recovers
+OK: audit03.extremeRunner.False.Newton.1e160.4.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e160.4.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e160.4.notConverged
+OK: audit03.extremeRunner.False.Newton.1e160.4.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e160.4.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e160.4.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e160.4|error=0|
+OK: audit03.extremeRunner.False.Newton.1e160.4.recovers
+OK: audit03.extremeRunner.False.Newton.1e160.5.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e160.5.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e160.5.notConverged
+OK: audit03.extremeRunner.False.Newton.1e160.5.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e160.5.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e160.5.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e160.5|error=0|
+OK: audit03.extremeRunner.False.Newton.1e160.5.recovers
+OK: audit03.extremeRunner.False.Newton.1e308.0.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e308.0.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e308.0.notConverged
+OK: audit03.extremeRunner.False.Newton.1e308.0.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e308.0.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e308.0.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e308.0|error=0|
+OK: audit03.extremeRunner.False.Newton.1e308.0.recovers
+OK: audit03.extremeRunner.False.Newton.1e308.1.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e308.1.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e308.1.notConverged
+OK: audit03.extremeRunner.False.Newton.1e308.1.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e308.1.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e308.1.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e308.1|error=0|
+OK: audit03.extremeRunner.False.Newton.1e308.1.recovers
+OK: audit03.extremeRunner.False.Newton.1e308.2.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e308.2.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e308.2.notConverged
+OK: audit03.extremeRunner.False.Newton.1e308.2.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e308.2.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e308.2.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e308.2|error=0|
+OK: audit03.extremeRunner.False.Newton.1e308.2.recovers
+OK: audit03.extremeRunner.False.Newton.1e308.3.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e308.3.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e308.3.notConverged
+OK: audit03.extremeRunner.False.Newton.1e308.3.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e308.3.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e308.3.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e308.3|error=0|
+OK: audit03.extremeRunner.False.Newton.1e308.3.recovers
+OK: audit03.extremeRunner.False.Newton.1e308.4.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e308.4.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e308.4.notConverged
+OK: audit03.extremeRunner.False.Newton.1e308.4.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e308.4.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e308.4.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e308.4|error=0|
+OK: audit03.extremeRunner.False.Newton.1e308.4.recovers
+OK: audit03.extremeRunner.False.Newton.1e308.5.noRuntimeError
+OK: audit03.extremeRunner.False.Newton.1e308.5.hasAttempt
+OK: audit03.extremeRunner.False.Newton.1e308.5.notConverged
+OK: audit03.extremeRunner.False.Newton.1e308.5.numericFailure
+OK: audit03.extremeRunner.False.Newton.1e308.5.noPhysicalState
+OK: audit03.extremeRunner.False.Newton.1e308.5.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Newton.1e308.5|error=0|
+OK: audit03.extremeRunner.False.Newton.1e308.5.recovers
+OK: audit03.extremeRunner.False.Secant.1e160.0.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e160.0.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e160.0.notConverged
+OK: audit03.extremeRunner.False.Secant.1e160.0.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e160.0.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e160.0.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e160.0|error=0|
+OK: audit03.extremeRunner.False.Secant.1e160.0.recovers
+OK: audit03.extremeRunner.False.Secant.1e160.1.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e160.1.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e160.1.notConverged
+OK: audit03.extremeRunner.False.Secant.1e160.1.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e160.1.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e160.1.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e160.1|error=0|
+OK: audit03.extremeRunner.False.Secant.1e160.1.recovers
+OK: audit03.extremeRunner.False.Secant.1e160.2.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e160.2.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e160.2.notConverged
+OK: audit03.extremeRunner.False.Secant.1e160.2.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e160.2.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e160.2.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e160.2|error=0|
+OK: audit03.extremeRunner.False.Secant.1e160.2.recovers
+OK: audit03.extremeRunner.False.Secant.1e160.3.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e160.3.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e160.3.notConverged
+OK: audit03.extremeRunner.False.Secant.1e160.3.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e160.3.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e160.3.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e160.3|error=0|
+OK: audit03.extremeRunner.False.Secant.1e160.3.recovers
+OK: audit03.extremeRunner.False.Secant.1e160.4.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e160.4.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e160.4.notConverged
+OK: audit03.extremeRunner.False.Secant.1e160.4.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e160.4.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e160.4.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e160.4|error=0|
+OK: audit03.extremeRunner.False.Secant.1e160.4.recovers
+OK: audit03.extremeRunner.False.Secant.1e160.5.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e160.5.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e160.5.notConverged
+OK: audit03.extremeRunner.False.Secant.1e160.5.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e160.5.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e160.5.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e160.5|error=0|
+OK: audit03.extremeRunner.False.Secant.1e160.5.recovers
+OK: audit03.extremeRunner.False.Secant.1e308.0.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e308.0.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e308.0.notConverged
+OK: audit03.extremeRunner.False.Secant.1e308.0.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e308.0.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e308.0.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e308.0|error=0|
+OK: audit03.extremeRunner.False.Secant.1e308.0.recovers
+OK: audit03.extremeRunner.False.Secant.1e308.1.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e308.1.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e308.1.notConverged
+OK: audit03.extremeRunner.False.Secant.1e308.1.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e308.1.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e308.1.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e308.1|error=0|
+OK: audit03.extremeRunner.False.Secant.1e308.1.recovers
+OK: audit03.extremeRunner.False.Secant.1e308.2.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e308.2.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e308.2.notConverged
+OK: audit03.extremeRunner.False.Secant.1e308.2.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e308.2.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e308.2.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e308.2|error=0|
+OK: audit03.extremeRunner.False.Secant.1e308.2.recovers
+OK: audit03.extremeRunner.False.Secant.1e308.3.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e308.3.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e308.3.notConverged
+OK: audit03.extremeRunner.False.Secant.1e308.3.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e308.3.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e308.3.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e308.3|error=0|
+OK: audit03.extremeRunner.False.Secant.1e308.3.recovers
+OK: audit03.extremeRunner.False.Secant.1e308.4.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e308.4.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e308.4.notConverged
+OK: audit03.extremeRunner.False.Secant.1e308.4.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e308.4.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e308.4.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e308.4|error=0|
+OK: audit03.extremeRunner.False.Secant.1e308.4.recovers
+OK: audit03.extremeRunner.False.Secant.1e308.5.noRuntimeError
+OK: audit03.extremeRunner.False.Secant.1e308.5.hasAttempt
+OK: audit03.extremeRunner.False.Secant.1e308.5.notConverged
+OK: audit03.extremeRunner.False.Secant.1e308.5.numericFailure
+OK: audit03.extremeRunner.False.Secant.1e308.5.noPhysicalState
+OK: audit03.extremeRunner.False.Secant.1e308.5.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.False.Secant.1e308.5|error=0|
+OK: audit03.extremeRunner.False.Secant.1e308.5.recovers
+OK: audit03.extremeRunner.True.Newton.1e160.0.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e160.0.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e160.0.notConverged
+OK: audit03.extremeRunner.True.Newton.1e160.0.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e160.0.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e160.0.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e160.0|error=0|
+OK: audit03.extremeRunner.True.Newton.1e160.0.recovers
+OK: audit03.extremeRunner.True.Newton.1e160.1.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e160.1.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e160.1.notConverged
+OK: audit03.extremeRunner.True.Newton.1e160.1.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e160.1.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e160.1.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e160.1|error=0|
+OK: audit03.extremeRunner.True.Newton.1e160.1.recovers
+OK: audit03.extremeRunner.True.Newton.1e160.2.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e160.2.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e160.2.notConverged
+OK: audit03.extremeRunner.True.Newton.1e160.2.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e160.2.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e160.2.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e160.2|error=0|
+OK: audit03.extremeRunner.True.Newton.1e160.2.recovers
+OK: audit03.extremeRunner.True.Newton.1e160.3.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e160.3.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e160.3.notConverged
+OK: audit03.extremeRunner.True.Newton.1e160.3.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e160.3.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e160.3.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e160.3|error=0|
+OK: audit03.extremeRunner.True.Newton.1e160.3.recovers
+OK: audit03.extremeRunner.True.Newton.1e160.4.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e160.4.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e160.4.notConverged
+OK: audit03.extremeRunner.True.Newton.1e160.4.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e160.4.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e160.4.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e160.4|error=0|
+OK: audit03.extremeRunner.True.Newton.1e160.4.recovers
+OK: audit03.extremeRunner.True.Newton.1e160.5.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e160.5.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e160.5.notConverged
+OK: audit03.extremeRunner.True.Newton.1e160.5.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e160.5.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e160.5.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e160.5|error=0|
+OK: audit03.extremeRunner.True.Newton.1e160.5.recovers
+OK: audit03.extremeRunner.True.Newton.1e308.0.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e308.0.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e308.0.notConverged
+OK: audit03.extremeRunner.True.Newton.1e308.0.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e308.0.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e308.0.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e308.0|error=0|
+OK: audit03.extremeRunner.True.Newton.1e308.0.recovers
+OK: audit03.extremeRunner.True.Newton.1e308.1.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e308.1.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e308.1.notConverged
+OK: audit03.extremeRunner.True.Newton.1e308.1.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e308.1.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e308.1.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e308.1|error=0|
+OK: audit03.extremeRunner.True.Newton.1e308.1.recovers
+OK: audit03.extremeRunner.True.Newton.1e308.2.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e308.2.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e308.2.notConverged
+OK: audit03.extremeRunner.True.Newton.1e308.2.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e308.2.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e308.2.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e308.2|error=0|
+OK: audit03.extremeRunner.True.Newton.1e308.2.recovers
+OK: audit03.extremeRunner.True.Newton.1e308.3.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e308.3.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e308.3.notConverged
+OK: audit03.extremeRunner.True.Newton.1e308.3.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e308.3.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e308.3.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e308.3|error=0|
+OK: audit03.extremeRunner.True.Newton.1e308.3.recovers
+OK: audit03.extremeRunner.True.Newton.1e308.4.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e308.4.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e308.4.notConverged
+OK: audit03.extremeRunner.True.Newton.1e308.4.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e308.4.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e308.4.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e308.4|error=0|
+OK: audit03.extremeRunner.True.Newton.1e308.4.recovers
+OK: audit03.extremeRunner.True.Newton.1e308.5.noRuntimeError
+OK: audit03.extremeRunner.True.Newton.1e308.5.hasAttempt
+OK: audit03.extremeRunner.True.Newton.1e308.5.notConverged
+OK: audit03.extremeRunner.True.Newton.1e308.5.numericFailure
+OK: audit03.extremeRunner.True.Newton.1e308.5.noPhysicalState
+OK: audit03.extremeRunner.True.Newton.1e308.5.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Newton.1e308.5|error=0|
+OK: audit03.extremeRunner.True.Newton.1e308.5.recovers
+OK: audit03.extremeRunner.True.Secant.1e160.0.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e160.0.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e160.0.notConverged
+OK: audit03.extremeRunner.True.Secant.1e160.0.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e160.0.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e160.0.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e160.0|error=0|
+OK: audit03.extremeRunner.True.Secant.1e160.0.recovers
+OK: audit03.extremeRunner.True.Secant.1e160.1.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e160.1.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e160.1.notConverged
+OK: audit03.extremeRunner.True.Secant.1e160.1.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e160.1.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e160.1.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e160.1|error=0|
+OK: audit03.extremeRunner.True.Secant.1e160.1.recovers
+OK: audit03.extremeRunner.True.Secant.1e160.2.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e160.2.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e160.2.notConverged
+OK: audit03.extremeRunner.True.Secant.1e160.2.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e160.2.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e160.2.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e160.2|error=0|
+OK: audit03.extremeRunner.True.Secant.1e160.2.recovers
+OK: audit03.extremeRunner.True.Secant.1e160.3.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e160.3.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e160.3.notConverged
+OK: audit03.extremeRunner.True.Secant.1e160.3.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e160.3.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e160.3.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e160.3|error=0|
+OK: audit03.extremeRunner.True.Secant.1e160.3.recovers
+OK: audit03.extremeRunner.True.Secant.1e160.4.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e160.4.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e160.4.notConverged
+OK: audit03.extremeRunner.True.Secant.1e160.4.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e160.4.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e160.4.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e160.4|error=0|
+OK: audit03.extremeRunner.True.Secant.1e160.4.recovers
+OK: audit03.extremeRunner.True.Secant.1e160.5.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e160.5.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e160.5.notConverged
+OK: audit03.extremeRunner.True.Secant.1e160.5.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e160.5.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e160.5.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e160.5|error=0|
+OK: audit03.extremeRunner.True.Secant.1e160.5.recovers
+OK: audit03.extremeRunner.True.Secant.1e308.0.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e308.0.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e308.0.notConverged
+OK: audit03.extremeRunner.True.Secant.1e308.0.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e308.0.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e308.0.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e308.0|error=0|
+OK: audit03.extremeRunner.True.Secant.1e308.0.recovers
+OK: audit03.extremeRunner.True.Secant.1e308.1.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e308.1.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e308.1.notConverged
+OK: audit03.extremeRunner.True.Secant.1e308.1.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e308.1.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e308.1.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e308.1|error=0|
+OK: audit03.extremeRunner.True.Secant.1e308.1.recovers
+OK: audit03.extremeRunner.True.Secant.1e308.2.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e308.2.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e308.2.notConverged
+OK: audit03.extremeRunner.True.Secant.1e308.2.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e308.2.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e308.2.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e308.2|error=0|
+OK: audit03.extremeRunner.True.Secant.1e308.2.recovers
+OK: audit03.extremeRunner.True.Secant.1e308.3.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e308.3.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e308.3.notConverged
+OK: audit03.extremeRunner.True.Secant.1e308.3.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e308.3.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e308.3.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e308.3|error=0|
+OK: audit03.extremeRunner.True.Secant.1e308.3.recovers
+OK: audit03.extremeRunner.True.Secant.1e308.4.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e308.4.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e308.4.notConverged
+OK: audit03.extremeRunner.True.Secant.1e308.4.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e308.4.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e308.4.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e308.4|error=0|
+OK: audit03.extremeRunner.True.Secant.1e308.4.recovers
+OK: audit03.extremeRunner.True.Secant.1e308.5.noRuntimeError
+OK: audit03.extremeRunner.True.Secant.1e308.5.hasAttempt
+OK: audit03.extremeRunner.True.Secant.1e308.5.notConverged
+OK: audit03.extremeRunner.True.Secant.1e308.5.numericFailure
+OK: audit03.extremeRunner.True.Secant.1e308.5.noPhysicalState
+OK: audit03.extremeRunner.True.Secant.1e308.5.reasonPresent
+EXTREME_RUNNER: audit03.extremeRunner.True.Secant.1e308.5|error=0|
+OK: audit03.extremeRunner.True.Secant.1e308.5.recovers
+OK: audit03.effect.Solver.LoadSteps.one
+OK: audit03.effect.Solver.LoadSteps.four
+OK: audit03.effect.Solver.LoadSteps.work
+OK: audit03.effect.Solver.MaxIterations.one
+OK: audit03.effect.Solver.MaxIterations.four
+OK: audit03.effect.Solver.ToleranceN.loose
+OK: audit03.effect.Solver.ToleranceN.strict
+OK: audit03.effect.Solver.ToleranceN.looseZero; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceN.strictN; actual=-100000.; expected=-100000.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceN.strictMx; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceN.strictMy; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceMx.loose
+OK: audit03.effect.Solver.ToleranceMx.strict
+OK: audit03.effect.Solver.ToleranceMx.looseZero; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceMx.strictN; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceMx.strictMx; actual=999999.999999999; expected=1000000.; absDiff=0.000000000582
+OK: audit03.effect.Solver.ToleranceMx.strictMy; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.effect.Solver.ToleranceMy.loose
+OK: audit03.effect.Solver.ToleranceMy.strict
+OK: audit03.effect.Solver.ToleranceMy.looseZero; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.ToleranceMy.strictN; actual=-0.000000000002; expected=0.; absDiff=0.000000000002
+OK: audit03.effect.Solver.ToleranceMy.strictMx; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.effect.Solver.ToleranceMy.strictMy; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.effect.Solver.MaxDeltaEpsilon0.converged
+OK: audit03.effect.Solver.MaxDeltaEpsilon0.moreWork
+OK: audit03.effect.Solver.MaxDeltaEpsilon0.N; actual=-100000.; expected=-100000.; absDiff=0.
+OK: audit03.effect.Solver.MaxDeltaEpsilon0.Mx; actual=-0.000000000016; expected=0.; absDiff=0.000000000016
+OK: audit03.effect.Solver.MaxDeltaKappa.converged
+OK: audit03.effect.Solver.MaxDeltaKappa.moreWork
+OK: audit03.effect.Solver.MaxDeltaKappa.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.effect.Solver.MaxDeltaKappa.Mx; actual=999999.999999999; expected=1000000.; absDiff=0.000000000582
+OK: audit03.effect.Solver.DampingInitial.converged
+OK: audit03.effect.Solver.DampingInitial.moreWork
+OK: audit03.effect.Solver.DampingInitial.N; actual=-99999.9992549419; expected=-100000.; absDiff=0.000745058074
+OK: audit03.effect.Solver.DampingInitial.Mx; actual=-0.000000000233; expected=0.; absDiff=0.000000000233
+OK: audit03.effect.Solver.Method.Newton
+OK: audit03.effect.Solver.Method.Secant
+OK: audit03.effect.Solver.SecantMinStepNorm.small
+OK: audit03.effect.Solver.SecantMinStepNorm.large
+OK: audit03.effect.Solver.SecantMaxRestarts.zero
+OK: audit03.effect.Solver.SecantMaxRestarts.three
+OK: audit03.effect.SecantOptions.inactiveInNewton
+OK: audit03.effect.invalid.Solver.Method
+OK: audit03.effect.invalid.noIterations.Solver.Method
+OK: audit03.effect.invalid.reason.Solver.Method
+OK: audit03.effect.invalid.Solver.MaxIterations
+OK: audit03.effect.invalid.noIterations.Solver.MaxIterations
+OK: audit03.effect.invalid.reason.Solver.MaxIterations
+OK: audit03.effect.invalid.Solver.LoadSteps
+OK: audit03.effect.invalid.noIterations.Solver.LoadSteps
+OK: audit03.effect.invalid.reason.Solver.LoadSteps
+OK: audit03.effect.invalid.Solver.ToleranceN
+OK: audit03.effect.invalid.noIterations.Solver.ToleranceN
+OK: audit03.effect.invalid.reason.Solver.ToleranceN
+OK: audit03.effect.invalid.Solver.ToleranceMx
+OK: audit03.effect.invalid.noIterations.Solver.ToleranceMx
+OK: audit03.effect.invalid.reason.Solver.ToleranceMx
+OK: audit03.effect.invalid.Solver.ToleranceMy
+OK: audit03.effect.invalid.noIterations.Solver.ToleranceMy
+OK: audit03.effect.invalid.reason.Solver.ToleranceMy
+OK: audit03.effect.invalid.Solver.DampingInitial
+OK: audit03.effect.invalid.noIterations.Solver.DampingInitial
+OK: audit03.effect.invalid.reason.Solver.DampingInitial
+OK: audit03.effect.invalid.Solver.MinLineSearchAlpha
+OK: audit03.effect.invalid.noIterations.Solver.MinLineSearchAlpha
+OK: audit03.effect.invalid.reason.Solver.MinLineSearchAlpha
+OK: audit03.effect.invalid.Solver.MaxDeltaEpsilon0
+OK: audit03.effect.invalid.noIterations.Solver.MaxDeltaEpsilon0
+OK: audit03.effect.invalid.reason.Solver.MaxDeltaEpsilon0
+OK: audit03.effect.invalid.Solver.MaxDeltaKappa
+OK: audit03.effect.invalid.noIterations.Solver.MaxDeltaKappa
+OK: audit03.effect.invalid.reason.Solver.MaxDeltaKappa
+OK: audit03.effect.invalid.Solver.SecantMaxRestarts
+OK: audit03.effect.invalid.noIterations.Solver.SecantMaxRestarts
+OK: audit03.effect.invalid.reason.Solver.SecantMaxRestarts
+OK: audit03.effect.invalid.Solver.SecantMinStepNorm
+OK: audit03.effect.invalid.noIterations.Solver.SecantMinStepNorm
+OK: audit03.effect.invalid.reason.Solver.SecantMinStepNorm
+OK: audit03.effect.Solver.LineSearchEnabled.off
+OK: audit03.effect.Solver.LineSearchEnabled.on
+OK: audit03.effect.Solver.LineSearchEnabled.offNoReduction
+OK: audit03.effect.Solver.LineSearchEnabled.onReduction
+SETTING_EFFECT: Solver.LineSearchEnabled|offIterations=3|onIterations=2|offEvaluations=6|onEvaluations=6
+OK: audit03.effect.Solver.MinLineSearchAlpha.one
+OK: audit03.effect.Solver.MinLineSearchAlpha.small
+OK: audit03.effect.units.Solver.ToleranceN.negativeTyped
+OK: audit03.effect.units.Solver.ToleranceN.noIterations
+OK: audit03.effect.units.Solver.ToleranceN.reason
+SIGNED_SETTING: key=Solver.ToleranceN|raw=-1|converged=False|failureCode=4|iterations=0|reason=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+OK: audit03.effect.units.Solver.ToleranceN.positiveRecovery
+OK: audit03.effect.units.Solver.ToleranceMx.negativeTyped
+OK: audit03.effect.units.Solver.ToleranceMx.noIterations
+OK: audit03.effect.units.Solver.ToleranceMx.reason
+SIGNED_SETTING: key=Solver.ToleranceMx|raw=-1|converged=False|failureCode=4|iterations=0|reason=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+OK: audit03.effect.units.Solver.ToleranceMx.positiveRecovery
+OK: audit03.effect.units.Solver.ToleranceMy.negativeTyped
+OK: audit03.effect.units.Solver.ToleranceMy.noIterations
+OK: audit03.effect.units.Solver.ToleranceMy.reason
+SIGNED_SETTING: key=Solver.ToleranceMy|raw=-1|converged=False|failureCode=4|iterations=0|reason=Допуски Solver.ToleranceN/Mx/My должны быть положительными.
+OK: audit03.effect.units.Solver.ToleranceMy.positiveRecovery
+OK: audit03.effect.units.Solver.MaxDeltaKappa.negativeTyped
+OK: audit03.effect.units.Solver.MaxDeltaKappa.noIterations
+OK: audit03.effect.units.Solver.MaxDeltaKappa.reason
+SIGNED_SETTING: key=Solver.MaxDeltaKappa|raw=-1|converged=False|failureCode=4|iterations=0|reason=Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами.
+OK: audit03.effect.units.Solver.MaxDeltaKappa.positiveRecovery
+OK: audit03.inputCurvature.Newton.axis1.referenceConverged
+OK: audit03.inputCurvature.Newton.axis1.binding
+OK: audit03.inputCurvature.Newton.axis1.unit0.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit0.converged
+OK: audit03.inputCurvature.Newton.axis1.unit0.iterations
+OK: audit03.inputCurvature.Newton.axis1.unit0.moreWork
+OK: audit03.inputCurvature.Newton.axis1.unit0.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit0.Mx; actual=999999.999999999; expected=1000000.; absDiff=0.000000000582
+OK: audit03.inputCurvature.Newton.axis1.unit0.My; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.inputCurvature.Newton.axis1.unit0.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit0.kappaX; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit0.kappaY; actual=0.; expected=0.; absDiff=0.
+CURVATURE_BINDING: method=Newton|axis=1|input=1/mm|raw=0.0000001|iterations=22|freeIterations=2
+OK: audit03.inputCurvature.Newton.axis1.unit1.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.converged
+OK: audit03.inputCurvature.Newton.axis1.unit1.iterations
+OK: audit03.inputCurvature.Newton.axis1.unit1.moreWork
+OK: audit03.inputCurvature.Newton.axis1.unit1.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.Mx; actual=1000000.; expected=1000000.; absDiff=0.000000000466
+OK: audit03.inputCurvature.Newton.axis1.unit1.My; actual=-0.000000000021; expected=0.; absDiff=0.000000000021
+OK: audit03.inputCurvature.Newton.axis1.unit1.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.kappaX; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.kappaY; actual=0.; expected=0.; absDiff=0.
+CURVATURE_BINDING: method=Newton|axis=1|input=1/m|raw=0.0001|iterations=22|freeIterations=2
+OK: audit03.inputCurvature.Newton.axis1.unit1.disconnectedConverged
+OK: audit03.inputCurvature.Newton.axis1.unit1.detectDisconnectedUnits
+OK: audit03.inputCurvature.Newton.axis1.unit1.disconnectedKx; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis1.unit1.disconnectedKy; actual=0.; expected=0.; absDiff=0.
+CURVATURE_DISCONNECTED: method=Newton|axis=1|iterations=2|correctIterations=22
+OK: audit03.inputCurvature.Newton.axis2.referenceConverged
+OK: audit03.inputCurvature.Newton.axis2.binding
+OK: audit03.inputCurvature.Newton.axis2.unit0.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit0.converged
+OK: audit03.inputCurvature.Newton.axis2.unit0.iterations
+OK: audit03.inputCurvature.Newton.axis2.unit0.moreWork
+OK: audit03.inputCurvature.Newton.axis2.unit0.N; actual=-0.000000000002; expected=0.; absDiff=0.000000000002
+OK: audit03.inputCurvature.Newton.axis2.unit0.Mx; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.inputCurvature.Newton.axis2.unit0.My; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.inputCurvature.Newton.axis2.unit0.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit0.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit0.kappaY; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_BINDING: method=Newton|axis=2|input=1/mm|raw=0.0000001|iterations=7|freeIterations=2
+OK: audit03.inputCurvature.Newton.axis2.unit1.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.converged
+OK: audit03.inputCurvature.Newton.axis2.unit1.iterations
+OK: audit03.inputCurvature.Newton.axis2.unit1.moreWork
+OK: audit03.inputCurvature.Newton.axis2.unit1.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.Mx; actual=-0.000000000002; expected=0.; absDiff=0.000000000002
+OK: audit03.inputCurvature.Newton.axis2.unit1.My; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.inputCurvature.Newton.axis2.unit1.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.kappaY; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_BINDING: method=Newton|axis=2|input=1/m|raw=0.0001|iterations=7|freeIterations=2
+OK: audit03.inputCurvature.Newton.axis2.unit1.disconnectedConverged
+OK: audit03.inputCurvature.Newton.axis2.unit1.detectDisconnectedUnits
+OK: audit03.inputCurvature.Newton.axis2.unit1.disconnectedKx; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Newton.axis2.unit1.disconnectedKy; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_DISCONNECTED: method=Newton|axis=2|iterations=2|correctIterations=7
+OK: audit03.inputCurvature.Secant.axis1.referenceConverged
+OK: audit03.inputCurvature.Secant.axis1.binding
+OK: audit03.inputCurvature.Secant.axis1.unit0.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit0.converged
+OK: audit03.inputCurvature.Secant.axis1.unit0.iterations
+OK: audit03.inputCurvature.Secant.axis1.unit0.moreWork
+OK: audit03.inputCurvature.Secant.axis1.unit0.N; actual=-0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.inputCurvature.Secant.axis1.unit0.Mx; actual=999999.999999999; expected=1000000.; absDiff=0.000000000582
+OK: audit03.inputCurvature.Secant.axis1.unit0.My; actual=0.000000000083; expected=0.; absDiff=0.000000000083
+OK: audit03.inputCurvature.Secant.axis1.unit0.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit0.kappaX; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit0.kappaY; actual=0.; expected=0.; absDiff=0.
+CURVATURE_BINDING: method=Secant|axis=1|input=1/mm|raw=0.0000001|iterations=22|freeIterations=2
+OK: audit03.inputCurvature.Secant.axis1.unit1.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit1.converged
+OK: audit03.inputCurvature.Secant.axis1.unit1.iterations
+OK: audit03.inputCurvature.Secant.axis1.unit1.moreWork
+OK: audit03.inputCurvature.Secant.axis1.unit1.N; actual=0.000000000036; expected=0.; absDiff=0.000000000036
+OK: audit03.inputCurvature.Secant.axis1.unit1.Mx; actual=1000000.; expected=1000000.; absDiff=0.000000000466
+OK: audit03.inputCurvature.Secant.axis1.unit1.My; actual=-0.000000000052; expected=0.; absDiff=0.000000000052
+OK: audit03.inputCurvature.Secant.axis1.unit1.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit1.kappaX; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit1.kappaY; actual=0.; expected=0.; absDiff=0.
+CURVATURE_BINDING: method=Secant|axis=1|input=1/m|raw=0.0001|iterations=22|freeIterations=2
+OK: audit03.inputCurvature.Secant.axis1.unit1.disconnectedConverged
+OK: audit03.inputCurvature.Secant.axis1.unit1.detectDisconnectedUnits
+OK: audit03.inputCurvature.Secant.axis1.unit1.disconnectedKx; actual=0.000002020202; expected=0.000002020202; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis1.unit1.disconnectedKy; actual=0.; expected=0.; absDiff=0.
+CURVATURE_DISCONNECTED: method=Secant|axis=1|iterations=2|correctIterations=22
+OK: audit03.inputCurvature.Secant.axis2.referenceConverged
+OK: audit03.inputCurvature.Secant.axis2.binding
+OK: audit03.inputCurvature.Secant.axis2.unit0.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit0.converged
+OK: audit03.inputCurvature.Secant.axis2.unit0.iterations
+OK: audit03.inputCurvature.Secant.axis2.unit0.moreWork
+OK: audit03.inputCurvature.Secant.axis2.unit0.N; actual=-0.000000000002; expected=0.; absDiff=0.000000000002
+OK: audit03.inputCurvature.Secant.axis2.unit0.Mx; actual=0.000000000005; expected=0.; absDiff=0.000000000005
+OK: audit03.inputCurvature.Secant.axis2.unit0.My; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.inputCurvature.Secant.axis2.unit0.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit0.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit0.kappaY; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_BINDING: method=Secant|axis=2|input=1/mm|raw=0.0000001|iterations=7|freeIterations=2
+OK: audit03.inputCurvature.Secant.axis2.unit1.physicalClamp; actual=0.0000001; expected=0.0000001; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.converged
+OK: audit03.inputCurvature.Secant.axis2.unit1.iterations
+OK: audit03.inputCurvature.Secant.axis2.unit1.moreWork
+OK: audit03.inputCurvature.Secant.axis2.unit1.N; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.Mx; actual=0.000000000006; expected=0.; absDiff=0.000000000006
+OK: audit03.inputCurvature.Secant.axis2.unit1.My; actual=-999999.999999999; expected=-1000000.; absDiff=0.000000001048
+OK: audit03.inputCurvature.Secant.axis2.unit1.epsilon0; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.kappaX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.kappaY; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_BINDING: method=Secant|axis=2|input=1/m|raw=0.0001|iterations=7|freeIterations=2
+OK: audit03.inputCurvature.Secant.axis2.unit1.disconnectedConverged
+OK: audit03.inputCurvature.Secant.axis2.unit1.detectDisconnectedUnits
+OK: audit03.inputCurvature.Secant.axis2.unit1.disconnectedKx; actual=0.; expected=0.; absDiff=0.
+OK: audit03.inputCurvature.Secant.axis2.unit1.disconnectedKy; actual=-0.000000501253; expected=-0.000000501253; absDiff=0.
+CURVATURE_DISCONNECTED: method=Secant|axis=2|iterations=2|correctIterations=7
+OK: audit03.inputCurvature.restore.1.1
+OK: audit03.inputCurvature.restore.1.2
+OK: audit03.inputCurvature.restore.1.3
+OK: audit03.inputCurvature.restore.1.4
+OK: audit03.inputCurvature.restore.2.1
+OK: audit03.inputCurvature.restore.2.2
+OK: audit03.inputCurvature.restore.2.3
+OK: audit03.inputCurvature.restore.2.4
+OK: audit03.inputCurvature.restore.3.1
+OK: audit03.inputCurvature.restore.3.2
+OK: audit03.inputCurvature.restore.3.3
+OK: audit03.inputCurvature.restore.3.4
+OK: audit03.inputCurvature.restore.4.1
+OK: audit03.inputCurvature.restore.4.2
+OK: audit03.inputCurvature.restore.4.3
+OK: audit03.inputCurvature.restore.4.4
+OK: audit03.inputCurvature.restore.5.1
+OK: audit03.inputCurvature.restore.5.2
+OK: audit03.inputCurvature.restore.5.3
+OK: audit03.inputCurvature.restore.5.4
+OK: audit03.inputCurvature.restore.6.1
+OK: audit03.inputCurvature.restore.6.2
+OK: audit03.inputCurvature.restore.6.3
+OK: audit03.inputCurvature.restore.6.4
+OK: audit03.inputCurvature.restore.7.1
+OK: audit03.inputCurvature.restore.7.2
+OK: audit03.inputCurvature.restore.7.3
+OK: audit03.inputCurvature.restore.7.4
+TOTAL_SECTION_SOLVER: passed=1367; failed=0; elapsedSec=1.7734375
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_7e10d8f620ad45e38aa5ad33933a0251\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionSolver.RunSectionSolverTests; 2026-10-05T05:44:44

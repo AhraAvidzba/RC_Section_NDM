@@ -1,0 +1,2413 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Audit03\RC_Section_NDM_small_path_v320.xlsm
+SOURCE_SHA256: CACB7F261AA3117BDD7C09340A41E65AD95E43F575A619F29789E9DA06EC5871
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4f950ed9c25545e593c15544ea298c45\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+===== modTestCrackWidth.RunCrackWidthTests =====
+SUITE_STARTED: modTestCrackWidth.RunCrackWidthTests; 2026-10-05T07:15:43
+EXCEL_AFTER_SUITE: pid=5896; workingSet=146952192; privateBytes=100564992; cpu=52.3125
+EXCEL_AFTER_SUITE: pid=23476; workingSet=222507008; privateBytes=174223360; cpu=18231.78125
+OK: crack.concrete.ignoreStress; actual=0.; expected=0.; absDiff=0.
+OK: crack.concrete.ignoreTangent; actual=0.; expected=0.; absDiff=0.
+OK: crack.concrete.useStress; actual=0.65; expected=0.65; absDiff=0.
+OK: crack.concrete.useLimit; actual=1.8; expected=1.8; absDiff=0.
+OK: crack.concrete.useTangent; actual=32500.; expected=32500.; absDiff=0.000000000004
+OK: crack.formula.width; actual=0.1792; expected=0.1792; absDiff=0.
+OK: crack.formula.utilization; actual=0.448; expected=0.448; absDiff=0.
+OK: crack.formula.noSteelEs; actual=0.; expected=0.; absDiff=0.
+OK: crack.user.mx.converged
+OK: crack.user.mx.formed
+OK: crack.user.mx.tensionBars
+OK: crack.user.mx.sigmaPositive
+OK: crack.user.mx.spacingPositive
+OK: crack.user.mx.widthFormula; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.user.mx.utilization; actual=0.758319334085; expected=0.758319334085; absDiff=0.
+OK: crack.user.psi; actual=1.; expected=1.; absDiff=0.
+OK: crack.user.sigmaCrcAvailable
+OK: crack.user.circleMxy.converged
+OK: crack.user.circleMxy.formed
+OK: crack.user.circleMxy.tensionBars
+OK: crack.user.circleMxy.sigmaPositive
+OK: crack.user.circleMxy.spacingPositive
+OK: crack.user.circleMxy.widthFormula; actual=0.13924115118; expected=0.13924115118; absDiff=0.
+OK: crack.user.circleMxy.utilization; actual=0.464137170601; expected=0.464137170601; absDiff=0.
+OK: crack.user.coeffs.converged
+OK: crack.user.coeffs.formed
+OK: crack.user.coeffs.tensionBars
+OK: crack.user.coeffs.sigmaPositive
+OK: crack.user.coeffs.spacingPositive
+OK: crack.user.coeffs.widthFormula; actual=0.320314086718; expected=0.320314086718; absDiff=0.
+OK: crack.user.coeffs.utilization; actual=1.067713622392; expected=1.067713622392; absDiff=0.
+OK: crack.user.coeffs.phi1; actual=1.6; expected=1.6; absDiff=0.
+OK: crack.user.coeffs.phi2; actual=0.7; expected=0.7; absDiff=0.
+OK: crack.user.coeffs.phi3; actual=1.1; expected=1.1; absDiff=0.
+OK: crack.user.coeffs.psi; actual=0.8; expected=0.8; absDiff=0.
+OK: crack.user.coeffs.lambda
+OK: crack.user.coeffs.preCrackState
+OK: crack.user.coeffs.postCrackState
+OK: crack.user.coeffs.sigmaCrcAvailable
+OK: crack.cover.local.converged
+OK: crack.cover.local.formed
+OK: crack.cover.local.tensionBars
+OK: crack.cover.local.sigmaPositive
+OK: crack.cover.local.spacingPositive
+OK: crack.cover.local.widthFormula; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.cover.local.utilization; actual=0.758319334085; expected=0.758319334085; absDiff=0.
+OK: crack.cover.local.mode
+OK: crack.cover.global.converged
+OK: crack.cover.global.formed
+OK: crack.cover.global.tensionBars
+OK: crack.cover.global.sigmaPositive
+OK: crack.cover.global.spacingPositive
+OK: crack.cover.global.widthFormula; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.cover.global.utilization; actual=0.758319334085; expected=0.758319334085; absDiff=0.
+OK: crack.cover.global.mode
+OK: crack.zone.effective.converged
+OK: crack.zone.effective.formed
+OK: crack.zone.effective.tensionBars
+OK: crack.zone.effective.sigmaPositive
+OK: crack.zone.effective.spacingPositive
+OK: crack.zone.effective.widthFormula; actual=0.228673856712; expected=0.228673856712; absDiff=0.
+OK: crack.zone.effective.utilization; actual=0.762246189039; expected=0.762246189039; absDiff=0.
+OK: crack.zone.full.converged
+OK: crack.zone.full.formed
+OK: crack.zone.full.tensionBars
+OK: crack.zone.full.sigmaPositive
+OK: crack.zone.full.spacingPositive
+OK: crack.zone.full.widthFormula; actual=0.228673856712; expected=0.228673856712; absDiff=0.
+OK: crack.zone.full.utilization; actual=0.762246189039; expected=0.762246189039; absDiff=0.
+OK: crack.zone.fullAbtPositive
+OK: crack.zone.effectiveAbtPositive
+OK: crack.zone.effectiveDepthFormula; actual=111.626764643974; expected=111.626764643974; absDiff=0.
+OK: crack.auto.pass.converged
+OK: crack.auto.pass.formed
+OK: crack.auto.pass.tensionBars
+OK: crack.auto.pass.sigmaPositive
+OK: crack.auto.pass.spacingPositive
+OK: crack.auto.pass.widthFormula; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.auto.pass.utilization; actual=0.227495800226; expected=0.227495800226; absDiff=0.
+OK: crack.auto.pass.psi; actual=1.; expected=1.; absDiff=0.
+OK: crack.auto.pass.lambda
+OK: crack.auto.pass.sigmaCrcAvailable
+OK: crack.auto.pass.preCrackState
+OK: crack.auto.pass.postCrackState
+OK: crack.alwaysCalc.pass.converged
+OK: crack.alwaysCalc.pass.formed
+OK: crack.alwaysCalc.pass.tensionBars
+OK: crack.alwaysCalc.pass.sigmaPositive
+OK: crack.alwaysCalc.pass.spacingPositive
+OK: crack.alwaysCalc.pass.widthFormula; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.alwaysCalc.pass.utilization; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.alwaysCalc.sigmaCrc
+OK: crack.alwaysCalc.psiReduced
+OK: crack.alwaysCalc.widthLessThanAuto
+OK: crack.sigmaCrcMode.allSelected.converged
+OK: crack.sigmaCrcMode.allSelected.formed
+OK: crack.sigmaCrcMode.allSelected.tensionBars
+OK: crack.sigmaCrcMode.allSelected.sigmaPositive
+OK: crack.sigmaCrcMode.allSelected.spacingPositive
+OK: crack.sigmaCrcMode.allSelected.widthFormula; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.sigmaCrcMode.allSelected.utilization; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.sigmaCrcMode.allSelected.normalized
+OK: crack.sigmaCrcMode.allSelected.sigmaCrcAvailable
+OK: crack.auto.fail.converged
+OK: crack.auto.fail.formed
+OK: crack.auto.fail.tensionBars
+OK: crack.auto.fail.sigmaPositive
+OK: crack.auto.fail.spacingPositive
+OK: crack.auto.fail.widthFormula; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.auto.fail.utilization; actual=1338.58063151258; expected=1338.58063151258; absDiff=0.
+OK: crack.auto.fail.lambda
+OK: crack.auto.fail.psiRange
+OK: crack.auto.fail.sigmaCrc
+OK: crack.auto.fail.psiReduced
+OK: crack.auto.fail.preCrackState
+OK: crack.auto.fail.postCrackState
+OK: crack.auto.fail.preCrackState.type
+OK: crack.auto.fail.postCrackState.type
+OK: crack.auto.fail.preCrackState.role
+OK: crack.auto.fail.postCrackState.role
+OK: crack.auto.fail.preCrack.twoSign
+OK: crack.auto.fail.preCrack.epsBtUlt; actual=0.00015; expected=0.00015; absDiff=0.
+OK: crack.auto.fail.preCrack.notElasticRbtEb
+OK: crack.auto.pureMx.converged
+OK: crack.auto.pureMx.formed
+OK: crack.auto.pureMx.tensionBars
+OK: crack.auto.pureMx.sigmaPositive
+OK: crack.auto.pureMx.spacingPositive
+OK: crack.auto.pureMx.widthFormula; actual=0.15090354696; expected=0.15090354696; absDiff=0.
+OK: crack.auto.pureMx.utilization; actual=1509.03546959501; expected=1509.03546959501; absDiff=0.
+OK: crack.auto.pureMx.lambda
+OK: crack.auto.pureMx.preCrackState
+OK: crack.auto.pureMx.postCrackState
+OK: crack.auto.pureMx.psiReduced
+OK: crack.auto.pureMx.preCrack.twoSign
+OK: crack.auto.pureMx.preCrack.epsBtUlt; actual=0.00015; expected=0.00015; absDiff=0.
+OK: crack.auto.pureMy.converged
+OK: crack.auto.pureMy.formed
+OK: crack.auto.pureMy.tensionBars
+OK: crack.auto.pureMy.sigmaPositive
+OK: crack.auto.pureMy.spacingPositive
+OK: crack.auto.pureMy.widthFormula; actual=0.068784578847; expected=0.068784578847; absDiff=0.
+OK: crack.auto.pureMy.utilization; actual=687.845788470674; expected=687.845788470674; absDiff=0.
+OK: crack.auto.pureMy.lambda
+OK: crack.auto.pureMy.preCrackState
+OK: crack.auto.pureMy.postCrackState
+OK: crack.auto.pureMy.psiReduced
+OK: crack.auto.pureMy.preCrack.twoSign
+OK: crack.auto.pureMy.preCrack.epsBtUlt; actual=0.00015; expected=0.00015; absDiff=0.
+OK: crack.auto.pureMxy.converged
+OK: crack.auto.pureMxy.formed
+OK: crack.auto.pureMxy.tensionBars
+OK: crack.auto.pureMxy.sigmaPositive
+OK: crack.auto.pureMxy.spacingPositive
+OK: crack.auto.pureMxy.widthFormula; actual=0.128223231956; expected=0.128223231956; absDiff=0.
+OK: crack.auto.pureMxy.utilization; actual=1282.23231955923; expected=1282.23231955923; absDiff=0.
+OK: crack.auto.pureMxy.lambda
+OK: crack.auto.pureMxy.preCrackState
+OK: crack.auto.pureMxy.postCrackState
+OK: crack.auto.pureMxy.psiReduced
+OK: crack.auto.pureMxy.preCrack.twoSign
+OK: crack.auto.pureMxy.preCrack.epsBtUlt; actual=0.00015; expected=0.00015; absDiff=0.
+OK: crack.auto.mcrcFixedN.low.converged
+OK: crack.auto.mcrcFixedN.low.formed
+OK: crack.auto.mcrcFixedN.low.tensionBars
+OK: crack.auto.mcrcFixedN.low.sigmaPositive
+OK: crack.auto.mcrcFixedN.low.spacingPositive
+OK: crack.auto.mcrcFixedN.low.widthFormula; actual=0.083842948823; expected=0.083842948823; absDiff=0.
+OK: crack.auto.mcrcFixedN.low.utilization; actual=838.429488230231; expected=838.429488230231; absDiff=0.
+OK: crack.auto.mcrcFixedN.high.converged
+OK: crack.auto.mcrcFixedN.high.formed
+OK: crack.auto.mcrcFixedN.high.tensionBars
+OK: crack.auto.mcrcFixedN.high.sigmaPositive
+OK: crack.auto.mcrcFixedN.high.spacingPositive
+OK: crack.auto.mcrcFixedN.high.widthFormula; actual=0.183935225605; expected=0.183935225605; absDiff=0.
+OK: crack.auto.mcrcFixedN.high.utilization; actual=1839.35225605328; expected=1839.35225605328; absDiff=0.
+OK: crack.auto.mcrcFixedN.lowState
+OK: crack.auto.mcrcFixedN.highState
+OK: crack.auto.mcrcFixedN.mcrcInvariant; actual=8344089.60756165; expected=8343868.86969828; absDiff=220.737863373011
+OK: crack.auto.mcrcFixedN.lambdaLowMoment; actual=8344089.60756165; expected=8344089.60756165; absDiff=0.
+OK: crack.auto.mcrcFixedN.lambdaHighMoment; actual=8343868.86969828; expected=8343868.86969828; absDiff=0.
+OK: crack.path.mxy.converged
+OK: crack.path.mxy.formed
+OK: crack.path.mxy.tensionBars
+OK: crack.path.mxy.sigmaPositive
+OK: crack.path.mxy.spacingPositive
+OK: crack.path.mxy.widthFormula; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.path.mxy.utilization; actual=1338.58063151258; expected=1338.58063151258; absDiff=0.
+OK: crack.path.mxy.lambda
+OK: crack.path.mxy.nFixed; actual=-20000.; expected=-20000.; absDiff=0.
+OK: crack.path.n.converged
+OK: crack.path.n.formed
+OK: crack.path.n.tensionBars
+OK: crack.path.n.sigmaPositive
+OK: crack.path.n.spacingPositive
+OK: crack.path.n.widthFormula; actual=0.139403828281; expected=0.139403828281; absDiff=0.
+OK: crack.path.n.utilization; actual=1394.03828280626; expected=1394.03828280626; absDiff=0.
+OK: crack.path.n.central
+OK: crack.path.n.formationN; actual=119657.725354552; expected=119657.725354552; absDiff=0.
+OK: crack.path.autoN.converged
+OK: crack.path.autoN.formed
+OK: crack.path.autoN.tensionBars
+OK: crack.path.autoN.sigmaPositive
+OK: crack.path.autoN.spacingPositive
+OK: crack.path.autoN.widthFormula; actual=0.139403828281; expected=0.139403828281; absDiff=0.
+OK: crack.path.autoN.utilization; actual=1394.03828280626; expected=1394.03828280626; absDiff=0.
+OK: crack.path.autoN.central
+OK: crack.path.autoN.method
+OK: crack.path.autoN.formationN; actual=119657.725354552; expected=119657.725354552; absDiff=0.
+OK: crack.path.nmxy.converged
+OK: crack.path.nmxy.formed
+OK: crack.path.nmxy.tensionBars
+OK: crack.path.nmxy.sigmaPositive
+OK: crack.path.nmxy.spacingPositive
+OK: crack.path.nmxy.widthFormula; actual=0.131350983982; expected=0.131350983982; absDiff=0.
+OK: crack.path.nmxy.utilization; actual=1313.50983981587; expected=1313.50983981587; absDiff=0.
+OK: crack.path.nmxy.lambda
+OK: crack.path.nmxy.nScaled; actual=-10565.5803262824; expected=-10565.5803262824; absDiff=0.
+OK: crack.path.nmxy.mScaled; actual=7924185.24471177; expected=7924185.24471177; absDiff=0.
+OK: crack.path.nFixedMomentFallback.converged
+OK: crack.path.nFixedMomentFallback.formed
+OK: crack.path.nFixedMomentFallback.baseFailure
+OK: crack.path.nFixedMomentFallback.lambda0; actual=0.; expected=0.; absDiff=0.
+OK: crack.path.nFixedMomentFallback.noFormationN; actual=0.; expected=0.; absDiff=0.
+OK: crack.path.nFixedMomentFallback.noMcrc; actual=0.; expected=0.; absDiff=0.
+OK: crack.path.nFixedMomentFallback.noBeforeState
+OK: crack.path.nFixedMomentFallback.noAfterState
+OK: crack.path.nFixedMomentFallback.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.path.nFixedMomentFallback.status
+OK: crack.path.mxyAxialFallback.converged
+OK: crack.path.mxyAxialFallback.formed
+OK: crack.path.mxyAxialFallback.emptyScaledLoad
+OK: crack.path.mxyAxialFallback.lambda0; actual=0.; expected=0.; absDiff=0.
+OK: crack.path.mxyAxialFallback.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.path.mxyAxialFallback.status
+OK: crack.formationFailureFallback.1.User.calculated
+OK: crack.formationFailureFallback.1.User.warning
+OK: crack.formationFailureFallback.1.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.User.comment
+OK: crack.formationFailureFallback.1.User.converged
+OK: crack.formationFailureFallback.1.User.formed
+OK: crack.formationFailureFallback.1.User.tensionBars
+OK: crack.formationFailureFallback.1.User.sigmaPositive
+OK: crack.formationFailureFallback.1.User.spacingPositive
+OK: crack.formationFailureFallback.1.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.1.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.1.User.formationCausePreserved
+OK: crack.formationFailureFallback.1.User.exceededCalculated
+OK: crack.formationFailureFallback.1.User.exceededStatus
+OK: crack.formationFailureFallback.1.User.exceededCode
+OK: crack.formationFailureFallback.1.User.exceededWarning
+OK: crack.formationFailureFallback.1.User.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.Auto.calculated
+OK: crack.formationFailureFallback.1.Auto.warning
+OK: crack.formationFailureFallback.1.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.Auto.comment
+OK: crack.formationFailureFallback.1.Auto.converged
+OK: crack.formationFailureFallback.1.Auto.formed
+OK: crack.formationFailureFallback.1.Auto.tensionBars
+OK: crack.formationFailureFallback.1.Auto.sigmaPositive
+OK: crack.formationFailureFallback.1.Auto.spacingPositive
+OK: crack.formationFailureFallback.1.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.1.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.1.Auto.formationCausePreserved
+OK: crack.formationFailureFallback.1.Auto.exceededCalculated
+OK: crack.formationFailureFallback.1.Auto.exceededStatus
+OK: crack.formationFailureFallback.1.Auto.exceededCode
+OK: crack.formationFailureFallback.1.Auto.exceededWarning
+OK: crack.formationFailureFallback.1.Auto.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.AlwaysCalc.calculated
+OK: crack.formationFailureFallback.1.AlwaysCalc.warning
+OK: crack.formationFailureFallback.1.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.1.AlwaysCalc.comment
+OK: crack.formationFailureFallback.1.AlwaysCalc.converged
+OK: crack.formationFailureFallback.1.AlwaysCalc.formed
+OK: crack.formationFailureFallback.1.AlwaysCalc.tensionBars
+OK: crack.formationFailureFallback.1.AlwaysCalc.sigmaPositive
+OK: crack.formationFailureFallback.1.AlwaysCalc.spacingPositive
+OK: crack.formationFailureFallback.1.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.1.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.1.AlwaysCalc.formationCausePreserved
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededCalculated
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededStatus
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededCode
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededWarning
+OK: crack.formationFailureFallback.1.AlwaysCalc.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.User.calculated
+OK: crack.formationFailureFallback.3.User.warning
+OK: crack.formationFailureFallback.3.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.User.comment
+OK: crack.formationFailureFallback.3.User.converged
+OK: crack.formationFailureFallback.3.User.formed
+OK: crack.formationFailureFallback.3.User.tensionBars
+OK: crack.formationFailureFallback.3.User.sigmaPositive
+OK: crack.formationFailureFallback.3.User.spacingPositive
+OK: crack.formationFailureFallback.3.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.3.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.3.User.formationCausePreserved
+OK: crack.formationFailureFallback.3.User.exceededCalculated
+OK: crack.formationFailureFallback.3.User.exceededStatus
+OK: crack.formationFailureFallback.3.User.exceededCode
+OK: crack.formationFailureFallback.3.User.exceededWarning
+OK: crack.formationFailureFallback.3.User.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.Auto.calculated
+OK: crack.formationFailureFallback.3.Auto.warning
+OK: crack.formationFailureFallback.3.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.Auto.comment
+OK: crack.formationFailureFallback.3.Auto.converged
+OK: crack.formationFailureFallback.3.Auto.formed
+OK: crack.formationFailureFallback.3.Auto.tensionBars
+OK: crack.formationFailureFallback.3.Auto.sigmaPositive
+OK: crack.formationFailureFallback.3.Auto.spacingPositive
+OK: crack.formationFailureFallback.3.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.3.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.3.Auto.formationCausePreserved
+OK: crack.formationFailureFallback.3.Auto.exceededCalculated
+OK: crack.formationFailureFallback.3.Auto.exceededStatus
+OK: crack.formationFailureFallback.3.Auto.exceededCode
+OK: crack.formationFailureFallback.3.Auto.exceededWarning
+OK: crack.formationFailureFallback.3.Auto.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.AlwaysCalc.calculated
+OK: crack.formationFailureFallback.3.AlwaysCalc.warning
+OK: crack.formationFailureFallback.3.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.3.AlwaysCalc.comment
+OK: crack.formationFailureFallback.3.AlwaysCalc.converged
+OK: crack.formationFailureFallback.3.AlwaysCalc.formed
+OK: crack.formationFailureFallback.3.AlwaysCalc.tensionBars
+OK: crack.formationFailureFallback.3.AlwaysCalc.sigmaPositive
+OK: crack.formationFailureFallback.3.AlwaysCalc.spacingPositive
+OK: crack.formationFailureFallback.3.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.3.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.3.AlwaysCalc.formationCausePreserved
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededCalculated
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededStatus
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededCode
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededWarning
+OK: crack.formationFailureFallback.3.AlwaysCalc.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.User.calculated
+OK: crack.formationFailureFallback.4.User.warning
+OK: crack.formationFailureFallback.4.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.User.comment
+OK: crack.formationFailureFallback.4.User.converged
+OK: crack.formationFailureFallback.4.User.formed
+OK: crack.formationFailureFallback.4.User.tensionBars
+OK: crack.formationFailureFallback.4.User.sigmaPositive
+OK: crack.formationFailureFallback.4.User.spacingPositive
+OK: crack.formationFailureFallback.4.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.4.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.4.User.formationCausePreserved
+OK: crack.formationFailureFallback.4.User.exceededCalculated
+OK: crack.formationFailureFallback.4.User.exceededStatus
+OK: crack.formationFailureFallback.4.User.exceededCode
+OK: crack.formationFailureFallback.4.User.exceededWarning
+OK: crack.formationFailureFallback.4.User.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.Auto.calculated
+OK: crack.formationFailureFallback.4.Auto.warning
+OK: crack.formationFailureFallback.4.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.Auto.comment
+OK: crack.formationFailureFallback.4.Auto.converged
+OK: crack.formationFailureFallback.4.Auto.formed
+OK: crack.formationFailureFallback.4.Auto.tensionBars
+OK: crack.formationFailureFallback.4.Auto.sigmaPositive
+OK: crack.formationFailureFallback.4.Auto.spacingPositive
+OK: crack.formationFailureFallback.4.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.4.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.4.Auto.formationCausePreserved
+OK: crack.formationFailureFallback.4.Auto.exceededCalculated
+OK: crack.formationFailureFallback.4.Auto.exceededStatus
+OK: crack.formationFailureFallback.4.Auto.exceededCode
+OK: crack.formationFailureFallback.4.Auto.exceededWarning
+OK: crack.formationFailureFallback.4.Auto.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.AlwaysCalc.calculated
+OK: crack.formationFailureFallback.4.AlwaysCalc.warning
+OK: crack.formationFailureFallback.4.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.4.AlwaysCalc.comment
+OK: crack.formationFailureFallback.4.AlwaysCalc.converged
+OK: crack.formationFailureFallback.4.AlwaysCalc.formed
+OK: crack.formationFailureFallback.4.AlwaysCalc.tensionBars
+OK: crack.formationFailureFallback.4.AlwaysCalc.sigmaPositive
+OK: crack.formationFailureFallback.4.AlwaysCalc.spacingPositive
+OK: crack.formationFailureFallback.4.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.4.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.4.AlwaysCalc.formationCausePreserved
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededCalculated
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededStatus
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededCode
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededWarning
+OK: crack.formationFailureFallback.4.AlwaysCalc.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.User.calculated
+OK: crack.formationFailureFallback.5.User.warning
+OK: crack.formationFailureFallback.5.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.User.comment
+OK: crack.formationFailureFallback.5.User.converged
+OK: crack.formationFailureFallback.5.User.formed
+OK: crack.formationFailureFallback.5.User.tensionBars
+OK: crack.formationFailureFallback.5.User.sigmaPositive
+OK: crack.formationFailureFallback.5.User.spacingPositive
+OK: crack.formationFailureFallback.5.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.5.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.5.User.formationCausePreserved
+OK: crack.formationFailureFallback.5.User.exceededCalculated
+OK: crack.formationFailureFallback.5.User.exceededStatus
+OK: crack.formationFailureFallback.5.User.exceededCode
+OK: crack.formationFailureFallback.5.User.exceededWarning
+OK: crack.formationFailureFallback.5.User.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.Auto.calculated
+OK: crack.formationFailureFallback.5.Auto.warning
+OK: crack.formationFailureFallback.5.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.Auto.comment
+OK: crack.formationFailureFallback.5.Auto.converged
+OK: crack.formationFailureFallback.5.Auto.formed
+OK: crack.formationFailureFallback.5.Auto.tensionBars
+OK: crack.formationFailureFallback.5.Auto.sigmaPositive
+OK: crack.formationFailureFallback.5.Auto.spacingPositive
+OK: crack.formationFailureFallback.5.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.5.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.5.Auto.formationCausePreserved
+OK: crack.formationFailureFallback.5.Auto.exceededCalculated
+OK: crack.formationFailureFallback.5.Auto.exceededStatus
+OK: crack.formationFailureFallback.5.Auto.exceededCode
+OK: crack.formationFailureFallback.5.Auto.exceededWarning
+OK: crack.formationFailureFallback.5.Auto.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.AlwaysCalc.calculated
+OK: crack.formationFailureFallback.5.AlwaysCalc.warning
+OK: crack.formationFailureFallback.5.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.5.AlwaysCalc.comment
+OK: crack.formationFailureFallback.5.AlwaysCalc.converged
+OK: crack.formationFailureFallback.5.AlwaysCalc.formed
+OK: crack.formationFailureFallback.5.AlwaysCalc.tensionBars
+OK: crack.formationFailureFallback.5.AlwaysCalc.sigmaPositive
+OK: crack.formationFailureFallback.5.AlwaysCalc.spacingPositive
+OK: crack.formationFailureFallback.5.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.formationFailureFallback.5.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.formationFailureFallback.5.AlwaysCalc.formationCausePreserved
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededCalculated
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededStatus
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededCode
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededWarning
+OK: crack.formationFailureFallback.5.AlwaysCalc.exceededPsi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.formationFailureFallback.currentMissingBlocks
+OK: crack.formationFailureFallback.currentPhysicalFailureBlocks
+OK: crack.uniformFallback.0.0.0.User.converged
+OK: crack.uniformFallback.0.0.0.User.causePreserved
+OK: crack.uniformFallback.0.0.0.User.notApplicable
+OK: crack.uniformFallback.0.0.0.User.notCalculated
+OK: crack.uniformFallback.0.0.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.User.reason
+OK: crack.uniformFallback.0.0.0.Auto.converged
+OK: crack.uniformFallback.0.0.0.Auto.causePreserved
+OK: crack.uniformFallback.0.0.0.Auto.notApplicable
+OK: crack.uniformFallback.0.0.0.Auto.notCalculated
+OK: crack.uniformFallback.0.0.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.Auto.reason
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.AlwaysCalc.reason
+OK: crack.uniformFallback.0.000000001.0.0.User.converged
+OK: crack.uniformFallback.0.000000001.0.0.User.causePreserved
+OK: crack.uniformFallback.0.000000001.0.0.User.notApplicable
+OK: crack.uniformFallback.0.000000001.0.0.User.notCalculated
+OK: crack.uniformFallback.0.000000001.0.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.000000001.0.0.User.reason
+OK: crack.uniformFallback.0.000000001.0.0.Auto.converged
+OK: crack.uniformFallback.0.000000001.0.0.Auto.causePreserved
+OK: crack.uniformFallback.0.000000001.0.0.Auto.notApplicable
+OK: crack.uniformFallback.0.000000001.0.0.Auto.notCalculated
+OK: crack.uniformFallback.0.000000001.0.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.000000001.0.0.Auto.reason
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.000000001.0.0.AlwaysCalc.reason
+OK: crack.uniformFallback.-0.000000001.0.0.User.converged
+OK: crack.uniformFallback.-0.000000001.0.0.User.causePreserved
+OK: crack.uniformFallback.-0.000000001.0.0.User.notApplicable
+OK: crack.uniformFallback.-0.000000001.0.0.User.notCalculated
+OK: crack.uniformFallback.-0.000000001.0.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-0.000000001.0.0.User.reason
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.converged
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.causePreserved
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.notApplicable
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.notCalculated
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-0.000000001.0.0.Auto.reason
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-0.000000001.0.0.AlwaysCalc.reason
+OK: crack.uniformFallback.0.0.000000001.0.User.converged
+OK: crack.uniformFallback.0.0.000000001.0.User.causePreserved
+OK: crack.uniformFallback.0.0.000000001.0.User.notApplicable
+OK: crack.uniformFallback.0.0.000000001.0.User.notCalculated
+OK: crack.uniformFallback.0.0.000000001.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.000000001.0.User.reason
+OK: crack.uniformFallback.0.0.000000001.0.Auto.converged
+OK: crack.uniformFallback.0.0.000000001.0.Auto.causePreserved
+OK: crack.uniformFallback.0.0.000000001.0.Auto.notApplicable
+OK: crack.uniformFallback.0.0.000000001.0.Auto.notCalculated
+OK: crack.uniformFallback.0.0.000000001.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.000000001.0.Auto.reason
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.converged
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.000000001.0.AlwaysCalc.reason
+OK: crack.uniformFallback.0.-0.000000001.0.User.converged
+OK: crack.uniformFallback.0.-0.000000001.0.User.causePreserved
+OK: crack.uniformFallback.0.-0.000000001.0.User.notApplicable
+OK: crack.uniformFallback.0.-0.000000001.0.User.notCalculated
+OK: crack.uniformFallback.0.-0.000000001.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.-0.000000001.0.User.reason
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.converged
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.causePreserved
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.notApplicable
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.notCalculated
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.-0.000000001.0.Auto.reason
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.converged
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.-0.000000001.0.AlwaysCalc.reason
+OK: crack.uniformFallback.0.0.0.000000001.User.converged
+OK: crack.uniformFallback.0.0.0.000000001.User.causePreserved
+OK: crack.uniformFallback.0.0.0.000000001.User.notApplicable
+OK: crack.uniformFallback.0.0.0.000000001.User.notCalculated
+OK: crack.uniformFallback.0.0.0.000000001.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.000000001.User.reason
+OK: crack.uniformFallback.0.0.0.000000001.Auto.converged
+OK: crack.uniformFallback.0.0.0.000000001.Auto.causePreserved
+OK: crack.uniformFallback.0.0.0.000000001.Auto.notApplicable
+OK: crack.uniformFallback.0.0.0.000000001.Auto.notCalculated
+OK: crack.uniformFallback.0.0.0.000000001.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.000000001.Auto.reason
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.converged
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.0.000000001.AlwaysCalc.reason
+OK: crack.uniformFallback.0.0.-0.000000001.User.converged
+OK: crack.uniformFallback.0.0.-0.000000001.User.causePreserved
+OK: crack.uniformFallback.0.0.-0.000000001.User.notApplicable
+OK: crack.uniformFallback.0.0.-0.000000001.User.notCalculated
+OK: crack.uniformFallback.0.0.-0.000000001.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.-0.000000001.User.reason
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.converged
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.causePreserved
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.notApplicable
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.notCalculated
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.-0.000000001.Auto.reason
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.converged
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.0.0.-0.000000001.AlwaysCalc.reason
+OK: crack.uniformFallback.-200000.0.0.User.converged
+OK: crack.uniformFallback.-200000.0.0.User.causePreserved
+OK: crack.uniformFallback.-200000.0.0.User.notApplicable
+OK: crack.uniformFallback.-200000.0.0.User.notCalculated
+OK: crack.uniformFallback.-200000.0.0.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-200000.0.0.User.reason
+OK: crack.uniformFallback.-200000.0.0.Auto.converged
+OK: crack.uniformFallback.-200000.0.0.Auto.causePreserved
+OK: crack.uniformFallback.-200000.0.0.Auto.notApplicable
+OK: crack.uniformFallback.-200000.0.0.Auto.notCalculated
+OK: crack.uniformFallback.-200000.0.0.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-200000.0.0.Auto.reason
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.notApplicable
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.notCalculated
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.uniformFallback.-200000.0.0.AlwaysCalc.reason
+OK: crack.uniformFallback.200000.0.0.User.converged
+OK: crack.uniformFallback.200000.0.0.User.causePreserved
+OK: crack.uniformFallback.200000.0.0.User.calculated
+OK: crack.uniformFallback.200000.0.0.User.warning
+OK: crack.uniformFallback.200000.0.0.User.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.User.allConcrete; actual=60000.; expected=60000.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.User.converged
+OK: crack.uniformFallback.200000.0.0.User.formed
+OK: crack.uniformFallback.200000.0.0.User.tensionBars
+OK: crack.uniformFallback.200000.0.0.User.sigmaPositive
+OK: crack.uniformFallback.200000.0.0.User.spacingPositive
+OK: crack.uniformFallback.200000.0.0.User.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.User.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.Auto.converged
+OK: crack.uniformFallback.200000.0.0.Auto.causePreserved
+OK: crack.uniformFallback.200000.0.0.Auto.calculated
+OK: crack.uniformFallback.200000.0.0.Auto.warning
+OK: crack.uniformFallback.200000.0.0.Auto.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.Auto.allConcrete; actual=60000.; expected=60000.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.Auto.converged
+OK: crack.uniformFallback.200000.0.0.Auto.formed
+OK: crack.uniformFallback.200000.0.0.Auto.tensionBars
+OK: crack.uniformFallback.200000.0.0.Auto.sigmaPositive
+OK: crack.uniformFallback.200000.0.0.Auto.spacingPositive
+OK: crack.uniformFallback.200000.0.0.Auto.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.Auto.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.causePreserved
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.calculated
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.warning
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.psi1; actual=1.; expected=1.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.allConcrete; actual=60000.; expected=60000.; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.converged
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.formed
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.tensionBars
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.sigmaPositive
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.spacingPositive
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.widthFormula; actual=0.267380304394; expected=0.267380304394; absDiff=0.
+OK: crack.uniformFallback.200000.0.0.AlwaysCalc.utilization; actual=0.026738030439; expected=0.026738030439; absDiff=0.
+OK: crack.confirmedNotCracked.noPoint.4
+OK: crack.confirmedNotCracked.4.User.notFormed
+OK: crack.confirmedNotCracked.4.User.notApplicable
+OK: crack.confirmedNotCracked.4.User.notCalculated
+OK: crack.confirmedNotCracked.4.User.external
+OK: crack.confirmedNotCracked.4.User.reason
+OK: crack.confirmedNotCracked.4.User.noFallbackWarning
+OK: crack.confirmedNotCracked.4.User.psiPreserved; actual=0.25; expected=0.25; absDiff=0.
+OK: crack.confirmedNotCracked.4.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.4.Auto.notFormed
+OK: crack.confirmedNotCracked.4.Auto.notApplicable
+OK: crack.confirmedNotCracked.4.Auto.notCalculated
+OK: crack.confirmedNotCracked.4.Auto.external
+OK: crack.confirmedNotCracked.4.Auto.reason
+OK: crack.confirmedNotCracked.4.Auto.noFallbackWarning
+OK: crack.confirmedNotCracked.4.Auto.psiPreserved; actual=0.25; expected=0.25; absDiff=0.
+OK: crack.confirmedNotCracked.4.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.4.AlwaysCalc.notFormed
+OK: crack.confirmedNotCracked.4.AlwaysCalc.notApplicable
+OK: crack.confirmedNotCracked.4.AlwaysCalc.notCalculated
+OK: crack.confirmedNotCracked.4.AlwaysCalc.external
+OK: crack.confirmedNotCracked.4.AlwaysCalc.reason
+OK: crack.confirmedNotCracked.4.AlwaysCalc.noFallbackWarning
+OK: crack.confirmedNotCracked.4.AlwaysCalc.psiPreserved; actual=0.25; expected=0.25; absDiff=0.
+OK: crack.confirmedNotCracked.4.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.noPoint.9
+OK: crack.confirmedNotCracked.9.User.notFormed
+OK: crack.confirmedNotCracked.9.User.notApplicable
+OK: crack.confirmedNotCracked.9.User.notCalculated
+OK: crack.confirmedNotCracked.9.User.external
+OK: crack.confirmedNotCracked.9.User.reason
+OK: crack.confirmedNotCracked.9.User.noFallbackWarning
+OK: crack.confirmedNotCracked.9.User.psiPreserved; actual=0.25; expected=0.25; absDiff=0.
+OK: crack.confirmedNotCracked.9.User.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.9.Auto.notFormed
+OK: crack.confirmedNotCracked.9.Auto.notApplicable
+OK: crack.confirmedNotCracked.9.Auto.notCalculated
+OK: crack.confirmedNotCracked.9.Auto.external
+OK: crack.confirmedNotCracked.9.Auto.reason
+OK: crack.confirmedNotCracked.9.Auto.noFallbackWarning
+OK: crack.confirmedNotCracked.9.Auto.psiPreserved; actual=0.25; expected=0.25; absDiff=0.
+OK: crack.confirmedNotCracked.9.Auto.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.9.AlwaysCalc.notFormed
+OK: crack.confirmedNotCracked.9.AlwaysCalc.notApplicable
+OK: crack.confirmedNotCracked.9.AlwaysCalc.notCalculated
+OK: crack.confirmedNotCracked.9.AlwaysCalc.external
+OK: crack.confirmedNotCracked.9.AlwaysCalc.reason
+OK: crack.confirmedNotCracked.9.AlwaysCalc.noFallbackWarning
+OK: crack.confirmedNotCracked.9.AlwaysCalc.psiPreserved; actual=0.25; expected=0.25; absDiff=0.
+OK: crack.confirmedNotCracked.9.AlwaysCalc.zeroWidth; actual=0.; expected=0.; absDiff=0.
+OK: crack.confirmedNotCracked.longitudinalPass
+OK: crack.confirmedNotCracked.longitudinalCalculated
+OK: crack.confirmedNotCracked.longitudinalFail
+OK: crack.confirmedNotCracked.longitudinalFailCalculated
+OK: crack.confirmedNotCracked.formationPreserved
+OK: crack.searchBound.formationNotConverged
+OK: crack.searchBound.notFormed
+OK: crack.searchBound.internalStatus
+OK: crack.searchBound.resultCode
+OK: crack.searchBound.noPostState
+OK: crack.searchBound.widthNotNumFail
+OK: crack.noCrack.converged
+OK: crack.noCrack.notFormed
+OK: crack.noCrack.criterion
+OK: crack.noCrack.fixedPhysicalFailure
+OK: crack.noCrack.widthNotApplicable
+OK: crack.noCrack.noBeforeState
+OK: crack.noCrack.noPostState
+OK: crack.noCrack.notNumFail
+OK: crack.cache.first.converged
+OK: crack.cache.first.formed
+OK: crack.cache.first.tensionBars
+OK: crack.cache.first.sigmaPositive
+OK: crack.cache.first.spacingPositive
+OK: crack.cache.first.widthFormula; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.cache.first.utilization; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.cache.first.sigmaCrc
+OK: crack.cache.first.preState
+OK: crack.cache.first.postState
+OK: crack.cache.second.converged
+OK: crack.cache.second.formed
+OK: crack.cache.second.tensionBars
+OK: crack.cache.second.sigmaPositive
+OK: crack.cache.second.spacingPositive
+OK: crack.cache.second.widthFormula; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.cache.second.utilization; actual=0.133858063151; expected=0.133858063151; absDiff=0.
+OK: crack.cache.second.reused
+OK: crack.cache.second.noLastRunner
+OK: crack.cache.second.sigmaCrc
+OK: crack.cache.second.preState
+OK: crack.cache.second.postState
+OK: limitSearch.crackSnapshot.hasBefore
+OK: limitSearch.crackSnapshot.noAfter
+OK: crack.danger.pureMx.converged
+OK: crack.danger.pureMx.formationNotNumFail
+OK: crack.danger.pureMx.notNumFail
+OK: crack.danger.pureMx.formed
+OK: crack.danger.pureMx.lambda
+OK: crack.danger.pureMx.preCrackState
+OK: crack.danger.pureMx.postCrackState
+OK: crack.danger.pureMy.converged
+OK: crack.danger.pureMy.formationNotNumFail
+OK: crack.danger.pureMy.notNumFail
+OK: crack.danger.pureMy.formed
+OK: crack.danger.pureMy.lambda
+OK: crack.danger.pureMy.preCrackState
+OK: crack.danger.pureMy.postCrackState
+OK: crack.danger.pureMxy.converged
+OK: crack.danger.pureMxy.formationNotNumFail
+OK: crack.danger.pureMxy.notNumFail
+OK: crack.danger.pureMxy.formed
+OK: crack.danger.pureMxy.lambda
+OK: crack.danger.pureMxy.preCrackState
+OK: crack.danger.pureMxy.postCrackState
+OK: crack.danger.centralTension.converged
+OK: crack.danger.centralTension.formationNotNumFail
+OK: crack.danger.centralTension.notNumFail
+OK: crack.danger.centralTension.formed
+OK: crack.danger.centralTension.lambda
+OK: crack.danger.centralTension.preCrackState
+OK: crack.danger.centralTension.postCrackState
+OK: crack.danger.pureCompression.converged
+OK: crack.danger.pureCompression.formationNotNumFail
+OK: crack.danger.pureCompression.notNumFail
+OK: crack.danger.pureCompression.notFormed
+OK: crack.danger.pureCompression.width; actual=0.; expected=0.; absDiff=0.
+OK: crack.auto.oneSign.converged
+OK: crack.auto.oneSign.formed
+OK: crack.auto.oneSign.tensionBars
+OK: crack.auto.oneSign.sigmaPositive
+OK: crack.auto.oneSign.spacingPositive
+OK: crack.auto.oneSign.widthFormula; actual=0.053157069547; expected=0.053157069547; absDiff=0.
+OK: crack.auto.oneSign.utilization; actual=531.570695473283; expected=531.570695473283; absDiff=0.
+OK: crack.auto.oneSign.preCrackState
+OK: crack.auto.oneSign.allTension
+OK: crack.auto.oneSign.formula854; actual=0.000147592191; expected=0.000147592191; absDiff=0.
+OK: crack.central.converged
+OK: crack.central.formed
+OK: crack.central.tensionBars
+OK: crack.central.sigmaPositive
+OK: crack.central.spacingPositive
+OK: crack.central.widthFormula; actual=0.139403828281; expected=0.139403828281; absDiff=0.
+OK: crack.central.utilization; actual=1394.03828280626; expected=1394.03828280626; absDiff=0.
+OK: crack.central.branch
+OK: crack.central.ncrc
+OK: crack.central.lambda
+OK: crack.central.lambdaFromNcrc; actual=119657.725354552; expected=119657.725354552; absDiff=0.
+OK: crack.central.preCrackState
+OK: crack.central.postCrackState
+OK: crack.central.phi3; actual=1.2; expected=1.2; absDiff=0.
+OK: crack.central.zoneModeInvariant; actual=0.139403828281; expected=0.139403828281; absDiff=0.
+OK: crack.central.eccentricLoadRejected
+OK: crack.central.offsetLoadStateRejected
+OK: crack.noTension.converged
+OK: crack.noTension.notFormed
+OK: crack.noTension.width; actual=0.; expected=0.; absDiff=0.
+OK: audit02.formation.aboveCurrent.converged
+OK: audit02.formation.aboveCurrent.notCracked
+OK: audit02.formation.aboveCurrent.lambda
+OK: audit02.formation.aboveCurrent.foundCode
+OK: audit02.formation.aboveCurrent.searchSuccess
+OK: audit02.formation.aboveCurrent.pointLambda; actual=8.343869263353; expected=8.343869263353; absDiff=0.
+OK: audit02.formation.aboveCurrent.pointMoment; actual=8343869.26335304; expected=8343869.26335304; absDiff=0.
+OK: audit02.formation.aboveCurrent.noPost
+OK: audit02.formation.constant.emptyPath
+OK: audit02.formation.constant.code
+OK: audit02.formation.constant.comment
+OK: audit02.formation.constant.noPre
+OK: audit02.formation.constant.noPost
+OK: audit02.formation.constant.noPoint; actual=0.; expected=0.; absDiff=0.
+OK: audit02.formation.constant.psi1; actual=1.; expected=1.; absDiff=0.
+OK: audit02.formation.missing.internalError
+OK: audit02.formationOnly.success
+OK: audit02.formationOnly.cracked
+OK: audit02.formationOnly.hasPoint
+OK: audit02.formationOnly.pre
+OK: audit02.formationOnly.post
+OK: audit02.formationOnly.prePhysical
+OK: audit02.formationOnly.postPhysical
+OK: audit02.formationOnly.searchPoint
+OK: audit02.formationOnly.actualMethod
+OK: audit02.formationOnly.reuseEmptyFixedPath
+OK: audit02.formationOnly.reuseNoCrack
+OK: audit02.formationOnly.reuseNoPoint
+OK: audit02.formationOnly.snapshot; actual=0.556257957067; expected=0.556257957067; absDiff=0.
+OK: audit02.formationOnly.resetPoint
+OK: audit02.formationOnly.resetPre
+OK: audit02.formationOnly.resetSearch
+OK: audit02.formationOnly.resetMeta
+OK: audit02.psi.negativeCrc; actual=1.; expected=1.; absDiff=0.
+OK: audit02.psi.zeroCrc; actual=1.; expected=1.; absDiff=0.
+OK: audit02.psi.zeroCurrent; actual=1.; expected=1.; absDiff=0.
+OK: audit02.psi.positiveCrc; actual=0.8; expected=0.8; absDiff=0.
+OK: audit02.psi.lowerBound; actual=0.; expected=0.; absDiff=0.
+OK: audit02.psi.fallback.User.converged
+OK: audit02.psi.fallback.User.formationCode
+OK: audit02.psi.fallback.User.noPost
+OK: audit02.psi.fallback.User.value; actual=1.; expected=1.; absDiff=0.
+OK: audit02.psi.fallback.User.warningComment
+OK: audit02.psi.fallback.User.upperBound
+OK: audit02.psi.fallback.User.notNumerical
+OK: audit02.psi.fallback.Auto.converged
+OK: audit02.psi.fallback.Auto.formationCode
+OK: audit02.psi.fallback.Auto.noPost
+OK: audit02.psi.fallback.Auto.value; actual=1.; expected=1.; absDiff=0.
+OK: audit02.psi.fallback.Auto.warningComment
+OK: audit02.psi.fallback.Auto.upperBound
+OK: audit02.psi.fallback.Auto.notNumerical
+OK: audit02.psi.fallback.AlwaysCalc.converged
+OK: audit02.psi.fallback.AlwaysCalc.formationCode
+OK: audit02.psi.fallback.AlwaysCalc.noPost
+OK: audit02.psi.fallback.AlwaysCalc.value; actual=1.; expected=1.; absDiff=0.
+OK: audit02.psi.fallback.AlwaysCalc.warningComment
+OK: audit02.psi.fallback.AlwaysCalc.upperBound
+OK: audit02.psi.fallback.AlwaysCalc.notNumerical
+OK: audit03.formation.typed.lambda*Mxy.1.status
+OK: audit03.formation.typed.lambda*Mxy.1.code
+OK: audit03.formation.typed.lambda*Mxy.1.notCalculated
+OK: audit03.formation.typed.lambda*Mxy.1.oneAttempt
+OK: audit03.formation.typed.lambda*Mxy.1.noPoint
+OK: audit03.formation.typed.lambda*Mxy.1.noPre
+OK: audit03.formation.typed.lambda*Mxy.1.noPost
+OK: audit03.formation.typed.lambda*Mxy.1.reason
+COMMENT: audit03.formation.typed.lambda*Mxy.1; Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+OK: audit03.formation.typed.lambda*Mxy.2.status
+OK: audit03.formation.typed.lambda*Mxy.2.code
+OK: audit03.formation.typed.lambda*Mxy.2.notCalculated
+OK: audit03.formation.typed.lambda*Mxy.2.oneAttempt
+OK: audit03.formation.typed.lambda*Mxy.2.noPoint
+OK: audit03.formation.typed.lambda*Mxy.2.noPre
+OK: audit03.formation.typed.lambda*Mxy.2.noPost
+OK: audit03.formation.typed.lambda*Mxy.2.reason
+COMMENT: audit03.formation.typed.lambda*Mxy.2; Solver.MaxIterations должен быть положительным.
+OK: audit03.formation.typed.lambda*Mxy.3.status
+OK: audit03.formation.typed.lambda*Mxy.3.code
+OK: audit03.formation.typed.lambda*Mxy.3.notCalculated
+OK: audit03.formation.typed.lambda*Mxy.3.oneAttempt
+OK: audit03.formation.typed.lambda*Mxy.3.noPoint
+OK: audit03.formation.typed.lambda*Mxy.3.noPre
+OK: audit03.formation.typed.lambda*Mxy.3.noPost
+OK: audit03.formation.typed.lambda*Mxy.3.reason
+COMMENT: audit03.formation.typed.lambda*Mxy.3; Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial.
+OK: audit03.formation.typed.lambda*N.1.status
+OK: audit03.formation.typed.lambda*N.1.code
+OK: audit03.formation.typed.lambda*N.1.notCalculated
+OK: audit03.formation.typed.lambda*N.1.oneAttempt
+OK: audit03.formation.typed.lambda*N.1.noPoint
+OK: audit03.formation.typed.lambda*N.1.noPre
+OK: audit03.formation.typed.lambda*N.1.noPost
+OK: audit03.formation.typed.lambda*N.1.reason
+COMMENT: audit03.formation.typed.lambda*N.1; Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+OK: audit03.formation.typed.lambda*N.2.status
+OK: audit03.formation.typed.lambda*N.2.code
+OK: audit03.formation.typed.lambda*N.2.notCalculated
+OK: audit03.formation.typed.lambda*N.2.oneAttempt
+OK: audit03.formation.typed.lambda*N.2.noPoint
+OK: audit03.formation.typed.lambda*N.2.noPre
+OK: audit03.formation.typed.lambda*N.2.noPost
+OK: audit03.formation.typed.lambda*N.2.reason
+COMMENT: audit03.formation.typed.lambda*N.2; Solver.MaxIterations должен быть положительным.
+OK: audit03.formation.typed.lambda*N.3.status
+OK: audit03.formation.typed.lambda*N.3.code
+OK: audit03.formation.typed.lambda*N.3.notCalculated
+OK: audit03.formation.typed.lambda*N.3.oneAttempt
+OK: audit03.formation.typed.lambda*N.3.noPoint
+OK: audit03.formation.typed.lambda*N.3.noPre
+OK: audit03.formation.typed.lambda*N.3.noPost
+OK: audit03.formation.typed.lambda*N.3.reason
+COMMENT: audit03.formation.typed.lambda*N.3; Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial.
+OK: audit03.formation.typed.lambda*NMxy.1.status
+OK: audit03.formation.typed.lambda*NMxy.1.code
+OK: audit03.formation.typed.lambda*NMxy.1.notCalculated
+OK: audit03.formation.typed.lambda*NMxy.1.oneAttempt
+OK: audit03.formation.typed.lambda*NMxy.1.noPoint
+OK: audit03.formation.typed.lambda*NMxy.1.noPre
+OK: audit03.formation.typed.lambda*NMxy.1.noPost
+OK: audit03.formation.typed.lambda*NMxy.1.reason
+COMMENT: audit03.formation.typed.lambda*NMxy.1; Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+OK: audit03.formation.typed.lambda*NMxy.2.status
+OK: audit03.formation.typed.lambda*NMxy.2.code
+OK: audit03.formation.typed.lambda*NMxy.2.notCalculated
+OK: audit03.formation.typed.lambda*NMxy.2.oneAttempt
+OK: audit03.formation.typed.lambda*NMxy.2.noPoint
+OK: audit03.formation.typed.lambda*NMxy.2.noPre
+OK: audit03.formation.typed.lambda*NMxy.2.noPost
+OK: audit03.formation.typed.lambda*NMxy.2.reason
+COMMENT: audit03.formation.typed.lambda*NMxy.2; Solver.MaxIterations должен быть положительным.
+OK: audit03.formation.typed.lambda*NMxy.3.status
+OK: audit03.formation.typed.lambda*NMxy.3.code
+OK: audit03.formation.typed.lambda*NMxy.3.notCalculated
+OK: audit03.formation.typed.lambda*NMxy.3.oneAttempt
+OK: audit03.formation.typed.lambda*NMxy.3.noPoint
+OK: audit03.formation.typed.lambda*NMxy.3.noPre
+OK: audit03.formation.typed.lambda*NMxy.3.noPost
+OK: audit03.formation.typed.lambda*NMxy.3.reason
+COMMENT: audit03.formation.typed.lambda*NMxy.3; Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial.
+OK: audit03.formation.typed.Auto.1.status
+OK: audit03.formation.typed.Auto.1.code
+OK: audit03.formation.typed.Auto.1.notCalculated
+OK: audit03.formation.typed.Auto.1.oneAttempt
+OK: audit03.formation.typed.Auto.1.noPoint
+OK: audit03.formation.typed.Auto.1.noPre
+OK: audit03.formation.typed.Auto.1.noPost
+OK: audit03.formation.typed.Auto.1.reason
+COMMENT: audit03.formation.typed.Auto.1; Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+OK: audit03.formation.typed.Auto.2.status
+OK: audit03.formation.typed.Auto.2.code
+OK: audit03.formation.typed.Auto.2.notCalculated
+OK: audit03.formation.typed.Auto.2.oneAttempt
+OK: audit03.formation.typed.Auto.2.noPoint
+OK: audit03.formation.typed.Auto.2.noPre
+OK: audit03.formation.typed.Auto.2.noPost
+OK: audit03.formation.typed.Auto.2.reason
+COMMENT: audit03.formation.typed.Auto.2; Solver.MaxIterations должен быть положительным.
+OK: audit03.formation.typed.Auto.3.status
+OK: audit03.formation.typed.Auto.3.code
+OK: audit03.formation.typed.Auto.3.notCalculated
+OK: audit03.formation.typed.Auto.3.oneAttempt
+OK: audit03.formation.typed.Auto.3.noPoint
+OK: audit03.formation.typed.Auto.3.noPre
+OK: audit03.formation.typed.Auto.3.noPost
+OK: audit03.formation.typed.Auto.3.reason
+COMMENT: audit03.formation.typed.Auto.3; Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial.
+OK: audit03.formation.lifecycle.Auto.0.searchExists
+OK: audit03.formation.lifecycle.Auto.0.searchExecuted
+OK: audit03.formation.lifecycle.Auto.0.cloneFlag
+OK: audit03.formation.lifecycle.Auto.0.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.0.notCalculated
+OK: audit03.formation.lifecycle.Auto.0.noSolver
+OK: audit03.formation.lifecycle.Auto.0.noPoint
+OK: audit03.formation.lifecycle.Auto.0.noPre
+OK: audit03.formation.lifecycle.Auto.0.noPost
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.0; SearchExecuted=False; Calculated=False; solves=0; comment=Нагрузки сочетания равны нулю; поиск точки образования трещины не требуется.
+OK: audit03.formation.lifecycle.Auto.1.searchExists
+OK: audit03.formation.lifecycle.Auto.1.searchExecuted
+OK: audit03.formation.lifecycle.Auto.1.cloneFlag
+OK: audit03.formation.lifecycle.Auto.1.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.1.analyticalCalculated
+OK: audit03.formation.lifecycle.Auto.1.analyticalNoSolver
+OK: audit03.formation.lifecycle.Auto.1.thresholdBeyondLoad
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.1; SearchExecuted=False; Calculated=True; solves=0; comment=Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы.
+OK: audit03.formation.lifecycle.Auto.2.searchExists
+OK: audit03.formation.lifecycle.Auto.2.searchExecuted
+OK: audit03.formation.lifecycle.Auto.2.cloneFlag
+OK: audit03.formation.lifecycle.Auto.2.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.2.analyticalCalculated
+OK: audit03.formation.lifecycle.Auto.2.namedSolves
+OK: audit03.formation.lifecycle.Auto.2.preState
+OK: audit03.formation.lifecycle.Auto.2.postState
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.2; SearchExecuted=False; Calculated=True; solves=2; comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.Auto.3.searchExists
+OK: audit03.formation.lifecycle.Auto.3.searchExecuted
+OK: audit03.formation.lifecycle.Auto.3.cloneFlag
+OK: audit03.formation.lifecycle.Auto.3.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.3.numericCalculated
+OK: audit03.formation.lifecycle.Auto.3.numericPoint
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.3; SearchExecuted=True; Calculated=True; solves=18; comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.Auto.4.searchExists
+OK: audit03.formation.lifecycle.Auto.4.searchExecuted
+OK: audit03.formation.lifecycle.Auto.4.cloneFlag
+OK: audit03.formation.lifecycle.Auto.4.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.4.notCalculated
+OK: audit03.formation.lifecycle.Auto.4.noSolver
+OK: audit03.formation.lifecycle.Auto.4.noPoint
+OK: audit03.formation.lifecycle.Auto.4.noPre
+OK: audit03.formation.lifecycle.Auto.4.noPost
+OK: audit03.formation.lifecycle.Auto.4.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.4; SearchExecuted=False; Calculated=False; solves=0; comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.formation.lifecycle.Auto.5.searchExists
+OK: audit03.formation.lifecycle.Auto.5.searchExecuted
+OK: audit03.formation.lifecycle.Auto.5.cloneFlag
+OK: audit03.formation.lifecycle.Auto.5.metaSnapshot
+OK: audit03.formation.lifecycle.Auto.5.typedConfiguration
+OK: audit03.formation.lifecycle.Auto.5.failedAttempt
+OK: audit03.formation.lifecycle.Auto.5.noPoint
+OK: audit03.formation.lifecycle.Auto.5.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.Auto.5; SearchExecuted=True; Calculated=False; solves=1; comment=Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+OK: audit03.formation.lifecycle.Auto.finalReset
+OK: audit03.formation.lifecycle.UltimateStrain.0.searchExists
+OK: audit03.formation.lifecycle.UltimateStrain.0.searchExecuted
+OK: audit03.formation.lifecycle.UltimateStrain.0.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.0.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.0.notCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.0.noSolver
+OK: audit03.formation.lifecycle.UltimateStrain.0.noPoint
+OK: audit03.formation.lifecycle.UltimateStrain.0.noPre
+OK: audit03.formation.lifecycle.UltimateStrain.0.noPost
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.0; SearchExecuted=False; Calculated=False; solves=0; comment=Нагрузки сочетания равны нулю; поиск точки образования трещины не требуется.
+OK: audit03.formation.lifecycle.UltimateStrain.1.searchExists
+OK: audit03.formation.lifecycle.UltimateStrain.1.searchExecuted
+OK: audit03.formation.lifecycle.UltimateStrain.1.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.1.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.1.analyticalCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.1.analyticalNoSolver
+OK: audit03.formation.lifecycle.UltimateStrain.1.thresholdBeyondLoad
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.1; SearchExecuted=False; Calculated=True; solves=0; comment=Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы.
+OK: audit03.formation.lifecycle.UltimateStrain.2.searchExists
+OK: audit03.formation.lifecycle.UltimateStrain.2.searchExecuted
+OK: audit03.formation.lifecycle.UltimateStrain.2.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.2.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.2.analyticalCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.2.namedSolves
+OK: audit03.formation.lifecycle.UltimateStrain.2.preState
+OK: audit03.formation.lifecycle.UltimateStrain.2.postState
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.2; SearchExecuted=False; Calculated=True; solves=2; comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.UltimateStrain.3.searchExists
+OK: audit03.formation.lifecycle.UltimateStrain.3.searchExecuted
+OK: audit03.formation.lifecycle.UltimateStrain.3.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.3.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.3.numericCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.3.numericPoint
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.3; SearchExecuted=True; Calculated=True; solves=18; comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.UltimateStrain.4.searchExists
+OK: audit03.formation.lifecycle.UltimateStrain.4.searchExecuted
+OK: audit03.formation.lifecycle.UltimateStrain.4.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.4.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.4.notCalculated
+OK: audit03.formation.lifecycle.UltimateStrain.4.noSolver
+OK: audit03.formation.lifecycle.UltimateStrain.4.noPoint
+OK: audit03.formation.lifecycle.UltimateStrain.4.noPre
+OK: audit03.formation.lifecycle.UltimateStrain.4.noPost
+OK: audit03.formation.lifecycle.UltimateStrain.4.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.4; SearchExecuted=False; Calculated=False; solves=0; comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.formation.lifecycle.UltimateStrain.5.searchExists
+OK: audit03.formation.lifecycle.UltimateStrain.5.searchExecuted
+OK: audit03.formation.lifecycle.UltimateStrain.5.cloneFlag
+OK: audit03.formation.lifecycle.UltimateStrain.5.metaSnapshot
+OK: audit03.formation.lifecycle.UltimateStrain.5.typedConfiguration
+OK: audit03.formation.lifecycle.UltimateStrain.5.failedAttempt
+OK: audit03.formation.lifecycle.UltimateStrain.5.noPoint
+OK: audit03.formation.lifecycle.UltimateStrain.5.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.UltimateStrain.5; SearchExecuted=True; Calculated=False; solves=1; comment=Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+OK: audit03.formation.lifecycle.UltimateStrain.finalReset
+OK: audit03.formation.lifecycle.LoadMultiplier.0.searchExists
+OK: audit03.formation.lifecycle.LoadMultiplier.0.searchExecuted
+OK: audit03.formation.lifecycle.LoadMultiplier.0.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.0.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.0.notCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.0.noSolver
+OK: audit03.formation.lifecycle.LoadMultiplier.0.noPoint
+OK: audit03.formation.lifecycle.LoadMultiplier.0.noPre
+OK: audit03.formation.lifecycle.LoadMultiplier.0.noPost
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.0; SearchExecuted=False; Calculated=False; solves=0; comment=Нагрузки сочетания равны нулю; поиск точки образования трещины не требуется.
+OK: audit03.formation.lifecycle.LoadMultiplier.1.searchExists
+OK: audit03.formation.lifecycle.LoadMultiplier.1.searchExecuted
+OK: audit03.formation.lifecycle.LoadMultiplier.1.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.1.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.1.analyticalCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.1.analyticalNoSolver
+OK: audit03.formation.lifecycle.LoadMultiplier.1.thresholdBeyondLoad
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.1; SearchExecuted=False; Calculated=True; solves=0; comment=Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы.
+OK: audit03.formation.lifecycle.LoadMultiplier.2.searchExists
+OK: audit03.formation.lifecycle.LoadMultiplier.2.searchExecuted
+OK: audit03.formation.lifecycle.LoadMultiplier.2.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.2.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.2.analyticalCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.2.namedSolves
+OK: audit03.formation.lifecycle.LoadMultiplier.2.preState
+OK: audit03.formation.lifecycle.LoadMultiplier.2.postState
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.2; SearchExecuted=False; Calculated=True; solves=2; comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.LoadMultiplier.3.searchExists
+OK: audit03.formation.lifecycle.LoadMultiplier.3.searchExecuted
+OK: audit03.formation.lifecycle.LoadMultiplier.3.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.3.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.3.numericCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.3.numericPoint
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.3; SearchExecuted=True; Calculated=True; solves=29; comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.formation.lifecycle.LoadMultiplier.4.searchExists
+OK: audit03.formation.lifecycle.LoadMultiplier.4.searchExecuted
+OK: audit03.formation.lifecycle.LoadMultiplier.4.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.4.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.4.notCalculated
+OK: audit03.formation.lifecycle.LoadMultiplier.4.noSolver
+OK: audit03.formation.lifecycle.LoadMultiplier.4.noPoint
+OK: audit03.formation.lifecycle.LoadMultiplier.4.noPre
+OK: audit03.formation.lifecycle.LoadMultiplier.4.noPost
+OK: audit03.formation.lifecycle.LoadMultiplier.4.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.4; SearchExecuted=False; Calculated=False; solves=0; comment=Для пути λ*My в колонке LoadPath сочетания соответствующая нагрузка должна быть ненулевой.
+OK: audit03.formation.lifecycle.LoadMultiplier.5.searchExists
+OK: audit03.formation.lifecycle.LoadMultiplier.5.searchExecuted
+OK: audit03.formation.lifecycle.LoadMultiplier.5.cloneFlag
+OK: audit03.formation.lifecycle.LoadMultiplier.5.metaSnapshot
+OK: audit03.formation.lifecycle.LoadMultiplier.5.typedConfiguration
+OK: audit03.formation.lifecycle.LoadMultiplier.5.failedAttempt
+OK: audit03.formation.lifecycle.LoadMultiplier.5.noPoint
+OK: audit03.formation.lifecycle.LoadMultiplier.5.priorSnapshot
+FORMATION_LIFECYCLE: audit03.formation.lifecycle.LoadMultiplier.5; SearchExecuted=True; Calculated=False; solves=1; comment=Ошибка настройки Solver.Method: допустимы только Newton или Secant.
+OK: audit03.formation.lifecycle.LoadMultiplier.finalReset
+OK: audit03.formationResidual.LambdaMx.1.noResidual
+OK: audit03.formationResidual.LambdaMx.1.status
+OK: audit03.formationResidual.LambdaMx.1.code
+OK: audit03.formationResidual.LambdaMx.1.display
+OK: audit03.formationResidual.LambdaMx.1.noPoint
+OK: audit03.formationResidual.LambdaMx.1.noState
+OK: audit03.formationResidual.LambdaMx.1.reason
+OK: audit03.formationResidual.LambdaMx.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.1; Модель сечения не передана.
+OK: audit03.formationResidual.LambdaMx.1.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.1.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.2.noResidual
+OK: audit03.formationResidual.LambdaMx.2.status
+OK: audit03.formationResidual.LambdaMx.2.code
+OK: audit03.formationResidual.LambdaMx.2.display
+OK: audit03.formationResidual.LambdaMx.2.noPoint
+OK: audit03.formationResidual.LambdaMx.2.noState
+OK: audit03.formationResidual.LambdaMx.2.reason
+OK: audit03.formationResidual.LambdaMx.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.2; В модели сечения нет бетонных элементов.
+OK: audit03.formationResidual.LambdaMx.2.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.2.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.3.noResidual
+OK: audit03.formationResidual.LambdaMx.3.status
+OK: audit03.formationResidual.LambdaMx.3.code
+OK: audit03.formationResidual.LambdaMx.3.display
+OK: audit03.formationResidual.LambdaMx.3.noPoint
+OK: audit03.formationResidual.LambdaMx.3.noState
+OK: audit03.formationResidual.LambdaMx.3.reason
+OK: audit03.formationResidual.LambdaMx.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.3; Материал бетона не передан.
+OK: audit03.formationResidual.LambdaMx.3.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.3.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.4.noResidual
+OK: audit03.formationResidual.LambdaMx.4.status
+OK: audit03.formationResidual.LambdaMx.4.code
+OK: audit03.formationResidual.LambdaMx.4.display
+OK: audit03.formationResidual.LambdaMx.4.noPoint
+OK: audit03.formationResidual.LambdaMx.4.noState
+OK: audit03.formationResidual.LambdaMx.4.reason
+OK: audit03.formationResidual.LambdaMx.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.4; Материал арматуры не передан.
+OK: audit03.formationResidual.LambdaMx.4.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.4.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.5.noResidual
+OK: audit03.formationResidual.LambdaMx.5.status
+OK: audit03.formationResidual.LambdaMx.5.code
+OK: audit03.formationResidual.LambdaMx.5.display
+OK: audit03.formationResidual.LambdaMx.5.noPoint
+OK: audit03.formationResidual.LambdaMx.5.noState
+OK: audit03.formationResidual.LambdaMx.5.reason
+OK: audit03.formationResidual.LambdaMx.5.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaMx.5.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaMx.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.5; Не удалось оценить плоскость деформаций при поиске образования трещины: не переданы обязательные данные траектории нагрузки.
+OK: audit03.formationResidual.LambdaMx.5.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.5.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.6.noResidual
+OK: audit03.formationResidual.LambdaMx.6.status
+OK: audit03.formationResidual.LambdaMx.6.code
+OK: audit03.formationResidual.LambdaMx.6.display
+OK: audit03.formationResidual.LambdaMx.6.noPoint
+OK: audit03.formationResidual.LambdaMx.6.noState
+OK: audit03.formationResidual.LambdaMx.6.reason
+OK: audit03.formationResidual.LambdaMx.6.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaMx.6.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaMx.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.6; Не удалось оценить плоскость деформаций при поиске образования трещины: промежуточные числа вышли за допустимый диапазон при оценке плоскости деформаций.
+OK: audit03.formationResidual.LambdaMx.6.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.6.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.7.noResidual
+OK: audit03.formationResidual.LambdaMx.7.status
+OK: audit03.formationResidual.LambdaMx.7.code
+OK: audit03.formationResidual.LambdaMx.7.display
+OK: audit03.formationResidual.LambdaMx.7.noPoint
+OK: audit03.formationResidual.LambdaMx.7.noState
+OK: audit03.formationResidual.LambdaMx.7.reason
+OK: audit03.formationResidual.LambdaMx.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaMx.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaMx.7.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.7.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMx.8.noResidual
+OK: audit03.formationResidual.LambdaMx.8.status
+OK: audit03.formationResidual.LambdaMx.8.code
+OK: audit03.formationResidual.LambdaMx.8.display
+OK: audit03.formationResidual.LambdaMx.8.noPoint
+OK: audit03.formationResidual.LambdaMx.8.noState
+OK: audit03.formationResidual.LambdaMx.8.reason
+OK: audit03.formationResidual.LambdaMx.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaMx.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMx.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaMx.8.recoverySuccess
+OK: audit03.formationResidual.LambdaMx.8.recoveryPoint
+OK: audit03.formationResidual.LambdaMx.8.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.1.noResidual
+OK: audit03.formationResidual.LambdaMy.1.status
+OK: audit03.formationResidual.LambdaMy.1.code
+OK: audit03.formationResidual.LambdaMy.1.display
+OK: audit03.formationResidual.LambdaMy.1.noPoint
+OK: audit03.formationResidual.LambdaMy.1.noState
+OK: audit03.formationResidual.LambdaMy.1.reason
+OK: audit03.formationResidual.LambdaMy.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.1; Модель сечения не передана.
+OK: audit03.formationResidual.LambdaMy.1.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.1.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.2.noResidual
+OK: audit03.formationResidual.LambdaMy.2.status
+OK: audit03.formationResidual.LambdaMy.2.code
+OK: audit03.formationResidual.LambdaMy.2.display
+OK: audit03.formationResidual.LambdaMy.2.noPoint
+OK: audit03.formationResidual.LambdaMy.2.noState
+OK: audit03.formationResidual.LambdaMy.2.reason
+OK: audit03.formationResidual.LambdaMy.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.2; В модели сечения нет бетонных элементов.
+OK: audit03.formationResidual.LambdaMy.2.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.2.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.3.noResidual
+OK: audit03.formationResidual.LambdaMy.3.status
+OK: audit03.formationResidual.LambdaMy.3.code
+OK: audit03.formationResidual.LambdaMy.3.display
+OK: audit03.formationResidual.LambdaMy.3.noPoint
+OK: audit03.formationResidual.LambdaMy.3.noState
+OK: audit03.formationResidual.LambdaMy.3.reason
+OK: audit03.formationResidual.LambdaMy.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.3; Материал бетона не передан.
+OK: audit03.formationResidual.LambdaMy.3.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.3.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.4.noResidual
+OK: audit03.formationResidual.LambdaMy.4.status
+OK: audit03.formationResidual.LambdaMy.4.code
+OK: audit03.formationResidual.LambdaMy.4.display
+OK: audit03.formationResidual.LambdaMy.4.noPoint
+OK: audit03.formationResidual.LambdaMy.4.noState
+OK: audit03.formationResidual.LambdaMy.4.reason
+OK: audit03.formationResidual.LambdaMy.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.4; Материал арматуры не передан.
+OK: audit03.formationResidual.LambdaMy.4.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.4.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.5.noResidual
+OK: audit03.formationResidual.LambdaMy.5.status
+OK: audit03.formationResidual.LambdaMy.5.code
+OK: audit03.formationResidual.LambdaMy.5.display
+OK: audit03.formationResidual.LambdaMy.5.noPoint
+OK: audit03.formationResidual.LambdaMy.5.noState
+OK: audit03.formationResidual.LambdaMy.5.reason
+OK: audit03.formationResidual.LambdaMy.5.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaMy.5.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaMy.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.5; Не удалось оценить плоскость деформаций при поиске образования трещины: не переданы обязательные данные траектории нагрузки.
+OK: audit03.formationResidual.LambdaMy.5.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.5.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.6.noResidual
+OK: audit03.formationResidual.LambdaMy.6.status
+OK: audit03.formationResidual.LambdaMy.6.code
+OK: audit03.formationResidual.LambdaMy.6.display
+OK: audit03.formationResidual.LambdaMy.6.noPoint
+OK: audit03.formationResidual.LambdaMy.6.noState
+OK: audit03.formationResidual.LambdaMy.6.reason
+OK: audit03.formationResidual.LambdaMy.6.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaMy.6.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaMy.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.6; Не удалось оценить плоскость деформаций при поиске образования трещины: промежуточные числа вышли за допустимый диапазон при оценке плоскости деформаций.
+OK: audit03.formationResidual.LambdaMy.6.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.6.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.7.noResidual
+OK: audit03.formationResidual.LambdaMy.7.status
+OK: audit03.formationResidual.LambdaMy.7.code
+OK: audit03.formationResidual.LambdaMy.7.display
+OK: audit03.formationResidual.LambdaMy.7.noPoint
+OK: audit03.formationResidual.LambdaMy.7.noState
+OK: audit03.formationResidual.LambdaMy.7.reason
+OK: audit03.formationResidual.LambdaMy.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaMy.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaMy.7.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.7.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMy.8.noResidual
+OK: audit03.formationResidual.LambdaMy.8.status
+OK: audit03.formationResidual.LambdaMy.8.code
+OK: audit03.formationResidual.LambdaMy.8.display
+OK: audit03.formationResidual.LambdaMy.8.noPoint
+OK: audit03.formationResidual.LambdaMy.8.noState
+OK: audit03.formationResidual.LambdaMy.8.reason
+OK: audit03.formationResidual.LambdaMy.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaMy.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMy.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaMy.8.recoverySuccess
+OK: audit03.formationResidual.LambdaMy.8.recoveryPoint
+OK: audit03.formationResidual.LambdaMy.8.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.1.noResidual
+OK: audit03.formationResidual.LambdaMxy.1.status
+OK: audit03.formationResidual.LambdaMxy.1.code
+OK: audit03.formationResidual.LambdaMxy.1.display
+OK: audit03.formationResidual.LambdaMxy.1.noPoint
+OK: audit03.formationResidual.LambdaMxy.1.noState
+OK: audit03.formationResidual.LambdaMxy.1.reason
+OK: audit03.formationResidual.LambdaMxy.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.1; Модель сечения не передана.
+OK: audit03.formationResidual.LambdaMxy.1.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.1.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.2.noResidual
+OK: audit03.formationResidual.LambdaMxy.2.status
+OK: audit03.formationResidual.LambdaMxy.2.code
+OK: audit03.formationResidual.LambdaMxy.2.display
+OK: audit03.formationResidual.LambdaMxy.2.noPoint
+OK: audit03.formationResidual.LambdaMxy.2.noState
+OK: audit03.formationResidual.LambdaMxy.2.reason
+OK: audit03.formationResidual.LambdaMxy.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.2; В модели сечения нет бетонных элементов.
+OK: audit03.formationResidual.LambdaMxy.2.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.2.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.3.noResidual
+OK: audit03.formationResidual.LambdaMxy.3.status
+OK: audit03.formationResidual.LambdaMxy.3.code
+OK: audit03.formationResidual.LambdaMxy.3.display
+OK: audit03.formationResidual.LambdaMxy.3.noPoint
+OK: audit03.formationResidual.LambdaMxy.3.noState
+OK: audit03.formationResidual.LambdaMxy.3.reason
+OK: audit03.formationResidual.LambdaMxy.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.3; Материал бетона не передан.
+OK: audit03.formationResidual.LambdaMxy.3.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.3.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.4.noResidual
+OK: audit03.formationResidual.LambdaMxy.4.status
+OK: audit03.formationResidual.LambdaMxy.4.code
+OK: audit03.formationResidual.LambdaMxy.4.display
+OK: audit03.formationResidual.LambdaMxy.4.noPoint
+OK: audit03.formationResidual.LambdaMxy.4.noState
+OK: audit03.formationResidual.LambdaMxy.4.reason
+OK: audit03.formationResidual.LambdaMxy.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.4; Материал арматуры не передан.
+OK: audit03.formationResidual.LambdaMxy.4.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.4.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.5.noResidual
+OK: audit03.formationResidual.LambdaMxy.5.status
+OK: audit03.formationResidual.LambdaMxy.5.code
+OK: audit03.formationResidual.LambdaMxy.5.display
+OK: audit03.formationResidual.LambdaMxy.5.noPoint
+OK: audit03.formationResidual.LambdaMxy.5.noState
+OK: audit03.formationResidual.LambdaMxy.5.reason
+OK: audit03.formationResidual.LambdaMxy.5.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaMxy.5.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaMxy.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.5; Не удалось оценить плоскость деформаций при поиске образования трещины: не переданы обязательные данные траектории нагрузки.
+OK: audit03.formationResidual.LambdaMxy.5.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.5.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.6.noResidual
+OK: audit03.formationResidual.LambdaMxy.6.status
+OK: audit03.formationResidual.LambdaMxy.6.code
+OK: audit03.formationResidual.LambdaMxy.6.display
+OK: audit03.formationResidual.LambdaMxy.6.noPoint
+OK: audit03.formationResidual.LambdaMxy.6.noState
+OK: audit03.formationResidual.LambdaMxy.6.reason
+OK: audit03.formationResidual.LambdaMxy.6.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaMxy.6.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaMxy.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.6; Не удалось оценить плоскость деформаций при поиске образования трещины: промежуточные числа вышли за допустимый диапазон при оценке плоскости деформаций.
+OK: audit03.formationResidual.LambdaMxy.6.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.6.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.7.noResidual
+OK: audit03.formationResidual.LambdaMxy.7.status
+OK: audit03.formationResidual.LambdaMxy.7.code
+OK: audit03.formationResidual.LambdaMxy.7.display
+OK: audit03.formationResidual.LambdaMxy.7.noPoint
+OK: audit03.formationResidual.LambdaMxy.7.noState
+OK: audit03.formationResidual.LambdaMxy.7.reason
+OK: audit03.formationResidual.LambdaMxy.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaMxy.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaMxy.7.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.7.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaMxy.8.noResidual
+OK: audit03.formationResidual.LambdaMxy.8.status
+OK: audit03.formationResidual.LambdaMxy.8.code
+OK: audit03.formationResidual.LambdaMxy.8.display
+OK: audit03.formationResidual.LambdaMxy.8.noPoint
+OK: audit03.formationResidual.LambdaMxy.8.noState
+OK: audit03.formationResidual.LambdaMxy.8.reason
+OK: audit03.formationResidual.LambdaMxy.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaMxy.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaMxy.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaMxy.8.recoverySuccess
+OK: audit03.formationResidual.LambdaMxy.8.recoveryPoint
+OK: audit03.formationResidual.LambdaMxy.8.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.1.noResidual
+OK: audit03.formationResidual.LambdaN.1.status
+OK: audit03.formationResidual.LambdaN.1.code
+OK: audit03.formationResidual.LambdaN.1.display
+OK: audit03.formationResidual.LambdaN.1.noPoint
+OK: audit03.formationResidual.LambdaN.1.noState
+OK: audit03.formationResidual.LambdaN.1.reason
+OK: audit03.formationResidual.LambdaN.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.1; Модель сечения не передана.
+OK: audit03.formationResidual.LambdaN.1.recoverySuccess
+OK: audit03.formationResidual.LambdaN.1.recoveryPoint
+OK: audit03.formationResidual.LambdaN.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.2.noResidual
+OK: audit03.formationResidual.LambdaN.2.status
+OK: audit03.formationResidual.LambdaN.2.code
+OK: audit03.formationResidual.LambdaN.2.display
+OK: audit03.formationResidual.LambdaN.2.noPoint
+OK: audit03.formationResidual.LambdaN.2.noState
+OK: audit03.formationResidual.LambdaN.2.reason
+OK: audit03.formationResidual.LambdaN.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.2; В модели сечения нет бетонных элементов.
+OK: audit03.formationResidual.LambdaN.2.recoverySuccess
+OK: audit03.formationResidual.LambdaN.2.recoveryPoint
+OK: audit03.formationResidual.LambdaN.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.3.noResidual
+OK: audit03.formationResidual.LambdaN.3.status
+OK: audit03.formationResidual.LambdaN.3.code
+OK: audit03.formationResidual.LambdaN.3.display
+OK: audit03.formationResidual.LambdaN.3.noPoint
+OK: audit03.formationResidual.LambdaN.3.noState
+OK: audit03.formationResidual.LambdaN.3.reason
+OK: audit03.formationResidual.LambdaN.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.3; Материал бетона не передан.
+OK: audit03.formationResidual.LambdaN.3.recoverySuccess
+OK: audit03.formationResidual.LambdaN.3.recoveryPoint
+OK: audit03.formationResidual.LambdaN.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.4.noResidual
+OK: audit03.formationResidual.LambdaN.4.status
+OK: audit03.formationResidual.LambdaN.4.code
+OK: audit03.formationResidual.LambdaN.4.display
+OK: audit03.formationResidual.LambdaN.4.noPoint
+OK: audit03.formationResidual.LambdaN.4.noState
+OK: audit03.formationResidual.LambdaN.4.reason
+OK: audit03.formationResidual.LambdaN.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.4; Материал арматуры не передан.
+OK: audit03.formationResidual.LambdaN.4.recoverySuccess
+OK: audit03.formationResidual.LambdaN.4.recoveryPoint
+OK: audit03.formationResidual.LambdaN.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.5.noResidual
+OK: audit03.formationResidual.LambdaN.5.status
+OK: audit03.formationResidual.LambdaN.5.code
+OK: audit03.formationResidual.LambdaN.5.display
+OK: audit03.formationResidual.LambdaN.5.noPoint
+OK: audit03.formationResidual.LambdaN.5.noState
+OK: audit03.formationResidual.LambdaN.5.reason
+OK: audit03.formationResidual.LambdaN.5.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaN.5.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaN.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.5; Не удалось оценить плоскость деформаций при поиске образования трещины: не переданы обязательные данные траектории нагрузки.
+OK: audit03.formationResidual.LambdaN.5.recoverySuccess
+OK: audit03.formationResidual.LambdaN.5.recoveryPoint
+OK: audit03.formationResidual.LambdaN.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.6.noResidual
+OK: audit03.formationResidual.LambdaN.6.status
+OK: audit03.formationResidual.LambdaN.6.code
+OK: audit03.formationResidual.LambdaN.6.display
+OK: audit03.formationResidual.LambdaN.6.noPoint
+OK: audit03.formationResidual.LambdaN.6.noState
+OK: audit03.formationResidual.LambdaN.6.reason
+OK: audit03.formationResidual.LambdaN.6.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaN.6.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaN.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.6; Не удалось оценить плоскость деформаций при поиске образования трещины: промежуточные числа вышли за допустимый диапазон при оценке плоскости деформаций.
+OK: audit03.formationResidual.LambdaN.6.recoverySuccess
+OK: audit03.formationResidual.LambdaN.6.recoveryPoint
+OK: audit03.formationResidual.LambdaN.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.7.noResidual
+OK: audit03.formationResidual.LambdaN.7.status
+OK: audit03.formationResidual.LambdaN.7.code
+OK: audit03.formationResidual.LambdaN.7.display
+OK: audit03.formationResidual.LambdaN.7.noPoint
+OK: audit03.formationResidual.LambdaN.7.noState
+OK: audit03.formationResidual.LambdaN.7.reason
+OK: audit03.formationResidual.LambdaN.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaN.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaN.7.recoverySuccess
+OK: audit03.formationResidual.LambdaN.7.recoveryPoint
+OK: audit03.formationResidual.LambdaN.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaN.8.noResidual
+OK: audit03.formationResidual.LambdaN.8.status
+OK: audit03.formationResidual.LambdaN.8.code
+OK: audit03.formationResidual.LambdaN.8.display
+OK: audit03.formationResidual.LambdaN.8.noPoint
+OK: audit03.formationResidual.LambdaN.8.noState
+OK: audit03.formationResidual.LambdaN.8.reason
+OK: audit03.formationResidual.LambdaN.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaN.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaN.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaN.8.recoverySuccess
+OK: audit03.formationResidual.LambdaN.8.recoveryPoint
+OK: audit03.formationResidual.LambdaN.8.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.1.noResidual
+OK: audit03.formationResidual.LambdaNMxy.1.status
+OK: audit03.formationResidual.LambdaNMxy.1.code
+OK: audit03.formationResidual.LambdaNMxy.1.display
+OK: audit03.formationResidual.LambdaNMxy.1.noPoint
+OK: audit03.formationResidual.LambdaNMxy.1.noState
+OK: audit03.formationResidual.LambdaNMxy.1.reason
+OK: audit03.formationResidual.LambdaNMxy.1.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.1; Модель сечения не передана.
+OK: audit03.formationResidual.LambdaNMxy.1.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.1.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.1.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.2.noResidual
+OK: audit03.formationResidual.LambdaNMxy.2.status
+OK: audit03.formationResidual.LambdaNMxy.2.code
+OK: audit03.formationResidual.LambdaNMxy.2.display
+OK: audit03.formationResidual.LambdaNMxy.2.noPoint
+OK: audit03.formationResidual.LambdaNMxy.2.noState
+OK: audit03.formationResidual.LambdaNMxy.2.reason
+OK: audit03.formationResidual.LambdaNMxy.2.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.2; В модели сечения нет бетонных элементов.
+OK: audit03.formationResidual.LambdaNMxy.2.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.2.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.2.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.3.noResidual
+OK: audit03.formationResidual.LambdaNMxy.3.status
+OK: audit03.formationResidual.LambdaNMxy.3.code
+OK: audit03.formationResidual.LambdaNMxy.3.display
+OK: audit03.formationResidual.LambdaNMxy.3.noPoint
+OK: audit03.formationResidual.LambdaNMxy.3.noState
+OK: audit03.formationResidual.LambdaNMxy.3.reason
+OK: audit03.formationResidual.LambdaNMxy.3.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.3; Материал бетона не передан.
+OK: audit03.formationResidual.LambdaNMxy.3.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.3.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.3.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.4.noResidual
+OK: audit03.formationResidual.LambdaNMxy.4.status
+OK: audit03.formationResidual.LambdaNMxy.4.code
+OK: audit03.formationResidual.LambdaNMxy.4.display
+OK: audit03.formationResidual.LambdaNMxy.4.noPoint
+OK: audit03.formationResidual.LambdaNMxy.4.noState
+OK: audit03.formationResidual.LambdaNMxy.4.reason
+OK: audit03.formationResidual.LambdaNMxy.4.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.4; Материал арматуры не передан.
+OK: audit03.formationResidual.LambdaNMxy.4.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.4.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.4.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.5.noResidual
+OK: audit03.formationResidual.LambdaNMxy.5.status
+OK: audit03.formationResidual.LambdaNMxy.5.code
+OK: audit03.formationResidual.LambdaNMxy.5.display
+OK: audit03.formationResidual.LambdaNMxy.5.noPoint
+OK: audit03.formationResidual.LambdaNMxy.5.noState
+OK: audit03.formationResidual.LambdaNMxy.5.reason
+OK: audit03.formationResidual.LambdaNMxy.5.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaNMxy.5.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaNMxy.5.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.5; Не удалось оценить плоскость деформаций при поиске образования трещины: не переданы обязательные данные траектории нагрузки.
+OK: audit03.formationResidual.LambdaNMxy.5.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.5.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.5.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.6.noResidual
+OK: audit03.formationResidual.LambdaNMxy.6.status
+OK: audit03.formationResidual.LambdaNMxy.6.code
+OK: audit03.formationResidual.LambdaNMxy.6.display
+OK: audit03.formationResidual.LambdaNMxy.6.noPoint
+OK: audit03.formationResidual.LambdaNMxy.6.noState
+OK: audit03.formationResidual.LambdaNMxy.6.reason
+OK: audit03.formationResidual.LambdaNMxy.6.localizedRuntimeReason
+OK: audit03.formationResidual.LambdaNMxy.6.runtimeDiagnostic
+OK: audit03.formationResidual.LambdaNMxy.6.oneEvaluation
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.6; Не удалось оценить плоскость деформаций при поиске образования трещины: промежуточные числа вышли за допустимый диапазон при оценке плоскости деформаций.
+OK: audit03.formationResidual.LambdaNMxy.6.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.6.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.6.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.7.noResidual
+OK: audit03.formationResidual.LambdaNMxy.7.status
+OK: audit03.formationResidual.LambdaNMxy.7.code
+OK: audit03.formationResidual.LambdaNMxy.7.display
+OK: audit03.formationResidual.LambdaNMxy.7.noPoint
+OK: audit03.formationResidual.LambdaNMxy.7.noState
+OK: audit03.formationResidual.LambdaNMxy.7.reason
+OK: audit03.formationResidual.LambdaNMxy.7.noTerminalProbe
+OK: audit03.formationResidual.LambdaNMxy.7.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.7; Контрольная первичная ошибка настройки Formation.
+OK: audit03.formationResidual.LambdaNMxy.7.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.7.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.7.recoveryReasonClean
+OK: audit03.formationResidual.LambdaNMxy.8.noResidual
+OK: audit03.formationResidual.LambdaNMxy.8.status
+OK: audit03.formationResidual.LambdaNMxy.8.code
+OK: audit03.formationResidual.LambdaNMxy.8.display
+OK: audit03.formationResidual.LambdaNMxy.8.noPoint
+OK: audit03.formationResidual.LambdaNMxy.8.noState
+OK: audit03.formationResidual.LambdaNMxy.8.reason
+OK: audit03.formationResidual.LambdaNMxy.8.noTerminalProbe
+OK: audit03.formationResidual.LambdaNMxy.8.primaryReason
+FORMATION_RESIDUAL_COMMENT: audit03.formationResidual.LambdaNMxy.8; Контрольная первичная ошибка контракта Formation.
+OK: audit03.formationResidual.LambdaNMxy.8.recoverySuccess
+OK: audit03.formationResidual.LambdaNMxy.8.recoveryPoint
+OK: audit03.formationResidual.LambdaNMxy.8.recoveryReasonClean
+OK: audit03.formationAdapterFailure.1.status
+OK: audit03.formationAdapterFailure.1.code
+OK: audit03.formationAdapterFailure.1.display
+OK: audit03.formationAdapterFailure.1.reason
+OK: audit03.formationAdapterFailure.1.noPoint
+OK: audit03.formationAdapterFailure.1.noState
+OK: audit03.formationAdapterFailure.1.noSolve
+OK: audit03.formationAdapterFailure.1.terminal
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.1; Контрольная причина адаптера образования трещины.
+OK: audit03.formationAdapterFailure.2.status
+OK: audit03.formationAdapterFailure.2.code
+OK: audit03.formationAdapterFailure.2.display
+OK: audit03.formationAdapterFailure.2.reason
+OK: audit03.formationAdapterFailure.2.noPoint
+OK: audit03.formationAdapterFailure.2.noState
+OK: audit03.formationAdapterFailure.2.noSolve
+OK: audit03.formationAdapterFailure.2.terminal
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.2; Поиск образования трещины остановлен из-за неизвестного результата контрольной пробы: Неизвестная контрольная проба.
+OK: audit03.formationAdapterFailure.3.status
+OK: audit03.formationAdapterFailure.3.code
+OK: audit03.formationAdapterFailure.3.display
+OK: audit03.formationAdapterFailure.3.reason
+OK: audit03.formationAdapterFailure.3.noPoint
+OK: audit03.formationAdapterFailure.3.noState
+OK: audit03.formationAdapterFailure.3.noSolve
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.3; Контрольная причина адаптера образования трещины.
+OK: audit03.formationAdapterFailure.4.status
+OK: audit03.formationAdapterFailure.4.code
+OK: audit03.formationAdapterFailure.4.display
+OK: audit03.formationAdapterFailure.4.reason
+OK: audit03.formationAdapterFailure.4.noPoint
+OK: audit03.formationAdapterFailure.4.noState
+OK: audit03.formationAdapterFailure.4.noSolve
+OK: audit03.formationAdapterFailure.4.terminal
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.4; Контрольная причина адаптера образования трещины.
+OK: audit03.formationAdapterFailure.5.status
+OK: audit03.formationAdapterFailure.5.code
+OK: audit03.formationAdapterFailure.5.display
+OK: audit03.formationAdapterFailure.5.reason
+OK: audit03.formationAdapterFailure.5.noPoint
+OK: audit03.formationAdapterFailure.5.noState
+OK: audit03.formationAdapterFailure.5.noSolve
+OK: audit03.formationAdapterFailure.5.terminal
+FORMATION_ADAPTER_FAILURE: audit03.formationAdapterFailure.5; Контрольная причина адаптера образования трещины.
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.0|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.1|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.2|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.2|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.3|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.3|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.4|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+160.5|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.0|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.1|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.2|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.2|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.3|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.3|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.4|error=0|
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.hasResult
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.notInternalError
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.reasonPresent
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.localizedReason
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.noPreState
+OK: audit03.extremeFormation.False.UltimateStrain.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.UltimateStrain.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.UltimateStrain.1E+308.5|error=0|
+OK: audit03.extremeFormation.recovery.False.UltimateStrain.success
+OK: audit03.extremeFormation.recovery.False.UltimateStrain.point
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.0|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.0.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.0|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.1|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.1.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.1|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.2|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.2|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.2.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.2|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.3|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.3|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.3.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.3|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.4|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.4.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.4|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+160.5|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+160.5.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+160.5|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.0|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.0.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.0|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.1|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.1.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.1|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.2|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.2|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.2.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.2|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.3|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.3|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.3.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.3|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.4|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.4.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.4|error=0|evaluated=False|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.hasResult
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.notInternalError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.reasonPresent
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.localizedReason
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.noPreState
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.LoadMultiplier.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.LoadMultiplier.1E+308.5|error=0|
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.directProbeNoRuntimeError
+OK: audit03.extremeFormation.False.LoadMultiplier.1E+308.5.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.False.LoadMultiplier.1E+308.5|error=0|evaluated=False|
+OK: audit03.extremeFormation.recovery.False.LoadMultiplier.success
+OK: audit03.extremeFormation.recovery.False.LoadMultiplier.point
+OK: audit03.extremeFormation.False.Auto.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.0.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.0.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.0.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+160.0.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.0.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.0|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.1.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.1.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.1.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+160.1.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.1.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.1|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.2.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.2.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.2.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+160.2.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.2.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.2|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.2|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.3.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.3.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.3.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+160.3.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.3.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.3|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.3|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.4.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.4.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.4.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+160.4.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.4.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.4|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+160.5.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+160.5.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+160.5.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+160.5.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+160.5.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+160.5|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.0.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.0.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.0.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+308.0.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.0.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.0|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.1.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.1.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.1.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+308.1.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.1.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.1|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.2.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.2.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.2.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+308.2.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.2.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.2|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.2|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.3.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.3.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.3.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+308.3.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.3.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.3|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.3|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.4.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.4.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.4.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+308.4.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.4.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.4|error=0|
+OK: audit03.extremeFormation.False.Auto.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.False.Auto.1E+308.5.hasResult
+OK: audit03.extremeFormation.False.Auto.1E+308.5.notInternalError
+OK: audit03.extremeFormation.False.Auto.1E+308.5.reasonPresent
+OK: audit03.extremeFormation.False.Auto.1E+308.5.localizedReason
+OK: audit03.extremeFormation.False.Auto.1E+308.5.noPreState
+OK: audit03.extremeFormation.False.Auto.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.False.Auto.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.False.Auto.1E+308.5|error=0|
+OK: audit03.extremeFormation.recovery.False.Auto.success
+OK: audit03.extremeFormation.recovery.False.Auto.point
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.0|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.1|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.2|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.2|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.3|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.3|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.4|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+160.5|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.0|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.1|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.2|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.2|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.3|status=6|code=10|comment=Путь λ*My: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.3|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.4|error=0|
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.hasResult
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.notInternalError
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.reasonPresent
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.localizedReason
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.noPreState
+OK: audit03.extremeFormation.True.UltimateStrain.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.UltimateStrain.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Путь λ*N: Не удалось решить линейную систему UltimateStrain: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось решить линейную систему UltimateStrain: Матрица вырождена.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.UltimateStrain.1E+308.5|error=0|
+OK: audit03.extremeFormation.recovery.True.UltimateStrain.success
+OK: audit03.extremeFormation.recovery.True.UltimateStrain.point
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.0|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.0.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.0|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.1|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.1.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.1|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.2|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.2|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.2.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.2|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.3|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.3|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.3.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.3|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.4|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.4.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.4|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+160.5|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+160.5.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+160.5|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.0|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.0.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.0|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.1|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.1.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.1|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.2|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.2|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.2.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.2|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.3|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.3|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.3.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.3|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.4|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.4.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.4|error=0|evaluated=False|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.hasResult
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.notInternalError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.reasonPresent
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.localizedReason
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.noPreState
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.LoadMultiplier.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.LoadMultiplier.1E+308.5|error=0|
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.directProbeNoRuntimeError
+OK: audit03.extremeFormation.True.LoadMultiplier.1E+308.5.directProbeAttempt
+EXTREME_FORMATION_PROBE: audit03.extremeFormation.True.LoadMultiplier.1E+308.5|error=0|evaluated=False|
+OK: audit03.extremeFormation.recovery.True.LoadMultiplier.success
+OK: audit03.extremeFormation.recovery.True.LoadMultiplier.point
+OK: audit03.extremeFormation.True.Auto.1E+160.0.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.0.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.0.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.0.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+160.0.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.0.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.0|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.0|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.1.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.1.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.1.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.1.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+160.1.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.1.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.1|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.1|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.2.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.2.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.2.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.2.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+160.2.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.2.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.2|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.2|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.3.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.3.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.3.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.3.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+160.3.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.3.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.3|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.3|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.4.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.4.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.4.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.4.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+160.4.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.4.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.4|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+160.5.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+160.5.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+160.5.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+160.5.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+160.5.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+160.5.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+160.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+160.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+160.5|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.0.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.0.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.0.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.0.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+308.0.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.0.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.0.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.0|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.0|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.1.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.1.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.1.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.1.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+308.1.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.1.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.1.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.1|status=6|code=10|comment=Путь λ*Mx: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.1|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.2.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.2.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.2.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.2.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+308.2.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.2.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.2.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.2|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.2|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.3.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.3.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.3.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.3.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+308.3.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.3.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.3.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.3|status=6|code=10|comment=Путь λ*My: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.3|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.4.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.4.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.4.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.4.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+308.4.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.4.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.4.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.4|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.4|error=0|
+OK: audit03.extremeFormation.True.Auto.1E+308.5.noRuntimeError
+OK: audit03.extremeFormation.True.Auto.1E+308.5.hasResult
+OK: audit03.extremeFormation.True.Auto.1E+308.5.notInternalError
+OK: audit03.extremeFormation.True.Auto.1E+308.5.reasonPresent
+OK: audit03.extremeFormation.True.Auto.1E+308.5.localizedReason
+OK: audit03.extremeFormation.True.Auto.1E+308.5.noPreState
+OK: audit03.extremeFormation.True.Auto.1E+308.5.noPostState
+EXTREME_FORMATION_RESULT: audit03.extremeFormation.True.Auto.1E+308.5|status=6|code=10|comment=Путь λ*Mxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Не удалось найти равновесие при lambda = 0.000001907349 в поиске трещинообразования.
+EXTREME_FORMATION_CALL: audit03.extremeFormation.True.Auto.1E+308.5|error=0|
+OK: audit03.extremeFormation.recovery.True.Auto.success
+OK: audit03.extremeFormation.recovery.True.Auto.point
+TOTAL_CRACK: passed=2155; failed=0; elapsedSec=49.40625
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4f950ed9c25545e593c15544ea298c45\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestCrackWidth.RunCrackWidthTests; 2026-10-05T07:16:33
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

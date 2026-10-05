@@ -201,6 +201,37 @@ shape/builders и передает нормализованные размеры
     source unchanged=True. Все 266 численных assertions обычного Stability
     из full v313 совпали точно. Остальные экстремальные арифметические
     выражения не объявляются автоматически проверенными этим gate.
+27. Полностью прочитаны `CSectionPropertiesCalculator`, `CCircleRebarLayoutBuilder`,
+    `CGeometryCircle`, `CExcelAppStateGuard`, `CLinearSystem3x3`,
+    `CCalculationProfile`, `CCalculationProfileCatalog`, `CLoadCombinationReader`,
+    `CDirectStateResult`, `CCrackFormationResult`, `CCrackWidthResult` и
+    `CLongitudinalCrackCalculator`. Геометрические A/I используют реальные
+    локальные инерции модели, а проекционная оболочка берется у CSectionModel.
+    App guard сохраняет исходную COM-ошибку при восстановлении; result-классы
+    защищают опубликованные данные. Уточнены два misleading-комментария
+    профиля/Formation, без изменения их исполняемого поведения.
+28. Broad v318 CircleSym/Light/Off `24160/57` доказал, что прежнее чтение
+    CLoadPathMath не выявило размерно несогласованный порог Base. В 19 случаях
+    маленький момент терялся в LoadPath helper, и Formation выдавал
+    rsInternalError. Отдельный helper negative v319 `81/20` воспроизвел
+    оба знака и три компоненты. Устранены default-отбрасывание ненулевой Base
+    и передача NEAR_ZERO_FORCE в общую математику. Positive v320 `125/0`,
+    Solver `1492/0`, Capacity `3562/0`, Crack `2155/0`. Все 1029 общих чисел
+    совпали точно с v313. Повтор broad запущен, но еще не принят;
+    это не основание ослаблять утвержденные матричные assertions.
+29. Полностью прочитаны `CCapacityLimitSearchProblem`, `CCapacityResult`,
+    `modResultStatus`, `CConcreteMaterialParameters`, `CSteelMaterialParameters`,
+    `CFiberMeshBuilder`, `CMaterialDiagram` и `CSectionPlotDataReader`.
+    Capacity adapter оставляет численные циклы общему Search, результат
+    хранит готовые пределы и meta. Mesh проверяет представимость счетчиков
+    до Long/массивов. Plot reader переводит сохраненные units, а не текущий
+    Config, и очищает частичный снимок при отказе.
+    В CMaterialDiagram описание UltimateCompressionStrain/UltimateTensionStrain
+    неточно называет физический предел крайней точкой диаграммы и содержит
+    историческую ссылку на удаленные настройки; нужна comment-only правка.
+    Private MaxDouble Capacity adapter не имеет callers; удаление рассматривается
+    в рамках A05 после сверки актуального source, не как новая архитектура.
+    Это чтение не заменяет mutation/extreme/финальные runtime gates.
 
 ## Приемочные Gates
 

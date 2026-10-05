@@ -23,13 +23,13 @@ Option Explicit
 ' и нормирует их через допуски равновесия solver-а. Поэтому capacity и crack
 ' не должны держать собственные копии этой математики.
 
-Private Const DEFAULT_BASE_TOLERANCE As Double = 0.000000001 ' Численный ноль для масштабируемой компоненты Base.
+Private Const DEFAULT_BASE_TOLERANCE As Double = 0# ' Ненулевая Base сохраняет путь; инженерный фильтр моментов применяется до Search.
 Private Const RELATIVE_COMPONENT_TOLERANCE As Double = 0.000000001 ' Минимальная относительная добавка к solver tolerance.
 
 Private mToleranceN As Double ' Допуск равновесия по N, Н.
 Private mToleranceMx As Double ' Допуск равновесия по Mx, Н*мм.
 Private mToleranceMy As Double ' Допуск равновесия по My, Н*мм.
-Private mBaseTolerance As Double ' Численный ноль для определения ненулевой компоненты Base.
+Private mBaseTolerance As Double ' Явный optional-порог API; production использует точное отличие Base от нуля.
 
 ' Инициализирует расчетные допуски равновесия значениями, совместимыми с default solver.
 Private Sub Class_Initialize()
@@ -41,7 +41,8 @@ End Sub
 
 ' Передает допуски того solver-а, для которого будут строиться безразмерные
 ' невязки load-path. Разные расчетные ветки могут иметь разные настройки, но
-' формула нормировки остается общей.
+' формула нормировки остается общей. По умолчанию любая ненулевая Base
+' масштабируется: допуск равновесия не является фильтром заданной нагрузки.
 Public Sub Configure(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
         ByVal toleranceMy As Double, Optional ByVal baseTolerance As Double = DEFAULT_BASE_TOLERANCE)
     mToleranceN = Abs(toleranceN)
@@ -51,7 +52,6 @@ Public Sub Configure(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
     If mToleranceN <= 0# Then mToleranceN = 5#
     If mToleranceMx <= 0# Then mToleranceMx = 5000#
     If mToleranceMy <= 0# Then mToleranceMy = 5000#
-    If mBaseTolerance <= 0# Then mBaseTolerance = DEFAULT_BASE_TOLERANCE
 End Sub
 
 ' Возвращает lambda по опорной масштабируемой компоненте. Опорная компонента

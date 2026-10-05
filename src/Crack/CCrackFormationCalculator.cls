@@ -1183,11 +1183,13 @@ End Function
 
 
 
-' Создает общий helper lambda-траектории с текущими допусками crack solver-а.
+' Создает общий helper lambda-траектории с допусками crack solver-а.
+' Порог классификации осевой силы сюда не передается: маленький ненулевой
+' момент также задает корректную масштабируемую компоненту пути.
 Private Function NewLoadPathMath() As CLoadPathMath
     Dim loadPathMath As CLoadPathMath
     Set loadPathMath = New CLoadPathMath
-    loadPathMath.Configure mSolverToleranceN, mSolverToleranceMx, mSolverToleranceMy, NEAR_ZERO_FORCE
+    loadPathMath.Configure mSolverToleranceN, mSolverToleranceMx, mSolverToleranceMy
     Set NewLoadPathMath = loadPathMath
 End Function
 

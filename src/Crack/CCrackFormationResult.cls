@@ -211,7 +211,8 @@ Public Property Get SearchResult() As CLimitSearchResult
     If Not mSearchResult Is Nothing Then Set SearchResult = mSearchResult.Clone
 End Property
 
-' Успех formation включает корректный warning-fallback без фиктивной точки.
+' Возвращает успех процедуры по meta, не обещая найденную limit point.
+' Доступность точки и допустимость Pre/Post проверяются отдельными признаками.
 Public Property Get Converged() As Boolean
     Converged = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
