@@ -1,0 +1,36 @@
+﻿[
+    {
+        "range":  "$A$81:$AC$90",
+        "name":  "Crack_Formation_Current",
+        "file":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SP35FormulaHelp_2026-10-06\\Visual\\Crack_Formation_Current.pdf"
+    },
+    {
+        "range":  "$AE$81:$AR$90",
+        "name":  "Crack_SP35",
+        "file":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SP35FormulaHelp_2026-10-06\\Visual\\Crack_SP35.pdf"
+    },
+    {
+        "range":  "$AT$81:$BT$90",
+        "name":  "Crack_SP63_Longitudinal",
+        "file":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SP35FormulaHelp_2026-10-06\\Visual\\Crack_SP63_Longitudinal.pdf"
+    },
+    {
+        "shapes":  145,
+        "name":  "HelpSections",
+        "rows":  {
+                     "SP35":  522,
+                     "Подготовка геометрии в AutoCAD и импорт":  808,
+                     "Расчет ширины раскрытия нормальных трещин":  276
+                 }
+    },
+    {
+        "range":  "$A$276:$H$654",
+        "name":  "Help_Crack",
+        "file":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SP35FormulaHelp_2026-10-06\\Visual\\Help_Crack.pdf"
+    },
+    {
+        "range":  "$A$808:$H$850",
+        "name":  "Help_AutoCAD",
+        "file":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SP35FormulaHelp_2026-10-06\\Visual\\Help_AutoCAD.pdf"
+    }
+]

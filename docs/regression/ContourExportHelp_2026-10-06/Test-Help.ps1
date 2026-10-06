@@ -28,6 +28,10 @@ foreach ($key in $keys) {
 $description = @(Get-SettingInstructionLines 'SLS.Crack.SP35.NeighborRatioLimit' $entries['SLS.Crack.SP35.NeighborRatioLimit'][3]) -join "`n"
 Assert-Help 'source.neighbor.rebarAndProjection' ($description.Contains('арматурных стержней') -and $description.Contains('проекциями на НЛ'))
 $source = [IO.File]::ReadAllText((Join-Path $root 'tools/build_workbook/SettingsCatalog.ps1'))
+$methodology = [regex]::Match($source, '(?ms)^function Add-SP35CrackWidthMethodologyGuide\b.*?^}').Value
+Assert-Help 'source.noNestedGroupSum' ($methodology -notmatch 'Σ_\{i∈g\}|Σ_g\(')
+Assert-Help 'source.noConflictingLocalNAndT' ($methodology -notmatch 'n_g =|t_g =|n_inner =')
+Assert-Help 'source.plainDiameterAverage' ($methodology.Contains('d_1 + d_2 + ... + d_p') -and $methodology.Contains('число стержней p'))
 Assert-Help 'source.noSP35WildcardBundle' (-not $source.Contains('"SLS.Crack.SP35.*"'))
 Assert-Help 'source.sourceLabels' ($source.Contains('Метки источников') -and $source.Contains('[METHOD] - пояснения') -and $source.Contains('[NDM] - принятые'))
 $excel = $null; $book = $null; $path = Join-Path $root $WorkbookPath
@@ -54,6 +58,13 @@ try {
         Assert-Help "saved.$key.textMatchesCatalog" ($text.Trim() -ceq (@(Get-SettingInstructionLines $full $entries[$full][3]) -join "`n").Trim())
     }
     $joined = ($data | ForEach-Object { [string]$_ }) -join "`n"
+    $formulaText = ($guide.Shapes | ForEach-Object { [string]$_.AlternativeText }) -join "`n"
+    Assert-Help 'saved.expandedGroupSum' ($formulaText.Contains('Σβnd = β_1·D_1 + β_2·D_2 + ...') -and -not $formulaText.Contains('Σ_{i∈g}'))
+    Assert-Help 'saved.groupDiameterDefinitions' ($joined.Contains('D_1 - сумма диаметров всех стержней первой группы') -and $joined.Contains('β_1 и β_2 - коэффициенты этих же групп'))
+    Assert-Help 'saved.numericGroupSumExample' ($formulaText.Contains('0.85·45 + 1.00·16 = 54.25 мм') -and $joined.Contains('деление на 54.25 мм дает R_r в мм'))
+    Assert-Help 'saved.centerDefinitions' ($joined.Contains('Индекс «ц» означает центр всей группы') -and $formulaText.Contains('A_1·x_1 + A_2·x_2 + ...'))
+    Assert-Help 'saved.localDirectionDefinitions' ($joined.Contains('e_n - единичное направление поперек НЛ') -and $joined.Contains('u_ц - координата центра группы поперек НЛ') -and $formulaText.Contains('u_ц = e_{n,x}·x_ц'))
+    Assert-Help 'saved.radiusAndAreaDefinitions' ($joined.Contains('d_ряд - выбранный диаметр опорного ряда') -and $joined.Contains('A_бет,1, A_бет,2, ... - площади наружных частей уже построенного участка'))
     Assert-Help 'saved.sourceLabels' ($joined.Contains('Метки источников') -and $joined.Contains('[METHOD] - пояснения'))
     Assert-Help 'saved.additiveContract' ($joined.Contains('без поиска совпадений и без автоматической очистки'))
     Assert-Help 'saved.colors' ($joined.Contains('ACI 30') -and $joined.Contains('ACI 4') -and $joined.Contains('ACI 31'))

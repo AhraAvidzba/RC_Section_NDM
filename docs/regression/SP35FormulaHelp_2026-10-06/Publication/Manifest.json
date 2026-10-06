@@ -1,0 +1,21 @@
+﻿{
+    "SourceSHA256":  "E6B5347CA7BCEA1D211EC14D228A9986BCB2F840029E9A4C94DC35AAF02C8F60",
+    "PreparedSHA256":  "5698EA8CFAF515ECC969FFE7735A095DAC29478B253306135D0BDA9142ED94D4",
+    "SourceUnchanged":  true,
+    "ConfigCellsPreserved":  2367,
+    "ConfigCommentsUpdated":  0,
+    "ConfigSettingsAdded":  0,
+    "ConfigValidationListsPreserved":  283,
+    "ConfigWidthsPreserved":  248,
+    "ResultsAddress":  "$A$1:$CF$648",
+    "ResultsCellsPreserved":  54432,
+    "ResultsWidthsPreserved":  84,
+    "StateSolveExecuted":  false,
+    "HelpOnly":  true,
+    "VBAProjectUnchanged":  false,
+    "SourceVBAProjectSHA256":  "B1215E290CB33AF95D5C1C93CA5DDCCD92D3D581478EDDA2C489FA00A94095FD",
+    "PreparedVBAProjectSHA256":  "A380E4C061D63773F64EBED54869C3BE39686D93962847AE0D9C6C624F95A680",
+    "VBASourceUnchanged":  true,
+    "SourceVBASourceSHA256":  "0B83FD16A9AADEED16DF48DE01F7F2A75191BED7C56CB38E222BFEC4A07E07F5",
+    "PreparedVBASourceSHA256":  "0B83FD16A9AADEED16DF48DE01F7F2A75191BED7C56CB38E222BFEC4A07E07F5"
+}

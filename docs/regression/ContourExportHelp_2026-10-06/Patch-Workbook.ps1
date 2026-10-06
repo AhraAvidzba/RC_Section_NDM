@@ -2,17 +2,52 @@
 # настройки, расчетный снимок, списки и ширины. НДС здесь не пересчитывается.
 param(
     [string]$ReportDirectory = '',
-    [string[]]$UpdatedCommentKeys = @('SLS.Crack.SP35.NeighborRatioLimit')
+    [string[]]$UpdatedCommentKeys = @('SLS.Crack.SP35.NeighborRatioLimit'),
+    [switch]$HelpOnly
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
 . (Join-Path $root 'tools/build_workbook/SettingsCatalog.ps1')
+
+# Читает бинарный проект для диагностики служебных изменений Excel при Save.
+function Get-VbaProjectHash([string]$Path) {
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $zip = [IO.Compression.ZipFile]::OpenRead($Path); $stream = $null; $sha = $null
+    try {
+        $entry = $zip.GetEntry('xl/vbaProject.bin')
+        if ($null -eq $entry) { throw 'Workbook has no VBA project.' }
+        $stream = $entry.Open(); $sha = [Security.Cryptography.SHA256]::Create()
+        return [BitConverter]::ToString($sha.ComputeHash($stream)).Replace('-', '')
+    } finally {
+        if ($null -ne $sha) { $sha.Dispose() }
+        if ($null -ne $stream) { $stream.Dispose() }
+        $zip.Dispose()
+    }
+}
+
+# Сравнивает точные тексты и состав всех модулей, включая модули листов.
+# Бинарный VBA-кеш Excel может изменяться даже без правок исходного кода.
+function Get-VbaSourceHash([object]$Book) {
+    $parts = New-Object 'System.Collections.Generic.List[string]'
+    foreach ($component in $Book.VBProject.VBComponents | Sort-Object Name) {
+        $module = $component.CodeModule; $body = ''
+        if ($module.CountOfLines -gt 0) { $body = [string]$module.Lines(1, $module.CountOfLines) }
+        $parts.Add("$($component.Name)|$($component.Type)|$($module.CountOfLines)")
+        $parts.Add($body)
+    }
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try { return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes(($parts -join "`n")))).Replace('-', '') }
+    finally { $sha.Dispose() }
+}
 $source = Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
 $directory = Join-Path $PSScriptRoot 'Publication'
 if ($ReportDirectory) { $directory = Join-Path $root $ReportDirectory }
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 $target = Join-Path $directory 'RC_Section_NDM.xlsm'
 $sourceHash = (Get-FileHash -LiteralPath $source).Hash
+$sourceVbaHash = ''; $preparedVbaHash = ''
+$sourceVbaSourceHash = ''; $preparedVbaSourceHash = ''
+if ($HelpOnly) { $sourceVbaHash = Get-VbaProjectHash $source }
 Copy-Item -LiteralPath $source -Destination (Join-Path $directory 'BeforePatch.xlsm') -Force
 Copy-Item -LiteralPath $source -Destination $target -Force
 $printAreas = @(Get-WorkbookPrintAreas $target)
@@ -74,6 +109,7 @@ try {
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $false; $excel.DisplayAlerts = $false; $excel.EnableEvents = $false; $excel.AutomationSecurity = 1
     $book = $excel.Workbooks.Open($target)
+    if ($HelpOnly) { $sourceVbaSourceHash = Get-VbaSourceHash $book }
     foreach ($name in (Get-ConfigNamedRangeNames)) {
         $range = $book.Names.Item($name).RefersToRange; $snapshots[$name] = $range.Formula
         for ($r = 1; $r -le $range.Rows.Count; $r++) {
@@ -86,15 +122,17 @@ try {
     for ($c = 1; $c -le $config.UsedRange.Columns.Count; $c++) { $configWidths += $config.Columns.Item($c).ColumnWidth }
     for ($c = 1; $c -le $results.UsedRange.Columns.Count; $c++) { $resultWidths += $results.Columns.Item($c).ColumnWidth }
     $resultsAddress = $results.UsedRange.Address(); $resultsSnapshot = $results.UsedRange.Formula
-    foreach ($file in Get-ChildItem -LiteralPath (Join-Path $root 'src'), (Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas', '.cls') {
-        $component = $null
-        try { $component = $book.VBProject.VBComponents.Item($file.BaseName) } catch { }
-        if ($null -ne $component) { $book.VBProject.VBComponents.Remove($component) }
-        $body = [regex]::Match([IO.File]::ReadAllText($file.FullName, [Text.Encoding]::UTF8), '(?ms)^Option Explicit.*').Value
-        if ([string]::IsNullOrWhiteSpace($body)) { throw "Missing Option Explicit: $file" }
-        $type = 1; if ($file.Extension -eq '.cls') { $type = 2 }
-        $component = $book.VBProject.VBComponents.Add($type); $component.Name = $file.BaseName
-        $component.CodeModule.AddFromString(($body -split "`r?`n") -join "`r`n")
+    if (-not $HelpOnly) {
+        foreach ($file in Get-ChildItem -LiteralPath (Join-Path $root 'src'), (Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas', '.cls') {
+            $component = $null
+            try { $component = $book.VBProject.VBComponents.Item($file.BaseName) } catch { }
+            if ($null -ne $component) { $book.VBProject.VBComponents.Remove($component) }
+            $body = [regex]::Match([IO.File]::ReadAllText($file.FullName, [Text.Encoding]::UTF8), '(?ms)^Option Explicit.*').Value
+            if ([string]::IsNullOrWhiteSpace($body)) { throw "Missing Option Explicit: $file" }
+            $type = 1; if ($file.Extension -eq '.cls') { $type = 2 }
+            $component = $book.VBProject.VBComponents.Add($type); $component.Name = $file.BaseName
+            $component.CodeModule.AddFromString(($body -split "`r?`n") -join "`r`n")
+        }
     }
     $settings = $book.Names.Item('rngSystemSettings').RefersToRange
     for ($r = 1; $r -le $settings.Rows.Count; $r++) {
@@ -115,7 +153,11 @@ try {
     Restore-WorkbookPrintAreas $target $printAreas
     $book = $excel.Workbooks.Open($target, 0, $true)
     $preserved = Assert-Preserved $book
-    Export-Vba $book (Join-Path $directory 'VBA_All_Code.txt')
+    if ($HelpOnly) {
+        $preparedVbaHash = Get-VbaProjectHash $target
+        $preparedVbaSourceHash = Get-VbaSourceHash $book
+        if ($preparedVbaSourceHash -ne $sourceVbaSourceHash) { throw 'Help-only edit changed VBA source or module list.' }
+    } else { Export-Vba $book (Join-Path $directory 'VBA_All_Code.txt') }
     if ((Get-FileHash -LiteralPath $source).Hash -ne $sourceHash) { throw 'User workbook changed; publication must rebase.' }
     [pscustomobject]@{
         SourceSHA256=$sourceHash; PreparedSHA256=(Get-FileHash -LiteralPath $target).Hash; SourceUnchanged=$true
@@ -123,6 +165,10 @@ try {
         ConfigValidationListsPreserved=$validations.Count; ConfigWidthsPreserved=$configWidths.Count
         ResultsAddress=$resultsAddress; ResultsCellsPreserved=$resultsSnapshot.Length; ResultsWidthsPreserved=$resultWidths.Count
         StateSolveExecuted=$false
+        HelpOnly=$HelpOnly.IsPresent; VBAProjectUnchanged=($HelpOnly -and $preparedVbaHash -eq $sourceVbaHash)
+        SourceVBAProjectSHA256=$sourceVbaHash; PreparedVBAProjectSHA256=$preparedVbaHash
+        VBASourceUnchanged=($HelpOnly -and $preparedVbaSourceHash -eq $sourceVbaSourceHash)
+        SourceVBASourceSHA256=$sourceVbaSourceHash; PreparedVBASourceSHA256=$preparedVbaSourceHash
     } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'Manifest.json') -Encoding UTF8
     Write-Output "PATCH_OK: Config=$preserved; Results=$($resultsSnapshot.Length); widths=$($resultWidths.Count)"
 } finally {
