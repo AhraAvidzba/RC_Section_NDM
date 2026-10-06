@@ -175,6 +175,7 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
     End If
     Dim query As CSectionGeometryQuery, reader As CAutoCADContourReader, regions As Collection
     Dim domain As CConcreteRegion, opening As CConcreteRegion, i As Long, j As Long, commentText As String, openings As Collection
+    Dim validatedOpenings As CConcreteRegion
     Set query = New CSectionGeometryQuery: Set reader = New CAutoCADContourReader
     Set openings = New Collection
     If exportedOuter Then
@@ -192,7 +193,7 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
         Set opening = reader.ReadRegion(entity)
         ' Region исходного outer может уже содержать это отверстие. Только
         ' собственная экспортная копия той же границы не вычитается повторно.
-        If IsNDMContourOutput(entity) And opening.LoopCount = 1 Then
+        If outerEntities.Count > 0 And IsNDMContourOutput(entity) And opening.LoopCount = 1 Then
             Dim matchingOpening As Boolean
             If FindMatchingBoundaryLoop(domain, opening, query, matchingOpening) Then
                 If matchingOpening Then GoTo NextOpening
@@ -204,8 +205,18 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
                     "Внутри Region отверстия есть отдельная бетонная часть, но наружный контур не задан. На AutoCAD.Common.SectionContourLayer разместите наружный Region с вырезанным отверстием и отдельный Region этой бетонной части."
             Next j
         End If
-        Set domain = query.SubtractContainedRegion(domain, opening)
-        openings.Add opening
+        If outerEntities.Count = 0 Then
+            ' Сеточная пустота может совпадать с точным opening, быть меньше
+            ' либо больше него. Это не конфликт достоверных исходных границ:
+            ' вычитаем opening из сетки, сохраняя его собственный контур.
+            ' Между самими точными отверстиями строгая проверка остается.
+            openings.Add opening
+            Set validatedOpenings = query.MergeDisjointRegions(openings)
+            Set domain = query.SubtractRegion(domain, opening)
+        Else
+            Set domain = query.SubtractContainedRegion(domain, opening)
+            openings.Add opening
+        End If
 NextOpening:
     Next entity
     End If

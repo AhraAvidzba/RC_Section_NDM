@@ -5,7 +5,8 @@
 # сохраняется машинно-читаемый отчет отдельных структурных проверок.
 param(
     [string]$WorkbookPath = "workbook/output/RC_Section_NDM.xlsm",
-    [string]$ReportPath = ""
+    [string]$ReportPath = "",
+    [switch]$UserConfiguredWorkbook
 )
 
 $ErrorActionPreference = "Stop"
@@ -296,7 +297,12 @@ try {
         }
     }
     $solverMethodDefaultOk = ($solverMethodCell -ne $null) -and ([string]$solverMethodCell.Value2 -eq "Newton")
-    Add-Check $checks "Solver.Method default" $solverMethodDefaultOk ("Value=" + [string]$(if ($solverMethodCell -eq $null) { "" } else { $solverMethodCell.Value2 }))
+    $solverCheckName = "Solver.Method default"
+    if ($UserConfiguredWorkbook) {
+        $solverCheckName = "Solver.Method user value"
+        $solverMethodDefaultOk = ($solverMethodCell -ne $null) -and ([string]$solverMethodCell.Value2 -in @("Newton", "Secant"))
+    }
+    Add-Check $checks $solverCheckName $solverMethodDefaultOk ("Value=" + [string]$(if ($solverMethodCell -eq $null) { "" } else { $solverMethodCell.Value2 }))
 
     $stabilityCodeCell = $null
     for ($i = 2; $i -le $settings.Rows.Count; $i++) {
@@ -306,7 +312,12 @@ try {
         }
     }
     $stabilityCodeDefaultOk = ($stabilityCodeCell -ne $null) -and ([string]$stabilityCodeCell.Value2 -eq "SP35")
-    Add-Check $checks "Stability.Code default" $stabilityCodeDefaultOk ("Value=" + [string]$(if ($stabilityCodeCell -eq $null) { "" } else { $stabilityCodeCell.Value2 }))
+    $stabilityCheckName = "Stability.Code default"
+    if ($UserConfiguredWorkbook) {
+        $stabilityCheckName = "Stability.Code user value"
+        $stabilityCodeDefaultOk = ($stabilityCodeCell -ne $null) -and ([string]$stabilityCodeCell.Value2 -in @("SP35", "SP63"))
+    }
+    Add-Check $checks $stabilityCheckName $stabilityCodeDefaultOk ("Value=" + [string]$(if ($stabilityCodeCell -eq $null) { "" } else { $stabilityCodeCell.Value2 }))
 
     $solverValidationOk = $false
     $solverValidationDetails = "Missing Solver.Method"

@@ -335,7 +335,7 @@ Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal secti
     Dim rows As Variant, members As Variant, group As Long, j As Long, bar As Long
     rows = mSP35Data.CandidateRows(mSP35CriticalCandidate)
     For i = LBound(rows, 1) To UBound(rows, 1)
-        group = CLng(rows(i, 1)): members = mSP35Data.GroupMembers(group)
+        group = CLng(rows(i, 1)): members = mSP35Data.CandidateGroupMembers(mSP35CriticalCandidate, group)
         For j = LBound(members) To UBound(members)
             bar = CLng(members(j))
             mTensionRebarCount = mTensionRebarCount + 1: mAs = mAs + mSP35Data.BarArea(bar)

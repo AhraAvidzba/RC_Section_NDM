@@ -1,6 +1,9 @@
 ﻿# Проверяет адресность справки в каталоге и в сохраненной Excel-книге.
 # Ссылки должны вести к пояснениям конкретного параметра, не к общему дампу.
-param([string]$WorkbookPath = 'docs/regression/ContourExportHelp_2026-10-06/Publication/RC_Section_NDM.xlsm')
+param(
+    [string]$WorkbookPath = 'docs/regression/ContourExportHelp_2026-10-06/Publication/RC_Section_NDM.xlsm',
+    [string]$ReportDirectory = ''
+)
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
 . (Join-Path $root 'tools/build_workbook/SettingsCatalog.ps1')
@@ -55,6 +58,22 @@ try {
     Assert-Help 'saved.additiveContract' ($joined.Contains('без поиска совпадений и без автоматической очистки'))
     Assert-Help 'saved.colors' ($joined.Contains('ACI 30') -and $joined.Contains('ACI 4') -and $joined.Contains('ACI 31'))
     Assert-Help 'saved.exactDimensions' ($joined.Contains('габаритные размеры импортированного сечения берутся по точному наружному контуру'))
+    Assert-Help 'saved.openingsIndependent' ($joined.Contains('Наружный контур и отверстия независимы') -and $joined.Contains('пересечение ее приближенной границы допустимо'))
+    Assert-Help 'saved.actualBarMembership' ($joined.Contains('учитывается вошедшая часть: число стержней, β, сумма диаметров и состав рядов') -and -not $joined.Contains('Группа неделима:'))
+    Assert-Help 'saved.noObsoleteCenterMembership' (-not $joined.Contains('Центр на общей границе участков учитывается полностью') -and $joined.Contains('β для каждой исходной группы определяется по числу ее вошедших стержней'))
+    $full = 'AutoCAD.Common.OpeningContourLayer'; $row = 0
+    for ($r = 1; $r -le $settings.Rows.Count; $r++) { if ([string]$settings.Cells.Item($r,1).Value2 -eq $full) { $row = $r; break } }
+    if ($row -eq 0) { throw "Missing key: $full" }
+    $link = [string]$settings.Cells.Item($row,5).Hyperlinks.Item(1).SubAddress
+    if ($link -notmatch '!\$?A\$?(\d+)$') { throw "Unexpected Help link: $link" }
+    $start = [int]$Matches[1]; $text = ''
+    for ($r = $start + 1; $r -le $data.GetLength(0); $r++) {
+        if ([string]$data[$r,1] -notmatch '^\d+$') { break }
+        $text += [string]$data[$r,2] + "`n"
+    }
+    Assert-Help 'saved.opening.linkTarget' ([string]$data[$start,1] -like "*$full*")
+    Assert-Help 'saved.opening.textMatchesCatalog' ($text.Trim() -ceq (@(Get-SettingInstructionLines $full $entries[$full][3]) -join "`n").Trim())
+    Assert-Help 'saved.opening.commentMatchesCatalog' ([string]$settings.Cells.Item($row,4).Value2 -ceq [string]$entries[$full][3])
 } finally {
     if ($null -ne $book) { $book.Close($false) }
     if ($null -ne $excel) { $excel.Quit() }
@@ -62,6 +81,8 @@ try {
 }
 Assert-Help 'saved.readOnly' ((Get-FileHash -LiteralPath $path).Hash -eq $hash)
 $lines.Add("TOTAL_HELP: passed=$passed; failed=$failed")
-$lines | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'HelpChecks.txt') -Encoding UTF8
+$directory = $PSScriptRoot
+if ($ReportDirectory) { $directory = Join-Path $root $ReportDirectory; New-Item -ItemType Directory -Path $directory -Force | Out-Null }
+$lines | Set-Content -LiteralPath (Join-Path $directory 'HelpChecks.txt') -Encoding UTF8
 Write-Output $lines[$lines.Count-1]
 if ($failed -gt 0) { throw 'Help checks failed.' }

@@ -1,10 +1,15 @@
 ﻿# Печатает только измененные блоки справки из сохраненной книги.
 # Свойства печати меняются в отдельном read-only экземпляре и не сохраняются.
-param([string]$WorkbookPath = 'docs/regression/ContourExportHelp_2026-10-06/Publication/RC_Section_NDM.xlsm')
+param(
+    [string]$WorkbookPath = 'docs/regression/ContourExportHelp_2026-10-06/Publication/RC_Section_NDM.xlsm',
+    [string]$SettingKey = 'SLS.Crack.SP35.NeighborRatioLimit',
+    [string]$ReportDirectory = ''
+)
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
 $path = Join-Path $root $WorkbookPath
 $directory = Join-Path $PSScriptRoot 'Visual'
+if ($ReportDirectory) { $directory = Join-Path $root $ReportDirectory; New-Item -ItemType Directory -Path $directory -Force | Out-Null }
 $hash = (Get-FileHash -LiteralPath $path).Hash
 $excel = $null; $book = $null
 
@@ -30,15 +35,15 @@ try {
     $settings = $book.Names.Item('rngSystemSettings').RefersToRange
     $start = 0
     for ($row = 1; $row -le $settings.Rows.Count; $row++) {
-        if ([string]$settings.Cells.Item($row,1).Value2 -ne 'SLS.Crack.SP35.NeighborRatioLimit') { continue }
+        if ([string]$settings.Cells.Item($row,1).Value2 -ne $SettingKey) { continue }
         $link = [string]$settings.Cells.Item($row,5).Hyperlinks.Item(1).SubAddress
         if ($link -notmatch '!\$?A\$?(\d+)$') { throw "Unexpected Help link: $link" }
         $start = [int]$Matches[1]; break
     }
-    if ($start -eq 0) { throw 'NeighborRatioLimit Help was not found.' }
+    if ($start -eq 0) { throw "$SettingKey Help was not found." }
     $end = $start
     while ([string]$data[($end + 1),1] -match '^\d+$') { $end++ }
-    Export-HelpRange $guide $start $end 'Help_NeighborRatioLimit'
+    Export-HelpRange $guide $start $end ('Help_' + ($SettingKey -split '\.')[-1])
     $start = 0
     for ($row = 1; $row -le $data.GetLength(0); $row++) {
         if ([string]$data[$row,1] -eq 'Справка по результатам расчета листа Results') { $start = $row; break }

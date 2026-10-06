@@ -1,10 +1,15 @@
 ﻿# Обновляет код и справку в собственной копии, сохраняя пользовательские
 # настройки, расчетный снимок, списки и ширины. НДС здесь не пересчитывается.
+param(
+    [string]$ReportDirectory = '',
+    [string[]]$UpdatedCommentKeys = @('SLS.Crack.SP35.NeighborRatioLimit')
+)
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
 . (Join-Path $root 'tools/build_workbook/SettingsCatalog.ps1')
 $source = Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
 $directory = Join-Path $PSScriptRoot 'Publication'
+if ($ReportDirectory) { $directory = Join-Path $root $ReportDirectory }
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 $target = Join-Path $directory 'RC_Section_NDM.xlsm'
 $sourceHash = (Get-FileHash -LiteralPath $source).Hash
@@ -12,10 +17,10 @@ Copy-Item -LiteralPath $source -Destination (Join-Path $directory 'BeforePatch.x
 Copy-Item -LiteralPath $source -Destination $target -Force
 $printAreas = @(Get-WorkbookPrintAreas $target)
 $snapshots = @{}; $validations = @{}; $configWidths = @(); $resultWidths = @()
-$resultsSnapshot = $null; $resultsAddress = ''; $commentRow = 0
+$resultsSnapshot = $null; $resultsAddress = ''; $commentRows = @{}
 $excel = $null; $book = $null
 
-# Сравнивает сохраненные исходные данные и Results, разрешая один комментарий.
+# Сравнивает сохраненные исходные данные и Results, разрешая указанные комментарии.
 function Assert-Preserved([object]$Book) {
     $cells = 0
     foreach ($name in $snapshots.Keys) {
@@ -24,7 +29,7 @@ function Assert-Preserved([object]$Book) {
         if ($actual.GetLength(0) -ne $expected.GetLength(0) -or $actual.GetLength(1) -ne $expected.GetLength(1)) { throw "Range resized: $name" }
         for ($r = 1; $r -le $expected.GetLength(0); $r++) {
             for ($c = 1; $c -le $expected.GetLength(1); $c++) {
-                if ($name -eq 'rngSystemSettings' -and $r -eq $commentRow -and $c -eq 4) { continue }
+                if ($name -eq 'rngSystemSettings' -and $commentRows.ContainsKey($r) -and $c -eq 4) { continue }
                 if ([string]$actual[$r,$c] -cne [string]$expected[$r,$c]) { throw "Input changed: $name/$r/$c" }
                 $key = "$name/$r/$c"
                 if ($validations.ContainsKey($key) -and [string]$range.Cells.Item($r,$c).Validation.Formula1 -cne $validations[$key]) { throw "List changed: $key" }
@@ -93,12 +98,14 @@ try {
     }
     $settings = $book.Names.Item('rngSystemSettings').RefersToRange
     for ($r = 1; $r -le $settings.Rows.Count; $r++) {
-        if ([string]$settings.Cells.Item($r,1).Value2 -eq 'SLS.Crack.SP35.NeighborRatioLimit') { $commentRow = $r }
+        if ($UpdatedCommentKeys -contains [string]$settings.Cells.Item($r,1).Value2) { $commentRows[$r] = [string]$settings.Cells.Item($r,1).Value2 }
     }
-    if ($commentRow -eq 0) { throw 'NeighborRatioLimit not found.' }
-    foreach ($group in (Get-SystemSettingsCatalog)) {
-        foreach ($entry in $group.Rows) {
-            if ($entry[0] -eq 'SLS.Crack.SP35.NeighborRatioLimit') { $settings.Cells.Item($commentRow,4).Value2 = [string]$entry[3] }
+    if ($commentRows.Count -ne $UpdatedCommentKeys.Count) { throw 'Requested comment setting not found.' }
+    foreach ($r in $commentRows.Keys) {
+        foreach ($group in (Get-SystemSettingsCatalog)) {
+            foreach ($entry in $group.Rows) {
+                if ($entry[0] -eq $commentRows[$r]) { $settings.Cells.Item($r,4).Value2 = [string]$entry[3] }
+            }
         }
     }
     Add-SettingsInstructions $book $config ($book.Worksheets.Item('Справка'))
@@ -112,7 +119,7 @@ try {
     if ((Get-FileHash -LiteralPath $source).Hash -ne $sourceHash) { throw 'User workbook changed; publication must rebase.' }
     [pscustomobject]@{
         SourceSHA256=$sourceHash; PreparedSHA256=(Get-FileHash -LiteralPath $target).Hash; SourceUnchanged=$true
-        ConfigCellsPreserved=$preserved; ConfigCommentsUpdated=1; ConfigSettingsAdded=0
+        ConfigCellsPreserved=$preserved; ConfigCommentsUpdated=$commentRows.Count; ConfigSettingsAdded=0
         ConfigValidationListsPreserved=$validations.Count; ConfigWidthsPreserved=$configWidths.Count
         ResultsAddress=$resultsAddress; ResultsCellsPreserved=$resultsSnapshot.Length; ResultsWidthsPreserved=$resultWidths.Count
         StateSolveExecuted=$false

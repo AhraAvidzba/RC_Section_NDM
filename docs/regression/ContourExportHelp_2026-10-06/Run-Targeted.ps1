@@ -4,6 +4,7 @@
 param(
     [string]$WorkbookPath = 'workbook/output/RC_Section_NDM.xlsm',
     [string]$ReportName = 'Targeted',
+    [string]$ReportDirectory = '',
     [string[]]$ImportModules = @(),
     [string[]]$Macros = @('modTestGeometryQuery.RunGeometryQueryTests')
 )
@@ -11,6 +12,7 @@ $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
 . (Join-Path $root 'tools/build_workbook/SettingsCatalog.ps1')
 $directory = Join-Path $PSScriptRoot $ReportName
+if ($ReportDirectory) { $directory = Join-Path $root $ReportDirectory }
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 $copy = Join-Path $directory 'RC_Section_NDM.xlsm'
 Copy-Item -LiteralPath (Join-Path $root $WorkbookPath) -Destination $copy -Force

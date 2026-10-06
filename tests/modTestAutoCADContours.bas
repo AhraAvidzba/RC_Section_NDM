@@ -30,6 +30,7 @@ Public Function RunAutoCADContourTests() As String
     CheckResultsRoundTrip
     CheckAdditiveContourExport
     CheckImportedContourDimensions
+    CheckOpeningWithoutOuter
     GoTo Finish
 Failed:
     Check "contour.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
@@ -37,6 +38,59 @@ Finish:
     mReport = mReport & "TOTAL_AUTOCAD_CONTOURS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunAutoCADContourTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: отдельный opening допустим при уже пустой или приближенной
+' сеточной границе. Точные наружные контуры здесь намеренно отсутствуют.
+Private Sub CheckOpeningWithoutOuter()
+    Dim space As Collection, layers As Collection, importer As CAutoCADSectionModelImporter
+    Dim cell As CFakeAcadRegion, layer As CFakeAcadContour, opening As CFakeAcadContour
+    Dim section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim mode As Long, expected As Double, writer As CNDMResultsWriter, restored As CSectionModel
+    Set importer = New CAutoCADSectionModelImporter: Set query = New CSectionGeometryQuery
+    For mode = 0 To 3
+        Set space = New Collection: Set layers = New Collection
+        Set cell = New CFakeAcadRegion
+        cell.Initialize 2000#, 50#, 10#, 66666.6666666667, 1666666.66666667, 0#, "CONCRETE", "BOTTOM", 0#, True: space.Add cell
+        Set cell = New CFakeAcadRegion
+        cell.Initialize 2000#, 50#, 90#, 66666.6666666667, 1666666.66666667, 0#, "CONCRETE", "TOP", 0#, True: space.Add cell
+        Set cell = New CFakeAcadRegion
+        cell.Initialize 1200#, 10#, 50#, 360000#, 40000#, 0#, "CONCRETE", "LEFT", 0#, True: space.Add cell
+        Set cell = New CFakeAcadRegion
+        cell.Initialize 1200#, 90#, 50#, 360000#, 40000#, 0#, "CONCRETE", "RIGHT", 0#, True: space.Add cell
+        Set cell = New CFakeAcadRegion
+        cell.Initialize GEOM_PI * 4#, 10#, 10#, 10#, 10#, 0#, "REBAR", "BAR": space.Add cell
+        Set layer = New CFakeAcadContour: layers.Add layer, "OPENING"
+        If mode = 0 Or mode = 3 Then
+            Set opening = Contour("AcDbPolyline", RectangleEdges(20#, 20#, 60#, 60#), "OPENING"): expected = 6400#
+        ElseIf mode = 1 Then
+            Set opening = Contour("AcDbRegion", RectangleEdges(15#, 15#, 70#, 70#), "OPENING"): expected = 5100#
+        Else
+            Set opening = Contour("AcDbPolyline", RectangleEdges(25#, 25#, 50#, 50#), "OPENING"): expected = 6400#
+        End If
+        space.Add opening
+        If mode = 3 Then
+            Set opening = Contour("AcDbPolyline", RectangleEdges(85#, 40#, 10#, 10#), "OPENING")
+            space.Add opening: expected = expected - 100#
+        End If
+        Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+        query.Initialize section: Set region = query.ConcreteDomain
+        CheckArea "openingOnly.meshVoid." & CStr(mode), region.Area, expected
+        Check "openingOnly.noInventedOuter." & CStr(mode), InStr(region.Source, "AuthoritativeContour") = 0
+        Check "openingOnly.actualHole." & CStr(mode), Not query.ContainsPoint(region, 50#, 50#)
+        Check "openingOnly.sourceKept." & CStr(mode), Not opening.Deleted And section.ConcreteCount = 4
+        Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
+        Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
+        query.Initialize restored
+        CheckArea "openingOnly.savedRoundTrip." & CStr(mode), query.ConcreteDomain.Area, expected
+    Next mode
+    Set opening = Contour("AcDbPolyline", RectangleEdges(87#, 42#, 5#, 5#), "OPENING"): space.Add opening
+    Dim number As Long
+    On Error Resume Next
+    Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+    number = Err.Number: Err.Clear
+    On Error GoTo 0
+    Check "openingOnly.overlappingExactOpeningsRejected", number <> 0
+End Sub
 
 ' ДЛЯ ТЕСТОВ: настоящий exporter только добавляет полилинии. Даже повторный
 ' запуск не читает ModelSpace.Count/Item, не удаляет прежние объекты, сохраняет

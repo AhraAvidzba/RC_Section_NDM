@@ -879,6 +879,7 @@ Public Function RunSP35PreparationTests() As String
     TestProjectedLateralSpacing
     TestLateralMaterialBoundary
     TestNeighborRatioBoundaries
+    TestPartialGroupMembership
     TestPreparationToleranceBoundaries
     GoTo Finished
 Failed:
@@ -887,6 +888,32 @@ Finished:
     mReport = mReport & "TOTAL_SP35_PREPARATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunSP35PreparationTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: исходная пара пересекается боковой границей. Включение не
+' зависит от формы и поворота: один реальный стержень входит, второй нет,
+' beta/n и знаменатель относятся к вошедшему составу, а не ко всей паре.
+Private Sub TestPartialGroupMembership()
+    Dim section As CSectionModel, data As CSP35CrackData, query As CSectionGeometryQuery
+    Dim angle As Variant, members As Variant, group As Long, prefix As String
+    Set query = New CSectionGeometryQuery
+    For Each angle In Array(0#, 0.47, -0.81)
+        Set section = RectangularSection(CDbl(angle))
+        AddBar section, 0#, 250#, 20#, CDbl(angle)
+        AddBar section, 115#, 300#, 20#, CDbl(angle)
+        AddBar section, 145#, 300#, 20#, CDbl(angle)
+        Set data = New CSP35CrackData
+        data.Prepare section, -0.0002, 0.000002 * Cos(CDbl(angle)), -0.000002 * Sin(CDbl(angle)), _
+            LinearSteel(), 10#, 50#, "Max", "6d", False, 1#
+        group = data.BarGroup(2): prefix = "SP35.partialGroup." & CStr(angle)
+        Check prefix & ".originalPair", data.GroupBarCount(group) = 2 And data.BarGroup(3) = group
+        members = data.CandidateGroupMembers(1, group)
+        Check prefix & ".actualBar", UBound(members) = 1 And CLng(members(1)) = 2
+        CheckNear prefix & ".actualBeta", data.CandidateGroupBeta(1, group), 1#
+        Check prefix & ".actualCount", data.CandidateGroupBarCount(1, group) = 1
+        CheckNear prefix & ".actualDenominator", data.CandidateBetaDiameterSum(1), 40#
+        CheckCandidateMembership prefix, data, section, query
+    Next angle
+End Sub
 
 ' ДЛЯ ТЕСТОВ: проверяет новое поле через настоящий reader/Width, включая
 ' неверные значения, неактивную ветку СП 63 и динамический адрес после
@@ -1072,7 +1099,7 @@ Private Function EndToEndSection() As CSectionModel
 End Function
 
 ' ДЛЯ ТЕСТОВ: проверяет сохраненную HollowRectangle и настоящее сочетание
-' пользователя без записи результатов. Все стержни обязаны лежать в бетоне,
+' пользователя в отдельной test-copy. Все стержни обязаны лежать в бетоне,
 ' а пригодный текущий НДС должен доходить до расчета ширины СП 35.
 Public Function RunSP35SavedHollowTests() As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
@@ -1081,6 +1108,7 @@ Public Function RunSP35SavedHollowTests() As String
     Dim query As CSectionGeometryQuery, region As CConcreteRegion, i As Long
     Dim provider As CMaterialModelProvider, profiles As CCalculationProfileCatalog
     Dim batch As CBatchSectionCalculator, reader As CLoadCombinationReader, width As CCrackWidthResult
+    Dim writer As CCrackSummaryWriter, anchor As Object, listed As String, bar As Long, count As Long
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
@@ -1097,10 +1125,28 @@ Public Function RunSP35SavedHollowTests() As String
     Set reader = New CLoadCombinationReader: reader.LoadFromWorkbook ThisWorkbook, batch, units
     Audit03ApplyLoadReferenceForTests section, settings, units, batch
     batch.Execute
+    Set writer = New CCrackSummaryWriter: writer.WriteSummary ThisWorkbook, batch, units
+    Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     For i = 1 To batch.Count
         Set width = batch.ResultAt(i).CrackResult.Width
         Check "savedHollow.width.calculated; " & width.ResultMeta.ResultComment, width.ResultMeta.Calculated
         Check "savedHollow.width.noInputError", width.ResultMeta.InternalStatus <> rsInvalidInput
+        CheckCandidateMembership "savedHollow", width.SP35Data, section, query
+        listed = CStr(anchor.Offset(i - 1, 36).Value2): count = 0
+        Set region = width.InteractionRegion
+        For bar = 1 To section.RebarCount
+            If width.SP35Data.BarGroup(bar) > 0 Then
+                If query.ContainsPoint(region, section.RebarX(bar), section.RebarY(bar)) Then
+                    count = count + 1
+                    Check "savedHollow.writer.member." & section.RebarID(bar), _
+                        InStr(1, ", " & width.TensionRebarIds & ", ", ", " & section.RebarID(bar) & ", ", vbBinaryCompare) > 0 And _
+                        InStr(1, Replace(Replace(Replace(Replace(listed, " | ", ", "), " ряд: ", ", "), "; ", ", "), "=", ", ") & ", ", ", " & section.RebarID(bar) & ", ", vbBinaryCompare) > 0
+                End If
+            End If
+        Next bar
+        Check "savedHollow.writer.count", CLng(anchor.Offset(i - 1, 37).Value2) = count And width.TensionRebarCount = count
+        Check "savedHollow.writer.noWrap", Not CBool(anchor.Offset(i - 1, 36).WrapText)
+        mReport = mReport & "SAVED_HOLLOW_REBARS: " & listed & "; count=" & CStr(count) & vbCrLf
         mReport = mReport & "SAVED_HOLLOW_WIDTH: " & CStr(width.CrackWidth) & "; " & width.ResultMeta.ResultComment & vbCrLf
     Next i
     GoTo Finished
@@ -1110,6 +1156,60 @@ Finished:
     mReport = mReport & "TOTAL_SP35_SAVED_HOLLOW: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunSP35SavedHollowTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: каждый растянутый стержень сравнивается с фактической конечной
+' областью, а не с центром его исходной группы. Проверяет все якорные области.
+Private Sub CheckCandidateMembership(ByVal prefix As String, ByVal data As CSP35CrackData, _
+        ByVal section As CSectionModel, ByVal query As CSectionGeometryQuery)
+    Dim candidate As Long, bar As Long, row As Long, rows As Variant, members As Variant, member As Variant
+    Dim region As CConcreteRegion, expected As Boolean, included As Boolean, group As Long
+    Dim actualCount As Long, formula As CCrackWidthCalculator, expectedSum As Double, expectedCounts() As Long, ids As String
+    If data Is Nothing Then Check prefix & ".dataPresent", False: Exit Sub
+    Set formula = New CCrackWidthCalculator
+    For candidate = 1 To data.CandidateCount
+        If data.CandidateAvailable(candidate) Then
+            Set region = data.CandidateRegion(candidate): rows = data.CandidateRows(candidate)
+            ReDim expectedCounts(1 To data.GroupCount): expectedSum = 0#
+            For bar = 1 To section.RebarCount
+                group = data.BarGroup(bar)
+                expected = False: included = False
+                If group > 0 Then expected = query.ContainsPoint(region, section.RebarX(bar), section.RebarY(bar))
+                If expected Then expectedCounts(group) = expectedCounts(group) + 1
+                For row = LBound(rows, 1) To UBound(rows, 1)
+                    members = data.CandidateGroupMembers(candidate, CLng(rows(row, 1)))
+                    For Each member In members
+                        If CLng(member) = bar Then included = True
+                    Next member
+                Next row
+                Check prefix & ".membership.G" & CStr(candidate) & "." & section.RebarID(bar), included = expected
+            Next bar
+            For row = LBound(rows, 1) To UBound(rows, 1)
+                group = CLng(rows(row, 1)): members = data.CandidateGroupMembers(candidate, group)
+                actualCount = UBound(members) - LBound(members) + 1
+                Check prefix & ".count.G" & CStr(candidate) & "." & CStr(group), _
+                    actualCount = expectedCounts(group) And data.CandidateGroupBarCount(candidate, group) = expectedCounts(group)
+                CheckNear prefix & ".beta.G" & CStr(candidate) & "." & CStr(group), _
+                    data.CandidateGroupBeta(candidate, group), formula.SP35GroupBetaFromData(expectedCounts(group))
+                For Each member In members
+                    expectedSum = expectedSum + formula.SP35GroupBetaFromData(expectedCounts(group)) * section.RebarDiameter(CLng(member))
+                Next member
+            Next row
+            CheckNear prefix & ".denominator.G" & CStr(candidate), data.CandidateBetaDiameterSum(candidate), expectedSum
+            If prefix = "savedHollow" And candidate = 8 Then
+                ids = vbNullString
+                For bar = 1 To section.RebarCount
+                    If data.BarGroup(bar) > 0 Then
+                        If query.ContainsPoint(region, section.RebarX(bar), section.RebarY(bar)) Then
+                            If Len(ids) > 0 Then ids = ids & ", "
+                            ids = ids & section.RebarID(bar)
+                        End If
+                    End If
+                Next bar
+                mReport = mReport & "SAVED_HOLLOW_G8: " & ids & "; betaDiameterSum=" & CStr(expectedSum) & vbCrLf
+            End If
+        End If
+    Next candidate
+End Sub
 
 ' ДЛЯ ТЕСТОВ: сверяет готовую ширину с независимой записью нормативной
 ' формулы и ее сохраненной геометрией; исходные НДС здесь не решаются повторно.
