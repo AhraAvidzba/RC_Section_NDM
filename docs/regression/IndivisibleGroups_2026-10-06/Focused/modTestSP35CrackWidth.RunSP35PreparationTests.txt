@@ -1,0 +1,417 @@
+﻿OK: SP35.groups.transitive
+OK: SP35.groups.noCompressedOrZero
+OK: SP35.groups.centerX; actual=1.80938221878813E-16; expected=0
+OK: SP35.groups.centerY; actual=350; expected=350
+OK: SP35.groups.betaDiameterSum; actual=45; expected=45
+OK: SP35.groups.sigmaActual; actual=100; expected=100
+OK: SP35.groups.area
+OK: SP35.groups.sameSideAndRowDiameter; actual=20; expected=20
+OK: SP35.groups.rowTopology
+OK: SP35.central.oneCandidate
+OK: SP35.central.allConcrete
+OK: SP35.central.allTensionBars
+OK: SP35.mixed.Max.oneGroup
+OK: SP35.mixed.Max.weightedCenter; actual=20; expected=20
+OK: SP35.mixed.Max.sideDiameter; actual=20; expected=20
+OK: SP35.mixed.Max.rowDiameter; actual=20; expected=20
+OK: SP35.mixed.Max.actualDiameters; actual=25.5; expected=25.5
+OK: SP35.mixed.Max.area
+OK: SP35.mixed.Min.oneGroup
+OK: SP35.mixed.Min.weightedCenter; actual=20; expected=20
+OK: SP35.mixed.Min.sideDiameter; actual=10; expected=10
+OK: SP35.mixed.Min.rowDiameter; actual=10; expected=10
+OK: SP35.mixed.Min.actualDiameters; actual=25.5; expected=25.5
+OK: SP35.mixed.Min.area
+OK: SP35.mixed.Average.oneGroup
+OK: SP35.mixed.Average.weightedCenter; actual=20; expected=20
+OK: SP35.mixed.Average.sideDiameter; actual=15; expected=15
+OK: SP35.mixed.Average.rowDiameter; actual=15; expected=15
+OK: SP35.mixed.Average.actualDiameters; actual=25.5; expected=25.5
+OK: SP35.mixed.Average.area
+OK: SP35.rows.0.twoGroups
+OK: SP35.rows.0.referenceDiameter; actual=20; expected=20
+OK: SP35.rows.0.area
+OK: SP35.rows.incomplete.outerFullReferenceFirst
+OK: SP35.rows.outerFirst
+OK: SP35.rows.incomplete.sum; actual=55; expected=55
+OK: SP35.rows.1.twoGroups
+OK: SP35.rows.1.referenceDiameter; actual=20; expected=20
+OK: SP35.rows.1.area
+OK: SP35.rows.excluded.renumbered
+OK: SP35.rows.excluded.notAnAnchor
+OK: SP35.rows.excluded.sum; actual=45; expected=45
+OK: SP35.openings.twoHoles.area
+OK: SP35.openings.connectedLowerRow
+OK: SP35.openings.firstHole
+OK: SP35.openings.secondHole
+OK: SP35.openings.noSecondShadow
+OK: SP35.openings.fiveBaseNormals
+OK: SP35.openings.nearestQ
+OK: SP35.openings.outerP
+OK: SP35.openings.betweenProbesLocalCut
+OK: SP35.openings.actualIncludedSum; actual=40; expected=40
+OK: SP35.openings.central.fullNetArea
+OK: SP35.openings.central.noArtificialProbes
+OK: SP35.openings.central.allRebars; actual=40; expected=40
+OK: SP35.openings.barrier.area
+OK: SP35.openings.barrier.noOppositeWall
+OK: SP35.openings.barrier.noLocalShadow
+OK: SP35.openings.barrier.onlyUpperRow; actual=20; expected=20
+OK: SP35.localCircle.0.innerAnchorFound
+OK: SP35.localCircle.0.analyticArea
+OK: SP35.localCircle.0.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.0.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.0.fullWidthBelowHoles
+OK: SP35.localCircle.0.localArcCut
+OK: SP35.localCircle.0.outsideStrip
+OK: SP35.localCircle.0.oneLowerInterval
+OK: SP35.localCircle.0.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.0.lowerRight; actual=40; expected=40
+AR_LOCAL_SEGMENT:	40	91.6515138991168	6.12303176911189E-15	100	0	0	0.411516846067488
+AR_LOCAL_SEGMENT:	6.12303176911189E-15	100	-40	91.6515138991168	0	0	0.411516846067488
+AR_LOCAL_SEGMENT:	-40	91.6515138991168	-40	68.2842712474619	0	0	0
+AR_LOCAL_SEGMENT:	-40	68.2842712474619	-20	40	-50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	-20	40	-40	11.7157287525381	-50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	-40	11.7157287525381	-40	-1.40512601554121E-16	0	0	0
+AR_LOCAL_SEGMENT:	-40	0	40	0	0	0	0
+AR_LOCAL_SEGMENT:	40	0	40	11.7157287525381	0	0	0
+AR_LOCAL_SEGMENT:	40	11.7157287525381	20	40	50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	20	40	40	68.2842712474619	50	40	-1.23095941734078
+AR_LOCAL_SEGMENT:	40	68.2842712474619	40	91.6515138991168	0	0	0
+OK: SP35.localCircle.0.exactArcs
+OK: SP35.localCircle.0.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+OK: SP35.localCircle.0.47.innerAnchorFound
+OK: SP35.localCircle.0.47.analyticArea
+OK: SP35.localCircle.0.47.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.0.47.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.0.47.fullWidthBelowHoles
+OK: SP35.localCircle.0.47.localArcCut
+OK: SP35.localCircle.0.47.outsideStrip
+OK: SP35.localCircle.0.47.oneLowerInterval
+OK: SP35.localCircle.0.47.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.0.47.lowerRight; actual=40; expected=40
+OK: SP35.localCircle.0.47.exactArcs
+OK: SP35.localCircle.0.47.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+OK: SP35.localCircle.-0.81.innerAnchorFound
+OK: SP35.localCircle.-0.81.analyticArea
+OK: SP35.localCircle.-0.81.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.-0.81.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.-0.81.fullWidthBelowHoles
+OK: SP35.localCircle.-0.81.localArcCut
+OK: SP35.localCircle.-0.81.outsideStrip
+OK: SP35.localCircle.-0.81.oneLowerInterval
+OK: SP35.localCircle.-0.81.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.-0.81.lowerRight; actual=40; expected=40
+OK: SP35.localCircle.-0.81.exactArcs
+OK: SP35.localCircle.-0.81.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+OK: SP35.rotation.area
+OK: SP35.rotation.sigma
+OK: SP35.rotation.betaDiameterSum; actual=45; expected=45
+OK: SP35.projectedSpacing.0.separateGroups
+OK: SP35.projectedSpacing.0.sameRow
+OK: SP35.projectedSpacing.0.leftProjectionHalf
+OK: SP35.projectedSpacing.0.rightProjectionHalf
+OK: SP35.projectedSpacing.0.notEuclideanHalf
+OK: SP35.projectedSpacing.0.area
+OK: SP35.projectedSpacing.0.47.separateGroups
+OK: SP35.projectedSpacing.0.47.sameRow
+OK: SP35.projectedSpacing.0.47.leftProjectionHalf
+OK: SP35.projectedSpacing.0.47.rightProjectionHalf
+OK: SP35.projectedSpacing.0.47.notEuclideanHalf
+OK: SP35.projectedSpacing.0.47.area
+OK: SP35.projectedSpacing.-0.81.separateGroups
+OK: SP35.projectedSpacing.-0.81.sameRow
+OK: SP35.projectedSpacing.-0.81.leftProjectionHalf
+OK: SP35.projectedSpacing.-0.81.rightProjectionHalf
+OK: SP35.projectedSpacing.-0.81.notEuclideanHalf
+OK: SP35.projectedSpacing.-0.81.area
+OK: SP35.materialBoundary.neighborOtherRow
+OK: SP35.materialBoundary.otherRowProjection
+OK: SP35.materialBoundary.projected27
+OK: SP35.materialBoundary.notVerticalStepHalf
+OK: SP35.materialBoundary.nominalLeftUnchanged; actual=192; expected=192
+OK: SP35.materialBoundary.nominalRightUnchanged; actual=192; expected=192
+OK: SP35.materialBoundary.notClampedByAnchorLine
+OK: SP35.materialBoundary.noOutsideConcrete
+OK: SP35.neighborRatio.0.0.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.0.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.0.0.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.0.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.0.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.0.0.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.50.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.50.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.0.50.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.50.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.50.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.0.50.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.200.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.200.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.0.200.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.200.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.200.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.0.200.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.47.0.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.0.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.0.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.47.0.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.0.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.0.47.0.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.47.50.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.50.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.50.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.47.50.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.50.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.0.47.50.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.47.200.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.200.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.200.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.0.47.200.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.0.47.200.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.0.47.200.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.-0.81.0.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.0.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.0.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.-0.81.0.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.0.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.-0.81.0.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.-0.81.50.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.50.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.50.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.-0.81.50.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.50.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.-0.81.50.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.-0.81.200.0.199.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.200.0.199.right; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.200.0.199.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.-0.81.200.0.201.leftNoNeighbor; actual=120; expected=120
+OK: SP35.neighborRatio.-0.81.200.0.201.right; actual=10.05; expected=10.05
+OK: SP35.neighborRatio.-0.81.200.0.201.storedThreshold; actual=0.2; expected=0.2
+OK: SP35.neighborRatio.equalThreshold; actual=15; expected=15
+OK: SP35.neighborRatio.highThresholdFullRadius; actual=120; expected=120
+OK: SP35.neighborRatio.zeroThresholdHalfProjection; actual=15; expected=15
+OK: SP35.neighborRatio.nearestByFullDistance; actual=30; expected=30
+OK: SP35.neighborRatio.independentRightFullRadius; actual=120; expected=120
+OK: SP35.neighborRatio.allIncludedActualBars; actual=60; expected=60
+OK: SP35.neighborRatio.outerFirstGlobal
+OK: SP35.neighborRatio.outerFirstLocal
+OK: SP35.neighborRatio.keepNeutralLine
+OK: SP35.neighborRatio.sameProjectionNotLeft; actual=120; expected=120
+OK: SP35.neighborRatio.sameProjectionNotRight; actual=120; expected=120
+OK: SP35.neighborRatio.invalidThreshold
+OK: SP35.indivisibleGroup.0.130.originalPair
+OK: SP35.indivisibleGroup.0.130.barInside
+OK: SP35.indivisibleGroup.0.130.barOutside
+OK: SP35.indivisibleGroup.0.130.centerDecision
+OK: SP35.indivisibleGroup.0.130.includedGroupCount
+OK: SP35.indivisibleGroup.0.130.fullMembers
+OK: SP35.indivisibleGroup.0.130.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.130.denominator; actual=20; expected=20
+OK: SP35.indivisibleGroup.0.130.membership.G1.R1
+OK: SP35.indivisibleGroup.0.130.membership.G1.R2
+OK: SP35.indivisibleGroup.0.130.membership.G1.R3
+OK: SP35.indivisibleGroup.0.130.count.G1.1
+OK: SP35.indivisibleGroup.0.130.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.130.denominator.G1; actual=20; expected=20
+OK: SP35.indivisibleGroup.0.130.membership.G2.R1
+OK: SP35.indivisibleGroup.0.130.membership.G2.R2
+OK: SP35.indivisibleGroup.0.130.membership.G2.R3
+OK: SP35.indivisibleGroup.0.130.count.G2.2
+OK: SP35.indivisibleGroup.0.130.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.130.denominator.G2; actual=34; expected=34
+OK: SP35.indivisibleGroup.0.115.originalPair
+OK: SP35.indivisibleGroup.0.115.barInside
+OK: SP35.indivisibleGroup.0.115.barOutside
+OK: SP35.indivisibleGroup.0.115.centerDecision
+OK: SP35.indivisibleGroup.0.115.includedGroupCount
+OK: SP35.indivisibleGroup.0.115.fullMembers
+OK: SP35.indivisibleGroup.0.115.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.115.denominator; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.115.membership.G1.R1
+OK: SP35.indivisibleGroup.0.115.membership.G1.R2
+OK: SP35.indivisibleGroup.0.115.membership.G1.R3
+OK: SP35.indivisibleGroup.0.115.count.G1.1
+OK: SP35.indivisibleGroup.0.115.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.115.count.G1.2
+OK: SP35.indivisibleGroup.0.115.beta.G1.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.115.denominator.G1; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.115.membership.G2.R1
+OK: SP35.indivisibleGroup.0.115.membership.G2.R2
+OK: SP35.indivisibleGroup.0.115.membership.G2.R3
+OK: SP35.indivisibleGroup.0.115.count.G2.1
+OK: SP35.indivisibleGroup.0.115.beta.G2.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.115.count.G2.2
+OK: SP35.indivisibleGroup.0.115.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.115.denominator.G2; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.120.originalPair
+OK: SP35.indivisibleGroup.0.120.barInside
+OK: SP35.indivisibleGroup.0.120.barOutside
+OK: SP35.indivisibleGroup.0.120.centerDecision
+OK: SP35.indivisibleGroup.0.120.includedGroupCount
+OK: SP35.indivisibleGroup.0.120.fullMembers
+OK: SP35.indivisibleGroup.0.120.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.120.denominator; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.120.membership.G1.R1
+OK: SP35.indivisibleGroup.0.120.membership.G1.R2
+OK: SP35.indivisibleGroup.0.120.membership.G1.R3
+OK: SP35.indivisibleGroup.0.120.count.G1.1
+OK: SP35.indivisibleGroup.0.120.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.120.count.G1.2
+OK: SP35.indivisibleGroup.0.120.beta.G1.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.120.denominator.G1; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.120.membership.G2.R1
+OK: SP35.indivisibleGroup.0.120.membership.G2.R2
+OK: SP35.indivisibleGroup.0.120.membership.G2.R3
+OK: SP35.indivisibleGroup.0.120.count.G2.1
+OK: SP35.indivisibleGroup.0.120.beta.G2.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.120.count.G2.2
+OK: SP35.indivisibleGroup.0.120.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.120.denominator.G2; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.47.130.originalPair
+OK: SP35.indivisibleGroup.0.47.130.barInside
+OK: SP35.indivisibleGroup.0.47.130.barOutside
+OK: SP35.indivisibleGroup.0.47.130.centerDecision
+OK: SP35.indivisibleGroup.0.47.130.includedGroupCount
+OK: SP35.indivisibleGroup.0.47.130.fullMembers
+OK: SP35.indivisibleGroup.0.47.130.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.47.130.denominator; actual=20; expected=20
+OK: SP35.indivisibleGroup.0.47.130.membership.G1.R1
+OK: SP35.indivisibleGroup.0.47.130.membership.G1.R2
+OK: SP35.indivisibleGroup.0.47.130.membership.G1.R3
+OK: SP35.indivisibleGroup.0.47.130.count.G1.1
+OK: SP35.indivisibleGroup.0.47.130.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.47.130.denominator.G1; actual=20; expected=20
+OK: SP35.indivisibleGroup.0.47.130.membership.G2.R1
+OK: SP35.indivisibleGroup.0.47.130.membership.G2.R2
+OK: SP35.indivisibleGroup.0.47.130.membership.G2.R3
+OK: SP35.indivisibleGroup.0.47.130.count.G2.2
+OK: SP35.indivisibleGroup.0.47.130.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.47.130.denominator.G2; actual=34; expected=34
+OK: SP35.indivisibleGroup.0.47.115.originalPair
+OK: SP35.indivisibleGroup.0.47.115.barInside
+OK: SP35.indivisibleGroup.0.47.115.barOutside
+OK: SP35.indivisibleGroup.0.47.115.centerDecision
+OK: SP35.indivisibleGroup.0.47.115.includedGroupCount
+OK: SP35.indivisibleGroup.0.47.115.fullMembers
+OK: SP35.indivisibleGroup.0.47.115.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.47.115.denominator; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.47.115.membership.G1.R1
+OK: SP35.indivisibleGroup.0.47.115.membership.G1.R2
+OK: SP35.indivisibleGroup.0.47.115.membership.G1.R3
+OK: SP35.indivisibleGroup.0.47.115.count.G1.1
+OK: SP35.indivisibleGroup.0.47.115.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.47.115.count.G1.2
+OK: SP35.indivisibleGroup.0.47.115.beta.G1.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.47.115.denominator.G1; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.47.115.membership.G2.R1
+OK: SP35.indivisibleGroup.0.47.115.membership.G2.R2
+OK: SP35.indivisibleGroup.0.47.115.membership.G2.R3
+OK: SP35.indivisibleGroup.0.47.115.count.G2.1
+OK: SP35.indivisibleGroup.0.47.115.beta.G2.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.47.115.count.G2.2
+OK: SP35.indivisibleGroup.0.47.115.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.47.115.denominator.G2; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.47.120.originalPair
+OK: SP35.indivisibleGroup.0.47.120.barInside
+OK: SP35.indivisibleGroup.0.47.120.barOutside
+OK: SP35.indivisibleGroup.0.47.120.centerDecision
+OK: SP35.indivisibleGroup.0.47.120.includedGroupCount
+OK: SP35.indivisibleGroup.0.47.120.fullMembers
+OK: SP35.indivisibleGroup.0.47.120.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.47.120.denominator; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.47.120.membership.G1.R1
+OK: SP35.indivisibleGroup.0.47.120.membership.G1.R2
+OK: SP35.indivisibleGroup.0.47.120.membership.G1.R3
+OK: SP35.indivisibleGroup.0.47.120.count.G1.1
+OK: SP35.indivisibleGroup.0.47.120.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.47.120.count.G1.2
+OK: SP35.indivisibleGroup.0.47.120.beta.G1.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.47.120.denominator.G1; actual=54; expected=54
+OK: SP35.indivisibleGroup.0.47.120.membership.G2.R1
+OK: SP35.indivisibleGroup.0.47.120.membership.G2.R2
+OK: SP35.indivisibleGroup.0.47.120.membership.G2.R3
+OK: SP35.indivisibleGroup.0.47.120.count.G2.1
+OK: SP35.indivisibleGroup.0.47.120.beta.G2.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.0.47.120.count.G2.2
+OK: SP35.indivisibleGroup.0.47.120.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.0.47.120.denominator.G2; actual=54; expected=54
+OK: SP35.indivisibleGroup.-0.81.130.originalPair
+OK: SP35.indivisibleGroup.-0.81.130.barInside
+OK: SP35.indivisibleGroup.-0.81.130.barOutside
+OK: SP35.indivisibleGroup.-0.81.130.centerDecision
+OK: SP35.indivisibleGroup.-0.81.130.includedGroupCount
+OK: SP35.indivisibleGroup.-0.81.130.fullMembers
+OK: SP35.indivisibleGroup.-0.81.130.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.-0.81.130.denominator; actual=20; expected=20
+OK: SP35.indivisibleGroup.-0.81.130.membership.G1.R1
+OK: SP35.indivisibleGroup.-0.81.130.membership.G1.R2
+OK: SP35.indivisibleGroup.-0.81.130.membership.G1.R3
+OK: SP35.indivisibleGroup.-0.81.130.count.G1.1
+OK: SP35.indivisibleGroup.-0.81.130.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.-0.81.130.denominator.G1; actual=20; expected=20
+OK: SP35.indivisibleGroup.-0.81.130.membership.G2.R1
+OK: SP35.indivisibleGroup.-0.81.130.membership.G2.R2
+OK: SP35.indivisibleGroup.-0.81.130.membership.G2.R3
+OK: SP35.indivisibleGroup.-0.81.130.count.G2.2
+OK: SP35.indivisibleGroup.-0.81.130.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.-0.81.130.denominator.G2; actual=34; expected=34
+OK: SP35.indivisibleGroup.-0.81.115.originalPair
+OK: SP35.indivisibleGroup.-0.81.115.barInside
+OK: SP35.indivisibleGroup.-0.81.115.barOutside
+OK: SP35.indivisibleGroup.-0.81.115.centerDecision
+OK: SP35.indivisibleGroup.-0.81.115.includedGroupCount
+OK: SP35.indivisibleGroup.-0.81.115.fullMembers
+OK: SP35.indivisibleGroup.-0.81.115.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.-0.81.115.denominator; actual=54; expected=54
+OK: SP35.indivisibleGroup.-0.81.115.membership.G1.R1
+OK: SP35.indivisibleGroup.-0.81.115.membership.G1.R2
+OK: SP35.indivisibleGroup.-0.81.115.membership.G1.R3
+OK: SP35.indivisibleGroup.-0.81.115.count.G1.1
+OK: SP35.indivisibleGroup.-0.81.115.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.-0.81.115.count.G1.2
+OK: SP35.indivisibleGroup.-0.81.115.beta.G1.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.-0.81.115.denominator.G1; actual=54; expected=54
+OK: SP35.indivisibleGroup.-0.81.115.membership.G2.R1
+OK: SP35.indivisibleGroup.-0.81.115.membership.G2.R2
+OK: SP35.indivisibleGroup.-0.81.115.membership.G2.R3
+OK: SP35.indivisibleGroup.-0.81.115.count.G2.1
+OK: SP35.indivisibleGroup.-0.81.115.beta.G2.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.-0.81.115.count.G2.2
+OK: SP35.indivisibleGroup.-0.81.115.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.-0.81.115.denominator.G2; actual=54; expected=54
+OK: SP35.indivisibleGroup.-0.81.120.originalPair
+OK: SP35.indivisibleGroup.-0.81.120.barInside
+OK: SP35.indivisibleGroup.-0.81.120.barOutside
+OK: SP35.indivisibleGroup.-0.81.120.centerDecision
+OK: SP35.indivisibleGroup.-0.81.120.includedGroupCount
+OK: SP35.indivisibleGroup.-0.81.120.fullMembers
+OK: SP35.indivisibleGroup.-0.81.120.fullBeta; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.-0.81.120.denominator; actual=54; expected=54
+OK: SP35.indivisibleGroup.-0.81.120.membership.G1.R1
+OK: SP35.indivisibleGroup.-0.81.120.membership.G1.R2
+OK: SP35.indivisibleGroup.-0.81.120.membership.G1.R3
+OK: SP35.indivisibleGroup.-0.81.120.count.G1.1
+OK: SP35.indivisibleGroup.-0.81.120.beta.G1.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.-0.81.120.count.G1.2
+OK: SP35.indivisibleGroup.-0.81.120.beta.G1.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.-0.81.120.denominator.G1; actual=54; expected=54
+OK: SP35.indivisibleGroup.-0.81.120.membership.G2.R1
+OK: SP35.indivisibleGroup.-0.81.120.membership.G2.R2
+OK: SP35.indivisibleGroup.-0.81.120.membership.G2.R3
+OK: SP35.indivisibleGroup.-0.81.120.count.G2.1
+OK: SP35.indivisibleGroup.-0.81.120.beta.G2.1; actual=1; expected=1
+OK: SP35.indivisibleGroup.-0.81.120.count.G2.2
+OK: SP35.indivisibleGroup.-0.81.120.beta.G2.2; actual=0.85; expected=0.85
+OK: SP35.indivisibleGroup.-0.81.120.denominator.G2; actual=54; expected=54
+OK: SP35.groupGap.9.9
+OK: SP35.groupGap.10
+OK: SP35.groupGap.10.1
+OK: SP35.rowTolerance.49.9
+OK: SP35.rowTolerance.50
+OK: SP35.rowTolerance.50.1
+OK: SP35.snapshot.members
+OK: SP35.snapshot.nominalDiameter; actual=20; expected=20
+OK: SP35.noTension.noCandidates
+OK: SP35.invalidTolerance.explained
+OK: SP35.invalidTolerance.noOldCandidates
+TOTAL_SP35_PREPARATION: passed=405; failed=0

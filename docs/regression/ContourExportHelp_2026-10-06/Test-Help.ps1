@@ -59,8 +59,8 @@ try {
     Assert-Help 'saved.colors' ($joined.Contains('ACI 30') -and $joined.Contains('ACI 4') -and $joined.Contains('ACI 31'))
     Assert-Help 'saved.exactDimensions' ($joined.Contains('габаритные размеры импортированного сечения берутся по точному наружному контуру'))
     Assert-Help 'saved.openingsIndependent' ($joined.Contains('Наружный контур и отверстия независимы') -and $joined.Contains('пересечение ее приближенной границы допустимо'))
-    Assert-Help 'saved.actualBarMembership' ($joined.Contains('учитывается вошедшая часть: число стержней, β, сумма диаметров и состав рядов') -and -not $joined.Contains('Группа неделима:'))
-    Assert-Help 'saved.noObsoleteCenterMembership' (-not $joined.Contains('Центр на общей границе участков учитывается полностью') -and $joined.Contains('β для каждой исходной группы определяется по числу ее вошедших стержней'))
+    Assert-Help 'saved.indivisibleGroupMembership' ($joined.Contains('Группа неделима:') -and $joined.Contains('Если центр снаружи, исключается вся группа') -and $joined.Contains('даже когда отдельный стержень внутри участка'))
+    Assert-Help 'saved.fullGroupFormulaData' ($joined.Contains('β и n относятся к полному составу каждой принятой группы') -and $joined.Contains('без коэффициента β') -and $joined.Contains('Центр на общей границе участков включает всю группу') -and -not $joined.Contains('учитывается вошедшая часть:'))
     $full = 'AutoCAD.Common.OpeningContourLayer'; $row = 0
     for ($r = 1; $r -le $settings.Rows.Count; $r++) { if ([string]$settings.Cells.Item($r,1).Value2 -eq $full) { $row = $r; break } }
     if ($row -eq 0) { throw "Missing key: $full" }

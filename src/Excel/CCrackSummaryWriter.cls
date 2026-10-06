@@ -832,10 +832,10 @@ Private Function SP35RowsText(ByVal width As CCrackWidthResult, ByVal field As S
             If CLng(rows(i, 2)) = row Then
                 group = CLng(rows(i, 1)): value = vbNullString
                 Select Case field
-                    Case "Beta": value = Replace$(Format$(prepared.CandidateGroupBeta(width.SP35CriticalCandidate, group), "0.00"), ",", ".")
-                    Case "Count": value = CStr(prepared.CandidateGroupBarCount(width.SP35CriticalCandidate, group))
+                    Case "Beta": value = Replace$(Format$(prepared.GroupBeta(group), "0.00"), ",", ".")
+                    Case "Count": value = CStr(prepared.GroupBarCount(group))
                     Case Else
-                        members = prepared.CandidateGroupMembers(width.SP35CriticalCandidate, group)
+                        members = prepared.GroupMembers(group)
                         For j = LBound(members) To UBound(members)
                             If Len(value) > 0 Then value = value & ", "
                             If field = "Diameter" Then

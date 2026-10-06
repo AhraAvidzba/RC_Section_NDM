@@ -26,19 +26,18 @@ Private mSection As CSectionModel
 Private mQuery As CSectionGeometryQuery
 Private mDomain As CConcreteRegion
 Private mGroupCount As Long
-Private mBarGroup() As Long ' 0 - стержень не растянут; иначе исходная связная группа для построения границ.
+Private mBarGroup() As Long ' 0 - стержень не растянут; иначе неделимая связная группа.
 Private mBarStress() As Double ' Фактические напряжения заданного НДС, МПа.
 Private mBarStrain() As Double, mBarDiameter() As Double, mBarArea() As Double
 Private mBarID() As String ' Собственные копии для результата, не чтение измененной модели позже.
 Private mGroupX() As Double, mGroupY() As Double ' Центр по реальным площадям As.
 Private mGroupN() As Double, mGroupT() As Double ' Проекции по нормали к Н.О. и вдоль нее.
 Private mGroupArea() As Double, mGroupBars() As Long
-Private mGroupBeta() As Double ' Коэффициент всей исходной группы для диагностики; окончательная beta хранится отдельно для кандидата.
+Private mGroupBeta() As Double ' Сохраненный коэффициент группы для формулы и пассивного вывода.
 Private mGroupRow() As Long ' Смысловой ряд исходных групп; не определяет боковые границы.
 Private mCandidateCount As Long
 Private mZones() As CConcreteRegion ' Снимки той же геометрии, площадь которой пойдет в формулу.
-Private mRows() As Variant ' Для кандидата [исходная группа, локальный ряд, beta, число включенных стержней].
-Private mCandidateBars() As Variant ' Собственный отбор реальных стержней по конечной области каждого кандидата.
+Private mRows() As Variant ' Для кандидата массив [группа, локальный ряд]; только включенные группы.
 Private mAnchorGroup() As Long, mStressBar() As Long
 Private mBetaDiameterSum() As Double
 Private mSideDiameter() As Double, mRowDiameter() As Double
@@ -101,7 +100,6 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     mCandidateCount = mGroupCount
     If centralTension Then mCandidateCount = 1
     ReDim mZones(1 To mCandidateCount): ReDim mRows(1 To mCandidateCount)
-    ReDim mCandidateBars(1 To mCandidateCount)
     ReDim mAnchorGroup(1 To mCandidateCount): ReDim mStressBar(1 To mCandidateCount)
     ReDim mBetaDiameterSum(1 To mCandidateCount)
     ReDim mSideDiameter(1 To mCandidateCount): ReDim mRowDiameter(1 To mCandidateCount)
@@ -110,11 +108,9 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     ReDim mReferenceRow(1 To mCandidateCount): ReDim mRowCount(1 To mCandidateCount)
     ReDim mCandidateRadius(1 To mCandidateCount): ReDim mCandidatePsi(1 To mCandidateCount): ReDim mCandidateWidth(1 To mCandidateCount)
     If centralTension Then
-        Dim selected() As Boolean
         Set mZones(1) = mDomain.Clone
         mStressBar(1) = MaximumStressBar(0): mAnchorGroup(1) = mBarGroup(mStressBar(1))
-        SelectRegionBars mDomain, selected, included
-        StoreIncludedGroups 1, included, rows, rowCount, selected, formula
+        StoreIncludedGroups 1, included, rows, rowCount, formula
     Else
         ' [NDM] Надежный общий fallback: каждый растянутый кластер - кандидат.
         ' Не создаем отдельный классификатор наружного ряда для каждой формы.
@@ -133,7 +129,7 @@ Private Sub ResetData()
     Erase mBarGroup: Erase mBarStress: Erase mBarStrain: Erase mBarDiameter: Erase mBarArea: Erase mBarID
     Erase mGroupX: Erase mGroupY
     Erase mGroupN: Erase mGroupT: Erase mGroupArea: Erase mGroupBars: Erase mGroupRow
-    Erase mZones: Erase mRows: Erase mCandidateBars: Erase mAnchorGroup: Erase mStressBar: Erase mBetaDiameterSum
+    Erase mZones: Erase mRows: Erase mAnchorGroup: Erase mStressBar: Erase mBetaDiameterSum
     Erase mSideDiameter: Erase mRowDiameter: Erase mSideRadius: Erase mNormalRadius
     Erase mLeftDistance: Erase mRightDistance
     Erase mReferenceRow: Erase mRowCount
@@ -222,20 +218,13 @@ End Function
 ' бетонной границы к Н.О.: наружный ряд 1, ближайший к Н.О. - последний.
 ' При центральном растяжении Н.О. нет: один общий ряд.
 Private Sub AssignRows(ByRef included() As Boolean, ByRef rows() As Long, ByRef rowCount As Long)
-    AssignRowsFromPositions included, rows, rowCount, mGroupN, mGroupT
-End Sub
-
-' Разбивает включенные группы на ряды по переданным фактическим центрам.
-' Для конечной области центры учитывают только стержни, действительно в ней.
-Private Sub AssignRowsFromPositions(ByRef included() As Boolean, ByRef rows() As Long, ByRef rowCount As Long, _
-        ByRef positionN() As Double, ByRef positionT() As Double)
     Dim order() As Long, count As Long, i As Long, j As Long, group As Long, firstN As Double
     ReDim rows(1 To mGroupCount): ReDim order(1 To mGroupCount): rowCount = 0
     For i = 1 To mGroupCount
         If included(i) Then
             count = count + 1: order(count) = i
             For j = count To 2 Step -1
-                If Not GroupBefore(order(j), order(j - 1), positionN, positionT) Then Exit For
+                If Not GroupBefore(order(j), order(j - 1)) Then Exit For
                 group = order(j - 1): order(j - 1) = order(j): order(j) = group
             Next j
         End If
@@ -243,9 +232,9 @@ Private Sub AssignRowsFromPositions(ByRef included() As Boolean, ByRef rows() As
     For i = 1 To count
         group = order(i)
         If rowCount = 0 Then
-            rowCount = 1: firstN = positionN(group)
-        ElseIf Not mCentralTension And positionN(group) - firstN > mRowTolerance + LENGTH_TOL Then
-            rowCount = rowCount + 1: firstN = positionN(group)
+            rowCount = 1: firstN = mGroupN(group)
+        ElseIf Not mCentralTension And mGroupN(group) - firstN > mRowTolerance + LENGTH_TOL Then
+            rowCount = rowCount + 1: firstN = mGroupN(group)
         End If
         rows(group) = rowCount
     Next i
@@ -256,12 +245,11 @@ Private Sub AssignRowsFromPositions(ByRef included() As Boolean, ByRef rows() As
 End Sub
 
 ' Сравнивает центры для воспроизводимого порядка рядов и групп одного ряда.
-Private Function GroupBefore(ByVal first As Long, ByVal second As Long, _
-        ByRef positionN() As Double, ByRef positionT() As Double) As Boolean
-    If Abs(positionN(first) - positionN(second)) > LENGTH_TOL Then
-        GroupBefore = (positionN(first) < positionN(second))
-    ElseIf Abs(positionT(first) - positionT(second)) > LENGTH_TOL Then
-        GroupBefore = (positionT(first) < positionT(second))
+Private Function GroupBefore(ByVal first As Long, ByVal second As Long) As Boolean
+    If Abs(mGroupN(first) - mGroupN(second)) > LENGTH_TOL Then
+        GroupBefore = (mGroupN(first) < mGroupN(second))
+    ElseIf Abs(mGroupT(first) - mGroupT(second)) > LENGTH_TOL Then
+        GroupBefore = (mGroupT(first) < mGroupT(second))
     Else
         GroupBefore = (first < second)
     End If
@@ -273,7 +261,7 @@ End Function
 ' стенку, опорный ряд по As и внутреннее отсечение по радиусу/нейтральной линии.
 Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVal formula As CCrackWidthCalculator)
     Dim wall As CConcreteRegion, region As CConcreteRegion, i As Long, left As Double, right As Double
-    Dim included() As Boolean, selected() As Boolean, rows() As Long, rowCount As Long, rowAreas() As Double, rowN() As Double
+    Dim included() As Boolean, rows() As Long, rowCount As Long, rowAreas() As Double, rowN() As Double
     Dim referenceRow As Long, referenceGroup As Long, incomplete As Boolean, lowerN As Double, minN As Double, maxN As Double
     mAnchorGroup(anchor) = anchor: mStressBar(anchor) = MaximumStressBar(anchor)
     mSideDiameter(anchor) = ReferenceDiameterForGroup(anchor)
@@ -293,6 +281,8 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVa
             mQuery.ContainsPoint(wall, mGroupX(i), mGroupY(i)))
     Next i
     AssignRows included, rows, rowCount
+    ' Площадь ряда включает полный состав принятых по центру групп, без beta.
+    ' Это предварительные ряды боковой полосы до внутреннего отсечения.
     ReDim rowAreas(1 To rowCount): ReDim rowN(1 To rowCount)
     For i = 1 To mGroupCount
         If included(i) Then
@@ -315,7 +305,11 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVa
     If lowerN < mNeutralN Then lowerN = mNeutralN
     Set region = mQuery.ClipWindow(wall, mNx, mNy, lowerN, maxN, mGroupT(anchor) - left, mGroupT(anchor) + right)
     Set region = mQuery.ConnectedRegionAtPoint(region, mGroupX(anchor), mGroupY(anchor))
-    SelectRegionBars region, selected, included
+    ' Группа неделима: центр внутри/на границе принимает весь исходный состав.
+    ' Положение отдельных осей относительно границы участка его не изменяет.
+    For i = 1 To mGroupCount
+        If included(i) Then included(i) = mQuery.ContainsPoint(region, mGroupX(i), mGroupY(i))
+    Next i
     ' Перебор всех групп включает внутренние кандидаты, которые после
     ' нормативного выбора полного ряда могут оказаться вне своей зоны.
     ' Такой кандидат не является расчетным якорем и не вызывает формулу;
@@ -323,16 +317,15 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVa
     If Not included(anchor) Or region.Area <= LENGTH_TOL Then Exit Sub
     ' Ряд за окончательной внутренней границей больше не участвует ни в
     ' знаменателе, ни в нумерации расшифровки сохраненного результата.
-    AssignSelectedRows selected, included, rows, rowCount
+    AssignRows included, rows, rowCount
     mReferenceRow(anchor) = rows(referenceGroup)
-    mStressBar(anchor) = MaximumSelectedStressBar(anchor, selected)
     ' Пять базовых пар P/Q сохраняются для проверки происхождения границ.
     ' Между ними область уже обрезана по всем настоящим граням и дугам:
     ' небольшое отверстие между пробами не исчезает и не меняет площадь.
     region.SetBoundaryProbes mQuery.SampleMaterialIntervals(region, mNx, mNy, mGroupN(anchor), _
         mGroupT(anchor) - left, mGroupT(anchor) + right, 5)
     Set mZones(anchor) = region
-    StoreIncludedGroups anchor, included, rows, rowCount, selected, formula
+    StoreIncludedGroups anchor, included, rows, rowCount, formula
 End Sub
 
 ' На каждой стороне выбирает ближайшую группу по полному расстоянию L.
@@ -367,72 +360,25 @@ End Sub
 ' Сохраняет разреженную таблицу групп/рядов конкретной конечной области.
 ' beta применяется к реальной сумме диаметров; один d_ref ее не заменяет.
 Private Sub StoreIncludedGroups(ByVal candidate As Long, ByRef included() As Boolean, ByRef rows() As Long, _
-        ByVal rowCount As Long, ByRef selected() As Boolean, ByVal formula As CCrackWidthCalculator)
-    Dim count As Long, i As Long, group As Long, data() As Variant, groupCounts() As Long, beta() As Double
-    ReDim groupCounts(1 To mGroupCount): ReDim beta(1 To mGroupCount)
-    For i = 1 To mSection.RebarCount
-        If selected(i) Then groupCounts(mBarGroup(i)) = groupCounts(mBarGroup(i)) + 1
-    Next i
+        ByVal rowCount As Long, ByVal formula As CCrackWidthCalculator)
+    Dim count As Long, i As Long, j As Long, group As Long, data() As Variant
     For i = 1 To mGroupCount: If included(i) Then count = count + 1
     Next i
-    ReDim data(1 To count, 1 To 4): count = 0
+    ReDim data(1 To count, 1 To 2): count = 0
     For i = 1 To mGroupCount
         If included(i) Then
             count = count + 1: data(count, 1) = i: data(count, 2) = rows(i)
-            beta(i) = formula.SP35GroupBetaFromData(groupCounts(i))
-            data(count, 3) = beta(i): data(count, 4) = groupCounts(i)
         End If
     Next i
     For i = 1 To mSection.RebarCount
         group = mBarGroup(i)
-        If selected(i) Then mBetaDiameterSum(candidate) = mBetaDiameterSum(candidate) + beta(group) * mBarDiameter(i)
-    Next i
-    mRows(candidate) = data: mRowCount(candidate) = rowCount: mCandidateBars(candidate) = selected
-End Sub
-
-' Отбирает растянутые стержни по их осям в готовой области. Центр исходной
-' группы не может исключить реальный стержень или включить стержень за границей.
-Private Sub SelectRegionBars(ByVal region As CConcreteRegion, ByRef selected() As Boolean, ByRef included() As Boolean)
-    Dim bar As Long, group As Long
-    ReDim selected(1 To mSection.RebarCount): ReDim included(1 To mGroupCount)
-    For bar = 1 To mSection.RebarCount
-        group = mBarGroup(bar)
         If group > 0 Then
-            selected(bar) = mQuery.ContainsPoint(region, mSection.RebarX(bar), mSection.RebarY(bar))
-            If selected(bar) Then included(group) = True
+            If included(group) Then mBetaDiameterSum(candidate) = mBetaDiameterSum(candidate) + _
+                mGroupBeta(group) * mSection.RebarDiameter(i)
         End If
-    Next bar
+    Next i
+    mRows(candidate) = data: mRowCount(candidate) = rowCount
 End Sub
-
-' Сохраняет нумерацию от наружной границы к НЛ для фактического состава
-' конечной области. Удаленные отсечением стержни не сдвигают центр ее ряда.
-Private Sub AssignSelectedRows(ByRef selected() As Boolean, ByRef included() As Boolean, _
-        ByRef rows() As Long, ByRef rowCount As Long)
-    Dim positionN() As Double, positionT() As Double, area() As Double, bar As Long, group As Long
-    ReDim positionN(1 To mGroupCount): ReDim positionT(1 To mGroupCount): ReDim area(1 To mGroupCount)
-    For bar = 1 To mSection.RebarCount
-        If selected(bar) Then
-            group = mBarGroup(bar): area(group) = area(group) + mBarArea(bar)
-            positionN(group) = positionN(group) + mBarArea(bar) * (mNx * mSection.RebarX(bar) + mNy * mSection.RebarY(bar))
-            positionT(group) = positionT(group) + mBarArea(bar) * (-mNy * mSection.RebarX(bar) + mNx * mSection.RebarY(bar))
-        End If
-    Next bar
-    For group = 1 To mGroupCount
-        If included(group) Then positionN(group) = positionN(group) / area(group): positionT(group) = positionT(group) / area(group)
-    Next group
-    AssignRowsFromPositions included, rows, rowCount, positionN, positionT
-End Sub
-
-' Выбирает напряжение только среди вошедших в область стержней якорной
-' группы; стержень за границей не может определять раскрытие этого кандидата.
-Private Function MaximumSelectedStressBar(ByVal group As Long, ByRef selected() As Boolean) As Long
-    Dim bar As Long, maximum As Double
-    For bar = 1 To mSection.RebarCount
-        If selected(bar) And mBarGroup(bar) = group Then
-            If mBarStress(bar) > maximum Then maximum = mBarStress(bar): MaximumSelectedStressBar = bar
-        End If
-    Next bar
-End Function
 
 ' Выбирает d_ref только для построения радиуса отдельной группы.
 Private Function ReferenceDiameterForGroup(ByVal group As Long) As Double
@@ -634,8 +580,8 @@ Private Sub AssertWritable()
         "Опубликованные данные СП 35 нельзя изменить; для нового сочетания создайте новый объект."
 End Sub
 
-' Возвращает копию исходной группы для построения границ и диагностики.
-' Состав конечной области для формулы и writer возвращает CandidateGroupMembers.
+' Возвращает копию списка реальных стержней неделимой группы. Writer может
+' расшифровать ряды, beta/n/d/rebars, не теряя смешанные номинальные диаметры.
 Public Function GroupMembers(ByVal group As Long) As Variant
     If group < 1 Or group > mGroupCount Then InvalidData "Номер растянутой группы СП 35 вне допустимого диапазона."
     Dim members() As Long, i As Long, count As Long
@@ -644,46 +590,6 @@ Public Function GroupMembers(ByVal group As Long) As Variant
         If mBarGroup(i) = group Then count = count + 1: members(count) = i
     Next i
     GroupMembers = members
-End Function
-
-' Возвращает собственный список стержней исходной группы, вошедших именно
-' в этот кандидат. Список для формулы и подробного вывода имеет одного владельца.
-Public Function CandidateGroupMembers(ByVal candidate As Long, ByVal group As Long) As Variant
-    CheckCandidate candidate
-    Dim selected As Variant, members() As Long, bar As Long, count As Long
-    selected = mCandidateBars(candidate)
-    For bar = 1 To UBound(mBarGroup)
-        If selected(bar) And mBarGroup(bar) = group Then count = count + 1
-    Next bar
-    If count = 0 Then InvalidData "В этой области нет стержней указанной группы СП 35."
-    ReDim members(1 To count): count = 0
-    For bar = 1 To UBound(mBarGroup)
-        If selected(bar) And mBarGroup(bar) = group Then count = count + 1: members(count) = bar
-    Next bar
-    CandidateGroupMembers = members
-End Function
-
-' Возвращают сохраненные beta/n для фактически включенного состава,
-' не пересчитывая нормативную формулу в writer и не подставляя исходную группу.
-Public Function CandidateGroupBeta(ByVal candidate As Long, ByVal group As Long) As Double
-    CheckCandidate candidate
-    Dim data As Variant, row As Long
-    data = mRows(candidate)
-    For row = LBound(data, 1) To UBound(data, 1)
-        If CLng(data(row, 1)) = group Then CandidateGroupBeta = CDbl(data(row, 3)): Exit Function
-    Next row
-    InvalidData "В этой области нет указанной группы СП 35."
-End Function
-
-' Возвращает число вошедших стержней той же группы и той же конечной области.
-Public Function CandidateGroupBarCount(ByVal candidate As Long, ByVal group As Long) As Long
-    CheckCandidate candidate
-    Dim data As Variant, row As Long
-    data = mRows(candidate)
-    For row = LBound(data, 1) To UBound(data, 1)
-        If CLng(data(row, 1)) = group Then CandidateGroupBarCount = CLng(data(row, 4)): Exit Function
-    Next row
-    InvalidData "В этой области нет указанной группы СП 35."
 End Function
 
 ' Проверяет чтение готового кандидата, чтобы не вернуть числа соседнего LC.

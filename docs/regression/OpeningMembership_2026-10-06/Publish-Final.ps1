@@ -1,8 +1,10 @@
 ﻿# Публикует проверенные артефакты только при неизменной пользовательской книге.
 # Не пересчитывает Results и не заменяет последний пользовательский отчет запуска.
+param([string]$ReportDirectory = '')
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
 $directory = Join-Path $PSScriptRoot 'FinalPublication'
+if ($ReportDirectory) { $directory = Join-Path $root $ReportDirectory }
 $manifest = Get-Content -LiteralPath (Join-Path $directory 'Manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $target = Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
 $source = Join-Path $directory 'RC_Section_NDM.xlsm'

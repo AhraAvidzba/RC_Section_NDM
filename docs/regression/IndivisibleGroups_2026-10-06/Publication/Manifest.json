@@ -1,0 +1,14 @@
+﻿{
+    "SourceSHA256":  "D1DB69B20EF516800511EA451BE6ABE2D480B3706C53304E5989A8EBBA150502",
+    "PreparedSHA256":  "E6B5347CA7BCEA1D211EC14D228A9986BCB2F840029E9A4C94DC35AAF02C8F60",
+    "SourceUnchanged":  true,
+    "ConfigCellsPreserved":  2367,
+    "ConfigCommentsUpdated":  0,
+    "ConfigSettingsAdded":  0,
+    "ConfigValidationListsPreserved":  283,
+    "ConfigWidthsPreserved":  248,
+    "ResultsAddress":  "$A$1:$CF$648",
+    "ResultsCellsPreserved":  54432,
+    "ResultsWidthsPreserved":  84,
+    "StateSolveExecuted":  false
+}
