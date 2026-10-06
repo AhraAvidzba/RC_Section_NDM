@@ -85,8 +85,9 @@ Private mInteractionRegion As CConcreteRegion ' Та же конечная об�
 Private mStandardCode As String ' SP63 или SP35: только выбор формулы ширины, не модели НДС.
 Private mSP35GroupGapTolerance As Double ' Чистый зазор объединения реальных стержней, мм.
 Private mSP35RowTolerance As Double ' Максимальная ширина ряда по нормали к Н.О., мм.
+Private mSP35NeighborRatioLimit As Double ' Безразмерный порог t/L, не допуск группировки рядов.
 Private mSP35RadiusDiameterMode As String ' Max/Min/Average только для геометрических радиусов.
-Private mSP35InteractionRadiusMode As String ' D3/D5/D6: нормативный множитель диаметра.
+Private mSP35InteractionRadiusMode As String ' 3d/5d/6d: нормативный множитель диаметра.
 Private mSP35RebarProfile As String ' Periodic/Smooth выбирает формулу psi СП 35.
 Private mSP35Data As CSP35CrackData ' Готовый неизменяемый снимок всех якорных расчетов.
 Private mSP35CriticalCandidate As Long ' Кандидат с максимальным раскрытием, не с максимальной площадью.
@@ -101,7 +102,8 @@ Private mSP35Radius As Double, mSP35PsiCm As Double ' Rr в мм; размерн
 Private Sub Class_Initialize()
     mStandardCode = "SP63"
     mSP35GroupGapTolerance = 10#: mSP35RowTolerance = 50#
-    mSP35RadiusDiameterMode = "Max": mSP35InteractionRadiusMode = "D6"
+    mSP35NeighborRatioLimit = 0.2
+    mSP35RadiusDiameterMode = "Max": mSP35InteractionRadiusMode = "6d"
     mSP35RebarProfile = "Periodic"
     mAllowableCrackWidth = 0.3
     mPsiMode = PSI_MODE_ALWAYS_CALC
@@ -264,8 +266,9 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     If mStandardCode = "SP35" Then
         mSP35GroupGapTolerance = settings.GetRequiredDouble("SLS.Crack.SP35.GroupGapTolerance")
         mSP35RowTolerance = settings.GetRequiredDouble("SLS.Crack.SP35.RowTolerance")
+        mSP35NeighborRatioLimit = settings.GetRequiredDouble("SLS.Crack.SP35.NeighborRatioLimit")
         mSP35RadiusDiameterMode = settings.GetRequiredChoice("SLS.Crack.SP35.RadiusDiameterMode", Array("Max", "Min", "Average"))
-        mSP35InteractionRadiusMode = settings.GetRequiredChoice("SLS.Crack.SP35.InteractionRadiusMode", Array("D3", "D5", "D6"))
+        mSP35InteractionRadiusMode = settings.GetRequiredChoice("SLS.Crack.SP35.InteractionRadiusMode", Array("3d", "5d", "6d"))
         mSP35RebarProfile = settings.GetRequiredChoice("SLS.Crack.SP35.RebarProfile", Array("Periodic", "Smooth"))
     Else
         mPsiMode = settings.GetRequiredString("SLS.Crack.PsiMode")
@@ -299,7 +302,7 @@ Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal secti
     central = mCentralTensionBranch Or (gradient <= NEAR_ZERO_STRAIN And currentState.Epsilon0 > NEAR_ZERO_STRAIN)
     Set mSP35Data = New CSP35CrackData
     mSP35Data.Prepare section, currentState.Epsilon0, currentState.KappaX, currentState.KappaY, steelMaterial, _
-        mSP35GroupGapTolerance, mSP35RowTolerance, mSP35RadiusDiameterMode, mSP35InteractionRadiusMode, central
+        mSP35GroupGapTolerance, mSP35RowTolerance, mSP35RadiusDiameterMode, mSP35InteractionRadiusMode, central, mSP35NeighborRatioLimit
     mCentralTensionBranch = central
 
     ' Формула получает только площадь, реальные диаметры, напряжение и Es.
@@ -770,11 +773,11 @@ End Function
 ' подготовке области, а не этой численной операции.
 Public Function SP35InteractionMultiplierFromData(ByVal radiusMode As String) As Double
     Select Case LCase$(Trim$(radiusMode))
-        Case "d3": SP35InteractionMultiplierFromData = 3#
-        Case "d5": SP35InteractionMultiplierFromData = 5#
-        Case "d6": SP35InteractionMultiplierFromData = 6#
+        Case "3d": SP35InteractionMultiplierFromData = 3#
+        Case "5d": SP35InteractionMultiplierFromData = 5#
+        Case "6d": SP35InteractionMultiplierFromData = 6#
         Case Else
-            Err.Raise vbObjectError + 3785, "CCrackWidthCalculator", "Радиус взаимодействия СП 35 должен быть D3, D5 или D6."
+            Err.Raise vbObjectError + 3785, "CCrackWidthCalculator", "Радиус взаимодействия СП 35 должен быть 3d, 5d или 6d."
     End Select
 End Function
 
@@ -1240,15 +1243,17 @@ End Sub
 Private Sub ValidateSP35Settings(ByVal settings As CSystemSettingsReader)
     If mSP35GroupGapTolerance < 0# Then RaiseInvalidSetting 3787, "SLS.Crack.SP35.GroupGapTolerance", "Чистый зазор не может быть отрицательным.", "Введите неотрицательную длину в единицах INPUT Length.", settings
     If mSP35RowTolerance < 0# Then RaiseInvalidSetting 3788, "SLS.Crack.SP35.RowTolerance", "Допуск ряда не может быть отрицательным.", "Введите неотрицательную длину в единицах INPUT Length.", settings
+    If mSP35NeighborRatioLimit < 0# Or mSP35NeighborRatioLimit > 1# Then _
+        RaiseInvalidSetting 3792, "SLS.Crack.SP35.NeighborRatioLimit", "Порог отношения t/L должен быть от 0 до 1.", "Введите число от 0 до 1; начальное значение 0.2.", settings
     Select Case LCase$(Trim$(mSP35RadiusDiameterMode))
         Case "max": mSP35RadiusDiameterMode = "Max"
         Case "min": mSP35RadiusDiameterMode = "Min"
         Case "average": mSP35RadiusDiameterMode = "Average"
         Case Else: RaiseInvalidSetting 3789, "SLS.Crack.SP35.RadiusDiameterMode", "Неизвестный способ выбора диаметра радиуса.", "Выберите Max, Min или Average.", settings
     End Select
-    Select Case UCase$(Trim$(mSP35InteractionRadiusMode))
-        Case "D3", "D5", "D6": mSP35InteractionRadiusMode = UCase$(Trim$(mSP35InteractionRadiusMode))
-        Case Else: RaiseInvalidSetting 3790, "SLS.Crack.SP35.InteractionRadiusMode", "Неизвестный радиус взаимодействия.", "Выберите D3, D5 или D6.", settings
+    Select Case LCase$(Trim$(mSP35InteractionRadiusMode))
+        Case "3d", "5d", "6d": mSP35InteractionRadiusMode = LCase$(Trim$(mSP35InteractionRadiusMode))
+        Case Else: RaiseInvalidSetting 3790, "SLS.Crack.SP35.InteractionRadiusMode", "Неизвестный радиус взаимодействия.", "Выберите 3d, 5d или 6d.", settings
     End Select
     Select Case LCase$(Trim$(mSP35RebarProfile))
         Case "periodic": mSP35RebarProfile = "Periodic"
@@ -1487,6 +1492,9 @@ Public Property Let SP35GroupGapTolerance(ByVal value As Double)
 End Property
 Public Property Let SP35RowTolerance(ByVal value As Double)
     mSP35RowTolerance = value
+End Property
+Public Property Let SP35NeighborRatioLimit(ByVal value As Double)
+    mSP35NeighborRatioLimit = value
 End Property
 Public Property Let SP35RadiusDiameterMode(ByVal value As String)
     mSP35RadiusDiameterMode = value

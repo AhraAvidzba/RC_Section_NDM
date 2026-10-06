@@ -95,7 +95,7 @@ Public Function CircleRegion(ByVal centerX As Double, ByVal centerY As Double, B
 End Function
 
 ' Принимает неупорядоченные аналитические ребра достоверного контура.
-' Проверяет замкнутость, вырождение, пересечения и дубли; роль каждого кольца
+' Проверяет замкнутость, вырождение, пересечения и дубли; роль каждого контура
 ' определяется вложенностью, а не направлением обхода исходного объекта.
 ' Поэтому Region с отверстиями и полилинии используют один topology-контракт.
 Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
@@ -113,7 +113,7 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
     Dim x As Double, y As Double, depth As Long, area As Double
     For loopID = 1 To loops
         area = SignedLoopArea(ordered, count, loopID)
-        If Abs(area) <= QUERY_TOLERANCE Then GeometryError "Заданный контур содержит кольцо нулевой площади."
+        If Abs(area) <= QUERY_TOLERANCE Then GeometryError "Заданная геометрия содержит замкнутый контур нулевой площади."
         For i = 1 To count
             If ordered(i).LoopID = loopID Then
                 EdgePoint ordered(i), 0.5, x, y
@@ -127,7 +127,7 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
                 For j = 1 To count
                     If ordered(j).LoopID = otherLoop Then AppendEdge oneLoop, oneCount, ordered(j)
                 Next j
-                ' Временное кольцо должно иметь положительный winding для
+                ' Временный замкнутый контур должен иметь положительный winding для
                 ' геометрической проверки, независимо от исходного обхода.
                 If SignedLoopArea(ordered, count, otherLoop) < 0# Then
                     For j = 1 To oneCount: ReverseEdge oneLoop(j): Next j
@@ -144,7 +144,7 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
     Set BoundaryRegion = MakeRegion(ordered, count, source, 0)
 End Function
 
-' Проверяет, что отдельные аналитические кольца простые и не касаются друг
+' Проверяет, что отдельные аналитические контуры простые и не касаются друг
 ' друга. Такое касание не исправляется молча при импорте; пользователь
 ' получает ошибку исходного контура до публикации новой модели.
 Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As Long)
@@ -161,13 +161,13 @@ Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As 
             EdgeIntersectionCuts edges(i), edges(j), cuts, cutCount
             For k = 1 To cutCount
                 If Not adjacent Or (cuts(k) > PARAM_TOLERANCE And cuts(k) < 1# - PARAM_TOLERANCE) Then _
-                    GeometryError "Заданный контур содержит пересечение, касание независимых колец или дублирующее ребро."
+                    GeometryError "Заданная геометрия содержит пересечение, касание независимых замкнутых контуров или дублирующее ребро."
             Next k
             Erase cuts: cutCount = 0
             EdgeIntersectionCuts edges(j), edges(i), cuts, cutCount
             For k = 1 To cutCount
                 If Not adjacent Or (cuts(k) > PARAM_TOLERANCE And cuts(k) < 1# - PARAM_TOLERANCE) Then _
-                    GeometryError "Заданный контур содержит пересечение, касание независимых колец или дублирующее ребро."
+                    GeometryError "Заданная геометрия содержит пересечение, касание независимых замкнутых контуров или дублирующее ребро."
             Next k
             ' Полностью совпадающие сегменты могут иметь только концевые
             ' пересечения. Проверяем их середины без аппроксимации дуг.
@@ -180,14 +180,71 @@ Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As 
     Next i
 End Sub
 
-' Возвращает семантическую роль готового ориентированного кольца. Решение
+' Возвращает семантическую роль готового ориентированного контура. Решение
 ' принимает общий движок; importer/writer не угадывают роль по тексту ошибки.
 Public Function LoopIsOpening(ByVal region As CConcreteRegion, ByVal loopID As Long) As Boolean
     RequireRegion region
-    If loopID < 1 Or loopID > region.LoopCount Then GeometryError "Номер кольца вне допустимого диапазона."
+    If loopID < 1 Or loopID > region.LoopCount Then GeometryError "Номер замкнутого контура вне допустимого диапазона."
     Dim edges() As TRegionEdge, count As Long
     region.CopyEdges edges, count
     LoopIsOpening = (SignedLoopArea(edges, count, loopID) < 0#)
+End Function
+
+' Выбирает связную часть материала, содержащую заданную точку. Сохраняет
+' ее настоящие прямые/дуговые границы и отверстия, не продолжая вырезы
+' за их геометрические пределы. Отдельная часть внутри отверстия относится
+' к собственному наружному контуру и не присоединяется к выбранной части.
+Public Function ConnectedRegionAtPoint(ByVal region As CConcreteRegion, ByVal x As Double, _
+        ByVal y As Double) As CConcreteRegion
+    RequireRegion region
+    Dim edges() As TRegionEdge, count As Long, selected() As TRegionEdge, selectedCount As Long
+    Dim outerLoop As Long, loopID As Long, i As Long, keepLoop As Boolean, sampleX As Double, sampleY As Double
+    region.CopyEdges edges, count
+    If ContainsRaw(edges, count, x, y, True) Then _
+        outerLoop = ContainingOuterLoop(edges, count, region.LoopCount, x, y)
+    If outerLoop > 0 Then
+        For loopID = 1 To region.LoopCount
+            keepLoop = (loopID = outerLoop)
+            If SignedLoopArea(edges, count, loopID) < 0# Then
+                For i = 1 To count
+                    If edges(i).LoopID = loopID Then
+                        EdgePoint edges(i), 0.5, sampleX, sampleY
+                        Exit For
+                    End If
+                Next i
+                keepLoop = (ContainingOuterLoop(edges, count, region.LoopCount, sampleX, sampleY) = outerLoop)
+            End If
+            If keepLoop Then
+                For i = 1 To count
+                    If edges(i).LoopID = loopID Then AppendEdge selected, selectedCount, edges(i)
+                Next i
+            End If
+        Next loopID
+    End If
+    Set ConnectedRegionAtPoint = MakeRegion(selected, selectedCount, region.Source, region.SectionRevision)
+    ConnectedRegionAtPoint.SetOwner region.OwnerID, region.Standard, region.AnchorID
+End Function
+
+' Находит ближайший охватывающий наружный контур по вложенности. Наименьшая
+' положительная площадь отличает отдельную бетонную часть внутри проема
+' от окружающего бетона и правильно назначает владельца ее отверстиям.
+Private Function ContainingOuterLoop(ByRef edges() As TRegionEdge, ByVal count As Long, _
+        ByVal loopCount As Long, ByVal x As Double, ByVal y As Double) As Long
+    Dim loopID As Long, i As Long, area As Double, bestArea As Double
+    Dim oneLoop() As TRegionEdge, oneCount As Long
+    bestArea = 1E+100
+    For loopID = 1 To loopCount
+        area = SignedLoopArea(edges, count, loopID)
+        If area > QUERY_TOLERANCE And area < bestArea Then
+            Erase oneLoop: oneCount = 0
+            For i = 1 To count
+                If edges(i).LoopID = loopID Then AppendEdge oneLoop, oneCount, edges(i)
+            Next i
+            If ContainsRaw(oneLoop, oneCount, x, y, True) Then
+                ContainingOuterLoop = loopID: bestArea = area
+            End If
+        End If
+    Next loopID
 End Function
 
 ' Объединяет независимые достоверные объекты материала, сохраняя отверстия
@@ -238,7 +295,7 @@ Private Function BoundariesMeet(ByVal first As CConcreteRegion, ByVal second As 
 End Function
 
 ' Возвращает True, если хотя бы один материальный участок первой области
-' находится во второй. Проба слева от точного ребра учитывает также кольца
+' находится во второй. Проба слева от точного ребра учитывает также контуры
 ' пустот, не используя центр тяжести, который может лежать вне материала.
 Private Function MaterialSampleInside(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean
     Dim edges() As TRegionEdge, count As Long, i As Long, x As Double, y As Double, tx As Double, ty As Double, length As Double
@@ -251,7 +308,7 @@ Private Function MaterialSampleInside(ByVal first As CConcreteRegion, ByVal seco
     Next i
 End Function
 
-' После проверки отсутствия пересечений требует принадлежность всех колец
+' После проверки отсутствия пересечений требует принадлежность всех замкнутых контуров
 ' opening материалу. Проверка каждого сегмента также охватывает несколько
 ' независимых компонент и не опирается на одну произвольную контрольную точку.
 Private Function AllMaterialSamplesInside(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean
@@ -610,7 +667,7 @@ End Function
 ' Запрашивает пары границ материала на равномерных прямых внутри заданной
 ' полосы. Выбирается только интервал, содержащий опорную плоскость: переход
 ' через opening к дальней стенке запрещен. Возвращает [найдено, Qx,Qy,Px,Py];
-' число проб задает потребитель. Эти точки не заменяют точные кольца области.
+' число проб задает потребитель. Эти точки не заменяют точные контуры области.
 Public Function SampleMaterialIntervals(ByVal region As CConcreteRegion, ByVal nx As Double, ByVal ny As Double, _
         ByVal seedPlane As Double, ByVal tMin As Double, ByVal tMax As Double, ByVal probeCount As Long) As Variant
     RequireRegion region
@@ -827,7 +884,7 @@ NextEdge:
 End Sub
 
 ' Упаковывает только замкнутую конечную границу. Площадь считается по формуле
-' Грина с аналитическим вкладом дуг и signed вкладом внутренних колец.
+' Грина с аналитическим вкладом дуг и signed вкладом внутренних контуров отверстий.
 Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal source As String, ByVal revision As Long) As CConcreteRegion
     Dim ordered() As TRegionEdge, loopCount As Long, area As Double, i As Long
@@ -880,7 +937,7 @@ Private Sub StitchLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef
                 LSet current = edges(candidate)
                 If reverseCandidate Then ReverseEdge current
                 used(candidate) = True
-                If position > count Then GeometryError "Нарушена топология замкнутых колец."
+                If position > count Then GeometryError "Нарушена топология замкнутых контуров."
             Loop
         End If
     Next i
@@ -903,7 +960,7 @@ Private Sub OrientLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal
     CopyArray ordered, count, edges
 End Sub
 
-' Возвращает signed площадь одного кольца, не теряя аналитический вклад дуг.
+' Возвращает signed площадь одного замкнутого контура, не теряя аналитический вклад дуг.
 Private Function SignedLoopArea(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal loopID As Long) As Double
     Dim i As Long
     For i = 1 To count
@@ -928,23 +985,46 @@ End Function
 ' технические массивы допустимы при нормализации: внутренние ребра сокращаются.
 Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal x As Double, ByVal y As Double, ByVal includeBoundary As Boolean) As Boolean
-    Dim i As Long, u As Double, winding As Long, crossX As Double, dy As Double
+    Dim i As Long, u As Double, winding As Long, crossX As Double, dy As Double, f1 As Double, f2 As Double
     Dim cuts() As Double, cutCount As Long, j As Long, px As Double, py As Double, tx As Double, ty As Double
+    Dim countedStart As Boolean, countedEnd As Boolean
     For i = 1 To count
         If includeBoundary Then
             If PointParameter(edges(i), x, y, u) Then ContainsRaw = True: Exit Function
         End If
         If Abs(edges(i).Sweep) <= PARAM_TOLERANCE Then
-            If (edges(i).Y1 <= y And edges(i).Y2 > y) Or (edges(i).Y2 <= y And edges(i).Y1 > y) Then
-                crossX = edges(i).X1 + (y - edges(i).Y1) * (edges(i).X2 - edges(i).X1) / (edges(i).Y2 - edges(i).Y1)
+            ' Стык с дугой должен считаться одной вершиной: координата конца
+            ' после sin/cos может отличаться от уровня луча на машинный шум.
+            ' Используем тот же линейный допуск, что аналитический arc query.
+            f1 = edges(i).Y1 - y: f2 = edges(i).Y2 - y
+            If Abs(f1) <= QUERY_TOLERANCE Then f1 = 0#
+            If Abs(f2) <= QUERY_TOLERANCE Then f2 = 0#
+            If (f1 <= 0# And f2 > 0#) Or (f2 <= 0# And f1 > 0#) Then
+                crossX = edges(i).X1 - f1 * (edges(i).X2 - edges(i).X1) / (f2 - f1)
                 If crossX > x Then winding = winding + Sgn(edges(i).Y2 - edges(i).Y1)
             End If
         Else
             Erase cuts: cutCount = 0
             HalfPlaneCuts edges(i), 0#, 1#, y, cuts, cutCount
+            ' Угловой параметр может выйти за [0,1] при луче в пределах
+            ' линейного допуска от конца дуги. Сохраняем саму общую вершину.
+            If Abs(edges(i).Y1 - y) <= QUERY_TOLERANCE Then AddScalar cuts, cutCount, 0#
+            If Abs(edges(i).Y2 - y) <= QUERY_TOLERANCE Then AddScalar cuts, cutCount, 1#
+            countedStart = False: countedEnd = False
             For j = 1 To cutCount
                 u = cuts(j)
                 If u >= 0# And u <= 1# Then
+                    ' Близкий к общей вершине arc-параметр согласуется с
+                    ' прямым ребром по тому же линейному допуску, не по углу.
+                    If u * EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 0#
+                    If (1# - u) * EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 1#
+                    If u = 0# Then
+                        If countedStart Then GoTo NextCrossing
+                        countedStart = True
+                    ElseIf u = 1# Then
+                        If countedEnd Then GoTo NextCrossing
+                        countedEnd = True
+                    End If
                     EdgePoint edges(i), u, px, py
                     EdgeTangent edges(i), u, tx, ty
                     dy = ty
@@ -957,6 +1037,7 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
                                 (u >= 1# - PARAM_TOLERANCE And dy < 0#) Then winding = winding + Sgn(dy)
                     End If
                 End If
+NextCrossing:
             Next j
         End If
     Next i
@@ -1154,7 +1235,7 @@ Private Sub AddLine(ByRef edges() As TRegionEdge, ByRef count As Long, ByVal x1 
     If EdgeLength(edge) > QUERY_TOLERANCE Then AppendEdge edges, count, edge
 End Sub
 
-' Добавляет четыре точных четверти окружности с заданной ролью кольца.
+' Добавляет четыре точных четверти окружности с заданной ролью замкнутого контура.
 Private Sub AddCircle(ByRef edges() As TRegionEdge, ByRef count As Long, ByVal cx As Double, _
         ByVal cy As Double, ByVal radius As Double, ByVal opening As Boolean)
     If radius <= QUERY_TOLERANCE Then GeometryError "Радиус окружности контура должен быть положительным."

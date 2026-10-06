@@ -42,9 +42,11 @@ Private mAnchorGroup() As Long, mStressBar() As Long
 Private mBetaDiameterSum() As Double
 Private mSideDiameter() As Double, mRowDiameter() As Double
 Private mSideRadius() As Double, mNormalRadius() As Double
+Private mLeftDistance() As Double, mRightDistance() As Double ' Заданные боковые границы до пересечения с бетоном, мм.
 Private mReferenceRow() As Long, mRowCount() As Long
 Private mNx As Double, mNy As Double, mNeutralN As Double
 Private mGapTolerance As Double, mRowTolerance As Double
+Private mNeighborRatioLimit As Double ' Порог проекции t / полного расстояния L ближайшего соседа.
 Private mDiameterMode As String, mRadiusMode As String
 Private mCentralTension As Boolean
 Private mFrozen As Boolean ' Опубликованный снимок нельзя повторно подготовить или изменить.
@@ -56,12 +58,14 @@ Private mCandidateRadius() As Double, mCandidatePsi() As Double, mCandidateWidth
 ' центральном растяжении создается одна общая область без искусственной Н.О.
 Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
         ByVal steelMaterial As Object, ByVal groupGapTolerance As Double, ByVal rowTolerance As Double, _
-        ByVal diameterMode As String, ByVal radiusMode As String, ByVal centralTension As Boolean)
+        ByVal diameterMode As String, ByVal radiusMode As String, ByVal centralTension As Boolean, _
+        Optional ByVal neighborRatioLimit As Double = 0.2)
     AssertWritable
     ResetData
     If section Is Nothing Then InvalidData "Не передана модель сечения для СП 35."
     If steelMaterial Is Nothing Then InvalidData "Не передана диаграмма арматуры текущего НДС."
     If groupGapTolerance < 0# Or rowTolerance < 0# Then InvalidData "Допуски групп и рядов СП 35 должны быть неотрицательными."
+    If neighborRatioLimit < 0# Or neighborRatioLimit > 1# Then InvalidData "Порог отношения t/L для СП 35 должен быть от 0 до 1."
     Select Case diameterMode
         Case "Max", "Min", "Average"
         Case Else: InvalidData "RadiusDiameterMode СП 35 должен быть Max, Min или Average."
@@ -72,6 +76,7 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     Set mQuery = New CSectionGeometryQuery: mQuery.Initialize section
     Set mDomain = mQuery.ConcreteDomain
     mGapTolerance = groupGapTolerance: mRowTolerance = rowTolerance
+    mNeighborRatioLimit = neighborRatioLimit
     mDiameterMode = diameterMode: mRadiusMode = radiusMode: mCentralTension = centralTension
     If section.RebarCount = 0 Then Exit Sub
     Dim gradient As Double
@@ -99,6 +104,7 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     ReDim mBetaDiameterSum(1 To mCandidateCount)
     ReDim mSideDiameter(1 To mCandidateCount): ReDim mRowDiameter(1 To mCandidateCount)
     ReDim mSideRadius(1 To mCandidateCount): ReDim mNormalRadius(1 To mCandidateCount)
+    ReDim mLeftDistance(1 To mCandidateCount): ReDim mRightDistance(1 To mCandidateCount)
     ReDim mReferenceRow(1 To mCandidateCount): ReDim mRowCount(1 To mCandidateCount)
     ReDim mCandidateRadius(1 To mCandidateCount): ReDim mCandidatePsi(1 To mCandidateCount): ReDim mCandidateWidth(1 To mCandidateCount)
     If centralTension Then
@@ -125,6 +131,7 @@ Private Sub ResetData()
     Erase mGroupN: Erase mGroupT: Erase mGroupArea: Erase mGroupBars: Erase mGroupRow
     Erase mZones: Erase mRows: Erase mAnchorGroup: Erase mStressBar: Erase mBetaDiameterSum
     Erase mSideDiameter: Erase mRowDiameter: Erase mSideRadius: Erase mNormalRadius
+    Erase mLeftDistance: Erase mRightDistance
     Erase mReferenceRow: Erase mRowCount
     mNx = 0#: mNy = 0#: mNeutralN = 0#: mCentralTension = False
 End Sub
@@ -206,9 +213,10 @@ Private Function GroupRoot(ByRef parent() As Long, ByVal index As Long) As Long
     GroupRoot = root
 End Function
 
-' Назначает ряды от Н.О. наружу. Порядок стабилен по n/t/ID; полный размах
-' координат одного ряда не превышает RowTolerance, без цепочного слияния
-' нескольких далеких рядов. При центральном растяжении Н.О. нет: один ряд.
+' Сохраняет прежнее разбиение на ряды по n/t/ID и полному размаху RowTolerance,
+' без цепочного слияния далеких рядов. Нумерует готовые ряды от растянутой
+' бетонной границы к Н.О.: наружный ряд 1, ближайший к Н.О. - последний.
+' При центральном растяжении Н.О. нет: один общий ряд.
 Private Sub AssignRows(ByRef included() As Boolean, ByRef rows() As Long, ByRef rowCount As Long)
     Dim order() As Long, count As Long, i As Long, j As Long, group As Long, firstN As Double
     ReDim rows(1 To mGroupCount): ReDim order(1 To mGroupCount): rowCount = 0
@@ -230,6 +238,10 @@ Private Sub AssignRows(ByRef included() As Boolean, ByRef rows() As Long, ByRef 
         End If
         rows(group) = rowCount
     Next i
+    ' Меняем только номера, не состав рядов и не выбор физического опорного ряда.
+    For i = 1 To mGroupCount
+        If included(i) Then rows(i) = rowCount + 1 - rows(i)
+    Next i
 End Sub
 
 ' Сравнивает центры для воспроизводимого порядка рядов и групп одного ряда.
@@ -244,26 +256,24 @@ Private Function GroupBefore(ByVal first As Long, ByVal second As Long) As Boole
 End Function
 
 ' Задает нормативное окно вокруг якоря и запрашивает общую геометрию.
-' Предварительно исключает арматуру противоположной стенки, затем выбирает
-' опорный ряд по реальным As и повторно проверяет центры в конечной области.
+' Сначала задает две боковые нормали по ближайшим группам и t/L, независимо
+' от рядов и бетонных граней. В готовой полосе сохраняет прежнюю связанную
+' стенку, опорный ряд по As и внутреннее отсечение по радиусу/нейтральной линии.
 Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVal formula As CCrackWidthCalculator)
-    Dim wall As CConcreteRegion, region As CConcreteRegion, i As Long, left As Double, right As Double, distance As Double
+    Dim wall As CConcreteRegion, region As CConcreteRegion, i As Long, left As Double, right As Double
     Dim included() As Boolean, rows() As Long, rowCount As Long, rowAreas() As Double, rowN() As Double
     Dim referenceRow As Long, referenceGroup As Long, incomplete As Boolean, lowerN As Double, minN As Double, maxN As Double
     mAnchorGroup(anchor) = anchor: mStressBar(anchor) = MaximumStressBar(anchor)
-    Set wall = mQuery.MaterialRegionThroughPlane(mDomain, mNx, mNy, mGroupN(anchor))
     mSideDiameter(anchor) = ReferenceDiameterForGroup(anchor)
     mSideRadius(anchor) = multiplier * mSideDiameter(anchor)
-    left = mSideRadius(anchor): right = left
-    For i = 1 To mGroupCount
-        If i <> anchor And mGroupRow(i) = mGroupRow(anchor) Then
-            If mQuery.ContainsPoint(wall, mGroupX(i), mGroupY(i)) Then
-                distance = mGroupT(i) - mGroupT(anchor)
-                If distance < -LENGTH_TOL Then left = MinValue(left, -distance / 2#)
-                If distance > LENGTH_TOL Then right = MinValue(right, distance / 2#)
-            End If
-        End If
-    Next i
+    SideDistances anchor, mSideRadius(anchor), left, right
+    mLeftDistance(anchor) = left: mRightDistance(anchor) = right
+    Set wall = mQuery.ConnectedRegionAtPoint(mDomain, mGroupX(anchor), mGroupY(anchor))
+    ' Сначала задаем боковые границы. Отверстия вычитаются только на своих
+    ' местах; другую стенку исключаем лишь при разрыве материала в полосе.
+    mQuery.ProjectionBounds wall, mNx, mNy, minN, maxN
+    Set wall = mQuery.ClipWindow(wall, mNx, mNy, minN, maxN, mGroupT(anchor) - left, mGroupT(anchor) + right)
+    Set wall = mQuery.ConnectedRegionAtPoint(wall, mGroupX(anchor), mGroupY(anchor))
     ReDim included(1 To mGroupCount)
     For i = 1 To mGroupCount
         included(i) = (mGroupT(i) >= mGroupT(anchor) - left - LENGTH_TOL And _
@@ -279,11 +289,11 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVa
         End If
     Next i
     For i = 1 To rowCount: rowN(i) = rowN(i) / rowAreas(i): Next i
-    referenceRow = 1: incomplete = (rowCount > 1)
-    For i = 2 To rowCount
-        If rowAreas(1) >= 0.5 * rowAreas(i) Then incomplete = False
+    referenceRow = rowCount: incomplete = (rowCount > 1)
+    For i = 1 To rowCount - 1
+        If rowAreas(rowCount) >= 0.5 * rowAreas(i) Then incomplete = False
     Next i
-    If incomplete Then referenceRow = 2
+    If incomplete Then referenceRow = rowCount - 1
     For i = 1 To mGroupCount
         If included(i) And rows(i) = referenceRow Then referenceGroup = i: Exit For
     Next i
@@ -291,8 +301,8 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVa
     mNormalRadius(anchor) = multiplier * mRowDiameter(anchor)
     lowerN = rowN(referenceRow) - mNormalRadius(anchor)
     If lowerN < mNeutralN Then lowerN = mNeutralN
-    mQuery.ProjectionBounds mDomain, mNx, mNy, minN, maxN
     Set region = mQuery.ClipWindow(wall, mNx, mNy, lowerN, maxN, mGroupT(anchor) - left, mGroupT(anchor) + right)
+    Set region = mQuery.ConnectedRegionAtPoint(region, mGroupX(anchor), mGroupY(anchor))
     For i = 1 To mGroupCount
         If included(i) Then included(i) = mQuery.ContainsPoint(region, mGroupX(i), mGroupY(i))
     Next i
@@ -312,6 +322,35 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVa
         mGroupT(anchor) - left, mGroupT(anchor) + right, 5)
     Set mZones(anchor) = region
     StoreIncludedGroups anchor, included, rows, rowCount, formula
+End Sub
+
+' На каждой стороне выбирает ближайшую группу по полному расстоянию L.
+' При t/L ниже порога остается весь радиус r; иначе граница не дальше t/2.
+' Совпадающие проекции не являются левым/правым соседом. RowTolerance,
+' контуры и отверстия не участвуют в выборе и не сдвигают готовые границы.
+Private Sub SideDistances(ByVal anchor As Long, ByVal radius As Double, ByRef left As Double, ByRef right As Double)
+    Dim i As Long, spacing As Double, distanceSquared As Double, leftSquared As Double, rightSquared As Double
+    Dim leftSpacing As Double, rightSpacing As Double
+    left = radius: right = radius: leftSquared = 1E+100: rightSquared = 1E+100
+    For i = 1 To mGroupCount
+        If i <> anchor Then
+            spacing = mGroupT(i) - mGroupT(anchor)
+            distanceSquared = (mGroupX(i) - mGroupX(anchor)) ^ 2 + (mGroupY(i) - mGroupY(anchor)) ^ 2
+            If spacing < -LENGTH_TOL And distanceSquared < leftSquared Then
+                leftSquared = distanceSquared: leftSpacing = -spacing
+            ElseIf spacing > LENGTH_TOL And distanceSquared < rightSquared Then
+                rightSquared = distanceSquared: rightSpacing = spacing
+            End If
+        End If
+    Next i
+    ' Равенство порогу относится к ограниченной ветке, без допуска,
+    ' подменяющего пользовательский коэффициент или геометрический шаг.
+    If leftSpacing > 0# Then
+        If leftSpacing / Sqr(leftSquared) >= mNeighborRatioLimit Then left = MinValue(radius, leftSpacing / 2#)
+    End If
+    If rightSpacing > 0# Then
+        If rightSpacing / Sqr(rightSquared) >= mNeighborRatioLimit Then right = MinValue(radius, rightSpacing / 2#)
+    End If
 End Sub
 
 ' Сохраняет разреженную таблицу групп/рядов конкретной конечной области.
@@ -427,6 +466,14 @@ End Property
 Public Property Get CandidateSideRadius(ByVal index As Long) As Double
     CheckCandidate index: CandidateSideRadius = mSideRadius(index)
 End Property
+' Возвращают заданные боковые расстояния до пересечения с бетоном. Они не
+' подменяются расстоянием до ближайшей грани готовой области или отверстия.
+Public Property Get CandidateLeftDistance(ByVal index As Long) As Double
+    CheckCandidate index: CandidateLeftDistance = mLeftDistance(index)
+End Property
+Public Property Get CandidateRightDistance(ByVal index As Long) As Double
+    CheckCandidate index: CandidateRightDistance = mRightDistance(index)
+End Property
 Public Property Get CandidateNormalRadius(ByVal index As Long) As Double
     CheckCandidate index: CandidateNormalRadius = mNormalRadius(index)
 End Property
@@ -483,6 +530,9 @@ Public Property Get GroupGapTolerance() As Double
 End Property
 Public Property Get RowTolerance() As Double
     RowTolerance = mRowTolerance
+End Property
+Public Property Get NeighborRatioLimit() As Double
+    NeighborRatioLimit = mNeighborRatioLimit
 End Property
 Public Property Get RadiusDiameterMode() As String
     RadiusDiameterMode = mDiameterMode

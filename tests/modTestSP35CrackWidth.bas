@@ -105,7 +105,7 @@ Private Sub TestReadyStatePipeline()
     CheckNear "SP35.result.allCandidateWidths", data.CandidateCrackWidth(1), 116# / 200000# * 1.5 * Sqr(84.5) * 10#
     Dim number As Long
     On Error Resume Next
-    data.Prepare section, 0.0005, 0#, 0#, LinearSteel(), 10#, 50#, "Max", "D6", True
+    data.Prepare section, 0.0005, 0#, 0#, LinearSteel(), 10#, 50#, "Max", "6d", True
     number = Err.Number: Err.Clear
     On Error GoTo 0
     Check "SP35.result.dataFrozen", number = vbObjectError + 5511
@@ -243,8 +243,9 @@ Public Function RunSP35WorkbookTests() As String
     SetWorkbookTestSetting settingsRange, "SLS.Crack.Code", "SP35"
     SetWorkbookTestSetting settingsRange, "SLS.Crack.SP35.GroupGapTolerance", 10#
     SetWorkbookTestSetting settingsRange, "SLS.Crack.SP35.RowTolerance", 50#
+    SetWorkbookTestSetting settingsRange, "SLS.Crack.SP35.NeighborRatioLimit", 0.2
     SetWorkbookTestSetting settingsRange, "SLS.Crack.SP35.RadiusDiameterMode", "Max"
-    SetWorkbookTestSetting settingsRange, "SLS.Crack.SP35.InteractionRadiusMode", "D6"
+    SetWorkbookTestSetting settingsRange, "SLS.Crack.SP35.InteractionRadiusMode", "6d"
     SetWorkbookTestSetting settingsRange, "SLS.Crack.SP35.RebarProfile", "Periodic"
     SetWorkbookTestSetting settingsRange, "SLS.Crack.Allowable", 0.25
     SetWorkbookTestSetting settingsRange, "Calculation.ZeroMomentPerDepth", 0#
@@ -371,9 +372,9 @@ Private Sub TestNumericFormula(ByVal formula As CCrackWidthCalculator)
     CheckNear "SP35.beta.double", formula.SP35GroupBetaFromData(2), 0.85
     CheckNear "SP35.beta.triple", formula.SP35GroupBetaFromData(3), 0.75
     CheckNear "NDM.beta.four", formula.SP35GroupBetaFromData(4), 0.75
-    CheckNear "SP35.radius.D3", formula.SP35InteractionMultiplierFromData("D3"), 3#
-    CheckNear "SP35.radius.D5", formula.SP35InteractionMultiplierFromData("D5"), 5#
-    CheckNear "SP35.radius.D6", formula.SP35InteractionMultiplierFromData("D6"), 6#
+    CheckNear "SP35.radius.3d", formula.SP35InteractionMultiplierFromData("3d"), 3#
+    CheckNear "SP35.radius.5d", formula.SP35InteractionMultiplierFromData("5d"), 5#
+    CheckNear "SP35.radius.6d", formula.SP35InteractionMultiplierFromData("6d"), 6#
 End Sub
 
 ' Сверяет относительные объединения, обозначения и оформление трех картинок ТЗ.
@@ -497,7 +498,7 @@ Private Sub AddBar(ByVal section As CSectionModel, ByVal x As Double, ByVal y As
 End Sub
 
 ' ДЛЯ ТЕСТОВ: сохраняет отдельный прямоугольный проем с собственным ключом
-' кольца. Несколько проемов никогда не объединяются общим идентификатором.
+' контура. Несколько проемов никогда не объединяются общим идентификатором.
 Private Sub AddOpening(ByVal section As CSectionModel, ByVal name As String, _
         ByVal xMin As Double, ByVal yMin As Double, ByVal xMax As Double, ByVal yMax As Double)
     Dim x As Variant, y As Variant, i As Long, j As Long
@@ -516,7 +517,7 @@ Private Sub TestConnectedGroups()
     AddBar section, -25#, 350#, 20#: AddBar section, 0#, 350#, 20#: AddBar section, 25#, 350#, 20#
     AddBar section, 0#, 50#, 20#: AddBar section, 0#, 100#, 20#
     Set data = New CSP35CrackData
-    data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "D6", False
+    data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "6d", False
     Check "SP35.groups.transitive", data.GroupCount = 1 And data.GroupBarCount(1) = 3
     Check "SP35.groups.noCompressedOrZero", data.BarGroup(4) = 0 And data.BarGroup(5) = 0
     CheckNear "SP35.groups.centerX", data.GroupX(1), 0#
@@ -527,7 +528,7 @@ Private Sub TestConnectedGroups()
     CheckNear "SP35.groups.sameSideAndRowDiameter", data.CandidateSideDiameter(1), data.CandidateRowDiameter(1)
     rows = data.CandidateRows(1)
     Check "SP35.groups.rowTopology", UBound(rows, 1) = 1 And CLng(rows(1, 1)) = 1 And CLng(rows(1, 2)) = 1
-    data.Prepare section, 0.0005, 0#, 0#, material, 10#, 50#, "Max", "D6", True
+    data.Prepare section, 0.0005, 0#, 0#, material, 10#, 50#, "Max", "6d", True
     Check "SP35.central.oneCandidate", data.CandidateCount = 1
     Check "SP35.central.allConcrete", Abs(data.CandidateRegion(1).Area - 160000#) < 0.00001
     Check "SP35.central.allTensionBars", data.GroupCount = 3 And data.CandidateBetaDiameterSum(1) = 85#
@@ -547,7 +548,7 @@ Private Sub TestMixedDiameters()
             Case "Min": expectedDiameter = 10#: expectedArea = 4800#
             Case "Average": expectedDiameter = 15#: expectedArea = 8550#
         End Select
-        data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, CStr(mode), "D3", False
+        data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, CStr(mode), "3d", False
         Check "SP35.mixed." & CStr(mode) & ".oneGroup", data.GroupCount = 1
         CheckNear "SP35.mixed." & CStr(mode) & ".weightedCenter", data.GroupX(1), 20#
         CheckNear "SP35.mixed." & CStr(mode) & ".sideDiameter", data.CandidateSideDiameter(1), expectedDiameter
@@ -568,13 +569,14 @@ Private Sub TestReferenceRows()
         AddBar section, -20#, 350#, 20#: AddBar section, 0#, 350#, 20#: AddBar section, 20#, 350#, 20#
         y = 250#: If mode = 1 Then y = 150#
         AddBar section, 10#, y, 10#
-        data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "D6", False
+        data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "6d", False
         Check "SP35.rows." & CStr(mode) & ".twoGroups", data.GroupCount = 2
         CheckNear "SP35.rows." & CStr(mode) & ".referenceDiameter", data.CandidateRowDiameter(1), 20#
         Check "SP35.rows." & CStr(mode) & ".area", Abs(data.CandidateRegion(1).Area - 40800#) < 0.00001
         rows = data.CandidateRows(1)
         If mode = 0 Then
-            Check "SP35.rows.incomplete.referenceSecond", data.CandidateReferenceRow(1) = 2 And data.CandidateRowCount(1) = 2
+            Check "SP35.rows.incomplete.outerFullReferenceFirst", data.CandidateReferenceRow(1) = 1 And data.CandidateRowCount(1) = 2
+            Check "SP35.rows.outerFirst", CLng(rows(1, 2)) = 1 And CLng(rows(2, 2)) = 2
             CheckNear "SP35.rows.incomplete.sum", data.CandidateBetaDiameterSum(1), 55#
         Else
             Check "SP35.rows.excluded.renumbered", data.CandidateReferenceRow(1) = 1 And data.CandidateRowCount(1) = 1 And UBound(rows, 1) = 1
@@ -584,9 +586,9 @@ Private Sub TestReferenceRows()
     Next mode
 End Sub
 
-' ДЛЯ ТЕСТОВ: два opening независимо ограничивают локальную стенку.
-' Группа за первым проемом не входит в знаменатель верхнего якоря; площадь
-' учитывает также тень второго проема, а не только булево вычитание дырок.
+' ДЛЯ ТЕСТОВ: два opening дают местные вырезы, не удаляя бетон за ними.
+' Если полоса остается связной, нижний ряд участвует по обычным правилам.
+' Сквозной для полосы проем отдельно проверяет исключение другой стенки.
 Private Sub TestMultipleOpeningWalls()
     Dim section As CSectionModel, data As CSP35CrackData, material As CMaterialDiagram
     Dim query As CSectionGeometryQuery, region As CConcreteRegion, i As Long, x As Variant, y As Variant, j As Long
@@ -603,24 +605,89 @@ Private Sub TestMultipleOpeningWalls()
     Next i
     AddBar section, 0#, 350#, 20#: AddBar section, 0#, 150#, 20#
     Set data = New CSP35CrackData
-    data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "D6", False
+    data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "6d", False
     Set region = data.CandidateRegion(1)
-    Check "SP35.openings.twoHoles.area", Abs(region.Area - 36600#) < 0.00001
-    Check "SP35.openings.noOppositeWall", Not query.ContainsPoint(region, 0#, 150#)
+    Check "SP35.openings.twoHoles.area", Abs(region.Area - 64400#) < 0.00001
+    Check "SP35.openings.connectedLowerRow", query.ContainsPoint(region, 0#, 150#)
     Check "SP35.openings.firstHole", Not query.ContainsPoint(region, 0#, 220#)
     Check "SP35.openings.secondHole", Not query.ContainsPoint(region, 90#, 310#)
-    Check "SP35.openings.secondShadow", Not query.ContainsPoint(region, 90#, 260#)
+    Check "SP35.openings.noSecondShadow", query.ContainsPoint(region, 90#, 260#)
     Check "SP35.openings.fiveBaseNormals", region.BoundaryProbeCount = 5
     Dim probes As Variant
     probes = region.BoundaryProbes
     Check "SP35.openings.nearestQ", CBool(probes(3, 1)) And CDbl(probes(3, 3)) >= 250# - 0.000001
     Check "SP35.openings.outerP", CBool(probes(3, 1)) And Abs(CDbl(probes(3, 5)) - 400#) < 0.000001
-    Check "SP35.openings.betweenProbesStillClipped", Not query.ContainsPoint(region, 90#, 310#) And Not query.ContainsPoint(region, 90#, 260#)
-    CheckNear "SP35.openings.actualIncludedSum", data.CandidateBetaDiameterSum(1), 20#
-    data.Prepare section, 0.0005, 0#, 0#, material, 10#, 50#, "Max", "D6", True
+    Check "SP35.openings.betweenProbesLocalCut", Not query.ContainsPoint(region, 90#, 310#) And query.ContainsPoint(region, 90#, 260#)
+    CheckNear "SP35.openings.actualIncludedSum", data.CandidateBetaDiameterSum(1), 40#
+    data.Prepare section, 0.0005, 0#, 0#, material, 10#, 50#, "Max", "6d", True
     Check "SP35.openings.central.fullNetArea", Abs(data.CandidateRegion(1).Area - 152400#) < 0.00001 And data.CandidateRegion(1).LoopCount = 3
     Check "SP35.openings.central.noArtificialProbes", data.CandidateRegion(1).BoundaryProbeCount = 0
     CheckNear "SP35.openings.central.allRebars", data.CandidateBetaDiameterSum(1), 40#
+
+    Set section = RectangularSection
+    AddOpening section, "BARRIER", -130#, 190#, 130#, 250#
+    AddOpening section, "LOCAL", 80#, 300#, 100#, 320#
+    AddBar section, 0#, 350#, 20#: AddBar section, 0#, 150#, 20#
+    data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "6d", False
+    Set region = data.CandidateRegion(1)
+    Check "SP35.openings.barrier.area", Abs(region.Area - 35600#) < 0.00001
+    Check "SP35.openings.barrier.noOppositeWall", Not query.ContainsPoint(region, 0#, 150#)
+    Check "SP35.openings.barrier.noLocalShadow", query.ContainsPoint(region, 90#, 260#)
+    CheckNear "SP35.openings.barrier.onlyUpperRow", data.CandidateBetaDiameterSum(1), 20#
+End Sub
+
+' ДЛЯ ТЕСТОВ: круг с двумя боковыми круглыми отверстиями воспроизводит
+' ошибочное сужение полосы до зазора между ними. Независимый эталон площади
+' состоит из сегмента наружного круга минус два круговых выреза; поворот
+' проверяет, что ограничение не привязано к вертикальным линиям X/Y.
+Private Sub TestCircularLocalOpeningCuts()
+    Dim section As CSectionModel, data As CSP35CrackData, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim angle As Variant, i As Long, candidate As Long, anchor As Long, prefix As String, expected As Double, capArea As Double
+    Dim intervals As Variant, x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double
+    Dim sweep As Double, loopID As Long, arcCount As Long, nx As Double, ny As Double
+    capArea = 900# * (GEOM_PI / 2# - Atn(1# / Sqr(8#))) - 10# * Sqr(800#)
+    expected = 40# * Sqr(8400#) + 10000# * Atn(0.4 / Sqr(0.84)) - 2# * capArea
+    For Each angle In Array(0#, 0.47, -0.81)
+        nx = -Sin(CDbl(angle)): ny = Cos(CDbl(angle))
+        Set section = New CSectionModel
+        section.AddConcreteElement 0#, 0#, GEOM_PI * 10000#, 1
+        section.Contours.AddContourCircle "CONTOUR_CIRCLE", 0#, 0#, 100#
+        section.Contours.AddContourCircle "CAD_OPENING_LEFT", -50# * ny + 40# * nx, 50# * nx + 40# * ny, _
+            30#, vbNullString, "LEFT", "Opening"
+        section.Contours.AddContourCircle "CAD_OPENING_RIGHT", 50# * ny + 40# * nx, -50# * nx + 40# * ny, _
+            30#, vbNullString, "RIGHT", "Opening"
+        AddBar section, 0#, 90#, 20#, CDbl(angle)
+        AddBar section, 0#, 75#, 40# / 6#, CDbl(angle)
+        Set data = New CSP35CrackData: Set query = New CSectionGeometryQuery
+        data.Prepare section, 0#, 0.000002 * ny, 0.000002 * nx, LinearSteel(), 0#, 1#, "Max", "6d", False
+        candidate = 0
+        For i = 1 To data.CandidateCount
+            anchor = data.CandidateAnchorGroup(i)
+            If Abs(nx * data.GroupX(anchor) + ny * data.GroupY(anchor) - 75#) < 0.000001 Then candidate = i
+        Next i
+        prefix = "SP35.localCircle." & CStr(angle)
+        Check prefix & ".innerAnchorFound", candidate > 0
+        Set region = data.CandidateRegion(candidate)
+        Check prefix & ".analyticArea", Abs(region.Area - expected) < 0.00001
+        CheckNear prefix & ".sideRadius", data.CandidateSideRadius(candidate), 40#
+        CheckNear prefix & ".normalRadius", data.CandidateNormalRadius(candidate), 120#
+        Check prefix & ".fullWidthBelowHoles", query.ContainsPoint(region, 35# * ny + 5# * nx, -35# * nx + 5# * ny)
+        Check prefix & ".localArcCut", Not query.ContainsPoint(region, 35# * ny + 40# * nx, -35# * nx + 40# * ny)
+        Check prefix & ".outsideStrip", Not query.ContainsPoint(region, 41# * ny + 5# * nx, -41# * nx + 5# * ny)
+        intervals = query.LineIntervals(region, 5# * nx, 5# * ny, ny, -nx)
+        Check prefix & ".oneLowerInterval", UBound(intervals, 1) = 1
+        CheckNear prefix & ".lowerLeft", CDbl(intervals(1, 1)), -40#
+        CheckNear prefix & ".lowerRight", CDbl(intervals(1, 2)), 40#
+        arcCount = 0
+        For i = 1 To region.SegmentCount
+            region.GetSegment i, x1, y1, x2, y2, cx, cy, sweep, loopID
+            If Abs(sweep) > 0.0000000001 Then arcCount = arcCount + 1
+            If CDbl(angle) = 0# Then mReport = mReport & "AR_LOCAL_SEGMENT:" & vbTab & CStr(x1) & vbTab & CStr(y1) & _
+                vbTab & CStr(x2) & vbTab & CStr(y2) & vbTab & CStr(cx) & vbTab & CStr(cy) & vbTab & CStr(sweep) & vbCrLf
+        Next i
+        Check prefix & ".exactArcs", arcCount >= 4
+        CheckNear prefix & ".actualBarDiameters", data.CandidateBetaDiameterSum(candidate), 20# + 40# / 6#
+    Next angle
 End Sub
 
 ' ДЛЯ ТЕСТОВ: общая геометрия и подготовка не зависят от глобальных X/Y.
@@ -630,10 +697,140 @@ Private Sub TestRotatedPreparation()
     angle = 0.47: Set section = RectangularSection(angle): Set material = LinearSteel
     AddBar section, -25#, 350#, 20#, angle: AddBar section, 0#, 350#, 20#, angle: AddBar section, 25#, 350#, 20#, angle
     Set data = New CSP35CrackData
-    data.Prepare section, -0.0002, 0.000002 * Cos(angle), -0.000002 * Sin(angle), material, 10#, 50#, "Max", "D6", False
+    data.Prepare section, -0.0002, 0.000002 * Cos(angle), -0.000002 * Sin(angle), material, 10#, 50#, "Max", "6d", False
     Check "SP35.rotation.area", Abs(data.CandidateRegion(1).Area - 40800#) < 0.00001
     Check "SP35.rotation.sigma", Abs(data.CandidateSigmaS(1) - 100#) < 0.000000001
     CheckNear "SP35.rotation.betaDiameterSum", data.CandidateBetaDiameterSum(1), 45#
+End Sub
+
+' ДЛЯ ТЕСТОВ: минимальный воспроизводимый сценарий двух боковых отверстий.
+' Позволяет отдельно проверить прежнюю ошибку и исправленный сохраненный код.
+Public Function RunSP35LocalOpeningTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    TestCircularLocalOpeningCuts
+    GoTo Finished
+Failed:
+    Check "localOpening.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    mReport = mReport & "TOTAL_SP35_LOCAL_OPENING: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    RunSP35LocalOpeningTests = mReport
+End Function
+
+' ДЛЯ ТЕСТОВ: соседние группы смещены по нормали, поэтому длина между
+' центрами отличается от проекции на Н.О. Проверяет обе стороны окна
+' и сохранение размеров после поворота всей физической постановки.
+Private Sub TestProjectedLateralSpacing()
+    Dim section As CSectionModel, data As CSP35CrackData, query As CSectionGeometryQuery
+    Dim region As CConcreteRegion, angle As Variant, minT As Double, maxT As Double, prefix As String
+    For Each angle In Array(0#, 0.47, -0.81)
+        Set section = RectangularSection(CDbl(angle))
+        AddBar section, 0#, 300#, 20#, CDbl(angle)
+        AddBar section, 100#, 330#, 20#, CDbl(angle)
+        AddBar section, -90#, 320#, 20#, CDbl(angle)
+        Set data = New CSP35CrackData
+        data.Prepare section, -0.0002, 0.000002 * Cos(CDbl(angle)), -0.000002 * Sin(CDbl(angle)), _
+            LinearSteel(), 10#, 50#, "Max", "6d", False
+        prefix = "SP35.projectedSpacing." & CStr(angle)
+        Check prefix & ".separateGroups", data.GroupCount = 3
+        Check prefix & ".sameRow", data.GroupRow(1) = data.GroupRow(2) And data.GroupRow(1) = data.GroupRow(3)
+        Set region = data.CandidateRegion(1): Set query = New CSectionGeometryQuery
+        query.ProjectionBounds region, -Cos(CDbl(angle)), -Sin(CDbl(angle)), minT, maxT
+        Check prefix & ".leftProjectionHalf", Abs(minT + 50#) < 0.000001
+        Check prefix & ".rightProjectionHalf", Abs(maxT - 45#) < 0.000001
+        Check prefix & ".notEuclideanHalf", Abs(minT + Sqr(100# ^ 2 + 30# ^ 2) / 2#) > 1#
+        Check prefix & ".area", Abs(region.Area - 20900#) < 0.00001
+    Next angle
+End Sub
+
+' ДЛЯ ТЕСТОВ: сосед другого ряда теперь ограничивает боковую границу,
+' если t/L достигает порога. При отсутствии соседа номинальный радиус
+' не уменьшается до грани на линии якоря; бетон пересекается с готовой полосой.
+Private Sub TestLateralMaterialBoundary()
+    Dim section As CSectionModel, data As CSP35CrackData, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim nx As Double, ny As Double, minT As Double, maxT As Double, centerT As Double
+    nx = 0.488832654432331: ny = 0.872377576488897
+    Set section = RectangularSection
+    AddBar section, 160#, 300#, 32#: AddBar section, 120#, 340#, 32#
+    AddBar section, 160#, 202.5, 32#: AddBar section, 30#, 340#, 32#
+    Set data = New CSP35CrackData
+    data.Prepare section, -0.0002, 0.000002 * ny, 0.000002 * nx, LinearSteel(), 10#, 50#, "Max", "6d", False
+    Check "SP35.materialBoundary.neighborOtherRow", data.GroupRow(1) <> data.GroupRow(3)
+    Set region = data.CandidateRegion(1): Set query = New CSectionGeometryQuery
+    query.ProjectionBounds region, -ny, nx, minT, maxT
+    centerT = -ny * 160# + nx * 300#
+    Check "SP35.materialBoundary.otherRowProjection", Abs((centerT - minT) - 97.5 * nx / 2#) < 0.000001
+    Check "SP35.materialBoundary.projected27", Abs((maxT - centerT) - (40# * ny + 40# * nx) / 2#) < 0.000001
+    Check "SP35.materialBoundary.notVerticalStepHalf", Abs((centerT - minT) - 97.5 / 2#) > 1#
+    Set section = RectangularSection
+    AddBar section, 160#, 300#, 32#
+    data.Prepare section, -0.0002, 0.000002 * ny, 0.000002 * nx, LinearSteel(), 10#, 50#, "Max", "6d", False
+    Set region = data.CandidateRegion(1)
+    CheckNear "SP35.materialBoundary.nominalLeftUnchanged", data.CandidateLeftDistance(1), 192#
+    CheckNear "SP35.materialBoundary.nominalRightUnchanged", data.CandidateRightDistance(1), 192#
+    Check "SP35.materialBoundary.notClampedByAnchorLine", query.ContainsPoint(region, 195#, 150#)
+    Check "SP35.materialBoundary.noOutsideConcrete", Not query.ContainsPoint(region, 201#, 150#)
+End Sub
+
+' ДЛЯ ТЕСТОВ: t/L проверяется отдельно для ближайшей по полному L группы
+' с каждой стороны. RowTolerance меняет только разбиение рядов, не боковые
+' расстояния. Проверяет обе ветки, равенство, отсутствие соседа, одинаковую
+' проекцию, поворот и включение всех групп конечной области.
+Private Sub TestNeighborRatioBoundaries()
+    Dim section As CSectionModel, data As CSP35CrackData, angle As Variant, rowTolerance As Variant
+    Dim ratio As Variant, prefix As String, expectedRight As Double, rows As Variant, region As CConcreteRegion
+    Dim query As CSectionGeometryQuery, number As Long
+    Set query = New CSectionGeometryQuery
+    For Each angle In Array(0#, 0.47, -0.81)
+        For Each rowTolerance In Array(0#, 50#, 200#)
+            For Each ratio In Array(0.199, 0.201)
+                Set section = RectangularSection(CDbl(angle))
+                AddBar section, 0#, 250#, 20#, CDbl(angle)
+                AddBar section, -100# * CDbl(ratio), 250# + Sqr(10000# * (1# - CDbl(ratio) ^ 2)), 5#, CDbl(angle)
+                Set data = New CSP35CrackData
+                data.Prepare section, -0.0002, 0.000002 * Cos(CDbl(angle)), -0.000002 * Sin(CDbl(angle)), _
+                    LinearSteel(), 0#, CDbl(rowTolerance), "Max", "6d", False, 0.2
+                expectedRight = 120#: If CDbl(ratio) > 0.2 Then expectedRight = 50# * CDbl(ratio)
+                prefix = "SP35.neighborRatio." & CStr(angle) & "." & CStr(rowTolerance) & "." & CStr(ratio)
+                CheckNear prefix & ".leftNoNeighbor", data.CandidateLeftDistance(1), 120#
+                CheckNear prefix & ".right", data.CandidateRightDistance(1), expectedRight
+                CheckNear prefix & ".storedThreshold", data.NeighborRatioLimit, 0.2
+            Next ratio
+        Next rowTolerance
+    Next angle
+    Set section = RectangularSection
+    AddBar section, 0#, 250#, 20#: AddBar section, 30#, 290#, 20#
+    Set data = New CSP35CrackData
+    data.Prepare section, -0.0002, 0.000002, 0#, LinearSteel(), 0#, 10#, "Max", "6d", False, 0.6
+    CheckNear "SP35.neighborRatio.equalThreshold", data.CandidateLeftDistance(1), 15#
+    data.Prepare section, -0.0002, 0.000002, 0#, LinearSteel(), 0#, 10#, "Max", "6d", False, 1#
+    CheckNear "SP35.neighborRatio.highThresholdFullRadius", data.CandidateLeftDistance(1), 120#
+    data.Prepare section, -0.0002, 0.000002, 0#, LinearSteel(), 0#, 10#, "Max", "6d", False, 0#
+    CheckNear "SP35.neighborRatio.zeroThresholdHalfProjection", data.CandidateLeftDistance(1), 15#
+
+    Set section = RectangularSection
+    AddBar section, 0#, 250#, 20#: AddBar section, 60#, 250#, 20#
+    AddBar section, -20#, 350#, 20#: AddBar section, 5#, 380#, 20#
+    data.Prepare section, -0.0002, 0.000002, 0#, LinearSteel(), 0#, 10#, "Max", "6d", False, 0.2
+    CheckNear "SP35.neighborRatio.nearestByFullDistance", data.CandidateLeftDistance(1), 30#
+    CheckNear "SP35.neighborRatio.independentRightFullRadius", data.CandidateRightDistance(1), 120#
+    CheckNear "SP35.neighborRatio.allIncludedActualBars", data.CandidateBetaDiameterSum(1), 60#
+    rows = data.CandidateRows(1)
+    Check "SP35.neighborRatio.outerFirstGlobal", data.GroupRow(4) = 1 And data.GroupRow(3) = 2 And data.GroupRow(1) = 3
+    Check "SP35.neighborRatio.outerFirstLocal", CLng(rows(1, 2)) = 3 And CLng(rows(2, 2)) = 2 And CLng(rows(3, 2)) = 1
+    Set region = data.CandidateRegion(1)
+    Check "SP35.neighborRatio.keepNeutralLine", Not query.ContainsPoint(region, 0#, 99#)
+
+    Set section = RectangularSection
+    AddBar section, 0#, 250#, 20#: AddBar section, 0#, 350#, 20#
+    data.Prepare section, -0.0002, 0.000002, 0#, LinearSteel(), 0#, 10#, "Max", "6d", False, 0#
+    CheckNear "SP35.neighborRatio.sameProjectionNotLeft", data.CandidateLeftDistance(1), 120#
+    CheckNear "SP35.neighborRatio.sameProjectionNotRight", data.CandidateRightDistance(1), 120#
+    On Error Resume Next
+    data.Prepare section, -0.0002, 0.000002, 0#, LinearSteel(), 0#, 10#, "Max", "6d", False, 1.01
+    number = Err.Number: Err.Clear
+    On Error GoTo 0
+    Check "SP35.neighborRatio.invalidThreshold", number <> 0 And data.CandidateCount = 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: границы пользовательских допусков отличаются от малого
@@ -645,23 +842,23 @@ Private Sub TestPreparationToleranceBoundaries()
     For Each value In Array(9.9, 10#, 10.1)
         Set section = RectangularSection
         AddBar section, 0#, 350#, 20#: AddBar section, 20# + CDbl(value), 350#, 20#
-        data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "D6", False
+        data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "6d", False
         expected = 1: If CDbl(value) > 10# Then expected = 2
         Check "SP35.groupGap." & CStr(value), data.GroupCount = expected
     Next value
     For Each value In Array(49.9, 50#, 50.1)
         Set section = RectangularSection
         AddBar section, 0#, 250#, 20#: AddBar section, 100#, 250# + CDbl(value), 20#
-        data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "D6", False
+        data.Prepare section, -0.0002, 0.000002, 0#, material, 10#, 50#, "Max", "6d", False
         Check "SP35.rowTolerance." & CStr(value), (data.GroupRow(1) = data.GroupRow(2)) = (CDbl(value) <= 50#)
     Next value
     members = data.GroupMembers(1)
     Check "SP35.snapshot.members", UBound(members) = 1 And data.BarID(CLng(members(1))) = "R1"
     CheckNear "SP35.snapshot.nominalDiameter", data.BarDiameter(CLng(members(1))), 20#
-    data.Prepare section, -0.001, 0#, 0#, material, 10#, 50#, "Max", "D6", False
+    data.Prepare section, -0.001, 0#, 0#, material, 10#, 50#, "Max", "6d", False
     Check "SP35.noTension.noCandidates", data.CandidateCount = 0 And data.GroupCount = 0
     On Error Resume Next
-    data.Prepare section, 0.0005, 0#, 0#, material, -1#, 50#, "Max", "D6", True
+    data.Prepare section, 0.0005, 0#, 0#, material, -1#, 50#, "Max", "6d", True
     number = Err.Number: description = Err.Description: Err.Clear
     On Error GoTo 0
     Check "SP35.invalidTolerance.explained", number <> 0 And Len(description) > 20
@@ -677,7 +874,11 @@ Public Function RunSP35PreparationTests() As String
     TestMixedDiameters
     TestReferenceRows
     TestMultipleOpeningWalls
+    TestCircularLocalOpeningCuts
     TestRotatedPreparation
+    TestProjectedLateralSpacing
+    TestLateralMaterialBoundary
+    TestNeighborRatioBoundaries
     TestPreparationToleranceBoundaries
     GoTo Finished
 Failed:
@@ -685,6 +886,166 @@ Failed:
 Finished:
     mReport = mReport & "TOTAL_SP35_PREPARATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunSP35PreparationTests = mReport
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет новое поле через настоящий reader/Width, включая
+' неверные значения, неактивную ветку СП 63 и динамический адрес после
+' перемещения таблицы. Все временные данные находятся в собственной копии.
+Public Function RunSP35NeighborSettingsTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Dim original As String, sheet As Object, source As Object, values As Variant, sourceRow As Long
+    Dim settings As CSystemSettingsReader, width As CCrackWidthCalculator, value As Variant, number As Long, description As String
+    Dim key As String, address As String, oldAddress As String, row As Long, expectedValid As Boolean, prefix As String
+    key = "SLS.Crack.SP35.NeighborRatioLimit"
+    original = ThisWorkbook.Names.Item("rngSystemSettings").RefersTo
+    values = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Value2
+    Set sheet = ThisWorkbook.Worksheets.Add: sheet.Name = "_SP35NeighborSettings"
+    Set source = sheet.Cells(20, 3).Resize(UBound(values, 1) + 2, UBound(values, 2))
+    source.Resize(UBound(values, 1), UBound(values, 2)).Value2 = values
+    ThisWorkbook.Names.Item("rngSystemSettings").RefersTo = "='" & sheet.Name & "'!" & source.Address
+    SetWorkbookTestSetting source, "SLS.Crack.Code", "SP35"
+    SetWorkbookTestSetting source, key, 0.2
+    For row = 2 To source.Rows.Count
+        If CStr(source.Cells(row, 1).Value2) = key Then sourceRow = row: Exit For
+    Next row
+    address = source.Cells(sourceRow, 2).Address(False, False)
+    For Each value In Array(0#, 0.2, 1#, -0.01, 1.01, vbNullString, "wrong")
+        SetWorkbookTestSetting source, key, value
+        On Error Resume Next
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set width = New CCrackWidthCalculator: width.ApplySettings settings
+        number = Err.Number: description = Err.Description: Err.Clear
+        On Error GoTo Failed
+        expectedValid = IsNumeric(value)
+        If expectedValid Then expectedValid = (CDbl(value) >= 0# And CDbl(value) <= 1#)
+        prefix = "SP35.neighborSetting." & CStr(value)
+        If expectedValid Then
+            Check prefix & ".accepted", number = 0
+        Else
+            Check prefix & ".rejected", number <> 0
+            Check prefix & ".key", InStr(description, key) > 0
+            Check prefix & ".location", InStr(description, address) > 0 And InStr(description, sheet.Name) > 0
+        End If
+    Next value
+    SetWorkbookTestSetting source, "SLS.Crack.Code", "SP63"
+    SetWorkbookTestSetting source, key, "wrong"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set width = New CCrackWidthCalculator: width.ApplySettings settings
+    Check "SP35.neighborSetting.inactiveIgnored", True
+    SetWorkbookTestSetting source, "SLS.Crack.Code", "SP35"
+    oldAddress = address
+    source.Cut sheet.Cells(20, 10)
+    Set source = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    address = source.Cells(sourceRow, 2).Address(False, False)
+    On Error Resume Next
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set width = New CCrackWidthCalculator: width.ApplySettings settings
+    number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check "SP35.neighborSetting.movedAddress", number <> 0 And InStr(description, address) > 0 And InStr(description, oldAddress) = 0
+    source.Cells(sourceRow, 1).Value2 = "REMOVED_NEIGHBOR_RATIO"
+    On Error Resume Next
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set width = New CCrackWidthCalculator: width.ApplySettings settings
+    number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check "SP35.neighborSetting.missingRequired", number <> 0 And InStr(description, key) > 0
+    GoTo Restore
+Failed:
+    Check "neighborSetting.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Restore:
+    On Error Resume Next
+    If Len(original) > 0 Then ThisWorkbook.Names.Item("rngSystemSettings").RefersTo = original
+    If Not sheet Is Nothing Then sheet.Delete
+    On Error GoTo 0
+    mReport = mReport & "TOTAL_SP35_NEIGHBOR_SETTINGS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    RunSP35NeighborSettingsTests = mReport
+End Function
+
+' ДЛЯ ТЕСТОВ: повторяет текущие сочетания в памяти и независимо проверяет
+' проекции боковых границ. Сохраняет центры/ряды групп для разбора конкретной
+' области пользователя; Config и Results не изменяются.
+Public Function RunSP35CurrentProjectionTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
+    Dim provider As CMaterialModelProvider, profiles As CCalculationProfileCatalog
+    Dim batch As CBatchSectionCalculator, reader As CLoadCombinationReader
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
+    Set batch.ProfileCatalog = profiles: batch.ApplySettings settings, units
+    Set reader = New CLoadCombinationReader: reader.LoadFromWorkbook ThisWorkbook, batch, units
+    Audit03ApplyLoadReferenceForTests section, settings, units, batch
+    batch.Execute
+    Dim result As CCrackWidthResult, data As CSP35CrackData, query As CSectionGeometryQuery
+    Dim region As CConcreteRegion, i As Long, j As Long, candidate As Long, anchor As Long
+    Dim tx As Double, ty As Double, centerT As Double, spacing As Double, left As Double, right As Double
+    Dim minT As Double, maxT As Double, prefix As String, members As Variant, member As Variant, ids As String
+    Dim distance As Double, nearestLeft As Double, nearestRight As Double, spacingLeft As Double, spacingRight As Double
+    Set query = New CSectionGeometryQuery: query.Initialize section
+    For i = 1 To batch.Count
+        Set result = batch.ResultAt(i).CrackResult.Width: Set data = result.SP35Data
+        If Not data Is Nothing Then
+            If Not data.CentralTension Then
+                tx = -data.NormalY: ty = data.NormalX
+                mReport = mReport & "PROJECTION_NORMAL: " & CStr(data.NormalX) & "; " & CStr(data.NormalY) & vbCrLf
+                For j = 1 To data.GroupCount
+                    members = data.GroupMembers(j): ids = vbNullString
+                    For Each member In members
+                        If Len(ids) > 0 Then ids = ids & ","
+                        ids = ids & data.BarID(CLng(member))
+                    Next member
+                    mReport = mReport & "PROJECTION_GROUP: G" & CStr(j) & "; bars=" & ids & "; row=" & CStr(data.GroupRow(j)) & _
+                        "; x=" & CStr(data.GroupX(j)) & "; y=" & CStr(data.GroupY(j)) & vbCrLf
+                Next j
+                For candidate = 1 To data.CandidateCount
+                    If data.CandidateAvailable(candidate) Then
+                        anchor = data.CandidateAnchorGroup(candidate)
+                        centerT = tx * data.GroupX(anchor) + ty * data.GroupY(anchor)
+                        left = data.CandidateSideRadius(candidate): right = left
+                        nearestLeft = 1E+100: nearestRight = 1E+100: spacingLeft = 0#: spacingRight = 0#
+                        For j = 1 To data.GroupCount
+                            If j <> anchor Then
+                                spacing = tx * (data.GroupX(j) - data.GroupX(anchor)) + ty * (data.GroupY(j) - data.GroupY(anchor))
+                                distance = Sqr((data.GroupX(j) - data.GroupX(anchor)) ^ 2 + (data.GroupY(j) - data.GroupY(anchor)) ^ 2)
+                                If spacing < -0.000001 And distance < nearestLeft Then
+                                    nearestLeft = distance: spacingLeft = -spacing
+                                ElseIf spacing > 0.000001 And distance < nearestRight Then
+                                    nearestRight = distance: spacingRight = spacing
+                                End If
+                            End If
+                        Next j
+                        If spacingLeft > 0# Then
+                            If spacingLeft / nearestLeft >= data.NeighborRatioLimit And spacingLeft / 2# < left Then left = spacingLeft / 2#
+                        End If
+                        If spacingRight > 0# Then
+                            If spacingRight / nearestRight >= data.NeighborRatioLimit And spacingRight / 2# < right Then right = spacingRight / 2#
+                        End If
+                        Set region = data.CandidateRegion(candidate): query.ProjectionBounds region, tx, ty, minT, maxT
+                        prefix = "SP35.currentProjection." & CStr(i) & ".G" & CStr(anchor)
+                        Check prefix & ".left", minT >= centerT - left - 0.000001
+                        Check prefix & ".right", maxT <= centerT + right + 0.000001
+                        CheckNear prefix & ".nominalLeft", data.CandidateLeftDistance(candidate), left
+                        CheckNear prefix & ".nominalRight", data.CandidateRightDistance(candidate), right
+                        mReport = mReport & "PROJECTION_WINDOW: " & prefix & "; left=" & CStr(left) & "; right=" & CStr(right) & _
+                            "; actualLeft=" & CStr(centerT - minT) & "; actualRight=" & CStr(maxT - centerT) & vbCrLf
+                    End If
+                Next candidate
+            End If
+        End If
+    Next i
+    Check "SP35.currentProjection.coverage", mPassed > 0
+    GoTo Finished
+Failed:
+    Check "currentProjection.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    mReport = mReport & "TOTAL_SP35_CURRENT_PROJECTION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    RunSP35CurrentProjectionTests = mReport
 End Function
 
 ' ДЛЯ ТЕСТОВ: симметричная сетка и восемь реальных стержней дают независимый
@@ -708,6 +1069,46 @@ Private Function EndToEndSection() As CSectionModel
         Next x
     Next y
     Set EndToEndSection = section
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет сохраненную HollowRectangle и настоящее сочетание
+' пользователя без записи результатов. Все стержни обязаны лежать в бетоне,
+' а пригодный текущий НДС должен доходить до расчета ширины СП 35.
+Public Function RunSP35SavedHollowTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
+    Dim query As CSectionGeometryQuery, region As CConcreteRegion, i As Long
+    Dim provider As CMaterialModelProvider, profiles As CCalculationProfileCatalog
+    Dim batch As CBatchSectionCalculator, reader As CLoadCombinationReader, width As CCrackWidthResult
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    Check "savedHollow.source", section.RebarCount = 56 And section.Contours.Count = 16
+    Set query = New CSectionGeometryQuery: query.Initialize section: Set region = query.ConcreteDomain
+    For i = 1 To section.RebarCount
+        Check "savedHollow.inConcrete." & section.RebarID(i) & "; x=" & Format$(section.RebarX(i), "0.00000000000000000") & _
+            "; y=" & Format$(section.RebarY(i), "0.00000000000000000"), query.ContainsPoint(region, section.RebarX(i), section.RebarY(i))
+    Next i
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
+    Set batch.ProfileCatalog = profiles: batch.ApplySettings settings, units
+    Set reader = New CLoadCombinationReader: reader.LoadFromWorkbook ThisWorkbook, batch, units
+    Audit03ApplyLoadReferenceForTests section, settings, units, batch
+    batch.Execute
+    For i = 1 To batch.Count
+        Set width = batch.ResultAt(i).CrackResult.Width
+        Check "savedHollow.width.calculated; " & width.ResultMeta.ResultComment, width.ResultMeta.Calculated
+        Check "savedHollow.width.noInputError", width.ResultMeta.InternalStatus <> rsInvalidInput
+        mReport = mReport & "SAVED_HOLLOW_WIDTH: " & CStr(width.CrackWidth) & "; " & width.ResultMeta.ResultComment & vbCrLf
+    Next i
+    GoTo Finished
+Failed:
+    Check "savedHollow.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    mReport = mReport & "TOTAL_SP35_SAVED_HOLLOW: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    RunSP35SavedHollowTests = mReport
 End Function
 
 ' ДЛЯ ТЕСТОВ: сверяет готовую ширину с независимой записью нормативной
@@ -775,6 +1176,7 @@ Public Function RunSP35EndToEndTests() As String
     SetWorkbookTestSetting settingsRange, "Solver.ToleranceMx", 10#
     SetWorkbookTestSetting settingsRange, "Solver.ToleranceMy", 10#
     SetWorkbookTestSetting settingsRange, "SLS.Crack.Allowable", 0.3
+    SetWorkbookTestSetting settingsRange, "SLS.Crack.SP35.NeighborRatioLimit", 0.2
     SetWorkbookTestSetting settingsRange, "Stability.Code", "SP63"
     SetWorkbookTestSetting settingsRange, "Stability.ElementLength", 1000#
     SetWorkbookTestSetting settingsRange, "Stability.Mu1", 1#

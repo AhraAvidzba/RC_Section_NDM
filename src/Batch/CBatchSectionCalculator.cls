@@ -72,6 +72,7 @@ Private mTransformedReferenceY(1 To 2) As Double ' Y центра приведе
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
 Private mCrackStandardCode As String ' Общий выбор SP63/SP35, независимый от Stability.Code.
 Private mCrackSP35GroupGap As Double, mCrackSP35RowTolerance As Double ' Настройки длин после CUnitSystem, мм.
+Private mCrackSP35NeighborRatioLimit As Double ' Порог t/L для бокового ограничения ближайшим соседом.
 Private mCrackSP35DiameterMode As String, mCrackSP35RadiusMode As String, mCrackSP35RebarProfile As String
 Private mCrackPsiMode As String ' User, Auto или AlwaysCalc: как определять psi_s для нормальных трещин.
 Private mCrackSigmaSCrcAveragingMode As String ' Как усреднять sigma_s,crc при уточнении psi_s по PostCrackState.
@@ -154,7 +155,8 @@ Private Sub Class_Initialize()
     mCrackAllowable = 0.3
     mCrackStandardCode = "SP63"
     mCrackSP35GroupGap = 10#: mCrackSP35RowTolerance = 50#
-    mCrackSP35DiameterMode = "Max": mCrackSP35RadiusMode = "D6": mCrackSP35RebarProfile = "Periodic"
+    mCrackSP35NeighborRatioLimit = 0.2
+    mCrackSP35DiameterMode = "Max": mCrackSP35RadiusMode = "6d": mCrackSP35RebarProfile = "Periodic"
     mCrackPsiMode = "AlwaysCalc"
     mCrackSigmaSCrcAveragingMode = "AllSelected"
     mCrackPhi1 = 1.4
@@ -260,8 +262,9 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     If mCrackStandardCode = "SP35" Then
         mCrackSP35GroupGap = settings.GetRequiredDouble("SLS.Crack.SP35.GroupGapTolerance")
         mCrackSP35RowTolerance = settings.GetRequiredDouble("SLS.Crack.SP35.RowTolerance")
+        mCrackSP35NeighborRatioLimit = settings.GetRequiredDouble("SLS.Crack.SP35.NeighborRatioLimit")
         mCrackSP35DiameterMode = settings.GetRequiredChoice("SLS.Crack.SP35.RadiusDiameterMode", Array("Max", "Min", "Average"))
-        mCrackSP35RadiusMode = settings.GetRequiredChoice("SLS.Crack.SP35.InteractionRadiusMode", Array("D3", "D5", "D6"))
+        mCrackSP35RadiusMode = settings.GetRequiredChoice("SLS.Crack.SP35.InteractionRadiusMode", Array("3d", "5d", "6d"))
         mCrackSP35RebarProfile = settings.GetRequiredChoice("SLS.Crack.SP35.RebarProfile", Array("Periodic", "Smooth"))
     Else
         mCrackPsiMode = settings.GetRequiredString("SLS.Crack.PsiMode")
@@ -1524,6 +1527,7 @@ Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.StandardCode = mCrackStandardCode
     crack.SP35GroupGapTolerance = mCrackSP35GroupGap
     crack.SP35RowTolerance = mCrackSP35RowTolerance
+    crack.SP35NeighborRatioLimit = mCrackSP35NeighborRatioLimit
     crack.SP35RadiusDiameterMode = mCrackSP35DiameterMode
     crack.SP35InteractionRadiusMode = mCrackSP35RadiusMode
     crack.SP35RebarProfile = mCrackSP35RebarProfile

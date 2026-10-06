@@ -13,7 +13,7 @@ Option Explicit
 ' Достоверные наружные границы и отверстия геометрии сечения
 ' ==========================================================================
 ' Контейнер принадлежит CSectionModel и хранит точные линии, дуги и окружности
-' во внутренних мм. Роль и принадлежность кольцу являются геометрическими
+' во внутренних мм. Роль и принадлежность замкнутому контуру являются геометрическими
 ' данными, а не аннотацией результата. Контейнер не вычисляет расчетную область
 ' трещин: она остается отдельным LC-зависимым результатом geometry-query.
 
@@ -63,7 +63,7 @@ Public Sub AddContourArc(ByVal contourID As String, ByVal startX As Double, ByVa
     AddSegment "CONTOUR_ARC", contourID, startX, startY, endX, endY, centerX, centerY, radius, sweepAngle, loopID, loopRole, sourceID, commentValue
 End Sub
 
-' Переносит проверенные кольца импортированной области без изменения примитивов.
+' Переносит проверенные замкнутые контуры импортированной области без изменения примитивов.
 ' Каждое отверстие имеет собственный ключ; внешняя Region отверстия меняет роль.
 Public Sub AddMaterialRegion(ByVal region As CConcreteRegion, ByVal sourceID As String, ByVal commentValue As String, _
         Optional ByVal asOpening As Boolean = False)
@@ -89,9 +89,9 @@ End Sub
 Private Sub AddSegment(ByVal kind As String, ByVal contourID As String, ByVal x1 As Double, ByVal y1 As Double, _
         ByVal x2 As Double, ByVal y2 As Double, ByVal cx As Double, ByVal cy As Double, ByVal radius As Double, _
         ByVal sweep As Double, ByVal loopID As String, ByVal role As String, ByVal source As String, ByVal comment As String)
-    If Len(Trim$(contourID)) = 0 Or Len(Trim$(loopID)) = 0 Then Err.Raise vbObjectError + 5281, "CSectionContours", "Не заданы ID сегмента или кольца контура."
+    If Len(Trim$(contourID)) = 0 Or Len(Trim$(loopID)) = 0 Then Err.Raise vbObjectError + 5281, "CSectionContours", "Не заданы ID сегмента или замкнутого контура."
     If StrComp(role, "Outer", vbTextCompare) <> 0 And StrComp(role, "Opening", vbTextCompare) <> 0 Then _
-        Err.Raise vbObjectError + 5281, "CSectionContours", "Роль кольца должна быть Outer или Opening."
+        Err.Raise vbObjectError + 5281, "CSectionContours", "Роль замкнутого контура должна быть Outer (наружная граница) или Opening (граница отверстия)."
     mCount = mCount + 1
     ReDim Preserve mKind(1 To mCount): ReDim Preserve mContourID(1 To mCount)
     ReDim Preserve mEdge(1 To mCount): ReDim Preserve mRadius(1 To mCount)

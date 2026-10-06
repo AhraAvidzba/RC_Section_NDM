@@ -31,7 +31,7 @@ Public Type TRegionEdge
     CenterX As Double
     CenterY As Double
     Sweep As Double
-    LoopID As Long ' Номер замкнутого кольца в готовом геометрическом снимке.
+    LoopID As Long ' Номер замкнутого контура в готовом геометрическом снимке.
 End Type
 
 Public Type TFiber

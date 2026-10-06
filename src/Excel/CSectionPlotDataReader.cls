@@ -691,7 +691,7 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
     For rowIndex = 2 To UBound(data, 1)
         Dim annotationType As String
         annotationType = Trim$(ReadAnnotationText(data(rowIndex, colType), anchor, rowIndex, colType, "AnnotationType"))
-        If Len(annotationType) > 0 And Left$(UCase$(annotationType), 8) <> "CONTOUR_" Then
+        If IsPlotLabelAnnotation(annotationType) Then
             Dim lengthUnit As String
             lengthUnit = ReadSnapshotUnit(data(rowIndex, colUnit), "Length", mSnapshotLengthUnit, "mm", anchor, rowIndex, colUnit, "Unit", True)
             Dim startX As Double, startY As Double, endX As Double, endY As Double
@@ -702,12 +702,6 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             endY = ReadAnnotationNumber(data(rowIndex, colEndY), anchor, rowIndex, colEndY, "EndY")
             normalX = ReadAnnotationNumber(data(rowIndex, colNormalX), anchor, rowIndex, colNormalX, "OutsideNormalX")
             normalY = ReadAnnotationNumber(data(rowIndex, colNormalY), anchor, rowIndex, colNormalY, "OutsideNormalY")
-            Dim sweepAngle As Double
-            sweepAngle = 0#
-            If StrComp(annotationType, "CONTOUR_ARC", vbTextCompare) = 0 Then
-                sweepAngle = ReadContourArcSweep(data(rowIndex, colText), anchor.Parent.Name & "!" & _
-                    anchor.Offset(rowIndex - 1, colText - 1).Address(False, False))
-            End If
             textValue = ReadAnnotationText(data(rowIndex, colText), anchor, rowIndex, colText, "Text")
             mAnnotationCount = mAnnotationCount + 1
             ReDim Preserve mAnnotationType(1 To mAnnotationCount)
@@ -724,18 +718,23 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             mAnnotationStartY(mAnnotationCount) = OutputLengthToInternalByUnit(startY, lengthUnit)
             mAnnotationEndX(mAnnotationCount) = OutputLengthToInternalByUnit(endX, lengthUnit)
             mAnnotationEndY(mAnnotationCount) = OutputLengthToInternalByUnit(endY, lengthUnit)
-            If StrComp(annotationType, "CONTOUR_ARC", vbTextCompare) = 0 Then
-                mAnnotationNormalX(mAnnotationCount) = OutputLengthToInternalByUnit(normalX, lengthUnit)
-                mAnnotationNormalY(mAnnotationCount) = OutputLengthToInternalByUnit(normalY, lengthUnit)
-            Else
-                mAnnotationNormalX(mAnnotationCount) = normalX
-                mAnnotationNormalY(mAnnotationCount) = normalY
-            End If
+            mAnnotationNormalX(mAnnotationCount) = normalX
+            mAnnotationNormalY(mAnnotationCount) = normalY
             mAnnotationText(mAnnotationCount) = textValue
-            mAnnotationSweepAngle(mAnnotationCount) = sweepAngle
+            mAnnotationSweepAngle(mAnnotationCount) = 0#
         End If
     Next rowIndex
 End Sub
+
+' Выбирает только размерные подписи и подписи арматуры для Excel-схемы.
+' Области трещин и их пробные точки имеют другую схему полей: отсутствие
+' нормали или координат неуспешной пробы не является повреждением подписи.
+Private Function IsPlotLabelAnnotation(ByVal annotationType As String) As Boolean
+    Select Case UCase$(Trim$(annotationType))
+        Case "DIMENSION", "REBAR_ANNOTATION"
+            IsPlotLabelAnnotation = True
+    End Select
+End Function
 
 ' Добавляет исходные контуры в готовые render-массивы схемы. Это адаптация
 ' представления, а не повторное хранение контуров в result-аннотациях.

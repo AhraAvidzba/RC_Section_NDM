@@ -1292,7 +1292,7 @@ Private Sub PutAnnotationHeaders(ByRef data() As Variant)
 End Sub
 
 ' Сериализует готовый result-region без повторного построения или отбора
-' арматуры. Все кольца, включая любое число opening, имеют отдельный LoopID;
+' арматуры. Все замкнутые контуры, включая любое число opening, имеют отдельный LoopID;
 ' тип CRACK_REGION_* никогда не используется как исходный material-contour.
 Private Sub PutCrackRegionRows(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
         ByVal region As CConcreteRegion, ByVal units As CUnitSystem)
@@ -1324,7 +1324,7 @@ Private Sub PutCrackRegionRows(ByRef data() As Variant, ByRef rowIndex As Long, 
 End Sub
 
 ' Записывает уже полученные P/Q отдельно от контурных сегментов. Эти строки
-' не образуют кольца и не используются для повторного вычисления площади;
+' не образуют замкнутые контуры и не используются для повторного вычисления площади;
 ' отсутствующий локальный интервал сохраняется явно, а не заменяется нулями.
 Private Sub PutCrackBoundaryProbeRows(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
         ByVal region As CConcreteRegion, ByVal units As CUnitSystem)
@@ -1482,7 +1482,8 @@ End Function
 ' фактический прямоугольник, эквивалентный прямоугольник по A/I или
 ' последний эквивалентный квадрат по площади. Реальные A/I при этом остаются
 ' расчетными характеристиками элемента. Здесь добавляются только общие
-' semantic-аннотации импортированной сетки: приблизительные габариты и
+' semantic-аннотации импорта: точные габариты при известном наружном контуре,
+' иначе приблизительные габариты бетонной сетки, а также
 ' сводная подпись всей распознанной арматуры.
 Private Sub EnsureAutoCADImportAnnotations(ByVal section As CSectionModel)
     If section Is Nothing Then Exit Sub
@@ -1495,16 +1496,37 @@ Private Sub EnsureAutoCADImportAnnotations(ByVal section As CSectionModel)
     Dim maxY As Double
     GetConcreteBounds section, minX, maxX, minY, maxY
 
+    Dim knownOuter As Boolean, i As Long, query As CSectionGeometryQuery, domain As CConcreteRegion
+    For i = 1 To section.Contours.Count
+        If StrComp(section.Contours.LoopRole(i), "Outer", vbTextCompare) = 0 Then knownOuter = True: Exit For
+    Next i
+    If knownOuter Then
+        Set query = New CSectionGeometryQuery: query.Initialize section
+        Set domain = query.ConcreteDomain
+        query.ProjectionBounds domain, 1#, 0#, minX, maxX
+        query.ProjectionBounds domain, 0#, 1#, minY, maxY
+    End If
+
     Dim annotations As CSectionAnnotations
     Set annotations = section.Annotations
 
     If Not AnnotationExists(annotations, "DIM_AUTO_BOUNDS_B") Then
-        annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
-            ApproxSign(), maxX - minX, "Приблизительная общая ширина по расчетным границам импортированного бетона."
+        If knownOuter Then
+            annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
+                "B", maxX - minX, "Общая ширина по достоверному наружному контуру импортированного сечения."
+        Else
+            annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
+                ApproxSign(), maxX - minX, "Приблизительная общая ширина по расчетным границам импортированного бетона."
+        End If
     End If
     If Not AnnotationExists(annotations, "DIM_AUTO_BOUNDS_H") Then
-        annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
-            ApproxSign(), maxY - minY, "Приблизительная общая высота по расчетным границам импортированного бетона."
+        If knownOuter Then
+            annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
+                "H", maxY - minY, "Общая высота по достоверному наружному контуру импортированного сечения."
+        Else
+            annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
+                ApproxSign(), maxY - minY, "Приблизительная общая высота по расчетным границам импортированного бетона."
+        End If
     End If
 
     If section.RebarCount > 0 And Not AnnotationExists(annotations, "REBAR_AUTO_ALL") Then

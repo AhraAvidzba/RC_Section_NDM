@@ -76,7 +76,7 @@ Private Sub ConfigureFixture(ByVal system As Object)
     keys = CadKeys()
     values = Array("CAD_CFG", "Yes", "Transformed", "Yes", "Yes", "NamesAndValues", _
         "AUDIT_C", "AUDIT_R", "AUDIT_CONTOUR", "AUDIT_CT", "AUDIT_CC", "AUDIT_RT", "AUDIT_RC", _
-        9, 5, 1, 6, 8, "AUDIT_IC", "AUDIT_IR")
+        9, 5, 1, 6, 8)
     For i = 0 To UBound(keys): SetValue system, CStr(keys(i)), values(i): Next i
     SetValue system, "AutoCAD.Import.MinArea", 0#
     SetValue system, "General.NonCriticalMessagesEnabled", "No"
@@ -88,6 +88,7 @@ End Sub
 Private Sub PrepareResults(ByRef stats As TCadStats, ByVal system As Object, ByVal profiles As Object)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
     Dim provider As CMaterialModelProvider, batch As CBatchSectionCalculator, writer As CNDMResultsWriter
+    Dim summaryWriter As CBatchResultWriter
     Dim key As Variant, x As Long, y As Long, elementIndex As Long
     For Each key In Array("Calculation.Stability.Enabled", "Calculation.Strength.Capacity", "Calculation.Crack.Width")
         SetProfile profiles, CStr(key), "No"
@@ -122,6 +123,9 @@ Private Sub PrepareResults(ByRef stats As TCadStats, ByVal system As Object, ByV
     LogLine stats, "AUTOCAD_SNAPSHOT: " & batch.ResultAt(2).OverallMeta.ResultComment
     Check stats, "autoCADConfig.snapshot.state1", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
     Check stats, "autoCADConfig.snapshot.state2", batch.ResultAt(2).DirectStateMeta.InternalStatus = rsSuccess
+    ' Worst должен принадлежать тому же тестовому snapshot, а не сводке
+    ' предыдущего пользовательского расчета или другого тестового набора.
+    Set summaryWriter = New CBatchResultWriter: summaryWriter.WriteSummary ThisWorkbook, batch
     Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, provider, batch, units
 End Sub
 
@@ -196,16 +200,32 @@ Private Sub CheckImporter(ByRef stats As TCadStats, ByVal system As Object, ByVa
     Check stats, prefix & ".counts", model.ConcreteCount = 1 And model.RebarCount = 1
     CheckClose stats, prefix & ".concreteMm", model.ConcreteX(1), 20#
     CheckClose stats, prefix & ".steelMm", model.RebarX(1), 80#
-    SetValue system, "AutoCAD.Import.ConcreteLayer", "AUDIT_IC2"
+    Dim emptyLayers As Collection, layer As CFakeAcadContour, layerName As Variant
+    Set emptyLayers = New Collection
+    For Each layerName In Array(settings.GetRawString("AutoCAD.Common.SectionContourLayer"), settings.GetRawString("AutoCAD.Common.OpeningContourLayer"))
+        If Len(CStr(layerName)) > 0 Then
+            Set layer = New CFakeAcadContour: emptyLayers.Add layer, CStr(layerName)
+        End If
+    Next layerName
+    Set model = importer.ImportConfiguredModelSpace(regions, settings, Nothing, emptyLayers)
+    Check stats, prefix & ".existingEmptyLayers.meshKept", model.ConcreteCount = 1 And model.RebarCount = 1
+    Check stats, prefix & ".existingEmptyLayers.noInventedContour", model.Contours.Count = 0
+    Check stats, prefix & ".existingEmptyLayers.comment", InStr(importer.ImportComment, "бетонной сетке") > 0
+    SetValue system, "AutoCAD.Common.ConcreteLayer", "AUDIT_IC2"
     Set model = importer.ImportConfiguredModelSpace(regions, Reader(), Nothing, EmptyContourLayers())
     CheckClose stats, prefix & ".changedConcrete", model.ConcreteX(1), 120#
     CheckClose stats, prefix & ".concreteLayerKeepsSteel", model.RebarX(1), 80#
+    Dim presentation As Object
+    Set presentation = Audit03AutoCADPresentationForTests(Reader(), "Concrete", "Tension", "C1", 1#, 2)
+    Check stats, prefix & ".concreteSharedWithExport", CStr(presentation("GeometryLayer")) = "AUDIT_IC2"
     system.Formula = saved
-    SetValue system, "AutoCAD.Import.RebarLayer", "AUDIT_IR2"
+    SetValue system, "AutoCAD.Common.RebarLayer", "AUDIT_IR2"
     Set model = importer.ImportConfiguredModelSpace(regions, Reader(), Nothing, EmptyContourLayers())
     CheckClose stats, prefix & ".changedSteel", model.RebarX(1), 180#
     CheckClose stats, prefix & ".steelLayerKeepsConcrete", model.ConcreteX(1), 20#
-    stats.Cases = stats.Cases + 3: system.Formula = saved
+    Set presentation = Audit03AutoCADPresentationForTests(Reader(), "Rebar", "Tension", "R1", 1#, 2)
+    Check stats, prefix & ".rebarSharedWithExport", CStr(presentation("GeometryLayer")) = "AUDIT_IR2"
+    stats.Cases = stats.Cases + 4: system.Formula = saved
 End Sub
 
 ' Рабочая очистка удаляет линии оформления, но сохраняет Region и чужие слои.
@@ -242,6 +262,7 @@ Private Sub CheckSettingEffects(ByRef stats As TCadStats, ByVal system As Object
         name = "AUDIT_CHANGED_" & CStr(position) & "_" & CStr(i)
         Dim settingKey As String
         settingKey = "AutoCAD.Layer." & CStr(keys(i))
+        If CStr(keys(i)) = "Concrete" Or CStr(keys(i)) = "Rebar" Then settingKey = "AutoCAD.Common." & CStr(keys(i)) & "Layer"
         If CStr(keys(i)) = "Contour" Then settingKey = "AutoCAD.Common.SectionContourLayer"
         SetValue system, settingKey, name
         Set result = Audit03AutoCADPresentationForTests(Reader(), CStr(materials(i)), CStr(states(i)), "E1", 1#, 2)
@@ -304,7 +325,7 @@ End Sub
 Private Sub CheckLayerContracts(ByRef stats As TCadStats, ByVal system As Object, ByVal position As Long)
     Dim saved As Variant, key As Variant, name As Variant, reason As String, target As Object, result As Object
     saved = system.Formula
-    For Each key In Array("AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar")
+    For Each key In Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer")
         For Each name In Array("AUDIT_CT", "AUDIT_CONTOUR", "RC_NDM_Axes", "RC_NDM_LoadPoint", "RC_NDM_NeutralLine", "RC_NDM_Warnings")
             Set target = CellForKey(system, CStr(key), 2): target.Value2 = CStr(name)
             reason = ConsumeError(stats, CStr(key))
@@ -313,8 +334,13 @@ Private Sub CheckLayerContracts(ByRef stats As TCadStats, ByVal system As Object
             system.Formula = saved
         Next name
     Next key
-    SetValue system, "AutoCAD.Import.RebarLayer", "audit_ic"
-    reason = ConsumeError(stats, "AutoCAD.Import.RebarLayer")
+    SetValue system, "AutoCAD.Common.RebarLayer", "audit_c"
+    On Error Resume Next
+    Dim importer As CAutoCADSectionModelImporter, model As CSectionModel
+    Set importer = New CAutoCADSectionModelImporter
+    Set model = importer.ImportConfiguredModelSpace(ImportRegions(), Reader(), Nothing, EmptyContourLayers())
+    reason = Err.Description: Err.Clear
+    On Error GoTo 0
     Check stats, "autoCADConfig.import.sameLayer." & CStr(position), InStr(1, reason, "совпадают", vbTextCompare) > 0
     system.Formula = saved
     SetValue system, "AutoCAD.Export.ContourEnabled", "No"
@@ -325,7 +351,7 @@ Private Sub CheckLayerContracts(ByRef stats As TCadStats, ByVal system As Object
     CheckCleanup stats, system, position
     system.Formula = saved
     For Each name In Array("Слой бетона длинный", String$(255, "a"))
-        SetValue system, "AutoCAD.Layer.Concrete", CStr(name)
+        SetValue system, "AutoCAD.Common.ConcreteLayer", CStr(name)
         Set result = Audit03AutoCADPresentationForTests(Reader(), "Concrete", "Tension", "C1", 1#, 2)
         Check stats, "autoCADConfig.layer.validBoundary." & CStr(position) & "." & CStr(Len(CStr(name))), result("GeometryLayer") = CStr(name)
         system.Formula = saved
@@ -346,25 +372,30 @@ Private Function ConsumeError(ByRef stats As TCadStats, ByVal key As String) As 
     Else
         Set result = Audit03AutoCADPresentationForTests(Reader(), "Concrete", "Tension", "C1", 1#, 2)
     End If
+    If key = "AutoCAD.Common.ConcreteLayer" Or key = "AutoCAD.Common.RebarLayer" Then
+        Set importer = New CAutoCADSectionModelImporter
+        Set model = importer.ImportConfiguredModelSpace(ImportRegions(), Reader(), Nothing, EmptyContourLayers())
+    End If
     Exit Function
 Rejected:
     ConsumeError = Err.Description
 End Function
 
-' Один список соответствует двадцати еще не принятым editable CAD-полям.
+' Один список содержит самостоятельные CAD-поля без дублирования общих
+' слоев. Изменение общего слоя проверяется и импортером, и экспортом.
 Private Function CadKeys() As Variant
     CadKeys = Array("AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
         "AutoCAD.Export.PrincipalAxesMode", "AutoCAD.Export.LoadPointEnabled", "AutoCAD.Export.ContourEnabled", _
-        "AutoCAD.Export.LabelMode", "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", "AutoCAD.Common.SectionContourLayer", _
+        "AutoCAD.Export.LabelMode", "AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
         "AutoCAD.Layer.ConcreteTension", "AutoCAD.Layer.ConcreteCompression", "AutoCAD.Layer.RebarTension", "AutoCAD.Layer.RebarCompression", _
         "AutoCAD.Color.ConcreteTension", "AutoCAD.Color.ConcreteCompression", "AutoCAD.Color.RebarTension", "AutoCAD.Color.RebarCompression", _
-        "AutoCAD.Color.Neutral", "AutoCAD.Import.ConcreteLayer", "AutoCAD.Import.RebarLayer")
+        "AutoCAD.Color.Neutral")
 End Function
 
 ' Четыре реальные Region-fixtures позволяют отличить выбор каждого слоя.
 Private Function ImportRegions() As Collection
     Dim result As Collection, region As CFakeAcadRegion, i As Long, layers As Variant
-    Set result = New Collection: layers = Array("AUDIT_IC", "AUDIT_IR", "AUDIT_IC2", "AUDIT_IR2")
+    Set result = New Collection: layers = Array("AUDIT_C", "AUDIT_R", "AUDIT_IC2", "AUDIT_IR2")
     For i = 0 To 3
         Set region = New CFakeAcadRegion
         If i Mod 2 = 0 Then
@@ -616,8 +647,8 @@ End Sub
 ' Читает экспортированные настоящие Region рабочим importer-ом. Контролирует
 ' точные мм/мм2 и раскладку вместо проверки только существования DWG-файла.
 Private Sub CheckNativeImport(ByRef stats As TCadStats, ByVal doc As Object, ByVal system As Object)
-    SetValue system, "AutoCAD.Import.ConcreteLayer", "AUDIT_C"
-    SetValue system, "AutoCAD.Import.RebarLayer", "AUDIT_R"
+    SetValue system, "AutoCAD.Common.ConcreteLayer", "AUDIT_C"
+    SetValue system, "AutoCAD.Common.RebarLayer", "AUDIT_R"
     Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, i As Long
     Set importer = New CAutoCADSectionModelImporter
     Set model = importer.ImportConfiguredModelSpace(doc.ModelSpace, Reader())

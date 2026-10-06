@@ -24,7 +24,12 @@ Public Function RunAutoCADContourTests() As String
     CheckMultipleOpenings
     CheckFiveOpenings
     CheckOptionalLayersAndSeparateConcrete
+    CheckEmptyContourLayers
+    CheckMixedContourSources
+    CheckMixedContourTopology
     CheckResultsRoundTrip
+    CheckAdditiveContourExport
+    CheckImportedContourDimensions
     GoTo Finish
 Failed:
     Check "contour.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
@@ -32,6 +37,199 @@ Finish:
     mReport = mReport & "TOTAL_AUTOCAD_CONTOURS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunAutoCADContourTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: настоящий exporter только добавляет полилинии. Даже повторный
+' запуск не читает ModelSpace.Count/Item, не удаляет прежние объекты, сохраняет
+' разные цвета outer/opening/Ar и реальные дуги в миллиметрах.
+Private Sub CheckAdditiveContourExport()
+    Dim section As CSectionModel, writer As CNDMResultsWriter, space As CFakeAcadContourExport
+    Dim region As CConcreteRegion, query As CSectionGeometryQuery, entity As CFakeAcadContourExport
+    Dim points As Variant, exported As Long, i As Long
+    Set section = New CSectionModel
+    section.AddConcreteElement 50#, 50#, 10000#, 1, , , "Rectangle", 100#, 100#
+    Set query = New CSectionGeometryQuery
+    Set region = query.PolygonRegion(ContourRectanglePoints(0#, 0#, 100#, 100#))
+    section.Contours.AddMaterialRegion region, "OUTER", "Наружный контур теста."
+    section.Contours.AddContourCircle "CONTOUR_HOLE", 50#, 50#, 10#, "Круглое отверстие теста.", "HOLE", "Opening"
+    section.Annotations.AddAnnotation "CRACK_REGION_CIRCLE", "CRACK_REGION_TEST", _
+        50#, 50#, 12#, 0#, 0#, 0#, vbNullString, 0#, "mm", "Расчетная область теста."
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
+    Set space = New CFakeAcadContourExport
+    exported = SP35ExportSavedContoursToModelSpaceForTests(space)
+    Check "export.append.first", exported = 2 And space.CreatedEntities.Count = 2
+    exported = SP35ExportSavedContoursToModelSpaceForTests(space)
+    Check "export.append.repeat", exported = 2 And space.CreatedEntities.Count = 4
+    For i = 1 To 4
+        Set entity = space.CreatedEntities(i)
+        Check "export.append.closed." & CStr(i), entity.Closed And Not entity.Deleted And IsNDMContourOutput(entity)
+        If entity.Layer = "TEST_OPENING" Then
+            Check "export.color.opening." & CStr(i), entity.Color = 4
+            CheckArea "export.arc.bulge." & CStr(i), entity.BulgeAt(0), Tan(GEOM_PI / 8#)
+        Else
+            Check "export.color.outer." & CStr(i), entity.Color = 30
+            points = entity.Coordinates
+            Check "export.mm.coordinates." & CStr(i), Abs(CDbl(points(2)) - CDbl(points(0))) = 100#
+        End If
+    Next i
+    exported = SP35ExportSavedContoursToModelSpaceForTests(space, True)
+    Check "export.append.crack", exported = 1 And space.CreatedEntities.Count = 5
+    Set entity = space.CreatedEntities(5)
+    Check "export.color.crack", entity.Color = 31 And entity.Closed And Not entity.Deleted
+    Check "export.append.noExistingObjectRead", space.ForbiddenReads = 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: четыре независимые координаты для явного наружного контура.
+Private Function ContourRectanglePoints(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As Variant
+    Dim points(1 To 4, 1 To 2) As Double
+    points(1, 1) = x1: points(1, 2) = y1: points(2, 1) = x2: points(2, 2) = y1
+    points(3, 1) = x2: points(3, 2) = y2: points(4, 1) = x1: points(4, 2) = y2
+    ContourRectanglePoints = points
+End Function
+
+' ДЛЯ ТЕСТОВ: точная окружность и повернутый наружный контур дают габариты
+' по аналитической границе, а не по меньшей сетке. Без outer сохраняется
+' прежний приблизительный размер. INPUT/OUTPUT не меняют исходные координаты.
+Private Sub CheckImportedContourDimensions()
+    Dim section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim writer As CNDMResultsWriter, annotations As CSectionAnnotations, kind As Long, i As Long
+    Dim expectedB As Double, expectedH As Double, raw() As TRegionEdge, count As Long, x As Double, y As Double
+    Set query = New CSectionGeometryQuery: Set writer = New CNDMResultsWriter
+    For kind = 0 To 2
+        Set section = New CSectionModel: section.SourceType = "AutoCADImport"
+        section.AddConcreteElement 10#, 20#, 400#, 1, , , "Rectangle", 20#, 20#
+        expectedB = 20#: expectedH = 20#
+        If kind = 1 Then
+            Set region = query.CircleRegion(10#, 20#, 100#)
+            section.Contours.AddMaterialRegion region, "EXACT_CIRCLE", "Точный наружный контур."
+            expectedB = 200#: expectedH = 200#
+        ElseIf kind = 2 Then
+            Set region = query.PolygonRegion(ContourRectanglePoints(-100#, -40#, 100#, 40#))
+            region.CopyEdges raw, count
+            For i = 1 To count
+                x = raw(i).X1: y = raw(i).Y1
+                raw(i).X1 = x * Cos(0.47) - y * Sin(0.47): raw(i).Y1 = x * Sin(0.47) + y * Cos(0.47)
+                x = raw(i).X2: y = raw(i).Y2
+                raw(i).X2 = x * Cos(0.47) - y * Sin(0.47): raw(i).Y2 = x * Sin(0.47) + y * Cos(0.47)
+            Next i
+            Set region = query.BoundaryRegion(raw, count)
+            section.Contours.AddMaterialRegion region, "EXACT_ROTATED", "Повернутый наружный контур."
+            expectedB = 200# * Cos(0.47) + 80# * Sin(0.47)
+            expectedH = 200# * Sin(0.47) + 80# * Cos(0.47)
+        End If
+        writer.WriteGeometryPreview ThisWorkbook, section
+        Set annotations = section.Annotations
+        For i = 1 To annotations.Count
+            If annotations.AnnotationID(i) = "DIM_AUTO_BOUNDS_B" Then CheckArea "dimension.width." & CStr(kind), annotations.Value(i), expectedB
+            If annotations.AnnotationID(i) = "DIM_AUTO_BOUNDS_H" Then CheckArea "dimension.height." & CStr(kind), annotations.Value(i), expectedH
+            If annotations.AnnotationType(i) = "DIMENSION" Then
+                Check "dimension.approxOnlyWithoutOuter." & CStr(kind) & "." & CStr(i), _
+                    (annotations.Text(i) = ChrW$(&H2248)) = (kind = 0)
+            End If
+        Next i
+    Next kind
+End Sub
+
+' ДЛЯ ТЕСТОВ: наружная граница и отверстия выбираются независимо по своим
+' слоям. Исходник одного типа не должен скрывать собственный экспорт другого;
+' запись и чтение Results сохраняют все три контура и прежнюю площадь сетки.
+Private Sub CheckMixedContourSources()
+    Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, layer As CFakeAcadContour
+    Dim outer As CFakeAcadContour, opening As CFakeAcadContour, duplicate As CFakeAcadContour
+    Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, restored As CSectionModel
+    Dim query As CSectionGeometryQuery, region As CConcreteRegion, writer As CNDMResultsWriter
+    Dim mode As Long, i As Long, countBefore As Long, prefix As String, outerCount As Long, openingCount As Long
+    Set importer = New CAutoCADSectionModelImporter: Set query = New CSectionGeometryQuery
+    Set writer = New CNDMResultsWriter
+    For mode = 0 To 4
+        Set space = New Collection: Set layers = New Collection
+        Set cell = New CFakeAcadRegion
+        cell.Initialize 10000#, 50#, 50#, 8333333.33333333, 8333333.33333333, 0#, "CONCRETE", "CELL", 0#, True
+        space.Add cell
+        Set cell = New CFakeAcadRegion
+        cell.Initialize GEOM_PI * 25#, 10#, 10#, 100#, 100#, 0#, "REBAR", "BAR": space.Add cell
+        Set outer = Contour("AcDbRegion", RectangleEdges(0#, 0#, 100#, 100#))
+        outer.SetOutputOwned (mode = 1 Or mode = 3): space.Add outer
+        For i = 0 To 1
+            Set opening = Contour("AcDbPolyline", RectangleEdges(25# + 35# * i, 30# + 30# * i, 10# + 10# * i, 10#), "OPENING")
+            opening.SetOutputOwned (mode = 0 Or mode = 3): space.Add opening
+            If mode = 4 Then
+                Set duplicate = Contour("AcDbPolyline", RectangleEdges(25# + 35# * i, 30# + 30# * i, 10# + 10# * i, 10#), "OPENING")
+                duplicate.SetOutputOwned True: space.Add duplicate
+            End If
+        Next i
+        If mode = 4 Then
+            Set duplicate = Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#))
+            duplicate.SetOutputOwned True: space.Add duplicate
+        End If
+        Set layer = New CFakeAcadContour: layers.Add layer, "OUTER"
+        Set layer = New CFakeAcadContour: layers.Add layer, "OPENING"
+        countBefore = space.Count: prefix = "mixedSources." & CStr(mode)
+        Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+        query.Initialize section: Set region = query.ConcreteDomain
+        CheckArea prefix & ".area", region.Area, 9700#
+        Check prefix & ".authoritativeOuter", InStr(region.Source, "AuthoritativeContour") > 0
+        Check prefix & ".threeLoops", region.LoopCount = 3
+        Check prefix & ".bothOpeningsExcluded", Not query.ContainsPoint(region, 30#, 35#) And Not query.ContainsPoint(region, 70#, 65#)
+        Check prefix & ".sourcesPreserved", space.Count = countBefore And Not outer.Deleted And Not opening.Deleted
+        CheckArea prefix & ".mechanicalArea", section.ConcreteArea(1), 10000#
+        writer.WriteGeometryPreview ThisWorkbook, section
+        Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
+        query.Initialize restored: Set region = query.ConcreteDomain
+        CheckArea prefix & ".resultsArea", region.Area, 9700#
+        Check prefix & ".resultsLoops", region.LoopCount = 3
+        outerCount = 0: openingCount = 0
+        For i = 1 To restored.Contours.Count
+            If restored.Contours.LoopRole(i) = "Opening" Then openingCount = openingCount + 1 Else outerCount = outerCount + 1
+        Next i
+        Check prefix & ".resultsBothRoles", outerCount = 4 And openingCount = 8
+    Next mode
+End Sub
+
+' ДЛЯ ТЕСТОВ: смешанные источники сохраняют встроенное отверстие Region
+' и бетонную часть внутри проема. Повторная собственная граница не вычитается
+' дважды, но исходное отверстие вне материала остается ошибкой, а не outer.
+Private Sub CheckMixedContourTopology()
+    Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, layer As CFakeAcadContour
+    Dim outer As CFakeAcadContour, part As CFakeAcadContour, hole As CFakeAcadContour, edges As Collection, edge As Variant
+    Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
+    Dim region As CConcreteRegion, number As Long, description As String
+    Set space = New Collection: Set layers = New Collection
+    Set cell = New CFakeAcadRegion
+    cell.Initialize 10000#, 50#, 50#, 8333333.33333333, 8333333.33333333, 0#, "CONCRETE", "CELL", 0#, True: space.Add cell
+    Set cell = New CFakeAcadRegion
+    cell.Initialize GEOM_PI * 25#, 10#, 10#, 100#, 100#, 0#, "REBAR", "BAR": space.Add cell
+    Set layer = New CFakeAcadContour: layers.Add layer, "OUTER"
+    Set layer = New CFakeAcadContour: layers.Add layer, "OPENING"
+    Set edges = RectangleEdges(0#, 0#, 100#, 100#)
+    For Each edge In RectangleEdges(25#, 30#, 10#, 10#): edges.Add edge: Next edge
+    Set outer = Contour("AcDbRegion", edges): space.Add outer
+    Set hole = Contour("AcDbPolyline", RectangleEdges(25#, 30#, 10#, 10#), "OPENING")
+    hole.SetOutputOwned True: space.Add hole
+    Set hole = Contour("AcDbPolyline", RectangleEdges(60#, 60#, 20#, 10#), "OPENING")
+    hole.SetOutputOwned True: space.Add hole
+    Set importer = New CAutoCADSectionModelImporter: Set query = New CSectionGeometryQuery
+    Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+    query.Initialize section: Set region = query.ConcreteDomain
+    CheckArea "mixedTopology.embeddedOpening.area", region.Area, 9700#
+    Check "mixedTopology.embeddedOpening.threeLoops", region.LoopCount = 3
+    Check "mixedTopology.embeddedOpening.bothExcluded", Not query.ContainsPoint(region, 30#, 35#) And Not query.ContainsPoint(region, 70#, 65#)
+    space.Remove 5: space.Remove 4: space.Remove 3
+    Set outer = Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#)): outer.SetOutputOwned True: space.Add outer
+    Set part = Contour("AcDbPolyline", RectangleEdges(40#, 40#, 20#, 20#)): part.SetOutputOwned True: space.Add part
+    Set hole = Contour("AcDbRegion", RectangleEdges(20#, 20#, 60#, 60#), "OPENING"): space.Add hole
+    Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+    query.Initialize section: Set region = query.ConcreteDomain
+    CheckArea "mixedTopology.separateConcrete.area", region.Area, 6800#
+    Check "mixedTopology.separateConcrete.threeLoops", region.LoopCount = 3
+    Check "mixedTopology.separateConcrete.roles", query.ContainsPoint(region, 50#, 50#) And Not query.ContainsPoint(region, 30#, 30#)
+    space.Add Contour("AcDbPolyline", RectangleEdges(120#, 20#, 10#, 10#), "OPENING")
+    On Error Resume Next
+    Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+    number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    Check "mixedTopology.outsideOpening.rejected", number <> 0 And InStr(description, "слое") > 0
+    Check "mixedTopology.outsideOpening.oldModelKept", section.Contours.Count = 12 And Abs(query.ConcreteDomain.Area - 6800#) < 0.00001
+End Sub
 
 ' ДЛЯ ТЕСТОВ: отсутствующие общие слои не отменяют сетку; отдельный Region
 ' внутри уже вырезанного проема возвращает бетон, а не заполняет весь проем.
@@ -79,6 +277,59 @@ Private Sub CheckOptionalLayersAndSeparateConcrete()
     CheckArea "exportOnly.separateConcrete.area", region.Area, 6800#
     Check "exportOnly.separateConcrete.threeContours", region.LoopCount = 3
     Check "exportOnly.separateConcrete.material", query.ContainsPoint(region, 50#, 50#) And Not query.ContainsPoint(region, 30#, 30#)
+End Sub
+
+' ДЛЯ ТЕСТОВ: существующие пустые слои не делают контуры обязательными.
+' Проверяет пересечение по бетонной сетке, отдельные отверстия без outer
+' и сохранение строгой ошибки для реально заданной незамкнутой полилинии.
+Private Sub CheckEmptyContourLayers()
+    Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, bar As CFakeAcadRegion
+    Dim layer As CFakeAcadContour, opening As CFakeAcadContour, invalid As CFakeAcadContour
+    Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
+    Dim domain As CConcreteRegion, clipped As CConcreteRegion, mode As Long, expectedArea As Double
+    Dim contourLayer As String, openingLayer As String, prefix As String, number As Long, description As String
+    Set importer = New CAutoCADSectionModelImporter
+    For mode = 0 To 3
+        Set space = New Collection: Set layers = New Collection
+        Set cell = New CFakeAcadRegion
+        cell.Initialize 10000#, 50#, 50#, 8333333.33333333, 8333333.33333333, 0#, "CONCRETE", "CELL", 0#, True
+        space.Add cell
+        Set bar = New CFakeAcadRegion
+        bar.Initialize GEOM_PI * 25#, 10#, 10#, 100#, 100#, 0#, "REBAR", "BAR": space.Add bar
+        contourLayer = "OUTER": openingLayer = "OPENING": expectedArea = 10000#
+        Set layer = New CFakeAcadContour: layers.Add layer, "OUTER"
+        If mode > 0 Then
+            Set layer = New CFakeAcadContour: layers.Add layer, "OPENING"
+        End If
+        If mode = 2 Then
+            Set opening = Contour("AcDbPolyline", RectangleEdges(60#, 60#, 20#, 20#), "OPENING")
+            space.Add opening: expectedArea = 9600#
+        ElseIf mode = 3 Then
+            contourLayer = vbNullString: openingLayer = vbNullString
+        End If
+        Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, contourLayer, openingLayer, layers)
+        Set query = New CSectionGeometryQuery: query.Initialize section: Set domain = query.ConcreteDomain
+        prefix = "emptyLayers." & CStr(mode)
+        Check prefix & ".meshKept", section.ConcreteCount = 1 And section.RebarCount = 1
+        Check prefix & ".noInventedContour", section.Contours.Count = IIf(mode = 2, 4, 0)
+        Check prefix & ".meshFallback", InStr(domain.Source, "AuthoritativeContour") = 0
+        Check prefix & ".comment", InStr(importer.ImportComment, "бетонной сетке") > 0
+        Check prefix & ".sourceKept", Not cell.Deleted And Not bar.Deleted
+        CheckArea prefix & ".area", domain.Area, expectedArea
+        Set clipped = query.ClipHalfPlane(domain, 1#, 0#, 50#)
+        CheckArea prefix & ".meshIntersection", clipped.Area, expectedArea - 5000#
+        If mode = 2 Then Check prefix & ".openingKept", Not query.ContainsPoint(domain, 70#, 70#) And Not opening.Deleted
+    Next mode
+    Set invalid = New CFakeAcadContour
+    invalid.InitializeLoop "AcDbPolyline", "OUTER", "OPEN", RectangleEdges(0#, 0#, 100#, 100#), False
+    space.Add invalid
+    On Error Resume Next
+    Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+    number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    Check "emptyLayers.invalidContourStillRejected", number <> 0 And InStr(description, "замкнутой") > 0
+    Check "emptyLayers.invalidSourceKept", Not invalid.Deleted
+    Check "emptyLayers.failedImportKeepsPreviousModel", section.ConcreteCount = 1 And section.RebarCount = 1 And section.Contours.Count = 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: сохраняет несколько отверстий и аналитические дуги через
@@ -222,7 +473,7 @@ Private Sub CheckMultipleOpenings()
 End Sub
 
 ' ДЛЯ ТЕСТОВ: число отдельных opening не ограничено двумя. Пять проемов
-' разных поддержанных типов остаются независимыми кольцами, вычитаются один
+' разных поддержанных типов остаются независимыми замкнутыми контурами, вычитаются один
 ' раз и сохраняются при записи/чтении Results в собственных единицах снимка.
 Private Sub CheckFiveOpenings()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, layer As CFakeAcadContour
@@ -472,6 +723,7 @@ Public Function RunRealAutoCADContourTests() As String
     CheckNativeSavedContours doc, reader
     CheckNativeSharedContourOwnership doc
     CheckNativeRegionBoundaryDedup doc
+    CheckNativeMixedContourRoundTrip doc
     path = ThisWorkbook.Path & "\SP35_ContourImport_" & Format$(Now, "yyyymmdd_hhnnss") & ".dwg"
     If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 5502, , "Тестовый DWG уже существует; перезапись запрещена."
     doc.SaveAs path
@@ -488,9 +740,82 @@ Cleanup:
     RunRealAutoCADContourTests = mReport
 End Function
 
+' ДЛЯ ТЕСТОВ: проходит production import -> Results -> export -> import
+' для обоих смешанных источников и для однородных вариантов. Два отверстия
+' остаются на своем слое; экспорт добавляет новые объекты и сохраняет
+' исходники. OUTPUT в метрах не меняет размеры DWG в миллиметрах.
+Private Sub CheckNativeMixedContourRoundTrip(ByVal doc As Object)
+    Dim importer As CAutoCADSectionModelImporter, writer As CNDMResultsWriter, units As CUnitSystem
+    Dim query As CSectionGeometryQuery, section As CSectionModel, region As CConcreteRegion
+    Dim outer As Object, mesh As Object, bar As Object, hole As Object, curve As Object, entity As Object
+    Dim curves(0 To 0) As Object, regions As Variant, center(0 To 2) As Double
+    Dim mode As Long, i As Long, countBefore As Long, exported As Long, expectedExported As Long, outerCount As Long, openingCount As Long
+    Dim prefix As String, outerLayer As String, openingLayer As String, meshLayer As String, rebarLayer As String, outerHandle As String
+    Dim unitRange As Object, savedUnits As Variant, settings As CSystemSettingsReader, number As Long, description As String
+    On Error GoTo Failed
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange: savedUnits = unitRange.Formula
+    For i = 2 To unitRange.Rows.Count
+        If CStr(unitRange.Cells(i, 1).Value2) = "Length" Then unitRange.Cells(i, 4).Value2 = "m"
+        If CStr(unitRange.Cells(i, 1).Value2) = "Area" Then unitRange.Cells(i, 4).Value2 = "m2"
+    Next i
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set importer = New CAutoCADSectionModelImporter: Set writer = New CNDMResultsWriter
+    Set query = New CSectionGeometryQuery: Set units = New CUnitSystem: units.LoadFromSettings settings
+    For mode = 0 To 3
+        prefix = "native.mixedRoundTrip." & CStr(mode)
+        outerLayer = "NDM_MIX_OUTER_" & CStr(mode): openingLayer = "NDM_MIX_OPENING_" & CStr(mode)
+        meshLayer = "NDM_MIX_MESH_" & CStr(mode): rebarLayer = "NDM_MIX_REBAR_" & CStr(mode)
+        doc.Layers.Add outerLayer: doc.Layers.Add openingLayer: doc.Layers.Add meshLayer: doc.Layers.Add rebarLayer
+        Set outer = NativeRectangle(doc, 100#, 100#, 0#, 1100# + 150# * mode, 100#): outer.Layer = outerLayer
+        Set curves(0) = outer: regions = doc.ModelSpace.AddRegion(curves): Set mesh = regions(LBound(regions)): mesh.Layer = meshLayer
+        If mode = 1 Or mode = 3 Then MarkNDMContourOutput outer
+        outerHandle = CStr(outer.Handle)
+        For i = 0 To 1
+            Set hole = NativeRectangle(doc, 10# + 10# * i, 10#, 0#, 1080# + 150# * mode + 35# * i, 85# + 30# * i)
+            hole.Layer = openingLayer
+            If mode = 0 Or mode = 3 Then MarkNDMContourOutput hole
+        Next i
+        center(0) = 1060# + 150# * mode: center(1) = 60#
+        Set curve = doc.ModelSpace.AddCircle(center, 5#)
+        Set curves(0) = curve: regions = doc.ModelSpace.AddRegion(curves): Set bar = regions(LBound(regions))
+        bar.Layer = rebarLayer: curve.Delete
+        countBefore = doc.ModelSpace.Count
+        Set section = importer.ImportFromModelSpace(doc.ModelSpace, meshLayer, rebarLayer, "Rebar", 0#, Nothing, outerLayer, openingLayer, doc.Layers)
+        query.Initialize section: Set region = query.ConcreteDomain
+        CheckArea prefix & ".importArea", region.Area, 9700#
+        Check prefix & ".importThreeLoops", region.LoopCount = 3 And doc.ModelSpace.Count = countBefore
+        writer.WriteGeometryPreview ThisWorkbook, section, units
+        expectedExported = 3
+        exported = SP35ExportSavedMaterialContoursForTests(doc, outerLayer, openingLayer)
+        Check prefix & ".exportAddsAll", exported = expectedExported And doc.ModelSpace.Count = countBefore + 3
+        Check prefix & ".originalOuterKept", CStr(doc.HandleToObject(outerHandle).Handle) = outerHandle
+        outerCount = 0: openingCount = 0
+        For Each entity In doc.ModelSpace
+            If CStr(entity.Layer) = outerLayer Then outerCount = outerCount + 1
+            If CStr(entity.Layer) = openingLayer Then openingCount = openingCount + 1
+        Next entity
+        Check prefix & ".exportBothLayers", outerCount = 2 And openingCount = 4
+        ' Тест сам подготавливает чистый импорт, как теперь обязан пользователь.
+        For i = doc.ModelSpace.Count - 1 To countBefore Step -1: doc.ModelSpace.Item(i).Delete: Next i
+        Set section = importer.ImportFromModelSpace(doc.ModelSpace, meshLayer, rebarLayer, "Rebar", 0#, Nothing, outerLayer, openingLayer, doc.Layers)
+        query.Initialize section: Set region = query.ConcreteDomain
+        CheckArea prefix & ".reimportArea", region.Area, 9700#
+        Check prefix & ".reimportThreeLoops", region.LoopCount = 3
+        exported = SP35ExportSavedMaterialContoursForTests(doc, outerLayer, openingLayer)
+        Check prefix & ".repeatExportAddsAll", exported = expectedExported And doc.ModelSpace.Count = countBefore + 3
+    Next mode
+    GoTo Restore
+Failed:
+    number = Err.Number: description = Err.Description
+Restore:
+    On Error Resume Next
+    If Not unitRange Is Nothing Then unitRange.Formula = savedUnits
+    On Error GoTo 0
+    If number <> 0 Then Err.Raise number, "CheckNativeMixedContourRoundTrip", description
+End Sub
+
 ' ДЛЯ ТЕСТОВ: отверстие исходного Region уже является достоверной границей.
-' Оно не дублируется отдельной экспортной полилинией на втором общем слое.
-' Точная окружность сравнивается с дуговыми сегментами будущей полилинии.
+' Экспорт добавляет его полилинию независимо от существующего исходника.
 Private Sub CheckNativeRegionBoundaryDedup(ByVal doc As Object)
     Dim polyline As Object, source As Object, circleEntity As Object, hole As Object
     Dim curves(0 To 0) As Object, regions As Variant, center(0 To 2) As Double
@@ -511,13 +836,13 @@ Private Sub CheckNativeRegionBoundaryDedup(ByVal doc As Object)
     Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
     countBefore = doc.ModelSpace.Count: handle = CStr(source.Handle)
     exported = SP35ExportSavedMaterialContoursForTests(doc, "SP35_DEDUP_OUTER", "SP35_DEDUP_OPENING")
-    Check "native.dedup.regionAndOpeningNotDuplicated", exported = 0 And doc.ModelSpace.Count = countBefore
+    Check "native.append.regionAndOpeningAdded", exported = 2 And doc.ModelSpace.Count = countBefore + 2
     Check "native.dedup.regionPreserved", doc.HandleToObject(handle).Handle = handle
     CheckArea "native.dedup.regionAreaPreserved", CDbl(source.Area), 10000# - 100# * GEOM_PI
 End Sub
 
 ' ДЛЯ ТЕСТОВ: настоящая XData защищает пользовательскую полилинию общего
-' слоя, заменяет собственный вывод и не создает дубли при повторном импорте.
+' слоя при отдельной ручной очистке. Экспорт не удаляет прежние объекты.
 Private Sub CheckNativeSharedContourOwnership(ByVal doc As Object)
     Dim system As Object, saved As Variant, settings As CSystemSettingsReader, i As Long
     Dim original As Object, copy As Object, number As Long, description As String, handle As String
@@ -545,13 +870,13 @@ Private Sub CheckNativeSharedContourOwnership(ByVal doc As Object)
     Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
     countBefore = doc.ModelSpace.Count
     exported = SP35ExportSavedMaterialContoursForTests(doc)
-    Check "native.ownership.existingSourceNotDuplicated", exported = 0 And doc.ModelSpace.Count = countBefore
+    Check "native.ownership.existingSourceDoesNotBlockExport", exported = 1 And doc.ModelSpace.Count = countBefore + 1
     exported = SP35ExportSavedMaterialContoursForTests(doc)
-    Check "native.ownership.repeatNoDuplicates", exported = 0 And doc.ModelSpace.Count = countBefore
+    Check "native.ownership.repeatAddsContour", exported = 1 And doc.ModelSpace.Count = countBefore + 2
     For Each entity In doc.ModelSpace
         If CStr(entity.Layer) = "SP35_SAVED_CONTOURS" And IsNDMContourOutput(entity) Then ownedCount = ownedCount + 1
     Next entity
-    Check "native.ownership.noRedundantOutput", ownedCount = 0
+    Check "native.ownership.previousOutputKept", ownedCount = 2
     Check "native.ownership.originalStillExists", doc.HandleToObject(handle).Handle = handle
     GoTo Restore
 Failed:

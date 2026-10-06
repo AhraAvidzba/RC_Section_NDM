@@ -208,7 +208,7 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Отдает самостоятельную копию конечных колец результата для сериализации.
+' Отдает самостоятельную копию конечных замкнутых контуров результата для сериализации.
 ' Writer/экспортер не восстанавливают область из Abt и не выполняют clipping.
 Public Property Get InteractionRegion() As CConcreteRegion
     If Not mInteractionRegion Is Nothing Then Set InteractionRegion = mInteractionRegion.Clone

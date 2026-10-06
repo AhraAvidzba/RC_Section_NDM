@@ -38,6 +38,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestSingleCombinationSkipsBlankRows stats
     TestLoadCombinationRangeMinimumRows stats
     TestConfigDropdownChoices stats
+    TestConfigDropdownMeaning stats
     TestConfigSettingsRightBorder stats
     AppendLine stats, "RUN: TestAudit03ReaderContract"
     TestAudit03ReaderContract stats
@@ -4599,7 +4600,7 @@ Private Sub TestAudit03ReaderWidth(ByRef stats As TUiTestStats, ByVal sheet As O
     End If
     Dim errorNumber As Long
     On Error Resume Next
-    reader.LoadFromRange sheet.Range("A1:D3"), batch
+    reader.LoadFromRange sheet.Range("A1:3d"), batch
     errorNumber = Err.Number
     Err.Clear
     On Error GoTo Failed
@@ -6364,8 +6365,8 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
     Next row
     If minAreaRow = 0 Then Err.Raise vbObjectError + 4602, "TestAudit03InputAreaImportFilter", "Не найден порог площади импорта."
     SetSystemSetting "Units.Length.Input", "m"
-    SetSystemSetting "AutoCAD.Import.ConcreteLayer", "Concrete"
-    SetSystemSetting "AutoCAD.Import.RebarLayer", "Reinf"
+    SetSystemSetting "AutoCAD.Common.ConcreteLayer", "Concrete"
+    SetSystemSetting "AutoCAD.Common.RebarLayer", "Reinf"
     Set modelSpace = New Collection
     Set region = New CFakeAcadRegion
     region.Initialize 10000#, 1000#, 2000#, 10000# * 10000# / 12#, 10000# * 10000# / 12#, 0#, "Concrete", "C_MAIN"
@@ -6547,8 +6548,8 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             SetProfileSetting "PR1", "Calculation.Stability.Enabled", "No"
             SetProfileSetting "PR1", "Visualization.State", "StrengthState"
             SetSystemSetting "AutoCAD.Import.MinArea", "0.000001"
-            SetSystemSetting "AutoCAD.Import.ConcreteLayer", "Concrete"
-            SetSystemSetting "AutoCAD.Import.RebarLayer", "Reinf"
+            SetSystemSetting "AutoCAD.Common.ConcreteLayer", "Concrete"
+            SetSystemSetting "AutoCAD.Common.RebarLayer", "Reinf"
             For Each name In Array("Force", "Moment", "Stress", "Curvature")
                 SetSystemSetting "Units." & CStr(name) & ".Output", GetSystemSetting("Units." & CStr(name) & ".Input")
             Next name
@@ -6594,8 +6595,8 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             ' Эти параметры остановили бы новый импорт, но сохраненную модель
             ' при расчете не должны ни перечитывать из DWG, ни фильтровать заново.
             SetSystemSetting "AutoCAD.Import.MinArea", "1e100"
-            SetSystemSetting "AutoCAD.Import.ConcreteLayer", "__NoNewConcreteImport"
-            SetSystemSetting "AutoCAD.Import.RebarLayer", "__NoNewRebarImport"
+            SetSystemSetting "AutoCAD.Common.ConcreteLayer", "__NoNewConcreteImport"
+            SetSystemSetting "AutoCAD.Common.RebarLayer", "__NoNewRebarImport"
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
             solveCount = SectionEquilibriumSolveCount()
@@ -6760,7 +6761,7 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
         "Stability.AccidentalEccentricityMode", "Stability.AccidentalEccentricityPlanes", _
         "Stability.AccidentalEccentricityUser1", "Stability.AccidentalEccentricityUser2", "Stability.SP63.Ks", _
         "Stability.SP63.DeltaEMin", "Stability.SP63.DeltaEMax", "Stability.SP35.PhiP", "Stability.SP35.NOverNcrLimit", _
-        "AutoCAD.Import.MinArea", "AutoCAD.Import.ConcreteLayer", "AutoCAD.Import.RebarLayer")
+        "AutoCAD.Import.MinArea", "AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer")
     For i = 0 To UBound(keys)
         key = CStr(keys(i))
         Set keyCell = Nothing
@@ -7598,10 +7599,167 @@ End Sub
 Public Function RunConfigPresentationTests() As String
     Dim stats As TUiTestStats
     TestConfigDropdownChoices stats
+    TestConfigDropdownMeaning stats
     TestConfigSettingsRightBorder stats
     TestRectSetIndependentSelectorLayout stats
+    TestAutoCADCommonSettingsLayout stats
     RunConfigPresentationTests = stats.Report & "TOTAL_CONFIG_PRESENTATION: passed=" & _
         CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' Проверяет единственный набор общих слоев и размещение экспортной области
+' в каталоге. Ожидания независимы от SettingsCatalog и действуют после сборки.
+Private Sub TestAutoCADCommonSettingsLayout(ByRef stats As TUiTestStats)
+    Dim range As Object, values As Variant, row As Long, key As String, subsection As String, section As String
+    Dim counts As Object, keyRows As Object, expected As Variant
+    On Error GoTo Failed
+    Set range = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    values = range.Value2: Set counts = CreateObject("Scripting.Dictionary"): Set keyRows = CreateObject("Scripting.Dictionary")
+    For row = 2 To range.Rows.Count
+        key = CStr(values(row, 1))
+        AssertTrue stats, "config.subsection.russian." & CStr(row), key <> "[Common]"
+        If key = "[AutoCAD]" Then
+            section = "AutoCAD": subsection = vbNullString
+        ElseIf Left$(key, 1) = "[" Then
+            subsection = key
+        ElseIf Left$(key, 8) = "AutoCAD." Then
+            If Not counts.Exists(key) Then counts.Add key, 0
+            counts(key) = CLng(counts(key)) + 1: keyRows(key) = row
+            If Left$(key, 15) = "AutoCAD.Common." Then
+                AssertTrue stats, "config.autoCAD.common." & key, section = "AutoCAD" And subsection = "[Общие настройки]"
+            ElseIf key = "AutoCAD.Export.CrackInteractionLayer" Then
+                AssertTrue stats, "config.autoCAD.crack.exportOnly", subsection = "[Экспорт]"
+            End If
+        End If
+    Next row
+    For Each expected In Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", _
+            "AutoCAD.Common.SectionContourLayer", "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Export.CrackInteractionLayer")
+        AssertTrue stats, "config.autoCAD.unique." & CStr(expected), counts.Exists(CStr(expected))
+        If counts.Exists(CStr(expected)) Then AssertTrue stats, "config.autoCAD.once." & CStr(expected), CLng(counts(CStr(expected))) = 1
+    Next expected
+    For Each expected In Array("AutoCAD.Import.ConcreteLayer", "AutoCAD.Import.RebarLayer", _
+            "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", "AutoCAD.Common.CrackInteractionLayer")
+        AssertTrue stats, "config.autoCAD.removed." & CStr(expected), Not counts.Exists(CStr(expected))
+    Next expected
+    If keyRows.Exists("AutoCAD.Export.CrackInteractionLayer") And keyRows.Exists("AutoCAD.Layer.ConcreteTension") Then _
+        AssertTrue stats, "config.autoCAD.crack.beforeConcreteTension", keyRows("AutoCAD.Export.CrackInteractionLayer") + 1 = keyRows("AutoCAD.Layer.ConcreteTension")
+    Exit Sub
+Failed:
+    AssertTrue stats, "config.autoCAD.layout.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
+
+' Проверяет смысл вариантов, а не только способность Excel открыть список.
+' Независимые ожидаемые наборы не позволяют пройти тесту при подмене
+' Stacked/SideBySide значениями mm/pt или при смешении иных настроек.
+Private Sub TestConfigDropdownMeaning(ByRef stats As TUiTestStats)
+    Dim table As Object, cell As Object, source As Object, name As Variant, key As String, expected As String, actual As String
+    Dim row As Long, column As Long, headerRow As Long, checked As Long, formula As String, validationType As Long
+    On Error GoTo Failed
+    For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
+            "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", _
+            "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngLoadCombinations")
+        Set table = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        For row = 2 To table.Rows.Count
+            For column = 2 To table.Columns.Count
+                Set cell = table.Cells(row, column)
+                validationType = 0
+                On Error Resume Next
+                validationType = cell.Validation.Type
+                On Error GoTo Failed
+                If validationType <> xlValidateList Then GoTo NextMeaningCell
+                key = CStr(table.Cells(row, 1).Value2)
+                If CStr(name) = "rngCalculationProfiles" Then key = CStr(table.Cells(row, 2).Value2)
+                expected = ExpectedConfigDropdownOptions(key)
+                If CStr(name) = "rngLoadCombinations" Then
+                    If column = 6 Then expected = "Auto|" & ChrW(&H3BB) & "*Mx|" & ChrW(&H3BB) & "*My|" & ChrW(&H3BB) & "*Mxy|" & ChrW(&H3BB) & "*N|" & ChrW(&H3BB) & "*NMxy"
+                End If
+                If InStr(1, CStr(name), "Geometry", vbTextCompare) > 0 And Len(expected) = 0 Then
+                    For headerRow = row - 1 To 1 Step -1
+                        key = LCase$(CStr(table.Cells(headerRow, column).Value2))
+                        If key = "положение" Then expected = "Stacked|SideBySide": Exit For
+                        If key = "привязка" Then expected = "EachBar|EverySecondBar": Exit For
+                    Next headerRow
+                End If
+                If Len(expected) > 0 Then
+                    formula = CStr(cell.Validation.Formula1)
+                    Set source = cell.Worksheet.Range(Mid$(formula, 2))
+                    actual = vbNullString
+                    For Each cell In source.Cells
+                        If Len(actual) > 0 Then actual = actual & "|"
+                        actual = actual & CStr(cell.Value2)
+                    Next cell
+                    AssertTextEquals stats, "config.dropdown.meaning." & CStr(name) & "." & CStr(row) & "." & CStr(column), actual, expected
+                    checked = checked + 1
+                End If
+NextMeaningCell:
+            Next column
+        Next row
+    Next name
+    AssertTrue stats, "config.dropdown.meaning.coverage", checked > 150
+    AppendLine stats, "CONFIG_DROPDOWN_MEANING: checked=" & CStr(checked)
+    Exit Sub
+Failed:
+    AssertTrue stats, "config.dropdown.meaning.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
+
+' Возвращает независимый oracle допустимых вариантов конкретной настройки.
+' Динамические профили и LC проверяются отдельно; здесь нет адресов helper-ячеек.
+Private Function ExpectedConfigDropdownOptions(ByVal key As String) As String
+    Select Case key
+        Case "Geometry.Source": ExpectedConfigDropdownOptions = "Generated|AutoCAD"
+        Case "General.WorstCombinationCriterion": ExpectedConfigDropdownOptions = "StrengthStrain|StrengthCapacity|Cracks|Stability"
+        Case "Stability.Code", "SLS.Crack.Code": ExpectedConfigDropdownOptions = "SP63|SP35"
+        Case "Stability.SystemType": ExpectedConfigDropdownOptions = "Determinate|Indeterminate"
+        Case "Stability.ZeroMomentEccentricitySign1", "Stability.ZeroMomentEccentricitySign2": ExpectedConfigDropdownOptions = "1|-1"
+        Case "Stability.AccidentalEccentricityMode": ExpectedConfigDropdownOptions = "AutoWithL|AutoWith" & ChrW(&H3BC) & "L|User"
+        Case "Stability.AccidentalEccentricityPlanes": ExpectedConfigDropdownOptions = "OnlyMomentPlane|BothPlanes"
+        Case "Stability.PhiLMode": ExpectedConfigDropdownOptions = "Auto|PhiL2"
+        Case "Geometry.Type": ExpectedConfigDropdownOptions = "RoundedRectangle|HollowRectangle|Circle|RectSet"
+        Case "Solver.Method": ExpectedConfigDropdownOptions = "Newton|Secant"
+        Case "Capacity.SolutionStrategy", "SLS.Crack.InitiationSolutionStrategy": ExpectedConfigDropdownOptions = "Auto|UltimateStrain|LoadMultiplier"
+        Case "Capacity.SearchMethod": ExpectedConfigDropdownOptions = "Bisection|Brent|Secant"
+        Case "SLS.Crack.SP35.RadiusDiameterMode": ExpectedConfigDropdownOptions = "Max|Min|Average"
+        Case "SLS.Crack.SP35.InteractionRadiusMode": ExpectedConfigDropdownOptions = "3d|5d|6d"
+        Case "SLS.Crack.SP35.RebarProfile": ExpectedConfigDropdownOptions = "Periodic|Smooth"
+        Case "SLS.Crack.Phi3Mode": ExpectedConfigDropdownOptions = "Auto|User"
+        Case "SLS.Crack.PsiMode": ExpectedConfigDropdownOptions = "User|Auto|AlwaysCalc"
+        Case "SLS.Crack.SigmaSCrcAveragingMode": ExpectedConfigDropdownOptions = "AllSelected|TensionOnly"
+        Case "SLS.Crack.TensionZoneMode": ExpectedConfigDropdownOptions = "Effective|FullTension"
+        Case "SLS.Crack.CoverDistanceMode": ExpectedConfigDropdownOptions = "NearestContour|GlobalExtreme"
+        Case "AutoCAD.Export.LabelMode": ExpectedConfigDropdownOptions = "ValuesOnly|NamesAndValues"
+        Case "AutoCAD.Export.PrincipalAxesMode", "Plot.PrincipalAxesMode": ExpectedConfigDropdownOptions = "Transformed|Concrete|None"
+        Case "Plot.LegendMode": ExpectedConfigDropdownOptions = "Separate|Common"
+        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", "Solver.LineSearchEnabled", _
+                "AutoCAD.Export.NeutralLineEnabled", "AutoCAD.Export.LoadPointEnabled", "AutoCAD.Export.ContourEnabled", _
+                "AutoCAD.Export.ExportCrackInteractionContour", "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", _
+                "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.NeutralLineEnabled", "Plot.LoadApplicationPointEnabled", _
+                "Plot.AxisLabelsEnabled", "Plot.ContourEnabled", "Plot.LegendEnabled", "Calculation.Strength.DirectState", _
+                "Calculation.Strength.Capacity", "Calculation.Crack.Width", "Calculation.Stability.Enabled", "Enabled", "LineEnabled"
+            ExpectedConfigDropdownOptions = "Yes|No"
+        Case "Length": ExpectedConfigDropdownOptions = "mm|cm|m"
+        Case "Area": ExpectedConfigDropdownOptions = "mm2|cm2|m2"
+        Case "Force": ExpectedConfigDropdownOptions = "N|kN|tf"
+        Case "Moment": ExpectedConfigDropdownOptions = "N*mm|kN*m|tf*m"
+        Case "Stress": ExpectedConfigDropdownOptions = "Pa|kPa|MPa|kgf/cm2|tf/m2"
+        Case "Curvature": ExpectedConfigDropdownOptions = "1/mm|1/m"
+        Case "+N": ExpectedConfigDropdownOptions = "Tension|Compression"
+        Case "+Mx": ExpectedConfigDropdownOptions = "+Y tension|-Y tension"
+        Case "+My": ExpectedConfigDropdownOptions = "+X tension|-X tension"
+        Case "MaterialModel.Stability.ValueSet", "MaterialModel.Strength.ValueSet", "MaterialModel.CrackInitiation.ValueSet", "MaterialModel.CrackedState.ValueSet"
+            ExpectedConfigDropdownOptions = "ULS(I)|SLS(II)"
+        Case "MaterialModel.Strength.ConcreteDiagram", "MaterialModel.CrackInitiation.ConcreteDiagram", "MaterialModel.CrackedState.ConcreteDiagram", _
+                "MaterialModel.Strength.SteelDiagram", "MaterialModel.CrackInitiation.SteelDiagram", "MaterialModel.CrackedState.SteelDiagram"
+            ExpectedConfigDropdownOptions = "TwoLine|ThreeLine"
+        Case "MaterialModel.Strength.ConcreteTension": ExpectedConfigDropdownOptions = "Ignore|UseDiagram"
+        Case "Visualization.State": ExpectedConfigDropdownOptions = "StrengthState|CapacityState|PreCrackState|PostCrackState|CrackedState"
+        Case "Visualization.Quantity": ExpectedConfigDropdownOptions = "Stress|Strain"
+        Case "Placement": ExpectedConfigDropdownOptions = "Outside|Inside"
+        Case "TextUnits": ExpectedConfigDropdownOptions = "mm|pt"
+        Case "ArrowType": ExpectedConfigDropdownOptions = "Triangle|Stealth|Diamond|Oval|Open"
+        Case "ArrowSize": ExpectedConfigDropdownOptions = "Small|Medium|Wide"
+        Case "Rebar.Loc2row", "Rebar.Loc3row": ExpectedConfigDropdownOptions = "Stacked|SideBySide"
+        Case "RectSet.SectionType": ExpectedConfigDropdownOptions = "Rectangle|LSection|TwoRectangles"
+    End Select
 End Function
 
 ' Проверяет все list-ячейки Config и по одному представителю каждого

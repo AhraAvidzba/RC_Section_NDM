@@ -47,7 +47,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     rebarLabels.AddRebarLabels annotations, rebars
 End Sub
 
-' Добавляет замкнутое кольцо с явными ключом и ролью Outer/Opening, чтобы
+' Добавляет замкнутый контур с явными ключом и ролью Outer/Opening, чтобы
 ' query и export не смешивали наружную границу с отверстием.
 Private Sub AddContourLoop(ByVal contours As CSectionContours, ByVal hollow As CGeometryHollowRectangle, _
         ByVal openingLoop As Boolean, ByVal loopName As String, ByVal commentPart As String)

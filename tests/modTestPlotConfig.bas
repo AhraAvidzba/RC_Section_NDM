@@ -27,11 +27,100 @@ Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
     TestAudit03SnapshotMetadataContracts stats
     TestAudit03AutoPlotContracts stats
     TestAudit03ContourArcContracts stats
+    TestCrackAnnotationsDoNotRequirePlotNormals stats
     TestAudit03NamedAnnotationSettings stats
     AppendLine stats, "TOTAL_AUDIT03_GENERAL_PLOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03GeneralPlotTests = stats.Report
 End Function
+
+' Проверяет отдельно разделение схемы подписей и расчетных аннотаций трещин.
+' Временная книга содержит пустые нормали области и координаты неуспешной
+' пробы; для настоящей размерной подписи обязательность нормали сохраняется.
+Public Function RunCrackAnnotationPlotTests() As String
+    Dim stats As TUiTestStats
+    TestCrackAnnotationsDoNotRequirePlotNormals stats
+    AppendLine stats, "TOTAL_CRACK_ANNOTATION_PLOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunCrackAnnotationPlotTests = stats.Report
+End Function
+
+' ДЛЯ ТЕСТОВ: переносит named anchor и проверяет геометрическое preview.
+' Расчетные аннотации остаются неизменными, solver не вызывается.
+Private Sub TestCrackAnnotationsDoNotRequirePlotNormals(ByRef stats As TUiTestStats)
+    Dim fixture As Object, config As Object, sheet As Object, source As Object, target As Object, anchor As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader
+    Dim addresses As Variant, name As Variant, headers As Variant, geometry As Variant, saved As Variant, actual As Variant
+    Dim annotations(1 To 6, 1 To 9) As Variant, props(1 To 2, 1 To 4) As Variant
+    Dim i As Long, j As Long, position As Long, code As Long, reason As String, solveCount As Long, prefix As String
+    On Error GoTo Failed
+    solveCount = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "Config"
+    Set sheet = fixture.Worksheets.Add: sheet.Name = "Results"
+    addresses = Array("A5", "H5", "P5", "P25"): i = 0
+    For Each name In Array("rngSystemSettings", "rngPlotAnnotationSettings", "rngUnitSettings", "rngSignConventionSettings")
+        Set source = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        Set target = config.Range(CStr(addresses(i))).Resize(source.Rows.Count, source.Columns.Count)
+        target.Value2 = source.Value2
+        fixture.Names.Add Name:=CStr(name), RefersTo:="=Config!" & target.Address: i = i + 1
+    Next name
+    geometry = Audit03ContourGeometrySnapshot("CONTOUR_LINE")
+    sheet.Range("A5").Resize(4, 25).Value2 = geometry
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
+    props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
+    sheet.Range("AB5").Resize(2, 4).Value2 = props
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$AB$5"
+    headers = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
+    For i = 0 To UBound(headers): annotations(1, i + 1) = headers(i): Next i
+    For i = 2 To 3
+        For j = 2 To 7: annotations(i, j) = 0#: Next j
+        annotations(i, 9) = "mm"
+    Next i
+    annotations(2, 1) = "DIMENSION": annotations(2, 4) = 100#: annotations(2, 7) = 1#: annotations(2, 8) = "DIM"
+    annotations(3, 1) = "REBAR_ANNOTATION": annotations(3, 4) = 100#: annotations(3, 7) = 1#: annotations(3, 8) = "REBAR"
+    annotations(4, 1) = "CRACK_REGION_LINE": annotations(4, 2) = 10#: annotations(4, 3) = 20#
+    annotations(4, 4) = 30#: annotations(4, 5) = 40#: annotations(4, 9) = "mm"
+    annotations(5, 1) = "CRACK_REGION_ARC": annotations(5, 9) = "mm"
+    annotations(6, 1) = "CRACK_PROBE": annotations(6, 8) = "P1/Q1": annotations(6, 9) = "mm"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook fixture
+    Set reader = New CSectionPlotDataReader
+    For position = 0 To 1
+        If position = 0 Then Set anchor = sheet.Range("A20") Else Set anchor = sheet.Range("CH800")
+        anchor.Resize(6, 9).Value2 = annotations
+        fixture.Names.Add Name:="rngNDMSectionAnnotations", RefersTo:="=Results!" & anchor.Address
+        saved = anchor.Resize(6, 9).Value2
+            prefix = "crackAnnotation.p" & CStr(position)
+            reader.LoadGeometryPreviewFromWorkbook fixture, settings
+            AssertTrue stats, prefix & ".count", reader.AnnotationCount = 3
+            AssertTrue stats, prefix & ".dimension", reader.AnnotationType(2) = "DIMENSION"
+            AssertTrue stats, prefix & ".rebar", reader.AnnotationType(3) = "REBAR_ANNOTATION"
+            actual = anchor.Resize(6, 9).Value2
+            For i = 1 To 6
+                For j = 1 To 9
+                    AssertTrue stats, prefix & ".preserved." & CStr(i) & "." & CStr(j), CStr(actual(i, j)) = CStr(saved(i, j))
+                Next j
+            Next i
+            anchor.Cells(2, 6).ClearContents
+            On Error Resume Next
+            Err.Clear: reader.LoadGeometryPreviewFromWorkbook fixture, settings
+            code = Err.Number: reason = Err.Description
+            On Error GoTo Failed
+            AssertTrue stats, prefix & ".realNormalRejected", code <> 0
+            AssertTrue stats, prefix & ".dynamicAddress", InStr(1, reason, "Results!" & anchor.Cells(2, 6).Address(False, False), vbTextCompare) > 0
+            AssertTrue stats, prefix & ".reset", reader.AnnotationCount = 0 And reader.Count = 0
+            anchor.Cells(2, 6).Value2 = 0#
+            reader.LoadGeometryPreviewFromWorkbook fixture, settings
+            AssertTrue stats, prefix & ".recovery", reader.AnnotationCount = 3
+    Next position
+    AssertTrue stats, "crackAnnotation.noSolve", SectionEquilibriumSolveCount() = solveCount
+    fixture.Close False
+    Exit Sub
+Failed:
+    AssertTrue stats, "crackAnnotation.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
 
 ' Проверяет углы дуг сохраненного контура через reader и настоящий preview.
 ' Рисунок и Results принадлежат отдельной книге; ошибочный текст должен

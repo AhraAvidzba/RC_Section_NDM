@@ -37,7 +37,7 @@ Private Function Rectangle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As D
     Rectangle = points
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет каждое кольцо готового снимка, включая inner loops.
+' ДЛЯ ТЕСТОВ: проверяет каждый замкнутый контур готового снимка, включая границы отверстий.
 Private Sub CheckClosed(ByVal name As String, ByVal region As CConcreteRegion)
     Dim i As Long, loopID As Long, previousLoop As Long
     Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, sweep As Double
@@ -234,6 +234,7 @@ Public Function RunGeometryQueryTests() As String
     Dim query As CSectionGeometryQuery
     Set query = New CSectionGeometryQuery
     TestAnalyticClipping query
+    TestHollowArcJunctions query
     TestOpenings query
     TestIntervals query
     TestMesh query
@@ -242,6 +243,7 @@ Public Function RunGeometryQueryTests() As String
     TestRotatedAndTouchingGeometry query
     TestFirstMaterialWall query
     TestRotatedMaterialWall query
+    TestConnectedRegionSelection query
     GoTo Finished
 Failed:
     Check "runtime: " & CStr(Err.Number) & "; " & Err.Description, False
@@ -249,6 +251,106 @@ Finished:
     mReport = mReport & "TOTAL: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunGeometryQueryTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: связная часть сохраняет свои отверстия, но не присоединяет
+' отдельный бетон внутри проема или соседнюю область. После clipping
+' сквозной проем отделяет стенку, а боковой вырез не создает длинную тень.
+Private Sub TestConnectedRegionSelection(ByVal query As CSectionGeometryQuery)
+    Dim region As CConcreteRegion, island As CConcreteRegion, separate As CConcreteRegion
+    Dim selected As CConcreteRegion, regions As Collection
+    Set region = query.PolygonRegion(Rectangle(0#, 0#, 100#, 100#))
+    Set region = query.SubtractRegion(region, query.PolygonRegion(Rectangle(20#, 20#, 80#, 80#)))
+    Set island = query.PolygonRegion(Rectangle(30#, 30#, 70#, 70#))
+    Set island = query.SubtractRegion(island, query.PolygonRegion(Rectangle(40#, 40#, 60#, 60#)))
+    Set separate = query.PolygonRegion(Rectangle(120#, 0#, 140#, 20#))
+    Set regions = New Collection: regions.Add region: regions.Add island: regions.Add separate
+    Set region = query.MergeDisjointRegions(regions)
+    region.SetOwner "fixture", "SP35", "G1"
+    Set selected = query.ConnectedRegionAtPoint(region, 10#, 50#)
+    CheckNear "connected.outer.area", selected.Area, 6400#
+    Check "connected.outer.onlyOwnOpening", selected.LoopCount = 2
+    Check "connected.outer.noIsland", Not query.ContainsPoint(selected, 35#, 35#)
+    Check "connected.outer.noSeparate", Not query.ContainsPoint(selected, 130#, 10#)
+    Check "connected.metadata", selected.OwnerID = "fixture" And selected.Standard = "SP35" And selected.AnchorID = "G1"
+    CheckClosed "connected.outer", selected
+    Set selected = query.ConnectedRegionAtPoint(region, 35#, 35#)
+    CheckNear "connected.island.area", selected.Area, 1200#
+    Check "connected.island.onlyOwnOpening", selected.LoopCount = 2
+    Check "connected.island.noSurrounding", Not query.ContainsPoint(selected, 10#, 50#)
+    Check "connected.island.hole", Not query.ContainsPoint(selected, 50#, 50#)
+    CheckClosed "connected.island", selected
+    Set selected = query.ConnectedRegionAtPoint(region, 50#, 50#)
+    Check "connected.emptyAtOpening", selected.Area = 0# And selected.SegmentCount = 0
+    Set selected = query.ConnectedRegionAtPoint(selected, 0#, 0#)
+    Check "connected.emptyInput", selected.Area = 0# And selected.SegmentCount = 0
+    Set selected = query.ConnectedRegionAtPoint(region, 120#, 10#)
+    CheckNear "connected.onBoundary", selected.Area, 400#
+
+    Set region = query.PolygonRegion(Rectangle(0#, 0#, 100#, 100#))
+    Set region = query.SubtractRegion(region, query.PolygonRegion(Rectangle(20#, 30#, 80#, 70#)))
+    Set selected = query.ClipWindow(region, 0#, 1#, 0#, 100#, -60#, -40#)
+    Set selected = query.ConnectedRegionAtPoint(selected, 50#, 85#)
+    CheckNear "connected.strip.separatedWall", selected.Area, 600#
+    Check "connected.strip.noOppositeWall", Not query.ContainsPoint(selected, 50#, 15#)
+    CheckClosed "connected.strip", selected
+    Set selected = query.ClipWindow(region, 0#, 1#, 0#, 100#, -30#, -10#)
+    Set selected = query.ConnectedRegionAtPoint(selected, 15#, 85#)
+    CheckNear "connected.notch.localArea", selected.Area, 1600#
+    Check "connected.notch.concreteBelow", query.ContainsPoint(selected, 25#, 15#)
+    Check "connected.notch.holeStillExcluded", Not query.ContainsPoint(selected, 25#, 50#)
+    CheckClosed "connected.notch", selected
+End Sub
+
+' ДЛЯ ТЕСТОВ: координата R22 из сохраненной HollowRectangle лежит в бетоне
+' на уровне стыка прямой и скругления. Проверяем также отверстие, обе стороны
+' стыка, перенос и поворот без подгонки допуска и без запуска НДС.
+Private Sub TestHollowArcJunctions(ByVal query As CSectionGeometryQuery)
+    Dim geometry As CGeometryHollowRectangle, section As CSectionModel
+    Dim annotations As CHollowRectAnnotationBuilder, rebars As CRebarLayout
+    Dim domain As CConcreteRegion, rotated As CConcreteRegion, raw() As TRegionEdge, count As Long
+    Dim angle As Variant, offset As Variant, side As Variant, i As Long, x As Double, y As Double
+    Set geometry = New CGeometryHollowRectangle
+    geometry.Initialize 500#, 800#, 180#, 200#, 500#, 30#, 0#, 0#
+    Set section = New CSectionModel
+    section.AddConcreteElement 0#, -300#, 10000#, 1, , , "Rectangle", 100#, 100#
+    Set annotations = New CHollowRectAnnotationBuilder: Set rebars = New CRebarLayout
+    annotations.Build section, geometry, rebars
+    query.Initialize section: Set domain = query.ConcreteDomain
+    For Each side In Array(-1#, 1#)
+        For Each offset In Array(-0.00001, -0.00000001, 0#, 0.00000001, 0.00001)
+            Check "hollow.original.junction.concrete." & CStr(side) & "." & CStr(offset), query.ContainsPoint(domain, side * 210#, 220# + offset)
+            Check "hollow.original.junction.opening." & CStr(side) & "." & CStr(offset), Not query.ContainsPoint(domain, 0#, 220# + offset)
+        Next offset
+    Next side
+    For Each angle In Array(0#, 0.47, GEOM_PI / 2#)
+        domain.CopyEdges raw, count
+        For i = 1 To count
+            x = raw(i).X1: y = raw(i).Y1
+            raw(i).X1 = 100000# + x * Cos(angle) - y * Sin(angle)
+            raw(i).Y1 = -200000# + x * Sin(angle) + y * Cos(angle)
+            x = raw(i).X2: y = raw(i).Y2
+            raw(i).X2 = 100000# + x * Cos(angle) - y * Sin(angle)
+            raw(i).Y2 = -200000# + x * Sin(angle) + y * Cos(angle)
+            x = raw(i).CenterX: y = raw(i).CenterY
+            raw(i).CenterX = 100000# + x * Cos(angle) - y * Sin(angle)
+            raw(i).CenterY = -200000# + x * Sin(angle) + y * Cos(angle)
+        Next i
+        Set rotated = query.BoundaryRegion(raw, count, "HollowJunctionFixture")
+        For Each side In Array(-1#, 1#)
+            For Each offset In Array(-0.00001, 0#, 0.00001)
+                x = side * 210#: y = 220# + offset
+                Check "hollow.junction.concrete." & CStr(angle) & "." & CStr(side) & "." & CStr(offset), _
+                    query.ContainsPoint(rotated, 100000# + x * Cos(angle) - y * Sin(angle), -200000# + x * Sin(angle) + y * Cos(angle))
+                x = side * 270#
+                Check "hollow.junction.outside." & CStr(angle) & "." & CStr(side) & "." & CStr(offset), _
+                    Not query.ContainsPoint(rotated, 100000# + x * Cos(angle) - y * Sin(angle), -200000# + x * Sin(angle) + y * Cos(angle))
+                x = 0#
+                Check "hollow.junction.opening." & CStr(angle) & "." & CStr(side) & "." & CStr(offset), _
+                    Not query.ContainsPoint(rotated, 100000# + x * Cos(angle) - y * Sin(angle), -200000# + x * Sin(angle) + y * Cos(angle))
+            Next offset
+        Next side
+    Next angle
+End Sub
 
 ' ДЛЯ ТЕСТОВ: сохраняет достоверный прямоугольный контур независимо от сетки.
 ' Роль opening задается машинным ID, а не знаком пользовательских координат.

@@ -12,9 +12,9 @@ Option Explicit
 ' ==========================================================================
 ' Готовая аналитическая область бетона и ее принадлежность результату
 ' ==========================================================================
-' Контейнер хранит замкнутые ориентированные кольца из отрезков и дуг, площадь
-' этих же колец и metadata владельца. Геометрические операции выполняет только
-' CSectionGeometryQuery. Здесь нет НДС, нормативных коэффициентов, Excel или
+' Контейнер хранит замкнутые ориентированные контуры из отрезков и дуг, площадь
+' ограниченной ими области и metadata владельца. Геометрические операции
+' выполняет только CSectionGeometryQuery. Здесь нет НДС, нормативных коэффициентов, Excel или
 ' построения альтернативной области для экспорта. Публичное чтение не меняет
 ' снимок; геометрия заполняется общим движком до публикации результата.
 
@@ -27,7 +27,7 @@ Private mSectionRevision As Long ' Версия модели, к которой 
 Private mOwnerID As String ' CombinationID конкретного результата, не ALL.
 Private mStandard As String ' Нормативный владелец готовой области; не влияет на геометрию.
 Private mAnchorID As String ' Критическая группа/стержень для проверки происхождения.
-Private mLoopOpening() As Boolean ' Готовые роли колец, определенные общим topology-контрактом.
+Private mLoopOpening() As Boolean ' Роли замкнутых контуров: наружная граница или граница отверстия.
 Private mBoundaryProbes As Variant ' [найден интервал, Qx, Qy, Px, Py]; диагностические точки, не аппроксимация площади.
 
 ' Принимает рассчитанный массив границ. Копирование отделяет готовый снимок
@@ -54,7 +54,7 @@ Friend Sub SetGeometry(ByRef edges() As TRegionEdge, ByVal count As Long, _
 End Sub
 
 ' Сохраняет готовые диагностические пары внутренних/внешних границ.
-' Число точек задает потребитель; площадь и кольца по этим пробам не строятся.
+' Число точек задает потребитель; площадь и замкнутые контуры по этим пробам не строятся.
 Friend Sub SetBoundaryProbes(ByVal probes As Variant)
     mBoundaryProbes = probes
 End Sub
@@ -107,10 +107,10 @@ Public Property Get LoopCount() As Long
     LoopCount = mLoopCount
 End Property
 
-' Возвращает роль сохраненного кольца через общий topology-контракт.
+' Возвращает роль сохраненного замкнутого контура через общий topology-контракт.
 ' Потребителям аннотаций не требуется собственный расчет ориентации границ.
 Public Property Get LoopIsOpening(ByVal index As Long) As Boolean
-    If index < 1 Or index > mLoopCount Then Err.Raise vbObjectError + 5400, "CConcreteRegion", "Номер кольца области вне допустимого диапазона."
+    If index < 1 Or index > mLoopCount Then Err.Raise vbObjectError + 5400, "CConcreteRegion", "Номер замкнутого контура области вне допустимого диапазона."
     LoopIsOpening = mLoopOpening(index)
 End Property
 Public Property Get Area() As Double
@@ -133,7 +133,7 @@ Public Property Get AnchorID() As String
 End Property
 
 ' Возвращает независимый снимок той же области, сохраняя владельца и источник.
-' Это не восстановление по площади: копируются все кольца и аналитические дуги.
+' Это не восстановление по площади: копируются все замкнутые контуры и аналитические дуги.
 Public Function Clone() As CConcreteRegion
     Dim result As CConcreteRegion
     Set result = New CConcreteRegion

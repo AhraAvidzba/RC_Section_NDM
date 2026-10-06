@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestSectionSolver"
+Attribute VB_Name = "modTestSectionSolver"
 Option Explicit
 
 ' ==========================================================================
@@ -219,13 +219,13 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
         "AutoCAD.Export.CombinationID", "AutoCAD.Export.NeutralLineEnabled", _
         "AutoCAD.Export.PrincipalAxesMode", "AutoCAD.Export.LoadPointEnabled", _
         "AutoCAD.Export.ContourEnabled", "AutoCAD.Export.LabelMode", _
-        "AutoCAD.Layer.Concrete", "AutoCAD.Layer.Rebar", "AutoCAD.Common.SectionContourLayer", _
+        "AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
         "AutoCAD.Layer.ConcreteTension", "AutoCAD.Layer.ConcreteCompression", _
         "AutoCAD.Layer.RebarTension", "AutoCAD.Layer.RebarCompression", _
         "AutoCAD.Color.ConcreteTension", "AutoCAD.Color.ConcreteCompression", _
         "AutoCAD.Color.RebarTension", "AutoCAD.Color.RebarCompression", _
         "AutoCAD.Color.Neutral", _
-        "AutoCAD.Import.ConcreteLayer", "AutoCAD.Import.RebarLayer", "AutoCAD.Import.MinArea")
+        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Export.CrackInteractionLayer", "AutoCAD.Import.MinArea")
     AssertRequiredKeys stats, requiredKeys
 
     requiredKeys = Array( _
