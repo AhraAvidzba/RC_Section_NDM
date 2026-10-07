@@ -1,0 +1,7 @@
+﻿{"Stage":"Export","Passed":true,"Seconds":87.9726116}
+{"Stage":"Imported","Passed":true,"Seconds":876.3168495}
+{"Stage":"UserInputs","Passed":true,"Seconds":34.7639868}
+{"Stage":"Readers","Passed":true,"Seconds":39.774925499999995}
+{"Stage":"Build","Passed":true,"Seconds":163.006674}
+{"Stage":"Release","Passed":true,"Seconds":64.2876139}
+{"Stage":"Validate","Passed":true,"Seconds":15.120157599999999}

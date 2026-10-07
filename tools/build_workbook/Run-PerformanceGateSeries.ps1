@@ -2,7 +2,9 @@
 # Every child owns its hidden Excel; timeout is preserved as a failed gate.
 param(
     [string]$BaselineWorkbook = 'docs/regression/Performance/BatchV3Baseline/RC_Section_NDM.xlsm',
-    [string]$CandidateWorkbook = 'docs/regression/Performance/BatchV3Candidate/RC_Section_NDM.xlsm'
+    [string]$CandidateWorkbook = 'docs/regression/Performance/BatchV3Candidate/RC_Section_NDM.xlsm',
+    [switch]$SkipDirected,
+    [string]$EvidenceSuffix = ''
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -28,8 +30,9 @@ $jobs = @(
 )
 $records = @()
 foreach ($job in $jobs) {
-    $directory = 'docs/regression/Performance/' + $job.Name
-    $output = Join-Path $evidence $job.Name
+    if($SkipDirected -and $job.Tool) {continue}
+    $directory = 'docs/regression/Performance/' + $job.Name + $EvidenceSuffix
+    $output = Join-Path $evidence ($job.Name + $EvidenceSuffix)
     New-Item -ItemType Directory -Path $output -Force | Out-Null
     $tool = 'Measure-PerformanceStorage.ps1'
     if ($job.Tool) {$tool=$job.Tool}
@@ -40,10 +43,11 @@ foreach ($job in $jobs) {
         $group='Batch'; if($job.Group){$group=$job.Group}
         $arguments += @('-Group',$group,'-BaselineWorkbook',$BaselineWorkbook,'-CandidateWorkbook',$CandidateWorkbook)
         foreach($key in @('Family','Method','Shape','Order','Extension')) {
-            if($job[$key]) {$arguments += @('-'+$key,[string]$job[$key])}
+            if($job[$key]) {$arguments += @(('-'+$key),([string]$job[$key]))}
         }
-        if($job.Count) {$arguments += @('-Counts',[string]$job.Count,'-BatchModes','Staged')}
+        if($job.ContainsKey('Count')) {$arguments += @('-Counts',[string]$job['Count'],'-BatchModes','Staged')}
     }
+    $arguments | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'Arguments.json') -Encoding UTF8
     $command = ($arguments | ForEach-Object {Quote-Argument $_}) -join ' '
     $timer=[Diagnostics.Stopwatch]::StartNew()
     $child=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $command -WorkingDirectory $root -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $output 'runner.stdout.log') -RedirectStandardError (Join-Path $output 'runner.stderr.log')
@@ -60,8 +64,15 @@ foreach ($job in $jobs) {
         throw "Performance gate timed out: $($job.Name)"
     }
     $child.WaitForExit(); $child.Refresh(); $timer.Stop()
-    $records += [ordered]@{Name=$job.Name;ExitCode=$child.ExitCode;Seconds=$timer.Elapsed.TotalSeconds}
-    $records | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $evidence 'GateSeries.json') -Encoding UTF8
+    if(-not $job.Tool -and $child.ExitCode -eq 0) {
+        $raw=Get-Content -LiteralPath (Join-Path $output 'Raw.json') -Raw | ConvertFrom-Json
+        if($job.Family -and @($raw | Where-Object {$_.Case -notlike "batch-$($job.Family)-*"}).Count -gt 0) {throw 'Runner executed a different family.'}
+        $expected=60; if($job.ContainsKey('Count')) {$expected=10}; if($job.Group -eq 'Storage') {$expected=20}
+        if(@($raw).Count -ne $expected) {throw "Runner observation count differs: $(@($raw).Count), expected $expected"}
+        if($job.ContainsKey('Count') -and @($raw | Where-Object {$_.Count -ne $job['Count']}).Count -gt 0) {throw 'Runner load count differs.'}
+    }
+    $records += [ordered]@{Name=$job.Name+$EvidenceSuffix;ExitCode=$child.ExitCode;Seconds=$timer.Elapsed.TotalSeconds;ArgumentsValidated=$true}
+    $records | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $evidence ('GateSeries'+$EvidenceSuffix+'.json')) -Encoding UTF8
     Write-Output ($records[-1] | ConvertTo-Json -Compress)
     if($child.ExitCode -ne 0) {throw "Performance gate failed: $($job.Name). Preserved logs must be reviewed."}
 }

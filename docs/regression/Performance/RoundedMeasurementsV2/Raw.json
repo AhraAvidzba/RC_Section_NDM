@@ -1,0 +1,357 @@
+﻿[
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.89788190007675,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.401012200047262",
+                          "summary":  "0.617141499998979",
+                          "solves":  "30",
+                          "packing":  "0.002250700024888",
+                          "core":  "0.199808300007135",
+                          "plot":  "0.433421600027941",
+                          "preparation":  "0.083047799998894",
+                          "clear":  "0.161187799996696"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  89120768,
+                             "WorkingSet":  128024576,
+                             "PeakWorkingSet":  143953920
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  111923200,
+                            "WorkingSet":  158265344,
+                            "PeakWorkingSet":  158269440
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.41763510007877,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.365157000022009",
+                          "summary":  "0.602742500021122",
+                          "mechanicalBuilds":  "0",
+                          "solves":  "30",
+                          "domainBuilds":  "0",
+                          "released":  "True",
+                          "packing":  "0.000859599909745",
+                          "core":  "0.142501399968751",
+                          "plot":  "0.218891200027429",
+                          "preparation":  "0.06419389997609",
+                          "clear":  "0.02327750006225"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  98140160,
+                             "WorkingSet":  145084416,
+                             "PeakWorkingSet":  158269440
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  115384320,
+                            "WorkingSet":  162209792,
+                            "PeakWorkingSet":  162213888
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.32228129997384,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.319103699992411",
+                          "summary":  "0.520703900023364",
+                          "solves":  "30",
+                          "packing":  "0.00099779991433",
+                          "core":  "0.152195899980143",
+                          "plot":  "0.244207300012931",
+                          "preparation":  "0.061620799941011",
+                          "clear":  "0.023439400014468"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  102354944,
+                             "WorkingSet":  149569536,
+                             "PeakWorkingSet":  171110400
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  116645888,
+                            "WorkingSet":  163819520,
+                            "PeakWorkingSet":  171110400
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.55113369994797,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.434858800028451",
+                          "summary":  "0.622178899939172",
+                          "mechanicalBuilds":  "0",
+                          "solves":  "30",
+                          "domainBuilds":  "0",
+                          "released":  "True",
+                          "packing":  "0.001888000057079",
+                          "core":  "0.125287499977276",
+                          "plot":  "0.289741499931552",
+                          "preparation":  "0.05458729993552",
+                          "clear":  "0.022575300070457"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  100200448,
+                             "WorkingSet":  147415040,
+                             "PeakWorkingSet":  171110400
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  116912128,
+                            "WorkingSet":  164122624,
+                            "PeakWorkingSet":  171110400
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.36049830005504,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.343812800012529",
+                          "summary":  "0.564049799926579",
+                          "solves":  "30",
+                          "packing":  "0.00089550006669",
+                          "core":  "0.134121200069785",
+                          "plot":  "0.235401100013405",
+                          "preparation":  "0.059314700076357",
+                          "clear":  "0.022889300016686"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  101310464,
+                             "WorkingSet":  147947520,
+                             "PeakWorkingSet":  171110400
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  118300672,
+                            "WorkingSet":  165154816,
+                            "PeakWorkingSet":  171110400
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.2685251000803,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.276319999946281",
+                          "summary":  "0.541930800070986",
+                          "mechanicalBuilds":  "0",
+                          "solves":  "30",
+                          "domainBuilds":  "0",
+                          "released":  "True",
+                          "packing":  "0.000872800010256",
+                          "core":  "0.11717610002961",
+                          "plot":  "0.24893450003583",
+                          "preparation":  "0.057165800011717",
+                          "clear":  "0.026112799998373"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  100892672,
+                             "WorkingSet":  148398080,
+                             "PeakWorkingSet":  173043712
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  118870016,
+                            "WorkingSet":  166084608,
+                            "PeakWorkingSet":  173043712
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.2883813000517,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.296716300072148",
+                          "summary":  "0.49315559992101",
+                          "solves":  "30",
+                          "packing":  "0.000739000039175",
+                          "core":  "0.112358299898915",
+                          "plot":  "0.3033345999429",
+                          "preparation":  "0.058946800068952",
+                          "clear":  "0.023118800017983"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  101085184,
+                             "WorkingSet":  148725760,
+                             "PeakWorkingSet":  173043712
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  118751232,
+                            "WorkingSet":  166203392,
+                            "PeakWorkingSet":  173043712
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.50832420005463,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.414951500017196",
+                          "summary":  "0.610010399948806",
+                          "mechanicalBuilds":  "0",
+                          "solves":  "30",
+                          "domainBuilds":  "0",
+                          "released":  "True",
+                          "packing":  "0.000664300052449",
+                          "core":  "0.150952200056054",
+                          "plot":  "0.247877800022252",
+                          "preparation":  "0.056989600067027",
+                          "clear":  "0.026865200023167"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  101904384,
+                             "WorkingSet":  149622784,
+                             "PeakWorkingSet":  173043712
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  119263232,
+                            "WorkingSet":  167030784,
+                            "PeakWorkingSet":  173043712
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.55383290001191,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.269584499998018",
+                          "summary":  "0.676250300020911",
+                          "solves":  "30",
+                          "packing":  "0.001155900070444",
+                          "core":  "0.186933099990711",
+                          "plot":  "0.262580599985085",
+                          "preparation":  "0.093293200014159",
+                          "clear":  "0.064021000056528"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  102240256,
+                             "WorkingSet":  150073344,
+                             "PeakWorkingSet":  173043712
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  107630592,
+                            "WorkingSet":  155422720,
+                            "PeakWorkingSet":  173043712
+                        }
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  1.3231950000627,
+        "Values":  {
+                       "elements":  "88",
+                       "fingerprint":  "ED57A05BDA856B0903BCA9F0B50E527174866554E6394548BDFEBE61E6E33254",
+                       "bars":  "26"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.369273799937218",
+                          "summary":  "0.535073700011708",
+                          "mechanicalBuilds":  "0",
+                          "solves":  "30",
+                          "domainBuilds":  "0",
+                          "released":  "True",
+                          "packing":  "0.000691100023687",
+                          "core":  "0.099096999969333",
+                          "plot":  "0.240604700054973",
+                          "preparation":  "0.055813100072555",
+                          "clear":  "0.022629000013694"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  103342080,
+                             "WorkingSet":  150593536,
+                             "PeakWorkingSet":  173043712
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  120795136,
+                            "WorkingSet":  163201024,
+                            "PeakWorkingSet":  173043712
+                        }
+    }
+]

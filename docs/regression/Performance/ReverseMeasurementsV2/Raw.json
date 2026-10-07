@@ -1,0 +1,357 @@
+﻿[
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  5.51379440003075,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "1.13990880001802",
+                          "summary":  "0.959641400026158",
+                          "solves":  "108",
+                          "packing":  "0.005645899916999",
+                          "core":  "2.56271520000882",
+                          "plot":  "0.594595300033689",
+                          "preparation":  "0.069470199989155",
+                          "clear":  "0.181806099950336"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  80760832,
+                             "WorkingSet":  127348736,
+                             "PeakWorkingSet":  142123008
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  108683264,
+                            "WorkingSet":  161402880,
+                            "PeakWorkingSet":  174841856
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  4.22067990002688,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "1.13556179997977",
+                          "summary":  "0.556478200014681",
+                          "mechanicalBuilds":  "1",
+                          "solves":  "108",
+                          "domainBuilds":  "1",
+                          "released":  "True",
+                          "packing":  "0.001543499995023",
+                          "core":  "2.07049820001703",
+                          "plot":  "0.364253700012341",
+                          "preparation":  "0.07109019998461",
+                          "clear":  "0.021238900022581"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  91250688,
+                             "WorkingSet":  145932288,
+                             "PeakWorkingSet":  174841856
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  111435776,
+                            "WorkingSet":  164958208,
+                            "PeakWorkingSet":  179109888
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  4.49962640006561,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "1.10520540003199",
+                          "summary":  "0.665215999935754",
+                          "solves":  "108",
+                          "packing":  "0.001294500078075",
+                          "core":  "2.20983279997017",
+                          "plot":  "0.430975700030103",
+                          "preparation":  "0.062790800002404",
+                          "clear":  "0.024298900039867"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  92925952,
+                             "WorkingSet":  147488768,
+                             "PeakWorkingSet":  179109888
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  113926144,
+                            "WorkingSet":  167972864,
+                            "PeakWorkingSet":  179851264
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  3.90082169999368,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "1.02238750003744",
+                          "summary":  "0.496413899934851",
+                          "mechanicalBuilds":  "1",
+                          "solves":  "108",
+                          "domainBuilds":  "1",
+                          "released":  "True",
+                          "packing":  "0.001972199999727",
+                          "core":  "1.94971839990467",
+                          "plot":  "0.346781200030819",
+                          "preparation":  "0.061644399887882",
+                          "clear":  "0.021890000090934"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  97705984,
+                             "WorkingSet":  152309760,
+                             "PeakWorkingSet":  179851264
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  118153216,
+                            "WorkingSet":  172216320,
+                            "PeakWorkingSet":  182562816
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  3.88840529997833,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.905094900052063",
+                          "summary":  "0.493879199959338",
+                          "solves":  "108",
+                          "packing":  "0.001899100025184",
+                          "core":  "1.98101560003124",
+                          "plot":  "0.425900600035675",
+                          "preparation":  "0.05690520000644",
+                          "clear":  "0.023696199990809"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  96567296,
+                             "WorkingSet":  151433216,
+                             "PeakWorkingSet":  182562816
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  115331072,
+                            "WorkingSet":  170283008,
+                            "PeakWorkingSet":  182562816
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  3.91279850003775,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.978247299906798",
+                          "summary":  "0.51711160002742",
+                          "mechanicalBuilds":  "1",
+                          "solves":  "108",
+                          "domainBuilds":  "1",
+                          "released":  "True",
+                          "packing":  "0.000841800007038",
+                          "core":  "1.97825229994487",
+                          "plot":  "0.357817600015551",
+                          "preparation":  "0.058386100106873",
+                          "clear":  "0.02212950005196"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  96608256,
+                             "WorkingSet":  151969792,
+                             "PeakWorkingSet":  182562816
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  116248576,
+                            "WorkingSet":  171524096,
+                            "PeakWorkingSet":  184229888
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  4.20468740002252,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "1.0602082000114",
+                          "summary":  "0.524798200000077",
+                          "solves":  "108",
+                          "packing":  "0.001398599939421",
+                          "core":  "2.12615359993652",
+                          "plot":  "0.402298699948005",
+                          "preparation":  "0.065701900050044",
+                          "clear":  "0.024115900043398"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  111538176,
+                             "WorkingSet":  166215680,
+                             "PeakWorkingSet":  184229888
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  124547072,
+                            "WorkingSet":  179707904,
+                            "PeakWorkingSet":  186245120
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  3.79524750006385,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.926973800058477",
+                          "summary":  "0.495912799960934",
+                          "mechanicalBuilds":  "1",
+                          "solves":  "108",
+                          "domainBuilds":  "1",
+                          "released":  "True",
+                          "packing":  "0.000832899939269",
+                          "core":  "1.9507129000267",
+                          "plot":  "0.334545799996704",
+                          "preparation":  "0.062454600003548",
+                          "clear":  "0.023802499985322"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  101183488,
+                             "WorkingSet":  156647424,
+                             "PeakWorkingSet":  186245120
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  126849024,
+                            "WorkingSet":  182169600,
+                            "PeakWorkingSet":  189284352
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "A",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  4.21477289998438,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "1.04290360002778",
+                          "summary":  "0.519059799960814",
+                          "solves":  "108",
+                          "packing":  "0.001355499960482",
+                          "core":  "2.04724440001883",
+                          "plot":  "0.488863500067964",
+                          "preparation":  "0.090635400032625",
+                          "clear":  "0.024699400062673"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  102477824,
+                             "WorkingSet":  157970432,
+                             "PeakWorkingSet":  189284352
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  127033344,
+                            "WorkingSet":  182525952,
+                            "PeakWorkingSet":  189284352
+                        }
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Reverse-Yes-Staged-30",
+        "Version":  "B",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  30,
+        "Seconds":  3.80828110000584,
+        "Values":  {
+                       "elements":  "108",
+                       "fingerprint":  "66C15B23008682FF5AC1E9C693AD865BCD9BD6558ADB619FCE7EBFE10F5C3126",
+                       "bars":  "56"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.896613599965349",
+                          "summary":  "0.513042200007476",
+                          "mechanicalBuilds":  "1",
+                          "solves":  "108",
+                          "domainBuilds":  "1",
+                          "released":  "True",
+                          "packing":  "0.001369599951431",
+                          "core":  "1.95167360000778",
+                          "plot":  "0.364477200084366",
+                          "preparation":  "0.05897329992149",
+                          "clear":  "0.022119899978861"
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  103239680,
+                             "WorkingSet":  159027200,
+                             "PeakWorkingSet":  190599168
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  129667072,
+                            "WorkingSet":  185106432,
+                            "PeakWorkingSet":  192196608
+                        }
+    }
+]

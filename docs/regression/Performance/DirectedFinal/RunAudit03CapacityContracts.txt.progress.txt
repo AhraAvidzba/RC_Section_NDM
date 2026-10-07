@@ -1,0 +1,151 @@
+OK: audit03.capacity.realPrecision.numerical
+OK: audit03.capacity.realPrecision.code
+OK: audit03.capacity.realPrecision.noPoint
+OK: audit03.capacity.realPrecision.notBound
+OK: audit03.capacity.realPrecision.finiteWork
+OK: audit03.capacity.realPrecision.calculated
+OK: audit03.capacity.realPrecision.reason
+COMMENT: audit03.capacity.realPrecision; Поиск Bisection остановлен: между границами lambda нет представимого числа, а заданная точность еще не достигнута.
+DIAGNOSTIC: search=lambda=0: нулевая нагрузка принята как точное равновесие нулевой плоскости деформаций.
+probe=1; attempt=0; lambda=0.; Mx=0.; My=0.; converged=True; state=Acceptable; stop=Равновесие заданной плоскости подтверждено по N, Mx и My.; minConcreteStrain=0.; maxConcreteStrain=0.; maxAbsSteelStrain=0.
+probe=2; attempt=0; lambda=1.; Mx=10000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.000125125958; maxConcreteStrain=0.000125125958; maxAbsSteelStrain=0.000083417305
+probe=3; attempt=0; lambda=2.; Mx=20000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.000250251915; maxConcreteStrain=0.000250251915; maxAbsSteelStrain=0.00016683461
+probe=4; attempt=0; lambda=4.; Mx=40000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.00050050383; maxConcreteStrain=0.00050050383; maxAbsSteelStrain=0.00033366922
+probe=5; attempt=0; lambda=8.; Mx=80000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.00100100766; maxConcreteStrain=0.00100100766; maxAbsSteelStrain=0.00066733844
+probe=6; attempt=0; lambda=16.; Mx=160000000.; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.002002015321; maxConcreteStrain=0.002002015321; maxAbsSteelStrain=0.001334676881
+search=searchMethod=Bisection
+probe=7; attempt=0; lambda=12.; Mx=120000000.; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001501511491; maxConcreteStrain=0.001501511491; maxAbsSteelStrain=0.00100100766
+probe=8; attempt=0; lambda=10.; Mx=100000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001251259576; maxConcreteStrain=0.001251259576; maxAbsSteelStrain=0.00083417305
+probe=9; attempt=0; lambda=11.; Mx=110000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001376385533; maxConcreteStrain=0.001376385533; maxAbsSteelStrain=0.000917590355
+probe=10; attempt=0; lambda=11.5; Mx=115000000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001438948512; maxConcreteStrain=0.001438948512; maxAbsSteelStrain=0.000959299008
+probe=11; attempt=0; lambda=11.75; Mx=117500000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001470230001; maxConcreteStrain=0.001470230001; maxAbsSteelStrain=0.000980153334
+probe=12; attempt=0; lambda=11.875; Mx=118750000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001485870746; maxConcreteStrain=0.001485870746; maxAbsSteelStrain=0.000990580497
+probe=13; attempt=0; lambda=11.9375; Mx=119375000.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001493691118; maxConcreteStrain=0.001493691118; maxAbsSteelStrain=0.000995794079
+probe=14; attempt=0; lambda=11.96875; Mx=119687500.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001497601305; maxConcreteStrain=0.001497601305; maxAbsSteelStrain=0.00099840087
+probe=15; attempt=0; lambda=11.984375; Mx=119843750.; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499556398; maxConcreteStrain=0.001499556398; maxAbsSteelStrain=0.000999704265
+probe=16; attempt=0; lambda=11.9921875; Mx=119921875.; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500533944; maxConcreteStrain=0.001500533944; maxAbsSteelStrain=0.001000355963
+probe=17; attempt=0; lambda=11.98828125; Mx=119882812.5; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500045171; maxConcreteStrain=0.001500045171; maxAbsSteelStrain=0.001000030114
+probe=18; attempt=0; lambda=11.986328125; Mx=119863281.25; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499800784; maxConcreteStrain=0.001499800784; maxAbsSteelStrain=0.000999867189
+probe=19; attempt=0; lambda=11.9873046875; Mx=119873046.875; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499922978; maxConcreteStrain=0.001499922978; maxAbsSteelStrain=0.000999948652
+probe=20; attempt=0; lambda=11.98779296875; Mx=119877929.6875; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499984074; maxConcreteStrain=0.001499984074; maxAbsSteelStrain=0.000999989383
+probe=21; attempt=0; lambda=11.988037109375; Mx=119880371.09375; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500014623; maxConcreteStrain=0.001500014623; maxAbsSteelStrain=0.001000009748
+probe=22; attempt=0; lambda=11.987915039063; Mx=119879150.390625; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999348; maxConcreteStrain=0.001499999348; maxAbsSteelStrain=0.000999999566
+probe=23; attempt=0; lambda=11.987976074219; Mx=119879760.742188; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500006985; maxConcreteStrain=0.001500006985; maxAbsSteelStrain=0.001000004657
+probe=24; attempt=0; lambda=11.987945556641; Mx=119879455.566406; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500003167; maxConcreteStrain=0.001500003167; maxAbsSteelStrain=0.001000002111
+probe=25; attempt=0; lambda=11.987930297852; Mx=119879302.978516; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500001258; maxConcreteStrain=0.001500001258; maxAbsSteelStrain=0.001000000838
+probe=26; attempt=0; lambda=11.987922668457; Mx=119879226.68457; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500000303; maxConcreteStrain=0.001500000303; maxAbsSteelStrain=0.001000000202
+probe=27; attempt=0; lambda=11.98791885376; Mx=119879188.537598; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999826; maxConcreteStrain=0.001499999826; maxAbsSteelStrain=0.000999999884
+probe=28; attempt=0; lambda=11.987920761108; Mx=119879207.611084; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500000064; maxConcreteStrain=0.001500000064; maxAbsSteelStrain=0.001000000043
+probe=29; attempt=0; lambda=11.987919807434; Mx=119879198.074341; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999945; maxConcreteStrain=0.001499999945; maxAbsSteelStrain=0.000999999963
+probe=30; attempt=0; lambda=11.987920284271; Mx=119879202.842712; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500000005; maxConcreteStrain=0.001500000005; maxAbsSteelStrain=0.001000000003
+probe=31; attempt=0; lambda=11.987920045853; Mx=119879200.458527; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999975; maxConcreteStrain=0.001499999975; maxAbsSteelStrain=0.000999999983
+probe=32; attempt=0; lambda=11.987920165062; Mx=119879201.65062; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.00149999999; maxConcreteStrain=0.00149999999; maxAbsSteelStrain=0.000999999993
+probe=33; attempt=0; lambda=11.987920224667; Mx=119879202.246666; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999997; maxConcreteStrain=0.001499999997; maxAbsSteelStrain=0.000999999998
+probe=34; attempt=0; lambda=11.987920254469; Mx=119879202.544689; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001500000001; maxConcreteStrain=0.001500000001; maxAbsSteelStrain=0.001000000001
+probe=35; attempt=0; lambda=11.987920239568; Mx=119879202.395678; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.001499999999; maxConcreteStrain=0.001499999999; maxAbsSteelStrain=0.000999999999
+probe=36; attempt=0; lambda=11.987920247018; Mx=119879202.470183; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=37; attempt=0; lambda=11.987920243293; Mx=119879202.43293; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=38; attempt=0; lambda=11.987920245156; Mx=119879202.451557; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=39; attempt=0; lambda=11.987920246087; Mx=119879202.46087; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=40; attempt=0; lambda=11.987920246553; Mx=119879202.465527; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=41; attempt=0; lambda=11.987920246786; Mx=119879202.467855; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=42; attempt=0; lambda=11.987920246669; Mx=119879202.466691; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=43; attempt=0; lambda=11.987920246727; Mx=119879202.467273; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=44; attempt=0; lambda=11.987920246756; Mx=119879202.467564; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=45; attempt=0; lambda=11.987920246742; Mx=119879202.467419; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=46; attempt=0; lambda=11.987920246749; Mx=119879202.467491; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=47; attempt=0; lambda=11.987920246746; Mx=119879202.467455; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=48; attempt=0; lambda=11.987920246744; Mx=119879202.467437; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=49; attempt=0; lambda=11.987920246743; Mx=119879202.467428; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=50; attempt=0; lambda=11.987920246743; Mx=119879202.467432; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=51; attempt=0; lambda=11.987920246743; Mx=119879202.46743; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=52; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=53; attempt=0; lambda=11.987920246743; Mx=119879202.467432; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=54; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=55; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=56; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=57; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=ConcreteStrainLimit; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+probe=58; attempt=0; lambda=11.987920246743; Mx=119879202.467431; My=0.; converged=True; state=Acceptable; stop=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.; minConcreteStrain=-0.0015; maxConcreteStrain=0.0015; maxAbsSteelStrain=0.001
+
+OK: audit03.capacity.typed.1.status
+OK: audit03.capacity.typed.1.code
+OK: audit03.capacity.typed.1.failure
+OK: audit03.capacity.typed.1.noRetry
+OK: audit03.capacity.typed.1.noPoint
+OK: audit03.capacity.typed.1.notBaseFail
+OK: audit03.capacity.typed.1.reason
+OK: audit03.capacity.typed.1.notCalculated
+COMMENT: audit03.capacity.typed.1; Solver.Method должен быть Newton или Secant.
+OK: audit03.capacity.typed.2.status
+OK: audit03.capacity.typed.2.code
+OK: audit03.capacity.typed.2.failure
+OK: audit03.capacity.typed.2.noRetry
+OK: audit03.capacity.typed.2.noPoint
+OK: audit03.capacity.typed.2.notBaseFail
+OK: audit03.capacity.typed.2.reason
+OK: audit03.capacity.typed.2.notCalculated
+COMMENT: audit03.capacity.typed.2; Число итераций решателя несущей способности должно быть положительным.
+OK: audit03.capacity.typed.3.status
+OK: audit03.capacity.typed.3.code
+OK: audit03.capacity.typed.3.failure
+OK: audit03.capacity.typed.3.noRetry
+OK: audit03.capacity.typed.3.noPoint
+OK: audit03.capacity.typed.3.notBaseFail
+OK: audit03.capacity.typed.3.reason
+OK: audit03.capacity.typed.3.notCalculated
+COMMENT: audit03.capacity.typed.3; Модель сечения не передана расчетчику несущей способности.
+OK: audit03.capacity.typed.4.status
+OK: audit03.capacity.typed.4.code
+OK: audit03.capacity.typed.4.failure
+OK: audit03.capacity.typed.4.noRetry
+OK: audit03.capacity.typed.4.noPoint
+OK: audit03.capacity.typed.4.notBaseFail
+OK: audit03.capacity.typed.4.reason
+OK: audit03.capacity.typed.4.notCalculated
+COMMENT: audit03.capacity.typed.4; Материал бетона не передан расчетчику несущей способности.
+OK: audit03.capacity.typed.5.status
+OK: audit03.capacity.typed.5.code
+OK: audit03.capacity.typed.5.failure
+OK: audit03.capacity.typed.5.noRetry
+OK: audit03.capacity.typed.5.noPoint
+OK: audit03.capacity.typed.5.notBaseFail
+OK: audit03.capacity.typed.5.reason
+OK: audit03.capacity.typed.5.notCalculated
+COMMENT: audit03.capacity.typed.5; В модели сечения нет бетонных элементов.
+OK: audit03.capacity.typed.6.status
+OK: audit03.capacity.typed.6.code
+OK: audit03.capacity.typed.6.failure
+OK: audit03.capacity.typed.6.noRetry
+OK: audit03.capacity.typed.6.noPoint
+OK: audit03.capacity.typed.6.notBaseFail
+OK: audit03.capacity.typed.6.reason
+COMMENT: audit03.capacity.typed.6; Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена.
+OK: audit03.capacity.typed.7.status
+OK: audit03.capacity.typed.7.code
+OK: audit03.capacity.typed.7.failure
+OK: audit03.capacity.typed.7.noRetry
+OK: audit03.capacity.typed.7.noPoint
+OK: audit03.capacity.typed.7.notBaseFail
+OK: audit03.capacity.typed.7.reason
+OK: audit03.capacity.typed.7.notCalculated
+COMMENT: audit03.capacity.typed.7; Минимальный шаг подбора демпфирования в UltimateStrain должен быть больше 0 и не больше начального демпфирования.
+OK: audit03.capacity.typed.8.status
+OK: audit03.capacity.typed.8.code
+OK: audit03.capacity.typed.8.failure
+OK: audit03.capacity.typed.8.noRetry
+OK: audit03.capacity.typed.8.noPoint
+OK: audit03.capacity.typed.8.notBaseFail
+OK: audit03.capacity.typed.8.reason
+OK: audit03.capacity.typed.8.notCalculated
+COMMENT: audit03.capacity.typed.8; Начальный коэффициент демпфирования UltimateStrain должен быть больше 0 и не больше 1.
+OK: audit03.capacity.typed.9.status
+OK: audit03.capacity.typed.9.code
+OK: audit03.capacity.typed.9.failure
+OK: audit03.capacity.typed.9.noRetry
+OK: audit03.capacity.typed.9.noPoint
+OK: audit03.capacity.typed.9.notBaseFail
+OK: audit03.capacity.typed.9.reason
+OK: audit03.capacity.typed.9.notCalculated
+COMMENT: audit03.capacity.typed.9; Минимальный шаг подбора демпфирования в UltimateStrain должен быть больше 0 и не больше начального демпфирования.
+
+DONE: audit03.capacity.typed.9

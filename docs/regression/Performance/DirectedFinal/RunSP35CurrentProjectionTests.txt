@@ -1,0 +1,165 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Performance\BatchV3Candidate\RC_Section_NDM.xlsm
+SOURCE_SHA256: DC794B8104DC8BA257567BB543B3FDE7A9D10466D0C91E55D3E89055F3244178
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_cd6e4e636b734fb3b69fb37d39083bcd\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=46700; startTicks=639269905748919188
+===== modTestSP35CrackWidth.RunSP35CurrentProjectionTests =====
+SUITE_STARTED: modTestSP35CrackWidth.RunSP35CurrentProjectionTests; 2026-10-07T20:23:00
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=6004; workingSet=111005696; privateBytes=89698304; cpu=17361.265625
+EXCEL_AFTER_SUITE: pid=17288; workingSet=115892224; privateBytes=103288832; cpu=1869.125
+EXCEL_AFTER_SUITE: pid=23088; workingSet=113180672; privateBytes=89505792; cpu=18199.5
+EXCEL_AFTER_SUITE: pid=46700; workingSet=133496832; privateBytes=86810624; cpu=5.015625
+PROJECTION_NORMAL: 0.730274788338303; 0.683153521192306
+PROJECTION_GROUP: G1; bars=R1; row=5; x=-195.162947599871; y=282.052261131992
+PROJECTION_GROUP: G2; bars=R2; row=4; x=-154.736323336065; y=331.397060075191
+PROJECTION_GROUP: G3; bars=R3; row=3; x=-96.3866853692936; y=357.188500884161
+PROJECTION_GROUP: G4; bars=R4; row=3; x=-32.1949460236979; y=360
+PROJECTION_GROUP: G5; bars=R5; row=2; x=32.1949460236978; y=360
+PROJECTION_GROUP: G6; bars=R6; row=1; x=96.3866853692935; y=357.188500884161
+PROJECTION_GROUP: G7; bars=R7; row=1; x=154.736323336065; y=331.397060075191
+PROJECTION_GROUP: G8; bars=R8; row=1; x=195.162947599871; y=282.052261131992
+PROJECTION_GROUP: G9; bars=R24; row=5; x=210; y=-132
+PROJECTION_GROUP: G10; bars=R25; row=4; x=210; y=-44
+PROJECTION_GROUP: G11; bars=R26; row=3; x=210; y=44
+PROJECTION_GROUP: G12; bars=R27; row=2; x=210; y=132
+PROJECTION_GROUP: G13; bars=R28; row=1; x=210; y=220
+PROJECTION_GROUP: G14; bars=R29,R30; row=5; x=-124.077107729616; y=262.020268102588
+PROJECTION_GROUP: G15; bars=R31; row=4; x=-82.7596020630037; y=288.68052681596
+PROJECTION_GROUP: G16; bars=R32; row=3; x=-32.1949460236979; y=290
+PROJECTION_GROUP: G17; bars=R33; row=3; x=32.1949460236978; y=290
+PROJECTION_GROUP: G18; bars=R34; row=2; x=82.7596020630034; y=288.68052681596
+PROJECTION_GROUP: G19; bars=R35,R36; row=2; x=124.077107729616; y=262.020268102588
+PROJECTION_GROUP: G20; bars=R50; row=5; x=-140; y=220
+PROJECTION_GROUP: G21; bars=R53; row=5; x=140; y=-44
+PROJECTION_GROUP: G22; bars=R54; row=4; x=140; y=44
+PROJECTION_GROUP: G23; bars=R55; row=3; x=140; y=132
+PROJECTION_GROUP: G24; bars=R56; row=2; x=140; y=220
+OK: SP35.currentProjection.1.G1.left
+OK: SP35.currentProjection.1.G1.right
+OK: SP35.currentProjection.1.G1.nominalLeft; actual=31.5957006419096; expected=31.5957006419096
+OK: SP35.currentProjection.1.G1.nominalRight; actual=120; expected=120
+PROJECTION_WINDOW: SP35.currentProjection.1.G1; left=31.5957006419096; right=120; actualLeft=31.5957006419096; actualRight=49.1792897602617
+OK: SP35.currentProjection.1.G2.left
+OK: SP35.currentProjection.1.G2.right
+OK: SP35.currentProjection.1.G2.nominalLeft; actual=120; expected=120
+OK: SP35.currentProjection.1.G2.nominalRight; actual=120; expected=120
+PROJECTION_WINDOW: SP35.currentProjection.1.G2; left=120; right=120; actualLeft=120; actualRight=40.761617872158
+OK: SP35.currentProjection.1.G3.left
+OK: SP35.currentProjection.1.G3.right
+OK: SP35.currentProjection.1.G3.nominalLeft; actual=20.8998229218349; expected=20.8998229218349
+OK: SP35.currentProjection.1.G3.nominalRight; actual=10.5134608297929; expected=10.5134608297929
+PROJECTION_WINDOW: SP35.currentProjection.1.G3; left=20.8998229218349; right=10.5134608297929; actualLeft=20.8998229218349; actualRight=10.5134608297931
+OK: SP35.currentProjection.1.G4.left
+OK: SP35.currentProjection.1.G4.right
+OK: SP35.currentProjection.1.G4.nominalLeft; actual=21.9940907406854; expected=21.9940907406854
+OK: SP35.currentProjection.1.G4.nominalRight; actual=20.8998229218349; expected=20.8998229218349
+PROJECTION_WINDOW: SP35.currentProjection.1.G4; left=21.9940907406854; right=20.8998229218349; actualLeft=21.9940907406854; actualRight=20.899822921835
+OK: SP35.currentProjection.1.G5.left
+OK: SP35.currentProjection.1.G5.right
+OK: SP35.currentProjection.1.G5.nominalLeft; actual=22.9529898435675; expected=22.9529898435675
+OK: SP35.currentProjection.1.G5.nominalRight; actual=21.9940907406854; expected=21.9940907406854
+PROJECTION_WINDOW: SP35.currentProjection.1.G5; left=22.9529898435675; right=21.9940907406854; actualLeft=22.9529898435675; actualRight=21.9940907406856
+OK: SP35.currentProjection.1.G6.left
+OK: SP35.currentProjection.1.G6.right
+OK: SP35.currentProjection.1.G6.nominalLeft; actual=29.3482998075035; expected=29.3482998075035
+OK: SP35.currentProjection.1.G6.nominalRight; actual=22.9529898435675; expected=22.9529898435675
+PROJECTION_WINDOW: SP35.currentProjection.1.G6; left=29.3482998075035; right=22.9529898435675; actualLeft=29.3482998075035; actualRight=22.9529898435675
+OK: SP35.currentProjection.1.G7.left
+OK: SP35.currentProjection.1.G7.right
+OK: SP35.currentProjection.1.G7.nominalLeft; actual=31.8264266597888; expected=31.8264266597888
+OK: SP35.currentProjection.1.G7.nominalRight; actual=29.3482998075035; expected=29.3482998075035
+PROJECTION_WINDOW: SP35.currentProjection.1.G7; left=31.8264266597888; right=29.3482998075035; actualLeft=31.8264266597888; actualRight=29.3482998075035
+OK: SP35.currentProjection.1.G8.left
+OK: SP35.currentProjection.1.G8.right
+OK: SP35.currentProjection.1.G8.nominalLeft; actual=27.7255932276708; expected=27.7255932276708
+OK: SP35.currentProjection.1.G8.nominalRight; actual=31.8264266597888; expected=31.8264266597888
+PROJECTION_WINDOW: SP35.currentProjection.1.G8; left=27.7255932276708; right=31.8264266597888; actualLeft=27.7255932276708; actualRight=31.8264266597889
+OK: SP35.currentProjection.1.G9.left
+OK: SP35.currentProjection.1.G9.right
+OK: SP35.currentProjection.1.G9.nominalLeft; actual=120; expected=120
+OK: SP35.currentProjection.1.G9.nominalRight; actual=32.1320906868853; expected=32.1320906868853
+PROJECTION_WINDOW: SP35.currentProjection.1.G9; left=120; right=32.1320906868853; actualLeft=97.0011596585856; actualRight=32.1320906868853
+OK: SP35.currentProjection.1.G10.left
+OK: SP35.currentProjection.1.G10.right
+OK: SP35.currentProjection.1.G10.nominalLeft; actual=32.1320906868853; expected=32.1320906868853
+OK: SP35.currentProjection.1.G10.nominalRight; actual=23.9103732417307; expected=23.9103732417307
+PROJECTION_WINDOW: SP35.currentProjection.1.G10; left=32.1320906868853; right=23.9103732417307; actualLeft=32.1320906868854; actualRight=23.9103732417307
+OK: SP35.currentProjection.1.G11.left
+OK: SP35.currentProjection.1.G11.right
+OK: SP35.currentProjection.1.G11.nominalLeft; actual=32.1320906868853; expected=32.1320906868853
+OK: SP35.currentProjection.1.G11.nominalRight; actual=23.9103732417307; expected=23.9103732417307
+PROJECTION_WINDOW: SP35.currentProjection.1.G11; left=32.1320906868853; right=23.9103732417307; actualLeft=32.1320906868853; actualRight=23.9103732417307
+OK: SP35.currentProjection.1.G12.left
+OK: SP35.currentProjection.1.G12.right
+OK: SP35.currentProjection.1.G12.nominalLeft; actual=32.1320906868853; expected=32.1320906868853
+OK: SP35.currentProjection.1.G12.nominalRight; actual=23.9103732417307; expected=23.9103732417307
+PROJECTION_WINDOW: SP35.currentProjection.1.G12; left=32.1320906868853; right=23.9103732417307; actualLeft=32.1320906868854; actualRight=23.9103732417307
+OK: SP35.currentProjection.1.G13.left
+OK: SP35.currentProjection.1.G13.right
+OK: SP35.currentProjection.1.G13.nominalLeft; actual=32.1320906868853; expected=32.1320906868853
+OK: SP35.currentProjection.1.G13.nominalRight; actual=27.7255932276708; expected=27.7255932276708
+PROJECTION_WINDOW: SP35.currentProjection.1.G13; left=32.1320906868853; right=27.7255932276708; actualLeft=32.1320906868853; actualRight=27.7255932276708
+OK: SP35.currentProjection.1.G14.left
+OK: SP35.currentProjection.1.G14.right
+OK: SP35.currentProjection.1.G14.nominalLeft; actual=9.90428123622885; expected=9.90428123622885
+OK: SP35.currentProjection.1.G14.nominalRight; actual=31.5957006419096; expected=31.5957006419096
+PROJECTION_WINDOW: SP35.currentProjection.1.G14; left=9.90428123622885; right=31.5957006419096; actualLeft=9.90428123622888; actualRight=31.5957006419097
+OK: SP35.currentProjection.1.G15.left
+OK: SP35.currentProjection.1.G15.right
+OK: SP35.currentProjection.1.G15.nominalLeft; actual=16.7899224104684; expected=16.7899224104684
+OK: SP35.currentProjection.1.G15.nominalRight; actual=120; expected=120
+PROJECTION_WINDOW: SP35.currentProjection.1.G15; left=16.7899224104684; right=120; actualLeft=16.7899224104684; actualRight=120
+OK: SP35.currentProjection.1.G16.left
+OK: SP35.currentProjection.1.G16.right
+OK: SP35.currentProjection.1.G16.nominalLeft; actual=21.9940907406854; expected=21.9940907406854
+OK: SP35.currentProjection.1.G16.nominalRight; actual=16.7899224104684; expected=16.7899224104684
+PROJECTION_WINDOW: SP35.currentProjection.1.G16; left=21.9940907406854; right=16.7899224104684; actualLeft=21.9940907406854; actualRight=16.7899224104685
+OK: SP35.currentProjection.1.G17.left
+OK: SP35.currentProjection.1.G17.right
+OK: SP35.currentProjection.1.G17.nominalLeft; actual=17.753500410661; expected=17.753500410661
+OK: SP35.currentProjection.1.G17.nominalRight; actual=21.9940907406854; expected=21.9940907406854
+PROJECTION_WINDOW: SP35.currentProjection.1.G17; left=17.753500410661; right=21.9940907406854; actualLeft=17.753500410661; actualRight=21.9940907406855
+OK: SP35.currentProjection.1.G18.left
+OK: SP35.currentProjection.1.G18.right
+OK: SP35.currentProjection.1.G18.nominalLeft; actual=23.847757135991; expected=23.847757135991
+OK: SP35.currentProjection.1.G18.nominalRight; actual=17.753500410661; expected=17.753500410661
+PROJECTION_WINDOW: SP35.currentProjection.1.G18; left=23.847757135991; right=17.753500410661; actualLeft=23.847757135991; actualRight=17.753500410661
+OK: SP35.currentProjection.1.G19.left
+OK: SP35.currentProjection.1.G19.right
+OK: SP35.currentProjection.1.G19.nominalLeft; actual=20.7820611583073; expected=20.7820611583073
+OK: SP35.currentProjection.1.G19.nominalRight; actual=23.847757135991; expected=23.847757135991
+PROJECTION_WINDOW: SP35.currentProjection.1.G19; left=20.7820611583073; right=23.847757135991; actualLeft=20.7820611583073; actualRight=23.8477571359911
+OK: SP35.currentProjection.1.G20.left
+OK: SP35.currentProjection.1.G20.right
+OK: SP35.currentProjection.1.G20.nominalLeft; actual=120; expected=120
+OK: SP35.currentProjection.1.G20.nominalRight; actual=9.90428123622885; expected=9.90428123622885
+PROJECTION_WINDOW: SP35.currentProjection.1.G20; left=120; right=9.90428123622885; actualLeft=120; actualRight=9.90428123622888
+OK: SP35.currentProjection.1.G21.left
+OK: SP35.currentProjection.1.G21.right
+OK: SP35.currentProjection.1.G21.nominalLeft; actual=23.9103732417307; expected=23.9103732417307
+OK: SP35.currentProjection.1.G21.nominalRight; actual=32.1320906868853; expected=32.1320906868853
+PROJECTION_WINDOW: SP35.currentProjection.1.G21; left=23.9103732417307; right=32.1320906868853; actualLeft=23.9103732417308; actualRight=32.1320906868853
+OK: SP35.currentProjection.1.G22.left
+OK: SP35.currentProjection.1.G22.right
+OK: SP35.currentProjection.1.G22.nominalLeft; actual=23.9103732417307; expected=23.9103732417307
+OK: SP35.currentProjection.1.G22.nominalRight; actual=32.1320906868853; expected=32.1320906868853
+PROJECTION_WINDOW: SP35.currentProjection.1.G22; left=23.9103732417307; right=32.1320906868853; actualLeft=23.9103732417307; actualRight=32.1320906868853
+OK: SP35.currentProjection.1.G23.left
+OK: SP35.currentProjection.1.G23.right
+OK: SP35.currentProjection.1.G23.nominalLeft; actual=23.9103732417307; expected=23.9103732417307
+OK: SP35.currentProjection.1.G23.nominalRight; actual=32.1320906868853; expected=32.1320906868853
+PROJECTION_WINDOW: SP35.currentProjection.1.G23; left=23.9103732417307; right=32.1320906868853; actualLeft=23.9103732417307; actualRight=32.1320906868854
+OK: SP35.currentProjection.1.G24.left
+OK: SP35.currentProjection.1.G24.right
+OK: SP35.currentProjection.1.G24.nominalLeft; actual=23.9103732417307; expected=23.9103732417307
+OK: SP35.currentProjection.1.G24.nominalRight; actual=20.7820611583073; expected=20.7820611583073
+PROJECTION_WINDOW: SP35.currentProjection.1.G24; left=23.9103732417307; right=20.7820611583073; actualLeft=23.9103732417307; actualRight=20.7820611583073
+OK: SP35.currentProjection.coverage
+TOTAL_SP35_CURRENT_PROJECTION: passed=97; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_cd6e4e636b734fb3b69fb37d39083bcd\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSP35CrackWidth.RunSP35CurrentProjectionTests; 2026-10-07T20:23:00
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

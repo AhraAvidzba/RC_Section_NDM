@@ -1,0 +1,66 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Performance\BatchV3Candidate\RC_Section_NDM.xlsm
+SOURCE_SHA256: DC794B8104DC8BA257567BB543B3FDE7A9D10466D0C91E55D3E89055F3244178
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c589ba9230164b8ca19204b312711aa9\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=26416; startTicks=639269905672062862
+===== modTestSP35CrackWidth.RunSP35LocalOpeningTests =====
+SUITE_STARTED: modTestSP35CrackWidth.RunSP35LocalOpeningTests; 2026-10-07T20:22:52
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=6004; workingSet=111005696; privateBytes=89698304; cpu=17353.328125
+EXCEL_AFTER_SUITE: pid=17288; workingSet=115892224; privateBytes=103288832; cpu=1868.84375
+EXCEL_AFTER_SUITE: pid=23088; workingSet=113180672; privateBytes=89505792; cpu=18191.578125
+EXCEL_AFTER_SUITE: pid=26416; workingSet=131485696; privateBytes=104726528; cpu=4.890625
+OK: SP35.localCircle.0.innerAnchorFound
+OK: SP35.localCircle.0.analyticArea
+OK: SP35.localCircle.0.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.0.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.0.fullWidthBelowHoles
+OK: SP35.localCircle.0.localArcCut
+OK: SP35.localCircle.0.outsideStrip
+OK: SP35.localCircle.0.oneLowerInterval
+OK: SP35.localCircle.0.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.0.lowerRight; actual=40; expected=40
+AR_LOCAL_SEGMENT:	40	91.6515138991168	6.12303176911189E-15	100	0	0	0.411516846067488
+AR_LOCAL_SEGMENT:	6.12303176911189E-15	100	-40	91.6515138991168	0	0	0.411516846067488
+AR_LOCAL_SEGMENT:	-40	91.6515138991168	-40	68.2842712474619	0	0	0
+AR_LOCAL_SEGMENT:	-40	68.2842712474619	-20	40	-50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	-20	40	-40	11.7157287525381	-50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	-40	11.7157287525381	-40	-1.40512601554121E-16	0	0	0
+AR_LOCAL_SEGMENT:	-40	0	40	0	0	0	0
+AR_LOCAL_SEGMENT:	40	0	40	11.7157287525381	0	0	0
+AR_LOCAL_SEGMENT:	40	11.7157287525381	20	40	50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	20	40	40	68.2842712474619	50	40	-1.23095941734078
+AR_LOCAL_SEGMENT:	40	68.2842712474619	40	91.6515138991168	0	0	0
+OK: SP35.localCircle.0.exactArcs
+OK: SP35.localCircle.0.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+OK: SP35.localCircle.0.47.innerAnchorFound
+OK: SP35.localCircle.0.47.analyticArea
+OK: SP35.localCircle.0.47.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.0.47.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.0.47.fullWidthBelowHoles
+OK: SP35.localCircle.0.47.localArcCut
+OK: SP35.localCircle.0.47.outsideStrip
+OK: SP35.localCircle.0.47.oneLowerInterval
+OK: SP35.localCircle.0.47.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.0.47.lowerRight; actual=40; expected=40
+OK: SP35.localCircle.0.47.exactArcs
+OK: SP35.localCircle.0.47.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+OK: SP35.localCircle.-0.81.innerAnchorFound
+OK: SP35.localCircle.-0.81.analyticArea
+OK: SP35.localCircle.-0.81.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.-0.81.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.-0.81.fullWidthBelowHoles
+OK: SP35.localCircle.-0.81.localArcCut
+OK: SP35.localCircle.-0.81.outsideStrip
+OK: SP35.localCircle.-0.81.oneLowerInterval
+OK: SP35.localCircle.-0.81.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.-0.81.lowerRight; actual=40; expected=40
+OK: SP35.localCircle.-0.81.exactArcs
+OK: SP35.localCircle.-0.81.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+TOTAL_SP35_LOCAL_OPENING: passed=36; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c589ba9230164b8ca19204b312711aa9\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSP35CrackWidth.RunSP35LocalOpeningTests; 2026-10-07T20:22:52
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

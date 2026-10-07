@@ -1,0 +1,74 @@
+﻿[
+    {
+        "Name":  "Crack63MeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  174.7989213,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "Stability35MeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  136.7182698,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "Stability63MeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  132.33348949999998,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "CapacityAutoMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  172.3895688,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "CapacityMultiplierMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  294.3518315,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "MixedMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  236.3040643,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "ReverseMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  60.4501857,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "ShuffleMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  61.3953536,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "CircleMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  25.749270799999998,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "RoundedMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  29.2900416,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "OffMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  31.1238973,
+        "ArgumentsValidated":  true
+    },
+    {
+        "Name":  "StorageQPCMeasurementsV2",
+        "ExitCode":  0,
+        "Seconds":  28.438427899999997,
+        "ArgumentsValidated":  true
+    }
+]

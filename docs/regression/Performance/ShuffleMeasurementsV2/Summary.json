@@ -1,0 +1,24 @@
+﻿[
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Shuffle-Yes-Staged-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  4.19088480004575,
+        "Min":  4.03421339998022,
+        "Max":  4.92412789992522,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Shuffle-Yes-Staged-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  3.99171289999504,
+        "Min":  3.93028980004601,
+        "Max":  4.13190430006944,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    }
+]

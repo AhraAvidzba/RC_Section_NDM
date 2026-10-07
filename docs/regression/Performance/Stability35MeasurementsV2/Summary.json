@@ -1,0 +1,134 @@
+﻿[
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Staged-1",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.07528999994975,
+        "Min":  0.918306799954735,
+        "Max":  1.38996219995897,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Staged-1",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.935231499955989,
+        "Min":  0.896935099968687,
+        "Max":  1.19138690002728,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Staged-10",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.24377340008505,
+        "Min":  1.07189799996559,
+        "Max":  1.6265688999556,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Staged-10",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.15587450005114,
+        "Min":  1.00044239999261,
+        "Max":  1.45417370006908,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.59710710006766,
+        "Min":  1.53295029990841,
+        "Max":  1.6411034000339,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.47617519996129,
+        "Min":  1.39803029992618,
+        "Max":  1.6411651999224,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.919325300026685,
+        "Min":  0.895757699967362,
+        "Max":  0.948789199930616,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.858820599969476,
+        "Min":  0.828635600046255,
+        "Max":  0.999444499961101,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Full-10",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.19790010002907,
+        "Min":  1.05183070001658,
+        "Max":  1.20813539996743,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Full-10",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.0927327000536,
+        "Min":  1.03780990000814,
+        "Max":  1.6104808000382,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Full-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.56360960006714,
+        "Min":  1.54349379998166,
+        "Max":  1.596113699954,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-STABILITY_SP35-Newton-Saved-Normal-Yes-Full-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.51187909999862,
+        "Min":  1.44717950001359,
+        "Max":  1.55123009998351,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    }
+]

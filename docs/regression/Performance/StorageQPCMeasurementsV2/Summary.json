@@ -1,0 +1,46 @@
+﻿[
+    {
+        "Case":  "model",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.533666400006041,
+        "Min":  0.501997499959543,
+        "Max":  0.620652899960987,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "model",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.267015099991113,
+        "Min":  0.254714299924672,
+        "Max":  0.291485099936835,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "extent",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.237864100025035,
+        "Min":  0.220114500029013,
+        "Max":  0.23959360003937,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "extent",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.047207199968398,
+        "Min":  0.03701239998918,
+        "Max":  0.054181199986488,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    }
+]

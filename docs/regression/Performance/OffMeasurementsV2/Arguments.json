@@ -1,0 +1,23 @@
+﻿[
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Measure-PerformanceStorage.ps1",
+    "-Directory",
+    "docs/regression/Performance/OffMeasurementsV2",
+    "-Group",
+    "Batch",
+    "-BaselineWorkbook",
+    "docs/regression/Performance/BatchV3Baseline/RC_Section_NDM.xlsm",
+    "-CandidateWorkbook",
+    "docs/regression/Performance/BatchV3Candidate/RC_Section_NDM.xlsm",
+    "-Family",
+    "DIRECT",
+    "-Extension",
+    "No",
+    "-Counts",
+    "30",
+    "-BatchModes",
+    "Staged"
+]

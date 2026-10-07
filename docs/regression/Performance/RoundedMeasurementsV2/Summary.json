@@ -1,0 +1,24 @@
+﻿[
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.36049830005504,
+        "Min":  1.2883813000517,
+        "Max":  1.89788190007675,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-RoundedRectangle-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.41763510007877,
+        "Min":  1.2685251000803,
+        "Max":  1.55113369994797,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    }
+]

@@ -1,0 +1,87 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Performance\StorageCandidate\RC_Section_NDM.xlsm
+SOURCE_SHA256: 3EEFB6BB9D74F5881EE77087B4BE149ABB8935D6FA00236F3A00A3242F866324
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4a41f33aba8a44bca3a01638d1b78029\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=54120; startTicks=639269853752911785
+===== modTestWorkbookInterface.RunAudit03ReaderTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunAudit03ReaderTests; 2026-10-07T18:56:20
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=6004; workingSet=109023232; privateBytes=89272320; cpu=12163.671875
+EXCEL_AFTER_SUITE: pid=17288; workingSet=115425280; privateBytes=103313408; cpu=1782.328125
+EXCEL_AFTER_SUITE: pid=23088; workingSet=106594304; privateBytes=85180416; cpu=13058.703125
+EXCEL_AFTER_SUITE: pid=54120; workingSet=157331456; privateBytes=111144960; cpu=5.96875
+OK: audit03.reader.width.5.count
+OK: audit03.reader.width.5.id; actual=WIDTH_5
+OK: audit03.reader.width.5.profile; actual=PR1
+OK: audit03.reader.width.5.comment; actual=
+OK: audit03.reader.width.5.sourceSlot
+OK: audit03.reader.width.5.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.5.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.5.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.5.shortRangeControlled
+OK: audit03.reader.width.6.count
+OK: audit03.reader.width.6.id; actual=WIDTH_6
+OK: audit03.reader.width.6.profile; actual=PR1
+OK: audit03.reader.width.6.comment; actual=Комментарий шести колонок
+OK: audit03.reader.width.6.sourceSlot
+OK: audit03.reader.width.6.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.6.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.6.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.6.shortRangeControlled
+OK: audit03.reader.width.7.count
+OK: audit03.reader.width.7.id; actual=WIDTH_7
+OK: audit03.reader.width.7.profile; actual=PR1
+OK: audit03.reader.width.7.comment; actual=Комментарий семи колонок
+OK: audit03.reader.width.7.sourceSlot
+OK: audit03.reader.width.7.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.7.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.7.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.7.capacityPath; actual=LambdaMx
+OK: audit03.reader.width.7.shortRangeControlled
+OK: audit03.reader.width.9.count
+OK: audit03.reader.width.9.id; actual=WIDTH_9
+OK: audit03.reader.width.9.profile; actual=PR1
+OK: audit03.reader.width.9.comment; actual=Комментарий семи колонок
+OK: audit03.reader.width.9.sourceSlot
+OK: audit03.reader.width.9.n; actual=-10000.; expected=-10000.
+OK: audit03.reader.width.9.mx; actual=10000000.; expected=10000000.
+OK: audit03.reader.width.9.my; actual=20000000.; expected=20000000.
+OK: audit03.reader.width.9.capacityPath; actual=LambdaMx
+OK: audit03.reader.width.9.shortRangeControlled
+OK: audit03.reader.rows.stringFixture
+OK: audit03.reader.rows.count
+OK: audit03.reader.rows.sourceGap
+OK: audit03.reader.rows.lastId; actual=VALID_LAST
+OK: audit03.reader.rows.lastSlot
+OK: audit03.reader.rows.numericString; actual=42.5; expected=42.5
+OK: audit03.reader.rows.numericFormula; actual=5.; expected=5.
+OK: audit03.reader.rows.invalid.1; actual=InputErr
+OK: audit03.reader.rows.comment.1
+OK: audit03.reader.rows.invalid.2; actual=InputErr
+OK: audit03.reader.rows.comment.2
+OK: audit03.reader.rows.invalid.3; actual=InputErr
+OK: audit03.reader.rows.comment.3
+OK: audit03.reader.rows.invalid.4; actual=InputErr
+OK: audit03.reader.rows.comment.4
+OK: audit03.reader.rows.invalid.7; actual=InputErr
+OK: audit03.reader.rows.invalid.8; actual=InputErr
+OK: audit03.reader.rows.invalid.9; actual=InputErr
+COMMENT: audit03.reader.rows.valid; 
+OK: audit03.reader.rows.validReachedResults
+OK: audit03.reader.tiny.0.count
+OK: audit03.reader.tiny.0.n; actual=0.00000000001; expected=0.00000000001
+OK: audit03.reader.tiny.0.m; actual=-0.00000000001; expected=-0.00000000001
+OK: audit03.reader.tiny.1.count
+OK: audit03.reader.tiny.1.n; actual=0.00000000001; expected=0.00000000001
+OK: audit03.reader.tiny.1.m; actual=-0.00000000001; expected=-0.00000000001
+OK: audit03.reader.overflow.count
+OK: audit03.reader.overflow.status; actual=InputErr
+OK: audit03.reader.overflow.comment
+OK: audit03.reader.overflow.next; actual=AFTER_OVERFLOW
+TOTAL_AUDIT03_READER: passed=67; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4a41f33aba8a44bca3a01638d1b78029\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunAudit03ReaderTests; 2026-10-07T18:56:22
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

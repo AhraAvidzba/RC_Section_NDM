@@ -1,0 +1,82 @@
+﻿[
+    {
+        "Run":  1,
+        "Seconds":  3.75528000004124,
+        "PrivateBytesBefore":  102141952,
+        "PrivateBytesAfter":  116867072,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  2,
+        "Seconds":  1.13877890002914,
+        "PrivateBytesBefore":  116867072,
+        "PrivateBytesAfter":  118149120,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  3,
+        "Seconds":  0.971979500027373,
+        "PrivateBytesBefore":  118149120,
+        "PrivateBytesAfter":  117841920,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  4,
+        "Seconds":  1.01990830001887,
+        "PrivateBytesBefore":  117841920,
+        "PrivateBytesAfter":  118231040,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  5,
+        "Seconds":  1.01028040004894,
+        "PrivateBytesBefore":  118231040,
+        "PrivateBytesAfter":  119156736,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  6,
+        "Seconds":  0.991422499995679,
+        "PrivateBytesBefore":  119156736,
+        "PrivateBytesAfter":  119173120,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  7,
+        "Seconds":  1.02664389996789,
+        "PrivateBytesBefore":  119173120,
+        "PrivateBytesAfter":  119214080,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  8,
+        "Seconds":  0.991467799991369,
+        "PrivateBytesBefore":  119214080,
+        "PrivateBytesAfter":  119250944,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  9,
+        "Seconds":  1.007720900001,
+        "PrivateBytesBefore":  119250944,
+        "PrivateBytesAfter":  120537088,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    },
+    {
+        "Run":  10,
+        "Seconds":  1.00407310004812,
+        "PrivateBytesBefore":  120537088,
+        "PrivateBytesAfter":  119865344,
+        "ExactResults":  true,
+        "InputsPreserved":  true
+    }
+]

@@ -5,10 +5,12 @@ param(
     [switch]$FrozenProduction,
     [string]$SourceWorkbook = 'docs/regression/Performance/Baseline/RC_Section_NDM.xlsm',
     [switch]$TestModuleOnly,
+    [string[]]$SourceModules = @(),
     [string]$SmokeMacro = 'modTestPerformance.RunPerformanceStorageTests'
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
+. (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
 $base = [IO.Path]::GetFullPath((Join-Path $root $SourceWorkbook))
 $directoryPath = [IO.Path]::GetFullPath((Join-Path $root $Directory))
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Performance')) + [IO.Path]::DirectorySeparatorChar
@@ -18,6 +20,7 @@ New-Item -ItemType Directory -Path $directoryPath -Force | Out-Null
 $target = Join-Path $directoryPath 'RC_Section_NDM.xlsm'
 if (Test-Path -LiteralPath $target) { throw 'Fixture exists; use a fresh evidence directory.' }
 Copy-Item -LiteralPath $base -Destination $target
+$printAreas = @(Get-WorkbookPrintAreas $target)
 $baseHash = (Get-FileHash -LiteralPath $base -Algorithm SHA256).Hash
 $excel = $null; $book = $null
 function Get-ComProperty([object]$Target, [string]$Property) {
@@ -34,6 +37,7 @@ try {
     $components = Get-ComProperty (Get-ComProperty $book 'VBProject') 'VBComponents'
     $files = @(Get-ChildItem -LiteralPath (Join-Path $root 'src'), (Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.cls','.bas')
     if ($FrozenProduction -or $TestModuleOnly) { $files = @($files | Where-Object BaseName -eq 'modTestPerformance') }
+    elseif ($SourceModules.Count -gt 0) { $files = @($files | Where-Object {$_.BaseName -eq 'modTestPerformance' -or $_.BaseName -in $SourceModules}) }
     foreach ($file in $files) {
         $component = $null
         for ($i = 1; $i -le $components.Count; $i++) {
@@ -66,6 +70,7 @@ try {
         if ($result -match '(?m)^FAIL:' -or $result -notmatch 'failed=0') { throw 'Smoke test failed.' }
     }
     $book.Close($false); $book = $null
+    Restore-WorkbookPrintAreas $target $printAreas
     [ordered]@{BaselineSHA256=$baseHash; FrozenProduction=[bool]$FrozenProduction; VBACompileCompleted=$true; SourceGitSHA=(& git -C $root rev-parse HEAD); CandidateSHA256=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directoryPath 'Preparation.json') -Encoding UTF8
     if ((Get-FileHash -LiteralPath $base -Algorithm SHA256).Hash -ne $baseHash) { throw 'Baseline changed.' }

@@ -1,0 +1,622 @@
+﻿[
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.48016579996329,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  80965632,
+                             "WorkingSet":  127021056,
+                             "PeakWorkingSet":  142630912
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  90558464,
+                            "WorkingSet":  144498688,
+                            "PeakWorkingSet":  144920576
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  1,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.08598210010678,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  90558464,
+                             "WorkingSet":  144498688,
+                             "PeakWorkingSet":  144920576
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  101707776,
+                            "WorkingSet":  155725824,
+                            "PeakWorkingSet":  156987392
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  0.95441399991978,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  93044736,
+                             "WorkingSet":  147456000,
+                             "PeakWorkingSet":  171397120
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  108994560,
+                            "WorkingSet":  160989184,
+                            "PeakWorkingSet":  171397120
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  1,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.05696509999689,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  109129728,
+                             "WorkingSet":  163733504,
+                             "PeakWorkingSet":  171397120
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  107954176,
+                            "WorkingSet":  162549760,
+                            "PeakWorkingSet":  171397120
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.11117070005275,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  106897408,
+                             "WorkingSet":  161525760,
+                             "PeakWorkingSet":  171397120
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  109281280,
+                            "WorkingSet":  163864576,
+                            "PeakWorkingSet":  171397120
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  2,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  0.965984900016338,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  109694976,
+                             "WorkingSet":  164278272,
+                             "PeakWorkingSet":  171397120
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110116864,
+                            "WorkingSet":  164364288,
+                            "PeakWorkingSet":  171397120
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.04846510000061,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  94650368,
+                             "WorkingSet":  149630976,
+                             "PeakWorkingSet":  174301184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  109895680,
+                            "WorkingSet":  154742784,
+                            "PeakWorkingSet":  174301184
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  2,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.06695020000916,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  110284800,
+                             "WorkingSet":  164773888,
+                             "PeakWorkingSet":  174301184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  109928448,
+                            "WorkingSet":  164712448,
+                            "PeakWorkingSet":  174301184
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.19046379998326,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  107958272,
+                             "WorkingSet":  162947072,
+                             "PeakWorkingSet":  174301184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110911488,
+                            "WorkingSet":  165363712,
+                            "PeakWorkingSet":  174301184
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  3,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.15952879993711,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  111300608,
+                             "WorkingSet":  165752832,
+                             "PeakWorkingSet":  174301184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  111030272,
+                            "WorkingSet":  165519360,
+                            "PeakWorkingSet":  174301184
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  0.943047799984925,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  106029056,
+                             "WorkingSet":  161042432,
+                             "PeakWorkingSet":  174301184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  111501312,
+                            "WorkingSet":  166162432,
+                            "PeakWorkingSet":  174301184
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  3,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  0.903445199946873,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  111611904,
+                             "WorkingSet":  166273024,
+                             "PeakWorkingSet":  174301184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  111808512,
+                            "WorkingSet":  166420480,
+                            "PeakWorkingSet":  174301184
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.00438840000425,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  95518720,
+                             "WorkingSet":  150659072,
+                             "PeakWorkingSet":  174301184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110551040,
+                            "WorkingSet":  165318656,
+                            "PeakWorkingSet":  174301184
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  4,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  0.991062500048429,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  110551040,
+                             "WorkingSet":  165318656,
+                             "PeakWorkingSet":  174301184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110571520,
+                            "WorkingSet":  165412864,
+                            "PeakWorkingSet":  174301184
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  0.955424399930052,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  112648192,
+                             "WorkingSet":  167165952,
+                             "PeakWorkingSet":  175534080
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110690304,
+                            "WorkingSet":  165588992,
+                            "PeakWorkingSet":  175534080
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  4,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  0.967187600093894,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  111079424,
+                             "WorkingSet":  165978112,
+                             "PeakWorkingSet":  175534080
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  111222784,
+                            "WorkingSet":  166117376,
+                            "PeakWorkingSet":  175534080
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  0.952154899947345,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  106393600,
+                             "WorkingSet":  161038336,
+                             "PeakWorkingSet":  175976448
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  99446784,
+                            "WorkingSet":  154660864,
+                            "PeakWorkingSet":  175976448
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Repeat":  5,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.13588640000671,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  111013888,
+                             "WorkingSet":  166223872,
+                             "PeakWorkingSet":  175976448
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  99405824,
+                            "WorkingSet":  154718208,
+                            "PeakWorkingSet":  175976448
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.00143239996396,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  122486784,
+                             "WorkingSet":  176431104,
+                             "PeakWorkingSet":  176439296
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  112291840,
+                            "WorkingSet":  167563264,
+                            "PeakWorkingSet":  176439296
+                        }
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Repeat":  5,
+        "RunWithinOpen":  2,
+        "Pilot":  false,
+        "Count":  1,
+        "Seconds":  1.05662569997367,
+        "Values":  {
+                       "fingerprint":  "F97FA8F7D3E842E8A3CE5E1D7509F43FA7B5781C1A303928C50B0F0B8FE9B744"
+                   },
+        "Technical":  {
+                          "snapshot":  "0.",
+                          "summary":  "0.",
+                          "packing":  "0.",
+                          "core":  "0.",
+                          "plot":  "0.",
+                          "preparation":  "0.",
+                          "clear":  "0."
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  112705536,
+                             "WorkingSet":  167985152,
+                             "PeakWorkingSet":  176439296
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  112291840,
+                            "WorkingSet":  167579648,
+                            "PeakWorkingSet":  176439296
+                        }
+    }
+]

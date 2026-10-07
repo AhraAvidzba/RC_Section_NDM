@@ -2,14 +2,14 @@
 # Timers belong to VBA operations, not setup/assertions. Five observations use max, not P95.
 param(
     [string]$Directory = 'docs/regression/Performance/StorageMeasurements', [int]$Repeats = 5,
-    [ValidateSet('Storage','Solver','Batch')][string]$Group = 'Storage',
+    [ValidateSet('Storage','Solver','Batch','Export')][string]$Group = 'Storage',
     [string]$BaselineWorkbook = 'docs/regression/Performance/StorageBaseline/RC_Section_NDM.xlsm',
     [string]$CandidateWorkbook = 'docs/regression/Performance/StorageCandidate/RC_Section_NDM.xlsm',
     [int]$ModelCount = 50000, [int]$ExtentCount = 100000, [int]$SolverDivisions = 40,
     [string]$Family = 'DIRECT', [string]$Method = 'Newton', [string]$Shape = 'Saved',
     [string]$Order = 'Normal', [string]$Extension = 'Yes', [int[]]$Counts = @(1,10,30),
     [ValidateSet('Staged','Full')][string[]]$BatchModes = @('Staged','Full'), [switch]$Pilot, [int]$RunsPerOpen = 1,
-    [switch]$MeasureOverhead
+    [switch]$MeasureOverhead, [switch]$KeepInputs
 )
 $ErrorActionPreference = 'Stop'
 if ($Repeats -lt 5 -and -not $Pilot) { throw 'At least five A/B observations are required.' }
@@ -63,26 +63,31 @@ try {
             $cases += @{Name="batch-$Family-$Method-$Shape-$Order-$Extension-$mode-$count"; Mode=$mode; Count=$count}
         }}
     }
+    if ($Group -eq 'Export') {
+        $cases=@(); foreach($count in @(1,10,30)) {$cases += @{Name="export-$count";Count=$count}}
+    }
     foreach ($case in $cases) {
         for ($repeat=1; $repeat -le $Repeats; $repeat++) {
             foreach ($version in @('A','B')) {
                 $books = Get-ComProperty $excel 'Workbooks'
                 $book = $books.Open($paths[$version])
                 $excel.Calculation = -4135
-                if ($Group -eq 'Batch') {
-                    [void]$excel.Run("'$($book.Name)'!modTestPerformance.ConfigurePerformanceFixture",[string]$Family,[int]$case.Count,[string]$Method,[string]$Shape,[string]$Order,[string]$Extension)
+                if ($Group -eq 'Batch' -or $Group -eq 'Export') {
+                    if(-not $KeepInputs) {[void]$excel.Run("'$($book.Name)'!modTestPerformance.ConfigurePerformanceFixture",[string]$Family,[int]$case.Count,[string]$Method,[string]$Shape,[string]$Order,[string]$Extension)}
                     if ($repeat -eq 1) {
                         $inputs=@{}; foreach($name in @('rngSystemSettings','rngCalculationProfiles','rngLoadCombinations','rngStabilityDurationLoads')) {
                             $inputs[$name]=$book.Names.Item($name).RefersToRange.Value2
                         }
                         $inputs | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $directoryPath "$($case.Name)-$version-input.json") -Encoding UTF8
                     }
+                    if($Group -eq 'Export') {[void]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceBatch",'Full')}
                 }
                 for ($run=1; $run -le $RunsPerOpen; $run++) {
                 $before = Get-Memory $excelProcessId
                 if ($case.Name -eq 'model') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceModel", [int]$case.Count) }
                 elseif ($case.Name -eq 'extent') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceExtent", [bool]($version -eq 'B'), [int]$case.Count) }
                 elseif ($Group -eq 'Solver') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceSolver", [string]$case.Method, [int]$SolverDivisions, [int]$case.Count) }
+                elseif ($Group -eq 'Export') { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceExport",10) }
                 else { $result = [string]$excel.Run("'$($book.Name)'!modTestPerformance.MeasurePerformanceBatch", [string]$case.Mode) }
                 $after = Get-Memory $excelProcessId
                 $delimiter = ';'; if ($Group -ne 'Storage') { $delimiter = [string][char]30 }

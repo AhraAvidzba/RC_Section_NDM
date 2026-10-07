@@ -1,0 +1,65 @@
+﻿[
+    {
+        "Family":  "CRACK_SP35",
+        "Seconds":  22.167450199999998,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\CRACK_SP35.txt"
+    },
+    {
+        "Family":  "CRACK_SP63",
+        "Seconds":  14.047541899999999,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\CRACK_SP63.txt"
+    },
+    {
+        "Family":  "STABILITY_SP35",
+        "Seconds":  11.6436154,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\STABILITY_SP35.txt"
+    },
+    {
+        "Family":  "STABILITY_SP63",
+        "Seconds":  11.6207373,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\STABILITY_SP63.txt"
+    },
+    {
+        "Family":  "CAPACITY",
+        "Seconds":  16.8150791,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\CAPACITY.txt"
+    },
+    {
+        "Family":  "MIXED",
+        "Seconds":  19.485064299999998,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\MIXED.txt"
+    },
+    {
+        "Family":  "TINY",
+        "Seconds":  12.6247826,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\TINY.txt"
+    },
+    {
+        "Family":  "REPEAT",
+        "Seconds":  12.033692,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\REPEAT.txt"
+    },
+    {
+        "Family":  "IMPORTED_CRACK_SP35",
+        "Seconds":  121.11456369999999,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\IsolationFinal\\IMPORTED_CRACK_SP35.txt"
+    }
+]

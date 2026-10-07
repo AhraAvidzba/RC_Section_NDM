@@ -1,0 +1,542 @@
+﻿[
+    {
+        "Case":  "model",
+        "Version":  "A",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.620652899960987,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  80658432,
+                             "WorkingSet":  126554112,
+                             "PeakWorkingSet":  142557184
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  81809408,
+                            "WorkingSet":  127832064,
+                            "PeakWorkingSet":  148033536
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "B",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.277538100024685,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  87531520,
+                             "WorkingSet":  137297920,
+                             "PeakWorkingSet":  149831680
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  87900160,
+                            "WorkingSet":  137678848,
+                            "PeakWorkingSet":  151666688
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "A",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.504046999965794,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  94883840,
+                             "WorkingSet":  145317888,
+                             "PeakWorkingSet":  161923072
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  88055808,
+                            "WorkingSet":  138342400,
+                            "PeakWorkingSet":  161923072
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "B",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.267015099991113,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  100442112,
+                             "WorkingSet":  150310912,
+                             "PeakWorkingSet":  161923072
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  91168768,
+                            "WorkingSet":  140517376,
+                            "PeakWorkingSet":  161923072
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "A",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.501997499959543,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  100708352,
+                             "WorkingSet":  150781952,
+                             "PeakWorkingSet":  161923072
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  89829376,
+                            "WorkingSet":  139923456,
+                            "PeakWorkingSet":  163336192
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "B",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.291485099936835,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  101400576,
+                             "WorkingSet":  150736896,
+                             "PeakWorkingSet":  163336192
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  91222016,
+                            "WorkingSet":  141008896,
+                            "PeakWorkingSet":  163336192
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "A",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.533666400006041,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  102821888,
+                             "WorkingSet":  151416832,
+                             "PeakWorkingSet":  163336192
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  92008448,
+                            "WorkingSet":  142303232,
+                            "PeakWorkingSet":  166006784
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "B",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.259900100063533,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  95932416,
+                             "WorkingSet":  146927616,
+                             "PeakWorkingSet":  166006784
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  94035968,
+                            "WorkingSet":  144306176,
+                            "PeakWorkingSet":  166006784
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "A",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.570308599970303,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  102891520,
+                             "WorkingSet":  152158208,
+                             "PeakWorkingSet":  166006784
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  92479488,
+                            "WorkingSet":  143454208,
+                            "PeakWorkingSet":  167518208
+                        }
+    },
+    {
+        "Case":  "model",
+        "Version":  "B",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  50000,
+        "Seconds":  0.254714299924672,
+        "Values":  {
+                       "y":  "-1250025000.",
+                       "x":  "1250025000.",
+                       "last":  "C50000",
+                       "count":  "50000",
+                       "area":  "5000000."
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  93798400,
+                             "WorkingSet":  144359424,
+                             "PeakWorkingSet":  167518208
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  94523392,
+                            "WorkingSet":  145113088,
+                            "PeakWorkingSet":  167518208
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "A",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.23959360003937,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  94531584,
+                             "WorkingSet":  145825792,
+                             "PeakWorkingSet":  167518208
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110956544,
+                            "WorkingSet":  161771520,
+                            "PeakWorkingSet":  167518208
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "B",
+        "Repeat":  1,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.04175179998856,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  92712960,
+                             "WorkingSet":  143962112,
+                             "PeakWorkingSet":  167518208
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  109903872,
+                            "WorkingSet":  161021952,
+                            "PeakWorkingSet":  167518208
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "A",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.220114500029013,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  94658560,
+                             "WorkingSet":  146243584,
+                             "PeakWorkingSet":  167518208
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110272512,
+                            "WorkingSet":  161529856,
+                            "PeakWorkingSet":  167518208
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "B",
+        "Repeat":  2,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.03701239998918,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  97427456,
+                             "WorkingSet":  148836352,
+                             "PeakWorkingSet":  167518208
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110096384,
+                            "WorkingSet":  161361920,
+                            "PeakWorkingSet":  167518208
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "A",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.237864100025035,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  95428608,
+                             "WorkingSet":  146591744,
+                             "PeakWorkingSet":  167518208
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  111271936,
+                            "WorkingSet":  162783232,
+                            "PeakWorkingSet":  167518208
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "B",
+        "Repeat":  3,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.054181199986488,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  94105600,
+                             "WorkingSet":  145977344,
+                             "PeakWorkingSet":  169099264
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  117874688,
+                            "WorkingSet":  166387712,
+                            "PeakWorkingSet":  169099264
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "A",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.239166600047611,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  95543296,
+                             "WorkingSet":  146989056,
+                             "PeakWorkingSet":  169099264
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  116555776,
+                            "WorkingSet":  165888000,
+                            "PeakWorkingSet":  169099264
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "B",
+        "Repeat":  4,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.047555000055581,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  105304064,
+                             "WorkingSet":  156340224,
+                             "PeakWorkingSet":  169099264
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  109830144,
+                            "WorkingSet":  161705984,
+                            "PeakWorkingSet":  169099264
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "A",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.229436099994928,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  93679616,
+                             "WorkingSet":  145780736,
+                             "PeakWorkingSet":  169099264
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  110460928,
+                            "WorkingSet":  162254848,
+                            "PeakWorkingSet":  169099264
+                        }
+    },
+    {
+        "Case":  "extent",
+        "Version":  "B",
+        "Repeat":  5,
+        "RunWithinOpen":  1,
+        "Pilot":  false,
+        "Count":  100000,
+        "Seconds":  0.047207199968398,
+        "Values":  {
+                       "count":  "100000"
+                   },
+        "Technical":  {
+
+                      },
+        "MemoryBefore":  {
+                             "PrivateBytes":  96272384,
+                             "WorkingSet":  147263488,
+                             "PeakWorkingSet":  169099264
+                         },
+        "MemoryAfter":  {
+                            "PrivateBytes":  119545856,
+                            "WorkingSet":  170438656,
+                            "PeakWorkingSet":  170442752
+                        }
+    }
+]

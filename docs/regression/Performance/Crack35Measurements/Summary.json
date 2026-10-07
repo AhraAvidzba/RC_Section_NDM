@@ -1,0 +1,134 @@
+﻿[
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Staged-1",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.03391009999905,
+        "Min":  0.940810300060548,
+        "Max":  1.26441689999774,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Staged-1",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.893927400000393,
+        "Min":  0.864834400010295,
+        "Max":  1.17354889994022,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Staged-10",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.84483010007534,
+        "Min":  1.78899409994483,
+        "Max":  2.09319179994054,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Staged-10",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.79160509991925,
+        "Min":  1.77113989996724,
+        "Max":  1.98223049996886,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  4.03435720002744,
+        "Min":  3.97108709998429,
+        "Max":  4.16029280005023,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  3.86429890000727,
+        "Min":  3.7621560000116,
+        "Max":  4.10524280008394,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.903052599984221,
+        "Min":  0.862812899984419,
+        "Max":  1.00398709997535,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.958211499964818,
+        "Min":  0.864881200017408,
+        "Max":  0.967674699961208,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Full-10",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.8902734000003,
+        "Min":  1.88076339999679,
+        "Max":  1.94853060005698,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Full-10",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.82497450010851,
+        "Min":  1.80934100004379,
+        "Max":  2.00268899998628,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Full-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  4.07388430007268,
+        "Min":  3.97186819999479,
+        "Max":  6.05479890003335,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CRACK_SP35-Newton-Saved-Normal-Yes-Full-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  3.98596439999528,
+        "Min":  3.8202385000186,
+        "Max":  4.19264510006178,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    }
+]

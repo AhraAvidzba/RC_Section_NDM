@@ -1,0 +1,18 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Performance\FinalCandidateV2\RC_Section_NDM.xlsm
+SOURCE_SHA256: 322B9AF92D6772F40A94119B07C4CC1AE6B471271CE70A7AE10C09C8181743E0
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_dddaed7e7b4e4eafa7dc4a6281706072\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=10312; startTicks=639269927759523964
+===== modTestPerformance.RunPerformanceBatchIsolationTests =====
+SUITE_STARTED: modTestPerformance.RunPerformanceBatchIsolationTests; 2026-10-07T20:59:41
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=6004; workingSet=111837184; privateBytes=90054656; cpu=19564.140625
+EXCEL_AFTER_SUITE: pid=10312; workingSet=136048640; privateBytes=88379392; cpu=8.765625
+EXCEL_AFTER_SUITE: pid=17288; workingSet=116350976; privateBytes=103198720; cpu=2180.265625
+EXCEL_AFTER_SUITE: pid=23088; workingSet=113598464; privateBytes=89509888; cpu=20204.296875
+TOTAL PERFORMANCE ISOLATION STABILITY_SP63: passed=153; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_dddaed7e7b4e4eafa7dc4a6281706072\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestPerformance.RunPerformanceBatchIsolationTests; 2026-10-07T20:59:45
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

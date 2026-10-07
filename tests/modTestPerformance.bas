@@ -1,6 +1,5 @@
 Attribute VB_Name = "modTestPerformance"
 Option Explicit
-#Const PERFORMANCE_CURRENT = True
 
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ: ЭКВИВАЛЕНТНОСТЬ И ЗАМЕРЫ ЛОКАЛЬНЫХ ОПТИМИЗАЦИЙ
@@ -8,6 +7,8 @@ Option Explicit
 ' Стандартный модуль не добавляет production-классов. Проверяет реальные
 ' контейнеры и Excel Range, сохраняет точные значения без новых допусков.
 ' Замеры не включают assertions; тот же код импортируется в A и B книги.
+
+#Const PERFORMANCE_CURRENT = True
 
 Private mPassed As Long, mFailed As Long, mReport As String
 
@@ -180,6 +181,7 @@ Private Function OldExtent(ByVal anchor As Object, ByVal columns As Boolean, ByV
     Next i
 End Function
 
+' ДЛЯ ТЕСТОВ: фиксирует только неуспешные assertions, не меняет expected/tolerance.
 Private Sub Check(ByVal label As String, ByVal condition As Boolean)
     If condition Then
         mPassed = mPassed + 1
@@ -188,6 +190,7 @@ Private Sub Check(ByVal label As String, ByVal condition As Boolean)
     End If
 End Sub
 
+' ДЛЯ ТЕСТОВ: длительность по одному монотонному таймеру, не VBA Timer.
 Private Function SecondsSince(ByVal start As Double) As Double
     SecondsSince = PerformanceNow() - start
 End Function
@@ -449,6 +452,7 @@ Finished:
     RunPerformancePreparationTests = mReport & "TOTAL PERFORMANCE PREPARATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' ДЛЯ ТЕСТОВ: машинная запись времени с точкой для одинакового A/B parser.
 Private Function NumberText(ByVal value As Double) As String
     NumberText = Replace$(Format$(value, "0.###############"), ",", ".")
 End Function
@@ -530,6 +534,8 @@ NextProfileColumn:
         If stability Then n = -100000# - j * 15000#: mx = j * 1000000#: my = (j Mod 6) * 800000#
         If j = 1 And Not crack Then n = -111000#: mx = 0#: my = 0#
         If family = "MIXED" And j = 15 Then n = -1000000000#: mx = 10000000000#
+        If family = "TINY" Then n = -j * 0.00000001: mx = j * 0.00000002: my = -j * 0.00000003
+        If family = "REPEAT" Then n = -120000#: mx = 15000000#: my = -6000000#
         values(i, 1) = "PERF_" & Format$(j, "00")
         values(i, 2) = n / units.InputForceToInternal(1#)
         values(i, 3) = mx / units.InputMomentMxToInternal(1#)
@@ -548,6 +554,39 @@ NextProfileColumn:
     Next i
     loads.Offset(1, 0).Resize(UBound(values, 1), UBound(values, 2)).Value2 = values
     duration.Offset(1, 0).Resize(UBound(durations, 1), UBound(durations, 2)).Value2 = durations
+    If Left$(family, 9) = "IMPORTED_" Then PreparePerformanceImportedSnapshot units
+End Sub
+
+' ДЛЯ ТЕСТОВ: снимок по контракту AutoCADImport с точными дугами и двумя
+' отверстиями. Это проверка Results-pipeline, а не новый сеанс настоящего CAD.
+' В A и B сетка/контуры/стержни одинаковы; механическая сетка не заменяется контуром.
+Private Sub PreparePerformanceImportedSnapshot(ByVal units As CUnitSystem)
+    Dim section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim props As CSectionPropertiesCalculator, writer As CNDMResultsWriter
+    Dim x As Double, y As Double, i As Long, angle As Double, pi As Double
+    Set section = New CSectionModel: section.SourceType = "AutoCADImport"
+    Set query = New CSectionGeometryQuery
+    Set region = query.CircleRegion(0#, 0#, 200#)
+    Set region = query.SubtractRegion(region, query.CircleRegion(-45#, 60#, 25#))
+    Set region = query.SubtractRegion(region, query.CircleRegion(45#, 60#, 25#))
+    For x = -195# To 195# Step 10#
+        For y = -195# To 195# Step 10#
+            If query.ContainsPoint(region, x, y) Then
+                section.AddConcreteElement x, y, 100#, 1, "CAD_CELL_" & CStr(section.ConcreteCount + 1), _
+                    vbNullString, "Rectangle", 10#, 10#
+            End If
+        Next y
+    Next x
+    pi = 4# * Atn(1#)
+    For i = 1 To 8
+        angle = (i - 1) * pi / 4#
+        section.AddRebarElement 170# * Cos(angle), 170# * Sin(angle), 30#, pi * 30# ^ 2 / 4#, "Periodic", _
+            1, "CAD_BAR_" & CStr(i)
+    Next i
+    section.Contours.AddMaterialRegion region, "PERFORMANCE_CAD", "Точный контур тестового снимка AutoCAD."
+    Set props = New CSectionPropertiesCalculator: props.PrepareSnapshot section
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, props, units
+    PerformanceSetting "Geometry.Source", "AutoCAD"
 End Sub
 
 ' ДЛЯ ТЕСТОВ: настройка частной копии по фактическому ключу.
@@ -633,6 +672,174 @@ Failed:
     Err.Raise number, "MeasurePerformanceBatch", description
 End Function
 
+' ДЛЯ ТЕСТОВ: один и тот же LC должен дать точные данные в пакете, повторном
+' Execute, другом порядке и отдельном расчете. Адрес исходной строки сохраняется.
+' Это проверка изоляции, а не замер ускорения 30 отдельных запусков.
+Public Function RunPerformanceBatchIsolationTests(Optional ByVal family As String = "CRACK_SP35") As String
+    Dim names As Variant, name As Variant, saved As Object, table As Object, values As Variant
+    Dim batch As CBatchSectionCalculator, section As CSectionModel, reference As Object
+    Dim i As Long, col As Long, order As Variant, singles() As Variant, loads As Object
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Set saved = CreateObject("Scripting.Dictionary")
+    names = Array("rngSystemSettings", "rngCalculationProfiles", "rngLoadCombinations", "rngStabilityDurationLoads")
+    For Each name In names
+        saved.Add CStr(name), ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
+    Next name
+    ConfigurePerformanceFixture family, 30, "Newton"
+    Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+    values = loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).Value2
+    Set reference = CreateObject("Scripting.Dictionary")
+    Set batch = BuildPerformanceTestBatch(section): batch.Execute
+    For i = 1 To batch.Count
+        reference.Add batch.CombinationID(i), CombinationFingerprint(batch, section, i)
+    Next i
+    Check "isolation.count", reference.Count = 30
+    Dim retained As CCombinationResult, retainedText As String
+    Set retained = batch.ResultAt(1): retainedText = ResultFingerprint(retained, section)
+    batch.Execute
+    For i = 1 To batch.Count
+        Check "isolation.repeat." & batch.CombinationID(i), CombinationFingerprint(batch, section, i) = reference(batch.CombinationID(i))
+    Next i
+    Check "isolation.retained", ResultFingerprint(retained, section) = retainedText
+#If PERFORMANCE_CURRENT Then
+    Check "isolation.released", batch.RunPreparationReleased
+#End If
+    ' Ошибка ввода содержит фактический адрес, который меняется при перестановке.
+    ' Поэтому MIXED проверяется отдельно с сохранением исходного места каждой строки.
+    If family <> "MIXED" Then
+        For Each order In Array("Reverse", "Shuffle")
+            ConfigurePerformanceFixture family, 30, "Newton", "Saved", CStr(order)
+            Set batch = BuildPerformanceTestBatch(section): batch.Execute
+            For i = 1 To batch.Count
+                Check "isolation." & CStr(order) & "." & batch.CombinationID(i), _
+                    CombinationFingerprint(batch, section, i) = reference(batch.CombinationID(i))
+            Next i
+        Next order
+    End If
+    For i = 1 To 30
+        ReDim singles(1 To UBound(values, 1), 1 To UBound(values, 2))
+        For col = 1 To UBound(values, 2): singles(i, col) = values(i, col): Next col
+        loads.Offset(1, 0).Resize(UBound(singles, 1), UBound(singles, 2)).Value2 = singles
+        Set batch = BuildPerformanceTestBatch(section): batch.Execute
+        Check "isolation.single.count." & CStr(i), batch.Count = 1
+        Check "isolation.single." & CStr(i), CombinationFingerprint(batch, section, 1) = reference(batch.CombinationID(1))
+    Next i
+    GoTo Restore
+Failed:
+    Check "isolation.runtime " & CStr(Err.Number) & ": " & Err.Description, False
+Restore:
+    On Error Resume Next
+    If Not saved Is Nothing Then
+        For Each name In saved.Keys
+            ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula = saved(name)
+        Next name
+    End If
+    On Error GoTo 0
+    RunPerformanceBatchIsolationTests = mReport & "TOTAL PERFORMANCE ISOLATION " & family & ": passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
+End Function
+
+' ДЛЯ ТЕСТОВ: штатные readers и владельцы без записи Results и нового warm start.
+Private Function BuildPerformanceTestBatch(ByRef section As CSectionModel) As CBatchSectionCalculator
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim profiles As CCalculationProfileCatalog, batch As CBatchSectionCalculator, reader As CLoadCombinationReader
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
+    Set batch.ProfileCatalog = profiles: batch.ApplySettings settings, units
+    Set reader = New CLoadCombinationReader: reader.LoadFromWorkbook ThisWorkbook, batch, units
+    LoadStabilityDurationLoadsFromWorkbook ThisWorkbook, batch, units
+    Dim data As Variant, inputError As String
+    data = ReadSP35Table721FromWorkbook(ThisWorkbook, inputError): batch.SetSP35Table721 data, inputError
+    Audit03ApplyLoadReferenceForTests section, settings, units, batch
+    Set BuildPerformanceTestBatch = batch
+End Function
+
+' ДЛЯ ТЕСТОВ: рабочие нагрузки и все result-поддеревья одного ID, без таймеров.
+Private Function CombinationFingerprint(ByVal batch As CBatchSectionCalculator, ByVal section As CSectionModel, ByVal index As Long) As String
+    CombinationFingerprint = DoubleBits(batch.N(index)) & DoubleBits(batch.Mx(index)) & DoubleBits(batch.My(index)) & _
+        DoubleBits(batch.UserMx(index)) & DoubleBits(batch.UserMy(index)) & ResultFingerprint(batch.ResultAt(index), section)
+End Function
+
+' ДЛЯ ТЕСТОВ: точные поля ширины, несущей, устойчивости и каждого named-state.
+' Технические времена/счетчики не инженерные expected; их проверяют замеры.
+Private Function ResultFingerprint(ByVal result As CCombinationResult, ByVal section As CSectionModel) As String
+    Dim text As String, state As CSectionStateResult, i As Long
+    text = MetaFingerprint(result.OverallMeta) & MetaFingerprint(result.DirectStateMeta) & MetaFingerprint(result.CapacityMeta) & _
+        MetaFingerprint(result.CrackFormationMeta) & MetaFingerprint(result.CrackCurrentStateMeta) & MetaFingerprint(result.CrackWidthMeta) & _
+        MetaFingerprint(result.LongitudinalCrackMeta) & MetaFingerprint(result.StabilityMeta)
+    text = text & ScalarFieldsFingerprint(result, "Status NormalCrackStatus CrackSummaryStatus ExtensionUsed GoverningUtil ProfileId DiagramExtensionEnabled")
+    text = text & ScalarFieldsFingerprint(result.StrengthResult.DirectState, "Status StateAvailable StateConverged ExtensionUsed ExtensionEnabled StrainReserve")
+    text = text & ScalarFieldsFingerprint(result.StrengthResult.Capacity, "Status LimitState SolutionMethod PathResolved LambdaCapacity UtilCapacity NUltimate MxUltimate MyUltimate CapacityStateN CapacityStateMx CapacityStateMy MomentUltimate CapacityStateAvailable CapacityEpsilon0 CapacityKappaX CapacityKappaY PureAxialForMethod ReserveFactor SearchExecuted")
+    text = text & ScalarFieldsFingerprint(result.CrackResult.Formation, "CrackFormed ConfirmedCracked ConfirmedNotCracked FormationMethod LambdaCrc Ncrc FormationNcrc Mcrc Ared RbtSer StopReason HasLimitPoint FallbackPsi1 CentralTensionBranch Converged")
+    text = text & ScalarFieldsFingerprint(result.CrackResult.Width, "CrackWidth AllowableCrackWidth Utilization Phi1 Phi2 Phi3 PsiS SigmaS SigmaSCrc SteelEs AsTension Abt DsEquivalent CrackSpacingRaw CrackSpacing TensionRebarCount TensionRebarIds SectionDepthH CoverA TensionDepth EffectiveZoneDepth CentralTensionBranch StopReason StandardCode SP35CriticalCandidate SP35ReinforcementRadius SP35PsiCm CriticalAnchorGroupID ReserveFactor")
+    text = text & ScalarFieldsFingerprint(result.CrackResult.Longitudinal, "Status MaxCompressionStress RbMc2 Utilization ReserveFactor")
+    text = text & ScalarFieldsFingerprint(result.StabilityResult, "Status SummaryReserve Code Branch ReferenceX ReferenceY DesignN DesignMx DesignMy SustainedN Moment1 Moment2 SustainedMoment1 SustainedMoment2 DesignMoment1 DesignMoment2 CriticalForce ReserveFactor Utilization Ncr1 Ncr2 Nultimate1 Nultimate2 Reserve1 Reserve2 Eta1 Eta2 PhiL1 PhiL2 PhiLTable1 PhiLTable2 PhiM1 PhiM2 PhiValue1 PhiValue2 PhiP1 PhiP2 Eccentricity1 Eccentricity2 AccidentalEcc1 AccidentalEcc2 EffectiveLength1 EffectiveLength2 Slenderness1 Slenderness2 Depth1 Depth2 Radius1 Radius2 CoreDistance1 CoreDistance2 Delta1 Delta2 Kb1 Kb2 Ks1 Ks2 StiffnessD1 StiffnessD2 PlaneBranch1 PlaneBranch2 PlaneApplicable1 PlaneApplicable2 PlanePassed1 PlanePassed2")
+    For i = 1 To result.StateRepository.StateCount
+        Set state = result.StateRepository.StateAt(i)
+        text = text & ScalarFieldsFingerprint(state, "StateType StateTypeText MaterialModelRole MaterialModelRoleText Epsilon0 KappaX KappaY ExtensionUsed WithinPhysicalRange Converged StopReason Status InternalStatus ResultCode ResultComment TargetN TargetMx TargetMy Nint Mxint Myint ResidualN ResidualMx ResidualMy RelativeResidualN RelativeResidualMx RelativeResidualMy LastResidualNorm IterationCount MinConcreteStrain MaxConcreteStrain MinSteelStrain MaxSteelStrain MinConcreteStress MaxConcreteStress MinSteelStress MaxSteelStress HasConcreteCompression HasConcreteTension HasSteelCompression HasSteelTension")
+        text = text & state.MaterialSpec.SpecKey & ArrayFingerprint(state.PrepareElementSnapshot(section))
+    Next i
+    Dim width As CCrackWidthResult, data As CSP35CrackData, j As Long
+    Set width = result.CrackResult.Width
+    If Not width Is Nothing Then
+        text = text & RegionFingerprint(width.InteractionRegion)
+        Set data = width.SP35Data
+        If Not data Is Nothing Then
+            text = text & ScalarFieldsFingerprint(data, "CandidateCount GroupCount NormalX NormalY NeutralProjection GroupGapTolerance RowTolerance NeighborRatioLimit RadiusDiameterMode InteractionRadiusMode CentralTension SectionRevision")
+            For j = 1 To data.GroupCount
+                text = text & DoubleBits(data.GroupX(j)) & DoubleBits(data.GroupY(j)) & DoubleBits(data.GroupArea(j)) & _
+                    DoubleBits(data.GroupBeta(j)) & CStr(data.GroupRow(j)) & ArrayFingerprint(data.GroupMembers(j))
+            Next j
+            For j = 1 To data.CandidateCount
+                text = text & CStr(data.CandidateAvailable(j))
+                If Not data.CandidateAvailable(j) Then GoTo NextIsolationCandidate
+                text = text & RegionFingerprint(data.CandidateRegion(j)) & ArrayFingerprint(data.CandidateRows(j)) & _
+                    CStr(data.CandidateAnchorGroup(j)) & CStr(data.CandidateStressBar(j)) & DoubleBits(data.CandidateSigmaS(j)) & _
+                    DoubleBits(data.CandidateBetaDiameterSum(j)) & DoubleBits(data.CandidateSideDiameter(j)) & DoubleBits(data.CandidateRowDiameter(j)) & _
+                    DoubleBits(data.CandidateLeftDistance(j)) & DoubleBits(data.CandidateRightDistance(j)) & DoubleBits(data.CandidateNormalRadius(j)) & _
+                    CStr(data.CandidateReferenceRow(j)) & CStr(data.CandidateRowCount(j)) & DoubleBits(data.CandidateCrackWidth(j))
+NextIsolationCandidate:
+            Next j
+        End If
+    End If
+    ResultFingerprint = text
+End Function
+
+' ДЛЯ ТЕСТОВ: только явно перечисленные скалярные getters; нет округления Double.
+Private Function ScalarFieldsFingerprint(ByVal value As Object, ByVal fields As String) As String
+    If value Is Nothing Then ScalarFieldsFingerprint = "<Nothing>": Exit Function
+    Dim name As Variant, item As Variant
+    For Each name In Split(fields, " ")
+        item = CallByName(value, CStr(name), VbGet)
+        ScalarFieldsFingerprint = ScalarFieldsFingerprint & CStr(name) & "=" & CellFingerprint(item) & "|"
+    Next name
+End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет размерность и точные значения массива одного состояния.
+Private Function ArrayFingerprint(ByVal data As Variant) As String
+    If Not IsArray(data) Then ArrayFingerprint = CellFingerprint(data): Exit Function
+    Dim dimensions As Long, row As Long, col As Long, item As Variant
+    On Error Resume Next
+    dimensions = UBound(data, 2)
+    On Error GoTo 0
+    If dimensions = 0 Then
+        ArrayFingerprint = "1D|" & CStr(LBound(data)) & "|" & CStr(UBound(data))
+        For Each item In data: ArrayFingerprint = ArrayFingerprint & CellFingerprint(item) & "|": Next item
+    Else
+        ArrayFingerprint = "2D|" & CStr(UBound(data, 1)) & "|" & CStr(UBound(data, 2))
+        For row = LBound(data, 1) To UBound(data, 1)
+            For col = LBound(data, 2) To UBound(data, 2)
+                ArrayFingerprint = ArrayFingerprint & CellFingerprint(data(row, col)) & "|"
+            Next col
+        Next row
+    End If
+End Function
+
+' ДЛЯ ТЕСТОВ: статус, код, применимость и комментарий без подмены внешним текстом.
 Private Function MetaFingerprint(ByVal meta As CResultMeta) As String
     MetaFingerprint = CStr(meta.InternalStatus) & ":" & CStr(meta.ResultCode) & ":" & CStr(meta.Applies) & ":" & _
         CStr(meta.Calculated) & ":" & meta.ResultComment
@@ -687,6 +894,7 @@ Public Function PerformanceResultsFingerprint() As String
     PerformanceResultsFingerprint = result
 End Function
 
+' ДЛЯ ТЕСТОВ: различает Empty/error/типы и сохраняет биты числовой ячейки.
 Private Function CellFingerprint(ByVal value As Variant) As String
     If IsError(value) Then
         CellFingerprint = "E:" & CStr(value)
@@ -697,6 +905,70 @@ Private Function CellFingerprint(ByVal value As Variant) As String
     Else
         CellFingerprint = "T:" & CStr(VarType(value)) & ":" & CStr(Len(CStr(value))) & ":" & CStr(value)
     End If
+End Function
+
+' ДЛЯ ТЕСТОВ: повторяет настоящий passive export-reader без запуска AutoCAD.
+' Геометрия/цикл выбора LC остаются включены; assertions вне замера.
+Public Function MeasurePerformanceExport(ByVal count As Long) As String
+    Dim t As Double, i As Long, elapsed As Double, values() As String
+    ReDim values(1 To count)
+    t = PerformanceNow()
+    For i = 1 To count
+        values(i) = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    Next i
+    elapsed = SecondsSince(t)
+    For i = 2 To count
+        If values(i) <> values(1) Then Err.Raise 5, "MeasurePerformanceExport", "Read changed within measurement."
+    Next i
+    MeasurePerformanceExport = "seconds=" & NumberText(elapsed) & Chr$(30) & "fingerprint=" & values(1) & vbLf & PerformanceResultsFingerprint()
+End Function
+
+' ДЛЯ ТЕСТОВ: следующая операция видит новые данные; ошибка не удерживает кэш.
+Public Function RunPerformanceExportCacheTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    Dim table As Object, data As Variant, row As Long, original As String, changed As String
+    Dim oldValue As Variant, oldHeader As Variant, errorNumber As Long, restored As Boolean
+    On Error GoTo Failed
+    Set table = ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange
+    Set table = table.Resize(OldExtent(table.Cells(1, 1), False, 0), 9)
+    data = table.Value2
+    original = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+#If PERFORMANCE_CURRENT Then
+    Check "export.released", InStr(PerformanceExportReadDiagnosticsForTests(), "released=True") > 0
+#End If
+    Dim identity As Variant
+    identity = Split(original, "|")
+    For row = 2 To UBound(data, 1)
+        If CStr(data(row, 2)) = identity(0) And CStr(data(row, 4)) = identity(2) Then Exit For
+    Next row
+    If row > UBound(data, 1) Then Err.Raise 5, "RunPerformanceExportCacheTests", "Missing selected state row."
+    oldValue = table.Cells(row, 8).Formula
+    table.Cells(row, 8).Value2 = CDbl(data(row, 8)) + 0.123456789
+    changed = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    Check "export.fresh.operation", changed <> original
+    table.Cells(row, 8).Formula = oldValue: restored = True
+    Check "export.restored", Audit02ReadExportSnapshotForTests(ThisWorkbook) = original
+    oldHeader = table.Cells(1, 8).Formula
+    table.Cells(1, 8).Value2 = "broken"
+    On Error Resume Next
+    changed = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    errorNumber = Err.Number: Err.Clear
+    On Error GoTo Failed
+    Check "export.corrupt.rejected", errorNumber <> 0
+#If PERFORMANCE_CURRENT Then
+    Check "export.failure.released", InStr(PerformanceExportReadDiagnosticsForTests(), "released=True") > 0
+#End If
+    table.Cells(1, 8).Formula = oldHeader
+    Check "export.after.failure", Audit02ReadExportSnapshotForTests(ThisWorkbook) = original
+    GoTo Restore
+Failed:
+    Check "export.runtime " & CStr(Err.Number) & ": " & Err.Description, False
+Restore:
+    On Error Resume Next
+    If Not restored And row > 1 Then table.Cells(row, 8).Formula = oldValue
+    If Not IsEmpty(oldHeader) Then table.Cells(1, 8).Formula = oldHeader
+    On Error GoTo 0
+    RunPerformanceExportCacheTests = mReport & "TOTAL PERFORMANCE EXPORT CACHE: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
 End Function
 
 ' ДЛЯ ТЕСТОВ: отделяет B04 от дорогого solve, а P05 от записи чисел.

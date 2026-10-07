@@ -1,0 +1,46 @@
+﻿[
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.11117070005275,
+        "Min":  0.952154899947345,
+        "Max":  1.48016579996329,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "RunWithinOpen":  2,
+        "Observations":  5,
+        "Median":  1.08598210010678,
+        "Min":  0.965984900016338,
+        "Max":  1.15952879993711,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.955424399930052,
+        "Min":  0.943047799984925,
+        "Max":  1.04846510000061,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-USER_SAVED-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "RunWithinOpen":  2,
+        "Observations":  5,
+        "Median":  1.05662569997367,
+        "Min":  0.903445199946873,
+        "Max":  1.06695020000916,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    }
+]

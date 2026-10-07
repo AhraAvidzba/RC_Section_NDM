@@ -1,0 +1,134 @@
+﻿[
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Staged-1",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.931446100003086,
+        "Min":  0.875593099975958,
+        "Max":  1.31830409995746,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Staged-1",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.967858900083229,
+        "Min":  0.92908360005822,
+        "Max":  0.991002899943851,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Staged-10",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  2.82802030001767,
+        "Min":  2.76294839999173,
+        "Max":  3.04746969998814,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Staged-10",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  2.52422650007065,
+        "Min":  2.48593089997303,
+        "Max":  2.62197219999507,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  8.53575859998818,
+        "Min":  8.15766439994331,
+        "Max":  8.95121270010713,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  7.04095570009667,
+        "Min":  6.93175860005431,
+        "Max":  7.23811500007287,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Full-1",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.03564969997387,
+        "Min":  0.949289700016379,
+        "Max":  1.08047000004444,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Full-1",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  0.99731350003276,
+        "Min":  0.922929399996065,
+        "Max":  1.07760140008759,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Full-10",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  2.85549969994463,
+        "Min":  2.75091599998996,
+        "Max":  2.91284499992616,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Full-10",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  2.50133070000447,
+        "Min":  2.43079060001764,
+        "Max":  2.56747470004484,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Full-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  8.45239720004611,
+        "Min":  8.20307930000126,
+        "Max":  8.97136409999803,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    },
+    {
+        "Case":  "batch-CAPACITY_MULTIPLIER-Secant-RectSet-Normal-Yes-Full-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  7.11548919999041,
+        "Min":  6.96620249992702,
+        "Max":  7.47563150001224,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  false
+    }
+]

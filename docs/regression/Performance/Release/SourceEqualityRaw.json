@@ -1,0 +1,1249 @@
+﻿{
+    "ActualComponents":  126,
+    "RepositoryComponents":  121,
+    "ProductionClasses":  88,
+    "AllPassed":  false,
+    "Checks":  [
+                   {
+                       "Component":  "CBatchSectionCalculator",
+                       "Type":  2,
+                       "SourceLines":  2202,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCalculationProfile",
+                       "Type":  2,
+                       "SourceLines":  286,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCalculationProfileCatalog",
+                       "Type":  2,
+                       "SourceLines":  318,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCombinationResult",
+                       "Type":  2,
+                       "SourceLines":  356,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CDirectStateResult",
+                       "Type":  2,
+                       "SourceLines":  158,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionStateResult",
+                       "Type":  2,
+                       "SourceLines":  508,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateProvider",
+                       "Type":  2,
+                       "SourceLines":  276,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateRepository",
+                       "Type":  2,
+                       "SourceLines":  190,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateRequest",
+                       "Type":  2,
+                       "SourceLines":  96,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStrengthResult",
+                       "Type":  2,
+                       "SourceLines":  132,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadPathDescriptor",
+                       "Type":  2,
+                       "SourceLines":  283,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadPathMath",
+                       "Type":  2,
+                       "SourceLines":  175,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadPathVector",
+                       "Type":  2,
+                       "SourceLines":  90,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CMomentZeroFilter",
+                       "Type":  2,
+                       "SourceLines":  58,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CResultMeta",
+                       "Type":  2,
+                       "SourceLines":  193,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CResultStatusPolicy",
+                       "Type":  2,
+                       "SourceLines":  184,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionLoadState",
+                       "Type":  2,
+                       "SourceLines":  161,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modCalculationPurpose",
+                       "Type":  1,
+                       "SourceLines":  305,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modGeometryTypes",
+                       "Type":  1,
+                       "SourceLines":  145,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modResultStatus",
+                       "Type":  1,
+                       "SourceLines":  125,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modSolverWorkStats",
+                       "Type":  1,
+                       "SourceLines":  26,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackFormationCalculator",
+                       "Type":  2,
+                       "SourceLines":  2385,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackFormationResult",
+                       "Type":  2,
+                       "SourceLines":  233,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackResult",
+                       "Type":  2,
+                       "SourceLines":  185,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackWidthCalculator",
+                       "Type":  2,
+                       "SourceLines":  1623,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackWidthResult",
+                       "Type":  2,
+                       "SourceLines":  284,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLongitudinalCrackCalculator",
+                       "Type":  2,
+                       "SourceLines":  85,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLongitudinalCrackResult",
+                       "Type":  2,
+                       "SourceLines":  87,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSP35CrackData",
+                       "Type":  2,
+                       "SourceLines":  633,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CAutoCADContourReader",
+                       "Type":  2,
+                       "SourceLines":  143,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CAutoCADSectionModelImporter",
+                       "Type":  2,
+                       "SourceLines":  808,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CBatchResultWriter",
+                       "Type":  2,
+                       "SourceLines":  839,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackSummaryWriter",
+                       "Type":  2,
+                       "SourceLines":  1064,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CExcelAppStateGuard",
+                       "Type":  2,
+                       "SourceLines":  86,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CExecutionReport",
+                       "Type":  2,
+                       "SourceLines":  641,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadCombinationReader",
+                       "Type":  2,
+                       "SourceLines":  182,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CNDMResultsWriter",
+                       "Type":  2,
+                       "SourceLines":  1549,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CPlotAnnotationLayout",
+                       "Type":  2,
+                       "SourceLines":  496,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionPlotDataReader",
+                       "Type":  2,
+                       "SourceLines":  1211,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionPlotter",
+                       "Type":  2,
+                       "SourceLines":  2120,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionTypeRegistry",
+                       "Type":  2,
+                       "SourceLines":  243,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStabilitySummaryWriter",
+                       "Type":  2,
+                       "SourceLines":  883,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStrengthSummaryWriter",
+                       "Type":  2,
+                       "SourceLines":  812,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSystemSettingsReader",
+                       "Type":  2,
+                       "SourceLines":  1341,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CUnitSystem",
+                       "Type":  2,
+                       "SourceLines":  400,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modAutoCADContourOwnership",
+                       "Type":  1,
+                       "SourceLines":  48,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modAutoCADStressExport",
+                       "Type":  1,
+                       "SourceLines":  2543,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  1983,
+                                               "Source":  "    labelx = x - 0.45# * width * c + 0.1# * height * s",
+                                               "Book":  "    labelx = x - 0.45 * width * c + 0.1 * height * s"
+                                           },
+                                           {
+                                               "Line":  1984,
+                                               "Source":  "    labely = y - 0.45# * width * s - 0.1# * height * c",
+                                               "Book":  "    labely = y - 0.45 * width * s - 0.1 * height * c"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "modStatusFormatting",
+                       "Type":  1,
+                       "SourceLines":  49,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modWorkbookCalculation",
+                       "Type":  1,
+                       "SourceLines":  1292,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modWorkbookMessages",
+                       "Type":  1,
+                       "SourceLines":  38,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFiberMeshBuilder",
+                       "Type":  2,
+                       "SourceLines":  245,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CGeometryCircle",
+                       "Type":  2,
+                       "SourceLines":  169,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CGeometryHollowRectangle",
+                       "Type":  2,
+                       "SourceLines":  429,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CGeometryRectSet",
+                       "Type":  2,
+                       "SourceLines":  369,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CGeometryRoundedRectangle",
+                       "Type":  2,
+                       "SourceLines":  1176,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "ILimitSearchProblem",
+                       "Type":  2,
+                       "SourceLines":  273,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "ISectionGeometry",
+                       "Type":  2,
+                       "SourceLines":  50,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CConcreteMaterialParameters",
+                       "Type":  2,
+                       "SourceLines":  177,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLinearConcreteMaterial",
+                       "Type":  2,
+                       "SourceLines":  42,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLinearSteelMaterial",
+                       "Type":  2,
+                       "SourceLines":  42,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CMaterialDiagram",
+                       "Type":  2,
+                       "SourceLines":  467,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CMaterialModelProvider",
+                       "Type":  2,
+                       "SourceLines":  862,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CMaterialModelSpec",
+                       "Type":  2,
+                       "SourceLines":  92,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSteelMaterialParameters",
+                       "Type":  2,
+                       "SourceLines":  155,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCircleAnnotationBuilder",
+                       "Type":  2,
+                       "SourceLines":  36,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCircleRebarLayoutBuilder",
+                       "Type":  2,
+                       "SourceLines":  286,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CConcreteRegion",
+                       "Type":  2,
+                       "SourceLines":  134,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CHollowRectAnnotationBuilder",
+                       "Type":  2,
+                       "SourceLines":  91,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CHollowRectRebarLayoutBuilder",
+                       "Type":  2,
+                       "SourceLines":  836,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CRebarGroupAnnotationBuilder",
+                       "Type":  2,
+                       "SourceLines":  78,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  7,
+                                               "Source":  "\u0027 6Ø32 или 6Ø32 + 3Ø20. Он не ищет стержни по координатам: принадлежность",
+                                               "Book":  "\u0027 6O32 или 6O32 + 3O20. Он не ищет стержни по координатам: принадлежность"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "CRebarLayout",
+                       "Type":  2,
+                       "SourceLines":  230,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CRectSetAnnotationBuilder",
+                       "Type":  2,
+                       "SourceLines":  81,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CRectSetRebarLayoutBuilder",
+                       "Type":  2,
+                       "SourceLines":  809,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  10,
+                                               "Source":  "\u0027 формирует semantic-группы для подписей вида 6Ø32 + 3Ø20.",
+                                               "Book":  "\u0027 формирует semantic-группы для подписей вида 6O32 + 3O20."
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "CRoundedRectAnnotationBuilder",
+                       "Type":  2,
+                       "SourceLines":  128,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CRoundedRectRebarLayoutBuilder",
+                       "Type":  2,
+                       "SourceLines":  515,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionAnnotations",
+                       "Type":  2,
+                       "SourceLines":  362,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  107,
+                                               "Source":  "\u0027 пробелов вокруг плюса: ALL: 3∅32+23∅16.",
+                                               "Book":  "\u0027 пробелов вокруг плюса: ALL: 3?32+23?16."
+                                           },
+                                           {
+                                               "Line":  141,
+                                               "Source":  "\u0027 пользовательскую запись ∅32.",
+                                               "Book":  "\u0027 пользовательскую запись ?32."
+                                           },
+                                           {
+                                               "Line":  162,
+                                               "Source":  "\u0027 диаметра. Для типичного импорта это дает привычный вид 3∅32+23∅16.",
+                                               "Book":  "\u0027 диаметра. Для типичного импорта это дает привычный вид 3?32+23?16."
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionContours",
+                       "Type":  2,
+                       "SourceLines":  154,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionGeometryQuery",
+                       "Type":  2,
+                       "SourceLines":  1344,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionModel",
+                       "Type":  2,
+                       "SourceLines":  903,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionModelBuilder",
+                       "Type":  2,
+                       "SourceLines":  44,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionPropertiesCalculator",
+                       "Type":  2,
+                       "SourceLines":  788,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCapacityCalculator",
+                       "Type":  2,
+                       "SourceLines":  356,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCapacityLimitSearchProblem",
+                       "Type":  2,
+                       "SourceLines":  493,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCapacityResult",
+                       "Type":  2,
+                       "SourceLines":  409,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCapacitySolver",
+                       "Type":  2,
+                       "SourceLines":  2072,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackLimitSearchProblem",
+                       "Type":  2,
+                       "SourceLines":  382,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLimitSearchCoordinator",
+                       "Type":  2,
+                       "SourceLines":  281,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLimitSearchRequest",
+                       "Type":  2,
+                       "SourceLines":  306,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLimitSearchResult",
+                       "Type":  2,
+                       "SourceLines":  213,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLinearSystem3x3",
+                       "Type":  2,
+                       "SourceLines":  192,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  101,
+                                               "Source":  "    if mrelativeresidual \u003e 1e-8 then",
+                                               "Book":  "    if mrelativeresidual \u003e 0.00000001 then"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadMultiplierSearch",
+                       "Type":  2,
+                       "SourceLines":  724,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  697,
+                                               "Source":  "    if abs(value) \u003e 1.797693134862315e+308 then exit function",
+                                               "Book":  "    if abs(value) \u003e 1.79769313486231e+308 then exit function"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionSolver",
+                       "Type":  2,
+                       "SourceLines":  1477,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateGuessBuilder",
+                       "Type":  2,
+                       "SourceLines":  848,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateSolutionRunner",
+                       "Type":  2,
+                       "SourceLines":  855,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CUltimateStrainSearch",
+                       "Type":  2,
+                       "SourceLines":  426,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  414,
+                                               "Source":  "    if abs(value) \u003e 1.797693134862315e+308 then exit function",
+                                               "Book":  "    if abs(value) \u003e 1.79769313486231e+308 then exit function"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "CStabilityCalculator",
+                       "Type":  2,
+                       "SourceLines":  1650,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  229,
+                                               "Source":  "    if squaredlength \u003c\u003e squaredlength or squaredlength \u003e 1.797693134862315e+308 then goto rangefailed",
+                                               "Book":  "    if squaredlength \u003c\u003e squaredlength or squaredlength \u003e 1.79769313486231e+308 then goto rangefailed"
+                                           },
+                                           {
+                                               "Line":  1268,
+                                               "Source":  "\u0027 AutoWithμL, но код также принимает AutoWithMuL, чтобы не зависеть от способа",
+                                               "Book":  "\u0027 AutoWith?L, но код также принимает AutoWithMuL, чтобы не зависеть от способа"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "CStabilityResult",
+                       "Type":  2,
+                       "SourceLines":  578,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadContour",
+                       "Type":  2,
+                       "SourceLines":  159,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadContourExport",
+                       "Type":  2,
+                       "SourceLines":  115,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadLine",
+                       "Type":  2,
+                       "SourceLines":  56,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadRegion",
+                       "Type":  2,
+                       "SourceLines":  121,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CTestLimitSearchProblem",
+                       "Type":  2,
+                       "SourceLines":  698,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestAutoCADConfig",
+                       "Type":  1,
+                       "SourceLines":  1255,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestAutoCADContours",
+                       "Type":  1,
+                       "SourceLines":  1246,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestBatchCalculation",
+                       "Type":  1,
+                       "SourceLines":  10117,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  844,
+                                               "Source":  "    assertclose stats, \"batch.zeroMoment.tinyResidual\", filter.normalizemoment(0.000000000000000242, 1000#), 0#, 0#",
+                                               "Book":  "    assertclose stats, \"batch.zeroMoment.tinyResidual\", filter.normalizemoment(2.42e-16, 1000#), 0#, 0#"
+                                           },
+                                           {
+                                               "Line":  896,
+                                               "Source":  "    batch.addcombination \"M_TINY\", -200000#, 0.000000000000000242, 0#, \"PR1\", \"tiny residual moment\"",
+                                               "Book":  "    batch.addcombination \"M_TINY\", -200000#, 2.42e-16, 0#, \"PR1\", \"tiny residual moment\""
+                                           },
+                                           {
+                                               "Line":  949,
+                                               "Source":  "    batch.addcombination \"STAB_TINY_M\", -120000#, 0.000000000000000242, 0#, \"PR1\", \"tiny stability moment\"",
+                                               "Book":  "    batch.addcombination \"STAB_TINY_M\", -120000#, 2.42e-16, 0#, \"PR1\", \"tiny stability moment\""
+                                           },
+                                           {
+                                               "Line":  4478,
+                                               "Source":  "\u0027 арматура Ø32 по всем внешним и внутренним граням. Этот сценарий нужен именно",
+                                               "Book":  "\u0027 арматура O32 по всем внешним и внутренним граням. Этот сценарий нужен именно"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestCapacitySolver",
+                       "Type":  1,
+                       "SourceLines":  2675,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  350,
+                                               "Source":  "    cap.steelstrainlimit = 0.001#",
+                                               "Book":  "    cap.steelstrainlimit = 0.001"
+                                           },
+                                           {
+                                               "Line":  631,
+                                               "Source":  "        loadmethod.steelstrainlimit = 0.001#",
+                                               "Book":  "        loadmethod.steelstrainlimit = 0.001"
+                                           },
+                                           {
+                                               "Line":  641,
+                                               "Source":  "        strainmethod.steelstrainlimit = 0.001#",
+                                               "Book":  "        strainmethod.steelstrainlimit = 0.001"
+                                           },
+                                           {
+                                               "Line":  1702,
+                                               "Source":  "        cap.steelstrainlimit = 0.001#",
+                                               "Book":  "        cap.steelstrainlimit = 0.001"
+                                           },
+                                           {
+                                               "Line":  1707,
+                                               "Source":  "            0#, stiffness * 0.001# / cdbl(root), 0#, 0#, 0#, 0#",
+                                               "Book":  "            0#, stiffness * 0.001 / cdbl(root), 0#, 0#, 0#, 0#"
+                                           },
+                                           {
+                                               "Line":  2073,
+                                               "Source":  "    cap.lambdatolerance = 0.000000000000000001",
+                                               "Book":  "    cap.lambdatolerance = 1e-18"
+                                           },
+                                           {
+                                               "Line":  2343,
+                                               "Source":  "            problem.configure methodname, adjacent, 0.000000000000000001, 80, 1#, adjacent, kind",
+                                               "Book":  "            problem.configure methodname, adjacent, 1e-18, 80, 1#, adjacent, kind"
+                                           },
+                                           {
+                                               "Line":  2344,
+                                               "Source":  "            if methodname = \"Bisection\" then problem.configure methodname, adjacent, 0.000000000000000001, 0, 1#, adjacent, kind",
+                                               "Book":  "            if methodname = \"Bisection\" then problem.configure methodname, adjacent, 1e-18, 0, 1#, adjacent, kind"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestConfiguration",
+                       "Type":  1,
+                       "SourceLines":  2193,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestCrackWidth",
+                       "Type":  1,
+                       "SourceLines":  1872,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  361,
+                                               "Source":  "\u0027 λ*Mxy сохраняет N постоянной, λ*N нужен для центрального",
+                                               "Book":  "\u0027 ?*Mxy сохраняет N постоянной, ?*N нужен для центрального"
+                                           },
+                                           {
+                                               "Line":  362,
+                                               "Source":  "\u0027 растяжения, а λ*NMxy масштабирует весь вектор N/Mx/My как единую траекторию.",
+                                               "Book":  "\u0027 растяжения, а ?*NMxy масштабирует весь вектор N/Mx/My как единую траекторию."
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeneralGeometryConfig",
+                       "Type":  1,
+                       "SourceLines":  567,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeometry",
+                       "Type":  1,
+                       "SourceLines":  2823,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  2747,
+                                               "Source":  "    appendline stats, \"CONST: GEOM_PI deltaFrom3x1e15=\" \u0026 cstr((geom_pi - 3#) * 1000000000000000#)",
+                                               "Book":  "    appendline stats, \"CONST: GEOM_PI deltaFrom3x1e15=\" \u0026 cstr((geom_pi - 3#) * 1e+15)"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeometryConfig",
+                       "Type":  1,
+                       "SourceLines":  1545,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeometryQuery",
+                       "Type":  1,
+                       "SourceLines":  548,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestLoadTableConfig",
+                       "Type":  1,
+                       "SourceLines":  855,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestMaterialDiagrams",
+                       "Type":  1,
+                       "SourceLines":  1073,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestPerformance",
+                       "Type":  1,
+                       "SourceLines":  1002,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestPlotConfig",
+                       "Type":  1,
+                       "SourceLines":  1605,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestProfileConfig",
+                       "Type":  1,
+                       "SourceLines":  1644,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestRegressionBaseline",
+                       "Type":  1,
+                       "SourceLines":  379,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestSectionSolver",
+                       "Type":  1,
+                       "SourceLines":  1955,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  821,
+                                               "Source":  "                assertclose stats, prefix \u0026 \".physicalClamp\", units.inputcurvaturetointernal(rawclamp), 0.0000001, 0.000000000000000001",
+                                               "Book":  "                assertclose stats, prefix \u0026 \".physicalClamp\", units.inputcurvaturetointernal(rawclamp), 0.0000001, 1e-18"
+                                           },
+                                           {
+                                               "Line":  1726,
+                                               "Source":  "    asserttrue stats, \"audit03.linear.typed.large.residual\", system.relativeresidual \u003e= 0# and system.relativeresidual \u003c= 1e-8",
+                                               "Book":  "    asserttrue stats, \"audit03.linear.typed.large.residual\", system.relativeresidual \u003e= 0# and system.relativeresidual \u003c= 0.00000001"
+                                           },
+                                           {
+                                               "Line":  1730,
+                                               "Source":  "    asserttrue stats, \"audit03.linear.typed.overflow\", not system.solve(0.00000000000000001, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1e+308, 1#, 1#)",
+                                               "Book":  "    asserttrue stats, \"audit03.linear.typed.overflow\", not system.solve(1e-17, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1e+308, 1#, 1#)"
+                                           },
+                                           {
+                                               "Line":  1822,
+                                               "Source":  "    solved = system.solve(0.00000000000000001, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1e+308, 1#, 1#)",
+                                               "Book":  "    solved = system.solve(1e-17, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1e+308, 1#, 1#)"
+                                           }
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestSP35CrackWidth",
+                       "Type":  1,
+                       "SourceLines":  1379,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestWorkbookInterface",
+                       "Type":  1,
+                       "SourceLines":  7855,
+                       "Passed":  false,
+                       "Differences":  [
+                                           {
+                                               "Line":  4702,
+                                               "Source":  "            assertclose stats, \"audit03.reader.tiny.\" \u0026 cstr(mode) \u0026 \".n\", batch.n(1), 0.00000000001, 0.00000000000000000000000001",
+                                               "Book":  "            assertclose stats, \"audit03.reader.tiny.\" \u0026 cstr(mode) \u0026 \".n\", batch.n(1), 0.00000000001, 1e-26"
+                                           },
+                                           {
+                                               "Line":  4703,
+                                               "Source":  "            assertclose stats, \"audit03.reader.tiny.\" \u0026 cstr(mode) \u0026 \".m\", batch.usermx(2), -0.00000000001, 0.00000000000000000000000001",
+                                               "Book":  "            assertclose stats, \"audit03.reader.tiny.\" \u0026 cstr(mode) \u0026 \".m\", batch.usermx(2), -0.00000000001, 1e-26"
+                                           }
+                                       ]
+                   }
+               ],
+    "Normalization":  "CRLF/LF, trailing blank lines, VBE identifier case; string literals and comments unchanged."
+}

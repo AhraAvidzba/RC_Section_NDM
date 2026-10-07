@@ -40,6 +40,9 @@ Private Const OPENING_CONTOUR_COLOR_INDEX As Long = 4 ' Контуры отве�
 Private Const CRACK_REGION_COLOR_INDEX As Long = 31 ' Расчетная область взаимодействия: ACI 31.
 Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001
 Private mSnapshotUnits As CUnitSystem ' Пересчет по явным единицам Results; не загружается из текущего Config.
+Private mSnapshotReadTables As Object ' Только подготовка одного export-state; освобождается до рисования/выхода с ошибкой.
+Private mSnapshotReadWorkbook As Object ' Identity книги защищает локальное чтение от чужого контекста.
+Private mSnapshotTableReadCount As Long ' ДЛЯ ТЕСТОВ: фактические Value2-чтения последней операции.
 
 ' Экспортирует выбранное сохраненное НДС и его оформление в активный чертеж.
 ' Читает Results, профиль отображения и единицы; решатель не вызывается,
@@ -206,6 +209,10 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
         ByRef loadReferenceX As Double, ByRef loadReferenceY As Double, _
         ByRef centroidX As Double, ByRef centroidY As Double, ByRef principalAngle As Double, _
         ByRef extensionUsed As Boolean, ByRef stateWarningText As String)
+    On Error GoTo Failed
+    Set mSnapshotReadTables = CreateObject("Scripting.Dictionary")
+    Set mSnapshotReadWorkbook = workbook
+    mSnapshotTableReadCount = 0
     Set section = ReadSectionGeometryFromResults(workbook, "Results")
 
     combinationID = ResolveExportCombinationID(workbook, settings.GetRequiredString("AutoCAD.Export.CombinationID"))
@@ -232,6 +239,13 @@ Private Sub ReadResultsExportState(ByVal workbook As Object, ByVal settings As C
     ReadElementResultsForCombination workbook, quantity, combinationID, stateType, resultByID, physicalStateByID
     ReadSectionPropertiesForCombination workbook, units, combinationID, stateType, principalAxesMode, epsilon0, kappaX, kappaY, _
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, extensionUsed, stateWarningText
+    Set mSnapshotReadTables = Nothing: Set mSnapshotReadWorkbook = Nothing
+    Exit Sub
+Failed:
+    Dim errorNumber As Long, errorSource As String, errorText As String
+    errorNumber = Err.Number: errorSource = Err.Source: errorText = Err.Description
+    Set mSnapshotReadTables = Nothing: Set mSnapshotReadWorkbook = Nothing
+    Err.Raise errorNumber, errorSource, errorText
 End Sub
 
 ' Восстанавливает CSectionModel из таблицы Results в внутренних единицах.
@@ -1025,6 +1039,14 @@ End Function
 ' CurrentRegion, чтобы человекочитаемые заголовки над таблицами не попадали
 ' в массив расчетных данных.
 Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+    Dim useReadTables As Boolean
+    useReadTables = Not mSnapshotReadTables Is Nothing And workbook Is mSnapshotReadWorkbook
+    If useReadTables Then
+        If mSnapshotReadTables.Exists(rangeName) Then
+            ReadAnchoredResultTable = mSnapshotReadTables.Item(rangeName)
+            Exit Function
+        End If
+    End If
     Dim anchor As Object
     Set anchor = workbook.Names.Item(rangeName).RefersToRange
 
@@ -1037,6 +1059,10 @@ Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeNa
     If rowCount <= 0 Then rowCount = 1
 
     ReadAnchoredResultTable = anchor.Resize(rowCount, columnCount).Value2
+    If useReadTables Then
+        mSnapshotReadTables.Add rangeName, ReadAnchoredResultTable
+        mSnapshotTableReadCount = mSnapshotTableReadCount + 1
+    End If
 End Function
 
 ' Определяет ширину таблицы по непрерывной строке заголовков.
@@ -2446,6 +2472,13 @@ Public Function Audit02ReadExportSnapshotForTests(ByVal workbook As Object) As S
         result = result & vbCrLf & CStr(key) & "|" & CStr(CDbl(values(key))) & "|" & CStr(physicalStates(key))
     Next key
     Audit02ReadExportSnapshotForTests = result
+End Function
+
+' ДЛЯ ТЕСТОВ: счетчик одной операции и отсутствие удержанных таблиц/книги.
+' Обычный экспорт не обращается к этой диагностике и не сохраняет модель.
+Public Function PerformanceExportReadDiagnosticsForTests() As String
+    PerformanceExportReadDiagnosticsForTests = "tables=" & CStr(mSnapshotTableReadCount) & ";released=" & _
+        CStr(mSnapshotReadTables Is Nothing And mSnapshotReadWorkbook Is Nothing)
 End Function
 
 ' Проверяет рабочие правила оформления без создания DWG. Возвращает тот же

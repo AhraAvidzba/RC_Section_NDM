@@ -1,0 +1,24 @@
+﻿[
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-No-Staged-30",
+        "Version":  "A",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.45320840005297,
+        "Min":  1.41819120000582,
+        "Max":  1.85503490001429,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-No-Staged-30",
+        "Version":  "B",
+        "RunWithinOpen":  1,
+        "Observations":  5,
+        "Median":  1.51434530003462,
+        "Min":  1.44680800009519,
+        "Max":  2.17521829996258,
+        "ExactValues":  true,
+        "FullPhasesMeasured":  true
+    }
+]

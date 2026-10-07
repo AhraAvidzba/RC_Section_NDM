@@ -1,0 +1,121 @@
+﻿[
+    {
+        "Macro":  "modTestGeometryQuery.RunGeometryQueryTests",
+        "Seconds":  7.68345,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunGeometryQueryTests.txt"
+    },
+    {
+        "Macro":  "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "Seconds":  8.39397,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunSP35PreparationTests.txt"
+    },
+    {
+        "Macro":  "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "Seconds":  7.5367599999999992,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunSP35LocalOpeningTests.txt"
+    },
+    {
+        "Macro":  "modTestSP35CrackWidth.RunSP35CurrentProjectionTests",
+        "Seconds":  7.5193562999999992,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunSP35CurrentProjectionTests.txt"
+    },
+    {
+        "Macro":  "modTestSP35CrackWidth.RunSP35EndToEndTests",
+        "Seconds":  14.1888188,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunSP35EndToEndTests.txt"
+    },
+    {
+        "Macro":  "modTestCapacitySolver.RunAudit03CapacityContracts",
+        "Seconds":  9.3781226,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunAudit03CapacityContracts.txt"
+    },
+    {
+        "Macro":  "modTestCapacitySolver.RunAudit03CapacityLifecycle",
+        "Seconds":  7.9169693999999993,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunAudit03CapacityLifecycle.txt"
+    },
+    {
+        "Macro":  "modTestCapacitySolver.RunAudit03MultiplierTypedFaults",
+        "Seconds":  7.8388390999999995,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunAudit03MultiplierTypedFaults.txt"
+    },
+    {
+        "Macro":  "modTestBatchCalculation.RunPostAudit03LifecycleTests",
+        "Seconds":  9.192288,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunPostAudit03LifecycleTests.txt"
+    },
+    {
+        "Macro":  "modTestBatchCalculation.RunAudit03PublishedResultTests",
+        "Seconds":  10.0628145,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunAudit03PublishedResultTests.txt"
+    },
+    {
+        "Macro":  "modTestBatchCalculation.RunPostAudit03SnapshotOwnerTests",
+        "Seconds":  7.5702618,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunPostAudit03SnapshotOwnerTests.txt"
+    },
+    {
+        "Macro":  "modTestBatchCalculation.RunPostAudit03SnapshotRepeatTests",
+        "Seconds":  9.3003427,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunPostAudit03SnapshotRepeatTests.txt"
+    },
+    {
+        "Macro":  "modTestBatchCalculation.RunAudit03StatusPaletteTests",
+        "Seconds":  10.5963883,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunAudit03StatusPaletteTests.txt"
+    },
+    {
+        "Macro":  "modTestWorkbookInterface.RunAudit03ReadLifecycleTests",
+        "Seconds":  21.136654099999998,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunAudit03ReadLifecycleTests.txt"
+    },
+    {
+        "Macro":  "modTestWorkbookInterface.RunAudit03ImportedSnapshotUnitChangeTests",
+        "Seconds":  22.8511416,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunAudit03ImportedSnapshotUnitChangeTests.txt"
+    },
+    {
+        "Macro":  "modTestWorkbookInterface.RunConfigPresentationTests",
+        "Seconds":  7.9869768999999993,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunConfigPresentationTests.txt"
+    },
+    {
+        "Macro":  "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+        "Seconds":  12.767559499999999,
+        "ExitCode":  0,
+        "Passed":  true,
+        "Report":  "docs\\regression\\Performance\\DirectedFinal\\RunAudit03ExcelGuardTests.txt"
+    }
+]
