@@ -173,14 +173,7 @@ End Sub
 ' Все нижние Results-таблицы имеют непустой первый столбец в строке шапки
 ' и в каждой строке данных, поэтому первая пустая ячейка завершает блок.
 Private Function ExistingAnchoredRowCount(ByVal anchor As Object) As Long
-    Dim maxOffset As Long
-    maxOffset = anchor.Worksheet.Rows.Count - anchor.Row
-
-    Dim rowOffset As Long
-    For rowOffset = 0 To maxOffset
-        If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
-        ExistingAnchoredRowCount = ExistingAnchoredRowCount + 1
-    Next rowOffset
+    ExistingAnchoredRowCount = SnapshotAnchoredExtent(anchor, False)
 End Function
 
 ' Записывает общий заголовок в пределах нижних snapshot-таблиц Results;

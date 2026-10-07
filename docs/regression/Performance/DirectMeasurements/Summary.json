@@ -1,0 +1,110 @@
+﻿[
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Staged-1",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  1.59917890001088,
+        "Min":  1.51365019998048,
+        "Max":  1.82917329994962,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Staged-1",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  1.46214900002815,
+        "Min":  1.38507519999985,
+        "Max":  1.49966109998059,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Staged-10",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  1.7439889999805,
+        "Min":  1.60828410007525,
+        "Max":  1.82867029996123,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Staged-10",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  1.69595089997165,
+        "Min":  1.58225279999897,
+        "Max":  1.98502430005465,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Staged-30",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  2.33289020007942,
+        "Min":  2.16020470007788,
+        "Max":  2.41155080008321,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Staged-30",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  2.08082839997951,
+        "Min":  2.0601861999603,
+        "Max":  2.61924200004432,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  1.42843039997388,
+        "Min":  1.403217199957,
+        "Max":  1.55271749990061,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  1.55963569995947,
+        "Min":  1.48479269992094,
+        "Max":  1.75286820007022,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Full-10",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  1.59814659995027,
+        "Min":  1.56902629998513,
+        "Max":  1.72267450008076,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Full-10",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  1.62948640005197,
+        "Min":  1.56717970001046,
+        "Max":  1.84303160000127,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Full-30",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  2.12185250001494,
+        "Min":  2.10333309997804,
+        "Max":  2.3082252999302,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Full-30",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  2.11044890002813,
+        "Min":  2.01480420003645,
+        "Max":  2.15449390001595,
+        "ExactValues":  true
+    }
+]

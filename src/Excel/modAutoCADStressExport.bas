@@ -1041,23 +1041,13 @@ End Function
 
 ' Определяет ширину таблицы по непрерывной строке заголовков.
 Private Function AnchoredColumnCount(ByVal anchor As Object) As Long
-    Dim colOffset As Long, lastOffset As Long
-    lastOffset = anchor.Worksheet.Columns.Count - anchor.Column
-    If lastOffset > 255 Then lastOffset = 255
-    For colOffset = 0 To lastOffset
-        If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
-        AnchoredColumnCount = AnchoredColumnCount + 1
-    Next colOffset
+    AnchoredColumnCount = SnapshotAnchoredExtent(anchor, True, 256)
 End Function
 
 ' Определяет высоту таблицы по первому столбцу, где все Results-таблицы имеют
 ' обязательный RunID/ElementID/AnnotationID в каждой строке данных.
 Private Function AnchoredRowCount(ByVal anchor As Object) As Long
-    Dim rowOffset As Long
-    For rowOffset = 0 To anchor.Worksheet.Rows.Count - anchor.Row
-        If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
-        AnchoredRowCount = AnchoredRowCount + 1
-    Next rowOffset
+    AnchoredRowCount = SnapshotAnchoredExtent(anchor, False)
 End Function
 
 ' Достает единицу измерения из заголовка вида "X, mm".

@@ -24,7 +24,8 @@ Private Const QUERY_TOLERANCE As Double = 0.000001 ' Прежний допуск
 Private Const PARAM_TOLERANCE As Double = 0.0000000001 ' Только безразмерный параметр аналитического сегмента.
 Private mSection As CSectionModel
 Private mRevision As Long
-Private mDomain As CConcreteRegion ' Локальный снимок только одной модели/query-session.
+Private mDomain As CConcreteRegion ' Неизменная область одной модели/query-session; потребитель получает clone.
+Private mDomainBuildCount As Long ' Число успешных подготовок за жизнь query, включая смену контекста.
 
 ' Привязывает query-session к модели. Достоверные контуры берутся из Contours
 ' генератора/импортера, а неизвестная граница восстанавливается по КЭ.
@@ -35,6 +36,23 @@ Public Sub Initialize(ByVal section As CSectionModel)
     mRevision = section.Revision
     Set mDomain = Nothing
 End Sub
+
+' Привязывает общий запрос к фактической модели, сохраняя только ее неизменную
+' подготовку. Новый объект/Revision сбрасывает область; LC-данных здесь нет.
+Friend Sub EnsureSection(ByVal section As CSectionModel)
+    If section Is Nothing Then GeometryError "Модель сечения не передана."
+    If Not section Is mSection Then
+        Initialize section
+    ElseIf section.Revision <> mRevision Then
+        mRevision = section.Revision
+        Set mDomain = Nothing
+    End If
+End Sub
+
+' ДЛЯ ТЕСТОВ: фактические подготовки, а не количество чтений clone.
+Friend Property Get DomainBuildCount() As Long
+    DomainBuildCount = mDomainBuildCount
+End Property
 
 ' Возвращает независимую копию всей бетонной области, включая отверстия.
 ' Кэш локален для session и перестраивается при изменении геометрии модели.
@@ -711,7 +729,8 @@ Public Function ConcreteCoverFromPointAlongDirection(ByVal pointX As Double, ByV
 End Function
 
 ' Подготавливает и валидирует локальный domain. Изменение сетки сбрасывает
-' снимок; shared/global cache, способный смешать разные модели, отсутствует.
+' снимок. При совместном использовании query ключ остается identity/Revision
+' модели, а не LC; при ошибке незавершенная область не публикуется в кэш.
 Private Sub EnsureDomain()
     If mSection Is Nothing Then GeometryError "Сначала привяжите геометрический запрос к модели сечения."
     If mSection.Revision <> mRevision Then Set mDomain = Nothing
@@ -759,8 +778,11 @@ Private Sub EnsureDomain()
     source = "ElementBoundaryLoops"
     If outerCount > 0 Then source = "AuthoritativeContour"
     If holeCount > 0 Then source = source & "+KnownOpening"
-    Set mDomain = MakeRegion(boundary, boundaryCount, source, mRevision)
-    If mDomain.Area <= QUERY_TOLERANCE Then GeometryError "Бетонная область пуста после учета внешнего контура и отверстий."
+    Dim preparedDomain As CConcreteRegion
+    Set preparedDomain = MakeRegion(boundary, boundaryCount, source, mRevision)
+    If preparedDomain.Area <= QUERY_TOLERANCE Then GeometryError "Бетонная область пуста после учета внешнего контура и отверстий."
+    Set mDomain = preparedDomain
+    mDomainBuildCount = mDomainBuildCount + 1
 End Sub
 
 ' Читает исходные материальные границы из геометрии модели. Расчетные области

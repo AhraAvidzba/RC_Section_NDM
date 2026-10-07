@@ -42,6 +42,8 @@ Private mStressUnit As String ' Единица напряжений, сохра�
 Private mCurvatureUnit As String ' Единица кривизн после чтения Results; для Plotter это всегда 1/mm.
 Private mSnapshotCurvatureUnit As String ' Исходная OUTPUT-единица кривизн, сохраненная в Results.
 Private mCount As Long ' Количество элементов, у которых есть геометрия и результат выбранного LC.
+Private mElementCapacity As Long ' Закрытый резерв одного Load; публичный Count не включает хвост.
+Private mReadTables As Object ' Value2-копии только текущего Load, освобождаются до передачи reader Plotter-у.
 Private mElementID() As String ' ID элемента для связи геометрии, результатов и подписей.
 Private mMaterialType() As String ' Concrete/Rebar; Plotter использует это для выбора маркера.
 Private mX() As Double ' X элемента во внутренних мм после чтения snapshot.
@@ -99,12 +101,14 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemS
 
     On Error GoTo Failed
     ResetReaderState
+    Set mReadTables = CreateObject("Scripting.Dictionary")
     mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
     ApplyVisualizationProfile workbook
 
     ReadSectionProperties workbook
     ReadGeometryAndResults workbook
     ReadAnnotations workbook
+    Set mReadTables = Nothing
     Exit Sub
 Failed:
     Dim errorNumber As Long, description As String, errorSource As String
@@ -123,6 +127,7 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
 
     On Error GoTo Failed
     ResetReaderState
+    Set mReadTables = CreateObject("Scripting.Dictionary")
     mGeometryOnly = True
     mGeometryOnlyTitle = "Импортированная геометрия AutoCAD"
     mVisualizationQuantity = "Stress"
@@ -133,6 +138,7 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     mResultUnit = "-"
     ReadGeometryPreview workbook
     ReadAnnotations workbook
+    Set mReadTables = Nothing
     Exit Sub
 Failed:
     Dim errorNumber As Long, description As String, errorSource As String
@@ -153,6 +159,7 @@ Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
 
     On Error GoTo Failed
     ResetReaderState
+    Set mReadTables = CreateObject("Scripting.Dictionary")
     mLoadCase = ResolveLoadCase(workbook, settings.GetRequiredString("Plot.LoadCase"))
     ApplyVisualizationProfile workbook
 
@@ -167,6 +174,7 @@ Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _
     mResultUnit = "-"
     ReadGeometryPreview workbook
     ReadAnnotations workbook
+    Set mReadTables = Nothing
     Exit Sub
 Failed:
     Dim errorNumber As Long, description As String, errorSource As String
@@ -629,19 +637,8 @@ Private Sub AppendElement(ByVal elementID As String, ByVal materialType As Strin
         ByVal rotation As Double, ByVal resultData As Variant)
     ' Сохраняем только элементы, у которых есть и геометрия, и результат
     ' выбранного LC. Так схема не рисует “пустые” элементы после ошибочного LC.
+    EnsureElementCapacity mCount + 1
     mCount = mCount + 1
-    ReDim Preserve mElementID(1 To mCount)
-    ReDim Preserve mMaterialType(1 To mCount)
-    ReDim Preserve mX(1 To mCount)
-    ReDim Preserve mY(1 To mCount)
-    ReDim Preserve mArea(1 To mCount)
-    ReDim Preserve mDiameter(1 To mCount)
-    ReDim Preserve mShapeType(1 To mCount)
-    ReDim Preserve mWidth(1 To mCount)
-    ReDim Preserve mHeight(1 To mCount)
-    ReDim Preserve mRotation(1 To mCount)
-    ReDim Preserve mResultValue(1 To mCount)
-    ReDim Preserve mPhysicalState(1 To mCount)
 
     mElementID(mCount) = elementID
     mMaterialType(mCount) = materialType
@@ -659,6 +656,32 @@ Private Sub AppendElement(ByVal elementID As String, ByVal materialType As Strin
         mResultValue(mCount) = CDbl(resultData(1))
     End If
     mPhysicalState(mCount) = CStr(resultData(2))
+End Sub
+
+' Сохраняет массивы элементов в прежнем порядке с геометрическим резервом.
+' Незанятые позиции недоступны через getters; ResetReaderState стирает резерв.
+Private Sub EnsureElementCapacity(ByVal required As Long)
+    If required <= mElementCapacity Then Exit Sub
+    Dim capacity As Long
+    capacity = required
+    If mElementCapacity = 0 Then
+        If capacity < 64 Then capacity = 64
+    ElseIf mElementCapacity <= 1073741823 Then
+        If capacity < mElementCapacity * 2 Then capacity = mElementCapacity * 2
+    End If
+    ReDim Preserve mElementID(1 To capacity)
+    ReDim Preserve mMaterialType(1 To capacity)
+    ReDim Preserve mX(1 To capacity)
+    ReDim Preserve mY(1 To capacity)
+    ReDim Preserve mArea(1 To capacity)
+    ReDim Preserve mDiameter(1 To capacity)
+    ReDim Preserve mShapeType(1 To capacity)
+    ReDim Preserve mWidth(1 To capacity)
+    ReDim Preserve mHeight(1 To capacity)
+    ReDim Preserve mRotation(1 To capacity)
+    ReDim Preserve mResultValue(1 To capacity)
+    ReDim Preserve mPhysicalState(1 To capacity)
+    mElementCapacity = capacity
 End Sub
 
 ' Читает semantic-аннотации схемы.
@@ -799,6 +822,8 @@ End Function
 ' Reader может переиспользоваться тестами, поэтому нельзя оставлять элементы
 ' и аннотации от предыдущей загрузки.
 Private Sub ResetReaderState()
+    Set mReadTables = Nothing
+    mElementCapacity = 0
     mGeometryOnly = False
     mGeometryOnlyTitle = vbNullString
     mGeometryOnlyNote = vbNullString
@@ -856,6 +881,12 @@ End Sub
 ' Это позволяет размещать человекочитаемый заголовок прямо над таблицей и не
 ' включать его в массив данных.
 Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+    If Not mReadTables Is Nothing Then
+        If mReadTables.Exists(rangeName) Then
+            ReadAnchoredResultTable = mReadTables.Item(rangeName)
+            Exit Function
+        End If
+    End If
     Dim anchor As Object
     Set anchor = workbook.Names.Item(rangeName).RefersToRange
 
@@ -868,27 +899,18 @@ Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeNa
     If rowCount <= 0 Then rowCount = 1
 
     ReadAnchoredResultTable = anchor.Resize(rowCount, columnCount).Value2
+    If Not mReadTables Is Nothing Then mReadTables.Add rangeName, ReadAnchoredResultTable
 End Function
 
 ' Определяет ширину таблицы по непрерывной строке заголовков от якоря.
 Private Function AnchoredColumnCount(ByVal anchor As Object) As Long
-    Dim colOffset As Long, lastOffset As Long
-    lastOffset = anchor.Worksheet.Columns.Count - anchor.Column
-    If lastOffset > 255 Then lastOffset = 255
-    For colOffset = 0 To lastOffset
-        If Len(Trim$(CStr(anchor.Offset(0, colOffset).Value2))) = 0 Then Exit For
-        AnchoredColumnCount = AnchoredColumnCount + 1
-    Next colOffset
+    AnchoredColumnCount = SnapshotAnchoredExtent(anchor, True, 256)
 End Function
 
 ' Определяет высоту таблицы по первому столбцу. Пустой первый столбец означает
 ' конец данных; это соответствует формату всех Results-диапазонов.
 Private Function AnchoredRowCount(ByVal anchor As Object) As Long
-    Dim rowOffset As Long
-    For rowOffset = 0 To anchor.Worksheet.Rows.Count - anchor.Row
-        If Len(Trim$(CStr(anchor.Offset(rowOffset, 0).Value2))) = 0 Then Exit For
-        AnchoredRowCount = AnchoredRowCount + 1
-    Next rowOffset
+    AnchoredRowCount = SnapshotAnchoredExtent(anchor, False)
 End Function
 
 ' Формирует понятное сообщение, если пользователь запросил состояние, которого

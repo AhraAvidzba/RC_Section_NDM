@@ -1,0 +1,110 @@
+﻿[
+    {
+        "Case":  "solver-Newton-1",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  0.066980000003241,
+        "Min":  0.042700199992396,
+        "Max":  0.094141899957322,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Newton-1",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  0.041613799985498,
+        "Min":  0.035322099924088,
+        "Max":  0.055691099958494,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Newton-10",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  0.391007300000638,
+        "Min":  0.35184409993235,
+        "Max":  0.476403199951164,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Newton-10",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  0.302346499986015,
+        "Min":  0.276938599999994,
+        "Max":  0.347545300028287,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Newton-30",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  1.3634682999691,
+        "Min":  1.35755910002626,
+        "Max":  1.46630930004176,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Newton-30",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  1.07952350005507,
+        "Min":  0.940966499969363,
+        "Max":  1.1522280999925,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Secant-1",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  0.114384299959056,
+        "Min":  0.111174199962988,
+        "Max":  0.122880700044334,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Secant-1",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  0.09821990004275,
+        "Min":  0.074140699929558,
+        "Max":  0.116312999976799,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Secant-10",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  0.90267009998206,
+        "Min":  0.833835200057365,
+        "Max":  1.04332960001193,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Secant-10",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  0.730823200079612,
+        "Min":  0.677611400024034,
+        "Max":  0.822427100036293,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Secant-30",
+        "Version":  "A",
+        "Observations":  5,
+        "Median":  2.92857540003024,
+        "Min":  2.73601130000316,
+        "Max":  2.97044499998447,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "solver-Secant-30",
+        "Version":  "B",
+        "Observations":  5,
+        "Median":  2.26527850003913,
+        "Min":  2.21478739997838,
+        "Max":  2.32140599994455,
+        "ExactValues":  true
+    }
+]

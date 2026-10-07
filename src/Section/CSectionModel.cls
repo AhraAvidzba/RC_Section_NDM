@@ -41,6 +41,7 @@ Private mConcreteLocalIy() As Double ' Реальный собственный I
 Private mConcreteLocalIxy() As Double ' Реальный собственный центробежный момент элемента, мм4; не заменяется оболочкой.
 Private mConcreteComment() As String ' Короткая диагностическая заметка для Results.
 Private mConcreteCount As Long ' Фактическое число бетонных элементов в модели.
+Private mConcreteCapacity As Long ' Емкость закрытых массивов; getters и сериализация используют только Count.
 
 Private mBoundaryCacheValid() As Boolean ' True, если интерпретация оболочки элемента уже рассчитана и не требует повторения.
 Private mBoundaryCacheStatus() As String ' Кэшированный GeometryInterpretationStatus: Rectangle, Equivalent rectangle или Equivalent square.
@@ -59,6 +60,7 @@ Private mRebarSteelClass() As String ' Расчетная подпись арм�
 Private mRebarMaterialID() As Long ' Идентификатор материала стержня; текущий solver получает единую диаграмму арматуры.
 Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
 Private mRebarCount As Long ' Фактическое число стержней в модели.
+Private mRebarCapacity As Long ' Резерв арматуры живет только вместе с этой моделью.
 
 Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сформированные генератором сечения.
 Private mContours As CSectionContours ' Достоверные outer/opening, принадлежащие исходной геометрии.
@@ -92,6 +94,7 @@ Public Sub Clear()
     Erase mConcreteLocalIxy
     Erase mConcreteComment
     mConcreteCount = 0
+    mConcreteCapacity = 0
     ClearBoundaryCache
 
     Erase mRebarID
@@ -105,6 +108,7 @@ Public Sub Clear()
     Erase mRebarMaterialID
     Erase mRebarComment
     mRebarCount = 0
+    mRebarCapacity = 0
 
     Set mAnnotations = New CSectionAnnotations
     Set mContours = New CSectionContours
@@ -134,28 +138,8 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
 
     ' Массивы хранятся параллельно, чтобы горячие расчетные циклы работали без
     ' коллекций и COM-объектов на каждом элементе.
+    EnsureConcreteCapacity mConcreteCount + 1
     mConcreteCount = mConcreteCount + 1
-    ReDim Preserve mConcreteID(1 To mConcreteCount)
-    ReDim Preserve mConcreteSourceName(1 To mConcreteCount)
-    ReDim Preserve mConcreteSourceHandle(1 To mConcreteCount)
-    ReDim Preserve mConcreteX(1 To mConcreteCount)
-    ReDim Preserve mConcreteY(1 To mConcreteCount)
-    ReDim Preserve mConcreteArea(1 To mConcreteCount)
-    ReDim Preserve mConcreteMaterialID(1 To mConcreteCount)
-    ReDim Preserve mConcreteShapeType(1 To mConcreteCount)
-    ReDim Preserve mConcreteWidth(1 To mConcreteCount)
-    ReDim Preserve mConcreteHeight(1 To mConcreteCount)
-    ReDim Preserve mConcreteRotation(1 To mConcreteCount)
-    ReDim Preserve mConcreteRotationKnown(1 To mConcreteCount)
-    ReDim Preserve mConcreteLocalIx(1 To mConcreteCount)
-    ReDim Preserve mConcreteLocalIy(1 To mConcreteCount)
-    ReDim Preserve mConcreteLocalIxy(1 To mConcreteCount)
-    ReDim Preserve mConcreteComment(1 To mConcreteCount)
-    ReDim Preserve mBoundaryCacheValid(1 To mConcreteCount)
-    ReDim Preserve mBoundaryCacheStatus(1 To mConcreteCount)
-    ReDim Preserve mBoundaryCacheWidth(1 To mConcreteCount)
-    ReDim Preserve mBoundaryCacheHeight(1 To mConcreteCount)
-    ReDim Preserve mBoundaryCacheRotation(1 To mConcreteCount)
 
     mConcreteID(mConcreteCount) = "C" & CStr(mConcreteCount)
     mConcreteSourceName(mConcreteCount) = sourceName
@@ -187,6 +171,79 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     End If
     mConcreteComment(mConcreteCount) = comment
     mRevision = mRevision + 1
+End Sub
+
+' Заранее выделяет известный размер без создания элементов и изменения
+' ревизии. Builder использует точный Count сетки; импорт может расти блоками.
+' Массивы закрыты, незаполненный хвост никогда не участвует в расчетах.
+Friend Sub ReserveElements(ByVal concreteCount As Long, ByVal rebarCount As Long)
+    If concreteCount < 0 Or rebarCount < 0 Then Err.Raise vbObjectError + 5202, "CSectionModel", "Размер резерва элементов не может быть отрицательным."
+    EnsureConcreteCapacity concreteCount, True
+    EnsureRebarCapacity rebarCount, True
+End Sub
+
+' Увеличивает все параллельные массивы бетона вместе. При неизвестном размере
+' рост удвоением устраняет копирование всей модели после каждого Add.
+' Clear освобождает резерв; емкость фиксируется лишь после успешного выделения.
+Private Sub EnsureConcreteCapacity(ByVal required As Long, Optional ByVal exactSize As Boolean = False)
+    If required <= mConcreteCapacity Then Exit Sub
+    Dim capacity As Long
+    capacity = required
+    If Not exactSize Then
+        If mConcreteCapacity = 0 Then
+            If capacity < 64 Then capacity = 64
+        ElseIf mConcreteCapacity <= 1073741823 Then
+            If capacity < mConcreteCapacity * 2 Then capacity = mConcreteCapacity * 2
+        End If
+    End If
+    ReDim Preserve mConcreteID(1 To capacity)
+    ReDim Preserve mConcreteSourceName(1 To capacity)
+    ReDim Preserve mConcreteSourceHandle(1 To capacity)
+    ReDim Preserve mConcreteX(1 To capacity)
+    ReDim Preserve mConcreteY(1 To capacity)
+    ReDim Preserve mConcreteArea(1 To capacity)
+    ReDim Preserve mConcreteMaterialID(1 To capacity)
+    ReDim Preserve mConcreteShapeType(1 To capacity)
+    ReDim Preserve mConcreteWidth(1 To capacity)
+    ReDim Preserve mConcreteHeight(1 To capacity)
+    ReDim Preserve mConcreteRotation(1 To capacity)
+    ReDim Preserve mConcreteRotationKnown(1 To capacity)
+    ReDim Preserve mConcreteLocalIx(1 To capacity)
+    ReDim Preserve mConcreteLocalIy(1 To capacity)
+    ReDim Preserve mConcreteLocalIxy(1 To capacity)
+    ReDim Preserve mConcreteComment(1 To capacity)
+    ReDim Preserve mBoundaryCacheValid(1 To capacity)
+    ReDim Preserve mBoundaryCacheStatus(1 To capacity)
+    ReDim Preserve mBoundaryCacheWidth(1 To capacity)
+    ReDim Preserve mBoundaryCacheHeight(1 To capacity)
+    ReDim Preserve mBoundaryCacheRotation(1 To capacity)
+    mConcreteCapacity = capacity
+End Sub
+
+' Арматура сохраняет прежний порядок R1/R2 и проверку фактического Count.
+' Резерв выделяется только при добавлении/явном Reserve и уничтожается Clear.
+Private Sub EnsureRebarCapacity(ByVal required As Long, Optional ByVal exactSize As Boolean = False)
+    If required <= mRebarCapacity Then Exit Sub
+    Dim capacity As Long
+    capacity = required
+    If Not exactSize Then
+        If mRebarCapacity = 0 Then
+            If capacity < 32 Then capacity = 32
+        ElseIf mRebarCapacity <= 1073741823 Then
+            If capacity < mRebarCapacity * 2 Then capacity = mRebarCapacity * 2
+        End If
+    End If
+    ReDim Preserve mRebarID(1 To capacity)
+    ReDim Preserve mRebarSourceName(1 To capacity)
+    ReDim Preserve mRebarSourceHandle(1 To capacity)
+    ReDim Preserve mRebarX(1 To capacity)
+    ReDim Preserve mRebarY(1 To capacity)
+    ReDim Preserve mRebarArea(1 To capacity)
+    ReDim Preserve mRebarDiameter(1 To capacity)
+    ReDim Preserve mRebarSteelClass(1 To capacity)
+    ReDim Preserve mRebarMaterialID(1 To capacity)
+    ReDim Preserve mRebarComment(1 To capacity)
+    mRebarCapacity = capacity
 End Sub
 
 ' Возвращает версию геометрии без копирования волокон. Она меняется только
@@ -588,17 +645,8 @@ Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
 
     ' Нумерация R1/R2/... создается здесь, чтобы у всех источников геометрии
     ' был одинаковый формат расчетных имен.
+    EnsureRebarCapacity mRebarCount + 1
     mRebarCount = mRebarCount + 1
-    ReDim Preserve mRebarID(1 To mRebarCount)
-    ReDim Preserve mRebarSourceName(1 To mRebarCount)
-    ReDim Preserve mRebarSourceHandle(1 To mRebarCount)
-    ReDim Preserve mRebarX(1 To mRebarCount)
-    ReDim Preserve mRebarY(1 To mRebarCount)
-    ReDim Preserve mRebarArea(1 To mRebarCount)
-    ReDim Preserve mRebarDiameter(1 To mRebarCount)
-    ReDim Preserve mRebarSteelClass(1 To mRebarCount)
-    ReDim Preserve mRebarMaterialID(1 To mRebarCount)
-    ReDim Preserve mRebarComment(1 To mRebarCount)
 
     mRebarID(mRebarCount) = "R" & CStr(mRebarCount)
     mRebarSourceName(mRebarCount) = sourceName

@@ -68,6 +68,12 @@ Private mDiagnosticLog As String ' Короткий текстовый журн�
 Private mTransformedReferenceValid(1 To 2) As Boolean ' Кэш центров приведенного сечения для ULS/SLS внутри одного batch.
 Private mTransformedReferenceX(1 To 2) As Double ' X центра приведенного сечения, мм.
 Private mTransformedReferenceY(1 To 2) As Double ' Y центра приведенного сечения, мм.
+Private mCrackGeometryQuery As CSectionGeometryQuery ' Ленивая неизменная область только текущего Execute; без StateRepo/НДС.
+Private mCrackDomainBuildCount As Long ' Последний счетчик подготовки; сам query освобождается до выхода Execute.
+Private mRunTransformedProperties(1 To 2) As CSectionPropertiesCalculator
+Private mRunConcreteProperties As CSectionPropertiesCalculator ' Ленивая механическая подготовка, отдельная от crack domain.
+Private mMechanicalPreparationBuildCount As Long
+Private mExecuting As Boolean ' Общая объектная подготовка живет только внутри Execute, не при чтении результатов.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
 Private mCrackStandardCode As String ' Общий выбор SP63/SP35, независимый от Stability.Code.
@@ -219,6 +225,10 @@ Public Sub Initialize(ByVal section As CSectionModel, ByVal materialProvider As 
     Set mSection = section
     Set mMaterialProvider = materialProvider
     ClearTransformedReferenceCache
+    mExecuting = False
+    Set mCrackGeometryQuery = Nothing
+    mCrackDomainBuildCount = 0
+    mMechanicalPreparationBuildCount = 0
     ConfigureConcreteMomentDepths
 End Sub
 
@@ -702,6 +712,8 @@ Public Sub Execute()
     ClearTransformedReferenceCache
     ConfigureConcreteMomentDepths
     NormalizeAllCombinationMoments
+    mExecuting = True
+    mCrackDomainBuildCount = 0: mMechanicalPreparationBuildCount = 0
     Dim t0 As Double
     Dim stage As String
     Dim currentIndex As Long
@@ -746,12 +758,48 @@ Public Sub Execute()
     mSolverCallCount = SectionEquilibriumSolveCount()
     mElapsedSeconds = Timer - t0
     ReportStep "Пакетный расчет завершен. Время: " & FormatNumberInvariant(mElapsedSeconds) & " с."
+    ReleaseRunPreparation
     Exit Sub
 
 Failed:
-    Err.Raise Err.Number, "CBatchSectionCalculator.Execute", _
-        stage & " LC=" & CStr(currentIndex) & ": " & Err.Description
+    Dim failureNumber As Long, failureText As String
+    failureNumber = Err.Number: failureText = Err.Description
+    ReleaseRunPreparation
+    Err.Raise failureNumber, "CBatchSectionCalculator.Execute", _
+        stage & " LC=" & CStr(currentIndex) & ": " & failureText
 End Sub
+
+' Освобождает общую временную геометрию на обоих выходах, не трогая готовые
+' результаты и отдельные repository LC. В Batch остается только счетчик.
+Private Sub ReleaseRunPreparation()
+    mExecuting = False
+    If Not mCrackGeometryQuery Is Nothing Then mCrackDomainBuildCount = mCrackGeometryQuery.DomainBuildCount
+    Set mCrackGeometryQuery = Nothing
+    Dim i As Long
+    For i = 1 To 2
+        If Not mRunTransformedProperties(i) Is Nothing Then _
+            mMechanicalPreparationBuildCount = mMechanicalPreparationBuildCount + mRunTransformedProperties(i).PreparationBuildCount
+        Set mRunTransformedProperties(i) = Nothing
+    Next i
+    If Not mRunConcreteProperties Is Nothing Then _
+        mMechanicalPreparationBuildCount = mMechanicalPreparationBuildCount + mRunConcreteProperties.PreparationBuildCount
+    Set mRunConcreteProperties = Nothing
+End Sub
+
+' ДЛЯ ТЕСТОВ: успешные построения общей области последнего Execute.
+Friend Property Get CrackDomainBuildCount() As Long
+    CrackDomainBuildCount = mCrackDomainBuildCount
+End Property
+
+Friend Property Get MechanicalPreparationBuildCount() As Long
+    MechanicalPreparationBuildCount = mMechanicalPreparationBuildCount
+End Property
+
+' ДЛЯ ТЕСТОВ: после Execute нет живых ссылок на временные расчетные кэши.
+Friend Property Get RunPreparationReleased() As Boolean
+    RunPreparationReleased = mCrackGeometryQuery Is Nothing And mRunConcreteProperties Is Nothing And _
+        mRunTransformedProperties(1) Is Nothing And mRunTransformedProperties(2) Is Nothing
+End Property
 
 ' Считает одно сочетание нагрузок и собирает итоговый статус.
 ' Внутри сохраняется разделение: capacity отвечает за запас по несущей,
@@ -884,6 +932,11 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
 
     Dim stability As CStabilityCalculator
     Set stability = New CStabilityCalculator
+    Dim slot As Long
+    slot = TransformedReferenceSlot(valueSet)
+    If mRunTransformedProperties(slot) Is Nothing Then Set mRunTransformedProperties(slot) = New CSectionPropertiesCalculator
+    If mRunConcreteProperties Is Nothing Then Set mRunConcreteProperties = New CSectionPropertiesCalculator
+    stability.UseMechanicalPreparation mRunTransformedProperties(slot), mRunConcreteProperties
     Dim loadState As CSectionLoadState
     Set loadState = LoadStateForCombination(index)
     Dim referenceMx As Double
@@ -1008,8 +1061,15 @@ Private Sub TransformedReferencePoint(ByVal valueSet As EMaterialValueSet, _
     End If
 
     Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformedByModuli mSection, _
+    If mExecuting Then
+        If mRunTransformedProperties(slot) Is Nothing Then Set mRunTransformedProperties(slot) = New CSectionPropertiesCalculator
+        Set props = mRunTransformedProperties(slot)
+    Else
+        ' Автономное справочное чтение сохраняет прежний scalar-кэш центра,
+        ' но не возвращает подготовленный объект в уже завершенный запуск.
+        Set props = New CSectionPropertiesCalculator
+    End If
+    props.EnsureTransformed mSection, _
         mMaterialProvider.ConcreteElasticModulusFromValueSet(valueSet), _
         mMaterialProvider.SteelElasticModulusFromValueSet(valueSet)
     referenceX = props.CentroidX
@@ -1028,7 +1088,9 @@ Private Sub ClearTransformedReferenceCache()
         mTransformedReferenceValid(i) = False
         mTransformedReferenceX(i) = 0#
         mTransformedReferenceY(i) = 0#
+        Set mRunTransformedProperties(i) = Nothing
     Next i
+    Set mRunConcreteProperties = Nothing
 End Sub
 
 ' Переводит набор характеристик материалов в маленький индекс кэша.
@@ -1276,8 +1338,9 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     End If
 
     ReportStep "Запускается расчет ширины раскрытия нормальных трещин."
+    If mCrackGeometryQuery Is Nothing Then Set mCrackGeometryQuery = New CSectionGeometryQuery
     crack.Calculate currentCrackedState, mSection, mMaterialProvider, profile.CrackedStateSpec, _
-        formationResult, loadState
+        formationResult, loadState, mCrackGeometryQuery
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
 
 ReportCrackResult:

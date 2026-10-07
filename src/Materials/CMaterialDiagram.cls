@@ -118,6 +118,12 @@ Friend Sub Freeze()
     mFrozen = True
 End Sub
 
+' Сообщает solver-у, что точная повторная оценка безопасна: опубликованная
+' диаграмма больше не допускает изменения точек или физических пределов.
+Friend Property Get IsFrozen() As Boolean
+    IsFrozen = mFrozen
+End Property
+
 ' Проверяет наличие всех используемых индексов до копирования точек.
 ' Дополнительные индексы за пределами 1..pointCount допустимы и не читаются.
 Private Sub ValidateInputArray(ByRef values() As Double, ByVal pointCount As Long, ByVal valueName As String)

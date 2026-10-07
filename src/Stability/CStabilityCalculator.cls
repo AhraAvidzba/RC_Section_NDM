@@ -153,6 +153,15 @@ Private mPlaneApplicable1 As Boolean ' True, если первая плоско�
 Private mPlaneApplicable2 As Boolean ' True, если вторая плоскость участвовала в проверке.
 Private mPlanePassed1 As Boolean ' True, если первая плоскость прошла свою проверку.
 Private mPlanePassed2 As Boolean ' True, если вторая плоскость прошла свою проверку.
+Private mPreparedTransformedProperties As CSectionPropertiesCalculator
+Private mPreparedConcreteProperties As CSectionPropertiesCalculator ' Только механическая геометрия; LC-dependent Ncr/eta не переиспользуются.
+
+' Подключает подготовку одного запуска. Реальные Eb/Es и геометрия проверяются
+' владельцем properties лишь в применимой ветви после проверки входных данных.
+Friend Sub UseMechanicalPreparation(ByVal transformed As CSectionPropertiesCalculator, ByVal concrete As CSectionPropertiesCalculator)
+    Set mPreparedTransformedProperties = transformed
+    Set mPreparedConcreteProperties = concrete
+End Sub
 
 ' Проверяет допустимость настроек до геометрии и раннего выхода без сжатия.
 ' Значения уже нормализованы по единицам; reader нужен только для текущего
@@ -314,13 +323,21 @@ Public Sub Calculate(ByVal section As CSectionModel, ByVal materialProvider As C
 
     Dim props As CSectionPropertiesCalculator
     mCalculationStarted = True
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateTransformedByModuli section, ebForGeometry, esForGeometry
+    If mPreparedTransformedProperties Is Nothing Then
+        Set props = New CSectionPropertiesCalculator
+    Else
+        Set props = mPreparedTransformedProperties
+    End If
+    props.EnsureTransformed section, ebForGeometry, esForGeometry
     mPrincipalAngleRad = props.PrincipalAngleRad
 
     Dim concreteProps As CSectionPropertiesCalculator
-    Set concreteProps = New CSectionPropertiesCalculator
-    concreteProps.CalculateConcrete section
+    If mPreparedConcreteProperties Is Nothing Then
+        Set concreteProps = New CSectionPropertiesCalculator
+    Else
+        Set concreteProps = mPreparedConcreteProperties
+    End If
+    concreteProps.EnsureConcrete section
 
     Dim plane1 As TPlaneResult
     Dim plane2 As TPlaneResult

@@ -49,6 +49,22 @@ Private mSnapshotSection As CSectionModel ' Модель, для которой 
 Private mSnapshotRevision As Long ' Ревизия подготовленной геометрии.
 Private mSnapshotBounds(1 To 4) As Double ' MinX/MaxX/MinY/MaxY по прежним оболочкам элементов.
 Private mTransformedSnapshot As CSectionPropertiesCalculator ' Готовое приведенное представление того же снимка.
+Private mPreparedSection As CSectionModel ' Контекст механических свойств; не контурная область трещин.
+Private mPreparedRevision As Long, mPreparedKind As Long ' 1 - бетон; 2 - приведение по фактическим Eb/Es.
+Private mPreparedEb As Double, mPreparedEs As Double
+Private mPreparationBuildCount As Long
+Private Type TMechanicalQuery
+    Kind As Long
+    AxisX As Double
+    AxisY As Double
+    OriginX As Double
+    OriginY As Double
+    IncludeRebar As Boolean
+    Value1 As Double
+    Value2 As Double
+End Type
+Private mMechanicalQueries(1 To 16) As TMechanicalQuery ' Малый ограниченный кэш точных осей/точек одного представления.
+Private mMechanicalQueryCount As Long
 
 Private Const PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE As Double = 0.000001 ' Допуск для почти круговых/изотропных сечений.
 
@@ -108,6 +124,7 @@ Public Sub CalculateConcrete(ByVal section As CSectionModel)
     If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь бетонного сечения равна нулю."
 
     FinalizeProperties t0
+    StorePreparationContext section, 1, 0#, 0#
 End Sub
 
 ' Считает свойства приведенного сечения бетон + арматура.
@@ -168,7 +185,41 @@ Public Sub CalculateTransformedByModuli(ByVal section As CSectionModel, _
     If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2207, "CSectionPropertiesCalculator", "Площадь приведенного сечения равна нулю."
 
     FinalizeProperties t0
+    StorePreparationContext section, 2, concreteModulus, steelModulus
 End Sub
+
+' Повторно использует только готовые механические свойства той же модели.
+' Самостоятельный caller сохраняет прежние Calculate-методы для явного расчета.
+Friend Sub EnsureConcrete(ByVal section As CSectionModel)
+    If PreparationMatches(section, 1, 0#, 0#) Then Exit Sub
+    CalculateConcrete section
+End Sub
+
+' Проверяет фактические Eb/Es без округления и без подмены material spec.
+' Новая модель, Revision или модуль требуют прежнего полного суммирования.
+Friend Sub EnsureTransformed(ByVal section As CSectionModel, ByVal eb As Double, ByVal es As Double)
+    If PreparationMatches(section, 2, eb, es) Then Exit Sub
+    CalculateTransformedByModuli section, eb, es
+End Sub
+
+' Принимает в кэш только успешно завершенный расчет; Clear удаляет контекст.
+Private Sub StorePreparationContext(ByVal section As CSectionModel, ByVal kind As Long, ByVal eb As Double, ByVal es As Double)
+    Set mPreparedSection = section: mPreparedRevision = section.Revision
+    mPreparedKind = kind: mPreparedEb = eb: mPreparedEs = es
+    mPreparationBuildCount = mPreparationBuildCount + 1
+End Sub
+
+' Точная проверка identity/revision/представления и исходных модулей.
+Private Function PreparationMatches(ByVal section As CSectionModel, ByVal kind As Long, ByVal eb As Double, ByVal es As Double) As Boolean
+    If section Is Nothing Then Exit Function
+    If Not section Is mPreparedSection Then Exit Function
+    PreparationMatches = section.Revision = mPreparedRevision And kind = mPreparedKind And eb = mPreparedEb And es = mPreparedEs
+End Function
+
+' ДЛЯ ТЕСТОВ: количество фактических расчетов механических характеристик.
+Friend Property Get PreparationBuildCount() As Long
+    PreparationBuildCount = mPreparationBuildCount
+End Property
 
 ' Добавляет элемент с весовой площадью и собственными инерциями вокруг центра.
 ' Для бетонного сечения weight равен площади. Для приведенного сечения арматура
@@ -216,6 +267,7 @@ Public Sub CalculateProjection(ByVal section As CSectionModel, ByVal axisX As Do
     Dim normValue As Double
     normValue = Sqr(axisX * axisX + axisY * axisY)
     If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2212, "CSectionPropertiesCalculator", "Ось проекции имеет нулевую длину."
+    If ReadMechanicalQuery(section, 1, axisX, axisY, 0#, 0#, includeRebar, minProjection, maxProjection) Then Exit Sub
 
     Dim nx As Double
     Dim ny As Double
@@ -237,6 +289,7 @@ Public Sub CalculateProjection(ByVal section As CSectionModel, ByVal axisX As Do
                 RebarEquivalentRadius(section.RebarArea(i))
         Next i
     End If
+    StoreMechanicalQuery section, 1, axisX, axisY, 0#, 0#, includeRebar, minProjection, maxProjection
 End Sub
 
 ' Возвращает полную высоту/габарит сечения по заданной оси проекции.
@@ -288,6 +341,8 @@ Public Function RebarInertiaAboutAxis(ByVal section As CSectionModel, ByVal axis
     Dim normValue As Double
     normValue = Sqr(axisX * axisX + axisY * axisY)
     If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Ось инерции арматуры имеет нулевую длину."
+    Dim unused As Double
+    If ReadMechanicalQuery(section, 3, axisX, axisY, originX, originY, True, RebarInertiaAboutAxis, unused) Then Exit Function
 
     Dim nx As Double
     Dim ny As Double
@@ -305,6 +360,7 @@ Public Function RebarInertiaAboutAxis(ByVal section As CSectionModel, ByVal axis
         RebarInertiaAboutAxis = RebarInertiaAboutAxis + _
             section.RebarArea(i) * distanceToAxis * distanceToAxis + RebarCircleInertia(section.RebarArea(i))
     Next i
+    StoreMechanicalQuery section, 3, axisX, axisY, originX, originY, True, RebarInertiaAboutAxis, 0#
 End Function
 
 ' Считает момент инерции бетонной части относительно произвольной оси.
@@ -317,6 +373,8 @@ Public Function ConcreteInertiaAboutAxis(ByVal section As CSectionModel, ByVal a
     Dim normValue As Double
     normValue = Sqr(axisX * axisX + axisY * axisY)
     If normValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2217, "CSectionPropertiesCalculator", "Ось инерции бетона имеет нулевую длину."
+    Dim unused As Double
+    If ReadMechanicalQuery(section, 2, axisX, axisY, originX, originY, False, ConcreteInertiaAboutAxis, unused) Then Exit Function
 
     Dim nx As Double
     Dim ny As Double
@@ -340,7 +398,42 @@ Public Function ConcreteInertiaAboutAxis(ByVal section As CSectionModel, ByVal a
         ConcreteInertiaAboutAxis = ConcreteInertiaAboutAxis + _
             localInertia + section.ConcreteArea(i) * distanceToAxis * distanceToAxis
     Next i
+    StoreMechanicalQuery section, 2, axisX, axisY, originX, originY, False, ConcreteInertiaAboutAxis, 0#
 End Function
+
+' Читает exact-запрос только при неизменном контексте подготовленных A/I.
+' Ненормированные исходные направления сравниваются точно: иной вектор не
+' получает результат, вычисленный с другим порядком арифметики нормировки.
+Private Function ReadMechanicalQuery(ByVal section As CSectionModel, ByVal kind As Long, _
+        ByVal axisX As Double, ByVal axisY As Double, ByVal originX As Double, ByVal originY As Double, _
+        ByVal includeRebar As Boolean, ByRef value1 As Double, ByRef value2 As Double) As Boolean
+    If Not section Is mPreparedSection Then Exit Function
+    If section.Revision <> mPreparedRevision Then Exit Function
+    Dim i As Long
+    For i = 1 To mMechanicalQueryCount
+        With mMechanicalQueries(i)
+            If .Kind = kind And .AxisX = axisX And .AxisY = axisY And .OriginX = originX And _
+                    .OriginY = originY And .IncludeRebar = includeRebar Then
+                value1 = .Value1: value2 = .Value2: ReadMechanicalQuery = True
+                Exit Function
+            End If
+        End With
+    Next i
+End Function
+
+' Сохраняет максимум 16 небольших запросов; лишние направления считаются
+' прежним способом. Не удерживает массивы нагрузок или LC-зависимые величины.
+Private Sub StoreMechanicalQuery(ByVal section As CSectionModel, ByVal kind As Long, _
+        ByVal axisX As Double, ByVal axisY As Double, ByVal originX As Double, ByVal originY As Double, _
+        ByVal includeRebar As Boolean, ByVal value1 As Double, ByVal value2 As Double)
+    If Not section Is mPreparedSection Then Exit Sub
+    If section.Revision <> mPreparedRevision Or mMechanicalQueryCount >= 16 Then Exit Sub
+    mMechanicalQueryCount = mMechanicalQueryCount + 1
+    With mMechanicalQueries(mMechanicalQueryCount)
+        .Kind = kind: .AxisX = axisX: .AxisY = axisY: .OriginX = originX: .OriginY = originY
+        .IncludeRebar = includeRebar: .Value1 = value1: .Value2 = value2
+    End With
+End Sub
 
 ' Возвращает центральный момент инерции относительно оси, перпендикулярной
 ' указанному направлению. Это величина I_n = integral(s^2 dA), где s - проекция
@@ -574,9 +667,14 @@ Private Sub FinalizeProperties(ByVal t0 As Double)
 End Sub
 
 ' Сбрасывает вычисленные площади, центры, инерции, главные оси и время расчета.
-' Входная модель не хранится и не меняется; обнуление исключает использование
+' Контекст подготовленной модели освобождается; сама модель не меняется.
+' Обнуление исключает использование
 ' прежних характеристик до следующего успешного вычисления свойств сечения.
 Public Sub Clear()
+    Set mPreparedSection = Nothing
+    mPreparedRevision = 0: mPreparedKind = 0: mPreparedEb = 0#: mPreparedEs = 0#
+    mMechanicalQueryCount = 0
+    Erase mMechanicalQueries
     Set mSnapshotSection = Nothing
     Set mTransformedSnapshot = Nothing
     mSnapshotRevision = 0

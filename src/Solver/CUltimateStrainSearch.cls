@@ -147,11 +147,28 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     Dim lambdaValue As Double
     Dim state As String
     Dim solver As CSectionSolver
+    Dim acceptedEvaluation As Boolean, acceptedRevision As Long, immutableMaterials As Boolean
+    Dim acceptedPath(1 To 6) As Double ' Точный Offset/Base; без строковых или округленных ключей.
+    If Not section Is Nothing And Not concreteMaterial Is Nothing And Not steelMaterial Is Nothing Then
+        If TypeOf concreteMaterial Is CMaterialDiagram And TypeOf steelMaterial Is CMaterialDiagram Then
+            Dim concreteDiagram As CMaterialDiagram, steelDiagram As CMaterialDiagram
+            Set concreteDiagram = concreteMaterial: Set steelDiagram = steelMaterial
+            immutableMaterials = concreteDiagram.IsFrozen And steelDiagram.IsFrozen
+        End If
+    End If
 
     For iter = 1 To context.LimitSearchUltimateMaxIterations
-        If Not context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
-                loadPath, eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state) Then
-            Exit Function
+        If acceptedEvaluation Then
+            acceptedEvaluation = section.Revision = acceptedRevision And _
+                loadPath.NOffset = acceptedPath(1) And loadPath.NBase = acceptedPath(2) And _
+                loadPath.MxOffset = acceptedPath(3) And loadPath.MxBase = acceptedPath(4) And _
+                loadPath.MyOffset = acceptedPath(5) And loadPath.MyBase = acceptedPath(6)
+        End If
+        If Not acceptedEvaluation Then
+            If Not context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
+                    loadPath, eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state) Then
+                Exit Function
+            End If
         End If
 
         If context.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit) Then
@@ -166,7 +183,16 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
         End If
 
         If Not ApplyUltimateNewtonStep(context, section, concreteMaterial, steelMaterial, _
-                loadPath, eps0, kx, ky, rPath1, rPath2, rLimit) Then Exit Function
+                loadPath, eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state) Then Exit Function
+        ' Принятая проба уже имеет свои residual/solver/критерий. Пробы Якобиана
+        ' ее не подменяют; финальное подтверждение усилий и физики остается выше.
+        acceptedEvaluation = immutableMaterials
+        If acceptedEvaluation Then
+            acceptedRevision = section.Revision
+            acceptedPath(1) = loadPath.NOffset: acceptedPath(2) = loadPath.NBase
+            acceptedPath(3) = loadPath.MxOffset: acceptedPath(4) = loadPath.MxBase
+            acceptedPath(5) = loadPath.MyOffset: acceptedPath(6) = loadPath.MyBase
+        End If
     Next iter
 
     context.LimitSearchSetUltimateNumericalFailure notConvergedReason
@@ -201,8 +227,9 @@ End Function
 Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByRef eps0 As Double, _
-        ByRef kx As Double, ByRef ky As Double, ByVal rPath1 As Double, _
-        ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
+        ByRef kx As Double, ByRef ky As Double, ByRef rPath1 As Double, _
+        ByRef rPath2 As Double, ByRef rLimit As Double, ByRef solver As CSectionSolver, _
+        ByRef lambdaValue As Double, ByRef state As String) As Boolean
     On Error GoTo Failed
 
     Dim hEps As Double
@@ -294,6 +321,9 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
                 eps0 = trialEps
                 kx = trialKx
                 ky = trialKy
+                Set solver = trialSolver
+                rPath1 = trialR1: rPath2 = trialR2: rLimit = trialRLimit
+                lambdaValue = trialLambda: state = trialState
                 ApplyUltimateNewtonStep = True
                 Exit Function
             End If

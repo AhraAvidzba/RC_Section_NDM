@@ -1134,7 +1134,7 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
 
     Set solver = New CSectionSolver
     mSolverCallCount = mSolverCallCount + 1
-    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
+    solver.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     If solver.FailureCode <> sfcNone Then
         CaptureFormationSolverFailure solver
         Exit Function

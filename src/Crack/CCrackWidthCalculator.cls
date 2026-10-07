@@ -202,10 +202,13 @@ End Sub
 
 ' Готовит зону, арматуру и коэффициенты по готовым состояниям. Сам поиск
 ' образования трещины и Pre/Post НДС здесь не выполняется; чистая формула
-' получает только подготовленные числа и не знает о State/status.
+' получает только подготовленные числа и не знает о State/status. Общая Query
+' передается на один вызов после штатного сброса Formation; автономный caller
+' без нее создает прежнюю новую session.
 Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
-        ByVal formation As CCrackFormationResult, ByVal loadStateForClassification As CSectionLoadState)
+        ByVal formation As CCrackFormationResult, ByVal loadStateForClassification As CSectionLoadState, _
+        Optional ByVal geometryQuery As CSectionGeometryQuery = Nothing)
     InitializeForFormation formation
     If formation Is Nothing Then Exit Sub
     If Not mConverged Or Not mCrackFormed Then Exit Sub
@@ -234,8 +237,9 @@ Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section A
     mStopReason = vbNullString
     mWidthInternalStatus = rsUnset
     mWidthResultCode = rcNone
-    Set mGeometryQuery = New CSectionGeometryQuery
-    mGeometryQuery.Initialize section
+    Set mGeometryQuery = geometryQuery
+    If mGeometryQuery Is Nothing Then Set mGeometryQuery = New CSectionGeometryQuery
+    mGeometryQuery.EnsureSection section
     If mStandardCode = "SP35" Then
         CalculateSP35 currentSolver, section, materialProvider.SteelMaterialFromSpec(mCrackedStateSpec)
     ElseIf formation.CentralTensionBranch Then
@@ -302,7 +306,8 @@ Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal secti
     central = mCentralTensionBranch Or (gradient <= NEAR_ZERO_STRAIN And currentState.Epsilon0 > NEAR_ZERO_STRAIN)
     Set mSP35Data = New CSP35CrackData
     mSP35Data.Prepare section, currentState.Epsilon0, currentState.KappaX, currentState.KappaY, steelMaterial, _
-        mSP35GroupGapTolerance, mSP35RowTolerance, mSP35RadiusDiameterMode, mSP35InteractionRadiusMode, central, mSP35NeighborRatioLimit
+        mSP35GroupGapTolerance, mSP35RowTolerance, mSP35RadiusDiameterMode, mSP35InteractionRadiusMode, central, _
+        mSP35NeighborRatioLimit, mGeometryQuery
     mCentralTensionBranch = central
 
     ' Формула получает только площадь, реальные диаметры, напряжение и Es.

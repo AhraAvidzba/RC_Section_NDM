@@ -28,6 +28,9 @@ Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars
     Dim model As CSectionModel
     Set model = New CSectionModel
     model.SourceType = sourceType
+    Dim rebarCount As Long
+    If Not rebars Is Nothing Then rebarCount = rebars.Count
+    model.ReserveElements mesh.FiberCount, rebarCount
 
     Dim i As Long
     For i = 1 To mesh.FiberCount

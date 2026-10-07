@@ -1,0 +1,20 @@
+﻿[
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "A",
+        "Observations":  10,
+        "Median":  0.891098249994684,
+        "Min":  0.85995750001166,
+        "Max":  1.45512499997858,
+        "ExactValues":  true
+    },
+    {
+        "Case":  "batch-DIRECT-Newton-Saved-Normal-Yes-Full-1",
+        "Version":  "B",
+        "Observations":  10,
+        "Median":  0.87692309997510143,
+        "Min":  0.832206599996425,
+        "Max":  1.08494039997458,
+        "ExactValues":  true
+    }
+]

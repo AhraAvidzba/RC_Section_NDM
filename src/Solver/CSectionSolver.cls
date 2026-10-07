@@ -89,6 +89,13 @@ Private mInitialTargetMy As Double ' Начальное My при продолж
 Private mSnapshotSection As CSectionModel ' Модель последнего Solve/Evaluate; общая ссылка без копирования сетки.
 Private mSnapshotConcrete As CMaterialDiagram ' Фактически переданная диаграмма, не повторный выбор по Config.
 Private mSnapshotSteel As CMaterialDiagram ' Фактически переданная диаграмма арматуры.
+Private mEvaluationReuseEnabled As Boolean ' Только внутри одного Solve с неизменными штатными диаграммами.
+Private mPhysicalEvaluationValid As Boolean, mPhysicalEvaluationHasK As Boolean
+Private mPhysicalEvaluationRevision As Long, mPhysicalEvaluationPlane(1 To 3) As Double
+Private mPhysicalEvaluationForces(1 To 3) As Double ' Экстремумы/K остаются в своих полях; forces-only пробы их не меняют.
+Private mForceEvaluationValid As Boolean, mForceEvaluationRevision As Long
+Private mForceEvaluationPlane(1 To 3) As Double, mForceEvaluationForces(1 To 3) As Double
+Private mEvaluationReuseCount As Long, mTangentBuildCount As Long ' Технические счетчики фактической работы, не инженерные результаты.
 
 ' ------------------------------
 ' Настройки по умолчанию
@@ -162,7 +169,10 @@ Public Sub Solve(ByVal section As CSectionModel, _
     ClearResult
     If Not ValidateInputs(section, concreteMaterial, steelMaterial) Then Exit Sub
     CaptureMaterialContext section, concreteMaterial, steelMaterial
-    If Not ValidateSolverMethod() Then Exit Sub
+    If Not mSnapshotConcrete Is Nothing And Not mSnapshotSteel Is Nothing Then
+        mEvaluationReuseEnabled = mSnapshotConcrete.IsFrozen And mSnapshotSteel.IsFrozen
+    End If
+    If Not ValidateSolverMethod() Then GoTo Finished
     RecordSectionEquilibriumSolve
     If mUseInitialState Then
         mEpsilon0 = mInitialEpsilon0
@@ -192,7 +202,7 @@ Public Sub Solve(ByVal section As CSectionModel, _
         stepMy = startMy + (targetMy - startMy) * stepIndex / mLoadSteps
 
         If Not SolveSelectedLoadStep(section, concreteMaterial, steelMaterial, stepIndex, stepN, stepMx, stepMy) Then
-            Exit Sub
+            GoTo Finished
         End If
         mLoadStepsCompleted = stepIndex
     Next stepIndex
@@ -209,6 +219,9 @@ Public Sub Solve(ByVal section As CSectionModel, _
         mStopReason = "Финальная проверка невязок равновесия не пройдена."
         mFailureCode = sfcNumericalFailure
     End If
+Finished:
+    mEvaluationReuseEnabled = False
+    mPhysicalEvaluationValid = False: mForceEvaluationValid = False
     Exit Sub
 Failed:
     mConverged = False
@@ -225,6 +238,7 @@ Failed:
             mFailureCode = sfcInternalError
             mStopReason = "Ошибка при вычислении равновесия: " & Err.Description
     End Select
+    Resume Finished
 End Sub
 
 ' ------------------------------
@@ -237,13 +251,32 @@ Public Sub EvaluateStrainPlane(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double)
 
+    EvaluatePlaneCore section, concreteMaterial, steelMaterial, epsilon0, kappaX, kappaY, True
+End Sub
+
+' Для проб UltimateStrain сохраняет тот же stress API, физические экстремумы
+' и усилия, но не собирает неиспользуемую аналитическую матрицу K.
+Friend Sub EvaluatePhysicalStrainPlane(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double)
+    Dim buildTangent As Boolean
+    buildTangent = Not (TypeOf concreteMaterial Is CMaterialDiagram And TypeOf steelMaterial Is CMaterialDiagram)
+    EvaluatePlaneCore section, concreteMaterial, steelMaterial, epsilon0, kappaX, kappaY, buildTangent
+End Sub
+
+' Общая оценка известной плоскости; запрос физических данных независим от K.
+' Публичная оценка по-прежнему возвращает полную касательную матрицу.
+Private Sub EvaluatePlaneCore(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, ByVal buildTangent As Boolean)
+
     ClearResult
     If Not ValidateInputs(section, concreteMaterial, steelMaterial) Then Exit Sub
     CaptureMaterialContext section, concreteMaterial, steelMaterial
     mEpsilon0 = epsilon0
     mKappaX = kappaX
     mKappaY = kappaY
-    EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
+    EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, buildTangent, True
     SetResiduals mNint, mMxint, mMyint
     mConverged = False
     mFailureCode = sfcNone
@@ -773,12 +806,13 @@ Private Function LimitIncrement(ByRef deltaEps As Double, ByRef deltaKx As Doubl
 End Function
 
 ' Пересчитывает состояние и записывает внутренние усилия в поля solver-а.
-' Если buildTangent=True, дополнительно собираются касательная матрица и
-' экстремальные деформации/напряжения для Results.
+' buildTangent запрашивает K и физические данные. collectPhysical позволяет
+' сохранить те же экстремумы и fused stress API без неиспользуемой K.
 Private Sub EvaluateState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean)
-    EvaluateStateInto section, concreteMaterial, steelMaterial, eps0, kx, ky, buildTangent, mNint, mMxint, mMyint
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean, _
+        Optional ByVal collectPhysical As Boolean = False)
+    EvaluateStateInto section, concreteMaterial, steelMaterial, eps0, kx, ky, buildTangent, mNint, mMxint, mMyint, collectPhysical
 End Sub
 
 ' Интегрирует напряжения по бетонным и арматурным элементам для заданной
@@ -787,12 +821,42 @@ End Sub
 Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean, _
-        ByRef nInt As Double, ByRef mxInt As Double, ByRef myInt As Double)
+        ByRef nInt As Double, ByRef mxInt As Double, ByRef myInt As Double, _
+        Optional ByVal collectPhysical As Boolean = False)
 
+    Dim physical As Boolean, reusable As Boolean, revision As Long
+    physical = buildTangent Or collectPhysical
+    If mEvaluationReuseEnabled Then
+        reusable = section Is mSnapshotSection And concreteMaterial Is mSnapshotConcrete And steelMaterial Is mSnapshotSteel
+        If reusable Then
+            revision = section.Revision
+            If physical Then
+                If mPhysicalEvaluationValid And (Not buildTangent Or mPhysicalEvaluationHasK) Then
+                    If revision = mPhysicalEvaluationRevision And eps0 = mPhysicalEvaluationPlane(1) And _
+                            kx = mPhysicalEvaluationPlane(2) And ky = mPhysicalEvaluationPlane(3) Then
+                        nInt = mPhysicalEvaluationForces(1): mxInt = mPhysicalEvaluationForces(2): myInt = mPhysicalEvaluationForces(3)
+                        mEvaluationReuseCount = mEvaluationReuseCount + 1
+                        Exit Sub
+                    End If
+                End If
+            ElseIf mForceEvaluationValid Then
+                If revision = mForceEvaluationRevision And eps0 = mForceEvaluationPlane(1) And _
+                        kx = mForceEvaluationPlane(2) And ky = mForceEvaluationPlane(3) Then
+                    nInt = mForceEvaluationForces(1): mxInt = mForceEvaluationForces(2): myInt = mForceEvaluationForces(3)
+                    mEvaluationReuseCount = mEvaluationReuseCount + 1
+                    Exit Sub
+                End If
+            End If
+        End If
+    End If
+    If physical Then mPhysicalEvaluationValid = False Else mForceEvaluationValid = False
     nInt = 0#: mxInt = 0#: myInt = 0#
     mInternalForceEvaluationCount = mInternalForceEvaluationCount + 1
-    If buildTangent Then ClearTangent
     If buildTangent Then
+        ClearTangent
+        mTangentBuildCount = mTangentBuildCount + 1
+    End If
+    If physical Then
         mMinConcreteStrain = 1E+100
         mMaxConcreteStrain = -1E+100
         mMaxConcreteCompressionStress = 0#
@@ -830,19 +894,19 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     For i = 1 To section.ConcreteCount
         section.ConcreteElementForSolver i, xCoord, yCoord, area
         strain = eps0 + kx * yCoord + ky * xCoord
-        If buildTangent Then
+        If physical Then
             If strain < mMinConcreteStrain Then mMinConcreteStrain = strain
             If strain > mMaxConcreteStrain Then mMaxConcreteStrain = strain
         End If
         If concreteDiagram Is Nothing Then
             stress = concreteMaterial.GetStress(strain)
             If buildTangent Then tangent = concreteMaterial.GetTangentModulus(strain)
-        ElseIf buildTangent Then
+        ElseIf physical Then
             concreteDiagram.EvaluateAtStrain strain, stress, tangent
         Else
             stress = concreteDiagram.StressAtStrain(strain)
         End If
-        If buildTangent Then
+        If physical Then
             If stress < 0# Then
                 mHasConcreteCompression = True
                 If stress < mMinConcreteStress Then mMinConcreteStress = stress
@@ -865,7 +929,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         For i = 1 To section.RebarCount
             section.RebarElementForSolver i, xCoord, yCoord, area
             strain = eps0 + kx * yCoord + ky * xCoord
-            If buildTangent Then
+            If physical Then
                 If strain < mMinSteelStrain Then mMinSteelStrain = strain
                 If strain > mMaxSteelStrain Then mMaxSteelStrain = strain
                 If Abs(strain) > mMaxAbsSteelStrain Then mMaxAbsSteelStrain = Abs(strain)
@@ -873,12 +937,12 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             If steelDiagram Is Nothing Then
                 steelStress = steelMaterial.GetStress(strain)
                 If buildTangent Then steelTangent = steelMaterial.GetTangentModulus(strain)
-            ElseIf buildTangent Then
+            ElseIf physical Then
                 steelDiagram.EvaluateAtStrain strain, steelStress, steelTangent
             Else
                 steelStress = steelDiagram.StressAtStrain(strain)
             End If
-            If buildTangent Then
+            If physical Then
                 If steelStress < 0# Then
                     mHasSteelCompression = True
                     If steelStress < mMinSteelStress Then mMinSteelStress = steelStress
@@ -890,7 +954,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             If concreteDiagram Is Nothing Then
                 concreteStress = concreteMaterial.GetStress(strain)
                 If buildTangent Then concreteTangent = concreteMaterial.GetTangentModulus(strain)
-            ElseIf buildTangent Then
+            ElseIf physical Then
                 concreteDiagram.EvaluateAtStrain strain, concreteStress, concreteTangent
             Else
                 concreteStress = concreteDiagram.StressAtStrain(strain)
@@ -906,13 +970,26 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             End If
         Next i
     End If
-    If buildTangent Then
+    If physical Then
         ' У отсутствующего знака напряжения нет экстремума. Служебные
         ' границы поиска не должны попадать в физический snapshot.
         If Not mHasConcreteCompression Then mMinConcreteStress = 0#
         If Not mHasConcreteTension Then mMaxConcreteStress = 0#
         If Not mHasSteelCompression Then mMinSteelStress = 0#
         If Not mHasSteelTension Then mMaxSteelStress = 0#
+    End If
+    If reusable Then
+        If physical Then
+            mPhysicalEvaluationRevision = revision
+            mPhysicalEvaluationPlane(1) = eps0: mPhysicalEvaluationPlane(2) = kx: mPhysicalEvaluationPlane(3) = ky
+            mPhysicalEvaluationForces(1) = nInt: mPhysicalEvaluationForces(2) = mxInt: mPhysicalEvaluationForces(3) = myInt
+            mPhysicalEvaluationHasK = buildTangent: mPhysicalEvaluationValid = True
+        Else
+            mForceEvaluationRevision = revision
+            mForceEvaluationPlane(1) = eps0: mForceEvaluationPlane(2) = kx: mForceEvaluationPlane(3) = ky
+            mForceEvaluationForces(1) = nInt: mForceEvaluationForces(2) = mxInt: mForceEvaluationForces(3) = myInt
+            mForceEvaluationValid = True
+        End If
     End If
 End Sub
 
@@ -1067,6 +1144,9 @@ End Function
 ' Очищает результаты последнего solve, но не сбрасывает настройки solver-а и
 ' заданное начальное приближение.
 Public Sub ClearResult()
+    mEvaluationReuseEnabled = False
+    mPhysicalEvaluationValid = False: mForceEvaluationValid = False
+    mEvaluationReuseCount = 0: mTangentBuildCount = 0
     Set mSnapshotSection = Nothing
     Set mSnapshotConcrete = Nothing
     Set mSnapshotSteel = Nothing
@@ -1386,6 +1466,15 @@ End Property
 
 Public Property Get InternalForceEvaluationCount() As Long
     InternalForceEvaluationCount = mInternalForceEvaluationCount
+End Property
+
+' ДЛЯ ТЕСТОВ: фактическая сборка K и устраненные точные повторы одного Solve.
+Friend Property Get TangentBuildCount() As Long
+    TangentBuildCount = mTangentBuildCount
+End Property
+
+Friend Property Get EvaluationReuseCount() As Long
+    EvaluationReuseCount = mEvaluationReuseCount
 End Property
 
 Public Property Get InternalNewtonCallCount() As Long

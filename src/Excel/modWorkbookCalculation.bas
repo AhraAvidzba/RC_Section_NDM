@@ -1231,6 +1231,44 @@ Private Function ElapsedSecondsFrom(ByVal startTimer As Double) As Double
     End If
 End Function
 
+' Считает непрерывную ось snapshot от фактического якоря ограниченными
+' блоками Value2. Правило конца прежнее: первая пустая после Trim/CStr.
+' Empty, формула "" и пробелы завершают ось, ошибка Excel не становится пустой.
+' Массив одного блока живет только здесь; соседние ячейки не включаются в таблицу.
+Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As Boolean, _
+        Optional ByVal maxCount As Long = 0) As Long
+    Const BLOCK_SIZE As Long = 1024
+    Dim available As Long, offset As Long, count As Long, i As Long
+    If columns Then
+        available = anchor.Worksheet.Columns.Count - anchor.Column + 1
+    Else
+        available = anchor.Worksheet.Rows.Count - anchor.Row + 1
+    End If
+    If maxCount > 0 And maxCount < available Then available = maxCount
+    Dim block As Variant, value As Variant
+    Do While offset < available
+        count = available - offset
+        If count > BLOCK_SIZE Then count = BLOCK_SIZE
+        If columns Then
+            block = anchor.Offset(0, offset).Resize(1, count).Value2
+        Else
+            block = anchor.Offset(offset, 0).Resize(count, 1).Value2
+        End If
+        For i = 1 To count
+            If count = 1 Then
+                value = block
+            ElseIf columns Then
+                value = block(1, i)
+            Else
+                value = block(i, 1)
+            End If
+            If Len(Trim$(CStr(value))) = 0 Then Exit Function
+            SnapshotAnchoredExtent = SnapshotAnchoredExtent + 1
+        Next i
+        offset = offset + count
+    Loop
+End Function
+
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ: ШТАТНЫЙ ПЕРЕНОС ПОЛЬЗОВАТЕЛЬСКОЙ ТОЧКИ НАГРУЗКИ
 ' ==========================================================================

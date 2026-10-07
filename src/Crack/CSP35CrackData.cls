@@ -59,7 +59,8 @@ Private mCandidateRadius() As Double, mCandidatePsi() As Double, mCandidateWidth
 Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, _
         ByVal steelMaterial As Object, ByVal groupGapTolerance As Double, ByVal rowTolerance As Double, _
         ByVal diameterMode As String, ByVal radiusMode As String, ByVal centralTension As Boolean, _
-        Optional ByVal neighborRatioLimit As Double = 0.2)
+        Optional ByVal neighborRatioLimit As Double = 0.2, _
+        Optional ByVal geometryQuery As CSectionGeometryQuery = Nothing)
     AssertWritable
     ResetData
     If section Is Nothing Then InvalidData "Не передана модель сечения для СП 35."
@@ -73,7 +74,11 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     Dim multiplier As Double
     multiplier = SP35InteractionMultiplierFromData(radiusMode)
     Set mSection = section: mSectionRevision = section.Revision
-    Set mQuery = New CSectionGeometryQuery: mQuery.Initialize section
+    If geometryQuery Is Nothing Then
+        Set mQuery = New CSectionGeometryQuery: mQuery.Initialize section
+    Else
+        Set mQuery = geometryQuery: mQuery.EnsureSection section
+    End If
     Set mDomain = mQuery.ConcreteDomain
     mGapTolerance = groupGapTolerance: mRowTolerance = rowTolerance
     mNeighborRatioLimit = neighborRatioLimit
@@ -597,6 +602,9 @@ End Sub
 ' чтении по-прежнему возвращается копией; стержни и настройки уже скопированы.
 Friend Sub Freeze()
     mFrozen = True
+    ' Все публичные данные уже скопированы. Не удерживаем модель и общий
+    ' подготовительный domain через опубликованные результаты отдельных LC.
+    Set mSection = Nothing: Set mQuery = Nothing: Set mDomain = Nothing
 End Sub
 
 ' Запрещает изменение подготовленных данных, уже использованных в результате.

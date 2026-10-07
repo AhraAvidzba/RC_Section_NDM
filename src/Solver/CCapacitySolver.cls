@@ -533,7 +533,7 @@ Private Function EvaluateUltimateMomentResidual(ByVal section As CSectionModel, 
     On Error GoTo Failed
 
     Set solver = New CSectionSolver
-    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
+    solver.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     mIterations = mIterations + 1
     Set mLastSolver = solver
     UpdateCriticalState section, concreteMaterial, solver
@@ -590,7 +590,7 @@ Private Function EvaluateUltimateLoadPathResidual(ByVal section As CSectionModel
     On Error GoTo Failed
 
     Set solver = New CSectionSolver
-    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
+    solver.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     mIterations = mIterations + 1
     Set mLastSolver = solver
     UpdateCriticalState section, concreteMaterial, solver
