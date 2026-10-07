@@ -7,10 +7,11 @@ param(
     [string]$Macro = "",
     [string]$MacroArgument1 = "",
     [string]$MacroArgument2 = "",
+    [ValidateSet("RectSet", "Circle", "RoundedRectangle", "HollowRectangle")][string]$FixtureGeometryType,
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
     [ValidateSet("Yes", "No")][string]$Mode = "No",
-    [ValidateRange(10, 3600)][int]$TimeoutSeconds = 120
+    [ValidateRange(10, 43200)][int]$TimeoutSeconds = 120
 )
 $ErrorActionPreference = "Stop"
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")).Path
@@ -50,6 +51,7 @@ if (-not [string]::IsNullOrWhiteSpace($Macro)) {
 }
 if ($MacroArgument1) { $arguments += @("-MacroArgument1", (Quote-ProcessArgument $MacroArgument1)) }
 if ($MacroArgument2) { $arguments += @("-MacroArgument2", (Quote-ProcessArgument $MacroArgument2)) }
+if ($FixtureGeometryType) { $arguments += @("-FixtureGeometryType", (Quote-ProcessArgument $FixtureGeometryType)) }
 if ($VerifyResultsReopen) { $arguments += "-VerifyResultsReopen" }
 if ($VerifyStatusReopen) { $arguments += "-VerifyStatusReopen" }
 $arguments = $arguments -join " "

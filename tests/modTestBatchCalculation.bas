@@ -351,7 +351,7 @@ Public Function RunPostAudit03SnapshotRepeatTests() As String
     AssertTrue stats, "postAudit03.repeat.widths", sheet.Columns(1).ColumnWidth = 7# And sheet.Columns(12).ColumnWidth = 13#
     writer.ClearResults fixture
     data = PostAudit03ReadSnapshotTable(fixture, "rngNDMSectionContours")
-    AssertTrue stats, "postAudit03.repeat.clearContourHeader", UBound(data, 1) = 1 And data(1, 1) = "RunID v1"
+    AssertTrue stats, "postAudit03.repeat.clearContourHeader", UBound(data, 1) = 1 And data(1, 1) = "RunID"
     GoTo Finished
 Failed:
     AssertTrue stats, "postAudit03.repeat.runtime." & CStr(Err.Number) & "." & Err.Description, False

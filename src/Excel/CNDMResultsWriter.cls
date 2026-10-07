@@ -345,15 +345,14 @@ End Sub
 ' Сериализует исходные границы отдельно от элементов и LC-аннотаций.
 ' Дуга хранит начало, центр и знаковый угол; ее конец и радиус вычисляются
 ' при чтении. Радиус записывается только для окружности, концы - для линии.
-' Шапка v1 без строк означает отсутствие сохраненных достоверных границ,
+' Шапка без строк означает отсутствие сохраненных достоверных границ,
 ' а не доказательство отсутствия отверстий. XY - координаты модели сечения.
 Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSectionContours, _
-        ByVal runID As Variant, Optional ByVal units As CUnitSystem = Nothing, _
-        Optional ByVal savedLengthUnit As String = vbNullString)
+        ByVal runID As Variant, Optional ByVal units As CUnitSystem = Nothing)
     Dim target As Object: Set target = workbook.Names.Item("rngNDMSectionContours").RefersToRange
     ClearNamedRegion workbook, "rngNDMSectionContours"
     Dim data() As Variant, headers As Variant, i As Long, row As Long, kind As String
-    headers = Array("RunID v1", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+    headers = Array("RunID", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
         "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", "SourceID", "Comment", "LengthUnit (SectionXY)")
     ReDim data(1 To contours.Count + 1, 1 To CONTOUR_COLUMNS)
     For i = 0 To UBound(headers): data(1, i + 1) = headers(i): Next i
@@ -361,33 +360,23 @@ Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSec
         row = i + 1: kind = contours.SegmentType(i)
         data(row, 1) = runID: data(row, 2) = contours.LoopID(i): data(row, 3) = contours.ContourID(i)
         data(row, 4) = i: data(row, 5) = contours.LoopRole(i): data(row, 6) = kind
-        data(row, 7) = ContourOutputLength(contours.StartX(i), units, savedLengthUnit): data(row, 8) = ContourOutputLength(contours.StartY(i), units, savedLengthUnit)
+        data(row, 7) = OutputLength(contours.StartX(i), units): data(row, 8) = OutputLength(contours.StartY(i), units)
         Select Case kind
             Case "CONTOUR_LINE"
-                data(row, 9) = ContourOutputLength(contours.EndX(i), units, savedLengthUnit): data(row, 10) = ContourOutputLength(contours.EndY(i), units, savedLengthUnit)
+                data(row, 9) = OutputLength(contours.EndX(i), units): data(row, 10) = OutputLength(contours.EndY(i), units)
             Case "CONTOUR_CIRCLE"
-                data(row, 13) = ContourOutputLength(contours.Radius(i), units, savedLengthUnit)
+                data(row, 13) = OutputLength(contours.Radius(i), units)
             Case "CONTOUR_ARC"
-                data(row, 11) = ContourOutputLength(contours.CenterX(i), units, savedLengthUnit): data(row, 12) = ContourOutputLength(contours.CenterY(i), units, savedLengthUnit)
+                data(row, 11) = OutputLength(contours.CenterX(i), units): data(row, 12) = OutputLength(contours.CenterY(i), units)
                 data(row, 14) = contours.SweepAngle(i)
         End Select
         data(row, 15) = contours.SourceID(i): data(row, 16) = contours.Comment(i)
-        data(row, 17) = savedLengthUnit
-        If Len(savedLengthUnit) = 0 Then data(row, 17) = OutputLengthUnit(units)
+        data(row, 17) = OutputLengthUnit(units)
     Next i
     target.Resize(contours.Count + 1, CONTOUR_COLUMNS).Value2 = data
     FormatResultsBlock target, contours.Count + 1, CONTOUR_COLUMNS, "Достоверные контуры и отверстия сечения"
 End Sub
 
-' Миграция сохраняет единицу прежнего снимка, не читая измененный Config.
-Private Function ContourOutputLength(ByVal value As Double, ByVal units As CUnitSystem, ByVal savedUnit As String) As Double
-    If Len(savedUnit) = 0 Then
-        ContourOutputLength = OutputLength(value, units)
-    Else
-        Dim adapter As CUnitSystem: Set adapter = New CUnitSystem
-        ContourOutputLength = adapter.InternalLengthToOutput(value, savedUnit)
-    End If
-End Function
 
 ' ------------------------------
 ' Свойства сечения и LC-состояния

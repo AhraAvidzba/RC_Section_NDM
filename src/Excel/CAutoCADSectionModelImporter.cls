@@ -76,8 +76,8 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     On Error GoTo InvalidMinimumArea
     minArea = importUnits.InputAreaToInternal(minArea)
     On Error GoTo 0
-    ' Эти два поля опциональны по контракту. Старый чертеж/Config без них
-    ' сохраняет прежний импорт. Непустое имя проверяется, но отсутствие
+    ' Эти два поля опциональны по контракту. Без точных контуров сохраняется
+    ' расчетная сетка. Непустое имя проверяется, но отсутствие
     ' объектов на существующем слое не делает контур обязательным.
     Dim contourLayer As String, openingLayer As String
     contourLayer = OptionalContourLayer(settings, "AutoCAD.Common.SectionContourLayer")
@@ -109,21 +109,35 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Set model = New CSectionModel
     model.SourceType = "AutoCADImport"
 
-    Dim entity As Object
+    Dim entity As Object, entityLayer As String, materialEntities As Collection, materialLayers As Collection
+    Dim outerEntities As Collection, openingEntities As Collection, i As Long
+    Set materialEntities = New Collection: Set materialLayers = New Collection
+    Set outerEntities = New Collection: Set openingEntities = New Collection
     mEdgeProbeCount = 0
+    ' Читаем слой один раз и сохраняем только ссылки этой операции. Последующее
+    ' Copy/Explode уже не меняет коллекцию во время ее COM-обхода.
     For Each entity In modelSpace
-        If IsRegionEntity(entity) Then
-            If SameLayer(entity.Layer, concreteLayer) Then
-                AddConcreteRegionEntity model, entity, minArea, units
-            ElseIf SameLayer(entity.Layer, rebarLayer) Then
-                AddRebarRegionEntity model, entity, steelClass, minArea, units
+        entityLayer = CStr(entity.Layer)
+        If SameLayer(entityLayer, concreteLayer) Or SameLayer(entityLayer, rebarLayer) Then
+            If IsRegionEntity(entity) Then
+                materialEntities.Add entity: materialLayers.Add entityLayer
             End If
         End If
+        If Len(contourLayer) > 0 And SameLayer(entityLayer, contourLayer) Then outerEntities.Add entity
+        If Len(openingLayer) > 0 And SameLayer(entityLayer, openingLayer) Then openingEntities.Add entity
     Next entity
+    For i = 1 To materialEntities.Count
+        Set entity = materialEntities(i): entityLayer = CStr(materialLayers(i))
+        If SameLayer(entityLayer, concreteLayer) Then
+            AddConcreteRegionEntity model, entity, minArea, units, entityLayer
+        Else
+            AddRebarRegionEntity model, entity, steelClass, minArea, units, entityLayer
+        End If
+    Next i
 
     ValidateImportedModel model
     model.ApplyAverageRotationToEquivalentAreaFallbacks
-    ImportMaterialContours model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers
+    ImportMaterialContours model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities
     Set ImportFromModelSpace = model
 End Function
 
@@ -133,7 +147,8 @@ End Function
 ' контура границы определяются по сетке. Ошибка не оставляет частичный импорт.
 Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpace As Object, _
         ByVal concreteLayer As String, ByVal rebarLayer As String, ByVal contourLayer As String, _
-        ByVal openingLayer As String, ByVal drawingLayers As Object)
+        ByVal openingLayer As String, ByVal drawingLayers As Object, _
+        ByVal outerEntities As Collection, ByVal openingEntities As Collection)
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
         Exit Sub
@@ -148,19 +163,14 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
         "Не удалось проверить слои достоверных контуров AutoCAD. Передайте коллекцию Layers активного чертежа."
     contourLayer = ExistingContourLayer(drawingLayers, contourLayer)
     openingLayer = ExistingContourLayer(drawingLayers, openingLayer)
+    If Len(contourLayer) = 0 Then Set outerEntities = New Collection
+    If Len(openingLayer) = 0 Then Set openingEntities = New Collection
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
         Exit Sub
     End If
 
-    Dim outerEntities As Collection, openingEntities As Collection, entity As Object
-    Set outerEntities = New Collection: Set openingEntities = New Collection
-    ' Copy/Explode временно меняют ModelSpace. Собираем исходные ссылки
-    ' заранее, чтобы не менять коллекцию во время ее обхода.
-    For Each entity In modelSpace
-        If Len(contourLayer) > 0 And SameLayer(CStr(entity.Layer), contourLayer) Then outerEntities.Add entity
-        If Len(openingLayer) > 0 And SameLayer(CStr(entity.Layer), openingLayer) Then openingEntities.Add entity
-    Next entity
+    Dim entity As Object
     Dim originalOuter As Collection, originalOpenings As Collection, exportedOuter As Boolean
     Set originalOuter = OriginalContours(outerEntities)
     Set originalOpenings = OriginalContours(openingEntities)
@@ -363,7 +373,8 @@ End Function
 ' Читает один бетонный Region из AutoCAD: площадь, центр тяжести, реальные
 ' центральные инерции и, только для почти изотропного случая, подсказку угла
 ' по первой прямой грани. Width/Height здесь не восстанавливаются.
-Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, ByVal units As CUnitSystem)
+Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, _
+        ByVal units As CUnitSystem, ByVal sourceLayer As String)
     Dim area As Double
     area = InputArea(CDbl(entity.Area), units)
     If area < minArea Then Exit Sub
@@ -388,14 +399,14 @@ Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity A
     End If
 
     AddConcreteRegion model, area, xCoord, yCoord, localIx, localIy, localIxy, _
-        0#, 0#, rotationHint, entity.Layer, EntityHandle(entity), rotationKnown
+        0#, 0#, rotationHint, sourceLayer, EntityHandle(entity), rotationKnown
 End Sub
 
 ' Читает один арматурный Region. Для арматуры программа хранит площадь и
 ' эквивалентный круговой диаметр, потому что механика стержня задается As,
 ' а визуальная оболочка стержня должна оставаться круглой.
 Private Sub AddRebarRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, _
-        ByVal steelClass As String, ByVal minArea As Double, ByVal units As CUnitSystem)
+        ByVal steelClass As String, ByVal minArea As Double, ByVal units As CUnitSystem, ByVal sourceLayer As String)
     Dim area As Double
     area = InputArea(CDbl(entity.Area), units)
     If area < minArea Then Exit Sub
@@ -403,7 +414,7 @@ Private Sub AddRebarRegionEntity(ByVal model As CSectionModel, ByVal entity As O
     Dim centroid As Variant
     centroid = entity.Centroid
     AddRebarRegion model, area, InputLength(CDbl(centroid(LBound(centroid))), units), _
-        InputLength(CDbl(centroid(LBound(centroid) + 1)), units), steelClass, entity.Layer, EntityHandle(entity)
+        InputLength(CDbl(centroid(LBound(centroid) + 1)), units), steelClass, sourceLayer, EntityHandle(entity)
 End Sub
 
 ' Тестовый/подготовленный путь импорта бетонных Region из массива значений.

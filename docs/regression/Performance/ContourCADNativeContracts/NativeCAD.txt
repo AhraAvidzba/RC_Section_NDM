@@ -1,0 +1,85 @@
+﻿OK: native.actualAutoCAD
+OK: native.rectangle.0; actual=8000; expected=8000
+OK: native.rectangle.source.0
+OK: native.rectangle.unchanged.0; actual=8000; expected=8000
+OK: native.rectangle.1; actual=8000; expected=8000
+OK: native.rectangle.source.1
+OK: native.rectangle.unchanged.1; actual=8000; expected=8000
+OK: native.semicircle.0; actual=3926.99081698724; expected=3926.99081698724
+OK: native.semicircle.analytic.0
+OK: native.semicircle.cleanup.0
+OK: native.semicircle.1; actual=3926.99081698724; expected=3926.99081698724
+OK: native.semicircle.analytic.1
+OK: native.semicircle.cleanup.1
+OK: native.twoOpenings.area; actual=9607.30091830128; expected=9607.30091830128
+OK: native.twoOpenings.loops
+OK: native.twoOpenings.roles
+OK: native.twoOpenings.excluded
+OK: native.twoOpenings.material
+OK: native.twoOpenings.source
+OK: native.twoOpenings.sourceArea; actual=9607.30091830128; expected=9607.30091830128
+OK: native.separateOpenings.area; actual=9607.30091830127; expected=9607.30091830128
+OK: native.separateOpenings.threeLoops
+OK: native.separateOpenings.excluded
+OK: native.separateOpenings.sourceKept
+OK: native.mesh.actualAreaKept; actual=9607.30091830128; expected=9607.30091830128
+OK: native.mesh.rectangleKept
+OK: native.mesh.equivalentArea; actual=9607.30091830128; expected=9607.30091830128
+OK: native.mesh.actualInertiaKept
+OK: native.snapshot.area; actual=9607.30091830128; expected=9607.30091830128
+OK: native.snapshot.exportThreeLoops
+OK: native.snapshot.closed.0
+OK: native.snapshot.exactArc.0; actual=10000; expected=10000
+OK: native.snapshot.closed.1
+OK: native.snapshot.exactArc.1; actual=314.15926535898; expected=314.15926535898
+OK: native.snapshot.closed.2
+OK: native.snapshot.exactArc.2; actual=78.5398163397449; expected=78.5398163397449
+OK: native.snapshot.outerMM; actual=10000; expected=10000
+OK: native.snapshot.openingsMM; actual=392.699081698725; expected=392.699081698724
+OK: native.snapshot.netArea; actual=9607.30091830127; expected=9607.30091830128
+OK: native.ownership.originalUnmarked
+OK: native.ownership.copyMarked
+OK: native.ownership.cleanupOwned
+OK: native.ownership.sourcePreserved
+OK: native.ownership.existingSourceDoesNotBlockExport
+OK: native.ownership.repeatAddsContour
+OK: native.ownership.previousOutputKept
+OK: native.ownership.originalStillExists
+OK: native.append.regionAndOpeningAdded
+OK: native.dedup.regionPreserved
+OK: native.dedup.regionAreaPreserved; actual=9685.84073464101; expected=9685.84073464102
+OK: native.mixedRoundTrip.0.importArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.0.importThreeLoops
+OK: native.mixedRoundTrip.0.exportAddsAll
+OK: native.mixedRoundTrip.0.originalOuterKept
+OK: native.mixedRoundTrip.0.exportBothLayers
+OK: native.mixedRoundTrip.0.reimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.0.reimportThreeLoops
+OK: native.mixedRoundTrip.0.repeatExportAddsAll
+OK: native.mixedRoundTrip.1.importArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.1.importThreeLoops
+OK: native.mixedRoundTrip.1.exportAddsAll
+OK: native.mixedRoundTrip.1.originalOuterKept
+OK: native.mixedRoundTrip.1.exportBothLayers
+OK: native.mixedRoundTrip.1.reimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.1.reimportThreeLoops
+OK: native.mixedRoundTrip.1.repeatExportAddsAll
+OK: native.mixedRoundTrip.2.importArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.2.importThreeLoops
+OK: native.mixedRoundTrip.2.exportAddsAll
+OK: native.mixedRoundTrip.2.originalOuterKept
+OK: native.mixedRoundTrip.2.exportBothLayers
+OK: native.mixedRoundTrip.2.reimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.2.reimportThreeLoops
+OK: native.mixedRoundTrip.2.repeatExportAddsAll
+OK: native.mixedRoundTrip.3.importArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.3.importThreeLoops
+OK: native.mixedRoundTrip.3.exportAddsAll
+OK: native.mixedRoundTrip.3.originalOuterKept
+OK: native.mixedRoundTrip.3.exportBothLayers
+OK: native.mixedRoundTrip.3.reimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.3.reimportThreeLoops
+OK: native.mixedRoundTrip.3.repeatExportAddsAll
+NATIVE_DWG: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\Performance\ContourCADNativeContracts\SP35_ContourImport_20261008_003837.dwg
+TOTAL_REAL_AUTOCAD_CONTOURS: passed=82; failed=0
+

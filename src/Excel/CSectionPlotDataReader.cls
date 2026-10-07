@@ -525,11 +525,13 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
         MissingStateMessage(mLoadCase, mStateType)
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
+    If UBound(geom, 2) <> 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
+        "Таблица расчетной геометрии Results должна содержать 15 столбцов. Повторите расчет или импорт геометрии."
     Dim colType As Long: colType = ResultColumn(geom, "MaterialType")
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
     Dim colArea As Long: colArea = ResultColumn(geom, "Area")
-    Dim colShape As Long: colShape = GeometryStatusColumn(geom)
+    Dim colShape As Long: colShape = ResultColumn(geom, "GeometryInterpretationStatus")
     Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
@@ -564,13 +566,15 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
         "На листе Results нет расчетной геометрии."
+    If UBound(geom, 2) <> 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
+        "Таблица расчетной геометрии Results должна содержать 15 столбцов. Повторите расчет или импорт геометрии."
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
     Dim colType As Long: colType = ResultColumn(geom, "MaterialType")
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
     Dim colArea As Long: colArea = ResultColumn(geom, "Area")
-    Dim colShape As Long: colShape = GeometryStatusColumn(geom)
+    Dim colShape As Long: colShape = ResultColumn(geom, "GeometryInterpretationStatus")
     Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
@@ -1064,21 +1068,6 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
     Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", "В Results не найден столбец: " & headerName
 End Function
 
-' Читает статус интерпретации оболочки по двум допустимым именам колонки.
-' Отсутствие обоих заголовков является повреждением snapshot, а не индексом 0.
-Private Function GeometryStatusColumn(ByRef data As Variant) As Long
-    Dim column As Long, header As String
-    For column = 1 To UBound(data, 2)
-        header = ResultHeaderBase(CStr(data(1, column)))
-        If StrComp(header, "GeometryInterpretationStatus", vbTextCompare) = 0 Or _
-                StrComp(header, "ShapeType", vbTextCompare) = 0 Then
-            GeometryStatusColumn = column
-            Exit Function
-        End If
-    Next column
-    Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
-        "В сохраненной геометрии Results отсутствует обязательный столбец GeometryInterpretationStatus или ShapeType. Повторите расчет/импорт для восстановления снимка."
-End Function
 
 ' Возвращает имя столбца без единицы измерения.
 Private Function ResultHeaderBase(ByVal headerText As String) As String

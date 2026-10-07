@@ -12,6 +12,7 @@ Option Explicit
 
 Private mPassed As Long, mFailed As Long, mReport As String
 
+
 #If VBA7 Then
 Private Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
 Private Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (ByRef value As Currency) As Long
@@ -1000,4 +1001,115 @@ Public Function MeasurePerformanceOverhead() As String
     Next name
     MeasurePerformanceOverhead = "validation10000=" & NumberText(validation) & Chr$(30) & "clone10000=" & NumberText(cloning) & _
         Chr$(30) & "snapshotFormat=" & NumberText(formatting)
+End Function
+
+' ДЛЯ ТЕСТОВ: готовит одинаковый сохраненный НДС до замера настоящего CAD.
+' Настройки меняются только в частной книге runner-а; расчет не входит во время
+' импорта/экспорта. Повернутый вариант проверяет повторяющиеся WCS-оболочки.
+Public Sub PrepareNativeCADPerformance(ByVal rotated As Boolean)
+    ConfigurePerformanceFixture "IMPORTED_DIRECT", 1, "Newton"
+    PerformanceSetting "Plot.Enabled", "No"
+    PerformanceSetting "Plot.AutoUpdateAfterCalculation", "No"
+    PerformanceSetting "General.ExecutionReportEnabled", "No"
+    PerformanceSetting "AutoCAD.Export.CombinationID", "PERF_01"
+    PerformanceSetting "AutoCAD.Import.MinArea", "0"
+    Dim table As Object, row As Long
+    Set table = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    For row = 1 To table.Rows.Count
+        If CStr(table.Cells(row, 2).Value2) = "Visualization.State" Then table.Cells(row, 3).Value2 = "StrengthState"
+    Next row
+    If rotated Then
+        Dim original As CSectionModel, section As CSectionModel, i As Long, c As Double, s As Double
+        Dim query As CSectionGeometryQuery, region As CConcreteRegion, settings As CSystemSettingsReader, units As CUnitSystem
+        Dim writer As CNDMResultsWriter, x As Double, y As Double
+        Set original = ReadSectionGeometryFromResults(ThisWorkbook)
+        Set section = New CSectionModel: section.SourceType = "AutoCADImport"
+        c = Cos(0.37): s = Sin(0.37)
+        For i = 1 To original.ConcreteCount
+            x = original.ConcreteX(i): y = original.ConcreteY(i)
+            section.AddConcreteElement c * x - s * y, s * x + c * y, original.ConcreteArea(i), 1, , , "Rectangle", 10#, 10#, 0.37
+        Next i
+        For i = 1 To original.RebarCount
+            x = original.RebarX(i): y = original.RebarY(i)
+            section.AddRebarElement c * x - s * y, s * x + c * y, original.RebarDiameter(i), original.RebarArea(i), "Periodic"
+        Next i
+        Set query = New CSectionGeometryQuery: Set region = query.CircleRegion(0#, 0#, 200#)
+        Set region = query.SubtractRegion(region, query.CircleRegion(c * -45# - s * 60#, s * -45# + c * 60#, 25#))
+        Set region = query.SubtractRegion(region, query.CircleRegion(c * 45# - s * 60#, s * 45# + c * 60#, 25#))
+        section.Contours.AddMaterialRegion region, "PERFORMANCE_CAD", "Повернутый достоверный контур теста."
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set writer = New CNDMResultsWriter
+        writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
+    End If
+    Dim result As String
+    result = MeasurePerformanceBatch("Staged")
+End Sub
+
+' ДЛЯ ТЕСТОВ: измеряет настоящий экспорт и импорт одного нового документа.
+' Сигнатура содержит все расчетные геометрические поля, без разных CAD handles;
+' подписи, слои и цвета проверяются вне таймеров. Пользовательский DWG запрещен.
+Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCount As Long) As String
+    If InStr(1, CStr(doc.Application.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) = 0 Then Err.Raise 5, , "Требуется настоящий Autodesk AutoCAD."
+    If doc.ModelSpace.Count <> 0 Then Err.Raise 5, , "Замер разрешен только в пустом собственном документе."
+    Dim t As Double, exportSeconds As Double, importSeconds As Double, count As Long, solves As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, importer As CAutoCADSectionModelImporter
+    Dim section As CSectionModel, entity As Object, i As Long, signature As String
+    Dim userLine As Object, userSet As Object, userPoint(0 To 2) As Double, userEnd(0 To 2) As Double
+    Dim userLayer As Object, userHandle As String, selectionCount As Long
+    Set userLayer = doc.Layers.Add("PERFORMANCE_EXISTING")
+    userPoint(0) = 1000#: userEnd(0) = 1010#: userEnd(1) = 10#
+    Set userLine = doc.ModelSpace.AddLine(userPoint, userEnd)
+    userLine.Layer = userLayer.Name: userLine.Color = 173: userHandle = CStr(userLine.Handle)
+    Set userSet = doc.SelectionSets.Add("PERFORMANCE_USER_SELECTION")
+    Dim userItems(0 To 0) As Object: Set userItems(0) = userLine
+    userSet.AddItems userItems: selectionCount = doc.SelectionSets.Count
+    solves = SectionEquilibriumSolveCount()
+    t = PerformanceNow(): count = Audit03ExportAutoCADDocumentForTests(doc): exportSeconds = SecondsSince(t)
+    If CStr(userLine.Handle) <> userHandle Or CStr(userLine.Layer) <> "PERFORMANCE_EXISTING" Or userLine.Color <> 173 Then Err.Raise 5, , "Экспорт изменил прежний объект чертежа."
+    Dim savedPoint As Variant: savedPoint = userLine.EndPoint
+    If CDbl(savedPoint(0)) <> 1010# Or CDbl(savedPoint(1)) <> 10# Then Err.Raise 5, , "Экспорт изменил координаты прежнего объекта."
+    If doc.SelectionSets.Count <> selectionCount Or userSet.Count <> 1 Then Err.Raise 5, , "Экспорт изменил прежние наборы выбора или оставил временный набор."
+    For Each entity In doc.ModelSpace
+        signature = signature & CStr(entity.ObjectName) & "|" & CStr(entity.Layer) & "|" & CStr(entity.Color)
+        If entity.ObjectName = "AcDbText" Then signature = signature & "|" & CStr(entity.TextString)
+        signature = signature & vbLf
+    Next entity
+    If noiseCount > 0 Then
+        Dim layer As Object, p(0 To 2) As Double, q(0 To 2) As Double
+        Set layer = doc.Layers.Add("PERFORMANCE_UNRELATED")
+        For i = 1 To noiseCount
+            p(0) = 1000# + i: q(0) = p(0): q(1) = 10#
+            Set entity = doc.ModelSpace.AddLine(p, q): entity.Layer = layer.Name
+        Next i
+    End If
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set importer = New CAutoCADSectionModelImporter
+    Dim before As Long: before = doc.ModelSpace.Count
+    t = PerformanceNow()
+    Set section = importer.ImportConfiguredModelSpace(doc.ModelSpace, settings, units, doc.Layers)
+    importSeconds = SecondsSince(t)
+    If doc.ModelSpace.Count <> before Then Err.Raise 5, , "Импорт изменил исходные CAD-объекты."
+    If SectionEquilibriumSolveCount() <> solves Then Err.Raise 5, , "Импорт/экспорт неожиданно запустил решатель."
+    For i = 1 To section.ConcreteCount
+        signature = signature & "C|" & section.ConcreteID(i) & "|" & section.ConcreteShapeType(i)
+        signature = signature & "|" & DoubleBits(section.ConcreteX(i)) & "|" & DoubleBits(section.ConcreteY(i)) & "|" & DoubleBits(section.ConcreteArea(i))
+        signature = signature & "|" & DoubleBits(section.ConcreteWidth(i)) & "|" & DoubleBits(section.ConcreteHeight(i)) & "|" & DoubleBits(section.ConcreteRotation(i))
+        signature = signature & "|" & DoubleBits(section.ConcreteLocalIx(i)) & "|" & DoubleBits(section.ConcreteLocalIy(i)) & "|" & DoubleBits(section.ConcreteLocalIxy(i)) & vbLf
+    Next i
+    For i = 1 To section.RebarCount
+        signature = signature & "R|" & section.RebarID(i) & "|" & DoubleBits(section.RebarX(i)) & "|" & DoubleBits(section.RebarY(i))
+        signature = signature & "|" & DoubleBits(section.RebarArea(i)) & "|" & DoubleBits(section.RebarDiameter(i)) & vbLf
+    Next i
+    For i = 1 To section.Contours.Count
+        signature = signature & "CONTOUR|" & section.Contours.SegmentType(i) & "|" & section.Contours.LoopRole(i)
+        signature = signature & "|" & DoubleBits(section.Contours.StartX(i)) & "|" & DoubleBits(section.Contours.StartY(i))
+        signature = signature & "|" & DoubleBits(section.Contours.EndX(i)) & "|" & DoubleBits(section.Contours.EndY(i))
+        signature = signature & "|" & DoubleBits(section.Contours.CenterX(i)) & "|" & DoubleBits(section.Contours.CenterY(i))
+        signature = signature & "|" & DoubleBits(section.Contours.Radius(i)) & "|" & DoubleBits(section.Contours.SweepAngle(i)) & vbLf
+    Next i
+    MeasureNativeCADPerformance = "export=" & NumberText(exportSeconds) & Chr$(30) & "import=" & NumberText(importSeconds) & _
+        Chr$(30) & "entities=" & CStr(count) & Chr$(30) & "concrete=" & CStr(section.ConcreteCount) & Chr$(30) & _
+        "rebar=" & CStr(section.RebarCount) & Chr$(30) & "noise=" & CStr(noiseCount) & Chr$(30) & "signature=" & signature
 End Function

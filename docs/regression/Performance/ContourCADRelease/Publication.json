@@ -1,0 +1,22 @@
+﻿{
+    "Published":  true,
+    "UTC":  "2026-10-07T21:39:35.3677806Z",
+    "WorkbookSHA256":  "C19AFBA0A5DFBFB957BA45473343DD19905E14E01CD39EB4749A3C2029A10E92",
+    "ExportSHA256":  "A58CACA1DD31768276F7AB7D53FB64F4CB209D88451490DAD16B58CA0BF3D81F",
+    "NativeABExact":  true,
+    "MeasuredWorkbookSHA256":  "F1F1D89F8B0AFFEFBE7695E298D07F99C8AF990A307765F60B414F0F2CFBAA6C",
+    "MeasuredCodeMatchesFinal":  true,
+    "SourceComponents":  121,
+    "GeneratedComponents":  5,
+    "UserReportPreserved":  true,
+    "UserReportSHA256":  "D65B41D99B4E8969F5ADBB7196C9FB41989DEBB1287827F4F18D5D17B98ECCBC",
+    "InputsNamesWidthsResultsPreservedExceptHeader":  true,
+    "Fingerprint":  {
+                        "Inputs":  "ECD50460326DC5D84AF43D1057AE4D31053979FE619DD1E83F0EB19F2F13052A",
+                        "Names":  "A1DAC58DBAE82820DDA9492FB85C776E327C3A9AB09696F7043BBA8294315C8B",
+                        "Widths":  "B77F81AC487F2672864B543F888EB94F1248550D1416B63A543AAF18F88E38E1",
+                        "ResultsExceptHeader":  "F1354889ED1C49F7A1B1F4964A3D2B2A347ADAAEA4C45706867A859E37FF08D2",
+                        "ResultAddress":  "$A$1:$CL$648"
+                    },
+    "FullOnOffCompleted":  true
+}

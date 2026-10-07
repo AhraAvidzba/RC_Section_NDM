@@ -1,0 +1,268 @@
+{
+  "CreatedUTC": "2026-10-07T23:24:01.1639445Z",
+  "BaseCommit": "465d33e8f5c5701718fb3b12fee6354cac1d4d2d",
+  "Files": [
+    {
+      "Path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Bytes": 51296,
+      "SHA256": "4B1313D2E11A99EAE16E406FDC7D86B519B0403574A22FABBBF078BB398FC7EE"
+    },
+    {
+      "Path": "src/Excel/CNDMResultsWriter.cls",
+      "Bytes": 111392,
+      "SHA256": "8F872ED9201E90D0E3359DE8B1EE3AE3560A7B4C44D31F526391DB9306A93C33"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotDataReader.cls",
+      "Bytes": 79568,
+      "SHA256": "C2CA5141345DDD9CC731E3D86BFD4BE19890B57366100AC86312044E7B1494B6"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotter.cls",
+      "Bytes": 115252,
+      "SHA256": "F33A79995031DB0EB4C18AC79E873C70BA5F62BCFF84D04EA5A3C4A3C10ECC76"
+    },
+    {
+      "Path": "src/Excel/modAutoCADStressExport.bas",
+      "Bytes": 143299,
+      "SHA256": "06A6DA51995A21F38100FE98594F6930D85E905735082F2282343F6EDA450569"
+    },
+    {
+      "Path": "tests/modTestAutoCADContours.bas",
+      "Bytes": 85266,
+      "SHA256": "247A928F3228A5FA0495AE52CB8C375A1DE18D3D2EF40E7529D1535D9FD7CE9B"
+    },
+    {
+      "Path": "tests/modTestBatchCalculation.bas",
+      "Bytes": 628398,
+      "SHA256": "5F1117C23CC1570A49E38CD15A33F16579061D2949BD6FDFCAC77CCBB377461F"
+    },
+    {
+      "Path": "tests/modTestPerformance.bas",
+      "Bytes": 72259,
+      "SHA256": "7D31C6E9B2F5FC12800119714CEDD8E8E7D0CB9BA35C842D1BF0ABC7DC61F360"
+    },
+    {
+      "Path": "tests/modTestPlotConfig.bas",
+      "Bytes": 118956,
+      "SHA256": "C19B6BC7E9899CAE3C037C061483DEA1E6BC60C475969E5F5CD641D1D7E0CE6D"
+    },
+    {
+      "Path": "tests/modTestProfileConfig.bas",
+      "Bytes": 117257,
+      "SHA256": "EC74845833290D40C78F21F2E12B49417CF69B430EB9D04A19A3EFDE99658D4D"
+    },
+    {
+      "Path": "tests/modTestWorkbookInterface.bas",
+      "Bytes": 472898,
+      "SHA256": "FFB6502F46AB2F98FD2AE40FF11CB2AEF15AB7C54F9EE5D473345C442BB6980F"
+    },
+    {
+      "Path": "tools/build_workbook/Build-Workbook.ps1",
+      "Bytes": 29788,
+      "SHA256": "923C31075CB76345D74E1D6DA07651E6C32B8C883BBE6E19D6ACD5E66E5D0F12"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-PerformanceWorkbook.ps1",
+      "Bytes": 6376,
+      "SHA256": "5D83EA49B64C639F654919EE61F9FB6C6369755A6899DDB4B5291625440BE060"
+    },
+    {
+      "Path": "tools/build_workbook/Prepare-SP35Publication.ps1",
+      "Bytes": 13609,
+      "SHA256": "F75248C27F018AC8F46FE7A37A20ECE50FF29707AC7787480EA628239BD21F4D"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit02ModeTests.ps1",
+      "Bytes": 20165,
+      "SHA256": "8E3D1B72AA41674C09884BAEEF896271E795B5B3CDC36EC4171E91B74582BF1F"
+    },
+    {
+      "Path": "tools/build_workbook/Run-Audit03Watchdog.ps1",
+      "Bytes": 5593,
+      "SHA256": "F7DD5C39861A4009AE02C8B26D178097D2F77F48A53A666338E8ADB3246A1BA6"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PostAudit03Focused.ps1",
+      "Bytes": 5649,
+      "SHA256": "FBA2BF7B679A391CF48FB6E89B812C44A2169DBD2AD8009E8278053FF741F717"
+    },
+    {
+      "Path": "tools/build_workbook/Run-PostAudit03NativeCAD.ps1",
+      "Bytes": 3803,
+      "SHA256": "C71FCE3CC864652D9F81EF45604D0F141F302FEB12770FF77BBA6F47DCCBA690"
+    },
+    {
+      "Path": "tools/build_workbook/Run-SP35FocusedTests.ps1",
+      "Bytes": 4704,
+      "SHA256": "4A73B7EF9AFAF2939009F4B3EE1CD122755E948C8916D083DF27694A6ABF41CE"
+    },
+    {
+      "Path": "tools/build_workbook/SettingsCatalog.ps1",
+      "Bytes": 712799,
+      "SHA256": "AD0B0B9295563288D57FCA03785F8A3A5C7D3C24E5F7B5794CE1BA97A563818A"
+    },
+    {
+      "Path": "tools/build_workbook/Update-Audit03WorkbookHelp.ps1",
+      "Bytes": 27841,
+      "SHA256": "8CA98673FF7E3BA70C4DA7143696EC6688833B8C832CC5797379EDBCBE40A566"
+    },
+    {
+      "Path": "tools/build_workbook/Update-PostAudit03Workbook.ps1",
+      "Deleted": true
+    },
+    {
+      "Path": "tools/build_workbook/Measure-NativeCADPerformance.ps1",
+      "Bytes": 7520,
+      "SHA256": "30E2869AB5E3FA2A0BCD3EED4E782EC3A745649AC9F54A3C6678371D713B4B39"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-NativeCADPerformance.ps1",
+      "Bytes": 2224,
+      "SHA256": "B3B8F034A2DFA563ECD275A26A1912F80EBB6EADC09716C71286F7ECC2F7A3F8"
+    },
+    {
+      "Path": "tools/build_workbook/Publish-ContourCADRelease.ps1",
+      "Bytes": 8047,
+      "SHA256": "184D15AA3D0F7A70179F6A0DB2906738751994966581EC64B342DDC5F9F34CC3"
+    },
+    {
+      "Path": "tools/build_workbook/Complete-ContourCADVerification.ps1",
+      "Bytes": 5427,
+      "SHA256": "4DFB6EB3C8E5EF3DC16F97B414206A4D335C6CDD00C40B1F38C75FE301ED1378"
+    },
+    {
+      "Path": "docs/NDM_Contour_Legacy_Removal_2026-10-07.md",
+      "Bytes": 20904,
+      "SHA256": "907E03EFB71CADB72ED2058ACF5A633AC2C94AA40BEB70FE38C5AD4C02B1A45A"
+    },
+    {
+      "Path": "docs/NDM_Performance_Final_Report.md",
+      "Bytes": 26916,
+      "SHA256": "5820C49B8B51A7AAD6F7FA3CC90A6DBA585AD557B455DABCDC851271E005B8D6"
+    },
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "Bytes": 7782879,
+      "SHA256": "C19AFBA0A5DFBFB957BA45473343DD19905E14E01CD39EB4749A3C2029A10E92"
+    },
+    {
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "Bytes": 5854058,
+      "SHA256": "A58CACA1DD31768276F7AB7D53FB64F4CB209D88451490DAD16B58CA0BF3D81F"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/Acceptance.json",
+      "Bytes": 9640,
+      "SHA256": "925CEBCED7985A14AA005685EBFA66D957A55B05C399A8C2FE46116529769563"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/SourceEquality.json",
+      "Bytes": 58867,
+      "SHA256": "F85DCD934B5A76E7C37023CA99562CB8649A8F4E06258A538DF08DCCBD1BEF42"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/NativeSourceEquality.json",
+      "Bytes": 58861,
+      "SHA256": "B5F8638A767B9BA797848B271FC965D603707C35B9392342F51649AE0C1B9102"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/Validation.json",
+      "Bytes": 4533,
+      "SHA256": "8A35A2D816D63C6AD6AD0BA49C0820E60EC586F71BAF2EA7FBFDBFB150ED0A89"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/Directed.txt",
+      "Bytes": 538197,
+      "SHA256": "3774A896C09D4254D4D1E47CC6D3D9C261BFEAACDB190F203D10657D1F8D9E34"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/ConfigPresentation.txt",
+      "Bytes": 75262,
+      "SHA256": "7CBBCE22B763D1E8A815A041003ADE47BD891569CC7BA05B00CBEF67F90904E8"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/Publication.json",
+      "Bytes": 1249,
+      "SHA256": "A3580F393F9172F59FB2C5447C1FCB042D0C6066C7042A9B4BDB3FD7E1D6379C"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/CapacityFixture.txt",
+      "Bytes": 263091,
+      "SHA256": "F9B161D7D5C8D3E98E87ED94994FD40135DC3AF3764275362A598E60ED284431"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/FullOn.txt",
+      "Bytes": 13353170,
+      "SHA256": "1E4893EC9B02211862351562759C4636940DE6DF9A7D23CEF2916CA342D6290E"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/FullOff.txt",
+      "Bytes": 13708472,
+      "SHA256": "39BE42D6D06C393CC794E431AE7E2A8D00BC3F7EA6670A3779F676EA8AE8E82A"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADRelease/FullOn_InitialFixture.txt",
+      "Bytes": 1053471,
+      "SHA256": "E6DA87DC0E9BDA18F4BCBFEAC5F2AD402C8E25F3CBBE2675559F1AEB3097F2D2"
+    },
+    {
+      "Path": "docs/regression/Performance/NativeCADV4/Acceptance.json",
+      "Bytes": 139,
+      "SHA256": "4FC08D33D952056D3A0CB7624BD89BFB38870D5FE51AC0FC55160D7E1A607D5D"
+    },
+    {
+      "Path": "docs/regression/Performance/NativeCADV4/Environment.json",
+      "Bytes": 822,
+      "SHA256": "FFFEBD906B72E1D72488095C46A7E4481BF40374E2F1A1C24BB1E1AF34B04752"
+    },
+    {
+      "Path": "docs/regression/Performance/NativeCADV4/ExcelIdentity.json",
+      "Bytes": 68,
+      "SHA256": "66DEB78FF8CF58E24062370585A20F50AD95B014AE8B8B707AC0F8EC0C86993A"
+    },
+    {
+      "Path": "docs/regression/Performance/NativeCADV4/Measurements.json",
+      "Bytes": 15242,
+      "SHA256": "5BDA1C8A201F419DAA668AD2A82D517E1D8524A781CDAACC07B05666C80318EA"
+    },
+    {
+      "Path": "docs/regression/Performance/NativeCADV4/Summary.json",
+      "Bytes": 4382,
+      "SHA256": "4523E1679C5703DDDD85B58C529E3FFB9D1AFE8AFB13EDE6BF444FE6FF3EB1E7"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADNativeContracts/NativeCAD.txt",
+      "Bytes": 4418,
+      "SHA256": "EA7E801F457CE8B06363E399A8E0ED14C5EDCFB17CA602E92D99AFF65B3949ED"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADNativeContracts/NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "03BD35F82FA1FD6BC43BEE5CED0C0912690A66AB27D2DA2C0021718ED874E40B"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADFreshCompiled/Preparation.json",
+      "Bytes": 471,
+      "SHA256": "7B3E79B8F39CA538FD2BD4A96815D5F11C87796A0300CCC62B01C5A31C15C992"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADFreshCompiled/Validation.json",
+      "Bytes": 4527,
+      "SHA256": "01EDF1BF15C288C0299C8411FDBE4AC564CDA546DA1D6F3D658429B6E26D787D"
+    },
+    {
+      "Path": "docs/regression/Performance/ContourCADFreshCompiled/ConfigPresentation.txt",
+      "Bytes": 75264,
+      "SHA256": "2CF47F0D407111EC0986CF89C91EB4A4B6503945348E651D08F67C85E94D7B6B"
+    },
+    {
+      "Path": "docs/regression/Performance/CADCandidateV6/Preparation.json",
+      "Bytes": 470,
+      "SHA256": "0A7C525998A13B57D8208C10AB6EACDC28F4DDE134207C1D23D3F880DF0FAA18"
+    }
+  ],
+  "SelfExcluded": true,
+  "PrivateFixturesAndRawSignaturesRemainLocal": true,
+  "UserExecutionReportExcluded": true
+}

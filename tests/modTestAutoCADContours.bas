@@ -39,18 +39,23 @@ Finish:
     RunAutoCADContourTests = mReport
 End Function
 
-' ДЛЯ ТЕСТОВ: отдельная книга проверяет компактный формат, миграцию и
+' ДЛЯ ТЕСТОВ: отдельная книга проверяет единственный формат контуров и
 ' save/reopen без импорта, solve и изменений пользовательского Results.
 Public Function RunPostAudit03ContourSnapshotTests() As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     Dim fixture As Object, sheet As Object, writer As CNDMResultsWriter, model As CSectionModel, restored As CSectionModel
     Dim contours As CSectionContours, readBack As CSectionContours, query As CSectionGeometryQuery
     Dim props As CSectionPropertiesCalculator, anchor As Object, unitText As Variant, marker As Object
-    Dim solves As Long, path As String, value As Variant, number As Long, description As String, i As Long, result As String
+    Dim solves As Long, path As String, value As Variant, number As Long, description As String, i As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, unitSheet As Object
     On Error GoTo Failed
     solves = SectionEquilibriumSolveCount()
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
-    CreatePostAudit03SnapshotAnchors fixture, sheet, False
+    CreatePostAudit03SnapshotAnchors fixture, sheet
+    Set unitSheet = fixture.Worksheets.Add
+    unitSheet.Cells(1, 1).Value2 = "Key": unitSheet.Cells(1, 2).Value2 = "Value"
+    unitSheet.Cells(1, 3).Value2 = "Unit": unitSheet.Cells(2, 3).Value2 = "-"
+    unitSheet.Cells(2, 1).Value2 = "Units.Length.Output"
     Set writer = New CNDMResultsWriter: Set model = New CSectionModel
     model.AddConcreteElement 0#, 0#, 10000#, 1, , , "Rectangle", 100#, 100#, 0#, , 123456#, 654321#, 12#
     model.AddRebarElement 5#, 5#, 12#, 0#, "A400"
@@ -71,7 +76,10 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Check "postAudit03.contours.geometry15", sheet.Cells(20, 27).Value2 = vbNullString
     Check "postAudit03.contours.geometryOnlyElements", sheet.Cells(23, 14).Value2 = vbNullString
     For Each unitText In Array("mm", "cm", "m")
-        writer.WriteSectionContours fixture, contours, sheet.Cells(21, 12).Value2, Nothing, CStr(unitText)
+        unitSheet.Cells(2, 2).Value2 = CStr(unitText)
+        Set settings = New CSystemSettingsReader: settings.LoadFromRange unitSheet.Range("A1:C2")
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        writer.WriteSectionContours fixture, contours, sheet.Cells(21, 12).Value2, units
         Set readBack = ReadSavedSectionContours(fixture)
         CheckPostAudit03ContoursEqual "postAudit03.contours." & CStr(unitText), contours, readBack
         Set restored = ReadSectionGeometryFromResults(fixture)
@@ -92,6 +100,13 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Set anchor = fixture.Names.Item("rngNDMSectionContours").RefersToRange
     Set readBack = ReadSavedSectionContours(fixture)
     CheckPostAudit03ContoursEqual "postAudit03.contours.moved", contours, readBack
+    Check "postAudit03.contours.canonicalHeader", anchor.Value2 = "RunID"
+    anchor.Value2 = "RunID v1"
+    On Error Resume Next
+    Set readBack = ReadSavedSectionContours(fixture): number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    Check "postAudit03.contours.obsoleteHeaderRejected", number = vbObjectError + 4376
+    anchor.Value2 = "RunID"
     value = anchor.Offset(1, 6).Value2: anchor.Offset(1, 6).Value2 = "bad"
     On Error Resume Next
     Set readBack = ReadSavedSectionContours(fixture): number = Err.Number: description = Err.Description: Err.Clear
@@ -103,13 +118,13 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Set readBack = ReadSavedSectionContours(fixture): number = Err.Number: description = Err.Description: Err.Clear
     On Error GoTo Failed
     anchor.Value2 = value
-    Check "postAudit03.contours.blankNotLegacyFallback", number = vbObjectError + 4376
+    Check "postAudit03.contours.blankHeaderRejected", number = vbObjectError + 4376
     fixture.Names.Item("rngNDMSectionContours").RefersTo = "=#REF!"
     On Error Resume Next
-    result = MigrateSavedSectionContours(fixture): number = Err.Number: Err.Clear
+    Set readBack = ReadSavedSectionContours(fixture): number = Err.Number: Err.Clear
     On Error GoTo Failed
     fixture.Names.Item("rngNDMSectionContours").RefersTo = "=Results!$GR$20"
-    Check "postAudit03.contours.brokenNameNotLegacyFallback", number <> 0 And _
+    Check "postAudit03.contours.brokenNameRejected", number = vbObjectError + 4376 And _
         fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
     Set readBack = New CSectionContours
     readBack.AddContourCircle "ONLY_HOLE", 5#, 5#, 2#, "Только отверстие", "ONLY_HOLE", "Opening"
@@ -119,9 +134,20 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Check "postAudit03.contours.largeSmallCleared", Len(CStr(anchor.Offset(2, 0).Value2)) = 0 And Len(CStr(anchor.Offset(10, 15).Value2)) = 0
     readBack.Clear: writer.WriteSectionContours fixture, readBack, "EMPTY"
     Set readBack = ReadSavedSectionContours(fixture)
-    Check "postAudit03.contours.emptyAvailable", readBack.Count = 0 And anchor.Value2 = "RunID v1"
+    Check "postAudit03.contours.emptyAvailable", readBack.Count = 0 And anchor.Value2 = "RunID"
+    fixture.Names.Item("rngNDMSectionContours").Delete
+    On Error Resume Next
+    Set readBack = ReadSavedSectionContours(fixture): number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    Check "postAudit03.contours.missingTableRejected", number = vbObjectError + 4376
+    Check "postAudit03.contours.missingTableDoesNotInsert", fixture.Names.Count = 5 And _
+        fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
+    sheet.Cells(20, 27).Value2 = "EndX, mm"
+    On Error Resume Next
+    Set restored = ReadSectionGeometryFromResults(fixture): number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    Check "postAudit03.contours.expandedGeometryRejected", number = vbObjectError + 4355
     fixture.Close False: Set fixture = Nothing
-    TestPostAudit03LegacyContourMigration contours
     Check "postAudit03.contours.noSolve", SectionEquilibriumSolveCount() = solves
     GoTo Finished
 Failed:
@@ -134,14 +160,14 @@ Finished:
 End Function
 
 ' Создает только тестовые якоря нижнего ряда; ширины не переназначаются.
-Private Sub CreatePostAudit03SnapshotAnchors(ByVal workbook As Object, ByVal sheet As Object, ByVal legacy As Boolean)
+Private Sub CreatePostAudit03SnapshotAnchors(ByVal workbook As Object, ByVal sheet As Object)
     Dim names As Variant, columns As Variant, i As Long
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-    If legacy Then columns = Array(1, 12, 39, 47, 60) Else columns = Array(1, 12, 48, 56, 69)
+    columns = Array(1, 12, 48, 56, 69)
     For i = 0 To UBound(names)
         workbook.Names.Add CStr(names(i)), "='" & sheet.Name & "'!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i
-    If Not legacy Then workbook.Names.Add "rngNDMSectionContours", "='" & sheet.Name & "'!$AC$20"
+    workbook.Names.Add "rngNDMSectionContours", "='" & sheet.Name & "'!$AC$20"
 End Sub
 
 ' Поля проверяются по собственным ID и аналитической геометрии, не по площади одной фигуры.
@@ -157,78 +183,6 @@ Private Sub CheckPostAudit03ContoursEqual(ByVal prefix As String, ByVal expected
             Abs(expected.EndX(i) - actual.EndX(i)) < 0.00000001 And Abs(expected.EndY(i) - actual.EndY(i)) < 0.00000001 And _
             Abs(expected.Radius(i) - actual.Radius(i)) < 0.00000001 And Abs(expected.SweepAngle(i) - actual.SweepAngle(i)) < 0.000000000001
     Next i
-End Sub
-
-' Старый 25-столбцовый снимок переносится без пересчета механики и верхних ячеек.
-Private Sub TestPostAudit03LegacyContourMigration(ByVal contours As CSectionContours)
-    Dim fixture As Object, sheet As Object, data() As Variant, row As Long, i As Long, col As Long
-    Dim headers As Variant, readBack As CSectionContours, result As String, before As Variant, actual As Variant, number As Long, description As String
-    On Error GoTo Failed
-    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
-    CreatePostAudit03SnapshotAnchors fixture, sheet, True
-    headers = Array("RunID", "ElementID", "MaterialType", "X, m", "Y, m", "Area, m2", "GeometryInterpretationStatus", "Width, m", "Height, m", "Diameter, m", "Rotation, rad", "LocalIx, m4", "LocalIy, m4", "LocalIxy, m4", "Comment", "EndX, m", "EndY, m", "CenterX, m", "CenterY, m", "Radius, m", "SweepAngle, rad", "LoopID", "LoopRole", "SourceID", "Unit")
-    ReDim data(1 To contours.Count + 2, 1 To 25)
-    For col = 0 To UBound(headers): data(1, col + 1) = headers(col): Next col
-    data(2, 1) = "LEGACY": data(2, 2) = "C1": data(2, 3) = "Concrete": data(2, 4) = 0.125: data(2, 5) = 0.375
-    data(2, 6) = 0.01: data(2, 7) = "Rectangle": data(2, 8) = 0.1: data(2, 9) = 0.1
-    data(2, 11) = 0.123: data(2, 12) = 0.000000123456: data(2, 13) = 0.000000654321: data(2, 14) = 0.000000000012
-    data(2, 15) = "Сохраненный комментарий"
-    For i = 1 To contours.Count
-        row = i + 2
-        data(row, 1) = "LEGACY": data(row, 2) = contours.ContourID(i): data(row, 3) = "Contour"
-        data(row, 4) = contours.StartX(i) / 1000#: data(row, 5) = contours.StartY(i) / 1000#: data(row, 7) = contours.SegmentType(i)
-        data(row, 15) = contours.Comment(i): data(row, 16) = contours.EndX(i) / 1000#: data(row, 17) = contours.EndY(i) / 1000#
-        data(row, 18) = contours.CenterX(i) / 1000#: data(row, 19) = contours.CenterY(i) / 1000#: data(row, 20) = contours.Radius(i) / 1000#
-        data(row, 21) = contours.SweepAngle(i): data(row, 22) = contours.LoopID(i): data(row, 23) = contours.LoopRole(i)
-        data(row, 24) = contours.SourceID(i): data(row, 25) = "m"
-    Next i
-    sheet.Cells(20, 12).Resize(UBound(data, 1), 25).Value2 = data
-    before = sheet.Cells(20, 12).Resize(2, 15).Value2
-    sheet.Cells(20, 39).Value2 = "PROPERTIES": sheet.Cells(21, 39).Value2 = "KEPT"
-    sheet.Cells(20, 47).Value2 = "DIAGRAMS": sheet.Cells(20, 60).Value2 = "ANNOTATIONS"
-    sheet.Range("AM5").Value2 = "UPPER-USER": sheet.Range("CL21").Value2 = "LOWER-USER"
-    Dim sheetCount As Long, nameCount As Long
-    sheetCount = fixture.Worksheets.Count: nameCount = fixture.Names.Count
-    sheet.Protect
-    On Error Resume Next
-    result = MigrateSavedSectionContours(fixture): number = Err.Number: description = Err.Description: Err.Clear
-    On Error GoTo Failed
-    sheet.Unprotect
-    Check "postAudit03.migration.protectedSheet", number = vbObjectError + 4377 And InStr(description, "снимите защиту") > 0
-    Check "postAudit03.migration.protectedSheetUnchanged", fixture.Worksheets.Count = sheetCount And fixture.Names.Count = nameCount And _
-        sheet.Cells(23, 14).Value2 = "Contour"
-    fixture.Protect Structure:=True
-    On Error Resume Next
-    result = MigrateSavedSectionContours(fixture): number = Err.Number: Err.Clear
-    On Error GoTo Failed
-    fixture.Unprotect
-    Check "postAudit03.migration.protectedStructure", number = vbObjectError + 4377
-    Check "postAudit03.migration.protectedStructureUnchanged", fixture.Worksheets.Count = sheetCount And fixture.Names.Count = nameCount
-    result = MigrateSavedSectionContours(fixture)
-    Set readBack = ReadSavedSectionContours(fixture)
-    CheckPostAudit03ContoursEqual "postAudit03.contours.migrate", contours, readBack
-    actual = sheet.Cells(20, 12).Resize(2, 15).Value2
-    For row = 1 To 2
-        For col = 1 To 15: Check "postAudit03.contours.migrate.element." & CStr(row) & "." & CStr(col), CStr(before(row, col)) = CStr(actual(row, col)): Next col
-    Next row
-    Check "postAudit03.contours.migrate.properties", fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48 And sheet.Cells(21, 48).Value2 = "KEPT"
-    Check "postAudit03.contours.migrate.upperUser", sheet.Range("AM5").Value2 = "UPPER-USER"
-    Check "postAudit03.contours.migrate.lowerUser", sheet.Range("CU21").Value2 = "LOWER-USER"
-    Check "postAudit03.contours.migrate.unit", fixture.Names.Item("rngNDMSectionContours").RefersToRange.Offset(1, 16).Value2 = "m"
-    Check "postAudit03.contours.migrate.noOldContourRows", Len(CStr(sheet.Cells(22, 14).Value2)) = 0
-    Check "postAudit03.contours.migrate.titleFormat", sheet.Cells(19, 12).Font.Name = "Arial" And _
-        sheet.Cells(19, 12).Font.Size = 9 And sheet.Cells(19, 12).HorizontalAlignment = -4108 And _
-        sheet.Cells(19, 12).Interior.Color = RGB(217, 217, 217)
-    result = MigrateSavedSectionContours(fixture)
-    Check "postAudit03.contours.migrate.idempotent", InStr(result, "already current") > 0 And fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
-    Check "postAudit03.contours.migrate.noExtraSheets", fixture.Worksheets.Count = 1
-    GoTo Finished
-Failed:
-    Check "postAudit03.contours.migrate.runtime." & CStr(Err.Number) & "." & Err.Description, False
-Finished:
-    On Error Resume Next
-    If Not fixture Is Nothing Then fixture.Close False
-    On Error GoTo 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: отдельный opening допустим при уже пустой или приближенной
@@ -641,7 +595,7 @@ Private Sub CheckResultsRoundTrip()
         Set anchor = ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange
         Dim contourRow As Long, annotationAnchor As Object
         contourRow = 1
-        Check "snapshot." & CStr(mode) & ".contoursOwnBlock", anchor.Value2 = "RunID v1" And anchor.Offset(contourRow, 5).Value2 Like "CONTOUR_*"
+        Check "snapshot." & CStr(mode) & ".contoursOwnBlock", anchor.Value2 = "RunID" And anchor.Offset(contourRow, 5).Value2 Like "CONTOUR_*"
         Check "snapshot." & CStr(mode) & ".explicitRole", Len(CStr(anchor.Offset(contourRow, 4).Value2)) > 0
         Set annotationAnchor = ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
         Check "snapshot." & CStr(mode) & ".noSourceAnnotations", Application.CountIf(annotationAnchor.Offset(1, 0).Resize(1000, 1), "CONTOUR_*") = 0

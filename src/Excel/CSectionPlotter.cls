@@ -182,7 +182,6 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
 
     Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
     Set mChart = mChartObject.Chart
-    ClearLegacyWorksheetGeneratedShapes
 
     mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
     mElementGroupingEnabled = Not mElementShapeLayerEnabled
@@ -210,7 +209,6 @@ Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
     Set mChartObject = EnsureChart(workbook.Worksheets.Item("Расчет"))
     Set mChart = mChartObject.Chart
 
-    ClearLegacyWorksheetGeneratedShapes
 
     mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
@@ -1949,23 +1947,6 @@ Private Sub ClearGeneratedShapes()
     Next i
 End Sub
 
-' Удаляет служебные Shape-объекты схемы, созданные прямо на листе Расчет.
-' Актуальная схема хранит опорные линии и точку внутри ChartObject, но остатки
-' старых версий могли остаться на листе и должны очищаться перед перерисовкой.
-Private Sub ClearLegacyWorksheetGeneratedShapes()
-    If mChartObject Is Nothing Then Exit Sub
-
-    Dim sheet As Object
-    Set sheet = mChartObject.Parent
-    If sheet Is Nothing Then Exit Sub
-
-    Dim i As Long
-    For i = sheet.Shapes.Count To 1 Step -1
-        If Left$(sheet.Shapes.Item(i).Name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
-            sheet.Shapes.Item(i).Delete
-        End If
-    Next i
-End Sub
 
 ' Возвращает визуальную ширину бетонного элемента. Если snapshot не хранит
 ' размеры оболочки, используется fallback по площади.

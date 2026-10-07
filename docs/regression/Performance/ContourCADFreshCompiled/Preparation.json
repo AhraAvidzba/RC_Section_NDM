@@ -1,0 +1,11 @@
+﻿{
+    "BaselineSHA256":  "B95BCF5548BD8E6F772E884E4EDA69222CF40041C35795277792BD2E7CCC4CFE",
+    "FrozenProduction":  false,
+    "ImportedComponents":  [
+                               "modTestPerformance"
+                           ],
+    "HelpRefreshed":  false,
+    "VBACompileCompleted":  true,
+    "SourceGitSHA":  "465d33e8f5c5701718fb3b12fee6354cac1d4d2d",
+    "CandidateSHA256":  "A15F8001B6C5CE6C9D45B4EFA67A883C33D759025FA2E9F0AA860B97C1F47DAA"
+}

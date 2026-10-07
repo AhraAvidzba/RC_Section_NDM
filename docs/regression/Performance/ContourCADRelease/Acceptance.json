@@ -1,0 +1,160 @@
+﻿{
+    "Passed":  true,
+    "CompletedUTC":  "2026-10-07T23:21:45.4846939Z",
+    "WorkbookSHA256":  "C19AFBA0A5DFBFB957BA45473343DD19905E14E01CD39EB4749A3C2029A10E92",
+    "ExportSHA256":  "A58CACA1DD31768276F7AB7D53FB64F4CB209D88451490DAD16B58CA0BF3D81F",
+    "UserReportPreserved":  true,
+    "SourceComponents":  121,
+    "GeneratedComponents":  5,
+    "ProductionClasses":  88,
+    "Modes":  [
+                  {
+                      "Mode":  "Yes",
+                      "Report":  "FullOn.txt",
+                      "ReportSHA256":  "1E4893EC9B02211862351562759C4636940DE6DF9A7D23CEF2916CA342D6290E",
+                      "Suites":  [
+                                     {
+                                         "Suite":  "modTestGeometry.RunGeometryTests",
+                                         "Passed":  668,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T00:46:43",
+                                         "FinishedLocal":  "2026-10-08T00:46:46",
+                                         "Seconds":  3
+                                     },
+                                     {
+                                         "Suite":  "modTestMaterialDiagrams.RunMaterialDiagramTests",
+                                         "Passed":  4353,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T00:46:47",
+                                         "FinishedLocal":  "2026-10-08T00:46:54",
+                                         "Seconds":  7
+                                     },
+                                     {
+                                         "Suite":  "modTestSectionSolver.RunSectionSolverTests",
+                                         "Passed":  1492,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T00:46:55",
+                                         "FinishedLocal":  "2026-10-08T00:46:58",
+                                         "Seconds":  3
+                                     },
+                                     {
+                                         "Suite":  "modTestCapacitySolver.RunCapacitySolverTests",
+                                         "Passed":  3562,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T00:46:58",
+                                         "FinishedLocal":  "2026-10-08T00:48:00",
+                                         "Seconds":  62
+                                     },
+                                     {
+                                         "Suite":  "modTestCrackWidth.RunCrackWidthTests",
+                                         "Passed":  2158,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T00:48:01",
+                                         "FinishedLocal":  "2026-10-08T00:49:10",
+                                         "Seconds":  69
+                                     },
+                                     {
+                                         "Suite":  "modTestBatchCalculation.RunBatchCalculationTests",
+                                         "Passed":  30909,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T00:49:11",
+                                         "FinishedLocal":  "2026-10-08T01:08:56",
+                                         "Seconds":  1185
+                                     },
+                                     {
+                                         "Suite":  "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+                                         "Passed":  67852,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:08:58",
+                                         "FinishedLocal":  "2026-10-08T01:32:36",
+                                         "Seconds":  1418
+                                     },
+                                     {
+                                         "Suite":  "modTestRegressionBaseline.RunRegressionBaselineTests",
+                                         "Passed":  39,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:32:38",
+                                         "FinishedLocal":  "2026-10-08T01:32:40",
+                                         "Seconds":  2
+                                     }
+                                 ],
+                      "SourceUnchanged":  true,
+                      "ExplicitHistoricalOnOverrides":  0
+                  },
+                  {
+                      "Mode":  "No",
+                      "Report":  "FullOff.txt",
+                      "ReportSHA256":  "39BE42D6D06C393CC794E431AE7E2A8D00BC3F7EA6670A3779F676EA8AE8E82A",
+                      "Suites":  [
+                                     {
+                                         "Suite":  "modTestGeometry.RunGeometryTests",
+                                         "Passed":  668,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:33:56",
+                                         "FinishedLocal":  "2026-10-08T01:33:59",
+                                         "Seconds":  3
+                                     },
+                                     {
+                                         "Suite":  "modTestMaterialDiagrams.RunMaterialDiagramTests",
+                                         "Passed":  4353,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:33:59",
+                                         "FinishedLocal":  "2026-10-08T01:34:08",
+                                         "Seconds":  9
+                                     },
+                                     {
+                                         "Suite":  "modTestSectionSolver.RunSectionSolverTests",
+                                         "Passed":  1492,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:34:08",
+                                         "FinishedLocal":  "2026-10-08T01:34:11",
+                                         "Seconds":  3
+                                     },
+                                     {
+                                         "Suite":  "modTestCapacitySolver.RunCapacitySolverTests",
+                                         "Passed":  3562,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:34:12",
+                                         "FinishedLocal":  "2026-10-08T01:35:13",
+                                         "Seconds":  61
+                                     },
+                                     {
+                                         "Suite":  "modTestCrackWidth.RunCrackWidthTests",
+                                         "Passed":  2158,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:35:14",
+                                         "FinishedLocal":  "2026-10-08T01:36:24",
+                                         "Seconds":  70
+                                     },
+                                     {
+                                         "Suite":  "modTestBatchCalculation.RunBatchCalculationTests",
+                                         "Passed":  30898,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:36:25",
+                                         "FinishedLocal":  "2026-10-08T01:57:24",
+                                         "Seconds":  1259
+                                     },
+                                     {
+                                         "Suite":  "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+                                         "Passed":  67852,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T01:57:25",
+                                         "FinishedLocal":  "2026-10-08T02:21:23",
+                                         "Seconds":  1438
+                                     },
+                                     {
+                                         "Suite":  "modTestRegressionBaseline.RunRegressionBaselineTests",
+                                         "Passed":  39,
+                                         "Failed":  0,
+                                         "StartedLocal":  "2026-10-08T02:21:25",
+                                         "FinishedLocal":  "2026-10-08T02:21:27",
+                                         "Seconds":  2
+                                     }
+                                 ],
+                      "SourceUnchanged":  true,
+                      "ExplicitHistoricalOnOverrides":  1
+                  }
+              ],
+    "FixtureGeometryType":  "RectSet",
+    "HistoricalExplicitOnSetupsUnchanged":  true
+}

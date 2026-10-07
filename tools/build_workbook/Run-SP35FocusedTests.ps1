@@ -45,7 +45,6 @@ try {
         }
         # Сохраняем только собственную копию до тестовых мутаций, чтобы ее
         # VBA-код на диске соответствовал действительно проверяемому исходнику.
-        [void]$excel.Run("'$($book.Name)'!MigrateSavedSectionContours")
         $book.Save()
     }
     foreach ($macro in $Macros) {

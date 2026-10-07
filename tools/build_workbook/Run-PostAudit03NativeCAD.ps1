@@ -1,8 +1,7 @@
 ﻿# Runs native contour acceptance in an owned Autodesk AutoCAD instance.
 # Existing user/SOFiPLUS instances are never edited, closed, or reused.
-param([string]$SourceWorkbook='docs/regression/PostAudit03/Clean/RC_Section_NDM.xlsm',
-      [string]$ReportDirectory='docs/regression/PostAudit03/NativeCAD',
-      [int]$PreviouslyOwnedAcadPid=19500)
+param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
+      [string]$ReportDirectory='docs/regression/PostAudit03/NativeCAD')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directory=Join-Path $root $ReportDirectory
@@ -32,7 +31,7 @@ try {
     $window=$acad.GetType().InvokeMember('HWND',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null)
     [void][PostAuditCADIdentity]::GetWindowThreadProcessId([IntPtr][long]$window,[ref]$processId)
     $pidValue=[int]$processId
-    $owned=($pidValue -gt 0 -and ($existing -notcontains $pidValue -or $pidValue -eq $PreviouslyOwnedAcadPid))
+    $owned=($pidValue -gt 0 -and $existing -notcontains $pidValue)
     if (-not $owned) {throw "CAD instance is not owned by this test: PID=$pidValue"}
     $acad.Visible=$false
     Write-Output "CAD_OWNED: PID=$pidValue; executable=$fullName"

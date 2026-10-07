@@ -646,7 +646,7 @@ try {
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AV$156'
     Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$BD$156'
     Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BQ$156'
-    $contourHeaders = @('RunID v1', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
+    $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
     for ($i = 0; $i -lt $contourHeaders.Count; $i++) { $results.Cells.Item(156, 29 + $i).Value2 = $contourHeaders[$i] }
     $results.Range('AC155:AS155').Merge()
     $results.Cells.Item(155, 29).Value2 = 'Достоверные контуры и отверстия сечения'

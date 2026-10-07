@@ -1487,7 +1487,7 @@ End Function
 
 ' Проверяет целостность реальных таблиц Results: недостающая обязательная
 ' колонка и испорченная аннотация не выдаются за успешно прочитанную схему.
-' ShapeType остается допустимым именем колонки геометрии, пустая таблица
+' Принимается единственная текущая шапка геометрии, пустая таблица
 ' semantic-аннотаций не блокирует саму расчетную геометрию.
 Private Sub TestPresentationSnapshotIntegrity(ByRef stats As TProfileStats, ByRef reader As CSectionPlotDataReader)
     Dim geometry As Object, annotations As Object, oldGeometry As Variant, oldAnnotations As Variant
@@ -1503,7 +1503,7 @@ Private Sub TestPresentationSnapshotIntegrity(ByRef stats As TProfileStats, ByRe
     Check stats, "presentationConfig.snapshot.geometryHeader.controlled", code <> 9 And code <> 13 And code <> 6
     If code <> 0 Then Check stats, "presentationConfig.snapshot.geometryHeader.reason", InStr(1, reason, "GeometryInterpretationStatus", vbBinaryCompare) > 0
     data(1, 7) = "ShapeType": geometry.Value2 = data
-    code = PresentationReaderError(reader, reason): Check stats, "presentationConfig.snapshot.ShapeType", code = 0
+    code = PresentationReaderError(reader, reason): Check stats, "presentationConfig.snapshot.obsoleteShapeType.rejected", code <> 0
     geometry.Formula = oldGeometry
     For Each field In Array("StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text")
         data = annotations.Value2

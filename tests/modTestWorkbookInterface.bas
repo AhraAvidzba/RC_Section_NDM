@@ -174,7 +174,6 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions"
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
-    TestPlotClearsLegacyWorksheetShapes stats
     TestPlotOverlayCoordinatesMatchResults stats
     AppendLine stats, "RUN: TestGeneratedSourceDoesNotReuseAutoCADPreview"
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
@@ -830,37 +829,6 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
         PlotShapeRotationExists("ElementConcrete", expectedFallbackDegrees, 0.5)
 End Sub
 
-' Проверяет, что новая Chart-схема удаляет старые листовые NDMPlot_*
-' объекты. Такие Shapes могли остаться от прежней реализации и визуально
-' сдвигать точку нагрузки или оси относительно актуальной схемы внутри Chart.
-Private Sub TestPlotClearsLegacyWorksheetShapes(ByRef stats As TUiTestStats)
-    PrepareCircleInput
-    SetSystemSetting "Geometry.Source", "AutoCAD"
-
-    Dim section As CSectionModel
-    Set section = New CSectionModel
-    section.SourceType = "AutoCADImport"
-    section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
-
-    Dim writer As CNDMResultsWriter
-    Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
-
-    Dim calc As Object
-    Set calc = ThisWorkbook.Worksheets.Item("Расчет")
-    Dim legacyShape As Object
-    Set legacyShape = calc.Shapes.AddShape(1, 10#, 10#, 20#, 20#)
-    legacyShape.Name = "NDMPlot_LegacyWorksheetShapeForTest"
-
-    AssertTrue stats, "ui.plot.legacyWorksheetShape.created", _
-        CountWorksheetPlotShapes("LegacyWorksheetShapeForTest") = 1
-
-    UpdateSectionPlotForWorkbook ThisWorkbook
-
-    AssertTrue stats, "ui.plot.legacyWorksheetShape.removed", _
-        CountWorksheetPlotShapes("LegacyWorksheetShapeForTest") = 0
-    AssertTrue stats, "ui.plot.legacyWorksheetShape.chartStillDraws", CountPlotShapes("AnnotationLine") > 0
-End Sub
 
 ' Проверяет не только наличие осей/точки, но и их взаимное положение.
 ' Для режима Transformed центр главных осей берется из Transformed.Centroid,
@@ -7152,8 +7120,8 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     AssertTrue stats, "audit03.geometrySnapshot.missingShape.named", InStr(1, description, "GeometryInterpretationStatus", vbTextCompare) > 0
     anchor.Offset(0, 6).Value2 = "ShapeType"
     cases = cases + 1
-    Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
-    Audit03CheckRestoredGeometry stats, "audit03.geometrySnapshot.shapeAlias", model
+    Audit03CaptureGeometrySnapshotError fixture, errorNumber, description
+    AssertTrue stats, "audit03.geometrySnapshot.obsoleteShapeHeader.rejected", errorNumber = vbObjectError + 4355
     anchor.Resize(3, 15).Value2 = data
     Set comments = sheet.Range("R100")
     fixture.Names.Add Name:="rngBatchSummary", RefersTo:="=Snapshot!" & comments.Address

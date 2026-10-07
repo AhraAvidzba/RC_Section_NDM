@@ -156,7 +156,7 @@ Private Function Audit03ContourSnapshot(ByVal kind As String) As Variant
     Dim data() As Variant, headers As Variant, j As Long, rows As Long
     rows = 1: If Len(kind) > 0 Then rows = 2
     ReDim data(1 To rows, 1 To 17)
-    headers = Array("RunID v1", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+    headers = Array("RunID", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
         "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", _
         "SourceID", "Comment", "LengthUnit (SectionXY)")
     For j = 0 To UBound(headers): data(1, j + 1) = headers(j): Next j

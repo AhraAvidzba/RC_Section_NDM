@@ -1,0 +1,14 @@
+﻿{
+    "Executable":  "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
+    "PID":  50804,
+    "StartTicks":  639270036969782775,
+    "UserDocumentsUsed":  false,
+    "Sources":  {
+                    "A":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\Performance\\CADBaselineV3\\RC_Section_NDM.xlsm",
+                    "B":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\Performance\\CADCandidateV5\\RC_Section_NDM.xlsm"
+                },
+    "SourceHashes":  {
+                         "A":  "9D198B4FB120099E87A3972F461B26057F8D1F11E468622679BCD2F7C089D617",
+                         "B":  "F1F1D89F8B0AFFEFBE7695E298D07F99C8AF990A307765F60B414F0F2CFBAA6C"
+                     }
+}

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-07 21:31:41
+Date: 2026-10-08 00:36:11
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -12257,24 +12257,24 @@ End Function
 ' StartPoint фрагментов Explode заданы в WCS, поэтому OCS-координаты
 ' полилинии и bulge не пересчитываются вручную и не теряют исходный поворот.
 Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByRef count As Long)
-    Dim kind As String, edge As TRegionEdge, point As Variant, EndPoint As Variant
+    Dim kind As String, edge As TRegionEdge, point As Variant, endPoint As Variant
     Dim normal As Variant, radius As Double, sweep As Double, angle As Double, i As Long
     kind = CStr(curve.objectName)
     Select Case kind
         Case "AcDbLine"
-            point = curve.StartPoint: EndPoint = curve.EndPoint
-            ValidatePoint point: ValidatePoint EndPoint
+            point = curve.startPoint: endPoint = curve.endPoint
+            ValidatePoint point: ValidatePoint endPoint
             edge.x1 = CDbl(point(LBound(point))): edge.y1 = CDbl(point(LBound(point) + 1))
-            edge.x2 = CDbl(EndPoint(LBound(EndPoint))): edge.y2 = CDbl(EndPoint(LBound(EndPoint) + 1))
+            edge.x2 = CDbl(endPoint(LBound(endPoint))): edge.y2 = CDbl(endPoint(LBound(endPoint) + 1))
             AppendEdge edges, count, edge
         Case "AcDbArc"
             ValidatePlaneNormal curve
             point = curve.center: ValidatePoint point
             edge.centerX = CDbl(point(LBound(point))): edge.centerY = CDbl(point(LBound(point) + 1))
-            point = curve.StartPoint: EndPoint = curve.EndPoint
-            ValidatePoint point: ValidatePoint EndPoint
+            point = curve.startPoint: endPoint = curve.endPoint
+            ValidatePoint point: ValidatePoint endPoint
             edge.x1 = CDbl(point(LBound(point))): edge.y1 = CDbl(point(LBound(point) + 1))
-            edge.x2 = CDbl(EndPoint(LBound(EndPoint))): edge.y2 = CDbl(EndPoint(LBound(EndPoint) + 1))
+            edge.x2 = CDbl(endPoint(LBound(endPoint))): edge.y2 = CDbl(endPoint(LBound(endPoint) + 1))
             normal = curve.normal
             sweep = CDbl(curve.TotalAngle)
             If sweep <= 0# Or sweep > 2# * GEOM_PI Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Круговая дуга имеет недопустимый угол."
@@ -12347,7 +12347,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CAutoCADSectionModelImporter
 TYPE: 2
-LINES: 811
+LINES: 822
 ====================================================================================================
 Option Explicit
 
@@ -12418,8 +12418,8 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     On Error GoTo InvalidMinimumArea
     minArea = importUnits.InputAreaToInternal(minArea)
     On Error GoTo 0
-    ' Эти два поля опциональны по контракту. Старый чертеж/Config без них
-    ' сохраняет прежний импорт. Непустое имя проверяется, но отсутствие
+    ' Эти два поля опциональны по контракту. Без точных контуров сохраняется
+    ' расчетная сетка. Непустое имя проверяется, но отсутствие
     ' объектов на существующем слое не делает контур обязательным.
     Dim contourLayer As String, openingLayer As String
     contourLayer = OptionalContourLayer(settings, "AutoCAD.Common.SectionContourLayer")
@@ -12451,21 +12451,35 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Set model = New CSectionModel
     model.sourceType = "AutoCADImport"
 
-    Dim entity As Object
+    Dim entity As Object, entityLayer As String, materialEntities As Collection, materialLayers As Collection
+    Dim outerEntities As Collection, openingEntities As Collection, i As Long
+    Set materialEntities = New Collection: Set materialLayers = New Collection
+    Set outerEntities = New Collection: Set openingEntities = New Collection
     mEdgeProbeCount = 0
+    ' Читаем слой один раз и сохраняем только ссылки этой операции. Последующее
+    ' Copy/Explode уже не меняет коллекцию во время ее COM-обхода.
     For Each entity In modelSpace
-        If IsRegionEntity(entity) Then
-            If SameLayer(entity.layer, concreteLayer) Then
-                AddConcreteRegionEntity model, entity, minArea, units
-            ElseIf SameLayer(entity.layer, rebarLayer) Then
-                AddRebarRegionEntity model, entity, steelClass, minArea, units
+        entityLayer = CStr(entity.layer)
+        If SameLayer(entityLayer, concreteLayer) Or SameLayer(entityLayer, rebarLayer) Then
+            If IsRegionEntity(entity) Then
+                materialEntities.Add entity: materialLayers.Add entityLayer
             End If
         End If
+        If Len(contourLayer) > 0 And SameLayer(entityLayer, contourLayer) Then outerEntities.Add entity
+        If Len(openingLayer) > 0 And SameLayer(entityLayer, openingLayer) Then openingEntities.Add entity
     Next entity
+    For i = 1 To materialEntities.count
+        Set entity = materialEntities(i): entityLayer = CStr(materialLayers(i))
+        If SameLayer(entityLayer, concreteLayer) Then
+            AddConcreteRegionEntity model, entity, minArea, units, entityLayer
+        Else
+            AddRebarRegionEntity model, entity, steelClass, minArea, units, entityLayer
+        End If
+    Next i
 
     ValidateImportedModel model
     model.ApplyAverageRotationToEquivalentAreaFallbacks
-    ImportMaterialContours model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers
+    ImportMaterialContours model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities
     Set ImportFromModelSpace = model
 End Function
 
@@ -12475,7 +12489,8 @@ End Function
 ' контура границы определяются по сетке. Ошибка не оставляет частичный импорт.
 Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpace As Object, _
         ByVal concreteLayer As String, ByVal rebarLayer As String, ByVal contourLayer As String, _
-        ByVal openingLayer As String, ByVal drawingLayers As Object)
+        ByVal openingLayer As String, ByVal drawingLayers As Object, _
+        ByVal outerEntities As Collection, ByVal openingEntities As Collection)
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
         Exit Sub
@@ -12490,19 +12505,14 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
         "Не удалось проверить слои достоверных контуров AutoCAD. Передайте коллекцию Layers активного чертежа."
     contourLayer = ExistingContourLayer(drawingLayers, contourLayer)
     openingLayer = ExistingContourLayer(drawingLayers, openingLayer)
+    If Len(contourLayer) = 0 Then Set outerEntities = New Collection
+    If Len(openingLayer) = 0 Then Set openingEntities = New Collection
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
         Exit Sub
     End If
 
-    Dim outerEntities As Collection, openingEntities As Collection, entity As Object
-    Set outerEntities = New Collection: Set openingEntities = New Collection
-    ' Copy/Explode временно меняют ModelSpace. Собираем исходные ссылки
-    ' заранее, чтобы не менять коллекцию во время ее обхода.
-    For Each entity In modelSpace
-        If Len(contourLayer) > 0 And SameLayer(CStr(entity.layer), contourLayer) Then outerEntities.Add entity
-        If Len(openingLayer) > 0 And SameLayer(CStr(entity.layer), openingLayer) Then openingEntities.Add entity
-    Next entity
+    Dim entity As Object
     Dim originalOuter As Collection, originalOpenings As Collection, exportedOuter As Boolean
     Set originalOuter = OriginalContours(outerEntities)
     Set originalOpenings = OriginalContours(openingEntities)
@@ -12705,7 +12715,8 @@ End Function
 ' Читает один бетонный Region из AutoCAD: площадь, центр тяжести, реальные
 ' центральные инерции и, только для почти изотропного случая, подсказку угла
 ' по первой прямой грани. Width/Height здесь не восстанавливаются.
-Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, ByVal units As CUnitSystem)
+Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, _
+        ByVal units As CUnitSystem, ByVal sourceLayer As String)
     Dim area As Double
     area = InputArea(CDbl(entity.area), units)
     If area < minArea Then Exit Sub
@@ -12730,14 +12741,14 @@ Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity A
     End If
 
     AddConcreteRegion model, area, xCoord, yCoord, localIx, localIy, localIxy, _
-        0#, 0#, rotationHint, entity.layer, EntityHandle(entity), rotationKnown
+        0#, 0#, rotationHint, sourceLayer, EntityHandle(entity), rotationKnown
 End Sub
 
 ' Читает один арматурный Region. Для арматуры программа хранит площадь и
 ' эквивалентный круговой диаметр, потому что механика стержня задается As,
 ' а визуальная оболочка стержня должна оставаться круглой.
 Private Sub AddRebarRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, _
-        ByVal steelClass As String, ByVal minArea As Double, ByVal units As CUnitSystem)
+        ByVal steelClass As String, ByVal minArea As Double, ByVal units As CUnitSystem, ByVal sourceLayer As String)
     Dim area As Double
     area = InputArea(CDbl(entity.area), units)
     If area < minArea Then Exit Sub
@@ -12745,7 +12756,7 @@ Private Sub AddRebarRegionEntity(ByVal model As CSectionModel, ByVal entity As O
     Dim centroid As Variant
     centroid = entity.centroid
     AddRebarRegion model, area, InputLength(CDbl(centroid(LBound(centroid))), units), _
-        InputLength(CDbl(centroid(LBound(centroid) + 1)), units), steelClass, entity.layer, EntityHandle(entity)
+        InputLength(CDbl(centroid(LBound(centroid) + 1)), units), steelClass, sourceLayer, EntityHandle(entity)
 End Sub
 
 ' Тестовый/подготовленный путь импорта бетонных Region из массива значений.
@@ -12926,19 +12937,19 @@ End Function
 ' фильтр от вырожденных сегментов; форму Region по этой линии не выводим.
 Private Function TryReadLineDirection(ByVal lineEntity As Object, ByVal units As CUnitSystem, _
         ByRef rotation As Double) As Boolean
-    Dim StartPoint As Variant
-    Dim EndPoint As Variant
-    StartPoint = lineEntity.StartPoint
-    EndPoint = lineEntity.EndPoint
+    Dim startPoint As Variant
+    Dim endPoint As Variant
+    startPoint = lineEntity.startPoint
+    endPoint = lineEntity.endPoint
 
     Dim x1 As Double
     Dim y1 As Double
     Dim x2 As Double
     Dim y2 As Double
-    x1 = InputLength(CDbl(StartPoint(LBound(StartPoint))), units)
-    y1 = InputLength(CDbl(StartPoint(LBound(StartPoint) + 1)), units)
-    x2 = InputLength(CDbl(EndPoint(LBound(EndPoint))), units)
-    y2 = InputLength(CDbl(EndPoint(LBound(EndPoint) + 1)), units)
+    x1 = InputLength(CDbl(startPoint(LBound(startPoint))), units)
+    y1 = InputLength(CDbl(startPoint(LBound(startPoint) + 1)), units)
+    x2 = InputLength(CDbl(endPoint(LBound(endPoint))), units)
+    y2 = InputLength(CDbl(endPoint(LBound(endPoint) + 1)), units)
 
     Dim dx As Double
     Dim dy As Double
@@ -16016,7 +16027,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CNDMResultsWriter
 TYPE: 2
-LINES: 1551
+LINES: 1540
 ====================================================================================================
 Option Explicit
 
@@ -16356,15 +16367,14 @@ End Sub
 ' Сериализует исходные границы отдельно от элементов и LC-аннотаций.
 ' Дуга хранит начало, центр и знаковый угол; ее конец и радиус вычисляются
 ' при чтении. Радиус записывается только для окружности, концы - для линии.
-' Шапка v1 без строк означает отсутствие сохраненных достоверных границ,
+' Шапка без строк означает отсутствие сохраненных достоверных границ,
 ' а не доказательство отсутствия отверстий. XY - координаты модели сечения.
 Public Sub WriteSectionContours(ByVal Workbook As Object, ByVal contours As CSectionContours, _
-        ByVal runID As Variant, Optional ByVal units As CUnitSystem = Nothing, _
-        Optional ByVal savedLengthUnit As String = vbNullString)
+        ByVal runID As Variant, Optional ByVal units As CUnitSystem = Nothing)
     Dim target As Object: Set target = Workbook.names.item("rngNDMSectionContours").RefersToRange
     ClearNamedRegion Workbook, "rngNDMSectionContours"
     Dim data() As Variant, headers As Variant, i As Long, row As Long, kind As String
-    headers = Array("RunID v1", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+    headers = Array("RunID", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
         "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", "SourceID", "Comment", "LengthUnit (SectionXY)")
     ReDim data(1 To contours.count + 1, 1 To CONTOUR_COLUMNS)
     For i = 0 To UBound(headers): data(1, i + 1) = headers(i): Next i
@@ -16372,33 +16382,23 @@ Public Sub WriteSectionContours(ByVal Workbook As Object, ByVal contours As CSec
         row = i + 1: kind = contours.SegmentType(i)
         data(row, 1) = runID: data(row, 2) = contours.loopID(i): data(row, 3) = contours.contourID(i)
         data(row, 4) = i: data(row, 5) = contours.LoopRole(i): data(row, 6) = kind
-        data(row, 7) = ContourOutputLength(contours.startX(i), units, savedLengthUnit): data(row, 8) = ContourOutputLength(contours.startY(i), units, savedLengthUnit)
+        data(row, 7) = OutputLength(contours.startX(i), units): data(row, 8) = OutputLength(contours.startY(i), units)
         Select Case kind
             Case "CONTOUR_LINE"
-                data(row, 9) = ContourOutputLength(contours.endX(i), units, savedLengthUnit): data(row, 10) = ContourOutputLength(contours.endY(i), units, savedLengthUnit)
+                data(row, 9) = OutputLength(contours.endX(i), units): data(row, 10) = OutputLength(contours.endY(i), units)
             Case "CONTOUR_CIRCLE"
-                data(row, 13) = ContourOutputLength(contours.radius(i), units, savedLengthUnit)
+                data(row, 13) = OutputLength(contours.radius(i), units)
             Case "CONTOUR_ARC"
-                data(row, 11) = ContourOutputLength(contours.centerX(i), units, savedLengthUnit): data(row, 12) = ContourOutputLength(contours.centerY(i), units, savedLengthUnit)
-                data(row, 14) = contours.SweepAngle(i)
+                data(row, 11) = OutputLength(contours.centerX(i), units): data(row, 12) = OutputLength(contours.centerY(i), units)
+                data(row, 14) = contours.sweepAngle(i)
         End Select
         data(row, 15) = contours.SourceID(i): data(row, 16) = contours.comment(i)
-        data(row, 17) = savedLengthUnit
-        If Len(savedLengthUnit) = 0 Then data(row, 17) = OutputLengthUnit(units)
+        data(row, 17) = OutputLengthUnit(units)
     Next i
     target.Resize(contours.count + 1, CONTOUR_COLUMNS).value2 = data
     FormatResultsBlock target, contours.count + 1, CONTOUR_COLUMNS, "Достоверные контуры и отверстия сечения"
 End Sub
 
-' Миграция сохраняет единицу прежнего снимка, не читая измененный Config.
-Private Function ContourOutputLength(ByVal value As Double, ByVal units As CUnitSystem, ByVal savedUnit As String) As Double
-    If Len(savedUnit) = 0 Then
-        ContourOutputLength = OutputLength(value, units)
-    Else
-        Dim adapter As CUnitSystem: Set adapter = New CUnitSystem
-        ContourOutputLength = adapter.InternalLengthToOutput(value, savedUnit)
-    End If
-End Function
 
 ' ------------------------------
 ' Свойства сечения и LC-состояния
@@ -18077,7 +18077,7 @@ Public Property Get rebarLabelsEnabled() As Boolean: rebarLabelsEnabled = mRebar
 ====================================================================================================
 COMPONENT: CSectionPlotDataReader
 TYPE: 2
-LINES: 1214
+LINES: 1203
 ====================================================================================================
 Option Explicit
 
@@ -18597,11 +18597,13 @@ Private Sub ReadGeometryAndResults(ByVal Workbook As Object)
         MissingStateMessage(mLoadCase, mStateType)
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
+    If UBound(geom, 2) <> 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
+        "Таблица расчетной геометрии Results должна содержать 15 столбцов. Повторите расчет или импорт геометрии."
     Dim colType As Long: colType = ResultColumn(geom, "MaterialType")
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
     Dim colArea As Long: colArea = ResultColumn(geom, "Area")
-    Dim colShape As Long: colShape = GeometryStatusColumn(geom)
+    Dim colShape As Long: colShape = ResultColumn(geom, "GeometryInterpretationStatus")
     Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
@@ -18636,13 +18638,15 @@ Private Sub ReadGeometryPreview(ByVal Workbook As Object)
     geom = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
         "На листе Results нет расчетной геометрии."
+    If UBound(geom, 2) <> 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
+        "Таблица расчетной геометрии Results должна содержать 15 столбцов. Повторите расчет или импорт геометрии."
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
     Dim colType As Long: colType = ResultColumn(geom, "MaterialType")
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
     Dim colArea As Long: colArea = ResultColumn(geom, "Area")
-    Dim colShape As Long: colShape = GeometryStatusColumn(geom)
+    Dim colShape As Long: colShape = ResultColumn(geom, "GeometryInterpretationStatus")
     Dim colDiameter As Long: colDiameter = ResultColumn(geom, "Diameter")
     Dim colWidth As Long: colWidth = ResultColumn(geom, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(geom, "Height")
@@ -18854,7 +18858,7 @@ Private Sub ReadMaterialContours(ByVal Workbook As Object)
         mAnnotationEndY(mAnnotationCount) = contours.endY(i)
         mAnnotationNormalX(mAnnotationCount) = contours.centerX(i)
         mAnnotationNormalY(mAnnotationCount) = contours.centerY(i)
-        mAnnotationSweepAngle(mAnnotationCount) = contours.SweepAngle(i)
+        mAnnotationSweepAngle(mAnnotationCount) = contours.sweepAngle(i)
     Next i
 End Sub
 
@@ -19136,21 +19140,6 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
     Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", "В Results не найден столбец: " & headerName
 End Function
 
-' Читает статус интерпретации оболочки по двум допустимым именам колонки.
-' Отсутствие обоих заголовков является повреждением snapshot, а не индексом 0.
-Private Function GeometryStatusColumn(ByRef data As Variant) As Long
-    Dim column As Long, header As String
-    For column = 1 To UBound(data, 2)
-        header = ResultHeaderBase(CStr(data(1, column)))
-        If StrComp(header, "GeometryInterpretationStatus", vbTextCompare) = 0 Or _
-                StrComp(header, "ShapeType", vbTextCompare) = 0 Then
-            GeometryStatusColumn = column
-            Exit Function
-        End If
-    Next column
-    Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
-        "В сохраненной геометрии Results отсутствует обязательный столбец GeometryInterpretationStatus или ShapeType. Повторите расчет/импорт для восстановления снимка."
-End Function
 
 ' Возвращает имя столбца без единицы измерения.
 Private Function ResultHeaderBase(ByVal headerText As String) As String
@@ -19297,7 +19286,7 @@ Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: Annotat
 ====================================================================================================
 COMPONENT: CSectionPlotter
 TYPE: 2
-LINES: 2122
+LINES: 2103
 ====================================================================================================
 Option Explicit
 
@@ -19474,7 +19463,6 @@ Public Sub Draw(ByVal Workbook As Object, ByVal data As CSectionPlotDataReader, 
 
     Set mChartObject = EnsureChart(Workbook.Worksheets.item("Расчет"))
     Set mChart = mChartObject.chart
-    ClearLegacyWorksheetGeneratedShapes
 
     mElementShapeLayerEnabled = ShouldDrawElementShapeLayer(data)
     mElementGroupingEnabled = Not mElementShapeLayerEnabled
@@ -19502,7 +19490,6 @@ Public Sub ClearExisting(ByVal Workbook As Object, ByVal titleText As String)
     Set mChartObject = EnsureChart(Workbook.Worksheets.item("Расчет"))
     Set mChart = mChartObject.chart
 
-    ClearLegacyWorksheetGeneratedShapes
 
     mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
@@ -20216,10 +20203,10 @@ End Sub
 ' поэтому программа не дорисовывает большую фаску между концами дуги.
 Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Double, _
         ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
-        ByVal SweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double)
+        ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double)
     Dim radius As Double
     radius = Sqr((startX - centerX) * (startX - centerX) + (startY - centerY) * (startY - centerY))
-    If radius <= 0# Or Abs(SweepAngle) <= 0.000000000001 Then
+    If radius <= 0# Or Abs(sweepAngle) <= 0.000000000001 Then
         DrawModelLine startX, startY, endX, endY, colorValue, weight, "ContourArcLine"
         Exit Sub
     End If
@@ -20228,8 +20215,8 @@ Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Doub
     startAngle = Atn2Local(startY - centerY, startX - centerX)
 
     Dim segmentCount As Long
-    segmentCount = CLng(Int(Abs(SweepAngle) / (GEOM_PI / 36#)))
-    If Abs(SweepAngle) > segmentCount * (GEOM_PI / 36#) + 0.000000000001 Then segmentCount = segmentCount + 1
+    segmentCount = CLng(Int(Abs(sweepAngle) / (GEOM_PI / 36#)))
+    If Abs(sweepAngle) > segmentCount * (GEOM_PI / 36#) + 0.000000000001 Then segmentCount = segmentCount + 1
     If segmentCount < 6 Then segmentCount = 6
 
     Dim i As Long
@@ -20239,7 +20226,7 @@ Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Doub
     prevX = startX
     prevY = startY
     For i = 1 To segmentCount
-        angleValue = startAngle + SweepAngle * CDbl(i) / CDbl(segmentCount)
+        angleValue = startAngle + sweepAngle * CDbl(i) / CDbl(segmentCount)
         If i = segmentCount Then
             nextX = endX
             nextY = endY
@@ -20398,10 +20385,10 @@ End Sub
 Private Sub AddArcLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal centerX As Double, _
         ByVal centerY As Double, ByVal arcStartX As Double, ByVal arcStartY As Double, _
-        ByVal SweepAngle As Double, ByRef values() As Double, ByRef count As Long)
+        ByVal sweepAngle As Double, ByRef values() As Double, ByRef count As Long)
     Dim radius As Double
     radius = Sqr((arcStartX - centerX) * (arcStartX - centerX) + (arcStartY - centerY) * (arcStartY - centerY))
-    If radius <= 0# Or Abs(SweepAngle) <= 0.000000000001 Then Exit Sub
+    If radius <= 0# Or Abs(sweepAngle) <= 0.000000000001 Then Exit Sub
 
     Dim vx As Double, vy As Double, tCenter As Double, d2 As Double, halfChord As Double
     vx = centerX - x0
@@ -20412,9 +20399,9 @@ Private Sub AddArcLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
     If d2 < 0# Then d2 = 0#
     halfChord = Sqr(MaxDouble(radius * radius - d2, 0#))
     AddArcIntersectionCandidate x0, y0, dirX, dirY, centerX, centerY, arcStartX, arcStartY, _
-        SweepAngle, tCenter - halfChord, values, count
+        sweepAngle, tCenter - halfChord, values, count
     AddArcIntersectionCandidate x0, y0, dirX, dirY, centerX, centerY, arcStartX, arcStartY, _
-        SweepAngle, tCenter + halfChord, values, count
+        sweepAngle, tCenter + halfChord, values, count
 End Sub
 
 ' Проверяет одну кандидатную точку пересечения с окружностью и добавляет ее
@@ -20422,11 +20409,11 @@ End Sub
 Private Sub AddArcIntersectionCandidate(ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal centerX As Double, _
         ByVal centerY As Double, ByVal arcStartX As Double, ByVal arcStartY As Double, _
-        ByVal SweepAngle As Double, ByVal tValue As Double, ByRef values() As Double, ByRef count As Long)
+        ByVal sweepAngle As Double, ByVal tValue As Double, ByRef values() As Double, ByRef count As Long)
     Dim x As Double, y As Double
     x = x0 + tValue * dirX
     y = y0 + tValue * dirY
-    If IsPointOnArcSweep(x, y, centerX, centerY, arcStartX, arcStartY, SweepAngle) Then
+    If IsPointOnArcSweep(x, y, centerX, centerY, arcStartX, arcStartY, sweepAngle) Then
         AddUniqueLineT tValue, values, count
     End If
 End Sub
@@ -20434,19 +20421,19 @@ End Sub
 ' True, если точка находится на signed sweep дуги от ее начального радиуса.
 Private Function IsPointOnArcSweep(ByVal x As Double, ByVal y As Double, _
         ByVal centerX As Double, ByVal centerY As Double, ByVal arcStartX As Double, _
-        ByVal arcStartY As Double, ByVal SweepAngle As Double) As Boolean
+        ByVal arcStartY As Double, ByVal sweepAngle As Double) As Boolean
     Dim startAngle As Double
     Dim pointAngle As Double
     startAngle = Atn2Local(arcStartY - centerY, arcStartX - centerX)
     pointAngle = Atn2Local(y - centerY, x - centerX)
 
     Dim delta As Double
-    If SweepAngle >= 0# Then
+    If sweepAngle >= 0# Then
         delta = NormalizePositiveAngle(pointAngle - startAngle)
-        IsPointOnArcSweep = (delta <= SweepAngle + 0.000001)
+        IsPointOnArcSweep = (delta <= sweepAngle + 0.000001)
     Else
         delta = NormalizePositiveAngle(startAngle - pointAngle)
-        IsPointOnArcSweep = (delta <= -SweepAngle + 0.000001)
+        IsPointOnArcSweep = (delta <= -sweepAngle + 0.000001)
     End If
 End Function
 
@@ -21241,23 +21228,6 @@ Private Sub ClearGeneratedShapes()
     Next i
 End Sub
 
-' Удаляет служебные Shape-объекты схемы, созданные прямо на листе Расчет.
-' Актуальная схема хранит опорные линии и точку внутри ChartObject, но остатки
-' старых версий могли остаться на листе и должны очищаться перед перерисовкой.
-Private Sub ClearLegacyWorksheetGeneratedShapes()
-    If mChartObject Is Nothing Then Exit Sub
-
-    Dim sheet As Object
-    Set sheet = mChartObject.parent
-    If sheet Is Nothing Then Exit Sub
-
-    Dim i As Long
-    For i = sheet.shapes.count To 1 Step -1
-        If left$(sheet.shapes.item(i).name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
-            sheet.shapes.item(i).Delete
-        End If
-    Next i
-End Sub
 
 ' Возвращает визуальную ширину бетонного элемента. Если snapshot не хранит
 ' размеры оболочки, используется fallback по площади.
@@ -25206,7 +25176,7 @@ End Function
 ====================================================================================================
 COMPONENT: modAutoCADStressExport
 TYPE: 1
-LINES: 2547
+LINES: 2353
 ====================================================================================================
 Option Explicit
 
@@ -25248,6 +25218,7 @@ Private Const SECTION_CONTOUR_COLOR_INDEX As Long = 30 ' Наружная гра
 Private Const OPENING_CONTOUR_COLOR_INDEX As Long = 4 ' Контуры отверстий: голубой ACI 4.
 Private Const CRACK_REGION_COLOR_INDEX As Long = 31 ' Расчетная область взаимодействия: ACI 31.
 Private Const CONTOUR_POINT_TOLERANCE As Double = 0.000001
+Private Const TEMPORARY_SOURCE_BATCH_SIZE As Long = 1024 ' Ограничение числа живых исходных кривых одной партии.
 Private mSnapshotUnits As CUnitSystem ' Пересчет по явным единицам Results; не загружается из текущего Config.
 Private mSnapshotReadTables As Object ' Только подготовка одного export-state; освобождается до рисования/выхода с ошибкой.
 Private mSnapshotReadWorkbook As Object ' Identity книги защищает локальное чтение от чужого контекста.
@@ -25468,13 +25439,15 @@ Public Function ReadSectionGeometryFromResults(ByVal Workbook As Object, Optiona
     data = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4350, "ReadSectionGeometryFromResults", _
         "На листе Results нет таблицы расчетной геометрии. Сначала выполните расчет."
+    If UBound(data, 2) <> 15 Then Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
+        "Таблица расчетной геометрии Results должна содержать 15 столбцов. Повторите расчет или импорт геометрии."
 
     Dim colID As Long: colID = ResultColumn(data, "ElementID")
     Dim colType As Long: colType = ResultColumn(data, "MaterialType")
     Dim colX As Long: colX = ResultColumn(data, "X")
     Dim colY As Long: colY = ResultColumn(data, "Y")
     Dim colArea As Long: colArea = ResultColumn(data, "Area")
-    Dim colShape As Long: colShape = GeometryStatusColumn(data)
+    Dim colShape As Long: colShape = ResultColumn(data, "GeometryInterpretationStatus")
     Dim colWidth As Long: colWidth = ResultColumn(data, "Width")
     Dim colHeight As Long: colHeight = ResultColumn(data, "Height")
     Dim colDiameter As Long: colDiameter = ResultColumn(data, "Diameter")
@@ -25508,6 +25481,10 @@ Public Function ReadSectionGeometryFromResults(ByVal Workbook As Object, Optiona
                     OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colDiameter), lengthUnit), OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), _
                     vbNullString, 1, vbNullString, _
                     vbNullString, CStr(data(rowIndex, colComment))
+            Else
+                Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
+                    "В таблице расчетных элементов Results допустимы только Concrete и Rebar: " & _
+                    anchor.parent.name & "!" & anchor.offset(rowIndex - 1, colType - 1).address(False, False) & ". Повторите расчет или импорт геометрии."
             End If
         End If
     Next rowIndex
@@ -25519,8 +25496,8 @@ Public Function ReadSectionGeometryFromResults(ByVal Workbook As Object, Optiona
     Set ReadSectionGeometryFromResults = model
 End Function
 
-' Читает только компактный v1-снимок. Отсутствующая версия или повреждение
-' явно диагностируются; устаревшие строки Geometry никогда не подмешиваются.
+' Читает единственный 17-колоночный формат достоверных контуров.
+' Отсутствующая таблица или повреждение явно диагностируются.
 ' Единицы и SectionXY принадлежат снимку, а не текущему Config.
 Public Function ReadSavedSectionContours(ByVal Workbook As Object, _
         Optional ByVal contours As CSectionContours = Nothing) As CSectionContours
@@ -25529,7 +25506,7 @@ Public Function ReadSavedSectionContours(ByVal Workbook As Object, _
     Set anchor = Workbook.names.item("rngNDMSectionContours").RefersToRange
     On Error GoTo 0
     data = ReadAnchoredResultTable(Workbook, "rngNDMSectionContours")
-    headers = Array("RunID v1", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+    headers = Array("RunID", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
         "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", "SourceID", "Comment", "LengthUnit (SectionXY)")
     If Not IsArray(data) Then GoTo InvalidHeader
     If UBound(data, 2) <> 17 Then GoTo InvalidHeader
@@ -25593,9 +25570,9 @@ Public Function ReadSavedSectionContours(ByVal Workbook As Object, _
     Set ReadSavedSectionContours = contours
     Exit Function
 MissingAnchor:
-    Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", "В книге отсутствует rngNDMSectionContours. Обновите формат сохраненного снимка Results."
+    Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", "В книге отсутствует таблица достоверных контуров rngNDMSectionContours. Повторите расчет или импорт геометрии."
 InvalidHeader:
-    Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", "Неверная или пустая шапка контуров v1: " & anchor.parent.name & "!" & anchor.address(False, False) & ". Восстановите снимок; старый блок не используется."
+    Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", "Неверная или пустая шапка таблицы контуров: " & anchor.parent.name & "!" & anchor.address(False, False) & ". Повторите расчет или импорт геометрии."
 InvalidRow:
     Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", "Неверная запись контура: " & anchor.parent.name & "!" & anchor.offset(row - 1, 0).Resize(1, 17).address(False, False) & ". Проверьте ID, порядок, роль, тип и единицы."
 End Function
@@ -25610,194 +25587,10 @@ Private Sub CopySectionContours(ByVal source As CSectionContours, ByVal target A
             Case "CONTOUR_CIRCLE"
                 target.AddContourCircle source.contourID(i), source.startX(i), source.startY(i), source.radius(i), source.comment(i), source.loopID(i), source.LoopRole(i), source.SourceID(i)
             Case "CONTOUR_ARC"
-                target.AddContourArc source.contourID(i), source.startX(i), source.startY(i), source.endX(i), source.endY(i), source.centerX(i), source.centerY(i), source.radius(i), source.SweepAngle(i), source.comment(i), source.loopID(i), source.LoopRole(i), source.SourceID(i)
+                target.AddContourArc source.contourID(i), source.startX(i), source.startY(i), source.endX(i), source.endY(i), source.centerX(i), source.centerY(i), source.radius(i), source.sweepAngle(i), source.comment(i), source.loopID(i), source.LoopRole(i), source.SourceID(i)
         End Select
     Next i
 End Sub
-
-' Обновляет только нижнюю полосу сохраненного Results. До мутации полностью
-' читает старые элементы/контуры и проверяет аналитические дуги. Ячейки справа
-' сдвигаются Insert внутри этой полосы, не удаляются и не затрагивают верхние
-' результаты. Повторный вызов проверяет v1 и ничего не перемещает.
-Public Function MigrateSavedSectionContours(Optional ByVal Workbook As Object = Nothing) As String
-    If Workbook Is Nothing Then Set Workbook = ThisWorkbook
-    Dim existing As Object, contourName As Object
-    On Error Resume Next
-    Set contourName = Workbook.names.item("rngNDMSectionContours")
-    On Error GoTo 0
-    Dim contours As CSectionContours
-    If Not contourName Is Nothing Then
-        ' Существующее, но поврежденное имя не считается отсутствующей версией.
-        Set existing = contourName.RefersToRange
-        Set contours = ReadSavedSectionContours(Workbook)
-        MigrateSavedSectionContours = "Contours v1: already current; segments=" & CStr(contours.count)
-        Exit Function
-    End If
-    Set contours = ReadLegacySectionContours(Workbook)
-    Dim geometry As Object, properties As Object, ws As Object, data As Variant, elements() As Variant
-    Set geometry = Workbook.names.item("rngNDMSectionGeometry").RefersToRange
-    Set properties = Workbook.names.item("rngNDMSectionProperties").RefersToRange
-    Set ws = geometry.Worksheet
-    If ws.ProtectContents Or Workbook.ProtectStructure Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", _
-        "Не удалось обновить снимок Results: снимите защиту листа Results и структуры книги, затем повторите обновление. Старый снимок не изменен."
-    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
-    Dim count As Long, row As Long, col As Long, oldRows As Long, unitText As String, runID As Variant
-    unitText = "mm": runID = Empty: oldRows = 1
-    If IsArray(data) Then
-        oldRows = UBound(data, 1)
-        If UBound(data, 2) <> 15 And UBound(data, 2) <> 25 Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", "Неизвестный старый формат геометрии Results."
-        unitText = ResultHeaderUnit(data, ResultColumn(data, "X"), "mm")
-        For row = 2 To oldRows
-            If SafeText(data(row, 3)) <> "Contour" Then count = count + 1
-        Next row
-        ReDim elements(1 To count + 1, 1 To 15)
-        For col = 1 To 15: elements(1, col) = data(1, col): Next col
-        count = 1
-        For row = 2 To oldRows
-            If SafeText(data(row, 3)) <> "Contour" Then
-                count = count + 1
-                For col = 1 To 15: elements(count, col) = data(row, col): Next col
-            End If
-            If IsEmpty(runID) Then runID = data(row, 1)
-        Next row
-    End If
-    Dim i As Long, ex As Double, ey As Double, tolerance As Double
-    For i = 1 To contours.count
-        If contours.SegmentType(i) = "CONTOUR_ARC" Then
-            ex = contours.centerX(i) + (contours.startX(i) - contours.centerX(i)) * Cos(contours.SweepAngle(i)) - (contours.startY(i) - contours.centerY(i)) * Sin(contours.SweepAngle(i))
-            ey = contours.centerY(i) + (contours.startX(i) - contours.centerX(i)) * Sin(contours.SweepAngle(i)) + (contours.startY(i) - contours.centerY(i)) * Cos(contours.SweepAngle(i))
-            tolerance = 0.0000001 * MaxDouble(1#, contours.radius(i))
-            If Abs(ex - contours.endX(i)) > tolerance Or Abs(ey - contours.endY(i)) > tolerance Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", "Конец сохраненной дуги не согласован с центром и углом; старый снимок оставлен без изменений."
-        End If
-    Next i
-    Dim name As Variant, block As Object, bottom As Long, shift As Long, contourColumn As Long
-    bottom = geometry.row + oldRows - 1
-    For Each name In Array("rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-        Set block = Workbook.names.item(CStr(name)).RefersToRange
-        If Not block.Worksheet Is ws Or block.row <> geometry.row Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", "Нижние якоря Results должны находиться в одной строке одного листа; снимок оставлен без изменений."
-        i = block.row + AnchoredRowCount(block) - 1
-        If i > bottom Then bottom = i
-    Next name
-    contourColumn = geometry.column + 15 + 2
-    shift = contourColumn + 17 + 2 - properties.column
-    ' Новый формат сначала проверяется на временном листе: новый и старый
-    ' footprints частично пересекаются, поэтому нельзя чистить старые поля раньше.
-    Dim stage As Object, writer As CNDMResultsWriter, restored As CSectionContours
-    Set stage = Workbook.Worksheets.Add
-    Set writer = New CNDMResultsWriter
-    Workbook.names.Add "rngNDMSectionContours", "='" & Replace(stage.name, "'", "''") & "'!$A$2"
-    On Error GoTo StageFailed
-    writer.WriteSectionContours Workbook, contours, runID, Nothing, unitText
-    Set restored = ReadSavedSectionContours(Workbook)
-    If restored.count <> contours.count Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", "Не совпало количество перенесенных сегментов."
-    Workbook.names.item("rngNDMSectionContours").Delete
-    On Error GoTo 0
-    If shift > 0 Then ws.cells(geometry.row - 1, properties.column).Resize(bottom - geometry.row + 2, shift).Insert -4161
-    ' Старый источник удаляется только после успешного обратного чтения нового.
-    geometry.Resize(oldRows, 15).ClearContents
-    geometry.offset(0, 15).Resize(oldRows, 10).clear
-    If count < oldRows Then geometry.offset(count, 0).Resize(oldRows - count, 15).clear
-    geometry.offset(-1, 0).Resize(1, 25).UnMerge: geometry.offset(-1, 0).Resize(1, 25).clear
-    If IsArray(data) Then
-        geometry.Resize(UBound(elements, 1), 15).value2 = elements
-        writer.FormatResultsBlock geometry, UBound(elements, 1), 15, "Геометрия расчетных элементов сечения"
-    Else
-        writer.FormatResultsBlock geometry, 1, 15, "Геометрия расчетных элементов сечения"
-    End If
-    Workbook.names.Add "rngNDMSectionContours", "='" & Replace(ws.name, "'", "''") & "'!" & ws.cells(geometry.row, contourColumn).address
-    writer.WriteSectionContours Workbook, restored, runID, Nothing, unitText
-    Set restored = ReadSavedSectionContours(Workbook)
-    Dim alerts As Boolean: alerts = Workbook.Application.DisplayAlerts
-    Workbook.Application.DisplayAlerts = False: stage.Delete: Workbook.Application.DisplayAlerts = alerts
-    MigrateSavedSectionContours = "Contours v1: migrated; segments=" & CStr(restored.count) & "; shifted columns=" & CStr(MaxDouble(0#, shift))
-    Exit Function
-StageFailed:
-    Dim errorNumber As Long, errorText As String
-    errorNumber = Err.number: errorText = Err.description
-    On Error Resume Next
-    Workbook.names.item("rngNDMSectionContours").Delete
-    alerts = Workbook.Application.DisplayAlerts
-    Workbook.Application.DisplayAlerts = False: stage.Delete: Workbook.Application.DisplayAlerts = alerts
-    On Error GoTo 0
-    Err.Raise errorNumber, "MigrateSavedSectionContours", errorText & " Старый снимок не изменен."
-End Function
-
-' Узкий reader старых 25 колонок используется только миграцией до очистки.
-Private Function ReadLegacySectionContours(ByVal Workbook As Object, _
-        Optional ByVal contours As CSectionContours = Nothing) As CSectionContours
-    If contours Is Nothing Then Set contours = New CSectionContours
-    contours.clear
-    Set ReadLegacySectionContours = contours
-    Dim anchor As Object, data As Variant
-    Set anchor = Workbook.names.item("rngNDMSectionGeometry").RefersToRange
-    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionGeometry")
-    If Not HasResultTableRows(data) Then Exit Function
-    Dim colMaterial As Long: colMaterial = ResultColumn(data, "MaterialType")
-    Dim row As Long, hasContours As Boolean
-    For row = 2 To UBound(data, 1)
-        If StrComp(SafeText(data(row, colMaterial)), "Contour", vbTextCompare) = 0 Then hasContours = True
-    Next row
-    If Not hasContours Then Exit Function
-
-    Dim colType As Long: colType = GeometryStatusColumn(data)
-    Dim colID As Long: colID = ResultColumn(data, "ElementID")
-    Dim colStartX As Long: colStartX = ResultColumn(data, "X")
-    Dim colStartY As Long: colStartY = ResultColumn(data, "Y")
-    Dim colEndX As Long: colEndX = ResultColumn(data, "EndX")
-    Dim colEndY As Long: colEndY = ResultColumn(data, "EndY")
-    Dim colCenterX As Long: colCenterX = ResultColumn(data, "CenterX")
-    Dim colCenterY As Long: colCenterY = ResultColumn(data, "CenterY")
-    Dim colSweep As Long: colSweep = ResultColumn(data, "SweepAngle")
-    Dim colRadius As Long: colRadius = ResultColumn(data, "Radius")
-    Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
-    Dim colComment As Long: colComment = ResultColumn(data, "Comment")
-    Dim colLoop As Long: colLoop = ResultColumn(data, "LoopID")
-    Dim colRole As Long: colRole = ResultColumn(data, "LoopRole")
-    Dim colSource As Long: colSource = ResultColumn(data, "SourceID")
-    Dim kind As String, contourID As String, unitText As String, comment As String
-    Dim loopID As String, role As String, source As String
-    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, radius As Double, sweep As Double
-    For row = 2 To UBound(data, 1)
-        If StrComp(ReadSavedAnnotationText(data, anchor, row, colMaterial), "Contour", vbTextCompare) = 0 Then
-            kind = UCase$(Trim$(ReadSavedAnnotationText(data, anchor, row, colType)))
-            contourID = ReadSavedAnnotationText(data, anchor, row, colID)
-            comment = ReadSavedAnnotationText(data, anchor, row, colComment)
-            loopID = ReadSavedAnnotationText(data, anchor, row, colLoop)
-            role = ReadSavedAnnotationText(data, anchor, row, colRole)
-            source = ReadSavedAnnotationText(data, anchor, row, colSource)
-            unitText = Trim$(ReadSavedAnnotationText(data, anchor, row, colUnit))
-            If Len(unitText) = 0 Or unitText = "-" Or Len(Trim$(loopID)) = 0 Or _
-                    (StrComp(role, "Outer", vbTextCompare) <> 0 And StrComp(role, "Opening", vbTextCompare) <> 0) Then
-                Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", _
-                    "В сохраненной геометрии Results не заданы единицы, ID замкнутого контура или его роль: " & _
-                    anchor.parent.name & "!" & anchor.offset(row - 1, colLoop - 1).Resize(1, 4).address(False, False) & _
-                    ". Повторите импорт геометрии или расчет."
-            End If
-            x1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colStartX), unitText)
-            y1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colStartY), unitText)
-            x2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colEndX), unitText)
-            y2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colEndY), unitText)
-            Select Case kind
-                Case "CONTOUR_LINE"
-                    contours.AddContourLine contourID, x1, y1, x2, y2, comment, loopID, role, source
-                Case "CONTOUR_CIRCLE"
-                    radius = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colRadius), unitText)
-                    contours.AddContourCircle contourID, x1, y1, radius, comment, loopID, role, source
-                Case "CONTOUR_ARC"
-                    cx = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colCenterX), unitText)
-                    cy = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colCenterY), unitText)
-                    radius = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colRadius), unitText)
-                    sweep = ReadContourArcSweep(data(row, colSweep), anchor.parent.name & "!" & _
-                        anchor.offset(row - 1, colSweep - 1).address(False, False))
-                    contours.AddContourArc contourID, x1, y1, x2, y2, cx, cy, radius, sweep, comment, loopID, role, source
-                Case Else
-                    Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", _
-                        "Неизвестный тип сохраненного контура " & kind & ": " & anchor.parent.name & "!" & _
-                        anchor.offset(row - 1, colType - 1).address(False, False) & ". Повторите импорт геометрии."
-            End Select
-        End If
-    Next row
-End Function
 
 ' Читает текст material-аннотации без превращения ошибки формулы в пустоту.
 ' Адрес вычисляется от текущего именованного якоря, а не фиксируется в коде.
@@ -26215,22 +26008,6 @@ Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String)
     Err.Raise vbObjectError + 4355, "ResultColumn", "В Results не найден столбец: " & headerName
 End Function
 
-' Геометрический snapshot явно хранит статус интерпретации оболочки.
-' Допускает ShapeType в сохраненной таблице без GeometryInterpretationStatus.
-Private Function GeometryStatusColumn(ByRef data As Variant) As Long
-    Dim column As Long, header As String
-    For column = 1 To UBound(data, 2)
-        header = ResultHeaderBase(CStr(data(1, column)))
-        If StrComp(header, "GeometryInterpretationStatus", vbTextCompare) = 0 Or _
-                StrComp(header, "ShapeType", vbTextCompare) = 0 Then
-            GeometryStatusColumn = column
-            Exit Function
-        End If
-    Next column
-    Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
-        "В Results отсутствует столбец GeometryInterpretationStatus или ShapeType. " & _
-        "Повторите импорт геометрии или расчет, чтобы восстановить таблицу."
-End Function
 
 ' Отделяет имя колонки от единиц после запятой, чтобы смена output-единиц
 ' не меняла поиск обязательного поля в сохраненной таблице.
@@ -26360,6 +26137,8 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
 
     Dim ms As Object
     Set ms = doc.modelSpace
+    Dim temporarySources As Collection: Set temporarySources = New Collection
+    On Error GoTo DrawingFailed
 
     EnsureAcadLayer doc, exportSettings.concreteLayer, 8
     EnsureAcadLayer doc, exportSettings.rebarLayer, 1
@@ -26394,7 +26173,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         textHeight = 0.22 * MinDouble(concreteWidth, concreteHeight)
         If textHeight <= 0# Then textHeight = 1#
         AddAcadRectangleRegion ms, section.concreteX(i), section.concreteY(i), concreteWidth, concreteHeight, concreteRotation, _
-            exportSettings.concreteLayer, ResultColorByPhysicalState("Concrete", physicalState, exportSettings)
+            exportSettings.concreteLayer, ResultColorByPhysicalState("Concrete", physicalState, exportSettings), temporarySources
 
         Dim labelX As Double
         Dim labelY As Double
@@ -26404,20 +26183,23 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
             labelX, labelY, textHeight, _
             ResultAnnotationLayerByPhysicalState("Concrete", physicalState, exportSettings), _
             ResultColorByPhysicalState("Concrete", physicalState, exportSettings)
+        If temporarySources.count >= TEMPORARY_SOURCE_BATCH_SIZE Then DeleteAcadTemporarySources doc, temporarySources
     Next i
 
     For i = 1 To section.rebarCount
         resultValue = LookupResultValue(resultByID, section.RebarID(i))
         physicalState = ResultPhysicalState(physicalStateByID, section.RebarID(i))
         AddAcadCircleRegion ms, section.RebarX(i), section.RebarY(i), section.RebarDiameter(i) / 2#, _
-            exportSettings.rebarLayer, ResultColorByPhysicalState("Rebar", physicalState, exportSettings)
+            exportSettings.rebarLayer, ResultColorByPhysicalState("Rebar", physicalState, exportSettings), temporarySources
         AddAcadText ms, ResultLabelText(section.RebarID(i), resultValue, exportSettings.IncludeElementNames, resultPrecision), _
             section.RebarX(i) + section.RebarDiameter(i) / 2#, section.RebarY(i) + section.RebarDiameter(i) / 2#, _
             MaxDouble(2.5, section.RebarDiameter(i) * 0.18), _
             ResultAnnotationLayerByPhysicalState("Rebar", physicalState, exportSettings), _
             ResultColorByPhysicalState("Rebar", physicalState, exportSettings)
+        If temporarySources.count >= TEMPORARY_SOURCE_BATCH_SIZE Then DeleteAcadTemporarySources doc, temporarySources
     Next i
 
+    DeleteAcadTemporarySources doc, temporarySources
     ' Контур выводим после бетонных и арматурных объектов, чтобы он не
     ' оказался закрыт AutoCAD Region, созданными для волокон расчетной сетки.
     If exportSettings.contourEnabled Then
@@ -26439,9 +26221,17 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     If Len(stateWarningText) > 0 Then DrawStateWarning ms, section, stateWarningText
 
     doc.Regen 1
+    Exit Sub
+DrawingFailed:
+    Dim errorNumber As Long, errorSource As String, errorText As String
+    errorNumber = Err.number: errorSource = Err.source: errorText = Err.description
+    On Error Resume Next
+    DeleteAcadTemporarySources doc, temporarySources
+    On Error GoTo 0
+    Err.Raise errorNumber, errorSource, errorText
 End Sub
 
-' Выбирает целиком актуальную область нужного сочетания. Старый или смешанный
+' Выбирает целиком актуальную область нужного сочетания. Неактуальный или смешанный
 ' snapshot пропускается целиком, чтобы не выгрузить только часть его замкнутых контуров.
 ' Проверяются metadata, а не внешние статусы: область выполненной FAIL-проверки
 ' ширины пригодна для диагностического вывода. Новое НДС здесь не решается.
@@ -26454,12 +26244,7 @@ Private Function CurrentCrackRegionRows(ByVal Workbook As Object, ByVal combinat
     properties = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
     If Not HasResultTableRows(data) Or Not HasResultTableRows(geometry) Or Not HasResultTableRows(properties) Then Exit Function
     Dim colOwner As Long, colRevision As Long, colType As Long, colRun As Long
-    ' В старых снимках нет result-region metadata; это отсутствие области,
-    ' а не причина пытаться восстановить ее по численной площади.
-    On Error Resume Next
     colOwner = ResultColumn(data, "CombinationID"): colRevision = ResultColumn(data, "SectionRevision")
-    On Error GoTo 0
-    If colOwner = 0 Or colRevision = 0 Then Exit Function
     colType = ResultColumn(data, "AnnotationType"): colRun = ResultColumn(data, "RunID")
     Dim colParameter As Long, colValue As Long, colCase As Long, revision As Variant, runID As Variant, row As Long
     colParameter = ResultColumn(properties, "Parameter"): colValue = ResultColumn(properties, "Value")
@@ -26508,20 +26293,17 @@ Private Function DrawSavedContourRows(ByVal Workbook As Object, ByVal ms As Obje
     Set tableName = Workbook.names.item("rngNDMSectionAnnotations")
     On Error GoTo 0
     If tableName Is Nothing Then Exit Function
+    Dim anchor As Object: Set anchor = tableName.RefersToRange
     Dim data As Variant
     data = ReadAnchoredResultTable(Workbook, "rngNDMSectionAnnotations")
     If Not HasResultTableRows(data) Then Exit Function
 
     Dim colType As Long: colType = ResultColumn(data, "AnnotationType")
-    Dim colID As Long: colID = ResultColumn(data, "AnnotationID")
     Dim colStartX As Long: colStartX = ResultColumn(data, "StartX")
     Dim colStartY As Long: colStartY = ResultColumn(data, "StartY")
     Dim colEndX As Long: colEndX = ResultColumn(data, "EndX")
     Dim colEndY As Long: colEndY = ResultColumn(data, "EndY")
     Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
-    Dim defaultLengthUnit As String
-    defaultLengthUnit = ResultsOutputLengthUnit(Workbook)
-    If Len(defaultLengthUnit) = 0 Then defaultLengthUnit = ResultHeaderUnit(data, colStartX, "mm")
 
     Dim segStartX() As Double
     Dim segStartY() As Double
@@ -26531,8 +26313,7 @@ Private Function DrawSavedContourRows(ByVal Workbook As Object, ByVal ms As Obje
     Dim segCount As Long
     Dim currentLoopKey As String
     Dim currentLayer As String, rowLayer As String
-    Dim colLoop As Long
-    If typePrefix = "CRACK_REGION_" Then colLoop = ResultColumn(data, "LoopID")
+    Dim colLoop As Long: colLoop = ResultColumn(data, "LoopID")
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -26543,10 +26324,8 @@ Private Function DrawSavedContourRows(ByVal Workbook As Object, ByVal ms As Obje
         annotationType = UCase$(Trim$(SafeText(data(rowIndex, colType))))
         If left$(annotationType, Len(typePrefix)) = typePrefix Then
             Dim loopKey As String
-            loopKey = ContourLoopKey(SafeText(data(rowIndex, colID)))
-            If colLoop > 0 Then loopKey = CStr(data(rowIndex, colLoop))
+            loopKey = CStr(data(rowIndex, colLoop))
             rowLayer = contourLayer
-            If Len(openingLayer) > 0 And InStr(1, UCase$(SafeText(data(rowIndex, colID))), "_OPENING_", vbBinaryCompare) > 0 Then rowLayer = openingLayer
             If segCount > 0 And StrComp(loopKey, currentLoopKey, vbTextCompare) <> 0 Then
                 DrawSavedContourRows = DrawSavedContourRows + _
                     DrawContourSegmentPolyline(ms, currentLayer, segStartX, segStartY, segEndX, segEndY, segBulge, segCount, CRACK_REGION_COLOR_INDEX)
@@ -26564,7 +26343,7 @@ Private Function DrawSavedContourRows(ByVal Workbook As Object, ByVal ms As Obje
         Select Case annotationType
             Case typePrefix & "LINE"
                 Dim lineUnit As String
-                lineUnit = AnnotationLengthUnit(data, rowIndex, colUnit, defaultLengthUnit)
+                lineUnit = AnnotationLengthUnit(data, rowIndex, colUnit, anchor)
                 AppendContourSegment segStartX, segStartY, segEndX, segEndY, segBulge, segCount, _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), lineUnit), _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), lineUnit), _
@@ -26573,7 +26352,7 @@ Private Function DrawSavedContourRows(ByVal Workbook As Object, ByVal ms As Obje
                     0#
             Case typePrefix & "ARC"
                 Dim arcUnit As String
-                arcUnit = AnnotationLengthUnit(data, rowIndex, colUnit, defaultLengthUnit)
+                arcUnit = AnnotationLengthUnit(data, rowIndex, colUnit, anchor)
                 AppendContourSegment segStartX, segStartY, segEndX, segEndY, segBulge, segCount, _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), arcUnit), _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartY)), arcUnit), _
@@ -26593,7 +26372,7 @@ Private Function DrawSavedContourRows(ByVal Workbook As Object, ByVal ms As Obje
                     currentLoopKey = vbNullString
                 End If
                 Dim circleUnit As String
-                circleUnit = AnnotationLengthUnit(data, rowIndex, colUnit, defaultLengthUnit)
+                circleUnit = AnnotationLengthUnit(data, rowIndex, colUnit, anchor)
                 DrawSavedContourRows = DrawSavedContourRows + _
                     DrawContourCirclePolyline(ms, rowLayer, _
                     OutputLengthToInternalByUnit(CDbl(data(rowIndex, colStartX)), circleUnit), _
@@ -26645,7 +26424,7 @@ Private Function DrawSavedMaterialContours(ByVal Workbook As Object, ByVal ms As
                     DrawContourCirclePolyline(ms, layer, contours.startX(i), contours.startY(i), contours.radius(i), colorIndex, True)
             Else
                 AppendContourSegment sx, sy, ex, ey, bulge, count, contours.startX(i), contours.startY(i), _
-                    contours.endX(i), contours.endY(i), Tan(contours.SweepAngle(i) / 4#)
+                    contours.endX(i), contours.endY(i), Tan(contours.sweepAngle(i) / 4#)
             End If
         Next indexValue
         If count > 0 Then DrawSavedMaterialContours = DrawSavedMaterialContours + _
@@ -26665,7 +26444,7 @@ Private Function ReadSavedContourArcSweeps(ByVal Workbook As Object, Optional By
         Dim contours As CSectionContours, i As Long
         Set contours = ReadSavedSectionContours(Workbook)
         For i = 1 To contours.count
-            If contours.SegmentType(i) = "CONTOUR_ARC" Then result.Add CStr(i), contours.SweepAngle(i)
+            If contours.SegmentType(i) = "CONTOUR_ARC" Then result.Add CStr(i), contours.sweepAngle(i)
         Next i
         Exit Function
     End If
@@ -26676,11 +26455,15 @@ Private Function ReadSavedContourArcSweeps(ByVal Workbook As Object, Optional By
     Set anchor = tableName.RefersToRange
     data = ReadAnchoredResultTable(Workbook, "rngNDMSectionAnnotations")
     If Not HasResultTableRows(data) Then Exit Function
-    Dim colType As Long, colText As Long, rowIndex As Long
+    Dim colType As Long, colText As Long, colUnit As Long, rowIndex As Long, unitText As String
     colType = ResultColumn(data, "AnnotationType"): colText = ResultColumn(data, "Text")
+    colUnit = ResultColumn(data, "Unit")
     For rowIndex = 2 To UBound(data, 1)
         If Not selectedRows Is Nothing Then
             If Not selectedRows.Exists(CStr(rowIndex)) Then GoTo NextSweepRow
+        End If
+        If left$(UCase$(Trim$(SafeText(data(rowIndex, colType)))), Len(typePrefix)) = typePrefix Then
+            unitText = AnnotationLengthUnit(data, rowIndex, colUnit, anchor)
         End If
         If StrComp(Trim$(SafeText(data(rowIndex, colType))), typePrefix & "ARC", vbTextCompare) = 0 Then
             result.Add CStr(rowIndex), ReadContourArcSweep(data(rowIndex, colText), anchor.parent.name & "!" & _
@@ -26690,59 +26473,16 @@ NextSweepRow:
     Next rowIndex
 End Function
 
-' Читает единицу длины последнего расчетного снимка. Для annotation-таблицы это
-' важнее заголовков StartX/EndX: сами заголовки не содержат единицу длины, но
-' значения уже переведены writer-ом в Output.LengthUnit.
-Private Function ResultsOutputLengthUnit(ByVal Workbook As Object) As String
-    On Error GoTo Failed
-    Dim data As Variant
-    data = ReadAnchoredResultTable(Workbook, "rngNDMSectionProperties")
-    If Not HasResultTableRows(data) Then Exit Function
-
-    Dim colParameter As Long: colParameter = ResultColumn(data, "Parameter")
-    Dim colValue As Long: colValue = ResultColumn(data, "Value")
-
-    Dim rowIndex As Long
-    For rowIndex = 2 To UBound(data, 1)
-        If StrComp(Trim$(SafeText(data(rowIndex, colParameter))), "Output.LengthUnit", vbTextCompare) = 0 Then
-            ResultsOutputLengthUnit = Trim$(SafeText(data(rowIndex, colValue)))
-            Exit Function
-        End If
-    Next rowIndex
-Failed:
-End Function
-
-' Возвращает единицу длины для одной строки semantic-аннотации.
-' В таблице rngNDMSectionAnnotations координатные заголовки не содержат ", mm":
-' координаты уже сохранены в пользовательских output-единицах. В новых снимках
-' contour-строки явно несут Unit, а для старых снимков без Unit берем общий
-' Output.LengthUnit из свойств сечения. Иначе при Output.LengthUnit = m контур
-' получается в 1000 раз меньше бетонной и арматурной геометрии.
+' Читает обязательную собственную единицу координат расчетного контура.
+' Пустое поле не заменяется текущей настройкой или внутренними миллиметрами.
 Private Function AnnotationLengthUnit(ByRef data As Variant, ByVal rowIndex As Long, _
-        ByVal colUnit As Long, ByVal defaultUnit As String) As String
+        ByVal colUnit As Long, ByVal anchor As Object) As String
     Dim unitText As String
-    unitText = Trim$(SafeText(data(rowIndex, colUnit)))
-    If Len(unitText) = 0 Or unitText = "-" Then unitText = defaultUnit
-    If Len(unitText) = 0 Or unitText = "-" Then unitText = "mm"
+    unitText = Trim$(ReadSavedAnnotationText(data, anchor, rowIndex, colUnit))
+    If Len(unitText) = 0 Or unitText = "-" Then Err.Raise vbObjectError + 4376, _
+        "AnnotationLengthUnit", "В расчетном контуре Results не задана единица длины: " & _
+        anchor.parent.name & "!" & anchor.offset(rowIndex - 1, colUnit - 1).address(False, False) & ". Повторите расчет."
     AnnotationLengthUnit = unitText
-End Function
-
-' Возвращает имя петли contour-аннотаций. Старые ID вида CONTOUR_LINE_1
-' попадают в одну пустую петлю; CONTOUR_OUTER_* и CONTOUR_OPENING_* сохраняют
-' прежние роли генератора. В CAD_<роль>_<source>_<loop>_<segment> убирается
-' только номер сегмента: несколько outer/opening не склеиваются в одну петлю.
-Private Function ContourLoopKey(ByVal annotationID As String) As String
-    Dim parts() As String
-    parts = Split(UCase$(Trim$(annotationID)), "_")
-    If UBound(parts) >= 4 And parts(0) = "CAD" Then
-        ContourLoopKey = left$(UCase$(Trim$(annotationID)), InStrRev(annotationID, "_") - 1)
-        Exit Function
-    End If
-    If UBound(parts) >= 3 Then
-        If parts(0) = "CONTOUR" And (parts(1) = "OUTER" Or parts(1) = "OPENING") Then
-            ContourLoopKey = parts(1)
-        End If
-    End If
 End Function
 
 ' Накопляет линейный или дуговой сегмент будущей AutoCAD LWPOLYLINE.
@@ -27402,10 +27142,10 @@ End Sub
 
 ' Строит повернутый прямоугольник четырьмя WCS-отрезками и преобразует в Region.
 ' Это сохраняет расположение элемента независимо от UCS/OCS активного чертежа;
-' временные исходные линии удаляются после создания области.
-Private Sub AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
+' временные исходные линии собираются для удаления одним собственным набором.
+Private Function AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
         ByVal width As Double, ByVal height As Double, ByVal rotationRad As Double, _
-        ByVal layerName As String, ByVal colorIndex As Long)
+        ByVal layerName As String, ByVal colorIndex As Long, ByVal temporarySources As Collection) As Object
     Dim hw As Double
     Dim hh As Double
     Dim c As Double
@@ -27426,11 +27166,15 @@ Private Sub AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, ByVal 
     ' может дать заметный перенос при нестандартной UCS/плоскости чертежа.
     Dim sourceObjects(0 To 3) As Object
     Set sourceObjects(0) = AddAcadSourceLine(ms, px(0), py(0), px(1), py(1))
+    temporarySources.Add sourceObjects(0)
     Set sourceObjects(1) = AddAcadSourceLine(ms, px(1), py(1), px(2), py(2))
+    temporarySources.Add sourceObjects(1)
     Set sourceObjects(2) = AddAcadSourceLine(ms, px(2), py(2), px(3), py(3))
+    temporarySources.Add sourceObjects(2)
     Set sourceObjects(3) = AddAcadSourceLine(ms, px(3), py(3), px(0), py(0))
-    AddAcadRegionFromCurves ms, sourceObjects, layerName, colorIndex
-End Sub
+    temporarySources.Add sourceObjects(3)
+    Set AddAcadRectangleRegion = AddAcadRegionFromCurves(ms, sourceObjects, layerName, colorIndex)
+End Function
 
 ' Создает временный отрезок по WCS-точкам для последующего AddRegion.
 Private Function AddAcadSourceLine(ByVal ms As Object, ByVal x1 As Double, ByVal y1 As Double, _
@@ -27458,27 +27202,29 @@ End Sub
 
 ' Создает круглую Region арматуры через временную окружность; диаметр берется
 ' из сохраненной модели, а не восстанавливается из площади бетонного элемента.
-Private Sub AddAcadCircleRegion(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
-        ByVal radius As Double, ByVal layerName As String, ByVal colorIndex As Long)
+Private Function AddAcadCircleRegion(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
+        ByVal radius As Double, ByVal layerName As String, ByVal colorIndex As Long, ByVal temporarySources As Collection) As Object
     Dim p(0 To 2) As Double
     p(0) = x: p(1) = y: p(2) = 0#
     Dim source As Object
     Set source = ms.AddCircle(p, radius)
-    AddAcadRegionFromCurve ms, source, layerName, colorIndex
-End Sub
+    temporarySources.Add source
+    Set AddAcadCircleRegion = AddAcadRegionFromCurve(ms, source, layerName, colorIndex)
+End Function
 
 ' Передает одну замкнутую исходную кривую общему созданию Region.
 ' Владелец преобразования назначает оформление и удаляет временную кривую.
-Private Sub AddAcadRegionFromCurve(ByVal ms As Object, ByVal source As Object, _
-        ByVal layerName As String, ByVal colorIndex As Long)
+Private Function AddAcadRegionFromCurve(ByVal ms As Object, ByVal source As Object, _
+        ByVal layerName As String, ByVal colorIndex As Long) As Object
     Dim sourceObjects(0 To 0) As Object
     Set sourceObjects(0) = source
-    AddAcadRegionFromCurves ms, sourceObjects, layerName, colorIndex
-End Sub
+    Set AddAcadRegionFromCurve = AddAcadRegionFromCurves(ms, sourceObjects, layerName, colorIndex)
+End Function
 
-' Превращает временные AutoCAD-кривые в Region и удаляет исходные линии/окружности.
-Private Sub AddAcadRegionFromCurves(ByVal ms As Object, ByRef sourceObjects() As Object, _
-        ByVal layerName As String, ByVal colorIndex As Long)
+' Превращает временные AutoCAD-кривые в Region прежним WCS-способом.
+' Успешно использованные исходники удаляет владелец всей выгрузки.
+Private Function AddAcadRegionFromCurves(ByVal ms As Object, ByRef sourceObjects() As Object, _
+        ByVal layerName As String, ByVal colorIndex As Long) As Object
     On Error GoTo Failed
     Dim regions As Variant
     regions = ms.AddRegion(sourceObjects)
@@ -27487,13 +27233,15 @@ Private Sub AddAcadRegionFromCurves(ByVal ms As Object, ByRef sourceObjects() As
     Set entity = regions(LBound(regions))
     entity.layer = layerName
     entity.color = colorIndex
-    DeleteAcadSourceObjects sourceObjects
-    Exit Sub
+    Set AddAcadRegionFromCurves = entity
+    Exit Function
 
 Failed:
+    Dim errorNumber As Long, errorSource As String, errorText As String
+    errorNumber = Err.number: errorSource = Err.source: errorText = Err.description
     DeleteAcadSourceObjects sourceObjects
-    Err.Raise Err.number, Err.source, Err.description
-End Sub
+    Err.Raise errorNumber, errorSource, errorText
+End Function
 
 ' Удаляет временные кривые, из которых был построен Region.
 Private Sub DeleteAcadSourceObjects(ByRef sourceObjects() As Object)
@@ -27502,6 +27250,34 @@ Private Sub DeleteAcadSourceObjects(ByRef sourceObjects() As Object)
     For i = LBound(sourceObjects) To UBound(sourceObjects)
         If Not sourceObjects(i) Is Nothing Then sourceObjects(i).Delete
     Next i
+    On Error GoTo 0
+End Sub
+
+' Удаляет только исходные кривые, созданные текущей выгрузкой. Собственный
+' SelectionSet никогда не содержит прежние объекты чертежа; он удаляется сразу.
+' Если пакетный вызов недоступен, сохраняется обычное удаление по тем же ссылкам.
+Private Sub DeleteAcadTemporarySources(ByVal doc As Object, ByRef sources As Collection)
+    If sources Is Nothing Then Exit Sub
+    If sources.count = 0 Then Exit Sub
+    Dim items() As Object, i As Long, selection As Object
+    ReDim items(0 To sources.count - 1)
+    For i = 1 To sources.count
+        Set items(i - 1) = sources(i)
+    Next i
+    On Error GoTo IndividualCleanup
+    Set selection = doc.SelectionSets.Add("NDM_TEMP_SOURCES_" & Hex$(CLng(Timer * 1000#)))
+    selection.AddItems items
+    selection.Erase
+    selection.Delete
+    Set sources = New Collection
+    Exit Sub
+IndividualCleanup:
+    On Error Resume Next
+    If Not selection Is Nothing Then selection.Delete
+    For i = 1 To sources.count
+        sources(i).Delete
+    Next i
+    Set sources = New Collection
     On Error GoTo 0
 End Sub
 
@@ -29753,11 +29529,11 @@ End Property
 Public Sub GetContourSegments(ByVal openingLoop As Boolean, ByRef SegmentType() As String, _
         ByRef startX() As Double, ByRef startY() As Double, ByRef endX() As Double, ByRef endY() As Double, _
         ByRef centerX() As Double, ByRef centerY() As Double, ByRef radiusValue() As Double, _
-        ByRef SweepAngle() As Double, ByRef segmentCount As Long)
+        ByRef sweepAngle() As Double, ByRef segmentCount As Long)
     If openingLoop Then
-        mOpening.GetContourSegments SegmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, SweepAngle, segmentCount
+        mOpening.GetContourSegments SegmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
     Else
-        mOuter.GetContourSegments SegmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, SweepAngle, segmentCount
+        mOuter.GetContourSegments SegmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
     End If
 End Sub
 
@@ -30478,7 +30254,7 @@ Private mMaxY As Double
 ' но не дробит радиусы на ломаную для визуализации схемы.
 Public Sub GetContourSegments(ByRef SegmentType() As String, ByRef startX() As Double, ByRef startY() As Double, _
         ByRef endX() As Double, ByRef endY() As Double, ByRef centerX() As Double, ByRef centerY() As Double, _
-        ByRef radiusValue() As Double, ByRef SweepAngle() As Double, ByRef segmentCount As Long)
+        ByRef radiusValue() As Double, ByRef sweepAngle() As Double, ByRef segmentCount As Long)
     Erase SegmentType
     Erase startX
     Erase startY
@@ -30487,7 +30263,7 @@ Public Sub GetContourSegments(ByRef SegmentType() As String, ByRef startX() As D
     Erase centerX
     Erase centerY
     Erase radiusValue
-    Erase SweepAngle
+    Erase sweepAngle
     segmentCount = 0
 
     Dim raw() As TRoundedRawPoint
@@ -30526,12 +30302,12 @@ Public Sub GetContourSegments(ByRef SegmentType() As String, ByRef startX() As D
         Dim prevIndex As Long
         prevIndex = PreviousIndex(i, rawCount)
         AddContourSegment SegmentType, startX, startY, endX, endY, centerX, centerY, _
-            radiusValue, SweepAngle, segmentCount, "LINE", _
+            radiusValue, sweepAngle, segmentCount, "LINE", _
             cornerEndX(prevIndex), cornerEndY(prevIndex), cornerStartX(i), cornerStartY(i), _
             0#, 0#, 0#, 0#
         If hasArc(i) Then
             AddContourSegment SegmentType, startX, startY, endX, endY, centerX, centerY, _
-                radiusValue, SweepAngle, segmentCount, "ARC", _
+                radiusValue, sweepAngle, segmentCount, "ARC", _
                 cornerStartX(i), cornerStartY(i), cornerEndX(i), cornerEndY(i), _
                 arcCenterX(i), arcCenterY(i), arcRadius(i), arcSweep(i)
         End If
@@ -31229,11 +31005,11 @@ Private Sub GetRoundedCornerGeometry(ByRef raw() As TRoundedRawPoint, ByRef offs
         ByVal rawCount As Long, ByVal prevIndex As Long, ByVal cornerIndex As Long, ByVal nextIndexValue As Long, _
         ByVal offsetDistance As Double, ByRef startX As Double, ByRef startY As Double, _
         ByRef endX As Double, ByRef endY As Double, ByRef centerX As Double, ByRef centerY As Double, _
-        ByRef radius As Double, ByRef SweepAngle As Double, ByRef hasArc As Boolean)
+        ByRef radius As Double, ByRef sweepAngle As Double, ByRef hasArc As Boolean)
     radius = GeomMax(raw(cornerIndex).radius - offsetDistance, 0#)
     GetCornerArcGeometry offsetX(prevIndex), offsetY(prevIndex), offsetX(cornerIndex), offsetY(cornerIndex), _
         offsetX(nextIndexValue), offsetY(nextIndexValue), radius, startX, startY, endX, endY, _
-        centerX, centerY, radius, SweepAngle, hasArc
+        centerX, centerY, radius, sweepAngle, hasArc
 End Sub
 
 ' Рассчитывает касательные точки, центр и signed sweep для произвольного
@@ -31242,7 +31018,7 @@ Private Sub GetCornerArcGeometry(ByVal prevX As Double, ByVal prevY As Double, _
         ByVal cornerX As Double, ByVal cornerY As Double, ByVal nextX As Double, ByVal nextY As Double, _
         ByVal inputRadius As Double, ByRef startX As Double, ByRef startY As Double, _
         ByRef endX As Double, ByRef endY As Double, ByRef centerX As Double, ByRef centerY As Double, _
-        ByRef radius As Double, ByRef SweepAngle As Double, ByRef hasArc As Boolean)
+        ByRef radius As Double, ByRef sweepAngle As Double, ByRef hasArc As Boolean)
     Dim vPrevX As Double, vPrevY As Double, vNextX As Double, vNextY As Double
     Dim prevLength As Double, nextLength As Double
     vPrevX = prevX - cornerX: vPrevY = prevY - cornerY
@@ -31252,7 +31028,7 @@ Private Sub GetCornerArcGeometry(ByVal prevX As Double, ByVal prevY As Double, _
     If prevLength <= GEOM_TOLERANCE Or nextLength <= GEOM_TOLERANCE Or inputRadius <= GEOM_TOLERANCE Then
         startX = cornerX: startY = cornerY
         endX = cornerX: endY = cornerY
-        radius = 0#: SweepAngle = 0#: hasArc = False
+        radius = 0#: sweepAngle = 0#: hasArc = False
         Exit Sub
     End If
 
@@ -31269,7 +31045,7 @@ Private Sub GetCornerArcGeometry(ByVal prevX As Double, ByVal prevY As Double, _
     If angleValue <= GEOM_TOLERANCE Or Abs(GEOM_PI - angleValue) <= GEOM_TOLERANCE Then
         startX = cornerX: startY = cornerY
         endX = cornerX: endY = cornerY
-        radius = 0#: SweepAngle = 0#: hasArc = False
+        radius = 0#: sweepAngle = 0#: hasArc = False
         Exit Sub
     End If
 
@@ -31284,7 +31060,7 @@ Private Sub GetCornerArcGeometry(ByVal prevX As Double, ByVal prevY As Double, _
     If tangentDistance <= GEOM_TOLERANCE Or inputRadius <= GEOM_TOLERANCE Then
         startX = cornerX: startY = cornerY
         endX = cornerX: endY = cornerY
-        radius = 0#: SweepAngle = 0#: hasArc = False
+        radius = 0#: sweepAngle = 0#: hasArc = False
         Exit Sub
     End If
 
@@ -31300,7 +31076,7 @@ Private Sub GetCornerArcGeometry(ByVal prevX As Double, ByVal prevY As Double, _
     If bisectorLength <= GEOM_TOLERANCE Then
         startX = cornerX: startY = cornerY
         endX = cornerX: endY = cornerY
-        radius = 0#: SweepAngle = 0#: hasArc = False
+        radius = 0#: sweepAngle = 0#: hasArc = False
         Exit Sub
     End If
     bisectorX = bisectorX / bisectorLength
@@ -31324,14 +31100,14 @@ Private Sub GetCornerArcGeometry(ByVal prevX As Double, ByVal prevY As Double, _
     End If
 
     radius = inputRadius
-    SweepAngle = endAngle - startAngle
+    sweepAngle = endAngle - startAngle
     hasArc = True
 End Sub
 
 ' Добавляет прямой или дуговой сегмент в выходной массив визуального контура.
 Private Sub AddContourSegment(ByRef SegmentType() As String, ByRef startX() As Double, ByRef startY() As Double, _
         ByRef endX() As Double, ByRef endY() As Double, ByRef centerX() As Double, ByRef centerY() As Double, _
-        ByRef radiusValue() As Double, ByRef SweepAngle() As Double, ByRef segmentCount As Long, _
+        ByRef radiusValue() As Double, ByRef sweepAngle() As Double, ByRef segmentCount As Long, _
         ByVal kind As String, ByVal sx As Double, ByVal sy As Double, ByVal ex As Double, ByVal ey As Double, _
         ByVal cx As Double, ByVal cy As Double, ByVal radius As Double, ByVal sweep As Double)
     If Abs(sx - ex) <= GEOM_TOLERANCE And Abs(sy - ey) <= GEOM_TOLERANCE Then Exit Sub
@@ -31345,7 +31121,7 @@ Private Sub AddContourSegment(ByRef SegmentType() As String, ByRef startX() As D
         ReDim centerX(1 To 16)
         ReDim centerY(1 To 16)
         ReDim radiusValue(1 To 16)
-        ReDim SweepAngle(1 To 16)
+        ReDim sweepAngle(1 To 16)
     ElseIf segmentCount > UBound(SegmentType) Then
         ReDim Preserve SegmentType(1 To UBound(SegmentType) + 16)
         ReDim Preserve startX(1 To UBound(startX) + 16)
@@ -31355,7 +31131,7 @@ Private Sub AddContourSegment(ByRef SegmentType() As String, ByRef startX() As D
         ReDim Preserve centerX(1 To UBound(centerX) + 16)
         ReDim Preserve centerY(1 To UBound(centerY) + 16)
         ReDim Preserve radiusValue(1 To UBound(radiusValue) + 16)
-        ReDim Preserve SweepAngle(1 To UBound(SweepAngle) + 16)
+        ReDim Preserve sweepAngle(1 To UBound(sweepAngle) + 16)
     End If
     SegmentType(segmentCount) = kind
     startX(segmentCount) = sx
@@ -31365,7 +31141,7 @@ Private Sub AddContourSegment(ByRef SegmentType() As String, ByRef startX() As D
     centerX(segmentCount) = cx
     centerY(segmentCount) = cy
     radiusValue(segmentCount) = radius
-    SweepAngle(segmentCount) = sweep
+    sweepAngle(segmentCount) = sweep
 End Sub
 
 ' Рассчитывает касательные точки произвольного угла и добавляет дугу заданного
@@ -31375,9 +31151,9 @@ Private Sub AppendRoundedCorner(ByRef outX() As Double, ByRef outY() As Double, 
         ByVal prevX As Double, ByVal prevY As Double, ByVal cornerX As Double, ByVal cornerY As Double, _
         ByVal nextX As Double, ByVal nextY As Double, ByVal radius As Double)
     Dim startX As Double, startY As Double, endX As Double, endY As Double
-    Dim centerX As Double, centerY As Double, SweepAngle As Double, hasArc As Boolean
+    Dim centerX As Double, centerY As Double, sweepAngle As Double, hasArc As Boolean
     GetCornerArcGeometry prevX, prevY, cornerX, cornerY, nextX, nextY, radius, _
-        startX, startY, endX, endY, centerX, centerY, radius, SweepAngle, hasArc
+        startX, startY, endX, endY, centerX, centerY, radius, sweepAngle, hasArc
     If Not hasArc Then
         AddOutputPoint outX, outY, outCount, cornerX, cornerY
         Exit Sub
@@ -31386,7 +31162,7 @@ Private Sub AppendRoundedCorner(ByRef outX() As Double, ByRef outY() As Double, 
     AddOutputPoint outX, outY, outCount, startX, startY
     AddArcPointsToOutput outX, outY, outCount, centerX, centerY, radius, _
         Atn2Local(startY - centerY, startX - centerX), _
-        Atn2Local(startY - centerY, startX - centerX) + SweepAngle
+        Atn2Local(startY - centerY, startX - centerX) + sweepAngle
 End Sub
 
 ' Дискретизирует дугу в общий массив точек контура или линии раскладки.
@@ -34385,9 +34161,9 @@ Private Sub AddContourLoop(ByVal contours As CSectionContours, ByVal hollow As C
     Dim startX() As Double, startY() As Double
     Dim endX() As Double, endY() As Double
     Dim centerX() As Double, centerY() As Double
-    Dim radiusValue() As Double, SweepAngle() As Double
+    Dim radiusValue() As Double, sweepAngle() As Double
     Dim segmentCount As Long
-    hollow.GetContourSegments openingLoop, SegmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, SweepAngle, segmentCount
+    hollow.GetContourSegments openingLoop, SegmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
 
     ' Сохраняем точные сегменты исходной геометрии. Plotter и AutoCAD export
     ' получают их из geometry snapshot, а не из результата расчета трещин.
@@ -34395,7 +34171,7 @@ Private Sub AddContourLoop(ByVal contours As CSectionContours, ByVal hollow As C
     For i = 1 To segmentCount
         If StrComp(SegmentType(i), "ARC", vbTextCompare) = 0 Then
             contours.AddContourArc "CONTOUR_" & loopName & "_ARC_" & CStr(i), _
-                startX(i), startY(i), endX(i), endY(i), centerX(i), centerY(i), radiusValue(i), SweepAngle(i), _
+                startX(i), startY(i), endX(i), endY(i), centerX(i), centerY(i), radiusValue(i), sweepAngle(i), _
                 "Дуга " & commentPart & " HollowRectangle.", loopName, IIf(openingLoop, "Opening", "Outer")
         Else
             contours.AddContourLine "CONTOUR_" & loopName & "_LINE_" & CStr(i), _
@@ -36589,15 +36365,15 @@ Private Sub AddRoundedContour(ByVal contours As CSectionContours, ByVal rounded 
     Dim startX() As Double, startY() As Double
     Dim endX() As Double, endY() As Double
     Dim centerX() As Double, centerY() As Double
-    Dim radiusValue() As Double, SweepAngle() As Double
+    Dim radiusValue() As Double, sweepAngle() As Double
     Dim segmentCount As Long
-    rounded.GetContourSegments SegmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, SweepAngle, segmentCount
+    rounded.GetContourSegments SegmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
 
     Dim i As Long
     For i = 1 To segmentCount
         If StrComp(SegmentType(i), "ARC", vbTextCompare) = 0 Then
             contours.AddContourArc "CONTOUR_ARC_" & CStr(i), startX(i), startY(i), endX(i), endY(i), _
-                centerX(i), centerY(i), radiusValue(i), SweepAngle(i), _
+                centerX(i), centerY(i), radiusValue(i), sweepAngle(i), _
                 "Дуга контура скругленного прямоугольника."
         Else
             contours.AddContourLine "CONTOUR_LINE_" & CStr(i), startX(i), startY(i), endX(i), endY(i), _
@@ -37602,11 +37378,11 @@ End Sub
 ' Сохраняет фактическую дугу с центром, радиусом и знаковым углом в радианах.
 Public Sub AddContourArc(ByVal contourID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal centerX As Double, ByVal centerY As Double, _
-        ByVal radius As Double, ByVal SweepAngle As Double, Optional ByVal commentValue As String = "Дуга контура сечения.", _
+        ByVal radius As Double, ByVal sweepAngle As Double, Optional ByVal commentValue As String = "Дуга контура сечения.", _
         Optional ByVal loopID As String = "OUTER", Optional ByVal LoopRole As String = "Outer", _
         Optional ByVal SourceID As String = "Generated")
     If radius <= 0# Then Err.Raise vbObjectError + 5284, "CSectionContours", "Радиус дуги контура должен быть положительным."
-    AddSegment "CONTOUR_ARC", contourID, startX, startY, endX, endY, centerX, centerY, radius, SweepAngle, loopID, LoopRole, SourceID, commentValue
+    AddSegment "CONTOUR_ARC", contourID, startX, startY, endX, endY, centerX, centerY, radius, sweepAngle, loopID, LoopRole, SourceID, commentValue
 End Sub
 
 ' Переносит проверенные замкнутые контуры импортированной области без изменения примитивов.
@@ -37687,8 +37463,8 @@ End Property
 Public Property Get radius(ByVal index As Long) As Double
     CheckIndex index: radius = mRadius(index)
 End Property
-Public Property Get SweepAngle(ByVal index As Long) As Double
-    CheckIndex index: SweepAngle = mEdge(index).sweep
+Public Property Get sweepAngle(ByVal index As Long) As Double
+    CheckIndex index: sweepAngle = mEdge(index).sweep
 End Property
 Public Property Get loopID(ByVal index As Long) As String
     CheckIndex index: loopID = mLoopID(index)
@@ -38514,7 +38290,7 @@ Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef outer
                 edge.centerX = 0#: edge.centerY = 0#: edge.sweep = 0#: edge.loopID = 0
                 If kind = "CONTOUR_ARC" Then
                     edge.centerX = contours.centerX(i): edge.centerY = contours.centerY(i)
-                    edge.sweep = contours.SweepAngle(i)
+                    edge.sweep = contours.sweepAngle(i)
                     ValidateArc edge
                 End If
                 If isHole Then
@@ -52344,11 +52120,11 @@ End Property
 Public Property Get normal() As Variant
     normal = mNormal
 End Property
-Public Property Get StartPoint() As Variant
-    StartPoint = mStart
+Public Property Get startPoint() As Variant
+    startPoint = mStart
 End Property
-Public Property Get EndPoint() As Variant
-    EndPoint = mEnd
+Public Property Get endPoint() As Variant
+    endPoint = mEnd
 End Property
 Public Property Get center() As Variant
     center = mCenter
@@ -52381,11 +52157,11 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: принимает численные поля Copy через объявленный Friend API,
 ' не обращаясь к private-полям другого экземпляра VBA-класса.
-Friend Sub CopyValues(ByVal StartPoint As Variant, ByVal EndPoint As Variant, ByVal center As Variant, _
+Friend Sub CopyValues(ByVal startPoint As Variant, ByVal endPoint As Variant, ByVal center As Variant, _
         ByVal normal As Variant, ByVal radius As Double, ByVal angle As Double, ByVal elevation As Double)
     Dim i As Long
     For i = 0 To 2
-        mStart(i) = StartPoint(i): mEnd(i) = EndPoint(i)
+        mStart(i) = startPoint(i): mEnd(i) = endPoint(i)
         mCenter(i) = center(i): mNormal(i) = normal(i)
     Next i
     mRadius = radius: mAngle = angle: mElevation = elevation
@@ -52571,13 +52347,13 @@ Public Property Get objectName() As String
 End Property
 
 ' Возвращает начальную точку в формате, похожем на AutoCAD COM Variant-array.
-Public Property Get StartPoint() As Variant
-    StartPoint = mStartPoint
+Public Property Get startPoint() As Variant
+    startPoint = mStartPoint
 End Property
 
 ' Возвращает конечную точку в формате, похожем на AutoCAD COM Variant-array.
-Public Property Get EndPoint() As Variant
-    EndPoint = mEndPoint
+Public Property Get endPoint() As Variant
+    endPoint = mEndPoint
 End Property
 
 ' Имитирует удаление временного AutoCAD-объекта после Explode.
@@ -54419,7 +54195,7 @@ Private Function NativeFirstEdgeAngle(ByVal region As Object) As Double
     Set copy = region.copy(): pieces = copy.Explode
     For Each line In pieces
         If Not found And line.objectName = "AcDbLine" Then
-            p = line.StartPoint: q = line.EndPoint: dx = q(0) - p(0): dy = q(1) - p(1)
+            p = line.startPoint: q = line.endPoint: dx = q(0) - p(0): dy = q(1) - p(1)
             If Abs(dx) > 0.000000001 Or Abs(dy) > 0.000000001 Then
                 If Abs(dx) < 0.000000001 Then
                     angle = Sgn(dy) * GEOM_PI / 2#
@@ -54549,7 +54325,7 @@ Private Sub CheckNativeRectangleEdges(ByRef stats As TCadStats, ByVal prefix As 
         count = count + 1
         Check stats, prefix & ".rectangle.line." & CStr(count), line.objectName = "AcDbLine"
         If line.objectName = "AcDbLine" Then
-            p = line.StartPoint: q = line.EndPoint
+            p = line.startPoint: q = line.endPoint
             wx = q(0) - p(0): wy = q(1) - p(1)
             If first Then
                 Check stats, prefix & ".rectangle.edgeDirection." & CStr(count), _
@@ -54699,7 +54475,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestAutoCADContours
 TYPE: 1
-LINES: 1248
+LINES: 1202
 ====================================================================================================
 Option Explicit
 
@@ -54741,18 +54517,23 @@ Finish:
     RunAutoCADContourTests = mReport
 End Function
 
-' ДЛЯ ТЕСТОВ: отдельная книга проверяет компактный формат, миграцию и
+' ДЛЯ ТЕСТОВ: отдельная книга проверяет единственный формат контуров и
 ' save/reopen без импорта, solve и изменений пользовательского Results.
 Public Function RunPostAudit03ContourSnapshotTests() As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     Dim fixture As Object, sheet As Object, writer As CNDMResultsWriter, model As CSectionModel, restored As CSectionModel
     Dim contours As CSectionContours, readBack As CSectionContours, query As CSectionGeometryQuery
     Dim props As CSectionPropertiesCalculator, anchor As Object, unitText As Variant, marker As Object
-    Dim solves As Long, path As String, value As Variant, number As Long, description As String, i As Long, result As String
+    Dim solves As Long, path As String, value As Variant, number As Long, description As String, i As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, unitSheet As Object
     On Error GoTo Failed
     solves = SectionEquilibriumSolveCount()
     Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.name = "Results"
-    CreatePostAudit03SnapshotAnchors fixture, sheet, False
+    CreatePostAudit03SnapshotAnchors fixture, sheet
+    Set unitSheet = fixture.Worksheets.Add
+    unitSheet.cells(1, 1).value2 = "Key": unitSheet.cells(1, 2).value2 = "Value"
+    unitSheet.cells(1, 3).value2 = "Unit": unitSheet.cells(2, 3).value2 = "-"
+    unitSheet.cells(2, 1).value2 = "Units.Length.Output"
     Set writer = New CNDMResultsWriter: Set model = New CSectionModel
     model.AddConcreteElement 0#, 0#, 10000#, 1, , , "Rectangle", 100#, 100#, 0#, , 123456#, 654321#, 12#
     model.AddRebarElement 5#, 5#, 12#, 0#, "A400"
@@ -54773,7 +54554,10 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Check "postAudit03.contours.geometry15", sheet.cells(20, 27).value2 = vbNullString
     Check "postAudit03.contours.geometryOnlyElements", sheet.cells(23, 14).value2 = vbNullString
     For Each unitText In Array("mm", "cm", "m")
-        writer.WriteSectionContours fixture, contours, sheet.cells(21, 12).value2, Nothing, CStr(unitText)
+        unitSheet.cells(2, 2).value2 = CStr(unitText)
+        Set settings = New CSystemSettingsReader: settings.LoadFromRange unitSheet.range("A1:C2")
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        writer.WriteSectionContours fixture, contours, sheet.cells(21, 12).value2, units
         Set readBack = ReadSavedSectionContours(fixture)
         CheckPostAudit03ContoursEqual "postAudit03.contours." & CStr(unitText), contours, readBack
         Set restored = ReadSectionGeometryFromResults(fixture)
@@ -54794,6 +54578,13 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Set anchor = fixture.names.item("rngNDMSectionContours").RefersToRange
     Set readBack = ReadSavedSectionContours(fixture)
     CheckPostAudit03ContoursEqual "postAudit03.contours.moved", contours, readBack
+    Check "postAudit03.contours.canonicalHeader", anchor.value2 = "RunID"
+    anchor.value2 = "RunID v1"
+    On Error Resume Next
+    Set readBack = ReadSavedSectionContours(fixture): number = Err.number: Err.clear
+    On Error GoTo Failed
+    Check "postAudit03.contours.obsoleteHeaderRejected", number = vbObjectError + 4376
+    anchor.value2 = "RunID"
     value = anchor.offset(1, 6).value2: anchor.offset(1, 6).value2 = "bad"
     On Error Resume Next
     Set readBack = ReadSavedSectionContours(fixture): number = Err.number: description = Err.description: Err.clear
@@ -54805,13 +54596,13 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Set readBack = ReadSavedSectionContours(fixture): number = Err.number: description = Err.description: Err.clear
     On Error GoTo Failed
     anchor.value2 = value
-    Check "postAudit03.contours.blankNotLegacyFallback", number = vbObjectError + 4376
+    Check "postAudit03.contours.blankHeaderRejected", number = vbObjectError + 4376
     fixture.names.item("rngNDMSectionContours").RefersTo = "=#REF!"
     On Error Resume Next
-    result = MigrateSavedSectionContours(fixture): number = Err.number: Err.clear
+    Set readBack = ReadSavedSectionContours(fixture): number = Err.number: Err.clear
     On Error GoTo Failed
     fixture.names.item("rngNDMSectionContours").RefersTo = "=Results!$GR$20"
-    Check "postAudit03.contours.brokenNameNotLegacyFallback", number <> 0 And _
+    Check "postAudit03.contours.brokenNameRejected", number = vbObjectError + 4376 And _
         fixture.names.item("rngNDMSectionProperties").RefersToRange.column = 48
     Set readBack = New CSectionContours
     readBack.AddContourCircle "ONLY_HOLE", 5#, 5#, 2#, "Только отверстие", "ONLY_HOLE", "Opening"
@@ -54821,9 +54612,20 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Check "postAudit03.contours.largeSmallCleared", Len(CStr(anchor.offset(2, 0).value2)) = 0 And Len(CStr(anchor.offset(10, 15).value2)) = 0
     readBack.clear: writer.WriteSectionContours fixture, readBack, "EMPTY"
     Set readBack = ReadSavedSectionContours(fixture)
-    Check "postAudit03.contours.emptyAvailable", readBack.count = 0 And anchor.value2 = "RunID v1"
+    Check "postAudit03.contours.emptyAvailable", readBack.count = 0 And anchor.value2 = "RunID"
+    fixture.names.item("rngNDMSectionContours").Delete
+    On Error Resume Next
+    Set readBack = ReadSavedSectionContours(fixture): number = Err.number: Err.clear
+    On Error GoTo Failed
+    Check "postAudit03.contours.missingTableRejected", number = vbObjectError + 4376
+    Check "postAudit03.contours.missingTableDoesNotInsert", fixture.names.count = 5 And _
+        fixture.names.item("rngNDMSectionProperties").RefersToRange.column = 48
+    sheet.cells(20, 27).value2 = "EndX, mm"
+    On Error Resume Next
+    Set restored = ReadSectionGeometryFromResults(fixture): number = Err.number: Err.clear
+    On Error GoTo Failed
+    Check "postAudit03.contours.expandedGeometryRejected", number = vbObjectError + 4355
     fixture.Close False: Set fixture = Nothing
-    TestPostAudit03LegacyContourMigration contours
     Check "postAudit03.contours.noSolve", SectionEquilibriumSolveCount() = solves
     GoTo Finished
 Failed:
@@ -54836,14 +54638,14 @@ Finished:
 End Function
 
 ' Создает только тестовые якоря нижнего ряда; ширины не переназначаются.
-Private Sub CreatePostAudit03SnapshotAnchors(ByVal Workbook As Object, ByVal sheet As Object, ByVal legacy As Boolean)
+Private Sub CreatePostAudit03SnapshotAnchors(ByVal Workbook As Object, ByVal sheet As Object)
     Dim names As Variant, columns As Variant, i As Long
     names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-    If legacy Then columns = Array(1, 12, 39, 47, 60) Else columns = Array(1, 12, 48, 56, 69)
+    columns = Array(1, 12, 48, 56, 69)
     For i = 0 To UBound(names)
         Workbook.names.Add CStr(names(i)), "='" & sheet.name & "'!" & sheet.cells(20, CLng(columns(i))).address
     Next i
-    If Not legacy Then Workbook.names.Add "rngNDMSectionContours", "='" & sheet.name & "'!$AC$20"
+    Workbook.names.Add "rngNDMSectionContours", "='" & sheet.name & "'!$AC$20"
 End Sub
 
 ' Поля проверяются по собственным ID и аналитической геометрии, не по площади одной фигуры.
@@ -54857,80 +54659,8 @@ Private Sub CheckPostAudit03ContoursEqual(ByVal prefix As String, ByVal expected
         Check prefix & ".type." & CStr(i), expected.SegmentType(i) = actual.SegmentType(i)
         Check prefix & ".geometry." & CStr(i), Abs(expected.startX(i) - actual.startX(i)) < 0.00000001 And Abs(expected.startY(i) - actual.startY(i)) < 0.00000001 And _
             Abs(expected.endX(i) - actual.endX(i)) < 0.00000001 And Abs(expected.endY(i) - actual.endY(i)) < 0.00000001 And _
-            Abs(expected.radius(i) - actual.radius(i)) < 0.00000001 And Abs(expected.SweepAngle(i) - actual.SweepAngle(i)) < 0.000000000001
+            Abs(expected.radius(i) - actual.radius(i)) < 0.00000001 And Abs(expected.sweepAngle(i) - actual.sweepAngle(i)) < 0.000000000001
     Next i
-End Sub
-
-' Старый 25-столбцовый снимок переносится без пересчета механики и верхних ячеек.
-Private Sub TestPostAudit03LegacyContourMigration(ByVal contours As CSectionContours)
-    Dim fixture As Object, sheet As Object, data() As Variant, row As Long, i As Long, col As Long
-    Dim headers As Variant, readBack As CSectionContours, result As String, before As Variant, actual As Variant, number As Long, description As String
-    On Error GoTo Failed
-    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.name = "Results"
-    CreatePostAudit03SnapshotAnchors fixture, sheet, True
-    headers = Array("RunID", "ElementID", "MaterialType", "X, m", "Y, m", "Area, m2", "GeometryInterpretationStatus", "Width, m", "Height, m", "Diameter, m", "Rotation, rad", "LocalIx, m4", "LocalIy, m4", "LocalIxy, m4", "Comment", "EndX, m", "EndY, m", "CenterX, m", "CenterY, m", "Radius, m", "SweepAngle, rad", "LoopID", "LoopRole", "SourceID", "Unit")
-    ReDim data(1 To contours.count + 2, 1 To 25)
-    For col = 0 To UBound(headers): data(1, col + 1) = headers(col): Next col
-    data(2, 1) = "LEGACY": data(2, 2) = "C1": data(2, 3) = "Concrete": data(2, 4) = 0.125: data(2, 5) = 0.375
-    data(2, 6) = 0.01: data(2, 7) = "Rectangle": data(2, 8) = 0.1: data(2, 9) = 0.1
-    data(2, 11) = 0.123: data(2, 12) = 0.000000123456: data(2, 13) = 0.000000654321: data(2, 14) = 0.000000000012
-    data(2, 15) = "Сохраненный комментарий"
-    For i = 1 To contours.count
-        row = i + 2
-        data(row, 1) = "LEGACY": data(row, 2) = contours.contourID(i): data(row, 3) = "Contour"
-        data(row, 4) = contours.startX(i) / 1000#: data(row, 5) = contours.startY(i) / 1000#: data(row, 7) = contours.SegmentType(i)
-        data(row, 15) = contours.comment(i): data(row, 16) = contours.endX(i) / 1000#: data(row, 17) = contours.endY(i) / 1000#
-        data(row, 18) = contours.centerX(i) / 1000#: data(row, 19) = contours.centerY(i) / 1000#: data(row, 20) = contours.radius(i) / 1000#
-        data(row, 21) = contours.SweepAngle(i): data(row, 22) = contours.loopID(i): data(row, 23) = contours.LoopRole(i)
-        data(row, 24) = contours.SourceID(i): data(row, 25) = "m"
-    Next i
-    sheet.cells(20, 12).Resize(UBound(data, 1), 25).value2 = data
-    before = sheet.cells(20, 12).Resize(2, 15).value2
-    sheet.cells(20, 39).value2 = "PROPERTIES": sheet.cells(21, 39).value2 = "KEPT"
-    sheet.cells(20, 47).value2 = "DIAGRAMS": sheet.cells(20, 60).value2 = "ANNOTATIONS"
-    sheet.range("AM5").value2 = "UPPER-USER": sheet.range("CL21").value2 = "LOWER-USER"
-    Dim sheetCount As Long, nameCount As Long
-    sheetCount = fixture.Worksheets.count: nameCount = fixture.names.count
-    sheet.Protect
-    On Error Resume Next
-    result = MigrateSavedSectionContours(fixture): number = Err.number: description = Err.description: Err.clear
-    On Error GoTo Failed
-    sheet.Unprotect
-    Check "postAudit03.migration.protectedSheet", number = vbObjectError + 4377 And InStr(description, "снимите защиту") > 0
-    Check "postAudit03.migration.protectedSheetUnchanged", fixture.Worksheets.count = sheetCount And fixture.names.count = nameCount And _
-        sheet.cells(23, 14).value2 = "Contour"
-    fixture.Protect Structure:=True
-    On Error Resume Next
-    result = MigrateSavedSectionContours(fixture): number = Err.number: Err.clear
-    On Error GoTo Failed
-    fixture.Unprotect
-    Check "postAudit03.migration.protectedStructure", number = vbObjectError + 4377
-    Check "postAudit03.migration.protectedStructureUnchanged", fixture.Worksheets.count = sheetCount And fixture.names.count = nameCount
-    result = MigrateSavedSectionContours(fixture)
-    Set readBack = ReadSavedSectionContours(fixture)
-    CheckPostAudit03ContoursEqual "postAudit03.contours.migrate", contours, readBack
-    actual = sheet.cells(20, 12).Resize(2, 15).value2
-    For row = 1 To 2
-        For col = 1 To 15: Check "postAudit03.contours.migrate.element." & CStr(row) & "." & CStr(col), CStr(before(row, col)) = CStr(actual(row, col)): Next col
-    Next row
-    Check "postAudit03.contours.migrate.properties", fixture.names.item("rngNDMSectionProperties").RefersToRange.column = 48 And sheet.cells(21, 48).value2 = "KEPT"
-    Check "postAudit03.contours.migrate.upperUser", sheet.range("AM5").value2 = "UPPER-USER"
-    Check "postAudit03.contours.migrate.lowerUser", sheet.range("CU21").value2 = "LOWER-USER"
-    Check "postAudit03.contours.migrate.unit", fixture.names.item("rngNDMSectionContours").RefersToRange.offset(1, 16).value2 = "m"
-    Check "postAudit03.contours.migrate.noOldContourRows", Len(CStr(sheet.cells(22, 14).value2)) = 0
-    Check "postAudit03.contours.migrate.titleFormat", sheet.cells(19, 12).font.name = "Arial" And _
-        sheet.cells(19, 12).font.size = 9 And sheet.cells(19, 12).HorizontalAlignment = -4108 And _
-        sheet.cells(19, 12).Interior.color = RGB(217, 217, 217)
-    result = MigrateSavedSectionContours(fixture)
-    Check "postAudit03.contours.migrate.idempotent", InStr(result, "already current") > 0 And fixture.names.item("rngNDMSectionProperties").RefersToRange.column = 48
-    Check "postAudit03.contours.migrate.noExtraSheets", fixture.Worksheets.count = 1
-    GoTo Finished
-Failed:
-    Check "postAudit03.contours.migrate.runtime." & CStr(Err.number) & "." & Err.description, False
-Finished:
-    On Error Resume Next
-    If Not fixture Is Nothing Then fixture.Close False
-    On Error GoTo 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: отдельный opening допустим при уже пустой или приближенной
@@ -55343,7 +55073,7 @@ Private Sub CheckResultsRoundTrip()
         Set anchor = ThisWorkbook.names.item("rngNDMSectionContours").RefersToRange
         Dim contourRow As Long, annotationAnchor As Object
         contourRow = 1
-        Check "snapshot." & CStr(mode) & ".contoursOwnBlock", anchor.value2 = "RunID v1" And anchor.offset(contourRow, 5).value2 Like "CONTOUR_*"
+        Check "snapshot." & CStr(mode) & ".contoursOwnBlock", anchor.value2 = "RunID" And anchor.offset(contourRow, 5).value2 Like "CONTOUR_*"
         Check "snapshot." & CStr(mode) & ".explicitRole", Len(CStr(anchor.offset(contourRow, 4).value2)) > 0
         Set annotationAnchor = ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange
         Check "snapshot." & CStr(mode) & ".noSourceAnnotations", Application.CountIf(annotationAnchor.offset(1, 0).Resize(1000, 1), "CONTOUR_*") = 0
@@ -56307,7 +56037,7 @@ Public Function RunPostAudit03SnapshotRepeatTests() As String
     AssertTrue stats, "postAudit03.repeat.widths", sheet.columns(1).ColumnWidth = 7# And sheet.columns(12).ColumnWidth = 13#
     writer.ClearResults fixture
     data = PostAudit03ReadSnapshotTable(fixture, "rngNDMSectionContours")
-    AssertTrue stats, "postAudit03.repeat.clearContourHeader", UBound(data, 1) = 1 And data(1, 1) = "RunID v1"
+    AssertTrue stats, "postAudit03.repeat.clearContourHeader", UBound(data, 1) = 1 And data(1, 1) = "RunID"
     GoTo Finished
 Failed:
     AssertTrue stats, "postAudit03.repeat.runtime." & CStr(Err.number) & "." & Err.description, False
@@ -80491,7 +80221,7 @@ Private Function Audit03ContourSnapshot(ByVal kind As String) As Variant
     Dim data() As Variant, headers As Variant, j As Long, rows As Long
     rows = 1: If Len(kind) > 0 Then rows = 2
     ReDim data(1 To rows, 1 To 17)
-    headers = Array("RunID v1", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+    headers = Array("RunID", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
         "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", _
         "SourceID", "Comment", "LengthUnit (SectionXY)")
     For j = 0 To UBound(headers): data(1, j + 1) = headers(j): Next j
@@ -83435,7 +83165,7 @@ End Function
 
 ' Проверяет целостность реальных таблиц Results: недостающая обязательная
 ' колонка и испорченная аннотация не выдаются за успешно прочитанную схему.
-' ShapeType остается допустимым именем колонки геометрии, пустая таблица
+' Принимается единственная текущая шапка геометрии, пустая таблица
 ' semantic-аннотаций не блокирует саму расчетную геометрию.
 Private Sub TestPresentationSnapshotIntegrity(ByRef stats As TProfileStats, ByRef reader As CSectionPlotDataReader)
     Dim geometry As Object, annotations As Object, oldGeometry As Variant, oldAnnotations As Variant
@@ -83451,7 +83181,7 @@ Private Sub TestPresentationSnapshotIntegrity(ByRef stats As TProfileStats, ByRe
     Check stats, "presentationConfig.snapshot.geometryHeader.controlled", code <> 9 And code <> 13 And code <> 6
     If code <> 0 Then Check stats, "presentationConfig.snapshot.geometryHeader.reason", InStr(1, reason, "GeometryInterpretationStatus", vbBinaryCompare) > 0
     data(1, 7) = "ShapeType": geometry.value2 = data
-    code = PresentationReaderError(reader, reason): Check stats, "presentationConfig.snapshot.ShapeType", code = 0
+    code = PresentationReaderError(reader, reason): Check stats, "presentationConfig.snapshot.obsoleteShapeType.rejected", code <> 0
     geometry.formula = oldGeometry
     For Each field In Array("StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text")
         data = annotations.value2
@@ -87336,7 +87066,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 7857
+LINES: 7825
 ====================================================================================================
 Option Explicit
 
@@ -87513,7 +87243,6 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestAutoCADPreviewWritesAndDrawsBoundsDimensions"
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
-    TestPlotClearsLegacyWorksheetShapes stats
     TestPlotOverlayCoordinatesMatchResults stats
     AppendLine stats, "RUN: TestGeneratedSourceDoesNotReuseAutoCADPreview"
     TestGeneratedSourceDoesNotReuseAutoCADPreview stats
@@ -88169,37 +87898,6 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
         PlotShapeRotationExists("ElementConcrete", expectedFallbackDegrees, 0.5)
 End Sub
 
-' Проверяет, что новая Chart-схема удаляет старые листовые NDMPlot_*
-' объекты. Такие Shapes могли остаться от прежней реализации и визуально
-' сдвигать точку нагрузки или оси относительно актуальной схемы внутри Chart.
-Private Sub TestPlotClearsLegacyWorksheetShapes(ByRef stats As TUiTestStats)
-    PrepareCircleInput
-    SetSystemSetting "Geometry.Source", "AutoCAD"
-
-    Dim section As CSectionModel
-    Set section = New CSectionModel
-    section.sourceType = "AutoCADImport"
-    section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
-
-    Dim writer As CNDMResultsWriter
-    Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
-
-    Dim calc As Object
-    Set calc = ThisWorkbook.Worksheets.item("Расчет")
-    Dim legacyShape As Object
-    Set legacyShape = calc.shapes.AddShape(1, 10#, 10#, 20#, 20#)
-    legacyShape.name = "NDMPlot_LegacyWorksheetShapeForTest"
-
-    AssertTrue stats, "ui.plot.legacyWorksheetShape.created", _
-        CountWorksheetPlotShapes("LegacyWorksheetShapeForTest") = 1
-
-    UpdateSectionPlotForWorkbook ThisWorkbook
-
-    AssertTrue stats, "ui.plot.legacyWorksheetShape.removed", _
-        CountWorksheetPlotShapes("LegacyWorksheetShapeForTest") = 0
-    AssertTrue stats, "ui.plot.legacyWorksheetShape.chartStillDraws", CountPlotShapes("AnnotationLine") > 0
-End Sub
 
 ' Проверяет не только наличие осей/точки, но и их взаимное положение.
 ' Для режима Transformed центр главных осей берется из Transformed.Centroid,
@@ -94491,8 +94189,8 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     AssertTrue stats, "audit03.geometrySnapshot.missingShape.named", InStr(1, description, "GeometryInterpretationStatus", vbTextCompare) > 0
     anchor.offset(0, 6).value2 = "ShapeType"
     cases = cases + 1
-    Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
-    Audit03CheckRestoredGeometry stats, "audit03.geometrySnapshot.shapeAlias", model
+    Audit03CaptureGeometrySnapshotError fixture, errorNumber, description
+    AssertTrue stats, "audit03.geometrySnapshot.obsoleteShapeHeader.rejected", errorNumber = vbObjectError + 4355
     anchor.Resize(3, 15).value2 = data
     Set comments = sheet.range("R100")
     fixture.names.Add name:="rngBatchSummary", RefersTo:="=Snapshot!" & comments.address
@@ -95199,7 +94897,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestPerformance
 TYPE: 1
-LINES: 1004
+LINES: 1116
 ====================================================================================================
 Option Explicit
 
@@ -95213,6 +94911,7 @@ Option Explicit
 #Const PERFORMANCE_CURRENT = True
 
 Private mPassed As Long, mFailed As Long, mReport As String
+
 
 #If VBA7 Then
 Private Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
@@ -96202,6 +95901,117 @@ Public Function MeasurePerformanceOverhead() As String
     Next name
     MeasurePerformanceOverhead = "validation10000=" & NumberText(validation) & Chr$(30) & "clone10000=" & NumberText(cloning) & _
         Chr$(30) & "snapshotFormat=" & NumberText(formatting)
+End Function
+
+' ДЛЯ ТЕСТОВ: готовит одинаковый сохраненный НДС до замера настоящего CAD.
+' Настройки меняются только в частной книге runner-а; расчет не входит во время
+' импорта/экспорта. Повернутый вариант проверяет повторяющиеся WCS-оболочки.
+Public Sub PrepareNativeCADPerformance(ByVal rotated As Boolean)
+    ConfigurePerformanceFixture "IMPORTED_DIRECT", 1, "Newton"
+    PerformanceSetting "Plot.Enabled", "No"
+    PerformanceSetting "Plot.AutoUpdateAfterCalculation", "No"
+    PerformanceSetting "General.ExecutionReportEnabled", "No"
+    PerformanceSetting "AutoCAD.Export.CombinationID", "PERF_01"
+    PerformanceSetting "AutoCAD.Import.MinArea", "0"
+    Dim table As Object, row As Long
+    Set table = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
+    For row = 1 To table.rows.count
+        If CStr(table.cells(row, 2).value2) = "Visualization.State" Then table.cells(row, 3).value2 = "StrengthState"
+    Next row
+    If rotated Then
+        Dim original As CSectionModel, section As CSectionModel, i As Long, c As Double, s As Double
+        Dim query As CSectionGeometryQuery, region As CConcreteRegion, settings As CSystemSettingsReader, units As CUnitSystem
+        Dim writer As CNDMResultsWriter, x As Double, y As Double
+        Set original = ReadSectionGeometryFromResults(ThisWorkbook)
+        Set section = New CSectionModel: section.sourceType = "AutoCADImport"
+        c = Cos(0.37): s = Sin(0.37)
+        For i = 1 To original.ConcreteCount
+            x = original.concreteX(i): y = original.concreteY(i)
+            section.AddConcreteElement c * x - s * y, s * x + c * y, original.concreteArea(i), 1, , , "Rectangle", 10#, 10#, 0.37
+        Next i
+        For i = 1 To original.rebarCount
+            x = original.RebarX(i): y = original.RebarY(i)
+            section.AddRebarElement c * x - s * y, s * x + c * y, original.RebarDiameter(i), original.rebarArea(i), "Periodic"
+        Next i
+        Set query = New CSectionGeometryQuery: Set region = query.circleRegion(0#, 0#, 200#)
+        Set region = query.SubtractRegion(region, query.circleRegion(c * -45# - s * 60#, s * -45# + c * 60#, 25#))
+        Set region = query.SubtractRegion(region, query.circleRegion(c * 45# - s * 60#, s * 45# + c * 60#, 25#))
+        section.contours.AddMaterialRegion region, "PERFORMANCE_CAD", "Повернутый достоверный контур теста."
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set writer = New CNDMResultsWriter
+        writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
+    End If
+    Dim result As String
+    result = MeasurePerformanceBatch("Staged")
+End Sub
+
+' ДЛЯ ТЕСТОВ: измеряет настоящий экспорт и импорт одного нового документа.
+' Сигнатура содержит все расчетные геометрические поля, без разных CAD handles;
+' подписи, слои и цвета проверяются вне таймеров. Пользовательский DWG запрещен.
+Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCount As Long) As String
+    If InStr(1, CStr(doc.Application.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) = 0 Then Err.Raise 5, , "Требуется настоящий Autodesk AutoCAD."
+    If doc.modelSpace.count <> 0 Then Err.Raise 5, , "Замер разрешен только в пустом собственном документе."
+    Dim t As Double, exportSeconds As Double, importSeconds As Double, count As Long, solves As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, importer As CAutoCADSectionModelImporter
+    Dim section As CSectionModel, entity As Object, i As Long, signature As String
+    Dim userLine As Object, userSet As Object, userPoint(0 To 2) As Double, userEnd(0 To 2) As Double
+    Dim userLayer As Object, userHandle As String, selectionCount As Long
+    Set userLayer = doc.layers.Add("PERFORMANCE_EXISTING")
+    userPoint(0) = 1000#: userEnd(0) = 1010#: userEnd(1) = 10#
+    Set userLine = doc.modelSpace.AddLine(userPoint, userEnd)
+    userLine.layer = userLayer.name: userLine.color = 173: userHandle = CStr(userLine.handle)
+    Set userSet = doc.SelectionSets.Add("PERFORMANCE_USER_SELECTION")
+    Dim userItems(0 To 0) As Object: Set userItems(0) = userLine
+    userSet.AddItems userItems: selectionCount = doc.SelectionSets.count
+    solves = SectionEquilibriumSolveCount()
+    t = PerformanceNow(): count = Audit03ExportAutoCADDocumentForTests(doc): exportSeconds = SecondsSince(t)
+    If CStr(userLine.handle) <> userHandle Or CStr(userLine.layer) <> "PERFORMANCE_EXISTING" Or userLine.color <> 173 Then Err.Raise 5, , "Экспорт изменил прежний объект чертежа."
+    Dim savedPoint As Variant: savedPoint = userLine.endPoint
+    If CDbl(savedPoint(0)) <> 1010# Or CDbl(savedPoint(1)) <> 10# Then Err.Raise 5, , "Экспорт изменил координаты прежнего объекта."
+    If doc.SelectionSets.count <> selectionCount Or userSet.count <> 1 Then Err.Raise 5, , "Экспорт изменил прежние наборы выбора или оставил временный набор."
+    For Each entity In doc.modelSpace
+        signature = signature & CStr(entity.objectName) & "|" & CStr(entity.layer) & "|" & CStr(entity.color)
+        If entity.objectName = "AcDbText" Then signature = signature & "|" & CStr(entity.TextString)
+        signature = signature & vbLf
+    Next entity
+    If noiseCount > 0 Then
+        Dim layer As Object, p(0 To 2) As Double, q(0 To 2) As Double
+        Set layer = doc.layers.Add("PERFORMANCE_UNRELATED")
+        For i = 1 To noiseCount
+            p(0) = 1000# + i: q(0) = p(0): q(1) = 10#
+            Set entity = doc.modelSpace.AddLine(p, q): entity.layer = layer.name
+        Next i
+    End If
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set importer = New CAutoCADSectionModelImporter
+    Dim before As Long: before = doc.modelSpace.count
+    t = PerformanceNow()
+    Set section = importer.ImportConfiguredModelSpace(doc.modelSpace, settings, units, doc.layers)
+    importSeconds = SecondsSince(t)
+    If doc.modelSpace.count <> before Then Err.Raise 5, , "Импорт изменил исходные CAD-объекты."
+    If SectionEquilibriumSolveCount() <> solves Then Err.Raise 5, , "Импорт/экспорт неожиданно запустил решатель."
+    For i = 1 To section.ConcreteCount
+        signature = signature & "C|" & section.ConcreteID(i) & "|" & section.ConcreteShapeType(i)
+        signature = signature & "|" & DoubleBits(section.concreteX(i)) & "|" & DoubleBits(section.concreteY(i)) & "|" & DoubleBits(section.concreteArea(i))
+        signature = signature & "|" & DoubleBits(section.concreteWidth(i)) & "|" & DoubleBits(section.concreteHeight(i)) & "|" & DoubleBits(section.concreteRotation(i))
+        signature = signature & "|" & DoubleBits(section.ConcreteLocalIx(i)) & "|" & DoubleBits(section.ConcreteLocalIy(i)) & "|" & DoubleBits(section.ConcreteLocalIxy(i)) & vbLf
+    Next i
+    For i = 1 To section.rebarCount
+        signature = signature & "R|" & section.RebarID(i) & "|" & DoubleBits(section.RebarX(i)) & "|" & DoubleBits(section.RebarY(i))
+        signature = signature & "|" & DoubleBits(section.rebarArea(i)) & "|" & DoubleBits(section.RebarDiameter(i)) & vbLf
+    Next i
+    For i = 1 To section.contours.count
+        signature = signature & "CONTOUR|" & section.contours.SegmentType(i) & "|" & section.contours.LoopRole(i)
+        signature = signature & "|" & DoubleBits(section.contours.startX(i)) & "|" & DoubleBits(section.contours.startY(i))
+        signature = signature & "|" & DoubleBits(section.contours.endX(i)) & "|" & DoubleBits(section.contours.endY(i))
+        signature = signature & "|" & DoubleBits(section.contours.centerX(i)) & "|" & DoubleBits(section.contours.centerY(i))
+        signature = signature & "|" & DoubleBits(section.contours.radius(i)) & "|" & DoubleBits(section.contours.sweepAngle(i)) & vbLf
+    Next i
+    MeasureNativeCADPerformance = "export=" & NumberText(exportSeconds) & Chr$(30) & "import=" & NumberText(importSeconds) & _
+        Chr$(30) & "entities=" & CStr(count) & Chr$(30) & "concrete=" & CStr(section.ConcreteCount) & Chr$(30) & _
+        "rebar=" & CStr(section.rebarCount) & Chr$(30) & "noise=" & CStr(noiseCount) & Chr$(30) & "signature=" & signature
 End Function
 
 

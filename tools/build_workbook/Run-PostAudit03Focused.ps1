@@ -4,7 +4,8 @@ param(
     [string[]]$Macros = @('modTestBatchCalculation.RunPostAudit03LifecycleTests'),
     [switch]$FrozenProduction,
     [string[]]$TestModules = @('modTestBatchCalculation'),
-    [switch]$AllowFailure
+    [switch]$AllowFailure,
+    [string]$SourceWorkbook = 'workbook/output/RC_Section_NDM.xlsm'
 )
 $ErrorActionPreference = 'Stop'
 $Macros = @($Macros | ForEach-Object {$_ -split ','})
@@ -12,7 +13,7 @@ $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directory = Join-Path $root $ReportDirectory
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 $target = Join-Path $directory 'RC_Section_NDM.xlsm'
-Copy-Item -LiteralPath (Join-Path $root 'docs/regression/PostAudit03/Baseline/RC_Section_NDM.xlsm') -Destination $target -Force
+Copy-Item -LiteralPath (Join-Path $root $SourceWorkbook) -Destination $target -Force
 $excel = $null; $book = $null; $records = @(); $failed = $false
 try {
     $excel = New-Object -ComObject Excel.Application
@@ -40,9 +41,6 @@ try {
             $component = $components.Add($type); $component.Name = $file.BaseName
         }
         $component.CodeModule.AddFromString(($body -split "`r?`n") -join "`r`n")
-    }
-    if (-not $FrozenProduction) {
-        Write-Output ([string]$excel.Run("'$($book.Name)'!MigrateSavedSectionContours"))
     }
     $book.Save()
     foreach ($macro in $Macros) {

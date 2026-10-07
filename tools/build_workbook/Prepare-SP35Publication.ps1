@@ -153,10 +153,7 @@ try {
         if ($field.Block -in @('rngLoadCombinations', 'rngStabilityDurationLoads')) { continue }
         if ($field.Block -eq 'rngSystemSettings') {
             $from = Find-SettingCell $sourceBook $field.Id
-            # Однократный перенос удаленного поля книги, не runtime-алиас.
-            $targetKey = $field.Id
-            if ($targetKey -eq 'AutoCAD.Layer.Contour') { $targetKey = 'AutoCAD.Common.SectionContourLayer' }
-            $to = Find-SettingCell $targetBook $targetKey
+            $to = Find-SettingCell $targetBook $field.Id
         } else {
             $offset = Get-FieldOffset $field
             $fromRange = $sourceBook.Names.Item($field.Block).RefersToRange

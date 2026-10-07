@@ -6,9 +6,12 @@ param(
     [string]$SourceWorkbook = 'docs/regression/Performance/Baseline/RC_Section_NDM.xlsm',
     [switch]$TestModuleOnly,
     [string[]]$SourceModules = @(),
+    [switch]$RefreshHelp,
+    [switch]$SkipSmoke,
     [string]$SmokeMacro = 'modTestPerformance.RunPerformanceStorageTests'
 )
 $ErrorActionPreference = 'Stop'
+$SourceModules = @($SourceModules | ForEach-Object { $_ -split ',' } | Where-Object { $_ })
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
 $base = [IO.Path]::GetFullPath((Join-Path $root $SourceWorkbook))
@@ -25,7 +28,8 @@ $baseHash = (Get-FileHash -LiteralPath $base -Algorithm SHA256).Hash
 $excel = $null; $book = $null
 function Get-ComProperty([object]$Target, [string]$Property) {
     if ($null -eq $Target) { throw "Missing COM target: $Property" }
-    $value = $Target.GetType().InvokeMember($Property, [Reflection.BindingFlags]::GetProperty, $null, $Target, $null)
+    try { $value = $Target.GetType().InvokeMember($Property, [Reflection.BindingFlags]::GetProperty, $null, $Target, $null) }
+    catch { throw "COM property $Property failed: $($_.Exception.Message)" }
     if ($null -eq $value) { throw "Missing COM property: $Property" }
     return ,$value
 }
@@ -36,6 +40,9 @@ try {
     $book = $books.Open($target)
     $components = Get-ComProperty (Get-ComProperty $book 'VBProject') 'VBComponents'
     $files = @(Get-ChildItem -LiteralPath (Join-Path $root 'src'), (Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.cls','.bas')
+    foreach ($name in $SourceModules) {
+        if (@($files | Where-Object BaseName -eq $name).Count -ne 1) { throw "Source component not found uniquely: $name" }
+    }
     if ($FrozenProduction -or $TestModuleOnly) { $files = @($files | Where-Object BaseName -eq 'modTestPerformance') }
     elseif ($SourceModules.Count -gt 0) { $files = @($files | Where-Object {$_.BaseName -eq 'modTestPerformance' -or $_.BaseName -in $SourceModules}) }
     foreach ($file in $files) {
@@ -61,9 +68,17 @@ try {
     $compile = $excel.VBE.CommandBars.FindControl(1, 578)
     if ($null -eq $compile) { throw 'VBA compile command is unavailable.' }
     if ($compile.Enabled) { $compile.Execute() }
-    if ($compile.Enabled) { throw 'VBA project did not reach compiled state.' }
+    if ($compile.Enabled) {
+        $pane = $excel.VBE.ActiveCodePane
+        $startLine=0; $startColumn=0; $endLine=0; $endColumn=0
+        $pane.GetSelection([ref]$startLine,[ref]$startColumn,[ref]$endLine,[ref]$endColumn)
+        throw "VBA compile failed at $($pane.CodeModule.Parent.Name):${startLine}: $($pane.CodeModule.Lines($startLine,1))"
+    }
+    if ($RefreshHelp) {
+        Add-SettingsInstructions $book $book.Worksheets.Item('Config') $book.Worksheets.Item(2)
+    }
     $book.Save()
-    if ($SmokeMacro) {
+    if ($SmokeMacro -and -not $SkipSmoke) {
         $result = [string]$excel.Run("'$($book.Name)'!$SmokeMacro")
         $result | Set-Content -LiteralPath (Join-Path $directoryPath 'Smoke.txt') -Encoding UTF8
         Write-Output $result
@@ -71,7 +86,7 @@ try {
     }
     $book.Close($false); $book = $null
     Restore-WorkbookPrintAreas $target $printAreas
-    [ordered]@{BaselineSHA256=$baseHash; FrozenProduction=[bool]$FrozenProduction; VBACompileCompleted=$true; SourceGitSHA=(& git -C $root rev-parse HEAD); CandidateSHA256=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash} |
+    [ordered]@{BaselineSHA256=$baseHash; FrozenProduction=[bool]$FrozenProduction; ImportedComponents=@($files.BaseName); HelpRefreshed=[bool]$RefreshHelp; VBACompileCompleted=$true; SourceGitSHA=(& git -C $root rev-parse HEAD); CandidateSHA256=(Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directoryPath 'Preparation.json') -Encoding UTF8
     if ((Get-FileHash -LiteralPath $base -Algorithm SHA256).Hash -ne $baseHash) { throw 'Baseline changed.' }
 }
