@@ -378,6 +378,9 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
     StoreFormationLoad targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc
     mResolvedCrackFormationPath = activePath
     If Not BuildPreCrackState(section, materialProvider, targetN, targetMx, targetMy) Then Exit Sub
+    ' Принятая точка подтверждает факт трещины независимо от пригодности Post.
+    ' Его отказ нужен для диагностики/fallback, но не отменяет найденный порог.
+    mCrackFormed = HasLimitPoint
     If Not EnsurePostCrackState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 
     mConverged = True
@@ -420,6 +423,7 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
 
     If mFormationPathFallbackPsi1 Then Exit Sub
 
+    mCrackFormed = HasLimitPoint
     If Not EnsurePostCrackState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 
     mConverged = True
@@ -1309,7 +1313,7 @@ End Function
 Private Function AcceptFormationState(ByVal state As CSectionStateResult, ByVal stageName As String) As Boolean
     If state Is Nothing Then
         mConverged = False
-        mCrackFormed = False
+        If Not HasLimitPoint Then mCrackFormed = False
         SetFormationResult rsInternalError, rcInternalError, stageName & ": результат НДС отсутствует."
         Exit Function
     End If
@@ -1317,7 +1321,7 @@ Private Function AcceptFormationState(ByVal state As CSectionStateResult, ByVal 
         Dim meta As CResultMeta
         Set meta = state.ResultMeta
         mConverged = False
-        mCrackFormed = False
+        If Not HasLimitPoint Then mCrackFormed = False
         SetFormationResult meta.InternalStatus, meta.ResultCode, stageName & ": " & meta.ResultComment
         Exit Function
     End If

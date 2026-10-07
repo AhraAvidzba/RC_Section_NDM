@@ -8,10 +8,12 @@ param(
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Audit03')) + [IO.Path]::DirectorySeparatorChar
+$postAuditAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PostAudit03')) + [IO.Path]::DirectorySeparatorChar
 $source = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $output = [IO.Path]::GetFullPath((Join-Path $root $OutputPath))
 foreach ($path in @($source, $output)) {
-    if (-not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) {
+    if (-not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
+        -not $path.StartsWith($postAuditAllowed, [StringComparison]::OrdinalIgnoreCase)) {
         throw 'Read-only export paths must stay in docs/regression/Audit03.'
     }
 }

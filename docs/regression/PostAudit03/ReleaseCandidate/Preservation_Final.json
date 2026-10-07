@@ -1,0 +1,16 @@
+﻿{
+    "Passed":  true,
+    "ComparedCells":  137179,
+    "ComparedWidths":  332,
+    "CellDifferences":  [
+
+                        ],
+    "WidthDifferences":  [
+
+                         ],
+    "SourceUnchanged":  true,
+    "SourceSHA256":  "D48A5FFCC17A3FC4F1F2A6FC7080952BD01BA08FCB7151CFBF15EA6E887EDB25",
+    "UserExecutionReportPreserved":  true,
+    "UserExecutionReportSHA256":  "05303BCAFDF04378813F3EE6F30109A0258D608DF92C0E280E77E593F304AC79",
+    "Exclusions":  "Results lower snapshot band and five approved crack-width heading cells only"
+}

@@ -296,14 +296,215 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Set ReadSectionGeometryFromResults = model
 End Function
 
-' Читает исходные outer/opening только из геометрического снимка Results.
-' Аннотации результата не участвуют в восстановлении исходного материала.
-' Координаты переводятся по единицам самого снимка, независимо от Config.
+' Читает только компактный v1-снимок. Отсутствующая версия или повреждение
+' явно диагностируются; устаревшие строки Geometry никогда не подмешиваются.
+' Единицы и SectionXY принадлежат снимку, а не текущему Config.
 Public Function ReadSavedSectionContours(ByVal workbook As Object, _
+        Optional ByVal contours As CSectionContours = Nothing) As CSectionContours
+    Dim anchor As Object, data As Variant, headers As Variant, i As Long, row As Long
+    On Error GoTo MissingAnchor
+    Set anchor = workbook.Names.Item("rngNDMSectionContours").RefersToRange
+    On Error GoTo 0
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionContours")
+    headers = Array("RunID v1", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+        "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", "SourceID", "Comment", "LengthUnit (SectionXY)")
+    If Not IsArray(data) Then GoTo InvalidHeader
+    If UBound(data, 2) <> 17 Then GoTo InvalidHeader
+    For i = 0 To UBound(headers)
+        If IsError(data(1, i + 1)) Then GoTo InvalidHeader
+        If CStr(data(1, i + 1)) <> CStr(headers(i)) Then GoTo InvalidHeader
+    Next i
+    Dim restored As CSectionContours: Set restored = New CSectionContours
+    Dim kind As String, id As String, loopID As String, role As String, source As String, comment As String, unitText As String
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, radius As Double, sweep As Double, angle As Double
+    Dim ids As Object: Set ids = CreateObject("Scripting.Dictionary")
+    Dim snapshotRun As Variant, geometryAnchor As Object
+    Set geometryAnchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
+    If CStr(geometryAnchor.Value2) = "RunID" Then snapshotRun = geometryAnchor.Offset(1, 0).Value2
+    For row = 2 To UBound(data, 1)
+        If IsError(data(row, 1)) Or IsNull(data(row, 1)) Then GoTo InvalidRow
+        If Len(CStr(data(row, 1))) = 0 Then GoTo InvalidRow
+        If Not IsEmpty(snapshotRun) Then
+            If CStr(data(row, 1)) <> CStr(snapshotRun) Then GoTo InvalidRow
+        Else
+            snapshotRun = data(row, 1)
+        End If
+        id = ReadSavedAnnotationText(data, anchor, row, 3)
+        loopID = ReadSavedAnnotationText(data, anchor, row, 2): role = ReadSavedAnnotationText(data, anchor, row, 5)
+        kind = ReadSavedAnnotationText(data, anchor, row, 6): source = ReadSavedAnnotationText(data, anchor, row, 15)
+        comment = ReadSavedAnnotationText(data, anchor, row, 16): unitText = ReadSavedAnnotationText(data, anchor, row, 17)
+        If Len(Trim$(id)) = 0 Or Len(Trim$(loopID)) = 0 Or Len(Trim$(unitText)) = 0 Then GoTo InvalidRow
+        If ids.Exists(id) Then GoTo InvalidRow
+        ids.Add id, True
+        If ReadGeometryNumber(data, anchor, row, 4) <> row - 1 Then GoTo InvalidRow
+        If StrComp(role, "Outer", vbTextCompare) <> 0 And StrComp(role, "Opening", vbTextCompare) <> 0 Then GoTo InvalidRow
+        x1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 7), unitText)
+        y1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 8), unitText)
+        Select Case kind
+            Case "CONTOUR_LINE"
+                x2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 9), unitText)
+                y2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 10), unitText)
+                restored.AddContourLine id, x1, y1, x2, y2, comment, loopID, role, source
+            Case "CONTOUR_CIRCLE"
+                radius = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 13), unitText)
+                restored.AddContourCircle id, x1, y1, radius, comment, loopID, role, source
+            Case "CONTOUR_ARC"
+                cx = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 11), unitText)
+                cy = OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 12), unitText)
+                sweep = ReadContourArcSweep(data(row, 14), anchor.Parent.Name & "!" & anchor.Offset(row - 1, 13).Address(False, False))
+                radius = Sqr((x1 - cx) ^ 2 + (y1 - cy) ^ 2)
+                ' Поворот вектора начала однозначно восстанавливает конец, включая большие и отрицательные дуги.
+                x2 = cx + (x1 - cx) * Cos(sweep) - (y1 - cy) * Sin(sweep)
+                y2 = cy + (x1 - cx) * Sin(sweep) + (y1 - cy) * Cos(sweep)
+                restored.AddContourArc id, x1, y1, x2, y2, cx, cy, radius, sweep, comment, loopID, role, source
+            Case Else
+                GoTo InvalidRow
+        End Select
+    Next row
+    If contours Is Nothing Then
+        Set contours = restored
+    Else
+        contours.Clear
+        CopySectionContours restored, contours
+    End If
+    Set ReadSavedSectionContours = contours
+    Exit Function
+MissingAnchor:
+    Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", "В книге отсутствует rngNDMSectionContours. Обновите формат сохраненного снимка Results."
+InvalidHeader:
+    Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", "Неверная или пустая шапка контуров v1: " & anchor.Parent.Name & "!" & anchor.Address(False, False) & ". Восстановите снимок; старый блок не используется."
+InvalidRow:
+    Err.Raise vbObjectError + 4376, "ReadSavedSectionContours", "Неверная запись контура: " & anchor.Parent.Name & "!" & anchor.Offset(row - 1, 0).Resize(1, 17).Address(False, False) & ". Проверьте ID, порядок, роль, тип и единицы."
+End Function
+
+' Переносит проверенный контейнер без геометрической классификации.
+Private Sub CopySectionContours(ByVal source As CSectionContours, ByVal target As CSectionContours)
+    Dim i As Long
+    For i = 1 To source.Count
+        Select Case source.SegmentType(i)
+            Case "CONTOUR_LINE"
+                target.AddContourLine source.ContourID(i), source.StartX(i), source.StartY(i), source.EndX(i), source.EndY(i), source.Comment(i), source.LoopID(i), source.LoopRole(i), source.SourceID(i)
+            Case "CONTOUR_CIRCLE"
+                target.AddContourCircle source.ContourID(i), source.StartX(i), source.StartY(i), source.Radius(i), source.Comment(i), source.LoopID(i), source.LoopRole(i), source.SourceID(i)
+            Case "CONTOUR_ARC"
+                target.AddContourArc source.ContourID(i), source.StartX(i), source.StartY(i), source.EndX(i), source.EndY(i), source.CenterX(i), source.CenterY(i), source.Radius(i), source.SweepAngle(i), source.Comment(i), source.LoopID(i), source.LoopRole(i), source.SourceID(i)
+        End Select
+    Next i
+End Sub
+
+' Обновляет только нижнюю полосу сохраненного Results. До мутации полностью
+' читает старые элементы/контуры и проверяет аналитические дуги. Ячейки справа
+' сдвигаются Insert внутри этой полосы, не удаляются и не затрагивают верхние
+' результаты. Повторный вызов проверяет v1 и ничего не перемещает.
+Public Function MigrateSavedSectionContours(Optional ByVal workbook As Object = Nothing) As String
+    If workbook Is Nothing Then Set workbook = ThisWorkbook
+    Dim existing As Object, contourName As Object
+    On Error Resume Next
+    Set contourName = workbook.Names.Item("rngNDMSectionContours")
+    On Error GoTo 0
+    Dim contours As CSectionContours
+    If Not contourName Is Nothing Then
+        ' Существующее, но поврежденное имя не считается отсутствующей версией.
+        Set existing = contourName.RefersToRange
+        Set contours = ReadSavedSectionContours(workbook)
+        MigrateSavedSectionContours = "Contours v1: already current; segments=" & CStr(contours.Count)
+        Exit Function
+    End If
+    Set contours = ReadLegacySectionContours(workbook)
+    Dim geometry As Object, properties As Object, ws As Object, data As Variant, elements() As Variant
+    Set geometry = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
+    Set properties = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
+    Set ws = geometry.Worksheet
+    If ws.ProtectContents Or workbook.ProtectStructure Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", _
+        "Не удалось обновить снимок Results: снимите защиту листа Results и структуры книги, затем повторите обновление. Старый снимок не изменен."
+    data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+    Dim count As Long, row As Long, col As Long, oldRows As Long, unitText As String, runID As Variant
+    unitText = "mm": runID = Empty: oldRows = 1
+    If IsArray(data) Then
+        oldRows = UBound(data, 1)
+        If UBound(data, 2) <> 15 And UBound(data, 2) <> 25 Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", "Неизвестный старый формат геометрии Results."
+        unitText = ResultHeaderUnit(data, ResultColumn(data, "X"), "mm")
+        For row = 2 To oldRows
+            If SafeText(data(row, 3)) <> "Contour" Then count = count + 1
+        Next row
+        ReDim elements(1 To count + 1, 1 To 15)
+        For col = 1 To 15: elements(1, col) = data(1, col): Next col
+        count = 1
+        For row = 2 To oldRows
+            If SafeText(data(row, 3)) <> "Contour" Then
+                count = count + 1
+                For col = 1 To 15: elements(count, col) = data(row, col): Next col
+            End If
+            If IsEmpty(runID) Then runID = data(row, 1)
+        Next row
+    End If
+    Dim i As Long, ex As Double, ey As Double, tolerance As Double
+    For i = 1 To contours.Count
+        If contours.SegmentType(i) = "CONTOUR_ARC" Then
+            ex = contours.CenterX(i) + (contours.StartX(i) - contours.CenterX(i)) * Cos(contours.SweepAngle(i)) - (contours.StartY(i) - contours.CenterY(i)) * Sin(contours.SweepAngle(i))
+            ey = contours.CenterY(i) + (contours.StartX(i) - contours.CenterX(i)) * Sin(contours.SweepAngle(i)) + (contours.StartY(i) - contours.CenterY(i)) * Cos(contours.SweepAngle(i))
+            tolerance = 0.0000001 * MaxDouble(1#, contours.Radius(i))
+            If Abs(ex - contours.EndX(i)) > tolerance Or Abs(ey - contours.EndY(i)) > tolerance Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", "Конец сохраненной дуги не согласован с центром и углом; старый снимок оставлен без изменений."
+        End If
+    Next i
+    Dim name As Variant, block As Object, bottom As Long, shift As Long, contourColumn As Long
+    bottom = geometry.Row + oldRows - 1
+    For Each name In Array("rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+        Set block = workbook.Names.Item(CStr(name)).RefersToRange
+        If Not block.Worksheet Is ws Or block.Row <> geometry.Row Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", "Нижние якоря Results должны находиться в одной строке одного листа; снимок оставлен без изменений."
+        i = block.Row + AnchoredRowCount(block) - 1
+        If i > bottom Then bottom = i
+    Next name
+    contourColumn = geometry.Column + 15 + 2
+    shift = contourColumn + 17 + 2 - properties.Column
+    ' Новый формат сначала проверяется на временном листе: новый и старый
+    ' footprints частично пересекаются, поэтому нельзя чистить старые поля раньше.
+    Dim stage As Object, writer As CNDMResultsWriter, restored As CSectionContours
+    Set stage = workbook.Worksheets.Add
+    Set writer = New CNDMResultsWriter
+    workbook.Names.Add "rngNDMSectionContours", "='" & Replace(stage.Name, "'", "''") & "'!$A$2"
+    On Error GoTo StageFailed
+    writer.WriteSectionContours workbook, contours, runID, Nothing, unitText
+    Set restored = ReadSavedSectionContours(workbook)
+    If restored.Count <> contours.Count Then Err.Raise vbObjectError + 4377, "MigrateSavedSectionContours", "Не совпало количество перенесенных сегментов."
+    workbook.Names.Item("rngNDMSectionContours").Delete
+    On Error GoTo 0
+    If shift > 0 Then ws.Cells(geometry.Row - 1, properties.Column).Resize(bottom - geometry.Row + 2, shift).Insert -4161
+    ' Старый источник удаляется только после успешного обратного чтения нового.
+    geometry.Resize(oldRows, 15).ClearContents
+    geometry.Offset(0, 15).Resize(oldRows, 10).Clear
+    If count < oldRows Then geometry.Offset(count, 0).Resize(oldRows - count, 15).Clear
+    geometry.Offset(-1, 0).Resize(1, 25).UnMerge: geometry.Offset(-1, 0).Resize(1, 25).Clear
+    If IsArray(data) Then
+        geometry.Resize(UBound(elements, 1), 15).Value2 = elements
+        writer.FormatResultsBlock geometry, UBound(elements, 1), 15, "Геометрия расчетных элементов сечения"
+    Else
+        writer.FormatResultsBlock geometry, 1, 15, "Геометрия расчетных элементов сечения"
+    End If
+    workbook.Names.Add "rngNDMSectionContours", "='" & Replace(ws.Name, "'", "''") & "'!" & ws.Cells(geometry.Row, contourColumn).Address
+    writer.WriteSectionContours workbook, restored, runID, Nothing, unitText
+    Set restored = ReadSavedSectionContours(workbook)
+    Dim alerts As Boolean: alerts = workbook.Application.DisplayAlerts
+    workbook.Application.DisplayAlerts = False: stage.Delete: workbook.Application.DisplayAlerts = alerts
+    MigrateSavedSectionContours = "Contours v1: migrated; segments=" & CStr(restored.Count) & "; shifted columns=" & CStr(MaxDouble(0#, shift))
+    Exit Function
+StageFailed:
+    Dim errorNumber As Long, errorText As String
+    errorNumber = Err.Number: errorText = Err.Description
+    On Error Resume Next
+    workbook.Names.Item("rngNDMSectionContours").Delete
+    alerts = workbook.Application.DisplayAlerts
+    workbook.Application.DisplayAlerts = False: stage.Delete: workbook.Application.DisplayAlerts = alerts
+    On Error GoTo 0
+    Err.Raise errorNumber, "MigrateSavedSectionContours", errorText & " Старый снимок не изменен."
+End Function
+
+' Узкий reader старых 25 колонок используется только миграцией до очистки.
+Private Function ReadLegacySectionContours(ByVal workbook As Object, _
         Optional ByVal contours As CSectionContours = Nothing) As CSectionContours
     If contours Is Nothing Then Set contours = New CSectionContours
     contours.Clear
-    Set ReadSavedSectionContours = contours
+    Set ReadLegacySectionContours = contours
     Dim anchor As Object, data As Variant
     Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")

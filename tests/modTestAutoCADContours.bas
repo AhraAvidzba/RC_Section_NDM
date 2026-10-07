@@ -39,6 +39,198 @@ Finish:
     RunAutoCADContourTests = mReport
 End Function
 
+' ДЛЯ ТЕСТОВ: отдельная книга проверяет компактный формат, миграцию и
+' save/reopen без импорта, solve и изменений пользовательского Results.
+Public Function RunPostAudit03ContourSnapshotTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    Dim fixture As Object, sheet As Object, writer As CNDMResultsWriter, model As CSectionModel, restored As CSectionModel
+    Dim contours As CSectionContours, readBack As CSectionContours, query As CSectionGeometryQuery
+    Dim props As CSectionPropertiesCalculator, anchor As Object, unitText As Variant, marker As Object
+    Dim solves As Long, path As String, value As Variant, number As Long, description As String, i As Long, result As String
+    On Error GoTo Failed
+    solves = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
+    CreatePostAudit03SnapshotAnchors fixture, sheet, False
+    Set writer = New CNDMResultsWriter: Set model = New CSectionModel
+    model.AddConcreteElement 0#, 0#, 10000#, 1, , , "Rectangle", 100#, 100#, 0#, , 123456#, 654321#, 12#
+    model.AddRebarElement 5#, 5#, 12#, 0#, "A400"
+    Set contours = model.Contours
+    contours.AddContourArc "OUT_BIG", 100#, 0#, 0#, -100#, 0#, 0#, 100#, 1.5 * GEOM_PI, "Большая дуга", "O1", "Outer", "TEST"
+    contours.AddContourArc "OUT_CLOSE", 0#, -100#, 100#, 0#, 0#, 0#, 100#, 0.5 * GEOM_PI, "Замыкание", "O1", "Outer", "TEST"
+    contours.AddContourArc "HOLE_BIG", 10#, 0#, 0#, 10#, 0#, 0#, 10#, -1.5 * GEOM_PI, "Отрицательная дуга", "H1", "Opening", "TEST"
+    contours.AddContourArc "HOLE_CLOSE", 0#, 10#, 10#, 0#, 0#, 0#, 10#, -0.5 * GEOM_PI, "Замыкание отверстия", "H1", "Opening", "TEST"
+    contours.AddContourCircle "OUT_CIRCLE", 250#, 0#, 50#, "Окружность", "O2", "Outer", "TEST"
+    contours.AddContourCircle "HOLE_CIRCLE", 250#, 0#, 20#, "Отдельное отверстие", "H2", "Opening", "TEST"
+    contours.AddContourLine "LINE1", 400#, 0#, 500#, 0#, "Прямая 1", "O3", "Outer", "TEST"
+    contours.AddContourLine "LINE2", 500#, 0#, 500#, 100#, "Прямая 2", "O3", "Outer", "TEST"
+    contours.AddContourLine "LINE3", 500#, 100#, 400#, 100#, "Прямая 3", "O3", "Outer", "TEST"
+    contours.AddContourLine "LINE4", 400#, 100#, 400#, 0#, "Прямая 4", "O3", "Outer", "TEST"
+    Set props = PrepareSectionSnapshot(model)
+    writer.WriteGeometryPreview fixture, model, props
+    Set marker = sheet.Cells(22, 46): marker.Value2 = "USER-GAP"
+    Check "postAudit03.contours.geometry15", sheet.Cells(20, 27).Value2 = vbNullString
+    Check "postAudit03.contours.geometryOnlyElements", sheet.Cells(23, 14).Value2 = vbNullString
+    For Each unitText In Array("mm", "cm", "m")
+        writer.WriteSectionContours fixture, contours, sheet.Cells(21, 12).Value2, Nothing, CStr(unitText)
+        Set readBack = ReadSavedSectionContours(fixture)
+        CheckPostAudit03ContoursEqual "postAudit03.contours." & CStr(unitText), contours, readBack
+        Set restored = ReadSectionGeometryFromResults(fixture)
+        CheckArea "postAudit03.contours.mechanicalA." & CStr(unitText), restored.ConcreteArea(1), 10000#
+        CheckArea "postAudit03.contours.mechanicalIx." & CStr(unitText), restored.ConcreteLocalIx(1), 123456#
+        Set query = New CSectionGeometryQuery: query.Initialize restored
+        CheckArea "postAudit03.contours.domain." & CStr(unitText), query.ConcreteDomain.Area, 12000# * GEOM_PI + 10000#
+        Check "postAudit03.contours.marker." & CStr(unitText), marker.Value2 = "USER-GAP"
+    Next unitText
+    path = ThisWorkbook.Path & "\PostAudit03_Contour_RoundTrip.xlsm"
+    Application.DisplayAlerts = False: fixture.SaveAs path, 52: fixture.Close False
+    Set fixture = Application.Workbooks.Open(path): Set sheet = fixture.Worksheets("Results")
+    Set readBack = ReadSavedSectionContours(fixture)
+    CheckPostAudit03ContoursEqual "postAudit03.contours.reopen", contours, readBack
+    Set anchor = fixture.Names.Item("rngNDMSectionContours").RefersToRange
+    anchor.Offset(-1, 0).Resize(contours.Count + 2, 17).Cut sheet.Cells(19, 200)
+    fixture.Names.Item("rngNDMSectionContours").RefersTo = "=Results!$GR$20"
+    Set anchor = fixture.Names.Item("rngNDMSectionContours").RefersToRange
+    Set readBack = ReadSavedSectionContours(fixture)
+    CheckPostAudit03ContoursEqual "postAudit03.contours.moved", contours, readBack
+    value = anchor.Offset(1, 6).Value2: anchor.Offset(1, 6).Value2 = "bad"
+    On Error Resume Next
+    Set readBack = ReadSavedSectionContours(fixture): number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo Failed
+    anchor.Offset(1, 6).Value2 = value
+    Check "postAudit03.contours.dynamicErrorAddress", number <> 0 And InStr(description, anchor.Offset(1, 6).Address(False, False)) > 0
+    value = anchor.Value2: anchor.ClearContents
+    On Error Resume Next
+    Set readBack = ReadSavedSectionContours(fixture): number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo Failed
+    anchor.Value2 = value
+    Check "postAudit03.contours.blankNotLegacyFallback", number = vbObjectError + 4376
+    fixture.Names.Item("rngNDMSectionContours").RefersTo = "=#REF!"
+    On Error Resume Next
+    result = MigrateSavedSectionContours(fixture): number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    fixture.Names.Item("rngNDMSectionContours").RefersTo = "=Results!$GR$20"
+    Check "postAudit03.contours.brokenNameNotLegacyFallback", number <> 0 And _
+        fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
+    Set readBack = New CSectionContours
+    readBack.AddContourCircle "ONLY_HOLE", 5#, 5#, 2#, "Только отверстие", "ONLY_HOLE", "Opening"
+    writer.WriteSectionContours fixture, readBack, sheet.Cells(21, 12).Value2
+    Set readBack = ReadSavedSectionContours(fixture)
+    Check "postAudit03.contours.onlyOpening", readBack.Count = 1 And readBack.LoopRole(1) = "Opening"
+    Check "postAudit03.contours.largeSmallCleared", Len(CStr(anchor.Offset(2, 0).Value2)) = 0 And Len(CStr(anchor.Offset(10, 15).Value2)) = 0
+    readBack.Clear: writer.WriteSectionContours fixture, readBack, "EMPTY"
+    Set readBack = ReadSavedSectionContours(fixture)
+    Check "postAudit03.contours.emptyAvailable", readBack.Count = 0 And anchor.Value2 = "RunID v1"
+    fixture.Close False: Set fixture = Nothing
+    TestPostAudit03LegacyContourMigration contours
+    Check "postAudit03.contours.noSolve", SectionEquilibriumSolveCount() = solves
+    GoTo Finished
+Failed:
+    Check "postAudit03.contours.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    RunPostAudit03ContourSnapshotTests = mReport & "TOTAL_POSTAUDIT03_CONTOURS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
+End Function
+
+' Создает только тестовые якоря нижнего ряда; ширины не переназначаются.
+Private Sub CreatePostAudit03SnapshotAnchors(ByVal workbook As Object, ByVal sheet As Object, ByVal legacy As Boolean)
+    Dim names As Variant, columns As Variant, i As Long
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+    If legacy Then columns = Array(1, 12, 39, 47, 60) Else columns = Array(1, 12, 48, 56, 69)
+    For i = 0 To UBound(names)
+        workbook.Names.Add CStr(names(i)), "='" & sheet.Name & "'!" & sheet.Cells(20, CLng(columns(i))).Address
+    Next i
+    If Not legacy Then workbook.Names.Add "rngNDMSectionContours", "='" & sheet.Name & "'!$AC$20"
+End Sub
+
+' Поля проверяются по собственным ID и аналитической геометрии, не по площади одной фигуры.
+Private Sub CheckPostAudit03ContoursEqual(ByVal prefix As String, ByVal expected As CSectionContours, ByVal actual As CSectionContours)
+    Check prefix & ".count", expected.Count = actual.Count
+    If expected.Count <> actual.Count Then Exit Sub
+    Dim i As Long
+    For i = 1 To expected.Count
+        Check prefix & ".id." & CStr(i), expected.ContourID(i) = actual.ContourID(i) And expected.LoopID(i) = actual.LoopID(i)
+        Check prefix & ".context." & CStr(i), expected.LoopRole(i) = actual.LoopRole(i) And expected.SourceID(i) = actual.SourceID(i) And expected.Comment(i) = actual.Comment(i)
+        Check prefix & ".type." & CStr(i), expected.SegmentType(i) = actual.SegmentType(i)
+        Check prefix & ".geometry." & CStr(i), Abs(expected.StartX(i) - actual.StartX(i)) < 0.00000001 And Abs(expected.StartY(i) - actual.StartY(i)) < 0.00000001 And _
+            Abs(expected.EndX(i) - actual.EndX(i)) < 0.00000001 And Abs(expected.EndY(i) - actual.EndY(i)) < 0.00000001 And _
+            Abs(expected.Radius(i) - actual.Radius(i)) < 0.00000001 And Abs(expected.SweepAngle(i) - actual.SweepAngle(i)) < 0.000000000001
+    Next i
+End Sub
+
+' Старый 25-столбцовый снимок переносится без пересчета механики и верхних ячеек.
+Private Sub TestPostAudit03LegacyContourMigration(ByVal contours As CSectionContours)
+    Dim fixture As Object, sheet As Object, data() As Variant, row As Long, i As Long, col As Long
+    Dim headers As Variant, readBack As CSectionContours, result As String, before As Variant, actual As Variant, number As Long, description As String
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
+    CreatePostAudit03SnapshotAnchors fixture, sheet, True
+    headers = Array("RunID", "ElementID", "MaterialType", "X, m", "Y, m", "Area, m2", "GeometryInterpretationStatus", "Width, m", "Height, m", "Diameter, m", "Rotation, rad", "LocalIx, m4", "LocalIy, m4", "LocalIxy, m4", "Comment", "EndX, m", "EndY, m", "CenterX, m", "CenterY, m", "Radius, m", "SweepAngle, rad", "LoopID", "LoopRole", "SourceID", "Unit")
+    ReDim data(1 To contours.Count + 2, 1 To 25)
+    For col = 0 To UBound(headers): data(1, col + 1) = headers(col): Next col
+    data(2, 1) = "LEGACY": data(2, 2) = "C1": data(2, 3) = "Concrete": data(2, 4) = 0.125: data(2, 5) = 0.375
+    data(2, 6) = 0.01: data(2, 7) = "Rectangle": data(2, 8) = 0.1: data(2, 9) = 0.1
+    data(2, 11) = 0.123: data(2, 12) = 0.000000123456: data(2, 13) = 0.000000654321: data(2, 14) = 0.000000000012
+    data(2, 15) = "Сохраненный комментарий"
+    For i = 1 To contours.Count
+        row = i + 2
+        data(row, 1) = "LEGACY": data(row, 2) = contours.ContourID(i): data(row, 3) = "Contour"
+        data(row, 4) = contours.StartX(i) / 1000#: data(row, 5) = contours.StartY(i) / 1000#: data(row, 7) = contours.SegmentType(i)
+        data(row, 15) = contours.Comment(i): data(row, 16) = contours.EndX(i) / 1000#: data(row, 17) = contours.EndY(i) / 1000#
+        data(row, 18) = contours.CenterX(i) / 1000#: data(row, 19) = contours.CenterY(i) / 1000#: data(row, 20) = contours.Radius(i) / 1000#
+        data(row, 21) = contours.SweepAngle(i): data(row, 22) = contours.LoopID(i): data(row, 23) = contours.LoopRole(i)
+        data(row, 24) = contours.SourceID(i): data(row, 25) = "m"
+    Next i
+    sheet.Cells(20, 12).Resize(UBound(data, 1), 25).Value2 = data
+    before = sheet.Cells(20, 12).Resize(2, 15).Value2
+    sheet.Cells(20, 39).Value2 = "PROPERTIES": sheet.Cells(21, 39).Value2 = "KEPT"
+    sheet.Cells(20, 47).Value2 = "DIAGRAMS": sheet.Cells(20, 60).Value2 = "ANNOTATIONS"
+    sheet.Range("AM5").Value2 = "UPPER-USER": sheet.Range("CL21").Value2 = "LOWER-USER"
+    Dim sheetCount As Long, nameCount As Long
+    sheetCount = fixture.Worksheets.Count: nameCount = fixture.Names.Count
+    sheet.Protect
+    On Error Resume Next
+    result = MigrateSavedSectionContours(fixture): number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo Failed
+    sheet.Unprotect
+    Check "postAudit03.migration.protectedSheet", number = vbObjectError + 4377 And InStr(description, "снимите защиту") > 0
+    Check "postAudit03.migration.protectedSheetUnchanged", fixture.Worksheets.Count = sheetCount And fixture.Names.Count = nameCount And _
+        sheet.Cells(23, 14).Value2 = "Contour"
+    fixture.Protect Structure:=True
+    On Error Resume Next
+    result = MigrateSavedSectionContours(fixture): number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    fixture.Unprotect
+    Check "postAudit03.migration.protectedStructure", number = vbObjectError + 4377
+    Check "postAudit03.migration.protectedStructureUnchanged", fixture.Worksheets.Count = sheetCount And fixture.Names.Count = nameCount
+    result = MigrateSavedSectionContours(fixture)
+    Set readBack = ReadSavedSectionContours(fixture)
+    CheckPostAudit03ContoursEqual "postAudit03.contours.migrate", contours, readBack
+    actual = sheet.Cells(20, 12).Resize(2, 15).Value2
+    For row = 1 To 2
+        For col = 1 To 15: Check "postAudit03.contours.migrate.element." & CStr(row) & "." & CStr(col), CStr(before(row, col)) = CStr(actual(row, col)): Next col
+    Next row
+    Check "postAudit03.contours.migrate.properties", fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48 And sheet.Cells(21, 48).Value2 = "KEPT"
+    Check "postAudit03.contours.migrate.upperUser", sheet.Range("AM5").Value2 = "UPPER-USER"
+    Check "postAudit03.contours.migrate.lowerUser", sheet.Range("CU21").Value2 = "LOWER-USER"
+    Check "postAudit03.contours.migrate.unit", fixture.Names.Item("rngNDMSectionContours").RefersToRange.Offset(1, 16).Value2 = "m"
+    Check "postAudit03.contours.migrate.noOldContourRows", Len(CStr(sheet.Cells(22, 14).Value2)) = 0
+    Check "postAudit03.contours.migrate.titleFormat", sheet.Cells(19, 12).Font.Name = "Arial" And _
+        sheet.Cells(19, 12).Font.Size = 9 And sheet.Cells(19, 12).HorizontalAlignment = -4108 And _
+        sheet.Cells(19, 12).Interior.Color = RGB(217, 217, 217)
+    result = MigrateSavedSectionContours(fixture)
+    Check "postAudit03.contours.migrate.idempotent", InStr(result, "already current") > 0 And fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
+    Check "postAudit03.contours.migrate.noExtraSheets", fixture.Worksheets.Count = 1
+    GoTo Finished
+Failed:
+    Check "postAudit03.contours.migrate.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+End Sub
+
 ' ДЛЯ ТЕСТОВ: отдельный opening допустим при уже пустой или приближенной
 ' сеточной границе. Точные наружные контуры здесь намеренно отсутствуют.
 Private Sub CheckOpeningWithoutOuter()
@@ -78,7 +270,7 @@ Private Sub CheckOpeningWithoutOuter()
         Check "openingOnly.noInventedOuter." & CStr(mode), InStr(region.Source, "AuthoritativeContour") = 0
         Check "openingOnly.actualHole." & CStr(mode), Not query.ContainsPoint(region, 50#, 50#)
         Check "openingOnly.sourceKept." & CStr(mode), Not opening.Deleted And section.ConcreteCount = 4
-        Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
+        Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
         query.Initialize restored
         CheckArea "openingOnly.savedRoundTrip." & CStr(mode), query.ConcreteDomain.Area, expected
@@ -107,7 +299,7 @@ Private Sub CheckAdditiveContourExport()
     section.Contours.AddContourCircle "CONTOUR_HOLE", 50#, 50#, 10#, "Круглое отверстие теста.", "HOLE", "Opening"
     section.Annotations.AddAnnotation "CRACK_REGION_CIRCLE", "CRACK_REGION_TEST", _
         50#, 50#, 12#, 0#, 0#, 0#, vbNullString, 0#, "mm", "Расчетная область теста."
-    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
     Set space = New CFakeAcadContourExport
     exported = SP35ExportSavedContoursToModelSpaceForTests(space)
     Check "export.append.first", exported = 2 And space.CreatedEntities.Count = 2
@@ -170,7 +362,7 @@ Private Sub CheckImportedContourDimensions()
             expectedB = 200# * Cos(0.47) + 80# * Sin(0.47)
             expectedH = 200# * Sin(0.47) + 80# * Cos(0.47)
         End If
-        writer.WriteGeometryPreview ThisWorkbook, section
+        writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set annotations = section.Annotations
         For i = 1 To annotations.Count
             If annotations.AnnotationID(i) = "DIM_AUTO_BOUNDS_B" Then CheckArea "dimension.width." & CStr(kind), annotations.Value(i), expectedB
@@ -226,7 +418,7 @@ Private Sub CheckMixedContourSources()
         Check prefix & ".bothOpeningsExcluded", Not query.ContainsPoint(region, 30#, 35#) And Not query.ContainsPoint(region, 70#, 65#)
         Check prefix & ".sourcesPreserved", space.Count = countBefore And Not outer.Deleted And Not opening.Deleted
         CheckArea prefix & ".mechanicalArea", section.ConcreteArea(1), 10000#
-        writer.WriteGeometryPreview ThisWorkbook, section
+        writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
         query.Initialize restored: Set region = query.ConcreteDomain
         CheckArea prefix & ".resultsArea", region.Area, 9700#
@@ -424,7 +616,7 @@ Private Sub CheckResultsRoundTrip()
                 section.Contours.AddMaterialRegion region, "HOLE_" & CStr(row), "Отдельный проем.", True
             Next row
         End If
-        writer.WriteGeometryPreview ThisWorkbook, section, units
+        writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
         ' Новые input/output настройки не меняют единицы сохраненного снимка.
         For row = 2 To unitRange.Rows.Count
             If CStr(unitRange.Cells(row, 1).Value2) = "Length" Then
@@ -446,20 +638,20 @@ Private Sub CheckResultsRoundTrip()
         Else
             Check "snapshot." & CStr(mode) & ".meshFallback", InStr(region.Source, "AuthoritativeContour") = 0
         End If
-        Set anchor = ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange
+        Set anchor = ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange
         Dim contourRow As Long, annotationAnchor As Object
-        contourRow = 1 + section.ConcreteCount + section.RebarCount
-        Check "snapshot." & CStr(mode) & ".contoursInGeometry", anchor.Offset(contourRow, 2).Value2 = "Contour"
-        Check "snapshot." & CStr(mode) & ".explicitRole", Len(CStr(anchor.Offset(contourRow, 22).Value2)) > 0
+        contourRow = 1
+        Check "snapshot." & CStr(mode) & ".contoursOwnBlock", anchor.Value2 = "RunID v1" And anchor.Offset(contourRow, 5).Value2 Like "CONTOUR_*"
+        Check "snapshot." & CStr(mode) & ".explicitRole", Len(CStr(anchor.Offset(contourRow, 4).Value2)) > 0
         Set annotationAnchor = ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
         Check "snapshot." & CStr(mode) & ".noSourceAnnotations", Application.CountIf(annotationAnchor.Offset(1, 0).Resize(1000, 1), "CONTOUR_*") = 0
-        savedValue = anchor.Offset(contourRow, 3).Value2: anchor.Offset(contourRow, 3).Value2 = "invalid"
+        savedValue = anchor.Offset(contourRow, 6).Value2: anchor.Offset(contourRow, 6).Value2 = "invalid"
         On Error Resume Next
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
         number = Err.Number: description = Err.Description: Err.Clear
         On Error GoTo Failed
-        anchor.Offset(contourRow, 3).Value2 = savedValue
-        Check "snapshot." & CStr(mode) & ".invalidCoordinate", number <> 0 And InStr(description, anchor.Offset(contourRow, 3).Address(False, False)) > 0
+        anchor.Offset(contourRow, 6).Value2 = savedValue
+        Check "snapshot." & CStr(mode) & ".invalidCoordinate", number <> 0 And InStr(description, anchor.Offset(contourRow, 6).Address(False, False)) > 0
     Next mode
     GoTo Restore
 Failed:
@@ -557,7 +749,7 @@ Private Sub CheckFiveOpenings()
     For i = 1 To 5
         Check "fiveOpenings.excluded." & CStr(i), Not query.ContainsPoint(region, 12.5 + 15# * (i - 1), 45#)
     Next i
-    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
     Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
     query.Initialize restored: Set region = query.ConcreteDomain
     CheckArea "fiveOpenings.snapshotArea", region.Area, 9750#
@@ -715,7 +907,7 @@ End Sub
 ' ДЛЯ ТЕСТОВ: проверяет настоящий Autodesk AutoCAD в собственном новом
 ' документе. Существующие чертежи не изменяются; source-объекты сохраняют
 ' handles, площадь и число сущностей после Copy/Explode production reader-а.
-Public Function RunRealAutoCADContourTests() As String
+Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Object = Nothing) As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     Dim acad As Object, doc As Object, previous As Object, polyline As Object, source As Object
     Dim circleEntity As Object, openingRegion As Object, reader As CAutoCADContourReader, query As CSectionGeometryQuery
@@ -723,7 +915,11 @@ Public Function RunRealAutoCADContourTests() As String
     Dim countBefore As Long, handleBefore As String, areaBefore As Double, mode As Long, i As Long, openings As Long
     Dim path As String, center(0 To 2) As Double, semi(0 To 3) As Double
     On Error GoTo Failed
-    Set acad = GetObject(, "AutoCAD.Application.24.2")
+    If ownedApplication Is Nothing Then
+        Set acad = GetObject(, "AutoCAD.Application.24.2")
+    Else
+        Set acad = ownedApplication
+    End If
     Check "native.actualAutoCAD", InStr(1, CStr(acad.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) > 0
     If InStr(1, CStr(acad.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) = 0 Then Err.Raise vbObjectError + 5502, , "Тест требует Autodesk AutoCAD 2023, а не SOFiPLUS."
     If acad.Documents.Count > 0 Then Set previous = acad.ActiveDocument
@@ -838,7 +1034,7 @@ Private Sub CheckNativeMixedContourRoundTrip(ByVal doc As Object)
         query.Initialize section: Set region = query.ConcreteDomain
         CheckArea prefix & ".importArea", region.Area, 9700#
         Check prefix & ".importThreeLoops", region.LoopCount = 3 And doc.ModelSpace.Count = countBefore
-        writer.WriteGeometryPreview ThisWorkbook, section, units
+        writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
         expectedExported = 3
         exported = SP35ExportSavedMaterialContoursForTests(doc, outerLayer, openingLayer)
         Check prefix & ".exportAddsAll", exported = expectedExported And doc.ModelSpace.Count = countBefore + 3
@@ -887,7 +1083,7 @@ Private Sub CheckNativeRegionBoundaryDedup(ByVal doc As Object)
     Set section = New CSectionModel: section.SourceType = "Generated"
     section.AddConcreteElement 800#, 100#, CDbl(source.Area), 1, , , "Rectangle", 100#, 100#, 0.23
     section.Contours.AddMaterialRegion region, "SAME_CONTRACT", "Достоверный контур независимо от источника."
-    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
     countBefore = doc.ModelSpace.Count: handle = CStr(source.Handle)
     exported = SP35ExportSavedMaterialContoursForTests(doc, "SP35_DEDUP_OUTER", "SP35_DEDUP_OPENING")
     Check "native.append.regionAndOpeningAdded", exported = 2 And doc.ModelSpace.Count = countBefore + 2
@@ -921,7 +1117,7 @@ Private Sub CheckNativeSharedContourOwnership(ByVal doc As Object)
     section.AddRebarElement 10#, 10#, 10#, GEOM_PI * 25#, "Rebar"
     Set reader = New CAutoCADContourReader: Set region = reader.ReadRegion(original)
     section.Contours.AddMaterialRegion region, "OWNERSHIP", "Исходный контур."
-    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
     countBefore = doc.ModelSpace.Count
     exported = SP35ExportSavedMaterialContoursForTests(doc)
     Check "native.ownership.existingSourceDoesNotBlockExport", exported = 1 And doc.ModelSpace.Count = countBefore + 1
@@ -959,7 +1155,7 @@ Private Sub CheckNativeSavedContours(ByVal doc As Object, ByVal reader As CAutoC
     Set contourEntity = Contour("AcDbRegion", edges): Set region = reader.ReadRegion(contourEntity)
     section.Contours.AddMaterialRegion region, "NATIVE_SNAPSHOT", "Точный контур с двумя проемами."
     Set units = New CUnitSystem: units.InitializeDefaults
-    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, units
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
     Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
     Set query = New CSectionGeometryQuery: query.Initialize restored
     CheckArea "native.snapshot.area", query.ConcreteDomain.Area, region.Area

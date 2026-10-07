@@ -126,7 +126,7 @@ Private Sub PrepareResults(ByRef stats As TCadStats, ByVal system As Object, ByV
     ' Worst должен принадлежать тому же тестовому snapshot, а не сводке
     ' предыдущего пользовательского расчета или другого тестового набора.
     Set summaryWriter = New CBatchResultWriter: summaryWriter.WriteSummary ThisWorkbook, batch
-    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, provider, batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
 End Sub
 
 ' Сравнивает фактические подписи и выбор цвета/слоя всех физических состояний,
@@ -1027,7 +1027,7 @@ Private Sub PrepareNativeImportedSnapshot(ByRef stats As TCadStats, ByVal system
     Check stats, prefix & ".snapshot.state", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
     If batch.ResultAt(1).DirectStateMeta.InternalStatus <> rsSuccess Then _
         Err.Raise vbObjectError + 4499, "PrepareNativeImportedSnapshot", "Не получено допустимое НДС импортированной формы: " & batch.ResultAt(1).DirectStateMeta.ResultComment
-    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, model, provider, batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, model, PrepareSectionSnapshot(model, provider), batch, units
 End Sub
 
 ' Создает фактический замкнутый polygon Region в WCS-плоскости собственного

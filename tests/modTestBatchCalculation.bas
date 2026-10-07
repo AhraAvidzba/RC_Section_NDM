@@ -24,6 +24,7 @@ Public Function RunBatchCalculationTests() As String
 
     Dim stats As TBatchTestStats
     Dim originalPr1Stability As String
+    Dim originalCrackCode As String
     Dim hasOriginalPr1Stability As Boolean
     Dim t0 As Double
     t0 = Timer
@@ -31,8 +32,12 @@ Public Function RunBatchCalculationTests() As String
     ' Общий batch-набор проверяет прочность PR1 без фильтра устойчивости.
     ' Пользовательский дефолт книги при этом не меняем: значение возвращается в конце.
     originalPr1Stability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    originalCrackCode = GetSystemSetting("SLS.Crack.Code")
     hasOriginalPr1Stability = True
     SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    ' Формульные регрессии этого набора относятся к СП 63; СП 35 имеет
+    ' собственные suites, а пользовательский default возвращается в конце.
+    SetSystemSetting "SLS.Crack.Code", "SP63"
 
     AppendLine stats, "RUN: TestBatchOneCombination"
     TestBatchOneCombination stats
@@ -272,7 +277,7 @@ Public Function RunBatchCalculationTests() As String
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
-    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability
+    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode
     RunBatchCalculationTests = stats.Report
     Exit Function
 
@@ -281,20 +286,109 @@ Failed:
     failureNumber = Err.Number
     failureSource = Err.Source
     failureDescription = Err.Description
-    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability
+    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode
     RunBatchCalculationTests = stats.Report & "RUNTIME ERROR: " & CStr(failureNumber) & _
         "; source=" & failureSource & "; description=" & failureDescription
+End Function
+
+' ДЛЯ ТЕСТОВ: готовый снимок повторно записывается после изменения Config.
+' Все инженерные поля и диаграммы сохраняются; preview не запускает solve.
+Public Function RunPostAudit03SnapshotRepeatTests() As String
+    Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object, unitRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, savedUnits As Variant, fixture As Object, sheet As Object
+    Dim section As CSectionModel, batch As CBatchSectionCalculator, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim props As CSectionPropertiesCalculator, writer As CNDMResultsWriter, names As Variant, columns As Variant
+    Dim saved As Collection, data As Variant, before As Variant, name As Variant, i As Long, row As Long, col As Long, solves As Long
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula: savedUnits = unitRange.Formula
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set batch = BuildBatchCalculator(True, section): batch.ApplySettings settings, units
+    batch.AddCombination "SNAPSHOT", -100000#, 1000000#, 200000#, "PR1", "Повторная запись", "Auto"
+    batch.Execute
+    Set props = PrepareSectionSnapshot(section, TestMaterialProvider())
+    solves = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
+        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+    columns = Array(1, 12, 29, 48, 56, 69)
+    For i = 0 To UBound(names)
+        fixture.Names.Add CStr(names(i)), "=Results!" & sheet.Cells(20, CLng(columns(i))).Address
+    Next i
+    sheet.Columns(1).ColumnWidth = 7#: sheet.Columns(12).ColumnWidth = 13#
+    Set writer = New CNDMResultsWriter: writer.WriteResults fixture, section, props, batch, units
+    Set saved = New Collection
+    For Each name In names
+        data = PostAudit03ReadSnapshotTable(fixture, CStr(name)): saved.Add data
+    Next name
+    SetSystemSetting "General.DiagramExtension", "No"
+    SetSystemSetting "Solver.MaxIterations", "1"
+    unitRange.Cells(2, 2).Value2 = "cm": unitRange.Cells(2, 4).Value2 = "m"
+    For i = 1 To 2
+        writer.WriteResults fixture, section, props, batch, units
+        For col = 0 To UBound(names)
+            data = PostAudit03ReadSnapshotTable(fixture, CStr(names(col))): before = saved.Item(col + 1)
+            AssertTrue stats, "postAudit03.repeat.shape." & CStr(i) & "." & CStr(col), _
+                UBound(data, 1) = UBound(before, 1) And UBound(data, 2) = UBound(before, 2)
+            Dim columnIndex As Long
+            For row = 1 To UBound(before, 1)
+                For columnIndex = 2 To UBound(before, 2)
+                    AssertEquals stats, "postAudit03.repeat.field." & CStr(i) & "." & CStr(col) & "." & CStr(row) & "." & CStr(columnIndex), _
+                        CStr(data(row, columnIndex)), CStr(before(row, columnIndex))
+                Next columnIndex
+            Next row
+        Next col
+    Next i
+    writer.WriteGeometryPreview fixture, section, props, units
+    AssertTrue stats, "postAudit03.repeat.previewNoSolve", SectionEquilibriumSolveCount() = solves
+    AssertTrue stats, "postAudit03.repeat.widths", sheet.Columns(1).ColumnWidth = 7# And sheet.Columns(12).ColumnWidth = 13#
+    writer.ClearResults fixture
+    data = PostAudit03ReadSnapshotTable(fixture, "rngNDMSectionContours")
+    AssertTrue stats, "postAudit03.repeat.clearContourHeader", UBound(data, 1) = 1 And data(1, 1) = "RunID v1"
+    GoTo Finished
+Failed:
+    AssertTrue stats, "postAudit03.repeat.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    If IsArray(savedUnits) Then unitRange.Formula = savedUnits
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    RunPostAudit03SnapshotRepeatTests = stats.Report & "TOTAL_POSTAUDIT03_REPEAT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: читает только непрерывную таблицу под одноячеечным якорем.
+Private Function PostAudit03ReadSnapshotTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
+    Dim anchor As Object, rows As Long, columns As Long
+    Set anchor = workbook.Names.Item(rangeName).RefersToRange
+    rows = 1: columns = 1
+    Do While Len(CStr(anchor.Offset(0, columns).Value2)) > 0
+        columns = columns + 1
+    Loop
+    Do While Len(CStr(anchor.Offset(rows, 0).Value2)) > 0
+        rows = rows + 1
+    Loop
+    PostAudit03ReadSnapshotTable = anchor.Resize(rows, columns).Value2
 End Function
 
 ' Возвращает настройки профиля, временно измененные общим batch-прогоном.
 ' Отдельные stability-тесты внутри набора сами включают устойчивость и восстанавливают
 ' ее к этому временному тестовому базису, поэтому здесь нужен только финальный возврат.
 Private Sub RestoreBatchSuiteProfileDefaults(ByVal originalPr1Stability As String, _
-                                             ByVal hasOriginalPr1Stability As Boolean)
+                                             ByVal hasOriginalPr1Stability As Boolean, ByVal originalCrackCode As String)
     If Not hasOriginalPr1Stability Then Exit Sub
 
     On Error Resume Next
     SetProfileValue "Calculation.Stability.Enabled", "PR1", originalPr1Stability
+    SetSystemSetting "SLS.Crack.Code", originalCrackCode
     On Error GoTo 0
 End Sub
 
@@ -306,18 +400,25 @@ Public Function RunBatchSummaryReserveConsistencyTest() As String
     On Error GoTo Failed
 
     Dim stats As TBatchTestStats
+    Dim originalCrackCode As String
+    originalCrackCode = GetSystemSetting("SLS.Crack.Code")
+    SetSystemSetting "SLS.Crack.Code", "SP63"
     AppendLine stats, "RUN: TestBatchSummaryWriter"
     TestBatchSummaryWriter stats
     AppendLine stats, "RUN: TestStabilitySP35TableBoundaryReservePasses"
     TestStabilitySP35TableBoundaryReservePasses stats
     AppendLine stats, "TOTAL_BATCH_SUMMARY_RESERVE: passed=" & CStr(stats.Passed) & _
         "; failed=" & CStr(stats.Failed)
+    SetSystemSetting "SLS.Crack.Code", originalCrackCode
     RunBatchSummaryReserveConsistencyTest = stats.Report
     Exit Function
 
 Failed:
     RunBatchSummaryReserveConsistencyTest = stats.Report & "RUNTIME ERROR: " & _
         CStr(Err.Number) & "; source=" & Err.Source & "; description=" & Err.Description
+    On Error Resume Next
+    If Len(originalCrackCode) > 0 Then SetSystemSetting "SLS.Crack.Code", originalCrackCode
+    On Error GoTo 0
 End Function
 
 ' Проверяет полный Execute одного LC: число результатов, определяющее
@@ -3942,36 +4043,36 @@ Private Sub TestBatchSummaryWriter(ByRef stats As TBatchTestStats)
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     AssertTrue stats, "batch.writer.crack.statusColors", _
         StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 3) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 19) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 20) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 23) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 45) And _
-        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 49) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 21) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 24) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 29) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 67) And _
+        StatusCellHasExpectedFill(resultsSheet, crackAnchor.Row, 72) And _
         CellHasNoFill(resultsSheet, crackAnchor.Row, 1) And _
         CellHasNoFill(resultsSheet, crackAnchor.Row, 10) And _
-        CellHasNoFill(resultsSheet, crackAnchor.Row, 46)
-    AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 11).Value2) = "Момент образования трещин"
+        CellHasNoFill(resultsSheet, crackAnchor.Row, 68)
+    AssertTrue stats, "batch.writer.crack.header.formationTitle", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 11).Value2) = "Начало трещинообразования"
     AssertTrue stats, "batch.writer.crack.header.crackedStateTitle", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 22).Value2) = "равновесие при заданных нагрузках"
-    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 24).Value2) = "нормальные и продольные трещины"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 26).Value2) = "равновесное состояние при заданных нагрузках"
+    AssertTrue stats, "batch.writer.crack.header.title", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 4, 46).Value2) = "нормальные трещины по СП 63"
     AssertTrue stats, "batch.writer.crack.header.mcrcNote", InStr(1, CStr(resultsSheet.Cells.Item(crackAnchor.Row - 2, 17).Value2), "моментного вектора", vbTextCompare) > 0
     AssertTrue stats, "batch.writer.crack.header.formationStatus", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 19).Value2) = "статус трещин" And _
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 19).Value2) = "PreCrackState (до трещины)" And _
         resultsSheet.Cells.Item(crackAnchor.Row - 3, 19).MergeArea.Columns.Count = 3
-    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 21).Value2) = "state"
-    AssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 23).Value2) = "статус"
+    AssertTrue stats, "batch.writer.crack.header.state", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 25).Value2) = "state"
+    AssertTrue stats, "batch.writer.crack.header.crackedStateStatus", CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 29).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.es", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 41).Value2) = "Es, MPa"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 63).Value2) = "Es, MPa"
     AssertTrue stats, "batch.writer.crack.header.widthTitle", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 41).Value2) = "ширина раскрытия нормальных трещин"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 3, 64).Value2) = "ширина раскрытия нормальных трещин"
     AssertTrue stats, "batch.writer.crack.header.widthMerge", _
-        resultsSheet.Cells.Item(crackAnchor.Row - 3, 41).MergeArea.Column = 41 And _
-        resultsSheet.Cells.Item(crackAnchor.Row - 3, 41).MergeArea.Columns.Count = 5 And _
-        resultsSheet.Cells.Item(crackAnchor.Row - 3, 41).MergeArea.Rows.Count = 1
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 64).MergeArea.Column = 64 And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 64).MergeArea.Columns.Count = 4 And _
+        resultsSheet.Cells.Item(crackAnchor.Row - 3, 64).MergeArea.Rows.Count = 1
     AssertTrue stats, "batch.writer.crack.header.normalStatusRu", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 45).Value2) = "статус"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 67).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.longStatusRu", _
-        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 49).Value2) = "статус"
+        CStr(resultsSheet.Cells.Item(crackAnchor.Row - 1, 72).Value2) = "статус"
     AssertTrue stats, "batch.writer.crack.header.notesPlain", Not resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Font.Bold And _
         resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).HorizontalAlignment = -4131
     AssertTrue stats, "batch.writer.crack.header.notesFill", CLng(resultsSheet.Cells.Item(crackAnchor.Row - 2, 15).Interior.Color) = RGB(217, 217, 217)
@@ -4129,10 +4230,10 @@ Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestSta
     If checkCrack And crackRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".crack", _
             resultsSheet.Cells.Item(summaryRow, 19).Value2, _
-            resultsSheet.Cells.Item(crackRow, 44).Value2
+            resultsSheet.Cells.Item(crackRow, 66).Value2
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".longCrack", _
             resultsSheet.Cells.Item(summaryRow, 20).Value2, _
-            resultsSheet.Cells.Item(crackRow, 48).Value2
+            resultsSheet.Cells.Item(crackRow, 71).Value2
     End If
     If checkStability And stabilityRow > 0 Then
         AssertOptionalReserve stats, "batch.writer.reserve." & combinationID & ".sp35p1eta", _
@@ -5258,8 +5359,8 @@ Public Function RunCrackCompressionParityTests() As String
 CheckComments:
         Audit03CheckResultComments stats, batch, i
         Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-        AssertEquals stats, prefix & ".currentOutput", CStr(anchor.Offset(i - 1, 22).Value2), policy.ExternalStatus(result.CrackCurrentStateMeta)
-        AssertEquals stats, prefix & ".widthOutput", CStr(anchor.Offset(i - 1, 44).Value2), policy.ExternalStatus(result.CrackWidthMeta)
+        AssertEquals stats, prefix & ".currentOutput", CStr(anchor.Offset(i - 1, 28).Value2), policy.ExternalStatus(result.CrackCurrentStateMeta)
+        AssertEquals stats, prefix & ".widthOutput", CStr(anchor.Offset(i - 1, 66).Value2), policy.ExternalStatus(result.CrackWidthMeta)
         AssertEquals stats, prefix & ".overallOutput", CStr(anchor.Offset(i - 1, 2).Value2), policy.ExternalStatus(result.CrackSummaryMeta)
         If prefix = "COMP_100._0._Auto" Then _
             AppendLine stats, "COMPRESSION_DIAGNOSTIC: " & prefix & vbCrLf & result.CrackResult.Formation.DiagnosticLog
@@ -7277,7 +7378,7 @@ Private Sub Audit03CheckWriterPalette(ByRef stats As TBatchTestStats, ByVal rows
         Select Case CStr(block)
             Case "rngBatchSummary": firstRow = firstRow + 12: columns = Array(4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
             Case "rngStrengthSummaryAnchor": columns = Array(3, 30, 49)
-            Case "rngCrackSummaryAnchor": columns = Array(3, 19, 20, 21, 23, 45, 49)
+            Case "rngCrackSummaryAnchor": columns = Array(3, 21, 24, 25, 29, 44, 67, 72)
             Case "rngStabilitySummaryAnchor": columns = Array(3, 38, 44, 53, 59, 72, 84)
         End Select
         For rowIndex = 1 To rows
@@ -8141,6 +8242,7 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
     ' В действующей таблице первая строка данных - длина, INPUT/OUTPUT
     ' занимают столбцы 2/4, а столбец 3 содержит неизменные INTERNAL.
     unitRange.Cells(2, 2).Value2 = "mm": unitRange.Cells(2, 4).Value2 = "mm"
+    SetSystemSetting "SLS.Crack.Code", "SP63"
     SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "1"
@@ -8343,7 +8445,7 @@ Private Function Audit03CrackConfigBatch(ByRef stats As TBatchTestStats, ByVal c
     AssertClose stats, prefix & ".independentFormula", width.CrackWidth, _
         width.Phi1 * width.Phi2 * width.Phi3 * width.PsiS * width.SigmaS / width.SteelEs * width.CrackSpacing, 0.0000000001
     Dim anchor As Object: Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    AssertClose stats, prefix & ".writerWidth", CDbl(anchor.Offset(0, 41).Value2), width.CrackWidth, 0.0000000001
+    AssertClose stats, prefix & ".writerWidth", CDbl(anchor.Offset(0, 63).Value2), width.CrackWidth, 0.0000000001
     AppendLine stats, "CRACK_CONFIG: " & prefix & "|width=" & FormatNumberInvariant(width.CrackWidth) & _
         "|psi=" & FormatNumberInvariant(width.PsiS) & "|sigmaSCrc=" & FormatNumberInvariant(width.SigmaSCrc) & _
         "|status=" & batch.ResultAt(1).NormalCrackStatus & "|solverCalls=" & CStr(batch.SolverCallCount)
@@ -8913,17 +9015,17 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
                 AssertTrue stats, prefix & ".widthNotBlocked", result.CrackWidthMeta.InternalStatus = rsNotApplicable
                 AssertClose stats, prefix & ".psiPreserved", result.CrackResult.Width.PsiS, 0.25, 0#
                 AssertTrue stats, prefix & ".noPsiWarning", InStr(1, result.CrackWidthMeta.ResultComment, "psi", vbTextCompare) = 0 And _
-                    InStr(1, result.CrackWidthMeta.ResultComment, "ψ", vbBinaryCompare) = 0
+                    InStr(1, result.CrackWidthMeta.ResultComment, ChrW$(&H3C8), vbBinaryCompare) = 0
                 AssertTrue stats, prefix & ".noSummaryPsiWarning", InStr(1, result.CrackSummaryMeta.ResultComment, "psi", vbTextCompare) = 0 And _
-                    InStr(1, result.CrackSummaryMeta.ResultComment, "ψ", vbBinaryCompare) = 0
+                    InStr(1, result.CrackSummaryMeta.ResultComment, ChrW$(&H3C8), vbBinaryCompare) = 0
                 AssertEquals stats, prefix & ".longitudinal", result.CrackResult.Longitudinal.Status, expectedLongitudinal
                 AssertTrue stats, prefix & ".longitudinalCalculated", result.LongitudinalCrackMeta.Calculated
                 outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", batch.CombinationID(i))
-                AssertEquals stats, prefix & ".writerState", CStr(sheet.Cells.Item(outputRow, anchor.Column + 20).Value2), "NotCracked"
-                AssertEquals stats, prefix & ".writerWidth", CStr(sheet.Cells.Item(outputRow, anchor.Column + 44).Value2), "N/A"
-                AssertEquals stats, prefix & ".writerPsiBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 35).Value2), vbNullString
-                AssertEquals stats, prefix & ".writerWidthBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 41).Value2), vbNullString
-                AssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.Item(outputRow, anchor.Column + 48).Value2), expectedLongitudinal
+                AssertEquals stats, prefix & ".writerState", CStr(sheet.Cells.Item(outputRow, anchor.Column + 24).Value2), "NotCracked"
+                AssertEquals stats, prefix & ".writerWidth", CStr(sheet.Cells.Item(outputRow, anchor.Column + 66).Value2), "N/A"
+                AssertEquals stats, prefix & ".writerPsiBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 57).Value2), vbNullString
+                AssertEquals stats, prefix & ".writerWidthBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 63).Value2), vbNullString
+                AssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.Item(outputRow, anchor.Column + 71).Value2), expectedLongitudinal
                 AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), result.CrackSummaryMeta.ResultComment
                 AppendLine stats, "NOT_CRACKED_OUTPUT: " & prefix & "|formation=" & result.CrackFormationMeta.ResultComment & _
                     "|width=" & result.CrackWidthMeta.ResultComment & "|longitudinal=" & result.LongitudinalCrackMeta.ResultComment & _
@@ -9629,7 +9731,7 @@ Private Sub TestFormationStatusFormatting(ByRef stats As TBatchTestStats)
         Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
         Dim row As Long
         For row = 1 To 3
-            Set cell = anchor.Offset(row - 1, 20)
+            Set cell = anchor.Offset(row - 1, 24)
             AssertEquals stats, "formation.format.status." & CStr(row), CStr(cell.Value2), CStr(statuses(row - 1))
             If row = 1 Then
                 AssertTrue stats, "formation.format.baseFail.fill." & CStr(index), _
@@ -9650,3 +9752,367 @@ Restore:
     If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
     On Error GoTo 0
 End Sub
+
+' ================== ДЛЯ ТЕСТОВ: ЖИЗНЕННЫЙ ЦИКЛ POSTAUDIT03 ==================
+
+' Проверяет один живой Batch против свежего объекта после повторного запуска,
+' смены профиля/порога/точки приложения. Использует реальные State/устойчивость;
+' Config и пользовательский расчетный снимок в книге-источнике не изменяются.
+Public Function RunPostAudit03LifecycleTests() As String
+    Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, code As Variant
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
+    SetSystemSetting "Stability.ElementLength", "1000"
+    SetSystemSetting "Stability.Mu1", "1": SetSystemSetting "Stability.Mu2", "1"
+    SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+    SetSystemSetting "Stability.AccidentalEccentricityUser1", "10"
+    SetSystemSetting "Stability.AccidentalEccentricityUser2", "10"
+    SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+    For Each code In Array("SP63", "SP35")
+        TestPostAudit03Lifecycle stats, CStr(code)
+    Next code
+    TestPostAudit03ModelMaterialLifecycle stats
+    GoTo Restore
+Failed:
+    AssertTrue stats, "postAudit03.lifecycle.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    On Error GoTo 0
+    RunPostAudit03LifecycleTests = stats.Report & "TOTAL_POSTAUDIT03_LIFECYCLE: passed=" & _
+        CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' Смена модели и поставщика на том же объекте не переиспользует старые центры
+' и состояния. Ранее выданный result сохраняет числа и прежние диаграммы.
+Private Sub TestPostAudit03ModelMaterialLifecycle(ByRef stats As TBatchTestStats)
+    Dim batch As CBatchSectionCalculator, fresh As CBatchSectionCalculator, section As CSectionModel
+    Dim provider As CMaterialModelProvider, concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
+    Dim settings As CSystemSettingsReader, retained As CCombinationResult, oldEps As Double, stepIndex As Long
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    For stepIndex = 1 To 3
+        Set section = New CSectionModel
+        section.AddConcreteElement -75# + 20# * stepIndex, -50#, 15000#, 1, , , "Rectangle", 150#, 100#
+        section.AddConcreteElement 75# + 20# * stepIndex, 50#, 15000#, 1, , , "Rectangle", 150#, 100#
+        section.AddRebarElement -90# + 20# * stepIndex, -60#, 20#, 0#, "A400"
+        section.AddRebarElement 90# + 20# * stepIndex, 60#, 20#, 0#, "A400"
+        Set concrete = New CConcreteMaterialParameters: concrete.Initialize 15.5, 1.1, 22#, 1.8, 30000# + 1000# * stepIndex, 30000# + 1000# * stepIndex, rbMc2:=14.6
+        Set steel = New CSteelMaterialParameters: steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+        Set provider = New CMaterialModelProvider: provider.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=False
+        If stepIndex = 1 Then Set batch = New CBatchSectionCalculator
+        batch.Initialize section, provider: Set batch.ProfileCatalog = TestProfileCatalog(): batch.ApplySettings settings
+        If stepIndex = 1 Then batch.AddCombination "REINIT", -100000#, 1000000#, 200000#, "PR1", "Исходные нагрузки", "Auto"
+        batch.Execute
+        Set fresh = New CBatchSectionCalculator: fresh.Initialize section, provider
+        Set fresh.ProfileCatalog = TestProfileCatalog(): fresh.ApplySettings settings
+        fresh.AddCombination "REINIT", -100000#, 1000000#, 200000#, "PR1", "Исходные нагрузки", "Auto": fresh.Execute
+        AssertPostAudit03BatchEqual stats, "postAudit03.lifecycle.reinitialize." & CStr(stepIndex), batch, fresh
+        If stepIndex = 1 Then
+            Set retained = batch.ResultAt(1): oldEps = retained.StrengthResult.DirectState.StateResult.Epsilon0
+        Else
+            AssertClose stats, "postAudit03.lifecycle.reinitialize.retained." & CStr(stepIndex), retained.StrengthResult.DirectState.StateResult.Epsilon0, oldEps, 0#
+        End If
+    Next stepIndex
+End Sub
+
+' Создает повторяемую нагрузку; единственные различия - запрошенное изменение
+' настроек. Прежняя опубликованная ссылка обязана остаться неизменной.
+Private Sub TestPostAudit03Lifecycle(ByRef stats As TBatchTestStats, ByVal code As String)
+    Dim batch As CBatchSectionCalculator, fresh As CBatchSectionCalculator
+    Dim settings As CSystemSettingsReader, retained As CCombinationResult
+    Dim oldMx As Double, oldEps As Double, oldStatus As String, stepIndex As Long, prefix As String
+    prefix = "postAudit03.lifecycle." & code
+    SetSystemSetting "Stability.Code", code
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set batch = BuildBatchCalculator(): batch.ApplySettings settings
+    batch.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+    batch.AddCombination "REPEAT", -120000#, 10000000#, 2000000#, "PR1", "Повторный запуск", "Auto"
+    batch.Execute
+    AssertEquals stats, prefix & ".initial.stability", batch.ResultAt(1).StabilityResult.Status, "OK"
+    Set retained = batch.ResultAt(1)
+    oldMx = retained.StabilityResult.DesignMx
+    oldEps = retained.StrengthResult.DirectState.StateResult.Epsilon0
+    oldStatus = retained.Status
+    For stepIndex = 1 To 7
+        Select Case stepIndex
+            Case 2: SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+            Case 3: SetProfileValue "Calculation.Stability.Enabled", "PR1", "Yes"
+            Case 4: SetSystemSetting "Calculation.ZeroMomentPerDepth", "100000"
+            Case 5: SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+            Case 6: batch.ApplyLoadReference 33#, -41#
+            Case 7: batch.ApplyLoadReference 0#, 0#
+        End Select
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set batch.ProfileCatalog = TestProfileCatalog()
+        batch.ApplySettings settings
+        batch.Execute
+        Set fresh = BuildBatchCalculator(): fresh.ApplySettings settings
+        fresh.SetSP35Table721 ThisWorkbook.Names.Item("rngSP35Table721").RefersToRange.Value2
+        fresh.AddCombination "REPEAT", -120000#, 10000000#, 2000000#, "PR1", "Повторный запуск", "Auto"
+        If stepIndex = 6 Then fresh.ApplyLoadReference 33#, -41#
+        fresh.Execute
+        AssertPostAudit03BatchEqual stats, prefix & ".step" & CStr(stepIndex), batch, fresh
+        AssertEquals stats, prefix & ".retained.status." & CStr(stepIndex), retained.Status, oldStatus
+        AssertClose stats, prefix & ".retained.mx." & CStr(stepIndex), retained.StabilityResult.DesignMx, oldMx, 0#
+        AssertClose stats, prefix & ".retained.eps." & CStr(stepIndex), retained.StrengthResult.DirectState.StateResult.Epsilon0, oldEps, 0#
+    Next stepIndex
+End Sub
+
+' Сверяет рабочие нагрузки, метаданные и плоскость НДС с независимым новым
+' Batch при тех же исходных числах. Допуски - штатные абсолютные solver tolerances.
+Private Sub AssertPostAudit03BatchEqual(ByRef stats As TBatchTestStats, ByVal prefix As String, _
+        ByVal actual As CBatchSectionCalculator, ByVal expected As CBatchSectionCalculator)
+    AssertClose stats, prefix & ".N", actual.N(1), expected.N(1), 0#
+    AssertClose stats, prefix & ".Mx", actual.Mx(1), expected.Mx(1), 0.000001
+    AssertClose stats, prefix & ".My", actual.My(1), expected.My(1), 0.000001
+    AssertClose stats, prefix & ".loadPointMx", actual.UserMx(1), expected.UserMx(1), 0.000001
+    AssertClose stats, prefix & ".loadPointMy", actual.UserMy(1), expected.UserMy(1), 0.000001
+    AssertEquals stats, prefix & ".status", actual.ResultAt(1).Status, expected.ResultAt(1).Status
+    AssertTrue stats, prefix & ".internalStatus", actual.ResultAt(1).OverallMeta.InternalStatus = expected.ResultAt(1).OverallMeta.InternalStatus
+    AssertTrue stats, prefix & ".resultCode", actual.ResultAt(1).OverallMeta.ResultCode = expected.ResultAt(1).OverallMeta.ResultCode
+    Dim a As CSectionStateResult, e As CSectionStateResult
+    Set a = actual.ResultAt(1).StrengthResult.DirectState.StateResult
+    Set e = expected.ResultAt(1).StrengthResult.DirectState.StateResult
+    AssertTrue stats, prefix & ".statesPresent", Not a Is Nothing And Not e Is Nothing
+    If a Is Nothing Then Exit Sub
+    If e Is Nothing Then Exit Sub
+    AssertClose stats, prefix & ".eps", a.Epsilon0, e.Epsilon0, 0.000000000001
+    AssertClose stats, prefix & ".kx", a.KappaX, e.KappaX, 0.000000000001
+    AssertClose stats, prefix & ".ky", a.KappaY, e.KappaY, 0.000000000001
+    AssertClose stats, prefix & ".Nint", a.Nint, e.Nint, 5#
+    AssertClose stats, prefix & ".Mxint", a.Mxint, e.Mxint, 5000#
+    AssertClose stats, prefix & ".Myint", a.Myint, e.Myint, 5000#
+End Sub
+
+' ДЛЯ ТЕСТОВ: настоящие отказы Pre/Post и подтвержденные исходы Formation.
+' Writer проверяется в отдельном листе; исходные таблицы и якорь восстанавливаются.
+Public Function RunPostAudit03FormationTests() As String
+    Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, savedAnchor As String, sheet As Object
+    Dim scenario As Variant, batch As CBatchSectionCalculator, provider As CMaterialModelProvider
+    Dim settings As CSystemSettingsReader, writer As CCrackSummaryWriter, anchor As Object
+    Dim result As CCombinationResult, formation As CCrackFormationResult, policy As CResultStatusPolicy
+    Dim diameter As Double, nValue As Double, mxValue As Double, pathValue As String, prefix As String, solves As Long
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    savedAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersTo
+    Set sheet = ThisWorkbook.Worksheets.Add
+    ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersTo = "='" & sheet.Name & "'!$C$20"
+    Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "No"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "Yes"
+    SetProfileValue "MaterialModel.CrackedState.ValueSet", "PR1", "SLS(II)"
+    SetProfileValue "MaterialModel.CrackedState.ConcreteDiagram", "PR1", "TwoLine"
+    SetProfileValue "MaterialModel.CrackedState.ConcreteTension", "PR1", "Ignore"
+    SetProfileValue "MaterialModel.CrackedState.SteelDiagram", "PR1", "TwoLine"
+    SetProfileValue "MaterialModel.CrackInitiation.ValueSet", "PR1", "SLS(II)"
+    SetProfileValue "MaterialModel.CrackInitiation.ConcreteDiagram", "PR1", "ThreeLine"
+    SetProfileValue "MaterialModel.CrackInitiation.ConcreteTension", "PR1", "UseDiagram"
+    SetProfileValue "MaterialModel.CrackInitiation.SteelDiagram", "PR1", "TwoLine"
+    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    SetSystemSetting "SLS.Crack.Code", "SP63"
+    SetSystemSetting "SLS.Crack.PsiMode", "AlwaysCalc"
+    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    Set policy = New CResultStatusPolicy
+    Set writer = New CCrackSummaryWriter
+    For Each scenario In Array("preFailure", "postFailure", "cracked", "notCracked", "compression", "searchBound", "nonstandardLimits")
+        prefix = "postAudit03.formation." & CStr(scenario)
+        diameter = 20#: nValue = 200000#: mxValue = 0#: pathValue = "Auto"
+        SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
+        SetSystemSetting "Solver.MaxIterations", "100"
+        If scenario = "preFailure" Then SetSystemSetting "Solver.MaxIterations", "1"
+        If scenario = "postFailure" Then diameter = 2#
+        If scenario = "notCracked" Then nValue = 1000#
+        If scenario = "compression" Then nValue = -100000#
+        Set provider = TestMaterialProvider(False)
+        If scenario = "searchBound" Then
+            nValue = -20000#: mxValue = -1#: pathValue = "lambda*Mxy"
+            SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "LoadMultiplier"
+        End If
+        If scenario = "nonstandardLimits" Then
+            nValue = 2000000#
+            Dim cp As CConcreteMaterialParameters, sp As CSteelMaterialParameters
+            Set cp = New CConcreteMaterialParameters: cp.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+            Set sp = New CSteelMaterialParameters: sp.Initialize 350#, 350#, 390#, 390#, 10000000#, 10000000#, twoLineEs2:=0.00005
+            Set provider = New CMaterialModelProvider: provider.InitializeFromParameters cp, sp, diagramExtensionEnabled:=True
+        End If
+        Set batch = BuildPostAudit03FormationBatch(diameter, provider)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        batch.ApplySettings settings
+        batch.AddCombination "FORMATION", nValue, mxValue, 0#, "PR1", CStr(scenario), pathValue
+        batch.Execute
+        Set result = batch.ResultAt(1): Set formation = result.CrackResult.Formation
+        solves = batch.SolverCallCount
+        writer.WriteSummary ThisWorkbook, batch
+        AssertTrue stats, prefix & ".noWriterSolve", batch.SolverCallCount = solves
+        AssertEquals stats, prefix & ".comment", CStr(anchor.Offset(0, 1).Value2), result.CrackSummaryMeta.ResultComment
+        If Not formation.PreCrackState Is Nothing Then AssertEquals stats, prefix & ".preDisplay", _
+            CStr(anchor.Offset(0, 20).Value2), policy.ExternalStatus(formation.PreCrackState.ResultMeta)
+        If Not formation.PostCrackState Is Nothing Then AssertEquals stats, prefix & ".postDisplay", _
+            CStr(anchor.Offset(0, 23).Value2), policy.ExternalStatus(formation.PostCrackState.ResultMeta)
+        Select Case CStr(scenario)
+            Case "preFailure"
+                AssertTrue stats, prefix & ".analyticNumberPrepared", formation.Ncrc > 0#
+                AssertTrue stats, prefix & ".preFailed", Not formation.PreCrackState.Converged
+                AssertTrue stats, prefix & ".noPoint", Not formation.HasLimitPoint
+                AssertTrue stats, prefix & ".unknownFact", Not formation.ConfirmedNotCracked And Not formation.ConfirmedCracked
+                AssertEquals stats, prefix & ".noFalseNotCracked", CStr(anchor.Offset(0, 24).Value2), policy.ExternalStatus(formation.ResultMeta)
+                AssertEquals stats, prefix & ".noFalseNcrc", CStr(anchor.Offset(0, 12).Value2), policy.NotApplicable
+            Case "postFailure"
+                AssertTrue stats, prefix & ".acceptedPre", formation.PreCrackState.Converged And formation.PreCrackState.WithinPhysicalRange
+                AssertTrue stats, prefix & ".postFailed", Not formation.PostCrackState.Converged Or Not formation.PostCrackState.WithinPhysicalRange
+                AssertTrue stats, prefix & ".pointPreserved", formation.HasLimitPoint
+                AssertTrue stats, prefix & ".factPreserved", formation.ConfirmedCracked And Not formation.ConfirmedNotCracked
+                AssertEquals stats, prefix & ".displayCracked", CStr(anchor.Offset(0, 24).Value2), "Cracked"
+                AssertClose stats, prefix & ".centralNcrcWithoutWidth", CDbl(anchor.Offset(0, 12).Value2), formation.Ncrc, 0#
+                AssertTrue stats, prefix & ".widthUnavailable", Not result.CrackWidthMeta.Calculated
+            Case "cracked"
+                AssertTrue stats, prefix & ".acceptedPoint", formation.HasLimitPoint And formation.ConfirmedCracked
+                AssertEquals stats, prefix & ".display", CStr(anchor.Offset(0, 24).Value2), "Cracked"
+                AssertTrue stats, prefix & ".widthCalculated", result.CrackWidthMeta.Calculated
+            Case "notCracked", "compression"
+                AssertTrue stats, prefix & ".confirmedNoCrack", formation.ConfirmedNotCracked
+                AssertEquals stats, prefix & ".display", CStr(anchor.Offset(0, 24).Value2), "NotCracked"
+                AssertTrue stats, prefix & ".noWidth", Not result.CrackWidthMeta.Calculated
+            Case "searchBound"
+                AssertTrue stats, prefix & ".technicalCode", formation.ResultMeta.ResultCode = rcSearchBoundReached
+                AssertTrue stats, prefix & ".noPointNoFact", Not formation.HasLimitPoint And Not formation.ConfirmedNotCracked And Not formation.ConfirmedCracked
+                AssertEquals stats, prefix & ".displayActualFailure", CStr(anchor.Offset(0, 24).Value2), policy.ExternalStatus(formation.ResultMeta)
+            Case "nonstandardLimits"
+                AssertTrue stats, prefix & ".validDifferentOrder", provider.SteelTensionLimitFromSpec(formation.PreCrackState.MaterialSpec) < provider.ConcreteTensionLimitFromSpec(formation.PreCrackState.MaterialSpec)
+                AssertTrue stats, prefix & ".physicalPreFail", formation.PreCrackState.Converged And Not formation.PreCrackState.WithinPhysicalRange
+                AssertEquals stats, prefix & ".physicalDisplay", CStr(anchor.Offset(0, 20).Value2), "FAIL"
+                AssertTrue stats, prefix & ".noFalseNotCracked", Not formation.ConfirmedNotCracked
+        End Select
+        AppendLine stats, prefix & "; status=" & policy.ExternalStatus(formation.ResultMeta) & _
+            "; point=" & CStr(formation.HasLimitPoint) & "; comment=" & formation.ResultMeta.ResultComment
+    Next scenario
+    GoTo Restore
+Failed:
+    AssertTrue stats, "postAudit03.formation.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    If Len(savedAnchor) > 0 Then ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersTo = savedAnchor
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    On Error GoTo 0
+    RunPostAudit03FormationTests = stats.Report & "TOTAL_POSTAUDIT03_FORMATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: симметричная модель с изменяемой арматурой, без искусственной meta.
+Private Function BuildPostAudit03FormationBatch(ByVal diameter As Double, ByVal provider As CMaterialModelProvider) As CBatchSectionCalculator
+    Dim section As CSectionModel, x As Variant, y As Variant, batch As CBatchSectionCalculator
+    Set section = New CSectionModel
+    For Each x In Array(-75#, 75#)
+        For Each y In Array(-50#, 50#)
+            section.AddConcreteElement CDbl(x), CDbl(y), 15000#, 1, , , "Rectangle", 150#, 100#
+        Next y
+    Next x
+    For Each x In Array(-90#, 90#)
+        For Each y In Array(-60#, 60#)
+            section.AddRebarElement CDbl(x), CDbl(y), diameter, 0#, "A400"
+        Next y
+    Next x
+    Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
+    Set batch.ProfileCatalog = TestProfileCatalog()
+    Set BuildPostAudit03FormationBatch = batch
+End Function
+
+' ДЛЯ ТЕСТОВ: владельцы готовят физический/extended-снимок по фактическим
+' материалам. Последующая замена исходных диаграмм не меняет опубликованный state.
+Public Function RunPostAudit03SnapshotOwnerTests() As String
+    Dim stats As TBatchTestStats, section As CSectionModel, concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Dim spec As CMaterialModelSpec, solver As CSectionSolver, state As CSectionStateResult, data As Variant, again As Variant
+    Dim strains(1 To 5) As Double, stresses(1 To 5) As Double, physical As CMaterialDiagram, mode As Long, i As Long
+    Dim solves As Long, eps As Double, actualStrain As Double, expectedStress As Double, number As Long
+    Dim properties As CSectionPropertiesCalculator, provider As CMaterialModelProvider, baseline As CSectionPropertiesCalculator
+    On Error GoTo Failed
+    solves = SectionEquilibriumSolveCount()
+    Set section = New CSectionModel
+    section.AddConcreteElement -50#, -30#, 3000#, 1, , , "Rectangle", 100#, 60#
+    section.AddConcreteElement 50#, 30#, 3000#, 1, , , "Rectangle", 100#, 60#
+    section.AddRebarElement -40#, 20#, 20#, 0#, "A400"
+    section.AddRebarElement 40#, -20#, 20#, 0#, "A400"
+    Set spec = New CMaterialModelSpec: spec.Initialize "ULS(I)", "ThreeLine", "UseDiagram", "TwoLine"
+    For mode = 0 To 1
+        Set concrete = New CMaterialDiagram: Set steel = New CMaterialDiagram
+        strains(1) = -10#: strains(2) = -0.0035: strains(3) = 0#: strains(4) = 0.0001: strains(5) = 10#
+        stresses(1) = -1000#: stresses(2) = -15#: stresses(3) = 0#: stresses(4) = 1#: stresses(5) = 1000#
+        concrete.InitializeFromArrays strains, stresses, 5, -0.0035, 0.0001, True, True
+        strains(2) = -0.025: strains(4) = 0.025
+        stresses(1) = -20000#: stresses(2) = -350#: stresses(3) = 0#: stresses(4) = 350#: stresses(5) = 20000#
+        steel.InitializeFromArrays strains, stresses, 5, -0.025, 0.025, True, True
+        eps = -0.001: If mode = 1 Then eps = -0.01
+        Set solver = New CSectionSolver
+        solver.EvaluateStrainPlane section, concrete, steel, eps, 0.000001, -0.0000005
+        AssertTrue stats, "postAudit03.snapshot.confirm." & CStr(mode), solver.ConfirmEquilibrium(solver.Nint, solver.Mxint, solver.Myint)
+        Set state = New CSectionStateResult
+        state.InitializeFromSolver sstStrengthState, cpStrength, spec, solver, mode = 1, mode = 0
+        data = state.PrepareElementSnapshot(section)
+        AssertTrue stats, "postAudit03.snapshot.materials." & CStr(mode), state.HasMaterialSnapshot
+        AssertTrue stats, "postAudit03.snapshot.points." & CStr(mode), state.ConcreteDiagramSnapshot.PointCount = 3 + 2 * mode
+        For i = 1 To 4
+            If i <= 2 Then
+                actualStrain = eps + 0.000001 * section.ConcreteY(i) - 0.0000005 * section.ConcreteX(i)
+                Set physical = concrete.Clone(mode = 0)
+            Else
+                actualStrain = eps + 0.000001 * section.RebarY(i - 2) - 0.0000005 * section.RebarX(i - 2)
+                Set physical = steel.Clone(mode = 0)
+            End If
+            expectedStress = physical.GetStress(actualStrain)
+            AssertClose stats, "postAudit03.snapshot.strain." & CStr(mode) & "." & CStr(i), CDbl(data(i, 3)), actualStrain, 0#
+            AssertClose stats, "postAudit03.snapshot.stress." & CStr(mode) & "." & CStr(i), CDbl(data(i, 4)), expectedStress, 0.000000001
+        Next i
+        For i = 1 To 5: stresses(i) = stresses(i) * 2#: Next i
+        concrete.InitializeFromArrays strains, stresses, 5
+        steel.InitializeFromArrays strains, stresses, 5
+        again = state.PrepareElementSnapshot(section)
+        For i = 1 To 4
+            AssertClose stats, "postAudit03.snapshot.retained." & CStr(mode) & "." & CStr(i), CDbl(again(i, 4)), CDbl(data(i, 4)), 0#
+        Next i
+        On Error Resume Next
+        state.ConcreteDiagramSnapshot.InitializeFromArrays strains, stresses, 5
+        number = Err.Number: Err.Clear
+        On Error GoTo Failed
+        AssertTrue stats, "postAudit03.snapshot.frozen." & CStr(mode), number = vbObjectError + 3114
+    Next mode
+    Set provider = TestMaterialProvider()
+    Set properties = PrepareSectionSnapshot(section, provider)
+    Set baseline = New CSectionPropertiesCalculator: baseline.CalculateConcrete section
+    AssertClose stats, "postAudit03.snapshot.area", properties.Area, baseline.Area, 0#
+    AssertClose stats, "postAudit03.snapshot.Ix", properties.Ixc, baseline.Ixc, 0#
+    AssertClose stats, "postAudit03.snapshot.Iy", properties.Iyc, baseline.Iyc, 0#
+    AssertTrue stats, "postAudit03.snapshot.noSolve", SectionEquilibriumSolveCount() = solves
+    section.AddRebarElement 0#, 0#, 10#, 0#, "A400"
+    On Error Resume Next
+    again = state.PrepareElementSnapshot(section): number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    AssertTrue stats, "postAudit03.snapshot.modelRevisionRejected", number = vbObjectError + 3974
+    On Error Resume Next
+    properties.ValidateSnapshot section: number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    AssertTrue stats, "postAudit03.snapshot.propertiesRevisionRejected", number = vbObjectError + 2215
+    GoTo Finished
+Failed:
+    AssertTrue stats, "postAudit03.snapshot.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    RunPostAudit03SnapshotOwnerTests = stats.Report & "TOTAL_POSTAUDIT03_SNAPSHOT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function

@@ -62,6 +62,11 @@ Private mHasConcreteCompression As Boolean ' True, если в состояни�
 Private mHasConcreteTension As Boolean ' True, если бетон реально работает на растяжение.
 Private mHasSteelCompression As Boolean ' True, если есть сжатая арматура.
 Private mHasSteelTension As Boolean ' True, если есть растянутая арматура.
+Private mSnapshotSection As CSectionModel ' Общая фактически решенная модель; ревизия запрещает подмену геометрии.
+Private mSnapshotRevision As Long ' Ревизия геометрии при фиксации состояния.
+Private mSnapshotConcrete As CMaterialDiagram ' Неизменяемая фактическая диаграмма бетона.
+Private mSnapshotSteel As CMaterialDiagram ' Неизменяемая фактическая диаграмма арматуры.
+Private Const ELEMENT_ZERO_TOLERANCE As Double = 0.000000001 ' Прежний порог классификации элемента для снимка.
 
 ' Создает named-state по результату CSectionSolver.
 Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
@@ -102,6 +107,8 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mHasConcreteTension = solver.HasConcreteTension
     mHasSteelCompression = solver.HasSteelCompression
     mHasSteelTension = solver.HasSteelTension
+    solver.CopyMaterialContext mSnapshotSection, mSnapshotConcrete, mSnapshotSteel, extensionUsed
+    If Not mSnapshotSection Is Nothing Then mSnapshotRevision = mSnapshotSection.Revision
 End Sub
 
 ' Сохраняет диагностический результат запроса, для которого solve не мог
@@ -124,6 +131,10 @@ End Sub
 ' Очищает все физические и диагностические поля перед заполнением snapshot,
 ' чтобы повторная инициализация отказом не сохраняла числа прошлого НДС.
 Private Sub ClearSnapshot()
+    Set mSnapshotSection = Nothing
+    Set mSnapshotConcrete = Nothing
+    Set mSnapshotSteel = Nothing
+    mSnapshotRevision = 0
     Set mMaterialSpec = Nothing
     Set mResultMeta = Nothing
     mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
@@ -142,6 +153,61 @@ Private Sub ClearSnapshot()
     mHasConcreteCompression = False: mHasConcreteTension = False
     mHasSteelCompression = False: mHasSteelTension = False
 End Sub
+
+' Готовит краткоживущий массив ID/type/strain/stress/physical-state по
+' сохраненной плоскости и фактическим диаграммам. Solve/Search не вызываются.
+' Сетка не копируется на каждый state; измененная модель явно отклоняется.
+Public Function PrepareElementSnapshot(ByVal section As CSectionModel) As Variant
+    If Not mConverged Then Exit Function
+    If section Is Nothing Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Модель для снимка элементов не передана."
+    If Not section Is mSnapshotSection Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Снимок НДС относится к другой модели сечения."
+    If section.Revision <> mSnapshotRevision Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "После расчета НДС геометрия изменилась; выполните расчет для текущего сечения."
+    If Not HasMaterialSnapshot Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Фактические диаграммы состояния недоступны для записи элементов."
+    Dim data() As Variant, i As Long, row As Long, strain As Double, stress As Double
+    ReDim data(1 To section.ConcreteCount + section.RebarCount, 1 To 5)
+    row = 1
+    For i = 1 To section.ConcreteCount
+        strain = mEpsilon0 + mKappaX * section.ConcreteY(i) + mKappaY * section.ConcreteX(i)
+        stress = mSnapshotConcrete.GetStress(strain)
+        data(row, 1) = section.ConcreteID(i): data(row, 2) = "Concrete"
+        data(row, 3) = strain: data(row, 4) = stress: data(row, 5) = ElementPhysicalState("Concrete", strain, stress)
+        row = row + 1
+    Next i
+    For i = 1 To section.RebarCount
+        strain = mEpsilon0 + mKappaX * section.RebarY(i) + mKappaY * section.RebarX(i)
+        stress = mSnapshotSteel.GetStress(strain)
+        data(row, 1) = section.RebarID(i): data(row, 2) = "Rebar"
+        data(row, 3) = strain: data(row, 4) = stress: data(row, 5) = ElementPhysicalState("Rebar", strain, stress)
+        row = row + 1
+    Next i
+    PrepareElementSnapshot = data
+End Function
+
+' Классификация относится к фактическому напряжению, не внешнему статусу LC.
+Private Function ElementPhysicalState(ByVal materialType As String, ByVal strain As Double, ByVal stress As Double) As String
+    If Abs(stress) <= ELEMENT_ZERO_TOLERANCE Then
+        If materialType = "Concrete" And strain > ELEMENT_ZERO_TOLERANCE Then
+            ElementPhysicalState = "InactiveTensionConcrete"
+        Else
+            ElementPhysicalState = "NearZero"
+        End If
+    ElseIf stress < 0# Then
+        ElementPhysicalState = "Compression"
+    Else
+        ElementPhysicalState = "Tension"
+    End If
+End Function
+
+' Снимки диаграмм закреплены при создании; выдача ссылки не разрешает мутацию.
+Public Property Get HasMaterialSnapshot() As Boolean
+    HasMaterialSnapshot = Not mSnapshotConcrete Is Nothing And Not mSnapshotSteel Is Nothing
+End Property
+Public Property Get ConcreteDiagramSnapshot() As CMaterialDiagram
+    Set ConcreteDiagramSnapshot = mSnapshotConcrete
+End Property
+Public Property Get SteelDiagramSnapshot() As CMaterialDiagram
+    Set SteelDiagramSnapshot = mSnapshotSteel
+End Property
 
 ' Копирует из solver-а все данные равновесия, которые определяют качество
 ' найденного НДС. Target восстанавливается как Nint - residual, потому что

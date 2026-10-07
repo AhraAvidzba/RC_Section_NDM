@@ -1,0 +1,37 @@
+﻿{
+    "FrozenProduction":  false,
+    "SourceGitSHA":  "872d481117fca33bd0fe60b953ffb9587266b5df",
+    "Tests":  [
+                  {
+                      "Macro":  "modTestAutoCADContours.RunPostAudit03ContourSnapshotTests",
+                      "Passed":  303,
+                      "Failed":  0,
+                      "Seconds":  1.4665636
+                  },
+                  {
+                      "Macro":  "modTestAutoCADContours.RunAutoCADContourTests",
+                      "Passed":  283,
+                      "Failed":  0,
+                      "Seconds":  1.7851536
+                  },
+                  {
+                      "Macro":  "modTestBatchCalculation.RunPostAudit03SnapshotOwnerTests",
+                      "Passed":  38,
+                      "Failed":  0,
+                      "Seconds":  0.11302749999999999
+                  },
+                  {
+                      "Macro":  "modTestWorkbookInterface.RunAudit03GeometrySnapshotTests",
+                      "Passed":  1158,
+                      "Failed":  0,
+                      "Seconds":  1.3934
+                  },
+                  {
+                      "Macro":  "modTestSP35CrackWidth.RunSP35SavedHollowTests",
+                      "Passed":  1563,
+                      "Failed":  0,
+                      "Seconds":  1.0543584
+                  }
+              ],
+    "Failed":  false
+}

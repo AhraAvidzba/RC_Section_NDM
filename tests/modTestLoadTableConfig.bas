@@ -775,10 +775,10 @@ Public Function RunAudit03SummaryWriterDiagnosticTests(Optional ByVal writerName
                 stability.WriteSummary ThisWorkbook, batch, units
             Case "Snapshot"
                 snapshot.ClearResults ThisWorkbook
-                snapshot.WriteResults ThisWorkbook, section, provider, batch, units
+                snapshot.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
             Case "Preview"
                 snapshot.ClearResults ThisWorkbook
-                snapshot.WriteGeometryPreview ThisWorkbook, section, units
+                snapshot.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
             Case Else: Err.Raise vbObjectError + 4500, "RunAudit03SummaryWriterDiagnosticTests", "Неизвестный диагностический writer."
         End Select
         Check stats, "writerDiagnostic." & writerName & "." & CStr(iteration) & ".noSolve", batch.SolverCallCount = 0

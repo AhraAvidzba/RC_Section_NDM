@@ -94,6 +94,7 @@ Private Sub ConfigureSearchFixture(ByVal systemRange As Object, ByVal unitRange 
     SetValue systemRange, "Capacity.SearchMethod", "Bisection"
     SetValue systemRange, "SLS.Crack.InitiationSolutionStrategy", "Auto"
     SetValue systemRange, "SLS.Crack.Allowable", 1#
+    SetValue systemRange, "SLS.Crack.Code", "SP63"
     SetValue systemRange, "SLS.Crack.PsiMode", "User"
     SetValue systemRange, "SLS.Crack.PsiS", 1#
     SetProfileValue profileRange, "Calculation.Stability.Enabled", "No", "PR1"
@@ -468,12 +469,12 @@ Public Function RunAudit03UniversalLoadPathTests(Optional ByRef passed As Long =
     Check stats, "universalPath.constantAlreadyCracked.summaryWarning", InStr(1, summaryComment, "Предупреждение", vbTextCompare) > 0
     Dim crackAnchor As Object
     Set crackAnchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    CheckClose stats, "universalPath.constantAlreadyCracked.outputPsi1", CDbl(crackAnchor.Offset(0, 35).Value2), 1#, 0#
-    CheckClose stats, "universalPath.constantAlreadyCracked.outputWidth", CDbl(crackAnchor.Offset(0, 41).Value2), _
+    CheckClose stats, "universalPath.constantAlreadyCracked.outputPsi1", CDbl(crackAnchor.Offset(0, 57).Value2), 1#, 0#
+    CheckClose stats, "universalPath.constantAlreadyCracked.outputWidth", CDbl(crackAnchor.Offset(0, 63).Value2), _
         units.InternalLengthToOutput(result.CrackResult.Width.CrackWidth), 0.000000000001
-    CheckClose stats, "universalPath.constantAlreadyCracked.outputEs", CDbl(crackAnchor.Offset(0, 40).Value2), _
+    CheckClose stats, "universalPath.constantAlreadyCracked.outputEs", CDbl(crackAnchor.Offset(0, 62).Value2), _
         units.InternalStressToOutput(result.CrackResult.Width.SteelEs), 0.000000000001
-    Check stats, "universalPath.constantAlreadyCracked.outputWidthStatus", CStr(crackAnchor.Offset(0, 44).Value2) = _
+    Check stats, "universalPath.constantAlreadyCracked.outputWidthStatus", CStr(crackAnchor.Offset(0, 66).Value2) = _
         policy.ExternalStatus(result.CrackWidthMeta)
     GoTo Restore
 FailedRun:

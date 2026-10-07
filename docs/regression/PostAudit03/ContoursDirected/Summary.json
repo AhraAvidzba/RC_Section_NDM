@@ -1,0 +1,37 @@
+﻿{
+    "FrozenProduction":  false,
+    "SourceGitSHA":  "872d481117fca33bd0fe60b953ffb9587266b5df",
+    "Tests":  [
+                  {
+                      "Macro":  "modTestAutoCADContours.RunAutoCADContourTests",
+                      "Passed":  275,
+                      "Failed":  8,
+                      "Seconds":  1.3734636
+                  },
+                  {
+                      "Macro":  "modTestSP35CrackWidth.RunSP35FormulaTests",
+                      "Passed":  27,
+                      "Failed":  0,
+                      "Seconds":  0.0105142
+                  },
+                  {
+                      "Macro":  "modTestSP35CrackWidth.RunSP35PipelineTests",
+                      "Passed":  34,
+                      "Failed":  0,
+                      "Seconds":  0.1460613
+                  },
+                  {
+                      "Macro":  "modTestSP35CrackWidth.RunSP35WorkbookTests",
+                      "Passed":  133,
+                      "Failed":  0,
+                      "Seconds":  7.7300071
+                  },
+                  {
+                      "Macro":  "modTestSP35CrackWidth.RunSP35PreparationTests",
+                      "Passed":  405,
+                      "Failed":  0,
+                      "Seconds":  0.7231172
+                  }
+              ],
+    "Failed":  true
+}

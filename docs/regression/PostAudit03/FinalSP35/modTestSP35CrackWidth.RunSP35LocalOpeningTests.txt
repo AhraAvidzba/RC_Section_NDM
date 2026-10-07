@@ -1,0 +1,49 @@
+﻿OK: SP35.localCircle.0.innerAnchorFound
+OK: SP35.localCircle.0.analyticArea
+OK: SP35.localCircle.0.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.0.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.0.fullWidthBelowHoles
+OK: SP35.localCircle.0.localArcCut
+OK: SP35.localCircle.0.outsideStrip
+OK: SP35.localCircle.0.oneLowerInterval
+OK: SP35.localCircle.0.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.0.lowerRight; actual=40; expected=40
+AR_LOCAL_SEGMENT:	40	91.6515138991168	6.12303176911189E-15	100	0	0	0.411516846067488
+AR_LOCAL_SEGMENT:	6.12303176911189E-15	100	-40	91.6515138991168	0	0	0.411516846067488
+AR_LOCAL_SEGMENT:	-40	91.6515138991168	-40	68.2842712474619	0	0	0
+AR_LOCAL_SEGMENT:	-40	68.2842712474619	-20	40	-50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	-20	40	-40	11.7157287525381	-50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	-40	11.7157287525381	-40	-1.40512601554121E-16	0	0	0
+AR_LOCAL_SEGMENT:	-40	0	40	0	0	0	0
+AR_LOCAL_SEGMENT:	40	0	40	11.7157287525381	0	0	0
+AR_LOCAL_SEGMENT:	40	11.7157287525381	20	40	50	40	-1.23095941734077
+AR_LOCAL_SEGMENT:	20	40	40	68.2842712474619	50	40	-1.23095941734078
+AR_LOCAL_SEGMENT:	40	68.2842712474619	40	91.6515138991168	0	0	0
+OK: SP35.localCircle.0.exactArcs
+OK: SP35.localCircle.0.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+OK: SP35.localCircle.0.47.innerAnchorFound
+OK: SP35.localCircle.0.47.analyticArea
+OK: SP35.localCircle.0.47.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.0.47.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.0.47.fullWidthBelowHoles
+OK: SP35.localCircle.0.47.localArcCut
+OK: SP35.localCircle.0.47.outsideStrip
+OK: SP35.localCircle.0.47.oneLowerInterval
+OK: SP35.localCircle.0.47.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.0.47.lowerRight; actual=40; expected=40
+OK: SP35.localCircle.0.47.exactArcs
+OK: SP35.localCircle.0.47.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+OK: SP35.localCircle.-0.81.innerAnchorFound
+OK: SP35.localCircle.-0.81.analyticArea
+OK: SP35.localCircle.-0.81.sideRadius; actual=40; expected=40
+OK: SP35.localCircle.-0.81.normalRadius; actual=120; expected=120
+OK: SP35.localCircle.-0.81.fullWidthBelowHoles
+OK: SP35.localCircle.-0.81.localArcCut
+OK: SP35.localCircle.-0.81.outsideStrip
+OK: SP35.localCircle.-0.81.oneLowerInterval
+OK: SP35.localCircle.-0.81.lowerLeft; actual=-40; expected=-40
+OK: SP35.localCircle.-0.81.lowerRight; actual=40; expected=40
+OK: SP35.localCircle.-0.81.exactArcs
+OK: SP35.localCircle.-0.81.actualBarDiameters; actual=26.6666666666667; expected=26.6666666666667
+TOTAL_SP35_LOCAL_OPENING: passed=36; failed=0
+

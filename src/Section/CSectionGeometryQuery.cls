@@ -888,14 +888,23 @@ End Sub
 Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal source As String, ByVal revision As Long) As CConcreteRegion
     Dim ordered() As TRegionEdge, loopCount As Long, area As Double, i As Long
+    Dim loopAreas() As Double, loopOpening() As Boolean
     StitchLoops edges, count, ordered, loopCount, False
+    If loopCount > 0 Then
+        ReDim loopAreas(1 To loopCount)
+        ReDim loopOpening(1 To loopCount)
+    End If
     For i = 1 To count
-        area = area + EdgeSignedArea(ordered(i))
+        Dim contribution As Double
+        contribution = EdgeSignedArea(ordered(i))
+        area = area + contribution
+        loopAreas(ordered(i).LoopID) = loopAreas(ordered(i).LoopID) + contribution
     Next i
+    For i = 1 To loopCount: loopOpening(i) = (loopAreas(i) < 0#): Next i
     If area < -QUERY_TOLERANCE Then GeometryError "Граница области имеет отрицательную площадь; проверьте outer/opening."
     Dim result As CConcreteRegion
     Set result = New CConcreteRegion
-    result.SetGeometry ordered, count, loopCount, GeomMax(area, 0#), source, revision
+    result.SetGeometry ordered, count, loopCount, GeomMax(area, 0#), source, revision, loopOpening
     Set MakeRegion = result
 End Function
 

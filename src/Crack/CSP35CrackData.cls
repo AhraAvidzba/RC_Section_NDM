@@ -70,8 +70,8 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
         Case "Max", "Min", "Average"
         Case Else: InvalidData "RadiusDiameterMode СП 35 должен быть Max, Min или Average."
     End Select
-    Dim formula As CCrackWidthCalculator, multiplier As Double
-    Set formula = New CCrackWidthCalculator: multiplier = formula.SP35InteractionMultiplierFromData(radiusMode)
+    Dim multiplier As Double
+    multiplier = SP35InteractionMultiplierFromData(radiusMode)
     Set mSection = section: mSectionRevision = section.Revision
     Set mQuery = New CSectionGeometryQuery: mQuery.Initialize section
     Set mDomain = mQuery.ConcreteDomain
@@ -93,7 +93,7 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     ReDim included(1 To mGroupCount): ReDim mGroupRow(1 To mGroupCount)
     ReDim mGroupBeta(1 To mGroupCount)
     For i = 1 To mGroupCount
-        included(i) = True: mGroupBeta(i) = formula.SP35GroupBetaFromData(mGroupBars(i))
+        included(i) = True: mGroupBeta(i) = SP35GroupBetaFromData(mGroupBars(i))
     Next i
     AssignRows included, rows, rowCount
     For i = 1 To mGroupCount: mGroupRow(i) = rows(i): Next i
@@ -110,11 +110,11 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     If centralTension Then
         Set mZones(1) = mDomain.Clone
         mStressBar(1) = MaximumStressBar(0): mAnchorGroup(1) = mBarGroup(mStressBar(1))
-        StoreIncludedGroups 1, included, rows, rowCount, formula
+        StoreIncludedGroups 1, included, rows, rowCount
     Else
         ' [NDM] Надежный общий fallback: каждый растянутый кластер - кандидат.
         ' Не создаем отдельный классификатор наружного ряда для каждой формы.
-        For i = 1 To mCandidateCount: PrepareAnchor i, multiplier, formula: Next i
+        For i = 1 To mCandidateCount: PrepareAnchor i, multiplier: Next i
     End If
 End Sub
 
@@ -259,7 +259,7 @@ End Function
 ' Сначала задает две боковые нормали по ближайшим группам и t/L, независимо
 ' от рядов и бетонных граней. В готовой полосе сохраняет прежнюю связанную
 ' стенку, опорный ряд по As и внутреннее отсечение по радиусу/нейтральной линии.
-Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVal formula As CCrackWidthCalculator)
+Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double)
     Dim wall As CConcreteRegion, region As CConcreteRegion, i As Long, left As Double, right As Double
     Dim included() As Boolean, rows() As Long, rowCount As Long, rowAreas() As Double, rowN() As Double
     Dim referenceRow As Long, referenceGroup As Long, incomplete As Boolean, lowerN As Double, minN As Double, maxN As Double
@@ -325,7 +325,7 @@ Private Sub PrepareAnchor(ByVal anchor As Long, ByVal multiplier As Double, ByVa
     region.SetBoundaryProbes mQuery.SampleMaterialIntervals(region, mNx, mNy, mGroupN(anchor), _
         mGroupT(anchor) - left, mGroupT(anchor) + right, 5)
     Set mZones(anchor) = region
-    StoreIncludedGroups anchor, included, rows, rowCount, formula
+    StoreIncludedGroups anchor, included, rows, rowCount
 End Sub
 
 ' На каждой стороне выбирает ближайшую группу по полному расстоянию L.
@@ -360,7 +360,7 @@ End Sub
 ' Сохраняет разреженную таблицу групп/рядов конкретной конечной области.
 ' beta применяется к реальной сумме диаметров; один d_ref ее не заменяет.
 Private Sub StoreIncludedGroups(ByVal candidate As Long, ByRef included() As Boolean, ByRef rows() As Long, _
-        ByVal rowCount As Long, ByVal formula As CCrackWidthCalculator)
+        ByVal rowCount As Long)
     Dim count As Long, i As Long, j As Long, group As Long, data() As Variant
     For i = 1 To mGroupCount: If included(i) Then count = count + 1
     Next i
@@ -379,6 +379,31 @@ Private Sub StoreIncludedGroups(ByVal candidate As Long, ByRef included() As Boo
     Next i
     mRows(candidate) = data: mRowCount(candidate) = rowCount
 End Sub
+
+' [SP35] Табл. 7.26: beta для одиночных, сдвоенных и строенных стержней.
+' [NDM] Для связной группы из четырех и более сохраняется согласованное
+' beta=0.75. Подготовка использует полный неделимый состав группы.
+Public Function SP35GroupBetaFromData(ByVal barCount As Long) As Double
+    Select Case barCount
+        Case 1: SP35GroupBetaFromData = 1#
+        Case 2: SP35GroupBetaFromData = 0.85
+        Case Is >= 3: SP35GroupBetaFromData = 0.75
+        Case Else
+            Err.Raise vbObjectError + 3784, "CSP35CrackData", "Группа армирования СП 35 должна содержать хотя бы один стержень."
+    End Select
+End Function
+
+' [SP35] Принимает нормативный множитель радиуса подготовки области.
+' Формулы Rr, psi и раскрытия сюда не входят и остаются у Width.
+Public Function SP35InteractionMultiplierFromData(ByVal radiusMode As String) As Double
+    Select Case LCase$(Trim$(radiusMode))
+        Case "3d": SP35InteractionMultiplierFromData = 3#
+        Case "5d": SP35InteractionMultiplierFromData = 5#
+        Case "6d": SP35InteractionMultiplierFromData = 6#
+        Case Else
+            Err.Raise vbObjectError + 3785, "CSP35CrackData", "Радиус взаимодействия СП 35 должен быть 3d, 5d или 6d."
+    End Select
+End Function
 
 ' Выбирает d_ref только для построения радиуса отдельной группы.
 Private Function ReferenceDiameterForGroup(ByVal group As Long) As Double

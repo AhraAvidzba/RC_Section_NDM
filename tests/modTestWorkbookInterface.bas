@@ -745,7 +745,7 @@ Private Sub TestAnnotationDimensionTextRoundsInMillimeters(ByRef stats As TUiTes
     Dim units As CUnitSystem
     Set units = New CUnitSystem
     units.LoadFromSettings settings
-    writer.WriteGeometryPreview ThisWorkbook, section, units
+    writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
 
     Dim annotationData As Variant
     annotationData = ResultTable("rngNDMSectionAnnotations")
@@ -787,7 +787,7 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview ThisWorkbook, section
+    writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
 
     Dim annotationData As Variant
     annotationData = ResultTable("rngNDMSectionAnnotations")
@@ -844,7 +844,7 @@ Private Sub TestPlotClearsLegacyWorksheetShapes(ByRef stats As TUiTestStats)
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview ThisWorkbook, section
+    writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
 
     Dim calc As Object
     Set calc = ThisWorkbook.Worksheets.Item("Расчет")
@@ -993,7 +993,7 @@ Private Sub TestGeneratedSourceDoesNotReuseAutoCADPreview(ByRef stats As TUiTest
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview ThisWorkbook, section
+    writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
 
     UpdateSectionPlotForWorkbook ThisWorkbook
     AssertTrue stats, "ui.plot.preview.title", PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
@@ -1102,7 +1102,7 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview ThisWorkbook, section, units
+    writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
 
     Dim beforeGeometry As Variant
     beforeGeometry = ResultTable("rngNDMSectionGeometry")
@@ -1228,9 +1228,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
     AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
     AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 39
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 47
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 60
+    AssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 29
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 56
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 69
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -1739,10 +1740,10 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
     safeOverall = CStr(resultsSheet.Cells.Item(safeSummaryRow, 4).Value2)
     safeCrack = CStr(resultsSheet.Cells.Item(safeCrackRow, 3).Value2)
     overOverall = CStr(resultsSheet.Cells.Item(overSummaryRow, 4).Value2)
-    overCrackExtUsed = CStr(resultsSheet.Cells.Item(overCrackRow, 22).Value2)
-    overCrackEquilibrium = CStr(resultsSheet.Cells.Item(overCrackRow, 23).Value2)
-    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 45).Value2)
-    overLongitudinal = CStr(resultsSheet.Cells.Item(overCrackRow, 49).Value2)
+    overCrackExtUsed = CStr(resultsSheet.Cells.Item(overCrackRow, 28).Value2)
+    overCrackEquilibrium = CStr(resultsSheet.Cells.Item(overCrackRow, 29).Value2)
+    overCrack = CStr(resultsSheet.Cells.Item(overCrackRow, 67).Value2)
+    overLongitudinal = CStr(resultsSheet.Cells.Item(overCrackRow, 72).Value2)
     overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
 
     AppendLine stats, "INFO: ui.rectset.axial795 overall=" & safeOverall & _
@@ -4330,7 +4331,7 @@ Private Function RunAudit02WorkbookPhases(ByVal writeResults As Boolean) As Stri
         AppendLine stats, "RUN: summary " & Audit02ExcelMemory()
         Dim ndmWriter As CNDMResultsWriter
         Set ndmWriter = New CNDMResultsWriter
-        ndmWriter.WriteResults ThisWorkbook, section, materials, batch, units
+        ndmWriter.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, materials), batch, units
         AppendLine stats, "RUN: NDM " & Audit02ExcelMemory()
         RunAudit02WorkbookPhases = RunAudit02WorkbookPhases & vbCrLf & stats.Report
     End If
@@ -4420,9 +4421,10 @@ Private Sub TestAudit02SavedResultsIgnoreMaterialChanges(ByRef stats As TUiTestS
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
     AssertTrue stats, "audit02.saved.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     Dim tables As Variant
-    tables = Array("rngNDMSectionGeometry", "rngNDMElementResults", "rngNDMSectionProperties", _
+    tables = Array("rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMElementResults", "rngNDMSectionProperties", _
         "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams", "rngBatchSummary")
-    Dim beforeTables(0 To 5) As Variant
+    Dim beforeTables() As Variant
+    ReDim beforeTables(0 To UBound(tables))
     For i = 0 To UBound(tables)
         beforeTables(i) = ResultTable(CStr(tables(i)))
     Next i
@@ -4600,7 +4602,7 @@ Private Sub TestAudit03ReaderWidth(ByRef stats As TUiTestStats, ByVal sheet As O
     End If
     Dim errorNumber As Long
     On Error Resume Next
-    reader.LoadFromRange sheet.Range("A1:3d"), batch
+    reader.LoadFromRange sheet.Range("A1:D3"), batch
     errorNumber = Err.Number
     Err.Clear
     On Error GoTo Failed
@@ -5855,7 +5857,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional
                 curvatureFactor = IIf((caseIndex Mod 2) = 0, 1#, 0.001)
                 Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
                 units.LoadFromSettings settings
-                snapshot.WriteResults ThisWorkbook, section, provider, batch, units
+                snapshot.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
                 If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".snapshot.done; " & Audit02ExcelMemory()
                 summary.WriteSummary ThisWorkbook, batch, units, section
                 If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".summary.done; " & Audit02ExcelMemory()
@@ -6199,7 +6201,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                         baselineProperties = ResultTable("rngNDMSectionProperties")
                         baselineDiagrams = ResultTable("rngNDMMaterialDiagrams")
                         baselineStrength = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Resize(4, 49).Value2
-                        baselineCrack = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 49).Value2
+                        baselineCrack = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 72).Value2
                         baselineStability = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, 84).Value2
                     Else
                         actual = ResultTable("rngNDMElementResults")
@@ -6212,7 +6214,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                         Audit03ComparePlainSnapshot stats, prefix & ".diagrams", baselineDiagrams, actual, 2
                         actual = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Resize(4, 49).Value2
                         Audit03ComparePlainSnapshot stats, prefix & ".strength", baselineStrength, actual, 1
-                        actual = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 49).Value2
+                        actual = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 72).Value2
                         Audit03ComparePlainSnapshot stats, prefix & ".crack", baselineCrack, actual, 1
                         actual = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, 84).Value2
                         Audit03ComparePlainSnapshot stats, prefix & ".stability", baselineStability, actual, 1
@@ -6253,7 +6255,8 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
                 Case "Circle.Diameter", "Rebar.AxisDistance", "Rebar.Diameter", "Rebar.Diameter2", "Rebar.Diameter3", _
                         "Mesh.StepX", "Mesh.StepY", "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", _
                         "Stability.ElementLength", "Stability.AccidentalEccentricityUser1", _
-                        "Stability.AccidentalEccentricityUser2", "SLS.Crack.Allowable", "Plot.ResultLabelSpacing"
+                        "Stability.AccidentalEccentricityUser2", "SLS.Crack.Allowable", "Plot.ResultLabelSpacing", _
+                        "SLS.Crack.SP35.GroupGapTolerance", "SLS.Crack.SP35.RowTolerance"
                     Audit03DivideNumericInput target.Cells(row, 2), lengthFactor
             End Select
         Next row
@@ -6558,7 +6561,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
             Set section = Audit03ImportSnapshotFixture(settings, units)
-            writer.WriteGeometryPreview ThisWorkbook, section, units
+            writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
             preview = ResultTable("rngNDMSectionGeometry")
             prefix = "audit03.importUnits.before" & CStr(beforeIndex) & ".after" & CStr(afterIndex)
             AssertClose stats, prefix & ".previewX", GeometryResultValue(preview, "C1", "X"), 950# / CDbl(lengthFactors(beforeIndex)), 0.000001
@@ -7002,6 +7005,14 @@ Public Function RunAudit03GeometrySnapshotTests() As String
     RunAudit03GeometrySnapshotTests = stats.Report
 End Function
 
+' Новый обязательный блок пустого v1-снимка в изолированных reader-fixtures.
+Private Sub InitializeEmptyContourFixture(ByVal workbook As Object, ByVal sheet As Object)
+    workbook.Names.Add Name:="rngNDMSectionContours", RefersTo:="='" & sheet.Name & "'!$GR$5"
+    Dim writer As CNDMResultsWriter, contours As CSectionContours
+    Set writer = New CNDMResultsWriter: Set contours = New CSectionContours
+    writer.WriteSectionContours workbook, contours, "FIXTURE"
+End Sub
+
 ' Проверяет дробные числа, mm/cm/m, поврежденные поля, перенос к последней
 ' строке листа и комментарий LC за прежней границей 1000. Текущий Config не
 ' может менять физическую геометрию, уже сохраненную с собственной размерностью.
@@ -7018,6 +7029,7 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     solveCount = SectionEquilibriumSolveCount()
     Set fixture = Application.Workbooks.Add(-4167)
     Set sheet = fixture.Worksheets(1): sheet.Name = "Snapshot"
+    InitializeEmptyContourFixture fixture, sheet
     Set anchor = sheet.Range("A5")
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Snapshot!" & anchor.Address
     Set properties = sheet.Range("R5")
@@ -7362,6 +7374,7 @@ Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
     Next row
     values = Audit03GeometrySnapshotArray("mm", 1#): sheet.Range("A5").Resize(3, 15).Value2 = values
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=ReadLifecycle!$A$5"
+    InitializeEmptyContourFixture fixture, sheet
     results(1, 1) = "LoadCase": results(1, 2) = "ProfileId": results(1, 3) = "StateType": results(1, 4) = "ElementID"
     results(1, 5) = "Strain": results(1, 6) = "Stress, MPa": results(1, 7) = "PhysicalState"
     results(2, 1) = "LIFE": results(2, 2) = "PR1": results(2, 3) = "StrengthState": results(2, 4) = "C1"

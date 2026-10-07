@@ -615,7 +615,7 @@ try {
     $system.Columns.Item(21).ColumnWidth = 22
     $results.Range("A1:AE1").Font.Bold = $true
     # Заливка относится только к построенному снимку, не ко всей строке листа.
-    $results.Range("A154:BJ154").Interior.Color = 15652797
+    $results.Range("A154:CL154").Interior.Color = 15652797
     $results.Cells.Item(154, 1).Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
     $results.Cells.Item(154, 1).Font.Name = "Arial"
     $results.Cells.Item(154, 1).Font.Size = 12
@@ -625,12 +625,13 @@ try {
     $results.Cells.Item(154, 1).VerticalAlignment = -4108
     $results.Range("A156:I156").Font.Bold = $true
     $results.Range("L156:Z156").Font.Bold = $true
-    $results.Range("AC156:AH156").Font.Bold = $true
-    $results.Range("AK156:AU156").Font.Bold = $true
-    $results.Range("AX156:BJ156").Font.Bold = $true
+    $results.Range("AC156:AS156").Font.Bold = $true
+    $results.Range("AV156:BA156").Font.Bold = $true
+    $results.Range("BD156:BN156").Font.Bold = $true
+    $results.Range("BQ156:CL156").Font.Bold = $true
     # Явная ширина используемых колонок не пересчитывается Excel при смене
     # шрифта ячеек, в отличие от общей default-ширины листа. Это только сборка.
-    $results.Range("A:CF").ColumnWidth = 10
+    $results.Range("A:CL").ColumnWidth = 10
     $results.Columns.Item(1).ColumnWidth = 15
     $results.Columns.Item(2).ColumnWidth = 18
     $results.Columns.Item(3).ColumnWidth = 21
@@ -641,9 +642,16 @@ try {
     Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$122'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$156'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$156'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AM$156'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$AU$156'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BH$156'
+    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$AC$156'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AV$156'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$BD$156'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BQ$156'
+    $contourHeaders = @('RunID v1', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
+    for ($i = 0; $i -lt $contourHeaders.Count; $i++) { $results.Cells.Item(156, 29 + $i).Value2 = $contourHeaders[$i] }
+    $results.Range('AC155:AS155').Merge()
+    $results.Cells.Item(155, 29).Value2 = 'Достоверные контуры и отверстия сечения'
+    $results.Range('AC155:AS156').Font.Bold = $true
+    Set-Border $results.Range('AC156:AS156')
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

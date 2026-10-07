@@ -1,0 +1,19 @@
+﻿{
+    "FrozenProduction":  false,
+    "SourceGitSHA":  "872d481117fca33bd0fe60b953ffb9587266b5df",
+    "Tests":  [
+                  {
+                      "Macro":  "modTestBatchCalculation.RunBatchSummaryReserveConsistencyTest",
+                      "Passed":  190,
+                      "Failed":  0,
+                      "Seconds":  4.0606746
+                  },
+                  {
+                      "Macro":  "modTestAutoCADContours.RunPostAudit03ContourSnapshotTests",
+                      "Passed":  309,
+                      "Failed":  0,
+                      "Seconds":  1.6680173999999999
+                  }
+              ],
+    "Failed":  false
+}

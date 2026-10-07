@@ -225,7 +225,7 @@ Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) A
 
     Dim writer As CNDMResultsWriter
     Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview workbook, section, units
+    writer.WriteGeometryPreview workbook, section, PrepareSectionSnapshot(section), units
 
     UpdateSectionGeometryPreviewForWorkbook workbook
 
@@ -385,7 +385,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
     report.AddStep "Начата запись расчетного snapshot NDM."
-    ndmWriter.WriteResults workbook, section, materialProvider, batch, units
+    ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
     report.AddSection "Схема"
@@ -626,25 +626,27 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
         ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
         ByVal annotationCount As Long, ByVal contourCount As Long, ByVal requiredGapColumns As Long)
-    Dim names(1 To 5) As String
-    Dim rows(1 To 5) As Long
-    Dim cols(1 To 5) As Long
+    Dim names(1 To 6) As String
+    Dim rows(1 To 6) As Long
+    Dim cols(1 To 6) As Long
     names(1) = "rngNDMElementResults"
     names(2) = "rngNDMSectionGeometry"
-    names(3) = "rngNDMSectionProperties"
-    names(4) = "rngNDMMaterialDiagrams"
-    names(5) = "rngNDMSectionAnnotations"
+    names(3) = "rngNDMSectionContours"
+    names(4) = "rngNDMSectionProperties"
+    names(5) = "rngNDMMaterialDiagrams"
+    names(6) = "rngNDMSectionAnnotations"
 
     rows(1) = ndmWriter.EstimatedElementResultRows(elementCount, estimatedStateCount)
-    rows(2) = 1 + elementCount + contourCount
-    rows(3) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
-    rows(4) = 1 + MaxLong(1, estimatedStateCount) * 14
-    rows(5) = 1 + MaxLong(2, annotationCount)
+    rows(2) = 1 + elementCount
+    rows(3) = 1 + contourCount
+    rows(4) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
+    rows(5) = 1 + MaxLong(1, estimatedStateCount) * 14
+    rows(6) = 1 + MaxLong(2, annotationCount)
 
     Dim index As Long
     Dim previousRightColumn As Long
     previousRightColumn = 0
-    For index = 1 To 5
+    For index = 1 To 6
         cols(index) = ndmWriter.OutputColumnCount(names(index))
 
         Dim anchor As Object
@@ -1239,3 +1241,15 @@ Public Sub Audit03ApplyLoadReferenceForTests(ByVal section As CSectionModel, _
         ByVal batch As CBatchSectionCalculator)
     ApplyLoadReferenceFromSettings section, settings, units, batch
 End Sub
+
+' Готовит инженерные данные до передачи пассивному writer. Свойства считает
+' их владелец, а размеры/подписи импортированной модели готовит контейнер
+' аннотаций. Config, solve и saved Results в этом маршруте не читаются.
+Public Function PrepareSectionSnapshot(ByVal section As CSectionModel, _
+        Optional ByVal provider As CMaterialModelProvider = Nothing) As CSectionPropertiesCalculator
+    Dim snapshot As CSectionPropertiesCalculator
+    Set snapshot = New CSectionPropertiesCalculator
+    snapshot.PrepareSnapshot section, provider
+    section.Annotations.PrepareImportedSection section, snapshot.SnapshotBounds
+    Set PrepareSectionSnapshot = snapshot
+End Function

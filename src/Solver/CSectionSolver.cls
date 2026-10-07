@@ -86,6 +86,9 @@ Private mUseInitialLoads As Boolean ' Использовать ненулеву�
 Private mInitialTargetN As Double ' Начальное N при продолжении расчета от уже уравновешенной точки.
 Private mInitialTargetMx As Double ' Начальное Mx при продолжении расчета от уже уравновешенной точки.
 Private mInitialTargetMy As Double ' Начальное My при продолжении расчета от уже уравновешенной точки.
+Private mSnapshotSection As CSectionModel ' Модель последнего Solve/Evaluate; общая ссылка без копирования сетки.
+Private mSnapshotConcrete As CMaterialDiagram ' Фактически переданная диаграмма, не повторный выбор по Config.
+Private mSnapshotSteel As CMaterialDiagram ' Фактически переданная диаграмма арматуры.
 
 ' ------------------------------
 ' Настройки по умолчанию
@@ -158,6 +161,7 @@ Public Sub Solve(ByVal section As CSectionModel, _
     On Error GoTo Failed
     ClearResult
     If Not ValidateInputs(section, concreteMaterial, steelMaterial) Then Exit Sub
+    CaptureMaterialContext section, concreteMaterial, steelMaterial
     If Not ValidateSolverMethod() Then Exit Sub
     RecordSectionEquilibriumSolve
     If mUseInitialState Then
@@ -235,6 +239,7 @@ Public Sub EvaluateStrainPlane(ByVal section As CSectionModel, _
 
     ClearResult
     If Not ValidateInputs(section, concreteMaterial, steelMaterial) Then Exit Sub
+    CaptureMaterialContext section, concreteMaterial, steelMaterial
     mEpsilon0 = epsilon0
     mKappaX = kappaX
     mKappaY = kappaY
@@ -1062,6 +1067,9 @@ End Function
 ' Очищает результаты последнего solve, но не сбрасывает настройки solver-а и
 ' заданное начальное приближение.
 Public Sub ClearResult()
+    Set mSnapshotSection = Nothing
+    Set mSnapshotConcrete = Nothing
+    Set mSnapshotSteel = Nothing
     mConverged = False
     mStopReason = vbNullString
     mFailureCode = sfcNone
@@ -1090,6 +1098,24 @@ Public Sub ClearResult()
     mInternalForceEvaluationCount = 0
     mInternalNewtonCallCount = 0
     ClearTangent
+End Sub
+
+' Запоминает контекст последней оценки без объектов на каждое волокно.
+' Протокол произвольного материала в solver сохраняется; серийный снимок
+' диаграмм доступен для штатного CMaterialDiagram, используемого provider-ом.
+Private Sub CaptureMaterialContext(ByVal section As CSectionModel, ByVal concrete As Object, ByVal steel As Object)
+    Set mSnapshotSection = section
+    If TypeOf concrete Is CMaterialDiagram Then Set mSnapshotConcrete = concrete
+    If TypeOf steel Is CMaterialDiagram Then Set mSnapshotSteel = steel
+End Sub
+
+' Named-state получает независимые небольшие диаграммы, не живой solver.
+' Неиспользованное численное продолжение не добавляется в physical-снимок.
+Friend Sub CopyMaterialContext(ByRef section As CSectionModel, ByRef concrete As CMaterialDiagram, _
+        ByRef steel As CMaterialDiagram, ByVal extensionUsed As Boolean)
+    Set section = mSnapshotSection
+    If Not mSnapshotConcrete Is Nothing Then Set concrete = mSnapshotConcrete.Clone(Not extensionUsed)
+    If Not mSnapshotSteel Is Nothing Then Set steel = mSnapshotSteel.Clone(Not extensionUsed)
 End Sub
 
 ' Задает стартовую плоскость деформаций для следующего solve. Используется

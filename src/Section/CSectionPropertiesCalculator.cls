@@ -45,8 +45,43 @@ Private mRadiusY As Double ' Радиус инерции относительн�
 Private mPrincipalRadius1 As Double ' Радиус инерции по главной оси I1.
 Private mPrincipalRadius2 As Double ' Радиус инерции по главной оси I2.
 Private mLastCalculationSeconds As Double ' Время последнего расчета свойств для диагностики производительности.
+Private mSnapshotSection As CSectionModel ' Модель, для которой заранее подготовлены свойства записи Results.
+Private mSnapshotRevision As Long ' Ревизия подготовленной геометрии.
+Private mSnapshotBounds(1 To 4) As Double ' MinX/MaxX/MinY/MaxY по прежним оболочкам элементов.
+Private mTransformedSnapshot As CSectionPropertiesCalculator ' Готовое приведенное представление того же снимка.
 
 Private Const PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE As Double = 0.000001 ' Допуск для почти круговых/изотропных сечений.
+
+' Готовит оба представления и габариты до сериализации. Материальные модули
+' считываются один раз из фактического provider; позже writer их не выбирает.
+' Preview без provider получает только бетонные характеристики.
+Public Sub PrepareSnapshot(ByVal section As CSectionModel, Optional ByVal provider As CMaterialModelProvider = Nothing)
+    CalculateConcrete section
+    CalculateProjection section, 1#, 0#, False, mSnapshotBounds(1), mSnapshotBounds(2)
+    CalculateProjection section, 0#, 1#, False, mSnapshotBounds(3), mSnapshotBounds(4)
+    Set mTransformedSnapshot = Nothing
+    If Not provider Is Nothing Then
+        Set mTransformedSnapshot = New CSectionPropertiesCalculator
+        mTransformedSnapshot.CalculateTransformedByModuli section, _
+            provider.ConcreteElasticModulusFromValueSet(mvsULS), provider.SteelElasticModulusFromValueSet(mvsULS)
+    End If
+    Set mSnapshotSection = section: mSnapshotRevision = section.Revision
+End Sub
+
+' Проверяет принадлежность готовых данных без повторного расчета.
+Public Sub ValidateSnapshot(ByVal section As CSectionModel, Optional ByVal requireTransformed As Boolean = False)
+    If section Is Nothing Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Модель для снимка не передана."
+    If Not section Is mSnapshotSection Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Характеристики подготовлены для другой модели сечения."
+    If section.Revision <> mSnapshotRevision Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "После подготовки характеристик геометрия изменилась; подготовьте текущий снимок заново."
+    If requireTransformed And mTransformedSnapshot Is Nothing Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Приведенные характеристики снимка не подготовлены."
+End Sub
+
+Public Property Get SnapshotBounds() As Variant
+    SnapshotBounds = mSnapshotBounds
+End Property
+Public Property Get TransformedSnapshot() As CSectionPropertiesCalculator
+    Set TransformedSnapshot = mTransformedSnapshot
+End Property
 
 ' Считает геометрические характеристики только бетонной части сечения.
 ' Такой расчет не зависит от диаграмм материалов и продольной арматуры. Он
@@ -542,6 +577,9 @@ End Sub
 ' Входная модель не хранится и не меняется; обнуление исключает использование
 ' прежних характеристик до следующего успешного вычисления свойств сечения.
 Public Sub Clear()
+    Set mSnapshotSection = Nothing
+    Set mTransformedSnapshot = Nothing
+    mSnapshotRevision = 0
     mArea = 0#
     mStaticMomentX = 0#
     mStaticMomentY = 0#

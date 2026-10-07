@@ -29,16 +29,6 @@ try {
     $excel.AutomationSecurity = 1
     $book = $excel.Workbooks.Open($copy)
     if ($ImportSources) {
-        # Только тестовая копия старого шаблона: освобождаем место под 25 колонок
-        # геометрии. Основная книга и пользовательские именованные якоря не меняются.
-        $geometry = $book.Names.Item('rngNDMSectionGeometry').RefersToRange
-        $properties = $book.Names.Item('rngNDMSectionProperties').RefersToRange
-        if ($properties.Column - $geometry.Column -lt 27) {
-            foreach ($name in 'rngNDMSectionProperties', 'rngNDMMaterialDiagrams', 'rngNDMSectionAnnotations') {
-                $anchor = $book.Names.Item($name).RefersToRange
-                $book.Names.Item($name).RefersTo = "='$($anchor.Worksheet.Name)'!$($anchor.Offset(0, 10).Address())"
-            }
-        }
         foreach ($file in Get-ChildItem -LiteralPath (Join-Path $root 'src'), (Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas', '.cls') {
             $name = $file.BaseName
             $component = $null
@@ -55,6 +45,7 @@ try {
         }
         # Сохраняем только собственную копию до тестовых мутаций, чтобы ее
         # VBA-код на диске соответствовал действительно проверяемому исходнику.
+        [void]$excel.Run("'$($book.Name)'!MigrateSavedSectionContours")
         $book.Save()
     }
     foreach ($macro in $Macros) {

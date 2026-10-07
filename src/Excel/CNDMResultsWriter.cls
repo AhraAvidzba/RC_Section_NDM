@@ -26,12 +26,11 @@ Option Explicit
 ' CStrengthSummaryWriter.
 
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' LC-зависимые результаты named-state: RunID, LoadCase, ProfileId, StateType, ElementID, MaterialType, Strain, Stress, PhysicalState.
-Private Const GEOMETRY_COLUMNS As Long = 25 ' Элементы и исходные outer/opening в одном постоянном снимке.
+Private Const GEOMETRY_COLUMNS As Long = 15 ' Только расчетные бетонные элементы и арматура.
+Private Const CONTOUR_COLUMNS As Long = 17 ' Компактные аналитические исходные границы, формат v1.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
 Private Const ANNOTATION_COLUMNS As Long = 22 ' Аннотации и принадлежность готовой области трещин; старые поля 1..13 сохранены.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Каталог уникальных точек диаграмм, переданных solver-ам.
-Private Const PHYSICAL_TOLERANCE As Double = 0.000000001 ' Порог, ниже которого напряжение считается NearZero.
-Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Дополнительный зазор сводной подписи арматуры AutoCAD над бетонным габаритом.
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 70 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 13 ' Строки metadata одного сохраненного named-state.
@@ -44,6 +43,8 @@ Public Function OutputColumnCount(ByVal rangeName As String) As Long
             OutputColumnCount = ELEMENT_RESULT_COLUMNS
         Case "rngndmsectiongeometry"
             OutputColumnCount = GEOMETRY_COLUMNS
+        Case "rngndmsectioncontours"
+            OutputColumnCount = CONTOUR_COLUMNS
         Case "rngndmsectionproperties"
             OutputColumnCount = SECTION_PROPERTY_COLUMNS
         Case "rngndmmaterialdiagrams"
@@ -77,13 +78,14 @@ End Function
 ' Очищает текущий снимок и заново пишет согласованные блоки:
 ' geometry, element results, section properties, material diagrams и annotations.
 Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
+        ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
-    If materialProvider Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Поставщик материалов не передан."
+    If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Готовые характеристики снимка не переданы."
     If batch Is Nothing Then Err.Raise vbObjectError + 4454, "CNDMResultsWriter", "Пакетный расчетчик не передан."
 
+    snapshot.ValidateSnapshot section, True
     ClearResults workbook
 
     Dim runID As Date
@@ -91,10 +93,10 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
 
     WriteSnapshotTitle workbook
     WriteSectionGeometry workbook, section, runID, units
-    WriteElementResults workbook, section, materialProvider, batch, runID, units
-    WriteSectionProperties workbook, section, materialProvider, batch, runID, units
-    WriteMaterialDiagrams workbook, materialProvider, batch, runID, units
-    EnsureAutoCADImportAnnotations section
+    WriteSectionContours workbook, section.Contours, runID, units
+    WriteElementResults workbook, section, batch, runID, units
+    WriteSectionProperties workbook, section, snapshot, batch, runID, units
+    WriteMaterialDiagrams workbook, batch, runID, units
     WriteSectionAnnotations workbook, section, runID, units, batch
 End Sub
 
@@ -102,9 +104,12 @@ End Sub
 ' Такой снимок нужен после кнопки AutoCAD import: пользователь сразу видит
 ' элементы на схеме, а последующий расчет берет эту же геометрию из Results.
 Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
+        ByVal snapshot As CSectionPropertiesCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
+    If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Готовые характеристики preview не переданы."
+    snapshot.ValidateSnapshot section
 
     ClearResults workbook
 
@@ -113,9 +118,9 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
 
     WriteSnapshotTitle workbook
     WriteSectionGeometry workbook, section, runID, units
+    WriteSectionContours workbook, section.Contours, runID, units
     WriteEmptyElementResults workbook, runID, units
-    WriteSectionPropertiesPreview workbook, section, runID, units
-    EnsureAutoCADImportAnnotations section
+    WriteSectionPropertiesPreview workbook, section, snapshot, runID, units
     WriteSectionAnnotations workbook, section, runID, units
 End Sub
 
@@ -126,9 +131,12 @@ Public Sub ClearResults(ByVal workbook As Object)
     ClearSnapshotTitle workbook
     ClearNamedRegion workbook, "rngNDMElementResults"
     ClearNamedRegion workbook, "rngNDMSectionGeometry"
+    ClearNamedRegion workbook, "rngNDMSectionContours"
     ClearNamedRegion workbook, "rngNDMSectionProperties"
     ClearNamedRegion workbook, "rngNDMSectionAnnotations"
     ClearNamedRegion workbook, "rngNDMMaterialDiagrams"
+    Dim emptyContours As CSectionContours: Set emptyContours = New CSectionContours
+    WriteSectionContours workbook, emptyContours, Empty
 End Sub
 
 ' Безопасно чистит только фактический прямоугольник одной snapshot-таблицы.
@@ -220,7 +228,7 @@ Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
     Dim rightColumn As Long, blockRightColumn As Long
     rightColumn = anchor.Column
     For Each name In Array("rngNDMElementResults", "rngNDMSectionGeometry", _
-            "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+            "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
         Set block = workbook.Names.Item(CStr(name)).RefersToRange
         blockRightColumn = block.Column + OutputColumnCount(CStr(name)) - 1
         If blockRightColumn > rightColumn Then rightColumn = blockRightColumn
@@ -234,7 +242,7 @@ End Function
 ' В этот блок не пишутся координаты и площади: они уже есть в
 ' rngNDMSectionGeometry и связываются по ElementID.
 Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
+        ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMElementResults").RefersToRange
@@ -265,7 +273,7 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
     For i = 1 To batch.Count
         Dim stateIndex As Long
         For stateIndex = 1 To batch.ResultAt(i).StateRepository.StateCount
-            PutCombinationElementResults data, rowIndex, section, materialProvider, batch, i, _
+            PutCombinationElementResults data, rowIndex, section, batch, i, _
                 batch.ResultAt(i).StateRepository.StateAt(stateIndex), runID, units
         Next stateIndex
     Next i
@@ -285,7 +293,7 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
     Set target = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
 
     Dim rowCount As Long
-    rowCount = 1 + section.ConcreteCount + section.RebarCount + section.Contours.Count
+    rowCount = 1 + section.ConcreteCount + section.RebarCount
 
     Dim data() As Variant
     ReDim data(1 To rowCount, 1 To GEOMETRY_COLUMNS)
@@ -337,33 +345,56 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         rowIndex = rowIndex + 1
     Next i
 
-    ' Исходные контуры не являются результатом отдельного сочетания. Их точные
-    ' примитивы записываются рядом с элементами, а не в таблицу аннотаций.
-    Dim contours As CSectionContours
-    Set contours = section.Contours
-    For i = 1 To contours.Count
-        data(rowIndex, 1) = runID
-        data(rowIndex, 2) = contours.ContourID(i)
-        data(rowIndex, 3) = "Contour"
-        data(rowIndex, 4) = OutputLength(contours.StartX(i), units)
-        data(rowIndex, 5) = OutputLength(contours.StartY(i), units)
-        data(rowIndex, 7) = contours.SegmentType(i)
-        data(rowIndex, 15) = contours.Comment(i)
-        data(rowIndex, 16) = OutputLength(contours.EndX(i), units)
-        data(rowIndex, 17) = OutputLength(contours.EndY(i), units)
-        data(rowIndex, 18) = OutputLength(contours.CenterX(i), units)
-        data(rowIndex, 19) = OutputLength(contours.CenterY(i), units)
-        data(rowIndex, 20) = OutputLength(contours.Radius(i), units)
-        data(rowIndex, 21) = contours.SweepAngle(i)
-        data(rowIndex, 22) = contours.LoopID(i)
-        data(rowIndex, 23) = contours.LoopRole(i)
-        data(rowIndex, 24) = contours.SourceID(i)
-        data(rowIndex, 25) = OutputLengthUnit(units)
-        rowIndex = rowIndex + 1
-    Next i
     target.Resize(rowCount, GEOMETRY_COLUMNS).Value2 = data
-    FormatResultsBlock target, rowCount, GEOMETRY_COLUMNS, "Геометрия сечения: элементы и исходные контуры"
+    FormatResultsBlock target, rowCount, GEOMETRY_COLUMNS, "Геометрия расчетных элементов сечения"
 End Sub
+
+' Сериализует исходные границы отдельно от элементов и LC-аннотаций.
+' Дуга хранит начало, центр и знаковый угол; ее конец и радиус вычисляются
+' при чтении. Радиус записывается только для окружности, концы - для линии.
+' Шапка v1 без строк означает отсутствие сохраненных достоверных границ,
+' а не доказательство отсутствия отверстий. XY - координаты модели сечения.
+Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSectionContours, _
+        ByVal runID As Variant, Optional ByVal units As CUnitSystem = Nothing, _
+        Optional ByVal savedLengthUnit As String = vbNullString)
+    Dim target As Object: Set target = workbook.Names.Item("rngNDMSectionContours").RefersToRange
+    ClearNamedRegion workbook, "rngNDMSectionContours"
+    Dim data() As Variant, headers As Variant, i As Long, row As Long, kind As String
+    headers = Array("RunID v1", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+        "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", "SourceID", "Comment", "LengthUnit (SectionXY)")
+    ReDim data(1 To contours.Count + 1, 1 To CONTOUR_COLUMNS)
+    For i = 0 To UBound(headers): data(1, i + 1) = headers(i): Next i
+    For i = 1 To contours.Count
+        row = i + 1: kind = contours.SegmentType(i)
+        data(row, 1) = runID: data(row, 2) = contours.LoopID(i): data(row, 3) = contours.ContourID(i)
+        data(row, 4) = i: data(row, 5) = contours.LoopRole(i): data(row, 6) = kind
+        data(row, 7) = ContourOutputLength(contours.StartX(i), units, savedLengthUnit): data(row, 8) = ContourOutputLength(contours.StartY(i), units, savedLengthUnit)
+        Select Case kind
+            Case "CONTOUR_LINE"
+                data(row, 9) = ContourOutputLength(contours.EndX(i), units, savedLengthUnit): data(row, 10) = ContourOutputLength(contours.EndY(i), units, savedLengthUnit)
+            Case "CONTOUR_CIRCLE"
+                data(row, 13) = ContourOutputLength(contours.Radius(i), units, savedLengthUnit)
+            Case "CONTOUR_ARC"
+                data(row, 11) = ContourOutputLength(contours.CenterX(i), units, savedLengthUnit): data(row, 12) = ContourOutputLength(contours.CenterY(i), units, savedLengthUnit)
+                data(row, 14) = contours.SweepAngle(i)
+        End Select
+        data(row, 15) = contours.SourceID(i): data(row, 16) = contours.Comment(i)
+        data(row, 17) = savedLengthUnit
+        If Len(savedLengthUnit) = 0 Then data(row, 17) = OutputLengthUnit(units)
+    Next i
+    target.Resize(contours.Count + 1, CONTOUR_COLUMNS).Value2 = data
+    FormatResultsBlock target, contours.Count + 1, CONTOUR_COLUMNS, "Достоверные контуры и отверстия сечения"
+End Sub
+
+' Миграция сохраняет единицу прежнего снимка, не читая измененный Config.
+Private Function ContourOutputLength(ByVal value As Double, ByVal units As CUnitSystem, ByVal savedUnit As String) As Double
+    If Len(savedUnit) = 0 Then
+        ContourOutputLength = OutputLength(value, units)
+    Else
+        Dim adapter As CUnitSystem: Set adapter = New CUnitSystem
+        ContourOutputLength = adapter.InternalLengthToOutput(value, savedUnit)
+    End If
+End Function
 
 ' ------------------------------
 ' Свойства сечения и LC-состояния
@@ -374,7 +405,7 @@ End Sub
 ' бетонного центра, а главные оси схемы и AutoCAD читаются из блока
 ' Transformed.* расчетного snapshot.
 Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal materialProvider As CMaterialModelProvider, ByVal batch As CBatchSectionCalculator, _
+        ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
@@ -392,22 +423,16 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     ' Bounds нужны любой геометрии, Generated или AutoCAD. По ним схема может
     ' восстановить общий габарит без обращения к текущим настройкам Config.
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
-    GetConcreteBounds section, minX, maxX, minY, maxY
+    Dim bounds As Variant: bounds = snapshot.SnapshotBounds
+    minX = bounds(1): maxX = bounds(2): minY = bounds(3): maxY = bounds(4)
 
-    ' Бетонные свойства нужны как база пользовательской точки нагрузки.
-    ' Приведенные свойства сохраняются отдельно: они используются для справки,
-    ' главных осей и совместимости существующего plot/export layer. Для
-    ' геометрического приведения берем обычные модули Eb/Es, а не наклон
-    ' выбранной диаграммы прочности: форма диаграммы не должна менять Ared/Ired.
+    ' Оба представления подготовлены владельцем до записи; writer переводит
+    ' готовые величины, не пересчитывая их по текущему provider/Config.
     Dim concreteProps As CSectionPropertiesCalculator
-    Set concreteProps = New CSectionPropertiesCalculator
-    concreteProps.CalculateConcrete section
+    Set concreteProps = snapshot
 
     Dim transformedProps As CSectionPropertiesCalculator
-    Set transformedProps = New CSectionPropertiesCalculator
-    transformedProps.CalculateTransformedByModuli section, _
-        materialProvider.ConcreteElasticModulusFromValueSet(mvsULS), _
-        materialProvider.SteelElasticModulusFromValueSet(mvsULS)
+    Set transformedProps = snapshot.TransformedSnapshot
 
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X бетонной расчетной модели в координатах модели."
@@ -494,13 +519,13 @@ End Function
 ' использовали для конечных named-state текущего snapshot. Диаграммы зависят
 ' от профиля, StateType, MaterialModelSpec и режима extension, но не от номера
 ' LC, поэтому одинаковые сочетания не дублируются.
-Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvider As CMaterialModelProvider, _
+Private Sub WriteMaterialDiagrams(ByVal workbook As Object, _
         ByVal batch As CBatchSectionCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange
 
     Dim rowCapacity As Long
-    rowCapacity = MaterialDiagramRowCount(materialProvider, batch)
+    rowCapacity = MaterialDiagramRowCount(batch)
 
     Dim data() As Variant
     ReDim data(1 To rowCapacity, 1 To MATERIAL_DIAGRAM_COLUMNS)
@@ -513,7 +538,7 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, ByVal materialProvid
 
     Dim i As Long
     For i = 1 To batch.Count
-        PutCombinationMaterialDiagrams data, rowIndex, runID, materialProvider, batch, i, units, written
+        PutCombinationMaterialDiagrams data, rowIndex, runID, batch, i, units, written
     Next i
 
     Dim rowCount As Long
@@ -528,7 +553,7 @@ End Sub
 ' named states, но пишет только новые DiagramId. Это важно для профилей: один
 ' и тот же StateType у разных профилей может иметь разную MaterialModelSpec.
 Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal runID As Variant, ByVal materialProvider As CMaterialModelProvider, _
+        ByVal runID As Variant, _
         ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem, _
         ByVal written As Object)
     Dim stateIndex As Long
@@ -536,40 +561,19 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
         Dim stateResult As CSectionStateResult
         Set stateResult = batch.ResultAt(combinationIndex).StateRepository.StateAt(stateIndex)
         If Not stateResult Is Nothing Then
-            AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
-                stateResult, "Concrete", _
-                ConcreteDiagramForState(materialProvider, stateResult, batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
-                batch.ResultAt(combinationIndex).DiagramExtensionEnabled, units, written
-            AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
-                stateResult, "Rebar", _
-                SteelDiagramForState(materialProvider, stateResult, batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
-                batch.ResultAt(combinationIndex).DiagramExtensionEnabled, units, written
+            If stateResult.HasMaterialSnapshot Then
+                AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
+                    stateResult, "Concrete", _
+                    stateResult.ConcreteDiagramSnapshot, _
+                    batch.ResultAt(combinationIndex).DiagramExtensionEnabled, units, written
+                AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
+                    stateResult, "Rebar", _
+                    stateResult.SteelDiagramSnapshot, _
+                    batch.ResultAt(combinationIndex).DiagramExtensionEnabled, units, written
+            End If
         End If
     Next stateIndex
 End Sub
-
-' Возвращает бетонную диаграмму именно в том виде, в котором ее мог получить
-' solver для named-state. Признак extension берется из самого stateResult:
-' так snapshot не зависит от старых предположений о конкретном типе состояния.
-Private Function ConcreteDiagramForState(ByVal materialProvider As CMaterialModelProvider, _
-        ByVal stateResult As CSectionStateResult, ByVal diagramExtensionEnabled As Boolean) As CMaterialDiagram
-    If stateResult.ExtensionUsed Then
-        Set ConcreteDiagramForState = materialProvider.ConcreteMaterialForEquilibriumFromSpec(stateResult.MaterialSpec)
-    Else
-        Set ConcreteDiagramForState = materialProvider.ConcreteMaterialFromSpec(stateResult.MaterialSpec)
-    End If
-End Function
-
-' Возвращает диаграмму арматуры для диагностического snapshot-а по тем же
-' правилам, по которым расчетный orchestrator отдавал материал solver-у.
-Private Function SteelDiagramForState(ByVal materialProvider As CMaterialModelProvider, _
-        ByVal stateResult As CSectionStateResult, ByVal diagramExtensionEnabled As Boolean) As CMaterialDiagram
-    If stateResult.ExtensionUsed Then
-        Set SteelDiagramForState = materialProvider.SteelMaterialForEquilibriumFromSpec(stateResult.MaterialSpec)
-    Else
-        Set SteelDiagramForState = materialProvider.SteelMaterialFromSpec(stateResult.MaterialSpec)
-    End If
-End Function
 
 ' Формирует стабильный идентификатор уникальной диаграммы текущего snapshot.
 ' LoadCase намеренно не входит в ключ: если разные сочетания используют один
@@ -909,8 +913,7 @@ End Function
 ' Считает точную высоту диагностической таблицы фактических диаграмм.
 ' В расчетах с профилями одно сочетание может иметь несколько material spec,
 ' поэтому размер зависит от фактических states и количества точек диаграмм.
-Private Function MaterialDiagramRowCount(ByVal materialProvider As CMaterialModelProvider, _
-        ByVal batch As CBatchSectionCalculator) As Long
+Private Function MaterialDiagramRowCount(ByVal batch As CBatchSectionCalculator) As Long
     Dim rowCount As Long
     rowCount = 1
 
@@ -921,10 +924,8 @@ Private Function MaterialDiagramRowCount(ByVal materialProvider As CMaterialMode
             Dim stateResult As CSectionStateResult
             Set stateResult = batch.ResultAt(combinationIndex).StateRepository.StateAt(stateIndex)
             If Not stateResult Is Nothing Then
-                rowCount = rowCount + ConcreteDiagramForState(materialProvider, stateResult, _
-                    batch.ResultAt(combinationIndex).DiagramExtensionEnabled).PointCount
-                rowCount = rowCount + SteelDiagramForState(materialProvider, stateResult, _
-                    batch.ResultAt(combinationIndex).DiagramExtensionEnabled).PointCount
+                If stateResult.HasMaterialSnapshot Then rowCount = rowCount + _
+                    stateResult.ConcreteDiagramSnapshot.PointCount + stateResult.SteelDiagramSnapshot.PointCount
             End If
         Next stateIndex
     Next combinationIndex
@@ -935,7 +936,7 @@ End Function
 ' Записывает минимальные свойства imported-preview: Bounds, количество
 ' элементов и единицы, достаточные для проверки геометрии на схеме.
 Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal runID As Variant, ByVal units As CUnitSystem)
+        ByVal snapshot As CSectionPropertiesCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
@@ -947,7 +948,8 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     rowIndex = 2
 
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
-    GetConcreteBounds section, minX, maxX, minY, maxY
+    Dim bounds As Variant: bounds = snapshot.SnapshotBounds
+    minX = bounds(1): maxX = bounds(2): minY = bounds(3): maxY = bounds(4)
 
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MinX", OutputLength(minX, units), OutputLengthUnit(units), "Минимальный X бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxX", OutputLength(maxX, units), OutputLengthUnit(units), "Максимальный X бетонной расчетной модели в координатах модели."
@@ -957,8 +959,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.Revision, "-", "Версия геометрии сохраненного снимка."
 
     Dim concreteProps As CSectionPropertiesCalculator
-    Set concreteProps = New CSectionPropertiesCalculator
-    concreteProps.CalculateConcrete section
+    Set concreteProps = snapshot
     PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "RebarCount", section.RebarCount, "шт", "Количество элементов продольной арматуры расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Output.LengthUnit", OutputLengthUnit(units), "-", "Единица вывода длины на момент импорта."
@@ -1052,7 +1053,7 @@ End Sub
 ' Оформляет один Results-диапазон как самостоятельную таблицу.
 ' Заголовок ставится прямо над якорем, а чтение Results ниже выполняется
 ' reader-ом по именованному якорю и размерам блока, без зависимости от CurrentRegion.
-Private Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)
+Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)
     Dim tableRange As Object
     Set tableRange = target.Resize(rowCount, columnCount)
 
@@ -1141,44 +1142,19 @@ Private Function ResultHeaderBase(ByVal headerText As String) As String
     End If
 End Function
 
-' Записывает LC-зависимые напряжения/деформации по всем бетонным и арматурным элементам
-' для одного сохраненного состояния НДС. Используется только уже найденное состояние,
-' solver здесь не запускается.
+' Записывает готовые поэлементные величины сохраненного НДС. Их временный
+' массив подготовлен владельцем состояния; writer только переводит напряжения.
 Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex As Long, _
-        ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
-        ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
+        ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal runID As Variant, ByVal units As CUnitSystem)
-    Dim i As Long
-    Dim strain As Double
-    Dim stress As Double
-    Dim concrete As CMaterialDiagram
-    Dim steel As CMaterialDiagram
-
     If stateResult Is Nothing Then Exit Sub
     If Not stateResult.Converged Then Exit Sub
-
-    Set concrete = ConcreteDiagramForState(materialProvider, stateResult, _
-        batch.ResultAt(combinationIndex).DiagramExtensionEnabled)
-    Set steel = SteelDiagramForState(materialProvider, stateResult, _
-        batch.ResultAt(combinationIndex).DiagramExtensionEnabled)
-
-    For i = 1 To section.ConcreteCount
-        strain = stateResult.Epsilon0 + stateResult.KappaX * section.ConcreteY(i) + _
-            stateResult.KappaY * section.ConcreteX(i)
-        stress = concrete.GetStress(strain)
+    Dim prepared As Variant, i As Long
+    prepared = stateResult.PrepareElementSnapshot(section)
+    For i = 1 To UBound(prepared, 1)
         PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            batch.ResultAt(combinationIndex).ProfileId, stateResult.StateTypeText, section.ConcreteID(i), "Concrete", _
-            strain, stress, PhysicalState("Concrete", strain, stress), units
-        rowIndex = rowIndex + 1
-    Next i
-
-    For i = 1 To section.RebarCount
-        strain = stateResult.Epsilon0 + stateResult.KappaX * section.RebarY(i) + _
-            stateResult.KappaY * section.RebarX(i)
-        stress = steel.GetStress(strain)
-        PutElementRow data, rowIndex, runID, batch.CombinationID(combinationIndex), _
-            batch.ResultAt(combinationIndex).ProfileId, stateResult.StateTypeText, section.RebarID(i), "Rebar", _
-            strain, stress, PhysicalState("Rebar", strain, stress), units
+            batch.ResultAt(combinationIndex).ProfileId, stateResult.StateTypeText, CStr(prepared(i, 1)), CStr(prepared(i, 2)), _
+            CDbl(prepared(i, 3)), CDbl(prepared(i, 4)), CStr(prepared(i, 5)), units
         rowIndex = rowIndex + 1
     Next i
 End Sub
@@ -1198,20 +1174,6 @@ Private Sub PutElementRow(ByRef data() As Variant, ByVal rowIndex As Long, ByVal
     data(rowIndex, 9) = state
 End Sub
 
-' Классифицирует физическое состояние элемента для визуализации и диагностики Results.
-Private Function PhysicalState(ByVal materialType As String, ByVal strain As Double, ByVal stress As Double) As String
-    If Abs(stress) <= PHYSICAL_TOLERANCE Then
-        If StrComp(materialType, "Concrete", vbTextCompare) = 0 And strain > PHYSICAL_TOLERANCE Then
-            PhysicalState = "InactiveTensionConcrete"
-        Else
-            PhysicalState = "NearZero"
-        End If
-    ElseIf stress < 0# Then
-        PhysicalState = "Compression"
-    Else
-        PhysicalState = "Tension"
-    End If
-End Function
 
 ' Формирует заголовки таблицы LC-зависимых результатов элементов.
 Private Sub PutElementResultHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
@@ -1243,16 +1205,6 @@ Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSyst
     data(1, 13) = "LocalIy, " & OutputLengthUnit(units) & "4"
     data(1, 14) = "LocalIxy, " & OutputLengthUnit(units) & "4"
     data(1, 15) = "Comment"
-    data(1, 16) = "EndX, " & OutputLengthUnit(units)
-    data(1, 17) = "EndY, " & OutputLengthUnit(units)
-    data(1, 18) = "CenterX, " & OutputLengthUnit(units)
-    data(1, 19) = "CenterY, " & OutputLengthUnit(units)
-    data(1, 20) = "Radius, " & OutputLengthUnit(units)
-    data(1, 21) = "SweepAngle, rad"
-    data(1, 22) = "LoopID"
-    data(1, 23) = "LoopRole"
-    data(1, 24) = "SourceID"
-    data(1, 25) = "Unit"
 End Sub
 
 ' Формирует заголовки таблицы общих и LC-зависимых свойств сечения.
@@ -1477,192 +1429,6 @@ Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotation
     End If
 End Function
 
-' Для AutoCAD-сетки у программы нет смысловых граней, но есть согласованная
-' прямоугольная оболочка бетонных элементов. Ее строит CSectionModel:
-' фактический прямоугольник, эквивалентный прямоугольник по A/I или
-' последний эквивалентный квадрат по площади. Реальные A/I при этом остаются
-' расчетными характеристиками элемента. Здесь добавляются только общие
-' semantic-аннотации импорта: точные габариты при известном наружном контуре,
-' иначе приблизительные габариты бетонной сетки, а также
-' сводная подпись всей распознанной арматуры.
-Private Sub EnsureAutoCADImportAnnotations(ByVal section As CSectionModel)
-    If section Is Nothing Then Exit Sub
-    If StrComp(section.SourceType, "AutoCADImport", vbTextCompare) <> 0 Then Exit Sub
-    If section.ConcreteCount <= 0 Then Exit Sub
-
-    Dim minX As Double
-    Dim maxX As Double
-    Dim minY As Double
-    Dim maxY As Double
-    GetConcreteBounds section, minX, maxX, minY, maxY
-
-    Dim knownOuter As Boolean, i As Long, query As CSectionGeometryQuery, domain As CConcreteRegion
-    For i = 1 To section.Contours.Count
-        If StrComp(section.Contours.LoopRole(i), "Outer", vbTextCompare) = 0 Then knownOuter = True: Exit For
-    Next i
-    If knownOuter Then
-        Set query = New CSectionGeometryQuery: query.Initialize section
-        Set domain = query.ConcreteDomain
-        query.ProjectionBounds domain, 1#, 0#, minX, maxX
-        query.ProjectionBounds domain, 0#, 1#, minY, maxY
-    End If
-
-    Dim annotations As CSectionAnnotations
-    Set annotations = section.Annotations
-
-    If Not AnnotationExists(annotations, "DIM_AUTO_BOUNDS_B") Then
-        If knownOuter Then
-            annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
-                "B", maxX - minX, "Общая ширина по достоверному наружному контуру импортированного сечения."
-        Else
-            annotations.AddDimension "DIM_AUTO_BOUNDS_B", minX, minY, maxX, minY, 0#, -1#, _
-                ApproxSign(), maxX - minX, "Приблизительная общая ширина по расчетным границам импортированного бетона."
-        End If
-    End If
-    If Not AnnotationExists(annotations, "DIM_AUTO_BOUNDS_H") Then
-        If knownOuter Then
-            annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
-                "H", maxY - minY, "Общая высота по достоверному наружному контуру импортированного сечения."
-        Else
-            annotations.AddDimension "DIM_AUTO_BOUNDS_H", minX, minY, minX, maxY, -1#, 0#, _
-                ApproxSign(), maxY - minY, "Приблизительная общая высота по расчетным границам импортированного бетона."
-        End If
-    End If
-
-    If section.RebarCount > 0 And Not AnnotationExists(annotations, "REBAR_AUTO_ALL") Then
-        Dim labelText As String
-        labelText = AutoCADRebarSummaryText(section)
-        If Len(labelText) > 0 Then
-            Dim labelY As Double
-            labelY = maxY + AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM
-            annotations.AddRebarLabel "REBAR_AUTO_ALL", minX, labelY, maxX, labelY, 0#, 1#, _
-                labelText, "Сводная подпись всей арматуры, распознанной при импорте AutoCAD."
-        End If
-    End If
-End Sub
-
-' Проверяет, есть ли semantic-аннотация с таким ID. Это защищает повторную
-' запись одного и того же CSectionModel от дублирования размеров и подписей.
-Private Function AnnotationExists(ByVal annotations As CSectionAnnotations, ByVal annotationID As String) As Boolean
-    If annotations Is Nothing Then Exit Function
-
-    Dim i As Long
-    For i = 1 To annotations.Count
-        If StrComp(annotations.AnnotationID(i), annotationID, vbTextCompare) = 0 Then
-            AnnotationExists = True
-            Exit Function
-        End If
-    Next i
-End Function
-
-' Собирает одну подпись для всей арматуры AutoCAD import. Диаметры группируются
-' по видимому инженерному значению, сортируются по убыванию и выводятся без
-' пробелов вокруг плюса: ALL: 3∅32+23∅16.
-Private Function AutoCADRebarSummaryText(ByVal section As CSectionModel) As String
-    If section Is Nothing Then Exit Function
-    If section.RebarCount <= 0 Then Exit Function
-
-    Dim diameterTexts() As String
-    Dim diameterValues() As Double
-    Dim counts() As Long
-    Dim groupCount As Long
-
-    Dim i As Long
-    For i = 1 To section.RebarCount
-        Dim diameterValue As Double
-        diameterValue = section.RebarDiameter(i)
-        If diameterValue > 0# Then
-            AddRebarDiameterGroup diameterTexts, diameterValues, counts, groupCount, _
-                FormatRebarDiameterForAnnotation(diameterValue), diameterValue
-        End If
-    Next i
-    If groupCount <= 0 Then Exit Function
-
-    SortRebarDiameterGroupsDescending diameterTexts, diameterValues, counts, groupCount
-
-    Dim resultText As String
-    resultText = "ALL: "
-    For i = 1 To groupCount
-        If i > 1 Then resultText = resultText & "+"
-        resultText = resultText & CStr(counts(i)) & RebarDiameterSymbol() & diameterTexts(i)
-    Next i
-    AutoCADRebarSummaryText = resultText
-End Function
-
-' Добавляет диаметр в существующую группу или создает новую группу. Группировка
-' идет по уже отформатированному тексту, чтобы 32 и 32.0000001 попали в одну
-' пользовательскую запись ∅32.
-Private Sub AddRebarDiameterGroup(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _
-        ByRef counts() As Long, ByRef groupCount As Long, ByVal diameterText As String, ByVal diameterValue As Double)
-    Dim i As Long
-    For i = 1 To groupCount
-        If StrComp(diameterTexts(i), diameterText, vbTextCompare) = 0 Then
-            counts(i) = counts(i) + 1
-            Exit Sub
-        End If
-    Next i
-
-    groupCount = groupCount + 1
-    ReDim Preserve diameterTexts(1 To groupCount)
-    ReDim Preserve diameterValues(1 To groupCount)
-    ReDim Preserve counts(1 To groupCount)
-    diameterTexts(groupCount) = diameterText
-    diameterValues(groupCount) = diameterValue
-    counts(groupCount) = 1
-End Sub
-
-' Стабилизирует порядок сводной подписи: сначала идут стержни большего
-' диаметра. Для типичного импорта это дает привычный вид 3∅32+23∅16.
-Private Sub SortRebarDiameterGroupsDescending(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _
-        ByRef counts() As Long, ByVal groupCount As Long)
-    Dim i As Long
-    Dim j As Long
-    For i = 1 To groupCount - 1
-        For j = i + 1 To groupCount
-            If diameterValues(j) > diameterValues(i) Then
-                SwapRebarDiameterGroups diameterTexts, diameterValues, counts, i, j
-            End If
-        Next j
-    Next i
-End Sub
-
-' Меняет местами две группы диаметров при простой сортировке сводной подписи.
-Private Sub SwapRebarDiameterGroups(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _
-        ByRef counts() As Long, ByVal firstIndex As Long, ByVal secondIndex As Long)
-    Dim textBuffer As String
-    Dim valueBuffer As Double
-    Dim countBuffer As Long
-
-    textBuffer = diameterTexts(firstIndex)
-    valueBuffer = diameterValues(firstIndex)
-    countBuffer = counts(firstIndex)
-
-    diameterTexts(firstIndex) = diameterTexts(secondIndex)
-    diameterValues(firstIndex) = diameterValues(secondIndex)
-    counts(firstIndex) = counts(secondIndex)
-
-    diameterTexts(secondIndex) = textBuffer
-    diameterValues(secondIndex) = valueBuffer
-    counts(secondIndex) = countBuffer
-End Sub
-
-' Форматирует диаметр для подписи арматуры без зависимости от десятичной
-' запятой Windows и без незначащих хвостовых нулей.
-Private Function FormatRebarDiameterForAnnotation(ByVal value As Double) As String
-    Dim textValue As String
-    textValue = Replace$(Format$(value, "0.###"), ",", ".")
-    Do While InStr(1, textValue, ".", vbTextCompare) > 0 And Right$(textValue, 1) = "0"
-        textValue = Left$(textValue, Len(textValue) - 1)
-    Loop
-    If Right$(textValue, 1) = "." Then textValue = Left$(textValue, Len(textValue) - 1)
-    FormatRebarDiameterForAnnotation = textValue
-End Function
-
-' Возвращает символ диаметра для AutoCAD-сводки через ChrW$, чтобы модуль не
-' зависел от кодировки исходного .cls-файла.
-Private Function RebarDiameterSymbol() As String
-    RebarDiameterSymbol = ChrW$(&H2205)
-End Function
 
 ' Возвращает знак приблизительного равенства без литерала в исходнике. Так VBA-модуль
 ' не зависит от кодировки файла, а на лист Results попадает настоящий знак приблизительного равенства.
@@ -1691,15 +1457,6 @@ Private Function OutputAnnotationUnit(ByVal annotations As CSectionAnnotations, 
         OutputAnnotationUnit = annotations.Unit(annotationIndex)
     End If
 End Function
-
-' Получает внешние границы бетона через общую проекционную геометрию CSectionPropertiesCalculator.
-Private Sub GetConcreteBounds(ByVal section As CSectionModel, ByRef minX As Double, ByRef maxX As Double, _
-        ByRef minY As Double, ByRef maxY As Double)
-    Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateProjection section, 1#, 0#, False, minX, maxX
-    props.CalculateProjection section, 0#, 1#, False, minY, maxY
-End Sub
 
 ' Ниже собраны адаптеры output units для полного снимка Results.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double

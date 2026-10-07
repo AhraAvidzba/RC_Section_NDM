@@ -1,0 +1,72 @@
+﻿{
+    "Compared":  26569,
+    "Missing":  [
+
+                ],
+    "Differences":  [
+
+                    ],
+    "Runs":  [
+                 {
+                     "Mode":  "Baseline",
+                     "Scenario":  0,
+                     "Result":  "status=OK; extension=False; noSolve=True; prepareSeconds=0; totalSeconds=0.4296875"
+                 },
+                 {
+                     "Mode":  "Baseline",
+                     "Scenario":  1,
+                     "Result":  "status=OK; extension=False; noSolve=True; prepareSeconds=0; totalSeconds=0.5859375"
+                 },
+                 {
+                     "Mode":  "Baseline",
+                     "Scenario":  2,
+                     "Result":  "status=NumFail; extension=False; noSolve=True; prepareSeconds=0; totalSeconds=0.17578125"
+                 },
+                 {
+                     "Mode":  "Baseline",
+                     "Scenario":  3,
+                     "Result":  "status=FAIL; extension=True; noSolve=True; prepareSeconds=0; totalSeconds=0.171875"
+                 },
+                 {
+                     "Mode":  "Baseline",
+                     "Scenario":  4,
+                     "Result":  "status=OK; extension=False; noSolve=True; prepareSeconds=0; totalSeconds=0.15234375"
+                 },
+                 {
+                     "Mode":  "Baseline",
+                     "Scenario":  5,
+                     "Result":  "status=OK; extension=False; noSolve=True; prepareSeconds=0; totalSeconds=0.1484375"
+                 },
+                 {
+                     "Mode":  "Current",
+                     "Scenario":  0,
+                     "Result":  "status=OK; extension=False; noSolve=True; prepareSeconds=0.015625; totalSeconds=0.3828125"
+                 },
+                 {
+                     "Mode":  "Current",
+                     "Scenario":  1,
+                     "Result":  "status=OK; extension=False; noSolve=True; prepareSeconds=0.0078125; totalSeconds=0.20703125"
+                 },
+                 {
+                     "Mode":  "Current",
+                     "Scenario":  2,
+                     "Result":  "status=NumFail; extension=False; noSolve=True; prepareSeconds=0.0078125; totalSeconds=0.1875"
+                 },
+                 {
+                     "Mode":  "Current",
+                     "Scenario":  3,
+                     "Result":  "status=FAIL; extension=True; noSolve=True; prepareSeconds=0.0078125; totalSeconds=0.16796875"
+                 },
+                 {
+                     "Mode":  "Current",
+                     "Scenario":  4,
+                     "Result":  "status=OK; extension=False; noSolve=True; prepareSeconds=0.00390625; totalSeconds=0.1796875"
+                 },
+                 {
+                     "Mode":  "Current",
+                     "Scenario":  5,
+                     "Result":  "status=OK; extension=False; noSolve=True; prepareSeconds=0.01171875; totalSeconds=0.16015625"
+                 }
+             ],
+    "Acceptance":  "Exact Double comparison; RunID excluded; no tolerance altered"
+}

@@ -1,0 +1,12 @@
+﻿{
+    "Migration":  "Contours v1: already current; segments=16",
+    "Repeat":  "Contours v1: already current; segments=16",
+    "Reopen":  "Contours v1: already current; segments=16",
+    "ConfigPreserved":  true,
+    "ResultsWidthsPreserved":  true,
+    "CrackHeaderRefreshed":  true,
+    "CrackDataPreserved":  true,
+    "SourceGitSHA":  "872d481117fca33bd0fe60b953ffb9587266b5df",
+    "SolveExecuted":  false,
+    "ImportExecuted":  false
+}

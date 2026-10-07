@@ -9,11 +9,13 @@ param(
     [string[]]$Macro = @(),
     [string]$MacroArgument1 = "",
     [string]$MacroArgument2 = "",
+    [ValidateSet("SP35", "SP63")][string]$CrackCode,
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
     [switch]$Visible
 )
 $ErrorActionPreference = "Stop"
+$Macro = @($Macro | ForEach-Object { $_ -split ',' })
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")).Path
 $sourcePath = (Resolve-Path -LiteralPath $SourceWorkbook).Path
@@ -134,7 +136,7 @@ function Get-ResultsStatusStyleHash([object]$Book) {
     $blocks = @(
         @{name='rngBatchSummary'; offset=12; columns=@(4,6,7,8,9,10,11,12,13,14,15)},
         @{name='rngStrengthSummaryAnchor'; offset=0; columns=@(3,30,49)},
-        @{name='rngCrackSummaryAnchor'; offset=0; columns=@(3,19,20,21,23,45,49)},
+        @{name='rngCrackSummaryAnchor'; offset=0; columns=@(3,21,24,25,29,44,67,72)},
         @{name='rngStabilitySummaryAnchor'; offset=0; columns=@(3,38,44,53,59,72,84)}
     )
     foreach ($block in $blocks) {
@@ -192,6 +194,10 @@ try {
     $openBooks = Get-RequiredComProperty $excel 'Workbooks'
     $workbook = $openBooks.Open($fixturePath)
     (Get-ModeSettingCell $workbook $SettingKey).Value2 = $Mode
+    if ($CrackCode) {
+        (Get-ModeSettingCell $workbook 'SLS.Crack.Code').Value2 = $CrackCode
+        $lines.Add("EXPLICIT_CRACK_CODE: $CrackCode; fixture only, source unchanged")
+    }
     $workbook.Save()
     $workbook.Close($false)
     $workbook = $null

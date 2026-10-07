@@ -15,7 +15,9 @@ $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $bookPath = (Resolve-Path -LiteralPath $WorkbookPath).Path
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Audit03')) + [IO.Path]::DirectorySeparatorChar
-if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) {
+$postAuditAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PostAudit03')) + [IO.Path]::DirectorySeparatorChar
+if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
+    -not $bookPath.StartsWith($postAuditAllowed, [StringComparison]::OrdinalIgnoreCase)) {
     throw 'Обновление справки допускается только в изолированной Audit03-книге.'
 }
 $fields = @(Import-Csv -LiteralPath (Join-Path $root $RegistryPath) | Where-Object Role -eq 'UserInput')
@@ -163,8 +165,8 @@ function Test-ActualHelp([object]$Book) {
     Assert-Help 'importedSnapshotUnitChanges' ($body.Contains('Импортированная геометрия записывается в Results в выбранных на момент импорта OUTPUT-единицах') -and $body.Contains('восстановит геометрию по единицам старого снимка')) 'Import and recalculation use their own recorded OUTPUT units'
     Assert-Help 'inputChangeDoesNotRescaleImportedGeometry' ($body.Contains('смена INPUT без перевода уже введенных чисел меняет их физический смысл') -and $body.Contains('не отфильтровывает заново сохраненный снимок')) 'Current input values and preserved imported geometry are distinct'
     Assert-Help 'signsDoNotFlipStressOrStrain' ($body.Contains('Пользовательские знаки N/Mx/My не меняют знак Stress и Strain')) 'Material tension/compression and strain plane keep internal signs'
-    Assert-Help 'crackSettingsRequiredInput' ($body.Contains('Все поля раздела SLS.Crack должны быть заполнены допустимыми значениями') -and $body.Contains('а не командой использовать значение по умолчанию')) 'Crack Config invalid/missing values do not become defaults'
-    Assert-Help 'crackInactiveUserCoefficientContract' ($body.Contains('Phi3 и PsiS сохраняют допустимое число и в автоматических режимах')) 'Inactive user coefficients remain valid editable inputs'
+    Assert-Help 'crackSettingsRequiredInput' ($body.Contains('Для расчета по СП 63 ячейка все равно должна содержать положительное число') -and $body.Contains('пустота или ошибка ввода не заменяются значением по умолчанию')) 'Active SP63 coefficient input does not become a default'
+    Assert-Help 'crackInactiveUserCoefficientContract' ($body.Contains('При SLS.Crack.Phi3Mode = Auto это значение не подставляется в формулу') -and $body.Contains('Ячейка все равно должна содержать положительный коэффициент') -and $body.Contains('При SLS.Crack.PsiMode = Auto или AlwaysCalc эта ячейка не задает итоговый коэффициент') -and $body.Contains('Для расчета по СП 63 ячейка все равно должна содержать положительное число')) 'Phi3 and PsiS remain valid inputs in automatic SP63 modes'
     Assert-Help 'mandatoryInputErrorNavigation' ($body.Contains('Сообщение называет настройку и фактическую ячейку Config') -and $body.Contains('Если строка удалена, адрес не угадывается') -and $body.Contains('в диспетчере имен Excel')) 'Input diagnostics explain actual cell, missing row and damaged named table repair'
     Assert-Help 'circleActiveRebarInput' ($body.Contains('Пустой отступ не заменяется значением шаблона') -and $body.Contains('Для каждого активного дополнительного ряда Loc2row/Loc3row обязателен')) 'Circle active cover and row position are required'
     Assert-Help 'inactiveGeometryFormulaErrors' ($body.Contains('ошибка в неактивном поле или невыбранной форме не мешает построению')) 'Inactive geometry formula error is not a failed active input'

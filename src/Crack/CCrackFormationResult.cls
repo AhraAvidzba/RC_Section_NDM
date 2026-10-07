@@ -127,6 +127,13 @@ Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
 End Property
 
+' Факт образования трещины принадлежит Formation, а не формуле ширины.
+' Подтвержденная точка сохраняется при отказе Post; физический fallback
+' постоянной части пути также может подтверждать трещину без limit point.
+Public Property Get ConfirmedCracked() As Boolean
+    ConfirmedCracked = mCrackFormed And (mHasLimitPoint Or mFallbackPsi1)
+End Property
+
 ' Подтвержденное отсутствие нормальной трещины отличается от неудачного
 ' поиска точки. Успешное недостижение критерия допустимо без Pre/Post; найденный
 ' порог выше текущего LC требует реальной точки. Ошибки и граница поиска

@@ -1,0 +1,12 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\PostAudit03\ReleaseCandidate\RC_Section_NDM.xlsm
+SOURCE_SHA256: D48A5FFCC17A3FC4F1F2A6FC7080952BD01BA08FCB7151CFBF15EA6E887EDB25
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_1264f3485bd44f15bcdc1d2e2427e3b1\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=21244; startTicks=639269760138534533
+EXPLICIT_CRACK_CODE: SP63; fixture only, source unchanged
+SCRIPT ERROR: Аргументы macro/save-reopen допускаются только для одной явно выбранной проверки.
+SCRIPT_ERROR_CONTEXT: macro=modTestWorkbookInterface.RunConfigPresentationTests modTestBatchCalculation.RunAudit03NotCrackedBatchTests; exceptionType=System.Management.Automation.RuntimeException
+SCRIPT_ERROR_POSITION: At C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1:217 char:9
++         throw "Аргументы macro/save-reopen допускаются только для одн ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SCRIPT_ERROR_STACK: at <ScriptBlock>, C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1: line 217

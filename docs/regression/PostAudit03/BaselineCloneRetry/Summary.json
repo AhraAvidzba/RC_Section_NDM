@@ -1,0 +1,13 @@
+﻿{
+    "FrozenProduction":  true,
+    "SourceGitSHA":  "872d481117fca33bd0fe60b953ffb9587266b5df",
+    "Tests":  [
+                  {
+                      "Macro":  "modTestGeometryQuery.RunGeometryQueryTests",
+                      "Passed":  1084,
+                      "Failed":  0,
+                      "Seconds":  0.34333579999999997
+                  }
+              ],
+    "Failed":  false
+}

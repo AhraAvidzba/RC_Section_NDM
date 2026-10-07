@@ -38,6 +38,7 @@ Public Function RunStateDisplay() As String
     Dim meta As CResultMeta, formationMeta As CResultMeta, blocked As CResultMeta
     Dim width As CCrackWidthResult, longitudinal As CLongitudinalCrackResult
     Dim request As CStateRequest, state As CSectionStateResult, stateType As Variant
+    Dim preState As CSectionStateResult, postState As CSectionStateResult
     Dim statuses As Variant, codes As Variant, i As Long, expected As String
     Dim policy As CResultStatusPolicy, writer As CCrackSummaryWriter, units As CUnitSystem
     Dim sheet As Object, anchor As Object, original As String, stage As String
@@ -68,12 +69,15 @@ Public Function RunStateDisplay() As String
         For Each stateType In Array(sstPreCrackState, sstPostCrackState, sstCrackedState)
             Set request = New CStateRequest: request.Initialize CLng(stateType), cpCrackedNDS, spec, -1000#, 0#, 0#, True
             Set state = New CSectionStateResult: state.InitializeFailure request, meta
+            If stateType = sstPreCrackState Then Set preState = state
+            If stateType = sstPostCrackState Then Set postState = state
             result.AddState state
         Next stateType
         stage = "aggregate " & CStr(i)
         Set formationMeta = New CResultMeta
         formationMeta.SetResult rsNumericalFailure, rcNumericalFailure, rkCrackFormation, "Контрольный поиск без точки.", , True, False
         Set formation = New CCrackFormationResult: formation.InitializeUncalculated formationMeta
+        formation.SP35TestAttachDiagnosticStates preState, postState
         Set blocked = New CResultMeta: blocked.SetBlockedByDependency rkCrackWidth, "текущего НДС"
         Set width = New CCrackWidthResult: width.InitializeFromCalculator Nothing, blocked
         blocked.SetBlockedByDependency rkLongitudinalCrack, "текущего НДС"
@@ -122,6 +126,13 @@ Friend Function SP35TestUnpublishedResult(ByVal index As Long) As CCombinationRe
     If mResults(index) Is Nothing Then Set mResults(index) = New CCombinationResult
     Set SP35TestUnpublishedResult = mResults(index)
 End Function
+'@)
+    $module = $book.VBProject.VBComponents.Item('CCrackFormationResult').CodeModule
+    $module.AddFromString(@'
+Friend Sub SP35TestAttachDiagnosticStates(ByVal pre As CSectionStateResult, ByVal post As CSectionStateResult)
+    Set mPreCrackState = pre
+    Set mPostCrackState = post
+End Sub
 '@)
     $component = $book.VBProject.VBComponents.Add(1)
     $component.Name = 'modSP35StateDisplayFixture'

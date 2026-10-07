@@ -17,6 +17,14 @@ $excel = $null
 $book = $null
 $failed = $false
 
+# Читает существующее COM-свойство напрямую, не скрывая потерю объекта.
+function Get-RequiredComProperty([object]$Target,[string]$Property) {
+    if ($null -eq $Target) {throw "COM target unavailable: $Property"}
+    $value=$Target.GetType().InvokeMember($Property,[Reflection.BindingFlags]::GetProperty,$null,$Target,$null)
+    if ($null -eq $value) {throw "COM property unavailable: $Property"}
+    return ,$value
+}
+
 try {
     $lines.Add("SOURCE: $source; SHA256=$sourceHash")
     $lines.Add("FIXTURE: $fixture")
@@ -24,8 +32,11 @@ try {
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 1
-    $book = $excel.Workbooks.Open($fixture)
-    $module = $book.VBProject.VBComponents.Item('modTestWorkbookInterface').CodeModule
+    $books=Get-RequiredComProperty $excel 'Workbooks'
+    $book = $books.Open($fixture)
+    $project=Get-RequiredComProperty $book 'VBProject'
+    $components=Get-RequiredComProperty $project 'VBComponents'
+    $module=Get-RequiredComProperty $components.Item('modTestWorkbookInterface') 'CodeModule'
     $module.AddFromString(@'
 ' ДЛЯ ТЕСТОВ: временный entrypoint подготовки сохраненной книги.
 Public Function Audit02PrepareReopenFixture() As String
@@ -63,7 +74,7 @@ Public Function Audit02ReadReopenSnapshot() As String
         result = result & vbCrLf & CStr(quantity) & ":" & Audit02ReadExportSnapshotForTests(ThisWorkbook)
     Next quantity
     Dim names As Variant
-    names = Array("rngNDMSectionGeometry", "rngNDMElementResults", "rngNDMSectionProperties", _
+    names = Array("rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMElementResults", "rngNDMSectionProperties", _
         "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams", "rngBatchSummary")
     Dim name As Variant, table As Variant
     Dim r As Long, c As Long
@@ -82,8 +93,10 @@ Public Function Audit02ReadReopenSnapshot() As String
 End Function
 '@
     )
+    $lines.Add('STAGE: prepare calculation fixture')
     $message = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02PrepareReopenFixture")
     if ($message -notmatch 'Расчет завершен') { throw $message }
+    $lines.Add('STAGE: read prepared snapshot')
     $before = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02ReadReopenSnapshot")
     $changed = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02ChangeReopenMaterials")
     $lines.Add("CHANGED: $changed")
@@ -91,7 +104,8 @@ End Function
     $book.Close($false)
     [Runtime.InteropServices.Marshal]::ReleaseComObject($book) | Out-Null
     $book = $null
-    $book = $excel.Workbooks.Open($fixture, $null, $true)
+    $books=Get-RequiredComProperty $excel 'Workbooks'
+    $book = $books.Open($fixture, $null, $true)
     $solvesBefore = [long]$excel.Run("'$($book.Name)'!modSolverWorkStats.SectionEquilibriumSolveCount")
     $after = [string]$excel.Run("'$($book.Name)'!modTestWorkbookInterface.Audit02ReadReopenSnapshot")
     $solvesAfter = [long]$excel.Run("'$($book.Name)'!modSolverWorkStats.SectionEquilibriumSolveCount")
@@ -103,7 +117,7 @@ End Function
     $lines.Add('SOURCE_UNCHANGED: True')
 } catch {
     $failed = $true
-    $lines.Add("SCRIPT ERROR: $($_.Exception.Message)")
+    $lines.Add("SCRIPT ERROR: $($_.Exception.Message); $($_.ScriptStackTrace)")
 } finally {
     if ($book) { try { $book.Close($false) } catch {}; [Runtime.InteropServices.Marshal]::ReleaseComObject($book) | Out-Null }
     if ($excel) { try { $excel.Quit() } catch {}; [Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null }

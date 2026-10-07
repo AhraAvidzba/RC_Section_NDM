@@ -1,0 +1,29 @@
+﻿OK: SP35.radius.mm; actual=90; expected=90
+OK: SP35.periodic.psi.cm; actual=4.5; expected=4.5
+OK: SP35.periodic.width.mm; actual=0.0225; expected=0.0225
+OK: SP35.smooth.psi.cm; actual=3.15; expected=3.15
+OK: SP35.smooth.width.mm; actual=0.01575; expected=0.01575
+OK: SP35.zeroArea.radius; actual=0; expected=0
+OK: SP35.zeroStress.width; actual=0; expected=0
+OK: SP35.actualDiameterSum; actual=57.784911717496; expected=57.784911717496
+OK: SP35.beta.single; actual=1; expected=1
+OK: SP35.beta.double; actual=0.85; expected=0.85
+OK: SP35.beta.triple; actual=0.75; expected=0.75
+OK: NDM.beta.four; actual=0.75; expected=0.75
+OK: SP35.radius.3d; actual=3; expected=3
+OK: SP35.radius.5d; actual=5; expected=5
+OK: SP35.radius.6d; actual=6; expected=6
+OK: SP35.invalid.1.error
+OK: SP35.invalid.1.explanation
+OK: SP35.invalid.2.error
+OK: SP35.invalid.2.explanation
+OK: SP35.invalid.3.error
+OK: SP35.invalid.3.explanation
+OK: SP35.invalid.4.error
+OK: SP35.invalid.4.explanation
+OK: SP35.invalid.5.error
+OK: SP35.invalid.5.explanation
+OK: SP35.invalid.6.error
+OK: SP35.invalid.6.explanation
+TOTAL_SP35_FORMULA: passed=27; failed=0
+

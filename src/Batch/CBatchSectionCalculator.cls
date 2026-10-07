@@ -33,8 +33,6 @@ Private Type TCombinationInput
     N As Double
     Mx As Double
     My As Double
-    UserMx As Double
-    UserMy As Double
     ProfileId As String
     LoadPath As String
     Comment As String
@@ -49,6 +47,8 @@ Private mStatusPolicy As CResultStatusPolicy ' Единый словарь по�
 Private mCount As Long ' Сколько сочетаний реально добавлено в пакет.
 
 Private mInputs() As TCombinationInput ' Исходные данные LC, прочитанные из фактических строк rngLoadCombinations.
+Private mWorkingLoads() As CSectionLoadState ' Рабочие усилия текущего запуска; исходная строка не изменяется.
+Private mWorkingPaths() As String ' Нормализованный путь запуска, отдельно от исходного текста LC.
 Private mResults() As CCombinationResult ' Расчетные результаты LC для Summary/Results; размер массива растет вместе с количеством LC.
 Private mLoadReferenceX As Double ' X точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
@@ -531,11 +531,9 @@ Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue A
     mInputs(mCount).ProfileId = Trim$(profileId)
     mInputs(mCount).LoadPath = Trim$(loadPathText)
     mInputs(mCount).Comment = comment
-    mInputs(mCount).UserMx = mxValue
-    mInputs(mCount).UserMy = myValue
     mInputs(mCount).InputValid = inputValid
     mInputs(mCount).InputError = inputError
-    If inputValid Then NormalizeCombinationMoments mCount
+    NormalizeCombinationMoments mCount
 End Sub
 
 ' Расширяет хранилище LC без изменения уже прочитанных нагрузок и результатов.
@@ -553,9 +551,13 @@ Private Sub EnsureCombinationCapacity(ByVal requiredCount As Long)
 
     If currentCapacity = 0 Then
         ReDim mInputs(1 To newCapacity)
+        ReDim mWorkingLoads(1 To newCapacity)
+        ReDim mWorkingPaths(1 To newCapacity)
         ReDim mResults(1 To newCapacity)
     Else
         ReDim Preserve mInputs(1 To newCapacity)
+        ReDim Preserve mWorkingLoads(1 To newCapacity)
+        ReDim Preserve mWorkingPaths(1 To newCapacity)
         ReDim Preserve mResults(1 To newCapacity)
     End If
 
@@ -663,19 +665,20 @@ Private Function NormalizeMomentMy(ByVal momentValue As Double) As Double
     End If
 End Function
 
-' Нормализует пару пользовательских моментов и заново переносит их к системе
-' координат модели. Это единая точка для исходных LC и усилий после Stability.
+' Заново строит рабочую нагрузку из неизменяемой строки LC. Фильтр и перенос
+' применяются к исходным числам, а не к результатам предыдущего запуска.
 Private Sub NormalizeCombinationMoments(ByVal index As Long)
-    If Not mSettingsValid Then Exit Sub
     If index < 1 Or index > mCount Then Exit Sub
-    If Not mInputs(index).InputValid Then Exit Sub
-
     Dim loadState As CSectionLoadState
-    Set loadState = LoadStateForCombination(index)
-    mInputs(index).UserMx = loadState.LoadPointMx
-    mInputs(index).UserMy = loadState.LoadPointMy
-    mInputs(index).Mx = loadState.InternalMx
-    mInputs(index).My = loadState.InternalMy
+    Set loadState = New CSectionLoadState
+    If mSettingsValid And mInputs(index).InputValid Then
+        loadState.Initialize mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
+            mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
+    Else
+        loadState.Initialize mInputs(index).N, mInputs(index).Mx, mInputs(index).My, mLoadReferenceX, mLoadReferenceY
+    End If
+    Set mWorkingLoads(index) = loadState
+    mWorkingPaths(index) = mInputs(index).LoadPath
 End Sub
 
 ' Применяет текущую настройку фильтра к уже загруженным сочетаниям. Метод
@@ -694,6 +697,9 @@ Public Sub Execute()
     On Error GoTo Failed
 
     ValidateReady
+    ' Модель/provider могут быть изменены между запусками тем же владельцем.
+    ' Кэш расчетного центра относится только к одному запуску.
+    ClearTransformedReferenceCache
     ConfigureConcreteMomentDepths
     NormalizeAllCombinationMoments
     Dim t0 As Double
@@ -769,13 +775,13 @@ Private Sub RunCombination(ByVal index As Long)
 
     Dim pathDescriptor As CLoadPathDescriptor, normalizedPath As String
     Set pathDescriptor = New CLoadPathDescriptor
-    normalizedPath = pathDescriptor.NormalizeKey(mInputs(index).LoadPath)
+    normalizedPath = pathDescriptor.NormalizeKey(mWorkingPaths(index))
     If Len(normalizedPath) = 0 Then
         MarkInvalid index, "В сочетании " & mInputs(index).CombinationID & _
             " исправьте LoadPath: выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
         Exit Sub
     End If
-    mInputs(index).LoadPath = normalizedPath
+    mWorkingPaths(index) = normalizedPath
 
     If Len(Trim$(mInputs(index).ProfileId)) = 0 Then
         ReportStep "Сочетание не рассчитано: ProfileId не задан."
@@ -792,9 +798,9 @@ Private Sub RunCombination(ByVal index As Long)
     Set profile = mProfiles.ProfileById(mInputs(index).ProfileId)
     mResults(index).SetProfileId profile.ProfileId
     ReportValue "Профиль", profile.ProfileId & " / " & profile.DisplayName
-    ReportValue "N", mReport.FormatForce(mInputs(index).N)
-    ReportValue "Mx расчетный", mReport.FormatMx(mInputs(index).Mx)
-    ReportValue "My расчетный", mReport.FormatMy(mInputs(index).My)
+    ReportValue "N", mReport.FormatForce(mWorkingLoads(index).N)
+    ReportValue "Mx расчетный", mReport.FormatMx(mWorkingLoads(index).InternalMx)
+    ReportValue "My расчетный", mReport.FormatMy(mWorkingLoads(index).InternalMy)
 
     Dim profileError As String
     If Not profile.ValidateForCalculation(profileError) Then
@@ -886,7 +892,7 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     referenceMy = loadState.MyAboutPoint(referenceX)
 
     stability.Calculate mSection, mMaterialProvider, valueSet, mStabilityCode, _
-        mInputs(index).N, referenceMx, referenceMy, _
+        loadState.N, referenceMx, referenceMy, _
         sustainedN, sustainedMx, sustainedMy, _
         mStabilityElementLength, mStabilityMu1, mStabilityMu2, _
         mStabilitySystemType, mStabilityZeroSign1, mStabilityZeroSign2, _
@@ -911,9 +917,9 @@ Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialV
     ReportValue "Контрольная сила устойчивости", mReport.FormatCompressionForce(stability.CriticalForce)
     ReportValue "Минимальный запас устойчивости", FormatNumberInvariant(stability.ReserveFactor)
     ReportValue "Итоговые N/Mx/My после фильтра", _
-        "N=" & mReport.FormatForce(mInputs(index).N) & "; " & _
-        "Mx=" & mReport.FormatMx(mInputs(index).Mx) & "; " & _
-        "My=" & mReport.FormatMy(mInputs(index).My)
+        "N=" & mReport.FormatForce(mWorkingLoads(index).N) & "; " & _
+        "Mx=" & mReport.FormatMx(mWorkingLoads(index).InternalMx) & "; " & _
+        "My=" & mReport.FormatMy(mWorkingLoads(index).InternalMy)
     If Not mReport Is Nothing Then mReport.ReportStabilityDetails mResults(index).StabilityResult
     Exit Sub
 
@@ -957,7 +963,7 @@ Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
     Next i
 End Sub
 
-' Подменяет усилия LC расчетными усилиями после фильтра устойчивости. Сам
+' Заменяет только рабочую нагрузку расчетными усилиями устойчивости. Сам
 ' CStabilityCalculator работает с моментами относительно центра тяжести
 ' приведенного сечения, как требуют СП 35/63. Перед НДМ моменты снова
 ' переносятся к внутренней системе координат элементов.
@@ -969,11 +975,7 @@ Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CS
         referenceX, referenceY, mLoadReferenceX, mLoadReferenceY, _
         mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
 
-    mInputs(index).N = loadState.N
-    mInputs(index).UserMx = loadState.LoadPointMx
-    mInputs(index).UserMy = loadState.LoadPointMy
-    mInputs(index).Mx = loadState.InternalMx
-    mInputs(index).My = loadState.InternalMy
+    Set mWorkingLoads(index) = loadState
 
     ' Summary должен показывать те же моменты, которые после zero-filter ушли
     ' дальше в DirectState/Capacity/Crack, а не промежуточный DesignLoad.
@@ -981,18 +983,14 @@ Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CS
     Dim finalDesignMy As Double
     finalDesignMx = loadState.MxAboutPoint(referenceY)
     finalDesignMy = loadState.MyAboutPoint(referenceX)
-    mResults(index).UpdateStabilityDesignLoads mInputs(index).N, finalDesignMx, finalDesignMy, _
+    mResults(index).UpdateStabilityDesignLoads loadState.N, finalDesignMx, finalDesignMy, _
         stability.PrincipalAngleRad
 End Sub
 
 ' Возвращает объект нагрузки LC: он единолично переносит моменты между
 ' пользовательской точкой, произвольным центром и внутренним началом модели.
 Private Function LoadStateForCombination(ByVal index As Long) As CSectionLoadState
-    Dim loadState As CSectionLoadState
-    Set loadState = New CSectionLoadState
-    loadState.Initialize mInputs(index).N, mInputs(index).UserMx, mInputs(index).UserMy, _
-        mLoadReferenceX, mLoadReferenceY, mMomentZeroFilter, mConcreteDepthForMx, mConcreteDepthForMy
-    Set LoadStateForCombination = loadState
+    Set LoadStateForCombination = mWorkingLoads(index)
 End Function
 
 ' Возвращает центр приведенного сечения для проверки относительно выбранного
@@ -1092,8 +1090,8 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
     Set capacityCalculator = New CCapacityCalculator
     ConfigureCapacityCalculator capacityCalculator
     Set loadState = LoadStateForCombination(index)
-    Set loadPath = capacityCalculator.BuildLoadPath(mInputs(index).LoadPath, loadState)
-    ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mInputs(index).LoadPath)
+    Set loadPath = capacityCalculator.BuildLoadPath(mWorkingPaths(index), loadState)
+    ReportValue "Путь нагрузки для несущей", IIf(loadPath.HasPath, loadPath.DisplayName, mWorkingPaths(index))
 
     ReportValue "Стратегия поиска несущей", capacityCalculator.SolutionStrategy
 
@@ -1143,7 +1141,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 
     Dim request As CStateRequest
     Set request = New CStateRequest
-    request.Initialize stateType, materialRole, spec, mInputs(index).N, mInputs(index).Mx, mInputs(index).My, _
+    request.Initialize stateType, materialRole, spec, mWorkingLoads(index).N, mWorkingLoads(index).InternalMx, mWorkingLoads(index).InternalMy, _
         effectiveDiagramExtension, effectiveDiagramExtension
 
     Dim provider As CStateProvider
@@ -1210,9 +1208,9 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Set crack = New CCrackWidthCalculator
     ConfigureCrackCalculator crack
     ReportStep "Запускается проверка образования нормальной трещины."
-    ReportValue "Путь образования трещины", mInputs(index).LoadPath
+    ReportValue "Путь образования трещины", mWorkingPaths(index)
     ReportValue "Стратегия поиска образования трещины", mCrackFormationSolutionStrategy
-    If Not mReport Is Nothing Then mReport.ReportCrackFormationSearchStart mInputs(index).LoadPath
+    If Not mReport Is Nothing Then mReport.ReportCrackFormationSearchStart mWorkingPaths(index)
 
     Dim crackReferenceX As Double
     Dim crackReferenceY As Double
@@ -1232,7 +1230,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     Dim formationResult As CCrackFormationResult
     Set formationResult = formationCalculator.CheckFormation(mSection, _
         mMaterialProvider, profile.CrackedStateSpec, profile.CrackInitiationSpec, _
-        mInputs(index).N, mInputs(index).Mx, mInputs(index).My, loadState, _
+        loadState.N, loadState.InternalMx, loadState.InternalMy, loadState, _
         crackReferenceX, crackReferenceY)
     crack.InitializeForFormation formationResult
     If Not crack.Converged Then AppendCrackDiagnostic index, crack
@@ -1455,7 +1453,6 @@ End Function
 ' в solver. Так пользователь видит причину в таблице, а остальные LC считаются.
 Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then reason = "Некорректное сочетание нагрузок."
-    mInputs(index).InputError = reason
     mResults(index).SetProfileId mInputs(index).ProfileId
     mResults(index).SetWorkflowMeta InvalidInputMeta(rkGeneric, reason)
     ' Ошибка одной строки относится только к запрошенным проверкам.
@@ -1547,7 +1544,7 @@ End Sub
 ' Передает formation-настройки его владельцу. Width не хранит solver-options
 ' и не участвует в поиске Pre/PostCrackState или выборе физического пути.
 Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormationCalculator, ByVal index As Long)
-    formation.CrackFormationPath = mInputs(index).LoadPath
+    formation.CrackFormationPath = mWorkingPaths(index)
     formation.CrackFormationSolutionStrategy = mCrackFormationSolutionStrategy
     formation.SolverLoadSteps = mSolverLoadSteps
     formation.SolverMethod = mSolverMethod
@@ -1791,23 +1788,23 @@ End Property
 
 
 Public Property Get N(ByVal index As Long) As Double
-    N = mInputs(index).N
+    N = mWorkingLoads(index).N
 End Property
 
 Public Property Get Mx(ByVal index As Long) As Double
-    Mx = mInputs(index).Mx
+    Mx = mWorkingLoads(index).InternalMx
 End Property
 
 Public Property Get My(ByVal index As Long) As Double
-    My = mInputs(index).My
+    My = mWorkingLoads(index).InternalMy
 End Property
 
 Public Property Get UserMx(ByVal index As Long) As Double
-    UserMx = mInputs(index).UserMx
+    UserMx = mWorkingLoads(index).LoadPointMx
 End Property
 
 Public Property Get UserMy(ByVal index As Long) As Double
-    UserMy = mInputs(index).UserMy
+    UserMy = mWorkingLoads(index).LoadPointMy
 End Property
 
 Public Property Get LoadReferenceX() As Double
@@ -1848,12 +1845,12 @@ Public Property Get ResultAt(ByVal index As Long) As CCombinationResult
 End Property
 
 Public Property Get StabilityLoadPointMx(ByVal index As Long) As Double
-    StabilityLoadPointMx = NormalizeMomentMx(mInputs(index).UserMx)
+    StabilityLoadPointMx = mWorkingLoads(index).LoadPointMx
 End Property
 
 ' Возвращает My после устойчивости в пользовательской точке задания нагрузки.
 Public Property Get StabilityLoadPointMy(ByVal index As Long) As Double
-    StabilityLoadPointMy = NormalizeMomentMy(mInputs(index).UserMy)
+    StabilityLoadPointMy = mWorkingLoads(index).LoadPointMy
 End Property
 
 ' Возвращает пользовательский лимит N/Ncr для eta-ветви СП 35.

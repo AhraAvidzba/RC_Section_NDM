@@ -1,0 +1,15 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\PostAudit03\ReleaseCandidate\RC_Section_NDM.xlsm; SHA256=D48A5FFCC17A3FC4F1F2A6FC7080952BD01BA08FCB7151CFBF15EA6E887EDB25
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_SnapshotReopen_fd68b52cc1294fda89ba86c3651900b9\RC_Section_NDM.xlsm
+STAGE: prepare calculation fixture
+STAGE: read prepared snapshot
+CHANGED: General.DiagramExtension=No
+Concrete.E=16250
+Concrete.R.ULS(I)=7.75
+Concrete.R.SLS(II)=11
+Steel.E=100000
+Steel.R.ULS(I)=175
+Steel.R.SLS(II)=195
+
+SNAPSHOT_EXACT_MATCH: True; characters=39103
+REOPEN_READ_EXPORT_PLOT_SOLVES: 0
+SOURCE_UNCHANGED: True

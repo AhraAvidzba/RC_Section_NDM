@@ -1,0 +1,20 @@
+﻿OK: SP35.neighborSetting.0.accepted
+OK: SP35.neighborSetting.0.2.accepted
+OK: SP35.neighborSetting.1.accepted
+OK: SP35.neighborSetting.-0.01.rejected
+OK: SP35.neighborSetting.-0.01.key
+OK: SP35.neighborSetting.-0.01.location
+OK: SP35.neighborSetting.1.01.rejected
+OK: SP35.neighborSetting.1.01.key
+OK: SP35.neighborSetting.1.01.location
+OK: SP35.neighborSetting..rejected
+OK: SP35.neighborSetting..key
+OK: SP35.neighborSetting..location
+OK: SP35.neighborSetting.wrong.rejected
+OK: SP35.neighborSetting.wrong.key
+OK: SP35.neighborSetting.wrong.location
+OK: SP35.neighborSetting.inactiveIgnored
+OK: SP35.neighborSetting.movedAddress
+OK: SP35.neighborSetting.missingRequired
+TOTAL_SP35_NEIGHBOR_SETTINGS: passed=18; failed=0
+

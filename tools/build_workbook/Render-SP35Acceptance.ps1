@@ -3,7 +3,8 @@
 # данные и ширины столбцов не меняются. PDF служат QA-артефактами, не отчетом.
 param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
-    [Parameter(Mandatory=$true)][string]$ReportDirectory
+    [Parameter(Mandatory=$true)][string]$ReportDirectory,
+    [switch]$PostAudit03Checks
 )
 $ErrorActionPreference = 'Stop'
 $path = (Resolve-Path -LiteralPath $WorkbookPath).Path
@@ -44,6 +45,14 @@ try {
     Export-Range $sheet $anchor.Offset(-4,0).Resize(10,29) 'Crack_Formation_Current' $true
     Export-Range $sheet $anchor.Offset(-4,30).Resize(10,14) 'Crack_SP35' $true
     Export-Range $sheet $anchor.Offset(-4,45).Resize(10,27) 'Crack_SP63_Longitudinal' $true
+    if ($PostAudit03Checks) {
+        $settings=$book.Names.Item('rngSystemSettings').RefersToRange
+        Export-Range $settings.Worksheet $settings.Resize(12,$settings.Columns.Count) 'Config_General_HelpBorder' $true
+        $rect=$book.Names.Item('rngRectSetGeometry').RefersToRange
+        Export-Range $rect.Worksheet $rect.Offset(18,0).Resize(10,$rect.Columns.Count) 'Config_RectSet_Selectors' $true
+        $contours=$book.Names.Item('rngNDMSectionContours').RefersToRange
+        Export-Range $contours.Worksheet $contours.Offset(-2,0).Resize(10,17) 'Results_Contours_v1' $true
+    }
     $guide = $book.Worksheets.Item('Справка')
     $data = $guide.UsedRange.Value2
     $rows = @{}

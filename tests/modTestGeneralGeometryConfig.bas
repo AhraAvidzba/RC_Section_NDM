@@ -215,7 +215,7 @@ Private Sub CheckSavedImport(ByRef stats As TGeneralConfigStats, ByVal system As
     regions.Add region
     Set importer = New CAutoCADSectionModelImporter
     Set imported = importer.ImportFromModelSpace(regions, "RC_CONCRETE", "RC_REBAR", "Rebar", 0#, units)
-    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, imported, units
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, imported, PrepareSectionSnapshot(imported), units
     SetValue system, "Geometry.Source", "AutoCAD"
     SetValue system, "Geometry.Type", "Unknown"
     SetValue system, "Mesh.StepX", -1#: SetValue system, "Mesh.StepY", -1#

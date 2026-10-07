@@ -755,32 +755,6 @@ Public Function SP35CrackWidthFromData(ByVal sigmaS As Double, ByVal steelEs As 
     SP35CrackWidthFromData = (sigmaS / steelEs) * psiCm * 10#
 End Function
 
-' [SP35] Табл. 7.26: beta для одиночных, сдвоенных и строенных стержней.
-' [NDM] Для связной группы из четырех и более обычных стержней согласованно
-' сохраняется beta=0.75; эта интерпретация должна отмечаться в справке.
-Public Function SP35GroupBetaFromData(ByVal barCount As Long) As Double
-    Select Case barCount
-        Case 1: SP35GroupBetaFromData = 1#
-        Case 2: SP35GroupBetaFromData = 0.85
-        Case Is >= 3: SP35GroupBetaFromData = 0.75
-        Case Else
-            Err.Raise vbObjectError + 3784, "CCrackWidthCalculator", "Группа армирования СП 35 должна содержать хотя бы один стержень."
-    End Select
-End Function
-
-' [SP35] Возвращает только согласованный нормативный множитель радиуса.
-' Выбор диаметра Max/Min/Average и геометрические ограничения принадлежат
-' подготовке области, а не этой численной операции.
-Public Function SP35InteractionMultiplierFromData(ByVal radiusMode As String) As Double
-    Select Case LCase$(Trim$(radiusMode))
-        Case "3d": SP35InteractionMultiplierFromData = 3#
-        Case "5d": SP35InteractionMultiplierFromData = 5#
-        Case "6d": SP35InteractionMultiplierFromData = 6#
-        Case Else
-            Err.Raise vbObjectError + 3785, "CCrackWidthCalculator", "Радиус взаимодействия СП 35 должен быть 3d, 5d или 6d."
-    End Select
-End Function
-
 ' Публикует машинный итог только формульного этапа. Получение Formation/State
 ' не объявляет формулу выполненной; отсутствующий итог является внутренней
 ' ошибкой, а не повторной численной несходимостью или успешным fallback.

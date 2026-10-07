@@ -64,8 +64,9 @@ Private Sub TestCrackAnnotationsDoNotRequirePlotNormals(ByRef stats As TUiTestSt
         fixture.Names.Add Name:=CStr(name), RefersTo:="=Config!" & target.Address: i = i + 1
     Next name
     geometry = Audit03ContourGeometrySnapshot("CONTOUR_LINE")
-    sheet.Range("A5").Resize(4, 25).Value2 = geometry
+    sheet.Range("A5").Resize(3, 15).Value2 = geometry
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    Audit03PrepareContourFixture fixture, "CONTOUR_LINE"
     props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
     props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
     sheet.Range("AB5").Resize(2, 4).Value2 = props
@@ -138,7 +139,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: создает новый geometry snapshot с двумя элементами и отдельной
 ' точной границей. Контур не пишется в annotation-таблицу даже в fixture.
 Private Function Audit03ContourGeometrySnapshot(ByVal kind As String) As Variant
-    Dim data(1 To 4, 1 To 25) As Variant, original As Variant, i As Long, j As Long, headers As Variant
+    Dim data(1 To 3, 1 To 15) As Variant, original As Variant, i As Long, j As Long
     original = Audit03GeometrySnapshotArray("mm", 1#)
     For i = 1 To 3
         data(i, 2) = original(i, 1): data(i, 3) = original(i, 2)
@@ -147,20 +148,39 @@ Private Function Audit03ContourGeometrySnapshot(ByVal kind As String) As Variant
         data(i, 1) = "TEST_RUN"
     Next i
     data(1, 1) = "RunID"
-    headers = Array("EndX, mm", "EndY, mm", "CenterX, mm", "CenterY, mm", "Radius, mm", _
-        "SweepAngle, rad", "LoopID", "LoopRole", "SourceID", "Unit")
-    For j = 0 To UBound(headers): data(1, 16 + j) = headers(j): Next j
-    ' Даже совпадение ID с арматурой не должно превратить контур в расчетный элемент.
-    data(4, 1) = "TEST_RUN": data(4, 2) = "R1": data(4, 3) = "Contour"
-    data(4, 4) = 0#: data(4, 5) = 0#: data(4, 7) = kind: data(4, 15) = "Точный тестовый контур."
-    data(4, 16) = 100#: data(4, 17) = 0#: data(4, 18) = 0#: data(4, 19) = 0#
-    data(4, 20) = 100#: data(4, 21) = 0#: data(4, 22) = "OUTER"
-    data(4, 23) = "Outer": data(4, 24) = "TEST": data(4, 25) = "mm"
-    If kind = "CONTOUR_ARC" Then
-        data(4, 4) = 100#: data(4, 16) = 0#: data(4, 17) = 100#: data(4, 21) = "1.570796326795"
-    End If
     Audit03ContourGeometrySnapshot = data
 End Function
+
+' ДЛЯ ТЕСТОВ: отдельный компактный contour-снимок, включая штатно пустой.
+Private Function Audit03ContourSnapshot(ByVal kind As String) As Variant
+    Dim data() As Variant, headers As Variant, j As Long, rows As Long
+    rows = 1: If Len(kind) > 0 Then rows = 2
+    ReDim data(1 To rows, 1 To 17)
+    headers = Array("RunID v1", "LoopID", "SegmentID", "Sequence", "LoopRole", "SegmentType", _
+        "StartX", "StartY", "EndX", "EndY", "CenterX", "CenterY", "Radius", "SweepAngle, rad", _
+        "SourceID", "Comment", "LengthUnit (SectionXY)")
+    For j = 0 To UBound(headers): data(1, j + 1) = headers(j): Next j
+    If rows = 2 Then
+        data(2, 1) = "TEST_RUN": data(2, 2) = "OUTER": data(2, 3) = "R1": data(2, 4) = 1
+        data(2, 5) = "Outer": data(2, 6) = kind: data(2, 7) = 0#: data(2, 8) = 0#
+        data(2, 15) = "TEST": data(2, 16) = "Точный тестовый контур.": data(2, 17) = "mm"
+        Select Case kind
+            Case "CONTOUR_LINE": data(2, 9) = 100#: data(2, 10) = 0#
+            Case "CONTOUR_CIRCLE": data(2, 13) = 100#
+            Case "CONTOUR_ARC"
+                data(2, 7) = 100#: data(2, 11) = 0#: data(2, 12) = 0#: data(2, 14) = "1.570796326795"
+        End Select
+    End If
+    Audit03ContourSnapshot = data
+End Function
+
+' ДЛЯ ТЕСТОВ: якорь вне остальных синтетических таблиц и их перенесенных копий.
+Private Sub Audit03PrepareContourFixture(ByVal fixture As Object, Optional ByVal kind As String = "")
+    Dim data As Variant
+    data = Audit03ContourSnapshot(kind)
+    fixture.Worksheets.Item("Results").Range("EZ5").Resize(UBound(data, 1), 17).Value2 = data
+    fixture.Names.Add Name:="rngNDMSectionContours", RefersTo:="=Results!$EZ$5"
+End Sub
 
 ' ДЛЯ ТЕСТОВ: проверяет углы, динамические адреса и сохранность новой geometry-таблицы.
 Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
@@ -186,9 +206,10 @@ Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
     Next name
     Audit03SetPlotSetting fixture.Names.Item("rngSystemSettings").RefersToRange, "Plot.Enabled", "Yes"
     Audit03SetPlotSetting fixture.Names.Item("rngSystemSettings").RefersToRange, "Plot.ContourEnabled", "Yes"
-    annotations = Audit03ContourGeometrySnapshot("CONTOUR_ARC")
-    sheet.Range("A5").Resize(4, 25).Value2 = annotations
+    annotations = Audit03ContourSnapshot("CONTOUR_ARC")
+    sheet.Range("A5").Resize(3, 15).Value2 = Audit03ContourGeometrySnapshot("CONTOUR_ARC")
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    Audit03PrepareContourFixture fixture, "CONTOUR_ARC"
     props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
     props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
     sheet.Range("AB5").Resize(2, 4).Value2 = props
@@ -197,17 +218,17 @@ Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
     Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
     Set chart = fixture.Worksheets.Item("Расчет").ChartObjects.Add(41#, 53#, 700#, 480#): chart.Name = "chtNDMSectionPlot"
     For position = 0 To 1
-        If position = 0 Then Set anchor = sheet.Range("A5") Else Set anchor = sheet.Range("CH800")
-        anchor.Resize(4, 25).NumberFormat = "@": anchor.Resize(4, 25).Value2 = annotations
-        fixture.Names.Item("rngNDMSectionGeometry").RefersTo = "=Results!" & anchor.Address
-        Set cell = anchor.Cells(4, 21): variantIndex = 0
+        If position = 0 Then Set anchor = sheet.Range("EZ5") Else Set anchor = sheet.Range("CH800")
+        anchor.Resize(2, 17).NumberFormat = "@": anchor.Resize(2, 17).Value2 = annotations
+        fixture.Names.Item("rngNDMSectionContours").RefersTo = "=Results!" & anchor.Address
+        Set cell = anchor.Cells(2, 14): variantIndex = 0
         For Each bad In Array("", "TODO", "1.25garbage", "1,25garbage", "1.2.3", "1,2,3", "1E", "--1", "&H1", CVErr(2015), "1E309", "1E300", "7", "-7", "$1", "1 000", "+.", "1e+1E-2", "True", True)
             variantIndex = variantIndex + 1: cases = cases + 1: cell.Value2 = bad
             prefix = "audit03.contourArc.p" & CStr(position) & ".bad" & CStr(variantIndex)
             Audit03ReadLifecycleLoad reader, fixture, settings, 1, code, reason
             AssertTrue stats, prefix & ".rejected", code <> 0
             AssertTrue stats, prefix & ".address", InStr(1, reason, "Results!" & cell.Address(False, False), vbTextCompare) > 0
-            AssertTrue stats, prefix & ".reason", InStr(1, reason, "Text", vbTextCompare) > 0 And InStr(1, reason, "радиан", vbTextCompare) > 0
+            AssertTrue stats, prefix & ".reason", InStr(1, reason, "угол", vbTextCompare) > 0 And InStr(1, reason, "радиан", vbTextCompare) > 0
             AssertTrue stats, prefix & ".empty", reader.Count = 0 And reader.AnnotationCount = 0
             On Error Resume Next
             Err.Clear: exportText = Audit03ReadContourArcSweepsForTests(fixture)
@@ -225,13 +246,13 @@ Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
             On Error Resume Next
             chart.Chart.Shapes.Item("NDMPlot_Audit03Sentinel").Delete
             On Error GoTo Failed
-            cell.Value2 = annotations(4, 21): reader.LoadGeometryPreviewFromWorkbook fixture, settings
+            cell.Value2 = annotations(2, 14): reader.LoadGeometryPreviewFromWorkbook fixture, settings
             AssertTrue stats, prefix & ".recovery", reader.Count = 2 And reader.AnnotationCount = 1
         Next bad
         expected = Array(1.570796326795, 1.570796326795, 1.570796326795, -1.570796326795, -0.5, 0.5, 0.001, 0#)
         index = 0
         For Each valid In Array("1.570796326795", "1,570796326795", "+1.570796326795E0", "-1.570796326795", "-.5", ".5", "1E-3", "0")
-            cases = cases + 1: cell.Value2 = valid: baseline = anchor.Resize(4, 25).Value2
+            cases = cases + 1: cell.Value2 = valid: baseline = anchor.Resize(2, 17).Value2
             reader.LoadGeometryPreviewFromWorkbook fixture, settings
             plotter.Draw fixture, reader, settings
             count = 0
@@ -248,7 +269,7 @@ Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
             Else
                 AssertTrue stats, prefix & ".segments", count = 6
             End If
-            actual = anchor.Resize(4, 25).Value2: Audit03ComparePlainSnapshot stats, prefix, baseline, actual, 1
+            actual = anchor.Resize(2, 17).Value2: Audit03ComparePlainSnapshot stats, prefix, baseline, actual, 1
             index = index + 1
         Next valid
         For Each separator In Array(".", ",")
@@ -344,6 +365,7 @@ Private Sub TestAudit03NamedAnnotationSettings(ByRef stats As TUiTestStats)
     Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
     geometry = Audit03GeometrySnapshotArray("mm", 1#): sheet.Range("A5").Resize(3, 15).Value2 = geometry
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    Audit03PrepareContourFixture fixture
     props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
     props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
     sheet.Range("R5").Resize(2, 4).Value2 = props
@@ -616,6 +638,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
     fixture.Names.Add Name:="rngCalculationProfiles", RefersTo:="=MetadataConfig!" & config.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Address
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
     fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Results!$R$35"
+    Audit03PrepareContourFixture fixture
     fixture.Names.Add Name:="rngNDMSectionAnnotations", RefersTo:="=Results!$A$20"
     fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$R$5"
     elements(1, 1) = "LoadCase": elements(1, 2) = "ProfileId": elements(1, 3) = "StateType": elements(1, 4) = "ElementID"
@@ -800,8 +823,9 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     Set annotationTable = fixture.Names.Item("rngPlotAnnotationSettings").RefersToRange
     annotationBaseline = annotationTable.Value2
     geometry = Audit03ContourGeometrySnapshot("CONTOUR_CIRCLE")
-    sheet.Range("A5").Resize(4, 25).Value2 = geometry
+    sheet.Range("A5").Resize(3, 15).Value2 = geometry
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    Audit03PrepareContourFixture fixture, "CONTOUR_CIRCLE"
     Set source = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
     config.Range("AF5").Resize(source.Rows.Count, source.Columns.Count).Value2 = source.Value2
     For row = 2 To source.Rows.Count
@@ -1454,6 +1478,7 @@ Private Sub TestAudit03PlotEnableContracts(ByRef stats As TUiTestStats)
     Set table = fixture.Names.Item("rngSystemSettings").RefersToRange: baseline = table.Value2
     sheet.Range("A5").Resize(3, 15).Value2 = Audit03GeometrySnapshotArray("mm", 1#)
     fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    Audit03PrepareContourFixture fixture
     props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
     props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
     sheet.Range("R5").Resize(2, 4).Value2 = props

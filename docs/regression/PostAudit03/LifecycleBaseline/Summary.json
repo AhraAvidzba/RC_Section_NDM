@@ -1,0 +1,13 @@
+﻿{
+    "FrozenProduction":  true,
+    "SourceGitSHA":  "872d481117fca33bd0fe60b953ffb9587266b5df",
+    "Tests":  [
+                  {
+                      "Macro":  "modTestBatchCalculation.RunPostAudit03LifecycleTests",
+                      "Passed":  146,
+                      "Failed":  108,
+                      "Seconds":  1.3855564
+                  }
+              ],
+    "Failed":  true
+}

@@ -244,6 +244,7 @@ Public Function RunGeometryQueryTests() As String
     TestFirstMaterialWall query
     TestRotatedMaterialWall query
     TestConnectedRegionSelection query
+    TestPostAudit03RegionClone query
     GoTo Finished
 Failed:
     Check "runtime: " & CStr(Err.Number) & "; " & Err.Description, False
@@ -251,6 +252,50 @@ Finished:
     mReport = mReport & "TOTAL: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunGeometryQueryTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: копия нескольких частей с дугами/проемами хранит готовые роли,
+' владельца и пробы. Изменение внешних массивов либо следующей копии не меняет оригинал.
+Private Sub TestPostAudit03RegionClone(ByVal query As CSectionGeometryQuery)
+    Dim regions As Collection, region As CConcreteRegion, copy As CConcreteRegion, nextCopy As CConcreteRegion
+    Set region = query.CircleRegion(0#, 0#, 100#)
+    Set region = query.SubtractRegion(region, query.CircleRegion(25#, 0#, 10#))
+    Set regions = New Collection: regions.Add region
+    regions.Add query.PolygonRegion(Rectangle(150#, 0#, 200#, 50#))
+    Set region = query.MergeDisjointRegions(regions)
+    region.SetOwner "COPY_LC", "SP35", "G7"
+    Dim probes(1 To 2, 1 To 5) As Variant
+    probes(1, 1) = True: probes(1, 2) = 1#: probes(1, 3) = 2#: probes(1, 4) = 3#: probes(1, 5) = 4#
+    probes(2, 1) = False
+    region.SetBoundaryProbes probes
+    Set copy = region.Clone: Set nextCopy = copy.Clone
+    Check "postAudit03.clone.multiLoop", region.LoopCount = 3
+    CheckNear "postAudit03.clone.area", copy.Area, region.Area, 0#
+    Check "postAudit03.clone.context", copy.Source = region.Source And copy.SectionRevision = region.SectionRevision
+    Check "postAudit03.clone.owner", copy.OwnerID = "COPY_LC" And copy.Standard = "SP35" And copy.AnchorID = "G7"
+    Dim edges() As TRegionEdge, copiedEdges() As TRegionEdge, count As Long, copiedCount As Long, i As Long
+    region.CopyEdges edges, count: nextCopy.CopyEdges copiedEdges, copiedCount
+    Check "postAudit03.clone.segmentCount", count = copiedCount
+    For i = 1 To count
+        Check "postAudit03.clone.edge." & CStr(i), edges(i).X1 = copiedEdges(i).X1 And edges(i).Y1 = copiedEdges(i).Y1 And _
+            edges(i).X2 = copiedEdges(i).X2 And edges(i).Y2 = copiedEdges(i).Y2 And _
+            edges(i).CenterX = copiedEdges(i).CenterX And edges(i).CenterY = copiedEdges(i).CenterY And _
+            edges(i).Sweep = copiedEdges(i).Sweep And edges(i).LoopID = copiedEdges(i).LoopID
+    Next i
+    For i = 1 To region.LoopCount
+        Check "postAudit03.clone.role." & CStr(i), copy.LoopIsOpening(i) = region.LoopIsOpening(i) And nextCopy.LoopIsOpening(i) = region.LoopIsOpening(i)
+    Next i
+    copiedEdges(1).X1 = -10000#: copy.SetOwner "OTHER", "OTHER", "OTHER"
+    Dim readProbes As Variant: readProbes = copy.BoundaryProbes
+    readProbes(1, 2) = 999#: copy.SetBoundaryProbes readProbes
+    readProbes = region.BoundaryProbes
+    Check "postAudit03.clone.probesIndependent", readProbes(1, 2) = 1# And region.BoundaryProbeCount = 2
+    Check "postAudit03.clone.ownerIndependent", region.OwnerID = "COPY_LC" And nextCopy.OwnerID = "COPY_LC"
+    region.CopyEdges copiedEdges, copiedCount
+    Check "postAudit03.clone.edgesIndependent", copiedEdges(1).X1 = edges(1).X1
+    Dim start As Double: start = Timer
+    For i = 1 To 1000: Set copy = region.Clone: Next i
+    mReport = mReport & "POSTAUDIT03_CLONE_1000_SECONDS=" & CStr(Timer - start) & vbCrLf
+End Sub
 
 ' ДЛЯ ТЕСТОВ: связная часть сохраняет свои отверстия, но не присоединяет
 ' отдельный бетон внутри проема или соседнюю область. После clipping

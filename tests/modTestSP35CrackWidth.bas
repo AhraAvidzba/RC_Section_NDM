@@ -297,7 +297,7 @@ Public Function RunSP35WorkbookTests() As String
     Check "SP35.writer.inactiveSP63", anchor.Offset(0, 66).Value2 = "N/A"
     Check "SP35.writer.failureColor", anchor.Offset(1, 43).Interior.Color <> anchor.Offset(0, 43).Interior.Color
     Check "SP35.writer.emptySeparators", Len(CStr(anchor.Offset(0, 29).Value2)) = 0 And Len(CStr(anchor.Offset(0, 44).Value2)) = 0
-    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, provider, batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
     Set annotations = ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
     Check "SP35.annotation.ownerHeader", annotations.Offset(0, 13).Value2 = "CombinationID"
     Check "SP35.annotation.roleHeader", annotations.Offset(0, 17).Value2 = "LoopRole"
@@ -356,6 +356,8 @@ End Function
 ' гладкой - 3.15 см. Итоговая ширина возвращается в мм, а не в см.
 Private Sub TestNumericFormula(ByVal formula As CCrackWidthCalculator)
     Dim radius As Double, psi As Double
+    Dim preparation As CSP35CrackData
+    Set preparation = New CSP35CrackData
     radius = formula.SP35ReinforcementRadiusFromData(5400#, 60#)
     CheckNear "SP35.radius.mm", radius, 90#
     psi = formula.SP35PsiFromData(radius, "Periodic")
@@ -368,13 +370,13 @@ Private Sub TestNumericFormula(ByVal formula As CCrackWidthCalculator)
     CheckNear "SP35.zeroStress.width", formula.SP35CrackWidthFromData(0#, 200000#, 4.5), 0#
     CheckNear "SP35.actualDiameterSum", formula.SP35ReinforcementRadiusFromData(5400#, _
         0.75 * (32# + 25# + 20#) + 0.85 * (22# + 20#)), 5400# / 93.45
-    CheckNear "SP35.beta.single", formula.SP35GroupBetaFromData(1), 1#
-    CheckNear "SP35.beta.double", formula.SP35GroupBetaFromData(2), 0.85
-    CheckNear "SP35.beta.triple", formula.SP35GroupBetaFromData(3), 0.75
-    CheckNear "NDM.beta.four", formula.SP35GroupBetaFromData(4), 0.75
-    CheckNear "SP35.radius.3d", formula.SP35InteractionMultiplierFromData("3d"), 3#
-    CheckNear "SP35.radius.5d", formula.SP35InteractionMultiplierFromData("5d"), 5#
-    CheckNear "SP35.radius.6d", formula.SP35InteractionMultiplierFromData("6d"), 6#
+    CheckNear "SP35.beta.single", preparation.SP35GroupBetaFromData(1), 1#
+    CheckNear "SP35.beta.double", preparation.SP35GroupBetaFromData(2), 0.85
+    CheckNear "SP35.beta.triple", preparation.SP35GroupBetaFromData(3), 0.75
+    CheckNear "NDM.beta.four", preparation.SP35GroupBetaFromData(4), 0.75
+    CheckNear "SP35.radius.3d", preparation.SP35InteractionMultiplierFromData("3d"), 3#
+    CheckNear "SP35.radius.5d", preparation.SP35InteractionMultiplierFromData("5d"), 5#
+    CheckNear "SP35.radius.6d", preparation.SP35InteractionMultiplierFromData("6d"), 6#
 End Sub
 
 ' Сверяет относительные объединения, обозначения и оформление трех картинок ТЗ.
@@ -432,6 +434,8 @@ End Sub
 ' ошибку данных; чистая формула не возвращает rsNotApplicable/NumFail.
 Private Sub TestInvalidData(ByVal formula As CCrackWidthCalculator)
     Dim i As Long, number As Long, description As String, unused As Double
+    Dim preparation As CSP35CrackData
+    Set preparation = New CSP35CrackData
     For i = 1 To 6
         On Error Resume Next
         Err.Clear
@@ -440,8 +444,8 @@ Private Sub TestInvalidData(ByVal formula As CCrackWidthCalculator)
             Case 2: unused = formula.SP35PsiFromData(-1#, "Periodic")
             Case 3: unused = formula.SP35PsiFromData(90#, "Unknown")
             Case 4: unused = formula.SP35CrackWidthFromData(100#, 0#, 4.5)
-            Case 5: unused = formula.SP35GroupBetaFromData(0)
-            Case 6: unused = formula.SP35InteractionMultiplierFromData("D4")
+            Case 5: unused = preparation.SP35GroupBetaFromData(0)
+            Case 6: unused = preparation.SP35InteractionMultiplierFromData("D4")
         End Select
         number = Err.Number: description = Err.Description
         On Error GoTo 0
@@ -1172,9 +1176,9 @@ Private Sub CheckCandidateMembership(ByVal prefix As String, ByVal data As CSP35
         ByVal section As CSectionModel, ByVal query As CSectionGeometryQuery)
     Dim candidate As Long, bar As Long, row As Long, rows As Variant, members As Variant, member As Variant
     Dim region As CConcreteRegion, expected As Boolean, included As Boolean, group As Long
-    Dim actualCount As Long, formula As CCrackWidthCalculator, expectedSum As Double, expectedCounts() As Long, ids As String
+    Dim actualCount As Long, preparation As CSP35CrackData, expectedSum As Double, expectedCounts() As Long, ids As String
     If data Is Nothing Then Check prefix & ".dataPresent", False: Exit Sub
-    Set formula = New CCrackWidthCalculator
+    Set preparation = New CSP35CrackData
     For candidate = 1 To data.CandidateCount
         If data.CandidateAvailable(candidate) Then
             Set region = data.CandidateRegion(candidate): rows = data.CandidateRows(candidate)
@@ -1198,9 +1202,9 @@ Private Sub CheckCandidateMembership(ByVal prefix As String, ByVal data As CSP35
                 Check prefix & ".count.G" & CStr(candidate) & "." & CStr(group), _
                     actualCount = expectedCounts(group) And data.GroupBarCount(group) = expectedCounts(group)
                 CheckNear prefix & ".beta.G" & CStr(candidate) & "." & CStr(group), _
-                    data.GroupBeta(group), formula.SP35GroupBetaFromData(expectedCounts(group))
+                    data.GroupBeta(group), preparation.SP35GroupBetaFromData(expectedCounts(group))
                 For Each member In members
-                    expectedSum = expectedSum + formula.SP35GroupBetaFromData(expectedCounts(group)) * section.RebarDiameter(CLng(member))
+                    expectedSum = expectedSum + preparation.SP35GroupBetaFromData(expectedCounts(group)) * section.RebarDiameter(CLng(member))
                 Next member
             Next row
             CheckNear prefix & ".denominator.G" & CStr(candidate), data.CandidateBetaDiameterSum(candidate), expectedSum
@@ -1355,7 +1359,7 @@ Public Function RunSP35EndToEndTests() As String
         Set presentationUnits = New CUnitSystem: presentationUnits.LoadFromSettings settings
         Set summary = New CCrackSummaryWriter: summary.WriteSummary ThisWorkbook, batch, presentationUnits
         Set batchWriter = New CBatchResultWriter: batchWriter.WriteSummary ThisWorkbook, batch, presentationUnits
-        Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, provider, batch, presentationUnits
+        Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, presentationUnits
         Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
         For i = 1 To 6
             Check "E2E.writer." & CStr(standard) & "." & CStr(i) & ".comment", CStr(anchor.Offset(i - 1, 1).Value2) = batch.ResultAt(i).CrackSummaryMeta.ResultComment

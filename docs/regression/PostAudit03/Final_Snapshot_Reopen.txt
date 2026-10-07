@@ -1,0 +1,3 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\PostAudit03\CleanFinal\RC_Section_NDM.xlsm; SHA256=0CF0E3C38FF3245AEA8A915A99BD2CDE53EFC473D329641576646CC3EE1773D3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_SnapshotReopen_f01ab613e34d46ab899d9b1d489cd13a\RC_Section_NDM.xlsm
+SCRIPT ERROR: You cannot call a method on a null-valued expression.

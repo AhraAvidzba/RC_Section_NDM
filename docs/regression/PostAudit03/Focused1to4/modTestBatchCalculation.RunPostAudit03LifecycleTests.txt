@@ -1,0 +1,255 @@
+﻿OK: postAudit03.lifecycle.SP63.initial.stability
+OK: postAudit03.lifecycle.SP63.step1.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step1.Mx; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step1.My; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.step1.loadPointMx; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step1.loadPointMy; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.step1.status
+OK: postAudit03.lifecycle.SP63.step1.internalStatus
+OK: postAudit03.lifecycle.SP63.step1.resultCode
+OK: postAudit03.lifecycle.SP63.step1.statesPresent
+OK: postAudit03.lifecycle.SP63.step1.eps; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step1.kx; actual=0.00000304324; expected=0.00000304324
+OK: postAudit03.lifecycle.SP63.step1.ky; actual=0.000000380243; expected=0.000000380243
+OK: postAudit03.lifecycle.SP63.step1.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step1.Mxint; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step1.Myint; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.retained.status.1
+OK: postAudit03.lifecycle.SP63.retained.mx.1; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.retained.eps.1; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step2.N; actual=-120000.; expected=-120000.
+FAIL: postAudit03.lifecycle.SP63.step2.Mx; actual=11271772.4954738; expected=10000000.
+FAIL: postAudit03.lifecycle.SP63.step2.My; actual=3200000.; expected=2000000.
+FAIL: postAudit03.lifecycle.SP63.step2.loadPointMx; actual=11271772.4954738; expected=10000000.
+FAIL: postAudit03.lifecycle.SP63.step2.loadPointMy; actual=3200000.; expected=2000000.
+OK: postAudit03.lifecycle.SP63.step2.status
+OK: postAudit03.lifecycle.SP63.step2.internalStatus
+OK: postAudit03.lifecycle.SP63.step2.resultCode
+OK: postAudit03.lifecycle.SP63.step2.statesPresent
+FAIL: postAudit03.lifecycle.SP63.step2.eps; actual=0.000021741099; expected=-0.000003641839
+FAIL: postAudit03.lifecycle.SP63.step2.kx; actual=0.00000304324; expected=0.000002427595
+FAIL: postAudit03.lifecycle.SP63.step2.ky; actual=0.000000380243; expected=0.000000216958
+OK: postAudit03.lifecycle.SP63.step2.Nint; actual=-120000.; expected=-120000.
+FAIL: postAudit03.lifecycle.SP63.step2.Mxint; actual=11271772.4954738; expected=10000000.
+FAIL: postAudit03.lifecycle.SP63.step2.Myint; actual=3200000.; expected=2000000.
+OK: postAudit03.lifecycle.SP63.retained.status.2
+OK: postAudit03.lifecycle.SP63.retained.mx.2; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.retained.eps.2; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step3.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step3.Mx; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step3.My; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.step3.loadPointMx; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step3.loadPointMy; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.step3.status
+OK: postAudit03.lifecycle.SP63.step3.internalStatus
+OK: postAudit03.lifecycle.SP63.step3.resultCode
+OK: postAudit03.lifecycle.SP63.step3.statesPresent
+OK: postAudit03.lifecycle.SP63.step3.eps; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step3.kx; actual=0.00000304324; expected=0.00000304324
+OK: postAudit03.lifecycle.SP63.step3.ky; actual=0.000000380243; expected=0.000000380243
+OK: postAudit03.lifecycle.SP63.step3.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step3.Mxint; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step3.Myint; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.retained.status.3
+OK: postAudit03.lifecycle.SP63.retained.mx.3; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.retained.eps.3; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step4.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step4.Mx; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP63.step4.My; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP63.step4.loadPointMx; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP63.step4.loadPointMy; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP63.step4.status
+OK: postAudit03.lifecycle.SP63.step4.internalStatus
+OK: postAudit03.lifecycle.SP63.step4.resultCode
+OK: postAudit03.lifecycle.SP63.step4.statesPresent
+OK: postAudit03.lifecycle.SP63.step4.eps; actual=-0.00005554304; expected=-0.00005554304
+OK: postAudit03.lifecycle.SP63.step4.kx; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP63.step4.ky; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP63.step4.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step4.Mxint; actual=0.000000000511; expected=0.000000000511
+OK: postAudit03.lifecycle.SP63.step4.Myint; actual=-0.000000000034; expected=-0.000000000034
+OK: postAudit03.lifecycle.SP63.retained.status.4
+OK: postAudit03.lifecycle.SP63.retained.mx.4; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.retained.eps.4; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step5.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step5.Mx; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step5.My; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.step5.loadPointMx; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step5.loadPointMy; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.step5.status
+OK: postAudit03.lifecycle.SP63.step5.internalStatus
+OK: postAudit03.lifecycle.SP63.step5.resultCode
+OK: postAudit03.lifecycle.SP63.step5.statesPresent
+OK: postAudit03.lifecycle.SP63.step5.eps; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step5.kx; actual=0.00000304324; expected=0.00000304324
+OK: postAudit03.lifecycle.SP63.step5.ky; actual=0.000000380243; expected=0.000000380243
+OK: postAudit03.lifecycle.SP63.step5.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step5.Mxint; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step5.Myint; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.retained.status.5
+OK: postAudit03.lifecycle.SP63.retained.mx.5; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.retained.eps.5; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step6.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step6.Mx; actual=16240315.443221; expected=16240315.443221
+OK: postAudit03.lifecycle.SP63.step6.My; actual=-3160000.; expected=-3160000.
+OK: postAudit03.lifecycle.SP63.step6.loadPointMx; actual=11320315.443221; expected=11320315.443221
+OK: postAudit03.lifecycle.SP63.step6.loadPointMy; actual=800000.; expected=800000.
+OK: postAudit03.lifecycle.SP63.step6.status
+OK: postAudit03.lifecycle.SP63.step6.internalStatus
+OK: postAudit03.lifecycle.SP63.step6.resultCode
+OK: postAudit03.lifecycle.SP63.step6.statesPresent
+OK: postAudit03.lifecycle.SP63.step6.eps; actual=0.000128565408; expected=0.000128565408
+OK: postAudit03.lifecycle.SP63.step6.kx; actual=0.000006069044; expected=0.000006069044
+OK: postAudit03.lifecycle.SP63.step6.ky; actual=-0.000000571509; expected=-0.000000571509
+OK: postAudit03.lifecycle.SP63.step6.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step6.Mxint; actual=16240315.443221; expected=16240315.443221
+OK: postAudit03.lifecycle.SP63.step6.Myint; actual=-3160000.; expected=-3160000.
+OK: postAudit03.lifecycle.SP63.retained.status.6
+OK: postAudit03.lifecycle.SP63.retained.mx.6; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.retained.eps.6; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step7.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step7.Mx; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step7.My; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.step7.loadPointMx; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step7.loadPointMy; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.step7.status
+OK: postAudit03.lifecycle.SP63.step7.internalStatus
+OK: postAudit03.lifecycle.SP63.step7.resultCode
+OK: postAudit03.lifecycle.SP63.step7.statesPresent
+OK: postAudit03.lifecycle.SP63.step7.eps; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP63.step7.kx; actual=0.00000304324; expected=0.00000304324
+OK: postAudit03.lifecycle.SP63.step7.ky; actual=0.000000380243; expected=0.000000380243
+OK: postAudit03.lifecycle.SP63.step7.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP63.step7.Mxint; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.step7.Myint; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP63.retained.status.7
+OK: postAudit03.lifecycle.SP63.retained.mx.7; actual=11271772.4954738; expected=11271772.4954738
+OK: postAudit03.lifecycle.SP63.retained.eps.7; actual=0.000021741099; expected=0.000021741099
+OK: postAudit03.lifecycle.SP35.initial.stability
+OK: postAudit03.lifecycle.SP35.step1.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step1.Mx; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step1.My; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.step1.loadPointMx; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step1.loadPointMy; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.step1.status
+OK: postAudit03.lifecycle.SP35.step1.internalStatus
+OK: postAudit03.lifecycle.SP35.step1.resultCode
+OK: postAudit03.lifecycle.SP35.step1.statesPresent
+OK: postAudit03.lifecycle.SP35.step1.eps; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step1.kx; actual=0.000003044801; expected=0.000003044801
+OK: postAudit03.lifecycle.SP35.step1.ky; actual=0.000000380326; expected=0.000000380326
+OK: postAudit03.lifecycle.SP35.step1.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step1.Mxint; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step1.Myint; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.retained.status.1
+OK: postAudit03.lifecycle.SP35.retained.mx.1; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.retained.eps.1; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step2.N; actual=-120000.; expected=-120000.
+FAIL: postAudit03.lifecycle.SP35.step2.Mx; actual=11274890.964762; expected=10000000.
+FAIL: postAudit03.lifecycle.SP35.step2.My; actual=3200000.; expected=2000000.
+FAIL: postAudit03.lifecycle.SP35.step2.loadPointMx; actual=11274890.964762; expected=10000000.
+FAIL: postAudit03.lifecycle.SP35.step2.loadPointMy; actual=3200000.; expected=2000000.
+OK: postAudit03.lifecycle.SP35.step2.status
+OK: postAudit03.lifecycle.SP35.step2.internalStatus
+OK: postAudit03.lifecycle.SP35.step2.resultCode
+OK: postAudit03.lifecycle.SP35.step2.statesPresent
+FAIL: postAudit03.lifecycle.SP35.step2.eps; actual=0.000021803625; expected=-0.000003641839
+FAIL: postAudit03.lifecycle.SP35.step2.kx; actual=0.000003044801; expected=0.000002427595
+FAIL: postAudit03.lifecycle.SP35.step2.ky; actual=0.000000380326; expected=0.000000216958
+OK: postAudit03.lifecycle.SP35.step2.Nint; actual=-120000.; expected=-120000.
+FAIL: postAudit03.lifecycle.SP35.step2.Mxint; actual=11274890.964762; expected=10000000.
+FAIL: postAudit03.lifecycle.SP35.step2.Myint; actual=3200000.; expected=2000000.
+OK: postAudit03.lifecycle.SP35.retained.status.2
+OK: postAudit03.lifecycle.SP35.retained.mx.2; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.retained.eps.2; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step3.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step3.Mx; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step3.My; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.step3.loadPointMx; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step3.loadPointMy; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.step3.status
+OK: postAudit03.lifecycle.SP35.step3.internalStatus
+OK: postAudit03.lifecycle.SP35.step3.resultCode
+OK: postAudit03.lifecycle.SP35.step3.statesPresent
+OK: postAudit03.lifecycle.SP35.step3.eps; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step3.kx; actual=0.000003044801; expected=0.000003044801
+OK: postAudit03.lifecycle.SP35.step3.ky; actual=0.000000380326; expected=0.000000380326
+OK: postAudit03.lifecycle.SP35.step3.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step3.Mxint; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step3.Myint; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.retained.status.3
+OK: postAudit03.lifecycle.SP35.retained.mx.3; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.retained.eps.3; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step4.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step4.Mx; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP35.step4.My; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP35.step4.loadPointMx; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP35.step4.loadPointMy; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP35.step4.status
+OK: postAudit03.lifecycle.SP35.step4.internalStatus
+OK: postAudit03.lifecycle.SP35.step4.resultCode
+OK: postAudit03.lifecycle.SP35.step4.statesPresent
+OK: postAudit03.lifecycle.SP35.step4.eps; actual=-0.00005554304; expected=-0.00005554304
+OK: postAudit03.lifecycle.SP35.step4.kx; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP35.step4.ky; actual=0.; expected=0.
+OK: postAudit03.lifecycle.SP35.step4.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step4.Mxint; actual=0.000000000511; expected=0.000000000511
+OK: postAudit03.lifecycle.SP35.step4.Myint; actual=-0.000000000034; expected=-0.000000000034
+OK: postAudit03.lifecycle.SP35.retained.status.4
+OK: postAudit03.lifecycle.SP35.retained.mx.4; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.retained.eps.4; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step5.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step5.Mx; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step5.My; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.step5.loadPointMx; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step5.loadPointMy; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.step5.status
+OK: postAudit03.lifecycle.SP35.step5.internalStatus
+OK: postAudit03.lifecycle.SP35.step5.resultCode
+OK: postAudit03.lifecycle.SP35.step5.statesPresent
+OK: postAudit03.lifecycle.SP35.step5.eps; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step5.kx; actual=0.000003044801; expected=0.000003044801
+OK: postAudit03.lifecycle.SP35.step5.ky; actual=0.000000380326; expected=0.000000380326
+OK: postAudit03.lifecycle.SP35.step5.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step5.Mxint; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step5.Myint; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.retained.status.5
+OK: postAudit03.lifecycle.SP35.retained.mx.5; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.retained.eps.5; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step6.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step6.Mx; actual=16242424.044974; expected=16242424.044974
+OK: postAudit03.lifecycle.SP35.step6.My; actual=-3160000.; expected=-3160000.
+OK: postAudit03.lifecycle.SP35.step6.loadPointMx; actual=11322424.044974; expected=11322424.044974
+OK: postAudit03.lifecycle.SP35.step6.loadPointMy; actual=800000.; expected=800000.
+OK: postAudit03.lifecycle.SP35.step6.status
+OK: postAudit03.lifecycle.SP35.step6.internalStatus
+OK: postAudit03.lifecycle.SP35.step6.resultCode
+OK: postAudit03.lifecycle.SP35.step6.statesPresent
+OK: postAudit03.lifecycle.SP35.step6.eps; actual=0.000128611459; expected=0.000128611459
+OK: postAudit03.lifecycle.SP35.step6.kx; actual=0.000006070533; expected=0.000006070533
+OK: postAudit03.lifecycle.SP35.step6.ky; actual=-0.000000571583; expected=-0.000000571583
+OK: postAudit03.lifecycle.SP35.step6.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step6.Mxint; actual=16242424.044974; expected=16242424.044974
+OK: postAudit03.lifecycle.SP35.step6.Myint; actual=-3160000.; expected=-3160000.
+OK: postAudit03.lifecycle.SP35.retained.status.6
+OK: postAudit03.lifecycle.SP35.retained.mx.6; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.retained.eps.6; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step7.N; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step7.Mx; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step7.My; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.step7.loadPointMx; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step7.loadPointMy; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.step7.status
+OK: postAudit03.lifecycle.SP35.step7.internalStatus
+OK: postAudit03.lifecycle.SP35.step7.resultCode
+OK: postAudit03.lifecycle.SP35.step7.statesPresent
+OK: postAudit03.lifecycle.SP35.step7.eps; actual=0.000021803625; expected=0.000021803625
+OK: postAudit03.lifecycle.SP35.step7.kx; actual=0.000003044801; expected=0.000003044801
+OK: postAudit03.lifecycle.SP35.step7.ky; actual=0.000000380326; expected=0.000000380326
+OK: postAudit03.lifecycle.SP35.step7.Nint; actual=-120000.; expected=-120000.
+OK: postAudit03.lifecycle.SP35.step7.Mxint; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.step7.Myint; actual=3200000.; expected=3200000.
+OK: postAudit03.lifecycle.SP35.retained.status.7
+OK: postAudit03.lifecycle.SP35.retained.mx.7; actual=11274890.964762; expected=11274890.964762
+OK: postAudit03.lifecycle.SP35.retained.eps.7; actual=0.000021803625; expected=0.000021803625
+TOTAL_POSTAUDIT03_LIFECYCLE: passed=236; failed=18

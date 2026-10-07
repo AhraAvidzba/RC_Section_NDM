@@ -463,7 +463,7 @@ Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Obje
         EnableChecks source, profile, "Yes", "Yes", "Yes", "No"
         SetLoad loads, profile, 200000#, 0#, 0#, "LambdaN"
         Set batch = ExecuteFixture(section, provider, settings, units)
-        Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, provider, batch, units
+        Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
         before = ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2
         solves = SectionEquilibriumSolveCount()
         SetTableValue system, "Plot.LoadCase", "PROFILE_CONFIG", 2
@@ -1250,7 +1250,7 @@ Public Function RunAudit03PresentationConfigTests(Optional ByRef passed As Long 
     section.Annotations.AddRebarLabel "AuditRebar", -80#, -60#, 80#, -60#, 0#, -1#, "AUDIT_REBAR"
     SetLoad loads, 1, -50000#, 1000000#, 2000000#, "Auto"
     Set batch = ExecuteFixture(section, provider, settings, units)
-    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, provider, batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
     Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
     before = ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange.CurrentRegion.Value2
     solves = SectionEquilibriumSolveCount()

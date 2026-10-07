@@ -433,6 +433,28 @@ Public Property Get PointCount() As Long
     PointCount = mPointCount
 End Property
 
+' Копирует фактические точки и физические границы материала для named-state.
+' physicalOnly удаляет только явно добавленные крайние extension-точки:
+' исходные точки физической диаграммы и ее напряжения не пересчитываются.
+Public Function Clone(Optional ByVal physicalOnly As Boolean = False) As CMaterialDiagram
+    EnsureInitialized
+    Dim strains() As Double, stresses() As Double, first As Long, last As Long, i As Long, count As Long
+    first = 1: last = mPointCount
+    If physicalOnly And mHasCompressionExtension Then first = first + 1
+    If physicalOnly And mHasTensionExtension Then last = last - 1
+    count = last - first + 1
+    ReDim strains(1 To count): ReDim stresses(1 To count)
+    For i = 1 To count
+        strains(i) = mStrains(first + i - 1): stresses(i) = mStresses(first + i - 1)
+    Next i
+    Dim result As CMaterialDiagram: Set result = New CMaterialDiagram
+    result.InitializeFromArrays strains, stresses, count, mPhysicalCompressionStrain, mPhysicalTensionStrain, _
+        mHasCompressionExtension And Not physicalOnly, mHasTensionExtension And Not physicalOnly, _
+        mCompressionExtensionStartStrain, mTensionExtensionStartStrain
+    result.Freeze
+    Set Clone = result
+End Function
+
 ' ДЛЯ ТЕСТОВ: возвращает деформацию контрольной точки диаграммы по индексу.
 Public Function PointStrain(ByVal index As Long) As Double
     EnsureInitialized

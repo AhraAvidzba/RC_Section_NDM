@@ -1,0 +1,57 @@
+﻿OK: postAudit03.formation.preFailure.noWriterSolve
+OK: postAudit03.formation.preFailure.comment
+OK: postAudit03.formation.preFailure.preDisplay
+OK: postAudit03.formation.preFailure.analyticNumberPrepared
+OK: postAudit03.formation.preFailure.preFailed
+OK: postAudit03.formation.preFailure.noPoint
+OK: postAudit03.formation.preFailure.unknownFact
+OK: postAudit03.formation.preFailure.noFalseNotCracked
+OK: postAudit03.formation.preFailure.noFalseNcrc
+postAudit03.formation.preFailure; status=NumFail; point=False; comment=До образования трещины: Достигнут лимит итераций на ступени нагрузки 1.
+OK: postAudit03.formation.postFailure.noWriterSolve
+OK: postAudit03.formation.postFailure.comment
+OK: postAudit03.formation.postFailure.preDisplay
+OK: postAudit03.formation.postFailure.postDisplay
+OK: postAudit03.formation.postFailure.acceptedPre
+OK: postAudit03.formation.postFailure.postFailed
+OK: postAudit03.formation.postFailure.pointPreserved
+OK: postAudit03.formation.postFailure.factPreserved
+OK: postAudit03.formation.postFailure.displayCracked
+OK: postAudit03.formation.postFailure.centralNcrcWithoutWidth; actual=108116.577253546; expected=108116.577253546
+OK: postAudit03.formation.postFailure.widthUnavailable
+postAudit03.formation.postFailure; status=NumFail; point=True; comment=После образования трещины: Не удалось решить касательную систему: Матрица вырождена.
+OK: postAudit03.formation.cracked.noWriterSolve
+OK: postAudit03.formation.cracked.comment
+OK: postAudit03.formation.cracked.preDisplay
+OK: postAudit03.formation.cracked.postDisplay
+OK: postAudit03.formation.cracked.acceptedPoint
+OK: postAudit03.formation.cracked.display
+OK: postAudit03.formation.cracked.widthCalculated
+postAudit03.formation.cracked; status=OK; point=True; comment=Предварительная проверка Ncrc: трещина образуется при текущей нагрузке.
+OK: postAudit03.formation.notCracked.noWriterSolve
+OK: postAudit03.formation.notCracked.comment
+OK: postAudit03.formation.notCracked.confirmedNoCrack
+OK: postAudit03.formation.notCracked.display
+OK: postAudit03.formation.notCracked.noWidth
+postAudit03.formation.notCracked; status=OK; point=True; comment=Трещина не образована: расчетная сила образования трещины больше заданной растягивающей силы.
+OK: postAudit03.formation.compression.noWriterSolve
+OK: postAudit03.formation.compression.comment
+OK: postAudit03.formation.compression.confirmedNoCrack
+OK: postAudit03.formation.compression.display
+OK: postAudit03.formation.compression.noWidth
+postAudit03.formation.compression; status=OK; point=False; comment=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.
+OK: postAudit03.formation.searchBound.noWriterSolve
+OK: postAudit03.formation.searchBound.comment
+OK: postAudit03.formation.searchBound.technicalCode
+OK: postAudit03.formation.searchBound.noPointNoFact
+OK: postAudit03.formation.searchBound.displayActualFailure
+postAudit03.formation.searchBound; status=FAIL; point=False; comment=Поиск трещинообразования достиг технической границы lambda = 1024, но условие образования нормальной трещины не выполнено. Это не доказывает отсутствие трещины.
+OK: postAudit03.formation.nonstandardLimits.noWriterSolve
+OK: postAudit03.formation.nonstandardLimits.comment
+OK: postAudit03.formation.nonstandardLimits.preDisplay
+OK: postAudit03.formation.nonstandardLimits.validDifferentOrder
+OK: postAudit03.formation.nonstandardLimits.physicalPreFail
+OK: postAudit03.formation.nonstandardLimits.physicalDisplay
+OK: postAudit03.formation.nonstandardLimits.noFalseNotCracked
+postAudit03.formation.nonstandardLimits; status=FAIL; point=False; comment=До образования трещины: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.
+TOTAL_POSTAUDIT03_FORMATION: passed=49; failed=0

@@ -439,7 +439,7 @@ Private Sub MergeHeaders(ByVal target As Object)
     MergeRange target, 2, COL_DS_EQ, 2, COL_LS
     MergeRange target, 2, COL_PHI1, 2, COL_PSI_S
     MergeRange target, 2, COL_REBARS, 2, COL_SIGMA_S
-    MergeRange target, 2, COL_ES, 2, COL_ACRC_STATUS
+    MergeRange target, 2, COL_ACRC, 2, COL_ACRC_STATUS
     MergeRange target, 1, COL_SIGMA_B_MAX, 2, COL_LONG_STATUS
 End Sub
 
@@ -507,6 +507,8 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
     Dim hasFormationData As Boolean
     hasFormationData = HasCrackFormationData(batch, index)
+    Dim formation As CCrackFormationResult
+    Set formation = batch.ResultAt(index).CrackResult.Formation
 
     If CrackFormationStatusText(batch, index, policy) = policy.NotApplicable And Not hasFormationData Then
         data(rowIndex, COL_FORMATION_STATE) = policy.NotApplicable
@@ -516,7 +518,7 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     If Len(batch.ResultAt(index).CrackResult.Formation.FormationMethod) > 0 Then _
         data(rowIndex, COL_FORMATION_METHOD) = batch.ResultAt(index).CrackResult.Formation.FormationMethod
 
-    If batch.ResultAt(index).CrackResult.Formation.Ncrc > SMALL_VALUE Then
+    If formation.CentralTensionBranch And hasFormationData Then
         data(rowIndex, COL_ARED) = OutputArea(batch.ResultAt(index).CrackResult.Formation.Ared, units)
         data(rowIndex, COL_RBT_SER) = OutputStress(batch.ResultAt(index).CrackResult.Formation.RbtSer, units)
         data(rowIndex, COL_NCRC) = OutputForce(batch.ResultAt(index).CrackResult.Formation.Ncrc, units)
@@ -525,13 +527,8 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         data(rowIndex, COL_NCRC) = policy.NotApplicable
     End If
 
-    If (Not batch.ResultAt(index).CrackResult.Width.CentralTensionBranch) And hasFormationData Then
-        data(rowIndex, COL_FORMATION_NCRC) = OutputForce(batch.ResultAt(index).CrackResult.Formation.FormationNcrc, units)
-    ElseIf Not batch.ResultAt(index).CrackResult.Width.CentralTensionBranch And batch.ResultAt(index).CrackResult.Formation.Mcrc > SMALL_VALUE Then
-        data(rowIndex, COL_FORMATION_NCRC) = policy.NotApplicable
-    End If
-
-    If batch.ResultAt(index).CrackResult.Formation.Mcrc > SMALL_VALUE Then
+    If Not formation.CentralTensionBranch And hasFormationData Then
+        data(rowIndex, COL_FORMATION_NCRC) = OutputForce(formation.FormationNcrc, units)
         data(rowIndex, COL_MCRC) = OutputMomentMagnitude(batch.ResultAt(index).CrackResult.Formation.Mcrc, units)
         data(rowIndex, COL_LAMBDA_MCRC) = batch.ResultAt(index).CrackResult.Formation.LambdaCrc
     Else
@@ -543,10 +540,10 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     PutNamedStateStrains data, rowIndex, batch.ResultAt(index).CrackResult.Formation.PreCrackState, COL_PRE_EBC, COL_PRE_EBT, True
     PutNamedStateStrains data, rowIndex, batch.ResultAt(index).CrackResult.Formation.PostCrackState, COL_POST_EBC, COL_POST_EBT, False
 
-    If batch.ResultAt(index).CrackResult.Formation.ConfirmedNotCracked Then
+    If formation.ConfirmedNotCracked Then
         data(rowIndex, COL_FORMATION_STATE) = "NotCracked"
-    ElseIf hasFormationData Then
-        data(rowIndex, COL_FORMATION_STATE) = IIf(batch.ResultAt(index).CrackResult.Formation.CrackFormed, "Cracked", "NotCracked")
+    ElseIf formation.ConfirmedCracked Then
+        data(rowIndex, COL_FORMATION_STATE) = "Cracked"
     Else
         data(rowIndex, COL_FORMATION_STATE) = CrackFormationStatusText(batch, index, policy)
     End If
@@ -557,7 +554,13 @@ End Sub
 Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal stateType As ESectionStateType, ByVal policy As CResultStatusPolicy) As String
     Dim stateResult As CSectionStateResult
-    Set stateResult = batch.ResultAt(index).StateRepository.FindState(stateType)
+    If stateType = sstPreCrackState Then
+        Set stateResult = batch.ResultAt(index).CrackResult.Formation.PreCrackState
+    ElseIf stateType = sstPostCrackState Then
+        Set stateResult = batch.ResultAt(index).CrackResult.Formation.PostCrackState
+    Else
+        Set stateResult = batch.ResultAt(index).StateRepository.FindState(stateType)
+    End If
     If stateResult Is Nothing Then
         NamedStateStatus = policy.NotApplicable
     Else
@@ -576,12 +579,10 @@ Private Sub PutNamedStateStrains(ByRef data() As Variant, ByVal rowIndex As Long
     If beforeCrack Or state.MaterialSpec.ConcreteTension = ctkUseDiagram Then data(rowIndex, tensionColumn) = state.MaxConcreteStrain
 End Sub
 
-' Определяет наличие ненулевых сохраненных усилий пороговой точки для вывода.
-' Это доступность числовых полей, не отдельная проверка сходимости или физики.
+' Читает доступность подтвержденной точки у владельца Formation.
+' Ненулевые пробные усилия при отказе Pre не выдаются за принятую точку.
 Private Function HasCrackFormationData(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Boolean
-    HasCrackFormationData = batch.ResultAt(index).CrackResult.Formation.Ncrc > SMALL_VALUE Or _
-        Abs(batch.ResultAt(index).CrackResult.Formation.FormationNcrc) > SMALL_VALUE Or _
-        batch.ResultAt(index).CrackResult.Formation.Mcrc > SMALL_VALUE
+    HasCrackFormationData = batch.ResultAt(index).CrackResult.Formation.HasLimitPoint
 End Function
 
 ' Записывает контроль пригодности текущего CrackedState для дальнейшего

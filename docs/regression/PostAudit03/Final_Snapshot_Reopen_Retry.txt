@@ -1,0 +1,5 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\PostAudit03\CleanFinal\RC_Section_NDM.xlsm; SHA256=0CF0E3C38FF3245AEA8A915A99BD2CDE53EFC473D329641576646CC3EE1773D3
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_SnapshotReopen_1c7fd93cbc3841d18585dbf2c5d9ded7\RC_Section_NDM.xlsm
+STAGE: prepare calculation fixture
+STAGE: read prepared snapshot
+SCRIPT ERROR: Exception calling "Run" with "1" argument(s): "System call failed. (Exception from HRESULT: 0x80010100 (RPC_E_SYS_CALL_FAILED))"; at <ScriptBlock>, C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02SnapshotReopen.ps1: line 100

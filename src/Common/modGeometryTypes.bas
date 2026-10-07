@@ -108,7 +108,7 @@ Public Function ReadContourArcSweep(ByVal value As Variant, ByVal inputLocation 
     Exit Function
 InvalidValue:
     Err.Raise vbObjectError + 5283, "ReadContourArcSweep", _
-        "В сохраненном контуре поле Text (" & inputLocation & ") должно содержать угол дуги в радианах целиком: " & _
+        "В сохраненном контуре угол дуги (" & inputLocation & ") должен быть полностью задан числом в радианах: " & _
         "десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. " & _
         "Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка."
 End Function

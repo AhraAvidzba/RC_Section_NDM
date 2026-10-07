@@ -1,0 +1,17 @@
+{
+  "TestReport": "Full_Off_UI_Affected_Current.txt",
+  "Assertions": {
+    "Failed": 0,
+    "Plot": 3347,
+    "InputUnits": 1294,
+    "Reader": 67,
+    "SavedSnapshot": 267
+  },
+  "RunnerExit": 1,
+  "RunnerFailure": "Final source hash read collided with controlled candidate updater",
+  "FrozenTestedSource": "docs/regression/PostAudit03/FinalSP35/RC_Section_NDM.xlsm",
+  "InitialSourceSHA256": "4D305339052DCAF985990CF36229B7B816A0066A7ABC9511B733F94CFF9EF351",
+  "FrozenSourceSHA256": "4D305339052DCAF985990CF36229B7B816A0066A7ABC9511B733F94CFF9EF351",
+  "FrozenSourceIdentityVerified": true,
+  "OriginalSourceUnchangedClaim": false
+}

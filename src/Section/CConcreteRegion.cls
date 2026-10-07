@@ -33,7 +33,8 @@ Private mBoundaryProbes As Variant ' [найден интервал, Qx, Qy, Px,
 ' Принимает рассчитанный массив границ. Копирование отделяет готовый снимок
 ' от временных массивов topology/clipping, которые будут переиспользованы.
 Friend Sub SetGeometry(ByRef edges() As TRegionEdge, ByVal count As Long, _
-        ByVal loopCount As Long, ByVal area As Double, ByVal source As String, ByVal revision As Long)
+        ByVal loopCount As Long, ByVal area As Double, ByVal source As String, ByVal revision As Long, _
+        ByRef loopOpening() As Boolean)
     mCount = count: mLoopCount = loopCount: mArea = area
     mSource = source: mSectionRevision = revision
     Erase mEdges
@@ -47,9 +48,7 @@ Friend Sub SetGeometry(ByRef edges() As TRegionEdge, ByVal count As Long, _
     Next i
     If loopCount > 0 Then
         ReDim mLoopOpening(1 To loopCount)
-        Dim query As CSectionGeometryQuery
-        Set query = New CSectionGeometryQuery
-        For i = 1 To loopCount: mLoopOpening(i) = query.LoopIsOpening(Me, i): Next i
+        For i = 1 To loopCount: mLoopOpening(i) = loopOpening(i): Next i
     End If
 End Sub
 
@@ -137,7 +136,7 @@ End Property
 Public Function Clone() As CConcreteRegion
     Dim result As CConcreteRegion
     Set result = New CConcreteRegion
-    result.SetGeometry mEdges, mCount, mLoopCount, mArea, mSource, mSectionRevision
+    result.SetGeometry mEdges, mCount, mLoopCount, mArea, mSource, mSectionRevision, mLoopOpening
     result.SetOwner mOwnerID, mStandard, mAnchorID
     result.SetBoundaryProbes mBoundaryProbes
     Set Clone = result

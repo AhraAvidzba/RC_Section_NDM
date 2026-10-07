@@ -1,0 +1,39 @@
+﻿OK: postAudit03.snapshot.confirm.0
+OK: postAudit03.snapshot.materials.0
+OK: postAudit03.snapshot.points.0
+OK: postAudit03.snapshot.strain.0.1; actual=-0.001005; expected=-0.001005
+OK: postAudit03.snapshot.stress.0.1; actual=-4.307142857143; expected=-4.307142857143
+OK: postAudit03.snapshot.strain.0.2; actual=-0.000995; expected=-0.000995
+OK: postAudit03.snapshot.stress.0.2; actual=-4.264285714286; expected=-4.264285714286
+OK: postAudit03.snapshot.strain.0.3; actual=-0.00096; expected=-0.00096
+OK: postAudit03.snapshot.stress.0.3; actual=-13.44; expected=-13.44
+OK: postAudit03.snapshot.strain.0.4; actual=-0.00104; expected=-0.00104
+OK: postAudit03.snapshot.stress.0.4; actual=-14.56; expected=-14.56
+OK: postAudit03.snapshot.retained.0.1; actual=-4.307142857143; expected=-4.307142857143
+OK: postAudit03.snapshot.retained.0.2; actual=-4.264285714286; expected=-4.264285714286
+OK: postAudit03.snapshot.retained.0.3; actual=-13.44; expected=-13.44
+OK: postAudit03.snapshot.retained.0.4; actual=-14.56; expected=-14.56
+OK: postAudit03.snapshot.frozen.0
+OK: postAudit03.snapshot.confirm.1
+OK: postAudit03.snapshot.materials.1
+OK: postAudit03.snapshot.points.1
+OK: postAudit03.snapshot.strain.1.1; actual=-0.010005; expected=-0.010005
+OK: postAudit03.snapshot.stress.1.1; actual=-15.640966838393; expected=-15.640966838393
+OK: postAudit03.snapshot.strain.1.2; actual=-0.009995; expected=-0.009995
+OK: postAudit03.snapshot.stress.1.2; actual=-15.639981493523; expected=-15.639981493523
+OK: postAudit03.snapshot.strain.1.3; actual=-0.00996; expected=-0.00996
+OK: postAudit03.snapshot.stress.1.3; actual=-139.44; expected=-139.44
+OK: postAudit03.snapshot.strain.1.4; actual=-0.01004; expected=-0.01004
+OK: postAudit03.snapshot.stress.1.4; actual=-140.56; expected=-140.56
+OK: postAudit03.snapshot.retained.1.1; actual=-15.640966838393; expected=-15.640966838393
+OK: postAudit03.snapshot.retained.1.2; actual=-15.639981493523; expected=-15.639981493523
+OK: postAudit03.snapshot.retained.1.3; actual=-139.44; expected=-139.44
+OK: postAudit03.snapshot.retained.1.4; actual=-140.56; expected=-140.56
+OK: postAudit03.snapshot.frozen.1
+OK: postAudit03.snapshot.area; actual=6000.; expected=6000.
+OK: postAudit03.snapshot.Ix; actual=6900000.; expected=6900000.
+OK: postAudit03.snapshot.Iy; actual=16500000.; expected=16500000.
+OK: postAudit03.snapshot.noSolve
+OK: postAudit03.snapshot.modelRevisionRejected
+OK: postAudit03.snapshot.propertiesRevisionRejected
+TOTAL_POSTAUDIT03_SNAPSHOT: passed=38; failed=0
