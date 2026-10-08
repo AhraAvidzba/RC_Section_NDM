@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: добавляющий ModelSpace и созданные контурные полилинии
+' ДЛЯ ТЕСТОВ: добавляющий ModelSpace, полилинии и Region
 ' ==========================================================================
 ' Исполняет минимальный COM-контракт production exporter без AutoCAD.
 ' Чтение Count/Item запрещено: экспорт не должен искать существующие контуры
@@ -23,6 +23,8 @@ Private mBulges As Object
 Private mLayer As String, mColor As Long, mClosed As Boolean, mDeleted As Boolean
 Private mCodes As Variant, mValues As Variant
 Private mForbiddenReads As Long
+Private mObjectName As String, mArea As Double
+Private mRegionCalls As Long, mFailRegionAt As Long
 
 ' ДЛЯ ТЕСТОВ: создает пустой ModelSpace или отдельную полилинию.
 Private Sub Class_Initialize()
@@ -40,7 +42,49 @@ End Function
 ' ДЛЯ ТЕСТОВ: сохраняет фактический массив вершин экспортера.
 Public Sub InitializePolyline(ByVal coordinates As Variant)
     mCoordinates = coordinates
+    mObjectName = "AcDbPolyline"
 End Sub
+
+' ДЛЯ ТЕСТОВ: Region получает геометрию своей новой полилинии, а не прежних объектов.
+Public Function AddRegion(ByVal curves As Variant) As Variant
+    mRegionCalls = mRegionCalls + 1
+    If mFailRegionAt = mRegionCalls Then Err.Raise vbObjectError + 9103, "CFakeAcadContourExport", "Injected AddRegion failure."
+    Dim entity As CFakeAcadContourExport: Set entity = New CFakeAcadContourExport
+    entity.InitializeRegion curves(LBound(curves))
+    mEntities.Add entity
+    AddRegion = Array(entity)
+End Function
+
+' ДЛЯ ТЕСТОВ: независимая площадь полилинии учитывает круговые сегменты bulge.
+Public Sub InitializeRegion(ByVal curve As CFakeAcadContourExport)
+    mObjectName = "AcDbRegion": mCoordinates = curve.Coordinates
+    Dim i As Long, j As Long, n As Long, x1 As Double, y1 As Double, x2 As Double, y2 As Double
+    Dim bulge As Double, angle As Double, chordSquared As Double, radiusSquared As Double
+    n = (UBound(mCoordinates) + 1) \ 2
+    For i = 0 To n - 1
+        j = (i + 1) Mod n
+        x1 = CDbl(mCoordinates(2 * i)): y1 = CDbl(mCoordinates(2 * i + 1))
+        x2 = CDbl(mCoordinates(2 * j)): y2 = CDbl(mCoordinates(2 * j + 1))
+        mArea = mArea + (x1 * y2 - x2 * y1) / 2#
+        bulge = curve.BulgeAt(i): mBulges(CStr(i)) = bulge
+        If Abs(bulge) > 0.000000000001 Then
+            angle = 4# * Atn(bulge): chordSquared = (x2 - x1) ^ 2 + (y2 - y1) ^ 2
+            radiusSquared = chordSquared / (4# * Sin(angle / 2#) ^ 2)
+            mArea = mArea + radiusSquared * (angle - Sin(angle)) / 2#
+        End If
+    Next i
+    mArea = Abs(mArea)
+End Sub
+
+Public Property Get Area() As Double
+    Area = mArea
+End Property
+Public Property Get ObjectName() As String
+    ObjectName = mObjectName
+End Property
+Public Property Let FailRegionAt(ByVal value As Long)
+    mFailRegionAt = value
+End Property
 
 ' ДЛЯ ТЕСТОВ: позволяет oracle читать записи без обращения к ModelSpace.Count.
 Public Property Get CreatedEntities() As Collection

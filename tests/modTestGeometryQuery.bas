@@ -240,6 +240,8 @@ Public Function RunGeometryQueryTests() As String
     TestMesh query
     TestCenterCellAreaDifference query
     TestKnownAndUnknownContours query
+    TestContourSourceSelection query
+    TestExplicitOpeningMeshOuterTopology query
     TestRotatedAndTouchingGeometry query
     TestFirstMaterialWall query
     TestRotatedMaterialWall query
@@ -526,6 +528,80 @@ Private Sub TestKnownAndUnknownContours(ByVal query As CSectionGeometryQuery)
     model.Contours.Clear
     Set region = query.ConcreteDomain
     CheckNear "removedContour.rebuilt", region.Area, 10000#
+End Sub
+
+' ДЛЯ ТЕСТОВ: четыре комбинации заданных outer/opening используют ровно
+' принятые источники границ. Сетка содержит большую незаданную пустоту,
+' два точных отверстия меньше нее; точный outer также отличается от сетки.
+Private Sub TestContourSourceSelection(ByVal query As CSectionGeometryQuery)
+    Dim model As CSectionModel, region As CConcreteRegion, mode As Long, i As Long, j As Long
+    Dim expected As Double, clippedArea As Double, expectedLoops As Long, intervals As Variant
+    Dim expectedEnd As Double, expectedFirstEnd As Double, expectedSecondStart As Double, prefix As String
+    For mode = 0 To 3
+        Set model = New CSectionModel
+        For i = 0 To 2
+            For j = 0 To 2
+                If i <> 1 Or j <> 1 Then model.AddConcreteElement i * 10# + 5#, j * 10# + 5#, 100#, 1, , , "Rectangle", 10#, 10#
+            Next j
+        Next i
+        If mode >= 2 Then AddContourRectangle model, "CONTOUR_OUTER", 0#, 0#, 40#, 40#
+        If mode = 1 Or mode = 3 Then
+            model.Contours.AddContourCircle "HOLE1", 15#, 15#, 2#, "Первое отверстие.", "H1", "Opening"
+            model.Contours.AddContourCircle "HOLE2", 12#, 12#, 1#, "Второе отверстие.", "H2", "Opening"
+        End If
+        Select Case mode
+            Case 0
+                expected = 800#: clippedArea = 400#: expectedLoops = 2
+                expectedEnd = 30#: expectedFirstEnd = 10#: expectedSecondStart = 20#
+            Case 1
+                expected = 900# - 5# * GEOM_PI: clippedArea = 450# - 2# * GEOM_PI: expectedLoops = 3
+                expectedEnd = 30#: expectedFirstEnd = 13#: expectedSecondStart = 17#
+            Case 2
+                expected = 1600#: clippedArea = 1000#: expectedLoops = 1
+                expectedEnd = 40#: expectedFirstEnd = 40#
+            Case 3
+                expected = 1600# - 5# * GEOM_PI: clippedArea = 1000# - 2# * GEOM_PI: expectedLoops = 3
+                expectedEnd = 40#: expectedFirstEnd = 13#: expectedSecondStart = 17#
+        End Select
+        prefix = "contourSources." & CStr(mode)
+        query.Initialize model: Set region = query.ConcreteDomain
+        CheckNear prefix & ".area", region.Area, expected
+        Check prefix & ".loops", region.LoopCount = expectedLoops
+        Check prefix & ".meshVoidOnlyWithoutContours", query.ContainsPoint(region, 11#, 15#) = (mode <> 0)
+        Check prefix & ".secondHole", query.ContainsPoint(region, 12#, 12#) = (mode = 2)
+        Check prefix & ".outside", Not query.ContainsPoint(region, expectedEnd + 1#, 15#)
+        CheckNear prefix & ".neutralLineClip", query.ClipHalfPlane(region, 0#, 1#, 15#).Area, clippedArea
+        intervals = query.LineIntervals(region, 0#, 15#, 1#, 0#)
+        CheckNear prefix & ".firstIntersection", intervals(1, 2), expectedFirstEnd
+        CheckNear prefix & ".lastIntersection", intervals(UBound(intervals, 1), 2), expectedEnd
+        If mode <> 2 Then CheckNear prefix & ".secondIntersection", intervals(2, 1), expectedSecondStart
+        Check prefix & ".mechanicalMeshUnchanged", model.ConcreteCount = 8 And model.ConcreteArea(1) = 100#
+        CheckClosed prefix, region
+    Next mode
+End Sub
+
+' ДЛЯ ТЕСТОВ: выбор наружных границ сетки сохраняет вогнутый вырез,
+' несколько бетонных частей и не превращает их в общий прямоугольник.
+Private Sub TestExplicitOpeningMeshOuterTopology(ByVal query As CSectionGeometryQuery)
+    Dim model As CSectionModel, region As CConcreteRegion, i As Long, j As Long
+    Set model = New CSectionModel
+    For i = 0 To 4
+        For j = 0 To 4
+            If Not ((i = 2 And j = 2) Or (i = 4 And j = 4)) Then _
+                model.AddConcreteElement i * 10# + 5#, j * 10# + 5#, 100#, 1, , , "Rectangle", 10#, 10#
+        Next j
+    Next i
+    model.AddConcreteElement 110#, 10#, 400#, 1, , , "Rectangle", 20#, 20#
+    model.AddConcreteElement 25#, 25#, 16#, 1, , , "Rectangle", 4#, 4#
+    model.Contours.AddContourCircle "HOLE", 25#, 25#, 2#, "Точное отверстие.", "H1", "Opening"
+    query.Initialize model: Set region = query.ConcreteDomain
+    CheckNear "openingMeshOuterTopology.area", region.Area, 2800# - 4# * GEOM_PI
+    Check "openingMeshOuterTopology.components", region.LoopCount = 3
+    Check "openingMeshOuterTopology.concaveBoundary", Not query.ContainsPoint(region, 45#, 45#)
+    Check "openingMeshOuterTopology.noInventedBridge", Not query.ContainsPoint(region, 75#, 10#)
+    Check "openingMeshOuterTopology.separateComponent", query.ContainsPoint(region, 110#, 10#)
+    Check "openingMeshOuterTopology.onlyExactHole", query.ContainsPoint(region, 21#, 25#) And Not query.ContainsPoint(region, 25#, 25#)
+    CheckClosed "openingMeshOuterTopology", region
 End Sub
 
 ' ДЛЯ ТЕСТОВ: наклон и перенос не меняют площадь; касающиеся в вершине

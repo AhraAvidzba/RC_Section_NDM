@@ -1,7 +1,9 @@
 ﻿# Runs native contour acceptance in an owned Autodesk AutoCAD instance.
 # Existing user/SOFiPLUS instances are never edited, closed, or reused.
 param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
-      [string]$ReportDirectory='docs/regression/PostAudit03/NativeCAD')
+      [string]$ReportDirectory='docs/regression/PostAudit03/NativeCAD',
+      [ValidateSet('RunRealAutoCADContourTests','RunRealAutoCADContourFormatTests')]
+      [string]$Macro='RunRealAutoCADContourTests')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directory=Join-Path $root $ReportDirectory
@@ -48,7 +50,7 @@ try {
     $book=$excel.Workbooks.Open($path)
     # The saved candidate already contains the guarded optional CAD entrypoint.
     # Test it without replacing its VBA or saving fixture mutations.
-    $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.RunRealAutoCADContourTests",$acad,$template)
+    $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.$Macro",$acad,$template)
     $result | Set-Content -LiteralPath (Join-Path $directory 'NativeCAD.txt') -Encoding UTF8
     [ordered]@{Executable=$fullName; OwnedPID=$pidValue; COMServer=$server; UserDocumentsUsed=$false} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADIdentity.json') -Encoding UTF8

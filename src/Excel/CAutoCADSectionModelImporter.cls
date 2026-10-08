@@ -260,9 +260,6 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
         Set regions = New Collection
         For Each entity In outerEntities: regions.Add reader.ReadRegion(entity): Next entity
         Set domain = query.MergeDisjointRegions(regions)
-    Else
-        query.Initialize model
-        Set domain = query.ConcreteDomain
     End If
     If Not exportedOuter Then
     For Each entity In openingEntities
@@ -282,13 +279,11 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
             Next j
         End If
         If outerEntities.Count = 0 Then
-            ' Сеточная пустота может совпадать с точным opening, быть меньше
-            ' либо больше него. Это не конфликт достоверных исходных границ:
-            ' вычитаем opening из сетки, сохраняя его собственный контур.
-            ' Между самими точными отверстиями строгая проверка остается.
+            ' Проверяем только совместимость достоверных отверстий.
+            ' Наружную границу из сетки и окончательную область затем
+            ' собирает общий query, без добавления сеточных пустот.
             openings.Add opening
             Set validatedOpenings = query.MergeDisjointRegions(openings)
-            Set domain = query.SubtractRegion(domain, opening)
         Else
             Set domain = query.SubtractContainedRegion(domain, opening)
             openings.Add opening
@@ -296,16 +291,12 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
 NextOpening:
     Next entity
     End If
-    For i = 1 To model.RebarCount
-        If Not query.ContainsPoint(domain, model.RebarX(i), model.RebarY(i), True) Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
-            "Арматура " & model.RebarID(i) & " находится вне импортированного бетонного контура или в отверстии. Проверьте слои и координаты исходных объектов."
-    Next i
     If outerEntities.Count > 0 Then
         commentText = "Достоверный контур AutoCAD: реальные линии/дуги и заданные отверстия; координаты в мм. " & _
             "Область бетона для трещин определяется только этими контурами; отверстия по сетке не добавляются."
     Else
-        commentText = "Наружный контур не задан; границы для расчета трещин определяются по бетонной сетке с учетом импортированных контуров отверстий. Координаты в мм."
-        AppendImportWarning "Наружный контур не задан: для трещин используются границы бетонной сетки с учетом импортированных отверстий."
+        commentText = "Наружный контур не задан; наружная граница для трещин определяется по бетонной сетке. Учитываются только импортированные отверстия, пустоты по сетке не добавляются. Координаты в мм."
+        AppendImportWarning "Наружный контур не задан: наружная граница для трещин определяется по бетонной сетке; учитываются только заданные отверстия."
     End If
     If Len(openingLayer) > 0 And openingEntities.Count = 0 Then commentText = commentText & _
         " На заданном слое отверстий '" & openingLayer & "' объектов нет; дополнительные контуры отверстий не заданы."
@@ -317,7 +308,13 @@ NextOpening:
         For i = 1 To openings.Count
             model.Contours.AddMaterialRegion openings(i), "OPENING_SOURCE_" & CStr(i), commentText, True
         Next i
+        query.Initialize model
+        Set domain = query.ConcreteDomain
     End If
+    For i = 1 To model.RebarCount
+        If Not query.ContainsPoint(domain, model.RebarX(i), model.RebarY(i), True) Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
+            "Арматура " & model.RebarID(i) & " находится вне импортированного бетонного контура или в отверстии. Проверьте слои и координаты исходных объектов."
+    Next i
     mImportComment = mImportComment & commentText
 End Sub
 

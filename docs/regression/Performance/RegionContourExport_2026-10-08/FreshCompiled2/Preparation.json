@@ -1,0 +1,12 @@
+﻿{
+    "BaselineSHA256":  "F55DFEF48176817CC59C2BA0DFC6E884FEB032FB913B931DE48220187136220B",
+    "FrozenProduction":  false,
+    "ImportedComponents":  [
+                               "modTestAutoCADContours",
+                               "modTestPerformance"
+                           ],
+    "HelpRefreshed":  false,
+    "VBACompileCompleted":  true,
+    "SourceGitSHA":  "106d4d303451e2aa19304d4b57af5e11b100114b",
+    "CandidateSHA256":  "7B47AD08F3A93C4BDD5EAF3196886B6F8D6917313F1FDC6D1C9059104593D425"
+}

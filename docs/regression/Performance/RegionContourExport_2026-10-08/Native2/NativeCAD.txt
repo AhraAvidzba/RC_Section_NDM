@@ -1,0 +1,152 @@
+﻿OK: native.actualAutoCAD
+OK: native.format.Region.0.count
+OK: native.format.Region.0.type.0
+OK: native.format.Region.0.owned.0
+FAIL: native.format.Region.0.outerColor.0
+OK: native.format.Region.0.type.1
+OK: native.format.Region.0.owned.1
+FAIL: native.format.Region.0.outerColor.1
+OK: native.format.Region.0.type.2
+OK: native.format.Region.0.owned.2
+OK: native.format.Region.0.outerColor.2
+OK: native.format.Region.0.area; actual=10783.2036129164; expected=10783.2036129164
+OK: native.format.Region.0.loops
+OK: native.format.Region.0.islandMaterial
+OK: native.format.Region.0.islandHole
+OK: native.format.Region.0.largeHole
+OK: native.format.Region.0.secondPart
+OK: native.format.Polyline.0.count
+OK: native.format.Polyline.0.type.0
+OK: native.format.Polyline.0.owned.0
+OK: native.format.Polyline.0.outerColor.0
+OK: native.format.Polyline.0.type.1
+OK: native.format.Polyline.0.owned.1
+OK: native.format.Polyline.0.outerColor.1
+OK: native.format.Polyline.0.type.2
+OK: native.format.Polyline.0.owned.2
+OK: native.format.Polyline.0.outerColor.2
+OK: native.format.Polyline.0.type.3
+OK: native.format.Polyline.0.owned.3
+OK: native.format.Polyline.0.openingColor.3
+OK: native.format.Polyline.0.type.4
+OK: native.format.Polyline.0.owned.4
+OK: native.format.Polyline.0.openingColor.4
+OK: native.format.Polyline.0.type.5
+OK: native.format.Polyline.0.owned.5
+OK: native.format.Polyline.0.openingColor.5
+OK: native.format.Polyline.0.type.6
+OK: native.format.Polyline.0.owned.6
+OK: native.format.Polyline.0.openingColor.6
+OK: native.format.Polyline.0.type.7
+OK: native.format.Polyline.0.owned.7
+OK: native.format.Polyline.0.openingColor.7
+OK: native.format.Polyline.0.type.8
+OK: native.format.Polyline.0.owned.8
+OK: native.format.Polyline.0.openingColor.8
+OK: native.format.Polyline.0.type.9
+OK: native.format.Polyline.0.owned.9
+OK: native.format.Polyline.0.openingColor.9
+OK: native.format.Polyline.0.area; actual=10783.2036129164; expected=10783.2036129164
+OK: native.format.Polyline.0.loops
+OK: native.format.Polyline.0.islandMaterial
+OK: native.format.Polyline.0.islandHole
+OK: native.format.Polyline.0.largeHole
+OK: native.format.Polyline.0.secondPart
+OK: native.format.Region.1.count
+OK: native.format.Region.1.type.0
+OK: native.format.Region.1.owned.0
+OK: native.format.Region.1.openingColor.0
+OK: native.format.Region.1.type.1
+OK: native.format.Region.1.owned.1
+OK: native.format.Region.1.openingColor.1
+OK: native.format.Region.1.area; actual=9607.30091830129; expected=9607.30091830128
+OK: native.format.Region.1.loops
+OK: native.format.Region.1.noInventedOuter.1
+OK: native.format.Region.1.noInventedOuter.2
+OK: native.format.Region.1.noInventedOuter.3
+OK: native.format.Region.1.noInventedOuter.4
+OK: native.format.Region.1.noInventedOuter.5
+OK: native.format.Region.1.noInventedOuter.6
+OK: native.format.Region.1.noInventedOuter.7
+OK: native.format.Region.1.noInventedOuter.8
+OK: native.format.Region.1.twoKnownHoles
+OK: native.format.Polyline.1.count
+OK: native.format.Polyline.1.type.0
+OK: native.format.Polyline.1.owned.0
+OK: native.format.Polyline.1.openingColor.0
+OK: native.format.Polyline.1.type.1
+OK: native.format.Polyline.1.owned.1
+OK: native.format.Polyline.1.openingColor.1
+OK: native.format.Polyline.1.area; actual=9607.30091830128; expected=9607.30091830128
+OK: native.format.Polyline.1.loops
+OK: native.format.Polyline.1.noInventedOuter.1
+OK: native.format.Polyline.1.noInventedOuter.2
+OK: native.format.Polyline.1.noInventedOuter.3
+OK: native.format.Polyline.1.noInventedOuter.4
+OK: native.format.Polyline.1.noInventedOuter.5
+OK: native.format.Polyline.1.noInventedOuter.6
+OK: native.format.Polyline.1.noInventedOuter.7
+OK: native.format.Polyline.1.noInventedOuter.8
+OK: native.format.Polyline.1.twoKnownHoles
+OK: native.snapshot.area; actual=9607.30091830128; expected=9607.30091830128
+OK: native.snapshot.exportOneRegion
+OK: native.snapshot.regionType.0
+OK: native.snapshot.exactArc.0; actual=9607.30091830128; expected=9607.30091830128
+OK: native.snapshot.twoOpenings.0
+OK: native.snapshot.netAreaMM; actual=9607.30091830128; expected=9607.30091830128
+OK: native.snapshot.netArea; actual=9607.30091830128; expected=9607.30091830128
+OK: native.mixedRoundTrip.0.importArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.0.importThreeLoops
+OK: native.mixedRoundTrip.0.exportAddsAll
+OK: native.mixedRoundTrip.0.exportRegion
+OK: native.mixedRoundTrip.0.exportRegionArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.0.exportRegionHoles
+OK: native.mixedRoundTrip.0.exportRegionReimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.0.exportRegionReimportHoles
+OK: native.mixedRoundTrip.0.originalOuterKept
+OK: native.mixedRoundTrip.0.exportNoDuplicateHoleCurves
+OK: native.mixedRoundTrip.0.reimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.0.reimportThreeLoops
+OK: native.mixedRoundTrip.0.repeatExportAddsAll
+OK: native.mixedRoundTrip.1.importArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.1.importThreeLoops
+OK: native.mixedRoundTrip.1.exportAddsAll
+OK: native.mixedRoundTrip.1.exportRegion
+OK: native.mixedRoundTrip.1.exportRegionArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.1.exportRegionHoles
+OK: native.mixedRoundTrip.1.exportRegionReimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.1.exportRegionReimportHoles
+OK: native.mixedRoundTrip.1.originalOuterKept
+OK: native.mixedRoundTrip.1.exportNoDuplicateHoleCurves
+OK: native.mixedRoundTrip.1.reimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.1.reimportThreeLoops
+OK: native.mixedRoundTrip.1.repeatExportAddsAll
+OK: native.mixedRoundTrip.2.importArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.2.importThreeLoops
+OK: native.mixedRoundTrip.2.exportAddsAll
+OK: native.mixedRoundTrip.2.exportRegion
+OK: native.mixedRoundTrip.2.exportRegionArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.2.exportRegionHoles
+OK: native.mixedRoundTrip.2.exportRegionReimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.2.exportRegionReimportHoles
+OK: native.mixedRoundTrip.2.originalOuterKept
+OK: native.mixedRoundTrip.2.exportNoDuplicateHoleCurves
+OK: native.mixedRoundTrip.2.reimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.2.reimportThreeLoops
+OK: native.mixedRoundTrip.2.repeatExportAddsAll
+OK: native.mixedRoundTrip.3.importArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.3.importThreeLoops
+OK: native.mixedRoundTrip.3.exportAddsAll
+OK: native.mixedRoundTrip.3.exportRegion
+OK: native.mixedRoundTrip.3.exportRegionArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.3.exportRegionHoles
+OK: native.mixedRoundTrip.3.exportRegionReimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.3.exportRegionReimportHoles
+OK: native.mixedRoundTrip.3.originalOuterKept
+OK: native.mixedRoundTrip.3.exportNoDuplicateHoleCurves
+OK: native.mixedRoundTrip.3.reimportArea; actual=9700; expected=9700
+OK: native.mixedRoundTrip.3.reimportThreeLoops
+OK: native.mixedRoundTrip.3.repeatExportAddsAll
+FAIL: native.format.runtime; -2145386476; Ключ не найден
+TOTAL_REAL_AUTOCAD_CONTOURS: passed=147; failed=3
+

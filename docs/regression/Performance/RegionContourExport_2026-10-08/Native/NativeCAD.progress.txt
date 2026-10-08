@@ -1,0 +1,16 @@
+17:13:14 start
+17:13:14 native.actualAutoCAD
+17:13:14 creating document
+17:13:15 document created
+17:13:15 document ready
+17:13:15 native.rectangle.0; actual=8000; expected=8000
+17:13:15 native.rectangle.source.0
+17:13:15 native.rectangle.unchanged.0; actual=8000; expected=8000
+17:13:15 native.rectangle.1; actual=8000; expected=8000
+17:13:15 native.rectangle.source.1
+17:13:15 native.rectangle.unchanged.1; actual=8000; expected=8000
+17:13:15 native.semicircle.0; actual=3926.99081698724; expected=3926.99081698724
+17:13:15 native.semicircle.analytic.0
+17:13:15 native.semicircle.cleanup.0
+17:18:25 native.runtime; -2147023170; Слой '0', объект 2C3: Automation error
+Сбой при удаленном вызове процедуры. 

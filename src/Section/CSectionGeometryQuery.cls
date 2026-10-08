@@ -769,6 +769,7 @@ Private Sub EnsureDomain()
     Dim mesh() As TRegionEdge, meshCount As Long
     If outerCount = 0 Then
         MeshBoundary mSection, mesh, meshCount
+        If holeCount > 0 Then KeepOuterMeshContours mesh, meshCount
     End If
     Dim raw() As TRegionEdge, count As Long, i As Long
     If outerCount > 0 Then
@@ -880,6 +881,25 @@ Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRe
     Dim ordered() As TRegionEdge, loopCount As Long
     StitchLoops boundary, count, ordered, loopCount, False
     CopyArray ordered, count, boundary
+End Sub
+
+' При явно заданных отверстиях сетка задает только наружные границы.
+' Ее внутренние пустоты не добавляются к достоверному списку Opening;
+' отдельные наружные части и вогнутые участки границы сохраняются.
+Private Sub KeepOuterMeshContours(ByRef edges() As TRegionEdge, ByRef count As Long)
+    If count = 0 Then Exit Sub
+    Dim loopAreas() As Double, outer() As TRegionEdge, outerCount As Long, i As Long
+    ReDim loopAreas(1 To count)
+    For i = 1 To count
+        loopAreas(edges(i).LoopID) = loopAreas(edges(i).LoopID) + EdgeSignedArea(edges(i))
+    Next i
+    For i = 1 To count
+        If loopAreas(edges(i).LoopID) > QUERY_TOLERANCE Then AppendEdge outer, outerCount, edges(i)
+    Next i
+    Dim boundary() As TRegionEdge, boundaryCount As Long
+    NormalizeBoundary outer, outerCount, boundary, boundaryCount
+    CopyArray boundary, boundaryCount, edges
+    count = boundaryCount
 End Sub
 
 ' Разбивает пересекающиеся/совпадающие ребра и оставляет только границы

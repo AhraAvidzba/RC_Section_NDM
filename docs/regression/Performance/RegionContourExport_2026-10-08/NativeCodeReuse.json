@@ -1,0 +1,11 @@
+﻿{
+    "Passed":  true,
+    "ComparedComponents":  128,
+    "MatchedComponents":  127,
+    "ChangedComponents":  [
+                              "modTestWorkbookInterface"
+                          ],
+    "AllowedChange":  "modTestWorkbookInterface (help assertions only)",
+    "NativeExportSHA256":  "B061596B52CBAA7D306B157F067074E085A994BE575F195A920D3CF8A3A07123",
+    "CurrentExportSHA256":  "89ADD21E0A652E972819DB1CEA82BC9909DF73D70A09298B77717023C55D4BD2"
+}

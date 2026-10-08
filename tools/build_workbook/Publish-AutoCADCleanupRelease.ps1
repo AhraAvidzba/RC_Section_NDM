@@ -3,7 +3,7 @@
 param(
     [string]$Directory = 'docs/regression/Performance/CleanupGeometry_2026-10-08',
     [switch]$VerifyOnly,
-    [ValidateSet('GeometryOwnership', 'PolylineImport', 'WorldCoordinates')]
+    [ValidateSet('GeometryOwnership', 'PolylineImport', 'WorldCoordinates', 'ContourSourceRules')]
     [string]$ChangeKind = 'GeometryOwnership'
 )
 $ErrorActionPreference = 'Stop'
@@ -102,6 +102,14 @@ if ($ChangeKind -eq 'WorldCoordinates') {
         if ($native -notmatch ('(?m)^OK: ' + [regex]::Escape($name) + '\b')) { throw "Native world-coordinate gate missing: $name" }
     }
 }
+if ($ChangeKind -eq 'ContourSourceRules') {
+    $focused = Get-Content -LiteralPath (Join-Path $directoryPath 'Focused.txt') -Raw
+    foreach ($name in @('openingOnly.noMeshOpening', 'openingOnly.rebarValidatedByFinalDomain',
+            'openingOnly.exactIntersections', 'contourSources.0.area', 'contourSources.1.area',
+            'contourSources.2.area', 'contourSources.3.area', 'openingMeshOuterTopology.area')) {
+        if ($focused -notmatch ('(?m)^OK: ' + [regex]::Escape($name) + '\b')) { throw "Contour-source gate missing: $name" }
+    }
+}
 $reportHash = (Get-FileHash -LiteralPath $outputReport -Algorithm SHA256).Hash
 $oldExportHash = (Get-FileHash -LiteralPath $outputExport -Algorithm SHA256).Hash
 $exportHash = (Get-FileHash -LiteralPath $export -Algorithm SHA256).Hash
@@ -118,20 +126,27 @@ try {
     $guide = $book.Worksheets.Item('Справка')
     $used = $guide.UsedRange; $values = $used.Value2; $startRow = 0; $endRow = 0
     $worldHelp = $false; $openingOnlyHelp = $false
+    $sourceRulesHelp = @{}
     $startTitle = '2. Точный контур и несколько отверстий'; $endTitle = '3. Единицы, поворот и плоскость'
     if ($ChangeKind -eq 'WorldCoordinates') { $startTitle = $endTitle; $endTitle = '4. Импорт, Results и повторный расчет' }
+    if ($ChangeKind -eq 'ContourSourceRules') { $startTitle = '6. Поясняющие примечания'; $endTitle = '' }
     for ($row = 1; $row -le $values.GetLength(0); $row++) {
         if ([string]$values[$row, 1] -ceq $startTitle) { $startRow = $used.Row + $row - 1 }
-        if ([string]$values[$row, 1] -ceq $endTitle) { $endRow = $used.Row + $row - 1 }
+        if ($endTitle -and [string]$values[$row, 1] -ceq $endTitle) { $endRow = $used.Row + $row - 1 }
         # Общая инструкция находится в A, пояснения отдельных настроек - в B.
         for ($column = 1; $column -le $values.GetLength(1); $column++) {
             $paragraph = [string]$values[$row, $column]
             if ($paragraph -like '*Перед импортом и экспортом включите мировую*' -and $paragraph.Contains('_UCS') -and $paragraph.Contains('_World')) { $worldHelp = $true }
             if ($paragraph -like '*импортированные отверстия остаются достоверными*') { $openingOnlyHelp = $true }
+            foreach ($prefix in @('1. Заданы только контуры отверстий.', '2. Задан только наружный контур, отверстия не заданы.', '3. Заданы наружный контур и отверстия.', '4. Не заданы ни наружный контур, ни контуры отверстий.')) {
+                if ($paragraph.StartsWith($prefix)) { $sourceRulesHelp[$prefix] = $true }
+            }
+            if ($ChangeKind -eq 'ContourSourceRules' -and $paragraph.StartsWith('4. Не заданы ни наружный контур, ни контуры отверстий.')) { $endRow = $used.Row + $row }
         }
     }
     if ($startRow -le 0 -or $endRow -le $startRow) { throw 'Geometry guide section is missing.' }
     if ($ChangeKind -eq 'WorldCoordinates' -and (-not $worldHelp -or -not $openingOnlyHelp)) { throw 'World coordinates or exact-opening help is missing from the actual workbook.' }
+    if ($ChangeKind -eq 'ContourSourceRules' -and $sourceRulesHelp.Count -ne 4) { throw 'Four contour-source notes are missing from the actual workbook.' }
     $guide.Outline.ShowLevels(8)
     $range = $guide.Range($guide.Cells.Item($startRow, 1), $guide.Cells.Item($endRow - 1, 6))
     $guide.PageSetup.PrintArea = $range.Address()
@@ -152,12 +167,13 @@ Assert-Hash $outputReport $reportHash
 $accepted = [ordered]@{Passed = $true; WorkbookSHA256 = $candidateHash; ExportSHA256 = $exportHash;
     BaselineWorkbookSHA256 = $preparation.BaselineSHA256; Fingerprint = $after;
     UserReportSHA256 = $reportHash; UserReportPreserved = $true; UserDataNamesWidthsPreserved = $true;
-    NativeCADPassed = $true; FullOnOffRepeated = $false; CrackDomainContractChanged = ($ChangeKind -eq 'GeometryOwnership');
+    NativeCADPassed = $true; FullOnOffRepeated = $false; CrackDomainContractChanged = ($ChangeKind -in @('GeometryOwnership', 'ContourSourceRules'));
     GeneratedContourOwnershipChanged = ($ChangeKind -eq 'GeometryOwnership'); MultipleOpeningsFromGeometryPassed = $true;
     PolylineImportChanged = ($ChangeKind -eq 'PolylineImport');
     ImportSummaryChanged = ($ChangeKind -eq 'PolylineImport'); LockedContourGuardChanged = ($ChangeKind -eq 'PolylineImport');
     WorldCoordinateImportGuardChanged = ($ChangeKind -eq 'WorldCoordinates'); OpeningOnlyExactContourPassed = $true;
     WorldCoordinateHelpVerified = $worldHelp; OpeningOnlyHelpVerified = $openingOnlyHelp;
+    ContourSourceRulesChanged = ($ChangeKind -eq 'ContourSourceRules'); FourContourSourceNotesVerified = ($sourceRulesHelp.Count -eq 4);
     SolverSearchMaterialsChanged = $false}
 $accepted | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $directoryPath 'Acceptance.json') -Encoding UTF8
 if ($VerifyOnly) { Write-Output 'ACCEPTED: current code, native CAD and help gates passed; user state preserved.'; exit }

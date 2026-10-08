@@ -1,0 +1,13 @@
+﻿{
+    "BaselineSHA256":  "7B47AD08F3A93C4BDD5EAF3196886B6F8D6917313F1FDC6D1C9059104593D425",
+    "FrozenProduction":  false,
+    "ImportedComponents":  [
+                               "modAutoCADStressExport",
+                               "modTestAutoCADContours",
+                               "modTestPerformance"
+                           ],
+    "HelpRefreshed":  false,
+    "VBACompileCompleted":  true,
+    "SourceGitSHA":  "106d4d303451e2aa19304d4b57af5e11b100114b",
+    "CandidateSHA256":  "27A7CC4CC1C9803C36695F6DCEA94352D203FAE08276B07B31BBEA71B111088A"
+}

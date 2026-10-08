@@ -26,6 +26,7 @@ Private Type TAutoCADExportSettings
     PrincipalAxesMode As String
     LoadPointEnabled As Boolean
     ContourEnabled As Boolean
+    ContourFormat As String ' Формат только исходных контуров сечения, не расчетной области трещин.
     ContourLayer As String
     OpeningContourLayer As String
     ExportCrackInteractionContour As Boolean
@@ -100,7 +101,7 @@ Public Sub ExportSectionStressToAutoCAD()
     If informationEnabled Then
         ShowWorkbookMessage "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
             "; стержней арматуры: " & CStr(section.RebarCount) & _
-            "; контурных полилиний: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
+            "; объектов контура: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
             "; сочетание: " & combinationID & _
             "; профиль: " & profileId & _
             "; состояние: " & stateType & _
@@ -1025,7 +1026,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     ' Контур выводим после бетонных и арматурных объектов, чтобы он не
     ' оказался закрыт AutoCAD Region, созданными для волокон расчетной сетки.
     If exportSettings.ContourEnabled Then
-        contourExportCount = DrawSavedContourRows(ThisWorkbook, ms, exportSettings.ContourLayer, arcSweeps, , "CONTOUR_", exportSettings.OpeningContourLayer)
+        contourExportCount = DrawSavedContourRows(ThisWorkbook, ms, exportSettings.ContourLayer, arcSweeps, , "CONTOUR_", exportSettings.OpeningContourLayer, exportSettings.ContourFormat)
     End If
     If Not crackRows Is Nothing Then
         If crackRows.Count > 0 Then
@@ -1105,9 +1106,10 @@ End Function
 ' Каждое opening остается отдельной замкнутой петлей с аналитическими дугами.
 Private Function DrawSavedContourRows(ByVal workbook As Object, ByVal ms As Object, ByVal contourLayer As String, _
         ByVal arcSweeps As Object, Optional ByVal selectedRows As Object = Nothing, _
-        Optional ByVal typePrefix As String = "CONTOUR_", Optional ByVal openingLayer As String = vbNullString) As Long
+        Optional ByVal typePrefix As String = "CONTOUR_", Optional ByVal openingLayer As String = vbNullString, _
+        Optional ByVal contourFormat As String = "Region") As Long
     If typePrefix = "CONTOUR_" Then
-        DrawSavedContourRows = DrawSavedMaterialContours(workbook, ms, contourLayer, openingLayer)
+        DrawSavedContourRows = DrawSavedMaterialContours(workbook, ms, contourLayer, openingLayer, contourFormat)
         Exit Function
     End If
     Dim tableName As Object
@@ -1210,12 +1212,17 @@ NextContourRow:
     End If
 End Function
 
-' Выгружает исходные замкнутые контуры из геометрии Results теми же низкоуровневыми
-' polyline-примитивами, что расчетные области. Роль отверстия и группировка
-' сегментов берутся из metadata геометрии; аннотации здесь не читаются.
-' Экспорт всегда добавляет новый вывод: не ищет совпадения и не очищает DWG.
+' Выгружает достоверные границы выбранным форматом: отдельными полилиниями
+' или как Region бетона с вырезанными отверстиями.
+' Отдельные бетонные части получают свои Region. Если известны только отверстия,
+' выводит их отдельными Region, не придумывая наружную границу по сетке.
+' Временные кривые принадлежат этому вызову; прежние объекты DWG не читаются.
 Private Function DrawSavedMaterialContours(ByVal workbook As Object, ByVal ms As Object, _
-        ByVal outerLayer As String, ByVal openingLayer As String) As Long
+        ByVal outerLayer As String, ByVal openingLayer As String, ByVal contourFormat As String) As Long
+    Dim asRegion As Boolean
+    asRegion = (StrComp(contourFormat, "Region", vbTextCompare) = 0)
+    If Not asRegion And StrComp(contourFormat, "Polyline", vbTextCompare) <> 0 Then _
+        Err.Raise vbObjectError + 4371, "DrawSavedMaterialContours", "Формат экспорта контуров должен быть Region или Polyline."
     Dim contours As CSectionContours, loops As Object, indices As Collection
     Dim i As Long, key As String, loopKey As Variant, indexValue As Variant, layer As String, colorIndex As Long
     Set contours = ReadSavedSectionContours(workbook)
@@ -1228,6 +1235,22 @@ Private Function DrawSavedMaterialContours(ByVal workbook As Object, ByVal ms As
         End If
         loops.Item(key).Add i
     Next i
+    If loops.Count = 0 Then Exit Function
+    Dim shapes As Object, parents As Object, expected As Object
+    Set shapes = CreateObject("Scripting.Dictionary"): Set parents = CreateObject("Scripting.Dictionary")
+    Set expected = CreateObject("Scripting.Dictionary")
+    If asRegion Then PrepareMaterialContourRegions contours, loops, shapes, parents, expected
+    For Each loopKey In loops.Keys
+        If Left$(CStr(loopKey), 8) = "OPENING:" And Len(openingLayer) = 0 Then
+            If Not asRegion Or parents.Count = 0 Then Err.Raise vbObjectError + 4371, "DrawSavedMaterialContours", _
+                "Для отдельных отверстий задайте AutoCAD.Common.OpeningContourLayer на Config."
+        End If
+    Next loopKey
+    Dim created As Collection, regions As Object, curve As Object, entity As Object, parent As Object
+    Dim curves(0 To 0) As Object, added As Variant, addedIndex As Long, ignored As Long
+    Dim errorNumber As Long, errorDescription As String, expectedRegion As CConcreteRegion
+    Set created = New Collection: Set regions = CreateObject("Scripting.Dictionary")
+    On Error GoTo Failed
     Dim sx() As Double, sy() As Double, ex() As Double, ey() As Double, bulge() As Double, count As Long
     For Each loopKey In loops.Keys
         Set indices = loops.Item(loopKey)
@@ -1238,20 +1261,143 @@ Private Function DrawSavedMaterialContours(ByVal workbook As Object, ByVal ms As
             colorIndex = OPENING_CONTOUR_COLOR_INDEX
         End If
         Erase sx: Erase sy: Erase ex: Erase ey: Erase bulge: count = 0
+        Set curve = Nothing
         For Each indexValue In indices
             i = CLng(indexValue)
             If contours.SegmentType(i) = "CONTOUR_CIRCLE" Then
                 If indices.Count <> 1 Then Err.Raise vbObjectError + 4371, "DrawSavedMaterialContours", "Круговой контур не должен содержать дополнительные сегменты."
-                DrawSavedMaterialContours = DrawSavedMaterialContours + _
-                    DrawContourCirclePolyline(ms, layer, contours.StartX(i), contours.StartY(i), contours.Radius(i), colorIndex, True)
+                ignored = DrawContourCirclePolyline(ms, layer, contours.StartX(i), contours.StartY(i), _
+                    contours.Radius(i), colorIndex, False, curve)
             Else
                 AppendContourSegment sx, sy, ex, ey, bulge, count, contours.StartX(i), contours.StartY(i), _
                     contours.EndX(i), contours.EndY(i), Tan(contours.SweepAngle(i) / 4#)
             End If
         Next indexValue
-        If count > 0 Then DrawSavedMaterialContours = DrawSavedMaterialContours + _
-            DrawContourSegmentPolyline(ms, layer, sx, sy, ex, ey, bulge, count, colorIndex, True)
+        If count > 0 Then ignored = DrawContourSegmentPolyline(ms, layer, sx, sy, ex, ey, bulge, count, colorIndex, False, curve)
+        created.Add curve
+        If Not asRegion Then
+            MarkNDMContourOutput curve
+            curve.Update
+            DrawSavedMaterialContours = DrawSavedMaterialContours + 1
+            Set curve = Nothing
+            GoTo NextMaterialLoop
+        End If
+        Set curves(0) = curve
+        added = ms.AddRegion(curves)
+        If Not IsArray(added) Then Err.Raise vbObjectError + 4371, "DrawSavedMaterialContours", "AutoCAD не создал Region по сохраненному контуру."
+        For addedIndex = LBound(added) To UBound(added): created.Add added(addedIndex): Next addedIndex
+        If UBound(added) <> LBound(added) Then Err.Raise vbObjectError + 4371, _
+            "DrawSavedMaterialContours", "По одному замкнутому контуру AutoCAD создал несколько областей. Проверьте контур в Results."
+        Set entity = added(LBound(added)): entity.Layer = layer: entity.Color = colorIndex
+        regions.Add CStr(loopKey), entity
+        curve.Delete: Set curve = Nothing
+NextMaterialLoop:
     Next loopKey
+    If Not asRegion Then Exit Function
+    ' Вычитаем каждый проем только из его ближайшей наружной области.
+    ' Бетонная часть внутри проема остается отдельным Region.
+    For Each loopKey In parents.Keys
+        Set parent = regions.Item(parents.Item(loopKey))
+        Set entity = regions.Item(loopKey)
+        parent.Boolean 2, entity
+    Next loopKey
+    For Each loopKey In regions.Keys
+        If Not parents.Exists(loopKey) Then
+            Set entity = regions.Item(loopKey): Set expectedRegion = expected.Item(loopKey)
+            If Abs(CDbl(entity.Area) - expectedRegion.Area) > MaxDouble(0.0001, expectedRegion.Area * 0.00000001) Then _
+                Err.Raise vbObjectError + 4371, "DrawSavedMaterialContours", "Площадь Region в AutoCAD не совпадает с сохраненной геометрией. Экспорт контура отменен."
+            ' Boolean может перенести оформление вычитаемой области на результат.
+            ' Назначаем итоговый слой и цвет после всех вычитаний.
+            If Left$(CStr(loopKey), 8) = "OPENING:" Then
+                entity.Layer = openingLayer: entity.Color = OPENING_CONTOUR_COLOR_INDEX
+            Else
+                entity.Layer = outerLayer: entity.Color = SECTION_CONTOUR_COLOR_INDEX
+            End If
+            MarkNDMContourOutput entity
+            entity.Update
+            DrawSavedMaterialContours = DrawSavedMaterialContours + 1
+        End If
+    Next loopKey
+    Exit Function
+Failed:
+    errorNumber = Err.Number: errorDescription = Err.Description
+    ' Удаляем только объекты, созданные этим незавершенным вызовом.
+    On Error Resume Next
+    If Not curve Is Nothing Then curve.Delete
+    For Each entity In created: entity.Delete: Next entity
+    On Error GoTo 0
+    Err.Raise errorNumber, "DrawSavedMaterialContours", "Не удалось вывести контуры сечения: " & errorDescription
+End Function
+
+' Проверяет принадлежность отверстий до первого изменения DWG. Рабочая
+' геометрия и аналитические проверки принадлежат общему geometry-query.
+Private Sub PrepareMaterialContourRegions(ByVal contours As CSectionContours, ByVal loops As Object, _
+        ByVal shapes As Object, ByVal parents As Object, ByVal expected As Object)
+    Dim query As CSectionGeometryQuery, key As Variant, otherKey As Variant, indices As Collection
+    Dim region As CConcreteRegion, outer As CConcreteRegion, first As Long, selected As String, bestArea As Double, outerCount As Long
+    Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, sweep As Double, loopNumber As Long
+    Set query = New CSectionGeometryQuery
+    For Each key In loops.Keys
+        Set indices = loops.Item(key): first = CLng(indices(1))
+        Set region = SavedMaterialLoopRegion(contours, indices, query)
+        shapes.Add CStr(key), region: expected.Add CStr(key), region
+        If StrComp(contours.LoopRole(first), "Outer", vbTextCompare) = 0 Then outerCount = outerCount + 1
+    Next key
+    Dim parts As Collection: Set parts = New Collection
+    If outerCount = 0 Then
+        For Each key In shapes.Keys: parts.Add shapes.Item(key): Next key
+        Set region = query.MergeDisjointRegions(parts)
+        Exit Sub
+    End If
+    For Each key In loops.Keys
+        Set indices = loops.Item(key): first = CLng(indices(1))
+        If StrComp(contours.LoopRole(first), "Opening", vbTextCompare) = 0 Then
+            Set region = shapes.Item(key)
+            region.GetSegment 1, x1, y1, x2, y2, cx, cy, sweep, loopNumber
+            selected = vbNullString: bestArea = 1E+100
+            For Each otherKey In loops.Keys
+                Set indices = loops.Item(otherKey): first = CLng(indices(1))
+                If StrComp(contours.LoopRole(first), "Outer", vbTextCompare) = 0 Then
+                    Set outer = shapes.Item(otherKey)
+                    If outer.Area < bestArea And query.ContainsPoint(outer, x1, y1, False) Then
+                        selected = CStr(otherKey): bestArea = outer.Area
+                    End If
+                End If
+            Next otherKey
+            If Len(selected) = 0 Then Err.Raise vbObjectError + 4371, "PrepareMaterialContourRegions", _
+                "В Results отверстие находится вне всех наружных контуров. Повторите импорт или расчет."
+            Set outer = expected.Item(selected)
+            Set expected.Item(selected) = query.SubtractContainedRegion(outer, region)
+            parents.Add CStr(key), selected
+        End If
+    Next key
+    For Each key In expected.Keys
+        If Not parents.Exists(key) Then parts.Add expected.Item(key)
+    Next key
+    Set region = query.MergeDisjointRegions(parts)
+End Sub
+
+' Собирает одну точную границу из сохраненных линий, дуг или окружности.
+Private Function SavedMaterialLoopRegion(ByVal contours As CSectionContours, ByVal indices As Collection, _
+        ByVal query As CSectionGeometryQuery) As CConcreteRegion
+    Dim first As Long: first = CLng(indices(1))
+    If contours.SegmentType(first) = "CONTOUR_CIRCLE" Then
+        If indices.Count <> 1 Then Err.Raise vbObjectError + 4371, "SavedMaterialLoopRegion", "Круговой контур содержит лишние сегменты."
+        Set SavedMaterialLoopRegion = query.CircleRegion(contours.StartX(first), contours.StartY(first), contours.Radius(first))
+        Exit Function
+    End If
+    Dim edges() As TRegionEdge, i As Long, sourceIndex As Long
+    ReDim edges(1 To indices.Count)
+    For i = 1 To indices.Count
+        sourceIndex = CLng(indices(i))
+        edges(i).X1 = contours.StartX(sourceIndex): edges(i).Y1 = contours.StartY(sourceIndex)
+        edges(i).X2 = contours.EndX(sourceIndex): edges(i).Y2 = contours.EndY(sourceIndex)
+        If contours.SegmentType(sourceIndex) = "CONTOUR_ARC" Then
+            edges(i).CenterX = contours.CenterX(sourceIndex): edges(i).CenterY = contours.CenterY(sourceIndex)
+            edges(i).Sweep = contours.SweepAngle(sourceIndex)
+        End If
+    Next i
+    Set SavedMaterialLoopRegion = query.BoundaryRegion(edges, indices.Count, "SavedMaterialContour")
 End Function
 
 ' Подготавливает численные углы дуг одним проходом до записи DWG.
@@ -1335,7 +1481,8 @@ End Sub
 Private Function DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLayer As String, _
         ByRef startX() As Double, ByRef startY() As Double, _
         ByRef endX() As Double, ByRef endY() As Double, ByRef bulge() As Double, ByVal segmentCount As Long, _
-        ByVal colorIndex As Long, Optional ByVal materialContour As Boolean = False) As Long
+        ByVal colorIndex As Long, Optional ByVal materialContour As Boolean = False, _
+        Optional ByRef createdEntity As Object = Nothing) As Long
     Dim segmentIndex As Long
     For segmentIndex = 1 To segmentCount - 1
         If Not PointsAreClose(endX(segmentIndex), endY(segmentIndex), startX(segmentIndex + 1), startY(segmentIndex + 1)) Then
@@ -1357,6 +1504,7 @@ Private Function DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLay
 
     Dim entity As Object
     Set entity = AddAcadLightWeightPolyline(ms, points, contourLayer, colorIndex)
+    Set createdEntity = entity
     For segmentIndex = 1 To segmentCount
         If Abs(bulge(segmentIndex)) > 0.000000000001 Then Call entity.SetBulge(segmentIndex - 1, bulge(segmentIndex))
     Next segmentIndex
@@ -1370,7 +1518,8 @@ End Function
 ' непрерывную замкнутую полилинию с дугами, а не отдельный объект Circle.
 Private Function DrawContourCirclePolyline(ByVal ms As Object, ByVal contourLayer As String, _
         ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double, _
-        ByVal colorIndex As Long, Optional ByVal materialContour As Boolean = False) As Long
+        ByVal colorIndex As Long, Optional ByVal materialContour As Boolean = False, _
+        Optional ByRef createdEntity As Object = Nothing) As Long
     If radius <= 0# Then Exit Function
 
     Dim points(0 To 7) As Double
@@ -1381,6 +1530,7 @@ Private Function DrawContourCirclePolyline(ByVal ms As Object, ByVal contourLaye
 
     Dim entity As Object
     Set entity = AddAcadLightWeightPolyline(ms, points, contourLayer, colorIndex)
+    Set createdEntity = entity
 
     Dim quarterBulge As Double
     quarterBulge = Tan((GEOM_PI / 2#) / 4#)
@@ -1409,9 +1559,18 @@ End Function
 ' Создает служебную полилинию AutoCAD на отдельном слое контура.
 Private Function AddAcadLightWeightPolyline(ByVal ms As Object, ByRef points() As Double, _
         ByVal layerName As String, ByVal colorIndex As Long) As Object
-    Set AddAcadLightWeightPolyline = ms.AddLightWeightPolyline(points)
-    AddAcadLightWeightPolyline.Layer = layerName
-    AddAcadLightWeightPolyline.Color = colorIndex
+    Dim entity As Object, errorNumber As Long, errorDescription As String
+    On Error GoTo Failed
+    Set entity = ms.AddLightWeightPolyline(points)
+    entity.Layer = layerName: entity.Color = colorIndex
+    Set AddAcadLightWeightPolyline = entity
+    Exit Function
+Failed:
+    errorNumber = Err.Number: errorDescription = Err.Description
+    On Error Resume Next
+    If Not entity Is Nothing Then entity.Delete
+    On Error GoTo 0
+    Err.Raise errorNumber, "AddAcadLightWeightPolyline", errorDescription
 End Function
 
 ' Сравнивает соседние вершины контура в миллиметрах.
@@ -1592,6 +1751,8 @@ Private Function ReadAutoCADExportSettings(ByVal settings As CSystemSettingsRead
             .ContourLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Common.SectionContourLayer")
             .OpeningContourLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Common.OpeningContourLayer")
         End If
+        If Not forCleanup And .ContourEnabled Then _
+            .ContourFormat = settings.GetRequiredChoice("AutoCAD.Export.ContourFormat", Array("Region", "Polyline"))
         If forCleanup Or .ExportCrackInteractionContour Then .CrackInteractionLayer = RequiredAutoCADLayerName(settings, "AutoCAD.Export.CrackInteractionLayer")
     End With
     Dim cleanupLayers As Object
@@ -2204,23 +2365,24 @@ End Function
 ' ДЛЯ ТЕСТОВ: исполняет рабочий exporter на запретившем чтение ModelSpace
 ' fixture. Не создает приложение AutoCAD, слои и не меняет расчетные данные.
 Public Function SP35ExportSavedContoursToModelSpaceForTests(ByVal ms As Object, _
-        Optional ByVal crackRegion As Boolean = False) As Long
+        Optional ByVal crackRegion As Boolean = False, Optional ByVal contourFormat As String = "Region") As Long
     Dim sweeps As Object, prefix As String
     prefix = "CONTOUR_": If crackRegion Then prefix = "CRACK_REGION_"
     Set sweeps = ReadSavedContourArcSweeps(ThisWorkbook, , prefix)
     SP35ExportSavedContoursToModelSpaceForTests = DrawSavedContourRows(ThisWorkbook, ms, _
-        "TEST_OUTER", sweeps, , prefix, "TEST_OPENING")
+        "TEST_OUTER", sweeps, , prefix, "TEST_OPENING", contourFormat)
 End Function
 
 ' Выводит только сохраненные материальные контуры в собственный документ
-' теста. Вызывает рабочие preflight и polyline exporter без поиска НДС.
+' теста. Вызывает рабочие preflight и Region exporter без поиска НДС.
 Public Function SP35ExportSavedMaterialContoursForTests(ByVal doc As Object, _
-        Optional ByVal outerLayer As String = "SP35_SAVED_CONTOURS", Optional ByVal openingLayer As String = "") As Long
+        Optional ByVal outerLayer As String = "SP35_SAVED_CONTOURS", Optional ByVal openingLayer As String = "", _
+        Optional ByVal contourFormat As String = "Region") As Long
     Dim sweeps As Object
     Set sweeps = ReadSavedContourArcSweeps(ThisWorkbook)
     EnsureAcadLayer doc, outerLayer, SECTION_CONTOUR_COLOR_INDEX
     If Len(openingLayer) > 0 Then EnsureAcadLayer doc, openingLayer, OPENING_CONTOUR_COLOR_INDEX
-    SP35ExportSavedMaterialContoursForTests = DrawSavedContourRows(ThisWorkbook, doc.ModelSpace, outerLayer, sweeps, , "CONTOUR_", openingLayer)
+    SP35ExportSavedMaterialContoursForTests = DrawSavedContourRows(ThisWorkbook, doc.ModelSpace, outerLayer, sweeps, , "CONTOUR_", openingLayer, contourFormat)
 End Function
 
 ' ДЛЯ ТЕСТОВ: проверяет штатную фильтрацию области по состоянию/флагу и
@@ -2309,6 +2471,7 @@ Public Function Audit03AutoCADPresentationForTests(ByVal settings As CSystemSett
     result.Add "NeutralLine", options.NeutralLineEnabled
     result.Add "LoadPoint", options.LoadPointEnabled
     result.Add "Contour", options.ContourEnabled
+    result.Add "ContourFormat", options.ContourFormat
     result.Add "ContourLayer", options.ContourLayer
     Set Audit03AutoCADPresentationForTests = result
 End Function

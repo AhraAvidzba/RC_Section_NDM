@@ -1,0 +1,12 @@
+{
+  "Passed": true,
+  "WorkbookSHA256": "8126A192A9371FE199B8455C7E522695B15C0ADE777A3C981AD12B5558C3D131",
+  "ImagesReviewed": ["GeometryGuide-1.png", "ExportSettings-1.png"],
+  "GuideFirst": true,
+  "RegionWithMultipleHolesExplained": true,
+  "FourNumberedSourceCasesReadable": true,
+  "WarningRedBoldAndUnclipped": true,
+  "ContourFormatSettingInExportSection": true,
+  "HelpRightBorderPresent": true,
+  "ExistingLayoutPreserved": true
+}

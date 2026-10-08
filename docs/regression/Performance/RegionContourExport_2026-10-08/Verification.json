@@ -1,0 +1,38 @@
+﻿{
+    "Passed":  true,
+    "WorkbookSHA256":  "8126A192A9371FE199B8455C7E522695B15C0ADE777A3C981AD12B5558C3D131",
+    "ExportSHA256":  "89ADD21E0A652E972819DB1CEA82BC9909DF73D70A09298B77717023C55D4BD2",
+    "BaselineWorkbookSHA256":  "5B1BE1C7CE8C11CD8BD99919DC716B67F94C5CCB1F6EAFD440C5039DA9323D74",
+    "UserReportSHA256":  "C91FABE2936AD1CD85F64D2AAFC1E917EF4D14D865F2208BE094706E7047987B",
+    "UserReportPreserved":  true,
+    "UserDataNamesWidthsPreserved":  true,
+    "Fingerprint":  {
+                        "Sheets":  [
+                                       {
+                                           "Name":  "Расчет",
+                                           "Address":  "$A$1:$AJ$60",
+                                           "FormulaHash":  "2BD8A9BD42817A2C233B0D0CE2D3F7655F5E3655F67F53D3BD39EB5DC625DE8A",
+                                           "ValueHash":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+                                       },
+                                       {
+                                           "Name":  "Results",
+                                           "Address":  "$A$1:$CL$351",
+                                           "FormulaHash":  "F81D10F3656CEA52CE3CE99961F76B8602BB33FFC13D440289C689E47EB8879B",
+                                           "ValueHash":  "F4ED4A722FEF1C20C5675028373431BDF3CEF2EDEF46C45E2F0FE6B0F89BB554"
+                                       }
+                                   ],
+                        "ConfigOtherFormula":  "AA22BE5F79AF483FDC1696929BC41233C8D66F915EEFA93B372F5806FA0D773C",
+                        "ConfigOtherValues":  "398413167DE3997EE3A860E2E16D008017D5D6A575047A79723FBC9D4D893293",
+                        "Settings":  "EB289B1AA5673038BFE8245A3E5AE9EEC154BE7B5B09C8F58A53DEFCE9EFFFB0",
+                        "Names":  "104FB0CB8ECA392066A3268C6C10703A145D5CD777AEECB16A92780654612608",
+                        "ResultsWidths":  "B77F81AC487F2672864B543F888EB94F1248550D1416B63A543AAF18F88E38E1",
+                        "HelpTargets":  "D1FA073319BDDB77DF7A1300DB125848D86AB80D3EA8FF966E3F7881D56184E4",
+                        "OriginalHelpLinkCount":  148
+                    },
+    "NewSetting":  "AutoCAD.Export.ContourFormat",
+    "Default":  "Region",
+    "NativeBothFormatsPassed":  true,
+    "NativeInputWorkbookSHA256":  "957746EE5F05AB45E7FF58EB5E3AF8FA33BAED34BA2C05B5B89FC052758B009F",
+    "NativeReusedAfterHelpOnlyChange":  true,
+    "FullOnOffRepeated":  false
+}

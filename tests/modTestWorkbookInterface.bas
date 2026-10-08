@@ -7595,7 +7595,7 @@ End Function
 ' Адреса не фиксированы: после пересборки справки ищутся ее заголовки.
 Private Sub TestAutoCADGeometryContourWarning(ByRef stats As TUiTestStats)
     Dim guide As Object, warning As Object, heading As Object, nextHeading As Object
-    Dim row As Long, text As String, cell As Object, used As Object, values As Variant, value As String, sectionText As String
+    Dim row As Long, text As String, cell As Object, used As Object, values As Variant, value As String, noteText As String
     On Error GoTo Failed
     Set guide = ThisWorkbook.Worksheets("Справка")
     ' Читаем и скрытые строки одним массивом, независимо от настроек Find.
@@ -7605,6 +7605,9 @@ Private Sub TestAutoCADGeometryContourWarning(ByRef stats As TUiTestStats)
         If InStr(1, value, "ВНИМАНИЕ: для расчета раскрытия трещин", vbTextCompare) = 1 Then Set warning = guide.Cells(used.Row + row - 1, used.Column)
         If value = "2. Точный контур и несколько отверстий" Then Set heading = guide.Cells(used.Row + row - 1, used.Column)
         If value = "3. Единицы, поворот и плоскость" Then Set nextHeading = guide.Cells(used.Row + row - 1, used.Column)
+        If Left$(value, Len("2. Задан только наружный контур, отверстия не заданы.")) = "2. Задан только наружный контур, отверстия не заданы." Then
+            noteText = value & " " & CStr(values(row + 1, 1))
+        End If
     Next row
     AssertTrue stats, "guide.autoCAD.contourWarning.exists", Not warning Is Nothing And Not heading Is Nothing And Not nextHeading Is Nothing
     If warning Is Nothing Or heading Is Nothing Or nextHeading Is Nothing Then Exit Sub
@@ -7618,11 +7621,10 @@ Private Sub TestAutoCADGeometryContourWarning(ByRef stats As TUiTestStats)
     AssertTrue stats, "guide.autoCAD.contourWarning.recommendation", InStr(1, text, "настоятельно рекомендуется", vbTextCompare) > 0
     AssertTrue stats, "guide.autoCAD.contourWarning.armature", InStr(1, text, "взаимодействия бетона с растянутой арматурой", vbTextCompare) > 0
     AssertTrue stats, "guide.autoCAD.contourWarning.risks", InStr(1, text, "завышены или занижены", vbTextCompare) > 0
-    For row = heading.Row + 1 To nextHeading.Row - 1
-        sectionText = sectionText & " " & CStr(guide.Cells(row, 1).Value2)
-    Next row
-    AssertTrue stats, "guide.autoCAD.knownOuter.solid", InStr(1, sectionText, "бетон внутри контура считается сплошным", vbTextCompare) > 0
-    AssertTrue stats, "guide.autoCAD.knownOuter.noMeshVoids", InStr(1, sectionText, "Пустоты по сетке не восстанавливаются", vbTextCompare) > 0
+    ' Четыре правила описываются один раз в примечаниях первого раздела,
+    ' а не дублируются в подразделе точного контура.
+    AssertTrue stats, "guide.autoCAD.knownOuter.solid", InStr(1, noteText, "сплошной бетон", vbTextCompare) > 0
+    AssertTrue stats, "guide.autoCAD.knownOuter.noMeshVoids", InStr(1, noteText, "Пустоты сетки не учитываются", vbTextCompare) > 0
     Exit Sub
 Failed:
     AssertTrue stats, "guide.autoCAD.contourWarning.runtime." & CStr(Err.Number) & "." & Err.Description, False
@@ -7748,6 +7750,7 @@ Private Function ExpectedConfigDropdownOptions(ByVal key As String) As String
         Case "SLS.Crack.TensionZoneMode": ExpectedConfigDropdownOptions = "Effective|FullTension"
         Case "SLS.Crack.CoverDistanceMode": ExpectedConfigDropdownOptions = "NearestContour|GlobalExtreme"
         Case "AutoCAD.Export.LabelMode": ExpectedConfigDropdownOptions = "ValuesOnly|NamesAndValues"
+        Case "AutoCAD.Export.ContourFormat": ExpectedConfigDropdownOptions = "Region|Polyline"
         Case "AutoCAD.Export.PrincipalAxesMode", "Plot.PrincipalAxesMode": ExpectedConfigDropdownOptions = "Transformed|Concrete|None"
         Case "Plot.LegendMode": ExpectedConfigDropdownOptions = "Separate|Common"
         Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", "Solver.LineSearchEnabled", _
