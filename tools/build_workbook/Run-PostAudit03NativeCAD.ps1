@@ -2,7 +2,7 @@
 # Existing user/SOFiPLUS instances are never edited, closed, or reused.
 param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
       [string]$ReportDirectory='docs/regression/PostAudit03/NativeCAD',
-      [ValidateSet('RunRealAutoCADContourTests','RunRealAutoCADContourFormatTests')]
+      [ValidateSet('RunRealAutoCADContourTests','RunRealAutoCADContourFormatTests','RunRealAutoCADContourMeshTests')]
       [string]$Macro='RunRealAutoCADContourTests')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -23,6 +23,19 @@ public static class PostAuditCADIdentity {
 '@
 $existing=@(Get-Process acad -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
 $excel=$null; $book=$null; $acad=$null; $owned=$false; $pidValue=0
+function Invoke-CadReady([scriptblock]$Action) {
+    $deadline=[DateTime]::UtcNow.AddSeconds(90)
+    while ($true) {
+        try { return (& $Action) }
+        catch {
+            $errorCode=$_.Exception.HResult
+            $inner=$_.Exception.InnerException
+            if ($inner) { $errorCode=$inner.HResult }
+            if ($errorCode -notin @(-2147418111,-2147417846) -or [DateTime]::UtcNow -ge $deadline) { throw }
+            Start-Sleep -Milliseconds 1000
+        }
+    }
+}
 try {
     Write-Output ('CAD_ACTIVATE: ' + $server)
     $acad=New-Object -ComObject AutoCAD.Application.24.2
@@ -35,15 +48,17 @@ try {
     $pidValue=[int]$processId
     $owned=($pidValue -gt 0 -and $existing -notcontains $pidValue)
     if (-not $owned) {throw "CAD instance is not owned by this test: PID=$pidValue"}
-    $acad.Visible=$false
     Write-Output "CAD_OWNED: PID=$pidValue; executable=$fullName"
+    [ordered]@{Executable=$fullName; OwnedPID=$pidValue; ExistingPIDs=$existing; UserDocumentsUsed=$false} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADOwnership.json') -Encoding UTF8
+    Invoke-CadReady { $acad.Visible=$false }
     # Готовим первый документ в управляющем COM-процессе до передачи
     # application в Excel: скрытый CAD без документа может зависнуть
     # на первом межпроцессном чтении Documents из VBA.
     $template=Join-Path $env:LOCALAPPDATA 'Autodesk/AutoCAD 2023/R24.2/rus/Template/acadiso.dwt'
     if (-not (Test-Path -LiteralPath $template)) {throw 'Standard AutoCAD test template is missing.'}
     $documents=$acad.GetType().InvokeMember('Documents',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null)
-    $bootstrap=$documents.Add($template)
+    $bootstrap=Invoke-CadReady { $documents.Add($template) }
     Write-Output ('CAD_BOOTSTRAP_DOCUMENT: ' + [string]$bootstrap.Name)
     $excel=New-Object -ComObject Excel.Application
     $excel.Visible=$false; $excel.DisplayAlerts=$false; $excel.EnableEvents=$false; $excel.AutomationSecurity=1
@@ -60,7 +75,7 @@ try {
     if ($book) {try {$book.Close($false)} catch {}}
     if ($excel) {try {$excel.Quit()} catch {}; [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)}
     if ($acad) {
-        if ($owned) {try {$acad.Quit()} catch {Write-Warning $_.Exception.Message}}
+        if ($owned) {try {Invoke-CadReady { $acad.Quit() }} catch {Write-Warning $_.Exception.Message}}
         [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($acad)
     }
     [GC]::Collect(); [GC]::WaitForPendingFinalizers()

@@ -190,13 +190,7 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Set geometry = CreateGeometry(settings, units)
 
     Dim mesh As CFiberMeshBuilder
-    Set mesh = New CFiberMeshBuilder
-
-    Dim meshStepX As Double ' Обязательный шаг бетонной сетки по X во внутренних единицах.
-    Dim meshStepY As Double ' Обязательный независимый шаг бетонной сетки по Y.
-    meshStepX = ReadMeshStep(settings, units, "Mesh.StepX")
-    meshStepY = ReadMeshStep(settings, units, "Mesh.StepY")
-    mesh.BuildMesh geometry, meshStepX, meshStepY, 1, MeshBoundarySubdivisions(settings)
+    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units)
 
     Dim rebars As CRebarLayout
     Set rebars = CreateRebars(geometry, settings, units)
@@ -219,37 +213,9 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Set BuildGeneratedModel = model
 End Function
 
-' Читает положительный шаг и нормализует INPUT длину до построения сетки.
-' Диагностика адаптера сохраняет ключ и действующий адрес; builder независимо
-' защищает свой внутренний API от невалидного шага без зависимости от Excel.
-Private Function ReadMeshStep(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal key As String) As Double
-    Dim value As Double
-    value = settings.GetRequiredDouble(key)
-    If value <= 0# Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
-        settings.InputErrorMessage(key, "Шаг бетонной сетки должен быть положительным.", _
-            "Введите число больше нуля в текущей INPUT-единице длины.")
-    On Error GoTo InvalidConversion
-    ReadMeshStep = units.InputLengthToInternal(value)
-    Exit Function
-InvalidConversion:
-    If Err.Number <> 6 Then Err.Raise Err.Number, Err.Source, Err.Description
-    Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
-        settings.InputErrorMessage(key, "Шаг слишком велик для пересчета в мм.", _
-            "Уменьшите число и проверьте INPUT-единицу длины.")
-End Function
-
 ' Возвращает число подъячеек для уточнения границы бетонной сетки.
 ' Настройка общая для всех встроенных форм и не относится к конкретной
 ' geometry/rebar/annotation реализации.
 Public Function MeshBoundarySubdivisions(ByVal settings As CSystemSettingsReader) As Long
-    If settings Is Nothing Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", "Настройки разбиения бетонной сетки не переданы."
-    If settings.HasKey("Mesh.BoundarySubdivisions") Then
-        Dim rawValue As String
-        rawValue = Trim$(settings.GetRawString("Mesh.BoundarySubdivisions"))
-        If Len(rawValue) = 0 Or UCase$(rawValue) = "TODO" Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
-            settings.InputErrorMessage("Mesh.BoundarySubdivisions", "Число подъячеек не задано.", "Введите целое число не меньше 1.")
-    End If
-    MeshBoundarySubdivisions = settings.GetRequiredLong("Mesh.BoundarySubdivisions")
-    If MeshBoundarySubdivisions < 1 Then Err.Raise vbObjectError + 4139, "CSectionTypeRegistry", _
-        settings.InputErrorMessage("Mesh.BoundarySubdivisions", "Число подъячеек меньше 1.", "Введите целое число не меньше 1.")
+    MeshBoundarySubdivisions = ReadMeshBoundarySubdivisions(settings)
 End Function

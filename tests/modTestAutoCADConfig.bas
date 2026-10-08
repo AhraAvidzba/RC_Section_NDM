@@ -244,7 +244,7 @@ Private Sub CheckCleanup(ByRef stats As TCadStats, ByVal system As Object, ByVal
         For owned = 0 To 1
             Set contour = New CFakeAcadContour
             contour.InitializeLoop "AcDbPolyline", CStr(layer), "KEEP_GEOMETRY", curves
-            contour.SetOutputOwned (owned = 1)
+            contour.SetLegacyContourTag (owned = 1)
             protected.Add contour: ms.Add ms.Count, contour
         Next owned
     Next layer
@@ -264,7 +264,7 @@ Private Sub CheckCleanup(ByRef stats As TCadStats, ByVal system As Object, ByVal
     Set line = New CFakeAcadLine: line.Initialize 0#, 0#, 1#, 0#, "AUDIT_CT"
     Set contour = New CFakeAcadContour
     contour.InitializeLoop "AcDbPolyline", "AUDIT_CT", "KEEP_SHARED", curves
-    contour.SetOutputOwned True
+    contour.SetLegacyContourTag True
     Set ms = CreateObject("Scripting.Dictionary"): ms.Add 0, line: ms.Add 1, contour
     deleted = Audit03CleanupAutoCADModelSpaceForTests(ms, Reader())
     Check stats, "autoCADConfig.cleanup.sharedLayer." & CStr(position), deleted = 0 And Not line.Deleted And Not contour.Deleted

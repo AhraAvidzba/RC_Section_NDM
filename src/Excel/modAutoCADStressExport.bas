@@ -99,13 +99,15 @@ Public Sub ExportSectionStressToAutoCAD()
         loadReferenceX, loadReferenceY, centroidX, centroidY, principalAngle, resultPrecision, stateWarningText, exportSettings, _
         contourExportCount, , crackRows, crackSweeps
     If informationEnabled Then
-        ShowWorkbookMessage "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
+        Dim message As String
+        message = "Экспорт в AutoCAD завершен. Волокон бетона: " & CStr(section.ConcreteCount) & _
             "; стержней арматуры: " & CStr(section.RebarCount) & _
             "; объектов контура: " & ContourExportStatusText(exportSettings.ContourEnabled, contourExportCount) & _
             "; сочетание: " & combinationID & _
             "; профиль: " & profileId & _
             "; состояние: " & stateType & _
-            "; величина: " & quantity, vbInformation, "RC Section NDM"
+            "; величина: " & quantity
+        ShowWorkbookMessage WithConcreteMeshGenerationNotice(message, section), vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
@@ -286,6 +288,7 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Dim model As CSectionModel
     Set model = New CSectionModel
     model.SourceType = sourceType
+    model.ConcreteMeshSource = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.ConcreteMeshSource")
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -1267,16 +1270,15 @@ Private Function DrawSavedMaterialContours(ByVal workbook As Object, ByVal ms As
             If contours.SegmentType(i) = "CONTOUR_CIRCLE" Then
                 If indices.Count <> 1 Then Err.Raise vbObjectError + 4371, "DrawSavedMaterialContours", "Круговой контур не должен содержать дополнительные сегменты."
                 ignored = DrawContourCirclePolyline(ms, layer, contours.StartX(i), contours.StartY(i), _
-                    contours.Radius(i), colorIndex, False, curve)
+                    contours.Radius(i), colorIndex, curve)
             Else
                 AppendContourSegment sx, sy, ex, ey, bulge, count, contours.StartX(i), contours.StartY(i), _
                     contours.EndX(i), contours.EndY(i), Tan(contours.SweepAngle(i) / 4#)
             End If
         Next indexValue
-        If count > 0 Then ignored = DrawContourSegmentPolyline(ms, layer, sx, sy, ex, ey, bulge, count, colorIndex, False, curve)
+        If count > 0 Then ignored = DrawContourSegmentPolyline(ms, layer, sx, sy, ex, ey, bulge, count, colorIndex, curve)
         created.Add curve
         If Not asRegion Then
-            MarkNDMContourOutput curve
             curve.Update
             DrawSavedMaterialContours = DrawSavedMaterialContours + 1
             Set curve = Nothing
@@ -1313,7 +1315,6 @@ NextMaterialLoop:
             Else
                 entity.Layer = outerLayer: entity.Color = SECTION_CONTOUR_COLOR_INDEX
             End If
-            MarkNDMContourOutput entity
             entity.Update
             DrawSavedMaterialContours = DrawSavedMaterialContours + 1
         End If
@@ -1481,7 +1482,7 @@ End Sub
 Private Function DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLayer As String, _
         ByRef startX() As Double, ByRef startY() As Double, _
         ByRef endX() As Double, ByRef endY() As Double, ByRef bulge() As Double, ByVal segmentCount As Long, _
-        ByVal colorIndex As Long, Optional ByVal materialContour As Boolean = False, _
+        ByVal colorIndex As Long, _
         Optional ByRef createdEntity As Object = Nothing) As Long
     Dim segmentIndex As Long
     For segmentIndex = 1 To segmentCount - 1
@@ -1510,7 +1511,6 @@ Private Function DrawContourSegmentPolyline(ByVal ms As Object, ByVal contourLay
     Next segmentIndex
     entity.Closed = True
     entity.Update
-    If materialContour Then MarkNDMContourOutput entity
     DrawContourSegmentPolyline = 1
 End Function
 
@@ -1518,7 +1518,7 @@ End Function
 ' непрерывную замкнутую полилинию с дугами, а не отдельный объект Circle.
 Private Function DrawContourCirclePolyline(ByVal ms As Object, ByVal contourLayer As String, _
         ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double, _
-        ByVal colorIndex As Long, Optional ByVal materialContour As Boolean = False, _
+        ByVal colorIndex As Long, _
         Optional ByRef createdEntity As Object = Nothing) As Long
     If radius <= 0# Then Exit Function
 
@@ -1540,7 +1540,6 @@ Private Function DrawContourCirclePolyline(ByVal ms As Object, ByVal contourLaye
     Next i
     entity.Closed = True
     entity.Update
-    If materialContour Then MarkNDMContourOutput entity
     DrawContourCirclePolyline = 1
 End Function
 

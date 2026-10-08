@@ -650,6 +650,82 @@ Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double
     ContainsPoint = ContainsRaw(edges, count, x, y, includeBoundary)
 End Function
 
+' При дискретизации формы наружная граница входит в бетон, граница проема -
+' нет. Подготовленные ребра принадлежат неизменяемому снимку CGeometryRegion;
+' общий winding/arc алгоритм не дублируется и не копирует массив на точку.
+Friend Function ContainsMeshPoint(ByVal region As CConcreteRegion, ByRef edges() As TRegionEdge, _
+        ByVal count As Long, ByVal x As Double, ByVal y As Double) As Boolean
+    Dim i As Long, u As Double
+    For i = 1 To count
+        If PointParameter(edges(i), x, y, u) Then
+            ContainsMeshPoint = Not region.LoopIsOpening(edges(i).LoopID)
+            Exit Function
+        End If
+    Next i
+    ContainsMeshPoint = ContainsRaw(edges, count, x, y, False)
+End Function
+
+' Четыре угла внутри бетона не исключают узкий наружный вырез между ними.
+' Общий mesher получает точные ребра один раз, без знания типа сечения.
+Friend Sub CopyMeshOuterEdges(ByVal contours As CSectionContours, ByRef edges() As TRegionEdge, ByRef count As Long)
+    Dim holes() As TRegionEdge, holeCount As Long
+    Erase edges: count = 0
+    ReadMaterialContours contours, edges, count, holes, holeCount
+End Sub
+
+' Возвращает реальные вершины и экстремумы дуг, а не углы габаритного
+' прямоугольника, которые для произвольного сечения могут быть вне бетона.
+Friend Sub MeshExtremePoints(ByRef edges() As TRegionEdge, ByVal count As Long, _
+        ByRef pointX() As Double, ByRef pointY() As Double)
+    Dim i As Long, j As Long, n As Long, radius As Double, x As Double, y As Double, u As Double
+    ReDim pointX(1 To count * 6): ReDim pointY(1 To count * 6)
+    For i = 1 To count
+        n = n + 1: pointX(n) = edges(i).X1: pointY(n) = edges(i).Y1
+        n = n + 1: pointX(n) = edges(i).X2: pointY(n) = edges(i).Y2
+        If Abs(edges(i).Sweep) > PARAM_TOLERANCE Then
+            radius = Sqr((edges(i).X1 - edges(i).CenterX) ^ 2 + (edges(i).Y1 - edges(i).CenterY) ^ 2)
+            For j = 0 To 3
+                x = edges(i).CenterX + radius * Cos(j * GEOM_PI / 2#)
+                y = edges(i).CenterY + radius * Sin(j * GEOM_PI / 2#)
+                If PointParameter(edges(i), x, y, u) Then
+                    n = n + 1: pointX(n) = x: pointY(n) = y
+                End If
+            Next j
+        End If
+    Next i
+    ReDim Preserve pointX(1 To n): ReDim Preserve pointY(1 To n)
+End Sub
+
+' Проверяет заход наружного ребра в открытую ячейку. Совпадение с ее
+' стороной не требует дробления. Линии и дуги используют прежние пересечения.
+Friend Function MeshBoundaryCrossesCell(ByRef edges() As TRegionEdge, ByVal count As Long, _
+        ByVal minX As Double, ByVal minY As Double, ByVal maxX As Double, ByVal maxY As Double) As Boolean
+    Dim i As Long, j As Long, cuts() As Double, cutCount As Long, x As Double, y As Double
+    For i = 1 To count
+        If Abs(edges(i).Sweep) <= PARAM_TOLERANCE Then
+            If GeomMax(edges(i).X1, edges(i).X2) <= minX + QUERY_TOLERANCE Or _
+                    GeomMin(edges(i).X1, edges(i).X2) >= maxX - QUERY_TOLERANCE Or _
+                    GeomMax(edges(i).Y1, edges(i).Y2) <= minY + QUERY_TOLERANCE Or _
+                    GeomMin(edges(i).Y1, edges(i).Y2) >= maxY - QUERY_TOLERANCE Then GoTo NextEdge
+        End If
+        Erase cuts: cutCount = 0
+        AddScalar cuts, cutCount, 0#: AddScalar cuts, cutCount, 1#
+        HalfPlaneCuts edges(i), 1#, 0#, minX, cuts, cutCount
+        HalfPlaneCuts edges(i), 1#, 0#, maxX, cuts, cutCount
+        HalfPlaneCuts edges(i), 0#, 1#, minY, cuts, cutCount
+        HalfPlaneCuts edges(i), 0#, 1#, maxY, cuts, cutCount
+        SortScalars cuts, cutCount
+        For j = 1 To cutCount - 1
+            EdgePoint edges(i), (cuts(j) + cuts(j + 1)) / 2#, x, y
+            If x > minX + QUERY_TOLERANCE And x < maxX - QUERY_TOLERANCE And _
+                    y > minY + QUERY_TOLERANCE And y < maxY - QUERY_TOLERANCE Then
+                MeshBoundaryCrossesCell = True: Exit Function
+            End If
+        Next j
+NextEdge:
+    Next i
+End Function
+
 ' Пересекает область параметрической прямой P+t*D. Интервалы ограничиваются
 ' явно переданным диапазоном t: прямая, луч и отрезок используют один алгоритм.
 ' D нормируется, поэтому t и границы интервалов измеряются в миллиметрах.

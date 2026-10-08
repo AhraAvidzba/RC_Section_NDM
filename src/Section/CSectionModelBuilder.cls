@@ -28,20 +28,14 @@ Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars
     Dim model As CSectionModel
     Set model = New CSectionModel
     model.SourceType = sourceType
+    model.ConcreteMeshSource = "Generated"
     Dim rebarCount As Long
     If Not rebars Is Nothing Then rebarCount = rebars.Count
     model.ReserveElements mesh.FiberCount, rebarCount
 
-    Dim i As Long
-    For i = 1 To mesh.FiberCount
-        model.AddConcreteElement mesh.FiberX(i), mesh.FiberY(i), _
-            mesh.FiberArea(i) * mesh.FiberFillFactor(i), mesh.FiberMaterialID(i), _
-            "Бетонный КЭ " & CStr(i), vbNullString, "Rectangle", _
-            mesh.FiberWidth(i), mesh.FiberHeight(i), 0#, "Параметрическая бетонная сетка", _
-            mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberHeight(i) * mesh.FiberHeight(i) / 12#, _
-            mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberWidth(i) * mesh.FiberWidth(i) / 12#, 0#
-    Next i
+    AppendConcreteMesh model, mesh
 
+    Dim i As Long
     If Not rebars Is Nothing Then
         For i = 1 To rebars.Count
             model.AddRebarElement rebars.X(i), rebars.Y(i), rebars.Diameter(i), rebars.Area(i), _
@@ -51,4 +45,23 @@ Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars
 
     Set BuildFromGenerated = model
 End Function
+
+' Один перенос волокон для параметрической формы и формы по CAD-контуру.
+' Уже импортированные стержни и достоверные границы модели не меняются.
+Public Sub AppendConcreteMesh(ByVal model As CSectionModel, ByVal mesh As CFiberMeshBuilder, _
+        Optional ByVal comment As String = "Параметрическая бетонная сетка")
+    If model Is Nothing Or mesh Is Nothing Then Err.Raise vbObjectError + 5250, "CSectionModelBuilder", "Модель и бетонная сетка не переданы."
+    If model.ConcreteCount > 0 Then Err.Raise vbObjectError + 5252, "CSectionModelBuilder", "Нельзя добавлять сгенерированную сетку поверх существующих бетонных элементов."
+    If mesh.FiberCount <= 0 Then Err.Raise vbObjectError + 5251, "CSectionModelBuilder", "Сетка бетонных элементов пуста."
+    model.ReserveElements mesh.FiberCount, model.RebarCount
+    Dim i As Long
+    For i = 1 To mesh.FiberCount
+        model.AddConcreteElement mesh.FiberX(i), mesh.FiberY(i), _
+            mesh.FiberArea(i) * mesh.FiberFillFactor(i), mesh.FiberMaterialID(i), _
+            "Бетонный КЭ " & CStr(i), vbNullString, "Rectangle", _
+            mesh.FiberWidth(i), mesh.FiberHeight(i), 0#, comment, _
+            mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberHeight(i) * mesh.FiberHeight(i) / 12#, _
+            mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberWidth(i) * mesh.FiberWidth(i) / 12#, 0#
+    Next i
+End Sub
 

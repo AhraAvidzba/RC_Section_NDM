@@ -16,6 +16,8 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.
 
 Направленные наборы: `Run-GeometryTests.ps1`, `Run-MaterialTests.ps1`, `Run-SectionSolverTests.ps1`, `Run-CapacityTests.ps1`, `Run-CrackTests.ps1`, `Run-SP35FocusedTests.ps1`, `Run-BatchTests.ps1`, `Run-WorkbookInterfaceTests.ps1`, `Run-RegressionBaselineTests.ps1`.
 
+Генерация бетона по CAD-контурам: макрос `modTestContourMesh.RunContourMeshTests` через `Run-SP35FocusedTests.ps1`. Реальный AutoCAD: `Run-PostAudit03NativeCAD.ps1 -Macro RunRealAutoCADContourMeshTests`. Проверяются сетки, несколько отверстий, единицы, сохранение Results, пары расчетов Generated/CAD и экспорт без повторного решения.
+
 Полный набор, только после согласования:
 
 ```powershell

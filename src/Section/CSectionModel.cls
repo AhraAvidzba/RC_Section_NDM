@@ -23,6 +23,7 @@ Option Explicit
 ' для расчетного ядра.
 
 Private mSourceType As String ' Диагностическая метка источника модели: Generated, AutoCADImport и т.п.
+Private mConcreteMeshSource As String ' Способ получения бетонных элементов, отдельно от источника арматуры/контуров.
 
 Private mConcreteID() As String ' Расчетные имена бетонных элементов: C1, C2, ...
 Private mConcreteSourceName() As String ' Необязательное исходное имя области для трассировки.
@@ -76,6 +77,7 @@ Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' До
 Public Sub Clear()
     mRevision = mRevision + 1
     mSourceType = vbNullString
+    mConcreteMeshSource = vbNullString
 
     Erase mConcreteID
     Erase mConcreteSourceName
@@ -120,6 +122,20 @@ End Property
 
 Public Property Get SourceType() As String
     SourceType = mSourceType
+End Property
+
+' Metadata геометрии сохраняется в Results; solver от нее не зависит.
+Public Property Let ConcreteMeshSource(ByVal value As String)
+    Select Case value
+        Case vbNullString, "Generated", "AutoCADRegions", "AutoCADContours"
+            mConcreteMeshSource = value
+        Case Else
+            Err.Raise vbObjectError + 5203, "CSectionModel", "Неизвестный источник бетонной сетки: " & value & ". Повторите импорт или расчет."
+    End Select
+End Property
+
+Public Property Get ConcreteMeshSource() As String
+    ConcreteMeshSource = mConcreteMeshSource
 End Property
 
 ' Добавляет одно бетонное волокно или импортированную бетонную область.

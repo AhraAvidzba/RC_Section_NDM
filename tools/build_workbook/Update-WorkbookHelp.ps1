@@ -186,13 +186,38 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
     }
     Assert-Help "$Stage.autoCADFirst" ($titles['Подготовка геометрии в AutoCAD и импорт'] -eq 1) 'Первый раздел'
     $body = Get-GuideText $guide 1 $data.GetLength(0)
+    $autoCAD = Get-GuideText $guide $titles['Подготовка геометрии в AutoCAD и импорт'] ($titles['Поиск НДС текущего сочетания']-1)
+    foreach ($phrase in @('Площадь взаимодействия для трещин - участок бетона',
+        'программа автоматически извлекает наружную границу','В палитре свойств AutoCAD',
+        'Если контурные слои заблокированы','Геометрия всегда экспортируется в AutoCAD в мм',
+        'таблице «Настройка расчетных профилей»','строке «Выводимое состояние» (Visualization.State)',
+        'Импортируются все объекты на заданных слоях независимо','отсутствие наложенных друг на друга дублей',
+        'изменение Config само по себе не обновляет Results',
+        'Новый импорт заменяет геометрию и удаляет ранее рассчитанную площадь',
+        'автоматически импортирует их как заданные отверстия')) {
+        Assert-Help "$Stage.autoCADNotes.$phrase" ($autoCAD.Contains($phrase)) 'Замечания к подготовке геометрии'
+    }
+    Assert-Help "$Stage.autoCADNoFixedColors" ($autoCAD -notmatch 'ACI\s*\d|цветом ACI|Цвет границ') 'Без описания внутренних цветов экспорта'
+    Assert-Help "$Stage.autoCADNoSourcePriority" ($autoCAD -notmatch 'исходники имеют приоритет|импортируются только исходные|Если исходников на слое нет') 'Без приоритета исходников и скрытого пропуска копий'
+    foreach ($prefix in @('Чистота чертежа и повторный импорт.', 'Актуальность площади взаимодействия для трещин.')) {
+        $labelRow = 0
+        for ($row=1; $row -lt $titles['Поиск НДС текущего сочетания']; $row++) {
+            if (([string]$data[$row,1]).StartsWith($prefix)) { $labelRow=$row; break }
+        }
+        Assert-Help "$Stage.autoCADLabel.$prefix" ($labelRow -gt 0) $labelRow
+        if ($labelRow -gt 0) {
+            $cell=$guide.Cells.Item($labelRow,1)
+            Assert-Help "$Stage.autoCADLabelBold.$prefix" ([bool]$cell.Characters(1,$prefix.Length).Font.Bold) 'Название жирным'
+            Assert-Help "$Stage.autoCADLabelBodyRegular.$prefix" (-not [bool]$cell.Characters($prefix.Length+2,1).Font.Bold) 'Пояснение обычным шрифтом'
+        }
+    }
     $sp35 = Get-GuideText $guide $titles['СП 35: расчет ширины нормальных трещин'] ($titles['Расчет продольного изгиба и устойчивости']-1)
     foreach ($phrase in @('Группа неделима','Частичного включения нет','боковых границ площади взаимодействия',
-        'Другие группы тоже будут рассмотрены','напряжение для этой проверки берется только из рассматриваемой группы',
-        'Ряд 1 находится у растянутой бетонной границы','SLS.Crack.SP35.NeighborRatioLimit',
+        'Остальные группы проверяются в отдельных итерациях','Расчетное напряжение принимается только по рассматриваемой группе',
+        'Ряд 1 - ближайший к растянутой бетонной границе','SLS.Crack.SP35.NeighborRatioLimit',
         'SLS.Crack.SP35.RowTolerance','SLS.Crack.SP35.RadiusDiameterMode','SLS.Crack.SP35.GroupGapTolerance',
-        '[SP35] - правило СП 35','[METHOD] - пояснение','[NDM] - принятое в программе допущение',
-        'D_1, D_2','Индекс s обозначает арматуру, cr - трещину','AutoCAD.Export.ExportCrackInteractionContour')) {
+        '[SP35] - требования СП 35','[METHOD] - Методическое пособие','[NDM] - инженерные допущения',
+        'D_1, D_2','R_r и ψ в этих зависимостях выражаются в сантиметрах','AutoCAD.Export.ExportCrackInteractionContour')) {
         Assert-Help "$Stage.sp35.$phrase" ($sp35.Contains($phrase)) 'Фактический лист'
     }
     Assert-Help "$Stage.sp35NoSP63" ($sp35 -notmatch 'СП 63|ψ_s|PsiS|Phi3') 'Без сравнения с другой методикой'
@@ -220,7 +245,22 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
     }
     Assert-Help "$Stage.noInternalClasses" ($body -notmatch 'CSectionModel|CUnitSystem|CSectionSolver|shape-builder|snapshot|named-state') 'Пользовательская справка'
     Assert-Help "$Stage.worldCoordinates" ($body.Contains('_UCS') -and $body.Contains('_World') -and $body.Contains('глобальн')) 'Глобальная система координат'
+    foreach ($phrase in @('Вариант без готовой сетки','Генерация включается только при действительно пустом слое бетона',
+        'Для изменения шага сетки измените Mesh и повторите импорт',
+        'БЕТОННАЯ СЕТКА АВТОМАТИЧЕСКИ СГЕНЕРИРОВАНА ПО КОНТУРАМ AUTOCAD')) {
+        Assert-Help "$Stage.contourMesh.$phrase" ($body.Contains($phrase)) 'Фактический лист'
+    }
     Assert-Help "$Stage.noOpaqueGroupSum" ($body -notmatch 'i∈g|iEg|gap_ij') 'Простая запись суммы'
+    foreach ($pattern in @('НДС означает','НДС - напряженно','НДС - напряжённо','квадратный корень',
+        'число пи','Вертикальные черты означают','Проекция -','под прямым углом',
+        'терпелив','спасает','маленькими шагами')) {
+        Assert-Help "$Stage.engineeringStyle.$pattern" ($body -notmatch [regex]::Escape($pattern)) 'Без объяснения базовых понятий и разговорных оценок'
+    }
+    foreach ($phrase in @('Найденный предел с λ < 1 завершает поиск','Явно заданный путь не заменяется другим',
+        'Численный допуск не','NotCracked','SLS.Crack.PsiMode','LoadMultiplier','Load.ReferenceOffset',
+        'всех заданных отверстий','Границы сетки для этой площади не используются')) {
+        Assert-Help "$Stage.methodContract.$phrase" ($body.Contains($phrase)) 'Сохранность существенных расчетных правил'
+    }
     $count=0
     foreach ($link in $Book.Worksheets.Item('Config').Hyperlinks) {
         if ([string]$link.SubAddress -match "^'?Справка'?!([A-Z]+[0-9]+)$") {
@@ -293,6 +333,7 @@ function Export-GuidePages([object]$Book, [object]$Titles) {
         $sheet.PageSetup.Zoom=$false
         $sheet.PageSetup.FitToPagesWide=1
         $sheet.PageSetup.FitToPagesTall=$false
+        if ($names[$i] -eq 'AutoCAD') { $sheet.PageSetup.FitToPagesTall=1 }
         $sheet.PageSetup.LeftMargin=15
         $sheet.PageSetup.RightMargin=15
         $sheet.PageSetup.TopMargin=15

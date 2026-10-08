@@ -10,12 +10,14 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Импорт расчетной сетки из AutoCAD Region
+' Импорт геометрии AutoCAD и генерация бетона по точному контуру
 ' ==========================================================================
 ' Импортер читает активный чертеж AutoCAD и превращает Region на заданных
 ' слоях бетона и арматуры в CSectionModel. После этого расчетное ядро уже не
 ' знает, что геометрия пришла из AutoCAD: оно видит те же бетонные элементы
 ' и арматуру, что и при автоматической генерации.
+' При действительно пустом слое бетона точный наружный контур и все
+' отверстия передаются общему генератору прямоугольных волокон.
 '
 ' Класс не выполняет расчет и не пишет Results. Его ответственность - только
 ' аккуратно отфильтровать AutoCAD-сущности и заполнить модель сечения.
@@ -50,6 +52,7 @@ Public Function ResultMessage(ByVal model As CSectionModel) As String
         "Бетонных элементов: " & CStr(model.ConcreteCount) & "; стержней: " & CStr(model.RebarCount) & "." & vbCrLf & _
         "Наружных контуров: " & CStr(outerCount) & "; отверстий: " & CStr(openingCount) & "."
     If Len(mImportWarnings) > 0 Then ResultMessage = ResultMessage & vbCrLf & vbCrLf & "Предупреждения:" & vbCrLf & mImportWarnings
+    ResultMessage = WithConcreteMeshGenerationNotice(ResultMessage, model)
 End Function
 
 ' Добавляет отдельную строку предупреждения без смешивания с технической диагностикой.
@@ -141,7 +144,7 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     contourLayer = OptionalContourLayer(settings, "AutoCAD.Common.SectionContourLayer")
     openingLayer = OptionalContourLayer(settings, "AutoCAD.Common.OpeningContourLayer")
     Set ImportConfiguredModelSpace = ImportFromModelSpace(modelSpace, _
-        concreteLayer, rebarLayer, REBAR_STEEL_CLASS, minArea, importUnits, contourLayer, openingLayer, drawingLayers)
+        concreteLayer, rebarLayer, REBAR_STEEL_CLASS, minArea, importUnits, contourLayer, openingLayer, drawingLayers, settings)
     Exit Function
 InvalidMinimumArea:
     Err.Raise vbObjectError + 4404, "CAutoCADSectionModelImporter", _
@@ -149,13 +152,14 @@ InvalidMinimumArea:
             "Уменьшите число и проверьте выбранную единицу INPUT Area.")
 End Function
 
-' Проходит по ModelSpace и отбирает только Region на пользовательских слоях
-' бетона и арматуры. На выходе возвращает полностью заполненный CSectionModel,
+' Проходит по ModelSpace, читает Region и точные контуры на своих слоях.
+' На выходе возвращает полностью заполненный CSectionModel,
 ' пригодный для того же расчетного pipeline, что и встроенные генераторы.
 ' После чтения всей сетки назначает средний угол оболочкам без направления грани.
 Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteLayer As String, _
         ByVal rebarLayer As String, ByVal steelClass As String, ByVal minArea As Double, Optional ByVal units As CUnitSystem = Nothing, _
-        Optional ByVal contourLayer As String = "", Optional ByVal openingLayer As String = "", Optional ByVal drawingLayers As Object = Nothing) As CSectionModel
+        Optional ByVal contourLayer As String = "", Optional ByVal openingLayer As String = "", Optional ByVal drawingLayers As Object = Nothing, _
+        Optional ByVal meshSettings As CSystemSettingsReader = Nothing) As CSectionModel
     mImportComment = vbNullString
     mImportWarnings = vbNullString
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
@@ -167,9 +171,10 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     Dim model As CSectionModel
     Set model = New CSectionModel
     model.SourceType = "AutoCADImport"
+    model.ConcreteMeshSource = "AutoCADRegions"
 
     Dim entity As Object, entityLayer As String, materialEntities As Collection, materialLayers As Collection
-    Dim outerEntities As Collection, openingEntities As Collection, i As Long
+    Dim outerEntities As Collection, openingEntities As Collection, i As Long, concreteObjectCount As Long
     Set materialEntities = New Collection: Set materialLayers = New Collection
     Set outerEntities = New Collection: Set openingEntities = New Collection
     mEdgeProbeCount = 0
@@ -177,6 +182,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     ' Copy/Explode уже не меняет коллекцию во время ее COM-обхода.
     For Each entity In modelSpace
         entityLayer = CStr(entity.Layer)
+        If SameLayer(entityLayer, concreteLayer) Then concreteObjectCount = concreteObjectCount + 1
         If SameLayer(entityLayer, concreteLayer) Or SameLayer(entityLayer, rebarLayer) Then
             If IsRegionEntity(entity) Then
                 materialEntities.Add entity: materialLayers.Add entityLayer
@@ -194,24 +200,52 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
         End If
     Next i
 
-    ValidateImportedModel model
+    ' Непригодные или отфильтрованные объекты не равны пустому слою:
+    ' ошибки существующей сетки не подменяются новой геометрией.
+    If model.ConcreteCount = 0 And concreteObjectCount > 0 Then ValidateImportedModel model
     model.ApplyAverageRotationToEquivalentAreaFallbacks
-    ImportMaterialContours model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities
+    Dim domain As CConcreteRegion
+    Set domain = ImportMaterialContours(model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities)
+    If model.ConcreteCount = 0 Then
+        If domain Is Nothing Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
+            "Слой бетона пуст и наружный контур не задан. Добавьте бетонные Region на AutoCAD.Common.ConcreteLayer либо наружный контур на AutoCAD.Common.SectionContourLayer. Одних отверстий недостаточно."
+        GenerateConcreteFromContour model, domain, meshSettings, units
+    End If
+    ValidateImportedModel model
     Set ImportFromModelSpace = model
 End Function
+
+' Готовая точная область задает форму; прежний mesher и общий builder
+' создают прямоугольные волокна, не меняя импортированную арматуру и контуры.
+Private Sub GenerateConcreteFromContour(ByVal model As CSectionModel, ByVal domain As CConcreteRegion, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    If settings Is Nothing Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
+        "Для генерации бетона по контуру задайте Mesh.StepX, Mesh.StepY и Mesh.BoundarySubdivisions на листе Config."
+    If units Is Nothing Then
+        Set units = New CUnitSystem
+        units.LoadFromSettings settings
+    End If
+    Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, builder As CSectionModelBuilder
+    Set geometry = New CGeometryRegion: geometry.Initialize domain
+    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units)
+    Set builder = New CSectionModelBuilder
+    builder.AppendConcreteMesh model, mesh, "Бетонная сетка сгенерирована по точному контуру AutoCAD."
+    model.ConcreteMeshSource = "AutoCADContours"
+    mImportComment = mImportComment & " " & CONTOUR_MESH_GENERATION_NOTICE
+End Sub
 
 ' Собирает опциональные достоверные контуры до возврата новой модели.
 ' Сначала проверяются найденные объекты и отверстия, затем готовая область
 ' сохраняется вместе с геометрией. Пустые слои допустимы: без наружного
 ' контура границы определяются по сетке. Ошибка не оставляет частичный импорт.
-Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpace As Object, _
+Private Function ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpace As Object, _
         ByVal concreteLayer As String, ByVal rebarLayer As String, ByVal contourLayer As String, _
         ByVal openingLayer As String, ByVal drawingLayers As Object, _
-        ByVal outerEntities As Collection, ByVal openingEntities As Collection)
+        ByVal outerEntities As Collection, ByVal openingEntities As Collection) As CConcreteRegion
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
         AppendImportWarning "Наружный контур не задан: границы для расчета трещин определяются по бетонной сетке."
-        Exit Sub
+        Exit Function
     End If
     ValidateContourLayerMapping concreteLayer, rebarLayer, contourLayer, openingLayer
     If drawingLayers Is Nothing Then
@@ -228,7 +262,7 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
         AppendImportWarning "Наружный контур не задан: границы для расчета трещин определяются по бетонной сетке."
-        Exit Sub
+        Exit Function
     End If
 
     Dim contourReader As CAutoCADContourReader
@@ -236,60 +270,33 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
     Set outerEntities = FilterEmptyContourSegments(outerEntities, contourReader)
     Set openingEntities = FilterEmptyContourSegments(openingEntities, contourReader)
     Dim entity As Object
-    Dim originalOuter As Collection, originalOpenings As Collection, exportedOuter As Boolean
-    Set originalOuter = OriginalContours(outerEntities)
-    Set originalOpenings = OriginalContours(openingEntities)
-    ' Приоритет исходников действует отдельно на каждом слое. Наличие
-    ' исходного outer не отменяет opening, сохранившиеся только в экспорте.
-    If originalOuter.Count > 0 Then Set outerEntities = originalOuter
-    If originalOpenings.Count > 0 Then Set openingEntities = originalOpenings
-    exportedOuter = (originalOuter.Count = 0 And outerEntities.Count > 0)
     If outerEntities.Count = 0 And openingEntities.Count = 0 Then
         mImportComment = mImportComment & "Дополнительные контуры не заданы; границы для расчета трещин определяются по бетонной сетке."
         AppendImportWarning "Наружный контур не задан: границы для расчета трещин определяются по бетонной сетке."
-        Exit Sub
+        Exit Function
     End If
-    Dim query As CSectionGeometryQuery, reader As CAutoCADContourReader, regions As Collection
+    If outerEntities.Count = 0 And model.ConcreteCount = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
+        "Слой бетона пуст. Для генерации сетки нужен наружный контур на AutoCAD.Common.SectionContourLayer; одних отверстий на AutoCAD.Common.OpeningContourLayer недостаточно."
+    Dim query As CSectionGeometryQuery, reader As CAutoCADContourReader
     Dim domain As CConcreteRegion, opening As CConcreteRegion, i As Long, j As Long, commentText As String, openings As Collection
     Dim validatedOpenings As CConcreteRegion
     Set query = New CSectionGeometryQuery: Set reader = New CAutoCADContourReader
     Set openings = New Collection
-    If exportedOuter Then
-        Set domain = ReadExportedMaterialContours(outerEntities, openingEntities, reader, query)
-    ElseIf outerEntities.Count > 0 Then
-        Set regions = New Collection
-        For Each entity In outerEntities: regions.Add reader.ReadRegion(entity): Next entity
-        Set domain = query.MergeDisjointRegions(regions)
-    End If
-    If Not exportedOuter Then
-    For Each entity In openingEntities
-        Set opening = reader.ReadRegion(entity)
-        ' Region исходного outer может уже содержать это отверстие. Только
-        ' собственная экспортная копия той же границы не вычитается повторно.
-        If outerEntities.Count > 0 And IsNDMContourOutput(entity) And opening.LoopCount = 1 Then
-            Dim matchingOpening As Boolean
-            If FindMatchingBoundaryLoop(domain, opening, query, matchingOpening) Then
-                If matchingOpening Then GoTo NextOpening
-            End If
-        End If
-        If outerEntities.Count = 0 Then
+    If outerEntities.Count > 0 Then
+        Set domain = ReadMaterialContours(outerEntities, openingEntities, reader, query)
+    Else
+        For Each entity In openingEntities
+            Set opening = reader.ReadRegion(entity)
             For j = 1 To opening.LoopCount
                 If query.LoopIsOpening(opening, j) Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
                     "Внутри Region отверстия есть отдельная бетонная часть, но наружный контур не задан. На AutoCAD.Common.SectionContourLayer разместите наружный Region с вырезанным отверстием и отдельный Region этой бетонной части."
             Next j
-        End If
-        If outerEntities.Count = 0 Then
             ' Проверяем только совместимость достоверных отверстий.
             ' Наружную границу из сетки и окончательную область затем
             ' собирает общий query, без добавления сеточных пустот.
             openings.Add opening
             Set validatedOpenings = query.MergeDisjointRegions(openings)
-        Else
-            Set domain = query.SubtractContainedRegion(domain, opening)
-            openings.Add opening
-        End If
-NextOpening:
-    Next entity
+        Next entity
     End If
     If outerEntities.Count > 0 Then
         commentText = "Достоверный контур AutoCAD: реальные линии/дуги и заданные отверстия; координаты в мм. " & _
@@ -316,7 +323,8 @@ NextOpening:
             "Арматура " & model.RebarID(i) & " находится вне импортированного бетонного контура или в отверстии. Проверьте слои и координаты исходных объектов."
     Next i
     mImportComment = mImportComment & commentText
-End Sub
+    Set ImportMaterialContours = domain
+End Function
 
 ' Пропускает только пустые самостоятельные отрезки, сохраняя исходные
 ' объекты. Предупреждение принадлежит импортеру и содержит слой и handle.
@@ -380,21 +388,10 @@ Private Function ExistingContourLayer(ByVal layers As Object, ByVal layerName As
     End If
 End Function
 
-' На одном общем слое исходники имеют приоритет над экспортированными
-' копиями. Решение не распространяется на другой слой/роль контура.
-Private Function OriginalContours(ByVal entities As Collection) As Collection
-    Dim originals As Collection, entity As Object
-    Set originals = New Collection
-    For Each entity In entities
-        If Not IsNDMContourOutput(entity) Then originals.Add entity
-    Next entity
-    Set OriginalContours = originals
-End Function
-
-' Собирает экспортированные наружные границы и выбранные отверстия обратно
-' в одну область, сохраняя бетон внутри проема. Отверстия могут быть исходными
-' или экспортированными; роль каждого контура проверяется по его слою.
-Private Function ReadExportedMaterialContours(ByVal outers As Collection, ByVal openings As Collection, _
+' Собирает все контуры заданных слоев независимо от их происхождения.
+' Region уже содержит свои отверстия; отдельные проемы и бетонные части
+' классифицируются по слою и вложенности. Дубли не пропускаются скрытно.
+Private Function ReadMaterialContours(ByVal outers As Collection, ByVal openings As Collection, _
         ByVal reader As CAutoCADContourReader, ByVal query As CSectionGeometryQuery) As CConcreteRegion
     Dim raw() As TRegionEdge, one() As TRegionEdge, count As Long, oneCount As Long
     Dim entity As Object, region As CConcreteRegion, group As Long, entities As Collection, i As Long
@@ -411,7 +408,7 @@ Private Function ReadExportedMaterialContours(ByVal outers As Collection, ByVal 
             count = count + oneCount
         Next entity
     Next group
-    Set domain = query.BoundaryRegion(raw, count, "ValidatedAutoCADExportContours")
+    Set domain = query.BoundaryRegion(raw, count, "ValidatedAutoCADMaterialContours")
     ' Вложенность не должна превращать ошибочно расположенное opening
     ' в новый бетонный участок или наружную границу в отверстие.
     For i = 1 To sourceRegions.Count
@@ -425,7 +422,7 @@ Private Function ReadExportedMaterialContours(ByVal outers As Collection, ByVal 
                 "Контур находится не на своем слое: отверстия должны быть внутри бетона, а отдельные бетонные части внутри отверстий должны находиться на слое наружного контура."
         Next loopID
     Next i
-    Set ReadExportedMaterialContours = domain
+    Set ReadMaterialContours = domain
 End Function
 
 ' Возвращает одну замкнутую границу как положительную область для точного
@@ -899,6 +896,7 @@ Public Function BuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal re
     Dim model As CSectionModel
     Set model = New CSectionModel
     model.SourceType = "AutoCADImport"
+    model.ConcreteMeshSource = "AutoCADRegions"
     mEdgeProbeCount = 0
 
     AddConcreteRegionArray model, concreteRegions, minArea

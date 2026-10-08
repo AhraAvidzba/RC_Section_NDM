@@ -1,6 +1,8 @@
 Attribute VB_Name = "modWorkbookMessages"
 Option Explicit
 
+Public Const CONTOUR_MESH_GENERATION_NOTICE As String = "БЕТОННАЯ СЕТКА АВТОМАТИЧЕСКИ СГЕНЕРИРОВАНА ПО КОНТУРАМ AUTOCAD."
+
 ' ==========================================================================
 ' Unicode-сообщения пользовательских сценариев Excel
 ' ==========================================================================
@@ -19,6 +21,14 @@ Option Explicit
         ByVal ownerWindow As Long, ByVal textPointer As Long, _
         ByVal titlePointer As Long, ByVal flags As Long) As Long
 #End If
+
+' Отдельная заметная строка сохраняет происхождение сетки при импорте
+' и последующем экспорте, в том числе после открытия сохраненного Results.
+Public Function WithConcreteMeshGenerationNotice(ByVal text As String, ByVal section As CSectionModel) As String
+    WithConcreteMeshGenerationNotice = text
+    If section.ConcreteMeshSource = "AutoCADContours" Then _
+        WithConcreteMeshGenerationNotice = text & vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE
+End Function
 
 ' Показывает модальное сообщение, принадлежащее текущему Excel, и возвращает
 ' выбранную кнопку. StrPtr передает исходные UTF-16 строки непосредственно

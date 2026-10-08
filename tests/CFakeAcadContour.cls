@@ -32,12 +32,17 @@ Private mElevation As Double
 Private mDeleted As Boolean
 Private mLastCopy As CFakeAcadContour
 Private mExploded As Collection
-Private mOutputOwned As Boolean ' ДЛЯ ТЕСТОВ: собственная метка экспортированной копии.
+Private mLegacyContourTag As Boolean ' ДЛЯ ТЕСТОВ: метаданные прежнего экспорта не влияют на импорт.
+Private mXDataReads As Long
 
-' ДЛЯ ТЕСТОВ: задает метку без имитации регистрации приложения в DWG.
-Public Sub SetOutputOwned(ByVal value As Boolean)
-    mOutputOwned = value
+' ДЛЯ ТЕСТОВ: моделирует объект из старого DWG без поддержки старого поведения.
+Public Sub SetLegacyContourTag(ByVal value As Boolean)
+    mLegacyContourTag = value
 End Sub
+
+Public Property Get XDataReads() As Long
+    XDataReads = mXDataReads
+End Property
 
 ' ДЛЯ ТЕСТОВ: источник в памяти не имеет владельца DWG и его слоев.
 ' Блокировка настоящего слоя проверяется отдельно в native AutoCAD.
@@ -48,7 +53,8 @@ End Property
 ' ДЛЯ ТЕСТОВ: возвращает XData в формате Autodesk либо Empty у исходника.
 Public Sub GetXData(ByVal appName As String, ByRef codes As Variant, ByRef values As Variant)
     codes = Empty: values = Empty
-    If mOutputOwned And appName = "RC_SECTION_NDM" Then
+    mXDataReads = mXDataReads + 1
+    If mLegacyContourTag And appName = "RC_SECTION_NDM" Then
         codes = Array(1001, 1000)
         values = Array("RC_SECTION_NDM", "MATERIAL_CONTOUR_OUTPUT")
     End If

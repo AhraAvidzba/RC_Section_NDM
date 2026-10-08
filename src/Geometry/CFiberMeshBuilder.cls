@@ -85,6 +85,7 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
     Dim anyCornerInside As Boolean
     Dim openingBounds() As Double, openingCount As Long, openingIndex As Long
     Dim contours As CSectionContours, query As CSectionGeometryQuery
+    Dim outerEdges() As TRegionEdge, outerEdgeCount As Long
     ' Четыре бетонных угла не исключают проем внутри ячейки. Его габариты
     ' читаем один раз для всех Opening через общий контракт формы;
     ' пересекающиеся ячейки уточняет обычный ContainsPoint.
@@ -92,6 +93,7 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
         Set contours = New CSectionContours: geometry.BuildContours contours
         Set query = New CSectionGeometryQuery
         query.OpeningBounds contours, openingBounds, openingCount
+        query.CopyMeshOuterEdges contours, outerEdges, outerEdgeCount
     End If
 
     For iy = 0 To ny - 1
@@ -115,6 +117,9 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
                             Exit For
                         End If
                     Next openingIndex
+                End If
+                If allCornersInside Then
+                    If query.MeshBoundaryCrossesCell(outerEdges, outerEdgeCount, cellMinX, cellMinY, cellMinX + stepX, cellMinY + stepY) Then allCornersInside = False
                 End If
                 If allCornersInside Then
                     AddFiber x, y, stepX, stepY, materialID
