@@ -35,13 +35,19 @@ try {
     if (-not $owned) {throw "CAD instance is not owned by this test: PID=$pidValue"}
     $acad.Visible=$false
     Write-Output "CAD_OWNED: PID=$pidValue; executable=$fullName"
+    # Готовим первый документ в управляющем COM-процессе до передачи
+    # application в Excel: скрытый CAD без документа может зависнуть
+    # на первом межпроцессном чтении Documents из VBA.
+    $template=Join-Path $env:LOCALAPPDATA 'Autodesk/AutoCAD 2023/R24.2/rus/Template/acadiso.dwt'
+    if (-not (Test-Path -LiteralPath $template)) {throw 'Standard AutoCAD test template is missing.'}
+    $documents=$acad.GetType().InvokeMember('Documents',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null)
+    $bootstrap=$documents.Add($template)
+    Write-Output ('CAD_BOOTSTRAP_DOCUMENT: ' + [string]$bootstrap.Name)
     $excel=New-Object -ComObject Excel.Application
     $excel.Visible=$false; $excel.DisplayAlerts=$false; $excel.EnableEvents=$false; $excel.AutomationSecurity=1
     $book=$excel.Workbooks.Open($path)
     # The saved candidate already contains the guarded optional CAD entrypoint.
     # Test it without replacing its VBA or saving fixture mutations.
-    $template=Join-Path $env:LOCALAPPDATA 'Autodesk/AutoCAD 2023/R24.2/rus/Template/acadiso.dwt'
-    if (-not (Test-Path -LiteralPath $template)) {throw 'Standard AutoCAD test template is missing.'}
     $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.RunRealAutoCADContourTests",$acad,$template)
     $result | Set-Content -LiteralPath (Join-Path $directory 'NativeCAD.txt') -Encoding UTF8
     [ordered]@{Executable=$fullName; OwnedPID=$pidValue; COMServer=$server; UserDocumentsUsed=$false} |

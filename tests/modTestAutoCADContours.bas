@@ -35,6 +35,7 @@ Public Function RunAutoCADContourTests() As String
     CheckKnownOuterWithoutOpenings
     CheckPhysicalPolylineClosure
     CheckEmptyStandaloneContourSegments
+    CheckWorldCoordinateGuard
     GoTo Finish
 Failed:
     Check "contour.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
@@ -195,7 +196,7 @@ Private Sub CheckOpeningWithoutOuter()
     Dim space As Collection, layers As Collection, importer As CAutoCADSectionModelImporter
     Dim cell As CFakeAcadRegion, layer As CFakeAcadContour, opening As CFakeAcadContour
     Dim section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
-    Dim mode As Long, expected As Double, writer As CNDMResultsWriter, restored As CSectionModel
+    Dim mode As Long, i As Long, expected As Double, writer As CNDMResultsWriter, restored As CSectionModel
     Set importer = New CAutoCADSectionModelImporter: Set query = New CSectionGeometryQuery
     For mode = 0 To 3
         Set space = New Collection: Set layers = New Collection
@@ -226,12 +227,17 @@ Private Sub CheckOpeningWithoutOuter()
         query.Initialize section: Set region = query.ConcreteDomain
         CheckArea "openingOnly.meshVoid." & CStr(mode), region.Area, expected
         Check "openingOnly.noInventedOuter." & CStr(mode), InStr(region.Source, "AuthoritativeContour") = 0
+        Check "openingOnly.authoritativeHole." & CStr(mode), region.Source = "ElementBoundaryLoops+KnownOpening"
+        For i = 1 To section.Contours.Count
+            Check "openingOnly.explicitRole." & CStr(mode) & "." & CStr(i), section.Contours.LoopRole(i) = "Opening"
+        Next i
         Check "openingOnly.actualHole." & CStr(mode), Not query.ContainsPoint(region, 50#, 50#)
         Check "openingOnly.sourceKept." & CStr(mode), Not opening.Deleted And section.ConcreteCount = 4
         Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
         query.Initialize restored
         CheckArea "openingOnly.savedRoundTrip." & CStr(mode), query.ConcreteDomain.Area, expected
+        CheckPostAudit03ContoursEqual "openingOnly.exactSaved." & CStr(mode), section.Contours, restored.Contours
     Next mode
     Set opening = Contour("AcDbPolyline", RectangleEdges(87#, 42#, 5#, 5#), "OPENING"): space.Add opening
     Dim number As Long
@@ -1010,6 +1016,7 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     CheckNativeMixedContourRoundTrip doc
     CheckNativePhysicalPolylineClosure doc
     CheckNativeEmptyOpeningSegment doc
+    CheckNativeWorldCoordinateGuard doc
     path = ThisWorkbook.Path & "\SP35_ContourImport_" & Format$(Now, "yyyymmdd_hhnnss") & ".dwg"
     If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 5502, , "Тестовый DWG уже существует; перезапись запрещена."
     doc.SaveAs path
@@ -1026,6 +1033,137 @@ Cleanup:
     mNativeProgress = False
     RunRealAutoCADContourTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: отказ по ПСК и невозможности прочитать WORLDUCS происходит
+' до обращения к ModelSpace/слоям. Строки, Null и Boolean не заменяют код 1.
+Private Sub CheckWorldCoordinateGuard()
+    Dim document As CFakeAcadDocument, settings As CSystemSettingsReader
+    Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, value As Variant
+    Dim number As Long, description As String, mode As Long, expectedError As Long
+    Set document = New CFakeAcadDocument: Set settings = New CSystemSettingsReader
+    Set importer = New CAutoCADSectionModelImporter
+    For Each value In Array(0, Empty, Null, "1", 2, True, 0.5, CVErr(2015))
+        mode = mode + 1: document.Initialize value
+        On Error Resume Next
+        Set model = importer.ImportFromDocument(document, settings)
+        number = Err.Number: description = Err.Description: Err.Clear
+        On Error GoTo 0
+        expectedError = vbObjectError + 4408
+        If mode = 1 Then expectedError = vbObjectError + 4407
+        Check "worldUCS.reject." & CStr(mode), number = expectedError And model Is Nothing
+        Check "worldUCS.noGeometryRead." & CStr(mode), document.GeometryReads = 0 And document.VariableReads = 1
+        Check "worldUCS.instruction." & CStr(mode), InStr(description, "_UCS") > 0 And InStr(description, "_World") > 0
+    Next value
+    document.Initialize 1, True
+    On Error Resume Next
+    Set model = importer.ImportFromDocument(document, settings): number = Err.Number: Err.Clear
+    On Error GoTo 0
+    Check "worldUCS.unavailableRejected", number = vbObjectError + 4408 And document.GeometryReads = 0
+    document.Initialize 1
+    On Error Resume Next
+    Set model = importer.ImportFromDocument(document, settings): number = Err.Number: Err.Clear
+    On Error GoTo 0
+    Check "worldUCS.worldAcceptedBeforeGeometry", number = vbObjectError + 9106 And document.GeometryReads = 1 And document.VariableReads = 1
+End Sub
+
+' ДЛЯ ТЕСТОВ: в собственном CAD-документе проверяет отказ смещенной,
+' повернутой и смещенно-повернутой ПСК, затем импорт двух точных отверстий
+' без outer в МСК. Координаты, исходники, настройки и текущая ПСК сохраняются.
+Private Sub CheckNativeWorldCoordinateGuard(ByVal doc As Object)
+    Dim fixture As Object, sheet As Object, settings As CSystemSettingsReader
+    Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, restored As CSectionModel
+    Dim world As Object, localUCS As Object, polyline As Object, mesh As Object, bar As Object, hole As Object
+    Dim origin(0 To 2) As Double, xAxis(0 To 2) As Double, yAxis(0 To 2) As Double, center(0 To 2) As Double
+    Dim curves(0 To 0) As Object, regions As Variant, keys As Variant, values As Variant
+    Dim mode As Long, i As Long, countBefore As Long, number As Long, description As String
+    Dim failure As Long, failureDescription As String, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim writer As CNDMResultsWriter, low As Double, high As Double, intervals As Variant
+    On Error GoTo Failed
+    NativeProgress "world coordinate guard"
+    xAxis(0) = 1#: yAxis(1) = 1#
+    NativeProgress "creating world UCS"
+    Set world = doc.UserCoordinateSystems.Add(origin, xAxis, yAxis, "NDM_TEST_WORLD")
+    NativeProgress "activating world UCS"
+    doc.ActiveUCS = world
+    Check "native.worldUCS.initialWorld", CLng(doc.GetVariable("WORLDUCS")) = 1
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1)
+    keys = Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
+        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Import.MinArea")
+    values = Array("NDM_WCS_MESH", "NDM_WCS_REBAR", "NDM_WCS_OUTER", "NDM_WCS_OPENING", 0#)
+    sheet.Cells(1, 1).Value2 = "Key": sheet.Cells(1, 2).Value2 = "Value": sheet.Cells(1, 3).Value2 = "Unit"
+    For i = 0 To UBound(keys)
+        sheet.Cells(i + 2, 1).Value2 = keys(i): sheet.Cells(i + 2, 2).Value2 = values(i): sheet.Cells(i + 2, 3).Value2 = "-"
+        If i < 4 Then doc.Layers.Add CStr(values(i))
+    Next i
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("A1:C6")
+    Set importer = New CAutoCADSectionModelImporter
+    Set polyline = NativeRectangle(doc, 100#, 80#, 0#, 5000#, 5000#)
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set mesh = regions(LBound(regions))
+    mesh.Layer = "NDM_WCS_MESH": polyline.Delete
+    center(0) = 4970#: center(1) = 4980#
+    Set polyline = doc.ModelSpace.AddCircle(center, 2#)
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set bar = regions(LBound(regions))
+    bar.Layer = "NDM_WCS_REBAR": polyline.Delete
+    For i = 0 To 1
+        center(0) = 5000# + 25# * i: center(1) = 5000#
+        Set hole = doc.ModelSpace.AddCircle(center, 10# - 5# * i): hole.Layer = "NDM_WCS_OPENING"
+    Next i
+    countBefore = doc.ModelSpace.Count
+    For mode = 0 To 2
+        origin(0) = 0#: origin(1) = 0#: xAxis(0) = 1#: xAxis(1) = 0#: yAxis(0) = 0#: yAxis(1) = 1#
+        If mode <> 1 Then origin(0) = 100#: origin(1) = -200#
+        xAxis(0) = origin(0) + 1#: xAxis(1) = origin(1): yAxis(0) = origin(0): yAxis(1) = origin(1) + 1#
+        If mode > 0 Then
+            xAxis(0) = origin(0) + Cos(0.37): xAxis(1) = origin(1) + Sin(0.37)
+            yAxis(0) = origin(0) - Sin(0.37): yAxis(1) = origin(1) + Cos(0.37)
+        End If
+        Set localUCS = doc.UserCoordinateSystems.Add(origin, xAxis, yAxis, "NDM_TEST_LOCAL_" & CStr(mode))
+        doc.ActiveUCS = localUCS
+        Check "native.worldUCS.localFlag." & CStr(mode), CLng(doc.GetVariable("WORLDUCS")) = 0
+        On Error Resume Next
+        Set section = importer.ImportFromDocument(doc, settings)
+        number = Err.Number: description = Err.Description: Err.Clear
+        On Error GoTo Failed
+        Check "native.worldUCS.localRejected." & CStr(mode), number = vbObjectError + 4407 And section Is Nothing
+        Check "native.worldUCS.instruction." & CStr(mode), InStr(description, "_UCS") > 0 And InStr(description, "_World") > 0
+        Check "native.worldUCS.noMutation." & CStr(mode), doc.ModelSpace.Count = countBefore And CStr(doc.GetVariable("UCSNAME")) = localUCS.Name
+    Next mode
+    doc.ActiveUCS = world
+    Set section = importer.ImportFromDocument(doc, settings)
+    Check "native.worldUCS.worldImported", section.ConcreteCount = 1 And section.RebarCount = 1
+    CheckArea "native.worldUCS.coordinatesX", section.ConcreteX(1), 5000#
+    CheckArea "native.worldUCS.coordinatesY", section.ConcreteY(1), 5000#
+    Check "native.worldUCS.sourcesKept", doc.ModelSpace.Count = countBefore And CLng(doc.GetVariable("WORLDUCS")) = 1
+    Set query = New CSectionGeometryQuery: query.Initialize section: Set region = query.ConcreteDomain
+    Check "native.openingOnly.source", region.Source = "ElementBoundaryLoops+KnownOpening"
+    Check "native.openingOnly.twoExactHoles", region.LoopCount = 3 And region.SegmentCount = 12
+    CheckArea "native.openingOnly.analyticArea", region.Area, 8000# - 125# * GEOM_PI
+    Check "native.openingOnly.holesExcluded", Not query.ContainsPoint(region, 5000#, 5000#) And Not query.ContainsPoint(region, 5025#, 5000#)
+    query.ProjectionBounds region, 1#, 0#, low, high
+    Check "native.openingOnly.meshOuterBounds", Abs(low - 4950#) < 0.000001 And Abs(high - 5050#) < 0.000001
+    intervals = query.LineIntervals(region, 5000#, 5000#, 1#, 0#)
+    Check "native.openingOnly.exactHoleIntersections", UBound(intervals, 1) = 3 And _
+        Abs(intervals(1, 2) + 10#) < 0.000001 And Abs(intervals(2, 1) - 10#) < 0.000001 And _
+        Abs(intervals(2, 2) - 20#) < 0.000001 And Abs(intervals(3, 1) - 30#) < 0.000001
+    For i = 1 To section.Contours.Count
+        Check "native.openingOnly.explicitRole." & CStr(i), section.Contours.LoopRole(i) = "Opening"
+    Next i
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
+    Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
+    CheckPostAudit03ContoursEqual "native.openingOnly.exactSaved", section.Contours, restored.Contours
+    query.Initialize restored
+    CheckArea "native.openingOnly.restoredArea", query.ConcreteDomain.Area, 8000# - 125# * GEOM_PI
+    Check "native.openingOnly.restoredSource", query.ConcreteDomain.Source = "ElementBoundaryLoops+KnownOpening"
+    GoTo Cleanup
+Failed:
+    failure = Err.Number: failureDescription = Err.Description
+Cleanup:
+    On Error Resume Next
+    If Not world Is Nothing Then doc.ActiveUCS = world
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    If failure <> 0 Then Err.Raise failure, "CheckNativeWorldCoordinateGuard", failureDescription
+End Sub
 
 ' ДЛЯ ТЕСТОВ: фактическое замыкание важнее флага Closed. Повторные прямые
 ' вершины не меняют область, но вырожденные Region и дуги остаются ошибками.

@@ -3,7 +3,7 @@
 param(
     [string]$Directory = 'docs/regression/Performance/CleanupGeometry_2026-10-08',
     [switch]$VerifyOnly,
-    [ValidateSet('GeometryOwnership', 'PolylineImport')]
+    [ValidateSet('GeometryOwnership', 'PolylineImport', 'WorldCoordinates')]
     [string]$ChangeKind = 'GeometryOwnership'
 )
 $ErrorActionPreference = 'Stop'
@@ -92,6 +92,16 @@ $identity = Read-Evidence (Join-Path $directoryPath 'Native/NativeCADIdentity.js
 if ($native -match '(?m)^FAIL:' -or $native -notmatch 'TOTAL_REAL_AUTOCAD_CONTOURS: passed=[1-9][0-9]*; failed=0' -or
     $identity.UserDocumentsUsed -or $identity.Executable -cne 'C:\Program Files\Autodesk\AutoCAD 2023\acad.exe') { throw 'Native CAD gate failed.' }
 Assert-Hash (Join-Path $directoryPath 'Native/RC_Section_NDM.xlsm') $candidateHash
+if ($ChangeKind -eq 'WorldCoordinates') {
+    $focused = Get-Content -LiteralPath (Join-Path $directoryPath 'Focused.txt') -Raw
+    foreach ($name in @('worldUCS.noGeometryRead.1', 'worldUCS.unavailableRejected', 'worldUCS.worldAcceptedBeforeGeometry', 'openingOnly.authoritativeHole.0')) {
+        if ($focused -notmatch ('(?m)^OK: ' + [regex]::Escape($name) + '\b')) { throw "World-coordinate gate missing: $name" }
+    }
+    foreach ($name in @('native.worldUCS.localRejected.0', 'native.worldUCS.localRejected.1', 'native.worldUCS.localRejected.2',
+            'native.worldUCS.worldImported', 'native.openingOnly.exactHoleIntersections', 'native.openingOnly.restoredSource')) {
+        if ($native -notmatch ('(?m)^OK: ' + [regex]::Escape($name) + '\b')) { throw "Native world-coordinate gate missing: $name" }
+    }
+}
 $reportHash = (Get-FileHash -LiteralPath $outputReport -Algorithm SHA256).Hash
 $oldExportHash = (Get-FileHash -LiteralPath $outputExport -Algorithm SHA256).Hash
 $exportHash = (Get-FileHash -LiteralPath $export -Algorithm SHA256).Hash
@@ -107,11 +117,21 @@ try {
     if (($before | ConvertTo-Json -Depth 8 -Compress) -cne ($after | ConvertTo-Json -Depth 8 -Compress)) { throw 'User data, named ranges or widths changed.' }
     $guide = $book.Worksheets.Item('Справка')
     $used = $guide.UsedRange; $values = $used.Value2; $startRow = 0; $endRow = 0
+    $worldHelp = $false; $openingOnlyHelp = $false
+    $startTitle = '2. Точный контур и несколько отверстий'; $endTitle = '3. Единицы, поворот и плоскость'
+    if ($ChangeKind -eq 'WorldCoordinates') { $startTitle = $endTitle; $endTitle = '4. Импорт, Results и повторный расчет' }
     for ($row = 1; $row -le $values.GetLength(0); $row++) {
-        if ([string]$values[$row, 1] -ceq '2. Точный контур и несколько отверстий') { $startRow = $used.Row + $row - 1 }
-        if ([string]$values[$row, 1] -ceq '3. Единицы, поворот и плоскость') { $endRow = $used.Row + $row - 1 }
+        if ([string]$values[$row, 1] -ceq $startTitle) { $startRow = $used.Row + $row - 1 }
+        if ([string]$values[$row, 1] -ceq $endTitle) { $endRow = $used.Row + $row - 1 }
+        # Общая инструкция находится в A, пояснения отдельных настроек - в B.
+        for ($column = 1; $column -le $values.GetLength(1); $column++) {
+            $paragraph = [string]$values[$row, $column]
+            if ($paragraph -like '*Перед импортом и экспортом включите мировую*' -and $paragraph.Contains('_UCS') -and $paragraph.Contains('_World')) { $worldHelp = $true }
+            if ($paragraph -like '*импортированные отверстия остаются достоверными*') { $openingOnlyHelp = $true }
+        }
     }
     if ($startRow -le 0 -or $endRow -le $startRow) { throw 'Geometry guide section is missing.' }
+    if ($ChangeKind -eq 'WorldCoordinates' -and (-not $worldHelp -or -not $openingOnlyHelp)) { throw 'World coordinates or exact-opening help is missing from the actual workbook.' }
     $guide.Outline.ShowLevels(8)
     $range = $guide.Range($guide.Cells.Item($startRow, 1), $guide.Cells.Item($endRow - 1, 6))
     $guide.PageSetup.PrintArea = $range.Address()
@@ -136,6 +156,8 @@ $accepted = [ordered]@{Passed = $true; WorkbookSHA256 = $candidateHash; ExportSH
     GeneratedContourOwnershipChanged = ($ChangeKind -eq 'GeometryOwnership'); MultipleOpeningsFromGeometryPassed = $true;
     PolylineImportChanged = ($ChangeKind -eq 'PolylineImport');
     ImportSummaryChanged = ($ChangeKind -eq 'PolylineImport'); LockedContourGuardChanged = ($ChangeKind -eq 'PolylineImport');
+    WorldCoordinateImportGuardChanged = ($ChangeKind -eq 'WorldCoordinates'); OpeningOnlyExactContourPassed = $true;
+    WorldCoordinateHelpVerified = $worldHelp; OpeningOnlyHelpVerified = $openingOnlyHelp;
     SolverSearchMaterialsChanged = $false}
 $accepted | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $directoryPath 'Acceptance.json') -Encoding UTF8
 if ($VerifyOnly) { Write-Output 'ACCEPTED: current code, native CAD and help gates passed; user state preserved.'; exit }

@@ -1,0 +1,291 @@
+14:23:56 start
+14:23:56 native.actualAutoCAD
+14:23:56 creating document
+14:23:56 document created
+14:23:56 document ready
+14:23:57 native.rectangle.0; actual=8000; expected=8000
+14:23:57 native.rectangle.source.0
+14:23:57 native.rectangle.unchanged.0; actual=8000; expected=8000
+14:23:57 native.rectangle.1; actual=8000; expected=8000
+14:23:57 native.rectangle.source.1
+14:23:57 native.rectangle.unchanged.1; actual=8000; expected=8000
+14:23:57 native.semicircle.0; actual=3926.99081698724; expected=3926.99081698724
+14:23:57 native.semicircle.analytic.0
+14:23:57 native.semicircle.cleanup.0
+14:23:57 native.semicircle.1; actual=3926.99081698724; expected=3926.99081698724
+14:23:57 native.semicircle.analytic.1
+14:23:57 native.semicircle.cleanup.1
+14:23:57 native.twoOpenings.area; actual=9607.30091830128; expected=9607.30091830128
+14:23:57 native.twoOpenings.loops
+14:23:57 native.twoOpenings.roles
+14:23:57 native.twoOpenings.excluded
+14:23:57 native.twoOpenings.material
+14:23:57 native.twoOpenings.source
+14:23:57 native.twoOpenings.sourceArea; actual=9607.30091830128; expected=9607.30091830128
+14:23:57 native.separateOpenings.area; actual=9607.30091830127; expected=9607.30091830128
+14:23:57 native.separateOpenings.threeLoops
+14:23:57 native.separateOpenings.excluded
+14:23:57 native.separateOpenings.sourceKept
+14:23:57 native.mesh.actualAreaKept; actual=9607.30091830128; expected=9607.30091830128
+14:23:57 native.mesh.rectangleKept
+14:23:57 native.mesh.equivalentArea; actual=9607.30091830128; expected=9607.30091830128
+14:23:57 native.mesh.actualInertiaKept
+14:23:57 native.knownOuterOnly..area; actual=10000; expected=10000
+14:23:57 native.knownOuterOnly..solid
+14:23:57 native.knownOuterOnly..mechanicalMeshKept; actual=9607.30091830128; expected=9607.30091830128
+14:23:57 native.knownOuterOnly..sourceKept
+14:23:57 native.knownOuterOnly.SP35_EMPTY_OPENING.area; actual=10000; expected=10000
+14:23:57 native.knownOuterOnly.SP35_EMPTY_OPENING.solid
+14:23:57 native.knownOuterOnly.SP35_EMPTY_OPENING.mechanicalMeshKept; actual=9607.30091830128; expected=9607.30091830128
+14:23:57 native.knownOuterOnly.SP35_EMPTY_OPENING.sourceKept
+14:23:57 native.knownOuterOnly.SP35_MISSING_OPENING.area; actual=10000; expected=10000
+14:23:57 native.knownOuterOnly.SP35_MISSING_OPENING.solid
+14:23:57 native.knownOuterOnly.SP35_MISSING_OPENING.mechanicalMeshKept; actual=9607.30091830128; expected=9607.30091830128
+14:23:57 native.knownOuterOnly.SP35_MISSING_OPENING.sourceKept
+14:23:57 native.snapshot.area; actual=9607.30091830128; expected=9607.30091830128
+14:23:58 native.snapshot.exportThreeLoops
+14:23:58 native.snapshot.closed.0
+14:23:58 native.snapshot.exactArc.0; actual=10000; expected=10000
+14:23:58 native.snapshot.closed.1
+14:23:58 native.snapshot.exactArc.1; actual=314.15926535898; expected=314.15926535898
+14:23:58 native.snapshot.closed.2
+14:23:58 native.snapshot.exactArc.2; actual=78.5398163397449; expected=78.5398163397449
+14:23:58 native.snapshot.outerMM; actual=10000; expected=10000
+14:23:58 native.snapshot.openingsMM; actual=392.699081698725; expected=392.699081698724
+14:23:58 native.snapshot.netArea; actual=9607.30091830127; expected=9607.30091830128
+14:23:58 native.ownership.originalUnmarked
+14:23:58 native.ownership.copyMarked
+14:23:58 native.ownership.sourcePreserved
+14:23:58 native.ownership.outputContourPreserved
+14:23:58 native.ownership.openingPreserved
+14:23:58 native.ownership.outputOpeningPreserved
+14:23:58 native.ownership.existingSourceDoesNotBlockExport
+14:23:58 native.ownership.repeatAddsContour
+14:23:58 native.ownership.previousOutputKept
+14:23:58 native.ownership.originalStillExists
+14:23:58 native.append.regionAndOpeningAdded
+14:23:58 native.dedup.regionPreserved
+14:23:58 native.dedup.regionAreaPreserved; actual=9685.84073464101; expected=9685.84073464102
+14:23:58 native.mixedRoundTrip.0.importArea; actual=9700; expected=9700
+14:23:58 native.mixedRoundTrip.0.importThreeLoops
+14:23:58 native.mixedRoundTrip.0.exportAddsAll
+14:23:58 native.mixedRoundTrip.0.originalOuterKept
+14:23:59 native.mixedRoundTrip.0.exportBothLayers
+14:23:59 native.mixedRoundTrip.0.reimportArea; actual=9700; expected=9700
+14:23:59 native.mixedRoundTrip.0.reimportThreeLoops
+14:23:59 native.mixedRoundTrip.0.repeatExportAddsAll
+14:23:59 native.mixedRoundTrip.1.importArea; actual=9700; expected=9700
+14:23:59 native.mixedRoundTrip.1.importThreeLoops
+14:23:59 native.mixedRoundTrip.1.exportAddsAll
+14:23:59 native.mixedRoundTrip.1.originalOuterKept
+14:23:59 native.mixedRoundTrip.1.exportBothLayers
+14:23:59 native.mixedRoundTrip.1.reimportArea; actual=9700; expected=9700
+14:23:59 native.mixedRoundTrip.1.reimportThreeLoops
+14:23:59 native.mixedRoundTrip.1.repeatExportAddsAll
+14:23:59 native.mixedRoundTrip.2.importArea; actual=9700; expected=9700
+14:23:59 native.mixedRoundTrip.2.importThreeLoops
+14:24:00 native.mixedRoundTrip.2.exportAddsAll
+14:24:00 native.mixedRoundTrip.2.originalOuterKept
+14:24:00 native.mixedRoundTrip.2.exportBothLayers
+14:24:00 native.mixedRoundTrip.2.reimportArea; actual=9700; expected=9700
+14:24:00 native.mixedRoundTrip.2.reimportThreeLoops
+14:24:00 native.mixedRoundTrip.2.repeatExportAddsAll
+14:24:00 native.mixedRoundTrip.3.importArea; actual=9700; expected=9700
+14:24:00 native.mixedRoundTrip.3.importThreeLoops
+14:24:00 native.mixedRoundTrip.3.exportAddsAll
+14:24:00 native.mixedRoundTrip.3.originalOuterKept
+14:24:01 native.mixedRoundTrip.3.exportBothLayers
+14:24:01 native.mixedRoundTrip.3.reimportArea; actual=9700; expected=9700
+14:24:01 native.mixedRoundTrip.3.reimportThreeLoops
+14:24:01 native.mixedRoundTrip.3.repeatExportAddsAll
+14:24:01 native.physicalPolyline.0.0.area.1; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.0.noLeakedEntities.1
+14:24:01 native.physicalPolyline.0.0.closedPreserved.1
+14:24:01 native.physicalPolyline.0.0.area.2; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.0.noLeakedEntities.2
+14:24:01 native.physicalPolyline.0.0.closedPreserved.2
+14:24:01 native.physicalPolyline.0.0.area.3; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.0.noLeakedEntities.3
+14:24:01 native.physicalPolyline.0.0.closedPreserved.3
+14:24:01 native.physicalPolyline.0.1.area.1; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.1.noLeakedEntities.1
+14:24:01 native.physicalPolyline.0.1.closedPreserved.1
+14:24:01 native.physicalPolyline.0.1.area.2; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.1.noLeakedEntities.2
+14:24:01 native.physicalPolyline.0.1.closedPreserved.2
+14:24:01 native.physicalPolyline.0.1.area.3; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.1.noLeakedEntities.3
+14:24:01 native.physicalPolyline.0.1.closedPreserved.3
+14:24:01 native.physicalPolyline.0.2.area.1; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.2.noLeakedEntities.1
+14:24:01 native.physicalPolyline.0.2.closedPreserved.1
+14:24:01 native.physicalPolyline.0.2.area.2; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.2.noLeakedEntities.2
+14:24:01 native.physicalPolyline.0.2.closedPreserved.2
+14:24:01 native.physicalPolyline.0.2.area.3; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.0.2.noLeakedEntities.3
+14:24:01 native.physicalPolyline.0.2.closedPreserved.3
+14:24:01 native.physicalPolyline.0.3.area.1; actual=157.07963267949; expected=157.07963267949
+14:24:01 native.physicalPolyline.0.3.noLeakedEntities.1
+14:24:01 native.physicalPolyline.0.3.closedPreserved.1
+14:24:01 native.physicalPolyline.0.3.bulgePreserved.1; actual=1; expected=1
+14:24:01 native.physicalPolyline.0.3.area.2; actual=157.07963267949; expected=157.07963267949
+14:24:01 native.physicalPolyline.0.3.noLeakedEntities.2
+14:24:01 native.physicalPolyline.0.3.closedPreserved.2
+14:24:01 native.physicalPolyline.0.3.bulgePreserved.2; actual=1; expected=1
+14:24:01 native.physicalPolyline.0.3.area.3; actual=157.07963267949; expected=157.07963267949
+14:24:01 native.physicalPolyline.0.3.noLeakedEntities.3
+14:24:01 native.physicalPolyline.0.3.closedPreserved.3
+14:24:01 native.physicalPolyline.0.3.bulgePreserved.3; actual=1; expected=1
+14:24:01 native.physicalPolyline.0.4.area.1; actual=157.07963267949; expected=157.07963267949
+14:24:01 native.physicalPolyline.0.4.noLeakedEntities.1
+14:24:01 native.physicalPolyline.0.4.closedPreserved.1
+14:24:01 native.physicalPolyline.0.4.bulgePreserved.1; actual=1; expected=1
+14:24:01 native.physicalPolyline.0.4.area.2; actual=157.07963267949; expected=157.07963267949
+14:24:01 native.physicalPolyline.0.4.noLeakedEntities.2
+14:24:01 native.physicalPolyline.0.4.closedPreserved.2
+14:24:01 native.physicalPolyline.0.4.bulgePreserved.2; actual=1; expected=1
+14:24:01 native.physicalPolyline.0.4.area.3; actual=157.07963267949; expected=157.07963267949
+14:24:01 native.physicalPolyline.0.4.noLeakedEntities.3
+14:24:01 native.physicalPolyline.0.4.closedPreserved.3
+14:24:01 native.physicalPolyline.0.4.bulgePreserved.3; actual=1; expected=1
+14:24:01 native.physicalPolyline.1.0.area.1; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.1.0.noLeakedEntities.1
+14:24:01 native.physicalPolyline.1.0.closedPreserved.1
+14:24:01 native.physicalPolyline.1.0.area.2; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.1.0.noLeakedEntities.2
+14:24:01 native.physicalPolyline.1.0.closedPreserved.2
+14:24:01 native.physicalPolyline.1.0.area.3; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.1.0.noLeakedEntities.3
+14:24:01 native.physicalPolyline.1.0.closedPreserved.3
+14:24:01 native.physicalPolyline.1.1.area.1; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.1.1.noLeakedEntities.1
+14:24:01 native.physicalPolyline.1.1.closedPreserved.1
+14:24:01 native.physicalPolyline.1.1.area.2; actual=8000; expected=8000
+14:24:01 native.physicalPolyline.1.1.noLeakedEntities.2
+14:24:01 native.physicalPolyline.1.1.closedPreserved.2
+14:24:02 native.physicalPolyline.1.1.area.3; actual=8000; expected=8000
+14:24:02 native.physicalPolyline.1.1.noLeakedEntities.3
+14:24:02 native.physicalPolyline.1.1.closedPreserved.3
+14:24:02 native.physicalPolyline.1.2.area.1; actual=8000; expected=8000
+14:24:02 native.physicalPolyline.1.2.noLeakedEntities.1
+14:24:02 native.physicalPolyline.1.2.closedPreserved.1
+14:24:02 native.physicalPolyline.1.2.area.2; actual=8000; expected=8000
+14:24:02 native.physicalPolyline.1.2.noLeakedEntities.2
+14:24:02 native.physicalPolyline.1.2.closedPreserved.2
+14:24:02 native.physicalPolyline.1.2.area.3; actual=8000; expected=8000
+14:24:02 native.physicalPolyline.1.2.noLeakedEntities.3
+14:24:02 native.physicalPolyline.1.2.closedPreserved.3
+14:24:02 native.physicalPolyline.1.3.area.1; actual=157.07963267949; expected=157.07963267949
+14:24:02 native.physicalPolyline.1.3.noLeakedEntities.1
+14:24:02 native.physicalPolyline.1.3.closedPreserved.1
+14:24:02 native.physicalPolyline.1.3.bulgePreserved.1; actual=1; expected=1
+14:24:02 native.physicalPolyline.1.3.area.2; actual=157.07963267949; expected=157.07963267949
+14:24:02 native.physicalPolyline.1.3.noLeakedEntities.2
+14:24:02 native.physicalPolyline.1.3.closedPreserved.2
+14:24:02 native.physicalPolyline.1.3.bulgePreserved.2; actual=1; expected=1
+14:24:02 native.physicalPolyline.1.3.area.3; actual=157.07963267949; expected=157.07963267949
+14:24:02 native.physicalPolyline.1.3.noLeakedEntities.3
+14:24:02 native.physicalPolyline.1.3.closedPreserved.3
+14:24:02 native.physicalPolyline.1.3.bulgePreserved.3; actual=1; expected=1
+14:24:02 native.physicalPolyline.1.4.area.1; actual=157.07963267949; expected=157.07963267949
+14:24:02 native.physicalPolyline.1.4.noLeakedEntities.1
+14:24:02 native.physicalPolyline.1.4.closedPreserved.1
+14:24:02 native.physicalPolyline.1.4.bulgePreserved.1; actual=1; expected=1
+14:24:02 native.physicalPolyline.1.4.area.2; actual=157.07963267949; expected=157.07963267949
+14:24:02 native.physicalPolyline.1.4.noLeakedEntities.2
+14:24:02 native.physicalPolyline.1.4.closedPreserved.2
+14:24:02 native.physicalPolyline.1.4.bulgePreserved.2; actual=1; expected=1
+14:24:02 native.physicalPolyline.1.4.area.3; actual=157.07963267949; expected=157.07963267949
+14:24:02 native.physicalPolyline.1.4.noLeakedEntities.3
+14:24:02 native.physicalPolyline.1.4.closedPreserved.3
+14:24:02 native.physicalPolyline.1.4.bulgePreserved.3; actual=1; expected=1
+14:24:02 native.physicalPolyline.realGapRejected
+14:24:02 native.physicalPolyline.realGapCleanup
+14:24:02 native.physicalPolyline.zeroAreaRejected
+14:24:02 native.physicalPolyline.zeroAreaCleanup
+14:24:02 native.physicalPolyline.lockedNoLeaks
+14:24:02 native.physicalPolyline.lockedRejected
+14:24:02 native.physicalPolyline.unlockedArea; actual=8000; expected=8000
+14:24:02 native.physicalPolyline.unlockedNoLeaks
+14:24:02 native.emptyContourSegment.NP_OUTER.area; actual=9600; expected=9600
+14:24:02 native.emptyContourSegment.NP_OUTER.roles
+14:24:02 native.emptyContourSegment.NP_OUTER.warning
+14:24:02 native.emptyContourSegment.NP_OUTER.noMutation
+14:24:02 native.emptyContourSegment.NP_OUTER.nonzeroRejected
+14:24:02 native.emptyContourSegment.NP_OUTER.failedNoMutation
+14:24:03 native.emptyContourSegment.NP_OPENING.area; actual=9600; expected=9600
+14:24:03 native.emptyContourSegment.NP_OPENING.roles
+14:24:03 native.emptyContourSegment.NP_OPENING.warning
+14:24:03 native.emptyContourSegment.NP_OPENING.noMutation
+14:24:03 native.emptyContourSegment.NP_OPENING.nonzeroRejected
+14:24:03 native.emptyContourSegment.NP_OPENING.failedNoMutation
+14:24:03 world coordinate guard
+14:24:03 creating world UCS
+14:24:03 activating world UCS
+14:24:03 native.worldUCS.initialWorld
+14:24:03 native.worldUCS.localFlag.0
+14:24:03 native.worldUCS.localRejected.0
+14:24:03 native.worldUCS.instruction.0
+14:24:03 native.worldUCS.noMutation.0
+14:24:03 native.worldUCS.localFlag.1
+14:24:03 native.worldUCS.localRejected.1
+14:24:03 native.worldUCS.instruction.1
+14:24:03 native.worldUCS.noMutation.1
+14:24:03 native.worldUCS.localFlag.2
+14:24:03 native.worldUCS.localRejected.2
+14:24:03 native.worldUCS.instruction.2
+14:24:03 native.worldUCS.noMutation.2
+14:24:03 native.worldUCS.worldImported
+14:24:03 native.worldUCS.coordinatesX; actual=5000; expected=5000
+14:24:03 native.worldUCS.coordinatesY; actual=5000; expected=5000
+14:24:03 native.worldUCS.sourcesKept
+14:24:03 native.openingOnly.source
+14:24:03 native.openingOnly.twoExactHoles
+14:24:03 native.openingOnly.analyticArea; actual=7607.30091828567; expected=7607.30091830128
+14:24:03 native.openingOnly.holesExcluded
+14:24:03 native.openingOnly.meshOuterBounds
+14:24:03 native.openingOnly.exactHoleIntersections
+14:24:03 native.openingOnly.explicitRole.1
+14:24:03 native.openingOnly.explicitRole.2
+14:24:03 native.openingOnly.explicitRole.3
+14:24:03 native.openingOnly.explicitRole.4
+14:24:03 native.openingOnly.explicitRole.5
+14:24:03 native.openingOnly.explicitRole.6
+14:24:03 native.openingOnly.explicitRole.7
+14:24:03 native.openingOnly.explicitRole.8
+14:24:03 native.openingOnly.exactSaved.count
+14:24:03 native.openingOnly.exactSaved.id.1
+14:24:03 native.openingOnly.exactSaved.context.1
+14:24:03 native.openingOnly.exactSaved.type.1
+14:24:03 native.openingOnly.exactSaved.geometry.1
+14:24:03 native.openingOnly.exactSaved.id.2
+14:24:03 native.openingOnly.exactSaved.context.2
+14:24:03 native.openingOnly.exactSaved.type.2
+14:24:03 native.openingOnly.exactSaved.geometry.2
+14:24:03 native.openingOnly.exactSaved.id.3
+14:24:03 native.openingOnly.exactSaved.context.3
+14:24:03 native.openingOnly.exactSaved.type.3
+14:24:03 native.openingOnly.exactSaved.geometry.3
+14:24:03 native.openingOnly.exactSaved.id.4
+14:24:03 native.openingOnly.exactSaved.context.4
+14:24:03 native.openingOnly.exactSaved.type.4
+14:24:03 native.openingOnly.exactSaved.geometry.4
+14:24:03 native.openingOnly.exactSaved.id.5
+14:24:03 native.openingOnly.exactSaved.context.5
+14:24:03 native.openingOnly.exactSaved.type.5
+14:24:03 native.openingOnly.exactSaved.geometry.5
+14:24:03 native.openingOnly.exactSaved.id.6
+14:24:03 native.openingOnly.exactSaved.context.6
+14:24:03 native.openingOnly.exactSaved.type.6
+14:24:03 native.openingOnly.exactSaved.geometry.6
+14:24:03 native.openingOnly.exactSaved.id.7
+14:24:03 native.openingOnly.exactSaved.context.7
+14:24:03 native.openingOnly.exactSaved.type.7
+14:24:03 native.openingOnly.exactSaved.geometry.7
+14:24:03 native.openingOnly.exactSaved.id.8
+14:24:03 native.openingOnly.exactSaved.context.8
+14:24:03 native.openingOnly.exactSaved.type.8
+14:24:03 native.openingOnly.exactSaved.geometry.8
+14:24:03 native.openingOnly.restoredArea; actual=7607.30091828567; expected=7607.30091830128
+14:24:03 native.openingOnly.restoredSource

@@ -74,13 +74,46 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
     If doc Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", _
         "AutoCAD открыт, но активный чертеж не найден. Откройте или создайте чертеж и повторите импорт."
 
-    Set ImportFromActiveDocument = ImportConfiguredModelSpace(doc.ModelSpace, settings, units, doc.Layers)
+    Set ImportFromActiveDocument = ImportFromDocument(doc, settings, units)
 End Function
+
+' Проверяет систему координат документа до чтения сущностей и запускает
+' общий импорт. Пользовательская ПСК не переключается; при отказе модель
+' не создается и прежний снимок Results остается у вызывающего Excel-слоя.
+Public Function ImportFromDocument(ByVal document As Object, ByVal settings As CSystemSettingsReader, _
+        Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
+    If document Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", "Документ AutoCAD не передан."
+    If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
+    RequireWorldCoordinateSystem document
+    Set ImportFromDocument = ImportConfiguredModelSpace(document.ModelSpace, settings, units, document.Layers)
+End Function
+
+' WORLDUCS проверяет совпадение текущей ПСК с МСК, в том числе для
+' несохраненной ПСК. Имя UCSNAME для этой проверки неоднозначно.
+' Недоступный или некорректный признак запрещает импорт, а не разрешает его.
+Private Sub RequireWorldCoordinateSystem(ByVal document As Object)
+    Dim worldUCS As Variant
+    On Error GoTo Unavailable
+    worldUCS = document.GetVariable("WORLDUCS")
+    On Error GoTo 0
+    Select Case VarType(worldUCS)
+        Case vbInteger, vbLong
+            If worldUCS = 1 Then Exit Sub
+            If worldUCS = 0 Then Err.Raise vbObjectError + 4407, "CAutoCADSectionModelImporter", _
+                "В AutoCAD активна локальная система координат (ПСК). Геометрия не импортирована. " & _
+                "Установите мировую систему координат (МСК): команда _UCS, затем _World, и повторите импорт."
+    End Select
+Unavailable:
+    Err.Raise vbObjectError + 4408, "CAutoCADSectionModelImporter", _
+        "Не удалось проверить систему координат AutoCAD. Геометрия не импортирована. " & _
+        "Установите мировую систему координат (МСК): команда _UCS, затем _World, и повторите импорт."
+End Sub
 
 ' Подготавливает параметры импорта из прочитанного Config и передает ModelSpace
 ' общему обходу Region. Порог из пользовательской INPUT-площади переводится
 ' в мм2; координаты и геометрические свойства самих Region уже заданы в мм.
-' Получение активного документа остается только в ImportFromActiveDocument.
+' Для живого документа вызывается ImportFromDocument с предварительной
+' проверкой МСК; этот нижний уровень получает уже проверенный ModelSpace.
 Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal settings As CSystemSettingsReader, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal drawingLayers As Object = Nothing) As CSectionModel
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."

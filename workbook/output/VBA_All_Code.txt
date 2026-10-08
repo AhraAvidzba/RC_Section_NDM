@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-08 13:35:18
+Date: 2026-10-08 14:32:32
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -12219,7 +12219,7 @@ Private Const NORMAL_TOLERANCE As Double = 0.0000000001 ' Проверка на�
 Public Function ReadRegion(ByVal entity As Object) As CConcreteRegion
     Dim temporary As Object, pieces As Variant, edges() As TRegionEdge, count As Long
     Dim kind As String, i As Long, query As CSectionGeometryQuery
-    Dim errorNumber As Long, errorDescription As String, context As String, Document As Object
+    Dim errorNumber As Long, errorDescription As String, context As String, document As Object
     On Error GoTo Failed
     If entity Is Nothing Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Объект контура не передан."
     context = "Слой '" & CStr(entity.layer) & "', объект " & CStr(entity.handle) & ": "
@@ -12229,9 +12229,9 @@ Public Function ReadRegion(ByVal entity As Object) As CConcreteRegion
             ValidatePlaneNormal entity
             ' AutoCAD разрешает Copy/Explode на locked-слое, но запрещает Delete.
             ' Проверяем до первой копии, чтобы не оставить временные объекты.
-            Set Document = entity.Document
-            If Not Document Is Nothing Then
-                If CBool(Document.layers.item(CStr(entity.layer)).Lock) Then _
+            Set document = entity.document
+            If Not document Is Nothing Then
+                If CBool(document.layers.item(CStr(entity.layer)).Lock) Then _
                     Err.Raise vbObjectError + 4410, "CAutoCADContourReader", _
                         "Слой контура заблокирован. Разблокируйте этот слой в AutoCAD и повторите импорт."
             End If
@@ -12386,7 +12386,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CAutoCADSectionModelImporter
 TYPE: 2
-LINES: 881
+LINES: 914
 ====================================================================================================
 Option Explicit
 
@@ -12455,14 +12455,47 @@ Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader
     If doc Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", _
         "AutoCAD открыт, но активный чертеж не найден. Откройте или создайте чертеж и повторите импорт."
 
-    Set ImportFromActiveDocument = ImportConfiguredModelSpace(doc.modelSpace, settings, units, doc.layers)
+    Set ImportFromActiveDocument = ImportFromDocument(doc, settings, units)
 End Function
+
+' Проверяет систему координат документа до чтения сущностей и запускает
+' общий импорт. Пользовательская ПСК не переключается; при отказе модель
+' не создается и прежний снимок Results остается у вызывающего Excel-слоя.
+Public Function ImportFromDocument(ByVal document As Object, ByVal settings As CSystemSettingsReader, _
+        Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
+    If document Is Nothing Then Err.Raise vbObjectError + 4402, "CAutoCADSectionModelImporter", "Документ AutoCAD не передан."
+    If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
+    RequireWorldCoordinateSystem document
+    Set ImportFromDocument = ImportConfiguredModelSpace(document.ModelSpace, settings, units, document.layers)
+End Function
+
+' WORLDUCS проверяет совпадение текущей ПСК с МСК, в том числе для
+' несохраненной ПСК. Имя UCSNAME для этой проверки неоднозначно.
+' Недоступный или некорректный признак запрещает импорт, а не разрешает его.
+Private Sub RequireWorldCoordinateSystem(ByVal document As Object)
+    Dim worldUCS As Variant
+    On Error GoTo Unavailable
+    worldUCS = document.GetVariable("WORLDUCS")
+    On Error GoTo 0
+    Select Case VarType(worldUCS)
+        Case vbInteger, vbLong
+            If worldUCS = 1 Then Exit Sub
+            If worldUCS = 0 Then Err.Raise vbObjectError + 4407, "CAutoCADSectionModelImporter", _
+                "В AutoCAD активна локальная система координат (ПСК). Геометрия не импортирована. " & _
+                "Установите мировую систему координат (МСК): команда _UCS, затем _World, и повторите импорт."
+    End Select
+Unavailable:
+    Err.Raise vbObjectError + 4408, "CAutoCADSectionModelImporter", _
+        "Не удалось проверить систему координат AutoCAD. Геометрия не импортирована. " & _
+        "Установите мировую систему координат (МСК): команда _UCS, затем _World, и повторите импорт."
+End Sub
 
 ' Подготавливает параметры импорта из прочитанного Config и передает ModelSpace
 ' общему обходу Region. Порог из пользовательской INPUT-площади переводится
 ' в мм2; координаты и геометрические свойства самих Region уже заданы в мм.
-' Получение активного документа остается только в ImportFromActiveDocument.
-Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal settings As CSystemSettingsReader, _
+' Для живого документа вызывается ImportFromDocument с предварительной
+' проверкой МСК; этот нижний уровень получает уже проверенный ModelSpace.
+Public Function ImportConfiguredModelSpace(ByVal ModelSpace As Object, ByVal settings As CSystemSettingsReader, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal drawingLayers As Object = Nothing) As CSectionModel
     If settings Is Nothing Then Err.Raise vbObjectError + 4400, "CAutoCADSectionModelImporter", "Настройки Config не переданы."
     Dim concreteLayer As String, rebarLayer As String
@@ -12488,7 +12521,7 @@ Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal set
     Dim contourLayer As String, openingLayer As String
     contourLayer = OptionalContourLayer(settings, "AutoCAD.Common.SectionContourLayer")
     openingLayer = OptionalContourLayer(settings, "AutoCAD.Common.OpeningContourLayer")
-    Set ImportConfiguredModelSpace = ImportFromModelSpace(modelSpace, _
+    Set ImportConfiguredModelSpace = ImportFromModelSpace(ModelSpace, _
         concreteLayer, rebarLayer, REBAR_STEEL_CLASS, minArea, importUnits, contourLayer, openingLayer, drawingLayers)
     Exit Function
 InvalidMinimumArea:
@@ -12501,12 +12534,12 @@ End Function
 ' бетона и арматуры. На выходе возвращает полностью заполненный CSectionModel,
 ' пригодный для того же расчетного pipeline, что и встроенные генераторы.
 ' После чтения всей сетки назначает средний угол оболочкам без направления грани.
-Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteLayer As String, _
+Public Function ImportFromModelSpace(ByVal ModelSpace As Object, ByVal concreteLayer As String, _
         ByVal rebarLayer As String, ByVal steelClass As String, ByVal minArea As Double, Optional ByVal units As CUnitSystem = Nothing, _
         Optional ByVal contourLayer As String = "", Optional ByVal openingLayer As String = "", Optional ByVal drawingLayers As Object = Nothing) As CSectionModel
     mImportComment = vbNullString
     mImportWarnings = vbNullString
-    If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
+    If ModelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
     If Len(Trim$(concreteLayer)) = 0 Or Len(Trim$(rebarLayer)) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
         "Не заданы слои импорта. Укажите отдельный слой бетонных Region и отдельный слой арматурных Region."
     If StrComp(Trim$(concreteLayer), Trim$(rebarLayer), vbTextCompare) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
@@ -12523,7 +12556,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
     mEdgeProbeCount = 0
     ' Читаем слой один раз и сохраняем только ссылки этой операции. Последующее
     ' Copy/Explode уже не меняет коллекцию во время ее COM-обхода.
-    For Each entity In modelSpace
+    For Each entity In ModelSpace
         entityLayer = CStr(entity.layer)
         If SameLayer(entityLayer, concreteLayer) Or SameLayer(entityLayer, rebarLayer) Then
             If IsRegionEntity(entity) Then
@@ -12544,7 +12577,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
 
     ValidateImportedModel model
     model.ApplyAverageRotationToEquivalentAreaFallbacks
-    ImportMaterialContours model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities
+    ImportMaterialContours model, ModelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities
     Set ImportFromModelSpace = model
 End Function
 
@@ -12552,7 +12585,7 @@ End Function
 ' Сначала проверяются найденные объекты и отверстия, затем готовая область
 ' сохраняется вместе с геометрией. Пустые слои допустимы: без наружного
 ' контура границы определяются по сетке. Ошибка не оставляет частичный импорт.
-Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpace As Object, _
+Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal ModelSpace As Object, _
         ByVal concreteLayer As String, ByVal rebarLayer As String, ByVal contourLayer As String, _
         ByVal openingLayer As String, ByVal drawingLayers As Object, _
         ByVal outerEntities As Collection, ByVal openingEntities As Collection)
@@ -12564,7 +12597,7 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
     ValidateContourLayerMapping concreteLayer, rebarLayer, contourLayer, openingLayer
     If drawingLayers Is Nothing Then
         On Error Resume Next
-        Set drawingLayers = modelSpace.Document.layers
+        Set drawingLayers = ModelSpace.document.layers
         On Error GoTo 0
     End If
     If drawingLayers Is Nothing Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
@@ -25242,9 +25275,9 @@ Public Sub MarkNDMContourOutput(ByVal entity As Object)
     On Error GoTo Failed
     Dim registered As Object
     On Error Resume Next
-    Set registered = entity.Document.RegisteredApplications.item(CONTOUR_APP)
+    Set registered = entity.document.RegisteredApplications.item(CONTOUR_APP)
     On Error GoTo Failed
-    If registered Is Nothing Then Set registered = entity.Document.RegisteredApplications.Add(CONTOUR_APP)
+    If registered Is Nothing Then Set registered = entity.document.RegisteredApplications.Add(CONTOUR_APP)
     Dim codes(0 To 1) As Integer, values(0 To 1) As Variant
     codes(0) = 1001: values(0) = CONTOUR_APP
     codes(1) = 1000: values(1) = CONTOUR_MARK
@@ -25418,7 +25451,7 @@ Public Sub ClearAutoCADDrawing()
     Set doc = ActiveAutoCADDocument(acad)
 
     Dim deletedCount As Long
-    deletedCount = DeleteAutoCADEntitiesOnLayers(doc.modelSpace, AutoCADCleanupLayerSet(exportSettings))
+    deletedCount = DeleteAutoCADEntitiesOnLayers(doc.ModelSpace, AutoCADCleanupLayerSet(exportSettings))
     doc.Regen 1
 
     If informationEnabled Then
@@ -26239,7 +26272,7 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     End If
 
     Dim ms As Object
-    Set ms = doc.modelSpace
+    Set ms = doc.ModelSpace
     Dim temporarySources As Collection: Set temporarySources = New Collection
     On Error GoTo DrawingFailed
 
@@ -27501,7 +27534,7 @@ Public Function SP35ExportSavedMaterialContoursForTests(ByVal doc As Object, _
     Set sweeps = ReadSavedContourArcSweeps(ThisWorkbook)
     EnsureAcadLayer doc, outerLayer, SECTION_CONTOUR_COLOR_INDEX
     If Len(openingLayer) > 0 Then EnsureAcadLayer doc, openingLayer, OPENING_CONTOUR_COLOR_INDEX
-    SP35ExportSavedMaterialContoursForTests = DrawSavedContourRows(ThisWorkbook, doc.modelSpace, outerLayer, sweeps, , "CONTOUR_", openingLayer)
+    SP35ExportSavedMaterialContoursForTests = DrawSavedContourRows(ThisWorkbook, doc.ModelSpace, outerLayer, sweeps, , "CONTOUR_", openingLayer)
 End Function
 
 ' ДЛЯ ТЕСТОВ: проверяет штатную фильтрацию области по состоянию/флагу и
@@ -27514,7 +27547,7 @@ Public Function SP35ExportSavedCrackRegionForTests(ByVal doc As Object, ByVal co
     If rows.count = 0 Then Exit Function
     Set sweeps = ReadSavedContourArcSweeps(ThisWorkbook, rows, "CRACK_REGION_")
     EnsureAcadLayer doc, "SP35_SAVED_CRACK_REGION", CRACK_REGION_COLOR_INDEX
-    SP35ExportSavedCrackRegionForTests = DrawSavedContourRows(ThisWorkbook, doc.modelSpace, _
+    SP35ExportSavedCrackRegionForTests = DrawSavedContourRows(ThisWorkbook, doc.ModelSpace, _
         "SP35_SAVED_CRACK_REGION", sweeps, rows, "CRACK_REGION_")
 End Function
 
@@ -27597,11 +27630,11 @@ End Function
 ' Запускает настоящий алгоритм очистки на переданном ModelSpace fixture.
 ' Тестовые сущности только отмечают Delete; эта проверка не заменяет DWG,
 ' но выявляет удаление Region и ошибочную передачу выбранных слоев.
-Public Function Audit03CleanupAutoCADModelSpaceForTests(ByVal modelSpace As Object, _
+Public Function Audit03CleanupAutoCADModelSpaceForTests(ByVal ModelSpace As Object, _
         ByVal settings As CSystemSettingsReader) As Long
     Dim options As TAutoCADExportSettings
     options = ReadAutoCADExportSettings(settings, True)
-    Audit03CleanupAutoCADModelSpaceForTests = DeleteAutoCADEntitiesOnLayers(modelSpace, AutoCADCleanupLayerSet(options))
+    Audit03CleanupAutoCADModelSpaceForTests = DeleteAutoCADEntitiesOnLayers(ModelSpace, AutoCADCleanupLayerSet(options))
 End Function
 
 ' Выполняет весь рабочий export pipeline в переданный собственный тестовый
@@ -27619,10 +27652,10 @@ Public Function Audit03ExportAutoCADDocumentForTests(ByVal doc As Object) As Lon
     ReadResultsExportState ThisWorkbook, settings, units, options.principalAxesMode, section, values, physicalStates, _
         combinationID, profileId, stateType, quantity, precision, eps0, kx, ky, referenceX, referenceY, _
         centroidX, centroidY, angle, extended, warning
-    Dim before As Long, contours As Long: before = doc.modelSpace.count
+    Dim before As Long, contours As Long: before = doc.ModelSpace.count
     DrawResultsStressExport section, values, physicalStates, eps0, kx, ky, referenceX, referenceY, _
         centroidX, centroidY, angle, precision, warning, options, contours, doc
-    Audit03ExportAutoCADDocumentForTests = doc.modelSpace.count - before
+    Audit03ExportAutoCADDocumentForTests = doc.ModelSpace.count - before
 End Function
 
 ' Проверяет настоящий Layer API тем же методом, который вызывает экспорт.
@@ -52166,8 +52199,8 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: источник в памяти не имеет владельца DWG и его слоев.
 ' Блокировка настоящего слоя проверяется отдельно в native AutoCAD.
-Public Property Get Document() As Object
-    Set Document = Nothing
+Public Property Get document() As Object
+    Set document = Nothing
 End Property
 
 ' ДЛЯ ТЕСТОВ: возвращает XData в формате Autodesk либо Empty у исходника.
@@ -52404,8 +52437,8 @@ Public Sub Delete()
 End Sub
 
 ' ДЛЯ ТЕСТОВ: зарегистрированное приложение доступно для реальной записи XData.
-Public Property Get Document() As Object
-    Set Document = Me
+Public Property Get document() As Object
+    Set document = Me
 End Property
 Public Property Get RegisteredApplications() As Object
     Dim apps As Object: Set apps = CreateObject("Scripting.Dictionary")
@@ -53921,21 +53954,21 @@ Public Function RunAudit03RealAutoCADTests(ByVal drawingPath As String, ByVal ex
     presentationPath = left$(drawingPath, Len(drawingPath) - 4) & "_presentation.dwg"
     If Len(Dir$(presentationPath)) > 0 Then Err.Raise vbObjectError + 4499, "RunAudit03RealAutoCADTests", "Тестовый presentation-DWG уже существует; перезапись запрещена."
     doc.SaveAs presentationPath
-    LogLine stats, "REAL_DWG_PRESENTATION: " & doc.FullName & "|entities=" & CStr(doc.modelSpace.count)
+    LogLine stats, "REAL_DWG_PRESENTATION: " & doc.FullName & "|entities=" & CStr(doc.ModelSpace.count)
     Dim entity As Object
-    For Each entity In doc.modelSpace
+    For Each entity In doc.ModelSpace
         If entity.ObjectName = "AcDbRegion" Then
             Set copyRegion = entity.copy(): copyRegion.layer = "AUDIT_CT": Exit For
         End If
     Next entity
-    Dim Deleted As Long: Deleted = Audit03CleanupAutoCADModelSpaceForTests(doc.modelSpace, reader())
+    Dim Deleted As Long: Deleted = Audit03CleanupAutoCADModelSpaceForTests(doc.ModelSpace, reader())
     Check stats, "realAutoCAD.cleanup.deleted", Deleted > 0
     Check stats, "realAutoCAD.cleanup.allRegionsKept", CountEntities(doc, "AcDbRegion") = 9
     Check stats, "realAutoCAD.cleanup.regionOnAnnotation", CountEntities(doc, "AcDbRegion", "AUDIT_CT") = 1
     Check stats, "realAutoCAD.export.noSolve", SectionEquilibriumSolveCount() = solves
     doc.SaveAs drawingPath
     Check stats, "realAutoCAD.saved", Len(Dir$(drawingPath)) > 0
-    LogLine stats, "REAL_DWG: " & doc.FullName & "|entities=" & CStr(doc.modelSpace.count)
+    LogLine stats, "REAL_DWG: " & doc.FullName & "|entities=" & CStr(doc.ModelSpace.count)
     doc.Close False: Set doc = Nothing
     LogLine stats, "REAL_STAGE: reopen saved DWG"
     Set doc = acad.Documents.Open(drawingPath)
@@ -53985,7 +54018,7 @@ End Sub
 Private Function CountEntities(ByVal doc As Object, Optional ByVal ObjectName As String = "", _
         Optional ByVal layerName As String = "") As Long
     Dim entity As Object
-    For Each entity In doc.modelSpace
+    For Each entity In doc.ModelSpace
         If (Len(ObjectName) = 0 Or StrComp(entity.ObjectName, ObjectName, vbTextCompare) = 0) And _
                 (Len(layerName) = 0 Or StrComp(entity.layer, layerName, vbTextCompare) = 0) Then CountEntities = CountEntities + 1
     Next entity
@@ -53995,7 +54028,7 @@ End Function
 ' этот helper не вызывается ни для пользовательского ActiveDocument, ни из UI.
 Private Sub ClearOwnModelSpace(ByVal doc As Object)
     Dim i As Long
-    For i = doc.modelSpace.count - 1 To 0 Step -1: doc.modelSpace.item(i).Delete: Next i
+    For i = doc.ModelSpace.count - 1 To 0 Step -1: doc.ModelSpace.item(i).Delete: Next i
 End Sub
 
 ' Читает экспортированные настоящие Region рабочим importer-ом. Контролирует
@@ -54005,7 +54038,7 @@ Private Sub CheckNativeImport(ByRef stats As TCadStats, ByVal doc As Object, ByV
     SetValue system, "AutoCAD.Common.RebarLayer", "AUDIT_R"
     Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, i As Long
     Set importer = New CAutoCADSectionModelImporter
-    Set model = importer.ImportConfiguredModelSpace(doc.modelSpace, reader())
+    Set model = importer.ImportConfiguredModelSpace(doc.ModelSpace, reader())
     Check stats, "realAutoCAD.import.counts", model.ConcreteCount = 4 And model.rebarCount = 4
     For i = 1 To model.ConcreteCount
         CheckClose stats, "realAutoCAD.import.concreteArea." & CStr(i), model.concreteArea(i), 10000#
@@ -54048,7 +54081,7 @@ Private Sub CheckNativeRegionInertia(ByRef stats As TCadStats, ByVal doc As Obje
             prefix = "realAutoCAD.inertia." & CStr(angleSign) & "." & CStr(position)
             LogLine stats, "REAL_INERTIA: " & prefix & "|cx=" & CStr(cx) & "; cy=" & CStr(cy) & _
                 "; rawProduct=" & NativeNumber(rawProduct) & "; expectedCentralIxy=" & NativeNumber(expectedIxy)
-            Set model = importer.ImportFromModelSpace(doc.modelSpace, layerName, "AUDIT_R", "A400", 0#)
+            Set model = importer.ImportFromModelSpace(doc.ModelSpace, layerName, "AUDIT_R", "A400", 0#)
             Check stats, prefix & ".count", model.ConcreteCount = 1
             If model.ConcreteCount = 1 Then
                 model.ConcreteLocalInertiaComponents 1, ix, iy, ixy
@@ -54076,10 +54109,10 @@ Private Function NativeRectangleRegion(ByVal doc As Object, ByVal width As Doubl
         points(2 * i + 1) = cy + CDbl(px(i)) * Sin(angle) + CDbl(py(i)) * Cos(angle)
     Next i
     Dim line As Object, curves(0 To 0) As Object, regions As Variant
-    Set line = doc.modelSpace.AddLightWeightPolyline(points)
+    Set line = doc.ModelSpace.AddLightWeightPolyline(points)
     line.Closed = True
     Set curves(0) = line
-    regions = doc.modelSpace.AddRegion(curves)
+    regions = doc.ModelSpace.AddRegion(curves)
     Set NativeRectangleRegion = regions(LBound(regions))
     line.Delete
 End Function
@@ -54158,7 +54191,7 @@ Private Sub CheckNativeShapeRoundTrip(ByRef stats As TCadStats, ByVal doc As Obj
                         bar.layer = "AUDIT_SHAPE_R"
                     Next j
                 Next i
-                Set model = importer.ImportFromModelSpace(doc.modelSpace, "AUDIT_SHAPE_IN", "AUDIT_SHAPE_R", "A400", 0#)
+                Set model = importer.ImportFromModelSpace(doc.ModelSpace, "AUDIT_SHAPE_IN", "AUDIT_SHAPE_R", "A400", 0#)
                 CheckNativeInertiaClose stats, prefix & ".import.area", model.concreteArea(1), area
                 CheckNativeInertiaClose stats, prefix & ".import.Ix", model.ConcreteLocalIx(1), ix
                 CheckNativeInertiaClose stats, prefix & ".import.Iy", model.ConcreteLocalIy(1), iy
@@ -54175,7 +54208,7 @@ Private Sub CheckNativeShapeRoundTrip(ByRef stats As TCadStats, ByVal doc As Obj
                 Check stats, prefix & ".export.added", added >= 10
                 Check stats, prefix & ".export.regionCount", CountEntities(doc, "AcDbRegion", "AUDIT_C") = 1
                 Set exported = Nothing
-                For Each entity In doc.modelSpace
+                For Each entity In doc.ModelSpace
                     If entity.ObjectName = "AcDbRegion" And entity.layer = "AUDIT_C" Then Set exported = entity: Exit For
                 Next entity
                 If exported Is Nothing Then Err.Raise vbObjectError + 4499, "CheckNativeShapeRoundTrip", "Экспортированный бетонный Region не найден."
@@ -54267,7 +54300,7 @@ Private Sub CheckNativeIsotropicRoundTrip(ByRef stats As TCadStats, ByVal doc As
                     bar.layer = "AUDIT_SHAPE_R"
                 Next j
             Next i
-            Set model = importer.ImportFromModelSpace(doc.modelSpace, "AUDIT_SHAPE_IN", "AUDIT_SHAPE_R", "A400", 0#)
+            Set model = importer.ImportFromModelSpace(doc.ModelSpace, "AUDIT_SHAPE_IN", "AUDIT_SHAPE_R", "A400", 0#)
             circleIndex = 0: squareIndex = 0
             For i = 1 To model.ConcreteCount
                 If model.ConcreteSourceHandle(i) = circleHandle Then circleIndex = i
@@ -54287,7 +54320,7 @@ Private Sub CheckNativeIsotropicRoundTrip(ByRef stats As TCadStats, ByVal doc As
             Check stats, prefix & ".export.noSolve", SectionEquilibriumSolveCount() = solves
             Check stats, prefix & ".export.regionCount", CountEntities(doc, "AcDbRegion", "AUDIT_C") = model.ConcreteCount
             Set exportedCircle = Nothing: Set exportedSquare = Nothing
-            For Each entity In doc.modelSpace
+            For Each entity In doc.ModelSpace
                 If entity.ObjectName = "AcDbRegion" And entity.layer = "AUDIT_C" Then
                     ReadNativeCentralInertia entity, area, cx, cy, ix, iy, ixy
                     If Abs(cx - circleX) < 0.000001 And Abs(cy) < 0.000001 Then Set exportedCircle = entity
@@ -54321,8 +54354,8 @@ End Sub
 Private Function NativeCircleRegion(ByVal doc As Object, ByVal x As Double, ByVal y As Double, ByVal radius As Double) As Object
     Dim center(0 To 2) As Double, circleEntity As Object, curves(0 To 0) As Object, regions As Variant
     center(0) = x: center(1) = y
-    Set circleEntity = doc.modelSpace.AddCircle(center, radius): Set curves(0) = circleEntity
-    regions = doc.modelSpace.AddRegion(curves): Set NativeCircleRegion = regions(LBound(regions))
+    Set circleEntity = doc.ModelSpace.AddCircle(center, radius): Set curves(0) = circleEntity
+    regions = doc.ModelSpace.AddRegion(curves): Set NativeCircleRegion = regions(LBound(regions))
     circleEntity.Delete
 End Function
 
@@ -54390,8 +54423,8 @@ Private Function NativePolygonRegion(ByVal doc As Object, ByRef x() As Double, B
     Dim points() As Double, i As Long, line As Object, curves(0 To 0) As Object, regions As Variant
     ReDim points(0 To 2 * (UBound(x) + 1) - 1)
     For i = 0 To UBound(x): points(2 * i) = x(i): points(2 * i + 1) = y(i): Next i
-    Set line = doc.modelSpace.AddLightWeightPolyline(points): line.Closed = True
-    Set curves(0) = line: regions = doc.modelSpace.AddRegion(curves)
+    Set line = doc.ModelSpace.AddLightWeightPolyline(points): line.Closed = True
+    Set curves(0) = line: regions = doc.ModelSpace.AddRegion(curves)
     Set NativePolygonRegion = regions(LBound(regions))
     line.Delete
 End Function
@@ -54563,7 +54596,7 @@ End Function
 ' и маркеры нагрузки не включаются в количество восемь расчетных labels.
 Private Sub CheckNativeLabels(ByRef stats As TCadStats, ByVal doc As Object, ByVal mode As String)
     Dim entity As Object, count As Long, text As String, hasName As Boolean
-    For Each entity In doc.modelSpace
+    For Each entity In doc.ModelSpace
         If entity.ObjectName = "AcDbText" And left$(entity.layer, 6) = "AUDIT_" Then
             text = entity.TextString: count = count + 1
             hasName = (left$(text, 1) = "C" Or left$(text, 1) = "R")
@@ -54585,7 +54618,7 @@ Private Sub CheckNativeColors(ByRef stats As TCadStats, ByVal doc As Object, ByV
         parts = Split(CStr(lines(i)), "|")
         If UBound(parts) = 2 Then states.Add CStr(parts(0)), CStr(parts(2))
     Next i
-    For Each entity In doc.modelSpace
+    For Each entity In doc.ModelSpace
         elementID = vbNullString
         If entity.ObjectName = "AcDbRegion" And (entity.layer = "AUDIT_C" Or entity.layer = "AUDIT_R") Then
             center = entity.centroid: index = 1
@@ -54614,7 +54647,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestAutoCADContours
 TYPE: 1
-LINES: 1495
+LINES: 1633
 ====================================================================================================
 Option Explicit
 
@@ -54652,6 +54685,7 @@ Public Function RunAutoCADContourTests() As String
     CheckKnownOuterWithoutOpenings
     CheckPhysicalPolylineClosure
     CheckEmptyStandaloneContourSegments
+    CheckWorldCoordinateGuard
     GoTo Finish
 Failed:
     Check "contour.runtime; " & CStr(Err.number) & "; " & Err.description, False
@@ -54812,7 +54846,7 @@ Private Sub CheckOpeningWithoutOuter()
     Dim space As Collection, layers As Collection, importer As CAutoCADSectionModelImporter
     Dim cell As CFakeAcadRegion, layer As CFakeAcadContour, opening As CFakeAcadContour
     Dim section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
-    Dim mode As Long, expected As Double, writer As CNDMResultsWriter, restored As CSectionModel
+    Dim mode As Long, i As Long, expected As Double, writer As CNDMResultsWriter, restored As CSectionModel
     Set importer = New CAutoCADSectionModelImporter: Set query = New CSectionGeometryQuery
     For mode = 0 To 3
         Set space = New Collection: Set layers = New Collection
@@ -54843,12 +54877,17 @@ Private Sub CheckOpeningWithoutOuter()
         query.Initialize section: Set region = query.ConcreteDomain
         CheckArea "openingOnly.meshVoid." & CStr(mode), region.area, expected
         Check "openingOnly.noInventedOuter." & CStr(mode), InStr(region.source, "AuthoritativeContour") = 0
+        Check "openingOnly.authoritativeHole." & CStr(mode), region.source = "ElementBoundaryLoops+KnownOpening"
+        For i = 1 To section.contours.count
+            Check "openingOnly.explicitRole." & CStr(mode) & "." & CStr(i), section.contours.loopRole(i) = "Opening"
+        Next i
         Check "openingOnly.actualHole." & CStr(mode), Not query.ContainsPoint(region, 50#, 50#)
         Check "openingOnly.sourceKept." & CStr(mode), Not opening.Deleted And section.ConcreteCount = 4
         Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
         query.Initialize restored
         CheckArea "openingOnly.savedRoundTrip." & CStr(mode), query.ConcreteDomain.area, expected
+        CheckPostAudit03ContoursEqual "openingOnly.exactSaved." & CStr(mode), section.contours, restored.contours
     Next mode
     Set opening = Contour("AcDbPolyline", RectangleEdges(87#, 42#, 5#, 5#), "OPENING"): space.Add opening
     Dim number As Long
@@ -55578,37 +55617,37 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     NativeProgress "document ready"
     Set reader = New CAutoCADContourReader: Set query = New CSectionGeometryQuery
     Set polyline = NativeRectangle(doc, 100#, 80#, 0.37, 137#, -73#)
-    Set curves(0) = polyline: regions = doc.modelSpace.AddRegion(curves): Set source = regions(LBound(regions))
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set source = regions(LBound(regions))
     For mode = 0 To 1
         If mode = 0 Then Set circleEntity = polyline Else Set circleEntity = source
-        countBefore = doc.modelSpace.count: handleBefore = CStr(circleEntity.handle): areaBefore = CDbl(circleEntity.area)
+        countBefore = doc.ModelSpace.count: handleBefore = CStr(circleEntity.handle): areaBefore = CDbl(circleEntity.area)
         Set region = reader.ReadRegion(circleEntity)
         CheckArea "native.rectangle." & CStr(mode), region.area, 8000#
-        Check "native.rectangle.source." & CStr(mode), CStr(circleEntity.handle) = handleBefore And doc.modelSpace.count = countBefore
+        Check "native.rectangle.source." & CStr(mode), CStr(circleEntity.handle) = handleBefore And doc.ModelSpace.count = countBefore
         CheckArea "native.rectangle.unchanged." & CStr(mode), CDbl(circleEntity.area), areaBefore
     Next mode
     ' Один bulge задает точную полуокружность; обе формы источника должны
     ' сохранить круговую дугу, а не заменять ее цепочкой прямых.
     semi(0) = 0#: semi(1) = 0#: semi(2) = 100#: semi(3) = 0#
-    Set polyline = doc.modelSpace.AddLightWeightPolyline(semi): polyline.Closed = True: polyline.SetBulge 0, 1#
-    Set curves(0) = polyline: regions = doc.modelSpace.AddRegion(curves): Set source = regions(LBound(regions))
+    Set polyline = doc.ModelSpace.AddLightWeightPolyline(semi): polyline.Closed = True: polyline.SetBulge 0, 1#
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set source = regions(LBound(regions))
     For mode = 0 To 1
         If mode = 0 Then Set circleEntity = polyline Else Set circleEntity = source
-        countBefore = doc.modelSpace.count
+        countBefore = doc.ModelSpace.count
         Set region = reader.ReadRegion(circleEntity)
         CheckArea "native.semicircle." & CStr(mode), region.area, 1250# * GEOM_PI
         Check "native.semicircle.analytic." & CStr(mode), region.segmentCount = 2
-        Check "native.semicircle.cleanup." & CStr(mode), doc.modelSpace.count = countBefore
+        Check "native.semicircle.cleanup." & CStr(mode), doc.ModelSpace.count = countBefore
     Next mode
     Set polyline = NativeRectangle(doc, 100#, 100#, 0#, 250#, 100#)
-    Set curves(0) = polyline: regions = doc.modelSpace.AddRegion(curves): Set source = regions(LBound(regions))
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set source = regions(LBound(regions))
     For mode = 0 To 1
         center(0) = 225# + 45# * mode: center(1) = 85# + 25# * mode
-        Set circleEntity = doc.modelSpace.AddCircle(center, 10# - 5# * mode)
-        Set curves(0) = circleEntity: regions = doc.modelSpace.AddRegion(curves): Set openingRegion = regions(LBound(regions))
+        Set circleEntity = doc.ModelSpace.AddCircle(center, 10# - 5# * mode)
+        Set curves(0) = circleEntity: regions = doc.ModelSpace.AddRegion(curves): Set openingRegion = regions(LBound(regions))
         source.Boolean 2, openingRegion
     Next mode
-    countBefore = doc.modelSpace.count: handleBefore = CStr(source.handle): areaBefore = CDbl(source.area)
+    countBefore = doc.ModelSpace.count: handleBefore = CStr(source.handle): areaBefore = CDbl(source.area)
     Set region = reader.ReadRegion(source)
     CheckArea "native.twoOpenings.area", region.area, 10000# - 125# * GEOM_PI
     Check "native.twoOpenings.loops", region.loopCount = 3
@@ -55618,7 +55657,7 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     Check "native.twoOpenings.roles", openings = 2
     Check "native.twoOpenings.excluded", Not query.ContainsPoint(region, 225#, 85#) And Not query.ContainsPoint(region, 270#, 110#)
     Check "native.twoOpenings.material", query.ContainsPoint(region, 250#, 100#)
-    Check "native.twoOpenings.source", CStr(source.handle) = handleBefore And doc.modelSpace.count = countBefore
+    Check "native.twoOpenings.source", CStr(source.handle) = handleBefore And doc.ModelSpace.count = countBefore
     CheckArea "native.twoOpenings.sourceArea", CDbl(source.area), areaBefore
     CheckNativeSeparateOpenings doc, reader, query
     CheckNativeSavedContours doc, reader
@@ -55627,6 +55666,7 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     CheckNativeMixedContourRoundTrip doc
     CheckNativePhysicalPolylineClosure doc
     CheckNativeEmptyOpeningSegment doc
+    CheckNativeWorldCoordinateGuard doc
     path = ThisWorkbook.path & "\SP35_ContourImport_" & Format$(Now, "yyyymmdd_hhnnss") & ".dwg"
     If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 5502, , "Тестовый DWG уже существует; перезапись запрещена."
     doc.SaveAs path
@@ -55643,6 +55683,137 @@ Cleanup:
     mNativeProgress = False
     RunRealAutoCADContourTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: отказ по ПСК и невозможности прочитать WORLDUCS происходит
+' до обращения к ModelSpace/слоям. Строки, Null и Boolean не заменяют код 1.
+Private Sub CheckWorldCoordinateGuard()
+    Dim document As CFakeAcadDocument, settings As CSystemSettingsReader
+    Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, value As Variant
+    Dim number As Long, description As String, mode As Long, expectedError As Long
+    Set document = New CFakeAcadDocument: Set settings = New CSystemSettingsReader
+    Set importer = New CAutoCADSectionModelImporter
+    For Each value In Array(0, Empty, Null, "1", 2, True, 0.5, CVErr(2015))
+        mode = mode + 1: document.Initialize value
+        On Error Resume Next
+        Set model = importer.ImportFromDocument(document, settings)
+        number = Err.number: description = Err.description: Err.clear
+        On Error GoTo 0
+        expectedError = vbObjectError + 4408
+        If mode = 1 Then expectedError = vbObjectError + 4407
+        Check "worldUCS.reject." & CStr(mode), number = expectedError And model Is Nothing
+        Check "worldUCS.noGeometryRead." & CStr(mode), document.GeometryReads = 0 And document.VariableReads = 1
+        Check "worldUCS.instruction." & CStr(mode), InStr(description, "_UCS") > 0 And InStr(description, "_World") > 0
+    Next value
+    document.Initialize 1, True
+    On Error Resume Next
+    Set model = importer.ImportFromDocument(document, settings): number = Err.number: Err.clear
+    On Error GoTo 0
+    Check "worldUCS.unavailableRejected", number = vbObjectError + 4408 And document.GeometryReads = 0
+    document.Initialize 1
+    On Error Resume Next
+    Set model = importer.ImportFromDocument(document, settings): number = Err.number: Err.clear
+    On Error GoTo 0
+    Check "worldUCS.worldAcceptedBeforeGeometry", number = vbObjectError + 9106 And document.GeometryReads = 1 And document.VariableReads = 1
+End Sub
+
+' ДЛЯ ТЕСТОВ: в собственном CAD-документе проверяет отказ смещенной,
+' повернутой и смещенно-повернутой ПСК, затем импорт двух точных отверстий
+' без outer в МСК. Координаты, исходники, настройки и текущая ПСК сохраняются.
+Private Sub CheckNativeWorldCoordinateGuard(ByVal doc As Object)
+    Dim fixture As Object, sheet As Object, settings As CSystemSettingsReader
+    Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, restored As CSectionModel
+    Dim world As Object, localUCS As Object, polyline As Object, mesh As Object, bar As Object, hole As Object
+    Dim origin(0 To 2) As Double, xAxis(0 To 2) As Double, yAxis(0 To 2) As Double, center(0 To 2) As Double
+    Dim curves(0 To 0) As Object, regions As Variant, keys As Variant, values As Variant
+    Dim mode As Long, i As Long, countBefore As Long, number As Long, description As String
+    Dim failure As Long, failureDescription As String, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim writer As CNDMResultsWriter, low As Double, high As Double, intervals As Variant
+    On Error GoTo Failed
+    NativeProgress "world coordinate guard"
+    xAxis(0) = 1#: yAxis(1) = 1#
+    NativeProgress "creating world UCS"
+    Set world = doc.UserCoordinateSystems.Add(origin, xAxis, yAxis, "NDM_TEST_WORLD")
+    NativeProgress "activating world UCS"
+    doc.ActiveUCS = world
+    Check "native.worldUCS.initialWorld", CLng(doc.GetVariable("WORLDUCS")) = 1
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1)
+    keys = Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
+        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Import.MinArea")
+    values = Array("NDM_WCS_MESH", "NDM_WCS_REBAR", "NDM_WCS_OUTER", "NDM_WCS_OPENING", 0#)
+    sheet.cells(1, 1).value2 = "Key": sheet.cells(1, 2).value2 = "Value": sheet.cells(1, 3).value2 = "Unit"
+    For i = 0 To UBound(keys)
+        sheet.cells(i + 2, 1).value2 = keys(i): sheet.cells(i + 2, 2).value2 = values(i): sheet.cells(i + 2, 3).value2 = "-"
+        If i < 4 Then doc.layers.Add CStr(values(i))
+    Next i
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.range("A1:C6")
+    Set importer = New CAutoCADSectionModelImporter
+    Set polyline = NativeRectangle(doc, 100#, 80#, 0#, 5000#, 5000#)
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set mesh = regions(LBound(regions))
+    mesh.layer = "NDM_WCS_MESH": polyline.Delete
+    center(0) = 4970#: center(1) = 4980#
+    Set polyline = doc.ModelSpace.AddCircle(center, 2#)
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set bar = regions(LBound(regions))
+    bar.layer = "NDM_WCS_REBAR": polyline.Delete
+    For i = 0 To 1
+        center(0) = 5000# + 25# * i: center(1) = 5000#
+        Set hole = doc.ModelSpace.AddCircle(center, 10# - 5# * i): hole.layer = "NDM_WCS_OPENING"
+    Next i
+    countBefore = doc.ModelSpace.count
+    For mode = 0 To 2
+        origin(0) = 0#: origin(1) = 0#: xAxis(0) = 1#: xAxis(1) = 0#: yAxis(0) = 0#: yAxis(1) = 1#
+        If mode <> 1 Then origin(0) = 100#: origin(1) = -200#
+        xAxis(0) = origin(0) + 1#: xAxis(1) = origin(1): yAxis(0) = origin(0): yAxis(1) = origin(1) + 1#
+        If mode > 0 Then
+            xAxis(0) = origin(0) + Cos(0.37): xAxis(1) = origin(1) + Sin(0.37)
+            yAxis(0) = origin(0) - Sin(0.37): yAxis(1) = origin(1) + Cos(0.37)
+        End If
+        Set localUCS = doc.UserCoordinateSystems.Add(origin, xAxis, yAxis, "NDM_TEST_LOCAL_" & CStr(mode))
+        doc.ActiveUCS = localUCS
+        Check "native.worldUCS.localFlag." & CStr(mode), CLng(doc.GetVariable("WORLDUCS")) = 0
+        On Error Resume Next
+        Set section = importer.ImportFromDocument(doc, settings)
+        number = Err.number: description = Err.description: Err.clear
+        On Error GoTo Failed
+        Check "native.worldUCS.localRejected." & CStr(mode), number = vbObjectError + 4407 And section Is Nothing
+        Check "native.worldUCS.instruction." & CStr(mode), InStr(description, "_UCS") > 0 And InStr(description, "_World") > 0
+        Check "native.worldUCS.noMutation." & CStr(mode), doc.ModelSpace.count = countBefore And CStr(doc.GetVariable("UCSNAME")) = localUCS.name
+    Next mode
+    doc.ActiveUCS = world
+    Set section = importer.ImportFromDocument(doc, settings)
+    Check "native.worldUCS.worldImported", section.ConcreteCount = 1 And section.rebarCount = 1
+    CheckArea "native.worldUCS.coordinatesX", section.concreteX(1), 5000#
+    CheckArea "native.worldUCS.coordinatesY", section.concreteY(1), 5000#
+    Check "native.worldUCS.sourcesKept", doc.ModelSpace.count = countBefore And CLng(doc.GetVariable("WORLDUCS")) = 1
+    Set query = New CSectionGeometryQuery: query.Initialize section: Set region = query.ConcreteDomain
+    Check "native.openingOnly.source", region.source = "ElementBoundaryLoops+KnownOpening"
+    Check "native.openingOnly.twoExactHoles", region.loopCount = 3 And region.segmentCount = 12
+    CheckArea "native.openingOnly.analyticArea", region.area, 8000# - 125# * GEOM_PI
+    Check "native.openingOnly.holesExcluded", Not query.ContainsPoint(region, 5000#, 5000#) And Not query.ContainsPoint(region, 5025#, 5000#)
+    query.ProjectionBounds region, 1#, 0#, low, high
+    Check "native.openingOnly.meshOuterBounds", Abs(low - 4950#) < 0.000001 And Abs(high - 5050#) < 0.000001
+    intervals = query.LineIntervals(region, 5000#, 5000#, 1#, 0#)
+    Check "native.openingOnly.exactHoleIntersections", UBound(intervals, 1) = 3 And _
+        Abs(intervals(1, 2) + 10#) < 0.000001 And Abs(intervals(2, 1) - 10#) < 0.000001 And _
+        Abs(intervals(2, 2) - 20#) < 0.000001 And Abs(intervals(3, 1) - 30#) < 0.000001
+    For i = 1 To section.contours.count
+        Check "native.openingOnly.explicitRole." & CStr(i), section.contours.loopRole(i) = "Opening"
+    Next i
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
+    Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
+    CheckPostAudit03ContoursEqual "native.openingOnly.exactSaved", section.contours, restored.contours
+    query.Initialize restored
+    CheckArea "native.openingOnly.restoredArea", query.ConcreteDomain.area, 8000# - 125# * GEOM_PI
+    Check "native.openingOnly.restoredSource", query.ConcreteDomain.source = "ElementBoundaryLoops+KnownOpening"
+    GoTo Cleanup
+Failed:
+    failure = Err.number: failureDescription = Err.description
+Cleanup:
+    On Error Resume Next
+    If Not world Is Nothing Then doc.ActiveUCS = world
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    If failure <> 0 Then Err.Raise failure, "CheckNativeWorldCoordinateGuard", failureDescription
+End Sub
 
 ' ДЛЯ ТЕСТОВ: фактическое замыкание важнее флага Closed. Повторные прямые
 ' вершины не меняют область, но вырожденные Region и дуги остаются ошибками.
@@ -55747,47 +55918,47 @@ Private Sub CheckNativePhysicalPolylineClosure(ByVal doc As Object)
             For i = 0 To (UBound(coordinates) + 1) / 2 - 1
                 values(i * stride) = coordinates(i * 2): values(i * stride + 1) = coordinates(i * 2 + 1)
             Next i
-            If kind = 0 Then Set entity = doc.modelSpace.AddLightWeightPolyline(values) Else Set entity = doc.modelSpace.AddPolyline(values)
+            If kind = 0 Then Set entity = doc.ModelSpace.AddLightWeightPolyline(values) Else Set entity = doc.ModelSpace.AddPolyline(values)
             entity.Closed = (mode = 1 Or mode = 2 Or mode = 4)
             If mode >= 3 Then entity.SetBulge 0, 1#
-            countBefore = doc.modelSpace.count: prefix = "native.physicalPolyline." & CStr(kind) & "." & CStr(mode)
+            countBefore = doc.ModelSpace.count: prefix = "native.physicalPolyline." & CStr(kind) & "." & CStr(mode)
             For j = 1 To 3
                 Set region = reader.ReadRegion(entity)
                 CheckArea prefix & ".area." & CStr(j), region.area, expectedArea
-                Check prefix & ".noLeakedEntities." & CStr(j), doc.modelSpace.count = countBefore
+                Check prefix & ".noLeakedEntities." & CStr(j), doc.ModelSpace.count = countBefore
                 Check prefix & ".closedPreserved." & CStr(j), CBool(entity.Closed) = (mode = 1 Or mode = 2 Or mode = 4)
                 If mode >= 3 Then CheckArea prefix & ".bulgePreserved." & CStr(j), entity.GetBulge(0), 1#
             Next j
         Next mode
     Next kind
     ReDim values(0 To 7): values(2) = 100#: values(4) = 100#: values(5) = 80#: values(7) = 80#
-    Set entity = doc.modelSpace.AddLightWeightPolyline(values): entity.Closed = False: countBefore = doc.modelSpace.count
+    Set entity = doc.ModelSpace.AddLightWeightPolyline(values): entity.Closed = False: countBefore = doc.ModelSpace.count
     On Error Resume Next
     Set region = reader.ReadRegion(entity): number = Err.number: description = Err.description: Err.clear
     On Error GoTo 0
     Check "native.physicalPolyline.realGapRejected", number <> 0
-    Check "native.physicalPolyline.realGapCleanup", doc.modelSpace.count = countBefore And Not CBool(entity.Closed)
+    Check "native.physicalPolyline.realGapCleanup", doc.ModelSpace.count = countBefore And Not CBool(entity.Closed)
     ReDim values(0 To 3)
-    Set entity = doc.modelSpace.AddLightWeightPolyline(values): entity.Closed = True: countBefore = doc.modelSpace.count
+    Set entity = doc.ModelSpace.AddLightWeightPolyline(values): entity.Closed = True: countBefore = doc.ModelSpace.count
     On Error Resume Next
     Set region = reader.ReadRegion(entity): number = Err.number: Err.clear
     On Error GoTo 0
     Check "native.physicalPolyline.zeroAreaRejected", number <> 0
-    Check "native.physicalPolyline.zeroAreaCleanup", doc.modelSpace.count = countBefore
+    Check "native.physicalPolyline.zeroAreaCleanup", doc.ModelSpace.count = countBefore
     Dim lockedLayer As Object
     Set lockedLayer = doc.layers.Add("NP_LOCKED")
     Set entity = NativeRectangle(doc, 100#, 80#, 0#, 600#, 600#): entity.layer = "NP_LOCKED"
-    lockedLayer.Lock = True: countBefore = doc.modelSpace.count
+    lockedLayer.Lock = True: countBefore = doc.ModelSpace.count
     Set region = Nothing
     On Error Resume Next
     Set region = reader.ReadRegion(entity): number = Err.number: description = Err.description: Err.clear
     On Error GoTo 0
     lockedLayer.Lock = False
-    Check "native.physicalPolyline.lockedNoLeaks", doc.modelSpace.count = countBefore
+    Check "native.physicalPolyline.lockedNoLeaks", doc.ModelSpace.count = countBefore
     Check "native.physicalPolyline.lockedRejected", number <> 0 And InStr(description, "Разблокируйте") > 0
     Set region = reader.ReadRegion(entity)
     CheckArea "native.physicalPolyline.unlockedArea", region.area, 8000#
-    Check "native.physicalPolyline.unlockedNoLeaks", doc.modelSpace.count = countBefore
+    Check "native.physicalPolyline.unlockedNoLeaks", doc.ModelSpace.count = countBefore
 End Sub
 
 ' ДЛЯ ТЕСТОВ: воспроизводит видимые пользователю полилинию и отдельный
@@ -55799,33 +55970,33 @@ Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     Dim layer As Variant, targetLayer As Variant, countBefore As Long, number As Long, description As String, prefix As String
     For Each layer In Array("NP_CONCRETE", "NP_REBAR", "NP_OUTER", "NP_OPENING"): doc.layers.Add CStr(layer): Next layer
     Set curve = NativeRectangle(doc, 100#, 100#, 0#, 50#, 50#)
-    Set curves(0) = curve: regions = doc.modelSpace.AddRegion(curves): Set entity = regions(LBound(regions)): entity.layer = "NP_CONCRETE"
-    point(0) = 10#: point(1) = 10#: Set curve = doc.modelSpace.AddCircle(point, 2#)
-    Set curves(0) = curve: regions = doc.modelSpace.AddRegion(curves): Set entity = regions(LBound(regions)): entity.layer = "NP_REBAR"
+    Set curves(0) = curve: regions = doc.ModelSpace.AddRegion(curves): Set entity = regions(LBound(regions)): entity.layer = "NP_CONCRETE"
+    point(0) = 10#: point(1) = 10#: Set curve = doc.ModelSpace.AddCircle(point, 2#)
+    Set curves(0) = curve: regions = doc.ModelSpace.AddRegion(curves): Set entity = regions(LBound(regions)): entity.layer = "NP_REBAR"
     values(2) = 100#: values(4) = 100#: values(5) = 100#: values(7) = 100#
-    Set outer = doc.modelSpace.AddLightWeightPolyline(values): outer.layer = "NP_OUTER": outer.Closed = False
+    Set outer = doc.ModelSpace.AddLightWeightPolyline(values): outer.layer = "NP_OUTER": outer.Closed = False
     values(0) = 40#: values(1) = 40#: values(2) = 60#: values(3) = 40#: values(4) = 60#: values(5) = 60#
     values(6) = 40#: values(7) = 60#: values(8) = 40#: values(9) = 40#
-    Set entity = doc.modelSpace.AddLightWeightPolyline(values): entity.layer = "NP_OPENING": entity.Closed = False
+    Set entity = doc.ModelSpace.AddLightWeightPolyline(values): entity.layer = "NP_OPENING": entity.Closed = False
     point(0) = 40#: point(1) = 40#: endpoint(0) = 40#: endpoint(1) = 40#
     Set importer = New CAutoCADSectionModelImporter
     For Each targetLayer In Array("NP_OUTER", "NP_OPENING")
-    Set zero = doc.modelSpace.AddLine(point, endpoint): zero.layer = CStr(targetLayer): countBefore = doc.modelSpace.count
+    Set zero = doc.ModelSpace.AddLine(point, endpoint): zero.layer = CStr(targetLayer): countBefore = doc.ModelSpace.count
     prefix = "native.emptyContourSegment." & CStr(targetLayer)
-    Set section = importer.ImportFromModelSpace(doc.modelSpace, "NP_CONCRETE", "NP_REBAR", "Rebar", 0#, Nothing, "NP_OUTER", "NP_OPENING", doc.layers)
+    Set section = importer.ImportFromModelSpace(doc.ModelSpace, "NP_CONCRETE", "NP_REBAR", "Rebar", 0#, Nothing, "NP_OUTER", "NP_OPENING", doc.layers)
     Set query = New CSectionGeometryQuery: query.Initialize section
     CheckArea prefix & ".area", query.ConcreteDomain.area, 9600#
     Check prefix & ".roles", query.ConcreteDomain.loopCount = 2
     Check prefix & ".warning", InStr(importer.ImportComment, CStr(zero.handle)) > 0 And InStr(importer.ImportComment, "нулевой длины") > 0
-    Check prefix & ".noMutation", doc.modelSpace.count = countBefore And Not CBool(entity.Closed) And Not CBool(outer.Closed)
-    zero.Delete: endpoint(0) = 41#: Set zero = doc.modelSpace.AddLine(point, endpoint): zero.layer = CStr(targetLayer)
-    countBefore = doc.modelSpace.count
+    Check prefix & ".noMutation", doc.ModelSpace.count = countBefore And Not CBool(entity.Closed) And Not CBool(outer.Closed)
+    zero.Delete: endpoint(0) = 41#: Set zero = doc.ModelSpace.AddLine(point, endpoint): zero.layer = CStr(targetLayer)
+    countBefore = doc.ModelSpace.count
     On Error Resume Next
-    Set section = importer.ImportFromModelSpace(doc.modelSpace, "NP_CONCRETE", "NP_REBAR", "Rebar", 0#, Nothing, "NP_OUTER", "NP_OPENING", doc.layers)
+    Set section = importer.ImportFromModelSpace(doc.ModelSpace, "NP_CONCRETE", "NP_REBAR", "Rebar", 0#, Nothing, "NP_OUTER", "NP_OPENING", doc.layers)
     number = Err.number: description = Err.description: Err.clear
     On Error GoTo 0
     Check prefix & ".nonzeroRejected", number <> 0 And InStr(description, CStr(zero.handle)) > 0 And InStr(description, "PEDIT") > 0
-    Check prefix & ".failedNoMutation", doc.modelSpace.count = countBefore
+    Check prefix & ".failedNoMutation", doc.ModelSpace.count = countBefore
     zero.Delete: endpoint(0) = 40#
     Next targetLayer
 End Sub
@@ -55857,7 +56028,7 @@ Private Sub CheckNativeMixedContourRoundTrip(ByVal doc As Object)
         meshLayer = "NDM_MIX_MESH_" & CStr(mode): rebarLayer = "NDM_MIX_REBAR_" & CStr(mode)
         doc.layers.Add outerLayer: doc.layers.Add openingLayer: doc.layers.Add meshLayer: doc.layers.Add rebarLayer
         Set outer = NativeRectangle(doc, 100#, 100#, 0#, 1100# + 150# * mode, 100#): outer.layer = outerLayer
-        Set curves(0) = outer: regions = doc.modelSpace.AddRegion(curves): Set mesh = regions(LBound(regions)): mesh.layer = meshLayer
+        Set curves(0) = outer: regions = doc.ModelSpace.AddRegion(curves): Set mesh = regions(LBound(regions)): mesh.layer = meshLayer
         If mode = 1 Or mode = 3 Then MarkNDMContourOutput outer
         outerHandle = CStr(outer.handle)
         For i = 0 To 1
@@ -55866,33 +56037,33 @@ Private Sub CheckNativeMixedContourRoundTrip(ByVal doc As Object)
             If mode = 0 Or mode = 3 Then MarkNDMContourOutput hole
         Next i
         center(0) = 1060# + 150# * mode: center(1) = 60#
-        Set curve = doc.modelSpace.AddCircle(center, 5#)
-        Set curves(0) = curve: regions = doc.modelSpace.AddRegion(curves): Set bar = regions(LBound(regions))
+        Set curve = doc.ModelSpace.AddCircle(center, 5#)
+        Set curves(0) = curve: regions = doc.ModelSpace.AddRegion(curves): Set bar = regions(LBound(regions))
         bar.layer = rebarLayer: curve.Delete
-        countBefore = doc.modelSpace.count
-        Set section = importer.ImportFromModelSpace(doc.modelSpace, meshLayer, rebarLayer, "Rebar", 0#, Nothing, outerLayer, openingLayer, doc.layers)
+        countBefore = doc.ModelSpace.count
+        Set section = importer.ImportFromModelSpace(doc.ModelSpace, meshLayer, rebarLayer, "Rebar", 0#, Nothing, outerLayer, openingLayer, doc.layers)
         query.Initialize section: Set region = query.ConcreteDomain
         CheckArea prefix & ".importArea", region.area, 9700#
-        Check prefix & ".importThreeLoops", region.loopCount = 3 And doc.modelSpace.count = countBefore
+        Check prefix & ".importThreeLoops", region.loopCount = 3 And doc.ModelSpace.count = countBefore
         writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
         expectedExported = 3
         exported = SP35ExportSavedMaterialContoursForTests(doc, outerLayer, openingLayer)
-        Check prefix & ".exportAddsAll", exported = expectedExported And doc.modelSpace.count = countBefore + 3
+        Check prefix & ".exportAddsAll", exported = expectedExported And doc.ModelSpace.count = countBefore + 3
         Check prefix & ".originalOuterKept", CStr(doc.HandleToObject(outerHandle).handle) = outerHandle
         outerCount = 0: openingCount = 0
-        For Each entity In doc.modelSpace
+        For Each entity In doc.ModelSpace
             If CStr(entity.layer) = outerLayer Then outerCount = outerCount + 1
             If CStr(entity.layer) = openingLayer Then openingCount = openingCount + 1
         Next entity
         Check prefix & ".exportBothLayers", outerCount = 2 And openingCount = 4
         ' Тест сам подготавливает чистый импорт, как теперь обязан пользователь.
-        For i = doc.modelSpace.count - 1 To countBefore Step -1: doc.modelSpace.item(i).Delete: Next i
-        Set section = importer.ImportFromModelSpace(doc.modelSpace, meshLayer, rebarLayer, "Rebar", 0#, Nothing, outerLayer, openingLayer, doc.layers)
+        For i = doc.ModelSpace.count - 1 To countBefore Step -1: doc.ModelSpace.item(i).Delete: Next i
+        Set section = importer.ImportFromModelSpace(doc.ModelSpace, meshLayer, rebarLayer, "Rebar", 0#, Nothing, outerLayer, openingLayer, doc.layers)
         query.Initialize section: Set region = query.ConcreteDomain
         CheckArea prefix & ".reimportArea", region.area, 9700#
         Check prefix & ".reimportThreeLoops", region.loopCount = 3
         exported = SP35ExportSavedMaterialContoursForTests(doc, outerLayer, openingLayer)
-        Check prefix & ".repeatExportAddsAll", exported = expectedExported And doc.modelSpace.count = countBefore + 3
+        Check prefix & ".repeatExportAddsAll", exported = expectedExported And doc.ModelSpace.count = countBefore + 3
     Next mode
     GoTo Restore
 Failed:
@@ -55913,20 +56084,20 @@ Private Sub CheckNativeRegionBoundaryDedup(ByVal doc As Object)
     Dim writer As CNDMResultsWriter, countBefore As Long, exported As Long, handle As String
     doc.layers.Add "SP35_DEDUP_OUTER": doc.layers.Add "SP35_DEDUP_OPENING"
     Set polyline = NativeRectangle(doc, 100#, 100#, 0.23, 800#, 100#)
-    Set curves(0) = polyline: regions = doc.modelSpace.AddRegion(curves): Set source = regions(LBound(regions))
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set source = regions(LBound(regions))
     source.layer = "SP35_DEDUP_OUTER": polyline.Delete
     center(0) = 800#: center(1) = 100#
-    Set circleEntity = doc.modelSpace.AddCircle(center, 10#)
-    Set curves(0) = circleEntity: regions = doc.modelSpace.AddRegion(curves): Set hole = regions(LBound(regions))
+    Set circleEntity = doc.ModelSpace.AddCircle(center, 10#)
+    Set curves(0) = circleEntity: regions = doc.ModelSpace.AddRegion(curves): Set hole = regions(LBound(regions))
     source.Boolean 2, hole: circleEntity.Delete
     Set reader = New CAutoCADContourReader: Set region = reader.ReadRegion(source)
     Set section = New CSectionModel: section.sourceType = "Generated"
     section.AddConcreteElement 800#, 100#, CDbl(source.area), 1, , , "Rectangle", 100#, 100#, 0.23
     section.contours.AddMaterialRegion region, "SAME_CONTRACT", "Достоверный контур независимо от источника."
     Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
-    countBefore = doc.modelSpace.count: handle = CStr(source.handle)
+    countBefore = doc.ModelSpace.count: handle = CStr(source.handle)
     exported = SP35ExportSavedMaterialContoursForTests(doc, "SP35_DEDUP_OUTER", "SP35_DEDUP_OPENING")
-    Check "native.append.regionAndOpeningAdded", exported = 2 And doc.modelSpace.count = countBefore + 2
+    Check "native.append.regionAndOpeningAdded", exported = 2 And doc.ModelSpace.count = countBefore + 2
     Check "native.dedup.regionPreserved", doc.HandleToObject(handle).handle = handle
     CheckArea "native.dedup.regionAreaPreserved", CDbl(source.area), 10000# - 100# * GEOM_PI
 End Sub
@@ -55954,11 +56125,11 @@ Private Sub CheckNativeSharedContourOwnership(ByVal doc As Object)
     Set openingCopy = opening.copy: MarkNDMContourOutput openingCopy: openingCopyHandle = CStr(openingCopy.handle)
     Check "native.ownership.originalUnmarked", Not IsNDMContourOutput(original)
     Check "native.ownership.copyMarked", IsNDMContourOutput(copy)
-    For Each entity In doc.modelSpace
+    For Each entity In doc.ModelSpace
         If CStr(entity.layer) = "SP35_SAVED_CONTOURS" And IsNDMContourOutput(entity) Then ownedBefore = ownedBefore + 1
     Next entity
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    exported = Audit03CleanupAutoCADModelSpaceForTests(doc.modelSpace, settings)
+    exported = Audit03CleanupAutoCADModelSpaceForTests(doc.ModelSpace, settings)
     Check "native.ownership.sourcePreserved", doc.HandleToObject(handle).handle = handle
     Check "native.ownership.outputContourPreserved", doc.HandleToObject(copyHandle).handle = copyHandle
     Check "native.ownership.openingPreserved", doc.HandleToObject(openingHandle).handle = openingHandle
@@ -55969,12 +56140,12 @@ Private Sub CheckNativeSharedContourOwnership(ByVal doc As Object)
     Set reader = New CAutoCADContourReader: Set region = reader.ReadRegion(original)
     section.contours.AddMaterialRegion region, "OWNERSHIP", "Исходный контур."
     Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
-    countBefore = doc.modelSpace.count
+    countBefore = doc.ModelSpace.count
     exported = SP35ExportSavedMaterialContoursForTests(doc)
-    Check "native.ownership.existingSourceDoesNotBlockExport", exported = 1 And doc.modelSpace.count = countBefore + 1
+    Check "native.ownership.existingSourceDoesNotBlockExport", exported = 1 And doc.ModelSpace.count = countBefore + 1
     exported = SP35ExportSavedMaterialContoursForTests(doc)
-    Check "native.ownership.repeatAddsContour", exported = 1 And doc.modelSpace.count = countBefore + 2
-    For Each entity In doc.modelSpace
+    Check "native.ownership.repeatAddsContour", exported = 1 And doc.ModelSpace.count = countBefore + 2
+    For Each entity In doc.ModelSpace
         If CStr(entity.layer) = "SP35_SAVED_CONTOURS" And IsNDMContourOutput(entity) Then ownedCount = ownedCount + 1
     Next entity
     Check "native.ownership.previousOutputKept", ownedCount = ownedBefore + 2
@@ -56010,11 +56181,11 @@ Private Sub CheckNativeSavedContours(ByVal doc As Object, ByVal reader As CAutoC
     Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
     Set query = New CSectionGeometryQuery: query.Initialize restored
     CheckArea "native.snapshot.area", query.ConcreteDomain.area, region.area
-    countBefore = doc.modelSpace.count
+    countBefore = doc.ModelSpace.count
     exported = SP35ExportSavedMaterialContoursForTests(doc)
-    Check "native.snapshot.exportThreeLoops", exported = 3 And doc.modelSpace.count = countBefore + 3
-    For i = countBefore To doc.modelSpace.count - 1
-        Set entity = doc.modelSpace.item(i)
+    Check "native.snapshot.exportThreeLoops", exported = 3 And doc.ModelSpace.count = countBefore + 3
+    For i = countBefore To doc.ModelSpace.count - 1
+        Set entity = doc.ModelSpace.item(i)
         Check "native.snapshot.closed." & CStr(i - countBefore), CBool(entity.Closed)
         value = CDbl(entity.area): totalArea = totalArea + value
         If value > maxArea Then maxArea = value
@@ -56038,32 +56209,32 @@ Private Sub CheckNativeSeparateOpenings(ByVal doc As Object, ByVal reader As CAu
     doc.layers.Add "SP35_OUTER": doc.layers.Add "SP35_OPENING"
     doc.layers.Add "SP35_MESH": doc.layers.Add "SP35_REBAR"
     Set outer = NativeRectangle(doc, 100#, 100#, 0#, 500#, 100#): outer.layer = "SP35_OUTER"
-    Set curves(0) = outer: regions = doc.modelSpace.AddRegion(curves): Set mesh = regions(LBound(regions))
+    Set curves(0) = outer: regions = doc.ModelSpace.AddRegion(curves): Set mesh = regions(LBound(regions))
     mesh.layer = "SP35_MESH"
     For i = 0 To 1
         center(0) = 475# + 45# * i: center(1) = 85# + 25# * i
-        Set polyline = doc.modelSpace.AddCircle(center, 10# - 5# * i)
-        Set curves(0) = polyline: regions = doc.modelSpace.AddRegion(curves): Set hole = regions(LBound(regions))
+        Set polyline = doc.ModelSpace.AddCircle(center, 10# - 5# * i)
+        Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set hole = regions(LBound(regions))
         hole.layer = "SP35_OPENING"
         Set holeCopy = hole.copy: mesh.Boolean 2, holeCopy
     Next i
     center(0) = 460#: center(1) = 60#
-    Set polyline = doc.modelSpace.AddCircle(center, 5#)
-    Set curves(0) = polyline: regions = doc.modelSpace.AddRegion(curves): Set bar = regions(LBound(regions))
+    Set polyline = doc.ModelSpace.AddCircle(center, 5#)
+    Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set bar = regions(LBound(regions))
     bar.layer = "SP35_REBAR"
     raw = mesh.MomentOfInertia
     Dim centroid As Variant
     centroid = mesh.centroid
     expectedIx = CDbl(raw(LBound(raw))) - CDbl(mesh.area) * CDbl(centroid(LBound(centroid) + 1)) ^ 2
     expectedIy = CDbl(raw(LBound(raw) + 1)) - CDbl(mesh.area) * CDbl(centroid(LBound(centroid))) ^ 2
-    countBefore = doc.modelSpace.count
+    countBefore = doc.ModelSpace.count
     Set importer = New CAutoCADSectionModelImporter
-    Set section = importer.ImportFromModelSpace(doc.modelSpace, "SP35_MESH", "SP35_REBAR", "Rebar", 0#, Nothing, "SP35_OUTER", "SP35_OPENING", doc.layers)
+    Set section = importer.ImportFromModelSpace(doc.ModelSpace, "SP35_MESH", "SP35_REBAR", "Rebar", 0#, Nothing, "SP35_OUTER", "SP35_OPENING", doc.layers)
     query.Initialize section: Set region = query.ConcreteDomain
     CheckArea "native.separateOpenings.area", region.area, 10000# - 125# * GEOM_PI
     Check "native.separateOpenings.threeLoops", region.loopCount = 3
     Check "native.separateOpenings.excluded", Not query.ContainsPoint(region, 475#, 85#) And Not query.ContainsPoint(region, 520#, 110#)
-    Check "native.separateOpenings.sourceKept", doc.modelSpace.count = countBefore
+    Check "native.separateOpenings.sourceKept", doc.ModelSpace.count = countBefore
     CheckArea "native.mesh.actualAreaKept", section.concreteArea(1), CDbl(mesh.area)
     Check "native.mesh.rectangleKept", section.ConcreteBoundaryRectangle(1, width, height, angle)
     CheckArea "native.mesh.equivalentArea", width * height, CDbl(mesh.area)
@@ -56074,13 +56245,13 @@ Private Sub CheckNativeSeparateOpenings(ByVal doc As Object, ByVal reader As CAu
     doc.layers.Add "SP35_EMPTY_OPENING"
     Dim openingLayer As Variant
     For Each openingLayer In Array(vbNullString, "SP35_EMPTY_OPENING", "SP35_MISSING_OPENING")
-        Set section = importer.ImportFromModelSpace(doc.modelSpace, "SP35_MESH", "SP35_REBAR", "Rebar", 0#, Nothing, "SP35_OUTER", CStr(openingLayer), doc.layers)
+        Set section = importer.ImportFromModelSpace(doc.ModelSpace, "SP35_MESH", "SP35_REBAR", "Rebar", 0#, Nothing, "SP35_OUTER", CStr(openingLayer), doc.layers)
         query.Initialize section: Set region = query.ConcreteDomain
         CheckArea "native.knownOuterOnly." & CStr(openingLayer) & ".area", region.area, 10000#
         Check "native.knownOuterOnly." & CStr(openingLayer) & ".solid", region.loopCount = 1 And _
             query.ContainsPoint(region, 475#, 85#) And query.ContainsPoint(region, 520#, 110#)
         CheckArea "native.knownOuterOnly." & CStr(openingLayer) & ".mechanicalMeshKept", section.concreteArea(1), CDbl(mesh.area)
-        Check "native.knownOuterOnly." & CStr(openingLayer) & ".sourceKept", doc.modelSpace.count = countBefore
+        Check "native.knownOuterOnly." & CStr(openingLayer) & ".sourceKept", doc.ModelSpace.count = countBefore
     Next openingLayer
 End Sub
 
@@ -56094,7 +56265,7 @@ Private Function NativeRectangle(ByVal doc As Object, ByVal width As Double, ByV
         coordinates(2 * i) = cx + CDbl(px(i)) * Cos(angle) - CDbl(py(i)) * Sin(angle)
         coordinates(2 * i + 1) = cy + CDbl(px(i)) * Sin(angle) + CDbl(py(i)) * Cos(angle)
     Next i
-    Set result = doc.modelSpace.AddLightWeightPolyline(coordinates): result.Closed = True
+    Set result = doc.ModelSpace.AddLightWeightPolyline(coordinates): result.Closed = True
     Set NativeRectangle = result
 End Function
 
@@ -73988,19 +74159,19 @@ Private Sub TestAutoCADImporterTranslatedRegionKeepsLocalGeometry(ByRef stats As
     inertiaV = area * expectedWidth * expectedWidth / 12#
     RotatedLocalInertia inertiaU, inertiaV, angle, localIx, localIy, localIxy
 
-    Dim modelSpace As Collection
-    Set modelSpace = New Collection
-    modelSpace.Add FakeRegion(area, 0#, 0#, localIx, localIy, localIxy, _
+    Dim ModelSpace As Collection
+    Set ModelSpace = New Collection
+    ModelSpace.Add FakeRegion(area, 0#, 0#, localIx, localIy, localIxy, _
         "Concrete", "C_NEAR", angle, False)
-    modelSpace.Add FakeRegion(area, 12000#, -8000#, localIx, localIy, localIxy, _
+    ModelSpace.Add FakeRegion(area, 12000#, -8000#, localIx, localIy, localIxy, _
         "Concrete", "C_FAR", angle, False)
-    modelSpace.Add FakeRegion(GEOM_PI * 12# * 12# / 4#, 0#, -60#, 1#, 1#, 0#, _
+    ModelSpace.Add FakeRegion(GEOM_PI * 12# * 12# / 4#, 0#, -60#, 1#, 1#, 0#, _
         "Reinf", "R1", 0#, False)
 
     Dim importer As CAutoCADSectionModelImporter
     Set importer = New CAutoCADSectionModelImporter
     Dim model As CSectionModel
-    Set model = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", 0.000001)
+    Set model = importer.ImportFromModelSpace(ModelSpace, "Concrete", "Reinf", "Rebar", 0.000001)
 
     AssertClose stats, "autocad.import.translated.noExplode", importer.DebugEdgeProbeCount, 0#, 0.000001
     AssertTrue stats, "autocad.import.translated.nearShape", model.ConcreteShapeType(1) = "Rectangle"
@@ -74060,8 +74231,8 @@ End Sub
 ' простой грани через дешевый Explode, а неизотропный Region обходится без
 ' Explode и интерпретируется по своим A/I уже в CSectionModel.
 Private Sub TestAutoCADImporterSquareRegionReadsEdgeRotation(ByRef stats As TTestStats)
-    Dim modelSpace As Collection
-    Set modelSpace = New Collection
+    Dim ModelSpace As Collection
+    Set ModelSpace = New Collection
 
     Dim rectArea As Double
     Dim rectWidth As Double
@@ -74076,23 +74247,23 @@ Private Sub TestAutoCADImporterSquareRegionReadsEdgeRotation(ByRef stats As TTes
     Rectangle = GEOM_PI / 7#
     RotatedLocalInertia rectArea * rectHeight * rectHeight / 12#, _
         rectArea * rectWidth * rectWidth / 12#, Rectangle, rectIx, rectIy, rectIxy
-    modelSpace.Add FakeRegion(rectArea, 0#, 0#, rectIx, rectIy, rectIxy, _
+    ModelSpace.Add FakeRegion(rectArea, 0#, 0#, rectIx, rectIy, rectIxy, _
         "Concrete", "C_RECT", Rectangle, True)
 
     Dim squareArea As Double
     Dim squareAngle As Double
     squareArea = 2500#
     squareAngle = GEOM_PI / 5#
-    modelSpace.Add FakeRegion(squareArea, 120#, 0#, squareArea * squareArea / 12#, _
+    ModelSpace.Add FakeRegion(squareArea, 120#, 0#, squareArea * squareArea / 12#, _
         squareArea * squareArea / 12#, 0#, "Concrete", "C_SQ", squareAngle, True)
 
-    modelSpace.Add FakeRegion(GEOM_PI * 12# * 12# / 4#, 0#, -60#, 1#, 1#, 0#, _
+    ModelSpace.Add FakeRegion(GEOM_PI * 12# * 12# / 4#, 0#, -60#, 1#, 1#, 0#, _
         "Reinf", "R1", 0#, False)
 
     Dim importer As CAutoCADSectionModelImporter
     Set importer = New CAutoCADSectionModelImporter
     Dim model As CSectionModel
-    Set model = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", 0.000001)
+    Set model = importer.ImportFromModelSpace(ModelSpace, "Concrete", "Reinf", "Rebar", 0.000001)
 
     AssertTrue stats, "autocad.import.edgeProbe.rect.shape", model.ConcreteShapeType(1) = "Rectangle"
     AssertClose stats, "autocad.import.edgeProbe.rect.noExplode", importer.DebugEdgeProbeCount, 1#, 0.000001
@@ -74106,21 +74277,21 @@ End Sub
 ' угла круга. Среднее берется по двум исходным ориентированным элементам;
 ' повторное назначение не должно включать круг как новый источник ориентации.
 Private Sub TestAutoCADImporterZeroEdgeAndCircleAverage(ByRef stats As TTestStats)
-    Dim modelSpace As Collection, importer As CAutoCADSectionModelImporter, model As CSectionModel
+    Dim ModelSpace As Collection, importer As CAutoCADSectionModelImporter, model As CSectionModel
     Dim ix As Double, iy As Double, ixy As Double, area As Double
-    Set modelSpace = New Collection
+    Set ModelSpace = New Collection
     area = 2500#
-    modelSpace.Add FakeRegion(area, 0#, 0#, area * area / 12#, area * area / 12#, 0#, _
+    ModelSpace.Add FakeRegion(area, 0#, 0#, area * area / 12#, area * area / 12#, 0#, _
         "Concrete", "SQUARE_0", 0#, True)
     area = 80# * 160#
     RotatedLocalInertia area * 160# ^ 2 / 12#, area * 80# ^ 2 / 12#, GEOM_PI / 6#, ix, iy, ixy
-    modelSpace.Add FakeRegion(area, 200#, 0#, ix, iy, ixy, "Concrete", "RECT_30", 0#, False)
+    ModelSpace.Add FakeRegion(area, 200#, 0#, ix, iy, ixy, "Concrete", "RECT_30", 0#, False)
     area = GEOM_PI * 20# ^ 2
-    modelSpace.Add FakeRegion(area, 400#, 0#, GEOM_PI * 20# ^ 4 / 4#, GEOM_PI * 20# ^ 4 / 4#, 0#, _
+    ModelSpace.Add FakeRegion(area, 400#, 0#, GEOM_PI * 20# ^ 4 / 4#, GEOM_PI * 20# ^ 4 / 4#, 0#, _
         "Concrete", "CIRCLE", 0#, False)
-    modelSpace.Add FakeRegion(100#, 0#, 0#, 1#, 1#, 0#, "Reinf", "R1", 0#, False)
+    ModelSpace.Add FakeRegion(100#, 0#, 0#, 1#, 1#, 0#, "Reinf", "R1", 0#, False)
     Set importer = New CAutoCADSectionModelImporter
-    Set model = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "A400", 0#)
+    Set model = importer.ImportFromModelSpace(ModelSpace, "Concrete", "Reinf", "A400", 0#)
     AssertClose stats, "autocad.import.zeroEdge.square", model.concreteRotation(1), 0#, 0.000001
     AssertClose stats, "autocad.import.zeroEdge.mean", model.AverageKnownConcreteElementRotation(), GEOM_PI / 12#, 0.000001
     AssertClose stats, "autocad.import.zeroEdge.circle", model.concreteRotation(3), GEOM_PI / 12#, 0.000001
@@ -80060,7 +80231,7 @@ End Sub
 ' Переполнение при построении технической ветви возвращается как явная
 ' ошибка построения, а не как урезанная диаграмма с ложным пределом.
 Private Sub TestAudit02ExtensionOverflowIsExplicit(ByRef stats As TMaterialTestStats)
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     Dim steel As CSteelMaterialParameters
     Set steel = New CSteelMaterialParameters
     steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, 1E+308, 1E+308, 1E+308, 1E+308
@@ -80071,7 +80242,7 @@ Private Sub TestAudit02ExtensionOverflowIsExplicit(ByRef stats As TMaterialTestS
     Set extended = provider.SteelMaterialForEquilibrium(cpStrength)
     AssertTrue stats, "audit02.technical.overflowRejected", False
     Exit Sub
-ExpectedError:
+expectedError:
     AssertTrue stats, "audit02.technical.overflowRejected", Err.number = vbObjectError + 3245
 End Sub
 
@@ -80150,11 +80321,11 @@ End Sub
 Private Function Audit03CaptureDiagramInitialize(ByVal diagram As CMaterialDiagram, _
         ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, _
         ByRef description As String) As Long
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     description = vbNullString
     diagram.InitializeFromArrays strains, stresses, pointCount
     Exit Function
-ExpectedError:
+expectedError:
     Audit03CaptureDiagramInitialize = Err.number
     description = Err.description
 End Function
@@ -80163,10 +80334,10 @@ End Function
 ' Успех или случайная ошибка индекса вместо EnsureInitialized не принимаются.
 Private Function Audit03CaptureDiagramStress(ByVal diagram As CMaterialDiagram) As Long
     Dim stress As Double
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     stress = diagram.GetStress(-0.00075)
     Exit Function
-ExpectedError:
+expectedError:
     Audit03CaptureDiagramStress = Err.number
 End Function
 
@@ -80336,12 +80507,12 @@ End Function
 ' Перехватывает только контролируемую попытку прочитать неверный материал.
 ' Последующий recovery использует новый provider, чтобы не скрывать ошибку.
 Private Function Audit03MaterialConfigError(ByRef description As String) As Long
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     Dim provider As CMaterialModelProvider
     description = vbNullString
     Set provider = Audit03MaterialConfigProvider()
     Exit Function
-ExpectedError:
+expectedError:
     Audit03MaterialConfigError = Err.number
     description = Err.description
 End Function
@@ -86611,14 +86782,14 @@ Public Function RunSP35WorkbookTests() As String
     Set acad = ConnectToRunningAutoCAD()
     If acad.Documents.count > 0 Then Set previousDoc = acad.ActiveDocument
     Set doc = acad.Documents.Add
-    countBefore = doc.modelSpace.count
-    Check "SP35.export.off", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "CrackedState", False) = 0 And doc.modelSpace.count = countBefore
-    Check "SP35.export.strengthExcluded", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "StrengthState", True) = 0 And doc.modelSpace.count = countBefore
-    Check "SP35.export.capacityExcluded", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "CapacityState", True) = 0 And doc.modelSpace.count = countBefore
+    countBefore = doc.ModelSpace.count
+    Check "SP35.export.off", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "CrackedState", False) = 0 And doc.ModelSpace.count = countBefore
+    Check "SP35.export.strengthExcluded", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "StrengthState", True) = 0 And doc.ModelSpace.count = countBefore
+    Check "SP35.export.capacityExcluded", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "CapacityState", True) = 0 And doc.ModelSpace.count = countBefore
     Check "SP35.export.missingLC", SP35ExportSavedCrackRegionForTests(doc, "MISSING", "CrackedState", True) = 0
     Check "SP35.export.threeLoops", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "CrackedState", True) = 3
-    For i = countBefore To doc.modelSpace.count - 1
-        Set entity = doc.modelSpace.item(i)
+    For i = countBefore To doc.ModelSpace.count - 1
+        Set entity = doc.ModelSpace.item(i)
         Check "SP35.export.closed." & CStr(i - countBefore), CBool(entity.Closed)
         totalArea = totalArea + CDbl(entity.area)
         If CDbl(entity.area) > maxArea Then maxArea = CDbl(entity.area)
@@ -86633,8 +86804,8 @@ Public Function RunSP35WorkbookTests() As String
             annotations.offset(i - 1, 18).value2 = CDbl(values(i, 19)) + 1#: Exit For
         End If
     Next i
-    countBefore = doc.modelSpace.count
-    Check "SP35.export.staleWholeRegionSkipped", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "CrackedState", True) = 0 And doc.modelSpace.count = countBefore
+    countBefore = doc.ModelSpace.count
+    Check "SP35.export.staleWholeRegionSkipped", SP35ExportSavedCrackRegionForTests(doc, "SP35_A", "CrackedState", True) = 0 And doc.ModelSpace.count = countBefore
     ThisWorkbook.SaveCopyAs ThisWorkbook.path & "\SP35_WorkbookSnapshot.xlsm"
     GoTo Restore
 Failed:
@@ -88381,16 +88552,16 @@ Private Sub TestAutoCADImporterTreatsDrawingUnitsAsMillimeters(ByRef stats As TU
     rebarRegion.Initialize GEOM_PI * 25# * 25# / 4#, 1100#, 1900#, 1#, 1#, 0#, _
         "Reinf", "R1"
 
-    Dim modelSpace As Collection
-    Set modelSpace = New Collection
-    modelSpace.Add concreteRegion
-    modelSpace.Add rebarRegion
+    Dim ModelSpace As Collection
+    Set ModelSpace = New Collection
+    ModelSpace.Add concreteRegion
+    ModelSpace.Add rebarRegion
 
     Dim importer As CAutoCADSectionModelImporter
     Set importer = New CAutoCADSectionModelImporter
 
     Dim section As CSectionModel
-    Set section = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", 0.000001, units)
+    Set section = importer.ImportFromModelSpace(ModelSpace, "Concrete", "Reinf", "Rebar", 0.000001, units)
 
     AssertClose stats, "ui.autocad.importUnits.concreteX", section.concreteX(1), 1000#, 0.000001
     AssertClose stats, "ui.autocad.importUnits.concreteY", section.concreteY(1), 2000#, 0.000001
@@ -92467,7 +92638,7 @@ End Sub
 ' Сетка с непредставимым числом ячеек должна отказать до выделения массива/цикла.
 Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operation As String, _
         ByRef description As String) As Long
-    On Error GoTo ExpectedError
+    On Error GoTo expectedError
     Dim settings As CSystemSettingsReader, profiles As CCalculationProfileCatalog
     Dim mesh As CFiberMeshBuilder, geometry As CGeometryRoundedRectangle
     Dim solver As CSectionSolver, registry As CSectionTypeRegistry
@@ -92512,7 +92683,7 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
             End Select
     End Select
     Exit Function
-ExpectedError:
+expectedError:
     Audit03CaptureInputError = Err.number
     description = Err.description
 End Function
@@ -94008,7 +94179,7 @@ End Function
 ' обязательного key проверяются отдельно; измененные ячейки восстанавливаются.
 Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
     Dim unitRange As Object, systemRange As Object, savedUnits As Variant, savedSystem As Variant
-    Dim modelSpace As Collection, region As CFakeAcadRegion, importer As CAutoCADSectionModelImporter
+    Dim ModelSpace As Collection, region As CFakeAcadRegion, importer As CAutoCADSectionModelImporter
     Dim section As CSectionModel, disconnected As CSectionModel
     Dim settings As CSystemSettingsReader, units As CUnitSystem
     Dim unitIndex As Long, caseIndex As Long, factor As Double, threshold As Double, rawValue As Double
@@ -94026,18 +94197,18 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
     SetSystemSetting "Units.Length.Input", "m"
     SetSystemSetting "AutoCAD.Common.ConcreteLayer", "Concrete"
     SetSystemSetting "AutoCAD.Common.RebarLayer", "Reinf"
-    Set modelSpace = New Collection
+    Set ModelSpace = New Collection
     Set region = New CFakeAcadRegion
     region.Initialize 10000#, 1000#, 2000#, 10000# * 10000# / 12#, 10000# * 10000# / 12#, 0#, "Concrete", "C_MAIN"
-    modelSpace.Add region
+    ModelSpace.Add region
     Set region = New CFakeAcadRegion
     region.Initialize 2#, 1005#, 2005#, 4# / 12#, 4# / 12#, 0#, "Concrete", "C_SMALL"
-    modelSpace.Add region
+    ModelSpace.Add region
     areas = Array(24.999, 25#, 25.001)
     For row = 0 To UBound(areas)
         Set region = New CFakeAcadRegion
         region.Initialize CDbl(areas(row)), 980# + row * 20#, 1980#, 1#, 1#, 0#, "Reinf", "R" & CStr(row + 1)
-        modelSpace.Add region
+        ModelSpace.Add region
     Next row
     Set importer = New CAutoCADSectionModelImporter
     unitNames = Array("mm2", "cm2", "m2")
@@ -94058,7 +94229,7 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
             settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem
             units.LoadFromSettings settings
-            Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, units, Audit03AbsentContourLayers())
+            Set section = importer.ImportConfiguredModelSpace(ModelSpace, settings, units, Audit03AbsentContourLayers())
             prefix = "audit03.inputArea.unit" & CStr(unitIndex) & ".case" & CStr(caseIndex)
             AssertTrue stats, prefix & ".concreteCount", section.ConcreteCount = expectedConcrete
             AssertTrue stats, prefix & ".rebarCount", section.rebarCount = expectedRebar
@@ -94070,10 +94241,10 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
                 AssertTrue stats, prefix & ".inclusiveBoundary", section.RebarSourceHandle(1) = "R2"
                 AssertClose stats, prefix & ".boundaryArea", section.rebarArea(1), 25#, 0.000001
                 AssertClose stats, prefix & ".boundaryX", section.RebarX(1), 1000#, 0.000001
-                Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, Nothing, Audit03AbsentContourLayers())
+                Set section = importer.ImportConfiguredModelSpace(ModelSpace, settings, Nothing, Audit03AbsentContourLayers())
                 AssertTrue stats, prefix & ".implicitUnitsRead", section.ConcreteCount = expectedConcrete And section.rebarCount = expectedRebar
                 If unitIndex > 0 Then
-                    Set disconnected = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", rawValue, units)
+                    Set disconnected = importer.ImportFromModelSpace(ModelSpace, "Concrete", "Reinf", "Rebar", rawValue, units)
                     AssertTrue stats, prefix & ".detectDisconnectedUnits", disconnected.ConcreteCount <> section.ConcreteCount And _
                         disconnected.rebarCount <> section.rebarCount
                 End If
@@ -94086,7 +94257,7 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
     invalid = Array(vbNullString, "TODO", "abc", CVErr(2042), -1#, "1e308")
     For invalidIndex = 0 To UBound(invalid)
         systemRange.cells(minAreaRow, 2).value2 = invalid(invalidIndex)
-        Audit03CaptureImportError modelSpace, errorNumber, description
+        Audit03CaptureImportError ModelSpace, errorNumber, description
         prefix = "audit03.inputArea.invalid" & CStr(invalidIndex)
         AssertTrue stats, prefix & ".rejected", errorNumber <> 0
         AssertTrue stats, prefix & ".address", InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
@@ -94096,17 +94267,17 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
         AppendLine stats, "AREA_INVALID: case=" & CStr(invalidIndex) & "|error=" & CStr(errorNumber) & "|reason=" & description
     Next invalidIndex
     systemRange.cells(minAreaRow, 2).value2 = 25.002 / 1000000#
-    Audit03CaptureImportError modelSpace, errorNumber, description
+    Audit03CaptureImportError ModelSpace, errorNumber, description
     AssertTrue stats, "audit03.inputArea.emptyRebar.rejected", errorNumber <> 0
     AssertTrue stats, "audit03.inputArea.emptyRebar.reason", InStr(1, description, "арматурных", vbBinaryCompare) > 0 And _
         InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
     systemRange.cells(minAreaRow, 2).value2 = 10001# / 1000000#
-    Audit03CaptureImportError modelSpace, errorNumber, description
+    Audit03CaptureImportError ModelSpace, errorNumber, description
     AssertTrue stats, "audit03.inputArea.emptyConcrete.rejected", errorNumber <> 0
     AssertTrue stats, "audit03.inputArea.emptyConcrete.reason", InStr(1, description, "бетонных", vbBinaryCompare) > 0 And _
         InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
     systemRange.cells(minAreaRow, 1).value2 = "__MissingImportMinimumArea"
-    Audit03CaptureImportError modelSpace, errorNumber, description
+    Audit03CaptureImportError ModelSpace, errorNumber, description
     AssertTrue stats, "audit03.inputArea.missing.rejected", errorNumber <> 0
     AssertTrue stats, "audit03.inputArea.missing.address", InStr(1, description, "AutoCAD.Import.MinArea", vbBinaryCompare) > 0
     AssertTrue stats, "audit03.inputArea.noStateSolve", SectionEquilibriumSolveCount() = solveCount
@@ -94134,7 +94305,7 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: собирает настройки заново после изменения ячейки и сохраняет
 ' только фактическую ошибку общего импорта. Ошибка не превращается в default.
-Private Sub Audit03CaptureImportError(ByVal modelSpace As Object, ByRef errorNumber As Long, ByRef description As String)
+Private Sub Audit03CaptureImportError(ByVal ModelSpace As Object, ByRef errorNumber As Long, ByRef description As String)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, importer As CAutoCADSectionModelImporter, section As CSectionModel
     errorNumber = 0: description = vbNullString
     On Error GoTo Failed
@@ -94143,7 +94314,7 @@ Private Sub Audit03CaptureImportError(ByVal modelSpace As Object, ByRef errorNum
     Set units = New CUnitSystem
     units.LoadFromSettings settings
     Set importer = New CAutoCADSectionModelImporter
-    Set section = importer.ImportConfiguredModelSpace(modelSpace, settings, units, Audit03AbsentContourLayers())
+    Set section = importer.ImportConfiguredModelSpace(ModelSpace, settings, units, Audit03AbsentContourLayers())
     Exit Sub
 Failed:
     errorNumber = Err.number: description = Err.description
@@ -94364,21 +94535,21 @@ End Sub
 ' ДЛЯ ТЕСТОВ: четыре квадратных бетонных Region и четыре арматурных Region
 ' проходят общий importer с Config. Смещенный центр проверяет перенос момента.
 Private Function Audit03ImportSnapshotFixture(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CSectionModel
-    Dim modelSpace As Collection, region As CFakeAcadRegion, importer As CAutoCADSectionModelImporter
+    Dim ModelSpace As Collection, region As CFakeAcadRegion, importer As CAutoCADSectionModelImporter
     Dim x As Double, y As Double, i As Long
-    Set modelSpace = New Collection
+    Set ModelSpace = New Collection
     For i = 0 To 3
         x = 950# + (i Mod 2) * 100#: y = -750# + (i \ 2) * 100#
         Set region = New CFakeAcadRegion
         region.Initialize 10000#, x, y, 10000# * 10000# / 12#, 10000# * 10000# / 12#, 0#, "Concrete", "C" & CStr(i + 1)
-        modelSpace.Add region
+        ModelSpace.Add region
         x = 930# + (i Mod 2) * 140#: y = -770# + (i \ 2) * 140#
         Set region = New CFakeAcadRegion
         region.Initialize GEOM_PI * 20# ^ 2 / 4#, x, y, 1#, 1#, 0#, "Reinf", "R" & CStr(i + 1)
-        modelSpace.Add region
+        ModelSpace.Add region
     Next i
     Set importer = New CAutoCADSectionModelImporter
-    Set Audit03ImportSnapshotFixture = importer.ImportConfiguredModelSpace(modelSpace, settings, units, Audit03AbsentContourLayers())
+    Set Audit03ImportSnapshotFixture = importer.ImportConfiguredModelSpace(ModelSpace, settings, units, Audit03AbsentContourLayers())
 End Function
 
 ' ====================== ДЛЯ ТЕСТОВ: ПОНЯТНЫЕ ОШИБКИ CONFIG ======================
@@ -96609,7 +96780,7 @@ End Sub
 ' подписи, слои и цвета проверяются вне таймеров. Пользовательский DWG запрещен.
 Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCount As Long) As String
     If InStr(1, CStr(doc.Application.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) = 0 Then Err.Raise 5, , "Требуется настоящий Autodesk AutoCAD."
-    If doc.modelSpace.count <> 0 Then Err.Raise 5, , "Замер разрешен только в пустом собственном документе."
+    If doc.ModelSpace.count <> 0 Then Err.Raise 5, , "Замер разрешен только в пустом собственном документе."
     Dim t As Double, exportSeconds As Double, importSeconds As Double, count As Long, solves As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, importer As CAutoCADSectionModelImporter
     Dim section As CSectionModel, entity As Object, i As Long, signature As String
@@ -96617,7 +96788,7 @@ Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCoun
     Dim userLayer As Object, userHandle As String, selectionCount As Long
     Set userLayer = doc.layers.Add("PERFORMANCE_EXISTING")
     userPoint(0) = 1000#: userEnd(0) = 1010#: userEnd(1) = 10#
-    Set userLine = doc.modelSpace.AddLine(userPoint, userEnd)
+    Set userLine = doc.ModelSpace.AddLine(userPoint, userEnd)
     userLine.layer = userLayer.name: userLine.color = 173: userHandle = CStr(userLine.handle)
     Set userSet = doc.SelectionSets.Add("PERFORMANCE_USER_SELECTION")
     Dim userItems(0 To 0) As Object: Set userItems(0) = userLine
@@ -96628,7 +96799,7 @@ Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCoun
     Dim savedPoint As Variant: savedPoint = userLine.endpoint
     If CDbl(savedPoint(0)) <> 1010# Or CDbl(savedPoint(1)) <> 10# Then Err.Raise 5, , "Экспорт изменил координаты прежнего объекта."
     If doc.SelectionSets.count <> selectionCount Or userSet.count <> 1 Then Err.Raise 5, , "Экспорт изменил прежние наборы выбора или оставил временный набор."
-    For Each entity In doc.modelSpace
+    For Each entity In doc.ModelSpace
         signature = signature & CStr(entity.ObjectName) & "|" & CStr(entity.layer) & "|" & CStr(entity.color)
         If entity.ObjectName = "AcDbText" Then signature = signature & "|" & CStr(entity.TextString)
         signature = signature & vbLf
@@ -96638,17 +96809,17 @@ Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCoun
         Set layer = doc.layers.Add("PERFORMANCE_UNRELATED")
         For i = 1 To noiseCount
             p(0) = 1000# + i: q(0) = p(0): q(1) = 10#
-            Set entity = doc.modelSpace.AddLine(p, q): entity.layer = layer.name
+            Set entity = doc.ModelSpace.AddLine(p, q): entity.layer = layer.name
         Next i
     End If
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set importer = New CAutoCADSectionModelImporter
-    Dim before As Long: before = doc.modelSpace.count
+    Dim before As Long: before = doc.ModelSpace.count
     t = PerformanceNow()
-    Set section = importer.ImportConfiguredModelSpace(doc.modelSpace, settings, units, doc.layers)
+    Set section = importer.ImportConfiguredModelSpace(doc.ModelSpace, settings, units, doc.layers)
     importSeconds = SecondsSince(t)
-    If doc.modelSpace.count <> before Then Err.Raise 5, , "Импорт изменил исходные CAD-объекты."
+    If doc.ModelSpace.count <> before Then Err.Raise 5, , "Импорт изменил исходные CAD-объекты."
     If SectionEquilibriumSolveCount() <> solves Then Err.Raise 5, , "Импорт/экспорт неожиданно запустил решатель."
     For i = 1 To section.ConcreteCount
         signature = signature & "C|" & section.ConcreteID(i) & "|" & section.ConcreteShapeType(i)
@@ -96776,5 +96947,59 @@ Private Sub ISectionGeometry_BuildContours(ByVal contours As CSectionContours)
     Next i
 End Sub
 
+
+
+====================================================================================================
+COMPONENT: CFakeAcadDocument
+TYPE: 2
+LINES: 48
+====================================================================================================
+Option Explicit
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ: граница документа AutoCAD перед чтением геометрии
+' ==========================================================================
+' Возвращает заданный WORLDUCS или ошибку COM. Обращение к ModelSpace/Layers
+' запрещено и подсчитывается, чтобы отказ при локальной/непроверенной ПСК
+' не мог незаметно прочитать геометрию. Не заменяет живые CAD-проверки.
+
+Private mWorldUCS As Variant
+Private mReadFails As Boolean
+Private mGeometryReads As Long
+Private mVariableReads As Long
+
+' ДЛЯ ТЕСТОВ: задает ответ машинного признака и сбрасывает счетчики чтений.
+Public Sub Initialize(ByVal worldUCS As Variant, Optional ByVal readFails As Boolean = False)
+    mWorldUCS = worldUCS: mReadFails = readFails
+    mGeometryReads = 0: mVariableReads = 0
+End Sub
+
+' ДЛЯ ТЕСТОВ: иной системный параметр означает ошибочный контракт проверки.
+Public Function GetVariable(ByVal name As String) As Variant
+    mVariableReads = mVariableReads + 1
+    If name <> "WORLDUCS" Or mReadFails Then Err.Raise vbObjectError + 9105, "CFakeAcadDocument", "Variable unavailable."
+    GetVariable = mWorldUCS
+End Function
+
+' ДЛЯ ТЕСТОВ: импорт не должен доходить сюда при локальной ПСК.
+Public Property Get ModelSpace() As Object
+    mGeometryReads = mGeometryReads + 1
+    Err.Raise vbObjectError + 9106, "CFakeAcadDocument", "ModelSpace accessed."
+End Property
+
+' ДЛЯ ТЕСТОВ: даже чтение слоев запрещено до успешной проверки МСК.
+Public Property Get layers() As Object
+    mGeometryReads = mGeometryReads + 1
+    Err.Raise vbObjectError + 9106, "CFakeAcadDocument", "Layers accessed."
+End Property
+
+' ДЛЯ ТЕСТОВ: счетчики отделяют отказ проверки от отказа чтения геометрии.
+Public Property Get GeometryReads() As Long
+    GeometryReads = mGeometryReads
+End Property
+
+Public Property Get VariableReads() As Long
+    VariableReads = mVariableReads
+End Property
 
 
