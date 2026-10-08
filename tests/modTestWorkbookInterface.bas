@@ -40,6 +40,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestConfigDropdownChoices stats
     TestConfigDropdownMeaning stats
     TestConfigSettingsRightBorder stats
+    TestAutoCADGeometryContourWarning stats
     AppendLine stats, "RUN: TestAudit03ReaderContract"
     TestAudit03ReaderContract stats
     AppendLine stats, "RUN: TestAudit03InputContracts; " & Audit02ExcelMemory()
@@ -7584,9 +7585,48 @@ Public Function RunConfigPresentationTests() As String
     TestConfigSettingsRightBorder stats
     TestRectSetIndependentSelectorLayout stats
     TestAutoCADCommonSettingsLayout stats
+    TestAutoCADGeometryContourWarning stats
     RunConfigPresentationTests = stats.Report & "TOTAL_CONFIG_PRESENTATION: passed=" & _
         CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
+
+' Проверяет предупреждение в инструкции подготовки геометрии, включая
+' риски завышения/занижения площади и красное выделение всего абзаца.
+' Адреса не фиксированы: после пересборки справки ищутся ее заголовки.
+Private Sub TestAutoCADGeometryContourWarning(ByRef stats As TUiTestStats)
+    Dim guide As Object, warning As Object, heading As Object, nextHeading As Object
+    Dim row As Long, text As String, cell As Object, used As Object, values As Variant, value As String, sectionText As String
+    On Error GoTo Failed
+    Set guide = ThisWorkbook.Worksheets("Справка")
+    ' Читаем и скрытые строки одним массивом, независимо от настроек Find.
+    Set used = guide.UsedRange: values = used.Value2
+    For row = 1 To UBound(values, 1)
+        value = CStr(values(row, 1))
+        If InStr(1, value, "ВНИМАНИЕ: для расчета раскрытия трещин", vbTextCompare) = 1 Then Set warning = guide.Cells(used.Row + row - 1, used.Column)
+        If value = "2. Точный контур и несколько отверстий" Then Set heading = guide.Cells(used.Row + row - 1, used.Column)
+        If value = "3. Единицы, поворот и плоскость" Then Set nextHeading = guide.Cells(used.Row + row - 1, used.Column)
+    Next row
+    AssertTrue stats, "guide.autoCAD.contourWarning.exists", Not warning Is Nothing And Not heading Is Nothing And Not nextHeading Is Nothing
+    If warning Is Nothing Or heading Is Nothing Or nextHeading Is Nothing Then Exit Sub
+    AssertTrue stats, "guide.autoCAD.contourWarning.location", warning.Row > heading.Row And warning.Row < nextHeading.Row
+    For row = warning.Row To nextHeading.Row - 1
+        Set cell = guide.Cells(row, 1)
+        If CLng(cell.Font.Color) <> 255 Then Exit For
+        text = text & " " & CStr(cell.Value2)
+        AssertTrue stats, "guide.autoCAD.contourWarning.redBold." & CStr(row), CBool(cell.Font.Bold)
+    Next row
+    AssertTrue stats, "guide.autoCAD.contourWarning.recommendation", InStr(1, text, "настоятельно рекомендуется", vbTextCompare) > 0
+    AssertTrue stats, "guide.autoCAD.contourWarning.armature", InStr(1, text, "взаимодействия бетона с растянутой арматурой", vbTextCompare) > 0
+    AssertTrue stats, "guide.autoCAD.contourWarning.risks", InStr(1, text, "завышены или занижены", vbTextCompare) > 0
+    For row = heading.Row + 1 To nextHeading.Row - 1
+        sectionText = sectionText & " " & CStr(guide.Cells(row, 1).Value2)
+    Next row
+    AssertTrue stats, "guide.autoCAD.knownOuter.solid", InStr(1, sectionText, "бетон внутри контура считается сплошным", vbTextCompare) > 0
+    AssertTrue stats, "guide.autoCAD.knownOuter.noMeshVoids", InStr(1, sectionText, "Пустоты по сетке не восстанавливаются", vbTextCompare) > 0
+    Exit Sub
+Failed:
+    AssertTrue stats, "guide.autoCAD.contourWarning.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
 
 ' Проверяет единственный набор общих слоев и размещение экспортной области
 ' в каталоге. Ожидания независимы от SettingsCatalog и действуют после сборки.

@@ -1871,3 +1871,19 @@ Public Function RunNoFormationTensionWidthTests() As String
 Failed:
     RunNoFormationTensionWidthTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
+
+' ДЛЯ ТЕСТОВ: адресная проверка потребителя геометрии СП 63. Использует
+' штатные случаи центрального/косого растяжения и двух режимов площади,
+' не запускает полный набор Formation и старую матрицу on/off.
+Public Function RunCrackGeometryTests() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestEffectiveAndFullTensionZones stats
+    TestCentralTensionBranch stats
+    TestCrackUserPsiMxy stats
+    AppendLine stats, "TOTAL_CRACK_GEOMETRY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunCrackGeometryTests = stats.Report
+    Exit Function
+Failed:
+    RunCrackGeometryTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function

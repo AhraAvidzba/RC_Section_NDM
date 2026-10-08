@@ -331,6 +331,23 @@ Private Sub AddOutlinePoint(ByRef pointX() As Double, ByRef pointY() As Double, 
     pointY(count) = Y
 End Sub
 
+' Передает точную наружную ломаную в общий контейнер геометрии.
+' Роль Outer задается здесь и не зависит от размеров или подписей формы.
+Public Sub BuildContours(ByVal contours As CSectionContours)
+    If contours Is Nothing Then Err.Raise vbObjectError + 5283, "CGeometryRectSet", "Контейнер контуров сечения не передан."
+    Dim message As String
+    If Not IsValid(message) Then Err.Raise vbObjectError + 5283, "CGeometryRectSet", message
+    Dim px() As Double, py() As Double, i As Long, nextIndex As Long
+    GetExtremePoints px, py
+    contours.Clear
+    For i = LBound(px) To UBound(px)
+        nextIndex = i + 1
+        If i = UBound(px) Then nextIndex = LBound(px)
+        contours.AddContourLine "CONTOUR_LINE_" & CStr(i), px(i), py(i), px(nextIndex), py(nextIndex), _
+            "Сегмент контура сечения.", "OUTER", "Outer"
+    Next i
+End Sub
+
 Private Property Get ISectionGeometry_MinX() As Double
     ISectionGeometry_MinX = MinX
 End Property
@@ -377,3 +394,7 @@ Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef po
     GetExtremePoints pointX, pointY
 End Sub
 
+' Передает классифицированные контуры через обязательный интерфейс формы.
+Private Sub ISectionGeometry_BuildContours(ByVal contours As CSectionContours)
+    BuildContours contours
+End Sub

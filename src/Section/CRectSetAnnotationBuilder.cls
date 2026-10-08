@@ -14,11 +14,11 @@ Option Explicit
 ' ==========================================================================
 ' Builder знает смысл верхнего и нижнего прямоугольников: общий габарит,
 ' размеры активных прямоугольников и линии арматуры. Он формирует
-' исходный контур в model.Contours и размерные/арматурные аннотации отдельно.
+' только размерные/арматурные аннотации; исходный контур принадлежит геометрии.
 ' Визуальное размещение подписей на листе не относится к ответственности builder-а.
 
-' Заменяет исходный контур модели, размеры активных прямоугольников
-' и подписями арматуры. Расчетное сечение и его НДС здесь не пересчитываются.
+' Заменяет размеры активных прямоугольников и подписи арматуры.
+' Исходные контуры, расчетное сечение и его НДС здесь не изменяются.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5300, "CRectSetAnnotationBuilder", "Модель сечения не передана."
     If geometry Is Nothing Then Err.Raise vbObjectError + 5301, "CRectSetAnnotationBuilder", "Геометрия RectSet-сечения не передана."
@@ -26,32 +26,11 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations
     annotations.Clear
-    model.Contours.Clear
-
-    AddContour model.Contours, geometry
     AddDimensions annotations, geometry
 
     Dim rebarLabels As CRebarGroupAnnotationBuilder
     Set rebarLabels = New CRebarGroupAnnotationBuilder
     rebarLabels.AddRebarLabels annotations, rebars
-End Sub
-
-' Добавляет внешний контур RectSet как набор прямых semantic-сегментов.
-Private Sub AddContour(ByVal contours As CSectionContours, ByVal geometry As ISectionGeometry)
-    Dim px() As Double
-    Dim py() As Double
-    geometry.GetExtremePoints px, py
-
-    Dim i As Long
-    Dim nextIndex As Long
-    For i = LBound(px) To UBound(px)
-        If i = UBound(px) Then
-            nextIndex = LBound(px)
-        Else
-            nextIndex = i + 1
-        End If
-        contours.AddContourLine "CONTOUR_LINE_" & CStr(i), px(i), py(i), px(nextIndex), py(nextIndex)
-    Next i
 End Sub
 
 ' Добавляет основные размеры RectSet и, при необходимости, смещение верхнего прямоугольника.

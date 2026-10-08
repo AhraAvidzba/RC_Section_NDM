@@ -172,6 +172,7 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     Set model = BuildGeneratedSectionModel(mesh, circleBars, "Circle")
     Dim annotationBuilder As CCircleAnnotationBuilder
     Set annotationBuilder = New CCircleAnnotationBuilder
+    geom.BuildContours model.Contours
     annotationBuilder.Build model, geom, circleBars
     AssertTrue stats, "annotation.model.count", model.AnnotationCount = 2 And model.Contours.Count = 1
     AssertTrue stats, "annotation.model.rebarLabel", HasSectionAnnotation(model, "REBAR_ANNOTATION", "REBAR_Circle")
@@ -1687,6 +1688,7 @@ Private Sub TestRoundedRectangleContourAnnotations(ByRef stats As TTestStats)
 
     Dim builder As CRoundedRectAnnotationBuilder
     Set builder = New CRoundedRectAnnotationBuilder
+    geom.BuildContours model.Contours
     builder.Build model, geom, rebars
 
     Dim annotations As CSectionAnnotations
@@ -1908,6 +1910,7 @@ Private Sub TestHollowRectangleContourAnnotations(ByRef stats As TTestStats)
 
     Dim builder As CHollowRectAnnotationBuilder
     Set builder = New CHollowRectAnnotationBuilder
+    geom.BuildContours model.Contours
     builder.Build model, geom, rebars
 
     AssertTrue stats, "hollow.annotation.outerLoop", HasSectionAnnotationIDPrefix(model, "CONTOUR_OUTER_")

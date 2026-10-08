@@ -27,8 +27,8 @@ Private mRevision As Long
 Private mDomain As CConcreteRegion ' Неизменная область одной модели/query-session; потребитель получает clone.
 Private mDomainBuildCount As Long ' Число успешных подготовок за жизнь query, включая смену контекста.
 
-' Привязывает query-session к модели. Достоверные контуры берутся из Contours
-' генератора/импортера, а неизвестная граница восстанавливается по КЭ.
+' Привязывает query-session к модели. Достоверные Contours задают полную
+' область бетона; сетка используется только при отсутствии наружного контура.
 Public Sub Initialize(ByVal section As CSectionModel)
     If section Is Nothing Then GeometryError "Модель сечения не передана."
     If section.ConcreteCount = 0 Then GeometryError "В модели нет бетонных элементов."
@@ -62,7 +62,8 @@ Public Function ConcreteDomain() As CConcreteRegion
 End Function
 
 ' Возвращает точные крайние проекции готовой области, включая экстремумы дуг.
-' Это API трещин; прежние сеточные проекции устойчивости остаются в properties.
+' Используется геометрией и трещинами; сеточные проекции устойчивости
+' по-прежнему остаются в properties.
 Public Sub ProjectionBounds(ByVal region As CConcreteRegion, ByVal nx As Double, ByVal ny As Double, _
         ByRef minimum As Double, ByRef maximum As Double)
     RequireRegion region
@@ -86,6 +87,33 @@ Public Sub ProjectionBounds(ByVal region As CConcreteRegion, ByVal nx As Double,
             If PointParameter(edges(i), edges(i).CenterX - radius * nx, edges(i).CenterY - radius * ny, u) Then minimum = GeomMin(minimum, projection - radius)
         End If
     Next i
+End Sub
+
+' Возвращает точные габариты каждого явно классифицированного отверстия.
+' Геометрический генератор сетки получает весь набор независимо от типа
+' формы. Колонки массива: minX, maxX, minY, maxY во внутренних мм.
+Public Sub OpeningBounds(ByVal contours As CSectionContours, ByRef bounds() As Double, ByRef openingCount As Long)
+    Erase bounds: openingCount = 0
+    If contours Is Nothing Then GeometryError "Контуры геометрии для определения отверстий не переданы."
+    Dim outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
+    ReadMaterialContours contours, outer, outerCount, holes, holeCount
+    If holeCount = 0 Then Exit Sub
+    OrientLoops holes, holeCount, False
+    Dim allOpenings As CConcreteRegion, oneOpening As CConcreteRegion
+    Dim oneLoop() As TRegionEdge, oneCount As Long, loopID As Long, i As Long
+    Set allOpenings = MakeRegion(holes, holeCount, "ExplicitOpeningBounds", 0)
+    allOpenings.CopyEdges holes, holeCount
+    openingCount = allOpenings.LoopCount
+    ReDim bounds(1 To openingCount, 1 To 4)
+    For loopID = 1 To openingCount
+        Erase oneLoop: oneCount = 0
+        For i = 1 To holeCount
+            If holes(i).LoopID = loopID Then AppendEdge oneLoop, oneCount, holes(i)
+        Next i
+        Set oneOpening = MakeRegion(oneLoop, oneCount, "ExplicitOpeningBounds", 0)
+        ProjectionBounds oneOpening, 1#, 0#, bounds(loopID, 1), bounds(loopID, 2)
+        ProjectionBounds oneOpening, 0#, 1#, bounds(loopID, 3), bounds(loopID, 4)
+    Next loopID
 End Sub
 
 ' Строит область заданного замкнутого многоугольника без обращения к модели.
@@ -738,29 +766,18 @@ Private Sub EnsureDomain()
     mRevision = mSection.Revision
     Dim outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
     ReadMaterialContours mSection.Contours, outer, outerCount, holes, holeCount
-    Dim mesh() As TRegionEdge, meshCount As Long, meshRegion As CConcreteRegion
-    If outerCount = 0 Or holeCount = 0 Then
+    Dim mesh() As TRegionEdge, meshCount As Long
+    If outerCount = 0 Then
         MeshBoundary mSection, mesh, meshCount
-        Set meshRegion = MakeRegion(mesh, meshCount, "ElementBoundaryLoops", mRevision)
     End If
-    Dim raw() As TRegionEdge, count As Long, i As Long, loopArea As Double, loopID As Long
+    Dim raw() As TRegionEdge, count As Long, i As Long
     If outerCount > 0 Then
+        ' Известный наружный контур задает всю область. Учитываем только
+        ' заданные отверстия; неизвестные пустоты по сетке не добавляются.
         OrientLoops outer, outerCount, False
         For i = 1 To outerCount
             AppendEdge raw, count, outer(i)
         Next i
-        If holeCount = 0 Then
-            ' Неизвестные opening не исчезают при наличии точного outer:
-            ' внутренние петли фактической дискретной сетки остаются пустотами.
-            For loopID = 1 To meshRegion.LoopCount
-                loopArea = SignedLoopArea(mesh, meshCount, loopID)
-                If loopArea < -QUERY_TOLERANCE Then
-                    For i = 1 To meshCount
-                        If mesh(i).LoopID = loopID Then AppendEdge raw, count, mesh(i)
-                    Next i
-                End If
-            Next loopID
-        End If
     Else
         For i = 1 To meshCount
             AppendEdge raw, count, mesh(i)

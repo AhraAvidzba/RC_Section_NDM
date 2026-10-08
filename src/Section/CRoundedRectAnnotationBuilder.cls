@@ -12,12 +12,12 @@ Option Explicit
 ' ==========================================================================
 ' Semantic-аннотации скругленного прямоугольника
 ' ==========================================================================
-' Builder формирует контур, размеры B/H, при необходимости W левой/правой
+' Builder формирует размеры B/H, при необходимости W левой/правой
 ' tapered-части и групповые подписи арматуры. Он не строит расчетную сетку и
-' не принимает решений по NDM. Точный контур относится к model.Contours,
-' а размеры и подписи - к Annotations; смешивания их хранилищ нет.
+' не принимает решений по NDM и не меняет точные контуры формы.
+' Размеры и подписи относятся только к Annotations.
 
-' Заменяет исходный контур модели и отдельно размеры/подписи арматуры.
+' Заменяет только размеры и подписи арматуры.
 ' Передает внутренние координаты визуальному слою, не изменяя сетку или НДС.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5305, "CRoundedRectAnnotationBuilder", "Модель сечения не передана."
@@ -26,67 +26,11 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations
     annotations.Clear
-    model.Contours.Clear
-
-    AddContour model.Contours, geometry
     AddDimensions annotations, geometry
 
     Dim rebarLabels As CRebarGroupAnnotationBuilder
     Set rebarLabels = New CRebarGroupAnnotationBuilder
     rebarLabels.AddRebarLabels annotations, rebars
-End Sub
-
-' Добавляет контур RoundedRectangle; для родного класса использует дуги, для fallback-геометрии - линии.
-Private Sub AddContour(ByVal contours As CSectionContours, ByVal geometry As ISectionGeometry)
-    Dim rounded As CGeometryRoundedRectangle
-    Dim geometryObject As Object
-    Set geometryObject = geometry
-    If TypeName(geometryObject) = "CGeometryRoundedRectangle" Then Set rounded = geometryObject
-
-    If Not rounded Is Nothing Then
-        AddRoundedContour contours, rounded
-        Exit Sub
-    End If
-
-    Dim px() As Double
-    Dim py() As Double
-    geometry.GetExtremePoints px, py
-
-    Dim i As Long
-    Dim nextIndex As Long
-    For i = LBound(px) To UBound(px)
-        If i = UBound(px) Then
-            nextIndex = LBound(px)
-        Else
-            nextIndex = i + 1
-        End If
-        contours.AddContourLine "CONTOUR_LINE_" & CStr(i), px(i), py(i), px(nextIndex), py(nextIndex), _
-            "Сегмент контура скругленного прямоугольника."
-    Next i
-End Sub
-
-' Добавляет точный semantic-контур RoundedRectangle: прямые остаются линиями,
-' а радиусы выводятся дугами, а не ломаной дискретизацией.
-Private Sub AddRoundedContour(ByVal contours As CSectionContours, ByVal rounded As CGeometryRoundedRectangle)
-    Dim segmentType() As String
-    Dim startX() As Double, startY() As Double
-    Dim endX() As Double, endY() As Double
-    Dim centerX() As Double, centerY() As Double
-    Dim radiusValue() As Double, sweepAngle() As Double
-    Dim segmentCount As Long
-    rounded.GetContourSegments segmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
-
-    Dim i As Long
-    For i = 1 To segmentCount
-        If StrComp(segmentType(i), "ARC", vbTextCompare) = 0 Then
-            contours.AddContourArc "CONTOUR_ARC_" & CStr(i), startX(i), startY(i), endX(i), endY(i), _
-                centerX(i), centerY(i), radiusValue(i), sweepAngle(i), _
-                "Дуга контура скругленного прямоугольника."
-        Else
-            contours.AddContourLine "CONTOUR_LINE_" & CStr(i), startX(i), startY(i), endX(i), endY(i), _
-                "Прямой участок контура скругленного прямоугольника."
-        End If
-    Next i
 End Sub
 
 ' Добавляет размеры B/H и фактический W' для tapered-сторон RoundedRectangle.

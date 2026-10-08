@@ -359,6 +359,7 @@ Private Sub TestHollowArcJunctions(ByVal query As CSectionGeometryQuery)
     Set section = New CSectionModel
     section.AddConcreteElement 0#, -300#, 10000#, 1, , , "Rectangle", 100#, 100#
     Set annotations = New CHollowRectAnnotationBuilder: Set rebars = New CRebarLayout
+    geometry.BuildContours section.Contours
     annotations.Build section, geometry, rebars
     query.Initialize section: Set domain = query.ConcreteDomain
     For Each side In Array(-1#, 1#)
@@ -479,8 +480,9 @@ Private Sub TestFirstMaterialWall(ByVal query As CSectionGeometryQuery)
     CheckClosed "wall.circular", wall
 End Sub
 
-' ДЛЯ ТЕСТОВ: проверяет смешанные источники и инвалидирование только при
-' изменении материала. Подпись результата не должна перестраивать domain.
+' ДЛЯ ТЕСТОВ: известный outer задает полную область, без поиска пустот
+' по сетке. Проверяет явные отверстия и инвалидирование по геометрии,
+' но не по подписи расчетного результата.
 Private Sub TestKnownAndUnknownContours(ByVal query As CSectionGeometryQuery)
     Dim model As CSectionModel, region As CConcreteRegion, i As Long, j As Long, revision As Long
     Set model = New CSectionModel
@@ -492,10 +494,19 @@ Private Sub TestKnownAndUnknownContours(ByVal query As CSectionGeometryQuery)
     AddContourRectangle model, "CONTOUR_OUTER", 0#, 0#, 30#, 30#
     query.Initialize model
     Set region = query.ConcreteDomain
-    CheckNear "knownOuter.unknownOpening.area", region.Area, 800#
-    Check "knownOuter.unknownOpening.loops", region.LoopCount = 2
-    Check "knownOuter.unknownOpening.empty", Not query.ContainsPoint(region, 15#, 15#)
-    CheckClosed "knownOuter.unknownOpening", region
+    CheckNear "knownOuter.noOpening.area", region.Area, 900#
+    Check "knownOuter.noOpening.loops", region.LoopCount = 1
+    Check "knownOuter.noOpening.solid", query.ContainsPoint(region, 15#, 15#)
+    Check "knownOuter.noOpening.authoritative", region.Source = "AuthoritativeContour"
+    CheckNear "knownOuter.noOpening.clippedArea", query.ClipHalfPlane(region, 0#, 1#, 15#).Area, 450#
+    CheckClosed "knownOuter.noOpening", region
+    model.Contours.AddContourCircle "CONTOUR_OPENING", 15#, 15#, 2#, "Заданное отверстие.", "HOLE", "Opening"
+    Set region = query.ConcreteDomain
+    CheckNear "knownOuter.explicitOpening.area", region.Area, 900# - 4# * GEOM_PI
+    Check "knownOuter.explicitOpening.loops", region.LoopCount = 2
+    Check "knownOuter.explicitOpening.empty", Not query.ContainsPoint(region, 15#, 15#)
+    Check "knownOuter.explicitOpening.noMeshVoid", query.ContainsPoint(region, 11#, 15#)
+    CheckClosed "knownOuter.explicitOpening", region
 
     Set model = New CSectionModel
     model.AddConcreteElement 50#, 50#, 10000#, 1, , , "Rectangle", 100#, 100#
@@ -546,4 +557,160 @@ Private Sub TestRotatedAndTouchingGeometry(ByVal query As CSectionGeometryQuery)
     CheckNear "touching.vertex.area", region.Area, 200#
     Check "touching.vertex.twoLoops", region.LoopCount = 2
     CheckClosed "touching.vertex", region
+End Sub
+
+' ДЛЯ ТЕСТОВ: проверяет обязательный интерфейс контуров всех генераторов
+' и новую форму с несколькими отверстиями без какого-либо annotation builder.
+Public Function RunGeneratedContourOwnershipTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    TestGeneratedContoursWithoutAnnotations
+    TestNewGeometryWithMultipleOpenings
+    GoTo Finished
+Failed:
+    Check "generatedContours.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunGeneratedContourOwnershipTests = mReport & "TOTAL_GENERATED_CONTOURS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: точные контуры появляются до аннотаций, а их повторное
+' построение/очистка не меняют ни одну запись контура или геометрическую версию.
+Private Sub TestGeneratedContoursWithoutAnnotations()
+    Dim kind As Variant, geometry As ISectionGeometry, circleGeometry As CGeometryCircle, rectSet As CGeometryRectSet
+    Dim rounded As CGeometryRoundedRectangle, hollow As CGeometryHollowRectangle
+    Dim model As CSectionModel, bars As CRebarLayout, mesh As CFiberMeshBuilder, query As CSectionGeometryQuery
+    Dim saved As CSectionContours, expectedArea As Double, revision As Long
+    Dim bounds() As Double, openingCount As Long
+    Dim circleLabels As CCircleAnnotationBuilder, rectLabels As CRectSetAnnotationBuilder
+    Dim roundedLabels As CRoundedRectAnnotationBuilder, hollowLabels As CHollowRectAnnotationBuilder
+    For Each kind In Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+        Select Case CStr(kind)
+            Case "Circle"
+                Set circleGeometry = New CGeometryCircle: circleGeometry.InitializeByDiameter 100#
+                Set geometry = circleGeometry: expectedArea = 2500# * GEOM_PI
+            Case "RectSet"
+                Set rectSet = New CGeometryRectSet: rectSet.Initialize 100#, 100#, 0#, 0#, 0#, 0#, 0#, "Rectangle"
+                Set geometry = rectSet: expectedArea = 10000#
+            Case "RoundedRectangle"
+                Set rounded = New CGeometryRoundedRectangle: rounded.Initialize 100#, 100#, 10#, 10#, 10#, 10#
+                Set geometry = rounded: expectedArea = 10000# - (4# - GEOM_PI) * 100#
+            Case "HollowRectangle"
+                Set hollow = New CGeometryHollowRectangle: hollow.Initialize 100#, 100#, 10#, 40#, 60#, 5#
+                Set geometry = hollow: expectedArea = 7600# - (4# - GEOM_PI) * 75#
+        End Select
+        Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 10#, 10#, 1, 2
+        Set bars = New CRebarLayout
+        bars.AddBar "SOURCE_BAR", 0.5 * (geometry.MinX + geometry.MaxX), geometry.MinY + 5#, 2#, GEOM_PI, "Rebar", , geometry
+        Set model = BuildGeneratedSectionModel(mesh, bars)
+        geometry.BuildContours model.Contours
+        Check "generatedContours." & CStr(kind) & ".noAnnotations", model.AnnotationCount = 0 And model.Contours.Count > 0
+        Set query = New CSectionGeometryQuery: query.Initialize model
+        CheckNear "generatedContours." & CStr(kind) & ".areaBeforeAnnotations", query.ConcreteDomain.Area, expectedArea
+        query.OpeningBounds model.Contours, bounds, openingCount
+        Check "generatedContours." & CStr(kind) & ".openingCount", openingCount = IIf(CStr(kind) = "HollowRectangle", 1, 0)
+        If CStr(kind) = "HollowRectangle" And openingCount = 1 Then
+            Check "generatedContours.hollow.meshBoundsUnchanged", bounds(1, 1) = hollow.OpeningMinX And bounds(1, 2) = hollow.OpeningMaxX And _
+                bounds(1, 3) = hollow.OpeningMinY And bounds(1, 4) = hollow.OpeningMaxY
+        End If
+        Set saved = CopyGeneratedContoursForTests(model.Contours): revision = model.Contours.Revision
+        Select Case CStr(kind)
+            Case "Circle": Set circleLabels = New CCircleAnnotationBuilder: circleLabels.Build model, geometry, bars
+            Case "RectSet": Set rectLabels = New CRectSetAnnotationBuilder: rectLabels.Build model, geometry, bars
+            Case "RoundedRectangle": Set roundedLabels = New CRoundedRectAnnotationBuilder: roundedLabels.Build model, geometry, bars
+            Case "HollowRectangle": Set hollowLabels = New CHollowRectAnnotationBuilder: hollowLabels.Build model, geometry, bars
+        End Select
+        Check "generatedContours." & CStr(kind) & ".annotationRevisionUnchanged", model.Contours.Revision = revision
+        CheckGeneratedContoursEqual "generatedContours." & CStr(kind) & ".annotations", saved, model.Contours
+        model.Annotations.Clear
+        Check "generatedContours." & CStr(kind) & ".clearAnnotationsKeepsRevision", model.Contours.Revision = revision
+        CheckNear "generatedContours." & CStr(kind) & ".areaWithoutAnnotations", query.ConcreteDomain.Area, expectedArea
+        geometry.BuildContours model.Contours
+        CheckGeneratedContoursEqual "generatedContours." & CStr(kind) & ".rebuild", saved, model.Contours
+    Next kind
+End Sub
+
+' ДЛЯ ТЕСТОВ: независимый новый геометрический класс передает два и пять
+' отверстий через один API; Results и query не знают ни его типа, ни ID пустот.
+Private Sub TestNewGeometryWithMultipleOpenings()
+    Dim fixture As CFakeMultiOpeningGeometry, geometry As ISectionGeometry, count As Variant, i As Long
+    Dim mesh As CFiberMeshBuilder, model As CSectionModel, restored As CSectionModel, bars As CRebarLayout
+    Dim query As CSectionGeometryQuery, writer As CNDMResultsWriter, expected As CSectionContours
+    Dim region As CConcreteRegion, holes As Object
+    Dim bounds() As Double, openingCount As Long, meshArea As Double
+    For Each count In Array(2, 5)
+        Set fixture = New CFakeMultiOpeningGeometry: fixture.Initialize CLng(count): Set geometry = fixture
+        Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 10#, 10#, 1, 2
+        meshArea = 0#
+        For i = 1 To mesh.FiberCount
+            meshArea = meshArea + mesh.FiberArea(i) * mesh.FiberFillFactor(i)
+            Check "generatedMultiple." & CStr(count) & ".meshInConcrete." & CStr(i), geometry.ContainsPoint(mesh.FiberX(i), mesh.FiberY(i))
+        Next i
+        Check "generatedMultiple." & CStr(count) & ".meshRefinesOpenings", mesh.FiberCount > 100 And meshArea < 10000#
+        Set bars = New CRebarLayout: bars.AddBar "SOURCE_BAR", 10#, 10#, 2#, GEOM_PI, "Rebar", , geometry
+        Set model = BuildGeneratedSectionModel(mesh, bars)
+        geometry.BuildContours model.Contours
+        Check "generatedMultiple." & CStr(count) & ".sameModel", TypeName(model) = "CSectionModel" And model.SourceType = "Generated"
+        Check "generatedMultiple." & CStr(count) & ".noAnnotations", model.AnnotationCount = 0
+        Set holes = CreateObject("Scripting.Dictionary")
+        For i = 1 To model.Contours.Count
+            If model.Contours.LoopRole(i) = "Opening" Then holes.Item(model.Contours.LoopID(i)) = True
+        Next i
+        Check "generatedMultiple." & CStr(count) & ".distinctRoles", holes.Count = CLng(count)
+        Set query = New CSectionGeometryQuery: query.Initialize model: Set region = query.ConcreteDomain
+        query.OpeningBounds model.Contours, bounds, openingCount
+        Check "generatedMultiple." & CStr(count) & ".allOpeningBounds", openingCount = CLng(count)
+        CheckNear "generatedMultiple." & CStr(count) & ".area", region.Area, fixture.ExpectedArea
+        Check "generatedMultiple." & CStr(count) & ".loops", region.LoopCount = CLng(count) + 1
+        For i = 1 To CLng(count)
+            Check "generatedMultiple." & CStr(count) & ".empty." & CStr(i), Not query.ContainsPoint(region, fixture.OpeningX(i), 50#)
+        Next i
+        Set expected = CopyGeneratedContoursForTests(model.Contours)
+        Set writer = New CNDMResultsWriter
+        writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model)
+        Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "Generated")
+        CheckGeneratedContoursEqual "generatedMultiple." & CStr(count) & ".snapshot", expected, restored.Contours
+        query.Initialize restored: Set region = query.ConcreteDomain
+        CheckNear "generatedMultiple." & CStr(count) & ".snapshotArea", region.Area, fixture.ExpectedArea
+        Check "generatedMultiple." & CStr(count) & ".snapshotLoops", region.LoopCount = CLng(count) + 1
+        CheckNear "generatedMultiple." & CStr(count) & ".halfArea", query.ClipHalfPlane(region, 0#, 1#, 50#).Area, fixture.ExpectedArea / 2#
+        CheckClosed "generatedMultiple." & CStr(count), region
+    Next count
+End Sub
+
+' ДЛЯ ТЕСТОВ: копирует исходные поля без сериализации дуг и восстановления
+' концов через тригонометрию, чтобы сравнение аннотаций не требовало допуска.
+Private Function CopyGeneratedContoursForTests(ByVal source As CSectionContours) As CSectionContours
+    Dim copy As CSectionContours, i As Long
+    Set copy = New CSectionContours
+    For i = 1 To source.Count
+        Select Case source.SegmentType(i)
+            Case "CONTOUR_LINE"
+                copy.AddContourLine source.ContourID(i), source.StartX(i), source.StartY(i), source.EndX(i), source.EndY(i), _
+                    source.Comment(i), source.LoopID(i), source.LoopRole(i), source.SourceID(i)
+            Case "CONTOUR_CIRCLE"
+                copy.AddContourCircle source.ContourID(i), source.StartX(i), source.StartY(i), source.Radius(i), _
+                    source.Comment(i), source.LoopID(i), source.LoopRole(i), source.SourceID(i)
+            Case "CONTOUR_ARC"
+                copy.AddContourArc source.ContourID(i), source.StartX(i), source.StartY(i), source.EndX(i), source.EndY(i), _
+                    source.CenterX(i), source.CenterY(i), source.Radius(i), source.SweepAngle(i), _
+                    source.Comment(i), source.LoopID(i), source.LoopRole(i), source.SourceID(i)
+        End Select
+    Next i
+    Set CopyGeneratedContoursForTests = copy
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет все геометрические поля и metadata без допуска,
+' чтобы перенос ответственности не изменил контур или породил копии.
+Private Sub CheckGeneratedContoursEqual(ByVal prefix As String, ByVal expected As CSectionContours, ByVal actual As CSectionContours)
+    Check prefix & ".count", expected.Count = actual.Count
+    If expected.Count <> actual.Count Then Exit Sub
+    Dim i As Long
+    For i = 1 To expected.Count
+        Check prefix & ".metadata." & CStr(i), expected.ContourID(i) = actual.ContourID(i) And _
+            expected.SegmentType(i) = actual.SegmentType(i) And expected.LoopID(i) = actual.LoopID(i) And _
+            expected.LoopRole(i) = actual.LoopRole(i) And expected.SourceID(i) = actual.SourceID(i) And expected.Comment(i) = actual.Comment(i)
+        Check prefix & ".coordinates." & CStr(i), expected.StartX(i) = actual.StartX(i) And expected.StartY(i) = actual.StartY(i) And _
+            expected.EndX(i) = actual.EndX(i) And expected.EndY(i) = actual.EndY(i) And expected.CenterX(i) = actual.CenterX(i) And _
+            expected.CenterY(i) = actual.CenterY(i) And expected.Radius(i) = actual.Radius(i) And expected.SweepAngle(i) = actual.SweepAngle(i)
+    Next i
 End Sub

@@ -83,17 +83,15 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
     Dim cellMinY As Double
     Dim allCornersInside As Boolean
     Dim anyCornerInside As Boolean
-    Dim hasOpening As Boolean, hollowGeometry As CGeometryHollowRectangle
-    Dim openingMinX As Double, openingMaxX As Double, openingMinY As Double, openingMaxY As Double
+    Dim openingBounds() As Double, openingCount As Long, openingIndex As Long
+    Dim contours As CSectionContours, query As CSectionGeometryQuery
     ' Четыре бетонных угла не исключают проем внутри ячейки. Его габариты
-    ' читаем один раз; пересекающиеся ячейки уточняет обычный ContainsPoint.
+    ' читаем один раз для всех Opening через общий контракт формы;
+    ' пересекающиеся ячейки уточняет обычный ContainsPoint.
     If boundarySubdivisions > 1 Then
-        If TypeOf geometry Is CGeometryHollowRectangle Then
-            Set hollowGeometry = geometry
-            hasOpening = True
-            openingMinX = hollowGeometry.OpeningMinX: openingMaxX = hollowGeometry.OpeningMaxX
-            openingMinY = hollowGeometry.OpeningMinY: openingMaxY = hollowGeometry.OpeningMaxY
-        End If
+        Set contours = New CSectionContours: geometry.BuildContours contours
+        Set query = New CSectionGeometryQuery
+        query.OpeningBounds contours, openingBounds, openingCount
     End If
 
     For iy = 0 To ny - 1
@@ -109,9 +107,14 @@ Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, 
                 If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
             Else
                 GetCornerStatus geometry, cellMinX, cellMinY, stepX, stepY, allCornersInside, anyCornerInside
-                If allCornersInside And hasOpening Then
-                    If cellMinX < openingMaxX And cellMinX + stepX > openingMinX And _
-                            cellMinY < openingMaxY And cellMinY + stepY > openingMinY Then allCornersInside = False
+                If allCornersInside Then
+                    For openingIndex = 1 To openingCount
+                        If cellMinX < openingBounds(openingIndex, 2) And cellMinX + stepX > openingBounds(openingIndex, 1) And _
+                                cellMinY < openingBounds(openingIndex, 4) And cellMinY + stepY > openingBounds(openingIndex, 3) Then
+                            allCornersInside = False
+                            Exit For
+                        End If
+                    Next openingIndex
                 End If
                 If allCornersInside Then
                     AddFiber x, y, stepX, stepY, materialID

@@ -12,13 +12,12 @@ Option Explicit
 ' ==========================================================================
 ' Semantic-аннотации HollowRectangle
 ' ==========================================================================
-' Builder записывает в Results точный внешний контур, контур Opening, основные
-' размерные линии и групповые подписи арматуры. Расчетные волокна, материалы и
-' solver-ы здесь не создаются. Outer/opening заполняют model.Contours,
-' размерные линии и подписи заполняют отдельный контейнер Annotations.
+' Builder создает только основные размерные линии и групповые подписи
+' арматуры. Расчетные волокна, материалы и solver-ы здесь не создаются.
+' Точные Outer/Opening уже получены от геометрии; они здесь не меняются.
 
-' Заменяет исходные наружный контур и отверстие, а также отдельные размеры
-' и подписями арматуры; бетонная сетка и расчетное НДС не изменяются.
+' Заменяет размеры и подписи арматуры, не изменяя наружную границу,
+' отверстия, бетонную сетку или расчетное НДС.
 Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5315, "CHollowRectAnnotationBuilder", "Модель сечения не передана."
     If geometry Is Nothing Then Err.Raise vbObjectError + 5316, "CHollowRectAnnotationBuilder", "Геометрия HollowRectangle не передана."
@@ -26,53 +25,19 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     Dim annotations As CSectionAnnotations
     Set annotations = model.Annotations
     annotations.Clear
-    model.Contours.Clear
-
-    ' Аннотации HollowRectangle требуют именно concrete geometry этого типа:
-    ' наружная и внутренняя петли контура нужны AutoCAD export и Excel-схеме.
+    ' Размеры наружной формы и проема берутся из физических параметров
+    ' HollowRectangle; сама геометрия контуров уже подготовлена отдельно.
     Dim hollow As CGeometryHollowRectangle
     Dim geometryObject As Object
     Set geometryObject = geometry
     If TypeName(geometryObject) = "CGeometryHollowRectangle" Then Set hollow = geometryObject
     If hollow Is Nothing Then Err.Raise vbObjectError + 5317, "CHollowRectAnnotationBuilder", "Ожидалась геометрия CGeometryHollowRectangle."
 
-    ' Контуры пишутся первыми, затем размерные линии и подписи групп арматуры.
-    ' Такой порядок удобен для чтения Results и не влияет на расчетную модель.
-    AddContourLoop model.Contours, hollow, False, "OUTER", "наружного контура"
-    AddContourLoop model.Contours, hollow, True, "OPENING", "внутреннего контура Opening"
     AddDimensions annotations, hollow
 
     Dim rebarLabels As CRebarGroupAnnotationBuilder
     Set rebarLabels = New CRebarGroupAnnotationBuilder
     rebarLabels.AddRebarLabels annotations, rebars
-End Sub
-
-' Добавляет замкнутый контур с явными ключом и ролью Outer/Opening, чтобы
-' query и export не смешивали наружную границу с отверстием.
-Private Sub AddContourLoop(ByVal contours As CSectionContours, ByVal hollow As CGeometryHollowRectangle, _
-        ByVal openingLoop As Boolean, ByVal loopName As String, ByVal commentPart As String)
-    Dim segmentType() As String
-    Dim startX() As Double, startY() As Double
-    Dim endX() As Double, endY() As Double
-    Dim centerX() As Double, centerY() As Double
-    Dim radiusValue() As Double, sweepAngle() As Double
-    Dim segmentCount As Long
-    hollow.GetContourSegments openingLoop, segmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
-
-    ' Сохраняем точные сегменты исходной геометрии. Plotter и AutoCAD export
-    ' получают их из geometry snapshot, а не из результата расчета трещин.
-    Dim i As Long
-    For i = 1 To segmentCount
-        If StrComp(segmentType(i), "ARC", vbTextCompare) = 0 Then
-            contours.AddContourArc "CONTOUR_" & loopName & "_ARC_" & CStr(i), _
-                startX(i), startY(i), endX(i), endY(i), centerX(i), centerY(i), radiusValue(i), sweepAngle(i), _
-                "Дуга " & commentPart & " HollowRectangle.", loopName, IIf(openingLoop, "Opening", "Outer")
-        Else
-            contours.AddContourLine "CONTOUR_" & loopName & "_LINE_" & CStr(i), _
-                startX(i), startY(i), endX(i), endY(i), _
-                "Прямой участок " & commentPart & " HollowRectangle.", loopName, IIf(openingLoop, "Opening", "Outer")
-        End If
-    Next i
 End Sub
 
 ' Размеры выводятся по физическим параметрам таблицы: наружные B/H и размеры

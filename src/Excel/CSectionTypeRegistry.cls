@@ -17,8 +17,9 @@ Option Explicit
 ' *RebarLayoutBuilder и *AnnotationBuilder. Он не должен знать внутреннюю
 ' структуру таблиц граней и рядов конкретного сечения: такие детали остаются
 ' внутри специализированных builders. Отдельные provider-классы здесь
-' сознательно не используются, чтобы новый тип сечения требовал не более трех
-' новых специализированных классов и одной регистрации в этом registry.
+' сознательно не используются: обязательны геометрия с точными outer/opening
+' и арматурный builder, а annotation builder необязателен. Новый тип
+' подключается только здесь; ниже по цепочке используются общие контракты.
 
 Private Const TYPE_CIRCLE As String = "circle" ' Ключ круглого сечения в Geometry.Type.
 Private Const TYPE_RECTSET As String = "rectset" ' Ключ сечения из одного или двух прямоугольников в Geometry.Type.
@@ -146,9 +147,9 @@ End Function
 ' Добавляет semantic-аннотации формы в готовую CSectionModel.
 ' AnnotationBuilder получает модельные координаты и смысловые группы арматуры;
 ' Excel/Chart-координаты по-прежнему рассчитывает только layout/plot layer.
-' Если зарегистрированная форма не имеет annotation builder, это не
-' считается ошибкой: модель остается без размеров/подписей граней,
-' а общие подписи схемы CSectionPlotter продолжит выводить сам.
+' Контуры здесь не создаются и не очищаются. Если зарегистрированная форма
+' не имеет annotation builder, модель остается без размеров/подписей граней;
+' геометрия и классификация всех отверстий уже подготовлены независимо.
 Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, _
         ByVal rebars As CRebarLayout, ByVal settings As CSystemSettingsReader)
     If model Is Nothing Then Err.Raise vbObjectError + 4136, "CSectionTypeRegistry", "Модель сечения не передана."
@@ -181,8 +182,9 @@ Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal geometry As ISec
 End Sub
 
 ' Собирает Generated-модель целиком: форму, бетонную сетку, арматуру и
-' semantic-аннотации. При добавлении нового типа меняется только registry и
-' три специализированных класса формы; writer/reader/layout/plotter не трогаются.
+' точные контуры с ролями и необязательные semantic-аннотации. Новый тип
+' требует геометрию и арматурный builder, необязательно annotation builder;
+' writer/reader/layout/plotter и расчетные потребители не меняются.
 Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CSectionModel
     Dim geometry As ISectionGeometry
     Set geometry = CreateGeometry(settings, units)
@@ -212,6 +214,7 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Dim modelBuilder As CSectionModelBuilder
     Set modelBuilder = New CSectionModelBuilder
     Set model = modelBuilder.BuildFromGenerated(mesh, rebars, "Generated")
+    geometry.BuildContours model.Contours
     BuildAnnotations model, geometry, rebars, settings
     Set BuildGeneratedModel = model
 End Function

@@ -113,7 +113,7 @@ Failed:
 End Sub
 
 ' Очищает активный чертеж AutoCAD от объектов оформления, созданных NDM-export.
-' Геометрические Region бетона и арматуры остаются на своих слоях. Удаляются
+' Геометрия бетона, арматуры, наружных границ и отверстий остается. Удаляются
 ' только подписи на annotation-слоях, нейтральная линия, главные оси и точка
 ' приложения нагрузки, чтобы можно было заново выгрузить расчет поверх той же
 ' геометрии.
@@ -143,7 +143,7 @@ Public Sub ClearAutoCADDrawing()
     If informationEnabled Then
         ShowWorkbookMessage "Чертеж AutoCAD очищен от объектов оформления RC Section NDM." & vbCrLf & _
             "Удалено объектов: " & CStr(deletedCount) & "." & vbCrLf & _
-            "Геометрия бетона и арматуры оставлена без изменений.", vbInformation, "RC Section NDM"
+            "Бетон, арматура, наружные контуры и отверстия оставлены без изменений.", vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
@@ -168,7 +168,8 @@ Private Function AutoCADCleanupLayerSet(ByRef exportSettings As TAutoCADExportSe
     AddCleanupLayer layers, "RC_NDM_NeutralLine"
     AddCleanupLayer layers, exportSettings.CrackInteractionLayer
     AddCleanupLayer layers, EXTENSION_WARNING_LAYER
-    ' Общие слои защищаются даже при совпадении с другим слоем оформления.
+    ' Общие контурные слои защищаются целиком, включая прежний NDM-export,
+    ' даже при совпадении с другим слоем оформления.
     If Len(exportSettings.ContourLayer) > 0 Then layers.Item(exportSettings.ContourLayer) = False
     If Len(exportSettings.OpeningContourLayer) > 0 Then layers.Item(exportSettings.OpeningContourLayer) = False
 
@@ -183,15 +184,15 @@ Private Sub AddCleanupLayer(ByVal layers As Object, ByVal layerName As String)
 End Sub
 
 ' Проходит ModelSpace с конца, чтобы безопасно удалять найденные объекты.
-' Region всегда сохраняются. Остальные объекты удаляются только со слоев
-' оформления, поэтому пользовательские объекты не следует размещать на них.
+' Region всегда сохраняются. На защищенных общих слоях сохраняются все
+' объекты независимо от метки NDM; удаляются только объекты оформления.
 Private Function DeleteAutoCADEntitiesOnLayers(ByVal ms As Object, ByVal layers As Object) As Long
     Dim i As Long
     For i = ms.Count - 1 To 0 Step -1
         Dim entity As Object
         Set entity = ms.Item(i)
         If layers.Exists(CStr(entity.Layer)) And StrComp(CStr(entity.ObjectName), "AcDbRegion", vbTextCompare) <> 0 Then
-            If CBool(layers.Item(CStr(entity.Layer))) Or IsNDMContourOutput(entity) Then
+            If CBool(layers.Item(CStr(entity.Layer))) Then
                 entity.Delete
                 DeleteAutoCADEntitiesOnLayers = DeleteAutoCADEntitiesOnLayers + 1
             End If

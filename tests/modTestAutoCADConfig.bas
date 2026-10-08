@@ -228,21 +228,48 @@ Private Sub CheckImporter(ByRef stats As TCadStats, ByVal system As Object, ByVa
     stats.Cases = stats.Cases + 4: system.Formula = saved
 End Sub
 
-' Рабочая очистка удаляет линии оформления, но сохраняет Region и чужие слои.
-' Region на annotation-слое защищен независимо от настроек импортных слоев.
+' Рабочая очистка удаляет оформление, но сохраняет всю геометрию общих слоев,
+' в том числе помеченные копии контуров. Region защищен даже на annotation-слое.
 Private Sub CheckCleanup(ByRef stats As TCadStats, ByVal system As Object, ByVal position As Long)
     Dim ms As Object, region As CFakeAcadRegion, line As CFakeAcadLine, foreign As CFakeAcadLine, deleted As Long
+    Dim settings As CSystemSettingsReader, contour As CFakeAcadContour, curves As Collection
+    Dim protected As Collection, layer As Variant, owned As Long, i As Long
     Set ms = CreateObject("Scripting.Dictionary")
     Set region = New CFakeAcadRegion: region.Initialize 100#, 0#, 0#, 100#, 100#, 0#, "AUDIT_CT", "KEEP_REGION"
     Set line = New CFakeAcadLine: line.Initialize 0#, 0#, 1#, 0#, "AUDIT_CT"
     Set foreign = New CFakeAcadLine: foreign.Initialize 0#, 0#, 1#, 0#, "FOREIGN"
     ms.Add 0, region: ms.Add 1, line: ms.Add 2, foreign
-    deleted = Audit03CleanupAutoCADModelSpaceForTests(ms, Reader())
+    Set settings = Reader(): Set protected = New Collection
+    For Each layer In Array("AUDIT_C", "AUDIT_R", "AUDIT_CONTOUR", settings.GetRequiredString("AutoCAD.Common.OpeningContourLayer"))
+        For owned = 0 To 1
+            Set contour = New CFakeAcadContour
+            contour.InitializeLoop "AcDbPolyline", CStr(layer), "KEEP_GEOMETRY", curves
+            contour.SetOutputOwned (owned = 1)
+            protected.Add contour: ms.Add ms.Count, contour
+        Next owned
+    Next layer
+    deleted = Audit03CleanupAutoCADModelSpaceForTests(ms, settings)
     Check stats, "autoCADConfig.cleanup.region." & CStr(position), Not region.Deleted
     Check stats, "autoCADConfig.cleanup.line." & CStr(position), line.Deleted
     Check stats, "autoCADConfig.cleanup.foreign." & CStr(position), Not foreign.Deleted
+    For i = 1 To protected.Count
+        Set contour = protected(i)
+        Check stats, "autoCADConfig.cleanup.protected." & CStr(position) & "." & CStr(i), Not contour.Deleted
+    Next i
     Check stats, "autoCADConfig.cleanup.count." & CStr(position), deleted = 1
-    stats.Cases = stats.Cases + 1
+    ' Общая граница имеет приоритет, даже если пользователь назначил ей
+    ' тот же слой, что и подписи: на этом слое не удаляется ни один объект.
+    Dim saved As Variant: saved = system.Formula
+    SetValue system, "AutoCAD.Common.SectionContourLayer", "AUDIT_CT"
+    Set line = New CFakeAcadLine: line.Initialize 0#, 0#, 1#, 0#, "AUDIT_CT"
+    Set contour = New CFakeAcadContour
+    contour.InitializeLoop "AcDbPolyline", "AUDIT_CT", "KEEP_SHARED", curves
+    contour.SetOutputOwned True
+    Set ms = CreateObject("Scripting.Dictionary"): ms.Add 0, line: ms.Add 1, contour
+    deleted = Audit03CleanupAutoCADModelSpaceForTests(ms, Reader())
+    Check stats, "autoCADConfig.cleanup.sharedLayer." & CStr(position), deleted = 0 And Not line.Deleted And Not contour.Deleted
+    system.Formula = saved
+    stats.Cases = stats.Cases + 2
 End Sub
 
 ' Меняет каждый экспортный слой и цвет независимо. Ожидается изменение

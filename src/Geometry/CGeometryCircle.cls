@@ -13,8 +13,8 @@ Option Explicit
 ' Математическая геометрия круглого сечения
 ' ==========================================================================
 ' Класс хранит диаметр круга и отвечает на геометрические вопросы: габариты,
-' принадлежность точки области и контур для визуального вывода. Арматура и
-' подписи рядов формируются отдельными builder-ами.
+' принадлежность точки области и достоверный контур с явной ролью Outer.
+' Арматура и необязательные подписи формируются отдельными builder-ами.
 
 Implements ISectionGeometry
 
@@ -129,6 +129,17 @@ Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     pointX(4) = mCenterX: pointY(4) = mCenterY - mRadius
 End Sub
 
+' Передает точную окружность как наружную границу в общий контейнер.
+' Аннотации и видимость схемы не участвуют в создании геометрии модели.
+Public Sub BuildContours(ByVal contours As CSectionContours)
+    If contours Is Nothing Then Err.Raise vbObjectError + 5283, "CGeometryCircle", "Контейнер контуров сечения не передан."
+    Dim message As String
+    If Not IsValid(message) Then Err.Raise vbObjectError + 5283, "CGeometryCircle", message
+    contours.Clear
+    contours.AddContourCircle "CONTOUR_CIRCLE", 0.5 * (MinX + MaxX), 0.5 * (MinY + MaxY), _
+        0.5 * GeomMin(MaxX - MinX, MaxY - MinY), "Круговой контур сечения.", "OUTER", "Outer"
+End Sub
+
 ' Реализация интерфейса ISectionGeometry: свойства и методы ниже только
 ' делегируют публичной математике круга.
 Private Property Get ISectionGeometry_MinX() As Double
@@ -175,6 +186,11 @@ End Sub
 ' Делегирует опорные точки контура в публичный GetExtremePoints.
 Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     GetExtremePoints pointX, pointY
+End Sub
+
+' Передает классифицированные контуры через обязательный интерфейс формы.
+Private Sub ISectionGeometry_BuildContours(ByVal contours As CSectionContours)
+    BuildContours contours
 End Sub
 
 

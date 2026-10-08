@@ -1,0 +1,33 @@
+﻿{
+    "BaselineSHA256":  "4AA1C84002E61926181EF9EECAF4FBD3CD0069BE2515607304F08FB404D548AA",
+    "FrozenProduction":  false,
+    "ImportedComponents":  [
+                               "CAutoCADSectionModelImporter",
+                               "CSectionTypeRegistry",
+                               "modAutoCADContourOwnership",
+                               "modAutoCADStressExport",
+                               "CFiberMeshBuilder",
+                               "CGeometryCircle",
+                               "CGeometryHollowRectangle",
+                               "CGeometryRectSet",
+                               "CGeometryRoundedRectangle",
+                               "ISectionGeometry",
+                               "CCircleAnnotationBuilder",
+                               "CHollowRectAnnotationBuilder",
+                               "CRectSetAnnotationBuilder",
+                               "CRoundedRectAnnotationBuilder",
+                               "CSectionGeometryQuery",
+                               "CFakeMultiOpeningGeometry",
+                               "modTestAutoCADConfig",
+                               "modTestAutoCADContours",
+                               "modTestCrackWidth",
+                               "modTestGeometry",
+                               "modTestGeometryQuery",
+                               "modTestPerformance",
+                               "modTestWorkbookInterface"
+                           ],
+    "HelpRefreshed":  true,
+    "VBACompileCompleted":  true,
+    "SourceGitSHA":  "82126e5be27937930140054210e5a8d3d98e4cd6",
+    "CandidateSHA256":  "E6A3F4491D6EC168016D4FED6E3A0870999640A12788B87C654EB0855560C169"
+}

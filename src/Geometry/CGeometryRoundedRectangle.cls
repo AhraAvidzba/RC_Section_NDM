@@ -590,6 +590,29 @@ Public Sub GetSideRebarPath(ByVal isLeft As Boolean, ByVal axisDistance As Doubl
     End If
 End Sub
 
+' Передает точную наружную границу с явной ролью Outer. Сохраняет реальные
+' линии и дуги исходной формы, не заменяя их дискретизированной ломаной.
+Public Sub BuildContours(ByVal contours As CSectionContours)
+    If contours Is Nothing Then Err.Raise vbObjectError + 5283, "CGeometryRoundedRectangle", "Контейнер контуров сечения не передан."
+    Dim message As String
+    If Not IsValid(message) Then Err.Raise vbObjectError + 5283, "CGeometryRoundedRectangle", message
+    Dim segmentType() As String, startX() As Double, startY() As Double
+    Dim endX() As Double, endY() As Double, centerX() As Double, centerY() As Double
+    Dim radiusValue() As Double, sweepAngle() As Double, segmentCount As Long, i As Long
+    GetContourSegments segmentType, startX, startY, endX, endY, centerX, centerY, radiusValue, sweepAngle, segmentCount
+    contours.Clear
+    For i = 1 To segmentCount
+        If StrComp(segmentType(i), "ARC", vbTextCompare) = 0 Then
+            contours.AddContourArc "CONTOUR_ARC_" & CStr(i), startX(i), startY(i), endX(i), endY(i), _
+                centerX(i), centerY(i), radiusValue(i), sweepAngle(i), _
+                "Дуга контура скругленного прямоугольника.", "OUTER", "Outer"
+        Else
+            contours.AddContourLine "CONTOUR_LINE_" & CStr(i), startX(i), startY(i), endX(i), endY(i), _
+                "Прямой участок контура скругленного прямоугольника.", "OUTER", "Outer"
+        End If
+    Next i
+End Sub
+
 Private Property Get ISectionGeometry_MinX() As Double
     ISectionGeometry_MinX = MinX
 End Property
@@ -634,6 +657,11 @@ End Sub
 ' Делегирует внешний контур в реализацию класса для интерфейса ISectionGeometry.
 Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     GetExtremePoints pointX, pointY
+End Sub
+
+' Передает классифицированные контуры через обязательный интерфейс формы.
+Private Sub ISectionGeometry_BuildContours(ByVal contours As CSectionContours)
+    BuildContours contours
 End Sub
 
 ' Нормализует тип боковой стороны: Simple или Tapered.
