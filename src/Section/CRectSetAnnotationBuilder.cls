@@ -19,7 +19,7 @@ Option Explicit
 
 ' Заменяет размеры активных прямоугольников и подписи арматуры.
 ' Исходные контуры, расчетное сечение и его НДС здесь не изменяются.
-Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
+Public Sub Build(ByVal model As CSectionModel, ByVal geometry As CGeometryRectSet, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5300, "CRectSetAnnotationBuilder", "Модель сечения не передана."
     If geometry Is Nothing Then Err.Raise vbObjectError + 5301, "CRectSetAnnotationBuilder", "Геометрия RectSet-сечения не передана."
 
@@ -34,7 +34,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
 End Sub
 
 ' Добавляет основные размеры RectSet и, при необходимости, смещение верхнего прямоугольника.
-Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geometry As ISectionGeometry)
+Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geometry As CGeometryRectSet)
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
     minX = geometry.MinX
     maxX = geometry.MaxX
@@ -44,12 +44,8 @@ Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geomet
     annotations.AddDimension "DIM_B", minX, minY, maxX, minY, 0#, -1#, "B", maxX - minX, "Общая ширина RectSet-сечения."
     annotations.AddDimension "DIM_H", minX, minY, minX, maxY, -1#, 0#, "H", maxY - minY, "Общая высота RectSet-сечения."
 
-    Dim geometryObject As Object
-    Set geometryObject = geometry
-    If TypeName(geometryObject) <> "CGeometryRectSet" Then Exit Sub
-
     Dim rectSet As CGeometryRectSet
-    Set rectSet = geometryObject
+    Set rectSet = geometry
 
     annotations.AddDimension "DIM_TOP_WIDTH", rectSet.UpperMinX, rectSet.UpperMaxY, _
         rectSet.UpperMaxX, rectSet.UpperMaxY, 0#, 1#, "B1", rectSet.B1, _

@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestGeometry"
+Attribute VB_Name = "modTestGeometry"
 Option Explicit
 
 ' ==========================================================================
@@ -90,12 +90,12 @@ Private Sub TestSectionModelFromGeneratedGeometry(ByRef stats As TTestStats)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 50#, 50#, 1, 2
+    mesh.BuildMesh BuildConcreteGeometry(geom), 50#, 50#, 1, 2
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "CircleSourceName-1", 100#, 0#, 20#, 0#, "A400", "source name", geom
-    rebars.AddBar "CircleSourceName-2", -100#, 0#, 20#, 0#, "A400", "source name", geom
+    rebars.AddBar "CircleSourceName-1", 100#, 0#, 20#, 0#, "A400", "source name", BuildConcreteGeometry(geom)
+    rebars.AddBar "CircleSourceName-2", -100#, 0#, 20#, 0#, "A400", "source name", BuildConcreteGeometry(geom)
 
     Dim model As CSectionModel
     Set model = BuildGeneratedSectionModel(mesh, rebars, "Circle")
@@ -166,7 +166,7 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     geom.InitializeByDiameter 300#, 10#, -20#
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 50#, 50#, 1, 2
+    mesh.BuildMesh BuildConcreteGeometry(geom), 50#, 50#, 1, 2
 
     Dim model As CSectionModel
     Set model = BuildGeneratedSectionModel(mesh, circleBars, "Circle")
@@ -770,7 +770,7 @@ Private Sub TestRectangle(ByRef stats As TTestStats)
     geom.Initialize 200#, 100#, 0#, 0#, 0#, 0#
 
     Dim props As CSectionPropertiesCalculator
-    Set props = MeshProps(geom, 2.5, 2.5)
+    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
 
     AssertClose stats, "rect.area", props.Area, 200# * 100#, 0.000001
     AssertClose stats, "rect.cx", props.CentroidX, 0#, 0.000001
@@ -883,24 +883,24 @@ Private Sub TestRectSetGeometry(ByRef stats As TTestStats)
     Dim analyticalArea As Double
     Dim centroidX As Double
     Dim centroidY As Double
-    analyticalArea = geom.AnalyticalArea(available)
-    geom.AnalyticalCentroid available, centroidX, centroidY
+    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(available)
+    BuildConcreteGeometry(geom).AnalyticalCentroid available, centroidX, centroidY
 
     AssertTrue stats, "rectset.area.available", available
     AssertClose stats, "rectset.area.analytical", analyticalArea, 600# * 250# + 250# * 550#, 0.000001
     AssertClose stats, "rectset.cx.analytical", centroidX, 226.304347826087, 0.000001
     AssertClose stats, "rectset.cy.analytical", centroidY, 296.304347826087, 0.000001
-    AssertTrue stats, "rectset.contains.lower", geom.ContainsPoint(580#, 20#)
-    AssertTrue stats, "rectset.contains.vertical", geom.ContainsPoint(100#, 700#)
-    AssertTrue stats, "rectset.excludes.cutout", Not geom.ContainsPoint(500#, 700#)
+    AssertTrue stats, "rectset.contains.lower", BuildConcreteGeometry(geom).ContainsPoint(580#, 20#)
+    AssertTrue stats, "rectset.contains.vertical", BuildConcreteGeometry(geom).ContainsPoint(100#, 700#)
+    AssertTrue stats, "rectset.excludes.cutout", Not BuildConcreteGeometry(geom).ContainsPoint(500#, 700#)
 
     Dim centerMesh As CFiberMeshBuilder
     Set centerMesh = New CFiberMeshBuilder
-    centerMesh.BuildMesh geom, 80#, 80#, 1
+    centerMesh.BuildMesh BuildConcreteGeometry(geom), 80#, 80#, 1
 
     Dim subcellMesh As CFiberMeshBuilder
     Set subcellMesh = New CFiberMeshBuilder
-    subcellMesh.BuildMesh geom, 80#, 80#, 1, 4
+    subcellMesh.BuildMesh BuildConcreteGeometry(geom), 80#, 80#, 1, 4
 
     Dim centerProps As CSectionPropertiesCalculator
     Set centerProps = New CSectionPropertiesCalculator
@@ -926,14 +926,14 @@ Private Sub TestRectSetGeometryModes(ByRef stats As TTestStats)
     Dim available As Boolean
     Dim cx As Double
     Dim cy As Double
-    AssertClose stats, "rectset.rectangle.area", rectangle.AnalyticalArea(available), 250# * 550#, 0.000001
+    AssertClose stats, "rectset.rectangle.area", BuildConcreteGeometry(rectangle).AnalyticalArea(available), 250# * 550#, 0.000001
     AssertTrue stats, "rectset.rectangle.area.available", available
-    rectangle.AnalyticalCentroid available, cx, cy
+    BuildConcreteGeometry(rectangle).AnalyticalCentroid available, cx, cy
     AssertClose stats, "rectset.rectangle.cx", cx, 125#, 0.000001
     AssertClose stats, "rectset.rectangle.cy", cy, 275#, 0.000001
     AssertTrue stats, "rectset.rectangle.hasNoLower", Not rectangle.HasLowerRectangle
-    AssertTrue stats, "rectset.rectangle.containsUpper", rectangle.ContainsPoint(100#, 500#)
-    AssertTrue stats, "rectset.rectangle.excludesOldLower", Not rectangle.ContainsPoint(500#, 20#)
+    AssertTrue stats, "rectset.rectangle.containsUpper", BuildConcreteGeometry(rectangle).ContainsPoint(100#, 500#)
+    AssertTrue stats, "rectset.rectangle.excludesOldLower", Not BuildConcreteGeometry(rectangle).ContainsPoint(500#, 20#)
 
     Dim lsection As CGeometryRectSet
     Dim twoZero As CGeometryRectSet
@@ -941,10 +941,10 @@ Private Sub TestRectSetGeometryModes(ByRef stats As TTestStats)
     Set twoZero = New CGeometryRectSet
     lsection.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 0#, "LSection"
     twoZero.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 0#, "TwoRectangles"
-    AssertClose stats, "rectset.twoZero.areaEqualsL", twoZero.AnalyticalArea(available), lsection.AnalyticalArea(available), 0.000001
+    AssertClose stats, "rectset.twoZero.areaEqualsL", BuildConcreteGeometry(twoZero).AnalyticalArea(available), BuildConcreteGeometry(lsection).AnalyticalArea(available), 0.000001
     AssertClose stats, "rectset.twoZero.minX", twoZero.MinX, lsection.MinX, 0.000001
     AssertClose stats, "rectset.twoZero.maxX", twoZero.MaxX, lsection.MaxX, 0.000001
-    AssertTrue stats, "rectset.twoZero.cutout", Not twoZero.ContainsPoint(500#, 700#)
+    AssertTrue stats, "rectset.twoZero.cutout", Not BuildConcreteGeometry(twoZero).ContainsPoint(500#, 700#)
 
     Dim tshape As CGeometryRectSet
     Set tshape = New CGeometryRectSet
@@ -953,18 +953,18 @@ Private Sub TestRectSetGeometryModes(ByRef stats As TTestStats)
     AssertTrue stats, "rectset.tshape.valid", tshape.IsValid(validMessage)
     AssertClose stats, "rectset.tshape.minX", tshape.MinX, -175#, 0.000001
     AssertClose stats, "rectset.tshape.maxX", tshape.MaxX, 425#, 0.000001
-    AssertTrue stats, "rectset.tshape.containsFlange", tshape.ContainsPoint(-100#, 300#)
-    AssertTrue stats, "rectset.tshape.containsWeb", tshape.ContainsPoint(125#, 100#)
+    AssertTrue stats, "rectset.tshape.containsFlange", BuildConcreteGeometry(tshape).ContainsPoint(-100#, 300#)
+    AssertTrue stats, "rectset.tshape.containsWeb", BuildConcreteGeometry(tshape).ContainsPoint(125#, 100#)
 
     Dim shifted As CGeometryRectSet
     Set shifted = New CGeometryRectSet
     shifted.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 150#, "TwoRectangles"
-    shifted.AnalyticalCentroid available, cx, cy
+    BuildConcreteGeometry(shifted).AnalyticalCentroid available, cx, cy
     AssertClose stats, "rectset.shifted.upperMinX", shifted.UpperMinX, 150#, 0.000001
     AssertClose stats, "rectset.shifted.cx", cx, 288.04347826087, 0.000001
     AssertClose stats, "rectset.shifted.cy", cy, 316.304347826087, 0.000001
-    AssertTrue stats, "rectset.shifted.containsUpper", shifted.ContainsPoint(250#, 700#)
-    AssertTrue stats, "rectset.shifted.excludesOldUpper", Not shifted.ContainsPoint(50#, 700#)
+    AssertTrue stats, "rectset.shifted.containsUpper", BuildConcreteGeometry(shifted).ContainsPoint(250#, 700#)
+    AssertTrue stats, "rectset.shifted.excludesOldUpper", Not BuildConcreteGeometry(shifted).ContainsPoint(50#, 700#)
 
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -995,7 +995,7 @@ Private Sub TestRectSetPrincipalAxesAndCoreDistances(ByRef stats As TTestStats)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 25#, 25#, 1, 2
+    mesh.BuildMesh BuildConcreteGeometry(geom), 25#, 25#, 1, 2
 
     Dim concreteSection As CSectionModel
     Set concreteSection = BuildGeneratedSectionModel(mesh, Nothing, "RectSetPrincipalConcrete")
@@ -1158,7 +1158,7 @@ Private Sub TestRectSetAutoRebarLayout(ByRef stats As TTestStats)
 
     Dim i As Long
     For i = 1 To layout.Count
-        AssertTrue stats, "rectset.rebar.inside." & CStr(i), geom.ContainsPoint(layout.X(i), layout.Y(i))
+        AssertTrue stats, "rectset.rebar.inside." & CStr(i), BuildConcreteGeometry(geom).ContainsPoint(layout.X(i), layout.Y(i))
     Next i
 
     AssertRectSetRebarError stats, "rectset.rebar.invalid.n", 600#, 550#, 250#, 250#, -1, 50#, 20#
@@ -1264,11 +1264,11 @@ Private Sub TestBoundarySubcellMesh(ByRef stats As TTestStats)
 
     Dim centerMesh As CFiberMeshBuilder
     Set centerMesh = New CFiberMeshBuilder
-    centerMesh.BuildMesh geom, 40#, 40#, 1
+    centerMesh.BuildMesh BuildConcreteGeometry(geom), 40#, 40#, 1
 
     Dim subcellMesh As CFiberMeshBuilder
     Set subcellMesh = New CFiberMeshBuilder
-    subcellMesh.BuildMesh geom, 40#, 40#, 1, 4
+    subcellMesh.BuildMesh BuildConcreteGeometry(geom), 40#, 40#, 1, 4
 
     Dim centerProps As CSectionPropertiesCalculator
     Set centerProps = New CSectionPropertiesCalculator
@@ -1296,7 +1296,7 @@ Private Sub TestRectangularMeshSteps(ByRef stats As TTestStats)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 25#, 15#, 1, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 25#, 15#, 1, 1
 
     AssertTrue stats, "mesh.rectangularSteps.hasFibers", mesh.FiberCount > 0
     AssertClose stats, "mesh.rectangularSteps.width", mesh.FiberWidth(1), 25#, 0.000001
@@ -1321,11 +1321,11 @@ Private Sub TestCircleGeometry(ByRef stats As TTestStats)
     Dim analyticalArea As Double
     Dim centroidX As Double
     Dim centroidY As Double
-    analyticalArea = geom.AnalyticalArea(available)
-    geom.AnalyticalCentroid available, centroidX, centroidY
+    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(available)
+    BuildConcreteGeometry(geom).AnalyticalCentroid available, centroidX, centroidY
 
     Dim props As CSectionPropertiesCalculator
-    Set props = MeshProps(geom, 2.5, 2.5)
+    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
 
     Dim analyticalI As Double
     analyticalI = GEOM_PI * geom.Radius ^ 4 / 4#
@@ -1349,7 +1349,7 @@ Private Sub TestCircleCoreDistance(ByRef stats As TTestStats)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 2.5, 2.5, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 2.5, 2.5, 1
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, Nothing)
@@ -1405,7 +1405,7 @@ Private Sub TestCoreDistanceWithProductInertiaMatchesLinearBoundary(ByRef stats 
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 25#, 25#, 1, 2
+    mesh.BuildMesh BuildConcreteGeometry(geom), 25#, 25#, 1, 2
 
     Dim rebarBuilder As CRectSetRebarLayoutBuilder
     Set rebarBuilder = New CRectSetRebarLayoutBuilder
@@ -1577,7 +1577,7 @@ Private Sub TestCirclePrincipalAxesStableOnCoarseMesh(ByRef stats As TTestStats)
     geom.InitializeByDiameter 500#
 
     Dim props As CSectionPropertiesCalculator
-    Set props = MeshProps(geom, 20#, 20#)
+    Set props = MeshProps(BuildConcreteGeometry(geom), 20#, 20#)
 
     AssertClose stats, "circle.coarse.principal.angle", props.PrincipalAngleRad, 0#, 0.000000001
     AssertTrue stats, "circle.coarse.IxIy.nearlyEqual", _
@@ -1607,10 +1607,10 @@ Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
 
     Dim areaAvailable As Boolean
     Dim analyticalArea As Double
-    analyticalArea = geom.AnalyticalArea(areaAvailable)
+    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(areaAvailable)
 
     Dim props As CSectionPropertiesCalculator
-    Set props = MeshProps(geom, 2.5, 2.5)
+    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
 
     AssertTrue stats, "sym.area.available", areaAvailable
     AssertRelative stats, "sym.area", props.Area, analyticalArea, 0.003
@@ -1630,14 +1630,14 @@ Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
 
     Dim props25 As CSectionPropertiesCalculator
     Dim props125 As CSectionPropertiesCalculator
-    Set props25 = MeshProps(geom, 25#, 25#)
-    Set props125 = MeshProps(geom, 12.5, 12.5)
+    Set props25 = MeshProps(BuildConcreteGeometry(geom), 25#, 25#)
+    Set props125 = MeshProps(BuildConcreteGeometry(geom), 12.5, 12.5)
 
     AssertTrue stats, "rounded.tapered.area.positive", props125.Area > 0#
-    AssertTrue stats, "rounded.tapered.centroid.inside", geom.ContainsPoint(props125.CentroidX, props125.CentroidY)
+    AssertTrue stats, "rounded.tapered.centroid.inside", BuildConcreteGeometry(geom).ContainsPoint(props125.CentroidX, props125.CentroidY)
     AssertTrue stats, "rounded.tapered.rightExtension", _
-        geom.MaxX > geom.RightBaseX And geom.MaxX < geom.RightBaseX + geom.RightW
-    AssertClose stats, "rounded.tapered.height", geom.MaxY - geom.MinY, 180#, 0.000001
+        BuildConcreteGeometry(geom).MaxX > geom.RightBaseX And BuildConcreteGeometry(geom).MaxX < geom.RightBaseX + geom.RightW
+    AssertClose stats, "rounded.tapered.height", BuildConcreteGeometry(geom).MaxY - BuildConcreteGeometry(geom).MinY, 180#, 0.000001
     AssertRelative stats, "rounded.tapered.area.convergence", props125.Area, props25.Area, 0.08
     AssertRelative stats, "rounded.tapered.Ix.convergence", props125.Ixc, props25.Ixc, 0.15
 
@@ -1658,9 +1658,9 @@ Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
     expectedTopTangent = wideGeom.RightBaseX - 300# * (Sqr(2#) - 1#)
     expectedNoseMaxX = wideGeom.RightBaseX + wideGeom.RightW - 100# * (Sqr(2#) - 1#)
     AssertClose stats, "rounded.tapered.variableAngle.topTangent", x2, expectedTopTangent, 0.000001
-    AssertClose stats, "rounded.tapered.variableAngle.maxX", wideGeom.MaxX, expectedNoseMaxX, 0.000001
+    AssertClose stats, "rounded.tapered.variableAngle.maxX", BuildConcreteGeometry(wideGeom).MaxX, expectedNoseMaxX, 0.000001
     AssertTrue stats, "rounded.tapered.variableAngle.maxLessThanRawApex", _
-        wideGeom.MaxX < wideGeom.RightBaseX + wideGeom.RightW
+        BuildConcreteGeometry(wideGeom).MaxX < wideGeom.RightBaseX + wideGeom.RightW
 
     Dim largeR1 As CGeometryRoundedRectangle
     Set largeR1 = New CGeometryRoundedRectangle
@@ -1703,7 +1703,7 @@ Private Sub TestRoundedRectangleContourAnnotations(ByRef stats As TTestStats)
     If wIndex > 0 Then
         AssertTrue stats, "rounded.annotation.wRight.label", annotations.Text(wIndex) = "W'"
         AssertClose stats, "rounded.annotation.wRight.value", annotations.Value(wIndex), _
-            RoundedDisplayLength(geom.MaxX - geom.RightBaseX), 0.000001
+            RoundedDisplayLength(BuildConcreteGeometry(geom).MaxX - geom.RightBaseX), 0.000001
     End If
 End Sub
 
@@ -1854,7 +1854,7 @@ Private Sub TestRoundedRectangleRebarLayout(ByRef stats As TTestStats)
 
     Dim i As Long
     For i = 1 To layout.Count
-        AssertTrue stats, "rounded.rebar.inside." & CStr(i), geom.ContainsPoint(layout.X(i), layout.Y(i))
+        AssertTrue stats, "rounded.rebar.inside." & CStr(i), BuildConcreteGeometry(geom).ContainsPoint(layout.X(i), layout.Y(i))
     Next i
 End Sub
 
@@ -1871,25 +1871,25 @@ Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
 
     Dim available As Boolean
     Dim areaValue As Double
-    areaValue = geom.AnalyticalArea(available)
+    areaValue = BuildConcreteGeometry(geom).AnalyticalArea(available)
     AssertTrue stats, "hollow.geometry.areaAvailable", available
     AssertClose stats, "hollow.geometry.area", areaValue, 500# * 800# - 200# * 500#, 0.000001
 
     Dim cx As Double
     Dim cy As Double
-    geom.AnalyticalCentroid available, cx, cy
+    BuildConcreteGeometry(geom).AnalyticalCentroid available, cx, cy
     AssertClose stats, "hollow.geometry.cx", cx, 0#, 0.000001
     AssertClose stats, "hollow.geometry.cy", cy, 0#, 0.000001
 
-    AssertTrue stats, "hollow.geometry.outerConcrete", geom.ContainsPoint(0#, 350#)
-    AssertTrue stats, "hollow.geometry.openingExcluded", Not geom.ContainsPoint(0#, 0#)
-    AssertTrue stats, "hollow.geometry.outsideExcluded", Not geom.ContainsPoint(260#, 0#)
+    AssertTrue stats, "hollow.geometry.outerConcrete", BuildConcreteGeometry(geom).ContainsPoint(0#, 350#)
+    AssertTrue stats, "hollow.geometry.openingExcluded", Not BuildConcreteGeometry(geom).ContainsPoint(0#, 0#)
+    AssertTrue stats, "hollow.geometry.outsideExcluded", Not BuildConcreteGeometry(geom).ContainsPoint(260#, 0#)
 
     Dim offsetGeom As CGeometryHollowRectangle
     Set offsetGeom = New CGeometryHollowRectangle
     offsetGeom.Initialize 500#, 800#, 30#, 200#, 300#, 20#, 40#, -30#
-    areaValue = offsetGeom.AnalyticalArea(available)
-    offsetGeom.AnalyticalCentroid available, cx, cy
+    areaValue = BuildConcreteGeometry(offsetGeom).AnalyticalArea(available)
+    BuildConcreteGeometry(offsetGeom).AnalyticalCentroid available, cx, cy
     AssertTrue stats, "hollow.geometry.offset.valid", offsetGeom.IsValid(message)
     AssertTrue stats, "hollow.geometry.offset.cxOppositeOpening", cx < 0#
     AssertTrue stats, "hollow.geometry.offset.cyOppositeOpening", cy > 0#
@@ -1993,7 +1993,7 @@ Private Sub TestHollowRectangleRebarLayout(ByRef stats As TTestStats)
 
     Dim i As Long
     For i = 1 To layout.Count
-        AssertTrue stats, "hollow.rebar.inside." & CStr(i), geom.ContainsPoint(layout.X(i), layout.Y(i))
+        AssertTrue stats, "hollow.rebar.inside." & CStr(i), BuildConcreteGeometry(geom).ContainsPoint(layout.X(i), layout.Y(i))
     Next i
 End Sub
 
@@ -2069,9 +2069,9 @@ Private Sub TestMeshConvergence(ByRef stats As TTestStats)
     Dim p25 As CSectionPropertiesCalculator
     Dim p125 As CSectionPropertiesCalculator
 
-    Set p50 = MeshProps(geom, 50#, 50#)
-    Set p25 = MeshProps(geom, 25#, 25#)
-    Set p125 = MeshProps(geom, 12.5, 12.5)
+    Set p50 = MeshProps(BuildConcreteGeometry(geom), 50#, 50#)
+    Set p25 = MeshProps(BuildConcreteGeometry(geom), 25#, 25#)
+    Set p125 = MeshProps(BuildConcreteGeometry(geom), 12.5, 12.5)
 
     AppendLine stats, "CONVERGENCE: step=50 area=" & FormatNumberInvariant(p50.Area) & _
         "; cx=" & FormatNumberInvariant(p50.CentroidX) & "; cy=" & FormatNumberInvariant(p50.CentroidY) & _
@@ -2104,7 +2104,7 @@ Private Sub TestPerformance(ByRef stats As TTestStats)
 
     Dim builder As CFiberMeshBuilder
     Set builder = New CFiberMeshBuilder
-    builder.BuildMesh geom, 10#, 10#, 1
+    builder.BuildMesh BuildConcreteGeometry(geom), 10#, 10#, 1
 
     Dim calc As CSectionPropertiesCalculator
     Set calc = New CSectionPropertiesCalculator
@@ -2146,7 +2146,7 @@ End Function
 
 ' Строит сетку через общий geometry-контракт и вычисляет бетонные A/центр/I.
 ' При ошибке дополняет причину шагами сетки и числом полученных волокон.
-Private Function MeshProps(ByVal geom As ISectionGeometry, ByVal stepX As Double, ByVal stepY As Double) As CSectionPropertiesCalculator
+Private Function MeshProps(ByVal geom As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double) As CSectionPropertiesCalculator
     On Error GoTo Failed
 
     Dim builder As CFiberMeshBuilder
@@ -2214,7 +2214,7 @@ Private Sub AssertBuildError(ByRef stats As TTestStats, ByVal name As String, _
     On Error GoTo GotError
     Dim builder As CFiberMeshBuilder
     Set builder = New CFiberMeshBuilder
-    builder.BuildMesh geom, stepX, stepY, 1
+    builder.BuildMesh BuildConcreteGeometry(geom), stepX, stepY, 1
     On Error GoTo 0
     AssertTrue stats, name, False
     Exit Sub
@@ -2674,8 +2674,18 @@ Restore:
     On Error GoTo 0
 End Sub
 
-' Сопоставляет прогретую и заново созданную геометрию по сетке точек после
-' valid-invalid-valid переходов. Допуски, дуги и алгоритм сетки не меняются.
+' ДЛЯ ТЕСТОВ: невалидное описание не должно превращаться в пригодную область
+' или неявно возвращать прежний снимок после повторной инициализации формы.
+Private Function GeometryPreparationFails(ByVal shape As ISectionShape) As Boolean
+    Dim geometry As CGeometryRegion, number As Long, description As String
+    On Error Resume Next
+    Set geometry = BuildConcreteGeometry(shape)
+    number = Err.Number: description = Err.Description
+    On Error GoTo 0
+    GeometryPreparationFails = (number <> 0 And Len(description) > 0 And geometry Is Nothing)
+End Function
+
+' Сравнивает подготовленные области после valid-invalid-valid переходов.
 Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByVal includeContourDetails As Boolean = False)
     Dim rounded As CGeometryRoundedRectangle
     Set rounded = New CGeometryRoundedRectangle
@@ -2683,16 +2693,16 @@ Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByV
     Set hollow = New CGeometryHollowRectangle
     Dim message As String, repeatedMessage As String
     AssertTrue stats, "audit03.geometry.rounded.uninitialized", Not rounded.IsValid(message)
-    AssertTrue stats, "audit03.geometry.rounded.uninitializedPoint", Not rounded.ContainsPoint(0#, 0#)
+    AssertTrue stats, "audit03.geometry.rounded.uninitializedPreparation", GeometryPreparationFails(rounded)
     AssertTrue stats, "audit03.geometry.hollow.uninitialized", Not hollow.IsValid(message)
-    AssertTrue stats, "audit03.geometry.hollow.uninitializedPoint", Not hollow.ContainsPoint(0#, 0#)
+    AssertTrue stats, "audit03.geometry.hollow.uninitializedPreparation", GeometryPreparationFails(hollow)
 
     rounded.Initialize 300#, 200#, 20#, 20#, 20#, 20#
     AssertTrue stats, "audit03.geometry.rounded.firstValid", rounded.IsValid(message)
-    AssertTrue stats, "audit03.geometry.rounded.firstCenter", rounded.ContainsPoint(0#, 0#)
+    AssertTrue stats, "audit03.geometry.rounded.firstCenter", BuildConcreteGeometry(rounded).ContainsPoint(0#, 0#)
     rounded.Initialize 300#, 200#, 1000#, 1000#, 1000#, 1000#
     AssertTrue stats, "audit03.geometry.rounded.invalid", Not rounded.IsValid(message)
-    AssertTrue stats, "audit03.geometry.rounded.invalidPoint", Not rounded.ContainsPoint(0#, 0#)
+    AssertTrue stats, "audit03.geometry.rounded.invalidPreparation", GeometryPreparationFails(rounded)
     AssertTrue stats, "audit03.geometry.rounded.repeatInvalid", Not rounded.IsValid(repeatedMessage)
     AssertTrue stats, "audit03.geometry.rounded.stableReason", message = repeatedMessage And Len(message) > 0
     rounded.InitializeSides 400#, 180#, "Simple", "Tapered", 0#, 70#, 20#, 25#, 0#, 10#, 50#, -30#
@@ -2702,7 +2712,7 @@ Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByV
     AssertTrue stats, "audit03.geometry.rounded.revalidated", rounded.IsValid(message) And Len(message) = 0
     If includeContourDetails Then
         Dim contourX() As Double, contourY() As Double, contourIndex As Long
-        rounded.GetExtremePoints contourX, contourY
+        BuildConcreteGeometry(rounded).GetExtremePoints contourX, contourY
         For contourIndex = LBound(contourX) To UBound(contourX)
             AppendLine stats, "CONTOUR: Rounded; i=" & CStr(contourIndex) & "; x=" & CStr(contourX(contourIndex)) & _
                 "; y=" & CStr(contourY(contourIndex)) & "; deltaFromBottom=" & CStr((contourY(contourIndex) + 120#) * 1000000000000#)
@@ -2711,10 +2721,10 @@ Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByV
 
     hollow.Initialize 500#, 800#, 30#, 200#, 500#, 20#, 40#, -30#
     AssertTrue stats, "audit03.geometry.hollow.firstValid", hollow.IsValid(message)
-    AssertTrue stats, "audit03.geometry.hollow.opening", Not hollow.ContainsPoint(40#, -30#)
+    AssertTrue stats, "audit03.geometry.hollow.opening", Not BuildConcreteGeometry(hollow).ContainsPoint(40#, -30#)
     hollow.Initialize 500#, 800#, 30#, 600#, 500#, 20#, 40#, -30#
     AssertTrue stats, "audit03.geometry.hollow.invalid", Not hollow.IsValid(message)
-    AssertTrue stats, "audit03.geometry.hollow.invalidPoint", Not hollow.ContainsPoint(0#, 350#)
+    AssertTrue stats, "audit03.geometry.hollow.invalidPreparation", GeometryPreparationFails(hollow)
     AssertTrue stats, "audit03.geometry.hollow.repeatInvalid", Not hollow.IsValid(repeatedMessage)
     AssertTrue stats, "audit03.geometry.hollow.stableReason", message = repeatedMessage And Len(message) > 0
     hollow.Initialize 450#, 650#, 40#, 180#, 300#, 20#, -30#, 20#
@@ -2722,31 +2732,35 @@ Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByV
     Set freshHollow = New CGeometryHollowRectangle
     freshHollow.Initialize 450#, 650#, 40#, 180#, 300#, 20#, -30#, 20#
     AssertTrue stats, "audit03.geometry.hollow.revalidated", hollow.IsValid(message) And Len(message) = 0
-    AssertTrue stats, "audit03.geometry.hollow.newOpening", Not hollow.ContainsPoint(-30#, 20#)
+    AssertTrue stats, "audit03.geometry.hollow.newOpening", Not BuildConcreteGeometry(hollow).ContainsPoint(-30#, 20#)
 
     Dim ix As Long, iy As Long
     Dim roundedMismatch As Long, hollowMismatch As Long
     Dim roundedRow As String, hollowRow As String
+    Dim roundedDomain As CGeometryRegion, freshRoundedDomain As CGeometryRegion
+    Dim hollowDomain As CGeometryRegion, freshHollowDomain As CGeometryRegion
+    Set roundedDomain = BuildConcreteGeometry(rounded): Set freshRoundedDomain = BuildConcreteGeometry(freshRounded)
+    Set hollowDomain = BuildConcreteGeometry(hollow): Set freshHollowDomain = BuildConcreteGeometry(freshHollow)
     For iy = -18 To 18
         roundedRow = vbNullString
         hollowRow = vbNullString
         For ix = -24 To 24
-            If rounded.ContainsPoint(ix * 15#, iy * 20#) <> freshRounded.ContainsPoint(ix * 15#, iy * 20#) Then roundedMismatch = roundedMismatch + 1
-            If hollow.ContainsPoint(ix * 15#, iy * 20#) <> freshHollow.ContainsPoint(ix * 15#, iy * 20#) Then hollowMismatch = hollowMismatch + 1
-            If rounded.ContainsPoint(ix * 15#, iy * 20#) Then roundedRow = roundedRow & "1" Else roundedRow = roundedRow & "0"
-            If hollow.ContainsPoint(ix * 15#, iy * 20#) Then hollowRow = hollowRow & "1" Else hollowRow = hollowRow & "0"
+            If roundedDomain.ContainsPoint(ix * 15#, iy * 20#) <> freshRoundedDomain.ContainsPoint(ix * 15#, iy * 20#) Then roundedMismatch = roundedMismatch + 1
+            If hollowDomain.ContainsPoint(ix * 15#, iy * 20#) <> freshHollowDomain.ContainsPoint(ix * 15#, iy * 20#) Then hollowMismatch = hollowMismatch + 1
+            If roundedDomain.ContainsPoint(ix * 15#, iy * 20#) Then roundedRow = roundedRow & "1" Else roundedRow = roundedRow & "0"
+            If hollowDomain.ContainsPoint(ix * 15#, iy * 20#) Then hollowRow = hollowRow & "1" Else hollowRow = hollowRow & "0"
         Next ix
         AppendLine stats, "GRID: Rounded; y=" & CStr(iy * 20#) & "; " & roundedRow
         AppendLine stats, "GRID: Hollow; y=" & CStr(iy * 20#) & "; " & hollowRow
     Next iy
     AssertTrue stats, "audit03.geometry.rounded.reinitGrid", roundedMismatch = 0
     AssertTrue stats, "audit03.geometry.hollow.reinitGrid", hollowMismatch = 0
-    AssertTrue stats, "audit03.geometry.hollow.outerBoundary", hollow.ContainsPoint(225#, 0#)
-    AssertTrue stats, "audit03.geometry.hollow.openingBoundary", Not hollow.ContainsPoint(60#, 20#)
+    AssertTrue stats, "audit03.geometry.hollow.outerBoundary", BuildConcreteGeometry(hollow).ContainsPoint(225#, 0#)
+    AssertTrue stats, "audit03.geometry.hollow.openingBoundary", Not BuildConcreteGeometry(hollow).ContainsPoint(60#, 20#)
     Dim available As Boolean, freshAvailable As Boolean
-    AssertClose stats, "audit03.geometry.rounded.reinitArea", rounded.AnalyticalArea(available), freshRounded.AnalyticalArea(freshAvailable), 0#
+    AssertClose stats, "audit03.geometry.rounded.reinitArea", BuildConcreteGeometry(rounded).AnalyticalArea(available), BuildConcreteGeometry(freshRounded).AnalyticalArea(freshAvailable), 0#
     AssertTrue stats, "audit03.geometry.rounded.areaAvailable", available And freshAvailable
-    AssertClose stats, "audit03.geometry.hollow.reinitArea", hollow.AnalyticalArea(available), freshHollow.AnalyticalArea(freshAvailable), 0#
+    AssertClose stats, "audit03.geometry.hollow.reinitArea", BuildConcreteGeometry(hollow).AnalyticalArea(available), BuildConcreteGeometry(freshHollow).AnalyticalArea(freshAvailable), 0#
     AssertTrue stats, "audit03.geometry.hollow.areaAvailable", available And freshAvailable
     AppendLine stats, "CONST: GEOM_PI deltaFrom3x1e15=" & CStr((GEOM_PI - 3#) * 1000000000000000#)
     AssertClose stats, "audit03.geometry.piFullPrecision", GEOM_PI, 4# * Atn(1#), 0#
@@ -2773,7 +2787,7 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
             offsetX = 0#: offsetY = 0#
         End If
         hollow.Initialize 400#, 400#, 0#, openingWidth, openingHeight, 0#, offsetX, offsetY
-        mesh.BuildMesh hollow, 100#, 100#, 2, 10
+        mesh.BuildMesh BuildConcreteGeometry(hollow), 100#, 100#, 2, 10
         area = 0#: invalidCenters = 0#: sx = 0#: sy = 0#: ix = 0#: iy = 0#: ixy = 0#
         For i = 1 To mesh.FiberCount
             fiberArea = mesh.FiberArea(i)
@@ -2784,7 +2798,7 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
             ix = ix + fiberArea * (12# * mesh.FiberY(i) ^ 2 + mesh.FiberHeight(i) ^ 2)
             iy = iy + fiberArea * (12# * mesh.FiberX(i) ^ 2 + mesh.FiberWidth(i) ^ 2)
             ixy = ixy + fiberArea * mesh.FiberX(i) * mesh.FiberY(i)
-            If Not hollow.ContainsPoint(mesh.FiberX(i), mesh.FiberY(i)) Then invalidCenters = invalidCenters + 1
+            If Not BuildConcreteGeometry(hollow).ContainsPoint(mesh.FiberX(i), mesh.FiberY(i)) Then invalidCenters = invalidCenters + 1
         Next i
         prefix = "audit03.hollow.containedOpening." & CStr(scenario)
         openingArea = openingWidth * openingHeight: expectedArea = 160000# - openingArea
@@ -2805,7 +2819,7 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
     Dim rectangle As CGeometryRoundedRectangle
     Set rectangle = New CGeometryRoundedRectangle
     rectangle.Initialize 200#, 200#, 0#, 0#, 0#, 0#
-    mesh.BuildMesh rectangle, 100#, 100#, 2, 10
+    mesh.BuildMesh BuildConcreteGeometry(rectangle), 100#, 100#, 2, 10
     Dim fullCellCount As Long
     For i = 1 To mesh.FiberCount
         If mesh.FiberWidth(i) = 100# And mesh.FiberHeight(i) = 100# Then fullCellCount = fullCellCount + 1

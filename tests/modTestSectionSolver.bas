@@ -129,7 +129,7 @@ Private Sub TestSecantComparativeTasks(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 20#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
 
     AssertNewtonSecantCase stats, "secant.compare.compression", mesh, Nothing, -100000#, 0#, 0#
     AssertNewtonSecantCase stats, "secant.compare.n_mx", mesh, Nothing, -150000#, -8000000#, 0#
@@ -141,7 +141,7 @@ Private Sub TestSecantComparativeTasks(ByRef stats As TSectionSolverTestStats)
     circleGeom.InitializeByDiameter 300#
     Dim circleMesh As CFiberMeshBuilder
     Set circleMesh = New CFiberMeshBuilder
-    circleMesh.BuildMesh circleGeom, 20#, 20#, 1
+    circleMesh.BuildMesh BuildConcreteGeometry(circleGeom), 20#, 20#, 1
     AssertNewtonSecantCase stats, "secant.compare.circle", circleMesh, Nothing, -120000#, -5000000#, 0#
 End Sub
 
@@ -306,7 +306,7 @@ Private Sub TestLinearMaterialEquilibrium(ByRef stats As TSectionSolverTestStats
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 10#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
 
     Dim concrete As CLinearConcreteMaterial
     Set concrete = New CLinearConcreteMaterial
@@ -340,13 +340,13 @@ Private Sub TestLinearMaterialWithRebarReplacement(ByRef stats As TSectionSolver
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 10#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -60#, -30#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 60#, -30#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -60#, 30#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 60#, 30#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", -60#, -30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 60#, -30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -60#, 30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 60#, 30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim concrete As CLinearConcreteMaterial
     Set concrete = New CLinearConcreteMaterial
@@ -380,7 +380,7 @@ Private Sub TestDiagramConcreteCentralCompression(ByRef stats As TSectionSolverT
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 10#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
 
     Dim concrete As CMaterialDiagram
     Set concrete = ProvisionalConcrete()
@@ -405,13 +405,13 @@ Private Sub TestDiagramConcreteWithRebar(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 20#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -429,7 +429,7 @@ Private Sub TestIncrementLimitsAndDiagnostics(ByRef stats As TSectionSolverTestS
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 10#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -448,13 +448,13 @@ Private Sub TestSecantIndependentBranch(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(300#, 200#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 20#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim newton As CSectionSolver
     Set newton = New CSectionSolver
@@ -488,7 +488,7 @@ Private Sub TestSolverMethodInputErrors(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 20#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -519,7 +519,7 @@ Private Sub TestSolverMethodFromSystem(ByRef stats As TSectionSolverTestStats)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 20#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -622,7 +622,7 @@ End Function
 Private Function BuildMesh(ByVal geom As CGeometryRoundedRectangle, ByVal stepSize As Double) As CFiberMeshBuilder
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, stepSize, stepSize, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), stepSize, stepSize, 1
     Set BuildMesh = mesh
 End Function
 
@@ -1408,7 +1408,7 @@ Private Sub Audit03ExtremeStateCase(ByRef stats As TSectionSolverTestStats, _
         geometry.Initialize 200#, 100#, 0#, 0#, 0#, 0#
     End If
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(geometry, 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(geometry), 20#), Nothing)
     Dim concreteParameters As CConcreteMaterialParameters, steelParameters As CSteelMaterialParameters
     Set concreteParameters = New CConcreteMaterialParameters
     concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
@@ -1743,7 +1743,7 @@ Private Sub TestAudit03LargeTangentState(ByRef stats As TSectionSolverTestStats)
     Dim concrete As CLinearConcreteMaterial, steel As CLinearSteelMaterial, solver As CSectionSolver
     Dim modulus As Variant, code As Long, reason As String, prefix As String
     Set geom = RectangleGeometry(200#, 100#)
-    Set mesh = BuildMesh(geom, 10#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
     Set section = BuildGeneratedSectionModel(mesh, Nothing)
     Set concrete = New CLinearConcreteMaterial
     Set steel = New CLinearSteelMaterial: steel.Initialize 200000#

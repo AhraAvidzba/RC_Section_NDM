@@ -959,6 +959,62 @@ Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRe
     CopyArray ordered, count, boundary
 End Sub
 
+' Готовит область непосредственно по классифицированным контурам формы,
+' без искусственной сетки и привязки запроса к расчетной модели.
+Public Function RegionFromContours(ByVal contours As CSectionContours) As CConcreteRegion
+    If contours Is Nothing Then GeometryError "Контуры бетонной формы не переданы."
+    Dim outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
+    ReadMaterialContours contours, outer, outerCount, holes, holeCount
+    If outerCount = 0 Then GeometryError "У формы отсутствует наружный контур бетона."
+    OrientLoops outer, outerCount, False
+    Dim raw() As TRegionEdge, count As Long, i As Long
+    CopyArray outer, outerCount, raw: count = outerCount
+    If holeCount > 0 Then
+        OrientLoops holes, holeCount, True
+        For i = 1 To holeCount: AppendEdge raw, count, holes(i): Next i
+    End If
+    Dim boundary() As TRegionEdge, boundaryCount As Long
+    NormalizeBoundary raw, count, boundary, boundaryCount
+    Set RegionFromContours = MakeRegion(boundary, boundaryCount, "AuthoritativeContour", 0)
+    If RegionFromContours.Area <= QUERY_TOLERANCE Then GeometryError "Бетонная область пуста после учета наружных границ и отверстий."
+End Function
+
+' Точные первые моменты площади по отрезкам и круговым дугам (формула Грина).
+' Локальное начало снижает потерю точности при больших координатах модели.
+Public Sub RegionCentroid(ByVal region As CConcreteRegion, ByRef x As Double, ByRef y As Double)
+    RequireRegion region
+    Dim edges() As TRegionEdge, count As Long, i As Long, edge As TRegionEdge
+    region.CopyEdges edges, count
+    If count = 0 Then GeometryError "Нельзя определить центр тяжести пустой области."
+    Dim originX As Double, originY As Double, area As Double, momentX As Double, momentY As Double
+    originX = edges(1).X1: originY = edges(1).Y1
+    Dim radius As Double, a As Double, b As Double, sa As Double, sb As Double, ca As Double, cb As Double
+    Dim integralCos2 As Double, integralSin2 As Double
+    For i = 1 To count
+        LSet edge = edges(i)
+        edge.X1 = edge.X1 - originX: edge.X2 = edge.X2 - originX
+        edge.Y1 = edge.Y1 - originY: edge.Y2 = edge.Y2 - originY
+        edge.CenterX = edge.CenterX - originX: edge.CenterY = edge.CenterY - originY
+        area = area + EdgeSignedArea(edge)
+        If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
+            momentX = momentX + (edge.Y2 - edge.Y1) * (edge.X1 ^ 2 + edge.X1 * edge.X2 + edge.X2 ^ 2) / 6#
+            momentY = momentY - (edge.X2 - edge.X1) * (edge.Y1 ^ 2 + edge.Y1 * edge.Y2 + edge.Y2 ^ 2) / 6#
+        Else
+            radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
+            a = AngleOf(edge.X1 - edge.CenterX, edge.Y1 - edge.CenterY): b = a + edge.Sweep
+            sa = Sin(a): sb = Sin(b): ca = Cos(a): cb = Cos(b)
+            integralCos2 = edge.Sweep / 2# + (Sin(2# * b) - Sin(2# * a)) / 4#
+            integralSin2 = edge.Sweep / 2# - (Sin(2# * b) - Sin(2# * a)) / 4#
+            momentX = momentX + radius / 2# * (edge.CenterX ^ 2 * (sb - sa) + _
+                2# * edge.CenterX * radius * integralCos2 + radius ^ 2 * (sb - sb ^ 3 / 3# - sa + sa ^ 3 / 3#))
+            momentY = momentY + radius / 2# * (edge.CenterY ^ 2 * (ca - cb) + _
+                2# * edge.CenterY * radius * integralSin2 + radius ^ 2 * (-cb + cb ^ 3 / 3# + ca - ca ^ 3 / 3#))
+        End If
+    Next i
+    If area <= QUERY_TOLERANCE Then GeometryError "Нельзя определить центр тяжести области нулевой площади."
+    x = originX + momentX / area: y = originY + momentY / area
+End Sub
+
 ' При явно заданных отверстиях сетка задает только наружные границы.
 ' Ее внутренние пустоты не добавляются к достоверному списку Opening;
 ' отдельные наружные части и вогнутые участки границы сохраняются.

@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestCapacitySolver"
+Attribute VB_Name = "modTestCapacitySolver"
 Option Explicit
 
 ' ==========================================================================
@@ -145,14 +145,14 @@ Private Sub TestCircleCapacitySymmetry(ByRef stats As TCapacityTestStats)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 10#, 10#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 10#, 10#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim capMx As CCapacitySolver
     Set capMx = New CCapacitySolver
@@ -502,7 +502,7 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
     Set geom = CapacityAsymmetricGeometry()
 
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 10#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -510,10 +510,10 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
@@ -533,7 +533,7 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     Set geom = CapacityAsymmetricGeometry()
 
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(geom, 10#)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -541,10 +541,10 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
@@ -664,14 +664,14 @@ Private Sub CompareCircleCapacitySolutionStrategys(ByRef stats As TCapacityTestS
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 12#, 12#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 12#, 12#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim loadMethod As CCapacitySolver
     Set loadMethod = New CCapacitySolver
@@ -1252,7 +1252,7 @@ Private Function RectSetCapacitySection() As CSectionModel
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 50#, 50#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 50#, 50#, 1
 
     Dim builder As CRectSetRebarLayoutBuilder
     Set builder = New CRectSetRebarLayoutBuilder
@@ -1539,7 +1539,7 @@ Private Sub PrepareSymmetricSection(ByVal width As Double, ByVal height As Doubl
         ByVal xAbs As Double, ByVal yAbs As Double, ByRef mesh As CFiberMeshBuilder, ByRef rebars As CRebarLayout)
     Dim geom As CGeometryRoundedRectangle
     Set geom = RectangleGeometry(width, height)
-    Set mesh = BuildMesh(geom, stepSize)
+    Set mesh = BuildMesh(BuildConcreteGeometry(geom), stepSize)
     Set rebars = SymmetricRebars(geom, xAbs, yAbs)
 End Sub
 
@@ -1548,10 +1548,10 @@ End Sub
 Private Function SymmetricRebars(ByVal geom As CGeometryRoundedRectangle, ByVal xAbs As Double, ByVal yAbs As Double) As CRebarLayout
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -xAbs, -yAbs, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", xAbs, -yAbs, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -xAbs, yAbs, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", xAbs, yAbs, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", -xAbs, -yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", xAbs, -yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -xAbs, yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", xAbs, yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
     Set SymmetricRebars = rebars
 End Function
 
@@ -1572,9 +1572,9 @@ Private Function CapacityAsymmetricGeometry() As CGeometryRectSet
     Set CapacityAsymmetricGeometry = geom
 End Function
 
-' Строит тестовую сетку любого поддерживаемого ISectionGeometry с одинаковым
+' Строит тестовую сетку общей бетонной области CGeometryRegion с одинаковым
 ' шагом по осям; затем сетка и арматура объединяются в CSectionModel.
-Private Function BuildMesh(ByVal geom As ISectionGeometry, ByVal stepSize As Double) As CFiberMeshBuilder
+Private Function BuildMesh(ByVal geom As CGeometryRegion, ByVal stepSize As Double) As CFiberMeshBuilder
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, stepSize, stepSize, 1

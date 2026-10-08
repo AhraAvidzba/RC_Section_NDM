@@ -1,0 +1,596 @@
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.effect
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled|Настройка Plot.Dimensions.Enabled (лист Config, ячейка J6): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled|Настройка Plot.Dimensions.Enabled (лист Config, ячейка J6): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled|Настройка Plot.Dimensions.Enabled (лист Config, ячейка J6): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Enabled|Настройка Plot.Dimensions.Enabled (лист Config, ячейка J6) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.effect
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка I6): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка I6): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка I6): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Enabled|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка I6) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.effect; actual=199.95; expected=199.95
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Placement|Настройка Plot.Dimensions.Placement (лист Config, ячейка J7): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Placement|Настройка Plot.Dimensions.Placement (лист Config, ячейка J7): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Placement|Настройка Plot.Dimensions.Placement (лист Config, ячейка J7): Недопустимый вариант: "INVALID". Выберите из списка: Outside, Inside.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Placement.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Placement|Настройка Plot.Dimensions.Placement (лист Config, ячейка J7) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.effect; actual=242.95; expected=242.95
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement|Настройка Plot.RebarLabels.Placement (лист Config, ячейка I7): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement|Настройка Plot.RebarLabels.Placement (лист Config, ячейка I7): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement|Настройка Plot.RebarLabels.Placement (лист Config, ячейка I7): Недопустимый вариант: "INVALID". Выберите из списка: Outside, Inside.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Placement|Настройка Plot.RebarLabels.Placement (лист Config, ячейка I7) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.effect; actual=172; expected=172
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Offset|Настройка Plot.Dimensions.Offset (лист Config, ячейка J8): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Offset|Настройка Plot.Dimensions.Offset (лист Config, ячейка J8): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Offset|Настройка Plot.Dimensions.Offset (лист Config, ячейка J8): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Offset.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Offset|Настройка Plot.Dimensions.Offset (лист Config, ячейка J8) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.effect; actual=172; expected=172
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset|Настройка Plot.RebarLabels.Offset (лист Config, ячейка I8): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset|Настройка Plot.RebarLabels.Offset (лист Config, ячейка I8): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset|Настройка Plot.RebarLabels.Offset (лист Config, ячейка I8): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Offset|Настройка Plot.RebarLabels.Offset (лист Config, ячейка I8) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.effect
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled|Настройка Plot.RebarLabels.LineEnabled (лист Config, ячейка I9): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled|Настройка Plot.RebarLabels.LineEnabled (лист Config, ячейка I9): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled|Настройка Plot.RebarLabels.LineEnabled (лист Config, ячейка I9): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.LineEnabled|Настройка Plot.RebarLabels.LineEnabled (лист Config, ячейка I9) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.effect; actual=2.5; expected=2.5
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight|Настройка Plot.Dimensions.LineWeight (лист Config, ячейка J10): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight|Настройка Plot.Dimensions.LineWeight (лист Config, ячейка J10): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight|Настройка Plot.Dimensions.LineWeight (лист Config, ячейка J10): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.LineWeight|Настройка Plot.Dimensions.LineWeight (лист Config, ячейка J10) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.effect; actual=2.5; expected=2.5
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight|Настройка Plot.RebarLabels.LineWeight (лист Config, ячейка I10): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight|Настройка Plot.RebarLabels.LineWeight (лист Config, ячейка I10): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight|Настройка Plot.RebarLabels.LineWeight (лист Config, ячейка I10): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.LineWeight|Настройка Plot.RebarLabels.LineWeight (лист Config, ячейка I10) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.effect; actual=1.25; expected=1.25
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight|Настройка Plot.Dimensions.ExtensionLineWeight (лист Config, ячейка J11): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight|Настройка Plot.Dimensions.ExtensionLineWeight (лист Config, ячейка J11): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight|Настройка Plot.Dimensions.ExtensionLineWeight (лист Config, ячейка J11): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineWeight|Настройка Plot.Dimensions.ExtensionLineWeight (лист Config, ячейка J11) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.effect; actual=6; expected=6
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits|Настройка Plot.Dimensions.TextUnits (лист Config, ячейка J12): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits|Настройка Plot.Dimensions.TextUnits (лист Config, ячейка J12): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits|Настройка Plot.Dimensions.TextUnits (лист Config, ячейка J12): Недопустимый вариант: "INVALID". Выберите из списка: mm, pt.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextUnits|Настройка Plot.Dimensions.TextUnits (лист Config, ячейка J12) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.effect; actual=6; expected=6
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits|Настройка Plot.RebarLabels.TextUnits (лист Config, ячейка I12): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits|Настройка Plot.RebarLabels.TextUnits (лист Config, ячейка I12): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits|Настройка Plot.RebarLabels.TextUnits (лист Config, ячейка I12): Недопустимый вариант: "INVALID". Выберите из списка: mm, pt.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextUnits|Настройка Plot.RebarLabels.TextUnits (лист Config, ячейка I12) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.effect; actual=17.2; expected=17.2
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight|Настройка Plot.Dimensions.TextHeight (лист Config, ячейка J13): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight|Настройка Plot.Dimensions.TextHeight (лист Config, ячейка J13): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight|Настройка Plot.Dimensions.TextHeight (лист Config, ячейка J13): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextHeight|Настройка Plot.Dimensions.TextHeight (лист Config, ячейка J13) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.effect; actual=17.2; expected=17.2
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight|Настройка Plot.RebarLabels.TextHeight (лист Config, ячейка I13): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight|Настройка Plot.RebarLabels.TextHeight (лист Config, ячейка I13): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight|Настройка Plot.RebarLabels.TextHeight (лист Config, ячейка I13): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextHeight|Настройка Plot.RebarLabels.TextHeight (лист Config, ячейка I13) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.effect; actual=182.75; expected=182.75
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap|Настройка Plot.Dimensions.TextGap (лист Config, ячейка J14): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap|Настройка Plot.Dimensions.TextGap (лист Config, ячейка J14): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap|Настройка Plot.Dimensions.TextGap (лист Config, ячейка J14): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.TextGap|Настройка Plot.Dimensions.TextGap (лист Config, ячейка J14) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.effect; actual=182.75; expected=182.75
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap|Настройка Plot.RebarLabels.TextGap (лист Config, ячейка I14): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap|Настройка Plot.RebarLabels.TextGap (лист Config, ячейка I14): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap|Настройка Plot.RebarLabels.TextGap (лист Config, ячейка I14): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.TextGap|Настройка Plot.RebarLabels.TextGap (лист Config, ячейка I14) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.effect
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Color|Настройка Plot.Dimensions.Color (лист Config, ячейка J17): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Color|Настройка Plot.Dimensions.Color (лист Config, ячейка J17): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Color|Настройка Plot.Dimensions.Color (лист Config, ячейка J17): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.Color.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.Color|Настройка Plot.Dimensions.Color (лист Config, ячейка J17) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.transmitted
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.effect
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Color|Настройка Plot.RebarLabels.Color (лист Config, ячейка I17): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Color|Настройка Plot.RebarLabels.Color (лист Config, ячейка I17): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Color|Настройка Plot.RebarLabels.Color (лист Config, ячейка I17): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.RebarLabels.Color.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.RebarLabels.Color|Настройка Plot.RebarLabels.Color (лист Config, ячейка I17) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.effect
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor|Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка J18): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor|Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка J18): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor|Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка J18): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ExtensionLineColor|Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка J18) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.line
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.effect
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType|Настройка Plot.Dimensions.ArrowType (лист Config, ячейка J15): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType|Настройка Plot.Dimensions.ArrowType (лист Config, ячейка J15): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType|Настройка Plot.Dimensions.ArrowType (лист Config, ячейка J15): Недопустимый вариант: "INVALID". Выберите из списка: Triangle, Stealth, Diamond, Oval, Open.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowType|Настройка Plot.Dimensions.ArrowType (лист Config, ячейка J15) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.transmitted
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.line
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.effect
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка J16): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка J16): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.bad8.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка J16): Недопустимый вариант: "INVALID". Выберите из списка: Small, Medium, Wide.
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.bad10.rejected
+OK: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p0.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка J16) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.effect
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled|Настройка Plot.Dimensions.Enabled (лист Config, ячейка CJ801): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled|Настройка Plot.Dimensions.Enabled (лист Config, ячейка CJ801): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled|Настройка Plot.Dimensions.Enabled (лист Config, ячейка CJ801): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Enabled|Настройка Plot.Dimensions.Enabled (лист Config, ячейка CJ801) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.effect
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка CI801): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка CI801): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка CI801): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Enabled|Настройка Plot.RebarLabels.Enabled (лист Config, ячейка CI801) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.effect; actual=199.95; expected=199.95
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Placement|Настройка Plot.Dimensions.Placement (лист Config, ячейка CJ802): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Placement|Настройка Plot.Dimensions.Placement (лист Config, ячейка CJ802): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Placement|Настройка Plot.Dimensions.Placement (лист Config, ячейка CJ802): Недопустимый вариант: "INVALID". Выберите из списка: Outside, Inside.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Placement.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Placement|Настройка Plot.Dimensions.Placement (лист Config, ячейка CJ802) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.effect; actual=242.95; expected=242.95
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement|Настройка Plot.RebarLabels.Placement (лист Config, ячейка CI802): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement|Настройка Plot.RebarLabels.Placement (лист Config, ячейка CI802): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement|Настройка Plot.RebarLabels.Placement (лист Config, ячейка CI802): Недопустимый вариант: "INVALID". Выберите из списка: Outside, Inside.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Placement|Настройка Plot.RebarLabels.Placement (лист Config, ячейка CI802) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.effect; actual=172; expected=172
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Offset|Настройка Plot.Dimensions.Offset (лист Config, ячейка CJ803): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Offset|Настройка Plot.Dimensions.Offset (лист Config, ячейка CJ803): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Offset|Настройка Plot.Dimensions.Offset (лист Config, ячейка CJ803): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Offset.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Offset|Настройка Plot.Dimensions.Offset (лист Config, ячейка CJ803) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.effect; actual=172; expected=172
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset|Настройка Plot.RebarLabels.Offset (лист Config, ячейка CI803): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset|Настройка Plot.RebarLabels.Offset (лист Config, ячейка CI803): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset|Настройка Plot.RebarLabels.Offset (лист Config, ячейка CI803): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Offset|Настройка Plot.RebarLabels.Offset (лист Config, ячейка CI803) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.effect
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled|Настройка Plot.RebarLabels.LineEnabled (лист Config, ячейка CI804): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled|Настройка Plot.RebarLabels.LineEnabled (лист Config, ячейка CI804): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled|Настройка Plot.RebarLabels.LineEnabled (лист Config, ячейка CI804): Значение переключателя не распознано. Выберите Yes или No.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.LineEnabled|Настройка Plot.RebarLabels.LineEnabled (лист Config, ячейка CI804) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.effect; actual=2.5; expected=2.5
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight|Настройка Plot.Dimensions.LineWeight (лист Config, ячейка CJ805): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight|Настройка Plot.Dimensions.LineWeight (лист Config, ячейка CJ805): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight|Настройка Plot.Dimensions.LineWeight (лист Config, ячейка CJ805): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.LineWeight|Настройка Plot.Dimensions.LineWeight (лист Config, ячейка CJ805) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.effect; actual=2.5; expected=2.5
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight|Настройка Plot.RebarLabels.LineWeight (лист Config, ячейка CI805): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight|Настройка Plot.RebarLabels.LineWeight (лист Config, ячейка CI805): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight|Настройка Plot.RebarLabels.LineWeight (лист Config, ячейка CI805): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.LineWeight|Настройка Plot.RebarLabels.LineWeight (лист Config, ячейка CI805) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.effect; actual=1.25; expected=1.25
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight|Настройка Plot.Dimensions.ExtensionLineWeight (лист Config, ячейка CJ806): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight|Настройка Plot.Dimensions.ExtensionLineWeight (лист Config, ячейка CJ806): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight|Настройка Plot.Dimensions.ExtensionLineWeight (лист Config, ячейка CJ806): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineWeight|Настройка Plot.Dimensions.ExtensionLineWeight (лист Config, ячейка CJ806) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.effect; actual=6; expected=6
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits|Настройка Plot.Dimensions.TextUnits (лист Config, ячейка CJ807): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits|Настройка Plot.Dimensions.TextUnits (лист Config, ячейка CJ807): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits|Настройка Plot.Dimensions.TextUnits (лист Config, ячейка CJ807): Недопустимый вариант: "INVALID". Выберите из списка: mm, pt.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextUnits|Настройка Plot.Dimensions.TextUnits (лист Config, ячейка CJ807) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.effect; actual=6; expected=6
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits|Настройка Plot.RebarLabels.TextUnits (лист Config, ячейка CI807): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits|Настройка Plot.RebarLabels.TextUnits (лист Config, ячейка CI807): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits|Настройка Plot.RebarLabels.TextUnits (лист Config, ячейка CI807): Недопустимый вариант: "INVALID". Выберите из списка: mm, pt.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextUnits|Настройка Plot.RebarLabels.TextUnits (лист Config, ячейка CI807) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.effect; actual=17.2; expected=17.2
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight|Настройка Plot.Dimensions.TextHeight (лист Config, ячейка CJ808): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight|Настройка Plot.Dimensions.TextHeight (лист Config, ячейка CJ808): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight|Настройка Plot.Dimensions.TextHeight (лист Config, ячейка CJ808): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextHeight|Настройка Plot.Dimensions.TextHeight (лист Config, ячейка CJ808) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.effect; actual=17.2; expected=17.2
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight|Настройка Plot.RebarLabels.TextHeight (лист Config, ячейка CI808): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight|Настройка Plot.RebarLabels.TextHeight (лист Config, ячейка CI808): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight|Настройка Plot.RebarLabels.TextHeight (лист Config, ячейка CI808): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextHeight|Настройка Plot.RebarLabels.TextHeight (лист Config, ячейка CI808) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.effect; actual=182.75; expected=182.75
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap|Настройка Plot.Dimensions.TextGap (лист Config, ячейка CJ809): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap|Настройка Plot.Dimensions.TextGap (лист Config, ячейка CJ809): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap|Настройка Plot.Dimensions.TextGap (лист Config, ячейка CJ809): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.TextGap|Настройка Plot.Dimensions.TextGap (лист Config, ячейка CJ809) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.effect; actual=182.75; expected=182.75
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap|Настройка Plot.RebarLabels.TextGap (лист Config, ячейка CI809): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap|Настройка Plot.RebarLabels.TextGap (лист Config, ячейка CI809): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap|Настройка Plot.RebarLabels.TextGap (лист Config, ячейка CI809): Не удалось прочитать обязательное число: "INVALID". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.TextGap|Настройка Plot.RebarLabels.TextGap (лист Config, ячейка CI809) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.effect
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Color|Настройка Plot.Dimensions.Color (лист Config, ячейка CJ812): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Color|Настройка Plot.Dimensions.Color (лист Config, ячейка CJ812): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Color|Настройка Plot.Dimensions.Color (лист Config, ячейка CJ812): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.Color.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.Color|Настройка Plot.Dimensions.Color (лист Config, ячейка CJ812) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.transmitted
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.effect
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Color|Настройка Plot.RebarLabels.Color (лист Config, ячейка CI812): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Color|Настройка Plot.RebarLabels.Color (лист Config, ячейка CI812): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Color|Настройка Plot.RebarLabels.Color (лист Config, ячейка CI812): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.RebarLabels.Color.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.RebarLabels.Color|Настройка Plot.RebarLabels.Color (лист Config, ячейка CI812) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.effect
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor|Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка CJ813): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor|Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка CJ813): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor|Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка CJ813): Цвет RGB задан неверно: "INVALID". Введите три целых числа от 0 до 255 через запятую, например 0,0,0 для черного цвета.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ExtensionLineColor|Настройка Plot.Dimensions.ExtensionLineColor (лист Config, ячейка CJ813) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.line
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.effect
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType|Настройка Plot.Dimensions.ArrowType (лист Config, ячейка CJ810): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType|Настройка Plot.Dimensions.ArrowType (лист Config, ячейка CJ810): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType|Настройка Plot.Dimensions.ArrowType (лист Config, ячейка CJ810): Недопустимый вариант: "INVALID". Выберите из списка: Triangle, Stealth, Diamond, Oval, Open.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowType|Настройка Plot.Dimensions.ArrowType (лист Config, ячейка CJ810) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.transmitted
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.line
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.effect
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка CJ811): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка CJ811): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad8.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка CJ811): Недопустимый вариант: "INVALID". Выберите из списка: Small, Medium, Wide.
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad10.rejected
+OK: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize.bad10.address
+NAMED_ANNOTATION_ERROR: audit03.namedAnnotation.p1.Plot.Dimensions.ArrowSize|Настройка Plot.Dimensions.ArrowSize (лист Config, ячейка CJ811) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: audit03.namedAnnotation.noSolve
+NAMED_ANNOTATION_CASES: fields=21; positions=2; variants=210; equilibriumCases=0
+TOTAL_AUDIT03_NAMED_ANNOTATION: passed=425; failed=0
+

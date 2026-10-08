@@ -1146,7 +1146,7 @@ End Sub
 
 ' Создает выбранную параметрическую геометрию через registry в внутренних мм.
 ' Здесь нет импорта AutoCAD или построения расчетной сетки.
-Public Function ReadWorkbookGeometry(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As ISectionGeometry
+Public Function ReadWorkbookGeometry(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CGeometryRegion
     If units Is Nothing Then
         Set units = New CUnitSystem
         units.InitializeDefaults
@@ -1197,7 +1197,7 @@ End Function
 
 ' Строит автоматическую арматуру выбранной формы через registry и CUnitSystem.
 ' Возвращает раскладку до объединения с бетонной сеткой в CSectionModel.
-Public Function ReadWorkbookRebars(ByVal workbook As Object, ByVal geometry As ISectionGeometry, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CRebarLayout
+Public Function ReadWorkbookRebars(ByVal workbook As Object, ByVal geometry As CGeometryRegion, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CRebarLayout
     If units Is Nothing Then
         Set units = New CUnitSystem
         units.InitializeDefaults

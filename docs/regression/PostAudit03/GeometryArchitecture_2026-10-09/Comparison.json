@@ -1,0 +1,114 @@
+{
+  "Passed": true,
+  "Shapes": 9,
+  "NDSCases": 108,
+  "BatchCases": 18,
+  "Checks": 1350,
+  "ActualWidthForms": 9,
+  "ExactBarAnnotationRows": 345,
+  "MaximumRelativeDeviations": {
+    "NDS.field7": {
+      "After": -1987199.99999999,
+      "Relative": 1.007620539162273E-14,
+      "Label": "HollowCentered.NDS.3.1",
+      "Absolute": 2.0023435354232788E-08,
+      "Before": -1987200.00000001
+    },
+    "BATCH.field11": {
+      "After": 17503.8995328539,
+      "Relative": 8.556431840577624E-06,
+      "Label": "RoundedMixed.BATCH.2",
+      "Absolute": 0.1497709232971829,
+      "Before": 17503.7497619306
+    },
+    "NDS.field11": {
+      "After": 0.0,
+      "Relative": 0,
+      "Label": "Circle.NDS.1.0",
+      "Absolute": 0.0,
+      "Before": 0.0
+    },
+    "NDS.field8": {
+      "After": 20439000.0000001,
+      "Relative": 4.9028968652392484E-14,
+      "Label": "HollowOffset.NDS.3.2",
+      "Absolute": 1.0021030902862549E-06,
+      "Before": 20438999.9999991
+    },
+    "NDS.field9": {
+      "After": -149040000.000001,
+      "Relative": 1.3597409570338616E-14,
+      "Label": "HollowCentered.NDS.1.2",
+      "Absolute": 2.0265579223632812E-06,
+      "Before": -149039999.999999
+    },
+    "NDS.field12": {
+      "After": -15.126441692706,
+      "Relative": 5.63281908138617E-05,
+      "Label": "RoundedSimple.NDS.2.3",
+      "Absolute": 0.0008520450940014968,
+      "Before": -15.125589647612
+    },
+    "NDS.field6": {
+      "After": -5.63562842685833E-08,
+      "Relative": 0.00011108427664540073,
+      "Label": "RoundedSimple.NDS.2.2",
+      "Absolute": 6.2602970723981525E-12,
+      "Before": -5.63500239715109E-08
+    },
+    "NDS.field13": {
+      "After": 0.0,
+      "Relative": 0,
+      "Label": "Circle.NDS.1.0",
+      "Absolute": 0.0,
+      "Before": 0.0
+    },
+    "NDS.field10": {
+      "After": -2.59661674169309,
+      "Relative": 6.0727111266740826E-05,
+      "Label": "RoundedSimple.NDS.2.3",
+      "Absolute": 0.0001576850337898783,
+      "Before": -2.5964590566593
+    },
+    "NDS.field4": {
+      "After": -4.20858874014761E-05,
+      "Relative": 3.623386623696009E-06,
+      "Label": "RoundedMixed.NDS.2.2",
+      "Absolute": 1.5249399400158294E-10,
+      "Before": -4.20860398954701E-05
+    },
+    "BATCH.field8": {
+      "After": 5.66178827777245,
+      "Relative": 2.7000250706771623E-05,
+      "Label": "RoundedSimple.BATCH.2",
+      "Absolute": 0.00015287383058026904,
+      "Before": 5.66194115160303
+    },
+    "BATCH.field10": {
+      "After": 0.0419478933912416,
+      "Relative": 1.9103226672872594E-05,
+      "Label": "RoundedSimple.BATCH.2",
+      "Absolute": 8.013401159023825E-07,
+      "Before": 0.0419470920511257
+    },
+    "NDS.field5": {
+      "After": -2.20174489149116E-09,
+      "Relative": 0.00014461914007860778,
+      "Label": "RoundedMixed.NDS.2.2",
+      "Absolute": 3.1841445287991917E-13,
+      "Before": -2.20142647703828E-09
+    },
+    "BATCH.field9": {
+      "After": 0.528047110459414,
+      "Relative": 7.301547580785924E-05,
+      "Label": "RoundedSimple.BATCH.2",
+      "Absolute": 3.8558426381007926E-05,
+      "Before": 0.528085668885795
+    }
+  },
+  "NumericalRecovery": [
+    "RoundedSimple.BATCH.1.field3 CalcErr -> OK",
+    "RoundedSimple.BATCH.1.field5 10 -> 4"
+  ],
+  "Failures": []
+}

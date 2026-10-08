@@ -12,16 +12,16 @@ Option Explicit
 ' ==========================================================================
 ' Пустотелый скругленный прямоугольник
 ' ==========================================================================
-' Класс описывает параметрическую бетонную область HollowRectangle: внешний
-' скругленный прямоугольник минус внутреннее отверстие Opening. Расчетное ядро
-' видит обычную ISectionGeometry: ContainsPoint, габариты, площадь и центр.
+' Класс задает параметры и классифицированные контуры HollowRectangle:
+' наружный скругленный прямоугольник и внутреннее отверстие Opening.
+' Принадлежность точек и свойства бетонной области вычисляет общее ядро.
 '
 ' Внешний и внутренний контуры построены на уже проверенной математике
 ' CGeometryRoundedRectangle. Этот класс только задает ответственность
 ' "наружный контур - отверстие" и предоставляет дополнительные методы для
-' арматуры/аннотаций, которым нужны отдельные петли контура.
+' арматуры/аннотаций, которым нужны наружная и внутренняя границы.
 
-Implements ISectionGeometry
+Implements ISectionShape
 
 Private mOuter As CGeometryRoundedRectangle ' Наружная бетонная граница.
 Private mOpening As CGeometryRoundedRectangle ' Граница пустоты; внутри нее бетона нет.
@@ -35,9 +35,6 @@ Private mOpeningH As Double ' Высота внутреннего отверст
 Private mOpeningR As Double ' Радиус внутренних углов R_o.
 Private mOpeningOffsetX As Double ' Смещение центра отверстия относительно центра наружного контура по X.
 Private mOpeningOffsetY As Double ' Смещение центра отверстия относительно центра наружного контура по Y.
-Private mArea As Double ' Площадь бетонного кольца по polygon-контурам наружной формы и отверстия.
-Private mCentroidX As Double ' Центр тяжести бетонного кольца.
-Private mCentroidY As Double
 Private mInitialized As Boolean
 Private mValidationReady As Boolean ' Сброс при каждом Initialize, включая ошибочные параметры.
 Private mGeometryValid As Boolean ' Наружный контур и отверстие уже проверены совместно.
@@ -52,9 +49,6 @@ Public Sub Initialize(ByVal widthMm As Double, ByVal heightMm As Double, ByVal r
     mValidationReady = False
     mGeometryValid = False
     mValidationMessage = vbNullString
-    mArea = 0#
-    mCentroidX = 0#
-    mCentroidY = 0#
     mB = widthMm
     mH = heightMm
     mR = radiusMm
@@ -83,7 +77,6 @@ Public Sub Initialize(ByVal widthMm As Double, ByVal heightMm As Double, ByVal r
         mOpeningR, mOpeningR, 0#, 0#, mOpeningOffsetY, -mOpeningOffsetX
 
     mInitialized = True
-    RecalculateAnalyticalProperties
     Dim message As String
     mGeometryValid = IsValid(message)
 End Sub
@@ -121,38 +114,38 @@ Public Property Get OpeningOffsetY() As Double
 End Property
 
 Public Property Get OpeningMinX() As Double
-    OpeningMinX = mOpening.MinX
+    OpeningMinX = mOpeningOffsetX - mOpeningB / 2#
 End Property
 
 Public Property Get OpeningMaxX() As Double
-    OpeningMaxX = mOpening.MaxX
+    OpeningMaxX = mOpeningOffsetX + mOpeningB / 2#
 End Property
 
 Public Property Get OpeningMinY() As Double
-    OpeningMinY = mOpening.MinY
+    OpeningMinY = mOpeningOffsetY - mOpeningH / 2#
 End Property
 
 Public Property Get OpeningMaxY() As Double
-    OpeningMaxY = mOpening.MaxY
+    OpeningMaxY = mOpeningOffsetY + mOpeningH / 2#
 End Property
 
 Public Property Get MinX() As Double
-    MinX = mOuter.MinX
+    MinX = -mB / 2#
 End Property
 
 Public Property Get MaxX() As Double
-    MaxX = mOuter.MaxX
+    MaxX = mB / 2#
 End Property
 
 Public Property Get MinY() As Double
-    MinY = mOuter.MinY
+    MinY = -mH / 2#
 End Property
 
 Public Property Get MaxY() As Double
-    MaxY = mOuter.MaxY
+    MaxY = mH / 2#
 End Property
 
-' Возвращает точный контур одной петли: наружной или внутренней.
+' Возвращает точные сегменты наружной границы или отверстия.
 ' openingLoop=False - внешний контур, openingLoop=True - Opening.
 Public Sub GetContourSegments(ByVal openingLoop As Boolean, ByRef segmentType() As String, _
         ByRef startX() As Double, ByRef startY() As Double, ByRef endX() As Double, ByRef endY() As Double, _
@@ -242,20 +235,6 @@ Public Sub GetHorizontalRebarPath(ByVal openingFace As Boolean, ByVal isTop As B
     Next i
 End Sub
 
-' Проверяет попадание в бетон: точка должна быть внутри внешнего контура и
-' одновременно вне внутреннего отверстия.
-Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
-    Dim message As String
-    If Not IsValid(message) Then Exit Function
-    ContainsPoint = (mOuter.ContainsPoint(X, Y) And Not mOpening.ContainsPoint(X, Y))
-End Function
-
-' Дублирует семантику ContainsPoint для общего интерфейса геометрий проекта:
-' точка считается внутри, только если она попадает в бетонное кольцо, а не в пустоту.
-Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
-    IsPointInside = ContainsPoint(X, Y)
-End Function
-
 ' Возвращает сохраненную совместную проверку контуров. Геометрия меняется
 ' только через Initialize, поэтому массовые запросы точки не повторяют ее.
 Public Function IsValid(ByRef message As String) As Boolean
@@ -267,7 +246,7 @@ Public Function IsValid(ByRef message As String) As Boolean
     IsValid = mGeometryValid
 End Function
 
-' Проверяет размеры, радиусы, размещение отверстия и площадь бетонного кольца.
+' Проверяет размеры, радиусы и размещение отверстия внутри наружной границы.
 ' Вызывается один раз для каждого нового набора параметров геометрии.
 Private Function ValidateCurrentGeometry(ByRef message As String) As Boolean
     message = vbNullString
@@ -296,46 +275,10 @@ Private Function ValidateCurrentGeometry(ByRef message As String) As Boolean
         message = "Opening должен целиком находиться внутри наружного контура HollowRectangle с учетом InnerOffsetX/InnerOffsetY."
         Exit Function
     End If
-    If mArea <= GEOM_TOLERANCE Then
-        message = "Площадь бетонной части HollowRectangle должна быть больше нуля."
-        Exit Function
-    End If
 
     ValidateCurrentGeometry = True
 End Function
 
-' Возвращает площадь бетонного кольца по подготовленным polygon-контурам,
-' если геометрия прошла валидацию. Дуги имеют ту же дискретизацию, что у
-' RoundedRectangle; результат не является площадью точных круговых дуг.
-Public Function AnalyticalArea(ByRef available As Boolean) As Double
-    Dim message As String
-    available = IsValid(message)
-    If available Then AnalyticalArea = mArea
-End Function
-
-' Возвращает центр тяжести бетонной части по тем же polygon-контурам. При смещенном отверстии
-' центр смещается в сторону, противоположную отверстию; этот результат нужен
-' для согласованной схемы, аннотаций и контрольных свойств сечения.
-Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
-    Dim message As String
-    available = IsValid(message)
-    If Not available Then Exit Sub
-    X = mCentroidX
-    Y = mCentroidY
-End Sub
-
-' Для построения сетки наружный контур задает расчетные габариты и
-' дискретизируется так же, как обычный RoundedRectangle.
-Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
-    mOuter.GetExtremePoints pointX, pointY
-End Sub
-
-' ----------
-' Реализация интерфейса ISectionGeometry.
-' Эти методы реализуют общий интерфейс через публичный API класса, чтобы
-' HollowRectangle мог использоваться тем же pipeline сетки и расчета, что и
-' остальные параметрические типы сечений.
-' ----------
 ' Передает наружную границу и отверстие как собственные геометрические
 ' данные с явными ролями. Необязательные аннотации их не создают и не меняют.
 Public Sub BuildContours(ByVal contours As CSectionContours)
@@ -368,98 +311,6 @@ Private Sub AddMaterialContour(ByVal contours As CSectionContours, ByVal opening
     Next i
 End Sub
 
-Private Property Get ISectionGeometry_MinX() As Double
-    ISectionGeometry_MinX = MinX
-End Property
-
-Private Property Get ISectionGeometry_MaxX() As Double
-    ISectionGeometry_MaxX = MaxX
-End Property
-
-Private Property Get ISectionGeometry_MinY() As Double
-    ISectionGeometry_MinY = MinY
-End Property
-
-Private Property Get ISectionGeometry_MaxY() As Double
-    ISectionGeometry_MaxY = MaxY
-End Property
-
-' Передает интерфейсный запрос попадания точки в бетонную часть HollowRectangle.
-Private Function ISectionGeometry_ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
-    ISectionGeometry_ContainsPoint = ContainsPoint(X, Y)
-End Function
-
-' Проверяет попадание точки в бетон через альтернативный метод ISectionGeometry;
-' внутренний проем, как и во внешнем ContainsPoint, исключается из области.
-Private Function ISectionGeometry_IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
-    ISectionGeometry_IsPointInside = IsPointInside(X, Y)
-End Function
-
-' Передает интерфейсную валидацию в основной метод IsValid с теми же сообщениями.
-Private Function ISectionGeometry_IsValid(ByRef message As String) As Boolean
-    ISectionGeometry_IsValid = IsValid(message)
-End Function
-
-' Отдает аналитическую площадь через интерфейс ISectionGeometry.
-Private Function ISectionGeometry_AnalyticalArea(ByRef available As Boolean) As Double
-    ISectionGeometry_AnalyticalArea = AnalyticalArea(available)
-End Function
-
-' Отдает аналитический центр тяжести через интерфейс ISectionGeometry.
-Private Sub ISectionGeometry_AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
-    AnalyticalCentroid available, X, Y
-End Sub
-
-' Отдает точки внешнего контура через интерфейс. Для сетки и габаритов берется
-' именно наружная оболочка, а отверстие учитывается проверкой ContainsPoint.
-Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
-    GetExtremePoints pointX, pointY
-End Sub
-
-' Передает классифицированные контуры через обязательный интерфейс формы.
-Private Sub ISectionGeometry_BuildContours(ByVal contours As CSectionContours)
-    BuildContours contours
-End Sub
-
-' Пересчитывает площадь и центр тяжести как разность наружного контура и
-' Opening. Для смещенного отверстия центр бетонного кольца закономерно
-' смещается в противоположную сторону.
-Private Sub RecalculateAnalyticalProperties()
-    Dim outerAvailable As Boolean
-    Dim openingAvailable As Boolean
-    Dim outerArea As Double
-    Dim openingArea As Double
-    Dim outerX As Double, outerY As Double
-    Dim openingX As Double, openingY As Double
-
-    outerArea = mOuter.AnalyticalArea(outerAvailable)
-    openingArea = mOpening.AnalyticalArea(openingAvailable)
-    mOuter.AnalyticalCentroid outerAvailable, outerX, outerY
-    mOpening.AnalyticalCentroid openingAvailable, openingX, openingY
-
-    If Not outerAvailable Or Not openingAvailable Then Exit Sub
-    mArea = outerArea - openingArea
-    If mArea <= GEOM_TOLERANCE Then Exit Sub
-
-    mCentroidX = (outerArea * outerX - openingArea * openingX) / mArea
-    mCentroidY = (outerArea * outerY - openingArea * openingY) / mArea
-End Sub
-
-' Opening считается допустимым, если все его дискретные точки лежат внутри
-' наружного контура с небольшим допуском. Этого достаточно для axis-aligned
-' скругленных прямоугольников и одновременно работает при смещении отверстия.
-Private Function OpeningFitsInsideOuter() As Boolean
-    Dim px() As Double
-    Dim py() As Double
-    mOpening.GetExtremePoints px, py
-
-    Dim i As Long
-    For i = LBound(px) To UBound(px)
-        If Not mOuter.ContainsPoint(px(i), py(i)) Then Exit Function
-    Next i
-    OpeningFitsInsideOuter = True
-End Function
-
 ' Преобразует точку из повернутой системы u=Y, v=-X обратно в исходные X/Y.
 Private Sub MapFromRotated(ByVal uValue As Double, ByVal vValue As Double, _
         ByRef xValue As Double, ByRef yValue As Double)
@@ -472,4 +323,25 @@ Private Sub MapVectorFromRotated(ByVal uValue As Double, ByVal vValue As Double,
         ByRef xValue As Double, ByRef yValue As Double)
     xValue = -vValue
     yValue = uValue
+End Sub
+
+' Совместная проверка точных границ использует общий topology/query-код.
+Private Function OpeningFitsInsideOuter() As Boolean
+    On Error GoTo InvalidOpening
+    Dim outerContours As CSectionContours, openingContours As CSectionContours, query As CSectionGeometryQuery
+    Set outerContours = New CSectionContours: mOuter.BuildContours outerContours
+    Set openingContours = New CSectionContours: mOpening.BuildContours openingContours
+    Set query = New CSectionGeometryQuery
+    Dim material As CConcreteRegion
+    Set material = query.SubtractContainedRegion(query.RegionFromContours(outerContours), query.RegionFromContours(openingContours))
+    OpeningFitsInsideOuter = (material.Area > GEOM_TOLERANCE)
+InvalidOpening:
+End Function
+
+Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+    ISectionShape_IsValid = IsValid(message)
+End Function
+
+Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
+    BuildContours contours
 End Sub

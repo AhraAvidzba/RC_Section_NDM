@@ -20,6 +20,7 @@ Private mAngleStep As Double
 Private mCentroidX As Double
 Private mCentroidY As Double
 Private mAxisRadius As Double
+Private mConcreteGeometry As CGeometryRegion
 Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Техническая метка типа элемента: расчетная арматура, не коэффициент трещин.
 
 ' Строит круговую раскладку по таблице rngCircleGeometry. Пустой/нулевой
@@ -27,7 +28,8 @@ Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Техническая м�
 ' ряды тогда не читаются. Активные параметры обязательны, а ошибка называет
 ' фактическую ячейку Config и способ исправить ввод вместо подстановки default.
 Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        Optional ByVal centerX As Double = 0#, Optional ByVal centerY As Double = 0#) As CRebarLayout
+        Optional ByVal centerX As Double = 0#, Optional ByVal centerY As Double = 0#, _
+        Optional ByVal concrete As CGeometryRegion = Nothing) As CRebarLayout
     If settings Is Nothing Then Err.Raise vbObjectError + 3162, "CCircleRebarLayoutBuilder", "Настройки Config не переданы."
     If units Is Nothing Then Err.Raise vbObjectError + 3163, "CCircleRebarLayoutBuilder", "Система единиц не передана."
 
@@ -58,7 +60,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
     End If
     On Error GoTo BuildFailed
     Set BuildFromSettings = Build(diameter, centerX, centerY, axisDistance, barCount, barDiameter, _
-        REBAR_STEEL_CLASS, row2, row3, loc2, loc3)
+        REBAR_STEEL_CLASS, row2, row3, loc2, loc3, concrete)
     Exit Function
 
 BuildFailed:
@@ -99,13 +101,15 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, _
         ByVal steelClass As String, Optional ByVal row2Diameter As Double = 0#, _
         Optional ByVal row3Diameter As Double = 0#, Optional ByVal row2Location As String = "Stacked", _
-        Optional ByVal row3Location As String = "Stacked") As CRebarLayout
+        Optional ByVal row3Location As String = "Stacked", Optional ByVal concrete As CGeometryRegion = Nothing) As CRebarLayout
 
     ValidateInputs diameter, axisDistance, barCount, barDiameter, row2Diameter, row3Diameter, row2Location, row3Location
 
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
     geom.InitializeByDiameter diameter, centerX, centerY
+    Set mConcreteGeometry = concrete
+    If mConcreteGeometry Is Nothing Then Set mConcreteGeometry = BuildConcreteGeometry(geom)
 
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
@@ -154,7 +158,7 @@ Public Function Build(ByVal diameter As Double, ByVal centerX As Double, ByVal c
         xCoord = centerX + mAxisRadius * Cos(alpha)
         yCoord = centerY + mAxisRadius * Sin(alpha)
         layout.AddBar "B" & CStr(i + 1), xCoord, yCoord, barDiameter, 0#, steelClass, _
-            "Круг: основной ряд арматуры", geom, "Circle"
+            "Круг: основной ряд арматуры", mConcreteGeometry, "Circle"
         AddAdditionalCircleBar layout, geom, "B" & CStr(i + 1) & "_R2", centerX, centerY, xCoord, yCoord, _
             alpha, barDiameter, row2Diameter, row2Location, 0#, steelClass
         AddAdditionalCircleBar layout, geom, "B" & CStr(i + 1) & "_R3", centerX, centerY, xCoord, yCoord, _
@@ -206,7 +210,7 @@ Private Sub AddAdditionalCircleBar(ByVal layout As CRebarLayout, ByVal geom As C
     yCoord = baseY + offsetDistance * dirY
     ValidateBarInsideCircle geom, centerX, centerY, xCoord, yCoord, addDiameter
     layout.AddBar barName, xCoord, yCoord, addDiameter, 0#, steelClass, _
-        "Круг: дополнительный ряд арматуры", geom, "Circle"
+        "Круг: дополнительный ряд арматуры", mConcreteGeometry, "Circle"
 End Sub
 
 ' Возвращает диаметр промежуточного ряда, который надо "перепрыгнуть" третьему

@@ -17,16 +17,15 @@ Option Explicit
 ' Боковая часть может быть Simple - вертикальная вставка с радиусами R1, либо
 ' Tapered - скругленное сопряжение R1, наклонные участки и носовой радиус R2.
 '
-' Для расчетного ядра класс остается обычной ISectionGeometry: дает габариты,
-' ContainsPoint, расчетную площадь/центр по дискретизированному контуру и
-' смысловые точки для арматуры/аннотаций. Сетка, NDM и solver не знают о
-' внутреннем устройстве торцов.
+' Класс задает точные контуры и геометрические траектории отступов от граней.
+' Принадлежность точек, площадь, центр тяжести и сетка принадлежат общему
+' CGeometryRegion/CSectionGeometryQuery, а расстановка стержней - builder-у.
 
-Implements ISectionGeometry
+Implements ISectionShape
 
 Private Const SIDE_SIMPLE As String = "simple" ' Вертикальная боковая вставка с верхним/нижним R1.
 Private Const SIDE_TAPERED As String = "tapered" ' Наклонная боковая часть с дополнительным носовым R2.
-Private Const ARC_SEGMENTS As Long = 12 ' Число малых отрезков на дугу; достаточно для схемы и mesh boundary.
+Private Const ARC_SEGMENTS As Long = 12 ' Дискретизация только траекторий раскладки; бетон сохраняет точные дуги.
 
 Private Type TRoundedRawPoint
     X As Double
@@ -48,23 +47,11 @@ Private mCenterX As Double
 Private mCenterY As Double
 Private mInitialized As Boolean
 Private mValidationReady As Boolean ' Результат проверки относится к текущему набору параметров.
-Private mGeometryValid As Boolean ' Горячие запросы точки не перестраивают и не проверяют контур.
+Private mGeometryValid As Boolean ' Параметры проверяются один раз до подготовки общей области.
 Private mValidationMessage As String ' Сохраненная причина невалидности до следующего Initialize.
-
-Private mPointX() As Double ' Дискретизированный внешний контур в координатах модели.
-Private mPointY() As Double
-Private mPointCount As Long
-Private mArea As Double
-Private mCentroidX As Double
-Private mCentroidY As Double
-Private mMinX As Double
-Private mMaxX As Double
-Private mMinY As Double
-Private mMaxY As Double
-
 ' Возвращает внешний контур как набор прямых и дуг. Расчет использует те же
-' raw-точки, offset-вершины и касательные, что и дискретизированный контур,
-' но не дробит радиусы на ломаную для визуализации схемы.
+' исходные вершины и касательные, что и траектории отступов арматуры,
+' но сохраняет точные дуги, не заменяя их хордами.
 Public Sub GetContourSegments(ByRef segmentType() As String, ByRef startX() As Double, ByRef startY() As Double, _
         ByRef endX() As Double, ByRef endY() As Double, ByRef centerX() As Double, ByRef centerY() As Double, _
         ByRef radiusValue() As Double, ByRef sweepAngle() As Double, ByRef segmentCount As Long)
@@ -171,7 +158,6 @@ Public Sub InitializeSides(ByVal bMm As Double, ByVal hMm As Double, _
     mCenterX = centerXMm
     mCenterY = centerYMm
     mInitialized = True
-    RebuildContour
     Dim message As String
     mGeometryValid = IsValid(message)
 End Sub
@@ -182,14 +168,6 @@ End Property
 
 Public Property Get H() As Double
     H = mH
-End Property
-
-Public Property Get Width() As Double
-    Width = mMaxX - mMinX
-End Property
-
-Public Property Get Height() As Double
-    Height = mMaxY - mMinY
 End Property
 
 Public Property Get LeftType() As String
@@ -248,36 +226,6 @@ Public Property Get BottomY() As Double
     BottomY = mCenterY - mH / 2#
 End Property
 
-Public Property Get MinX() As Double
-    MinX = mMinX
-End Property
-
-Public Property Get MaxX() As Double
-    MaxX = mMaxX
-End Property
-
-Public Property Get MinY() As Double
-    MinY = mMinY
-End Property
-
-Public Property Get MaxY() As Double
-    MaxY = mMaxY
-End Property
-
-' Проверяет точку через быстрый bounding-box и точный polygon-contour.
-Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
-    Dim message As String
-    If Not IsValid(message) Then Exit Function
-    If X < mMinX - GEOM_TOLERANCE Or X > mMaxX + GEOM_TOLERANCE Then Exit Function
-    If Y < mMinY - GEOM_TOLERANCE Or Y > mMaxY + GEOM_TOLERANCE Then Exit Function
-    ContainsPoint = PointInContour(X, Y)
-End Function
-
-' Возвращает ту же проверку области через предусмотренное имя интерфейса.
-Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
-    IsPointInside = ContainsPoint(X, Y)
-End Function
-
 ' Возвращает проверку текущей неизменяемой геометрии. Initialize инвалидирует
 ' прежний результат и выполняет проверку один раз после подготовки контура.
 Public Function IsValid(ByRef message As String) As Boolean
@@ -289,8 +237,7 @@ Public Function IsValid(ByRef message As String) As Boolean
     IsValid = mGeometryValid
 End Function
 
-' Проверяет размеры, сопряжения радиусов и невырожденность готового контура.
-' Численная геометрия остается общей с ContainsPoint и построением арматуры.
+' Проверяет размеры и размещение сопряжений до построения точного контура.
 Private Function ValidateCurrentGeometry(ByRef message As String) As Boolean
     message = vbNullString
 
@@ -327,13 +274,6 @@ Private Function ValidateCurrentGeometry(ByRef message As String) As Boolean
         Exit Function
     End If
     If Not RoundedCornersFit(message) Then
-        Exit Function
-    End If
-    If mPointCount < 3 Or mArea <= GEOM_TOLERANCE Then
-        RebuildContour
-    End If
-    If mPointCount < 3 Or mArea <= GEOM_TOLERANCE Then
-        message = "Расчетный контур скругленного прямоугольника вырожден."
         Exit Function
     End If
 
@@ -468,34 +408,6 @@ Private Function RoundedEdgeLabel(ByVal firstIndex As Long, ByVal secondIndex As
     End If
 End Function
 
-' Возвращает площадь расчетного polygon-представления скругленного контура.
-Public Function AnalyticalArea(ByRef available As Boolean) As Double
-    Dim message As String
-    available = IsValid(message)
-    If available Then AnalyticalArea = mArea
-End Function
-
-' Возвращает центр тяжести polygon-представления скругленного контура.
-Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
-    Dim message As String
-    available = IsValid(message)
-    If Not available Then Exit Sub
-    X = mCentroidX
-    Y = mCentroidY
-End Sub
-
-' Возвращает точки внешнего polygon-контура для сетки, габаритов и визуализации.
-Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
-    ReDim pointX(1 To mPointCount)
-    ReDim pointY(1 To mPointCount)
-
-    Dim i As Long
-    For i = 1 To mPointCount
-        pointX(i) = mPointX(i)
-        pointY(i) = mPointY(i)
-    Next i
-End Sub
-
 ' Возвращает линию раскладки верхней или нижней горизонтальной грани B.
 ' Линия уже смещена внутрь на as и идет только по прямому участку между
 ' началом/концом скруглений R1.
@@ -613,57 +525,6 @@ Public Sub BuildContours(ByVal contours As CSectionContours)
     Next i
 End Sub
 
-Private Property Get ISectionGeometry_MinX() As Double
-    ISectionGeometry_MinX = MinX
-End Property
-
-Private Property Get ISectionGeometry_MaxX() As Double
-    ISectionGeometry_MaxX = MaxX
-End Property
-
-Private Property Get ISectionGeometry_MinY() As Double
-    ISectionGeometry_MinY = MinY
-End Property
-
-Private Property Get ISectionGeometry_MaxY() As Double
-    ISectionGeometry_MaxY = MaxY
-End Property
-
-' Делегирует проверку точки в реализацию класса для интерфейса ISectionGeometry.
-Private Function ISectionGeometry_ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
-    ISectionGeometry_ContainsPoint = ContainsPoint(X, Y)
-End Function
-
-' Делегирует IsPointInside в реализацию класса для интерфейса ISectionGeometry.
-Private Function ISectionGeometry_IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
-    ISectionGeometry_IsPointInside = IsPointInside(X, Y)
-End Function
-
-' Делегирует валидацию в реализацию класса для интерфейса ISectionGeometry.
-Private Function ISectionGeometry_IsValid(ByRef message As String) As Boolean
-    ISectionGeometry_IsValid = IsValid(message)
-End Function
-
-' Делегирует аналитическую площадь в реализацию класса для интерфейса ISectionGeometry.
-Private Function ISectionGeometry_AnalyticalArea(ByRef available As Boolean) As Double
-    ISectionGeometry_AnalyticalArea = AnalyticalArea(available)
-End Function
-
-' Делегирует аналитический центр тяжести в реализацию класса для интерфейса ISectionGeometry.
-Private Sub ISectionGeometry_AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
-    AnalyticalCentroid available, X, Y
-End Sub
-
-' Делегирует внешний контур в реализацию класса для интерфейса ISectionGeometry.
-Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
-    GetExtremePoints pointX, pointY
-End Sub
-
-' Передает классифицированные контуры через обязательный интерфейс формы.
-Private Sub ISectionGeometry_BuildContours(ByVal contours As CSectionContours)
-    BuildContours contours
-End Sub
-
 ' Нормализует тип боковой стороны: Simple или Tapered.
 Private Function NormalizeSideType(ByVal rawValue As String) As String
     Select Case LCase$(Trim$(rawValue))
@@ -684,21 +545,6 @@ Private Function DisplaySideType(ByVal normalizedValue As String) As String
         DisplaySideType = "Simple"
     End If
 End Function
-
-' Полностью пересобирает расчетный контур: raw-ломаная, скругления, затем свойства polygon-а.
-Private Sub RebuildContour()
-    mPointCount = 0
-    Erase mPointX
-    Erase mPointY
-    If Not mInitialized Then Exit Sub
-
-    Dim raw() As TRoundedRawPoint
-    Dim rawCount As Long
-    BuildRawContour raw, rawCount
-    BuildRoundedPath raw, rawCount, 0#, mPointX, mPointY, mPointCount
-    RemoveClosingDuplicate
-    RecalculatePolygonProperties
-End Sub
 
 ' Собирает исходную ломаную форму до скруглений: базовые торцы B, вершины
 ' tapered-носов и радиусы, которые затем превращаются в касательные дуги.
@@ -1147,67 +993,11 @@ Private Function Atn2Local(ByVal Y As Double, ByVal X As Double) As Double
     End If
 End Function
 
-' Убирает последнюю точку, если она повторяет первую после замыкания контура.
-Private Sub RemoveClosingDuplicate()
-    If mPointCount < 2 Then Exit Sub
-    If Abs(mPointX(1) - mPointX(mPointCount)) <= GEOM_TOLERANCE And _
-            Abs(mPointY(1) - mPointY(mPointCount)) <= GEOM_TOLERANCE Then
-        mPointCount = mPointCount - 1
-    End If
-    ReDim Preserve mPointX(1 To mPointCount)
-    ReDim Preserve mPointY(1 To mPointCount)
-End Sub
 
-' Пересчитывает площадь, центр тяжести и bounds по текущему polygon-контуру.
-Private Sub RecalculatePolygonProperties()
-    mArea = 0#
-    mCentroidX = 0#
-    mCentroidY = 0#
-    If mPointCount < 3 Then Exit Sub
-
-    mMinX = mPointX(1): mMaxX = mPointX(1)
-    mMinY = mPointY(1): mMaxY = mPointY(1)
-    Dim twiceArea As Double
-    Dim cxSum As Double
-    Dim cySum As Double
-    Dim i As Long
-    For i = 1 To mPointCount
-        Dim j As Long
-        If i = mPointCount Then
-            j = 1
-        Else
-            j = i + 1
-        End If
-        Dim crossValue As Double
-        crossValue = mPointX(i) * mPointY(j) - mPointX(j) * mPointY(i)
-        twiceArea = twiceArea + crossValue
-        cxSum = cxSum + (mPointX(i) + mPointX(j)) * crossValue
-        cySum = cySum + (mPointY(i) + mPointY(j)) * crossValue
-        If mPointX(i) < mMinX Then mMinX = mPointX(i)
-        If mPointX(i) > mMaxX Then mMaxX = mPointX(i)
-        If mPointY(i) < mMinY Then mMinY = mPointY(i)
-        If mPointY(i) > mMaxY Then mMaxY = mPointY(i)
-    Next i
-
-    If Abs(twiceArea) <= GEOM_TOLERANCE Then Exit Sub
-    mArea = Abs(twiceArea) / 2#
-    mCentroidX = cxSum / (3# * twiceArea)
-    mCentroidY = cySum / (3# * twiceArea)
-End Sub
-
-' Выполняет ray-casting проверку попадания точки внутрь расчетного polygon-контура.
-Private Function PointInContour(ByVal X As Double, ByVal Y As Double) As Boolean
-    Dim inside As Boolean
-    Dim i As Long
-    Dim j As Long
-    j = mPointCount
-    For i = 1 To mPointCount
-        If ((mPointY(i) > Y) <> (mPointY(j) > Y)) Then
-            Dim xIntersection As Double
-            xIntersection = (mPointX(j) - mPointX(i)) * (Y - mPointY(i)) / (mPointY(j) - mPointY(i)) + mPointX(i)
-            If X < xIntersection + GEOM_TOLERANCE Then inside = Not inside
-        End If
-        j = i
-    Next i
-    PointInContour = inside
+Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+    ISectionShape_IsValid = IsValid(message)
 End Function
+
+Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
+    BuildContours contours
+End Sub

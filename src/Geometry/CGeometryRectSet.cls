@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -18,7 +18,7 @@ Option Explicit
 ' прямоугольником. В режиме TwoRectangles верхний прямоугольник можно
 ' смещать по X относительно этого базового положения.
 
-Implements ISectionGeometry
+Implements ISectionShape
 
 Private Const SECTION_RECTANGLE As String = "rectangle" ' Только верхний прямоугольник B1 x H1.
 Private Const SECTION_LSECTION As String = "lsection" ' Г-сечение: верхний прямоугольник слева над нижним.
@@ -153,29 +153,6 @@ Public Property Get MaxY() As Double
     MaxY = ActiveUpperMaxY()
 End Property
 
-' Проверяет попадание точки в объединение активных прямоугольников с учетом геометрического допуска.
-Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
-    Dim message As String
-    If Not IsValid(message) Then Exit Function
-
-    Dim insideLower As Boolean
-    If LowerRectangleActive() Then
-        insideLower = (X >= mOriginX - GEOM_TOLERANCE And X <= mOriginX + mB2 + GEOM_TOLERANCE _
-            And Y >= mOriginY - GEOM_TOLERANCE And Y <= mOriginY + mH2 + GEOM_TOLERANCE)
-    End If
-
-    Dim insideUpper As Boolean
-    insideUpper = (X >= ActiveUpperMinX() - GEOM_TOLERANCE And X <= ActiveUpperMaxX() + GEOM_TOLERANCE _
-        And Y >= ActiveUpperMinY() - GEOM_TOLERANCE And Y <= ActiveUpperMaxY() + GEOM_TOLERANCE)
-    ContainsPoint = insideLower Or insideUpper
-End Function
-
-' Отвечает на альтернативный запрос попадания точки общего интерфейса
-' геометрий с той же проверкой активных прямоугольников.
-Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
-    IsPointInside = ContainsPoint(X, Y)
-End Function
-
 ' Проверяет, что выбранный режим RectSet имеет положительные размеры и связную геометрию.
 Public Function IsValid(ByRef message As String) As Boolean
     message = vbNullString
@@ -200,38 +177,8 @@ Public Function IsValid(ByRef message As String) As Boolean
     End If
 End Function
 
-' Возвращает точную аналитическую площадь активных прямоугольников.
-Public Function AnalyticalArea(ByRef available As Boolean) As Double
-    Dim message As String
-    available = IsValid(message)
-    If Not available Then Exit Function
-
-    AnalyticalArea = mB1 * mH1
-    If LowerRectangleActive() Then AnalyticalArea = AnalyticalArea + mB2 * mH2
-End Function
-
-' Возвращает точный центр тяжести активных прямоугольников без обращения к дискретной сетке.
-Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
-    Dim message As String
-    available = IsValid(message)
-    If Not available Then Exit Sub
-
-    Dim areaUpper As Double
-    areaUpper = mB1 * mH1
-    If Not LowerRectangleActive() Then
-        X = ActiveUpperMinX() + mB1 / 2#
-        Y = ActiveUpperMinY() + mH1 / 2#
-        Exit Sub
-    End If
-
-    Dim areaLower As Double
-    areaLower = mB2 * mH2
-    X = (areaLower * (mOriginX + mB2 / 2#) + areaUpper * (ActiveUpperMinX() + mB1 / 2#)) / (areaLower + areaUpper)
-    Y = (areaLower * (mOriginY + mH2 / 2#) + areaUpper * (ActiveUpperMinY() + mH1 / 2#)) / (areaLower + areaUpper)
-End Sub
-
 ' Возвращает внешний контур активной RectSet-геометрии для аннотаций, схемы и AutoCAD export.
-Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
+Private Sub BuildOutline(ByRef pointX() As Double, ByRef pointY() As Double)
     If Not LowerRectangleActive() Then
         ReDim pointX(1 To 4)
         ReDim pointY(1 To 4)
@@ -338,7 +285,7 @@ Public Sub BuildContours(ByVal contours As CSectionContours)
     Dim message As String
     If Not IsValid(message) Then Err.Raise vbObjectError + 5283, "CGeometryRectSet", message
     Dim px() As Double, py() As Double, i As Long, nextIndex As Long
-    GetExtremePoints px, py
+    BuildOutline px, py
     contours.Clear
     For i = LBound(px) To UBound(px)
         nextIndex = i + 1
@@ -348,53 +295,11 @@ Public Sub BuildContours(ByVal contours As CSectionContours)
     Next i
 End Sub
 
-Private Property Get ISectionGeometry_MinX() As Double
-    ISectionGeometry_MinX = MinX
-End Property
 
-Private Property Get ISectionGeometry_MaxX() As Double
-    ISectionGeometry_MaxX = MaxX
-End Property
-
-Private Property Get ISectionGeometry_MinY() As Double
-    ISectionGeometry_MinY = MinY
-End Property
-
-Private Property Get ISectionGeometry_MaxY() As Double
-    ISectionGeometry_MaxY = MaxY
-End Property
-
-' Делегирует проверку точки в реализацию класса для интерфейса ISectionGeometry.
-Private Function ISectionGeometry_ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
-    ISectionGeometry_ContainsPoint = ContainsPoint(X, Y)
+Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+    ISectionShape_IsValid = IsValid(message)
 End Function
 
-' Делегирует IsPointInside в реализацию класса для интерфейса ISectionGeometry.
-Private Function ISectionGeometry_IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
-    ISectionGeometry_IsPointInside = IsPointInside(X, Y)
-End Function
-
-' Делегирует валидацию в реализацию класса для интерфейса ISectionGeometry.
-Private Function ISectionGeometry_IsValid(ByRef message As String) As Boolean
-    ISectionGeometry_IsValid = IsValid(message)
-End Function
-
-' Делегирует аналитическую площадь в реализацию класса для интерфейса ISectionGeometry.
-Private Function ISectionGeometry_AnalyticalArea(ByRef available As Boolean) As Double
-    ISectionGeometry_AnalyticalArea = AnalyticalArea(available)
-End Function
-
-' Делегирует аналитический центр тяжести в реализацию класса для интерфейса ISectionGeometry.
-Private Sub ISectionGeometry_AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
-    AnalyticalCentroid available, X, Y
-End Sub
-
-' Делегирует контур в реализацию класса для интерфейса ISectionGeometry.
-Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
-    GetExtremePoints pointX, pointY
-End Sub
-
-' Передает классифицированные контуры через обязательный интерфейс формы.
-Private Sub ISectionGeometry_BuildContours(ByVal contours As CSectionContours)
+Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
     BuildContours contours
 End Sub

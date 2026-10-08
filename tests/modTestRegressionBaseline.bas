@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestRegressionBaseline"
+Attribute VB_Name = "modTestRegressionBaseline"
 Option Explicit
 
 ' ==========================================================================
@@ -59,7 +59,7 @@ Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As S
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, meshStep, meshStep, 1, boundarySubdivisions
+    mesh.BuildMesh BuildConcreteGeometry(geom), meshStep, meshStep, 1, boundarySubdivisions
 
     Dim rebarBuilder As CCircleRebarLayoutBuilder
     Set rebarBuilder = New CCircleRebarLayoutBuilder
@@ -96,7 +96,7 @@ Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 20#, 20#, 1, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1, 1
 
     Dim rebarBuilder As CCircleRebarLayoutBuilder
     Set rebarBuilder = New CCircleRebarLayoutBuilder
@@ -197,7 +197,7 @@ Private Function SolveCircleDirect(ByVal diameter As Double, ByVal centerX As Do
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, meshStep, meshStep, 1, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), meshStep, meshStep, 1, 1
 
     Dim rebarBuilder As CCircleRebarLayoutBuilder
     Set rebarBuilder = New CCircleRebarLayoutBuilder

@@ -22,9 +22,11 @@ Option Explicit
 ' бетон, то есть в противоположную сторону относительно нормали в отверстие.
 
 Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Материал продольной арматуры generated-модели.
+Private mConcreteGeometry As CGeometryRegion
 
 ' Строит геометрию и раскладку по настройкам Config.
-Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CRebarLayout
+Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        Optional ByVal concrete As CGeometryRegion = Nothing) As CRebarLayout
     If settings Is Nothing Then Err.Raise vbObjectError + 3240, "CHollowRectRebarLayoutBuilder", "Настройки Config не переданы."
     If units Is Nothing Then Err.Raise vbObjectError + 3241, "CHollowRectRebarLayoutBuilder", "Система единиц не передана."
 
@@ -49,7 +51,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         ReadFaceSettingsFromConfig(settings, units, "Opening.H.Right"), _
         ReadFaceSettingsFromConfig(settings, units, "Opening.B.Top"), _
         ReadFaceSettingsFromConfig(settings, units, "Opening.B.Bottom"), _
-        REBAR_STEEL_CLASS)
+        REBAR_STEEL_CLASS, concrete)
 End Function
 
 ' Создает CRebarLayout для уже подготовленной HollowRectangle-геометрии.
@@ -59,11 +61,13 @@ Public Function Build(ByVal geom As CGeometryHollowRectangle, _
         ByVal bTopSettings As Variant, ByVal bBottomSettings As Variant, _
         ByVal openingHLeftSettings As Variant, ByVal openingHRightSettings As Variant, _
         ByVal openingBTopSettings As Variant, ByVal openingBBottomSettings As Variant, _
-        ByVal steelClass As String) As CRebarLayout
+        ByVal steelClass As String, Optional ByVal concrete As CGeometryRegion = Nothing) As CRebarLayout
     If geom Is Nothing Then Err.Raise vbObjectError + 3242, "CHollowRectRebarLayoutBuilder", "Геометрия HollowRectangle не передана."
 
     Dim message As String
     If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3243, "CHollowRectRebarLayoutBuilder", message
+    Set mConcreteGeometry = concrete
+    If mConcreteGeometry Is Nothing Then Set mConcreteGeometry = BuildConcreteGeometry(geom)
 
     ' Наружные счетчики проверяем до n+1 и накопления массивов проекций.
     ' Opening не имеет собственного n: его фактическое количество проверяет
@@ -195,7 +199,7 @@ Private Sub AddHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeome
     geom.GetHorizontalRebarPath openingFace, isTop, axisDistance, px, py
 
     Dim lengthValue As Double
-    lengthValue = PolylineLength(px, py)
+    lengthValue = RebarPolylineLength(px, py)
     If lengthValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 3244, "CHollowRectRebarLayoutBuilder", _
         HollowFaceDisplayName(faceName) & ": длина линии раскладки должна быть больше нуля."
 
@@ -204,7 +208,7 @@ Private Sub AddHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeome
 
     Dim centroidAvailable As Boolean
     Dim referenceX As Double, referenceY As Double
-    geom.AnalyticalCentroid centroidAvailable, referenceX, referenceY
+    mConcreteGeometry.AnalyticalCentroid centroidAvailable, referenceX, referenceY
     If Not centroidAvailable Then referenceY = 0#
 
     Dim spacing As Double
@@ -217,15 +221,15 @@ Private Sub AddHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeome
     Dim i As Long
     For i = 1 To barCount
         Dim xCoord As Double, yCoord As Double, tx As Double, ty As Double
-        PointAtDistance px, py, spacing * CDbl(i), xCoord, yCoord, tx, ty
+        RebarPointAtDistance px, py, spacing * CDbl(i), xCoord, yCoord, tx, ty
         Dim inwardX As Double, inwardY As Double
-        ConcreteInwardVector geom, xCoord, yCoord, tx, ty, axisDistance, inwardX, inwardY
+        ConcreteInwardVector xCoord, yCoord, tx, ty, axisDistance, inwardX, inwardY
 
-        If AddBarIfAvailable(layout, geom, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
+        If AddBarIfAvailable(layout, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
             AccumulateBLabelAnchor isTop, referenceY, xCoord, yCoord, _
                 anchorStartX, anchorStartY, anchorEndX, anchorEndY, anchorProjection, anchorInitialized
             RecordBarProjection barX, barY, barNormalX, barNormalY, barCountOut, xCoord, yCoord, inwardX, inwardY
-            AddAdditionalRows layout, geom, faceName, xCoord, yCoord, diameter, settings, i, tx, ty, inwardX, inwardY, steelClass, nextIndex
+            AddAdditionalRows layout, faceName, xCoord, yCoord, diameter, settings, i, tx, ty, inwardX, inwardY, steelClass, nextIndex
         End If
     Next i
     If anchorInitialized Then layout.AddAnnotationAnchor faceName, anchorStartX, anchorStartY, anchorEndX, anchorEndY, normalX, normalY, axisDistance
@@ -275,9 +279,9 @@ Private Sub AddSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryHol
         xCoord = x1 + t * (x2 - x1)
         yCoord = y1 + t * (y2 - y1)
 
-        If AddBarIfAvailable(layout, geom, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
+        If AddBarIfAvailable(layout, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
             RecordBarProjection barX, barY, barNormalX, barNormalY, barCountOut, xCoord, yCoord, inwardX, inwardY
-            AddAdditionalRows layout, geom, faceName, xCoord, yCoord, diameter, settings, i, tx, ty, inwardX, inwardY, steelClass, nextIndex
+            AddAdditionalRows layout, faceName, xCoord, yCoord, diameter, settings, i, tx, ty, inwardX, inwardY, steelClass, nextIndex
         End If
     Next i
 End Sub
@@ -316,13 +320,13 @@ Private Sub AddProjectedHorizontalFace(ByVal layout As CRebarLayout, ByVal geom 
         If lineLength <= GEOM_TOLERANCE Then Exit Sub
     Else
         geom.GetHorizontalRebarPath True, isTop, axisDistance, px, py
-        lineLength = PolylineLength(px, py)
+        lineLength = RebarPolylineLength(px, py)
         If lineLength <= GEOM_TOLERANCE Then Exit Sub
     End If
 
     Dim centroidAvailable As Boolean
     Dim referenceX As Double, referenceY As Double
-    geom.AnalyticalCentroid centroidAvailable, referenceX, referenceY
+    mConcreteGeometry.AnalyticalCentroid centroidAvailable, referenceX, referenceY
     If Not centroidAvailable Then referenceY = 0#
 
     Dim i As Long
@@ -353,12 +357,12 @@ Private Sub AddProjectedHorizontalFace(ByVal layout As CRebarLayout, ByVal geom 
                 ' Используем известную нормаль грани от пустоты в бетон.
                 inwardX = -lineNormalX: inwardY = -lineNormalY
             Else
-                ConcreteInwardVector geom, xCoord, yCoord, tx, ty, axisDistance, inwardX, inwardY
+                ConcreteInwardVector xCoord, yCoord, tx, ty, axisDistance, inwardX, inwardY
             End If
-            If AddBarIfAvailable(layout, geom, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
+            If AddBarIfAvailable(layout, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
                 AccumulateBLabelAnchor isTop, referenceY, xCoord, yCoord, _
                     anchorStartX, anchorStartY, anchorEndX, anchorEndY, anchorProjection, anchorInitialized
-                AddAdditionalRows layout, geom, faceName, xCoord, yCoord, diameter, settings, ordinal, tx, ty, inwardX, inwardY, steelClass, nextIndex
+                AddAdditionalRows layout, faceName, xCoord, yCoord, diameter, settings, ordinal, tx, ty, inwardX, inwardY, steelClass, nextIndex
             End If
         End If
     Next i
@@ -402,15 +406,15 @@ Private Sub AddProjectedSideFace(ByVal layout As CRebarLayout, ByVal geom As CGe
         Dim xCoord As Double, yCoord As Double
         If ProjectRayToSegment(sourceX(i), sourceY(i), sourceNormalX(i), sourceNormalY(i), x1, y1, x2, y2, xCoord, yCoord) Then
             ordinal = ordinal + 1
-            If AddBarIfAvailable(layout, geom, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
-                AddAdditionalRows layout, geom, faceName, xCoord, yCoord, diameter, settings, ordinal, tx, ty, inwardX, inwardY, steelClass, nextIndex
+            If AddBarIfAvailable(layout, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex) Then
+                AddAdditionalRows layout, faceName, xCoord, yCoord, diameter, settings, ordinal, tx, ty, inwardX, inwardY, steelClass, nextIndex
             End If
         End If
     Next i
 End Sub
 
 ' Добавляет второй и третий ряды относительно найденного первого ряда.
-Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As CGeometryHollowRectangle, _
+Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, _
         ByVal faceName As String, ByVal baseX As Double, ByVal baseY As Double, ByVal row1Diameter As Double, _
         ByVal settings As Variant, ByVal baseBarOrdinal As Long, ByVal tangentX As Double, ByVal tangentY As Double, _
         ByVal inwardX As Double, ByVal inwardY As Double, ByVal steelClass As String, ByRef nextIndex As Long)
@@ -418,53 +422,34 @@ Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As CGeome
     row2Diameter = FaceRow2Diameter(settings)
     row3Diameter = FaceRow3Diameter(settings)
 
-    If row2Diameter > 0# And ShouldAddAdditionalRow(baseBarOrdinal, FaceRow2Binding(settings)) Then
+    If row2Diameter > 0# And RebarShouldAddAdditionalRow(baseBarOrdinal, FaceRow2Binding(settings)) Then
         Dim row2X As Double, row2Y As Double
-        OffsetAdditionalRow baseX, baseY, row1Diameter, row2Diameter, 0#, FaceRow2Location(settings), _
+        RebarOffsetAdditionalRow baseX, baseY, row1Diameter, row2Diameter, 0#, FaceRow2Location(settings), _
             tangentX, tangentY, inwardX, inwardY, row2X, row2Y
-        AddBarIfAvailable layout, geom, faceName, 2, row2X, row2Y, row2Diameter, steelClass, nextIndex
+        AddBarIfAvailable layout, faceName, 2, row2X, row2Y, row2Diameter, steelClass, nextIndex
     End If
 
-    If row3Diameter > 0# And ShouldAddAdditionalRow(baseBarOrdinal, FaceRow3Binding(settings)) Then
+    If row3Diameter > 0# And RebarShouldAddAdditionalRow(baseBarOrdinal, FaceRow3Binding(settings)) Then
         Dim skippedDiameter As Double
         skippedDiameter = 0#
         If row2Diameter > 0# And StrComp(FaceRow2Location(settings), FaceRow3Location(settings), vbTextCompare) = 0 Then skippedDiameter = row2Diameter
         Dim row3X As Double, row3Y As Double
-        OffsetAdditionalRow baseX, baseY, row1Diameter, row3Diameter, skippedDiameter, FaceRow3Location(settings), _
+        RebarOffsetAdditionalRow baseX, baseY, row1Diameter, row3Diameter, skippedDiameter, FaceRow3Location(settings), _
             tangentX, tangentY, inwardX, inwardY, row3X, row3Y
-        AddBarIfAvailable layout, geom, faceName, 3, row3X, row3Y, row3Diameter, steelClass, nextIndex
-    End If
-End Sub
-
-' Вычисляет координату стержня второго или третьего ряда относительно стержня
-' первого ряда. Stacked уводит ряд в бетон по нормали, SideBySide - вдоль
-' касательной к линии раскладки; skippedDiameter нужен, когда третий ряд
-' должен "перепрыгнуть" уже существующий второй ряд.
-Private Sub OffsetAdditionalRow(ByVal baseX As Double, ByVal baseY As Double, _
-        ByVal row1Diameter As Double, ByVal targetDiameter As Double, ByVal skippedDiameter As Double, _
-        ByVal locationMode As String, ByVal tangentX As Double, ByVal tangentY As Double, _
-        ByVal inwardX As Double, ByVal inwardY As Double, ByRef xCoord As Double, ByRef yCoord As Double)
-    Dim distance As Double
-    distance = row1Diameter / 2# + skippedDiameter + targetDiameter / 2#
-    If StrComp(locationMode, "SideBySide", vbTextCompare) = 0 Then
-        xCoord = baseX + tangentX * distance
-        yCoord = baseY + tangentY * distance
-    Else
-        xCoord = baseX + inwardX * distance
-        yCoord = baseY + inwardY * distance
+        AddBarIfAvailable layout, faceName, 3, row3X, row3Y, row3Diameter, steelClass, nextIndex
     End If
 End Sub
 
 ' Добавляет стержень в layout только если в этой же точке еще нет стержня.
 ' Это защищает углы и пересечения проекций Opening от дублей: один и тот же
 ' физический стержень может быть достигнут из соседних смысловых граней.
-Private Function AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As CGeometryHollowRectangle, _
+Private Function AddBarIfAvailable(ByVal layout As CRebarLayout, _
         ByVal faceName As String, ByVal rowNumber As Long, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal steelClass As String, ByRef nextIndex As Long) As Boolean
-    If HasBarAt(layout, xCoord, yCoord) Then Exit Function
+    If layout.HasBarAt(xCoord, yCoord) Then Exit Function
     layout.AddBar faceName & ".row_" & CStr(rowNumber) & "-" & CStr(nextIndex), _
         xCoord, yCoord, diameter, 0#, steelClass, _
-        "HollowRectangle: " & HollowFaceDisplayName(faceName) & ", ряд " & CStr(rowNumber), geom, faceName
+        "HollowRectangle: " & HollowFaceDisplayName(faceName) & ", ряд " & CStr(rowNumber), mConcreteGeometry, faceName
     nextIndex = nextIndex + 1
     AddBarIfAvailable = True
 End Function
@@ -488,34 +473,11 @@ Private Sub ValidateOpeningFace(ByVal faceName As String, ByVal axisDistance As 
     If diameter = 0# Then Exit Sub
     If axisDistance <= diameter / 2# Then Err.Raise vbObjectError + 3252, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": расстояние as до оси стержня должно быть больше d/2."
     If FaceRow2Diameter(settings) < 0# Or FaceRow3Diameter(settings) < 0# Then Err.Raise vbObjectError + 3253, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": диаметры дополнительных рядов d2 и d3 должны быть неотрицательными."
-    If FaceRow2Diameter(settings) > 0# And Not IsSupportedRowLocation(FaceRow2Location(settings)) Then Err.Raise vbObjectError + 3254, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": положение второго ряда должно быть SideBySide или Stacked."
-    If FaceRow3Diameter(settings) > 0# And Not IsSupportedRowLocation(FaceRow3Location(settings)) Then Err.Raise vbObjectError + 3255, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": положение третьего ряда должно быть SideBySide или Stacked."
-    If FaceRow2Diameter(settings) > 0# And Not IsSupportedRowBinding(FaceRow2Binding(settings)) Then Err.Raise vbObjectError + 3256, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": привязка второго ряда должна быть EachBar или EverySecondBar."
-    If FaceRow3Diameter(settings) > 0# And Not IsSupportedRowBinding(FaceRow3Binding(settings)) Then Err.Raise vbObjectError + 3257, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": привязка третьего ряда должна быть EachBar или EverySecondBar."
+    If FaceRow2Diameter(settings) > 0# And Not RebarRowLocationIsValid(FaceRow2Location(settings)) Then Err.Raise vbObjectError + 3254, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": положение второго ряда должно быть SideBySide или Stacked."
+    If FaceRow3Diameter(settings) > 0# And Not RebarRowLocationIsValid(FaceRow3Location(settings)) Then Err.Raise vbObjectError + 3255, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": положение третьего ряда должно быть SideBySide или Stacked."
+    If FaceRow2Diameter(settings) > 0# And Not RebarRowBindingIsValid(FaceRow2Binding(settings)) Then Err.Raise vbObjectError + 3256, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": привязка второго ряда должна быть EachBar или EverySecondBar."
+    If FaceRow3Diameter(settings) > 0# And Not RebarRowBindingIsValid(FaceRow3Binding(settings)) Then Err.Raise vbObjectError + 3257, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": привязка третьего ряда должна быть EachBar или EverySecondBar."
 End Sub
-
-' Возвращает True только для поддерживаемых режимов положения дополнительного
-' ряда: рядом по касательной или внутрь бетона по нормали.
-Private Function IsSupportedRowLocation(ByVal value As String) As Boolean
-    IsSupportedRowLocation = (StrComp(value, "SideBySide", vbTextCompare) = 0 Or StrComp(value, "Stacked", vbTextCompare) = 0)
-End Function
-
-' Возвращает True только для поддерживаемых режимов привязки дополнительного
-' ряда к первому ряду: к каждому стержню или через один.
-Private Function IsSupportedRowBinding(ByVal value As String) As Boolean
-    IsSupportedRowBinding = (StrComp(value, "EachBar", vbTextCompare) = 0 Or StrComp(value, "EverySecondBar", vbTextCompare) = 0)
-End Function
-
-' Решает, создавать ли дополнительный стержень для текущего стержня первого
-' ряда. Для EverySecondBar используются не индексы layout, а порядковый номер
-' базового стержня на этой конкретной смысловой грани.
-Private Function ShouldAddAdditionalRow(ByVal baseBarOrdinal As Long, ByVal bindingMode As String) As Boolean
-    If StrComp(bindingMode, "EverySecondBar", vbTextCompare) = 0 Then
-        ShouldAddAdditionalRow = ((baseBarOrdinal Mod 2) = 1)
-    Else
-        ShouldAddAdditionalRow = True
-    End If
-End Function
 
 ' Запоминает координаты и нормаль уже созданного наружного стержня. Позже эти
 ' массивы используются, чтобы проецировать наружную раскладку на внутренний
@@ -687,21 +649,21 @@ End Sub
 ' Выбирает нормаль второго/третьего ряда в сторону бетона. Это надежнее, чем
 ' вручную угадывать знак для верхней/нижней и внутренней/наружной кривой:
 ' контрольная точка должна оставаться внутри бетонного кольца.
-Private Sub ConcreteInwardVector(ByVal geom As CGeometryHollowRectangle, ByVal xCoord As Double, ByVal yCoord As Double, _
+Private Sub ConcreteInwardVector(ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal tangentX As Double, ByVal tangentY As Double, ByVal axisDistance As Double, _
         ByRef inwardX As Double, ByRef inwardY As Double)
     Dim nx1 As Double, ny1 As Double
     Dim nx2 As Double, ny2 As Double
     nx1 = -tangentY: ny1 = tangentX
     nx2 = tangentY: ny2 = -tangentX
-    NormalizeVector nx1, ny1
-    NormalizeVector nx2, ny2
+    RebarNormalizeVector nx1, ny1
+    RebarNormalizeVector nx2, ny2
 
     ' Пробуем точку глубже, чем собственный as: стержень уже стоит внутри бетона,
     ' поэтому проверка на 1 мм могла принять наружное направление за внутреннее.
     Dim probe As Double
     probe = WorksheetMax(1#, Abs(axisDistance) * 1.25)
-    If geom.ContainsPoint(xCoord + nx1 * probe, yCoord + ny1 * probe) Then
+    If mConcreteGeometry.ContainsPoint(xCoord + nx1 * probe, yCoord + ny1 * probe) Then
         inwardX = nx1
         inwardY = ny1
     Else
@@ -709,70 +671,6 @@ Private Sub ConcreteInwardVector(ByVal geom As CGeometryHollowRectangle, ByVal x
         inwardY = ny2
     End If
 End Sub
-
-' Считает суммарную длину ломаной траектории раскладки. Дуги к этому моменту
-' уже дискретизированы геометрией в последовательность точек, поэтому здесь
-' используется обычная сумма длин соседних отрезков.
-Private Function PolylineLength(ByRef px() As Double, ByRef py() As Double) As Double
-    Dim i As Long
-    For i = LBound(px) To UBound(px) - 1
-        PolylineLength = PolylineLength + Sqr((px(i + 1) - px(i)) ^ 2 + (py(i + 1) - py(i)) ^ 2)
-    Next i
-End Function
-
-' Возвращает точку на ломаной на заданном расстоянии от начала и касательный
-' единичный вектор в этой точке. Метод нужен для равномерной раскладки по
-' криволинейным B-граням, где простой линейной интерполяции по X/Y недостаточно.
-Private Sub PointAtDistance(ByRef px() As Double, ByRef py() As Double, ByVal targetDistance As Double, _
-        ByRef xCoord As Double, ByRef yCoord As Double, ByRef tangentX As Double, ByRef tangentY As Double)
-    Dim accumulated As Double
-    Dim i As Long
-    For i = LBound(px) To UBound(px) - 1
-        Dim segLen As Double
-        segLen = Sqr((px(i + 1) - px(i)) ^ 2 + (py(i + 1) - py(i)) ^ 2)
-        If segLen <= GEOM_TOLERANCE Then GoTo NextSegment
-        If accumulated + segLen >= targetDistance - GEOM_TOLERANCE Then
-            Dim t As Double
-            t = (targetDistance - accumulated) / segLen
-            If t < 0# Then t = 0#
-            If t > 1# Then t = 1#
-            xCoord = px(i) + t * (px(i + 1) - px(i))
-            yCoord = py(i) + t * (py(i + 1) - py(i))
-            tangentX = (px(i + 1) - px(i)) / segLen
-            tangentY = (py(i + 1) - py(i)) / segLen
-            Exit Sub
-        End If
-        accumulated = accumulated + segLen
-NextSegment:
-    Next i
-    xCoord = px(UBound(px))
-    yCoord = py(UBound(py))
-    tangentX = 0#
-    tangentY = -1#
-End Sub
-
-' Нормирует двумерный вектор на месте. Нулевой или почти нулевой вектор не
-' меняется, чтобы не создавать деление на численный шум.
-Private Sub NormalizeVector(ByRef xValue As Double, ByRef yValue As Double)
-    Dim lenValue As Double
-    lenValue = Sqr(xValue * xValue + yValue * yValue)
-    If lenValue <= GEOM_TOLERANCE Then Exit Sub
-    xValue = xValue / lenValue
-    yValue = yValue / lenValue
-End Sub
-
-' Проверяет, есть ли уже стержень с такими координатами. Используется перед
-' добавлением угловых и проецируемых стержней, чтобы разные грани не создавали
-' совпадающие расчетные элементы арматуры.
-Private Function HasBarAt(ByVal layout As CRebarLayout, ByVal xCoord As Double, ByVal yCoord As Double) As Boolean
-    Dim i As Long
-    For i = 1 To layout.Count
-        If Abs(layout.X(i) - xCoord) <= GEOM_TOLERANCE And Abs(layout.Y(i) - yCoord) <= GEOM_TOLERANCE Then
-            HasBarAt = True
-            Exit Function
-        End If
-    Next i
-End Function
 
 ' Достает as из компактного массива настроек одной грани.
 Private Function FaceAs(ByVal settings As Variant) As Double

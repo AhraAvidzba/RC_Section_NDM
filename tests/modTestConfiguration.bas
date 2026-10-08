@@ -154,12 +154,12 @@ End Sub
 Private Function SearchFixtureSection() As CSectionModel
     Dim geometry As CGeometryCircle, mesh As CFiberMeshBuilder, rebars As CRebarLayout
     Set geometry = New CGeometryCircle: geometry.InitializeByDiameter 300#
-    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 20#, 20#, 1, 2
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geometry), 20#, 20#, 1, 2
     Set rebars = New CRebarLayout
     Dim i As Long, angle As Double
     For i = 0 To 11
         angle = 2# * GEOM_PI * CDbl(i) / 12#
-        rebars.AddBar "R" & CStr(i + 1), 120# * Cos(angle), 120# * Sin(angle), 16#, 0#, "A400", vbNullString, geometry
+        rebars.AddBar "R" & CStr(i + 1), 120# * Cos(angle), 120# * Sin(angle), 16#, 0#, "A400", vbNullString, BuildConcreteGeometry(geometry)
     Next i
     Set SearchFixtureSection = BuildGeneratedSectionModel(mesh, rebars, "SearchConfigFixture")
 End Function

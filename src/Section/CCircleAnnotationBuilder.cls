@@ -19,7 +19,7 @@ Option Explicit
 
 ' Заменяет только размерные аннотации и подписи арматуры круга.
 ' Координаты остаются внутренними; расчетная геометрия и НДС не изменяются.
-Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
+Public Sub Build(ByVal model As CSectionModel, ByVal geometry As CGeometryCircle, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5295, "CCircleAnnotationBuilder", "Модель сечения не передана."
     If geometry Is Nothing Then Err.Raise vbObjectError + 5296, "CCircleAnnotationBuilder", "Геометрия круглого сечения не передана."
 

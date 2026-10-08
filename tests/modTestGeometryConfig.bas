@@ -440,7 +440,7 @@ End Sub
 
 ' Читает форму штатным reader/unit/registry pipeline без создания арматуры:
 ' проверка одного размера не должна зависеть от чужой раскладки стержней.
-Private Function ReadShape() As ISectionGeometry
+Private Function ReadShape() As CGeometryRegion
     Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -450,7 +450,7 @@ End Function
 
 ' Сохраняет расчетные площадь, центр и габариты. Отказ геометрии считается
 ' ошибкой fixture; снимок не подменяет форму ее исходными getter-параметрами.
-Private Function ShapeSnapshot(ByVal geom As ISectionGeometry) As Variant
+Private Function ShapeSnapshot(ByVal geom As CGeometryRegion) As Variant
     Dim message As String, available As Boolean, area As Double, X As Double, Y As Double
     If Not geom.IsValid(message) Then Err.Raise vbObjectError + 5962, "modTestGeometryConfig", message
     area = geom.AnalyticalArea(available)
@@ -473,7 +473,7 @@ End Function
 ' Для каждого поля проверяет изменение готовой формы, отклонение неверного
 ' значения и повторный нормальный ввод. Числа журналируются для последующей сверки.
 Private Sub CheckShapeEffects(ByRef stats As TGeometryConfigStats, ByVal target As Object, ByVal shapeName As String)
-    Dim item As Variant, baseline As Variant, changed As Variant, geom As ISectionGeometry
+    Dim item As Variant, baseline As Variant, changed As Variant, geom As CGeometryRegion
     Dim errorNumber As Long, description As String, valid As Boolean, prefix As String
     ConfigureShape target, shapeName
     baseline = ShapeSnapshot(ReadShape())
@@ -500,9 +500,8 @@ Private Sub CheckShapeEffects(ByRef stats As TGeometryConfigStats, ByVal target 
     Next item
 End Sub
 
-' Независимо проверяет площадь/центр двух простых fixtures. Для HollowRectangle
-' учитывает утвержденный polygon-контракт: каждая четверть дуги содержит 12
-' хорд; это не подмена текущей геометрии точной круглой дугой.
+' Независимо проверяет площадь и центр. Скругления представлены точными
+' дугами: потеря площади четырех углов равна (4 - pi) * R^2.
 Private Sub CheckShapeBaseline(ByRef stats As TGeometryConfigStats, ByVal shapeName As String, ByVal actual As Variant)
     Dim area As Double, openingArea As Double, cornerLoss As Double
     If shapeName = "RectSet" Then
@@ -511,7 +510,7 @@ Private Sub CheckShapeBaseline(ByRef stats As TGeometryConfigStats, ByVal shapeN
         Near stats, "shapeConfig.RectSet.oracle.cx", CDbl(actual(1)), (600# * 250# * 300# + 200# * 300# * 50#) / area
         Near stats, "shapeConfig.RectSet.oracle.cy", CDbl(actual(2)), (600# * 250# * 125# + 200# * 300# * 400#) / area
     ElseIf shapeName = "HollowRectangle" Then
-        cornerLoss = 4# - 24# * Sin(GEOM_PI / 24#)
+        cornerLoss = 4# - GEOM_PI
         openingArea = 400# * 500# - cornerLoss * 30# ^ 2
         area = 1000# * 1200# - cornerLoss * 60# ^ 2 - openingArea
         Near stats, "shapeConfig.HollowRectangle.oracle.area", CDbl(actual(0)), area
@@ -585,7 +584,7 @@ End Sub
 ' молча; сообщение должно назвать Config, фактическую ячейку и настройку.
 ' Служебные количества внутренних граней не являются пользовательским вводом.
 Private Sub CheckHollowCounts(ByRef stats As TGeometryConfigStats, ByVal target As Object)
-    Dim rowIndex As Long, index As Long, bad As Variant, geom As ISectionGeometry, bars As CRebarLayout
+    Dim rowIndex As Long, index As Long, bad As Variant, geom As CGeometryRegion, bars As CRebarLayout
     Dim errorNumber As Long, description As String, face As String, prefix As String, faceNames As Variant
     faceNames = Array("H.Left", "H.Right", "B.Top", "B.Bottom")
     ConfigureShape target, "HollowRectangle"
@@ -658,7 +657,7 @@ End Sub
 ' Oracle первой позиции не использует builder: ось основного ряда лежит на +X,
 ' Stacked сдвигает внутрь на полусумму диаметров, третий ряд перескакивает второй.
 Private Sub CheckCircleEffects(ByRef stats As TGeometryConfigStats, ByVal target As Object)
-    Dim key As Variant, geom As ISectionGeometry, bars As CRebarLayout
+    Dim key As Variant, geom As CGeometryRegion, bars As CRebarLayout
     For Each key In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
             "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
         ConfigureCircle target
@@ -710,7 +709,7 @@ End Sub
 ' затем обычную раскладку. Пустые/нулевые диаметры сохраняют утвержденное выключение ряда.
 Private Sub CheckCircleBoundaries(ByRef stats As TGeometryConfigStats, ByVal target As Object)
     Dim key As Variant, value As Variant, errorNumber As Long, description As String
-    Dim geom As ISectionGeometry, bars As CRebarLayout
+    Dim geom As CGeometryRegion, bars As CRebarLayout
     For Each key In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
             "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
         ConfigureCircle target
@@ -752,8 +751,8 @@ End Sub
 ' форму и арматуру выбранного RectSet. Проверяем весь снимок, а не один счетчик.
 Private Sub CheckCircleInactive(ByRef stats As TGeometryConfigStats, ByVal systemRange As Object, ByVal target As Object)
     SetKey systemRange, "Geometry.Type", "RectSet"
-    Dim originalGeom As ISectionGeometry, originalBars As CRebarLayout
-    Dim geom As ISectionGeometry, bars As CRebarLayout, key As Variant, index As Long, equal As Boolean
+    Dim originalGeom As CGeometryRegion, originalBars As CRebarLayout
+    Dim geom As CGeometryRegion, bars As CRebarLayout, key As Variant, index As Long, equal As Boolean
     ReadGeometry originalGeom, originalBars
     For Each key In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
             "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
@@ -778,7 +777,7 @@ End Sub
 
 ' Читает текущие ячейки заново и использует штатные единицы/registry;
 ' прямые вызовы чистого Build здесь не могли бы обнаружить обрыв Config-передачи.
-Private Sub ReadGeometry(ByRef geom As ISectionGeometry, ByRef bars As CRebarLayout)
+Private Sub ReadGeometry(ByRef geom As CGeometryRegion, ByRef bars As CRebarLayout)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -1374,7 +1373,7 @@ End Sub
 ' для loc/bind положение и число дополнительных стержней относительно первого.
 Private Sub CheckRebarFieldEffect(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal shape As String, ByVal face As Variant, ByVal field As Variant, ByRef cases As Long)
-    Dim geom As ISectionGeometry, baseline As CRebarLayout, bars As CRebarLayout, cell As Object
+    Dim geom As CGeometryRegion, baseline As CRebarLayout, bars As CRebarLayout, cell As Object
     Dim before As Variant, after As Variant, kind As String, prefix As String, value As Variant
     Dim rowNumber As Long, expectedCount As Long, expectedDistance As Double
     kind = CStr(field(0)): Set cell = RebarFieldCell(target, CLng(field(1)), CLng(field(2)))
@@ -1451,7 +1450,7 @@ End Sub
 Private Sub CheckRebarFieldInvalid(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal shape As String, ByVal face As Variant, ByVal field As Variant, ByRef cases As Long)
     Dim bad As Variant, badValues As Variant, kind As String, prefix As String, cell As Object
-    Dim savedValue As Variant, geom As ISectionGeometry, bars As CRebarLayout, baseline As Variant, current As Variant
+    Dim savedValue As Variant, geom As CGeometryRegion, bars As CRebarLayout, baseline As Variant, current As Variant
     Dim number As Long, description As String, index As Long
     kind = CStr(field(0)): Set cell = RebarFieldCell(target, CLng(field(1)), CLng(field(2)))
     savedValue = cell.Formula: baseline = RequiredGeometryRouteSnapshot(shape, "Rebars")

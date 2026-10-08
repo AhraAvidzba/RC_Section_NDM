@@ -2062,7 +2062,7 @@ End Sub
 ' Прикладывает сжатие через бетонный центр симметричного fixture и проверяет нулевые кривизны.
 ' Перенос усилий делает обычный CSectionLoadState, поэтому проверяется и точка нагрузки.
 Private Sub CheckPureCompressionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
-        ByVal geom As ISectionGeometry, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double)
+        ByVal geom As CGeometryRegion, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double)
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, meshStep, meshStep, 1, 1
@@ -2122,7 +2122,7 @@ End Sub
 ' Сравнивает центральное и эксцентричное растяжение одной симметричной модели.
 ' Ожидает нулевые кривизны в центре и ненулевой изгиб после заданного смещения силы.
 Private Sub CheckPureTensionReference(ByRef stats As TBatchTestStats, ByVal caseName As String, _
-        ByVal geom As ISectionGeometry, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double, _
+        ByVal geom As CGeometryRegion, ByVal rebars As CRebarLayout, ByVal meshStep As Double, ByVal tolerance As Double, _
         Optional ByVal eccentricOffsetX As Double = -25#, Optional ByVal eccentricOffsetY As Double = 40#)
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -3190,7 +3190,7 @@ Private Sub TestStabilityCircleMxDoesNotCreateMy(ByRef stats As TBatchTestStats)
     SetSystemSetting "Stability.Code", "SP63"
     SetSystemSetting "Stability.AccidentalEccentricityPlanes", "OnlyMomentPlane"
 
-    Dim geom As ISectionGeometry
+    Dim geom As CGeometryRegion
     Set geom = CircleGeometry(500#, 0#, 0#)
 
     Dim mesh As CFiberMeshBuilder
@@ -3304,7 +3304,7 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
     SetSystemSetting "Stability.Code", "SP63"
 
-    Dim geom As ISectionGeometry
+    Dim geom As CGeometryRegion
     Set geom = RectSetGeometry(250#, 550#, 600#, 250#)
 
     Dim mesh As CFiberMeshBuilder
@@ -3497,7 +3497,7 @@ Private Sub TestStabilitySP35UsesCoreDistanceNotRadius(ByRef stats As TBatchTest
     SetSystemSetting "Stability.Mu1", "1"
     SetSystemSetting "Stability.Mu2", "1"
 
-    Dim geom As ISectionGeometry
+    Dim geom As CGeometryRegion
     Set geom = CircleGeometry(500#, 0#, 0#)
 
     Dim mesh As CFiberMeshBuilder
@@ -3558,7 +3558,7 @@ Private Sub TestStabilityDepthUsesConcreteContourOnly(ByRef stats As TBatchTestS
     SetProfileValue "MaterialModel.Stability.ValueSet", "PR1", "ULS(I)"
     SetSystemSetting "Stability.Code", "SP63"
 
-    Dim geom As ISectionGeometry
+    Dim geom As CGeometryRegion
     Set geom = RoundedRectangleGeometry(300#, 200#)
 
     Dim mesh As CFiberMeshBuilder
@@ -4402,14 +4402,14 @@ Private Function BuildBatchCalculator(Optional ByVal diagramExtensionEnabled As 
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 30#, 20#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 30#, 20#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, rebars, "TestBatch")
@@ -4432,14 +4432,14 @@ Private Function BuildSteppedCrackCoverBatch() As CBatchSectionCalculator
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 30#, 20#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 30#, 20#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, rebars, "SteppedCoverTest")
@@ -4480,7 +4480,7 @@ End Function
 ' для проверки StateSolution при почти предельном осевом растяжении PR2.
 Private Function BuildUserRectSetTensionBatch(ByRef referenceX As Double, ByRef referenceY As Double, _
         Optional ByVal providerOverride As CMaterialModelProvider = Nothing) As CBatchSectionCalculator
-    Dim geom As ISectionGeometry
+    Dim geom As CGeometryRegion
     Set geom = RectSetGeometry(250#, 550#, 600#, 250#)
 
     Dim mesh As CFiberMeshBuilder
@@ -4727,29 +4727,29 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: создает круг в заданном центре через штатный geometry-интерфейс.
 ' Явное смещение нужно регрессиям переноса нагрузки и осей сечения.
-Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double) As ISectionGeometry
+Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double) As CGeometryRegion
     Dim geom As CGeometryCircle
     Set geom = New CGeometryCircle
     geom.InitializeByDiameter diameter, centerX, centerY
-    Set CircleGeometry = geom
+    Set CircleGeometry = BuildConcreteGeometry(geom)
 End Function
 
 ' ДЛЯ ТЕСТОВ: прямоугольник без скруглений проходит через тот же генератор,
 ' что и RoundedRectangle, чтобы фиксировать частный случай общего контура.
-Private Function RoundedRectangleGeometry(ByVal width As Double, ByVal height As Double) As ISectionGeometry
+Private Function RoundedRectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
     Dim geom As CGeometryRoundedRectangle
     Set geom = New CGeometryRoundedRectangle
     geom.Initialize width, height, 0#, 0#, 0#, 0#
-    Set RoundedRectangleGeometry = geom
+    Set RoundedRectangleGeometry = BuildConcreteGeometry(geom)
 End Function
 
 ' ДЛЯ ТЕСТОВ: собирает два прямоугольника с общей левой гранью и без смещения.
 ' Размеры заданы явно; функция не читает и не меняет Config.
-Private Function RectSetGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double) As ISectionGeometry
+Private Function RectSetGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double) As CGeometryRegion
     Dim geom As CGeometryRectSet
     Set geom = New CGeometryRectSet
     geom.Initialize b1, h1, b2, h2, 0#, 0#
-    Set RectSetGeometry = geom
+    Set RectSetGeometry = BuildConcreteGeometry(geom)
 End Function
 
 ' ДЛЯ ТЕСТОВ: создает один круговой ряд A400 с заданным осевым отступом.
@@ -5495,7 +5495,7 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: четыре одинаковых угловых стержня задают симметричный oracle.
 ' Штатный AddBar сохраняет проверку попадания каждого стержня в бетон.
-Private Function RectangleRebars(ByVal geom As ISectionGeometry) As CRebarLayout
+Private Function RectangleRebars(ByVal geom As CGeometryRegion) As CRebarLayout
     Dim layout As CRebarLayout
     Set layout = New CRebarLayout
     layout.AddBar "R1", -140#, -80#, 20#, 0#, "A400", "test", geom
@@ -5543,7 +5543,7 @@ End Function
 ' Собирает круглое сечение для тестов устойчивости СП 35.
 Private Function BuildCircleStabilitySection(ByVal diameter As Double, ByVal barCount As Long, _
         ByVal barDiameter As Double) As CSectionModel
-    Dim geom As ISectionGeometry
+    Dim geom As CGeometryRegion
     Set geom = CircleGeometry(diameter, 0#, 0#)
 
     Dim mesh As CFiberMeshBuilder
@@ -6074,13 +6074,13 @@ Private Function BuildAudit02PairBatch(ByVal extensionEnabled As Boolean) As CBa
     geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 30#, 20#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 30#, 20#, 1
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
     Dim materials As CMaterialModelProvider
     Set materials = New CMaterialModelProvider
     Dim parameters As CMaterialModelProvider
@@ -7022,7 +7022,7 @@ End Function
 ' фиксированная модель Region с реальными A/I, а не проверка живого AutoCAD.
 ' Сетка строится один раз и переиспользуется во всех LC этой формы.
 Private Function Audit03LoadMatrixSection(ByVal shapeName As String) As CSectionModel
-    Dim geometry As ISectionGeometry, circleGeometry As CGeometryCircle, rounded As CGeometryRoundedRectangle
+    Dim geometry As CGeometryRegion, circleGeometry As CGeometryCircle, rounded As CGeometryRoundedRectangle
     Dim hollow As CGeometryHollowRectangle, rectset As CGeometryRectSet, mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout, section As CSectionModel, x As Double, y As Double, i As Long
     Set rebars = New CRebarLayout
@@ -7030,7 +7030,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String) As CSection
         Case "CircleSym", "CircleUneven"
             Set circleGeometry = New CGeometryCircle
             circleGeometry.InitializeByDiameter 300#, 0#, 0#
-            Set geometry = circleGeometry
+            Set geometry = BuildConcreteGeometry(circleGeometry)
             For i = 0 To 11
                 If shapeName = "CircleSym" Or (i <> 1 And i <> 2) Then
                     x = 120# * Cos(i * 2# * GEOM_PI / 12#): y = 120# * Sin(i * 2# * GEOM_PI / 12#)
@@ -7045,7 +7045,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String) As CSection
                 Case "RectTwoLeft": rectset.Initialize 250#, 300#, 450#, 150#, 0#, 0#, -60#, "TwoRectangles"
                 Case "RectTwoRight": rectset.Initialize 250#, 300#, 450#, 150#, 0#, 0#, 60#, "TwoRectangles"
             End Select
-            Set geometry = rectset
+            Set geometry = BuildConcreteGeometry(rectset)
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed"
             Set rounded = New CGeometryRoundedRectangle
             Select Case shapeName
@@ -7053,7 +7053,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String) As CSection
                 Case "RoundedTapered": rounded.InitializeSides 300#, 180#, "Tapered", "Tapered", 80#, 100#, 20#, 30#, 35#, 45#
                 Case "RoundedMixed": rounded.InitializeSides 300#, 180#, "Simple", "Tapered", 0#, 80#, 20#, 30#, 0#, 45#
             End Select
-            Set geometry = rounded
+            Set geometry = BuildConcreteGeometry(rounded)
         Case "HollowCentered", "HollowOffset", "HollowThin"
             Set hollow = New CGeometryHollowRectangle
             Select Case shapeName
@@ -7061,7 +7061,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String) As CSection
                 Case "HollowOffset": hollow.Initialize 500#, 800#, 30#, 200#, 300#, 20#, 40#, -30#
                 Case "HollowThin": hollow.Initialize 300#, 500#, 0#, 240#, 440#, 0#
             End Select
-            Set geometry = hollow
+            Set geometry = BuildConcreteGeometry(hollow)
         Case "ImportedFixture"
             Set section = New CSectionModel
             section.SourceType = "AutoCADImportFixture"

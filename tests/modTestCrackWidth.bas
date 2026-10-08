@@ -752,14 +752,14 @@ Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue 
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 20#, 20#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -781,14 +781,14 @@ Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal n
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 15#, 15#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 15#, 15#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -812,14 +812,14 @@ Private Function SolveServiceStateWithRunner(ByRef section As CSectionModel, ByV
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 20#, 20#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
 
     Set section = BuildGeneratedSectionModel(mesh, rebars)
 
@@ -1516,13 +1516,13 @@ Private Function Audit03SigmaBoundarySection() As CSectionModel
     geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 20#, 20#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", geom
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
     Set Audit03SigmaBoundarySection = BuildGeneratedSectionModel(mesh, rebars)
 End Function
 

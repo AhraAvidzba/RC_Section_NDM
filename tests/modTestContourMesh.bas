@@ -15,7 +15,7 @@ Public Function RunContourMeshTests() As String
     On Error GoTo Failed
     Set mFixture = Application.Workbooks.Add(-4167)
     Set mConfig = mFixture.Worksheets(1): mConfig.Name = "MeshConfig"
-    Dim shape As Long, subdivision As Variant, geometry As ISectionGeometry
+    Dim shape As Long, subdivision As Variant, geometry As CGeometryRegion
     For shape = 1 To 6
         Set geometry = ControlGeometry(shape)
         For Each subdivision In Array(1, 2, 3)
@@ -40,7 +40,7 @@ End Function
 ' Контуры выводит production export, импорт читает настоящие CAD-сущности.
 Public Function RunNativeContourMeshTests(ByVal acad As Object, ByVal template As String) As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
-    Dim doc As Object, geometry As ISectionGeometry, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim doc As Object, geometry As CGeometryRegion, settings As CSystemSettingsReader, units As CUnitSystem
     Dim mesh As CFiberMeshBuilder, bars As CRebarLayout, generated As CSectionModel, imported As CSectionModel, restored As CSectionModel
     Dim writer As CNDMResultsWriter, importer As CAutoCADSectionModelImporter, shape As Long, format As Variant
     Dim outerLayer As String, openingLayer As String, rebarLayer As String, meshLayer As String, key As String
@@ -188,25 +188,25 @@ Private Sub CheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSe
     Check "native.twoHoles.empty", Not query.ContainsPoint(query.ConcreteDomain, -45#, 0#) And Not query.ContainsPoint(query.ConcreteDomain, 45#, 0#)
 End Sub
 
-Private Function ControlGeometry(ByVal shape As Long) As ISectionGeometry
+Private Function ControlGeometry(ByVal shape As Long) As CGeometryRegion
     Dim circleGeometry As CGeometryCircle, rect As CGeometryRoundedRectangle
     Dim hollow As CGeometryHollowRectangle, rectset As CGeometryRectSet
     Select Case shape
         Case 1
             Set circleGeometry = New CGeometryCircle: circleGeometry.InitializeByDiameter 300#
-            Set ControlGeometry = circleGeometry
+            Set ControlGeometry = BuildConcreteGeometry(circleGeometry)
         Case 2, 3, 4
             Set rectset = New CGeometryRectSet
             If shape = 2 Then rectset.Initialize 300#, 400#, 0#, 0#, 0#, 0#, 0#, "Rectangle"
             If shape = 3 Then rectset.Initialize 120#, 240#, 300#, 120#, 0#, 0#, 0#, "LSection"
             If shape = 4 Then rectset.Initialize 200#, 240#, 300#, 120#, -83#, 41#, 60#, "TwoRectangles"
-            Set ControlGeometry = rectset
+            Set ControlGeometry = BuildConcreteGeometry(rectset)
         Case 5
             Set rect = New CGeometryRoundedRectangle: rect.Initialize 300#, 400#, 40#, 40#, 40#, 40#, 13#, -27#
-            Set ControlGeometry = rect
+            Set ControlGeometry = BuildConcreteGeometry(rect)
         Case 6
             Set hollow = New CGeometryHollowRectangle: hollow.Initialize 400#, 500#, 35#, 200#, 280#, 25#, 17#, -23#
-            Set ControlGeometry = hollow
+            Set ControlGeometry = BuildConcreteGeometry(hollow)
     End Select
 End Function
 
@@ -285,7 +285,7 @@ Private Function Atan2(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
-Private Function ControlBars(ByVal mesh As CFiberMeshBuilder, ByVal geometry As ISectionGeometry) As CRebarLayout
+Private Function ControlBars(ByVal mesh As CFiberMeshBuilder, ByVal geometry As CGeometryRegion) As CRebarLayout
     Set ControlBars = New CRebarLayout
     Dim index As Long, i As Long
     For i = 1 To 4
@@ -294,7 +294,7 @@ Private Function ControlBars(ByVal mesh As CFiberMeshBuilder, ByVal geometry As 
     Next i
 End Function
 
-Private Sub CompareGeneratedAndImported(ByVal geometry As ISectionGeometry, ByVal label As String, _
+Private Sub CompareGeneratedAndImported(ByVal geometry As CGeometryRegion, ByVal label As String, _
         ByVal subdivision As Long, ByVal solve As Boolean)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, mesh As CFiberMeshBuilder, bars As CRebarLayout
     Dim generated As CSectionModel, imported As CSectionModel, importer As CAutoCADSectionModelImporter
@@ -305,20 +305,18 @@ Private Sub CompareGeneratedAndImported(ByVal geometry As ISectionGeometry, ByVa
     geometry.BuildContours generated.Contours
     Set importer = New CAutoCADSectionModelImporter
     Set imported = importer.ImportFromModelSpace(FakeSpace(generated.Contours, bars), "CONCRETE", "REBAR", "Rebar", 0#, units, "OUTER", "OPENING", FakeLayers(), settings)
-    Dim exactPair As Boolean
-    exactPair = Not TypeOf geometry Is CGeometryRoundedRectangle And Not TypeOf geometry Is CGeometryHollowRectangle
-    If exactPair Then CompareModels label, generated, imported Else CompareCurvedModels label, generated, imported
+    CompareModels label, generated, imported
     Check label & ".source", imported.SourceType = "AutoCADImport" And imported.ConcreteMeshSource = "AutoCADContours"
     Check label & ".notice", InStr(importer.ResultMessage(imported), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
     Set query = New CSectionGeometryQuery: query.Initialize imported
     Set adapter = New CGeometryRegion: adapter.Initialize query.ConcreteDomain
-    Near label & ".exactArea", adapter.AnalyticalArea(available), geometry.AnalyticalArea(available), IIf(exactPair, 0.0000001, adapter.AnalyticalArea(available) * 0.0002)
+    Near label & ".exactArea", adapter.AnalyticalArea(available), geometry.AnalyticalArea(available), 0.0000001
     CheckCellCenters label, mesh, geometry
     Dim i As Long
     For i = 1 To imported.ConcreteCount
         Check label & ".importedCenter." & CStr(i), adapter.ContainsPoint(imported.ConcreteX(i), imported.ConcreteY(i))
     Next i
-    If solve Then CompareSolutions label, generated, imported, exactPair
+    If solve Then CompareSolutions label, generated, imported, True
     If label = "3.sub2" Then CheckBatchPair generated, imported
     mReport = mReport & "SECTION " & label & ": concrete=" & CStr(imported.ConcreteCount) & "; rebar=" & CStr(imported.RebarCount) & vbCrLf
 End Sub
@@ -390,8 +388,8 @@ Finish:
     If Not IsEmpty(savedSystem) Then systemTable.Formula = savedSystem
 End Sub
 
-' Generated скругления проверяют ломаную, CAD сохраняет дуги. Допуск только
-' для этих двух форм; отчет показывает отклонения A/I, а не скрывает их.
+' Независимый контроль площади и инерции после нативного CAD-преобразования;
+' величины отклонений сохраняются в отчете.
 Private Sub CompareCurvedModels(ByVal label As String, ByVal first As CSectionModel, ByVal second As CSectionModel)
     Dim a As CSectionPropertiesCalculator, b As CSectionPropertiesCalculator
     Set a = New CSectionPropertiesCalculator: a.CalculateConcrete first
@@ -511,7 +509,7 @@ Private Function FlatPolygon(ByVal values As Variant) As CConcreteRegion
     Set query = New CSectionGeometryQuery: Set FlatPolygon = query.PolygonRegion(points)
 End Function
 
-Private Sub CheckCellCenters(ByVal label As String, ByVal mesh As CFiberMeshBuilder, ByVal geometry As ISectionGeometry)
+Private Sub CheckCellCenters(ByVal label As String, ByVal mesh As CFiberMeshBuilder, ByVal geometry As CGeometryRegion)
     Dim i As Long, seen As Object, key As String
     Set seen = CreateObject("Scripting.Dictionary")
     For i = 1 To mesh.FiberCount
@@ -523,7 +521,7 @@ Private Sub CheckCellCenters(ByVal label As String, ByVal mesh As CFiberMeshBuil
 End Sub
 
 Private Sub CheckImportContracts()
-    Dim geometry As ISectionGeometry, contours As CSectionContours, bars As CRebarLayout, mesh As CFiberMeshBuilder
+    Dim geometry As CGeometryRegion, contours As CSectionContours, bars As CRebarLayout, mesh As CFiberMeshBuilder
     Dim importer As CAutoCADSectionModelImporter, settings As CSystemSettingsReader, units As CUnitSystem
     Dim space As Collection, model As CSectionModel, baseline As CSectionModel, cell As CFakeAcadRegion, bad As CFakeAcadContour
     Dim number As Long, description As String, mode As Long, factor As Double, unit As Variant
@@ -571,7 +569,7 @@ Private Sub CheckImportContracts()
 End Sub
 
 Private Sub CheckSnapshot()
-    Dim geometry As ISectionGeometry, settings As CSystemSettingsReader, units As CUnitSystem, bars As CRebarLayout
+    Dim geometry As CGeometryRegion, settings As CSystemSettingsReader, units As CUnitSystem, bars As CRebarLayout
     Dim mesh As CFiberMeshBuilder, contours As CSectionContours, importer As CAutoCADSectionModelImporter
     Dim model As CSectionModel, restored As CSectionModel, writer As CNDMResultsWriter, sheet As Object, names As Variant, columns As Variant, i As Long
     Set geometry = ControlGeometry(3): Set settings = MeshSettings(): Set units = SettingsUnits(settings)

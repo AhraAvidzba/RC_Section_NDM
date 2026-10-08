@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -64,7 +64,7 @@ End Sub
 ' Добавляет стержень в промежуточную раскладку с проверкой ID, площади, диаметра и положения в бетоне.
 Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal area As Double, ByVal steelClass As String, _
-        Optional ByVal comment As String = vbNullString, Optional ByVal geometry As ISectionGeometry = Nothing, _
+        Optional ByVal comment As String = vbNullString, Optional ByVal geometry As CGeometryRegion = Nothing, _
         Optional ByVal annotationGroupName As String = vbNullString)
 
     If Len(Trim$(barName)) = 0 Then Err.Raise vbObjectError + 3100, "CRebarLayout", "ID стержня не заполнен."
@@ -117,6 +117,18 @@ End Sub
 Public Property Get Count() As Long
     Count = mCount
 End Property
+
+' Общий поиск уже созданного стержня для сопряжений граней и проекций.
+' AddBar по-прежнему отклоняет дубли; решение пропустить позицию принимает builder.
+Public Function HasBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Boolean
+    Dim i As Long
+    For i = 1 To mCount
+        If Abs(mX(i) - xCoord) <= GEOM_TOLERANCE And Abs(mY(i) - yCoord) <= GEOM_TOLERANCE Then
+            HasBarAt = True
+            Exit Function
+        End If
+    Next i
+End Function
 
 Public Property Get BarID(ByVal index As Long) As String
     CheckIndex index

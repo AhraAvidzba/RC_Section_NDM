@@ -1,0 +1,518 @@
+OK: generatedContours.Circle.noAnnotations
+OK: generatedContours.Circle.areaBeforeAnnotations; actual=7853.98163397448; expected=7853.98163397448
+OK: generatedContours.Circle.openingCount
+OK: generatedContours.Circle.annotationRevisionUnchanged
+OK: generatedContours.Circle.annotations.count
+OK: generatedContours.Circle.annotations.metadata.1
+OK: generatedContours.Circle.annotations.coordinates.1
+OK: generatedContours.Circle.clearAnnotationsKeepsRevision
+OK: generatedContours.Circle.areaWithoutAnnotations; actual=7853.98163397448; expected=7853.98163397448
+OK: generatedContours.Circle.rebuild.count
+OK: generatedContours.Circle.rebuild.metadata.1
+OK: generatedContours.Circle.rebuild.coordinates.1
+OK: generatedContours.RectSet.noAnnotations
+OK: generatedContours.RectSet.areaBeforeAnnotations; actual=10000; expected=10000
+OK: generatedContours.RectSet.openingCount
+OK: generatedContours.RectSet.annotationRevisionUnchanged
+OK: generatedContours.RectSet.annotations.count
+OK: generatedContours.RectSet.annotations.metadata.1
+OK: generatedContours.RectSet.annotations.coordinates.1
+OK: generatedContours.RectSet.annotations.metadata.2
+OK: generatedContours.RectSet.annotations.coordinates.2
+OK: generatedContours.RectSet.annotations.metadata.3
+OK: generatedContours.RectSet.annotations.coordinates.3
+OK: generatedContours.RectSet.annotations.metadata.4
+OK: generatedContours.RectSet.annotations.coordinates.4
+OK: generatedContours.RectSet.clearAnnotationsKeepsRevision
+OK: generatedContours.RectSet.areaWithoutAnnotations; actual=10000; expected=10000
+OK: generatedContours.RectSet.rebuild.count
+OK: generatedContours.RectSet.rebuild.metadata.1
+OK: generatedContours.RectSet.rebuild.coordinates.1
+OK: generatedContours.RectSet.rebuild.metadata.2
+OK: generatedContours.RectSet.rebuild.coordinates.2
+OK: generatedContours.RectSet.rebuild.metadata.3
+OK: generatedContours.RectSet.rebuild.coordinates.3
+OK: generatedContours.RectSet.rebuild.metadata.4
+OK: generatedContours.RectSet.rebuild.coordinates.4
+OK: generatedContours.RoundedRectangle.noAnnotations
+OK: generatedContours.RoundedRectangle.areaBeforeAnnotations; actual=9914.15926535898; expected=9914.15926535898
+OK: generatedContours.RoundedRectangle.openingCount
+OK: generatedContours.RoundedRectangle.annotationRevisionUnchanged
+OK: generatedContours.RoundedRectangle.annotations.count
+OK: generatedContours.RoundedRectangle.annotations.metadata.1
+OK: generatedContours.RoundedRectangle.annotations.coordinates.1
+OK: generatedContours.RoundedRectangle.annotations.metadata.2
+OK: generatedContours.RoundedRectangle.annotations.coordinates.2
+OK: generatedContours.RoundedRectangle.annotations.metadata.3
+OK: generatedContours.RoundedRectangle.annotations.coordinates.3
+OK: generatedContours.RoundedRectangle.annotations.metadata.4
+OK: generatedContours.RoundedRectangle.annotations.coordinates.4
+OK: generatedContours.RoundedRectangle.annotations.metadata.5
+OK: generatedContours.RoundedRectangle.annotations.coordinates.5
+OK: generatedContours.RoundedRectangle.annotations.metadata.6
+OK: generatedContours.RoundedRectangle.annotations.coordinates.6
+OK: generatedContours.RoundedRectangle.annotations.metadata.7
+OK: generatedContours.RoundedRectangle.annotations.coordinates.7
+OK: generatedContours.RoundedRectangle.annotations.metadata.8
+OK: generatedContours.RoundedRectangle.annotations.coordinates.8
+OK: generatedContours.RoundedRectangle.clearAnnotationsKeepsRevision
+OK: generatedContours.RoundedRectangle.areaWithoutAnnotations; actual=9914.15926535898; expected=9914.15926535898
+OK: generatedContours.RoundedRectangle.rebuild.count
+OK: generatedContours.RoundedRectangle.rebuild.metadata.1
+OK: generatedContours.RoundedRectangle.rebuild.coordinates.1
+OK: generatedContours.RoundedRectangle.rebuild.metadata.2
+OK: generatedContours.RoundedRectangle.rebuild.coordinates.2
+OK: generatedContours.RoundedRectangle.rebuild.metadata.3
+OK: generatedContours.RoundedRectangle.rebuild.coordinates.3
+OK: generatedContours.RoundedRectangle.rebuild.metadata.4
+OK: generatedContours.RoundedRectangle.rebuild.coordinates.4
+OK: generatedContours.RoundedRectangle.rebuild.metadata.5
+OK: generatedContours.RoundedRectangle.rebuild.coordinates.5
+OK: generatedContours.RoundedRectangle.rebuild.metadata.6
+OK: generatedContours.RoundedRectangle.rebuild.coordinates.6
+OK: generatedContours.RoundedRectangle.rebuild.metadata.7
+OK: generatedContours.RoundedRectangle.rebuild.coordinates.7
+OK: generatedContours.RoundedRectangle.rebuild.metadata.8
+OK: generatedContours.RoundedRectangle.rebuild.coordinates.8
+OK: generatedContours.HollowRectangle.noAnnotations
+OK: generatedContours.HollowRectangle.areaBeforeAnnotations; actual=7535.61944901923; expected=7535.61944901923
+OK: generatedContours.HollowRectangle.openingCount
+OK: generatedContours.hollow.meshBoundsUnchanged
+OK: generatedContours.HollowRectangle.annotationRevisionUnchanged
+OK: generatedContours.HollowRectangle.annotations.count
+OK: generatedContours.HollowRectangle.annotations.metadata.1
+OK: generatedContours.HollowRectangle.annotations.coordinates.1
+OK: generatedContours.HollowRectangle.annotations.metadata.2
+OK: generatedContours.HollowRectangle.annotations.coordinates.2
+OK: generatedContours.HollowRectangle.annotations.metadata.3
+OK: generatedContours.HollowRectangle.annotations.coordinates.3
+OK: generatedContours.HollowRectangle.annotations.metadata.4
+OK: generatedContours.HollowRectangle.annotations.coordinates.4
+OK: generatedContours.HollowRectangle.annotations.metadata.5
+OK: generatedContours.HollowRectangle.annotations.coordinates.5
+OK: generatedContours.HollowRectangle.annotations.metadata.6
+OK: generatedContours.HollowRectangle.annotations.coordinates.6
+OK: generatedContours.HollowRectangle.annotations.metadata.7
+OK: generatedContours.HollowRectangle.annotations.coordinates.7
+OK: generatedContours.HollowRectangle.annotations.metadata.8
+OK: generatedContours.HollowRectangle.annotations.coordinates.8
+OK: generatedContours.HollowRectangle.annotations.metadata.9
+OK: generatedContours.HollowRectangle.annotations.coordinates.9
+OK: generatedContours.HollowRectangle.annotations.metadata.10
+OK: generatedContours.HollowRectangle.annotations.coordinates.10
+OK: generatedContours.HollowRectangle.annotations.metadata.11
+OK: generatedContours.HollowRectangle.annotations.coordinates.11
+OK: generatedContours.HollowRectangle.annotations.metadata.12
+OK: generatedContours.HollowRectangle.annotations.coordinates.12
+OK: generatedContours.HollowRectangle.annotations.metadata.13
+OK: generatedContours.HollowRectangle.annotations.coordinates.13
+OK: generatedContours.HollowRectangle.annotations.metadata.14
+OK: generatedContours.HollowRectangle.annotations.coordinates.14
+OK: generatedContours.HollowRectangle.annotations.metadata.15
+OK: generatedContours.HollowRectangle.annotations.coordinates.15
+OK: generatedContours.HollowRectangle.annotations.metadata.16
+OK: generatedContours.HollowRectangle.annotations.coordinates.16
+OK: generatedContours.HollowRectangle.clearAnnotationsKeepsRevision
+OK: generatedContours.HollowRectangle.areaWithoutAnnotations; actual=7535.61944901923; expected=7535.61944901923
+OK: generatedContours.HollowRectangle.rebuild.count
+OK: generatedContours.HollowRectangle.rebuild.metadata.1
+OK: generatedContours.HollowRectangle.rebuild.coordinates.1
+OK: generatedContours.HollowRectangle.rebuild.metadata.2
+OK: generatedContours.HollowRectangle.rebuild.coordinates.2
+OK: generatedContours.HollowRectangle.rebuild.metadata.3
+OK: generatedContours.HollowRectangle.rebuild.coordinates.3
+OK: generatedContours.HollowRectangle.rebuild.metadata.4
+OK: generatedContours.HollowRectangle.rebuild.coordinates.4
+OK: generatedContours.HollowRectangle.rebuild.metadata.5
+OK: generatedContours.HollowRectangle.rebuild.coordinates.5
+OK: generatedContours.HollowRectangle.rebuild.metadata.6
+OK: generatedContours.HollowRectangle.rebuild.coordinates.6
+OK: generatedContours.HollowRectangle.rebuild.metadata.7
+OK: generatedContours.HollowRectangle.rebuild.coordinates.7
+OK: generatedContours.HollowRectangle.rebuild.metadata.8
+OK: generatedContours.HollowRectangle.rebuild.coordinates.8
+OK: generatedContours.HollowRectangle.rebuild.metadata.9
+OK: generatedContours.HollowRectangle.rebuild.coordinates.9
+OK: generatedContours.HollowRectangle.rebuild.metadata.10
+OK: generatedContours.HollowRectangle.rebuild.coordinates.10
+OK: generatedContours.HollowRectangle.rebuild.metadata.11
+OK: generatedContours.HollowRectangle.rebuild.coordinates.11
+OK: generatedContours.HollowRectangle.rebuild.metadata.12
+OK: generatedContours.HollowRectangle.rebuild.coordinates.12
+OK: generatedContours.HollowRectangle.rebuild.metadata.13
+OK: generatedContours.HollowRectangle.rebuild.coordinates.13
+OK: generatedContours.HollowRectangle.rebuild.metadata.14
+OK: generatedContours.HollowRectangle.rebuild.coordinates.14
+OK: generatedContours.HollowRectangle.rebuild.metadata.15
+OK: generatedContours.HollowRectangle.rebuild.coordinates.15
+OK: generatedContours.HollowRectangle.rebuild.metadata.16
+OK: generatedContours.HollowRectangle.rebuild.coordinates.16
+OK: generatedMultiple.2.meshInConcrete.1
+OK: generatedMultiple.2.meshInConcrete.2
+OK: generatedMultiple.2.meshInConcrete.3
+OK: generatedMultiple.2.meshInConcrete.4
+OK: generatedMultiple.2.meshInConcrete.5
+OK: generatedMultiple.2.meshInConcrete.6
+OK: generatedMultiple.2.meshInConcrete.7
+OK: generatedMultiple.2.meshInConcrete.8
+OK: generatedMultiple.2.meshInConcrete.9
+OK: generatedMultiple.2.meshInConcrete.10
+OK: generatedMultiple.2.meshInConcrete.11
+OK: generatedMultiple.2.meshInConcrete.12
+OK: generatedMultiple.2.meshInConcrete.13
+OK: generatedMultiple.2.meshInConcrete.14
+OK: generatedMultiple.2.meshInConcrete.15
+OK: generatedMultiple.2.meshInConcrete.16
+OK: generatedMultiple.2.meshInConcrete.17
+OK: generatedMultiple.2.meshInConcrete.18
+OK: generatedMultiple.2.meshInConcrete.19
+OK: generatedMultiple.2.meshInConcrete.20
+OK: generatedMultiple.2.meshInConcrete.21
+OK: generatedMultiple.2.meshInConcrete.22
+OK: generatedMultiple.2.meshInConcrete.23
+OK: generatedMultiple.2.meshInConcrete.24
+OK: generatedMultiple.2.meshInConcrete.25
+OK: generatedMultiple.2.meshInConcrete.26
+OK: generatedMultiple.2.meshInConcrete.27
+OK: generatedMultiple.2.meshInConcrete.28
+OK: generatedMultiple.2.meshInConcrete.29
+OK: generatedMultiple.2.meshInConcrete.30
+OK: generatedMultiple.2.meshInConcrete.31
+OK: generatedMultiple.2.meshInConcrete.32
+OK: generatedMultiple.2.meshInConcrete.33
+OK: generatedMultiple.2.meshInConcrete.34
+OK: generatedMultiple.2.meshInConcrete.35
+OK: generatedMultiple.2.meshInConcrete.36
+OK: generatedMultiple.2.meshInConcrete.37
+OK: generatedMultiple.2.meshInConcrete.38
+OK: generatedMultiple.2.meshInConcrete.39
+OK: generatedMultiple.2.meshInConcrete.40
+OK: generatedMultiple.2.meshInConcrete.41
+OK: generatedMultiple.2.meshInConcrete.42
+OK: generatedMultiple.2.meshInConcrete.43
+OK: generatedMultiple.2.meshInConcrete.44
+OK: generatedMultiple.2.meshInConcrete.45
+OK: generatedMultiple.2.meshInConcrete.46
+OK: generatedMultiple.2.meshInConcrete.47
+OK: generatedMultiple.2.meshInConcrete.48
+OK: generatedMultiple.2.meshInConcrete.49
+OK: generatedMultiple.2.meshInConcrete.50
+OK: generatedMultiple.2.meshInConcrete.51
+OK: generatedMultiple.2.meshInConcrete.52
+OK: generatedMultiple.2.meshInConcrete.53
+OK: generatedMultiple.2.meshInConcrete.54
+OK: generatedMultiple.2.meshInConcrete.55
+OK: generatedMultiple.2.meshInConcrete.56
+OK: generatedMultiple.2.meshInConcrete.57
+OK: generatedMultiple.2.meshInConcrete.58
+OK: generatedMultiple.2.meshInConcrete.59
+OK: generatedMultiple.2.meshInConcrete.60
+OK: generatedMultiple.2.meshInConcrete.61
+OK: generatedMultiple.2.meshInConcrete.62
+OK: generatedMultiple.2.meshInConcrete.63
+OK: generatedMultiple.2.meshInConcrete.64
+OK: generatedMultiple.2.meshInConcrete.65
+OK: generatedMultiple.2.meshInConcrete.66
+OK: generatedMultiple.2.meshInConcrete.67
+OK: generatedMultiple.2.meshInConcrete.68
+OK: generatedMultiple.2.meshInConcrete.69
+OK: generatedMultiple.2.meshInConcrete.70
+OK: generatedMultiple.2.meshInConcrete.71
+OK: generatedMultiple.2.meshInConcrete.72
+OK: generatedMultiple.2.meshInConcrete.73
+OK: generatedMultiple.2.meshInConcrete.74
+OK: generatedMultiple.2.meshInConcrete.75
+OK: generatedMultiple.2.meshInConcrete.76
+OK: generatedMultiple.2.meshInConcrete.77
+OK: generatedMultiple.2.meshInConcrete.78
+OK: generatedMultiple.2.meshInConcrete.79
+OK: generatedMultiple.2.meshInConcrete.80
+OK: generatedMultiple.2.meshInConcrete.81
+OK: generatedMultiple.2.meshInConcrete.82
+OK: generatedMultiple.2.meshInConcrete.83
+OK: generatedMultiple.2.meshInConcrete.84
+OK: generatedMultiple.2.meshInConcrete.85
+OK: generatedMultiple.2.meshInConcrete.86
+OK: generatedMultiple.2.meshInConcrete.87
+OK: generatedMultiple.2.meshInConcrete.88
+OK: generatedMultiple.2.meshInConcrete.89
+OK: generatedMultiple.2.meshInConcrete.90
+OK: generatedMultiple.2.meshInConcrete.91
+OK: generatedMultiple.2.meshInConcrete.92
+OK: generatedMultiple.2.meshInConcrete.93
+OK: generatedMultiple.2.meshInConcrete.94
+OK: generatedMultiple.2.meshInConcrete.95
+OK: generatedMultiple.2.meshInConcrete.96
+OK: generatedMultiple.2.meshInConcrete.97
+OK: generatedMultiple.2.meshInConcrete.98
+OK: generatedMultiple.2.meshInConcrete.99
+OK: generatedMultiple.2.meshInConcrete.100
+OK: generatedMultiple.2.meshInConcrete.101
+OK: generatedMultiple.2.meshInConcrete.102
+OK: generatedMultiple.2.meshInConcrete.103
+OK: generatedMultiple.2.meshInConcrete.104
+OK: generatedMultiple.2.meshInConcrete.105
+OK: generatedMultiple.2.meshInConcrete.106
+OK: generatedMultiple.2.meshInConcrete.107
+OK: generatedMultiple.2.meshInConcrete.108
+OK: generatedMultiple.2.meshRefinesOpenings
+OK: generatedMultiple.2.sameModel
+OK: generatedMultiple.2.noAnnotations
+OK: generatedMultiple.2.distinctRoles
+OK: generatedMultiple.2.allOpeningBounds
+OK: generatedMultiple.2.area; actual=9943.45133223539; expected=9943.45133223538
+OK: generatedMultiple.2.loops
+OK: generatedMultiple.2.empty.1
+OK: generatedMultiple.2.empty.2
+OK: generatedMultiple.2.snapshot.count
+OK: generatedMultiple.2.snapshot.metadata.1
+OK: generatedMultiple.2.snapshot.coordinates.1
+OK: generatedMultiple.2.snapshot.metadata.2
+OK: generatedMultiple.2.snapshot.coordinates.2
+OK: generatedMultiple.2.snapshot.metadata.3
+OK: generatedMultiple.2.snapshot.coordinates.3
+OK: generatedMultiple.2.snapshot.metadata.4
+OK: generatedMultiple.2.snapshot.coordinates.4
+OK: generatedMultiple.2.snapshot.metadata.5
+OK: generatedMultiple.2.snapshot.coordinates.5
+OK: generatedMultiple.2.snapshot.metadata.6
+OK: generatedMultiple.2.snapshot.coordinates.6
+OK: generatedMultiple.2.snapshotArea; actual=9943.45133223539; expected=9943.45133223538
+OK: generatedMultiple.2.snapshotLoops
+OK: generatedMultiple.2.halfArea; actual=4971.72566611769; expected=4971.72566611769
+OK: generatedMultiple.2.joinedX; actual=100; expected=100
+OK: generatedMultiple.2.joinedY; actual=0; expected=0
+OK: generatedMultiple.2.joinedX; actual=100; expected=100
+OK: generatedMultiple.2.joinedY; actual=100; expected=100
+OK: generatedMultiple.2.joinedX; actual=0; expected=0
+OK: generatedMultiple.2.joinedY; actual=100; expected=100
+OK: generatedMultiple.2.loopEndX; actual=0; expected=0
+OK: generatedMultiple.2.loopEndY; actual=0; expected=0
+OK: generatedMultiple.2.joinedX; actual=33.3333333333333; expected=33.3333333333333
+OK: generatedMultiple.2.joinedY; actual=47; expected=47
+OK: generatedMultiple.2.joinedX; actual=30.3333333333333; expected=30.3333333333333
+OK: generatedMultiple.2.joinedY; actual=50; expected=50
+OK: generatedMultiple.2.joinedX; actual=33.3333333333333; expected=33.3333333333333
+OK: generatedMultiple.2.joinedY; actual=53; expected=53
+OK: generatedMultiple.2.loopEndX; actual=36.3333333333333; expected=36.3333333333333
+OK: generatedMultiple.2.loopEndY; actual=50; expected=50
+OK: generatedMultiple.2.joinedX; actual=66.6666666666667; expected=66.6666666666667
+OK: generatedMultiple.2.joinedY; actual=47; expected=47
+OK: generatedMultiple.2.joinedX; actual=63.6666666666667; expected=63.6666666666667
+OK: generatedMultiple.2.joinedY; actual=50; expected=50
+OK: generatedMultiple.2.joinedX; actual=66.6666666666667; expected=66.6666666666667
+OK: generatedMultiple.2.joinedY; actual=53; expected=53
+OK: generatedMultiple.2.lastEndX; actual=69.6666666666667; expected=69.6666666666667
+OK: generatedMultiple.2.lastEndY; actual=50; expected=50
+OK: generatedMultiple.5.meshInConcrete.1
+OK: generatedMultiple.5.meshInConcrete.2
+OK: generatedMultiple.5.meshInConcrete.3
+OK: generatedMultiple.5.meshInConcrete.4
+OK: generatedMultiple.5.meshInConcrete.5
+OK: generatedMultiple.5.meshInConcrete.6
+OK: generatedMultiple.5.meshInConcrete.7
+OK: generatedMultiple.5.meshInConcrete.8
+OK: generatedMultiple.5.meshInConcrete.9
+OK: generatedMultiple.5.meshInConcrete.10
+OK: generatedMultiple.5.meshInConcrete.11
+OK: generatedMultiple.5.meshInConcrete.12
+OK: generatedMultiple.5.meshInConcrete.13
+OK: generatedMultiple.5.meshInConcrete.14
+OK: generatedMultiple.5.meshInConcrete.15
+OK: generatedMultiple.5.meshInConcrete.16
+OK: generatedMultiple.5.meshInConcrete.17
+OK: generatedMultiple.5.meshInConcrete.18
+OK: generatedMultiple.5.meshInConcrete.19
+OK: generatedMultiple.5.meshInConcrete.20
+OK: generatedMultiple.5.meshInConcrete.21
+OK: generatedMultiple.5.meshInConcrete.22
+OK: generatedMultiple.5.meshInConcrete.23
+OK: generatedMultiple.5.meshInConcrete.24
+OK: generatedMultiple.5.meshInConcrete.25
+OK: generatedMultiple.5.meshInConcrete.26
+OK: generatedMultiple.5.meshInConcrete.27
+OK: generatedMultiple.5.meshInConcrete.28
+OK: generatedMultiple.5.meshInConcrete.29
+OK: generatedMultiple.5.meshInConcrete.30
+OK: generatedMultiple.5.meshInConcrete.31
+OK: generatedMultiple.5.meshInConcrete.32
+OK: generatedMultiple.5.meshInConcrete.33
+OK: generatedMultiple.5.meshInConcrete.34
+OK: generatedMultiple.5.meshInConcrete.35
+OK: generatedMultiple.5.meshInConcrete.36
+OK: generatedMultiple.5.meshInConcrete.37
+OK: generatedMultiple.5.meshInConcrete.38
+OK: generatedMultiple.5.meshInConcrete.39
+OK: generatedMultiple.5.meshInConcrete.40
+OK: generatedMultiple.5.meshInConcrete.41
+OK: generatedMultiple.5.meshInConcrete.42
+OK: generatedMultiple.5.meshInConcrete.43
+OK: generatedMultiple.5.meshInConcrete.44
+OK: generatedMultiple.5.meshInConcrete.45
+OK: generatedMultiple.5.meshInConcrete.46
+OK: generatedMultiple.5.meshInConcrete.47
+OK: generatedMultiple.5.meshInConcrete.48
+OK: generatedMultiple.5.meshInConcrete.49
+OK: generatedMultiple.5.meshInConcrete.50
+OK: generatedMultiple.5.meshInConcrete.51
+OK: generatedMultiple.5.meshInConcrete.52
+OK: generatedMultiple.5.meshInConcrete.53
+OK: generatedMultiple.5.meshInConcrete.54
+OK: generatedMultiple.5.meshInConcrete.55
+OK: generatedMultiple.5.meshInConcrete.56
+OK: generatedMultiple.5.meshInConcrete.57
+OK: generatedMultiple.5.meshInConcrete.58
+OK: generatedMultiple.5.meshInConcrete.59
+OK: generatedMultiple.5.meshInConcrete.60
+OK: generatedMultiple.5.meshInConcrete.61
+OK: generatedMultiple.5.meshInConcrete.62
+OK: generatedMultiple.5.meshInConcrete.63
+OK: generatedMultiple.5.meshInConcrete.64
+OK: generatedMultiple.5.meshInConcrete.65
+OK: generatedMultiple.5.meshInConcrete.66
+OK: generatedMultiple.5.meshInConcrete.67
+OK: generatedMultiple.5.meshInConcrete.68
+OK: generatedMultiple.5.meshInConcrete.69
+OK: generatedMultiple.5.meshInConcrete.70
+OK: generatedMultiple.5.meshInConcrete.71
+OK: generatedMultiple.5.meshInConcrete.72
+OK: generatedMultiple.5.meshInConcrete.73
+OK: generatedMultiple.5.meshInConcrete.74
+OK: generatedMultiple.5.meshInConcrete.75
+OK: generatedMultiple.5.meshInConcrete.76
+OK: generatedMultiple.5.meshInConcrete.77
+OK: generatedMultiple.5.meshInConcrete.78
+OK: generatedMultiple.5.meshInConcrete.79
+OK: generatedMultiple.5.meshInConcrete.80
+OK: generatedMultiple.5.meshInConcrete.81
+OK: generatedMultiple.5.meshInConcrete.82
+OK: generatedMultiple.5.meshInConcrete.83
+OK: generatedMultiple.5.meshInConcrete.84
+OK: generatedMultiple.5.meshInConcrete.85
+OK: generatedMultiple.5.meshInConcrete.86
+OK: generatedMultiple.5.meshInConcrete.87
+OK: generatedMultiple.5.meshInConcrete.88
+OK: generatedMultiple.5.meshInConcrete.89
+OK: generatedMultiple.5.meshInConcrete.90
+OK: generatedMultiple.5.meshInConcrete.91
+OK: generatedMultiple.5.meshInConcrete.92
+OK: generatedMultiple.5.meshInConcrete.93
+OK: generatedMultiple.5.meshInConcrete.94
+OK: generatedMultiple.5.meshInConcrete.95
+OK: generatedMultiple.5.meshInConcrete.96
+OK: generatedMultiple.5.meshInConcrete.97
+OK: generatedMultiple.5.meshInConcrete.98
+OK: generatedMultiple.5.meshInConcrete.99
+OK: generatedMultiple.5.meshInConcrete.100
+OK: generatedMultiple.5.meshInConcrete.101
+OK: generatedMultiple.5.meshInConcrete.102
+OK: generatedMultiple.5.meshInConcrete.103
+OK: generatedMultiple.5.meshInConcrete.104
+OK: generatedMultiple.5.meshInConcrete.105
+OK: generatedMultiple.5.meshInConcrete.106
+OK: generatedMultiple.5.meshInConcrete.107
+OK: generatedMultiple.5.meshInConcrete.108
+OK: generatedMultiple.5.meshInConcrete.109
+OK: generatedMultiple.5.meshInConcrete.110
+OK: generatedMultiple.5.meshInConcrete.111
+OK: generatedMultiple.5.meshInConcrete.112
+OK: generatedMultiple.5.meshInConcrete.113
+OK: generatedMultiple.5.meshInConcrete.114
+OK: generatedMultiple.5.meshInConcrete.115
+OK: generatedMultiple.5.meshInConcrete.116
+OK: generatedMultiple.5.meshInConcrete.117
+OK: generatedMultiple.5.meshInConcrete.118
+OK: generatedMultiple.5.meshInConcrete.119
+OK: generatedMultiple.5.meshInConcrete.120
+OK: generatedMultiple.5.meshInConcrete.121
+OK: generatedMultiple.5.meshInConcrete.122
+OK: generatedMultiple.5.meshInConcrete.123
+OK: generatedMultiple.5.meshInConcrete.124
+OK: generatedMultiple.5.meshInConcrete.125
+OK: generatedMultiple.5.meshInConcrete.126
+OK: generatedMultiple.5.meshInConcrete.127
+OK: generatedMultiple.5.meshInConcrete.128
+OK: generatedMultiple.5.meshRefinesOpenings
+OK: generatedMultiple.5.sameModel
+OK: generatedMultiple.5.noAnnotations
+OK: generatedMultiple.5.distinctRoles
+OK: generatedMultiple.5.allOpeningBounds
+OK: generatedMultiple.5.area; actual=9858.62833058847; expected=9858.62833058846
+OK: generatedMultiple.5.loops
+OK: generatedMultiple.5.empty.1
+OK: generatedMultiple.5.empty.2
+OK: generatedMultiple.5.empty.3
+OK: generatedMultiple.5.empty.4
+OK: generatedMultiple.5.empty.5
+OK: generatedMultiple.5.snapshot.count
+OK: generatedMultiple.5.snapshot.metadata.1
+OK: generatedMultiple.5.snapshot.coordinates.1
+OK: generatedMultiple.5.snapshot.metadata.2
+OK: generatedMultiple.5.snapshot.coordinates.2
+OK: generatedMultiple.5.snapshot.metadata.3
+OK: generatedMultiple.5.snapshot.coordinates.3
+OK: generatedMultiple.5.snapshot.metadata.4
+OK: generatedMultiple.5.snapshot.coordinates.4
+OK: generatedMultiple.5.snapshot.metadata.5
+OK: generatedMultiple.5.snapshot.coordinates.5
+OK: generatedMultiple.5.snapshot.metadata.6
+OK: generatedMultiple.5.snapshot.coordinates.6
+OK: generatedMultiple.5.snapshot.metadata.7
+OK: generatedMultiple.5.snapshot.coordinates.7
+OK: generatedMultiple.5.snapshot.metadata.8
+OK: generatedMultiple.5.snapshot.coordinates.8
+OK: generatedMultiple.5.snapshot.metadata.9
+OK: generatedMultiple.5.snapshot.coordinates.9
+OK: generatedMultiple.5.snapshotArea; actual=9858.62833058847; expected=9858.62833058846
+OK: generatedMultiple.5.snapshotLoops
+OK: generatedMultiple.5.halfArea; actual=4929.31416529423; expected=4929.31416529423
+OK: generatedMultiple.5.joinedX; actual=100; expected=100
+OK: generatedMultiple.5.joinedY; actual=0; expected=0
+OK: generatedMultiple.5.joinedX; actual=100; expected=100
+OK: generatedMultiple.5.joinedY; actual=100; expected=100
+OK: generatedMultiple.5.joinedX; actual=0; expected=0
+OK: generatedMultiple.5.joinedY; actual=100; expected=100
+OK: generatedMultiple.5.loopEndX; actual=0; expected=0
+OK: generatedMultiple.5.loopEndY; actual=0; expected=0
+OK: generatedMultiple.5.joinedX; actual=16.6666666666667; expected=16.6666666666667
+OK: generatedMultiple.5.joinedY; actual=47; expected=47
+OK: generatedMultiple.5.joinedX; actual=13.6666666666667; expected=13.6666666666667
+OK: generatedMultiple.5.joinedY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=16.6666666666667; expected=16.6666666666667
+OK: generatedMultiple.5.joinedY; actual=53; expected=53
+OK: generatedMultiple.5.loopEndX; actual=19.6666666666667; expected=19.6666666666667
+OK: generatedMultiple.5.loopEndY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=33.3333333333333; expected=33.3333333333333
+OK: generatedMultiple.5.joinedY; actual=47; expected=47
+OK: generatedMultiple.5.joinedX; actual=30.3333333333333; expected=30.3333333333333
+OK: generatedMultiple.5.joinedY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=33.3333333333333; expected=33.3333333333333
+OK: generatedMultiple.5.joinedY; actual=53; expected=53
+OK: generatedMultiple.5.loopEndX; actual=36.3333333333333; expected=36.3333333333333
+OK: generatedMultiple.5.loopEndY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=50; expected=50
+OK: generatedMultiple.5.joinedY; actual=47; expected=47
+OK: generatedMultiple.5.joinedX; actual=47; expected=47
+OK: generatedMultiple.5.joinedY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=50; expected=50
+OK: generatedMultiple.5.joinedY; actual=53; expected=53
+OK: generatedMultiple.5.loopEndX; actual=53; expected=53
+OK: generatedMultiple.5.loopEndY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=66.6666666666667; expected=66.6666666666667
+OK: generatedMultiple.5.joinedY; actual=47; expected=47
+OK: generatedMultiple.5.joinedX; actual=63.6666666666667; expected=63.6666666666667
+OK: generatedMultiple.5.joinedY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=66.6666666666667; expected=66.6666666666667
+OK: generatedMultiple.5.joinedY; actual=53; expected=53
+OK: generatedMultiple.5.loopEndX; actual=69.6666666666667; expected=69.6666666666667
+OK: generatedMultiple.5.loopEndY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=83.3333333333333; expected=83.3333333333333
+OK: generatedMultiple.5.joinedY; actual=47; expected=47
+OK: generatedMultiple.5.joinedX; actual=80.3333333333333; expected=80.3333333333333
+OK: generatedMultiple.5.joinedY; actual=50; expected=50
+OK: generatedMultiple.5.joinedX; actual=83.3333333333333; expected=83.3333333333333
+OK: generatedMultiple.5.joinedY; actual=53; expected=53
+OK: generatedMultiple.5.lastEndX; actual=86.3333333333333; expected=86.3333333333333
+OK: generatedMultiple.5.lastEndY; actual=50; expected=50
+TOTAL_GENERATED_CONTOURS: passed=516; failed=0
+

@@ -1,0 +1,267 @@
+OK: shapeConfig.RectSet.oracle.area
+CIRCLE_CONFIG_NUMBER: shapeConfig.RectSet.oracle.area; actual=210000; expected=210000
+OK: shapeConfig.RectSet.oracle.cx
+CIRCLE_CONFIG_NUMBER: shapeConfig.RectSet.oracle.cx; actual=228.571428571429; expected=228.571428571429
+OK: shapeConfig.RectSet.oracle.cy
+CIRCLE_CONFIG_NUMBER: shapeConfig.RectSet.oracle.cy; actual=203.571428571429; expected=203.571428571429
+OK: shapeConfig.RectSet.H1.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.H1; area=220000; cx=220.454545454545; cy=220.454545454545
+OK: shapeConfig.RectSet.H1.invalid
+OK: shapeConfig.RectSet.H1.recovery
+OK: shapeConfig.RectSet.B1.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.B1; area=222000; cx=225.405405405405; cy=214.189189189189
+OK: shapeConfig.RectSet.B1.invalid
+OK: shapeConfig.RectSet.B1.recovery
+OK: shapeConfig.RectSet.H2.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.H2; area=240000; cx=237.5; cy=225
+OK: shapeConfig.RectSet.H2.invalid
+OK: shapeConfig.RectSet.H2.recovery
+OK: shapeConfig.RectSet.B2.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.B2; area=222500; cx=250.842696629213; cy=199.157303370787
+OK: shapeConfig.RectSet.B2.invalid
+OK: shapeConfig.RectSet.B2.recovery
+OK: shapeConfig.RectSet.UpperOffsetX.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.UpperOffsetX; area=210000; cx=222.857142857143; cy=203.571428571429
+OK: shapeConfig.RectSet.UpperOffsetX.invalid
+OK: shapeConfig.RectSet.UpperOffsetX.recovery
+OK: shapeConfig.RectSet.SectionType.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.SectionType; area=60000; cx=100; cy=150
+OK: shapeConfig.RectSet.SectionType.invalid
+OK: shapeConfig.RectSet.SectionType.recovery
+OK: shapeConfig.RectSet.Rectangle.inactive.8.3
+OK: shapeConfig.RectSet.Rectangle.inactive.8.4
+OK: shapeConfig.RectSet.Rectangle.inactive.4.2
+OK: shapeConfig.RectSet.LSection.inactive.offset
+OK: shapeConfig.RectSet.units.cm
+OK: shapeConfig.RectSet.H1.inactive.type
+OK: shapeConfig.RectSet.B1.inactive.type
+OK: shapeConfig.RectSet.H2.inactive.type
+OK: shapeConfig.RectSet.B2.inactive.type
+OK: shapeConfig.RectSet.UpperOffsetX.inactive.type
+OK: shapeConfig.RectSet.SectionType.inactive.type
+OK: shapeConfig.RoundedRectangle.oracle.cx
+CIRCLE_CONFIG_NUMBER: shapeConfig.RoundedRectangle.oracle.cx; actual=-1.21069820835373E-13; expected=0
+OK: shapeConfig.RoundedRectangle.oracle.cy
+CIRCLE_CONFIG_NUMBER: shapeConfig.RoundedRectangle.oracle.cy; actual=4.41868763800812E-14; expected=0
+OK: shapeConfig.RoundedRectangle.B.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.B; area=299738.86341973; cx=-5.97299987248334E-14; cy=1.17961196366423E-14
+OK: shapeConfig.RoundedRectangle.B.invalid
+OK: shapeConfig.RoundedRectangle.B.recovery
+OK: shapeConfig.RoundedRectangle.H.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.H; area=314714.110382378; cx=-1.06553654788399E-13; cy=9.24260668000443E-15
+OK: shapeConfig.RoundedRectangle.H.invalid
+OK: shapeConfig.RoundedRectangle.H.recovery
+OK: shapeConfig.RoundedRectangle.Left.Type.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Left.Type; area=259483.148403981; cx=25.9732340069701; cy=-1.14352971536391E-14
+OK: shapeConfig.RoundedRectangle.Left.Type.invalid
+OK: shapeConfig.RoundedRectangle.Left.Type.recovery
+OK: shapeConfig.RoundedRectangle.Right.Type.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Right.Type; area=259483.148403981; cx=-25.9732340069701; cy=-7.66053886991358E-15
+OK: shapeConfig.RoundedRectangle.Right.Type.invalid
+OK: shapeConfig.RoundedRectangle.Right.Type.recovery
+OK: shapeConfig.RoundedRectangle.Left.W.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Left.W; area=285758.125914147; cx=-7.92047988077222; cy=4.24799084797201E-14
+OK: shapeConfig.RoundedRectangle.Left.W.invalid
+OK: shapeConfig.RoundedRectangle.Left.W.recovery
+OK: shapeConfig.RoundedRectangle.Right.W.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Right.W; area=285758.125914147; cx=7.92047988077229; cy=-4.95437024738976E-15
+OK: shapeConfig.RoundedRectangle.Right.W.invalid
+OK: shapeConfig.RoundedRectangle.Right.W.recovery
+OK: shapeConfig.RoundedRectangle.Left.R1.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Left.R1; area=279593.829252562; cx=0.153487769362767; cy=-7.93809462606987E-15
+OK: shapeConfig.RoundedRectangle.Left.R1.invalid
+OK: shapeConfig.RoundedRectangle.Left.R1.recovery
+OK: shapeConfig.RoundedRectangle.Right.R1.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Right.R1; area=279593.829252561; cx=-0.153487769362676; cy=2.47024622979097E-15
+OK: shapeConfig.RoundedRectangle.Right.R1.invalid
+OK: shapeConfig.RoundedRectangle.Right.R1.recovery
+OK: shapeConfig.RoundedRectangle.Left.R2.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Left.R2; area=279708.872697156; cx=4.24676254398106E-02; cy=3.65957264492067E-14
+OK: shapeConfig.RoundedRectangle.Left.R2.invalid
+OK: shapeConfig.RoundedRectangle.Left.R2.recovery
+OK: shapeConfig.RoundedRectangle.Right.R2.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Right.R2; area=279708.872697156; cx=-4.24676254397982E-02; cy=4.81281681175005E-14
+OK: shapeConfig.RoundedRectangle.Right.R2.invalid
+OK: shapeConfig.RoundedRectangle.Right.R2.recovery
+OK: shapeConfig.RoundedRectangle.Simple.inactive.8.2
+OK: shapeConfig.RoundedRectangle.Simple.inactive.8.3
+OK: shapeConfig.RoundedRectangle.Simple.inactive.10.2
+OK: shapeConfig.RoundedRectangle.Simple.inactive.10.3
+OK: shapeConfig.RoundedRectangle.units.cm
+OK: shapeConfig.RoundedRectangle.B.inactive.type
+OK: shapeConfig.RoundedRectangle.H.inactive.type
+OK: shapeConfig.RoundedRectangle.Left.Type.inactive.type
+OK: shapeConfig.RoundedRectangle.Right.Type.inactive.type
+OK: shapeConfig.RoundedRectangle.Left.W.inactive.type
+OK: shapeConfig.RoundedRectangle.Right.W.inactive.type
+OK: shapeConfig.RoundedRectangle.Left.R1.inactive.type
+OK: shapeConfig.RoundedRectangle.Right.R1.inactive.type
+OK: shapeConfig.RoundedRectangle.Left.R2.inactive.type
+OK: shapeConfig.RoundedRectangle.Right.R2.inactive.type
+OK: shapeConfig.HollowRectangle.oracle.area
+CIRCLE_CONFIG_NUMBER: shapeConfig.HollowRectangle.oracle.area; actual=997682.300164693; expected=997682.300164692
+OK: shapeConfig.HollowRectangle.oracle.cx
+CIRCLE_CONFIG_NUMBER: shapeConfig.HollowRectangle.oracle.cx; actual=-7.98761021841713; expected=-7.98761021841696
+OK: shapeConfig.HollowRectangle.oracle.cy
+CIRCLE_CONFIG_NUMBER: shapeConfig.HollowRectangle.oracle.cy; actual=-9.98451277302096; expected=-9.9845127730212
+OK: shapeConfig.HollowRectangle.H.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.H; area=1097682.30016469; cx=-7.25993061410733; cy=-9.07491326763378
+OK: shapeConfig.HollowRectangle.H.invalid
+OK: shapeConfig.HollowRectangle.H.recovery
+OK: shapeConfig.HollowRectangle.B.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.B; area=1117682.30016469; cx=-7.13002016257687; cy=-8.91252520322046
+OK: shapeConfig.HollowRectangle.B.invalid
+OK: shapeConfig.HollowRectangle.B.recovery
+OK: shapeConfig.HollowRectangle.R.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.R; area=995278.759594744; cx=-8.00689983454897; cy=-10.0086247931861
+OK: shapeConfig.HollowRectangle.R.invalid
+OK: shapeConfig.HollowRectangle.R.recovery
+OK: shapeConfig.HollowRectangle.OpeningH.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.OpeningH; area=977682.300164693; cx=-8.96927082964705; cy=-11.2115885370583
+OK: shapeConfig.HollowRectangle.OpeningH.invalid
+OK: shapeConfig.HollowRectangle.OpeningH.recovery
+OK: shapeConfig.HollowRectangle.OpeningB.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.OpeningB; area=972682.300164693; cx=-9.22099367286815; cy=-11.5262420910846
+OK: shapeConfig.HollowRectangle.OpeningB.invalid
+OK: shapeConfig.HollowRectangle.OpeningB.recovery
+OK: shapeConfig.HollowRectangle.OpeningR.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.OpeningR; area=998283.18530718; cx=-7.95872558685336; cy=-9.94840698356665
+OK: shapeConfig.HollowRectangle.OpeningR.invalid
+OK: shapeConfig.HollowRectangle.OpeningR.recovery
+OK: shapeConfig.HollowRectangle.InnerOffsetX.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.InnerOffsetX; area=997682.300164693; cx=-11.9814153276257; cy=-9.98451277302096
+OK: shapeConfig.HollowRectangle.InnerOffsetX.invalid
+OK: shapeConfig.HollowRectangle.InnerOffsetX.recovery
+OK: shapeConfig.HollowRectangle.InnerOffsetY.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.InnerOffsetY; area=997682.300164693; cx=-7.98761021841713; cy=-13.9783178822292
+OK: shapeConfig.HollowRectangle.InnerOffsetY.invalid
+OK: shapeConfig.HollowRectangle.InnerOffsetY.recovery
+OK: shapeConfig.HollowRectangle.units.cm
+OK: shapeConfig.HollowRectangle.H.inactive.type
+OK: shapeConfig.HollowRectangle.B.inactive.type
+OK: shapeConfig.HollowRectangle.R.inactive.type
+OK: shapeConfig.HollowRectangle.OpeningH.inactive.type
+OK: shapeConfig.HollowRectangle.OpeningB.inactive.type
+OK: shapeConfig.HollowRectangle.OpeningR.inactive.type
+OK: shapeConfig.HollowRectangle.InnerOffsetX.inactive.type
+OK: shapeConfig.HollowRectangle.InnerOffsetY.inactive.type
+OK: shapeConfig.hollowCount.H.Left.effect
+OK: shapeConfig.hollowCount.H.Left.1.reject
+OK: shapeConfig.hollowCount.H.Left.1.location
+OK: shapeConfig.hollowCount.H.Left.1.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.1; error=-2147217192; Настройка HollowRectangle.H.Left.n (лист Config, ячейка K163): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: shapeConfig.hollowCount.H.Left.1.recovery
+OK: shapeConfig.hollowCount.H.Left.2.reject
+OK: shapeConfig.hollowCount.H.Left.2.location
+OK: shapeConfig.hollowCount.H.Left.2.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.2; error=-2147218254; Настройка HollowRectangle.H.Left.n (лист Config, ячейка K163): H - левая наружная грань: количество стержней не может быть отрицательным. Введите целое неотрицательное количество; 0 или пустая ячейка выключают арматуру на этой грани.
+OK: shapeConfig.hollowCount.H.Left.2.recovery
+OK: shapeConfig.hollowCount.H.Left.3.reject
+OK: shapeConfig.hollowCount.H.Left.3.location
+OK: shapeConfig.hollowCount.H.Left.3.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.3; error=-2147217189; Настройка HollowRectangle.H.Left.n (лист Config, ячейка K163): Введено дробное значение вместо целого; автоматическое округление не выполняется. Введите целое число.
+OK: shapeConfig.hollowCount.H.Left.3.recovery
+OK: shapeConfig.hollowCount.H.Left.4.reject
+OK: shapeConfig.hollowCount.H.Left.4.location
+OK: shapeConfig.hollowCount.H.Left.4.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.4; error=-2147217195; Настройка HollowRectangle.H.Left.n (лист Config, ячейка K163) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: shapeConfig.hollowCount.H.Left.4.recovery
+OK: shapeConfig.hollowCount.H.Left.5.reject
+OK: shapeConfig.hollowCount.H.Left.5.location
+OK: shapeConfig.hollowCount.H.Left.5.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.5; error=-2147217189; Настройка HollowRectangle.H.Left.n (лист Config, ячейка K163): Целое число выходит за допустимый диапазон Long. Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.
+OK: shapeConfig.hollowCount.H.Left.5.recovery
+OK: shapeConfig.hollowCount.H.Left.blank.off
+OK: shapeConfig.hollowCount.H.Left.zero.off
+OK: shapeConfig.hollowCount.H.Right.effect
+OK: shapeConfig.hollowCount.H.Right.6.reject
+OK: shapeConfig.hollowCount.H.Right.6.location
+OK: shapeConfig.hollowCount.H.Right.6.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.6; error=-2147217192; Настройка HollowRectangle.H.Right.n (лист Config, ячейка K164): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: shapeConfig.hollowCount.H.Right.6.recovery
+OK: shapeConfig.hollowCount.H.Right.7.reject
+OK: shapeConfig.hollowCount.H.Right.7.location
+OK: shapeConfig.hollowCount.H.Right.7.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.7; error=-2147218254; Настройка HollowRectangle.H.Right.n (лист Config, ячейка K164): H - правая наружная грань: количество стержней не может быть отрицательным. Введите целое неотрицательное количество; 0 или пустая ячейка выключают арматуру на этой грани.
+OK: shapeConfig.hollowCount.H.Right.7.recovery
+OK: shapeConfig.hollowCount.H.Right.8.reject
+OK: shapeConfig.hollowCount.H.Right.8.location
+OK: shapeConfig.hollowCount.H.Right.8.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.8; error=-2147217189; Настройка HollowRectangle.H.Right.n (лист Config, ячейка K164): Введено дробное значение вместо целого; автоматическое округление не выполняется. Введите целое число.
+OK: shapeConfig.hollowCount.H.Right.8.recovery
+OK: shapeConfig.hollowCount.H.Right.9.reject
+OK: shapeConfig.hollowCount.H.Right.9.location
+OK: shapeConfig.hollowCount.H.Right.9.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.9; error=-2147217195; Настройка HollowRectangle.H.Right.n (лист Config, ячейка K164) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: shapeConfig.hollowCount.H.Right.9.recovery
+OK: shapeConfig.hollowCount.H.Right.10.reject
+OK: shapeConfig.hollowCount.H.Right.10.location
+OK: shapeConfig.hollowCount.H.Right.10.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.10; error=-2147217189; Настройка HollowRectangle.H.Right.n (лист Config, ячейка K164): Целое число выходит за допустимый диапазон Long. Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.
+OK: shapeConfig.hollowCount.H.Right.10.recovery
+OK: shapeConfig.hollowCount.H.Right.blank.off
+OK: shapeConfig.hollowCount.H.Right.zero.off
+OK: shapeConfig.hollowCount.B.Top.effect
+OK: shapeConfig.hollowCount.B.Top.11.reject
+OK: shapeConfig.hollowCount.B.Top.11.location
+OK: shapeConfig.hollowCount.B.Top.11.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.11; error=-2147217192; Настройка HollowRectangle.B.Top.n (лист Config, ячейка K165): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: shapeConfig.hollowCount.B.Top.11.recovery
+OK: shapeConfig.hollowCount.B.Top.12.reject
+OK: shapeConfig.hollowCount.B.Top.12.location
+OK: shapeConfig.hollowCount.B.Top.12.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.12; error=-2147218254; Настройка HollowRectangle.B.Top.n (лист Config, ячейка K165): B - верхняя наружная грань: количество стержней не может быть отрицательным. Введите целое неотрицательное количество; 0 или пустая ячейка выключают арматуру на этой грани.
+OK: shapeConfig.hollowCount.B.Top.12.recovery
+OK: shapeConfig.hollowCount.B.Top.13.reject
+OK: shapeConfig.hollowCount.B.Top.13.location
+OK: shapeConfig.hollowCount.B.Top.13.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.13; error=-2147217189; Настройка HollowRectangle.B.Top.n (лист Config, ячейка K165): Введено дробное значение вместо целого; автоматическое округление не выполняется. Введите целое число.
+OK: shapeConfig.hollowCount.B.Top.13.recovery
+OK: shapeConfig.hollowCount.B.Top.14.reject
+OK: shapeConfig.hollowCount.B.Top.14.location
+OK: shapeConfig.hollowCount.B.Top.14.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.14; error=-2147217195; Настройка HollowRectangle.B.Top.n (лист Config, ячейка K165) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: shapeConfig.hollowCount.B.Top.14.recovery
+OK: shapeConfig.hollowCount.B.Top.15.reject
+OK: shapeConfig.hollowCount.B.Top.15.location
+OK: shapeConfig.hollowCount.B.Top.15.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.15; error=-2147217189; Настройка HollowRectangle.B.Top.n (лист Config, ячейка K165): Целое число выходит за допустимый диапазон Long. Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.
+OK: shapeConfig.hollowCount.B.Top.15.recovery
+OK: shapeConfig.hollowCount.B.Top.blank.off
+OK: shapeConfig.hollowCount.B.Top.zero.off
+OK: shapeConfig.hollowCount.B.Bottom.effect
+OK: shapeConfig.hollowCount.B.Bottom.16.reject
+OK: shapeConfig.hollowCount.B.Bottom.16.location
+OK: shapeConfig.hollowCount.B.Bottom.16.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.16; error=-2147217192; Настройка HollowRectangle.B.Bottom.n (лист Config, ячейка K166): Не удалось прочитать число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: shapeConfig.hollowCount.B.Bottom.16.recovery
+OK: shapeConfig.hollowCount.B.Bottom.17.reject
+OK: shapeConfig.hollowCount.B.Bottom.17.location
+OK: shapeConfig.hollowCount.B.Bottom.17.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.17; error=-2147218254; Настройка HollowRectangle.B.Bottom.n (лист Config, ячейка K166): B - нижняя наружная грань: количество стержней не может быть отрицательным. Введите целое неотрицательное количество; 0 или пустая ячейка выключают арматуру на этой грани.
+OK: shapeConfig.hollowCount.B.Bottom.17.recovery
+OK: shapeConfig.hollowCount.B.Bottom.18.reject
+OK: shapeConfig.hollowCount.B.Bottom.18.location
+OK: shapeConfig.hollowCount.B.Bottom.18.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.18; error=-2147217189; Настройка HollowRectangle.B.Bottom.n (лист Config, ячейка K166): Введено дробное значение вместо целого; автоматическое округление не выполняется. Введите целое число.
+OK: shapeConfig.hollowCount.B.Bottom.18.recovery
+OK: shapeConfig.hollowCount.B.Bottom.19.reject
+OK: shapeConfig.hollowCount.B.Bottom.19.location
+OK: shapeConfig.hollowCount.B.Bottom.19.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.19; error=-2147217195; Настройка HollowRectangle.B.Bottom.n (лист Config, ячейка K166) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: shapeConfig.hollowCount.B.Bottom.19.recovery
+OK: shapeConfig.hollowCount.B.Bottom.20.reject
+OK: shapeConfig.hollowCount.B.Bottom.20.location
+OK: shapeConfig.hollowCount.B.Bottom.20.key
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.20; error=-2147217189; Настройка HollowRectangle.B.Bottom.n (лист Config, ячейка K166): Целое число выходит за допустимый диапазон Long. Введите целое число от -2147483648 до 2147483647 с учетом допустимого диапазона этой настройки.
+OK: shapeConfig.hollowCount.B.Bottom.20.recovery
+OK: shapeConfig.hollowCount.B.Bottom.blank.off
+OK: shapeConfig.hollowCount.B.Bottom.zero.off
+OK: shapeConfig.restore.0
+OK: shapeConfig.restore.1
+OK: shapeConfig.restore.2
+OK: shapeConfig.restore.system
+OK: shapeConfig.restore.units
+OK: shapeConfig.restore.circle
+TOTAL_SHAPE_CONFIG: passed=213; failed=0
+

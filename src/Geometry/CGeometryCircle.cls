@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -10,13 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Математическая геометрия круглого сечения
+' Параметры и контур круглого сечения
 ' ==========================================================================
-' Класс хранит диаметр круга и отвечает на геометрические вопросы: габариты,
-' принадлежность точки области и достоверный контур с явной ролью Outer.
+' Класс хранит размеры и положение круга, задает точный контур с ролью Outer.
+' Принадлежность точек и свойства бетона вычисляются общим геометрическим ядром.
 ' Арматура и необязательные подписи формируются отдельными builder-ами.
 
-Implements ISectionGeometry
+Implements ISectionShape
 
 Private mRadius As Double
 Private mCenterX As Double
@@ -71,25 +71,6 @@ Public Property Get MaxY() As Double
     MaxY = mCenterY + mRadius
 End Property
 
-' Проверяет принадлежность точки замкнутой области круга с малым
-' геометрическим допуском на границе.
-Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
-    Dim message As String
-    If Not IsValid(message) Then Exit Function
-
-    Dim dx As Double
-    Dim dy As Double
-    dx = X - mCenterX
-    dy = Y - mCenterY
-    ContainsPoint = (dx * dx + dy * dy <= mRadius * mRadius + GEOM_TOLERANCE)
-End Function
-
-' Явный алиас для контракта ISectionGeometry: точка на контуре считается
-' находящейся внутри расчетной бетонной области.
-Public Function IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
-    IsPointInside = ContainsPoint(X, Y)
-End Function
-
 ' Проверяет, что круг был инициализирован и радиус физически положителен.
 Public Function IsValid(ByRef message As String) As Boolean
     message = vbNullString
@@ -102,33 +83,6 @@ Public Function IsValid(ByRef message As String) As Boolean
     End If
 End Function
 
-' Возвращает аналитическую площадь круга, когда геометрия валидна.
-Public Function AnalyticalArea(ByRef available As Boolean) As Double
-    Dim message As String
-    available = IsValid(message)
-    If available Then AnalyticalArea = GEOM_PI * mRadius * mRadius
-End Function
-
-' Возвращает аналитический центр тяжести круга.
-Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
-    Dim message As String
-    available = IsValid(message)
-    If Not available Then Exit Sub
-    X = mCenterX
-    Y = mCenterY
-End Sub
-
-' Возвращает четыре опорные точки контура по главным направлениям.
-' Их достаточно для габаритов, аннотаций и первичного масштабирования схемы.
-Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
-    ReDim pointX(1 To 4)
-    ReDim pointY(1 To 4)
-    pointX(1) = mCenterX + mRadius: pointY(1) = mCenterY
-    pointX(2) = mCenterX: pointY(2) = mCenterY + mRadius
-    pointX(3) = mCenterX - mRadius: pointY(3) = mCenterY
-    pointX(4) = mCenterX: pointY(4) = mCenterY - mRadius
-End Sub
-
 ' Передает точную окружность как наружную границу в общий контейнер.
 ' Аннотации и видимость схемы не участвуют в создании геометрии модели.
 Public Sub BuildContours(ByVal contours As CSectionContours)
@@ -140,57 +94,11 @@ Public Sub BuildContours(ByVal contours As CSectionContours)
         0.5 * GeomMin(MaxX - MinX, MaxY - MinY), "Круговой контур сечения.", "OUTER", "Outer"
 End Sub
 
-' Реализация интерфейса ISectionGeometry: свойства и методы ниже только
-' делегируют публичной математике круга.
-Private Property Get ISectionGeometry_MinX() As Double
-    ISectionGeometry_MinX = MinX
-End Property
 
-Private Property Get ISectionGeometry_MaxX() As Double
-    ISectionGeometry_MaxX = MaxX
-End Property
-
-Private Property Get ISectionGeometry_MinY() As Double
-    ISectionGeometry_MinY = MinY
-End Property
-
-Private Property Get ISectionGeometry_MaxY() As Double
-    ISectionGeometry_MaxY = MaxY
-End Property
-
-' Делегирует проверку точки в публичный ContainsPoint.
-Private Function ISectionGeometry_ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
-    ISectionGeometry_ContainsPoint = ContainsPoint(X, Y)
+Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+    ISectionShape_IsValid = IsValid(message)
 End Function
 
-' Делегирует проверку точки в публичный IsPointInside.
-Private Function ISectionGeometry_IsPointInside(ByVal X As Double, ByVal Y As Double) As Boolean
-    ISectionGeometry_IsPointInside = IsPointInside(X, Y)
-End Function
-
-' Делегирует валидацию в публичный IsValid.
-Private Function ISectionGeometry_IsValid(ByRef message As String) As Boolean
-    ISectionGeometry_IsValid = IsValid(message)
-End Function
-
-' Делегирует аналитическую площадь в публичный AnalyticalArea.
-Private Function ISectionGeometry_AnalyticalArea(ByRef available As Boolean) As Double
-    ISectionGeometry_AnalyticalArea = AnalyticalArea(available)
-End Function
-
-' Делегирует аналитический центр тяжести в публичный AnalyticalCentroid.
-Private Sub ISectionGeometry_AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)
-    AnalyticalCentroid available, X, Y
-End Sub
-
-' Делегирует опорные точки контура в публичный GetExtremePoints.
-Private Sub ISectionGeometry_GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
-    GetExtremePoints pointX, pointY
-End Sub
-
-' Передает классифицированные контуры через обязательный интерфейс формы.
-Private Sub ISectionGeometry_BuildContours(ByVal contours As CSectionContours)
+Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
     BuildContours contours
 End Sub
-
-

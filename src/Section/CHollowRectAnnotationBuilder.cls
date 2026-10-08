@@ -18,7 +18,7 @@ Option Explicit
 
 ' Заменяет размеры и подписи арматуры, не изменяя наружную границу,
 ' отверстия, бетонную сетку или расчетное НДС.
-Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, ByVal rebars As CRebarLayout)
+Public Sub Build(ByVal model As CSectionModel, ByVal geometry As CGeometryHollowRectangle, ByVal rebars As CRebarLayout)
     If model Is Nothing Then Err.Raise vbObjectError + 5315, "CHollowRectAnnotationBuilder", "Модель сечения не передана."
     If geometry Is Nothing Then Err.Raise vbObjectError + 5316, "CHollowRectAnnotationBuilder", "Геометрия HollowRectangle не передана."
 
@@ -28,10 +28,7 @@ Public Sub Build(ByVal model As CSectionModel, ByVal geometry As ISectionGeometr
     ' Размеры наружной формы и проема берутся из физических параметров
     ' HollowRectangle; сама геометрия контуров уже подготовлена отдельно.
     Dim hollow As CGeometryHollowRectangle
-    Dim geometryObject As Object
-    Set geometryObject = geometry
-    If TypeName(geometryObject) = "CGeometryHollowRectangle" Then Set hollow = geometryObject
-    If hollow Is Nothing Then Err.Raise vbObjectError + 5317, "CHollowRectAnnotationBuilder", "Ожидалась геометрия CGeometryHollowRectangle."
+    Set hollow = geometry
 
     AddDimensions annotations, hollow
 

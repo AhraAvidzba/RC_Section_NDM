@@ -362,12 +362,12 @@ Private Sub BuildPhysicalFixture(ByRef section As CSectionModel, ByRef provider 
     Set geometry = New CGeometryRoundedRectangle
     geometry.Initialize 300#, 200#, 0#, 0#, 0#, 0#
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geometry, 30#, 20#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geometry), 30#, 20#, 1
     Set rebars = New CRebarLayout
-    rebars.AddBar "A", -90#, -60#, 20#, 0#, "A400", "", geometry
-    rebars.AddBar "B", 90#, -60#, 20#, 0#, "A400", "", geometry
-    rebars.AddBar "C", -90#, 60#, 20#, 0#, "A400", "", geometry
-    rebars.AddBar "D", 90#, 60#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "A", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+    rebars.AddBar "B", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+    rebars.AddBar "C", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+    rebars.AddBar "D", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
     Set section = BuildGeneratedSectionModel(mesh, rebars, "Audit03LoadTable")
     Dim concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
     Set concrete = New CConcreteMaterialParameters

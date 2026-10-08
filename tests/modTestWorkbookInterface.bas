@@ -3685,7 +3685,7 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geom, 20#, 20#, 1
+    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
 
     Dim builder As CCircleRebarLayoutBuilder
     Set builder = New CCircleRebarLayoutBuilder
@@ -4817,10 +4817,10 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
             geometry.Initialize 100#, 100#, 0#, 0#, 0#, 0#
             Select Case operation
                 Case "MeshNothing": mesh.BuildMesh Nothing, 25#, 25#
-                Case "MeshAxis": mesh.BuildMesh geometry, 1E-308, 25#
-                Case "MeshProduct": mesh.BuildMesh geometry, 0.001, 0.001
-                Case "MeshBoundary": mesh.BuildMesh geometry, 25#, 25#, 1, 0
-                Case "MeshSubcellProduct": mesh.BuildMesh geometry, 25#, 25#, 1, 2147483647
+                Case "MeshAxis": mesh.BuildMesh BuildConcreteGeometry(geometry), 1E-308, 25#
+                Case "MeshProduct": mesh.BuildMesh BuildConcreteGeometry(geometry), 0.001, 0.001
+                Case "MeshBoundary": mesh.BuildMesh BuildConcreteGeometry(geometry), 25#, 25#, 1, 0
+                Case "MeshSubcellProduct": mesh.BuildMesh BuildConcreteGeometry(geometry), 25#, 25#, 1, 2147483647
                 Case Else: Err.Raise vbObjectError + 4499, "Audit03CaptureInputError", "Неизвестный тестовый сценарий ввода."
             End Select
     End Select
@@ -5755,7 +5755,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional
     SetProfileSetting "PR2", "Calculation.Crack.Width", "Yes"
     SetProfileSetting "PR2", "Calculation.Stability.Enabled", "No"
     Set geom = New CGeometryCircle: geom.InitializeByDiameter 300#
-    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geom, 20#, 20#, 1
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
     Set rebarBuilder = New CCircleRebarLayoutBuilder
     Set rebars = rebarBuilder.Build(300#, 0#, 0#, 40#, 8, 20#, "Rebar")
     Set section = BuildGeneratedSectionModel(mesh, rebars, "Audit03UnitSign")
@@ -7603,10 +7603,14 @@ Private Sub TestAutoCADGeometryContourWarning(ByRef stats As TUiTestStats)
     For row = 1 To UBound(values, 1)
         value = CStr(values(row, 1))
         If InStr(1, value, "ВНИМАНИЕ: для расчета раскрытия трещин", vbTextCompare) = 1 Then Set warning = guide.Cells(used.Row + row - 1, used.Column)
-        If value = "2. Точный контур и несколько отверстий" Then Set heading = guide.Cells(used.Row + row - 1, used.Column)
-        If value = "3. Единицы, поворот и плоскость" Then Set nextHeading = guide.Cells(used.Row + row - 1, used.Column)
-        If Left$(value, Len("2. Задан только наружный контур, отверстия не заданы.")) = "2. Задан только наружный контур, отверстия не заданы." Then
-            noteText = value & " " & CStr(values(row + 1, 1))
+        If value = "3. Точный контур и несколько отверстий" Then Set heading = guide.Cells(used.Row + row - 1, used.Column)
+        If value = "4. Импорт и контроль модели" Then Set nextHeading = guide.Cells(used.Row + row - 1, used.Column)
+        If Left$(value, Len("2. Задан только наружный контур.")) = "2. Задан только наружный контур." Then
+            Dim noteRow As Long
+            For noteRow = row To UBound(values, 1)
+                If Left$(CStr(values(noteRow, 1)), Len("3. Заданы наружный контур")) = "3. Заданы наружный контур" Then Exit For
+                noteText = noteText & " " & CStr(values(noteRow, 1))
+            Next noteRow
         End If
     Next row
     AssertTrue stats, "guide.autoCAD.contourWarning.exists", Not warning Is Nothing And Not heading Is Nothing And Not nextHeading Is Nothing
@@ -7619,12 +7623,12 @@ Private Sub TestAutoCADGeometryContourWarning(ByRef stats As TUiTestStats)
         AssertTrue stats, "guide.autoCAD.contourWarning.redBold." & CStr(row), CBool(cell.Font.Bold)
     Next row
     AssertTrue stats, "guide.autoCAD.contourWarning.recommendation", InStr(1, text, "настоятельно рекомендуется", vbTextCompare) > 0
-    AssertTrue stats, "guide.autoCAD.contourWarning.armature", InStr(1, text, "взаимодействия бетона с растянутой арматурой", vbTextCompare) > 0
+    AssertTrue stats, "guide.autoCAD.contourWarning.armature", InStr(1, text, "площадь взаимодействия для трещин", vbTextCompare) > 0
     AssertTrue stats, "guide.autoCAD.contourWarning.risks", InStr(1, text, "завышены или занижены", vbTextCompare) > 0
     ' Четыре правила описываются один раз в примечаниях первого раздела,
     ' а не дублируются в подразделе точного контура.
     AssertTrue stats, "guide.autoCAD.knownOuter.solid", InStr(1, noteText, "сплошной бетон", vbTextCompare) > 0
-    AssertTrue stats, "guide.autoCAD.knownOuter.noMeshVoids", InStr(1, noteText, "Пустоты сетки не учитываются", vbTextCompare) > 0
+    AssertTrue stats, "guide.autoCAD.knownOuter.noMeshVoids", InStr(1, noteText, "пустоты сетки их не заменят", vbTextCompare) > 0
     Exit Sub
 Failed:
     AssertTrue stats, "guide.autoCAD.contourWarning.runtime." & CStr(Err.Number) & "." & Err.Description, False

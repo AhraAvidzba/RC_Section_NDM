@@ -1,0 +1,114 @@
+{
+  "Passed": true,
+  "Shapes": 9,
+  "NDSCases": 108,
+  "BatchCases": 18,
+  "Checks": 1350,
+  "ActualWidthForms": 9,
+  "ExactBarAnnotationRows": 345,
+  "MaximumRelativeDeviations": {
+    "BATCH.field8": {
+      "Absolute": 0.00015287383058026904,
+      "Before": 5.66194115160303,
+      "Relative": 2.7000250706771623E-05,
+      "After": 5.66178827777245,
+      "Label": "RoundedSimple.BATCH.2"
+    },
+    "NDS.field7": {
+      "Absolute": 2.0023435354232788E-08,
+      "Before": -1987200.00000001,
+      "Relative": 1.007620539162273E-14,
+      "After": -1987199.99999999,
+      "Label": "HollowCentered.NDS.3.1"
+    },
+    "NDS.field9": {
+      "Absolute": 2.0265579223632812E-06,
+      "Before": -149039999.999999,
+      "Relative": 1.3597409570338616E-14,
+      "After": -149040000.000001,
+      "Label": "HollowCentered.NDS.1.2"
+    },
+    "BATCH.field9": {
+      "Absolute": 3.8558426381007926E-05,
+      "Before": 0.528085668885795,
+      "Relative": 7.301547580785924E-05,
+      "After": 0.528047110459414,
+      "Label": "RoundedSimple.BATCH.2"
+    },
+    "NDS.field10": {
+      "Absolute": 0.0001576850337898783,
+      "Before": -2.5964590566593,
+      "Relative": 6.0727111266740826E-05,
+      "After": -2.59661674169309,
+      "Label": "RoundedSimple.NDS.2.3"
+    },
+    "BATCH.field11": {
+      "Absolute": 1.1341993620007997,
+      "Before": 125597.870522689,
+      "Relative": 9.030321255417339E-06,
+      "After": 125599.004722051,
+      "Label": "RoundedMixed.BATCH.2"
+    },
+    "NDS.field5": {
+      "Absolute": 3.1841445287991917E-13,
+      "Before": -2.20142647703828E-09,
+      "Relative": 0.00014461914007860778,
+      "After": -2.20174489149116E-09,
+      "Label": "RoundedMixed.NDS.2.2"
+    },
+    "BATCH.field10": {
+      "Absolute": 2.2896531041011192E-06,
+      "Before": 0.0344069009554601,
+      "Relative": 6.654190533418827E-05,
+      "After": 0.0344091906085642,
+      "Label": "RoundedSimple.BATCH.2"
+    },
+    "NDS.field13": {
+      "Absolute": 0.0,
+      "Before": 0.0,
+      "Relative": 0,
+      "After": 0.0,
+      "Label": "Circle.NDS.1.0"
+    },
+    "NDS.field11": {
+      "Absolute": 0.0,
+      "Before": 0.0,
+      "Relative": 0,
+      "After": 0.0,
+      "Label": "Circle.NDS.1.0"
+    },
+    "NDS.field6": {
+      "Absolute": 6.2602970723981525E-12,
+      "Before": -5.63500239715109E-08,
+      "Relative": 0.00011108427664540073,
+      "After": -5.63562842685833E-08,
+      "Label": "RoundedSimple.NDS.2.2"
+    },
+    "NDS.field12": {
+      "Absolute": 0.0008520450940014968,
+      "Before": -15.125589647612,
+      "Relative": 5.63281908138617E-05,
+      "After": -15.126441692706,
+      "Label": "RoundedSimple.NDS.2.3"
+    },
+    "NDS.field8": {
+      "Absolute": 1.0021030902862549E-06,
+      "Before": 20438999.9999991,
+      "Relative": 4.9028968652392484E-14,
+      "After": 20439000.0000001,
+      "Label": "HollowOffset.NDS.3.2"
+    },
+    "NDS.field4": {
+      "Absolute": 1.5249399400158294E-10,
+      "Before": -4.20860398954701E-05,
+      "Relative": 3.623386623696009E-06,
+      "After": -4.20858874014761E-05,
+      "Label": "RoundedMixed.NDS.2.2"
+    }
+  },
+  "NumericalRecovery": [
+    "RoundedSimple.BATCH.1.field3 CalcErr -> OK",
+    "RoundedSimple.BATCH.1.field5 10 -> 4"
+  ],
+  "Failures": []
+}

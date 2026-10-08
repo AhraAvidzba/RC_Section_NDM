@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -26,7 +26,7 @@ Private mBuildSeconds As Double
 ' Дискретизирует бетонную область регулярной сеткой. Ячейки полностью внутри
 ' формы добавляются целиком; пограничные ячейки при необходимости дробятся на
 ' подячейки через Mesh.BoundarySubdivisions.
-Public Sub BuildMesh(ByVal geometry As ISectionGeometry, ByVal stepX As Double, ByVal stepY As Double, _
+Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1)
 
     Dim message As String
@@ -142,7 +142,7 @@ End Sub
 
 ' Дробит пограничную ячейку на более мелкие прямоугольники и добавляет только
 ' те центры подъячеек, которые попали внутрь исходной геометрии.
-Private Sub AddSubcellFibers(ByVal geometry As ISectionGeometry, ByVal cellMinX As Double, ByVal cellMinY As Double, _
+Private Sub AddSubcellFibers(ByVal geometry As CGeometryRegion, ByVal cellMinX As Double, ByVal cellMinY As Double, _
         ByVal stepX As Double, ByVal stepY As Double, ByVal boundarySubdivisions As Long, ByVal materialID As Long)
     Dim subX As Double
     Dim subY As Double
@@ -164,7 +164,7 @@ End Sub
 
 ' Проверяет четыре угла расчетной ячейки. Это быстрый способ понять, можно ли
 ' взять всю ячейку целиком или нужно уточнять границу подъячеечным разбиением.
-Private Sub GetCornerStatus(ByVal geometry As ISectionGeometry, ByVal cellMinX As Double, ByVal cellMinY As Double, _
+Private Sub GetCornerStatus(ByVal geometry As CGeometryRegion, ByVal cellMinX As Double, ByVal cellMinY As Double, _
         ByVal width As Double, ByVal height As Double, ByRef allInside As Boolean, ByRef anyInside As Boolean)
     Dim p1 As Boolean
     Dim p2 As Boolean

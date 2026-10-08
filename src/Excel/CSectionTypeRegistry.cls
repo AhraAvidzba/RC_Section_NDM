@@ -48,8 +48,8 @@ End Function
 
 ' Создает математическую форму сечения для Geometry.Source = Generated.
 ' Здесь допустим shape-specific Select Case: это единственная точка регистрации
-' встроенных форм. Ниже по цепочке расчетное ядро видит только ISectionGeometry.
-Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As ISectionGeometry
+' встроенных форм. Сетка и проверки арматуры получают общий CGeometryRegion.
+Public Function CreateShape(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As ISectionShape
     If units Is Nothing Then Err.Raise vbObjectError + 4135, "CSectionTypeRegistry", "Система единиц геометрии не передана."
     Dim circleGeometry As CGeometryCircle ' Конкретная математическая форма круга.
     Dim rectSetGeometry As CGeometryRectSet ' Математическая форма из одного/двух прямоугольников.
@@ -60,7 +60,7 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
         Case TYPE_CIRCLE
             Set circleGeometry = New CGeometryCircle
             circleGeometry.InitializeByDiameter units.InputLengthToInternal(settings.GetRequiredDouble("Circle.Diameter")), 0#, 0#
-            Set CreateGeometry = circleGeometry
+            Set CreateShape = circleGeometry
 
         Case TYPE_RECTSET
             Set rectSetGeometry = New CGeometryRectSet
@@ -76,7 +76,7 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
             rectSetGeometry.Initialize units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.B1")), _
                 units.InputLengthToInternal(settings.GetRequiredDouble("RectSet.H1")), _
                 lowerB, lowerH, 0#, 0#, upperOffset, sectionType
-            Set CreateGeometry = rectSetGeometry
+            Set CreateShape = rectSetGeometry
 
         Case TYPE_ROUNDED_RECTANGLE
             Set roundedGeometry = New CGeometryRoundedRectangle
@@ -97,7 +97,7 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
                 leftType, rightType, leftW, rightW, _
                 units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Left.R1")), _
                 units.InputLengthToInternal(settings.GetRequiredDouble("RoundedRectangle.Right.R1")), leftR2, rightR2
-            Set CreateGeometry = roundedGeometry
+            Set CreateShape = roundedGeometry
 
         Case TYPE_HOLLOW_RECTANGLE
             Set hollowGeometry = New CGeometryHollowRectangle
@@ -110,15 +110,20 @@ Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal un
                 units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.OpeningR")), _
                 units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetX")), _
                 units.InputLengthToInternal(settings.GetRequiredDouble("HollowRectangle.InnerOffsetY"))
-            Set CreateGeometry = hollowGeometry
+            Set CreateShape = hollowGeometry
     End Select
+End Function
+
+' Общая бетонная область для потребителей, которым не нужны параметры формы.
+Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CGeometryRegion
+    Set CreateGeometry = BuildConcreteGeometry(CreateShape(settings, units))
 End Function
 
 ' Создает раскладку арматуры для активной встроенной формы.
 ' Registry выбирает нужный builder, а чтение shape-specific ключей Config
 ' выполняет сам builder. Так таблица граней RectSet и правила дополнительных
 ' рядов не размазываются по общему registry.
-Public Function CreateRebars(ByVal geometry As ISectionGeometry, ByVal settings As CSystemSettingsReader, _
+Public Function CreateRebars(ByVal geometry As CGeometryRegion, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem) As CRebarLayout
     Dim circleRebars As CCircleRebarLayoutBuilder ' Генератор раскладки арматуры для кругового сечения.
     Dim rectSetRebars As CRectSetRebarLayoutBuilder ' Генератор раскладки арматуры для RectSet-сечения.
@@ -128,19 +133,19 @@ Public Function CreateRebars(ByVal geometry As ISectionGeometry, ByVal settings 
     Select Case ActiveGeometryType(settings)
         Case TYPE_CIRCLE
             Set circleRebars = New CCircleRebarLayoutBuilder
-            Set CreateRebars = circleRebars.BuildFromSettings(settings, units)
+            Set CreateRebars = circleRebars.BuildFromSettings(settings, units, concrete:=geometry)
 
         Case TYPE_RECTSET
             Set rectSetRebars = New CRectSetRebarLayoutBuilder
-            Set CreateRebars = rectSetRebars.BuildFromSettings(settings, units)
+            Set CreateRebars = rectSetRebars.BuildFromSettings(settings, units, geometry)
 
         Case TYPE_ROUNDED_RECTANGLE
             Set roundedRebars = New CRoundedRectRebarLayoutBuilder
-            Set CreateRebars = roundedRebars.BuildFromSettings(settings, units)
+            Set CreateRebars = roundedRebars.BuildFromSettings(settings, units, geometry)
 
         Case TYPE_HOLLOW_RECTANGLE
             Set hollowRebars = New CHollowRectRebarLayoutBuilder
-            Set CreateRebars = hollowRebars.BuildFromSettings(settings, units)
+            Set CreateRebars = hollowRebars.BuildFromSettings(settings, units, geometry)
     End Select
 End Function
 
@@ -150,10 +155,10 @@ End Function
 ' Контуры здесь не создаются и не очищаются. Если зарегистрированная форма
 ' не имеет annotation builder, модель остается без размеров/подписей граней;
 ' геометрия и классификация всех отверстий уже подготовлены независимо.
-Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal geometry As ISectionGeometry, _
+Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal shape As ISectionShape, _
         ByVal rebars As CRebarLayout, ByVal settings As CSystemSettingsReader)
     If model Is Nothing Then Err.Raise vbObjectError + 4136, "CSectionTypeRegistry", "Модель сечения не передана."
-    If geometry Is Nothing Then Err.Raise vbObjectError + 4137, "CSectionTypeRegistry", "Геометрия сечения не передана."
+    If shape Is Nothing Then Err.Raise vbObjectError + 4137, "CSectionTypeRegistry", "Описание формы сечения не передано."
 
     Dim circleAnnotations As CCircleAnnotationBuilder ' Формирует semantic-размеры и подписи арматуры для круга.
     Dim rectSetAnnotations As CRectSetAnnotationBuilder ' Формирует semantic-аннотации для граней RectSet-сечения.
@@ -165,19 +170,23 @@ Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal geometry As ISec
     Select Case ActiveGeometryType(settings)
         Case TYPE_CIRCLE
             Set circleAnnotations = New CCircleAnnotationBuilder
-            circleAnnotations.Build model, geometry, rebars
+            Dim circleShape As CGeometryCircle: Set circleShape = shape
+            circleAnnotations.Build model, circleShape, rebars
 
         Case TYPE_RECTSET
             Set rectSetAnnotations = New CRectSetAnnotationBuilder
-            rectSetAnnotations.Build model, geometry, rebars
+            Dim rectSet As CGeometryRectSet: Set rectSet = shape
+            rectSetAnnotations.Build model, rectSet, rebars
 
         Case TYPE_ROUNDED_RECTANGLE
             Set roundedAnnotations = New CRoundedRectAnnotationBuilder
-            roundedAnnotations.Build model, geometry, rebars
+            Dim rounded As CGeometryRoundedRectangle: Set rounded = shape
+            roundedAnnotations.Build model, rounded, rebars
 
         Case TYPE_HOLLOW_RECTANGLE
             Set hollowAnnotations = New CHollowRectAnnotationBuilder
-            hollowAnnotations.Build model, geometry, rebars
+            Dim hollow As CGeometryHollowRectangle: Set hollow = shape
+            hollowAnnotations.Build model, hollow, rebars
     End Select
 End Sub
 
@@ -186,8 +195,9 @@ End Sub
 ' требует геометрию и арматурный builder, необязательно annotation builder;
 ' writer/reader/layout/plotter и расчетные потребители не меняются.
 Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CSectionModel
-    Dim geometry As ISectionGeometry
-    Set geometry = CreateGeometry(settings, units)
+    Dim shape As ISectionShape, geometry As CGeometryRegion
+    Set shape = CreateShape(settings, units)
+    Set geometry = BuildConcreteGeometry(shape)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units)
@@ -208,8 +218,8 @@ Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByV
     Dim modelBuilder As CSectionModelBuilder
     Set modelBuilder = New CSectionModelBuilder
     Set model = modelBuilder.BuildFromGenerated(mesh, rebars, "Generated")
-    geometry.BuildContours model.Contours
-    BuildAnnotations model, geometry, rebars, settings
+    shape.BuildContours model.Contours
+    BuildAnnotations model, shape, rebars, settings
     Set BuildGeneratedModel = model
 End Function
 

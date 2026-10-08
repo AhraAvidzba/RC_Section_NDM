@@ -26,7 +26,7 @@ $excel=$null; $book=$null; $acad=$null; $owned=$false; $pidValue=0
 function Invoke-CadReady([scriptblock]$Action) {
     $deadline=[DateTime]::UtcNow.AddSeconds(90)
     while ($true) {
-        try { return (& $Action) }
+        try { $value = & $Action; return ,$value }
         catch {
             $errorCode=$_.Exception.HResult
             $inner=$_.Exception.InnerException
@@ -57,8 +57,8 @@ try {
     # на первом межпроцессном чтении Documents из VBA.
     $template=Join-Path $env:LOCALAPPDATA 'Autodesk/AutoCAD 2023/R24.2/rus/Template/acadiso.dwt'
     if (-not (Test-Path -LiteralPath $template)) {throw 'Standard AutoCAD test template is missing.'}
-    $documents=$acad.GetType().InvokeMember('Documents',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null)
-    $bootstrap=Invoke-CadReady { $documents.Add($template) }
+    $documents=Invoke-CadReady { ,$acad.GetType().InvokeMember('Documents',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null) }
+    $bootstrap=Invoke-CadReady { $documents.GetType().InvokeMember('Add',[Reflection.BindingFlags]::InvokeMethod,$null,$documents,@($template)) }
     Write-Output ('CAD_BOOTSTRAP_DOCUMENT: ' + [string]$bootstrap.Name)
     $excel=New-Object -ComObject Excel.Application
     $excel.Visible=$false; $excel.DisplayAlerts=$false; $excel.EnableEvents=$false; $excel.AutomationSecurity=1

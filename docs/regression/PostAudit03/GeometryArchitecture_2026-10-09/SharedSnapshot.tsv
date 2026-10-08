@@ -1,0 +1,354 @@
+Circle	PROPS	concrete	358	36	282000	0	0	6292710000	6377440000	0
+Circle	BAR	R1	260	0	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R2	242	0	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R3	260	-16	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R4	225.166604983954	130	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R5	209.578147715834	121	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R6	233.166604983954	116.143593539449	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R7	130	225.166604983954	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R8	121	209.578147715834	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R9	143.856406460551	217.166604983954	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R10	1.59198825996909E-14	260	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R11	1.48177368812508E-14	242	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R12	16	260	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R13	-130	225.166604983954	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R14	-121	209.578147715834	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R15	-116.143593539449	233.166604983954	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R16	-225.166604983954	130	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R17	-209.578147715834	121	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R18	-217.166604983954	143.856406460551	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R19	-260	3.18397651993818E-14	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R20	-242	2.96354737625015E-14	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R21	-260	16	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R22	-225.166604983954	-130	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R23	-209.578147715834	-121	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R24	-233.166604983954	-116.143593539449	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R25	-130	-225.166604983954	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R26	-121	-209.578147715834	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R27	-143.856406460551	-217.166604983954	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R28	-4.77596477990727E-14	-260	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R29	-4.44532106437523E-14	-242	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R30	-16	-260	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R31	130	-225.166604983954	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R32	121	-209.578147715834	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R33	116.143593539449	-233.166604983954	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R34	225.166604983954	-130	20	314.159265358979	Rebar	Круг: основной ряд арматуры
+Circle	BAR	R35	209.578147715834	-121	16	201.061929829747	Rebar	Круг: дополнительный ряд арматуры
+Circle	BAR	R36	217.166604983954	-143.856406460551	12	113.097335529233	Rebar	Круг: дополнительный ряд арматуры
+Circle	ANNOTATION	DIM_CIRCLE_D	DIMENSION	-300	-300	-300	300	-1	0	D	600	Диаметр параметрического круглого сечения.
+Circle	ANNOTATION	REBAR_Circle	REBAR_ANNOTATION	-260	260	260	260	0	1	12Ø20 + 12Ø16 + 12Ø12	0	Групповая подпись арматуры по смысловой грани.
+Rectangle	PROPS	concrete	132	14	121500	150	202.5	1660753125	911250000	0
+Rectangle	BAR	R1	40	200	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+Rectangle	BAR	R2	40	140	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+Rectangle	BAR	R3	40	260	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+Rectangle	BAR	R4	40	80	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+Rectangle	BAR	R5	40	320	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+Rectangle	BAR	R6	260	200	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+Rectangle	BAR	R7	260	260	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+Rectangle	BAR	R8	260	140	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+Rectangle	BAR	R9	260	320	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+Rectangle	BAR	R10	260	80	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+Rectangle	BAR	R11	80	360	32	804.247719318987	Rebar	RectSet: B1 - верхняя грань, ряд 1
+Rectangle	BAR	R12	220	360	32	804.247719318987	Rebar	RectSet: B1 - верхняя грань, ряд 1
+Rectangle	BAR	R13	220	40	32	804.247719318987	Rebar	RectSet: B1 - нижняя грань, ряд 1
+Rectangle	BAR	R14	80	40	32	804.247719318987	Rebar	RectSet: B1 - нижняя грань, ряд 1
+Rectangle	ANNOTATION	DIM_B	DIMENSION	0	0	300	0	0	-1	B	300	Общая ширина RectSet-сечения.
+Rectangle	ANNOTATION	DIM_H	DIMENSION	0	0	0	400	-1	0	H	400	Общая высота RectSet-сечения.
+Rectangle	ANNOTATION	DIM_TOP_WIDTH	DIMENSION	0	400	300	400	0	1	B1	300	Ширина верхнего прямоугольника RectSet-сечения.
+Rectangle	ANNOTATION	REBAR_H1.as_1	REBAR_ANNOTATION	40	80	40	320	-1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+Rectangle	ANNOTATION	REBAR_H1.as_2	REBAR_ANNOTATION	260	320	260	80	1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+Rectangle	ANNOTATION	REBAR_B1.as_1	REBAR_ANNOTATION	80	360	220	360	0	1	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+Rectangle	ANNOTATION	REBAR_B1.as_2	REBAR_ANNOTATION	220	40	80	40	0	-1	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+LSection	PROPS	concrete	231	28	238500	223.584905660377	250.330188679245	7395836497.64151	5762334905.66038	-2682169811.32075
+LSection	BAR	R1	40	400	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+LSection	BAR	R2	40	340	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+LSection	BAR	R3	40	460	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+LSection	BAR	R4	40	280	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+LSection	BAR	R5	40	520	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+LSection	BAR	R6	260	400	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+LSection	BAR	R7	260	460	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+LSection	BAR	R8	260	340	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+LSection	BAR	R9	260	520	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+LSection	BAR	R10	260	280	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+LSection	BAR	R11	80	560	32	804.247719318987	Rebar	RectSet: B1 - верхняя грань, ряд 1
+LSection	BAR	R12	220	560	32	804.247719318987	Rebar	RectSet: B1 - верхняя грань, ряд 1
+LSection	BAR	R13	220	240	32	804.247719318987	Rebar	RectSet: B1 - нижняя грань, ряд 1
+LSection	BAR	R14	80	240	32	804.247719318987	Rebar	RectSet: B1 - нижняя грань, ряд 1
+LSection	BAR	R15	40	80	32	804.247719318987	Rebar	RectSet: H2 - левая грань, ряд 1
+LSection	BAR	R16	40	120	32	804.247719318987	Rebar	RectSet: H2 - левая грань, ряд 1
+LSection	BAR	R17	560	120	32	804.247719318987	Rebar	RectSet: H2 - правая грань, ряд 1
+LSection	BAR	R18	560	80	32	804.247719318987	Rebar	RectSet: H2 - правая грань, ряд 1
+LSection	BAR	R19	300	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+LSection	BAR	R20	190	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+LSection	BAR	R21	410	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+LSection	BAR	R22	80	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+LSection	BAR	R23	520	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+LSection	BAR	R24	300	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+LSection	BAR	R25	410	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+LSection	BAR	R26	190	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+LSection	BAR	R27	520	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+LSection	BAR	R28	80	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+LSection	ANNOTATION	DIM_B	DIMENSION	0	0	600	0	0	-1	B	600	Общая ширина RectSet-сечения.
+LSection	ANNOTATION	DIM_H	DIMENSION	0	0	0	600	-1	0	H	600	Общая высота RectSet-сечения.
+LSection	ANNOTATION	DIM_TOP_WIDTH	DIMENSION	0	600	300	600	0	1	B1	300	Ширина верхнего прямоугольника RectSet-сечения.
+LSection	ANNOTATION	DIM_RIGHT_HEIGHT	DIMENSION	600	0	600	200	1	0	H2	200	Высота нижнего прямоугольника RectSet-сечения.
+LSection	ANNOTATION	REBAR_H1.as_1	REBAR_ANNOTATION	40	280	40	520	-1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+LSection	ANNOTATION	REBAR_H1.as_2	REBAR_ANNOTATION	260	520	260	280	1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+LSection	ANNOTATION	REBAR_B1.as_1	REBAR_ANNOTATION	80	560	220	560	0	1	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+LSection	ANNOTATION	REBAR_B1.as_2	REBAR_ANNOTATION	220	240	80	240	0	-1	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+LSection	ANNOTATION	REBAR_H2.as_1	REBAR_ANNOTATION	40	80	40	120	-1	0	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+LSection	ANNOTATION	REBAR_H2.as_2	REBAR_ANNOTATION	560	120	560	80	1	0	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+LSection	ANNOTATION	REBAR_B2.as_1	REBAR_ANNOTATION	80	160	520	160	0	1	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+LSection	ANNOTATION	REBAR_B2.as_2	REBAR_ANNOTATION	520	40	80	40	0	-1	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+TwoRectangles	PROPS	concrete	268	28	242400	199.752475247525	247.871287128713	7497821584.15841	7208065148.51485	-3635977722.77228
+TwoRectangles	BAR	R1	-10	400	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+TwoRectangles	BAR	R2	-10	340	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+TwoRectangles	BAR	R3	-10	460	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+TwoRectangles	BAR	R4	-10	280	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+TwoRectangles	BAR	R5	-10	520	32	804.247719318987	Rebar	RectSet: H1 - левая грань, ряд 1
+TwoRectangles	BAR	R6	210	400	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+TwoRectangles	BAR	R7	210	460	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+TwoRectangles	BAR	R8	210	340	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+TwoRectangles	BAR	R9	210	520	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+TwoRectangles	BAR	R10	210	280	32	804.247719318987	Rebar	RectSet: H1 - правая грань, ряд 1
+TwoRectangles	BAR	R11	30	560	32	804.247719318987	Rebar	RectSet: B1 - верхняя грань, ряд 1
+TwoRectangles	BAR	R12	170	560	32	804.247719318987	Rebar	RectSet: B1 - верхняя грань, ряд 1
+TwoRectangles	BAR	R13	170	240	32	804.247719318987	Rebar	RectSet: B1 - нижняя грань, ряд 1
+TwoRectangles	BAR	R14	30	240	32	804.247719318987	Rebar	RectSet: B1 - нижняя грань, ряд 1
+TwoRectangles	BAR	R15	40	80	32	804.247719318987	Rebar	RectSet: H2 - левая грань, ряд 1
+TwoRectangles	BAR	R16	40	120	32	804.247719318987	Rebar	RectSet: H2 - левая грань, ряд 1
+TwoRectangles	BAR	R17	560	120	32	804.247719318987	Rebar	RectSet: H2 - правая грань, ряд 1
+TwoRectangles	BAR	R18	560	80	32	804.247719318987	Rebar	RectSet: H2 - правая грань, ряд 1
+TwoRectangles	BAR	R19	300	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+TwoRectangles	BAR	R20	190	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+TwoRectangles	BAR	R21	410	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+TwoRectangles	BAR	R22	80	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+TwoRectangles	BAR	R23	520	160	32	804.247719318987	Rebar	RectSet: B2 - верхняя грань, ряд 1
+TwoRectangles	BAR	R24	300	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+TwoRectangles	BAR	R25	410	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+TwoRectangles	BAR	R26	190	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+TwoRectangles	BAR	R27	520	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+TwoRectangles	BAR	R28	80	40	32	804.247719318987	Rebar	RectSet: B2 - нижняя грань, ряд 1
+TwoRectangles	ANNOTATION	DIM_B	DIMENSION	-50	0	600	0	0	-1	B	650	Общая ширина RectSet-сечения.
+TwoRectangles	ANNOTATION	DIM_H	DIMENSION	-50	0	-50	600	-1	0	H	600	Общая высота RectSet-сечения.
+TwoRectangles	ANNOTATION	DIM_TOP_WIDTH	DIMENSION	-50	600	250	600	0	1	B1	300	Ширина верхнего прямоугольника RectSet-сечения.
+TwoRectangles	ANNOTATION	DIM_RIGHT_HEIGHT	DIMENSION	600	0	600	200	1	0	H2	200	Высота нижнего прямоугольника RectSet-сечения.
+TwoRectangles	ANNOTATION	DIM_UPPER_OFFSET_X	DIMENSION	0	200	-50	200	0	1	Δ	-50	Горизонтальное смещение верхнего прямоугольника относительно базового положения.
+TwoRectangles	ANNOTATION	REBAR_H1.as_1	REBAR_ANNOTATION	-10	280	-10	520	-1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+TwoRectangles	ANNOTATION	REBAR_H1.as_2	REBAR_ANNOTATION	210	520	210	280	1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+TwoRectangles	ANNOTATION	REBAR_B1.as_1	REBAR_ANNOTATION	30	560	170	560	0	1	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+TwoRectangles	ANNOTATION	REBAR_B1.as_2	REBAR_ANNOTATION	170	240	30	240	0	-1	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+TwoRectangles	ANNOTATION	REBAR_H2.as_1	REBAR_ANNOTATION	40	80	40	120	-1	0	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+TwoRectangles	ANNOTATION	REBAR_H2.as_2	REBAR_ANNOTATION	560	120	560	80	1	0	2Ø32	0	Групповая подпись арматуры по смысловой грани.
+TwoRectangles	ANNOTATION	REBAR_B2.as_1	REBAR_ANNOTATION	80	160	520	160	0	1	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+TwoRectangles	ANNOTATION	REBAR_B2.as_2	REBAR_ANNOTATION	520	40	80	40	0	-1	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedSimple	PROPS	concrete	236	26	241800	0	2.5	3275853750	7189040000	0
+RoundedSimple	BAR	R1	-260	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedSimple	BAR	R2	-185.714285714286	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedSimple	BAR	R3	-111.428571428571	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedSimple	BAR	R4	-37.1428571428572	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedSimple	BAR	R5	37.1428571428571	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedSimple	BAR	R6	111.428571428571	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedSimple	BAR	R7	185.714285714286	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedSimple	BAR	R8	260	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedSimple	BAR	R9	-260	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedSimple	BAR	R10	-185.714285714286	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedSimple	BAR	R11	-111.428571428571	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedSimple	BAR	R12	-37.1428571428572	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedSimple	BAR	R13	37.1428571428571	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedSimple	BAR	R14	111.428571428571	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedSimple	BAR	R15	185.714285714286	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedSimple	BAR	R16	260	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedSimple	BAR	R17	-260	106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedSimple	BAR	R18	-260	53.3333333333333	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedSimple	BAR	R19	-260	0	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedSimple	BAR	R20	-260	-53.3333333333334	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedSimple	BAR	R21	-260	-106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedSimple	BAR	R22	260	106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedSimple	BAR	R23	260	53.3333333333333	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedSimple	BAR	R24	260	0	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedSimple	BAR	R25	260	-53.3333333333334	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedSimple	BAR	R26	260	-106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedSimple	ANNOTATION	DIM_B	DIMENSION	-300	200	300	200	0	1	B	600	Размер горизонтальной базы RoundedRectangle между левым и правым торцом.
+RoundedSimple	ANNOTATION	DIM_H	DIMENSION	-300	-200	-300	200	-1	0	H	400	Полная высота RoundedRectangle.
+RoundedSimple	ANNOTATION	REBAR_B.Top	REBAR_ANNOTATION	-260	160	260	160	0	1	8Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedSimple	ANNOTATION	REBAR_B.Bottom	REBAR_ANNOTATION	-260	-160	260	-160	0	-1	8Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedSimple	ANNOTATION	REBAR_H.Left	REBAR_ANNOTATION	-260	106.666666666667	-260	-106.666666666667	-1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedSimple	ANNOTATION	REBAR_H.Right	REBAR_ANNOTATION	260	106.666666666667	260	-106.666666666667	1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedTapered	PROPS	concrete	320	26	288600	7.26712468144275	1.56444906444906	3616138651.2474	12564332474.0125	-65815259.8752596
+RoundedTapered	BAR	R1	-275.278640450004	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedTapered	BAR	R2	-196.197040638219	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedTapered	BAR	R3	-117.115440826433	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedTapered	BAR	R4	-38.0338410146479	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedTapered	BAR	R5	41.0477587971375	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedTapered	BAR	R6	120.129358608923	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedTapered	BAR	R7	199.210958420708	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedTapered	BAR	R8	278.292558232494	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedTapered	BAR	R9	-275.278640450004	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedTapered	BAR	R10	-196.197040638219	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedTapered	BAR	R11	-117.115440826433	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedTapered	BAR	R12	-38.0338410146479	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedTapered	BAR	R13	41.0477587971375	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedTapered	BAR	R14	120.129358608923	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedTapered	BAR	R15	199.210958420708	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedTapered	BAR	R16	278.292558232494	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedTapered	BAR	R17	-301.945307116671	106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedTapered	BAR	R18	-328.611973783338	53.3333333333333	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedTapered	BAR	R19	-355.278640450004	-6.84174938925253E-15	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedTapered	BAR	R20	-328.611973783338	-53.3333333333333	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedTapered	BAR	R21	-301.945307116671	-106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedTapered	BAR	R22	312.95922489916	106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedTapered	BAR	R23	347.625891565827	53.3333333333334	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedTapered	BAR	R24	382.292558232494	1.27259314197659E-14	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedTapered	BAR	R25	347.625891565827	-53.3333333333333	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedTapered	BAR	R26	312.95922489916	-106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedTapered	ANNOTATION	DIM_B	DIMENSION	-300	200	300	200	0	1	B	600	Размер горизонтальной базы RoundedRectangle между левым и правым торцом.
+RoundedTapered	ANNOTATION	DIM_H	DIMENSION	-397.639320225002	-200	-397.639320225002	200	-1	0	H	400	Полная высота RoundedRectangle.
+RoundedTapered	ANNOTATION	DIM_W_LEFT	DIMENSION	-397.639320225002	200	-300	200	0	1	W'	98	Фактический вынос левого края бетона относительно левого торца базы B.
+RoundedTapered	ANNOTATION	DIM_W_RIGHT	DIMENSION	300	200	425.182848895309	200	0	1	W'	125	Фактический вынос правого края бетона относительно правого торца базы B.
+RoundedTapered	ANNOTATION	REBAR_B.Top	REBAR_ANNOTATION	-275.278640450004	160	278.292558232494	160	0	1	8Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedTapered	ANNOTATION	REBAR_B.Bottom	REBAR_ANNOTATION	-275.278640450004	-160	278.292558232494	-160	0	-1	8Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedTapered	ANNOTATION	REBAR_H.Left	REBAR_ANNOTATION	-355.278640450004	106.666666666667	-355.278640450004	-106.666666666667	-1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedTapered	ANNOTATION	REBAR_H.Right	REBAR_ANNOTATION	382.292558232494	106.666666666667	382.292558232494	-106.666666666667	1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedMixed	PROPS	concrete	283	26	268500	33.9776536312849	2.29888268156425	3479653514.6648	10021581865.9218	-18865206.7039106
+RoundedMixed	BAR	R1	-260	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedMixed	BAR	R2	-183.101063109644	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedMixed	BAR	R3	-106.202126219288	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedMixed	BAR	R4	-29.3031893289313	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedMixed	BAR	R5	47.595747561425	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedMixed	BAR	R6	124.494684451781	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedMixed	BAR	R7	201.393621342137	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedMixed	BAR	R8	278.292558232494	160	32	804.247719318987	Rebar	RoundedRectangle: B - верхняя грань, ряд 1
+RoundedMixed	BAR	R9	-260	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedMixed	BAR	R10	-183.101063109644	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedMixed	BAR	R11	-106.202126219288	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedMixed	BAR	R12	-29.3031893289313	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedMixed	BAR	R13	47.595747561425	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedMixed	BAR	R14	124.494684451781	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedMixed	BAR	R15	201.393621342137	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedMixed	BAR	R16	278.292558232494	-160	32	804.247719318987	Rebar	RoundedRectangle: B - нижняя грань, ряд 1
+RoundedMixed	BAR	R17	-260	106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedMixed	BAR	R18	-260	53.3333333333333	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedMixed	BAR	R19	-260	0	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedMixed	BAR	R20	-260	-53.3333333333334	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedMixed	BAR	R21	-260	-106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - левая грань, ряд 1
+RoundedMixed	BAR	R22	312.95922489916	106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedMixed	BAR	R23	347.625891565827	53.3333333333334	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedMixed	BAR	R24	382.292558232494	1.27259314197659E-14	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedMixed	BAR	R25	347.625891565827	-53.3333333333333	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedMixed	BAR	R26	312.95922489916	-106.666666666667	32	804.247719318987	Rebar	RoundedRectangle: H - правая грань, ряд 1
+RoundedMixed	ANNOTATION	DIM_B	DIMENSION	-300	200	300	200	0	1	B	600	Размер горизонтальной базы RoundedRectangle между левым и правым торцом.
+RoundedMixed	ANNOTATION	DIM_H	DIMENSION	-300	-200	-300	200	-1	0	H	400	Полная высота RoundedRectangle.
+RoundedMixed	ANNOTATION	DIM_W_RIGHT	DIMENSION	300	200	425.182848895309	200	0	1	W'	125	Фактический вынос правого края бетона относительно правого торца базы B.
+RoundedMixed	ANNOTATION	REBAR_B.Top	REBAR_ANNOTATION	-260	160	278.292558232494	160	0	1	8Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedMixed	ANNOTATION	REBAR_B.Bottom	REBAR_ANNOTATION	-260	-160	278.292558232494	-160	0	-1	8Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedMixed	ANNOTATION	REBAR_H.Left	REBAR_ANNOTATION	-260	106.666666666667	-260	-106.666666666667	-1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+RoundedMixed	ANNOTATION	REBAR_H.Right	REBAR_ANNOTATION	382.292558232494	106.666666666667	382.292558232494	-106.666666666667	1	0	5Ø32	0	Групповая подпись арматуры по смысловой грани.
+HollowCentered	PROPS	concrete	942	40	993600	0	0	138409020000	96481920000	0
+HollowCentered	BAR	R1	-366.639390468142	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowCentered	BAR	R2	-261.885278905816	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowCentered	BAR	R3	-157.13116734349	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowCentered	BAR	R4	-52.3770557811632	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowCentered	BAR	R5	52.3770557811632	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowCentered	BAR	R6	157.13116734349	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowCentered	BAR	R7	261.885278905816	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowCentered	BAR	R8	366.639390468142	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowCentered	BAR	R9	-366.639390468142	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowCentered	BAR	R10	-261.885278905816	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowCentered	BAR	R11	-157.13116734349	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowCentered	BAR	R12	-52.3770557811632	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowCentered	BAR	R13	52.3770557811632	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowCentered	BAR	R14	157.13116734349	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowCentered	BAR	R15	261.885278905816	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowCentered	BAR	R16	366.639390468142	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowCentered	BAR	R17	-460	-540	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowCentered	BAR	R18	-460	-324	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowCentered	BAR	R19	-460	-108	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowCentered	BAR	R20	-460	108	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowCentered	BAR	R21	-460	324	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowCentered	BAR	R22	-460	540	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowCentered	BAR	R23	460	-540	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowCentered	BAR	R24	460	-324	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowCentered	BAR	R25	460	-108	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowCentered	BAR	R26	460	108	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowCentered	BAR	R27	460	324	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowCentered	BAR	R28	460	540	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowCentered	BAR	R29	-157.13116734349	290	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowCentered	BAR	R30	-52.3770557811632	290	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowCentered	BAR	R31	52.3770557811632	290	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowCentered	BAR	R32	157.13116734349	290	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowCentered	BAR	R33	-157.13116734349	-290	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowCentered	BAR	R34	-52.3770557811632	-290	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowCentered	BAR	R35	52.3770557811632	-290	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowCentered	BAR	R36	157.13116734349	-290	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowCentered	BAR	R37	-240	-108	20	314.159265358979	Rebar	HollowRectangle: H_o - левая грань Opening, ряд 1
+HollowCentered	BAR	R38	-240	108	20	314.159265358979	Rebar	HollowRectangle: H_o - левая грань Opening, ряд 1
+HollowCentered	BAR	R39	240	-108	20	314.159265358979	Rebar	HollowRectangle: H_o - правая грань Opening, ряд 1
+HollowCentered	BAR	R40	240	108	20	314.159265358979	Rebar	HollowRectangle: H_o - правая грань Opening, ряд 1
+HollowCentered	ANNOTATION	DIM_B	DIMENSION	-500	600	500	600	0	1	B	1000	Наружная ширина HollowRectangle.
+HollowCentered	ANNOTATION	DIM_H	DIMENSION	-500	-600	-500	600	-1	0	H	1200	Наружная высота HollowRectangle.
+HollowCentered	ANNOTATION	DIM_B_OPENING	DIMENSION	-200	-600	200	-600	0	-1	B_o	400	Ширина внутреннего отверстия Opening.
+HollowCentered	ANNOTATION	DIM_H_OPENING	DIMENSION	500	-250	500	250	1	0	H_o	500	Высота внутреннего отверстия Opening.
+HollowCentered	ANNOTATION	REBAR_B.Top	REBAR_ANNOTATION	-366.639390468142	560	366.639390468142	560	0	1	8Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowCentered	ANNOTATION	REBAR_B.Bottom	REBAR_ANNOTATION	-366.639390468142	-560	366.639390468142	-560	0	-1	8Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowCentered	ANNOTATION	REBAR_H.Left	REBAR_ANNOTATION	-460	-540	-460	540	-1	0	6Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowCentered	ANNOTATION	REBAR_H.Right	REBAR_ANNOTATION	460	-540	460	540	1	0	6Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowCentered	ANNOTATION	REBAR_Opening.B.Top	REBAR_ANNOTATION	-157.13116734349	290	157.13116734349	290	0	-1	4Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowCentered	ANNOTATION	REBAR_Opening.B.Bottom	REBAR_ANNOTATION	-157.13116734349	-290	157.13116734349	-290	0	1	4Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowCentered	ANNOTATION	REBAR_Opening.H.Left	REBAR_ANNOTATION	-240	-220	-240	220	1	0	2Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowCentered	ANNOTATION	REBAR_Opening.H.Right	REBAR_ANNOTATION	240	-220	240	220	-1	0	2Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowOffset	PROPS	concrete	954	42	999000	-7.9039039039039	-10.2297297297297	138115342277.027	96161990774.7748	-489553945.945946
+HollowOffset	BAR	R1	-366.639390468142	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowOffset	BAR	R2	-261.885278905816	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowOffset	BAR	R3	-157.13116734349	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowOffset	BAR	R4	-52.3770557811632	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowOffset	BAR	R5	52.3770557811632	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowOffset	BAR	R6	157.13116734349	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowOffset	BAR	R7	261.885278905816	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowOffset	BAR	R8	366.639390468142	560	20	314.159265358979	Rebar	HollowRectangle: B - верхняя наружная грань, ряд 1
+HollowOffset	BAR	R9	-366.639390468142	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowOffset	BAR	R10	-261.885278905816	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowOffset	BAR	R11	-157.13116734349	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowOffset	BAR	R12	-52.3770557811632	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowOffset	BAR	R13	52.3770557811632	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowOffset	BAR	R14	157.13116734349	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowOffset	BAR	R15	261.885278905816	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowOffset	BAR	R16	366.639390468142	-560	20	314.159265358979	Rebar	HollowRectangle: B - нижняя наружная грань, ряд 1
+HollowOffset	BAR	R17	-460	-540	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowOffset	BAR	R18	-460	-324	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowOffset	BAR	R19	-460	-108	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowOffset	BAR	R20	-460	108	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowOffset	BAR	R21	-460	324	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowOffset	BAR	R22	-460	540	20	314.159265358979	Rebar	HollowRectangle: H - левая наружная грань, ряд 1
+HollowOffset	BAR	R23	460	-540	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowOffset	BAR	R24	460	-324	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowOffset	BAR	R25	460	-108	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowOffset	BAR	R26	460	108	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowOffset	BAR	R27	460	324	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowOffset	BAR	R28	460	540	20	314.159265358979	Rebar	HollowRectangle: H - правая наружная грань, ряд 1
+HollowOffset	BAR	R29	-157.13116734349	334.502257097675	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowOffset	BAR	R30	-52.3770557811632	340	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowOffset	BAR	R31	52.3770557811632	340	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowOffset	BAR	R32	157.13116734349	340	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowOffset	BAR	R33	261.885278905816	316.774705802114	20	314.159265358979	Rebar	HollowRectangle: B_o - верхняя грань Opening, ряд 1
+HollowOffset	BAR	R34	-157.13116734349	-234.502257097675	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowOffset	BAR	R35	-52.3770557811632	-240	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowOffset	BAR	R36	52.3770557811632	-240	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowOffset	BAR	R37	157.13116734349	-240	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowOffset	BAR	R38	261.885278905816	-216.774705802114	20	314.159265358979	Rebar	HollowRectangle: B_o - нижняя грань Opening, ряд 1
+HollowOffset	BAR	R39	-200	-108	20	314.159265358979	Rebar	HollowRectangle: H_o - левая грань Opening, ряд 1
+HollowOffset	BAR	R40	-200	108	20	314.159265358979	Rebar	HollowRectangle: H_o - левая грань Opening, ряд 1
+HollowOffset	BAR	R41	280	-108	20	314.159265358979	Rebar	HollowRectangle: H_o - правая грань Opening, ряд 1
+HollowOffset	BAR	R42	280	108	20	314.159265358979	Rebar	HollowRectangle: H_o - правая грань Opening, ряд 1
+HollowOffset	ANNOTATION	DIM_B	DIMENSION	-500	600	500	600	0	1	B	1000	Наружная ширина HollowRectangle.
+HollowOffset	ANNOTATION	DIM_H	DIMENSION	-500	-600	-500	600	-1	0	H	1200	Наружная высота HollowRectangle.
+HollowOffset	ANNOTATION	DIM_B_OPENING	DIMENSION	-160	-600	240	-600	0	-1	B_o	400	Ширина внутреннего отверстия Opening.
+HollowOffset	ANNOTATION	DIM_H_OPENING	DIMENSION	500	-200	500	300	1	0	H_o	500	Высота внутреннего отверстия Opening.
+HollowOffset	ANNOTATION	REBAR_B.Top	REBAR_ANNOTATION	-366.639390468142	560	366.639390468142	560	0	1	8Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowOffset	ANNOTATION	REBAR_B.Bottom	REBAR_ANNOTATION	-366.639390468142	-560	366.639390468142	-560	0	-1	8Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowOffset	ANNOTATION	REBAR_H.Left	REBAR_ANNOTATION	-460	-540	-460	540	-1	0	6Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowOffset	ANNOTATION	REBAR_H.Right	REBAR_ANNOTATION	460	-540	460	540	1	0	6Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowOffset	ANNOTATION	REBAR_Opening.B.Top	REBAR_ANNOTATION	-52.3770557811632	340	157.13116734349	340	0	-1	5Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowOffset	ANNOTATION	REBAR_Opening.B.Bottom	REBAR_ANNOTATION	-52.3770557811632	-240	157.13116734349	-240	0	1	5Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowOffset	ANNOTATION	REBAR_Opening.H.Left	REBAR_ANNOTATION	-200	-170	-200	270	1	0	2Ø20	0	Групповая подпись арматуры по смысловой грани.
+HollowOffset	ANNOTATION	REBAR_Opening.H.Right	REBAR_ANNOTATION	280	-170	280	270	-1	0	2Ø20	0	Групповая подпись арматуры по смысловой грани.

@@ -7,7 +7,7 @@ Option Explicit
 ' Excel-адаптер нормализует обязательные INPUT-параметры и передает их
 ' обычному CFiberMeshBuilder. Математическая геометрия Config не читает.
 
-Public Function BuildConfiguredConcreteMesh(ByVal geometry As ISectionGeometry, _
+Public Function BuildConfiguredConcreteMesh(ByVal geometry As CGeometryRegion, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CFiberMeshBuilder
     If settings Is Nothing Or units Is Nothing Then Err.Raise vbObjectError + 4139, _
         "modMeshConfiguration", "Настройки и единицы бетонной сетки не переданы."

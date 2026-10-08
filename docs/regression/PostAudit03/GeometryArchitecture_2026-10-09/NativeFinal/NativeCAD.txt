@@ -1,0 +1,44 @@
+NATIVE CM_1_Region: concrete=110; contours=4; rebar=4
+NATIVE CM_1_Polyline: concrete=110; contours=4; rebar=4
+NATIVE CM_2_Region: concrete=132; contours=4; rebar=4
+NATIVE CM_2_Polyline: concrete=132; contours=4; rebar=4
+SOLVE CM_3_Region.purpose1.load0: eps=-1.97841854049087E-04; kx=3.48631474962687E-08; ky=2.89651160265431E-07; iterations=2
+SOLVE CM_3_Region.purpose1.load1: eps=-3.4305924781748E-04; kx=7.66263284063723E-07; ky=6.67526626984374E-07; iterations=2
+SOLVE CM_3_Region.purpose1.load2: eps=-9.11567130744275E-05; kx=-2.01309019203071E-07; ky=-3.2038417183257E-07; iterations=2
+SOLVE CM_3_Region.purpose1.load3: eps=-2.36374106842821E-04; kx=5.30091117364384E-07; ky=5.74912948863727E-08; iterations=2
+SOLVE CM_3_Region.purpose2.load0: eps=-6.29140646751529E-05; kx=5.66304193487518E-09; ky=3.7622858443655E-08; iterations=2
+SOLVE CM_3_Region.purpose2.load1: eps=-1.1517411130948E-04; kx=2.61661166496007E-07; ky=1.85045037408324E-07; iterations=2
+SOLVE CM_3_Region.purpose2.load2: eps=-2.23745900017202E-05; kx=-8.64758199180432E-08; ky=-2.05954593365817E-07; iterations=2
+SOLVE CM_3_Region.purpose2.load3: eps=-7.46346366360478E-05; kx=1.69522304643089E-07; ky=-5.85324144011475E-08; iterations=2
+SOLVE CM_3_Region.purpose3.load0: eps=-1.40311346267891E-04; kx=2.17184160961867E-08; ky=1.63401997267112E-07; iterations=2
+SOLVE CM_3_Region.purpose3.load1: eps=-2.47945280098474E-04; kx=5.57887448633243E-07; ky=4.52387509048316E-07; iterations=2
+SOLVE CM_3_Region.purpose3.load2: eps=-5.96122691860711E-05; kx=-1.58897528767066E-07; ky=-3.06928001482476E-07; iterations=2
+SOLVE CM_3_Region.purpose3.load3: eps=-1.67246203016654E-04; kx=3.7727150376999E-07; ky=-1.79424897012717E-08; iterations=2
+BATCH 1: status=OK; normalCrack=OK; capacity=2.30501310318628; width=0; Ar=0; reason=Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие найдено в физических пределах, предельная растягивающая деформация бетона не достигнута. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины; точка трещинообразования на этом пути не определена.
+BATCH 2: status=FAIL; normalCrack=OK; capacity=0.927993720564389; width=0.230788566277072; Ar=9960.85963547516; reason=НДС: Равновесие найдено с расширением диаграмм, но деформации материала вышли за физические пределы. Проверка по физической диаграмме не проходит.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.927994, раньше заданной нагрузки (lambda = 1).; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 22.000 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+NATIVE CM_3_Region: concrete=60; contours=7; rebar=4
+SOLVE CM_3_Polyline.purpose1.load0: eps=-1.97841854049087E-04; kx=3.48631474962687E-08; ky=2.89651160265431E-07; iterations=2
+SOLVE CM_3_Polyline.purpose1.load1: eps=-3.4305924781748E-04; kx=7.66263284063723E-07; ky=6.67526626984374E-07; iterations=2
+SOLVE CM_3_Polyline.purpose1.load2: eps=-9.11567130744275E-05; kx=-2.01309019203071E-07; ky=-3.2038417183257E-07; iterations=2
+SOLVE CM_3_Polyline.purpose1.load3: eps=-2.36374106842821E-04; kx=5.30091117364384E-07; ky=5.74912948863727E-08; iterations=2
+SOLVE CM_3_Polyline.purpose2.load0: eps=-6.29140646751529E-05; kx=5.66304193487518E-09; ky=3.7622858443655E-08; iterations=2
+SOLVE CM_3_Polyline.purpose2.load1: eps=-1.1517411130948E-04; kx=2.61661166496007E-07; ky=1.85045037408324E-07; iterations=2
+SOLVE CM_3_Polyline.purpose2.load2: eps=-2.23745900017202E-05; kx=-8.64758199180432E-08; ky=-2.05954593365817E-07; iterations=2
+SOLVE CM_3_Polyline.purpose2.load3: eps=-7.46346366360478E-05; kx=1.69522304643089E-07; ky=-5.85324144011475E-08; iterations=2
+SOLVE CM_3_Polyline.purpose3.load0: eps=-1.40311346267891E-04; kx=2.17184160961867E-08; ky=1.63401997267112E-07; iterations=2
+SOLVE CM_3_Polyline.purpose3.load1: eps=-2.47945280098474E-04; kx=5.57887448633243E-07; ky=4.52387509048316E-07; iterations=2
+SOLVE CM_3_Polyline.purpose3.load2: eps=-5.96122691860711E-05; kx=-1.58897528767066E-07; ky=-3.06928001482476E-07; iterations=2
+SOLVE CM_3_Polyline.purpose3.load3: eps=-1.67246203016654E-04; kx=3.7727150376999E-07; ky=-1.79424897012717E-08; iterations=2
+NATIVE CM_3_Polyline: concrete=60; contours=7; rebar=4
+NATIVE CM_4_Region: concrete=100; contours=8; rebar=4
+NATIVE CM_4_Polyline: concrete=100; contours=8; rebar=4
+CURVED CM_5_Region: GeneratedCount=140; CADCount=140; relativeArea=0; relativeIx=0; relativeIy=0
+NATIVE CM_5_Region: concrete=140; contours=8; rebar=4
+CURVED CM_5_Polyline: GeneratedCount=140; CADCount=140; relativeArea=0; relativeIx=0; relativeIy=0
+NATIVE CM_5_Polyline: concrete=140; contours=8; rebar=4
+CURVED CM_6_Region: GeneratedCount=214; CADCount=214; relativeArea=0; relativeIx=0; relativeIy=0
+NATIVE CM_6_Region: concrete=214; contours=16; rebar=4
+CURVED CM_6_Polyline: GeneratedCount=214; CADCount=214; relativeArea=0; relativeIx=0; relativeIy=0
+NATIVE CM_6_Polyline: concrete=214; contours=16; rebar=4
+NATIVE_DWG: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\PostAudit03\GeometryArchitecture_2026-10-09\NativeFinal\ContourMeshNative.dwg
+TOTAL_NATIVE_CONTOUR_MESH: passed=32310; failed=0

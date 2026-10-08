@@ -22,9 +22,11 @@ Private Const REBAR_STEEL_CLASS As String = "Rebar" ' Техническая м�
 
 Private mRequestedCount As Long
 Private mSkippedDuplicateCount As Long
+Private mConcreteGeometry As CGeometryRegion
 
 ' Строит раскладку по настройкам Config, не обращаясь к Excel напрямую.
-Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CRebarLayout
+Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        Optional ByVal concrete As CGeometryRegion = Nothing) As CRebarLayout
     If settings Is Nothing Then Err.Raise vbObjectError + 3220, "CRoundedRectRebarLayoutBuilder", "Настройки Config не переданы."
     If units Is Nothing Then Err.Raise vbObjectError + 3221, "CRoundedRectRebarLayoutBuilder", "Система единиц не передана."
 
@@ -54,7 +56,7 @@ Public Function BuildFromSettings(ByVal settings As CSystemSettingsReader, ByVal
         ReadFaceSettingsFromConfig(settings, units, "H.Right"), _
         ReadFaceSettingsFromConfig(settings, units, "B.Top"), _
         ReadFaceSettingsFromConfig(settings, units, "B.Bottom"), _
-        REBAR_STEEL_CLASS)
+        REBAR_STEEL_CLASS, concrete)
 End Function
 
 ' Создает раскладку для уже подготовленной геометрии. Этот метод нужен тестам
@@ -62,11 +64,13 @@ End Function
 Public Function Build(ByVal geom As CGeometryRoundedRectangle, _
         ByVal hLeftSettings As Variant, ByVal hRightSettings As Variant, _
         ByVal bTopSettings As Variant, ByVal bBottomSettings As Variant, _
-        ByVal steelClass As String) As CRebarLayout
+        ByVal steelClass As String, Optional ByVal concrete As CGeometryRegion = Nothing) As CRebarLayout
     If geom Is Nothing Then Err.Raise vbObjectError + 3222, "CRoundedRectRebarLayoutBuilder", "Геометрия RoundedRectangle не передана."
 
     Dim message As String
     If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3223, "CRoundedRectRebarLayoutBuilder", message
+    Set mConcreteGeometry = concrete
+    If mConcreteGeometry Is Nothing Then Set mConcreteGeometry = BuildConcreteGeometry(geom)
 
     ' Сумма в Double проверяется до Long-выражения n+1, циклов и размещения.
     Dim requestedPositions As Double
@@ -195,8 +199,8 @@ Private Sub AddHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeome
         Dim xCoord As Double, yCoord As Double
         xCoord = x1 + t * (x2 - x1)
         yCoord = y1 + t * (y2 - y1)
-        AddBarIfAvailable layout, geom, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex
-        AddAdditionalRows layout, geom, faceName, xCoord, yCoord, diameter, settings, i, tx, ty, inwardX, inwardY, steelClass, nextIndex
+        AddBarIfAvailable layout, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex
+        AddAdditionalRows layout, faceName, xCoord, yCoord, diameter, settings, i, tx, ty, inwardX, inwardY, steelClass, nextIndex
     Next i
 End Sub
 
@@ -229,7 +233,7 @@ Private Sub AddSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryRou
     geom.GetSideRebarPath isLeft, axisDistance, px, py
 
     Dim totalLength As Double
-    totalLength = PolylineLength(px, py)
+    totalLength = RebarPolylineLength(px, py)
     If totalLength <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 3225, "CRoundedRectRebarLayoutBuilder", _
         RoundedFaceDisplayName(faceName) & ": длина боковой линии раскладки должна быть больше нуля."
 
@@ -248,7 +252,7 @@ Private Sub AddSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryRou
         Dim distanceAlong As Double
         distanceAlong = spacing * CDbl(i)
         Dim xCoord As Double, yCoord As Double, tx As Double, ty As Double
-        PointAtDistance px, py, distanceAlong, xCoord, yCoord, tx, ty
+        RebarPointAtDistance px, py, distanceAlong, xCoord, yCoord, tx, ty
 
         AccumulateSideLabelAnchor isLeft, xCoord, yCoord, anchorX, anchorMinY, anchorMaxY, anchorInitialized
 
@@ -258,10 +262,10 @@ Private Sub AddSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryRou
         Else
             inwardX = ty: inwardY = -tx
         End If
-        NormalizeVector inwardX, inwardY
+        RebarNormalizeVector inwardX, inwardY
 
-        AddBarIfAvailable layout, geom, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex
-        AddAdditionalRows layout, geom, faceName, xCoord, yCoord, diameter, settings, i, tx, ty, inwardX, inwardY, steelClass, nextIndex
+        AddBarIfAvailable layout, faceName, 1, xCoord, yCoord, diameter, steelClass, nextIndex
+        AddAdditionalRows layout, faceName, xCoord, yCoord, diameter, settings, i, tx, ty, inwardX, inwardY, steelClass, nextIndex
     Next i
     If anchorInitialized Then layout.AddAnnotationAnchor faceName, anchorX, anchorMaxY, anchorX, anchorMinY, outwardX, outwardY, axisDistance
 End Sub
@@ -292,7 +296,7 @@ End Sub
 ' раскладки, SideBySide - вдоль касательной к этой линии. Для криволинейной
 ' H-грани касательная и нормаль берутся в фактической точке первого ряда,
 ' поэтому дополнительные ряды следуют форме боковой траектории.
-Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As CGeometryRoundedRectangle, _
+Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, _
         ByVal faceName As String, ByVal baseX As Double, ByVal baseY As Double, ByVal row1Diameter As Double, _
         ByVal settings As Variant, ByVal baseBarOrdinal As Long, ByVal tangentX As Double, ByVal tangentY As Double, _
         ByVal inwardX As Double, ByVal inwardY As Double, ByVal steelClass As String, ByRef nextIndex As Long)
@@ -301,68 +305,38 @@ Private Sub AddAdditionalRows(ByVal layout As CRebarLayout, ByVal geom As CGeome
     row2Diameter = FaceRow2Diameter(settings)
     row3Diameter = FaceRow3Diameter(settings)
 
-    If row2Diameter > 0# And ShouldAddAdditionalRow(baseBarOrdinal, FaceRow2Binding(settings)) Then
+    If row2Diameter > 0# And RebarShouldAddAdditionalRow(baseBarOrdinal, FaceRow2Binding(settings)) Then
         Dim row2X As Double, row2Y As Double
-        OffsetAdditionalRow baseX, baseY, row1Diameter, row2Diameter, 0#, FaceRow2Location(settings), _
+        RebarOffsetAdditionalRow baseX, baseY, row1Diameter, row2Diameter, 0#, FaceRow2Location(settings), _
             tangentX, tangentY, inwardX, inwardY, row2X, row2Y
-        AddBarIfAvailable layout, geom, faceName, 2, row2X, row2Y, row2Diameter, steelClass, nextIndex
+        AddBarIfAvailable layout, faceName, 2, row2X, row2Y, row2Diameter, steelClass, nextIndex
     End If
 
-    If row3Diameter > 0# And ShouldAddAdditionalRow(baseBarOrdinal, FaceRow3Binding(settings)) Then
+    If row3Diameter > 0# And RebarShouldAddAdditionalRow(baseBarOrdinal, FaceRow3Binding(settings)) Then
         Dim skippedDiameter As Double
         skippedDiameter = 0#
         If row2Diameter > 0# And StrComp(FaceRow2Location(settings), FaceRow3Location(settings), vbTextCompare) = 0 Then skippedDiameter = row2Diameter
         Dim row3X As Double, row3Y As Double
-        OffsetAdditionalRow baseX, baseY, row1Diameter, row3Diameter, skippedDiameter, FaceRow3Location(settings), _
+        RebarOffsetAdditionalRow baseX, baseY, row1Diameter, row3Diameter, skippedDiameter, FaceRow3Location(settings), _
             tangentX, tangentY, inwardX, inwardY, row3X, row3Y
-        AddBarIfAvailable layout, geom, faceName, 3, row3X, row3Y, row3Diameter, steelClass, nextIndex
+        AddBarIfAvailable layout, faceName, 3, row3X, row3Y, row3Diameter, steelClass, nextIndex
     End If
 End Sub
-
-' Возвращает координату дополнительного стержня относительно базового стержня.
-' Расстояние между осями считается по сумме радиусов стержней; если третий ряд
-' ставится в том же направлении, что и второй, диаметр второго ряда добавляется
-' как пропущенный промежуток между первым и третьим рядами.
-Private Sub OffsetAdditionalRow(ByVal baseX As Double, ByVal baseY As Double, _
-        ByVal row1Diameter As Double, ByVal targetDiameter As Double, ByVal skippedDiameter As Double, _
-        ByVal locationMode As String, ByVal tangentX As Double, ByVal tangentY As Double, _
-        ByVal inwardX As Double, ByVal inwardY As Double, ByRef xCoord As Double, ByRef yCoord As Double)
-    Dim distance As Double
-    distance = row1Diameter / 2# + skippedDiameter + targetDiameter / 2#
-    If StrComp(locationMode, "SideBySide", vbTextCompare) = 0 Then
-        xCoord = baseX + tangentX * distance
-        yCoord = baseY + tangentY * distance
-    Else
-        xCoord = baseX + inwardX * distance
-        yCoord = baseY + inwardY * distance
-    End If
-End Sub
-
-' Проверяет, нужно ли привязывать дополнительный ряд к конкретному стержню
-' первого ряда. EachBar дублирует каждый стержень, EverySecondBar - только
-' нечетные номера, чтобы можно было разреженно поставить второй/третий ряд.
-Private Function ShouldAddAdditionalRow(ByVal baseBarOrdinal As Long, ByVal bindingMode As String) As Boolean
-    If StrComp(bindingMode, "EverySecondBar", vbTextCompare) = 0 Then
-        ShouldAddAdditionalRow = ((baseBarOrdinal Mod 2) = 1)
-    Else
-        ShouldAddAdditionalRow = True
-    End If
-End Function
 
 ' Добавляет стержень, если в этой точке еще нет ранее созданного стержня.
 ' Такая защита нужна в местах, где линии B и H могут геометрически сблизиться:
 ' пользователь видит запрошенное число отдельно по граням, а расчетная модель
 ' не получает две арматуры с одинаковыми координатами.
-Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, ByVal geom As CGeometryRoundedRectangle, _
+Private Sub AddBarIfAvailable(ByVal layout As CRebarLayout, _
         ByVal faceName As String, ByVal rowNumber As Long, ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal steelClass As String, ByRef nextIndex As Long)
-    If HasBarAt(layout, xCoord, yCoord) Then
+    If layout.HasBarAt(xCoord, yCoord) Then
         mSkippedDuplicateCount = mSkippedDuplicateCount + 1
         Exit Sub
     End If
     layout.AddBar faceName & ".row_" & CStr(rowNumber) & "-" & CStr(nextIndex), _
         xCoord, yCoord, diameter, 0#, steelClass, _
-        "RoundedRectangle: " & RoundedFaceDisplayName(faceName) & ", ряд " & CStr(rowNumber), geom, faceName
+        "RoundedRectangle: " & RoundedFaceDisplayName(faceName) & ", ряд " & CStr(rowNumber), mConcreteGeometry, faceName
     nextIndex = nextIndex + 1
 End Sub
 
@@ -377,84 +351,11 @@ Private Sub ValidateFace(ByVal faceName As String, ByVal axisDistance As Double,
     If barCount = 0 Or diameter = 0# Then Exit Sub
     If axisDistance <= diameter / 2# Then Err.Raise vbObjectError + 3232, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": расстояние as до оси стержня должно быть больше d/2."
     If row2Diameter < 0# Or row3Diameter < 0# Then Err.Raise vbObjectError + 3233, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": диаметры дополнительных рядов d2 и d3 должны быть неотрицательными."
-    If row2Diameter > 0# And Not IsSupportedRowLocation(row2Location) Then Err.Raise vbObjectError + 3234, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": положение второго ряда должно быть SideBySide или Stacked."
-    If row3Diameter > 0# And Not IsSupportedRowLocation(row3Location) Then Err.Raise vbObjectError + 3235, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": положение третьего ряда должно быть SideBySide или Stacked."
-    If row2Diameter > 0# And Not IsSupportedRowBinding(row2Binding) Then Err.Raise vbObjectError + 3236, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": привязка второго ряда должна быть EachBar или EverySecondBar."
-    If row3Diameter > 0# And Not IsSupportedRowBinding(row3Binding) Then Err.Raise vbObjectError + 3237, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": привязка третьего ряда должна быть EachBar или EverySecondBar."
+    If row2Diameter > 0# And Not RebarRowLocationIsValid(row2Location) Then Err.Raise vbObjectError + 3234, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": положение второго ряда должно быть SideBySide или Stacked."
+    If row3Diameter > 0# And Not RebarRowLocationIsValid(row3Location) Then Err.Raise vbObjectError + 3235, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": положение третьего ряда должно быть SideBySide или Stacked."
+    If row2Diameter > 0# And Not RebarRowBindingIsValid(row2Binding) Then Err.Raise vbObjectError + 3236, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": привязка второго ряда должна быть EachBar или EverySecondBar."
+    If row3Diameter > 0# And Not RebarRowBindingIsValid(row3Binding) Then Err.Raise vbObjectError + 3237, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": привязка третьего ряда должна быть EachBar или EverySecondBar."
 End Sub
-
-' Поддерживаемые способы размещения дополнительного ряда относительно первого.
-Private Function IsSupportedRowLocation(ByVal value As String) As Boolean
-    IsSupportedRowLocation = (StrComp(value, "SideBySide", vbTextCompare) = 0 Or StrComp(value, "Stacked", vbTextCompare) = 0)
-End Function
-
-' Поддерживаемые способы привязки дополнительного ряда к стержням первого ряда.
-Private Function IsSupportedRowBinding(ByVal value As String) As Boolean
-    IsSupportedRowBinding = (StrComp(value, "EachBar", vbTextCompare) = 0 Or StrComp(value, "EverySecondBar", vbTextCompare) = 0)
-End Function
-
-' Считает фактическую длину ломаной/дискретизированной кривой, по которой
-' раскладывается H-арматура. Длина нужна именно по пути, а не по хорде между
-' концами, чтобы шаг по tapered-части и дугам был равномерным.
-Private Function PolylineLength(ByRef px() As Double, ByRef py() As Double) As Double
-    Dim i As Long
-    For i = LBound(px) To UBound(px) - 1
-        PolylineLength = PolylineLength + Sqr((px(i + 1) - px(i)) ^ 2 + (py(i + 1) - py(i)) ^ 2)
-    Next i
-End Function
-
-' Находит точку и локальную касательную на заданном расстоянии от начала
-' бокового пути. Этим методом H-арматура получает равномерный шаг по фактической
-' траектории, а дополнительные ряды - правильное локальное направление.
-Private Sub PointAtDistance(ByRef px() As Double, ByRef py() As Double, ByVal targetDistance As Double, _
-        ByRef xCoord As Double, ByRef yCoord As Double, ByRef tangentX As Double, ByRef tangentY As Double)
-    Dim accumulated As Double
-    Dim i As Long
-    For i = LBound(px) To UBound(px) - 1
-        Dim segLen As Double
-        segLen = Sqr((px(i + 1) - px(i)) ^ 2 + (py(i + 1) - py(i)) ^ 2)
-        If segLen <= GEOM_TOLERANCE Then GoTo NextSegment
-        If accumulated + segLen >= targetDistance - GEOM_TOLERANCE Then
-            Dim t As Double
-            t = (targetDistance - accumulated) / segLen
-            If t < 0# Then t = 0#
-            If t > 1# Then t = 1#
-            xCoord = px(i) + t * (px(i + 1) - px(i))
-            yCoord = py(i) + t * (py(i + 1) - py(i))
-            tangentX = (px(i + 1) - px(i)) / segLen
-            tangentY = (py(i + 1) - py(i)) / segLen
-            Exit Sub
-        End If
-        accumulated = accumulated + segLen
-NextSegment:
-    Next i
-    xCoord = px(UBound(px))
-    yCoord = py(UBound(py))
-    tangentX = 0#
-    tangentY = -1#
-End Sub
-
-' Нормирует локальную нормаль или касательную перед смещением дополнительных рядов.
-Private Sub NormalizeVector(ByRef xValue As Double, ByRef yValue As Double)
-    Dim lenValue As Double
-    lenValue = Sqr(xValue * xValue + yValue * yValue)
-    If lenValue <= GEOM_TOLERANCE Then Exit Sub
-    xValue = xValue / lenValue
-    yValue = yValue / lenValue
-End Sub
-
-' Проверяет совпадение координат с уже добавленными стержнями с геометрическим
-' допуском. Используется только внутри автоматической раскладки, чтобы убрать
-' дубли на сопряжениях граней.
-Private Function HasBarAt(ByVal layout As CRebarLayout, ByVal xCoord As Double, ByVal yCoord As Double) As Boolean
-    Dim i As Long
-    For i = 1 To layout.Count
-        If Abs(layout.X(i) - xCoord) <= GEOM_TOLERANCE And Abs(layout.Y(i) - yCoord) <= GEOM_TOLERANCE Then
-            HasBarAt = True
-            Exit Function
-        End If
-    Next i
-End Function
 
 ' Возвращает расстояние as из компактного массива настроек одной грани.
 Private Function FaceAs(ByVal settings As Variant) As Double
