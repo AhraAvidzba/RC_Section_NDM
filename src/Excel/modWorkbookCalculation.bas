@@ -229,12 +229,7 @@ Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) A
 
     UpdateSectionGeometryPreviewForWorkbook workbook
 
-    ImportGeometryFromAutoCADForWorkbook = "Геометрия успешно импортирована из AutoCAD." & vbCrLf & _
-        "Бетонных Region: " & CStr(section.ConcreteCount) & "; арматурных Region: " & _
-        CStr(section.RebarCount) & "." & vbCrLf & _
-        "На схеме показаны только импортированные элементы для визуального контроля."
-    If Len(importer.ImportComment) > 0 Then ImportGeometryFromAutoCADForWorkbook = _
-        ImportGeometryFromAutoCADForWorkbook & vbCrLf & importer.ImportComment
+    ImportGeometryFromAutoCADForWorkbook = importer.ResultMessage(section)
 End Function
 
 ' Возвращает пользовательское решение о показе обычных информационных окон.

@@ -39,6 +39,12 @@ Public Sub SetOutputOwned(ByVal value As Boolean)
     mOutputOwned = value
 End Sub
 
+' ДЛЯ ТЕСТОВ: источник в памяти не имеет владельца DWG и его слоев.
+' Блокировка настоящего слоя проверяется отдельно в native AutoCAD.
+Public Property Get Document() As Object
+    Set Document = Nothing
+End Property
+
 ' ДЛЯ ТЕСТОВ: возвращает XData в формате Autodesk либо Empty у исходника.
 Public Sub GetXData(ByVal appName As String, ByRef codes As Variant, ByRef values As Variant)
     codes = Empty: values = Empty

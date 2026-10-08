@@ -40,7 +40,9 @@ try {
     $book=$excel.Workbooks.Open($path)
     # The saved candidate already contains the guarded optional CAD entrypoint.
     # Test it without replacing its VBA or saving fixture mutations.
-    $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.RunRealAutoCADContourTests",$acad)
+    $template=Join-Path $env:LOCALAPPDATA 'Autodesk/AutoCAD 2023/R24.2/rus/Template/acadiso.dwt'
+    if (-not (Test-Path -LiteralPath $template)) {throw 'Standard AutoCAD test template is missing.'}
+    $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.RunRealAutoCADContourTests",$acad,$template)
     $result | Set-Content -LiteralPath (Join-Path $directory 'NativeCAD.txt') -Encoding UTF8
     [ordered]@{Executable=$fullName; OwnedPID=$pidValue; COMServer=$server; UserDocumentsUsed=$false} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADIdentity.json') -Encoding UTF8

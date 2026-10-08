@@ -1,0 +1,4 @@
+﻿OK: native.actualAutoCAD
+FAIL: native.runtime; -2147023170; Automation error
+Сбой при удаленном вызове процедуры.
+TOTAL_REAL_AUTOCAD_CONTOURS: passed=1; failed=1

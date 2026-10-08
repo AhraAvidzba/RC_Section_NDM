@@ -1,0 +1,16 @@
+﻿{
+    "BaselineSHA256":  "E6A3F4491D6EC168016D4FED6E3A0870999640A12788B87C654EB0855560C169",
+    "FrozenProduction":  false,
+    "ImportedComponents":  [
+                               "CAutoCADContourReader",
+                               "CAutoCADSectionModelImporter",
+                               "modWorkbookCalculation",
+                               "CFakeAcadContour",
+                               "modTestAutoCADContours",
+                               "modTestPerformance"
+                           ],
+    "HelpRefreshed":  true,
+    "VBACompileCompleted":  true,
+    "SourceGitSHA":  "03af1a3b900ef59abc3646a88424c65d046d800e",
+    "CandidateSHA256":  "789774E5A28DF9AC3212452550BCAF31C75D3C4BACDF13A7EE855B9647114AB4"
+}

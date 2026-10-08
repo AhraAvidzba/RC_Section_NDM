@@ -1,0 +1,42 @@
+﻿{
+    "Passed":  true,
+    "WorkbookSHA256":  "789774E5A28DF9AC3212452550BCAF31C75D3C4BACDF13A7EE855B9647114AB4",
+    "ExportSHA256":  "F5616AA2553A9A2C83654A25AF57CF07E6435E13CFE563F41299C1110F46E0C1",
+    "BaselineWorkbookSHA256":  "E6A3F4491D6EC168016D4FED6E3A0870999640A12788B87C654EB0855560C169",
+    "Fingerprint":  {
+                        "Sheets":  [
+                                       {
+                                           "Name":  "Config",
+                                           "Address":  "$A$1:$IN$501",
+                                           "FormulaHash":  "BA5AF6B7112A4B3C8DE9507B10950AF8C2E171AFF321D58BE5893397A941169A",
+                                           "ValueHash":  "115E5CC2206E89065B377E20A303F545429D7D799EAFF8AA5EFC4E495BA93D7C"
+                                       },
+                                       {
+                                           "Name":  "Расчет",
+                                           "Address":  "$A$1:$AJ$60",
+                                           "FormulaHash":  "2BD8A9BD42817A2C233B0D0CE2D3F7655F5E3655F67F53D3BD39EB5DC625DE8A",
+                                           "ValueHash":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+                                       },
+                                       {
+                                           "Name":  "Results",
+                                           "Address":  "$A$1:$CL$351",
+                                           "FormulaHash":  "F81D10F3656CEA52CE3CE99961F76B8602BB33FFC13D440289C689E47EB8879B",
+                                           "ValueHash":  "F4ED4A722FEF1C20C5675028373431BDF3CEF2EDEF46C45E2F0FE6B0F89BB554"
+                                       }
+                                   ],
+                        "Names":  "A1DAC58DBAE82820DDA9492FB85C776E327C3A9AB09696F7043BBA8294315C8B",
+                        "ResultsWidths":  "B77F81AC487F2672864B543F888EB94F1248550D1416B63A543AAF18F88E38E1"
+                    },
+    "UserReportSHA256":  "10BE5E986866531E1EB74CE1C99106D298EE5B222F86AFDECAD155A90047F6AB",
+    "UserReportPreserved":  true,
+    "UserDataNamesWidthsPreserved":  true,
+    "NativeCADPassed":  true,
+    "FullOnOffRepeated":  false,
+    "CrackDomainContractChanged":  false,
+    "GeneratedContourOwnershipChanged":  false,
+    "MultipleOpeningsFromGeometryPassed":  true,
+    "PolylineImportChanged":  true,
+    "ImportSummaryChanged":  true,
+    "LockedContourGuardChanged":  true,
+    "SolverSearchMaterialsChanged":  false
+}

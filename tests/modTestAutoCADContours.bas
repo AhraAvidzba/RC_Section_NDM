@@ -12,6 +12,7 @@ Option Explicit
 Private mPassed As Long
 Private mFailed As Long
 Private mReport As String
+Private mNativeProgress As Boolean ' ДЛЯ ТЕСТОВ: журнал собственного CAD-прогона до возврата из COM.
 
 ' ДЛЯ ТЕСТОВ: запускает parity/negative/import проверки без AutoCAD.
 Public Function RunAutoCADContourTests() As String
@@ -32,6 +33,8 @@ Public Function RunAutoCADContourTests() As String
     CheckImportedContourDimensions
     CheckOpeningWithoutOuter
     CheckKnownOuterWithoutOpenings
+    CheckPhysicalPolylineClosure
+    CheckEmptyStandaloneContourSegments
     GoTo Finish
 Failed:
     Check "contour.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
@@ -284,6 +287,8 @@ Private Sub CheckKnownOuterWithoutOpenings()
         Check "knownOuterOnly." & CStr(mode) & ".mechanicalMeshKept", section.ConcreteCount = 4 And _
             section.ConcreteArea(1) + section.ConcreteArea(2) + section.ConcreteArea(3) + section.ConcreteArea(4) = 6400#
         Check "knownOuterOnly." & CStr(mode) & ".comment", InStr(importer.ImportComment, "отверстия по сетке не добавляются") > 0
+        Check "knownOuterOnly." & CStr(mode) & ".shortMessage", InStr(importer.ResultMessage(section), "Наружных контуров: 1; отверстий: 0.") > 0 And _
+            InStr(importer.ResultMessage(section), "Предупреждения:") = 0 And InStr(importer.ResultMessage(section), "Координаты") = 0
         Check "knownOuterOnly." & CStr(mode) & ".sourceKept", Not outer.Deleted
         writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
@@ -576,13 +581,15 @@ Private Sub CheckEmptyContourLayers()
         If mode = 2 Then Check prefix & ".openingKept", Not query.ContainsPoint(domain, 70#, 70#) And Not opening.Deleted
     Next mode
     Set invalid = New CFakeAcadContour
-    invalid.InitializeLoop "AcDbPolyline", "OUTER", "OPEN", RectangleEdges(0#, 0#, 100#, 100#), False
+    Dim openEdges As Collection
+    Set openEdges = RectangleEdges(0#, 0#, 100#, 100#): openEdges.Remove 1
+    invalid.InitializeLoop "AcDbPolyline", "OUTER", "OPEN", openEdges, False
     space.Add invalid
     On Error Resume Next
     Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
     number = Err.Number: description = Err.Description: Err.Clear
     On Error GoTo 0
-    Check "emptyLayers.invalidContourStillRejected", number <> 0 And InStr(description, "замкнутой") > 0
+    Check "emptyLayers.invalidContourStillRejected", number <> 0 And InStr(description, "не замкнут") > 0
     Check "emptyLayers.invalidSourceKept", Not invalid.Deleted
     Check "emptyLayers.failedImportKeepsPreviousModel", section.ConcreteCount = 1 And section.RebarCount = 1 And section.Contours.Count = 0
 End Sub
@@ -679,6 +686,16 @@ Private Sub Check(ByVal name As String, ByVal condition As Boolean)
     Else
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
+    If mNativeProgress Then NativeProgress name
+End Sub
+
+' ДЛЯ ТЕСТОВ: оставляет этап в отдельном журнале собственной тестовой книги.
+Private Sub NativeProgress(ByVal phase As String)
+    Dim file As Integer
+    file = FreeFile
+    Open ThisWorkbook.Path & "\NativeCAD.progress.txt" For Append As #file
+    Print #file, Format$(Now, "hh:nn:ss") & " " & phase
+    Close #file
 End Sub
 
 ' ДЛЯ ТЕСТОВ: несколько opening читаются отдельными Region/Polyline как с
@@ -862,7 +879,9 @@ Private Sub CheckInvalidContours()
             Case 2: edges.Add edges(1)
             Case 3: entity.SetPlane 1#, 0#, 0#, 0#
             Case 4: Set entity = Contour("AcDbSpline", edges)
-            Case 5: entity.InitializeLoop "AcDbPolyline", "OUTER", "OPEN", edges, False
+            Case 5
+                edges.Remove 1
+                entity.InitializeLoop "AcDbPolyline", "OUTER", "OPEN", edges, False
             Case 6: entity.InitializeLoop "AcDbPolyline", "OUTER", "Z", edges: entity.SetPlane 0#, 0#, 1#, 1#
             Case 7
                 Set curve = New CFakeAcadContour: curve.InitializeLoop "AcDbEllipse", "OUTER", "ELLIPSE", Nothing: edges.Add curve
@@ -916,7 +935,8 @@ End Sub
 ' ДЛЯ ТЕСТОВ: проверяет настоящий Autodesk AutoCAD в собственном новом
 ' документе. Существующие чертежи не изменяются; source-объекты сохраняют
 ' handles, площадь и число сущностей после Copy/Explode production reader-а.
-Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Object = Nothing) As String
+Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Object = Nothing, _
+        Optional ByVal templatePath As String = "") As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     Dim acad As Object, doc As Object, previous As Object, polyline As Object, source As Object
     Dim circleEntity As Object, openingRegion As Object, reader As CAutoCADContourReader, query As CSectionGeometryQuery
@@ -924,6 +944,8 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     Dim countBefore As Long, handleBefore As String, areaBefore As Double, mode As Long, i As Long, openings As Long
     Dim path As String, center(0 To 2) As Double, semi(0 To 3) As Double
     On Error GoTo Failed
+    mNativeProgress = True
+    NativeProgress "start"
     If ownedApplication Is Nothing Then
         Set acad = GetObject(, "AutoCAD.Application.24.2")
     Else
@@ -932,8 +954,11 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     Check "native.actualAutoCAD", InStr(1, CStr(acad.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) > 0
     If InStr(1, CStr(acad.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) = 0 Then Err.Raise vbObjectError + 5502, , "Тест требует Autodesk AutoCAD 2023, а не SOFiPLUS."
     If acad.Documents.Count > 0 Then Set previous = acad.ActiveDocument
-    Set doc = acad.Documents.Add
+    NativeProgress "creating document"
+    If Len(templatePath) > 0 Then Set doc = acad.Documents.Add(templatePath) Else Set doc = acad.Documents.Add
+    NativeProgress "document created"
     WaitForCAD acad
+    NativeProgress "document ready"
     Set reader = New CAutoCADContourReader: Set query = New CSectionGeometryQuery
     Set polyline = NativeRectangle(doc, 100#, 80#, 0.37, 137#, -73#)
     Set curves(0) = polyline: regions = doc.ModelSpace.AddRegion(curves): Set source = regions(LBound(regions))
@@ -983,6 +1008,8 @@ Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Ob
     CheckNativeSharedContourOwnership doc
     CheckNativeRegionBoundaryDedup doc
     CheckNativeMixedContourRoundTrip doc
+    CheckNativePhysicalPolylineClosure doc
+    CheckNativeEmptyOpeningSegment doc
     path = ThisWorkbook.Path & "\SP35_ContourImport_" & Format$(Now, "yyyymmdd_hhnnss") & ".dwg"
     If Len(Dir$(path)) > 0 Then Err.Raise vbObjectError + 5502, , "Тестовый DWG уже существует; перезапись запрещена."
     doc.SaveAs path
@@ -996,8 +1023,195 @@ Cleanup:
     If Not previous Is Nothing Then previous.Activate
     On Error GoTo 0
     mReport = mReport & "TOTAL_REAL_AUTOCAD_CONTOURS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    mNativeProgress = False
     RunRealAutoCADContourTests = mReport
 End Function
+
+' ДЛЯ ТЕСТОВ: фактическое замыкание важнее флага Closed. Повторные прямые
+' вершины не меняют область, но вырожденные Region и дуги остаются ошибками.
+Private Sub CheckPhysicalPolylineClosure()
+    Dim reader As CAutoCADContourReader, entity As CFakeAcadContour, curve As CFakeAcadContour
+    Dim region As CConcreteRegion, edges As Collection, kind As Variant, mode As Long, prefix As String
+    Dim number As Long, layerName As Variant
+    Set reader = New CAutoCADContourReader
+    For Each layerName In Array("OUTER", "OPENING")
+    For Each kind In Array("AcDbPolyline", "AcDb2dPolyline")
+        For mode = 0 To 2
+            Set edges = RectangleEdges(0#, 0#, 100#, 80#)
+            If mode > 0 Then
+                Set curve = New CFakeAcadContour: curve.InitializeLine 0#, 0#, 0#, 0#: edges.Add curve
+                Set curve = New CFakeAcadContour: curve.InitializeLine 100#, 0#, 100#, 0#: edges.Add curve
+            End If
+            Set entity = New CFakeAcadContour
+            entity.InitializeLoop CStr(kind), CStr(layerName), "PHYSICAL", edges, (mode = 2)
+            Set region = reader.ReadRegion(entity)
+            prefix = "physicalPolyline." & CStr(layerName) & "." & CStr(kind) & "." & CStr(mode)
+            CheckArea prefix & ".area", region.Area, 8000#
+            Check prefix & ".edges", region.SegmentCount = 4
+            Check prefix & ".sourceUnchanged", Not entity.Deleted And entity.Closed = (mode = 2)
+            Check prefix & ".copyDeleted", entity.LastCopy.Deleted
+            For Each curve In entity.LastCopy.ExplodedPieces: Check prefix & ".pieceDeleted", curve.Deleted: Next curve
+        Next mode
+    Next kind
+    Next layerName
+    For mode = 0 To 2
+        Set edges = RectangleEdges(0#, 0#, 100#, 80#)
+        Set curve = New CFakeAcadContour
+        If mode < 2 Then curve.InitializeLine 0#, 0#, 0#, 0# Else curve.InitializeArc 0#, 0#, 0#, 0#, GEOM_PI
+        edges.Add curve
+        Set entity = Contour("AcDbRegion", edges)
+        If mode = 1 Then
+            Set edges = New Collection
+            entity.InitializeLoop "AcDbPolyline", "OPENING", "EMPTY", edges, True
+        End If
+        If mode = 2 Then entity.InitializeLoop "AcDbPolyline", "OPENING", "BAD_ARC", edges, True
+        On Error Resume Next
+        Set region = reader.ReadRegion(entity): number = Err.Number: Err.Clear
+        On Error GoTo 0
+        Check "physicalPolyline.invalidNotHidden." & CStr(mode), number <> 0
+        Check "physicalPolyline.invalidCleanup." & CStr(mode), Not entity.Deleted And entity.LastCopy.Deleted
+    Next mode
+End Sub
+
+' ДЛЯ ТЕСТОВ: отдельный нулевой отрезок на каждом из контурных слоев не блокирует
+' правильную полилинию. Ненулевой отрезок остается адресной ошибкой ввода.
+Private Sub CheckEmptyStandaloneContourSegments()
+    Dim space As Collection, layers As Collection, importer As CAutoCADSectionModelImporter, section As CSectionModel
+    Dim zero As CFakeAcadContour, opening As CFakeAcadContour, layer As CFakeAcadContour, cell As CFakeAcadRegion
+    Dim query As CSectionGeometryQuery, number As Long, description As String, layerName As Variant, prefix As String
+    Set space = New Collection: Set layers = New Collection
+    Set cell = New CFakeAcadRegion: cell.Initialize 10000#, 50#, 50#, 1000000#, 1200000#, 0#, "CONCRETE", "C1": space.Add cell
+    Set cell = New CFakeAcadRegion: cell.Initialize 10#, 10#, 10#, 100#, 100#, 0#, "REBAR", "R1": space.Add cell
+    space.Add Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#))
+    Set zero = New CFakeAcadContour: zero.InitializeLoop "AcDbLine", "OPENING", "ZERO_LINE", Nothing
+    zero.InitializeLine 40#, 40#, 40#, 40#: space.Add zero
+    Set opening = Contour("AcDbPolyline", RectangleEdges(40#, 40#, 20#, 20#), "OPENING"): space.Add opening
+    Set layer = New CFakeAcadContour: layers.Add layer, "OUTER": layers.Add layer, "OPENING"
+    Set importer = New CAutoCADSectionModelImporter
+    For Each layerName In Array("OUTER", "OPENING")
+    zero.InitializeLoop "AcDbLine", CStr(layerName), "ZERO_LINE", Nothing
+    zero.InitializeLine 40#, 40#, 40#, 40#
+    prefix = "emptyContourSegment." & CStr(layerName)
+    Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+    Set query = New CSectionGeometryQuery: query.Initialize section
+    CheckArea prefix & ".area", query.ConcreteDomain.Area, 9600#
+    Check prefix & ".sourceKept", Not zero.Deleted And Not opening.Deleted
+    Check prefix & ".warning", InStr(importer.ImportComment, "нулевой длины") > 0 And InStr(importer.ImportComment, "ZERO_LINE") > 0
+    Check prefix & ".shortMessage", InStr(importer.ResultMessage(section), "Наружных контуров: 1; отверстий: 1.") > 0 And _
+        InStr(importer.ResultMessage(section), vbCrLf & vbCrLf & "Предупреждения:") > 0 And _
+        InStr(importer.ResultMessage(section), "реальные линии/дуги") = 0
+    zero.InitializeLine 40#, 40#, 41#, 40#
+    On Error Resume Next
+    Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+    number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    Check prefix & ".nonzeroRejected", number <> 0 And InStr(description, "ZERO_LINE") > 0 And InStr(description, "PEDIT") > 0
+    Check prefix & ".nonzeroKept", Not zero.Deleted
+    Next layerName
+End Sub
+
+' ДЛЯ ТЕСТОВ: настоящий AutoCAD проверяет Closed=False с повтором первой
+' вершины, Closed=True с таким же повтором, внутренний повтор и bulge-дугу.
+' Повторное чтение и ошибочный импорт не оставляют фрагментов Explode.
+Private Sub CheckNativePhysicalPolylineClosure(ByVal doc As Object)
+    Dim reader As CAutoCADContourReader, entity As Object, region As CConcreteRegion
+    Dim coordinates As Variant, values() As Double, stride As Long, kind As Long, mode As Long, i As Long, j As Long
+    Dim countBefore As Long, number As Long, expectedArea As Double, prefix As String, description As String
+    Set reader = New CAutoCADContourReader
+    For kind = 0 To 1
+        For mode = 0 To 4
+            Select Case mode
+                Case 0, 1: coordinates = Array(0#, 0#, 100#, 0#, 100#, 80#, 0#, 80#, 0#, 0#): expectedArea = 8000#
+                Case 2: coordinates = Array(0#, 0#, 100#, 0#, 100#, 0#, 100#, 80#, 0#, 80#, 0#, 0#): expectedArea = 8000#
+                Case 3, 4: coordinates = Array(0#, 0#, 20#, 0#, 0#, 0#): expectedArea = 50# * GEOM_PI
+            End Select
+            stride = 2 + kind
+            ReDim values(0 To (UBound(coordinates) + 1) / 2 * stride - 1)
+            For i = 0 To (UBound(coordinates) + 1) / 2 - 1
+                values(i * stride) = coordinates(i * 2): values(i * stride + 1) = coordinates(i * 2 + 1)
+            Next i
+            If kind = 0 Then Set entity = doc.ModelSpace.AddLightWeightPolyline(values) Else Set entity = doc.ModelSpace.AddPolyline(values)
+            entity.Closed = (mode = 1 Or mode = 2 Or mode = 4)
+            If mode >= 3 Then entity.SetBulge 0, 1#
+            countBefore = doc.ModelSpace.Count: prefix = "native.physicalPolyline." & CStr(kind) & "." & CStr(mode)
+            For j = 1 To 3
+                Set region = reader.ReadRegion(entity)
+                CheckArea prefix & ".area." & CStr(j), region.Area, expectedArea
+                Check prefix & ".noLeakedEntities." & CStr(j), doc.ModelSpace.Count = countBefore
+                Check prefix & ".closedPreserved." & CStr(j), CBool(entity.Closed) = (mode = 1 Or mode = 2 Or mode = 4)
+                If mode >= 3 Then CheckArea prefix & ".bulgePreserved." & CStr(j), entity.GetBulge(0), 1#
+            Next j
+        Next mode
+    Next kind
+    ReDim values(0 To 7): values(2) = 100#: values(4) = 100#: values(5) = 80#: values(7) = 80#
+    Set entity = doc.ModelSpace.AddLightWeightPolyline(values): entity.Closed = False: countBefore = doc.ModelSpace.Count
+    On Error Resume Next
+    Set region = reader.ReadRegion(entity): number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    Check "native.physicalPolyline.realGapRejected", number <> 0
+    Check "native.physicalPolyline.realGapCleanup", doc.ModelSpace.Count = countBefore And Not CBool(entity.Closed)
+    ReDim values(0 To 3)
+    Set entity = doc.ModelSpace.AddLightWeightPolyline(values): entity.Closed = True: countBefore = doc.ModelSpace.Count
+    On Error Resume Next
+    Set region = reader.ReadRegion(entity): number = Err.Number: Err.Clear
+    On Error GoTo 0
+    Check "native.physicalPolyline.zeroAreaRejected", number <> 0
+    Check "native.physicalPolyline.zeroAreaCleanup", doc.ModelSpace.Count = countBefore
+    Dim lockedLayer As Object
+    Set lockedLayer = doc.Layers.Add("NP_LOCKED")
+    Set entity = NativeRectangle(doc, 100#, 80#, 0#, 600#, 600#): entity.Layer = "NP_LOCKED"
+    lockedLayer.Lock = True: countBefore = doc.ModelSpace.Count
+    Set region = Nothing
+    On Error Resume Next
+    Set region = reader.ReadRegion(entity): number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    lockedLayer.Lock = False
+    Check "native.physicalPolyline.lockedNoLeaks", doc.ModelSpace.Count = countBefore
+    Check "native.physicalPolyline.lockedRejected", number <> 0 And InStr(description, "Разблокируйте") > 0
+    Set region = reader.ReadRegion(entity)
+    CheckArea "native.physicalPolyline.unlockedArea", region.Area, 8000#
+    Check "native.physicalPolyline.unlockedNoLeaks", doc.ModelSpace.Count = countBefore
+End Sub
+
+' ДЛЯ ТЕСТОВ: воспроизводит видимые пользователю полилинию и отдельный
+' пустой AcDbLine на каждом контурном слое. Полный importer сохраняет роли и область.
+Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
+    Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
+    Dim entity As Object, outer As Object, zero As Object, curve As Object, regions As Variant, curves(0 To 0) As Object
+    Dim point(0 To 2) As Double, endpoint(0 To 2) As Double, values(0 To 9) As Double
+    Dim layer As Variant, targetLayer As Variant, countBefore As Long, number As Long, description As String, prefix As String
+    For Each layer In Array("NP_CONCRETE", "NP_REBAR", "NP_OUTER", "NP_OPENING"): doc.Layers.Add CStr(layer): Next layer
+    Set curve = NativeRectangle(doc, 100#, 100#, 0#, 50#, 50#)
+    Set curves(0) = curve: regions = doc.ModelSpace.AddRegion(curves): Set entity = regions(LBound(regions)): entity.Layer = "NP_CONCRETE"
+    point(0) = 10#: point(1) = 10#: Set curve = doc.ModelSpace.AddCircle(point, 2#)
+    Set curves(0) = curve: regions = doc.ModelSpace.AddRegion(curves): Set entity = regions(LBound(regions)): entity.Layer = "NP_REBAR"
+    values(2) = 100#: values(4) = 100#: values(5) = 100#: values(7) = 100#
+    Set outer = doc.ModelSpace.AddLightWeightPolyline(values): outer.Layer = "NP_OUTER": outer.Closed = False
+    values(0) = 40#: values(1) = 40#: values(2) = 60#: values(3) = 40#: values(4) = 60#: values(5) = 60#
+    values(6) = 40#: values(7) = 60#: values(8) = 40#: values(9) = 40#
+    Set entity = doc.ModelSpace.AddLightWeightPolyline(values): entity.Layer = "NP_OPENING": entity.Closed = False
+    point(0) = 40#: point(1) = 40#: endpoint(0) = 40#: endpoint(1) = 40#
+    Set importer = New CAutoCADSectionModelImporter
+    For Each targetLayer In Array("NP_OUTER", "NP_OPENING")
+    Set zero = doc.ModelSpace.AddLine(point, endpoint): zero.Layer = CStr(targetLayer): countBefore = doc.ModelSpace.Count
+    prefix = "native.emptyContourSegment." & CStr(targetLayer)
+    Set section = importer.ImportFromModelSpace(doc.ModelSpace, "NP_CONCRETE", "NP_REBAR", "Rebar", 0#, Nothing, "NP_OUTER", "NP_OPENING", doc.Layers)
+    Set query = New CSectionGeometryQuery: query.Initialize section
+    CheckArea prefix & ".area", query.ConcreteDomain.Area, 9600#
+    Check prefix & ".roles", query.ConcreteDomain.LoopCount = 2
+    Check prefix & ".warning", InStr(importer.ImportComment, CStr(zero.Handle)) > 0 And InStr(importer.ImportComment, "нулевой длины") > 0
+    Check prefix & ".noMutation", doc.ModelSpace.Count = countBefore And Not CBool(entity.Closed) And Not CBool(outer.Closed)
+    zero.Delete: endpoint(0) = 41#: Set zero = doc.ModelSpace.AddLine(point, endpoint): zero.Layer = CStr(targetLayer)
+    countBefore = doc.ModelSpace.Count
+    On Error Resume Next
+    Set section = importer.ImportFromModelSpace(doc.ModelSpace, "NP_CONCRETE", "NP_REBAR", "Rebar", 0#, Nothing, "NP_OUTER", "NP_OPENING", doc.Layers)
+    number = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo 0
+    Check prefix & ".nonzeroRejected", number <> 0 And InStr(description, CStr(zero.Handle)) > 0 And InStr(description, "PEDIT") > 0
+    Check prefix & ".failedNoMutation", doc.ModelSpace.Count = countBefore
+    zero.Delete: endpoint(0) = 40#
+    Next targetLayer
+End Sub
 
 ' ДЛЯ ТЕСТОВ: проходит production import -> Results -> export -> import
 ' для обоих смешанных источников и для однородных вариантов. Два отверстия

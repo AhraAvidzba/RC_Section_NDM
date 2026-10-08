@@ -23,12 +23,12 @@ Private Const PLANE_TOLERANCE As Double = 0.000001 ' Тот же линейны�
 Private Const NORMAL_TOLERANCE As Double = 0.0000000001 ' Проверка направления нормали относительно WCS XY.
 
 ' Возвращает проверенную область фактического объекта с outer/opening loops.
-' Поддерживаются Region, замкнутые LWPolyline/2D Polyline и Circle; кривые
+' Поддерживаются Region, физически замкнутые LWPolyline/2D Polyline и Circle; кривые
 ' другого типа отклоняются явно, без полигональной или A/I-аппроксимации.
 Public Function ReadRegion(ByVal entity As Object) As CConcreteRegion
     Dim temporary As Object, pieces As Variant, edges() As TRegionEdge, count As Long
     Dim kind As String, i As Long, query As CSectionGeometryQuery
-    Dim errorNumber As Long, errorDescription As String, context As String
+    Dim errorNumber As Long, errorDescription As String, context As String, document As Object
     On Error GoTo Failed
     If entity Is Nothing Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Объект контура не передан."
     context = "Слой '" & CStr(entity.Layer) & "', объект " & CStr(entity.Handle) & ": "
@@ -36,18 +36,32 @@ Public Function ReadRegion(ByVal entity As Object) As CConcreteRegion
     Select Case kind
         Case "AcDbRegion", "AcDbPolyline", "AcDb2dPolyline"
             ValidatePlaneNormal entity
+            ' AutoCAD разрешает Copy/Explode на locked-слое, но запрещает Delete.
+            ' Проверяем до первой копии, чтобы не оставить временные объекты.
+            Set document = entity.Document
+            If Not document Is Nothing Then
+                If CBool(document.Layers.Item(CStr(entity.Layer)).Lock) Then _
+                    Err.Raise vbObjectError + 4410, "CAutoCADContourReader", _
+                        "Слой контура заблокирован. Разблокируйте этот слой в AutoCAD и повторите импорт."
+            End If
             If kind <> "AcDbRegion" Then
-                If Not CBool(entity.Closed) Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Полилиния контура должна быть замкнутой."
                 If Abs(CDbl(entity.Elevation)) > PLANE_TOLERANCE Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Контур должен лежать в расчетной плоскости WCS XY (Z = 0)."
             End If
             Set temporary = entity.Copy
             pieces = temporary.Explode
             If Not IsArray(pieces) Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "AutoCAD не вернул граничные кривые объекта."
             For i = LBound(pieces) To UBound(pieces)
-                AppendCurve pieces(i), edges, count
+                ' Флаг Closed не заменяет проверку фактических концов. Повтор
+                ' первой вершины допустим; его пустое прямое ребро не является границей.
+                AppendCurve pieces(i), edges, count, (kind <> "AcDbRegion")
             Next i
         Case "AcDbCircle"
             AppendCurve entity, edges, count
+        Case "AcDbLine", "AcDbArc"
+            Err.Raise vbObjectError + 4410, "CAutoCADContourReader", _
+                "На контурном слое найден отдельный отрезок или дуга, а не полилиния. " & _
+                "Объедините границы командой PEDIT (ПОЛРЕД) в замкнутую полилинию или создайте Region. " & _
+                "Если этот объект не относится к контуру, перенесите его на другой слой."
         Case Else
             Err.Raise vbObjectError + 4410, "CAutoCADContourReader", _
                 "Тип " & kind & " не поддерживается для контура. Используйте Region, замкнутую 2D-полилинию или окружность с границами из прямых и круговых дуг."
@@ -62,10 +76,32 @@ Failed:
     Err.Raise errorNumber, "CAutoCADContourReader", context & errorDescription
 End Function
 
+' Проверяет пустой самостоятельный отрезок на контурном слое. Импортер
+' может пропустить его с предупреждением: такой объект не задает границу.
+' Ненулевые отрезки и дуги здесь не объединяются и не скрываются.
+Public Function IsEmptyStraightSegment(ByVal entity As Object) As Boolean
+    Dim point As Variant, endpoint As Variant, context As String, dx As Double, dy As Double
+    On Error GoTo Failed
+    If entity Is Nothing Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Объект контура не передан."
+    context = "Слой '" & CStr(entity.Layer) & "', объект " & CStr(entity.Handle) & ": "
+    If StrComp(CStr(entity.ObjectName), "AcDbLine", vbTextCompare) <> 0 Then Exit Function
+    point = entity.StartPoint: endpoint = entity.EndPoint
+    ValidatePoint point: ValidatePoint endpoint
+    dx = CDbl(point(LBound(point))) - CDbl(endpoint(LBound(endpoint)))
+    dy = CDbl(point(LBound(point) + 1)) - CDbl(endpoint(LBound(endpoint) + 1))
+    IsEmptyStraightSegment = (Abs(dx) <= PLANE_TOLERANCE And Abs(dy) <= PLANE_TOLERANCE)
+    Exit Function
+Failed:
+    Err.Raise Err.Number, "CAutoCADContourReader", context & Err.Description
+End Function
+
 ' Читает только аналитически поддержанные граничные кривые. EndPoint и
 ' StartPoint фрагментов Explode заданы в WCS, поэтому OCS-координаты
 ' полилинии и bulge не пересчитываются вручную и не теряют исходный поворот.
-Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByRef count As Long)
+' Только в полилинии пропускаются пустые прямые сегменты повторных вершин;
+' вырожденные дуги и поврежденные Region по-прежнему отклоняются.
+Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByRef count As Long, _
+        Optional ByVal ignoreRepeatedPolylineVertex As Boolean = False)
     Dim kind As String, edge As TRegionEdge, point As Variant, endpoint As Variant
     Dim normal As Variant, radius As Double, sweep As Double, angle As Double, i As Long
     kind = CStr(curve.ObjectName)
@@ -75,6 +111,9 @@ Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByR
             ValidatePoint point: ValidatePoint endpoint
             edge.X1 = CDbl(point(LBound(point))): edge.Y1 = CDbl(point(LBound(point) + 1))
             edge.X2 = CDbl(endpoint(LBound(endpoint))): edge.Y2 = CDbl(endpoint(LBound(endpoint) + 1))
+            If ignoreRepeatedPolylineVertex Then
+                If Abs(edge.X2 - edge.X1) <= PLANE_TOLERANCE And Abs(edge.Y2 - edge.Y1) <= PLANE_TOLERANCE Then Exit Sub
+            End If
             AppendEdge edges, count, edge
         Case "AcDbArc"
             ValidatePlaneNormal curve

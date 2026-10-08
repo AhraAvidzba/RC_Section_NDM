@@ -1,0 +1,62 @@
+﻿{
+    "ReadOnly":  true,
+    "Application":  "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
+    "Document":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\рис.dwg",
+    "ModelSpaceCount":  194,
+    "Entities":  [
+                     {
+                         "Handle":  "5C721",
+                         "Layer":  "RC_NDM_Opening",
+                         "Kind":  "AcDbLine",
+                         "LayerLocked":  false,
+                         "StartPoint":  [
+                                            -2939.6594950132712,
+                                            -491.15175970003838,
+                                            0
+                                        ],
+                         "EndPoint":  [
+                                          -2939.6594950132712,
+                                          -491.15175970003838,
+                                          0
+                                      ]
+                     },
+                     {
+                         "Handle":  "5C722",
+                         "Layer":  "RC_NDM_Opening",
+                         "Kind":  "AcDbPolyline",
+                         "LayerLocked":  false,
+                         "Closed":  true,
+                         "Elevation":  0,
+                         "Coordinates":  [
+                                             -3088.8168030894794,
+                                             -493.72889518392367,
+                                             -2939.6594950132712,
+                                             -491.15175970003838,
+                                             -2984.490086476435,
+                                             -389.40217857087919
+                                         ],
+                         "Normal":  [
+                                        0,
+                                        0,
+                                        1
+                                    ],
+                         "Bulges":  [
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                     },
+                     {
+                         "Handle":  "5C782",
+                         "Layer":  "RC_NDM_Contour",
+                         "Kind":  "AcDbCircle",
+                         "LayerLocked":  false,
+                         "Center":  [
+                                        -3199.1467917807927,
+                                        -786.89745161757878,
+                                        0
+                                    ],
+                         "Radius":  500
+                     }
+                 ]
+}

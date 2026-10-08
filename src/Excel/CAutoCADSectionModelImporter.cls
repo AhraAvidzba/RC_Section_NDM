@@ -26,12 +26,37 @@ Private Const EXPLICIT_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.02 ' Допу�
 
 Private mEdgeProbeCount As Long ' ДЛЯ ТЕСТОВ: сколько раз импорт обращался к Explode за углом простой грани.
 Private mImportComment As String ' Диагностика достоверных контуров, сформированная ответственным importer-ом.
+Private mImportWarnings As String ' Только предупреждения для краткого итогового окна.
 
-' Возвращает пояснение последнего успешного импорта контуров для сообщения
-' Excel. Writer и оболочка кнопки не угадывают, был ли слой пустым.
+' Возвращает подробную диагностику импорта, не предназначенную для итогового окна.
 Public Property Get ImportComment() As String
     ImportComment = mImportComment
 End Property
+
+' Формирует краткий итог импорта: элементы и замкнутые контуры, затем предупреждения.
+' Сегменты одного контура считаются один раз; подробности геометрии сюда не попадают.
+Public Function ResultMessage(ByVal model As CSectionModel) As String
+    If model Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "Импортированная модель не передана."
+    Dim loops As Object, i As Long, key As String, outerCount As Long, openingCount As Long
+    Set loops = CreateObject("Scripting.Dictionary")
+    For i = 1 To model.Contours.Count
+        key = model.Contours.LoopID(i)
+        If Not loops.Exists(key) Then
+            loops.Add key, True
+            If model.Contours.LoopRole(i) = "Opening" Then openingCount = openingCount + 1 Else outerCount = outerCount + 1
+        End If
+    Next i
+    ResultMessage = "Импорт из AutoCAD выполнен." & vbCrLf & _
+        "Бетонных элементов: " & CStr(model.ConcreteCount) & "; стержней: " & CStr(model.RebarCount) & "." & vbCrLf & _
+        "Наружных контуров: " & CStr(outerCount) & "; отверстий: " & CStr(openingCount) & "."
+    If Len(mImportWarnings) > 0 Then ResultMessage = ResultMessage & vbCrLf & vbCrLf & "Предупреждения:" & vbCrLf & mImportWarnings
+End Function
+
+' Добавляет отдельную строку предупреждения без смешивания с технической диагностикой.
+Private Sub AppendImportWarning(ByVal text As String)
+    If Len(mImportWarnings) > 0 Then mImportWarnings = mImportWarnings & vbCrLf
+    mImportWarnings = mImportWarnings & text
+End Sub
 
 ' Читает активный документ AutoCAD через COM и запускает общий импорт
 ' ModelSpace. Метод остается тонкой оболочкой: проверяет доступность AutoCAD,
@@ -99,6 +124,7 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
         ByVal rebarLayer As String, ByVal steelClass As String, ByVal minArea As Double, Optional ByVal units As CUnitSystem = Nothing, _
         Optional ByVal contourLayer As String = "", Optional ByVal openingLayer As String = "", Optional ByVal drawingLayers As Object = Nothing) As CSectionModel
     mImportComment = vbNullString
+    mImportWarnings = vbNullString
     If modelSpace Is Nothing Then Err.Raise vbObjectError + 4403, "CAutoCADSectionModelImporter", "ModelSpace AutoCAD не передан."
     If Len(Trim$(concreteLayer)) = 0 Or Len(Trim$(rebarLayer)) = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
         "Не заданы слои импорта. Укажите отдельный слой бетонных Region и отдельный слой арматурных Region."
@@ -151,6 +177,7 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
         ByVal outerEntities As Collection, ByVal openingEntities As Collection)
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
+        AppendImportWarning "Наружный контур не задан: границы для расчета трещин определяются по бетонной сетке."
         Exit Sub
     End If
     ValidateContourLayerMapping concreteLayer, rebarLayer, contourLayer, openingLayer
@@ -167,9 +194,14 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
     If Len(openingLayer) = 0 Then Set openingEntities = New Collection
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
+        AppendImportWarning "Наружный контур не задан: границы для расчета трещин определяются по бетонной сетке."
         Exit Sub
     End If
 
+    Dim contourReader As CAutoCADContourReader
+    Set contourReader = New CAutoCADContourReader
+    Set outerEntities = FilterEmptyContourSegments(outerEntities, contourReader)
+    Set openingEntities = FilterEmptyContourSegments(openingEntities, contourReader)
     Dim entity As Object
     Dim originalOuter As Collection, originalOpenings As Collection, exportedOuter As Boolean
     Set originalOuter = OriginalContours(outerEntities)
@@ -181,6 +213,7 @@ Private Sub ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpac
     exportedOuter = (originalOuter.Count = 0 And outerEntities.Count > 0)
     If outerEntities.Count = 0 And openingEntities.Count = 0 Then
         mImportComment = mImportComment & "Дополнительные контуры не заданы; границы для расчета трещин определяются по бетонной сетке."
+        AppendImportWarning "Наружный контур не задан: границы для расчета трещин определяются по бетонной сетке."
         Exit Sub
     End If
     Dim query As CSectionGeometryQuery, reader As CAutoCADContourReader, regions As Collection
@@ -239,6 +272,7 @@ NextOpening:
             "Область бетона для трещин определяется только этими контурами; отверстия по сетке не добавляются."
     Else
         commentText = "Наружный контур не задан; границы для расчета трещин определяются по бетонной сетке с учетом импортированных контуров отверстий. Координаты в мм."
+        AppendImportWarning "Наружный контур не задан: для трещин используются границы бетонной сетки с учетом импортированных отверстий."
     End If
     If Len(openingLayer) > 0 And openingEntities.Count = 0 Then commentText = commentText & _
         " На заданном слое отверстий '" & openingLayer & "' объектов нет; дополнительные контуры отверстий не заданы."
@@ -253,6 +287,30 @@ NextOpening:
     End If
     mImportComment = mImportComment & commentText
 End Sub
+
+' Пропускает только пустые самостоятельные отрезки, сохраняя исходные
+' объекты. Предупреждение принадлежит импортеру и содержит слой и handle.
+' Остальные неподдержанные сущности остаются в наборе для явной ошибки reader.
+Private Function FilterEmptyContourSegments(ByVal entities As Collection, ByVal reader As CAutoCADContourReader) As Collection
+    Dim filtered As Collection, entity As Object, skipped As Long, firstHandle As String, layer As String
+    Set filtered = New Collection
+    For Each entity In entities
+        If reader.IsEmptyStraightSegment(entity) Then
+            skipped = skipped + 1
+            If skipped = 1 Then firstHandle = CStr(entity.Handle): layer = CStr(entity.Layer)
+        Else
+            filtered.Add entity
+        End If
+    Next entity
+    If skipped > 0 Then
+        Dim warning As String
+        warning = "На слое '" & layer & "' пропущено отрезков нулевой длины: " & CStr(skipped) & _
+            " (первый объект " & firstHandle & "). Исходные объекты сохранены."
+        AppendImportWarning warning
+        mImportComment = mImportComment & warning & " "
+    End If
+    Set FilterEmptyContourSegments = filtered
+End Function
 
 ' Пустое опциональное поле допустимо, но TODO и ошибка Excel не равны
 ' отсутствию запроса. Непустое имя проходит тот же валидатор, что слои сетки.

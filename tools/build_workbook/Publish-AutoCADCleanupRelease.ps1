@@ -2,7 +2,9 @@
 # Настройки, весь Results, имена и ширины сохраняются; отчет пользователя не трогаем.
 param(
     [string]$Directory = 'docs/regression/Performance/CleanupGeometry_2026-10-08',
-    [switch]$VerifyOnly
+    [switch]$VerifyOnly,
+    [ValidateSet('GeometryOwnership', 'PolylineImport')]
+    [string]$ChangeKind = 'GeometryOwnership'
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -130,8 +132,10 @@ Assert-Hash $outputReport $reportHash
 $accepted = [ordered]@{Passed = $true; WorkbookSHA256 = $candidateHash; ExportSHA256 = $exportHash;
     BaselineWorkbookSHA256 = $preparation.BaselineSHA256; Fingerprint = $after;
     UserReportSHA256 = $reportHash; UserReportPreserved = $true; UserDataNamesWidthsPreserved = $true;
-    NativeCADPassed = $true; FullOnOffRepeated = $false; CrackDomainContractChanged = $true;
-    GeneratedContourOwnershipChanged = $true; MultipleOpeningsFromGeometryPassed = $true;
+    NativeCADPassed = $true; FullOnOffRepeated = $false; CrackDomainContractChanged = ($ChangeKind -eq 'GeometryOwnership');
+    GeneratedContourOwnershipChanged = ($ChangeKind -eq 'GeometryOwnership'); MultipleOpeningsFromGeometryPassed = $true;
+    PolylineImportChanged = ($ChangeKind -eq 'PolylineImport');
+    ImportSummaryChanged = ($ChangeKind -eq 'PolylineImport'); LockedContourGuardChanged = ($ChangeKind -eq 'PolylineImport');
     SolverSearchMaterialsChanged = $false}
 $accepted | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $directoryPath 'Acceptance.json') -Encoding UTF8
 if ($VerifyOnly) { Write-Output 'ACCEPTED: current code, native CAD and help gates passed; user state preserved.'; exit }
