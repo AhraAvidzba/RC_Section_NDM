@@ -1,6 +1,6 @@
 # Закрытие post-refactoring audit
 
-Основание: `docs/NDM_PostRefactoring_Audit_2026-09-30.md`.
+Основание: `docs/reports/audits/NDM_PostRefactoring_Audit_2026-09-30.md`.
 
 Дата финальной проверки: 2026-10-01.
 

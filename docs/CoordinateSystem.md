@@ -1,6 +1,6 @@
 # CoordinateSystem
 
-Дата актуализации: 2026-09-21.
+Дата актуализации: 2026-10-08.
 
 ## Пользовательская Точка Приложения
 
@@ -27,24 +27,6 @@ My_internal = My_user + N * (Xaxial + Load.ReferenceOffsetX)
 ```
 
 Где `Xaxial`, `Yaxial` - координаты центра тяжести бетонного сечения.
-
-## Точка приложения пользовательских нагрузок
-
-В таблице `rngLoadCombinations` пользователь задает `N`, `Mx`, `My` относительно фактического центра тяжести построенной бетонной волоконной сетки с учетом оффсета:
-
-```text
-Xref = Xcentroid(mesh) + Load.ReferenceOffsetX
-Yref = Ycentroid(mesh) + Load.ReferenceOffsetY
-```
-
-Если `Load.ReferenceOffsetX = 0` и `Load.ReferenceOffsetY = 0`, моменты пользователя относятся к центру тяжести бетонной сетки для любой поддерживаемой геометрии: `Circle`, `RectSet`, `RoundedRectangle`, `HollowRectangle` и импортированной AutoCAD-сетки.
-
-Расчетное ядро по-прежнему суммирует моменты относительно текущих координат волокон. Поэтому перед запуском решателей входные моменты переносятся:
-
-```text
-Mx_internal = Mx_user + N * Yref
-My_internal = My_user + N * Xref
-```
 
 ## Внутренние единицы
 

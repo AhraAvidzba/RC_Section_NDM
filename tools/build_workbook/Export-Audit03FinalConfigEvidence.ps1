@@ -60,7 +60,7 @@ if ($matrix.AcceptedRuns -ne 52 -or $matrix.FailedAssertions -ne 0 -or
         -not $matrix.AllResultsSaveReopen -or -not $matrix.AllSourceUnchanged) {
     throw 'Нет принятой широкой матрицы.'
 }
-$review = 'docs/NDM_Audit03_Final_Config_Review.md'
+$review = 'docs/reports/audits/NDM_Audit03_Final_Config_Review.md'
 if (-not (Test-Path -LiteralPath (Join-Path $root $review))) { throw 'Отсутствует содержательная итоговая ревизия.' }
 $supplementary = @(
     'docs/regression/Audit03/stability_config_final_v328_2026-10-05.txt',
@@ -144,7 +144,7 @@ $records = foreach ($field in $fresh.Fields) {
                 'NotEditable:NotApplicableCell' { $contract.BlankAndErrorContract = 'Неприменимая клетка не читается расчетным consumer; пустота/ошибка в ней не изменяет нормализованные активные данные.' }
                 default { throw "Не рассмотрена роль поля $($field.Role) у $($field.Id)" }
             }
-            $contractSource = 'docs/NDM_Audit03_Final_Config_Review.md: Derived/inactive и соответствующий поадресный TestId'
+            $contractSource = 'docs/reports/audits/NDM_Audit03_Final_Config_Review.md: Derived/inactive и соответствующий поадресный TestId'
         } elseif ($field.Block -eq 'rngCircleGeometry') {
             switch ($field.Id) {
                 'Rebar.Count' { $contract.BlankAndErrorContract = 'Существующая пустота/0 выключает ряд; missing, negative, fractional, text/CVErr не заменяются нулем.' }

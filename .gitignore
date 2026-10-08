@@ -1,0 +1,17 @@
+# Local files and temporary build work
+/tmp/
+__pycache__/
+*.py[cod]
+*.log
+*.clixml
+**/~$*
+Thumbs.db
+.DS_Store
+
+# Generated regression runs; add accepted evidence explicitly.
+/docs/regression/
+
+# Published artifacts are tracked; other build outputs are local.
+/workbook/output/*
+!/workbook/output/RC_Section_NDM.xlsm
+!/workbook/output/VBA_All_Code.txt
