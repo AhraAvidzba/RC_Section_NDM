@@ -104,6 +104,12 @@ function Restore-MacroParts([string]$File, [object]$Parts) {
         foreach ($name in $Parts.Keys) {
             $entry=$zip.GetEntry($name)
             if ($null -eq $entry) { throw "Макро-часть потеряна: $name" }
+            # Update существующей ZIP-записи может ухудшать сжатие VBA.
+            # Создаем ее заново с явным уровнем, сохраняя байты и дату части.
+            $timestamp=$entry.LastWriteTime
+            $entry.Delete()
+            $entry=$zip.CreateEntry($name,[IO.Compression.CompressionLevel]::Optimal)
+            $entry.LastWriteTime=$timestamp
             $stream=$entry.Open()
             try { $stream.SetLength(0); $stream.Write($Parts[$name],0,$Parts[$name].Length) }
             finally { $stream.Dispose() }
@@ -188,7 +194,11 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
     $body = Get-GuideText $guide 1 $data.GetLength(0)
     $autoCAD = Get-GuideText $guide $titles['Подготовка геометрии в AutoCAD и импорт'] ($titles['Поиск НДС текущего сочетания']-1)
     foreach ($phrase in @('Площадь взаимодействия для трещин - участок бетона',
-        'программа автоматически извлекает наружную границу','В палитре свойств AutoCAD',
+        'программа автоматически извлекает наружную границу',
+        'полилиниями на соответствующих слоях либо одним Region с вычтенными отверстиями',
+        'одним Region на слое из настройки AutoCAD.Common.SectionContourLayer',
+        'Полилиния должна образовывать замкнутый контур',
+        'Для экспорта рассчитанной площади взаимодействия для трещин, принятой в расчете ширины раскрытия',
         'Если контурные слои заблокированы','Геометрия всегда экспортируется в AutoCAD в мм',
         'таблице «Настройка расчетных профилей»','строке «Выводимое состояние» (Visualization.State)',
         'Импортируются все объекты на заданных слоях независимо','отсутствие наложенных друг на друга дублей',
@@ -198,8 +208,10 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
         Assert-Help "$Stage.autoCADNotes.$phrase" ($autoCAD.Contains($phrase)) 'Замечания к подготовке геометрии'
     }
     Assert-Help "$Stage.autoCADNoFixedColors" ($autoCAD -notmatch 'ACI\s*\d|цветом ACI|Цвет границ') 'Без описания внутренних цветов экспорта'
+    Assert-Help "$Stage.autoCADNoPolylinePropertyDetails" ($autoCAD -notmatch 'В палитре свойств AutoCAD|поле «Замкнуто»') 'Без описания свойства полилинии'
+    Assert-Help "$Stage.autoCADNoDimensionDetails" ($autoCAD -notmatch 'При заданном наружном контуре габариты|Без него габариты определяются по сетке') 'Без технического пояснения габаритов схемы'
     Assert-Help "$Stage.autoCADNoSourcePriority" ($autoCAD -notmatch 'исходники имеют приоритет|импортируются только исходные|Если исходников на слое нет') 'Без приоритета исходников и скрытого пропуска копий'
-    foreach ($prefix in @('Чистота чертежа и повторный импорт.', 'Актуальность площади взаимодействия для трещин.')) {
+    foreach ($prefix in @('Вариант без готовой сетки:', 'Чистота чертежа и повторный импорт.', 'Актуальность площади взаимодействия для трещин.')) {
         $labelRow = 0
         for ($row=1; $row -lt $titles['Поиск НДС текущего сочетания']; $row++) {
             if (([string]$data[$row,1]).StartsWith($prefix)) { $labelRow=$row; break }

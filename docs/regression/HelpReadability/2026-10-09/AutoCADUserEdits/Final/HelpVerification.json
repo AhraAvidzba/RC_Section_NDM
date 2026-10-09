@@ -1,0 +1,8056 @@
+{
+  "workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\HelpReadability\\2026-10-09\\AutoCADUserEdits\\RC_Section_NDM.xlsm",
+  "failures": 0,
+  "checks": 1456,
+  "evidence": [
+    {
+      "check": "validationCoverage",
+      "passed": true,
+      "detail": 284
+    },
+    {
+      "check": "allDataFormulasNamesWidthsPreserved",
+      "passed": true,
+      "detail": {
+        "after": "618238A8D28B376D193E4CD4D757D2C20DF9B7BFE95391FFBAC59EA4A122C506",
+        "before": "618238A8D28B376D193E4CD4D757D2C20DF9B7BFE95391FFBAC59EA4A122C506"
+      }
+    },
+    {
+      "check": "allValidationPreserved",
+      "passed": true,
+      "detail": "E87BD7AB219AB91B3D5D3494CF6AC98E9EC1C7A82030125E04D80DD463200EFF"
+    },
+    {
+      "check": "updated.section.Подготовка геометрии в AutoCAD и импорт",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "check": "updated.section.Поиск НДС текущего сочетания",
+      "passed": true,
+      "detail": 86
+    },
+    {
+      "check": "updated.section.Поиск предельной несущей способности",
+      "passed": true,
+      "detail": 129
+    },
+    {
+      "check": "updated.section.Расчет ширины раскрытия нормальных трещин",
+      "passed": true,
+      "detail": 172
+    },
+    {
+      "check": "updated.section.Расчет продольного изгиба и устойчивости",
+      "passed": true,
+      "detail": 392
+    },
+    {
+      "check": "updated.section.Справка по настройкам листа Config",
+      "passed": true,
+      "detail": 490
+    },
+    {
+      "check": "updated.section.Справка по результатам расчета листа Results",
+      "passed": true,
+      "detail": 1668
+    },
+    {
+      "check": "updated.section.СП 35: расчет ширины нормальных трещин",
+      "passed": true,
+      "detail": 273
+    },
+    {
+      "check": "updated.autoCADFirst",
+      "passed": true,
+      "detail": "Первый раздел"
+    },
+    {
+      "check": "updated.autoCADNotes.Площадь взаимодействия для трещин - участок бетона",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.программа автоматически извлекает наружную границу",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.полилиниями на соответствующих слоях либо одним Region с вычтенными отверстиями",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.одним Region на слое из настройки AutoCAD.Common.SectionContourLayer",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.Полилиния должна образовывать замкнутый контур",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.Для экспорта рассчитанной площади взаимодействия для трещин, принятой в расчете ширины раскрытия",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.Если контурные слои заблокированы",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.Геометрия всегда экспортируется в AutoCAD в мм",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.таблице «Настройка расчетных профилей»",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.строке «Выводимое состояние» (Visualization.State)",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.Импортируются все объекты на заданных слоях независимо",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.отсутствие наложенных друг на друга дублей",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.изменение Config само по себе не обновляет Results",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.Новый импорт заменяет геометрию и удаляет ранее рассчитанную площадь",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNotes.автоматически импортирует их как заданные отверстия",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "updated.autoCADNoFixedColors",
+      "passed": true,
+      "detail": "Без описания внутренних цветов экспорта"
+    },
+    {
+      "check": "updated.autoCADNoPolylinePropertyDetails",
+      "passed": true,
+      "detail": "Без описания свойства полилинии"
+    },
+    {
+      "check": "updated.autoCADNoDimensionDetails",
+      "passed": true,
+      "detail": "Без технического пояснения габаритов схемы"
+    },
+    {
+      "check": "updated.autoCADNoSourcePriority",
+      "passed": true,
+      "detail": "Без приоритета исходников и скрытого пропуска копий"
+    },
+    {
+      "check": "updated.autoCADLabel.Вариант без готовой сетки:",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "check": "updated.autoCADLabelBold.Вариант без готовой сетки:",
+      "passed": true,
+      "detail": "Название жирным"
+    },
+    {
+      "check": "updated.autoCADLabelBodyRegular.Вариант без готовой сетки:",
+      "passed": true,
+      "detail": "Пояснение обычным шрифтом"
+    },
+    {
+      "check": "updated.autoCADLabel.Чистота чертежа и повторный импорт.",
+      "passed": true,
+      "detail": 75
+    },
+    {
+      "check": "updated.autoCADLabelBold.Чистота чертежа и повторный импорт.",
+      "passed": true,
+      "detail": "Название жирным"
+    },
+    {
+      "check": "updated.autoCADLabelBodyRegular.Чистота чертежа и повторный импорт.",
+      "passed": true,
+      "detail": "Пояснение обычным шрифтом"
+    },
+    {
+      "check": "updated.autoCADLabel.Актуальность площади взаимодействия для трещин.",
+      "passed": true,
+      "detail": 79
+    },
+    {
+      "check": "updated.autoCADLabelBold.Актуальность площади взаимодействия для трещин.",
+      "passed": true,
+      "detail": "Название жирным"
+    },
+    {
+      "check": "updated.autoCADLabelBodyRegular.Актуальность площади взаимодействия для трещин.",
+      "passed": true,
+      "detail": "Пояснение обычным шрифтом"
+    },
+    {
+      "check": "updated.sp35.Группа неделима",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.Частичного включения нет",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.боковых границ площади взаимодействия",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.Остальные группы проверяются в отдельных итерациях",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.Расчетное напряжение принимается только по рассматриваемой группе",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.Ряд 1 - ближайший к растянутой бетонной границе",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.SLS.Crack.SP35.NeighborRatioLimit",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.SLS.Crack.SP35.RowTolerance",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.SLS.Crack.SP35.RadiusDiameterMode",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.SLS.Crack.SP35.GroupGapTolerance",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.[SP35] - требования СП 35",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.[METHOD] - Методическое пособие",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.[NDM] - инженерные допущения",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.D_1, D_2",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.R_r и ψ в этих зависимостях выражаются в сантиметрах",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35.AutoCAD.Export.ExportCrackInteractionContour",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.sp35NoSP63",
+      "passed": true,
+      "detail": "Без сравнения с другой методикой"
+    },
+    {
+      "check": "updated.settingHeading.SLS.Crack.SP35.GroupGapTolerance",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "updated.sp35Card.SLS.Crack.SP35.GroupGapTolerance",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "updated.settingHeading.SLS.Crack.SP35.RowTolerance",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "updated.sp35Card.SLS.Crack.SP35.RowTolerance",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "updated.settingHeading.SLS.Crack.SP35.NeighborRatioLimit",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "updated.sp35Card.SLS.Crack.SP35.NeighborRatioLimit",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "updated.settingHeading.SLS.Crack.SP35.RadiusDiameterMode",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "updated.sp35Card.SLS.Crack.SP35.RadiusDiameterMode",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "updated.settingHeading.SLS.Crack.SP35.InteractionRadiusMode",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "updated.sp35Card.SLS.Crack.SP35.InteractionRadiusMode",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "updated.settingHeading.SLS.Crack.SP35.RebarProfile",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "updated.sp35Card.SLS.Crack.SP35.RebarProfile",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "updated.sp35CardCoverage",
+      "passed": true,
+      "detail": 6
+    },
+    {
+      "check": "updated.contract.1. Заданы только отверстия",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contract.2. Задан только наружный контур",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contract.3. Заданы наружный контур и отверстия",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contract.4. Контуры не заданы",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contract.SUBTRACT",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contract.AutoCAD.Export.ContourFormat",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contract.Фактически полученную площадь взаимодействия можно вывести в AutoCAD",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.noInternalClasses",
+      "passed": true,
+      "detail": "Пользовательская справка"
+    },
+    {
+      "check": "updated.worldCoordinates",
+      "passed": true,
+      "detail": "Глобальная система координат"
+    },
+    {
+      "check": "updated.contourMesh.Вариант без готовой сетки",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contourMesh.Генерация включается только при действительно пустом слое бетона",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contourMesh.Для изменения шага сетки измените Mesh и повторите импорт",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.contourMesh.БЕТОННАЯ СЕТКА АВТОМАТИЧЕСКИ СГЕНЕРИРОВАНА ПО КОНТУРАМ AUTOCAD",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "updated.noOpaqueGroupSum",
+      "passed": true,
+      "detail": "Простая запись суммы"
+    },
+    {
+      "check": "updated.engineeringStyle.НДС означает",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.НДС - напряженно",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.НДС - напряжённо",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.квадратный корень",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.число пи",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.Вертикальные черты означают",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.Проекция -",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.под прямым углом",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.терпелив",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.спасает",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.engineeringStyle.маленькими шагами",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "updated.methodContract.Найденный предел с λ < 1 завершает поиск",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.methodContract.Явно заданный путь не заменяется другим",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.methodContract.Численный допуск не",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.methodContract.NotCracked",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.methodContract.SLS.Crack.PsiMode",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.methodContract.LoadMultiplier",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.methodContract.Load.ReferenceOffset",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.methodContract.всех заданных отверстий",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.methodContract.Границы сетки для этой площади не используются",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "updated.link.$E$5",
+      "passed": true,
+      "detail": "'Справка'!A658"
+    },
+    {
+      "check": "updated.link.$E$6",
+      "passed": true,
+      "detail": "'Справка'!A667"
+    },
+    {
+      "check": "updated.link.$E$7",
+      "passed": true,
+      "detail": "'Справка'!A674"
+    },
+    {
+      "check": "updated.link.$E$8",
+      "passed": true,
+      "detail": "'Справка'!A684"
+    },
+    {
+      "check": "updated.link.$E$9",
+      "passed": true,
+      "detail": "'Справка'!A691"
+    },
+    {
+      "check": "updated.link.$E$12",
+      "passed": true,
+      "detail": "'Справка'!A701"
+    },
+    {
+      "check": "updated.link.$E$13",
+      "passed": true,
+      "detail": "'Справка'!A710"
+    },
+    {
+      "check": "updated.link.$E$14",
+      "passed": true,
+      "detail": "'Справка'!A717"
+    },
+    {
+      "check": "updated.link.$E$15",
+      "passed": true,
+      "detail": "'Справка'!A727"
+    },
+    {
+      "check": "updated.link.$E$16",
+      "passed": true,
+      "detail": "'Справка'!A737"
+    },
+    {
+      "check": "updated.link.$E$17",
+      "passed": true,
+      "detail": "'Справка'!A748"
+    },
+    {
+      "check": "updated.link.$E$18",
+      "passed": true,
+      "detail": "'Справка'!A757"
+    },
+    {
+      "check": "updated.link.$E$22",
+      "passed": true,
+      "detail": "'Справка'!A766"
+    },
+    {
+      "check": "updated.link.$E$23",
+      "passed": true,
+      "detail": "'Справка'!A773"
+    },
+    {
+      "check": "updated.link.$E$24",
+      "passed": true,
+      "detail": "'Справка'!A780"
+    },
+    {
+      "check": "updated.link.$E$25",
+      "passed": true,
+      "detail": "'Справка'!A786"
+    },
+    {
+      "check": "updated.link.$E$26",
+      "passed": true,
+      "detail": "'Справка'!A792"
+    },
+    {
+      "check": "updated.link.$E$27",
+      "passed": true,
+      "detail": "'Справка'!A798"
+    },
+    {
+      "check": "updated.link.$E$29",
+      "passed": true,
+      "detail": "'Справка'!A804"
+    },
+    {
+      "check": "updated.link.$E$30",
+      "passed": true,
+      "detail": "'Справка'!A810"
+    },
+    {
+      "check": "updated.link.$E$31",
+      "passed": true,
+      "detail": "'Справка'!A817"
+    },
+    {
+      "check": "updated.link.$E$32",
+      "passed": true,
+      "detail": "'Справка'!A824"
+    },
+    {
+      "check": "updated.link.$E$33",
+      "passed": true,
+      "detail": "'Справка'!A831"
+    },
+    {
+      "check": "updated.link.$E$35",
+      "passed": true,
+      "detail": "'Справка'!A839"
+    },
+    {
+      "check": "updated.link.$E$36",
+      "passed": true,
+      "detail": "'Справка'!A845"
+    },
+    {
+      "check": "updated.link.$E$40",
+      "passed": true,
+      "detail": "'Справка'!A851"
+    },
+    {
+      "check": "updated.link.$E$41",
+      "passed": true,
+      "detail": "'Справка'!A859"
+    },
+    {
+      "check": "updated.link.$E$43",
+      "passed": true,
+      "detail": "'Справка'!A869"
+    },
+    {
+      "check": "updated.link.$E$45",
+      "passed": true,
+      "detail": "'Справка'!A877"
+    },
+    {
+      "check": "updated.link.$E$46",
+      "passed": true,
+      "detail": "'Справка'!A885"
+    },
+    {
+      "check": "updated.link.$E$47",
+      "passed": true,
+      "detail": "'Справка'!A892"
+    },
+    {
+      "check": "updated.link.$E$48",
+      "passed": true,
+      "detail": "'Справка'!A900"
+    },
+    {
+      "check": "updated.link.$E$49",
+      "passed": true,
+      "detail": "'Справка'!A908"
+    },
+    {
+      "check": "updated.link.$E$50",
+      "passed": true,
+      "detail": "'Справка'!A920"
+    },
+    {
+      "check": "updated.link.$E$54",
+      "passed": true,
+      "detail": "'Справка'!A932"
+    },
+    {
+      "check": "updated.link.$E$55",
+      "passed": true,
+      "detail": "'Справка'!A940"
+    },
+    {
+      "check": "updated.link.$E$56",
+      "passed": true,
+      "detail": "'Справка'!A949"
+    },
+    {
+      "check": "updated.link.$E$57",
+      "passed": true,
+      "detail": "'Справка'!A959"
+    },
+    {
+      "check": "updated.link.$E$58",
+      "passed": true,
+      "detail": "'Справка'!A969"
+    },
+    {
+      "check": "updated.link.$E$59",
+      "passed": true,
+      "detail": "'Справка'!A977"
+    },
+    {
+      "check": "updated.link.$E$60",
+      "passed": true,
+      "detail": "'Справка'!A986"
+    },
+    {
+      "check": "updated.link.$E$61",
+      "passed": true,
+      "detail": "'Справка'!A995"
+    },
+    {
+      "check": "updated.link.$E$62",
+      "passed": true,
+      "detail": "'Справка'!A1003"
+    },
+    {
+      "check": "updated.link.$E$63",
+      "passed": true,
+      "detail": "'Справка'!A1013"
+    },
+    {
+      "check": "updated.link.$E$64",
+      "passed": true,
+      "detail": "'Справка'!A1023"
+    },
+    {
+      "check": "updated.link.$E$65",
+      "passed": true,
+      "detail": "'Справка'!A1030"
+    },
+    {
+      "check": "updated.link.$E$67",
+      "passed": true,
+      "detail": "'Справка'!A1041"
+    },
+    {
+      "check": "updated.link.$E$68",
+      "passed": true,
+      "detail": "'Справка'!A1046"
+    },
+    {
+      "check": "updated.link.$E$69",
+      "passed": true,
+      "detail": "'Справка'!A1051"
+    },
+    {
+      "check": "updated.link.$E$71",
+      "passed": true,
+      "detail": "'Справка'!A1056"
+    },
+    {
+      "check": "updated.link.$E$72",
+      "passed": true,
+      "detail": "'Справка'!A1061"
+    },
+    {
+      "check": "updated.link.$E$76",
+      "passed": true,
+      "detail": "'Справка'!A1066"
+    },
+    {
+      "check": "updated.link.$E$77",
+      "passed": true,
+      "detail": "'Справка'!A1071"
+    },
+    {
+      "check": "updated.link.$E$78",
+      "passed": true,
+      "detail": "'Справка'!A1080"
+    },
+    {
+      "check": "updated.link.$E$80",
+      "passed": true,
+      "detail": "'Справка'!A1086"
+    },
+    {
+      "check": "updated.link.$E$81",
+      "passed": true,
+      "detail": "'Справка'!A1094"
+    },
+    {
+      "check": "updated.link.$E$82",
+      "passed": true,
+      "detail": "'Справка'!A1100"
+    },
+    {
+      "check": "updated.link.$E$83",
+      "passed": true,
+      "detail": "'Справка'!A1105"
+    },
+    {
+      "check": "updated.link.$E$84",
+      "passed": true,
+      "detail": "'Справка'!A1110"
+    },
+    {
+      "check": "updated.link.$E$85",
+      "passed": true,
+      "detail": "'Справка'!A1116"
+    },
+    {
+      "check": "updated.link.$E$86",
+      "passed": true,
+      "detail": "'Справка'!A1121"
+    },
+    {
+      "check": "updated.link.$E$87",
+      "passed": true,
+      "detail": "'Справка'!A1129"
+    },
+    {
+      "check": "updated.link.$E$88",
+      "passed": true,
+      "detail": "'Справка'!A1135"
+    },
+    {
+      "check": "updated.link.$E$90",
+      "passed": true,
+      "detail": "'Справка'!A1141"
+    },
+    {
+      "check": "updated.link.$E$91",
+      "passed": true,
+      "detail": "'Справка'!A1146"
+    },
+    {
+      "check": "updated.link.$E$92",
+      "passed": true,
+      "detail": "'Справка'!A1151"
+    },
+    {
+      "check": "updated.link.$E$93",
+      "passed": true,
+      "detail": "'Справка'!A1156"
+    },
+    {
+      "check": "updated.link.$E$94",
+      "passed": true,
+      "detail": "'Справка'!A1161"
+    },
+    {
+      "check": "updated.link.$E$95",
+      "passed": true,
+      "detail": "'Справка'!A1166"
+    },
+    {
+      "check": "updated.link.$E$99",
+      "passed": true,
+      "detail": "'Справка'!A1171"
+    },
+    {
+      "check": "updated.link.$E$100",
+      "passed": true,
+      "detail": "'Справка'!A1181"
+    },
+    {
+      "check": "updated.link.$E$101",
+      "passed": true,
+      "detail": "'Справка'!A1187"
+    },
+    {
+      "check": "updated.link.$E$102",
+      "passed": true,
+      "detail": "'Справка'!A1193"
+    },
+    {
+      "check": "updated.link.$E$104",
+      "passed": true,
+      "detail": "'Справка'!A1199"
+    },
+    {
+      "check": "updated.link.$E$106",
+      "passed": true,
+      "detail": "'Справка'!A1208"
+    },
+    {
+      "check": "updated.link.$E$107",
+      "passed": true,
+      "detail": "'Справка'!A1217"
+    },
+    {
+      "check": "updated.link.$E$108",
+      "passed": true,
+      "detail": "'Справка'!A1224"
+    },
+    {
+      "check": "updated.link.$E$109",
+      "passed": true,
+      "detail": "'Справка'!A1232"
+    },
+    {
+      "check": "updated.link.$E$110",
+      "passed": true,
+      "detail": "'Справка'!A1239"
+    },
+    {
+      "check": "updated.link.$E$111",
+      "passed": true,
+      "detail": "'Справка'!A1247"
+    },
+    {
+      "check": "updated.link.$E$112",
+      "passed": true,
+      "detail": "'Справка'!A1254"
+    },
+    {
+      "check": "updated.link.$E$113",
+      "passed": true,
+      "detail": "'Справка'!A1261"
+    },
+    {
+      "check": "updated.link.$E$114",
+      "passed": true,
+      "detail": "'Справка'!A1268"
+    },
+    {
+      "check": "updated.link.$E$115",
+      "passed": true,
+      "detail": "'Справка'!A1273"
+    },
+    {
+      "check": "updated.link.$E$116",
+      "passed": true,
+      "detail": "'Справка'!A1282"
+    },
+    {
+      "check": "updated.link.$E$117",
+      "passed": true,
+      "detail": "'Справка'!A1291"
+    },
+    {
+      "check": "updated.link.$E$118",
+      "passed": true,
+      "detail": "'Справка'!A1300"
+    },
+    {
+      "check": "updated.link.$E$119",
+      "passed": true,
+      "detail": "'Справка'!A1309"
+    },
+    {
+      "check": "updated.link.$E$120",
+      "passed": true,
+      "detail": "'Справка'!A1315"
+    },
+    {
+      "check": "updated.link.$E$121",
+      "passed": true,
+      "detail": "'Справка'!A1321"
+    },
+    {
+      "check": "updated.link.$E$122",
+      "passed": true,
+      "detail": "'Справка'!A1327"
+    },
+    {
+      "check": "updated.link.$E$123",
+      "passed": true,
+      "detail": "'Справка'!A1333"
+    },
+    {
+      "check": "updated.link.$E$126",
+      "passed": true,
+      "detail": "'Справка'!A1339"
+    },
+    {
+      "check": "updated.link.$E$127",
+      "passed": true,
+      "detail": "'Справка'!A1345"
+    },
+    {
+      "check": "updated.link.$E$128",
+      "passed": true,
+      "detail": "'Справка'!A1353"
+    },
+    {
+      "check": "updated.link.$E$129",
+      "passed": true,
+      "detail": "'Справка'!A1360"
+    },
+    {
+      "check": "updated.link.$E$130",
+      "passed": true,
+      "detail": "'Справка'!A1366"
+    },
+    {
+      "check": "updated.link.$E$131",
+      "passed": true,
+      "detail": "'Справка'!A1373"
+    },
+    {
+      "check": "updated.link.$E$132",
+      "passed": true,
+      "detail": "'Справка'!A1380"
+    },
+    {
+      "check": "updated.link.$E$133",
+      "passed": true,
+      "detail": "'Справка'!A1387"
+    },
+    {
+      "check": "updated.link.$E$134",
+      "passed": true,
+      "detail": "'Справка'!A1395"
+    },
+    {
+      "check": "updated.link.$E$135",
+      "passed": true,
+      "detail": "'Справка'!A1402"
+    },
+    {
+      "check": "updated.link.$E$136",
+      "passed": true,
+      "detail": "'Справка'!A1408"
+    },
+    {
+      "check": "updated.link.$E$137",
+      "passed": true,
+      "detail": "'Справка'!A1414"
+    },
+    {
+      "check": "updated.link.$E$138",
+      "passed": true,
+      "detail": "'Справка'!A1420"
+    },
+    {
+      "check": "updated.link.$E$139",
+      "passed": true,
+      "detail": "'Справка'!A1427"
+    },
+    {
+      "check": "updated.link.$E$140",
+      "passed": true,
+      "detail": "'Справка'!A1433"
+    },
+    {
+      "check": "updated.link.$E$141",
+      "passed": true,
+      "detail": "'Справка'!A1440"
+    },
+    {
+      "check": "updated.link.$E$142",
+      "passed": true,
+      "detail": "'Справка'!A1447"
+    },
+    {
+      "check": "updated.link.$E$143",
+      "passed": true,
+      "detail": "'Справка'!A1454"
+    },
+    {
+      "check": "updated.link.$M$19",
+      "passed": true,
+      "detail": "'Справка'!A1585"
+    },
+    {
+      "check": "updated.link.$M$20",
+      "passed": true,
+      "detail": "'Справка'!A1591"
+    },
+    {
+      "check": "updated.link.$M$21",
+      "passed": true,
+      "detail": "'Справка'!A1597"
+    },
+    {
+      "check": "updated.link.$M$22",
+      "passed": true,
+      "detail": "'Справка'!A1603"
+    },
+    {
+      "check": "updated.link.$M$23",
+      "passed": true,
+      "detail": "'Справка'!A1609"
+    },
+    {
+      "check": "updated.link.$M$27",
+      "passed": true,
+      "detail": "'Справка'!A1539"
+    },
+    {
+      "check": "updated.link.$M$28",
+      "passed": true,
+      "detail": "'Справка'!A1545"
+    },
+    {
+      "check": "updated.link.$M$29",
+      "passed": true,
+      "detail": "'Справка'!A1551"
+    },
+    {
+      "check": "updated.link.$M$30",
+      "passed": true,
+      "detail": "'Справка'!A1558"
+    },
+    {
+      "check": "updated.link.$M$31",
+      "passed": true,
+      "detail": "'Справка'!A1564"
+    },
+    {
+      "check": "updated.link.$M$32",
+      "passed": true,
+      "detail": "'Справка'!A1571"
+    },
+    {
+      "check": "updated.link.$M$33",
+      "passed": true,
+      "detail": "'Справка'!A1578"
+    },
+    {
+      "check": "updated.link.$M$71",
+      "passed": true,
+      "detail": "'Справка'!A1461"
+    },
+    {
+      "check": "updated.link.$M$72",
+      "passed": true,
+      "detail": "'Справка'!A1466"
+    },
+    {
+      "check": "updated.link.$M$73",
+      "passed": true,
+      "detail": "'Справка'!A1471"
+    },
+    {
+      "check": "updated.link.$M$74",
+      "passed": true,
+      "detail": "'Справка'!A1480"
+    },
+    {
+      "check": "updated.link.$M$75",
+      "passed": true,
+      "detail": "'Справка'!A1485"
+    },
+    {
+      "check": "updated.link.$M$76",
+      "passed": true,
+      "detail": "'Справка'!A1490"
+    },
+    {
+      "check": "updated.link.$M$77",
+      "passed": true,
+      "detail": "'Справка'!A1495"
+    },
+    {
+      "check": "updated.link.$M$78",
+      "passed": true,
+      "detail": "'Справка'!A1504"
+    },
+    {
+      "check": "updated.link.$M$79",
+      "passed": true,
+      "detail": "'Справка'!A1512"
+    },
+    {
+      "check": "updated.link.$M$80",
+      "passed": true,
+      "detail": "'Справка'!A1519"
+    },
+    {
+      "check": "updated.link.$M$81",
+      "passed": true,
+      "detail": "'Справка'!A1524"
+    },
+    {
+      "check": "updated.link.$M$82",
+      "passed": true,
+      "detail": "'Справка'!A1529"
+    },
+    {
+      "check": "updated.link.$M$83",
+      "passed": true,
+      "detail": "'Справка'!A1534"
+    },
+    {
+      "check": "updated.link.$AI$1",
+      "passed": true,
+      "detail": "'Справка'!A596"
+    },
+    {
+      "check": "updated.link.$H$2",
+      "passed": true,
+      "detail": "'Справка'!A507"
+    },
+    {
+      "check": "updated.link.$O$2",
+      "passed": true,
+      "detail": "'Справка'!A526"
+    },
+    {
+      "check": "updated.link.$H$11",
+      "passed": true,
+      "detail": "'Справка'!A518"
+    },
+    {
+      "check": "updated.link.$H$17",
+      "passed": true,
+      "detail": "'Справка'!A574"
+    },
+    {
+      "check": "updated.link.$H$25",
+      "passed": true,
+      "detail": "'Справка'!A565"
+    },
+    {
+      "check": "updated.link.$H$35",
+      "passed": true,
+      "detail": "'Справка'!A582"
+    },
+    {
+      "check": "updated.link.$P$36",
+      "passed": true,
+      "detail": "'Справка'!A550"
+    },
+    {
+      "check": "updated.link.$AI$58",
+      "passed": true,
+      "detail": "'Справка'!A557"
+    },
+    {
+      "check": "updated.link.$H$69",
+      "passed": true,
+      "detail": "'Справка'!A602"
+    },
+    {
+      "check": "updated.link.$H$85",
+      "passed": true,
+      "detail": "'Справка'!A611"
+    },
+    {
+      "check": "updated.link.$H$97",
+      "passed": true,
+      "detail": "'Справка'!A643"
+    },
+    {
+      "check": "updated.link.$H$127",
+      "passed": true,
+      "detail": "'Справка'!A620"
+    },
+    {
+      "check": "updated.link.$H$152",
+      "passed": true,
+      "detail": "'Справка'!A631"
+    },
+    {
+      "check": "updated.linkCoverage",
+      "passed": true,
+      "detail": {
+        "after": 149,
+        "before": 149
+      }
+    },
+    {
+      "check": "updated.border.rngSystemSettings.1",
+      "passed": true,
+      "detail": "$E$3"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.2",
+      "passed": true,
+      "detail": "$E$4"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.3",
+      "passed": true,
+      "detail": "$E$5"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.4",
+      "passed": true,
+      "detail": "$E$6"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.5",
+      "passed": true,
+      "detail": "$E$7"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.6",
+      "passed": true,
+      "detail": "$E$8"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.7",
+      "passed": true,
+      "detail": "$E$9"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.8",
+      "passed": true,
+      "detail": "$E$10"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.9",
+      "passed": true,
+      "detail": "$E$11"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.10",
+      "passed": true,
+      "detail": "$E$12"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.11",
+      "passed": true,
+      "detail": "$E$13"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.12",
+      "passed": true,
+      "detail": "$E$14"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.13",
+      "passed": true,
+      "detail": "$E$15"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.14",
+      "passed": true,
+      "detail": "$E$16"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.15",
+      "passed": true,
+      "detail": "$E$17"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.16",
+      "passed": true,
+      "detail": "$E$18"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.17",
+      "passed": true,
+      "detail": "$E$19"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.18",
+      "passed": true,
+      "detail": "$E$20"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.19",
+      "passed": true,
+      "detail": "$E$21"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.20",
+      "passed": true,
+      "detail": "$E$22"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.21",
+      "passed": true,
+      "detail": "$E$23"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.22",
+      "passed": true,
+      "detail": "$E$24"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.23",
+      "passed": true,
+      "detail": "$E$25"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.24",
+      "passed": true,
+      "detail": "$E$26"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.25",
+      "passed": true,
+      "detail": "$E$27"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.26",
+      "passed": true,
+      "detail": "$E$28"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.27",
+      "passed": true,
+      "detail": "$E$29"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.28",
+      "passed": true,
+      "detail": "$E$30"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.29",
+      "passed": true,
+      "detail": "$E$31"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.30",
+      "passed": true,
+      "detail": "$E$32"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.31",
+      "passed": true,
+      "detail": "$E$33"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.32",
+      "passed": true,
+      "detail": "$E$34"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.33",
+      "passed": true,
+      "detail": "$E$35"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.34",
+      "passed": true,
+      "detail": "$E$36"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.35",
+      "passed": true,
+      "detail": "$E$37"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.36",
+      "passed": true,
+      "detail": "$E$38"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.37",
+      "passed": true,
+      "detail": "$E$39"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.38",
+      "passed": true,
+      "detail": "$E$40"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.39",
+      "passed": true,
+      "detail": "$E$41"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.40",
+      "passed": true,
+      "detail": "$E$42"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.41",
+      "passed": true,
+      "detail": "$E$43"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.42",
+      "passed": true,
+      "detail": "$E$44"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.43",
+      "passed": true,
+      "detail": "$E$45"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.44",
+      "passed": true,
+      "detail": "$E$46"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.45",
+      "passed": true,
+      "detail": "$E$47"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.46",
+      "passed": true,
+      "detail": "$E$48"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.47",
+      "passed": true,
+      "detail": "$E$49"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.48",
+      "passed": true,
+      "detail": "$E$50"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.49",
+      "passed": true,
+      "detail": "$E$51"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.50",
+      "passed": true,
+      "detail": "$E$52"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.51",
+      "passed": true,
+      "detail": "$E$53"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.52",
+      "passed": true,
+      "detail": "$E$54"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.53",
+      "passed": true,
+      "detail": "$E$55"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.54",
+      "passed": true,
+      "detail": "$E$56"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.55",
+      "passed": true,
+      "detail": "$E$57"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.56",
+      "passed": true,
+      "detail": "$E$58"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.57",
+      "passed": true,
+      "detail": "$E$59"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.58",
+      "passed": true,
+      "detail": "$E$60"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.59",
+      "passed": true,
+      "detail": "$E$61"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.60",
+      "passed": true,
+      "detail": "$E$62"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.61",
+      "passed": true,
+      "detail": "$E$63"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.62",
+      "passed": true,
+      "detail": "$E$64"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.63",
+      "passed": true,
+      "detail": "$E$65"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.64",
+      "passed": true,
+      "detail": "$E$66"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.65",
+      "passed": true,
+      "detail": "$E$67"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.66",
+      "passed": true,
+      "detail": "$E$68"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.67",
+      "passed": true,
+      "detail": "$E$69"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.68",
+      "passed": true,
+      "detail": "$E$70"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.69",
+      "passed": true,
+      "detail": "$E$71"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.70",
+      "passed": true,
+      "detail": "$E$72"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.71",
+      "passed": true,
+      "detail": "$E$73"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.72",
+      "passed": true,
+      "detail": "$E$74"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.73",
+      "passed": true,
+      "detail": "$E$75"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.74",
+      "passed": true,
+      "detail": "$E$76"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.75",
+      "passed": true,
+      "detail": "$E$77"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.76",
+      "passed": true,
+      "detail": "$E$78"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.77",
+      "passed": true,
+      "detail": "$E$79"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.78",
+      "passed": true,
+      "detail": "$E$80"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.79",
+      "passed": true,
+      "detail": "$E$81"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.80",
+      "passed": true,
+      "detail": "$E$82"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.81",
+      "passed": true,
+      "detail": "$E$83"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.82",
+      "passed": true,
+      "detail": "$E$84"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.83",
+      "passed": true,
+      "detail": "$E$85"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.84",
+      "passed": true,
+      "detail": "$E$86"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.85",
+      "passed": true,
+      "detail": "$E$87"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.86",
+      "passed": true,
+      "detail": "$E$88"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.87",
+      "passed": true,
+      "detail": "$E$89"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.88",
+      "passed": true,
+      "detail": "$E$90"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.89",
+      "passed": true,
+      "detail": "$E$91"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.90",
+      "passed": true,
+      "detail": "$E$92"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.91",
+      "passed": true,
+      "detail": "$E$93"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.92",
+      "passed": true,
+      "detail": "$E$94"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.93",
+      "passed": true,
+      "detail": "$E$95"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.94",
+      "passed": true,
+      "detail": "$E$96"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.95",
+      "passed": true,
+      "detail": "$E$97"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.96",
+      "passed": true,
+      "detail": "$E$98"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.97",
+      "passed": true,
+      "detail": "$E$99"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.98",
+      "passed": true,
+      "detail": "$E$100"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.99",
+      "passed": true,
+      "detail": "$E$101"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.100",
+      "passed": true,
+      "detail": "$E$102"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.101",
+      "passed": true,
+      "detail": "$E$103"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.102",
+      "passed": true,
+      "detail": "$E$104"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.103",
+      "passed": true,
+      "detail": "$E$105"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.104",
+      "passed": true,
+      "detail": "$E$106"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.105",
+      "passed": true,
+      "detail": "$E$107"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.106",
+      "passed": true,
+      "detail": "$E$108"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.107",
+      "passed": true,
+      "detail": "$E$109"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.108",
+      "passed": true,
+      "detail": "$E$110"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.109",
+      "passed": true,
+      "detail": "$E$111"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.110",
+      "passed": true,
+      "detail": "$E$112"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.111",
+      "passed": true,
+      "detail": "$E$113"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.112",
+      "passed": true,
+      "detail": "$E$114"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.113",
+      "passed": true,
+      "detail": "$E$115"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.114",
+      "passed": true,
+      "detail": "$E$116"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.115",
+      "passed": true,
+      "detail": "$E$117"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.116",
+      "passed": true,
+      "detail": "$E$118"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.117",
+      "passed": true,
+      "detail": "$E$119"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.118",
+      "passed": true,
+      "detail": "$E$120"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.119",
+      "passed": true,
+      "detail": "$E$121"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.120",
+      "passed": true,
+      "detail": "$E$122"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.121",
+      "passed": true,
+      "detail": "$E$123"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.122",
+      "passed": true,
+      "detail": "$E$124"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.123",
+      "passed": true,
+      "detail": "$E$125"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.124",
+      "passed": true,
+      "detail": "$E$126"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.125",
+      "passed": true,
+      "detail": "$E$127"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.126",
+      "passed": true,
+      "detail": "$E$128"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.127",
+      "passed": true,
+      "detail": "$E$129"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.128",
+      "passed": true,
+      "detail": "$E$130"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.129",
+      "passed": true,
+      "detail": "$E$131"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.130",
+      "passed": true,
+      "detail": "$E$132"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.131",
+      "passed": true,
+      "detail": "$E$133"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.132",
+      "passed": true,
+      "detail": "$E$134"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.133",
+      "passed": true,
+      "detail": "$E$135"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.134",
+      "passed": true,
+      "detail": "$E$136"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.135",
+      "passed": true,
+      "detail": "$E$137"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.136",
+      "passed": true,
+      "detail": "$E$138"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.137",
+      "passed": true,
+      "detail": "$E$139"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.138",
+      "passed": true,
+      "detail": "$E$140"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.139",
+      "passed": true,
+      "detail": "$E$141"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.140",
+      "passed": true,
+      "detail": "$E$142"
+    },
+    {
+      "check": "updated.border.rngSystemSettings.141",
+      "passed": true,
+      "detail": "$E$143"
+    },
+    {
+      "check": "updated.border.rngUnitSettings.1",
+      "passed": true,
+      "detail": "$K$3"
+    },
+    {
+      "check": "updated.border.rngUnitSettings.2",
+      "passed": true,
+      "detail": "$K$4"
+    },
+    {
+      "check": "updated.border.rngUnitSettings.3",
+      "passed": true,
+      "detail": "$K$5"
+    },
+    {
+      "check": "updated.border.rngUnitSettings.4",
+      "passed": true,
+      "detail": "$K$6"
+    },
+    {
+      "check": "updated.border.rngUnitSettings.5",
+      "passed": true,
+      "detail": "$K$7"
+    },
+    {
+      "check": "updated.border.rngUnitSettings.6",
+      "passed": true,
+      "detail": "$K$8"
+    },
+    {
+      "check": "updated.border.rngUnitSettings.7",
+      "passed": true,
+      "detail": "$K$9"
+    },
+    {
+      "check": "updated.border.rngSignConventionSettings.1",
+      "passed": true,
+      "detail": "$J$12"
+    },
+    {
+      "check": "updated.border.rngSignConventionSettings.2",
+      "passed": true,
+      "detail": "$J$13"
+    },
+    {
+      "check": "updated.border.rngSignConventionSettings.3",
+      "passed": true,
+      "detail": "$J$14"
+    },
+    {
+      "check": "updated.border.rngSignConventionSettings.4",
+      "passed": true,
+      "detail": "$J$15"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.1",
+      "passed": true,
+      "detail": "$N$36"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.2",
+      "passed": true,
+      "detail": "$N$37"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.3",
+      "passed": true,
+      "detail": "$N$38"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.4",
+      "passed": true,
+      "detail": "$N$39"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.5",
+      "passed": true,
+      "detail": "$N$40"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.6",
+      "passed": true,
+      "detail": "$N$41"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.7",
+      "passed": true,
+      "detail": "$N$42"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.8",
+      "passed": true,
+      "detail": "$N$43"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.9",
+      "passed": true,
+      "detail": "$N$44"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.10",
+      "passed": true,
+      "detail": "$N$45"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.11",
+      "passed": true,
+      "detail": "$N$46"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.12",
+      "passed": true,
+      "detail": "$N$47"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.13",
+      "passed": true,
+      "detail": "$N$48"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.14",
+      "passed": true,
+      "detail": "$N$49"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.15",
+      "passed": true,
+      "detail": "$N$50"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.16",
+      "passed": true,
+      "detail": "$N$51"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.17",
+      "passed": true,
+      "detail": "$N$52"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.18",
+      "passed": true,
+      "detail": "$N$53"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.19",
+      "passed": true,
+      "detail": "$N$54"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.20",
+      "passed": true,
+      "detail": "$N$55"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.21",
+      "passed": true,
+      "detail": "$N$56"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.22",
+      "passed": true,
+      "detail": "$N$57"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.23",
+      "passed": true,
+      "detail": "$N$58"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.24",
+      "passed": true,
+      "detail": "$N$59"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.25",
+      "passed": true,
+      "detail": "$N$60"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.26",
+      "passed": true,
+      "detail": "$N$61"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.27",
+      "passed": true,
+      "detail": "$N$62"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.28",
+      "passed": true,
+      "detail": "$N$63"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.29",
+      "passed": true,
+      "detail": "$N$64"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.30",
+      "passed": true,
+      "detail": "$N$65"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.31",
+      "passed": true,
+      "detail": "$N$66"
+    },
+    {
+      "check": "updated.border.rngCalculationProfiles.32",
+      "passed": true,
+      "detail": "$N$67"
+    },
+    {
+      "check": "updated.border.rngConcreteMaterialParameters.1",
+      "passed": true,
+      "detail": "$M$26"
+    },
+    {
+      "check": "updated.border.rngConcreteMaterialParameters.2",
+      "passed": true,
+      "detail": "$M$27"
+    },
+    {
+      "check": "updated.border.rngConcreteMaterialParameters.3",
+      "passed": true,
+      "detail": "$M$28"
+    },
+    {
+      "check": "updated.border.rngConcreteMaterialParameters.4",
+      "passed": true,
+      "detail": "$M$29"
+    },
+    {
+      "check": "updated.border.rngConcreteMaterialParameters.5",
+      "passed": true,
+      "detail": "$M$30"
+    },
+    {
+      "check": "updated.border.rngConcreteMaterialParameters.6",
+      "passed": true,
+      "detail": "$M$31"
+    },
+    {
+      "check": "updated.border.rngConcreteMaterialParameters.7",
+      "passed": true,
+      "detail": "$M$32"
+    },
+    {
+      "check": "updated.border.rngConcreteMaterialParameters.8",
+      "passed": true,
+      "detail": "$M$33"
+    },
+    {
+      "check": "updated.border.rngSteelMaterialParameters.1",
+      "passed": true,
+      "detail": "$M$18"
+    },
+    {
+      "check": "updated.border.rngSteelMaterialParameters.2",
+      "passed": true,
+      "detail": "$M$19"
+    },
+    {
+      "check": "updated.border.rngSteelMaterialParameters.3",
+      "passed": true,
+      "detail": "$M$20"
+    },
+    {
+      "check": "updated.border.rngSteelMaterialParameters.4",
+      "passed": true,
+      "detail": "$M$21"
+    },
+    {
+      "check": "updated.border.rngSteelMaterialParameters.5",
+      "passed": true,
+      "detail": "$M$22"
+    },
+    {
+      "check": "updated.border.rngSteelMaterialParameters.6",
+      "passed": true,
+      "detail": "$M$23"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.1",
+      "passed": true,
+      "detail": "$M$70"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.2",
+      "passed": true,
+      "detail": "$M$71"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.3",
+      "passed": true,
+      "detail": "$M$72"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.4",
+      "passed": true,
+      "detail": "$M$73"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.5",
+      "passed": true,
+      "detail": "$M$74"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.6",
+      "passed": true,
+      "detail": "$M$75"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.7",
+      "passed": true,
+      "detail": "$M$76"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.8",
+      "passed": true,
+      "detail": "$M$77"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.9",
+      "passed": true,
+      "detail": "$M$78"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.10",
+      "passed": true,
+      "detail": "$M$79"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.11",
+      "passed": true,
+      "detail": "$M$80"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.12",
+      "passed": true,
+      "detail": "$M$81"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.13",
+      "passed": true,
+      "detail": "$M$82"
+    },
+    {
+      "check": "updated.border.rngPlotAnnotationSettings.14",
+      "passed": true,
+      "detail": "$M$83"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.1",
+      "passed": true,
+      "detail": "$U$3"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.2",
+      "passed": true,
+      "detail": "$U$4"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.3",
+      "passed": true,
+      "detail": "$U$5"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.4",
+      "passed": true,
+      "detail": "$U$6"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.5",
+      "passed": true,
+      "detail": "$U$7"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.6",
+      "passed": true,
+      "detail": "$U$8"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.7",
+      "passed": true,
+      "detail": "$U$9"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.8",
+      "passed": true,
+      "detail": "$U$10"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.9",
+      "passed": true,
+      "detail": "$U$11"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.10",
+      "passed": true,
+      "detail": "$U$12"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.11",
+      "passed": true,
+      "detail": "$U$13"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.12",
+      "passed": true,
+      "detail": "$U$14"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.13",
+      "passed": true,
+      "detail": "$U$15"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.14",
+      "passed": true,
+      "detail": "$U$16"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.15",
+      "passed": true,
+      "detail": "$U$17"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.16",
+      "passed": true,
+      "detail": "$U$18"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.17",
+      "passed": true,
+      "detail": "$U$19"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.18",
+      "passed": true,
+      "detail": "$U$20"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.19",
+      "passed": true,
+      "detail": "$U$21"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.20",
+      "passed": true,
+      "detail": "$U$22"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.21",
+      "passed": true,
+      "detail": "$U$23"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.22",
+      "passed": true,
+      "detail": "$U$24"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.23",
+      "passed": true,
+      "detail": "$U$25"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.24",
+      "passed": true,
+      "detail": "$U$26"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.25",
+      "passed": true,
+      "detail": "$U$27"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.26",
+      "passed": true,
+      "detail": "$U$28"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.27",
+      "passed": true,
+      "detail": "$U$29"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.28",
+      "passed": true,
+      "detail": "$U$30"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.29",
+      "passed": true,
+      "detail": "$U$31"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.30",
+      "passed": true,
+      "detail": "$U$32"
+    },
+    {
+      "check": "updated.border.rngLoadCombinations.31",
+      "passed": true,
+      "detail": "$U$33"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.1",
+      "passed": true,
+      "detail": "$K$86"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.2",
+      "passed": true,
+      "detail": "$K$87"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.3",
+      "passed": true,
+      "detail": "$K$88"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.4",
+      "passed": true,
+      "detail": "$K$89"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.5",
+      "passed": true,
+      "detail": "$K$90"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.6",
+      "passed": true,
+      "detail": "$K$91"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.7",
+      "passed": true,
+      "detail": "$K$92"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.8",
+      "passed": true,
+      "detail": "$K$93"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.9",
+      "passed": true,
+      "detail": "$K$94"
+    },
+    {
+      "check": "updated.border.rngCircleGeometry.10",
+      "passed": true,
+      "detail": "$K$95"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.1",
+      "passed": true,
+      "detail": "$P$128"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.2",
+      "passed": true,
+      "detail": "$P$129"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.3",
+      "passed": true,
+      "detail": "$P$130"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.4",
+      "passed": true,
+      "detail": "$P$131"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.5",
+      "passed": true,
+      "detail": "$P$132"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.6",
+      "passed": true,
+      "detail": "$P$133"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.7",
+      "passed": true,
+      "detail": "$P$134"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.8",
+      "passed": true,
+      "detail": "$P$135"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.9",
+      "passed": true,
+      "detail": "$P$136"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.10",
+      "passed": true,
+      "detail": "$P$137"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.11",
+      "passed": true,
+      "detail": "$P$138"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.12",
+      "passed": true,
+      "detail": "$P$139"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.13",
+      "passed": true,
+      "detail": "$P$140"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.14",
+      "passed": true,
+      "detail": "$P$141"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.15",
+      "passed": true,
+      "detail": "$P$142"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.16",
+      "passed": true,
+      "detail": "$P$143"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.17",
+      "passed": true,
+      "detail": "$P$144"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.18",
+      "passed": true,
+      "detail": "$P$145"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.19",
+      "passed": true,
+      "detail": "$P$146"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.20",
+      "passed": true,
+      "detail": "$P$147"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.21",
+      "passed": true,
+      "detail": "$P$148"
+    },
+    {
+      "check": "updated.border.rngRoundedRectangleGeometry.22",
+      "passed": true,
+      "detail": "$P$149"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.1",
+      "passed": true,
+      "detail": "$P$153"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.2",
+      "passed": true,
+      "detail": "$P$154"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.3",
+      "passed": true,
+      "detail": "$P$155"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.4",
+      "passed": true,
+      "detail": "$P$156"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.5",
+      "passed": true,
+      "detail": "$P$157"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.6",
+      "passed": true,
+      "detail": "$P$158"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.7",
+      "passed": true,
+      "detail": "$P$159"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.8",
+      "passed": true,
+      "detail": "$P$160"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.9",
+      "passed": true,
+      "detail": "$P$161"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.10",
+      "passed": true,
+      "detail": "$P$162"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.11",
+      "passed": true,
+      "detail": "$P$163"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.12",
+      "passed": true,
+      "detail": "$P$164"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.13",
+      "passed": true,
+      "detail": "$P$165"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.14",
+      "passed": true,
+      "detail": "$P$166"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.15",
+      "passed": true,
+      "detail": "$P$167"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.16",
+      "passed": true,
+      "detail": "$P$168"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.17",
+      "passed": true,
+      "detail": "$P$169"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.18",
+      "passed": true,
+      "detail": "$P$170"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.19",
+      "passed": true,
+      "detail": "$P$171"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.20",
+      "passed": true,
+      "detail": "$P$172"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.21",
+      "passed": true,
+      "detail": "$P$173"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.22",
+      "passed": true,
+      "detail": "$P$174"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.23",
+      "passed": true,
+      "detail": "$P$175"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.24",
+      "passed": true,
+      "detail": "$P$176"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.25",
+      "passed": true,
+      "detail": "$P$177"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.26",
+      "passed": true,
+      "detail": "$P$178"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.27",
+      "passed": true,
+      "detail": "$P$179"
+    },
+    {
+      "check": "updated.border.rngHollowRectangleGeometry.28",
+      "passed": true,
+      "detail": "$P$180"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.1",
+      "passed": true,
+      "detail": "$P$98"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.2",
+      "passed": true,
+      "detail": "$P$99"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.3",
+      "passed": true,
+      "detail": "$P$100"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.4",
+      "passed": true,
+      "detail": "$P$101"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.5",
+      "passed": true,
+      "detail": "$P$102"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.6",
+      "passed": true,
+      "detail": "$P$103"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.7",
+      "passed": true,
+      "detail": "$P$104"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.8",
+      "passed": true,
+      "detail": "$P$105"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.9",
+      "passed": true,
+      "detail": "$P$106"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.10",
+      "passed": true,
+      "detail": "$P$107"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.11",
+      "passed": true,
+      "detail": "$P$108"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.12",
+      "passed": true,
+      "detail": "$P$109"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.13",
+      "passed": true,
+      "detail": "$P$110"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.14",
+      "passed": true,
+      "detail": "$P$111"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.15",
+      "passed": true,
+      "detail": "$P$112"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.16",
+      "passed": true,
+      "detail": "$P$113"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.17",
+      "passed": true,
+      "detail": "$P$114"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.18",
+      "passed": true,
+      "detail": "$P$115"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.19",
+      "passed": true,
+      "detail": "$P$116"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.20",
+      "passed": true,
+      "detail": "$P$117"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.21",
+      "passed": true,
+      "detail": "$P$118"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.22",
+      "passed": true,
+      "detail": "$P$119"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.23",
+      "passed": true,
+      "detail": "$P$120"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.24",
+      "passed": true,
+      "detail": "$P$121"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.25",
+      "passed": true,
+      "detail": "$P$122"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.26",
+      "passed": true,
+      "detail": "$P$123"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.27",
+      "passed": true,
+      "detail": "$P$124"
+    },
+    {
+      "check": "updated.border.rngRectSetGeometry.28",
+      "passed": true,
+      "detail": "$P$125"
+    },
+    {
+      "check": "updated.borderCoverage",
+      "passed": true,
+      "detail": 331
+    },
+    {
+      "check": "updated.rectset.21.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.21.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.21.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.21.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.21.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.21.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.21.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.21.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.22.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.22.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.22.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.22.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.22.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.22.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.22.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.22.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.23.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.23.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.23.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.23.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.23.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.23.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.23.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.23.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.24.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.24.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.24.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.24.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.24.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.24.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.24.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.24.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.25.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.25.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.25.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.25.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.25.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.25.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.25.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.25.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.26.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.26.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.26.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.26.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.26.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.26.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.26.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.26.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.27.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.27.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.27.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.27.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.27.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.27.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.27.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.27.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.28.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.28.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.28.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.28.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.rectset.28.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "updated.rectsetOptions.28.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "updated.rectset.28.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "updated.rectsetOptions.28.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "updated.formulaPictures",
+      "passed": true,
+      "detail": 76
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_001",
+      "passed": true,
+      "detail": {
+        "top": 1285.5,
+        "rowHeight": 42.0,
+        "row": 98,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_002",
+      "passed": true,
+      "detail": {
+        "top": 1340.2501,
+        "rowHeight": 42.0,
+        "row": 100,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_003",
+      "passed": true,
+      "detail": {
+        "top": 1395.0,
+        "rowHeight": 42.0,
+        "row": 102,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_004",
+      "passed": true,
+      "detail": {
+        "top": 1479.0,
+        "rowHeight": 42.0,
+        "row": 106,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_005",
+      "passed": true,
+      "detail": {
+        "top": 1917.0,
+        "rowHeight": 42.0,
+        "row": 136,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_006",
+      "passed": true,
+      "detail": {
+        "top": 1971.7499,
+        "rowHeight": 42.0,
+        "row": 138,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_007",
+      "passed": true,
+      "detail": {
+        "top": 2158.0,
+        "rowHeight": 66.0,
+        "row": 150,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_008",
+      "passed": true,
+      "detail": {
+        "top": 2397.0,
+        "rowHeight": 42.0,
+        "row": 164,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_009",
+      "passed": true,
+      "detail": {
+        "top": 2648.25,
+        "rowHeight": 42.0,
+        "row": 180,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_010",
+      "passed": true,
+      "detail": {
+        "top": 2703.25,
+        "rowHeight": 66.0,
+        "row": 182,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_011",
+      "passed": true,
+      "detail": {
+        "top": 2849.25,
+        "rowHeight": 42.0,
+        "row": 189,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_012",
+      "passed": true,
+      "detail": {
+        "top": 2997.0,
+        "rowHeight": 42.0,
+        "row": 198,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_013",
+      "passed": true,
+      "detail": {
+        "top": 3051.75,
+        "rowHeight": 42.0,
+        "row": 200,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_014",
+      "passed": true,
+      "detail": {
+        "top": 3106.75,
+        "rowHeight": 66.0,
+        "row": 202,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_015",
+      "passed": true,
+      "detail": {
+        "top": 3185.4998,
+        "rowHeight": 66.0,
+        "row": 204,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_016",
+      "passed": true,
+      "detail": {
+        "top": 3293.25,
+        "rowHeight": 42.0,
+        "row": 208,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_017",
+      "passed": true,
+      "detail": {
+        "top": 3361.0,
+        "rowHeight": 66.0,
+        "row": 211,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_018",
+      "passed": true,
+      "detail": {
+        "top": 3532.5002,
+        "rowHeight": 42.0,
+        "row": 220,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_019",
+      "passed": true,
+      "detail": {
+        "top": 3680.5002,
+        "rowHeight": 66.0,
+        "row": 229,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_020",
+      "passed": true,
+      "detail": {
+        "top": 3772.0,
+        "rowHeight": 66.0,
+        "row": 232,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_021",
+      "passed": true,
+      "detail": {
+        "top": 3867.25,
+        "rowHeight": 66.0,
+        "row": 235,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_022",
+      "passed": true,
+      "detail": {
+        "top": 3945.75,
+        "rowHeight": 42.0,
+        "row": 237,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_023",
+      "passed": true,
+      "detail": {
+        "top": 4000.5002,
+        "rowHeight": 42.0,
+        "row": 239,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_024",
+      "passed": true,
+      "detail": {
+        "top": 4161.25,
+        "rowHeight": 66.0,
+        "row": 249,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_025",
+      "passed": true,
+      "detail": {
+        "top": 4345.75,
+        "rowHeight": 66.0,
+        "row": 259,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_026",
+      "passed": true,
+      "detail": {
+        "top": 4479.0,
+        "rowHeight": 42.0,
+        "row": 265,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_027",
+      "passed": true,
+      "detail": {
+        "top": 4534.0,
+        "rowHeight": 66.0,
+        "row": 267,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_028",
+      "passed": true,
+      "detail": {
+        "top": 4920.25,
+        "rowHeight": 66.0,
+        "row": 292,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_029",
+      "passed": true,
+      "detail": {
+        "top": 4999.25,
+        "rowHeight": 48.0,
+        "row": 294,
+        "height": 39.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_030",
+      "passed": true,
+      "detail": {
+        "top": 5059.75,
+        "rowHeight": 66.0,
+        "row": 296,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_031",
+      "passed": true,
+      "detail": {
+        "top": 5189.5,
+        "rowHeight": 211.5,
+        "row": 302,
+        "height": 204.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_032",
+      "passed": true,
+      "detail": {
+        "top": 5497.5,
+        "rowHeight": 42.0,
+        "row": 310,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_033",
+      "passed": true,
+      "detail": {
+        "top": 5616.5,
+        "rowHeight": 48.0,
+        "row": 317,
+        "height": 39.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_034",
+      "passed": true,
+      "detail": {
+        "top": 5689.75,
+        "rowHeight": 66.0,
+        "row": 320,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_035",
+      "passed": true,
+      "detail": {
+        "top": 5886.75,
+        "rowHeight": 42.0,
+        "row": 331,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_036",
+      "passed": true,
+      "detail": {
+        "top": 5954.5,
+        "rowHeight": 211.5,
+        "row": 334,
+        "height": 204.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_037",
+      "passed": true,
+      "detail": {
+        "top": 6300.75,
+        "rowHeight": 42.0,
+        "row": 345,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_038",
+      "passed": true,
+      "detail": {
+        "top": 6432.25,
+        "rowHeight": 211.5,
+        "row": 353,
+        "height": 204.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_039",
+      "passed": true,
+      "detail": {
+        "top": 6643.75,
+        "rowHeight": 66.0,
+        "row": 354,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_040",
+      "passed": true,
+      "detail": {
+        "top": 6734.9995,
+        "rowHeight": 42.0,
+        "row": 357,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_041",
+      "passed": true,
+      "detail": {
+        "top": 6789.75,
+        "rowHeight": 42.0,
+        "row": 359,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_042",
+      "passed": true,
+      "detail": {
+        "top": 6874.25,
+        "rowHeight": 48.0,
+        "row": 363,
+        "height": 39.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_043",
+      "passed": true,
+      "detail": {
+        "top": 6947.5,
+        "rowHeight": 66.0,
+        "row": 366,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_044",
+      "passed": true,
+      "detail": {
+        "top": 7051.75,
+        "rowHeight": 66.0,
+        "row": 370,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_045",
+      "passed": true,
+      "detail": {
+        "top": 7130.25,
+        "rowHeight": 42.0,
+        "row": 372,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_046",
+      "passed": true,
+      "detail": {
+        "top": 7252.75,
+        "rowHeight": 211.5,
+        "row": 379,
+        "height": 204.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_047",
+      "passed": true,
+      "detail": {
+        "top": 7801.5,
+        "rowHeight": 42.0,
+        "row": 405,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_048",
+      "passed": true,
+      "detail": {
+        "top": 7869.25,
+        "rowHeight": 66.0,
+        "row": 408,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_049",
+      "passed": true,
+      "detail": {
+        "top": 7947.75,
+        "rowHeight": 42.0,
+        "row": 410,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_050",
+      "passed": true,
+      "detail": {
+        "top": 8002.75,
+        "rowHeight": 66.0,
+        "row": 412,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_051",
+      "passed": true,
+      "detail": {
+        "top": 8081.5,
+        "rowHeight": 66.0,
+        "row": 414,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_052",
+      "passed": true,
+      "detail": {
+        "top": 8189.25,
+        "rowHeight": 42.0,
+        "row": 418,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_053",
+      "passed": true,
+      "detail": {
+        "top": 8269.75,
+        "rowHeight": 66.0,
+        "row": 422,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_054",
+      "passed": true,
+      "detail": {
+        "top": 8348.5,
+        "rowHeight": 66.0,
+        "row": 424,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_055",
+      "passed": true,
+      "detail": {
+        "top": 8494.75,
+        "rowHeight": 66.0,
+        "row": 431,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_056",
+      "passed": true,
+      "detail": {
+        "top": 8598.75,
+        "rowHeight": 42.0,
+        "row": 435,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_057",
+      "passed": true,
+      "detail": {
+        "top": 8670.25,
+        "rowHeight": 66.0,
+        "row": 438,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_058",
+      "passed": true,
+      "detail": {
+        "top": 8761.75,
+        "rowHeight": 66.0,
+        "row": 441,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_059",
+      "passed": true,
+      "detail": {
+        "top": 8840.5,
+        "rowHeight": 66.0,
+        "row": 443,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_060",
+      "passed": true,
+      "detail": {
+        "top": 8919.0,
+        "rowHeight": 42.0,
+        "row": 445,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_061",
+      "passed": true,
+      "detail": {
+        "top": 8974.0,
+        "rowHeight": 66.0,
+        "row": 447,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_062",
+      "passed": true,
+      "detail": {
+        "top": 9052.75,
+        "rowHeight": 66.0,
+        "row": 449,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_063",
+      "passed": true,
+      "detail": {
+        "top": 9144.0,
+        "rowHeight": 42.0,
+        "row": 452,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_064",
+      "passed": true,
+      "detail": {
+        "top": 9228.25,
+        "rowHeight": 66.0,
+        "row": 456,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_065",
+      "passed": true,
+      "detail": {
+        "top": 9319.75,
+        "rowHeight": 66.0,
+        "row": 459,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_066",
+      "passed": true,
+      "detail": {
+        "top": 9398.5,
+        "rowHeight": 66.0,
+        "row": 461,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_067",
+      "passed": true,
+      "detail": {
+        "top": 9477.25,
+        "rowHeight": 66.0,
+        "row": 463,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_068",
+      "passed": true,
+      "detail": {
+        "top": 9556.0,
+        "rowHeight": 66.0,
+        "row": 465,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_069",
+      "passed": true,
+      "detail": {
+        "top": 9634.75,
+        "rowHeight": 66.0,
+        "row": 467,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_070",
+      "passed": true,
+      "detail": {
+        "top": 9755.5,
+        "rowHeight": 66.0,
+        "row": 472,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_071",
+      "passed": true,
+      "detail": {
+        "top": 9834.25,
+        "rowHeight": 66.0,
+        "row": 474,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_072",
+      "passed": true,
+      "detail": {
+        "top": 9913.0,
+        "rowHeight": 66.0,
+        "row": 476,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_073",
+      "passed": true,
+      "detail": {
+        "top": 9991.5,
+        "rowHeight": 42.0,
+        "row": 478,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_074",
+      "passed": true,
+      "detail": {
+        "top": 10072.0,
+        "rowHeight": 66.0,
+        "row": 482,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_075",
+      "passed": true,
+      "detail": {
+        "top": 34122.25,
+        "rowHeight": 66.0,
+        "row": 1700,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "updated.pictureBounds.NDMHelpFormula_076",
+      "passed": true,
+      "detail": {
+        "top": 34294.0,
+        "rowHeight": 66.0,
+        "row": 1709,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "allDataSaveReopen",
+      "passed": true,
+      "detail": "618238A8D28B376D193E4CD4D757D2C20DF9B7BFE95391FFBAC59EA4A122C506"
+    },
+    {
+      "check": "allValidationSaveReopen",
+      "passed": true,
+      "detail": "E87BD7AB219AB91B3D5D3494CF6AC98E9EC1C7A82030125E04D80DD463200EFF"
+    },
+    {
+      "check": "reopened.section.Подготовка геометрии в AutoCAD и импорт",
+      "passed": true,
+      "detail": 1
+    },
+    {
+      "check": "reopened.section.Поиск НДС текущего сочетания",
+      "passed": true,
+      "detail": 86
+    },
+    {
+      "check": "reopened.section.Поиск предельной несущей способности",
+      "passed": true,
+      "detail": 129
+    },
+    {
+      "check": "reopened.section.Расчет ширины раскрытия нормальных трещин",
+      "passed": true,
+      "detail": 172
+    },
+    {
+      "check": "reopened.section.Расчет продольного изгиба и устойчивости",
+      "passed": true,
+      "detail": 392
+    },
+    {
+      "check": "reopened.section.Справка по настройкам листа Config",
+      "passed": true,
+      "detail": 490
+    },
+    {
+      "check": "reopened.section.Справка по результатам расчета листа Results",
+      "passed": true,
+      "detail": 1668
+    },
+    {
+      "check": "reopened.section.СП 35: расчет ширины нормальных трещин",
+      "passed": true,
+      "detail": 273
+    },
+    {
+      "check": "reopened.autoCADFirst",
+      "passed": true,
+      "detail": "Первый раздел"
+    },
+    {
+      "check": "reopened.autoCADNotes.Площадь взаимодействия для трещин - участок бетона",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.программа автоматически извлекает наружную границу",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.полилиниями на соответствующих слоях либо одним Region с вычтенными отверстиями",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.одним Region на слое из настройки AutoCAD.Common.SectionContourLayer",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.Полилиния должна образовывать замкнутый контур",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.Для экспорта рассчитанной площади взаимодействия для трещин, принятой в расчете ширины раскрытия",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.Если контурные слои заблокированы",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.Геометрия всегда экспортируется в AutoCAD в мм",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.таблице «Настройка расчетных профилей»",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.строке «Выводимое состояние» (Visualization.State)",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.Импортируются все объекты на заданных слоях независимо",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.отсутствие наложенных друг на друга дублей",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.изменение Config само по себе не обновляет Results",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.Новый импорт заменяет геометрию и удаляет ранее рассчитанную площадь",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNotes.автоматически импортирует их как заданные отверстия",
+      "passed": true,
+      "detail": "Замечания к подготовке геометрии"
+    },
+    {
+      "check": "reopened.autoCADNoFixedColors",
+      "passed": true,
+      "detail": "Без описания внутренних цветов экспорта"
+    },
+    {
+      "check": "reopened.autoCADNoPolylinePropertyDetails",
+      "passed": true,
+      "detail": "Без описания свойства полилинии"
+    },
+    {
+      "check": "reopened.autoCADNoDimensionDetails",
+      "passed": true,
+      "detail": "Без технического пояснения габаритов схемы"
+    },
+    {
+      "check": "reopened.autoCADNoSourcePriority",
+      "passed": true,
+      "detail": "Без приоритета исходников и скрытого пропуска копий"
+    },
+    {
+      "check": "reopened.autoCADLabel.Вариант без готовой сетки:",
+      "passed": true,
+      "detail": 15
+    },
+    {
+      "check": "reopened.autoCADLabelBold.Вариант без готовой сетки:",
+      "passed": true,
+      "detail": "Название жирным"
+    },
+    {
+      "check": "reopened.autoCADLabelBodyRegular.Вариант без готовой сетки:",
+      "passed": true,
+      "detail": "Пояснение обычным шрифтом"
+    },
+    {
+      "check": "reopened.autoCADLabel.Чистота чертежа и повторный импорт.",
+      "passed": true,
+      "detail": 75
+    },
+    {
+      "check": "reopened.autoCADLabelBold.Чистота чертежа и повторный импорт.",
+      "passed": true,
+      "detail": "Название жирным"
+    },
+    {
+      "check": "reopened.autoCADLabelBodyRegular.Чистота чертежа и повторный импорт.",
+      "passed": true,
+      "detail": "Пояснение обычным шрифтом"
+    },
+    {
+      "check": "reopened.autoCADLabel.Актуальность площади взаимодействия для трещин.",
+      "passed": true,
+      "detail": 79
+    },
+    {
+      "check": "reopened.autoCADLabelBold.Актуальность площади взаимодействия для трещин.",
+      "passed": true,
+      "detail": "Название жирным"
+    },
+    {
+      "check": "reopened.autoCADLabelBodyRegular.Актуальность площади взаимодействия для трещин.",
+      "passed": true,
+      "detail": "Пояснение обычным шрифтом"
+    },
+    {
+      "check": "reopened.sp35.Группа неделима",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.Частичного включения нет",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.боковых границ площади взаимодействия",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.Остальные группы проверяются в отдельных итерациях",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.Расчетное напряжение принимается только по рассматриваемой группе",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.Ряд 1 - ближайший к растянутой бетонной границе",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.SLS.Crack.SP35.NeighborRatioLimit",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.SLS.Crack.SP35.RowTolerance",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.SLS.Crack.SP35.RadiusDiameterMode",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.SLS.Crack.SP35.GroupGapTolerance",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.[SP35] - требования СП 35",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.[METHOD] - Методическое пособие",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.[NDM] - инженерные допущения",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.D_1, D_2",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.R_r и ψ в этих зависимостях выражаются в сантиметрах",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35.AutoCAD.Export.ExportCrackInteractionContour",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.sp35NoSP63",
+      "passed": true,
+      "detail": "Без сравнения с другой методикой"
+    },
+    {
+      "check": "reopened.settingHeading.SLS.Crack.SP35.GroupGapTolerance",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "reopened.sp35Card.SLS.Crack.SP35.GroupGapTolerance",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "reopened.settingHeading.SLS.Crack.SP35.RowTolerance",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "reopened.sp35Card.SLS.Crack.SP35.RowTolerance",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "reopened.settingHeading.SLS.Crack.SP35.NeighborRatioLimit",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "reopened.sp35Card.SLS.Crack.SP35.NeighborRatioLimit",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "reopened.settingHeading.SLS.Crack.SP35.RadiusDiameterMode",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "reopened.sp35Card.SLS.Crack.SP35.RadiusDiameterMode",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "reopened.settingHeading.SLS.Crack.SP35.InteractionRadiusMode",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "reopened.sp35Card.SLS.Crack.SP35.InteractionRadiusMode",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "reopened.settingHeading.SLS.Crack.SP35.RebarProfile",
+      "passed": true,
+      "detail": "Имя настройки без разрыва строки"
+    },
+    {
+      "check": "reopened.sp35Card.SLS.Crack.SP35.RebarProfile",
+      "passed": true,
+      "detail": "Только параметры СП 35"
+    },
+    {
+      "check": "reopened.sp35CardCoverage",
+      "passed": true,
+      "detail": 6
+    },
+    {
+      "check": "reopened.contract.1. Заданы только отверстия",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contract.2. Задан только наружный контур",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contract.3. Заданы наружный контур и отверстия",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contract.4. Контуры не заданы",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contract.SUBTRACT",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contract.AutoCAD.Export.ContourFormat",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contract.Фактически полученную площадь взаимодействия можно вывести в AutoCAD",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.noInternalClasses",
+      "passed": true,
+      "detail": "Пользовательская справка"
+    },
+    {
+      "check": "reopened.worldCoordinates",
+      "passed": true,
+      "detail": "Глобальная система координат"
+    },
+    {
+      "check": "reopened.contourMesh.Вариант без готовой сетки",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contourMesh.Генерация включается только при действительно пустом слое бетона",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contourMesh.Для изменения шага сетки измените Mesh и повторите импорт",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.contourMesh.БЕТОННАЯ СЕТКА АВТОМАТИЧЕСКИ СГЕНЕРИРОВАНА ПО КОНТУРАМ AUTOCAD",
+      "passed": true,
+      "detail": "Фактический лист"
+    },
+    {
+      "check": "reopened.noOpaqueGroupSum",
+      "passed": true,
+      "detail": "Простая запись суммы"
+    },
+    {
+      "check": "reopened.engineeringStyle.НДС означает",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.НДС - напряженно",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.НДС - напряжённо",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.квадратный корень",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.число пи",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.Вертикальные черты означают",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.Проекция -",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.под прямым углом",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.терпелив",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.спасает",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.engineeringStyle.маленькими шагами",
+      "passed": true,
+      "detail": "Без объяснения базовых понятий и разговорных оценок"
+    },
+    {
+      "check": "reopened.methodContract.Найденный предел с λ < 1 завершает поиск",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.methodContract.Явно заданный путь не заменяется другим",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.methodContract.Численный допуск не",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.methodContract.NotCracked",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.methodContract.SLS.Crack.PsiMode",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.methodContract.LoadMultiplier",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.methodContract.Load.ReferenceOffset",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.methodContract.всех заданных отверстий",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.methodContract.Границы сетки для этой площади не используются",
+      "passed": true,
+      "detail": "Сохранность существенных расчетных правил"
+    },
+    {
+      "check": "reopened.link.$E$5",
+      "passed": true,
+      "detail": "'Справка'!A658"
+    },
+    {
+      "check": "reopened.link.$E$6",
+      "passed": true,
+      "detail": "'Справка'!A667"
+    },
+    {
+      "check": "reopened.link.$E$7",
+      "passed": true,
+      "detail": "'Справка'!A674"
+    },
+    {
+      "check": "reopened.link.$E$8",
+      "passed": true,
+      "detail": "'Справка'!A684"
+    },
+    {
+      "check": "reopened.link.$E$9",
+      "passed": true,
+      "detail": "'Справка'!A691"
+    },
+    {
+      "check": "reopened.link.$E$12",
+      "passed": true,
+      "detail": "'Справка'!A701"
+    },
+    {
+      "check": "reopened.link.$E$13",
+      "passed": true,
+      "detail": "'Справка'!A710"
+    },
+    {
+      "check": "reopened.link.$E$14",
+      "passed": true,
+      "detail": "'Справка'!A717"
+    },
+    {
+      "check": "reopened.link.$E$15",
+      "passed": true,
+      "detail": "'Справка'!A727"
+    },
+    {
+      "check": "reopened.link.$E$16",
+      "passed": true,
+      "detail": "'Справка'!A737"
+    },
+    {
+      "check": "reopened.link.$E$17",
+      "passed": true,
+      "detail": "'Справка'!A748"
+    },
+    {
+      "check": "reopened.link.$E$18",
+      "passed": true,
+      "detail": "'Справка'!A757"
+    },
+    {
+      "check": "reopened.link.$E$22",
+      "passed": true,
+      "detail": "'Справка'!A766"
+    },
+    {
+      "check": "reopened.link.$E$23",
+      "passed": true,
+      "detail": "'Справка'!A773"
+    },
+    {
+      "check": "reopened.link.$E$24",
+      "passed": true,
+      "detail": "'Справка'!A780"
+    },
+    {
+      "check": "reopened.link.$E$25",
+      "passed": true,
+      "detail": "'Справка'!A786"
+    },
+    {
+      "check": "reopened.link.$E$26",
+      "passed": true,
+      "detail": "'Справка'!A792"
+    },
+    {
+      "check": "reopened.link.$E$27",
+      "passed": true,
+      "detail": "'Справка'!A798"
+    },
+    {
+      "check": "reopened.link.$E$29",
+      "passed": true,
+      "detail": "'Справка'!A804"
+    },
+    {
+      "check": "reopened.link.$E$30",
+      "passed": true,
+      "detail": "'Справка'!A810"
+    },
+    {
+      "check": "reopened.link.$E$31",
+      "passed": true,
+      "detail": "'Справка'!A817"
+    },
+    {
+      "check": "reopened.link.$E$32",
+      "passed": true,
+      "detail": "'Справка'!A824"
+    },
+    {
+      "check": "reopened.link.$E$33",
+      "passed": true,
+      "detail": "'Справка'!A831"
+    },
+    {
+      "check": "reopened.link.$E$35",
+      "passed": true,
+      "detail": "'Справка'!A839"
+    },
+    {
+      "check": "reopened.link.$E$36",
+      "passed": true,
+      "detail": "'Справка'!A845"
+    },
+    {
+      "check": "reopened.link.$E$40",
+      "passed": true,
+      "detail": "'Справка'!A851"
+    },
+    {
+      "check": "reopened.link.$E$41",
+      "passed": true,
+      "detail": "'Справка'!A859"
+    },
+    {
+      "check": "reopened.link.$E$43",
+      "passed": true,
+      "detail": "'Справка'!A869"
+    },
+    {
+      "check": "reopened.link.$E$45",
+      "passed": true,
+      "detail": "'Справка'!A877"
+    },
+    {
+      "check": "reopened.link.$E$46",
+      "passed": true,
+      "detail": "'Справка'!A885"
+    },
+    {
+      "check": "reopened.link.$E$47",
+      "passed": true,
+      "detail": "'Справка'!A892"
+    },
+    {
+      "check": "reopened.link.$E$48",
+      "passed": true,
+      "detail": "'Справка'!A900"
+    },
+    {
+      "check": "reopened.link.$E$49",
+      "passed": true,
+      "detail": "'Справка'!A908"
+    },
+    {
+      "check": "reopened.link.$E$50",
+      "passed": true,
+      "detail": "'Справка'!A920"
+    },
+    {
+      "check": "reopened.link.$E$54",
+      "passed": true,
+      "detail": "'Справка'!A932"
+    },
+    {
+      "check": "reopened.link.$E$55",
+      "passed": true,
+      "detail": "'Справка'!A940"
+    },
+    {
+      "check": "reopened.link.$E$56",
+      "passed": true,
+      "detail": "'Справка'!A949"
+    },
+    {
+      "check": "reopened.link.$E$57",
+      "passed": true,
+      "detail": "'Справка'!A959"
+    },
+    {
+      "check": "reopened.link.$E$58",
+      "passed": true,
+      "detail": "'Справка'!A969"
+    },
+    {
+      "check": "reopened.link.$E$59",
+      "passed": true,
+      "detail": "'Справка'!A977"
+    },
+    {
+      "check": "reopened.link.$E$60",
+      "passed": true,
+      "detail": "'Справка'!A986"
+    },
+    {
+      "check": "reopened.link.$E$61",
+      "passed": true,
+      "detail": "'Справка'!A995"
+    },
+    {
+      "check": "reopened.link.$E$62",
+      "passed": true,
+      "detail": "'Справка'!A1003"
+    },
+    {
+      "check": "reopened.link.$E$63",
+      "passed": true,
+      "detail": "'Справка'!A1013"
+    },
+    {
+      "check": "reopened.link.$E$64",
+      "passed": true,
+      "detail": "'Справка'!A1023"
+    },
+    {
+      "check": "reopened.link.$E$65",
+      "passed": true,
+      "detail": "'Справка'!A1030"
+    },
+    {
+      "check": "reopened.link.$E$67",
+      "passed": true,
+      "detail": "'Справка'!A1041"
+    },
+    {
+      "check": "reopened.link.$E$68",
+      "passed": true,
+      "detail": "'Справка'!A1046"
+    },
+    {
+      "check": "reopened.link.$E$69",
+      "passed": true,
+      "detail": "'Справка'!A1051"
+    },
+    {
+      "check": "reopened.link.$E$71",
+      "passed": true,
+      "detail": "'Справка'!A1056"
+    },
+    {
+      "check": "reopened.link.$E$72",
+      "passed": true,
+      "detail": "'Справка'!A1061"
+    },
+    {
+      "check": "reopened.link.$E$76",
+      "passed": true,
+      "detail": "'Справка'!A1066"
+    },
+    {
+      "check": "reopened.link.$E$77",
+      "passed": true,
+      "detail": "'Справка'!A1071"
+    },
+    {
+      "check": "reopened.link.$E$78",
+      "passed": true,
+      "detail": "'Справка'!A1080"
+    },
+    {
+      "check": "reopened.link.$E$80",
+      "passed": true,
+      "detail": "'Справка'!A1086"
+    },
+    {
+      "check": "reopened.link.$E$81",
+      "passed": true,
+      "detail": "'Справка'!A1094"
+    },
+    {
+      "check": "reopened.link.$E$82",
+      "passed": true,
+      "detail": "'Справка'!A1100"
+    },
+    {
+      "check": "reopened.link.$E$83",
+      "passed": true,
+      "detail": "'Справка'!A1105"
+    },
+    {
+      "check": "reopened.link.$E$84",
+      "passed": true,
+      "detail": "'Справка'!A1110"
+    },
+    {
+      "check": "reopened.link.$E$85",
+      "passed": true,
+      "detail": "'Справка'!A1116"
+    },
+    {
+      "check": "reopened.link.$E$86",
+      "passed": true,
+      "detail": "'Справка'!A1121"
+    },
+    {
+      "check": "reopened.link.$E$87",
+      "passed": true,
+      "detail": "'Справка'!A1129"
+    },
+    {
+      "check": "reopened.link.$E$88",
+      "passed": true,
+      "detail": "'Справка'!A1135"
+    },
+    {
+      "check": "reopened.link.$E$90",
+      "passed": true,
+      "detail": "'Справка'!A1141"
+    },
+    {
+      "check": "reopened.link.$E$91",
+      "passed": true,
+      "detail": "'Справка'!A1146"
+    },
+    {
+      "check": "reopened.link.$E$92",
+      "passed": true,
+      "detail": "'Справка'!A1151"
+    },
+    {
+      "check": "reopened.link.$E$93",
+      "passed": true,
+      "detail": "'Справка'!A1156"
+    },
+    {
+      "check": "reopened.link.$E$94",
+      "passed": true,
+      "detail": "'Справка'!A1161"
+    },
+    {
+      "check": "reopened.link.$E$95",
+      "passed": true,
+      "detail": "'Справка'!A1166"
+    },
+    {
+      "check": "reopened.link.$E$99",
+      "passed": true,
+      "detail": "'Справка'!A1171"
+    },
+    {
+      "check": "reopened.link.$E$100",
+      "passed": true,
+      "detail": "'Справка'!A1181"
+    },
+    {
+      "check": "reopened.link.$E$101",
+      "passed": true,
+      "detail": "'Справка'!A1187"
+    },
+    {
+      "check": "reopened.link.$E$102",
+      "passed": true,
+      "detail": "'Справка'!A1193"
+    },
+    {
+      "check": "reopened.link.$E$104",
+      "passed": true,
+      "detail": "'Справка'!A1199"
+    },
+    {
+      "check": "reopened.link.$E$106",
+      "passed": true,
+      "detail": "'Справка'!A1208"
+    },
+    {
+      "check": "reopened.link.$E$107",
+      "passed": true,
+      "detail": "'Справка'!A1217"
+    },
+    {
+      "check": "reopened.link.$E$108",
+      "passed": true,
+      "detail": "'Справка'!A1224"
+    },
+    {
+      "check": "reopened.link.$E$109",
+      "passed": true,
+      "detail": "'Справка'!A1232"
+    },
+    {
+      "check": "reopened.link.$E$110",
+      "passed": true,
+      "detail": "'Справка'!A1239"
+    },
+    {
+      "check": "reopened.link.$E$111",
+      "passed": true,
+      "detail": "'Справка'!A1247"
+    },
+    {
+      "check": "reopened.link.$E$112",
+      "passed": true,
+      "detail": "'Справка'!A1254"
+    },
+    {
+      "check": "reopened.link.$E$113",
+      "passed": true,
+      "detail": "'Справка'!A1261"
+    },
+    {
+      "check": "reopened.link.$E$114",
+      "passed": true,
+      "detail": "'Справка'!A1268"
+    },
+    {
+      "check": "reopened.link.$E$115",
+      "passed": true,
+      "detail": "'Справка'!A1273"
+    },
+    {
+      "check": "reopened.link.$E$116",
+      "passed": true,
+      "detail": "'Справка'!A1282"
+    },
+    {
+      "check": "reopened.link.$E$117",
+      "passed": true,
+      "detail": "'Справка'!A1291"
+    },
+    {
+      "check": "reopened.link.$E$118",
+      "passed": true,
+      "detail": "'Справка'!A1300"
+    },
+    {
+      "check": "reopened.link.$E$119",
+      "passed": true,
+      "detail": "'Справка'!A1309"
+    },
+    {
+      "check": "reopened.link.$E$120",
+      "passed": true,
+      "detail": "'Справка'!A1315"
+    },
+    {
+      "check": "reopened.link.$E$121",
+      "passed": true,
+      "detail": "'Справка'!A1321"
+    },
+    {
+      "check": "reopened.link.$E$122",
+      "passed": true,
+      "detail": "'Справка'!A1327"
+    },
+    {
+      "check": "reopened.link.$E$123",
+      "passed": true,
+      "detail": "'Справка'!A1333"
+    },
+    {
+      "check": "reopened.link.$E$126",
+      "passed": true,
+      "detail": "'Справка'!A1339"
+    },
+    {
+      "check": "reopened.link.$E$127",
+      "passed": true,
+      "detail": "'Справка'!A1345"
+    },
+    {
+      "check": "reopened.link.$E$128",
+      "passed": true,
+      "detail": "'Справка'!A1353"
+    },
+    {
+      "check": "reopened.link.$E$129",
+      "passed": true,
+      "detail": "'Справка'!A1360"
+    },
+    {
+      "check": "reopened.link.$E$130",
+      "passed": true,
+      "detail": "'Справка'!A1366"
+    },
+    {
+      "check": "reopened.link.$E$131",
+      "passed": true,
+      "detail": "'Справка'!A1373"
+    },
+    {
+      "check": "reopened.link.$E$132",
+      "passed": true,
+      "detail": "'Справка'!A1380"
+    },
+    {
+      "check": "reopened.link.$E$133",
+      "passed": true,
+      "detail": "'Справка'!A1387"
+    },
+    {
+      "check": "reopened.link.$E$134",
+      "passed": true,
+      "detail": "'Справка'!A1395"
+    },
+    {
+      "check": "reopened.link.$E$135",
+      "passed": true,
+      "detail": "'Справка'!A1402"
+    },
+    {
+      "check": "reopened.link.$E$136",
+      "passed": true,
+      "detail": "'Справка'!A1408"
+    },
+    {
+      "check": "reopened.link.$E$137",
+      "passed": true,
+      "detail": "'Справка'!A1414"
+    },
+    {
+      "check": "reopened.link.$E$138",
+      "passed": true,
+      "detail": "'Справка'!A1420"
+    },
+    {
+      "check": "reopened.link.$E$139",
+      "passed": true,
+      "detail": "'Справка'!A1427"
+    },
+    {
+      "check": "reopened.link.$E$140",
+      "passed": true,
+      "detail": "'Справка'!A1433"
+    },
+    {
+      "check": "reopened.link.$E$141",
+      "passed": true,
+      "detail": "'Справка'!A1440"
+    },
+    {
+      "check": "reopened.link.$E$142",
+      "passed": true,
+      "detail": "'Справка'!A1447"
+    },
+    {
+      "check": "reopened.link.$E$143",
+      "passed": true,
+      "detail": "'Справка'!A1454"
+    },
+    {
+      "check": "reopened.link.$M$19",
+      "passed": true,
+      "detail": "'Справка'!A1585"
+    },
+    {
+      "check": "reopened.link.$M$20",
+      "passed": true,
+      "detail": "'Справка'!A1591"
+    },
+    {
+      "check": "reopened.link.$M$21",
+      "passed": true,
+      "detail": "'Справка'!A1597"
+    },
+    {
+      "check": "reopened.link.$M$22",
+      "passed": true,
+      "detail": "'Справка'!A1603"
+    },
+    {
+      "check": "reopened.link.$M$23",
+      "passed": true,
+      "detail": "'Справка'!A1609"
+    },
+    {
+      "check": "reopened.link.$M$27",
+      "passed": true,
+      "detail": "'Справка'!A1539"
+    },
+    {
+      "check": "reopened.link.$M$28",
+      "passed": true,
+      "detail": "'Справка'!A1545"
+    },
+    {
+      "check": "reopened.link.$M$29",
+      "passed": true,
+      "detail": "'Справка'!A1551"
+    },
+    {
+      "check": "reopened.link.$M$30",
+      "passed": true,
+      "detail": "'Справка'!A1558"
+    },
+    {
+      "check": "reopened.link.$M$31",
+      "passed": true,
+      "detail": "'Справка'!A1564"
+    },
+    {
+      "check": "reopened.link.$M$32",
+      "passed": true,
+      "detail": "'Справка'!A1571"
+    },
+    {
+      "check": "reopened.link.$M$33",
+      "passed": true,
+      "detail": "'Справка'!A1578"
+    },
+    {
+      "check": "reopened.link.$M$71",
+      "passed": true,
+      "detail": "'Справка'!A1461"
+    },
+    {
+      "check": "reopened.link.$M$72",
+      "passed": true,
+      "detail": "'Справка'!A1466"
+    },
+    {
+      "check": "reopened.link.$M$73",
+      "passed": true,
+      "detail": "'Справка'!A1471"
+    },
+    {
+      "check": "reopened.link.$M$74",
+      "passed": true,
+      "detail": "'Справка'!A1480"
+    },
+    {
+      "check": "reopened.link.$M$75",
+      "passed": true,
+      "detail": "'Справка'!A1485"
+    },
+    {
+      "check": "reopened.link.$M$76",
+      "passed": true,
+      "detail": "'Справка'!A1490"
+    },
+    {
+      "check": "reopened.link.$M$77",
+      "passed": true,
+      "detail": "'Справка'!A1495"
+    },
+    {
+      "check": "reopened.link.$M$78",
+      "passed": true,
+      "detail": "'Справка'!A1504"
+    },
+    {
+      "check": "reopened.link.$M$79",
+      "passed": true,
+      "detail": "'Справка'!A1512"
+    },
+    {
+      "check": "reopened.link.$M$80",
+      "passed": true,
+      "detail": "'Справка'!A1519"
+    },
+    {
+      "check": "reopened.link.$M$81",
+      "passed": true,
+      "detail": "'Справка'!A1524"
+    },
+    {
+      "check": "reopened.link.$M$82",
+      "passed": true,
+      "detail": "'Справка'!A1529"
+    },
+    {
+      "check": "reopened.link.$M$83",
+      "passed": true,
+      "detail": "'Справка'!A1534"
+    },
+    {
+      "check": "reopened.link.$AI$1",
+      "passed": true,
+      "detail": "'Справка'!A596"
+    },
+    {
+      "check": "reopened.link.$H$2",
+      "passed": true,
+      "detail": "'Справка'!A507"
+    },
+    {
+      "check": "reopened.link.$O$2",
+      "passed": true,
+      "detail": "'Справка'!A526"
+    },
+    {
+      "check": "reopened.link.$H$11",
+      "passed": true,
+      "detail": "'Справка'!A518"
+    },
+    {
+      "check": "reopened.link.$H$17",
+      "passed": true,
+      "detail": "'Справка'!A574"
+    },
+    {
+      "check": "reopened.link.$H$25",
+      "passed": true,
+      "detail": "'Справка'!A565"
+    },
+    {
+      "check": "reopened.link.$H$35",
+      "passed": true,
+      "detail": "'Справка'!A582"
+    },
+    {
+      "check": "reopened.link.$P$36",
+      "passed": true,
+      "detail": "'Справка'!A550"
+    },
+    {
+      "check": "reopened.link.$AI$58",
+      "passed": true,
+      "detail": "'Справка'!A557"
+    },
+    {
+      "check": "reopened.link.$H$69",
+      "passed": true,
+      "detail": "'Справка'!A602"
+    },
+    {
+      "check": "reopened.link.$H$85",
+      "passed": true,
+      "detail": "'Справка'!A611"
+    },
+    {
+      "check": "reopened.link.$H$97",
+      "passed": true,
+      "detail": "'Справка'!A643"
+    },
+    {
+      "check": "reopened.link.$H$127",
+      "passed": true,
+      "detail": "'Справка'!A620"
+    },
+    {
+      "check": "reopened.link.$H$152",
+      "passed": true,
+      "detail": "'Справка'!A631"
+    },
+    {
+      "check": "reopened.linkCoverage",
+      "passed": true,
+      "detail": {
+        "after": 149,
+        "before": 149
+      }
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.1",
+      "passed": true,
+      "detail": "$E$3"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.2",
+      "passed": true,
+      "detail": "$E$4"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.3",
+      "passed": true,
+      "detail": "$E$5"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.4",
+      "passed": true,
+      "detail": "$E$6"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.5",
+      "passed": true,
+      "detail": "$E$7"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.6",
+      "passed": true,
+      "detail": "$E$8"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.7",
+      "passed": true,
+      "detail": "$E$9"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.8",
+      "passed": true,
+      "detail": "$E$10"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.9",
+      "passed": true,
+      "detail": "$E$11"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.10",
+      "passed": true,
+      "detail": "$E$12"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.11",
+      "passed": true,
+      "detail": "$E$13"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.12",
+      "passed": true,
+      "detail": "$E$14"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.13",
+      "passed": true,
+      "detail": "$E$15"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.14",
+      "passed": true,
+      "detail": "$E$16"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.15",
+      "passed": true,
+      "detail": "$E$17"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.16",
+      "passed": true,
+      "detail": "$E$18"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.17",
+      "passed": true,
+      "detail": "$E$19"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.18",
+      "passed": true,
+      "detail": "$E$20"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.19",
+      "passed": true,
+      "detail": "$E$21"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.20",
+      "passed": true,
+      "detail": "$E$22"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.21",
+      "passed": true,
+      "detail": "$E$23"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.22",
+      "passed": true,
+      "detail": "$E$24"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.23",
+      "passed": true,
+      "detail": "$E$25"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.24",
+      "passed": true,
+      "detail": "$E$26"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.25",
+      "passed": true,
+      "detail": "$E$27"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.26",
+      "passed": true,
+      "detail": "$E$28"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.27",
+      "passed": true,
+      "detail": "$E$29"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.28",
+      "passed": true,
+      "detail": "$E$30"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.29",
+      "passed": true,
+      "detail": "$E$31"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.30",
+      "passed": true,
+      "detail": "$E$32"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.31",
+      "passed": true,
+      "detail": "$E$33"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.32",
+      "passed": true,
+      "detail": "$E$34"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.33",
+      "passed": true,
+      "detail": "$E$35"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.34",
+      "passed": true,
+      "detail": "$E$36"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.35",
+      "passed": true,
+      "detail": "$E$37"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.36",
+      "passed": true,
+      "detail": "$E$38"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.37",
+      "passed": true,
+      "detail": "$E$39"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.38",
+      "passed": true,
+      "detail": "$E$40"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.39",
+      "passed": true,
+      "detail": "$E$41"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.40",
+      "passed": true,
+      "detail": "$E$42"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.41",
+      "passed": true,
+      "detail": "$E$43"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.42",
+      "passed": true,
+      "detail": "$E$44"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.43",
+      "passed": true,
+      "detail": "$E$45"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.44",
+      "passed": true,
+      "detail": "$E$46"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.45",
+      "passed": true,
+      "detail": "$E$47"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.46",
+      "passed": true,
+      "detail": "$E$48"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.47",
+      "passed": true,
+      "detail": "$E$49"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.48",
+      "passed": true,
+      "detail": "$E$50"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.49",
+      "passed": true,
+      "detail": "$E$51"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.50",
+      "passed": true,
+      "detail": "$E$52"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.51",
+      "passed": true,
+      "detail": "$E$53"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.52",
+      "passed": true,
+      "detail": "$E$54"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.53",
+      "passed": true,
+      "detail": "$E$55"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.54",
+      "passed": true,
+      "detail": "$E$56"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.55",
+      "passed": true,
+      "detail": "$E$57"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.56",
+      "passed": true,
+      "detail": "$E$58"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.57",
+      "passed": true,
+      "detail": "$E$59"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.58",
+      "passed": true,
+      "detail": "$E$60"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.59",
+      "passed": true,
+      "detail": "$E$61"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.60",
+      "passed": true,
+      "detail": "$E$62"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.61",
+      "passed": true,
+      "detail": "$E$63"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.62",
+      "passed": true,
+      "detail": "$E$64"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.63",
+      "passed": true,
+      "detail": "$E$65"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.64",
+      "passed": true,
+      "detail": "$E$66"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.65",
+      "passed": true,
+      "detail": "$E$67"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.66",
+      "passed": true,
+      "detail": "$E$68"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.67",
+      "passed": true,
+      "detail": "$E$69"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.68",
+      "passed": true,
+      "detail": "$E$70"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.69",
+      "passed": true,
+      "detail": "$E$71"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.70",
+      "passed": true,
+      "detail": "$E$72"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.71",
+      "passed": true,
+      "detail": "$E$73"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.72",
+      "passed": true,
+      "detail": "$E$74"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.73",
+      "passed": true,
+      "detail": "$E$75"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.74",
+      "passed": true,
+      "detail": "$E$76"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.75",
+      "passed": true,
+      "detail": "$E$77"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.76",
+      "passed": true,
+      "detail": "$E$78"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.77",
+      "passed": true,
+      "detail": "$E$79"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.78",
+      "passed": true,
+      "detail": "$E$80"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.79",
+      "passed": true,
+      "detail": "$E$81"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.80",
+      "passed": true,
+      "detail": "$E$82"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.81",
+      "passed": true,
+      "detail": "$E$83"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.82",
+      "passed": true,
+      "detail": "$E$84"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.83",
+      "passed": true,
+      "detail": "$E$85"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.84",
+      "passed": true,
+      "detail": "$E$86"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.85",
+      "passed": true,
+      "detail": "$E$87"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.86",
+      "passed": true,
+      "detail": "$E$88"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.87",
+      "passed": true,
+      "detail": "$E$89"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.88",
+      "passed": true,
+      "detail": "$E$90"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.89",
+      "passed": true,
+      "detail": "$E$91"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.90",
+      "passed": true,
+      "detail": "$E$92"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.91",
+      "passed": true,
+      "detail": "$E$93"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.92",
+      "passed": true,
+      "detail": "$E$94"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.93",
+      "passed": true,
+      "detail": "$E$95"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.94",
+      "passed": true,
+      "detail": "$E$96"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.95",
+      "passed": true,
+      "detail": "$E$97"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.96",
+      "passed": true,
+      "detail": "$E$98"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.97",
+      "passed": true,
+      "detail": "$E$99"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.98",
+      "passed": true,
+      "detail": "$E$100"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.99",
+      "passed": true,
+      "detail": "$E$101"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.100",
+      "passed": true,
+      "detail": "$E$102"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.101",
+      "passed": true,
+      "detail": "$E$103"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.102",
+      "passed": true,
+      "detail": "$E$104"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.103",
+      "passed": true,
+      "detail": "$E$105"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.104",
+      "passed": true,
+      "detail": "$E$106"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.105",
+      "passed": true,
+      "detail": "$E$107"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.106",
+      "passed": true,
+      "detail": "$E$108"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.107",
+      "passed": true,
+      "detail": "$E$109"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.108",
+      "passed": true,
+      "detail": "$E$110"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.109",
+      "passed": true,
+      "detail": "$E$111"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.110",
+      "passed": true,
+      "detail": "$E$112"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.111",
+      "passed": true,
+      "detail": "$E$113"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.112",
+      "passed": true,
+      "detail": "$E$114"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.113",
+      "passed": true,
+      "detail": "$E$115"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.114",
+      "passed": true,
+      "detail": "$E$116"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.115",
+      "passed": true,
+      "detail": "$E$117"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.116",
+      "passed": true,
+      "detail": "$E$118"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.117",
+      "passed": true,
+      "detail": "$E$119"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.118",
+      "passed": true,
+      "detail": "$E$120"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.119",
+      "passed": true,
+      "detail": "$E$121"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.120",
+      "passed": true,
+      "detail": "$E$122"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.121",
+      "passed": true,
+      "detail": "$E$123"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.122",
+      "passed": true,
+      "detail": "$E$124"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.123",
+      "passed": true,
+      "detail": "$E$125"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.124",
+      "passed": true,
+      "detail": "$E$126"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.125",
+      "passed": true,
+      "detail": "$E$127"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.126",
+      "passed": true,
+      "detail": "$E$128"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.127",
+      "passed": true,
+      "detail": "$E$129"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.128",
+      "passed": true,
+      "detail": "$E$130"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.129",
+      "passed": true,
+      "detail": "$E$131"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.130",
+      "passed": true,
+      "detail": "$E$132"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.131",
+      "passed": true,
+      "detail": "$E$133"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.132",
+      "passed": true,
+      "detail": "$E$134"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.133",
+      "passed": true,
+      "detail": "$E$135"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.134",
+      "passed": true,
+      "detail": "$E$136"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.135",
+      "passed": true,
+      "detail": "$E$137"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.136",
+      "passed": true,
+      "detail": "$E$138"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.137",
+      "passed": true,
+      "detail": "$E$139"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.138",
+      "passed": true,
+      "detail": "$E$140"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.139",
+      "passed": true,
+      "detail": "$E$141"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.140",
+      "passed": true,
+      "detail": "$E$142"
+    },
+    {
+      "check": "reopened.border.rngSystemSettings.141",
+      "passed": true,
+      "detail": "$E$143"
+    },
+    {
+      "check": "reopened.border.rngUnitSettings.1",
+      "passed": true,
+      "detail": "$K$3"
+    },
+    {
+      "check": "reopened.border.rngUnitSettings.2",
+      "passed": true,
+      "detail": "$K$4"
+    },
+    {
+      "check": "reopened.border.rngUnitSettings.3",
+      "passed": true,
+      "detail": "$K$5"
+    },
+    {
+      "check": "reopened.border.rngUnitSettings.4",
+      "passed": true,
+      "detail": "$K$6"
+    },
+    {
+      "check": "reopened.border.rngUnitSettings.5",
+      "passed": true,
+      "detail": "$K$7"
+    },
+    {
+      "check": "reopened.border.rngUnitSettings.6",
+      "passed": true,
+      "detail": "$K$8"
+    },
+    {
+      "check": "reopened.border.rngUnitSettings.7",
+      "passed": true,
+      "detail": "$K$9"
+    },
+    {
+      "check": "reopened.border.rngSignConventionSettings.1",
+      "passed": true,
+      "detail": "$J$12"
+    },
+    {
+      "check": "reopened.border.rngSignConventionSettings.2",
+      "passed": true,
+      "detail": "$J$13"
+    },
+    {
+      "check": "reopened.border.rngSignConventionSettings.3",
+      "passed": true,
+      "detail": "$J$14"
+    },
+    {
+      "check": "reopened.border.rngSignConventionSettings.4",
+      "passed": true,
+      "detail": "$J$15"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.1",
+      "passed": true,
+      "detail": "$N$36"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.2",
+      "passed": true,
+      "detail": "$N$37"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.3",
+      "passed": true,
+      "detail": "$N$38"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.4",
+      "passed": true,
+      "detail": "$N$39"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.5",
+      "passed": true,
+      "detail": "$N$40"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.6",
+      "passed": true,
+      "detail": "$N$41"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.7",
+      "passed": true,
+      "detail": "$N$42"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.8",
+      "passed": true,
+      "detail": "$N$43"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.9",
+      "passed": true,
+      "detail": "$N$44"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.10",
+      "passed": true,
+      "detail": "$N$45"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.11",
+      "passed": true,
+      "detail": "$N$46"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.12",
+      "passed": true,
+      "detail": "$N$47"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.13",
+      "passed": true,
+      "detail": "$N$48"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.14",
+      "passed": true,
+      "detail": "$N$49"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.15",
+      "passed": true,
+      "detail": "$N$50"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.16",
+      "passed": true,
+      "detail": "$N$51"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.17",
+      "passed": true,
+      "detail": "$N$52"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.18",
+      "passed": true,
+      "detail": "$N$53"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.19",
+      "passed": true,
+      "detail": "$N$54"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.20",
+      "passed": true,
+      "detail": "$N$55"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.21",
+      "passed": true,
+      "detail": "$N$56"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.22",
+      "passed": true,
+      "detail": "$N$57"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.23",
+      "passed": true,
+      "detail": "$N$58"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.24",
+      "passed": true,
+      "detail": "$N$59"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.25",
+      "passed": true,
+      "detail": "$N$60"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.26",
+      "passed": true,
+      "detail": "$N$61"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.27",
+      "passed": true,
+      "detail": "$N$62"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.28",
+      "passed": true,
+      "detail": "$N$63"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.29",
+      "passed": true,
+      "detail": "$N$64"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.30",
+      "passed": true,
+      "detail": "$N$65"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.31",
+      "passed": true,
+      "detail": "$N$66"
+    },
+    {
+      "check": "reopened.border.rngCalculationProfiles.32",
+      "passed": true,
+      "detail": "$N$67"
+    },
+    {
+      "check": "reopened.border.rngConcreteMaterialParameters.1",
+      "passed": true,
+      "detail": "$M$26"
+    },
+    {
+      "check": "reopened.border.rngConcreteMaterialParameters.2",
+      "passed": true,
+      "detail": "$M$27"
+    },
+    {
+      "check": "reopened.border.rngConcreteMaterialParameters.3",
+      "passed": true,
+      "detail": "$M$28"
+    },
+    {
+      "check": "reopened.border.rngConcreteMaterialParameters.4",
+      "passed": true,
+      "detail": "$M$29"
+    },
+    {
+      "check": "reopened.border.rngConcreteMaterialParameters.5",
+      "passed": true,
+      "detail": "$M$30"
+    },
+    {
+      "check": "reopened.border.rngConcreteMaterialParameters.6",
+      "passed": true,
+      "detail": "$M$31"
+    },
+    {
+      "check": "reopened.border.rngConcreteMaterialParameters.7",
+      "passed": true,
+      "detail": "$M$32"
+    },
+    {
+      "check": "reopened.border.rngConcreteMaterialParameters.8",
+      "passed": true,
+      "detail": "$M$33"
+    },
+    {
+      "check": "reopened.border.rngSteelMaterialParameters.1",
+      "passed": true,
+      "detail": "$M$18"
+    },
+    {
+      "check": "reopened.border.rngSteelMaterialParameters.2",
+      "passed": true,
+      "detail": "$M$19"
+    },
+    {
+      "check": "reopened.border.rngSteelMaterialParameters.3",
+      "passed": true,
+      "detail": "$M$20"
+    },
+    {
+      "check": "reopened.border.rngSteelMaterialParameters.4",
+      "passed": true,
+      "detail": "$M$21"
+    },
+    {
+      "check": "reopened.border.rngSteelMaterialParameters.5",
+      "passed": true,
+      "detail": "$M$22"
+    },
+    {
+      "check": "reopened.border.rngSteelMaterialParameters.6",
+      "passed": true,
+      "detail": "$M$23"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.1",
+      "passed": true,
+      "detail": "$M$70"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.2",
+      "passed": true,
+      "detail": "$M$71"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.3",
+      "passed": true,
+      "detail": "$M$72"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.4",
+      "passed": true,
+      "detail": "$M$73"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.5",
+      "passed": true,
+      "detail": "$M$74"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.6",
+      "passed": true,
+      "detail": "$M$75"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.7",
+      "passed": true,
+      "detail": "$M$76"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.8",
+      "passed": true,
+      "detail": "$M$77"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.9",
+      "passed": true,
+      "detail": "$M$78"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.10",
+      "passed": true,
+      "detail": "$M$79"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.11",
+      "passed": true,
+      "detail": "$M$80"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.12",
+      "passed": true,
+      "detail": "$M$81"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.13",
+      "passed": true,
+      "detail": "$M$82"
+    },
+    {
+      "check": "reopened.border.rngPlotAnnotationSettings.14",
+      "passed": true,
+      "detail": "$M$83"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.1",
+      "passed": true,
+      "detail": "$U$3"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.2",
+      "passed": true,
+      "detail": "$U$4"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.3",
+      "passed": true,
+      "detail": "$U$5"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.4",
+      "passed": true,
+      "detail": "$U$6"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.5",
+      "passed": true,
+      "detail": "$U$7"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.6",
+      "passed": true,
+      "detail": "$U$8"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.7",
+      "passed": true,
+      "detail": "$U$9"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.8",
+      "passed": true,
+      "detail": "$U$10"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.9",
+      "passed": true,
+      "detail": "$U$11"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.10",
+      "passed": true,
+      "detail": "$U$12"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.11",
+      "passed": true,
+      "detail": "$U$13"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.12",
+      "passed": true,
+      "detail": "$U$14"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.13",
+      "passed": true,
+      "detail": "$U$15"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.14",
+      "passed": true,
+      "detail": "$U$16"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.15",
+      "passed": true,
+      "detail": "$U$17"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.16",
+      "passed": true,
+      "detail": "$U$18"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.17",
+      "passed": true,
+      "detail": "$U$19"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.18",
+      "passed": true,
+      "detail": "$U$20"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.19",
+      "passed": true,
+      "detail": "$U$21"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.20",
+      "passed": true,
+      "detail": "$U$22"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.21",
+      "passed": true,
+      "detail": "$U$23"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.22",
+      "passed": true,
+      "detail": "$U$24"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.23",
+      "passed": true,
+      "detail": "$U$25"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.24",
+      "passed": true,
+      "detail": "$U$26"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.25",
+      "passed": true,
+      "detail": "$U$27"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.26",
+      "passed": true,
+      "detail": "$U$28"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.27",
+      "passed": true,
+      "detail": "$U$29"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.28",
+      "passed": true,
+      "detail": "$U$30"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.29",
+      "passed": true,
+      "detail": "$U$31"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.30",
+      "passed": true,
+      "detail": "$U$32"
+    },
+    {
+      "check": "reopened.border.rngLoadCombinations.31",
+      "passed": true,
+      "detail": "$U$33"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.1",
+      "passed": true,
+      "detail": "$K$86"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.2",
+      "passed": true,
+      "detail": "$K$87"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.3",
+      "passed": true,
+      "detail": "$K$88"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.4",
+      "passed": true,
+      "detail": "$K$89"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.5",
+      "passed": true,
+      "detail": "$K$90"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.6",
+      "passed": true,
+      "detail": "$K$91"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.7",
+      "passed": true,
+      "detail": "$K$92"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.8",
+      "passed": true,
+      "detail": "$K$93"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.9",
+      "passed": true,
+      "detail": "$K$94"
+    },
+    {
+      "check": "reopened.border.rngCircleGeometry.10",
+      "passed": true,
+      "detail": "$K$95"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.1",
+      "passed": true,
+      "detail": "$P$128"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.2",
+      "passed": true,
+      "detail": "$P$129"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.3",
+      "passed": true,
+      "detail": "$P$130"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.4",
+      "passed": true,
+      "detail": "$P$131"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.5",
+      "passed": true,
+      "detail": "$P$132"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.6",
+      "passed": true,
+      "detail": "$P$133"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.7",
+      "passed": true,
+      "detail": "$P$134"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.8",
+      "passed": true,
+      "detail": "$P$135"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.9",
+      "passed": true,
+      "detail": "$P$136"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.10",
+      "passed": true,
+      "detail": "$P$137"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.11",
+      "passed": true,
+      "detail": "$P$138"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.12",
+      "passed": true,
+      "detail": "$P$139"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.13",
+      "passed": true,
+      "detail": "$P$140"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.14",
+      "passed": true,
+      "detail": "$P$141"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.15",
+      "passed": true,
+      "detail": "$P$142"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.16",
+      "passed": true,
+      "detail": "$P$143"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.17",
+      "passed": true,
+      "detail": "$P$144"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.18",
+      "passed": true,
+      "detail": "$P$145"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.19",
+      "passed": true,
+      "detail": "$P$146"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.20",
+      "passed": true,
+      "detail": "$P$147"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.21",
+      "passed": true,
+      "detail": "$P$148"
+    },
+    {
+      "check": "reopened.border.rngRoundedRectangleGeometry.22",
+      "passed": true,
+      "detail": "$P$149"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.1",
+      "passed": true,
+      "detail": "$P$153"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.2",
+      "passed": true,
+      "detail": "$P$154"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.3",
+      "passed": true,
+      "detail": "$P$155"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.4",
+      "passed": true,
+      "detail": "$P$156"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.5",
+      "passed": true,
+      "detail": "$P$157"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.6",
+      "passed": true,
+      "detail": "$P$158"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.7",
+      "passed": true,
+      "detail": "$P$159"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.8",
+      "passed": true,
+      "detail": "$P$160"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.9",
+      "passed": true,
+      "detail": "$P$161"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.10",
+      "passed": true,
+      "detail": "$P$162"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.11",
+      "passed": true,
+      "detail": "$P$163"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.12",
+      "passed": true,
+      "detail": "$P$164"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.13",
+      "passed": true,
+      "detail": "$P$165"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.14",
+      "passed": true,
+      "detail": "$P$166"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.15",
+      "passed": true,
+      "detail": "$P$167"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.16",
+      "passed": true,
+      "detail": "$P$168"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.17",
+      "passed": true,
+      "detail": "$P$169"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.18",
+      "passed": true,
+      "detail": "$P$170"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.19",
+      "passed": true,
+      "detail": "$P$171"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.20",
+      "passed": true,
+      "detail": "$P$172"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.21",
+      "passed": true,
+      "detail": "$P$173"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.22",
+      "passed": true,
+      "detail": "$P$174"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.23",
+      "passed": true,
+      "detail": "$P$175"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.24",
+      "passed": true,
+      "detail": "$P$176"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.25",
+      "passed": true,
+      "detail": "$P$177"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.26",
+      "passed": true,
+      "detail": "$P$178"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.27",
+      "passed": true,
+      "detail": "$P$179"
+    },
+    {
+      "check": "reopened.border.rngHollowRectangleGeometry.28",
+      "passed": true,
+      "detail": "$P$180"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.1",
+      "passed": true,
+      "detail": "$P$98"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.2",
+      "passed": true,
+      "detail": "$P$99"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.3",
+      "passed": true,
+      "detail": "$P$100"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.4",
+      "passed": true,
+      "detail": "$P$101"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.5",
+      "passed": true,
+      "detail": "$P$102"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.6",
+      "passed": true,
+      "detail": "$P$103"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.7",
+      "passed": true,
+      "detail": "$P$104"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.8",
+      "passed": true,
+      "detail": "$P$105"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.9",
+      "passed": true,
+      "detail": "$P$106"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.10",
+      "passed": true,
+      "detail": "$P$107"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.11",
+      "passed": true,
+      "detail": "$P$108"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.12",
+      "passed": true,
+      "detail": "$P$109"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.13",
+      "passed": true,
+      "detail": "$P$110"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.14",
+      "passed": true,
+      "detail": "$P$111"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.15",
+      "passed": true,
+      "detail": "$P$112"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.16",
+      "passed": true,
+      "detail": "$P$113"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.17",
+      "passed": true,
+      "detail": "$P$114"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.18",
+      "passed": true,
+      "detail": "$P$115"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.19",
+      "passed": true,
+      "detail": "$P$116"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.20",
+      "passed": true,
+      "detail": "$P$117"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.21",
+      "passed": true,
+      "detail": "$P$118"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.22",
+      "passed": true,
+      "detail": "$P$119"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.23",
+      "passed": true,
+      "detail": "$P$120"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.24",
+      "passed": true,
+      "detail": "$P$121"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.25",
+      "passed": true,
+      "detail": "$P$122"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.26",
+      "passed": true,
+      "detail": "$P$123"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.27",
+      "passed": true,
+      "detail": "$P$124"
+    },
+    {
+      "check": "reopened.border.rngRectSetGeometry.28",
+      "passed": true,
+      "detail": "$P$125"
+    },
+    {
+      "check": "reopened.borderCoverage",
+      "passed": true,
+      "detail": 331
+    },
+    {
+      "check": "reopened.rectset.21.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.21.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.21.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.21.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.21.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.21.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.21.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.21.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.22.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.22.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.22.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.22.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.22.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.22.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.22.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.22.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.23.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.23.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.23.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.23.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.23.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.23.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.23.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.23.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.24.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.24.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.24.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.24.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.24.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.24.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.24.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.24.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.25.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.25.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.25.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.25.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.25.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.25.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.25.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.25.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.26.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.26.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.26.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.26.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.26.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.26.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.26.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.26.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.27.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.27.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.27.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.27.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.27.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.27.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.27.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.27.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.28.3",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.28.3",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.28.4",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.28.4",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.rectset.28.6",
+      "passed": true,
+      "detail": "=$HC$1:$HC$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.28.6",
+      "passed": true,
+      "detail": "Stacked|SideBySide"
+    },
+    {
+      "check": "reopened.rectset.28.7",
+      "passed": true,
+      "detail": "=$HD$1:$HD$2"
+    },
+    {
+      "check": "reopened.rectsetOptions.28.7",
+      "passed": true,
+      "detail": "EachBar|EverySecondBar"
+    },
+    {
+      "check": "reopened.formulaPictures",
+      "passed": true,
+      "detail": 76
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_001",
+      "passed": true,
+      "detail": {
+        "top": 1285.5,
+        "rowHeight": 42.0,
+        "row": 98,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_002",
+      "passed": true,
+      "detail": {
+        "top": 1340.2501,
+        "rowHeight": 42.0,
+        "row": 100,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_003",
+      "passed": true,
+      "detail": {
+        "top": 1395.0,
+        "rowHeight": 42.0,
+        "row": 102,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_004",
+      "passed": true,
+      "detail": {
+        "top": 1479.0,
+        "rowHeight": 42.0,
+        "row": 106,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_005",
+      "passed": true,
+      "detail": {
+        "top": 1917.0,
+        "rowHeight": 42.0,
+        "row": 136,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_006",
+      "passed": true,
+      "detail": {
+        "top": 1971.7499,
+        "rowHeight": 42.0,
+        "row": 138,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_007",
+      "passed": true,
+      "detail": {
+        "top": 2158.0,
+        "rowHeight": 66.0,
+        "row": 150,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_008",
+      "passed": true,
+      "detail": {
+        "top": 2397.0,
+        "rowHeight": 42.0,
+        "row": 164,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_009",
+      "passed": true,
+      "detail": {
+        "top": 2648.25,
+        "rowHeight": 42.0,
+        "row": 180,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_010",
+      "passed": true,
+      "detail": {
+        "top": 2703.25,
+        "rowHeight": 66.0,
+        "row": 182,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_011",
+      "passed": true,
+      "detail": {
+        "top": 2849.25,
+        "rowHeight": 42.0,
+        "row": 189,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_012",
+      "passed": true,
+      "detail": {
+        "top": 2997.0,
+        "rowHeight": 42.0,
+        "row": 198,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_013",
+      "passed": true,
+      "detail": {
+        "top": 3051.75,
+        "rowHeight": 42.0,
+        "row": 200,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_014",
+      "passed": true,
+      "detail": {
+        "top": 3106.75,
+        "rowHeight": 66.0,
+        "row": 202,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_015",
+      "passed": true,
+      "detail": {
+        "top": 3185.4998,
+        "rowHeight": 66.0,
+        "row": 204,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_016",
+      "passed": true,
+      "detail": {
+        "top": 3293.25,
+        "rowHeight": 42.0,
+        "row": 208,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_017",
+      "passed": true,
+      "detail": {
+        "top": 3361.0,
+        "rowHeight": 66.0,
+        "row": 211,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_018",
+      "passed": true,
+      "detail": {
+        "top": 3532.5002,
+        "rowHeight": 42.0,
+        "row": 220,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_019",
+      "passed": true,
+      "detail": {
+        "top": 3680.5002,
+        "rowHeight": 66.0,
+        "row": 229,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_020",
+      "passed": true,
+      "detail": {
+        "top": 3772.0,
+        "rowHeight": 66.0,
+        "row": 232,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_021",
+      "passed": true,
+      "detail": {
+        "top": 3867.25,
+        "rowHeight": 66.0,
+        "row": 235,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_022",
+      "passed": true,
+      "detail": {
+        "top": 3945.75,
+        "rowHeight": 42.0,
+        "row": 237,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_023",
+      "passed": true,
+      "detail": {
+        "top": 4000.5002,
+        "rowHeight": 42.0,
+        "row": 239,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_024",
+      "passed": true,
+      "detail": {
+        "top": 4161.25,
+        "rowHeight": 66.0,
+        "row": 249,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_025",
+      "passed": true,
+      "detail": {
+        "top": 4345.75,
+        "rowHeight": 66.0,
+        "row": 259,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_026",
+      "passed": true,
+      "detail": {
+        "top": 4479.0,
+        "rowHeight": 42.0,
+        "row": 265,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_027",
+      "passed": true,
+      "detail": {
+        "top": 4534.0,
+        "rowHeight": 66.0,
+        "row": 267,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_028",
+      "passed": true,
+      "detail": {
+        "top": 4920.25,
+        "rowHeight": 66.0,
+        "row": 292,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_029",
+      "passed": true,
+      "detail": {
+        "top": 4999.25,
+        "rowHeight": 48.0,
+        "row": 294,
+        "height": 39.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_030",
+      "passed": true,
+      "detail": {
+        "top": 5059.75,
+        "rowHeight": 66.0,
+        "row": 296,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_031",
+      "passed": true,
+      "detail": {
+        "top": 5189.5,
+        "rowHeight": 211.5,
+        "row": 302,
+        "height": 204.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_032",
+      "passed": true,
+      "detail": {
+        "top": 5497.5,
+        "rowHeight": 42.0,
+        "row": 310,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_033",
+      "passed": true,
+      "detail": {
+        "top": 5616.5,
+        "rowHeight": 48.0,
+        "row": 317,
+        "height": 39.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_034",
+      "passed": true,
+      "detail": {
+        "top": 5689.75,
+        "rowHeight": 66.0,
+        "row": 320,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_035",
+      "passed": true,
+      "detail": {
+        "top": 5886.75,
+        "rowHeight": 42.0,
+        "row": 331,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_036",
+      "passed": true,
+      "detail": {
+        "top": 5954.5,
+        "rowHeight": 211.5,
+        "row": 334,
+        "height": 204.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_037",
+      "passed": true,
+      "detail": {
+        "top": 6300.75,
+        "rowHeight": 42.0,
+        "row": 345,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_038",
+      "passed": true,
+      "detail": {
+        "top": 6432.25,
+        "rowHeight": 211.5,
+        "row": 353,
+        "height": 204.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_039",
+      "passed": true,
+      "detail": {
+        "top": 6643.75,
+        "rowHeight": 66.0,
+        "row": 354,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_040",
+      "passed": true,
+      "detail": {
+        "top": 6734.9995,
+        "rowHeight": 42.0,
+        "row": 357,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_041",
+      "passed": true,
+      "detail": {
+        "top": 6789.75,
+        "rowHeight": 42.0,
+        "row": 359,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_042",
+      "passed": true,
+      "detail": {
+        "top": 6874.25,
+        "rowHeight": 48.0,
+        "row": 363,
+        "height": 39.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_043",
+      "passed": true,
+      "detail": {
+        "top": 6947.5,
+        "rowHeight": 66.0,
+        "row": 366,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_044",
+      "passed": true,
+      "detail": {
+        "top": 7051.75,
+        "rowHeight": 66.0,
+        "row": 370,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_045",
+      "passed": true,
+      "detail": {
+        "top": 7130.25,
+        "rowHeight": 42.0,
+        "row": 372,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_046",
+      "passed": true,
+      "detail": {
+        "top": 7252.75,
+        "rowHeight": 211.5,
+        "row": 379,
+        "height": 204.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_047",
+      "passed": true,
+      "detail": {
+        "top": 7801.5,
+        "rowHeight": 42.0,
+        "row": 405,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_048",
+      "passed": true,
+      "detail": {
+        "top": 7869.25,
+        "rowHeight": 66.0,
+        "row": 408,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_049",
+      "passed": true,
+      "detail": {
+        "top": 7947.75,
+        "rowHeight": 42.0,
+        "row": 410,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_050",
+      "passed": true,
+      "detail": {
+        "top": 8002.75,
+        "rowHeight": 66.0,
+        "row": 412,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_051",
+      "passed": true,
+      "detail": {
+        "top": 8081.5,
+        "rowHeight": 66.0,
+        "row": 414,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_052",
+      "passed": true,
+      "detail": {
+        "top": 8189.25,
+        "rowHeight": 42.0,
+        "row": 418,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_053",
+      "passed": true,
+      "detail": {
+        "top": 8269.75,
+        "rowHeight": 66.0,
+        "row": 422,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_054",
+      "passed": true,
+      "detail": {
+        "top": 8348.5,
+        "rowHeight": 66.0,
+        "row": 424,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_055",
+      "passed": true,
+      "detail": {
+        "top": 8494.75,
+        "rowHeight": 66.0,
+        "row": 431,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_056",
+      "passed": true,
+      "detail": {
+        "top": 8598.75,
+        "rowHeight": 42.0,
+        "row": 435,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_057",
+      "passed": true,
+      "detail": {
+        "top": 8670.25,
+        "rowHeight": 66.0,
+        "row": 438,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_058",
+      "passed": true,
+      "detail": {
+        "top": 8761.75,
+        "rowHeight": 66.0,
+        "row": 441,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_059",
+      "passed": true,
+      "detail": {
+        "top": 8840.5,
+        "rowHeight": 66.0,
+        "row": 443,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_060",
+      "passed": true,
+      "detail": {
+        "top": 8919.0,
+        "rowHeight": 42.0,
+        "row": 445,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_061",
+      "passed": true,
+      "detail": {
+        "top": 8974.0,
+        "rowHeight": 66.0,
+        "row": 447,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_062",
+      "passed": true,
+      "detail": {
+        "top": 9052.75,
+        "rowHeight": 66.0,
+        "row": 449,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_063",
+      "passed": true,
+      "detail": {
+        "top": 9144.0,
+        "rowHeight": 42.0,
+        "row": 452,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_064",
+      "passed": true,
+      "detail": {
+        "top": 9228.25,
+        "rowHeight": 66.0,
+        "row": 456,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_065",
+      "passed": true,
+      "detail": {
+        "top": 9319.75,
+        "rowHeight": 66.0,
+        "row": 459,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_066",
+      "passed": true,
+      "detail": {
+        "top": 9398.5,
+        "rowHeight": 66.0,
+        "row": 461,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_067",
+      "passed": true,
+      "detail": {
+        "top": 9477.25,
+        "rowHeight": 66.0,
+        "row": 463,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_068",
+      "passed": true,
+      "detail": {
+        "top": 9556.0,
+        "rowHeight": 66.0,
+        "row": 465,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_069",
+      "passed": true,
+      "detail": {
+        "top": 9634.75,
+        "rowHeight": 66.0,
+        "row": 467,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_070",
+      "passed": true,
+      "detail": {
+        "top": 9755.5,
+        "rowHeight": 66.0,
+        "row": 472,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_071",
+      "passed": true,
+      "detail": {
+        "top": 9834.25,
+        "rowHeight": 66.0,
+        "row": 474,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_072",
+      "passed": true,
+      "detail": {
+        "top": 9913.0,
+        "rowHeight": 66.0,
+        "row": 476,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_073",
+      "passed": true,
+      "detail": {
+        "top": 9991.5,
+        "rowHeight": 42.0,
+        "row": 478,
+        "height": 34.5
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_074",
+      "passed": true,
+      "detail": {
+        "top": 10072.0,
+        "rowHeight": 66.0,
+        "row": 482,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_075",
+      "passed": true,
+      "detail": {
+        "top": 34122.25,
+        "rowHeight": 66.0,
+        "row": 1700,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "reopened.pictureBounds.NDMHelpFormula_076",
+      "passed": true,
+      "detail": {
+        "top": 34294.0,
+        "rowHeight": 66.0,
+        "row": 1709,
+        "height": 58.0
+      }
+    },
+    {
+      "check": "readOnlyVerificationUnchanged",
+      "passed": true,
+      "detail": "6DAF105D941A0CF1189BCF4D8A262F68A85DA210296F5FAAFE9421F76A3D408F"
+    },
+    {
+      "check": "vbaProjectUnchanged",
+      "passed": true,
+      "detail": "C382BA88E166BFC0C775A3E289A579CA8A624F90EB18608ED206F9CAAC595017"
+    },
+    {
+      "check": "calculationPropertiesUnchanged",
+      "passed": true,
+      "detail": "<calcPr calcId=\"191029\" xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" />"
+    }
+  ]
+}
