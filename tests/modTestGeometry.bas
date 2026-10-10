@@ -116,6 +116,10 @@ Private Sub TestConcreteMeshCenter(ByRef stats As TTestStats)
         section.ConcreteMeshCentroid centerX, centerY, area
         AssertClose stats, prefix & ".repeatX", centerX, CDbl(shift) + 30#, 0#
         AssertClose stats, prefix & ".repeatY", centerY, -CDbl(shift) + 60#, 0#
+        Set frame = New CSectionNumericalFrame: frame.Initialize section
+        AssertClose stats, prefix & ".radius", frame.LengthScale, Sqr(30# * 30# + 60# * 60#), 0#
+        Set frame = New CSectionNumericalFrame: frame.Initialize section
+        AssertClose stats, prefix & ".radiusRepeat", frame.LengthScale, Sqr(30# * 30# + 60# * 60#), 0#
         section.AddRebarElement CDbl(shift) + 500#, -CDbl(shift) - 400#, 200#, 0#, "A400"
         section.ConcreteMeshCentroid centerX, centerY, area
         AssertClose stats, prefix & ".rebarExcludedX", centerX, CDbl(shift) + 30#, 0#
@@ -126,6 +130,7 @@ Private Sub TestConcreteMeshCenter(ByRef stats As TTestStats)
         CalculateConcreteSectionCentroid section, referenceX, referenceY
         AssertClose stats, prefix & ".frameX", frame.OriginX, centerX, 0#
         AssertClose stats, prefix & ".frameY", frame.OriginY, centerY, 0#
+        AssertClose stats, prefix & ".radiusRebarInvalidation", frame.LengthScale, Sqr(470# * 470# + 460# * 460#), 0#
         AssertClose stats, prefix & ".propertiesX", props.CentroidX, centerX, 0#
         AssertClose stats, prefix & ".propertiesY", props.CentroidY, centerY, 0#
         AssertClose stats, prefix & ".loadReferenceX", referenceX, centerX, 0#
@@ -139,6 +144,7 @@ Private Sub TestConcreteMeshCenter(ByRef stats As TTestStats)
         AssertClose stats, prefix & ".changedY", centerY, -CDbl(shift) + 10#, 0#
         AssertClose stats, prefix & ".changedArea", area, 800#, 0#
         AssertClose stats, prefix & ".changedFrameX", frame.OriginX, centerX, 0#
+        AssertClose stats, prefix & ".radiusConcreteInvalidation", frame.LengthScale, Sqr(495# * 495# + 410# * 410#), 0#
         AssertClose stats, prefix & ".changedPropertiesY", props.CentroidY, centerY, 0#
         section.Clear
         On Error Resume Next
@@ -153,6 +159,7 @@ Private Sub TestConcreteMeshCenter(ByRef stats As TTestStats)
         AssertClose stats, prefix & ".rebuiltY", centerY, -CDbl(shift) - 9#, 0#
         AssertClose stats, prefix & ".rebuiltArea", area, 25#, 0#
         AssertClose stats, prefix & ".rebuiltFrameX", frame.OriginX, centerX, 0#
+        AssertClose stats, prefix & ".rebuiltRadius", frame.LengthScale, 1#, 0#
         AssertClose stats, prefix & ".rebuiltPropertiesY", props.CentroidY, centerY, 0#
     Next shift
 End Sub

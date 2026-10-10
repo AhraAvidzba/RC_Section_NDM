@@ -1365,6 +1365,15 @@ Friend Sub NumericalEfforts(ByRef n As Double, ByRef mx As Double, ByRef my As D
     n = mNint: mx = mCenterMx: my = mCenterMy
 End Sub
 
+' Неизменяемые скаляры последней плоскости для массовой проверки пределов.
+' Получатель вычисляет деформации в том же порядке, что StrainAt, без
+' многократного чтения свойств центра для каждого волокна.
+Friend Sub NumericalStrainPlane(ByRef epsilon As Double, ByRef kx As Double, ByRef ky As Double, _
+        ByRef originX As Double, ByRef originY As Double)
+    epsilon = mCenterEpsilon: kx = mKappaX: ky = mKappaY
+    originX = mFrame.OriginX: originY = mFrame.OriginY
+End Sub
+
 ' Физические проверки используют ту же плоскость и малые плечи, что ядро.
 Friend Function StrainAt(ByVal x As Double, ByVal y As Double) As Double
     StrainAt = mCenterEpsilon + mKappaX * (y - mFrame.OriginY) + mKappaY * (x - mFrame.OriginX)

@@ -141,6 +141,50 @@ Failed:
     RunCapacityOutputContractTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' ДЛЯ ТЕСТОВ: стартовая плоскость внутри физических пределов, включая перенос на 1000 м.
+Public Function RunLimitGuessScalingTests() As String
+    Dim stats As TCapacityTestStats
+    On Error GoTo Failed
+    Dim section As CSectionModel, frame As CSectionNumericalFrame, builder As CStateGuessBuilder
+    Dim solver As CSectionSolver, limits As CSectionStrainLimits, shift As Variant, multiplier As Variant
+    Dim eps0 As Double, kx As Double, ky As Double, utilization As Double, prefix As String
+    For Each shift In Array(0#, 1000000#, -1000000#)
+        Set section = New CSectionModel
+        section.AddConcreteElement CDbl(shift) - 100#, -CDbl(shift) - 100#, 10000#
+        section.AddConcreteElement CDbl(shift) + 100#, -CDbl(shift) + 100#, 10000#
+        section.AddRebarElement CDbl(shift) - 80#, -CDbl(shift) - 80#, 20#, 0#, "A400"
+        section.AddRebarElement CDbl(shift) + 80#, -CDbl(shift) + 80#, 20#, 0#, "A400"
+        Set frame = New CSectionNumericalFrame: frame.Initialize section
+        Set builder = New CStateGuessBuilder: Set solver = New CSectionSolver
+        Set limits = New CSectionStrainLimits
+        limits.Configure -0.0035, 0.00015, 0.001, 0.0025
+        For Each multiplier In Array(1#, 1000000#)
+            kx = CDbl(multiplier) * 0.00001: ky = CDbl(multiplier) * -0.000006
+            eps0 = frame.OriginalStrain(-CDbl(multiplier) * 0.004, kx, ky)
+            solver.EvaluatePhysicalStrainPlane section, LinearConcrete(), LinearSteel(), eps0, kx, ky
+            limits.Evaluate section, solver: utilization = limits.Utilization
+            builder.ScaleToPhysicalLimit section, utilization, eps0, kx, ky
+            solver.EvaluatePhysicalStrainPlane section, LinearConcrete(), LinearSteel(), eps0, kx, ky
+            limits.Evaluate section, solver
+            prefix = "limitGuess." & CStr(shift) & "." & CStr(multiplier)
+            AssertClose stats, prefix & ".ratio", limits.Utilization, 0.9, 0.000000001
+            AssertClose stats, prefix & ".center", frame.CenterStrain(eps0, kx, ky), _
+                -CDbl(multiplier) * 0.004 * 0.9 / utilization, 0.00000000001
+            AssertClose stats, prefix & ".kx", kx, CDbl(multiplier) * 0.00001 * 0.9 / utilization, 0.000000000001
+            AssertClose stats, prefix & ".ky", ky, CDbl(multiplier) * -0.000006 * 0.9 / utilization, 0.000000000001
+            AssertClose stats, prefix & ".coordinates", section.ConcreteX(1), CDbl(shift) - 100#, 0#
+        Next multiplier
+        eps0 = 0.0002: kx = 0.000001: ky = -0.000003
+        builder.ScaleToPhysicalLimit section, 0#, eps0, kx, ky
+        AssertClose stats, "limitGuess.zero." & CStr(shift), eps0, 0.0002, 0#
+    Next shift
+    AppendLine stats, "TOTAL_LIMIT_GUESS_SCALING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunLimitGuessScalingTests = stats.Report
+    Exit Function
+Failed:
+    RunLimitGuessScalingTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
 ' ДЛЯ ТЕСТОВ: общий критерий бетона и арматуры без запуска поиска нагрузки.
 Public Function RunCommonStrainLimitTests() As String
     Dim stats As TCapacityTestStats

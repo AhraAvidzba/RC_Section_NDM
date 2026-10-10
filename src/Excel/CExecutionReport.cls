@@ -375,7 +375,8 @@ Private Function CompactCrackDiagnosticText(ByVal body As String) As String
     Dim lines() As String
     lines = Split(body, vbCrLf)
 
-    Dim result As String
+    Dim parts() As String, partCount As Long
+    ReDim parts(0 To UBound(lines) + 2)
     Dim warmStartCount As Long
     Dim i As Long
     For i = LBound(lines) To UBound(lines)
@@ -384,20 +385,20 @@ Private Function CompactCrackDiagnosticText(ByVal body As String) As String
         If Len(lineText) = 0 Then
             ' Пустые строки внутри diagnostic-блока не несут смысла.
         ElseIf Left$(lineText, Len("lambda_crc_iter=")) = "lambda_crc_iter=" Then
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         ElseIf Left$(lineText, Len("lambda_crc_path_iter=")) = "lambda_crc_path_iter=" Then
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         ElseIf lineText = "initialGuess=warmStartSolver" Then
             warmStartCount = warmStartCount + 1
         Else
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         End If
     Next i
 
     If warmStartCount > 0 Then _
-        AppendReportLine result, "Для повторных НДС использовалась стартовая плоскость из предыдущего близкого решения; повторов: " & CStr(warmStartCount) & "."
+        AppendReportPart parts, partCount, "Для повторных НДС использовалась стартовая плоскость из предыдущего близкого решения; повторов: " & CStr(warmStartCount) & "."
 
-    CompactCrackDiagnosticText = result
+    CompactCrackDiagnosticText = JoinReportParts(parts, partCount)
 End Function
 
 ' Сжимает diagnostic CStateSolutionRunner. Особенно важно убрать десятки
@@ -406,7 +407,8 @@ Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As Str
     Dim lines() As String
     lines = Split(body, vbCrLf)
 
-    Dim result As String
+    Dim parts() As String, partCount As Long
+    ReDim parts(0 To UBound(lines) + 2)
     Dim warmStartCount As Long
     Dim activeGuessCount As Long
     Dim i As Long
@@ -416,32 +418,34 @@ Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As Str
         If Len(lineText) = 0 Then
             ' Пропускаем.
         ElseIf Left$(lineText, Len("step=")) = "step=" Then
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         ElseIf lineText = "initialGuess=warmStartSolver" Then
             warmStartCount = warmStartCount + 1
         ElseIf lineText = "initialGuess=directStateActiveSet" Then
             activeGuessCount = activeGuessCount + 1
         Else
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         End If
     Next i
 
     If warmStartCount > 0 Then _
-        AppendReportLine result, "Стартовая плоскость: использовано предыдущее близкое решение; повторов: " & CStr(warmStartCount) & "."
+        AppendReportPart parts, partCount, "Стартовая плоскость: использовано предыдущее близкое решение; повторов: " & CStr(warmStartCount) & "."
     If activeGuessCount > 0 Then _
-        AppendReportLine result, "Стартовая плоскость: подобрана по активной зоне сечения; повторов: " & CStr(activeGuessCount) & "."
+        AppendReportPart parts, partCount, "Стартовая плоскость: подобрана по активной зоне сечения; повторов: " & CStr(activeGuessCount) & "."
 
-    CompactStateSolutionDiagnosticText = result
+    CompactStateSolutionDiagnosticText = JoinReportParts(parts, partCount)
 End Function
 
 ' Сжимает диагностический блок поиска несущей способности. Полный список
 ' lambda-точек может быть большим, но для инженерной диагностики полезно
 ' видеть каждую проверенную точку и возможный retry НДС.
 Private Function CompactCapacityDiagnosticText(ByVal body As String) As String
+    If Len(body) = 0 Then Exit Function
     Dim lines() As String
     lines = Split(body, vbCrLf)
 
-    Dim result As String
+    Dim parts() As String, partCount As Long
+    ReDim parts(0 To UBound(lines))
     Dim i As Long
     For i = LBound(lines) To UBound(lines)
         Dim lineText As String
@@ -449,13 +453,13 @@ Private Function CompactCapacityDiagnosticText(ByVal body As String) As String
         If Len(lineText) = 0 Then
             ' Пропускаем.
         ElseIf Left$(lineText, Len("probe=")) = "probe=" Then
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         Else
-            AppendReportLine result, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         End If
     Next i
 
-    CompactCapacityDiagnosticText = result
+    CompactCapacityDiagnosticText = JoinReportParts(parts, partCount)
 End Function
 
 ' Переводит короткие машинные diagnostic-строки в более понятные фразы.
@@ -641,9 +645,15 @@ Public Sub ReportLongitudinalCrackResult(ByVal longitudinalResult As CLongitudin
     End If
 End Sub
 
-' Аккуратно добавляет строку в собираемый многострочный блок отчета.
-Private Sub AppendReportLine(ByRef target As String, ByVal lineText As String)
+' Сохраняет перевод каждой строки без повторного копирования всего блока.
+Private Sub AppendReportPart(ByRef parts() As String, ByRef count As Long, ByVal lineText As String)
     If Len(lineText) = 0 Then Exit Sub
-    If Len(target) > 0 Then target = target & vbCrLf
-    target = target & lineText
+    parts(count) = lineText
+    count = count + 1
 End Sub
+
+Private Function JoinReportParts(ByRef parts() As String, ByVal count As Long) As String
+    If count = 0 Then Exit Function
+    ReDim Preserve parts(0 To count - 1)
+    JoinReportParts = Join(parts, vbCrLf)
+End Function

@@ -997,9 +997,8 @@ Public Function LimitSearchAlternativeUltimateStart(ByVal section As CSectionMod
     solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     UpdateCriticalState section, concreteMaterial, solver
     If mCriticalStrainUtilization <= 0# Then Exit Function
-    Dim strainScale As Double
-    strainScale = 0.9 / mCriticalStrainUtilization
-    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0 * strainScale, kx * strainScale, ky * strainScale
+    builder.ScaleToPhysicalLimit section, mCriticalStrainUtilization, eps0, kx, ky
+    solver.EvaluateStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
     AppendSearchDiagnostic "UltimateStrain: повторный старт по фактическим диаграммам и форме сечения."
     Set LimitSearchAlternativeUltimateStart = solver
 End Function

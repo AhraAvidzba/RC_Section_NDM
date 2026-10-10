@@ -20,25 +20,15 @@ Private Sub Class_Initialize()
 End Sub
 
 ' Центр берется из общей подготовки бетонной сетки модели; здесь определяются
-' только численный масштаб и правила переноса, без повторного расчета центра.
+' только численный масштаб и правила переноса. Геометрический радиус также
+' кэшируется моделью, а не пересчитывается для каждой пробной плоскости.
 Friend Sub Initialize(ByVal section As CSectionModel)
     If section Is mSection Then
         If section.Revision = mRevision Then Exit Sub
     End If
-    Dim x As Double, y As Double, area As Double, sumArea As Double, i As Long
+    Dim sumArea As Double
     section.ConcreteMeshCentroid mOriginX, mOriginY, sumArea
-    mLength = 0#
-    For i = 1 To section.ConcreteCount + section.RebarCount
-        If i <= section.ConcreteCount Then
-            section.ConcreteElementForSolver i, x, y, area
-        Else
-            section.RebarElementForSolver i - section.ConcreteCount, x, y, area
-        End If
-        x = x - mOriginX: y = y - mOriginY
-        Dim radius As Double
-        radius = Sqr(x * x + y * y)
-        If radius > mLength Then mLength = radius
-    Next i
+    mLength = section.MaximumElementRadiusFromConcreteCenter
     ' Вырожденная геометрия остается вырожденной; масштаб не добавляет жесткости.
     If mLength <= 0# Then mLength = 1#
     mConcreteArea = sumArea: mSupportChecked = False

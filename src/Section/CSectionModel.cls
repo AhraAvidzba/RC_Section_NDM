@@ -69,6 +69,7 @@ Private mRevision As Long ' Версия расчетной геометрии �
 Private mObservedContourRevision As Long ' Последняя учтенная версия достоверного outer/opening.
 Private mConcreteCenterValid As Boolean, mConcreteCenterRevision As Long
 Private mConcreteCenterX As Double, mConcreteCenterY As Double, mConcreteCenterArea As Double
+Private mElementRadiusValid As Boolean, mElementRadiusRevision As Long, mElementRadius As Double
 
 Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допуск, при котором главные локальные I считаются изотропными.
 Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
@@ -79,6 +80,7 @@ Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' До
 Public Sub Clear()
     mRevision = mRevision + 1
     mConcreteCenterValid = False
+    mElementRadiusValid = False
     mSourceType = vbNullString
     mConcreteMeshSource = vbNullString
 
@@ -299,6 +301,30 @@ Public Sub ConcreteMeshCentroid(ByRef centerX As Double, ByRef centerY As Double
     End If
     centerX = mConcreteCenterX: centerY = mConcreteCenterY: totalArea = mConcreteCenterArea
 End Sub
+
+' Наибольшее расстояние элемента от бетонного центра. Это свойство геометрии,
+' поэтому все численные плоскости используют один кэш точной ревизии модели.
+Friend Function MaximumElementRadiusFromConcreteCenter() As Double
+    Dim currentRevision As Long
+    currentRevision = Revision
+    If Not mElementRadiusValid Or mElementRadiusRevision <> currentRevision Then
+        Dim cx As Double, cy As Double, area As Double, x As Double, y As Double, radius As Double, i As Long
+        ConcreteMeshCentroid cx, cy, area
+        mElementRadius = 0#
+        For i = 1 To mConcreteCount + mRebarCount
+            If i <= mConcreteCount Then
+                x = mConcreteX(i): y = mConcreteY(i)
+            Else
+                x = mRebarX(i - mConcreteCount): y = mRebarY(i - mConcreteCount)
+            End If
+            x = x - cx: y = y - cy
+            radius = Sqr(x * x + y * y)
+            If radius > mElementRadius Then mElementRadius = radius
+        Next i
+        mElementRadiusRevision = currentRevision: mElementRadiusValid = True
+    End If
+    MaximumElementRadiusFromConcreteCenter = mElementRadius
+End Function
 
 ' Назначает эквивалентным площадным оболочкам без направления от источника среднюю
 ' ориентацию известных элементов. Инвалидирует затронутый boundary-cache;

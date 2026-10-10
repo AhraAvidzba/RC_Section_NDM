@@ -19,6 +19,7 @@ Private Const EXTENSION_START_FACTOR As Double = 1.02 ' Небольшой за�
 Private Const EXTENSION_GUESS_ATTEMPTS As Long = 3 ' Количество независимых стартовых оценок для повторного StateSolution.
 Private Const EXTENSION_ACTIVE_SET_ITERATIONS As Long = 8 ' Сколько раз уточнять кусочно-линейный набор участков диаграмм.
 Private Const ACTIVE_SET_EPSILON_TOLERANCE As Double = 0.0000000001 ' Допуск стабилизации epsilon0 в active-set уточнении.
+Private Const LIMIT_GUESS_UTILIZATION As Double = 0.9 ' Старт немного внутри первого предела, вне вырожденного плато.
 
 ' Стартовые оценки используют ту же систему, что и основные итерации.
 ' Наружу возвращается epsilon0 в исходном начале координат; модель не сдвигается.
@@ -32,6 +33,19 @@ Public Function BuildForDirectState(ByVal section As CSectionModel, _
         targetN, targetMx, targetMy, eps0, kx, ky)
     If BuildForDirectState Then eps0 = mFrame.OriginalStrain(eps0, kx, ky)
 End Function
+
+' Масштабирует только стартовую плоскость поиска предела, не расчетные усилия.
+' Доменный критерий передает использование всех активных пределов материалов.
+Public Sub ScaleToPhysicalLimit(ByVal section As CSectionModel, ByVal utilization As Double, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
+    If utilization <= 0# Then Exit Sub
+    InitializeFrame section
+    Dim strainScale As Double, centerStrain As Double
+    strainScale = LIMIT_GUESS_UTILIZATION / utilization
+    centerStrain = mFrame.CenterStrain(eps0, kx, ky)
+    kx = kx * strainScale: ky = ky * strainScale
+    eps0 = mFrame.OriginalStrain(centerStrain * strainScale, kx, ky)
+End Sub
 
 ' Повторные старты имеют такой же публичный координатный контракт.
 Public Function BuildAttemptForExtensionState(ByVal attemptIndex As Long, _

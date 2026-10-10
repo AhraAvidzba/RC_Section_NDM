@@ -35,24 +35,32 @@ End Sub
 Public Sub Evaluate(ByVal section As CSectionModel, ByVal solver As CSectionSolver)
     mUtilization = 0#: mStrain = 0#: mElement = vbNullString
     mState = "NumericalFailure": mDescription = vbNullString
-    Dim i As Long, strain As Double
+    Dim i As Long, strain As Double, epsilon As Double, kx As Double, ky As Double
+    Dim originX As Double, originY As Double, x As Double, y As Double, area As Double, ratio As Double
+    solver.NumericalStrainPlane epsilon, kx, ky, originX, originY
     For i = 1 To section.ConcreteCount
-        strain = solver.StrainAt(section.ConcreteX(i), section.ConcreteY(i))
+        section.ConcreteElementForSolver i, x, y, area
+        strain = epsilon + kx * (y - originY) + ky * (x - originX)
         If strain < 0# And mConcreteCompression < 0# Then
-            StoreIfLarger strain / mConcreteCompression, strain, section.ConcreteID(i) & ":Compression", _
+            ratio = strain / mConcreteCompression
+            If ratio > mUtilization Then StoreIfLarger ratio, strain, section.ConcreteID(i) & ":Compression", _
                 "ConcreteStrainLimit", "сжатие бетона"
         ElseIf strain > 0# And mTensionEnabled And mConcreteTension > 0# Then
-            StoreIfLarger strain / mConcreteTension, strain, section.ConcreteID(i) & ":Tension", _
+            ratio = strain / mConcreteTension
+            If ratio > mUtilization Then StoreIfLarger ratio, strain, section.ConcreteID(i) & ":Tension", _
                 "ConcreteTensionStrainLimit", "растяжение бетона"
         End If
     Next i
     For i = 1 To section.RebarCount
-        strain = solver.StrainAt(section.RebarX(i), section.RebarY(i))
+        section.RebarElementForSolver i, x, y, area
+        strain = epsilon + kx * (y - originY) + ky * (x - originX)
         If strain < 0# And mSteelCompression > 0# Then
-            StoreIfLarger Abs(strain) / mSteelCompression, strain, section.RebarID(i) & ":Steel", _
+            ratio = Abs(strain) / mSteelCompression
+            If ratio > mUtilization Then StoreIfLarger ratio, strain, section.RebarID(i) & ":Steel", _
                 "SteelStrainLimit", "сжатие арматуры"
         ElseIf strain >= 0# And mSteelTension > 0# Then
-            StoreIfLarger Abs(strain) / mSteelTension, strain, section.RebarID(i) & ":Steel", _
+            ratio = Abs(strain) / mSteelTension
+            If ratio > mUtilization Then StoreIfLarger ratio, strain, section.RebarID(i) & ":Steel", _
                 "SteelStrainLimit", "растяжение арматуры"
         End If
     Next i

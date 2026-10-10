@@ -36,6 +36,8 @@ Private Const STRATEGY_LOAD_MULTIPLIER As String = "LoadMultiplier" ' Одном
 Private mConverged As Boolean ' True, если расчет трещины завершился без ошибки входных данных или несходимости.
 Private mStopReason As String ' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
 Private mDiagnosticLog As String ' Диагностика пути, критерия и состояний трещинообразования.
+Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long
+Private mDiagnosticDirty As Boolean ' Журнал собирается при чтении, без копирования всего текста каждой пробы.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mSolverCallCount As Long ' Сколько внутренних CSectionSolver/CStateSolutionRunner-вызовов выполнил расчет трещин.
 Private mSearchExecuted As Boolean ' Хотя бы одна численная попытка поиска точки в текущем LC; аналитический Ncrc не является Search.
@@ -139,6 +141,8 @@ Private Sub ClearResult()
     mConverged = False
     mStopReason = vbNullString
     mDiagnosticLog = vbNullString
+    Erase mDiagnosticLines
+    mDiagnosticCount = 0: mDiagnosticCapacity = 0: mDiagnosticDirty = False
     mSolverCallCount = 0
     mSearchExecuted = False
     mFormationInternalStatus = rsUnset
@@ -949,6 +953,15 @@ Private Sub InitializeCrcLoadPathGuess(ByVal section As CSectionModel, _
     Set guessBuilder = New CStateGuessBuilder
     If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
             targetN, targetMx, targetMy, eps0, kx, ky) Then
+        ' Полная перегрузка может дать старт далеко за всеми пределами.
+        ' Для поиска первой границы сохраняем форму этой плоскости, но
+        ' начинаем внутри физической области. Найденную точку проверяет Search.
+        Dim guessSolver As CSectionSolver, residual As Double, limitState As String
+        Set guessSolver = New CSectionSolver
+        guessSolver.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
+        If FirstFormationLimitResidual(section, guessSolver, concreteMaterial, steelMaterial, residual, limitState) Then
+            If residual > 0# Then guessBuilder.ScaleToPhysicalLimit section, residual + 1#, eps0, kx, ky
+        End If
         Exit Sub
     End If
 
@@ -1934,7 +1947,17 @@ End Sub
 ' Добавляет строку в диагностический журнал.
 Private Sub AppendDiagnostic(ByVal text As String)
     If Not mDiagnosticsEnabled Then Exit Sub
-    mDiagnosticLog = mDiagnosticLog & text & vbCrLf
+    If mDiagnosticCount = mDiagnosticCapacity Then
+        If mDiagnosticCapacity = 0 Then
+            mDiagnosticCapacity = 256
+        Else
+            mDiagnosticCapacity = mDiagnosticCapacity * 2
+        End If
+        ReDim Preserve mDiagnosticLines(0 To mDiagnosticCapacity - 1)
+    End If
+    mDiagnosticLines(mDiagnosticCount) = text & vbCrLf
+    mDiagnosticCount = mDiagnosticCount + 1
+    mDiagnosticDirty = True
 End Sub
 
 ' Форматирует числа диагностического журнала через точку.
@@ -1962,7 +1985,7 @@ Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimit
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
     result.Initialize meta, requestedStrategy, mFormationSolutionMethod, HasLimitPoint, _
-        mLambdaCrc, nValue, mxValue, myValue, mPreCrackState, vbNullString, mDiagnosticLog, _
+        mLambdaCrc, nValue, mxValue, myValue, mPreCrackState, vbNullString, DiagnosticLog, _
         vbNullString, mSearchExecuted
     Set BuildSearchSnapshot = result
 End Function
@@ -1996,6 +2019,10 @@ Public Property Get CrackFormed() As Boolean
 End Property
 
 Public Property Get DiagnosticLog() As String
+    If mDiagnosticDirty Then
+        mDiagnosticLog = Join(mDiagnosticLines, vbNullString)
+        mDiagnosticDirty = False
+    End If
     DiagnosticLog = mDiagnosticLog
 End Property
 
