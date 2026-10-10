@@ -795,7 +795,7 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
                 MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, stateResult, "Rebar", batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
                 "-", "Ссылка на диаграмму арматуры в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Epsilon0", _
-                stateResult.Epsilon0, "-", "Деформация в точке (0;0) внутренней системы координат модели для именованного расчетного состояния."
+                stateResult.Epsilon0, "-", "Деформация в исходной точке X=0, Y=0 модели (для импорта AutoCAD - начало МСК/WCS). Численный перенос к центру сечения эту точку вывода не меняет."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaX", _
                 OutputCurvature(stateResult.KappaX, units), OutputCurvatureUnit(units), "Кривизна KappaX при координате Y внутренней системы координат модели."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "KappaY", _

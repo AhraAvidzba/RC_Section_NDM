@@ -490,7 +490,6 @@ Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     translated = Replace$(translated, "extensionRetry=", "повтор после выхода за диаграмму=")
     translated = Replace$(translated, "directStateActiveSet", "активная зона прямого НДС")
     translated = Replace$(translated, "warmStartSolver", "предыдущее близкое решение")
-    translated = Replace$(translated, "direct target without line search", "целевая нагрузка без line search")
     translated = Replace$(translated, "direct target", "целевая нагрузка")
     translated = Replace$(translated, "stepped", "ступенчатая нагрузка")
     translated = Replace$(translated, "attempt=", "повтор НДС=")

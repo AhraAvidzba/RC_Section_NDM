@@ -10,8 +10,9 @@ param(
     [ValidateSet("RectSet", "Circle", "RoundedRectangle", "HollowRectangle")][string]$FixtureGeometryType,
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
+    [switch]$FailFast,
     [ValidateSet("Yes", "No")][string]$Mode = "No",
-    [ValidateRange(10, 43200)][int]$TimeoutSeconds = 120
+    [ValidateRange(10, 172800)][int]$TimeoutSeconds = 120
 )
 $ErrorActionPreference = "Stop"
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")).Path
@@ -54,6 +55,7 @@ if ($MacroArgument2) { $arguments += @("-MacroArgument2", (Quote-ProcessArgument
 if ($FixtureGeometryType) { $arguments += @("-FixtureGeometryType", (Quote-ProcessArgument $FixtureGeometryType)) }
 if ($VerifyResultsReopen) { $arguments += "-VerifyResultsReopen" }
 if ($VerifyStatusReopen) { $arguments += "-VerifyStatusReopen" }
+if ($FailFast) { $arguments += "-FailFast" }
 $arguments = $arguments -join " "
 $process = Start-Process -FilePath (Join-Path $PSHOME "powershell.exe") `
     -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden -PassThru `

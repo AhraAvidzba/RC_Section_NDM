@@ -30,6 +30,7 @@ Public Function RunMaterialDiagramTests() As String
     TestSteelThreePointDiagram stats
     TestProviderConcreteDiagrams stats
     TestProviderSteelDiagrams stats
+    TestProviderAsymmetricSteelStrengths stats
     TestProviderStateSolutionExtension stats
     TestUserStrainParametersAffectDiagrams stats
     TestInvalidParameters stats
@@ -50,6 +51,66 @@ Failed:
     RunMaterialDiagramTests = "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
+
+' ДЛЯ ТЕСТОВ: независимые сопротивления, модули и пределы двух ветвей стали.
+Public Function RunAsymmetricSteelStrengthTests() As String
+    On Error GoTo Failed
+    Dim stats As TMaterialTestStats
+    TestProviderAsymmetricSteelStrengths stats
+    AppendLine stats, "TOTAL_ASYMMETRIC_STEEL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunAsymmetricSteelStrengthTests = stats.Report
+    Exit Function
+Failed:
+    RunAsymmetricSteelStrengthTests = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Разные Rsc/Rs не должны смешиваться между знаками напряжений и I/II ГПС.
+Private Sub TestProviderAsymmetricSteelStrengths(ByRef stats As TMaterialTestStats)
+    Dim parameters As CSteelMaterialParameters, provider As CMaterialModelProvider
+    Dim steel As CMaterialDiagram, equilibrium As CMaterialDiagram
+    Dim diagramName As Variant, extension As Variant, purpose As Variant
+    Dim rsc As Double, rs As Double, compressionLimit As Double, tensionLimit As Double
+    Dim compressionKnee As Double, tensionKnee As Double, factor As Double, prefix As String
+    Set parameters = New CSteelMaterialParameters
+    parameters.Initialize 250#, 400#, 280#, 450#, 190000#, 210000#, 0.02, 0.03, 0.018, 0.022
+    For Each diagramName In Array("TwoLine", "ThreeLine")
+        For Each extension In Array(False, True)
+            Set provider = New CMaterialModelProvider
+            provider.InitializeFromParameters TestConcreteParameters(), parameters, _
+                "TwoLine", "Ignore", CStr(diagramName), "ThreeLine", CStr(diagramName), _
+                "TwoLine", CStr(diagramName), CBool(extension)
+            For Each purpose In Array(cpStrength, cpMcrc, cpCrackedNDS)
+                If CLng(purpose) = cpStrength Then
+                    rsc = 250#: rs = 400#
+                Else
+                    rsc = 280#: rs = 450#
+                End If
+                If CStr(diagramName) = "TwoLine" Then
+                    compressionLimit = 0.02: tensionLimit = 0.03: factor = 1#
+                    compressionKnee = rsc / 190000#: tensionKnee = rs / 210000#
+                Else
+                    compressionLimit = 0.018: tensionLimit = 0.022: factor = 1.1
+                    compressionKnee = 0.9 * rsc / 190000#: tensionKnee = 0.9 * rs / 210000#
+                End If
+                Set steel = provider.SteelMaterial(CLng(purpose))
+                If CLng(purpose) = cpMcrc Then
+                    Set equilibrium = steel
+                Else
+                    Set equilibrium = provider.SteelMaterialForEquilibrium(CLng(purpose))
+                End If
+                prefix = "asymmetricSteel." & CStr(diagramName) & "." & CStr(extension) & "." & CStr(purpose)
+                AssertClose stats, prefix & ".compressionStrength", steel.GetStress(-compressionLimit), -factor * rsc, 0.000000001
+                AssertClose stats, prefix & ".tensionStrength", steel.GetStress(tensionLimit), factor * rs, 0.000000001
+                AssertClose stats, prefix & ".compressionElastic", steel.GetStress(-compressionKnee / 2#), -190000# * compressionKnee / 2#, 0.000000001
+                AssertClose stats, prefix & ".tensionElastic", steel.GetStress(tensionKnee / 2#), 210000# * tensionKnee / 2#, 0.000000001
+                AssertClose stats, prefix & ".compressionLimit", equilibrium.PhysicalCompressionStrain, -compressionLimit, 0#
+                AssertClose stats, prefix & ".tensionLimit", equilibrium.PhysicalTensionStrain, tensionLimit, 0#
+                AssertClose stats, prefix & ".equilibriumCompression", equilibrium.GetStress(-compressionLimit), -factor * rsc, 0.000000001
+                AssertClose stats, prefix & ".equilibriumTension", equilibrium.GetStress(tensionLimit), factor * rs, 0.000000001
+            Next purpose
+        Next extension
+    Next diagramName
+End Sub
 
 ' Проверяет сжатую бетонную ветвь: до первой точки держится плато,
 ' между точками работает линейная интерполяция, а растяжение выключено.

@@ -13,6 +13,7 @@ param(
     [ValidateSet("RectSet", "Circle", "RoundedRectangle", "HollowRectangle")][string]$FixtureGeometryType,
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
+    [switch]$FailFast,
     [switch]$Visible
 )
 $ErrorActionPreference = "Stop"
@@ -292,6 +293,11 @@ try {
         }
         $workbook.Close($false)
         $workbook = $null
+        if ($FailFast -and $failed) {
+            $lines.Add('FAIL_FAST: remaining suites were not run after a completed failed suite')
+            Save-Progress
+            break
+        }
     }
     if ((Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash -ne $sourceHash) {
         throw "Исходная книга изменилась во время проверки независимой копии."

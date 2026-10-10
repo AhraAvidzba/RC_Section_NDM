@@ -1187,11 +1187,12 @@ Private Sub CheckCapacityNumericEffects(ByRef stats As TConfigTestStats, ByVal t
     Set changed = CapacityNumericRun(stats, prefix & ".Capacity.SolverMaxIterations.one", section, provider, profiles, units)
     Check stats, prefix & ".Capacity.SolverMaxIterations.typedFailure", changed.ResultMeta.InternalStatus = rsNumericalFailure
     Check stats, prefix & ".Capacity.SolverMaxIterations.noPoint", Not changed.SearchResult.HasLimitPoint
-    ' Один Newton-шаг включает оценки трех колонок Якобиана и line-search.
-    ' Лимит итераций не равен числу EvaluateStrainPlane в диагностике.
+    ' Пробы Якобиана и резервного line-search не являются новыми итерациями.
+    ' При бюджете 1 каждая стартовая попытка вправе сделать только первый шаг.
     Check stats, prefix & ".Capacity.SolverMaxIterations.budget", _
-        CapacityNumericRecordCount(changed.DiagnosticLog, "ultimatePath iter=") < _
-        CapacityNumericRecordCount(baseline.DiagnosticLog, "ultimatePath iter=")
+        CapacityNumericRecordCount(changed.DiagnosticLog, "ultimateNewton step=1") > 0 And _
+        CapacityNumericRecordCount(changed.DiagnosticLog, "ultimateNewton step=") = _
+        CapacityNumericRecordCount(changed.DiagnosticLog, "ultimateNewton step=1")
 
     table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "UltimateStrain"
     SetValue table, "Capacity.ToleranceStrain", 0.000000001
@@ -1225,10 +1226,10 @@ Private Sub CheckCapacityNumericEffects(ByRef stats As TConfigTestStats, ByVal t
     table.Formula = configured
 End Sub
 
-' Изолирует деформационный допуск в настоящем batch-пути: демпфирование 0.5
-' приближает критерий постепенно, а равновесие имеет свои явно заданные допуски.
-' Изменение только ToleranceStrain должно менять остановку Newton; физические
-' пределы и проверка конечных усилий не отключаются и не пересчитываются тестом.
+' Изолирует деформационный допуск в настоящем batch-пути; равновесие имеет
+' свои явно заданные допуски, длина Newton-шагов выбирается автоматически.
+' Более строгий допуск требует уточнения только пока прежняя точка его не
+' достигла. Физический контроль и равновесие остаются обязательными.
 Private Sub CheckCapacityStrainToleranceBatch(ByRef stats As TConfigTestStats, ByVal prefix As String, _
         ByVal table As Object, ByRef configured As Variant, ByVal section As CSectionModel, _
         ByVal provider As CMaterialModelProvider, ByVal profiles As CCalculationProfileCatalog, ByVal units As CUnitSystem)
@@ -1236,7 +1237,6 @@ Private Sub CheckCapacityStrainToleranceBatch(ByRef stats As TConfigTestStats, B
     table.Formula = configured
     SetValue table, "Capacity.SolutionStrategy", "UltimateStrain"
     SetValue table, "Capacity.SolverMaxIterations", 120
-    SetValue table, "Solver.DampingInitial", 0.5
     SetValue table, "Solver.ToleranceN", 1000#
     SetValue table, "Solver.ToleranceMx", 100000#
     SetValue table, "Solver.ToleranceMy", 100000#
@@ -1248,12 +1248,41 @@ Private Sub CheckCapacityStrainToleranceBatch(ByRef stats As TConfigTestStats, B
     If Not coarse.SearchResult.HasLimitPoint Or Not tight.SearchResult.HasLimitPoint Then Exit Sub
     CheckState stats, prefix & ".Capacity.ToleranceStrain.batchCoarse", coarse.StateResult, 1000#, 100000#
     CheckState stats, prefix & ".Capacity.ToleranceStrain.batchTight", tight.StateResult, 1000#, 100000#
-    Check stats, prefix & ".Capacity.ToleranceStrain.batchEffect", _
+    Dim coarseError As Double, tightError As Double
+    coarseError = CapacityNumericAbsoluteStrainError(coarse.StateResult, section, provider)
+    tightError = CapacityNumericAbsoluteStrainError(tight.StateResult, section, provider)
+    LogLine stats, prefix & ".Capacity.ToleranceStrain.errors|coarse=" & FormatNumberInvariant(coarseError) & "|tight=" & FormatNumberInvariant(tightError)
+    Check stats, prefix & ".Capacity.ToleranceStrain.batchTight.criterion", tightError <= 0.000000001
+    Check stats, prefix & ".Capacity.ToleranceStrain.batchEffectOrAlreadyTight", _
         CapacityNumericRecordCount(tight.DiagnosticLog, "ultimatePath iter=") > _
         CapacityNumericRecordCount(coarse.DiagnosticLog, "ultimatePath iter=") Or _
-        Abs(tight.LambdaCapacity - coarse.LambdaCapacity) > 0.000000000001
+        Abs(tight.LambdaCapacity - coarse.LambdaCapacity) > 0.000000000001 Or coarseError <= 0.000000001
     table.Formula = configured
 End Sub
+
+' Независимо пересчитывает отклонение критической деформации от ее предела
+' по фактической плоскости и материалам опубликованного batch-состояния.
+Private Function CapacityNumericAbsoluteStrainError(ByVal point As CSectionStateResult, _
+        ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider) As Double
+    Dim context As CCapacitySolver, concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Dim path As CLoadPathVector, solver As CSectionSolver, material As CMaterialModelSpec
+    Dim r1 As Double, r2 As Double, rLimit As Double, lambdaValue As Double, state As String
+    Set material = point.MaterialSpec
+    Set concrete = provider.ConcreteMaterialFromSpec(material): Set steel = provider.SteelMaterialFromSpec(material)
+    Set context = New CCapacitySolver
+    context.ConcreteCompressionLimit = concrete.UltimateCompressionStrain
+    context.ConcreteTensionLimit = concrete.UltimateTensionStrain
+    context.ConcreteTensionLimitEnabled = provider.ConcreteTensionLimitEnabledFromSpec(material)
+    context.SteelCompressionLimit = Abs(steel.UltimateCompressionStrain)
+    context.SteelTensionLimit = Abs(steel.UltimateTensionStrain)
+    Set path = New CLoadPathVector: path.Initialize 0#, FIXTURE_N, 0#, FIXTURE_MX, 0#, FIXTURE_MY
+    If Not context.LimitSearchEvaluateUltimateResidual(section, concrete, steel, path, _
+            point.Epsilon0, point.KappaX, point.KappaY, solver, r1, r2, rLimit, lambdaValue, state) Then
+        Err.Raise vbObjectError + 4714, "CapacityNumericAbsoluteStrainError", "Не удалось проверить опубликованную плоскость."
+    End If
+    If context.CriticalStrainUtilization <= 0# Then Err.Raise vbObjectError + 4715, "CapacityNumericAbsoluteStrainError", "Критическая деформация не определена."
+    CapacityNumericAbsoluteStrainError = Abs(context.CriticalStrain - context.CriticalStrain / context.CriticalStrainUtilization)
+End Function
 
 ' Проверяет неактивную Capacity в реальном crack-профиле: изменение любого
 ' из семи допустимых параметров не меняет Formation/current/width и число solve.

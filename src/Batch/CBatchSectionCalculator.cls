@@ -96,13 +96,7 @@ Private mSolverMaxIterations As Long ' Лимит итераций прямог�
 Private mSolverToleranceN As Double ' Допуск равновесия по N, Н.
 Private mSolverToleranceMx As Double ' Допуск равновесия по Mx, Н*мм.
 Private mSolverToleranceMy As Double ' Допуск равновесия по My, Н*мм.
-Private mSolverLineSearchEnabled As Boolean ' Разрешает дробить итерационный шаг, если полный шаг ухудшает невязку.
-Private mSolverDampingInitial As Double ' Начальный alpha для line search общего решателя НДС.
-Private mSolverMinLineSearchAlpha As Double ' Минимальный alpha, ниже которого line search считается неудачным.
-Private mSolverMaxDeltaEpsilon0 As Double ' Защита от слишком большого шага по epsilon0.
-Private mSolverMaxDeltaKappa As Double ' Защита от слишком большого шага по кривизнам.
 Private mSolverSecantMaxRestarts As Long ' Сколько раз Secant может перестроить приближенную матрицу.
-Private mSolverSecantMinStepNorm As Double ' Минимальная норма шага Secant до признания застоя.
 Private mCapacityInitialLambda As Double ' Начальный шаг/точка поиска lambda для LoadMultiplier.
 Private mCapacitySolutionStrategy As String ' Auto, LoadMultiplier или UltimateStrain.
 Private mCapacitySearchMethod As String ' Bisection, Brent или Secant для LoadMultiplier.
@@ -179,13 +173,7 @@ Private Sub Class_Initialize()
     mSolverToleranceN = 5#
     mSolverToleranceMx = 5000#
     mSolverToleranceMy = 5000#
-    mSolverLineSearchEnabled = True
-    mSolverDampingInitial = 1#
-    mSolverMinLineSearchAlpha = 0.03125
-    mSolverMaxDeltaEpsilon0 = 0.0005
-    mSolverMaxDeltaKappa = 0.00001
     mSolverSecantMaxRestarts = 2
-    mSolverSecantMinStepNorm = 0.000000000001
     mCapacityInitialLambda = 1#
     mCapacitySolutionStrategy = "Auto"
     mCapacitySearchMethod = "Bisection"
@@ -298,13 +286,7 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSolverToleranceN = settings.GetDouble("Solver.ToleranceN", mSolverToleranceN, False)
     mSolverToleranceMx = settings.GetDouble("Solver.ToleranceMx", mSolverToleranceMx, False)
     mSolverToleranceMy = settings.GetDouble("Solver.ToleranceMy", mSolverToleranceMy, False)
-    mSolverLineSearchEnabled = settings.GetBoolean("Solver.LineSearchEnabled", mSolverLineSearchEnabled)
-    mSolverDampingInitial = settings.GetDouble("Solver.DampingInitial", mSolverDampingInitial, False)
-    mSolverMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mSolverMinLineSearchAlpha, False)
-    mSolverMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mSolverMaxDeltaEpsilon0, False)
-    mSolverMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mSolverMaxDeltaKappa, False)
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts, False)
-    mSolverSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSolverSecantMinStepNorm, False)
     mCapacityInitialLambda = settings.GetDouble("Capacity.InitialLambda", mCapacityInitialLambda, False)
     mCapacitySolutionStrategy = CapacityTextSetting(settings, "Capacity.SolutionStrategy")
     mCapacitySearchMethod = CapacityTextSetting(settings, "Capacity.SearchMethod")
@@ -353,8 +335,6 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         mSolverToleranceMx = Sgn(mSolverToleranceMx) * Abs(units.InputMomentMxToInternal(mSolverToleranceMx))
         conversionKey = "Solver.ToleranceMy"
         mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
-        conversionKey = "Solver.MaxDeltaKappa"
-        mSolverMaxDeltaKappa = Sgn(mSolverMaxDeltaKappa) * Abs(units.InputCurvatureToInternal(mSolverMaxDeltaKappa))
         conversionKey = "Calculation.ZeroMomentPerDepth"
         ' Adapter переводит модуль момента/длины; исходный отрицательный ввод
         ' сохраняем для проверки владельцем фильтра, а не превращаем в плюс.
@@ -981,7 +961,6 @@ Failed:
     ReportStep "Устойчивость не рассчитана: " & Err.Description
 End Sub
 
-
 ' Возвращает ошибку первой сопоставленной строки длительных нагрузок.
 ' Порядок совпадает с выбором самих усилий: последующая строка с тем же ID
 ' не должна менять уже выбранную строку, а прошлый запуск сбрасывается Clear.
@@ -994,7 +973,6 @@ Private Function StabilityDurationInputError(ByVal combinationID As String) As S
         End If
     Next i
 End Function
-
 
 ' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
 ' принимаются нули: это допустимый ввод и не блокирует основной расчет.
@@ -1454,8 +1432,6 @@ Private Function MissingStateMeta(ByVal runner As CStateSolutionRunner, _
     Set MissingStateMeta = meta
 End Function
 
-
-
 ' Добавляет в компактный batch-журнал причину отказа подготовки или расчета
 ' трещин. Подробный txt-отчет пишет DiagnosticLog отдельно; эта строка сохраняет
 ' исходную причину этапа для диагностики и regression-тестов.
@@ -1534,7 +1510,6 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     AppendDiagnostic index
 End Sub
 
-
 ' Передает в CCapacityCalculator настройки поиска несущей и внутреннего
 ' равновесия. Материальные пределы calculator берет из построенных диаграмм
 ' для конкретного профиля; batch передает только общие параметры запуска.
@@ -1544,9 +1519,7 @@ Private Sub ConfigureCapacityCalculator(ByVal calculator As CCapacityCalculator)
         mCapacityToleranceStrain, mCapacityMaxRetries, mCapacityBaseLoadSteps, _
         mCapacitySolverMaxIterations
     calculator.ConfigureEquilibriumSolver mSolverToleranceN, mSolverToleranceMx, _
-        mSolverToleranceMy, mSolverMethod, mSolverLineSearchEnabled, _
-        mSolverDampingInitial, mSolverMinLineSearchAlpha, mSolverMaxDeltaEpsilon0, _
-        mSolverMaxDeltaKappa, mSolverSecantMaxRestarts, mSolverSecantMinStepNorm, _
+        mSolverToleranceMy, mSolverMethod, mSolverSecantMaxRestarts, _
         DetailedDiagnosticsEnabled()
 End Sub
 
@@ -1570,13 +1543,7 @@ Private Sub ConfigureStateProvider(ByVal provider As CStateProvider)
     provider.ToleranceN = mSolverToleranceN
     provider.ToleranceMx = mSolverToleranceMx
     provider.ToleranceMy = mSolverToleranceMy
-    provider.LineSearchEnabled = mSolverLineSearchEnabled
-    provider.DampingInitial = mSolverDampingInitial
-    provider.MinLineSearchAlpha = mSolverMinLineSearchAlpha
-    provider.MaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    provider.MaxDeltaKappa = mSolverMaxDeltaKappa
     provider.SecantMaxRestarts = mSolverSecantMaxRestarts
-    provider.SecantMinStepNorm = mSolverSecantMinStepNorm
     provider.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
@@ -1615,13 +1582,7 @@ Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormation
     formation.SolverToleranceN = mSolverToleranceN
     formation.SolverToleranceMx = mSolverToleranceMx
     formation.SolverToleranceMy = mSolverToleranceMy
-    formation.SolverLineSearchEnabled = mSolverLineSearchEnabled
-    formation.SolverDampingInitial = mSolverDampingInitial
-    formation.SolverMinLineSearchAlpha = mSolverMinLineSearchAlpha
-    formation.SolverMaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    formation.SolverMaxDeltaKappa = mSolverMaxDeltaKappa
     formation.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
-    formation.SolverSecantMinStepNorm = mSolverSecantMinStepNorm
     formation.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
@@ -1847,9 +1808,6 @@ Public Property Get InputProfileId(ByVal index As Long) As String
     InputProfileId = mInputs(index).ProfileId
 End Property
 
-
-
-
 Public Property Get N(ByVal index As Long) As Double
     N = mWorkingLoads(index).N
 End Property
@@ -1957,16 +1915,9 @@ Public Property Get CrackLoadPointMy(ByVal index As Long) As Double
     CrackLoadPointMy = LoadStateForCombination(index).LoadPointMy
 End Property
 
-
 Public Property Get CrackSteelElasticModulus() As Double
     CrackSteelElasticModulus = mMaterialProvider.SteelElasticModulus(cpCrackedNDS)
 End Property
-
-
-
-
-
-
 
 ' Предельная сжатая деформация бетона именно для модели прочности.
 Public Function StrengthConcreteCompressionLimitForCombination(ByVal index As Long) As Double
@@ -2124,8 +2075,6 @@ Private Function DisplayCombinationID(ByVal index As Long) As String
     DisplayCombinationID = Trim$(mInputs(index).CombinationID)
     If Len(DisplayCombinationID) = 0 Then DisplayCombinationID = "#" & CStr(index)
 End Function
-
-
 
 ' Читает сохраненную N прочностного LC; перенос точки не меняет силу.
 Public Property Get StrengthReferenceN(ByVal index As Long) As Double

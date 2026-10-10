@@ -4734,8 +4734,6 @@ Private Sub TestAudit03InputContracts(ByRef stats As TUiTestStats)
         Audit03AssertInputError stats, sheet.Range("A1:C2"), "Long", _
             "audit03.input.long.invalid." & CStr(value), vbObjectError + 4315
     Next value
-    sheet.Range("A2").Value2 = "Solver.LineSearchEnabled": sheet.Range("B2").Value2 = "Maybe"
-    Audit03AssertInputError stats, sheet.Range("A1:C2"), "Solver", "audit03.input.consumer.boolean", vbObjectError + 4314
     sheet.Range("A2").Value2 = "Solver.MaxIterations": sheet.Range("B2").Value2 = 1.25
     Audit03AssertInputError stats, sheet.Range("A1:C2"), "Solver", "audit03.input.consumer.integer", vbObjectError + 4315
     sheet.Range("A2").Value2 = "Mesh.BoundarySubdivisions": sheet.Range("B2").Value2 = 0
@@ -5055,7 +5053,7 @@ Private Sub TestAudit03UnitSignConsumers(ByRef stats As TUiTestStats)
     Set steel = materials.SteelMaterialFromSpec(strengthSpec)
     Set load = New CSectionLoadState
     load.Initialize -100000#, 50000000#, 10000000#, 0#, 0#
-    For Each key In Array("Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.MaxDeltaKappa")
+    For Each key In Array("Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy")
         target.Formula = savedFormula
         Set valueCell = Nothing
         For row = 2 To target.Rows.Count
@@ -5125,24 +5123,19 @@ End Sub
 ' а не только прямым вызовом GetDouble. Инженерные диапазоны проверяются отдельно.
 Private Function Audit03NumericSettingsKeys(ByVal operation As String) As Variant
     If operation = "Capacity" Then
-        Audit03NumericSettingsKeys = Array("Capacity.InitialLambda", "Capacity.MaxLambda", _
-            "Capacity.ToleranceLambda", "Capacity.ToleranceStrain", "Capacity.MaxRetries", _
-            "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations", "Solver.ToleranceN", _
-            "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.DampingInitial", _
-            "Solver.MinLineSearchAlpha", "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
-            "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm")
+        Audit03NumericSettingsKeys = Array("Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
+        "Capacity.ToleranceStrain", "Capacity.MaxRetries", "Capacity.BaseLoadSteps", _
+        "Capacity.SolverMaxIterations", "Solver.ToleranceN", "Solver.ToleranceMx", _
+        "Solver.ToleranceMy", "Solver.SecantMaxRestarts")
     ElseIf operation = "Batch" Then
-        Audit03NumericSettingsKeys = Array("Solver.MaxIterations", "Solver.LoadSteps", _
-            "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.DampingInitial", _
-            "Solver.MinLineSearchAlpha", "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
-            "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm", "Capacity.InitialLambda", _
-            "Capacity.MaxLambda", "Capacity.ToleranceLambda", "Capacity.ToleranceStrain", _
-            "Capacity.MaxRetries", "Capacity.BaseLoadSteps", "Capacity.SolverMaxIterations")
+        Audit03NumericSettingsKeys = Array("Solver.MaxIterations", "Solver.LoadSteps", "Solver.ToleranceN", _
+        "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.SecantMaxRestarts", _
+        "Capacity.InitialLambda", "Capacity.MaxLambda", "Capacity.ToleranceLambda", _
+        "Capacity.ToleranceStrain", "Capacity.MaxRetries", "Capacity.BaseLoadSteps", _
+        "Capacity.SolverMaxIterations")
     Else
-        Audit03NumericSettingsKeys = Array("Solver.MaxIterations", "Solver.LoadSteps", _
-            "Solver.ToleranceN", "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.DampingInitial", _
-            "Solver.MinLineSearchAlpha", "Solver.MaxDeltaEpsilon0", "Solver.MaxDeltaKappa", _
-            "Solver.SecantMaxRestarts", "Solver.SecantMinStepNorm")
+        Audit03NumericSettingsKeys = Array("Solver.MaxIterations", "Solver.LoadSteps", "Solver.ToleranceN", _
+        "Solver.ToleranceMx", "Solver.ToleranceMy", "Solver.SecantMaxRestarts")
     End If
 End Function
 
@@ -5745,7 +5738,6 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional
     SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     SetSystemSetting "Load.ReferenceOffsetX", "10": SetSystemSetting "Load.ReferenceOffsetY", "-7"
     SetSystemSetting "General.ExecutionReportEnabled", "No"
-    SetSystemSetting "Solver.MaxDeltaKappa", "0.0001"
     SetProfileSetting "PR1", "Calculation.Strength.DirectState", "Yes"
     SetProfileSetting "PR1", "Calculation.Strength.Capacity", "No"
     SetProfileSetting "PR1", "Calculation.Crack.Width", "No"
@@ -5972,6 +5964,14 @@ Private Sub Audit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal prefix
                 If IsNumeric(baseline(row, column)) And IsNumeric(actual(row, column)) Then
                     expected = CDbl(baseline(row, column)): converted = CDbl(actual(row, column)) * factor
                     absoluteLimit = tolerance * (1# + Abs(expected))
+                    If kind = "Properties" And column = 4 Then
+                        If CStr(baseline(row, 5)) = "1/mm" Then
+                            ' Около нуля сохраняется абсолютный порог 1e-12.
+                            ' Относительное округление большого коэффициента
+                            ' согласовано с проверкой деформаций Elements (1e-10).
+                            absoluteLimit = 0.000000000001 + 0.0000000001 * Abs(expected)
+                        End If
+                    End If
                     If compareInertiaRoundoff And column = 4 And kind = "Properties" Then
                         If parameter = "Transformed.Ixy" Or parameter = "Transformed.Ixyc" Then
                             Dim roundoffLimit As Double
@@ -6113,7 +6113,6 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     SetSystemSetting "Mesh.BoundarySubdivisions", "1"
     SetSystemSetting "Solver.ToleranceN", "0.1"
     SetSystemSetting "Solver.ToleranceMx", "1": SetSystemSetting "Solver.ToleranceMy", "1"
-    SetSystemSetting "Solver.MaxDeltaKappa", "0.00005"
     SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
     SetSystemSetting "Capacity.SearchMethod", "Bisection"
     SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "Auto"
@@ -6154,7 +6153,6 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                     SetSystemSetting "Units.Stress.Input", CStr(stressNames(stressIndex))
                     SetSystemSetting "Units.Curvature.Input", IIf(curvatureIndex = 0, "1/mm", "1/m")
                     Audit03RescaleInputTables CDbl(lengthFactors(lengthIndex)), CDbl(stressFactors(stressIndex))
-                    SetSystemSetting "Solver.MaxDeltaKappa", CStr(0.00005 / IIf(curvatureIndex = 0, 1#, 0.001))
                     prefix = "audit03.inputUnits." & CStr(shape) & ".l" & CStr(lengthIndex) & _
                         ".s" & CStr(stressIndex) & ".k" & CStr(curvatureIndex)
                     AppendLine stats, "RUN: " & prefix
@@ -6511,7 +6509,6 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
             SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
             SetSystemSetting "Load.ReferenceOffsetX", "0": SetSystemSetting "Load.ReferenceOffsetY", "0"
-            SetSystemSetting "Solver.MaxDeltaKappa", "0"
             SetSystemSetting "Solver.ToleranceN", "0.001"
             SetSystemSetting "Solver.ToleranceMx", "0.001": SetSystemSetting "Solver.ToleranceMy", "0.001"
             SetProfileSetting "PR1", "Calculation.Strength.DirectState", "Yes"
@@ -7757,7 +7754,7 @@ Private Function ExpectedConfigDropdownOptions(ByVal key As String) As String
         Case "AutoCAD.Export.ContourFormat": ExpectedConfigDropdownOptions = "Region|Polyline"
         Case "AutoCAD.Export.PrincipalAxesMode", "Plot.PrincipalAxesMode": ExpectedConfigDropdownOptions = "Transformed|Concrete|None"
         Case "Plot.LegendMode": ExpectedConfigDropdownOptions = "Separate|Common"
-        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", "Solver.LineSearchEnabled", _
+        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", _
                 "AutoCAD.Export.NeutralLineEnabled", "AutoCAD.Export.LoadPointEnabled", "AutoCAD.Export.ContourEnabled", _
                 "AutoCAD.Export.ExportCrackInteractionContour", "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", _
                 "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.NeutralLineEnabled", "Plot.LoadApplicationPointEnabled", _

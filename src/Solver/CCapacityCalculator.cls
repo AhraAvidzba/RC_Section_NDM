@@ -34,13 +34,7 @@ Private mSolverToleranceN As Double ' Допуск равновесия внут
 Private mSolverToleranceMx As Double ' Допуск равновесия внутреннего CSectionSolver по Mx.
 Private mSolverToleranceMy As Double ' Допуск равновесия внутреннего CSectionSolver по My.
 Private mSolverMethod As String ' Newton или Secant для внутренних расчетов равновесия.
-Private mSolverLineSearchEnabled As Boolean ' Включен ли line search во внутренних расчетах.
-Private mSolverDampingInitial As Double ' Начальный коэффициент демпфирования Newton.
-Private mSolverMinLineSearchAlpha As Double ' Минимальный alpha line search.
-Private mSolverMaxDeltaEpsilon0 As Double ' Ограничение шага epsilon0.
-Private mSolverMaxDeltaKappa As Double ' Ограничение шага кривизн.
 Private mSolverSecantMaxRestarts As Long ' Максимум рестартов Secant-решателя.
-Private mSolverSecantMinStepNorm As Double ' Минимальная норма шага Secant-решателя.
 Private mDiagnosticsEnabled As Boolean ' True, если нужно писать подробный журнал итераций.
 
 ' Задает безопасные значения по умолчанию на случай прямых unit-тестов.
@@ -59,13 +53,7 @@ Private Sub Class_Initialize()
     mSolverToleranceMx = 0.01
     mSolverToleranceMy = 0.01
     mSolverMethod = "Newton"
-    mSolverLineSearchEnabled = True
-    mSolverDampingInitial = 1#
-    mSolverMinLineSearchAlpha = 0.000001
-    mSolverMaxDeltaEpsilon0 = 0#
-    mSolverMaxDeltaKappa = 0#
     mSolverSecantMaxRestarts = 0
-    mSolverSecantMinStepNorm = 0#
     mDiagnosticsEnabled = False
 End Sub
 
@@ -134,22 +122,14 @@ End Sub
 ' пробных lambda-точек Capacity. Это те же параметры равновесия, что применяет
 ' batch для прямого НДС, но владение ими в capacity-сценарии остается здесь.
 Public Sub ConfigureEquilibriumSolver(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
-        ByVal toleranceMy As Double, ByVal solverMethod As String, ByVal lineSearchEnabled As Boolean, _
-        ByVal dampingInitial As Double, ByVal minLineSearchAlpha As Double, _
-        ByVal maxDeltaEpsilon0 As Double, ByVal maxDeltaKappa As Double, _
-        ByVal secantMaxRestarts As Long, ByVal secantMinStepNorm As Double, _
+        ByVal toleranceMy As Double, ByVal solverMethod As String, _
+        ByVal secantMaxRestarts As Long, _
         ByVal diagnosticsEnabled As Boolean)
     mSolverToleranceN = toleranceN
     mSolverToleranceMx = toleranceMx
     mSolverToleranceMy = toleranceMy
     mSolverMethod = solverMethod
-    mSolverLineSearchEnabled = lineSearchEnabled
-    mSolverDampingInitial = dampingInitial
-    mSolverMinLineSearchAlpha = minLineSearchAlpha
-    mSolverMaxDeltaEpsilon0 = maxDeltaEpsilon0
-    mSolverMaxDeltaKappa = maxDeltaKappa
     mSolverSecantMaxRestarts = secantMaxRestarts
-    mSolverSecantMinStepNorm = secantMinStepNorm
     mDiagnosticsEnabled = diagnosticsEnabled
 End Sub
 
@@ -200,7 +180,7 @@ Public Function Calculate(ByVal section As CSectionModel, _
 
     Dim request As CLimitSearchRequest
     Set request = New CLimitSearchRequest
-    request.InitializeCapacity configuredSolver, section, concreteMaterial, steelMaterial, _
+    InitializeCapacitySearchRequest request, configuredSolver, section, concreteMaterial, steelMaterial, _
         SolutionStrategy, loadPath.NOffset, loadPath.NBase, loadPath.MxOffset, _
         loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, loadPath.ForceOnly, _
         pureAxialForMethod, strengthSpec
@@ -352,13 +332,7 @@ Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
     cap.SolverToleranceMx = mSolverToleranceMx
     cap.SolverToleranceMy = mSolverToleranceMy
     cap.SolverMethod = mSolverMethod
-    cap.SolverLineSearchEnabled = mSolverLineSearchEnabled
-    cap.SolverDampingInitial = mSolverDampingInitial
-    cap.SolverMinLineSearchAlpha = mSolverMinLineSearchAlpha
-    cap.SolverMaxDeltaEpsilon0 = mSolverMaxDeltaEpsilon0
-    cap.SolverMaxDeltaKappa = mSolverMaxDeltaKappa
     cap.SolverSecantMaxRestarts = mSolverSecantMaxRestarts
-    cap.SolverSecantMinStepNorm = mSolverSecantMinStepNorm
     cap.DiagnosticsEnabled = mDiagnosticsEnabled
 
     Set CreateConfiguredSolver = cap

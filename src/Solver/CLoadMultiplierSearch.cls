@@ -83,7 +83,8 @@ Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CL
     If Not request.Problem.AcceptInitialPoint(request, loadPath, functionValue, probeState, lowSolver) Then Exit Sub
 
     If Not FindBracket(request, loadPath, lowLambda, lowSolver, highLambda, highSolver) Then
-        If Not request.Problem.StoppedTerminally Then request.Problem.TryFinalizeAfterSearchFailure request
+        If Not request.Problem.Converged And Not request.Problem.StoppedTerminally Then _
+            request.Problem.TryFinalizeAfterSearchFailure request
         Exit Sub
     End If
     RunSearchInsideBracket request, loadPath, lowLambda, highLambda, lowSolver, highSolver, _
@@ -116,21 +117,38 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
         ByRef highLambda As Double, ByRef highSolver As CSectionSolver) As Boolean
     On Error GoTo ArithmeticFailed
     Dim functionValue As Double, probeState As String
-    Dim evaluated As Boolean, reducedLambda As Double
+    Dim evaluated As Boolean, reducedLambda As Double, recoveryAttempts As Long
+    Dim boundaryRefinementAttempted As Boolean
     highLambda = MinDouble(highLambda, request.Problem.MaxLambda)
     Do
         evaluated = request.Problem.EvaluatePoint(request, loadPath, lowSolver, highLambda, _
             functionValue, probeState, highSolver)
         If Not evaluated Or request.Problem.IsNumericalFailureState(probeState) Then
             If request.Problem.StoppedTerminally Then Exit Function
+            If Not boundaryRefinementAttempted And Not lowSolver Is Nothing Then
+                If lowSolver.Converged Then
+                    ' На плато силовая проба может не иметь решения, хотя реальный
+                    ' первый предел уже доступен от сохраненного НДС. Общий
+                    ' callback подтверждает его по исходному пути и всем усилиям.
+                    boundaryRefinementAttempted = True
+                    request.Problem.TryFinalizeAfterSearchFailure request
+                    If request.Problem.Converged Or request.Problem.StoppedTerminally Then Exit Function
+                End If
+            End If
+            recoveryAttempts = recoveryAttempts + 1
+            ' До подтвержденной физической скобки допуск lambda не завершает
+            ' recovery: численный отказ не является физической верхней границей.
+            ' Работу ограничивают бюджет и представимость следующей пробы.
+            If request.Problem.MaxIterations > 0 Then
+                If recoveryAttempts >= request.Problem.MaxIterations Then
+                    request.Problem.SetNumericalFailure "Исчерпан общий бюджет восстановления lambda: равновесие следующей точки не подтверждено."
+                    Exit Function
+                End If
+            End If
             reducedLambda = request.Problem.ReduceLambdaAfterNumericalFailure(lowLambda, highLambda, probeState)
             If Not IsFiniteNumber(reducedLambda) Or reducedLambda <= lowLambda Or reducedLambda >= highLambda Then
                 request.Problem.SetNumericalFailure _
                     "Восстановление поиска lambda не уменьшило интервал; следующую пробу невозможно выбрать."
-                Exit Function
-            End If
-            If reducedLambda - lowLambda <= request.Problem.LambdaTolerance Then
-                request.Problem.HandleBracketNumericalFailure lowLambda, highLambda, probeState
                 Exit Function
             End If
             highLambda = reducedLambda
@@ -138,6 +156,8 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             FindBracket = True
             Exit Function
         ElseIf request.Problem.IsAcceptableState(probeState) Then
+            ' Бюджет относится ко всему построению скобки: успешная проба
+            ' не отменяет прежние неудачи и не разрешает бесконечное recovery.
             lowLambda = highLambda
             Set lowSolver = highSolver
             request.Problem.RecordAcceptable loadPath, lowLambda
@@ -246,8 +266,19 @@ Private Function SearchByBisectionCore(ByVal request As CLimitSearchRequest, _
             Exit Function
         End If
         Set startSolver = PreferredBisectionStartSolver(lowSolver, highSolver)
-        If Not EvaluateBisectionPoint(request, loadPath, startSolver, midLambda, _
-                midResidual, probeState, midSolver) Then
+        Dim evaluated As Boolean
+        evaluated = EvaluateBisectionPoint(request, loadPath, startSolver, midLambda, _
+            midResidual, probeState, midSolver)
+        If Not request.Problem.StoppedTerminally Then
+            If Not evaluated Or IsNumericalFailureState(request, probeState) Then
+                If Not highSolver Is Nothing Then
+                    request.Problem.AppendDiagnostic "bisectionRecovery=oppositeEquilibriumStart; lambda=" & FormatNumberInvariant(midLambda)
+                    evaluated = EvaluateBisectionPoint(request, loadPath, highSolver, midLambda, _
+                        midResidual, probeState, midSolver)
+                End If
+            End If
+        End If
+        If Not evaluated Then
             HandleBisectionEvaluationFailure request, midLambda
             Exit Function
         End If
@@ -617,6 +648,14 @@ Private Function EvaluateLimitPoint(ByVal request As CLimitSearchRequest, _
         ByRef solver As CSectionSolver) As Boolean
     EvaluateLimitPoint = request.Problem.EvaluatePoint(request, loadPath, Nothing, _
         lambdaValue, functionValue, probeState, solver)
+    If EvaluateLimitPoint Then
+        If IsNumericalFailureState(request, probeState) Then
+            ' Неудачная проба может вернуть нулевую невязку-заглушку.
+            ' Brent/Secant не должны принимать ее за корень или менять знак скобки.
+            HandleBisectionEvaluationFailure request, lambdaValue
+            EvaluateLimitPoint = False
+        End If
+    End If
 End Function
 
 ' Проверяет, что lambda-точка находится ниже предела.

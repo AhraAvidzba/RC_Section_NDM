@@ -50,9 +50,9 @@ Private mSelectedLoadPath As CLoadPathDescriptor ' Конкретная трае
 Private mPureAxialLoad As Boolean ' Признак осевого полного LC для численной политики Capacity, независимо от первого пути Auto.
 
 ' Заполняет request для поиска несущей способности.
-' Материалы и capacitySolver передаются готовыми, чтобы общий search-слой
+' Материалы и доменная задача передаются готовыми, чтобы общий search-слой
 ' не зависел от Config, расчетного профиля и правил построения диаграмм.
-Public Sub InitializeCapacity(ByVal capacitySolver As CCapacitySolver, _
+Public Sub InitializeCapacity(ByVal problem As ILimitSearchProblem, _
         ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal solutionStrategy As String, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -61,14 +61,11 @@ Public Sub InitializeCapacity(ByVal capacitySolver As CCapacitySolver, _
         ByVal forceOnly As Boolean, ByVal pureAxialForMethod As Boolean, _
         Optional ByVal materialSpec As CMaterialModelSpec = Nothing)
     ClearLoadPathSelection
-    If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4200, "CLimitSearchRequest", "Не передан solver поиска несущей способности."
+    If problem Is Nothing Then Err.Raise vbObjectError + 4200, "CLimitSearchRequest", "Не передана задача поиска несущей способности."
     If section Is Nothing Then Err.Raise vbObjectError + 4201, "CLimitSearchRequest", "Не передана модель сечения для limit-search."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, "CLimitSearchRequest", "Не передана диаграмма бетона для limit-search."
     If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4203, "CLimitSearchRequest", "Не передана диаграмма арматуры для limit-search."
 
-    Dim problem As CCapacityLimitSearchProblem
-    Set problem = New CCapacityLimitSearchProblem
-    problem.Initialize capacitySolver
     Set mProblem = problem
     Set mSection = section
     Set mConcreteMaterial = concreteMaterial
@@ -90,21 +87,18 @@ End Sub
 ' Заполняет request для поиска стадии образования нормальной трещины.
 ' На вход уже приходят материалы модели CrackInitiation; общий LimitSearch
 ' не выбирает профили и не знает о листе Config.
-Public Sub InitializeCrackFormation(ByVal crackCalculator As CCrackFormationCalculator, _
+Public Sub InitializeCrackFormation(ByVal problem As ILimitSearchProblem, _
         ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal solutionStrategy As String, ByVal crackFormationPath As String, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double)
     ClearLoadPathSelection
-    If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4204, "CLimitSearchRequest", "Не передан расчетчик трещинообразования."
+    If problem Is Nothing Then Err.Raise vbObjectError + 4204, "CLimitSearchRequest", "Не передана задача поиска трещинообразования."
     If section Is Nothing Then Err.Raise vbObjectError + 4205, "CLimitSearchRequest", "Не передана модель сечения для поиска трещинообразования."
     If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4206, "CLimitSearchRequest", "Не передана диаграмма бетона для поиска трещинообразования."
     If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4207, "CLimitSearchRequest", "Не передана диаграмма арматуры для поиска трещинообразования."
 
-    Dim problem As CCrackLimitSearchProblem
-    Set problem = New CCrackLimitSearchProblem
-    problem.Initialize crackCalculator
     Set mProblem = problem
     Set mSection = section
     Set mConcreteMaterial = concreteMaterial
@@ -125,7 +119,7 @@ End Sub
 ' Заполняет request уже готовой доменной задачей LimitSearch.
 ' Этот вход используется контрактными тестами с callback-объектом,
 ' созданным снаружи. Он не заменяет строгие доменные
-' фабрики Capacity/CrackFormation: они проверяют обязательные
+' входы Capacity/CrackFormation: они проверяют обязательные
 ' материалы и расчетную модель.
 Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
         ByVal resultKind As EResultKind, ByVal solutionStrategy As String, _

@@ -39,6 +39,27 @@ Private Sub Class_Initialize()
     mBaseTolerance = DEFAULT_BASE_TOLERANCE
 End Sub
 
+' Проверяет осевую lambda-траекторию относительно указанной расчетной точки.
+' Это характеристика нагрузки, не выбор метода поиска. Guard учитывает лишь
+' округление переноса Double, не вводит инженерный фильтр моментов.
+Public Function IsPureAxialLoadPath(ByVal nOffset As Double, ByVal nBase As Double, _
+        ByVal mxOffset As Double, ByVal mxBase As Double, ByVal myOffset As Double, ByVal myBase As Double, _
+        ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
+    If Abs(nBase) <= 0.000000001 Or Abs(nOffset) > 0.000000001 Then Exit Function
+    IsPureAxialLoadPath = IsZeroMomentAboutPoint(nOffset, mxOffset, referenceY) And _
+        IsZeroMomentAboutPoint(nBase, mxBase, referenceY) And _
+        IsZeroMomentAboutPoint(nOffset, myOffset, referenceX) And _
+        IsZeroMomentAboutPoint(nBase, myBase, referenceX)
+End Function
+
+Private Function IsZeroMomentAboutPoint(ByVal n As Double, ByVal moment As Double, ByVal coordinate As Double) As Boolean
+    Dim transfer As Double, roundoff As Double
+    transfer = n * coordinate
+    ' Восемь машинных epsilon Double для произведения и разности моментов.
+    roundoff = 0.000000001 + 0.00000000000000177635683940025 * (Abs(moment) + Abs(transfer))
+    IsZeroMomentAboutPoint = Abs(moment - transfer) <= roundoff
+End Function
+
 ' Передает допуски того solver-а, для которого будут строиться безразмерные
 ' невязки load-path. Разные расчетные ветки могут иметь разные настройки, но
 ' формула нормировки остается общей. По умолчанию любая ненулевая Base
@@ -101,7 +122,8 @@ End Function
 ' контролируются как постоянная часть Offset.
 Public Sub BuildResiduals(ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal loadPath As CLoadPathVector, _
-        ByVal lambdaValue As Double, ByRef rPath1 As Double, ByRef rPath2 As Double)
+        ByVal lambdaValue As Double, ByRef rPath1 As Double, ByRef rPath2 As Double, _
+        Optional ByVal commonResidualScale As Double = 0#)
     Dim residualCount As Long
     Dim anchor As Long
     Dim targetNValue As Double
@@ -119,24 +141,35 @@ Public Sub BuildResiduals(ByVal nValue As Double, ByVal mxValue As Double, _
 
     If Abs(loadPath.NBase) <= mBaseTolerance Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (nValue - loadPath.NOffset) / ComponentTolerance(1, loadPath.NOffset, loadPath.NOffset)
+            (nValue - loadPath.NOffset) / ResidualScale(1, loadPath.NOffset, commonResidualScale)
     If Abs(loadPath.MxBase) <= mBaseTolerance Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (mxValue - loadPath.MxOffset) / ComponentTolerance(2, loadPath.MxOffset, loadPath.MxOffset)
+            (mxValue - loadPath.MxOffset) / ResidualScale(2, loadPath.MxOffset, commonResidualScale)
     If Abs(loadPath.MyBase) <= mBaseTolerance Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (myValue - loadPath.MyOffset) / ComponentTolerance(3, loadPath.MyOffset, loadPath.MyOffset)
+            (myValue - loadPath.MyOffset) / ResidualScale(3, loadPath.MyOffset, commonResidualScale)
 
     If residualCount < 2 And Abs(loadPath.NBase) > mBaseTolerance And anchor <> 1 Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (nValue - targetNValue) / ComponentTolerance(1, targetNValue, targetNValue)
+            (nValue - targetNValue) / ResidualScale(1, targetNValue, commonResidualScale)
     If residualCount < 2 And Abs(loadPath.MxBase) > mBaseTolerance And anchor <> 2 Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (mxValue - targetMxValue) / ComponentTolerance(2, targetMxValue, targetMxValue)
+            (mxValue - targetMxValue) / ResidualScale(2, targetMxValue, commonResidualScale)
     If residualCount < 2 And Abs(loadPath.MyBase) > mBaseTolerance And anchor <> 3 Then _
         AddResidual residualCount, rPath1, rPath2, _
-            (myValue - targetMyValue) / ComponentTolerance(3, targetMyValue, targetMyValue)
+            (myValue - targetMyValue) / ResidualScale(3, targetMyValue, commonResidualScale)
 End Sub
+
+' В численном пространстве N/Mx/L/My/L все компоненты имеют размерность силы.
+' Общий масштаб отделяет направление шага от допусков окончательной приемки.
+Private Function ResidualScale(ByVal componentIndex As Long, ByVal target As Double, _
+        ByVal commonScale As Double) As Double
+    If commonScale > 0# Then
+        ResidualScale = commonScale
+    Else
+        ResidualScale = ComponentTolerance(componentIndex, target, target)
+    End If
+End Function
 
 ' Возвращает норму системы load-path + limit. Последний множитель сохраняет
 ' принятую в capacity/crack практику: предельный критерий важнее мелкой

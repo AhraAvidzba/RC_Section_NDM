@@ -53,23 +53,20 @@ Private mHasSteelTension As Boolean ' True, если есть растянута
 Private mIterations As Long ' Суммарное число итераций на всех ступенях текущего вызова Solve.
 Private mLoadStepsCompleted As Long ' Сколько ступеней нагрузки успешно доведено до равновесия.
 Private mK(1 To 3, 1 To 3) As Double ' Касательная матрица d(N,Mx,My)/d(epsilon0,kappaX,kappaY).
+Private mFrame As CSectionNumericalFrame ' Общий центр и масштаб без изменения публичных координат.
+Private mCenterEpsilon As Double, mCenterMx As Double, mCenterMy As Double
+Private mCenterResidualMx As Double, mCenterResidualMy As Double
+Private mCenterK(1 To 3, 1 To 3) As Double ' Собирается напрямую по малым плечам, без вычитания больших K.
 Private mMaxIterations As Long ' Максимум итераций на одну ступень нагрузки.
 Private mLoadSteps As Long ' На сколько ступеней дробится заданный вектор N/Mx/My.
 Private mToleranceN As Double ' Абсолютный допуск равновесия по N во внутренних единицах.
 Private mToleranceMx As Double ' Абсолютный допуск равновесия по Mx во внутренних единицах.
 Private mToleranceMy As Double ' Абсолютный допуск равновесия по My во внутренних единицах.
-Private mLineSearchEnabled As Boolean ' Разрешает дробить шаг, если полный шаг ухудшает невязку.
-Private mDampingInitial As Double ' Начальный множитель шага перед line search.
-Private mMinLineSearchAlpha As Double ' Минимальный alpha, ниже которого шаг считается неудачным.
-Private mMaxDeltaEpsilon0 As Double ' Ограничение приращения epsilon0 за одну итерацию.
-Private mMaxDeltaKappa As Double ' Ограничение приращения kappaX/kappaY за одну итерацию.
 Private mDiagnosticsEnabled As Boolean ' Управляет накоплением текстовой диагностики итераций.
 Private mSolverMethod As String ' Выбранная численная ветка: Newton или Secant.
 Private mSecantMaxRestarts As Long ' Сколько раз Secant может пересобрать приближенную матрицу чувствительности.
-Private mSecantMinStepNorm As Double ' Минимальный размер secant-шага; меньше считается застоем.
 Private mDiagnosticLog As String ' Текстовый журнал ключевых итераций для тестов и диагностики.
 Private mLastAlpha As Double ' Последний принятый коэффициент line search.
-Private mLastDeltaScale As Double ' Во сколько раз был уменьшен последний шаг из-за лимитов приращений.
 Private mLastResidualNorm As Double ' Норма невязки после последней оценки состояния.
 Private mLastStepNorm As Double ' Норма последней поправки [deltaEps, deltaKx, deltaKy].
 Private mLastMatrixConditionEstimate As Double ' Грубая оценка вырожденности касательной матрицы.
@@ -108,15 +105,9 @@ Private Sub Class_Initialize()
     mToleranceN = 1#
     mToleranceMx = 1000#
     mToleranceMy = 1000#
-    mLineSearchEnabled = True
-    mDampingInitial = 1#
-    mMinLineSearchAlpha = 0.03125
-    mMaxDeltaEpsilon0 = 0.0005
-    mMaxDeltaKappa = 0.00001
     mDiagnosticsEnabled = True
     mSolverMethod = "Newton"
     mSecantMaxRestarts = 2
-    mSecantMinStepNorm = 0.000000000001
 End Sub
 
 ' ------------------------------
@@ -133,25 +124,18 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mToleranceN = settings.GetDouble("Solver.ToleranceN", mToleranceN, False)
     mToleranceMx = settings.GetDouble("Solver.ToleranceMx", mToleranceMx, False)
     mToleranceMy = settings.GetDouble("Solver.ToleranceMy", mToleranceMy, False)
-    mLineSearchEnabled = settings.GetBoolean("Solver.LineSearchEnabled", mLineSearchEnabled)
-    mDampingInitial = settings.GetDouble("Solver.DampingInitial", mDampingInitial, False)
-    mMinLineSearchAlpha = settings.GetDouble("Solver.MinLineSearchAlpha", mMinLineSearchAlpha, False)
-    mMaxDeltaEpsilon0 = settings.GetDouble("Solver.MaxDeltaEpsilon0", mMaxDeltaEpsilon0, False)
-    mMaxDeltaKappa = settings.GetDouble("Solver.MaxDeltaKappa", mMaxDeltaKappa, False)
     If settings.HasKey("Solver.Method") Then
         mSolverMethod = settings.GetRawString("Solver.Method", vbNullString)
     Else
         mSolverMethod = "Newton"
     End If
     mSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSecantMaxRestarts, False)
-    mSecantMinStepNorm = settings.GetDouble("Solver.SecantMinStepNorm", mSecantMinStepNorm, False)
     If Not units Is Nothing Then
         ' Знак нагрузки не относится к допуску; неверный отрицательный ввод
         ' сохраняем для адресной проверки конфигурации до начала solve.
         mToleranceN = Sgn(mToleranceN) * Abs(units.InputForceToInternal(mToleranceN))
         mToleranceMx = Sgn(mToleranceMx) * Abs(units.InputMomentMxToInternal(mToleranceMx))
         mToleranceMy = Sgn(mToleranceMy) * Abs(units.InputMomentMyToInternal(mToleranceMy))
-        mMaxDeltaKappa = Sgn(mMaxDeltaKappa) * Abs(units.InputCurvatureToInternal(mMaxDeltaKappa))
     End If
 End Sub
 
@@ -179,6 +163,7 @@ Public Sub Solve(ByVal section As CSectionModel, _
         mKappaX = mInitialKappaX
         mKappaY = mInitialKappaY
     End If
+    mCenterEpsilon = mFrame.CenterStrain(mEpsilon0, mKappaX, mKappaY)
 
     Dim stepIndex As Long
     Dim stepN As Double
@@ -209,7 +194,7 @@ Public Sub Solve(ByVal section As CSectionModel, _
 
     ' Финальная проверка выполняется уже на полной нагрузке: промежуточная сходимость ступеней
     ' сама по себе еще не гарантирует, что итоговые невязки попали в пользовательские допуски.
-    EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
+    EvaluateState section, concreteMaterial, steelMaterial, mCenterEpsilon, mKappaX, mKappaY, True, False, True
     SetResiduals targetN, targetMx, targetMy
     mConverged = IsConverged(targetN, targetMx, targetMy)
     If mConverged Then
@@ -264,19 +249,36 @@ Friend Sub EvaluatePhysicalStrainPlane(ByVal section As CSectionModel, _
     EvaluatePlaneCore section, concreteMaterial, steelMaterial, epsilon0, kappaX, kappaY, buildTangent
 End Sub
 
+' Внутренний численный поиск передает деформацию центра напрямую, без
+' потери точности на переносе в удаленное начало координат и обратно.
+Friend Sub EvaluatePhysicalCenterPlane(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal centerEpsilon As Double, ByVal kappaX As Double, ByVal kappaY As Double)
+    Dim buildTangent As Boolean
+    buildTangent = Not (TypeOf concreteMaterial Is CMaterialDiagram And TypeOf steelMaterial Is CMaterialDiagram)
+    EvaluatePlaneCore section, concreteMaterial, steelMaterial, centerEpsilon, kappaX, kappaY, buildTangent, True
+End Sub
+
 ' Общая оценка известной плоскости; запрос физических данных независим от K.
 ' Публичная оценка по-прежнему возвращает полную касательную матрицу.
 Private Sub EvaluatePlaneCore(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
-        ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, ByVal buildTangent As Boolean)
+        ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double, ByVal buildTangent As Boolean, _
+        Optional ByVal centeredPlane As Boolean = False)
 
     ClearResult
     If Not ValidateInputs(section, concreteMaterial, steelMaterial) Then Exit Sub
     CaptureMaterialContext section, concreteMaterial, steelMaterial
-    mEpsilon0 = epsilon0
     mKappaX = kappaX
     mKappaY = kappaY
-    EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, buildTangent, True
+    If centeredPlane Then
+        mCenterEpsilon = epsilon0
+        mEpsilon0 = mFrame.OriginalStrain(epsilon0, kappaX, kappaY)
+    Else
+        mEpsilon0 = epsilon0
+        mCenterEpsilon = mFrame.CenterStrain(epsilon0, kappaX, kappaY)
+    End If
+    EvaluateState section, concreteMaterial, steelMaterial, mCenterEpsilon, mKappaX, mKappaY, buildTangent, True, True
     SetResiduals mNint, mMxint, mMyint
     mConverged = False
     mFailureCode = sfcNone
@@ -289,7 +291,7 @@ End Sub
 Public Function ConfirmEquilibrium(ByVal targetN As Double, ByVal targetMx As Double, _
         ByVal targetMy As Double) As Boolean
     SetResiduals targetN, targetMx, targetMy
-    mLastResidualNorm = ResidualNorm(mResidualN, mResidualMx, mResidualMy, targetN, targetMx, targetMy)
+    mLastResidualNorm = ResidualNorm(mResidualN, mCenterResidualMx, mCenterResidualMy, targetN, targetMx, targetMy)
     mConverged = IsConverged(targetN, targetMx, targetMy)
     If mConverged Then
         mFailureCode = sfcNone
@@ -323,8 +325,8 @@ End Function
 ' Шаг Newton
 ' ------------------------------
 ' На каждой итерации считаем текущую невязку равновесия, собираем касательную
-' матрицу K и решаем K * delta = -R. Затем шаг ограничивается по величине и
-' принимается через line search, чтобы не прыгнуть в состояние с худшей невязкой.
+' матрицу K и решаем K * delta = -R. Длина шага подбирается по снижению
+' невязки, без фиксированных ограничений приращения деформаций.
 Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal stepIndex As Long, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
@@ -338,10 +340,10 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         ' Считаем текущие внутренние усилия и касательную матрицу для этой
         ' плоскости деформаций. После этого можно проверить, достигнуто ли
         ' равновесие без дополнительного шага.
-        EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
+        EvaluateState section, concreteMaterial, steelMaterial, mCenterEpsilon, mKappaX, mKappaY, True, False, True
         SetResiduals targetN, targetMx, targetMy
         If IsConverged(targetN, targetMx, targetMy) Then
-            AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, "сошлось"
+            AppendDiagnostics stepIndex, iter, 0#, targetN, targetMx, targetMy, "сошлось"
             SolveNewtonLoadStep = True
             Exit Function
         End If
@@ -350,14 +352,20 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         ' потому что хотим сдвинуть состояние в сторону уменьшения R.
         Dim system As CLinearSystem3x3
         Set system = New CLinearSystem3x3
-        If Not system.Solve(mK(1, 1), mK(1, 2), mK(1, 3), _
-                mK(2, 1), mK(2, 2), mK(2, 3), _
-                mK(3, 1), mK(3, 2), mK(3, 3), _
-                -mResidualN, -mResidualMx, -mResidualMy) Then
+        Dim length As Double
+        length = mFrame.LengthScale
+        If Not system.Solve(mCenterK(1, 1), mCenterK(1, 2) / length, mCenterK(1, 3) / length, _
+                mCenterK(2, 1) / length, mCenterK(2, 2) / length / length, mCenterK(2, 3) / length / length, _
+                mCenterK(3, 1) / length, mCenterK(3, 2) / length / length, mCenterK(3, 3) / length / length, _
+                -mResidualN, -mCenterResidualMx / length, -mCenterResidualMy / length) Then
+            If TryRegularizedStep(section, concreteMaterial, steelMaterial, mCenterK, targetN, targetMx, targetMy) Then
+                AppendDiagnostics stepIndex, iter, mLastAlpha, targetN, targetMx, targetMy, "регуляризованная поправка Newton"
+                GoTo NewtonIterationCompleted
+            End If
             mConverged = False
             mFailureCode = system.FailureCode
             mStopReason = "Не удалось решить касательную систему: " & system.StopReason
-            AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, mStopReason
+            AppendDiagnostics stepIndex, iter, 0#, targetN, targetMx, targetMy, mStopReason
             SolveNewtonLoadStep = False
             Exit Function
         End If
@@ -366,24 +374,33 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
         Dim deltaKx As Double
         Dim deltaKy As Double
         deltaEps = system.X1
-        deltaKx = system.X2
-        deltaKy = system.X3
+        deltaKx = system.X2 / length
+        deltaKy = system.X3 / length
 
-        ' Слишком большой шаг сначала режется по инженерным лимитам приращений,
-        ' а затем line search подбирает alpha, который реально улучшает невязку.
-        mLastDeltaScale = LimitIncrement(deltaEps, deltaKx, deltaKy)
+        ' Полный центрированный шаг допускается сразу. Обратный поиск ниже
+        ' автоматически уменьшает его по фактическому снижению невязки.
         mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy)
-        AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "итерация"
+        AppendDiagnostics stepIndex, iter, mLastAlpha, targetN, targetMx, targetMy, "итерация"
         If mLastAlpha <= 0# Then
+            If TryRegularizedStep(section, concreteMaterial, steelMaterial, mCenterK, targetN, targetMx, targetMy) Then
+                AppendDiagnostics stepIndex, iter, mLastAlpha, targetN, targetMx, targetMy, "регуляризованная поправка Newton"
+                GoTo NewtonIterationCompleted
+            End If
             mConverged = False
             mFailureCode = sfcNumericalFailure
             If Len(mStopReason) = 0 Then mStopReason = "Подбор шага решения не смог уменьшить невязку равновесия."
             SolveNewtonLoadStep = False
             Exit Function
         End If
+NewtonIterationCompleted:
     Next iter
 
     RefreshCurrentState section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
+    If IsConverged(targetN, targetMx, targetMy) Then
+        AppendDiagnostics stepIndex, mMaxIterations, mLastAlpha, targetN, targetMx, targetMy, "сошлось на последнем шаге"
+        SolveNewtonLoadStep = True
+        Exit Function
+    End If
     mConverged = False
     mFailureCode = sfcNumericalFailure
     mStopReason = "Достигнут лимит итераций на ступени нагрузки " & CStr(stepIndex) & "."
@@ -401,10 +418,10 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
     Dim scaleKx As Double, scaleKy As Double ' Плечи для приведения кривизн к деформациям.
     SecantCoordinateScales section, scaleKx, scaleKy
     EvaluateSecantResidual section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-        mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy
+        mCenterEpsilon, mKappaX, mKappaY, mResidualN, mCenterResidualMx, mCenterResidualMy
 
     If Not BuildInitialSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-            mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b) Then
+            mCenterEpsilon, mKappaX, mKappaY, mResidualN, mCenterResidualMx, mCenterResidualMy, b) Then
         SolveSecantLoadStep = False
         Exit Function
     End If
@@ -412,10 +429,10 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
     Dim iter As Long
     For iter = 1 To mMaxIterations
         mIterations = mIterations + 1
-        mLastResidualNorm = ResidualNorm(mResidualN, mResidualMx, mResidualMy, targetN, targetMx, targetMy)
+        mLastResidualNorm = ResidualNorm(mResidualN, mCenterResidualMx, mCenterResidualMy, targetN, targetMx, targetMy)
 
         If IsConverged(targetN, targetMx, targetMy) Then
-            AppendDiagnostics stepIndex, iter, 0#, 0#, targetN, targetMx, targetMy, "Secant сошелся"
+            AppendDiagnostics stepIndex, iter, 0#, targetN, targetMx, targetMy, "Secant сошелся"
             SolveSecantLoadStep = True
             Exit Function
         End If
@@ -425,8 +442,9 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         Dim deltaKy As Double
         Dim linearFailureCode As ESolverFailureCode, linearFailureReason As String
         If Not SolveSecantCorrection(b, deltaEps, deltaKx, deltaKy, linearFailureCode, linearFailureReason) Then
+            If TryRegularizedStep(section, concreteMaterial, steelMaterial, b, targetN, targetMx, targetMy) Then GoTo SecantRegularizedStep
             If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "линейная система не решена") Then
+                    mCenterEpsilon, mKappaX, mKappaY, mResidualN, mCenterResidualMx, mCenterResidualMy, b, "линейная система не решена") Then
                 SolveSecantLoadStep = False
                 Exit Function
             End If
@@ -445,21 +463,21 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
         Dim oldRN As Double
         Dim oldRMx As Double
         Dim oldRMy As Double
-        oldEps = mEpsilon0: oldKx = mKappaX: oldKy = mKappaY
-        oldRN = mResidualN: oldRMx = mResidualMx: oldRMy = mResidualMy
+        oldEps = mCenterEpsilon: oldKx = mKappaX: oldKy = mKappaY
+        oldRN = mResidualN: oldRMx = mCenterResidualMx: oldRMy = mCenterResidualMy
 
-        mLastDeltaScale = LimitIncrement(deltaEps, deltaKx, deltaKy)
         mLastStepNorm = SecantStepNorm(deltaEps, deltaKx, deltaKy)
-        If Not IsFiniteNumber(mLastStepNorm) Or mLastStepNorm <= mSecantMinStepNorm Then
+        If Not IsFiniteNumber(mLastStepNorm) Or mLastStepNorm <= 0# Then
             If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "шаг слишком мал") Then
+                    mCenterEpsilon, mKappaX, mKappaY, mResidualN, mCenterResidualMx, mCenterResidualMy, b, "шаг слишком мал") Then
                 SolveSecantLoadStep = False
                 Exit Function
             End If
-            AppendDiagnostics stepIndex, iter, 0#, mLastDeltaScale, targetN, targetMx, targetMy, "Secant перезапущен"
+            AppendDiagnostics stepIndex, iter, 0#, targetN, targetMx, targetMy, "Secant перезапущен"
         Else
             mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, deltaEps, deltaKx, deltaKy)
             If mLastAlpha <= 0# Then
+                If TryRegularizedStep(section, concreteMaterial, steelMaterial, b, targetN, targetMx, targetMy) Then GoTo SecantRegularizedStep
                 If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
                         oldEps, oldKx, oldKy, oldRN, oldRMx, oldRMy, b, "подбор шага не уменьшил невязку") Then
                     SolveSecantLoadStep = False
@@ -467,25 +485,91 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
                 End If
             Else
                 EvaluateSecantResidual section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                    mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy
-                If Not UpdateBroydenMatrix(b, mEpsilon0 - oldEps, mKappaX - oldKx, mKappaY - oldKy, _
-                        mResidualN - oldRN, mResidualMx - oldRMx, mResidualMy - oldRMy, scaleKx, scaleKy) Then
+                    mCenterEpsilon, mKappaX, mKappaY, mResidualN, mCenterResidualMx, mCenterResidualMy
+                If IsConverged(targetN, targetMx, targetMy) Then
+                    AppendDiagnostics stepIndex, iter, mLastAlpha, targetN, targetMx, targetMy, "Secant сошелся"
+                    SolveSecantLoadStep = True
+                    Exit Function
+                End If
+                If Not UpdateBroydenMatrix(b, mCenterEpsilon - oldEps, mKappaX - oldKx, mKappaY - oldKy, _
+                        mResidualN - oldRN, mCenterResidualMx - oldRMx, mCenterResidualMy - oldRMy, scaleKx, scaleKy) Then
                     If Not RestartSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                            mEpsilon0, mKappaX, mKappaY, mResidualN, mResidualMx, mResidualMy, b, "обновление Broyden не выполнено") Then
+                            mCenterEpsilon, mKappaX, mKappaY, mResidualN, mCenterResidualMx, mCenterResidualMy, b, "обновление Broyden не выполнено") Then
                         SolveSecantLoadStep = False
                         Exit Function
                     End If
                 End If
-                AppendDiagnostics stepIndex, iter, mLastAlpha, mLastDeltaScale, targetN, targetMx, targetMy, "итерация Secant"
+                AppendDiagnostics stepIndex, iter, mLastAlpha, targetN, targetMx, targetMy, "итерация Secant"
             End If
         End If
+        GoTo SecantIterationCompleted
+SecantRegularizedStep:
+        EvaluateSecantResidual section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+            mCenterEpsilon, mKappaX, mKappaY, mResidualN, mCenterResidualMx, mCenterResidualMy
+        If IsConverged(targetN, targetMx, targetMy) Then
+            SolveSecantLoadStep = True
+            Exit Function
+        End If
+        BuildInitialSecantMatrix section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+            mCenterEpsilon, mKappaX, mKappaY, mResidualN, mCenterResidualMx, mCenterResidualMy, b
+        AppendDiagnostics stepIndex, iter, mLastAlpha, targetN, targetMx, targetMy, "регуляризованная поправка Secant"
+SecantIterationCompleted:
     Next iter
 
     RefreshCurrentState section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy
+    If IsConverged(targetN, targetMx, targetMy) Then
+        AppendDiagnostics stepIndex, mMaxIterations, mLastAlpha, targetN, targetMx, targetMy, "Secant сошелся на последнем шаге"
+        SolveSecantLoadStep = True
+        Exit Function
+    End If
     mConverged = False
     mFailureCode = sfcNumericalFailure
     mStopReason = "Равновесие не найдено: метод Secant достиг лимита итераций на ступени нагрузки " & CStr(stepIndex) & "."
     SolveSecantLoadStep = False
+End Function
+
+' Псевдовременная регуляризация J + mu*I помогает выйти из материального плато.
+' Сдвиг относится только к поправке, не к напряжениям или физической жесткости.
+' Каждая проба обязана снизить настоящую невязку через обычный AcceptStep;
+' успех определяется прежними допусками, а не решением сдвинутой системы.
+' Основа метода: PETSc, TS Pseudo-Timestepping for Steady-State Problems.
+Private Function TryRegularizedStep(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
+        ByVal steelMaterial As Object, ByRef matrix() As Double, ByVal targetN As Double, _
+        ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
+    If Not mFrame.HasFullPlaneSupport Then Exit Function
+    Dim a(1 To 3, 1 To 3) As Double, i As Long, j As Long, matrixScale As Double, length As Double
+    length = mFrame.LengthScale
+    For i = 1 To 3
+        For j = 1 To 3
+            a(i, j) = matrix(i, j)
+            If i > 1 Then a(i, j) = a(i, j) / length
+            If j > 1 Then a(i, j) = a(i, j) / length
+            If Abs(a(i, j)) > matrixScale Then matrixScale = Abs(a(i, j))
+        Next j
+    Next i
+    If matrixScale <= 0# Or Not IsFiniteNumber(matrixScale) Then Exit Function
+    For i = 1 To 3
+        For j = 1 To 3
+            a(i, j) = a(i, j) / matrixScale
+        Next j
+    Next i
+    Dim system As CLinearSystem3x3, shift As Double, attempt As Long
+    Set system = New CLinearSystem3x3
+    shift = 0.000000000001
+    For attempt = 1 To 15
+        If system.Solve(a(1, 1) + shift, a(1, 2), a(1, 3), a(2, 1), a(2, 2) + shift, a(2, 3), _
+                a(3, 1), a(3, 2), a(3, 3) + shift, -mResidualN / matrixScale, _
+                -mCenterResidualMx / length / matrixScale, -mCenterResidualMy / length / matrixScale) Then
+            mLastAlpha = AcceptStep(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
+                system.X1, system.X2 / length, system.X3 / length)
+            If mLastAlpha > 0# Then
+                mFailureCode = sfcNone: mStopReason = vbNullString
+                TryRegularizedStep = True
+                Exit Function
+            End If
+        End If
+        shift = shift * 10#
+    Next attempt
 End Function
 
 ' Пересчитывает внутренние усилия для текущей плоскости деформаций и сразу
@@ -493,7 +577,7 @@ End Function
 Private Sub RefreshCurrentState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double)
-    EvaluateState section, concreteMaterial, steelMaterial, mEpsilon0, mKappaX, mKappaY, True
+    EvaluateState section, concreteMaterial, steelMaterial, mCenterEpsilon, mKappaX, mKappaY, True, False, True
     SetResiduals targetN, targetMx, targetMy
 End Sub
 
@@ -506,11 +590,9 @@ Private Sub EvaluateSecantResidual(ByVal section As CSectionModel, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByRef resN As Double, ByRef resMx As Double, ByRef resMy As Double)
 
-    EvaluateStateInto section, concreteMaterial, steelMaterial, eps0, kx, ky, False, mNint, mMxint, mMyint
-    resN = mNint - targetN
-    resMx = mMxint - targetMx
-    resMy = mMyint - targetMy
+    EvaluateState section, concreteMaterial, steelMaterial, eps0, kx, ky, False, False, True
     SetResiduals targetN, targetMx, targetMy
+    resN = mResidualN: resMx = mCenterResidualMx: resMy = mCenterResidualMy
 End Sub
 
 ' Строит начальную численную матрицу чувствительности для Secant. Производные
@@ -527,8 +609,8 @@ Private Function BuildInitialSecantMatrix(ByVal section As CSectionModel, _
     Dim hKx As Double
     Dim hKy As Double
     hEps = MaxDouble(0.0000001, Abs(eps0) * 0.0001)
-    hKx = MaxDouble(0.000000001, Abs(kx) * 0.0001)
-    hKy = MaxDouble(0.000000001, Abs(ky) * 0.0001)
+    hKx = MaxDouble(0.0000001 / mFrame.LengthScale, Abs(kx) * 0.0001)
+    hKy = MaxDouble(0.0000001 / mFrame.LengthScale, Abs(ky) * 0.0001)
 
     BuildSecantJacobianColumn section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
         eps0 + hEps, kx, ky, eps0 - hEps, kx, ky, 2# * hEps, b, 1
@@ -568,17 +650,11 @@ Private Sub BuildSecantJacobianColumn(ByVal section As CSectionModel, _
     Dim minusRN As Double
     Dim minusRMx As Double
     Dim minusRMy As Double
-    EvaluateStateInto section, concreteMaterial, steelMaterial, plusEps0, plusKx, plusKy, False, pN, pMx, pMy
-    EvaluateStateInto section, concreteMaterial, steelMaterial, minusEps0, minusKx, minusKy, False, mN, mMx, mMy
-    rN = pN - targetN
-    rMx = pMx - targetMx
-    rMy = pMy - targetMy
-    minusRN = mN - targetN
-    minusRMx = mMx - targetMx
-    minusRMy = mMy - targetMy
-    b(1, columnIndex) = (rN - minusRN) / h
-    b(2, columnIndex) = (rMx - minusRMx) / h
-    b(3, columnIndex) = (rMy - minusRMy) / h
+    EvaluateStateInto section, concreteMaterial, steelMaterial, plusEps0, plusKx, plusKy, False, pN, pMx, pMy, False, True, True
+    EvaluateStateInto section, concreteMaterial, steelMaterial, minusEps0, minusKx, minusKy, False, mN, mMx, mMy, False, True, True
+    b(1, columnIndex) = (pN - mN) / h
+    b(2, columnIndex) = (pMx - mMx) / h
+    b(3, columnIndex) = (pMy - mMy) / h
 End Sub
 
 ' Решает линейную систему Secant для поправки плоскости деформаций.
@@ -591,18 +667,20 @@ Private Function SolveSecantCorrection(ByRef b() As Double, ByRef deltaEps As Do
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
     failureCode = sfcNone: failureReason = vbNullString
-    If Not system.Solve(b(1, 1), b(1, 2), b(1, 3), _
-            b(2, 1), b(2, 2), b(2, 3), _
-            b(3, 1), b(3, 2), b(3, 3), _
-            -mResidualN, -mResidualMx, -mResidualMy) Then
+    Dim length As Double
+    length = mFrame.LengthScale
+    If Not system.Solve(b(1, 1), b(1, 2) / length, b(1, 3) / length, _
+            b(2, 1) / length, b(2, 2) / length / length, b(2, 3) / length / length, _
+            b(3, 1) / length, b(3, 2) / length / length, b(3, 3) / length / length, _
+            -mResidualN, -mCenterResidualMx / length, -mCenterResidualMy / length) Then
         failureCode = system.FailureCode
         failureReason = system.StopReason
         SolveSecantCorrection = False
         Exit Function
     End If
     deltaEps = system.X1
-    deltaKx = system.X2
-    deltaKy = system.X3
+    deltaKx = system.X2 / length
+    deltaKy = system.X3 / length
     SolveSecantCorrection = IsFiniteNumber(deltaEps) And IsFiniteNumber(deltaKx) And IsFiniteNumber(deltaKy)
     If Not SolveSecantCorrection Then
         failureCode = sfcNumericalFailure
@@ -622,7 +700,7 @@ Private Function UpdateBroydenMatrix(ByRef b() As Double, ByVal s1 As Double, By
 
     Dim denom As Double
     denom = s1 * s1 + (s2 * scaleKx) * (s2 * scaleKx) + (s3 * scaleKy) * (s3 * scaleKy)
-    If denom <= mSecantMinStepNorm * mSecantMinStepNorm Then Exit Function
+    If denom <= 0# Then Exit Function
 
     Dim bs1 As Double
     Dim bs2 As Double
@@ -658,25 +736,7 @@ End Function
 ' не меняют поля деформаций, усилия и пользовательские допуски равновесия.
 Private Sub SecantCoordinateScales(ByVal section As CSectionModel, _
         ByRef scaleKx As Double, ByRef scaleKy As Double)
-    Dim minX As Double, maxX As Double, minY As Double, maxY As Double
-    Dim x As Double, y As Double, area As Double, i As Long
-    section.ConcreteElementForSolver 1, x, y, area
-    minX = x: maxX = x: minY = y: maxY = y
-    For i = 1 To section.ConcreteCount + section.RebarCount
-        If i <= section.ConcreteCount Then
-            section.ConcreteElementForSolver i, x, y, area
-        Else
-            section.RebarElementForSolver i - section.ConcreteCount, x, y, area
-        End If
-        minX = MinDouble(minX, x): maxX = MaxDouble(maxX, x)
-        minY = MinDouble(minY, y): maxY = MaxDouble(maxY, y)
-    Next i
-    scaleKx = maxY / 2# - minY / 2#
-    scaleKy = maxX / 2# - minX / 2#
-    ' При нулевом плече соответствующая координата не имеет геометрического
-    ' масштаба; единичный вес оставляет вырождение на проверку линейной системы.
-    If scaleKx <= 0# Then scaleKx = 1#
-    If scaleKy <= 0# Then scaleKy = 1#
+    scaleKx = mFrame.LengthScale: scaleKy = mFrame.LengthScale
 End Sub
 
 ' Пересобирает Secant-матрицу после застоя, плохого line search или неудачного
@@ -695,7 +755,7 @@ Private Function RestartSecantMatrix(ByVal section As CSectionModel, _
         Exit Function
     End If
     mMatrixRestartCount = mMatrixRestartCount + 1
-    AppendDiagnostics mLoadStepsCompleted + 1, mIterations, 0#, 0#, targetN, targetMx, targetMy, "перезапуск матрицы Secant: " & reason
+    AppendDiagnostics mLoadStepsCompleted + 1, mIterations, 0#, targetN, targetMx, targetMy, "перезапуск матрицы Secant: " & reason
     RestartSecantMatrix = BuildInitialSecantMatrix(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
         eps0, kx, ky, resN, resMx, resMy, b)
 End Function
@@ -703,7 +763,7 @@ End Function
 ' Возвращает простую норму шага Secant по трем параметрам плоскости.
 ' Она нужна только для обнаружения численного застоя.
 Private Function SecantStepNorm(ByVal deltaEps As Double, ByVal deltaKx As Double, ByVal deltaKy As Double) As Double
-    SecantStepNorm = Abs(deltaEps) + Abs(deltaKx) + Abs(deltaKy)
+    SecantStepNorm = Abs(deltaEps) + mFrame.LengthScale * (Abs(deltaKx) + Abs(deltaKy))
 End Function
 
 ' Дает грубую оценку разброса элементов матрицы чувствительности.
@@ -727,30 +787,33 @@ Private Function EstimateMatrixCondition(ByRef b() As Double) As Double
     End If
 End Function
 
-' Принимает или отклоняет найденную поправку Newton/Secant. При включенном
-' line search метод дробит шаг, пока норма невязки не перестанет ухудшаться.
+' Общая автоматическая глобализация Newton/Secant: полный шаг, затем обратный
+' поиск с условием достаточного снижения Armijo. Малый шаг не означает успех;
+' выход без равновесия остается численным отказом. См. SUNDIALS KINSOL, 7.2.5.
 Private Function AcceptStep(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal deltaEps As Double, ByVal deltaKx As Double, ByVal deltaKy As Double) As Double
 
     Dim baseNorm As Double
-    baseNorm = ResidualNorm(mResidualN, mResidualMx, mResidualMy, targetN, targetMx, targetMy)
+    baseNorm = ResidualNorm(mResidualN, mCenterResidualMx, mCenterResidualMy, targetN, targetMx, targetMy)
 
     Dim alpha As Double
-    alpha = mDampingInitial
+    alpha = 1#
     mLineSearchIterations = 0
     mLineSearchUsed = False
 
-    Do While alpha >= mMinLineSearchAlpha
+    ' 52 деления соответствуют точности мантиссы Double. Дополнительно
+    ' проверяется фактическая представимость каждой пробной плоскости.
+    Do While mLineSearchIterations < NONLINEAR_MAX_BACKTRACKS
         mLineSearchIterations = mLineSearchIterations + 1
         Dim trialEps As Double
         Dim trialKx As Double
         Dim trialKy As Double
-        trialEps = mEpsilon0 + alpha * deltaEps
+        trialEps = mCenterEpsilon + alpha * deltaEps
         trialKx = mKappaX + alpha * deltaKx
         trialKy = mKappaY + alpha * deltaKy
-        If trialEps = mEpsilon0 And trialKx = mKappaX And trialKy = mKappaY Then
+        If trialEps = mCenterEpsilon And trialKx = mKappaX And trialKy = mKappaY Then
             mStopReason = "Невязка не достигла допуска, но приращение плоскости деформаций меньше представимого шага Double."
             Exit Function
         End If
@@ -758,13 +821,15 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
         Dim trialN As Double
         Dim trialMx As Double
         Dim trialMy As Double
-        EvaluateStateInto section, concreteMaterial, steelMaterial, trialEps, trialKx, trialKy, False, trialN, trialMx, trialMy
+        EvaluateStateInto section, concreteMaterial, steelMaterial, trialEps, trialKx, trialKy, False, trialN, trialMx, trialMy, False, True, True
         Dim trialNorm As Double
-        trialNorm = ResidualNorm(trialN - targetN, trialMx - targetMx, trialMy - targetMy, targetN, targetMx, targetMy)
+        trialNorm = ResidualNorm(trialN - targetN, trialMx - mFrame.CenterMx(targetN, targetMx), _
+            trialMy - mFrame.CenterMy(targetN, targetMy), targetN, targetMx, targetMy)
 
-        If (Not mLineSearchEnabled) Or trialNorm <= baseNorm Or baseNorm <= 0.000000000001 Then
-            If alpha < mDampingInitial Then mLineSearchUsed = True
-            mEpsilon0 = trialEps
+        If NonlinearStepImproves(baseNorm, trialNorm, alpha) Then
+            If alpha < 1# Then mLineSearchUsed = True
+            mCenterEpsilon = trialEps
+            mEpsilon0 = mFrame.OriginalStrain(trialEps, trialKx, trialKy)
             mKappaX = trialKx
             mKappaY = trialKy
             AcceptStep = alpha
@@ -783,36 +848,17 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
     AcceptStep = 0#
 End Function
 
-' Ограничивает приращения epsilon0 и кривизн пользовательскими лимитами.
-' Возвращает множитель, на который был уменьшен исходный расчетный шаг.
-Private Function LimitIncrement(ByRef deltaEps As Double, ByRef deltaKx As Double, ByRef deltaKy As Double) As Double
-    Dim scaleFactor As Double
-    scaleFactor = 1#
-
-    If mMaxDeltaEpsilon0 > 0# And Abs(deltaEps) > mMaxDeltaEpsilon0 Then
-        scaleFactor = MinDouble(scaleFactor, mMaxDeltaEpsilon0 / Abs(deltaEps))
-    End If
-    If mMaxDeltaKappa > 0# And Abs(deltaKx) > mMaxDeltaKappa Then
-        scaleFactor = MinDouble(scaleFactor, mMaxDeltaKappa / Abs(deltaKx))
-    End If
-    If mMaxDeltaKappa > 0# And Abs(deltaKy) > mMaxDeltaKappa Then
-        scaleFactor = MinDouble(scaleFactor, mMaxDeltaKappa / Abs(deltaKy))
-    End If
-
-    deltaEps = deltaEps * scaleFactor
-    deltaKx = deltaKx * scaleFactor
-    deltaKy = deltaKy * scaleFactor
-    LimitIncrement = scaleFactor
-End Function
-
 ' Пересчитывает состояние и записывает внутренние усилия в поля solver-а.
 ' buildTangent запрашивает K и физические данные. collectPhysical позволяет
 ' сохранить те же экстремумы и fused stress API без неиспользуемой K.
 Private Sub EvaluateState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean, _
-        Optional ByVal collectPhysical As Boolean = False)
-    EvaluateStateInto section, concreteMaterial, steelMaterial, eps0, kx, ky, buildTangent, mNint, mMxint, mMyint, collectPhysical
+        Optional ByVal collectPhysical As Boolean = False, Optional ByVal centeredInput As Boolean = False)
+    EvaluateStateInto section, concreteMaterial, steelMaterial, eps0, kx, ky, buildTangent, _
+        mNint, mCenterMx, mCenterMy, collectPhysical, centeredInput, True
+    mMxint = mFrame.OriginalMx(mNint, mCenterMx)
+    mMyint = mFrame.OriginalMy(mNint, mCenterMy)
 End Sub
 
 ' Интегрирует напряжения по бетонным и арматурным элементам для заданной
@@ -822,9 +868,12 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean, _
         ByRef nInt As Double, ByRef mxInt As Double, ByRef myInt As Double, _
-        Optional ByVal collectPhysical As Boolean = False)
+        Optional ByVal collectPhysical As Boolean = False, Optional ByVal centeredInput As Boolean = False, _
+        Optional ByVal centeredOutput As Boolean = False)
 
     Dim physical As Boolean, reusable As Boolean, revision As Long
+    mFrame.Initialize section
+    If Not centeredInput Then eps0 = mFrame.CenterStrain(eps0, kx, ky)
     physical = buildTangent Or collectPhysical
     If mEvaluationReuseEnabled Then
         reusable = section Is mSnapshotSection And concreteMaterial Is mSnapshotConcrete And steelMaterial Is mSnapshotSteel
@@ -836,7 +885,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
                             kx = mPhysicalEvaluationPlane(2) And ky = mPhysicalEvaluationPlane(3) Then
                         nInt = mPhysicalEvaluationForces(1): mxInt = mPhysicalEvaluationForces(2): myInt = mPhysicalEvaluationForces(3)
                         mEvaluationReuseCount = mEvaluationReuseCount + 1
-                        Exit Sub
+                        GoTo ConvertOutput
                     End If
                 End If
             ElseIf mForceEvaluationValid Then
@@ -844,7 +893,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
                         kx = mForceEvaluationPlane(2) And ky = mForceEvaluationPlane(3) Then
                     nInt = mForceEvaluationForces(1): mxInt = mForceEvaluationForces(2): myInt = mForceEvaluationForces(3)
                     mEvaluationReuseCount = mEvaluationReuseCount + 1
-                    Exit Sub
+                    GoTo ConvertOutput
                 End If
             End If
         End If
@@ -887,12 +936,15 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     Dim concreteTangent As Double
     Dim concreteDiagram As CMaterialDiagram ' Быстрый путь для штатной кусочно-линейной диаграммы.
     Dim steelDiagram As CMaterialDiagram ' Быстрый путь для штатной диаграммы арматуры.
+    Dim originX As Double, originY As Double
+    originX = mFrame.OriginX: originY = mFrame.OriginY
 
     If TypeName(concreteMaterial) = "CMaterialDiagram" Then Set concreteDiagram = concreteMaterial
     If TypeName(steelMaterial) = "CMaterialDiagram" Then Set steelDiagram = steelMaterial
 
     For i = 1 To section.ConcreteCount
         section.ConcreteElementForSolver i, xCoord, yCoord, area
+        xCoord = xCoord - originX: yCoord = yCoord - originY
         strain = eps0 + kx * yCoord + ky * xCoord
         If physical Then
             If strain < mMinConcreteStrain Then mMinConcreteStrain = strain
@@ -928,6 +980,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
     If section.RebarCount > 0 Then
         For i = 1 To section.RebarCount
             section.RebarElementForSolver i, xCoord, yCoord, area
+            xCoord = xCoord - originX: yCoord = yCoord - originY
             strain = eps0 + kx * yCoord + ky * xCoord
             If physical Then
                 If strain < mMinSteelStrain Then mMinSteelStrain = strain
@@ -978,6 +1031,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         If Not mHasSteelCompression Then mMinSteelStress = 0#
         If Not mHasSteelTension Then mMaxSteelStress = 0#
     End If
+    If buildTangent Then BuildOriginalTangent
     If reusable Then
         If physical Then
             mPhysicalEvaluationRevision = revision
@@ -991,6 +1045,11 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             mForceEvaluationValid = True
         End If
     End If
+ConvertOutput:
+    If Not centeredOutput Then
+        mxInt = mFrame.OriginalMx(nInt, mxInt)
+        myInt = mFrame.OriginalMy(nInt, myInt)
+    End If
 End Sub
 
 ' Очищает касательную матрицу перед новой сборкой производных равновесия.
@@ -998,6 +1057,7 @@ Private Sub ClearTangent()
     Dim i As Long
     For i = 1 To 3
         mK(i, 1) = 0#: mK(i, 2) = 0#: mK(i, 3) = 0#
+        mCenterK(i, 1) = 0#: mCenterK(i, 2) = 0#: mCenterK(i, 3) = 0#
     Next i
 End Sub
 
@@ -1005,15 +1065,30 @@ End Sub
 ' axialStiffness уже включает E_tangent * Area, поэтому здесь остается только
 ' умножение на координаты по правилу моментов.
 Private Sub AddTangent(ByVal axialStiffness As Double, ByVal xCoord As Double, ByVal yCoord As Double)
-    mK(1, 1) = mK(1, 1) + axialStiffness
-    mK(1, 2) = mK(1, 2) + axialStiffness * yCoord
-    mK(1, 3) = mK(1, 3) + axialStiffness * xCoord
-    mK(2, 1) = mK(2, 1) + axialStiffness * yCoord
-    mK(2, 2) = mK(2, 2) + axialStiffness * yCoord * yCoord
-    mK(2, 3) = mK(2, 3) + axialStiffness * yCoord * xCoord
-    mK(3, 1) = mK(3, 1) + axialStiffness * xCoord
-    mK(3, 2) = mK(3, 2) + axialStiffness * xCoord * yCoord
-    mK(3, 3) = mK(3, 3) + axialStiffness * xCoord * xCoord
+    mCenterK(1, 1) = mCenterK(1, 1) + axialStiffness
+    mCenterK(1, 2) = mCenterK(1, 2) + axialStiffness * yCoord
+    mCenterK(1, 3) = mCenterK(1, 3) + axialStiffness * xCoord
+    mCenterK(2, 1) = mCenterK(2, 1) + axialStiffness * yCoord
+    mCenterK(2, 2) = mCenterK(2, 2) + axialStiffness * yCoord * yCoord
+    mCenterK(2, 3) = mCenterK(2, 3) + axialStiffness * yCoord * xCoord
+    mCenterK(3, 1) = mCenterK(3, 1) + axialStiffness * xCoord
+    mCenterK(3, 2) = mCenterK(3, 2) + axialStiffness * xCoord * yCoord
+    mCenterK(3, 3) = mCenterK(3, 3) + axialStiffness * xCoord * xCoord
+End Sub
+
+' Публичная K относится к прежнему началу координат. Численные поправки
+' используют только напрямую собранную центрированную K, а не ее обратный перенос.
+Private Sub BuildOriginalTangent()
+    Dim x As Double, y As Double
+    x = mFrame.OriginX: y = mFrame.OriginY
+    mK(1, 1) = mCenterK(1, 1)
+    mK(1, 2) = mCenterK(1, 2) + y * mCenterK(1, 1)
+    mK(1, 3) = mCenterK(1, 3) + x * mCenterK(1, 1)
+    mK(2, 1) = mK(1, 2): mK(3, 1) = mK(1, 3)
+    mK(2, 2) = mCenterK(2, 2) + 2# * y * mCenterK(1, 2) + y * y * mCenterK(1, 1)
+    mK(2, 3) = mCenterK(2, 3) + y * mCenterK(1, 3) + x * mCenterK(1, 2) + x * y * mCenterK(1, 1)
+    mK(3, 2) = mK(2, 3)
+    mK(3, 3) = mCenterK(3, 3) + 2# * x * mCenterK(1, 3) + x * x * mCenterK(1, 1)
 End Sub
 
 ' Обновляет абсолютные и относительные невязки равновесия после очередной
@@ -1022,6 +1097,8 @@ Private Sub SetResiduals(ByVal targetN As Double, ByVal targetMx As Double, ByVa
     mResidualN = mNint - targetN
     mResidualMx = mMxint - targetMx
     mResidualMy = mMyint - targetMy
+    mCenterResidualMx = mCenterMx - mFrame.CenterMx(targetN, targetMx)
+    mCenterResidualMy = mCenterMy - mFrame.CenterMy(targetN, targetMy)
     mRelativeResidualN = RelativeResidual(mResidualN, targetN)
     mRelativeResidualMx = RelativeResidual(mResidualMx, targetMx)
     mRelativeResidualMy = RelativeResidual(mResidualMy, targetMy)
@@ -1032,17 +1109,20 @@ End Sub
 Private Function IsConverged(ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
     IsConverged = Abs(mResidualN) <= mToleranceN And _
         Abs(mResidualMx) <= mToleranceMx And _
-        Abs(mResidualMy) <= mToleranceMy
+        Abs(mResidualMy) <= mToleranceMy And _
+        Abs(mCenterResidualMx) <= mToleranceMx And Abs(mCenterResidualMy) <= mToleranceMy
 End Function
 
-' Собирает безразмерную норму невязки для line search и диагностики.
-' Нормировка идет по максимуму из заданного solver tolerance и малой доли
-' целевого усилия, чтобы крупные нагрузки не доминировали численно.
+' Масштабированная евклидова норма центрированных невязок для поиска шага.
+' Масштабы не меняют компонентные допуски окончательной приемки равновесия.
 Private Function ResidualNorm(ByVal resN As Double, ByVal resMx As Double, ByVal resMy As Double, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Double
-    ResidualNorm = Abs(resN) / MaxDouble(mToleranceN, Abs(targetN) * 0.000000001) + _
-        Abs(resMx) / MaxDouble(mToleranceMx, Abs(targetMx) * 0.000000001) + _
-        Abs(resMy) / MaxDouble(mToleranceMy, Abs(targetMy) * 0.000000001)
+    Dim n As Double, mx As Double, my As Double, normScale As Double
+    n = Abs(resN) / MaxDouble(mToleranceN, Abs(targetN) * 0.000000001)
+    mx = Abs(resMx) / MaxDouble(mToleranceMx, Abs(mFrame.CenterMx(targetN, targetMx)) * 0.000000001)
+    my = Abs(resMy) / MaxDouble(mToleranceMy, Abs(mFrame.CenterMy(targetN, targetMy)) * 0.000000001)
+    normScale = MaxDouble(n, MaxDouble(mx, my))
+    If normScale > 0# Then ResidualNorm = normScale * Sqr((n / normScale) ^ 2 + (mx / normScale) ^ 2 + (my / normScale) ^ 2)
 End Function
 
 ' Возвращает относительную невязку, а для нулевого target - абсолютную.
@@ -1057,10 +1137,10 @@ End Function
 ' Записывает одну строку подробной диагностики итераций solver-а.
 ' Диагностика включается только для отчета/тестов и не влияет на расчет.
 Private Sub AppendDiagnostics(ByVal stepIndex As Long, ByVal iter As Long, ByVal alpha As Double, _
-        ByVal deltaScale As Double, ByVal targetN As Double, ByVal targetMx As Double, _
+        ByVal targetN As Double, ByVal targetMx As Double, _
         ByVal targetMy As Double, ByVal state As String)
     If Not mDiagnosticsEnabled Then Exit Sub
-    mLastResidualNorm = ResidualNorm(mResidualN, mResidualMx, mResidualMy, targetN, targetMx, targetMy)
+    mLastResidualNorm = ResidualNorm(mResidualN, mCenterResidualMx, mCenterResidualMy, targetN, targetMx, targetMy)
     mDiagnosticLog = mDiagnosticLog & "step=" & CStr(stepIndex) & _
         "; iter=" & CStr(iter) & _
         "; method=" & mSolverMethod & _
@@ -1079,12 +1159,19 @@ Private Sub AppendDiagnostics(ByVal stepIndex As Long, ByVal iter As Long, ByVal
         "; lineSearchIterations=" & CStr(mLineSearchIterations) & _
         "; internalForceEvaluationCount=" & CStr(mInternalForceEvaluationCount) & _
         "; internalNewtonCallCount=" & CStr(mInternalNewtonCallCount) & _
-        "; alpha=" & FormatNumberInvariant(alpha) & _
-        "; deltaScale=" & FormatNumberInvariant(deltaScale) & vbCrLf
+        "; alpha=" & FormatNumberInvariant(alpha) & vbCrLf
 End Sub
 
 ' Проверяет модель и настройки до численных итераций. Программная зависимость,
 ' входная геометрия и ошибочная конфигурация имеют разные машинные причины.
+Friend Function ValidateProblem(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
+        ByVal steelMaterial As Object) As Boolean
+    ClearResult
+    mSolverMethod = Trim$(mSolverMethod)
+    If Not ValidateInputs(section, concreteMaterial, steelMaterial) Then Exit Function
+    ValidateProblem = ValidateSolverMethod()
+End Function
+
 Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object) As Boolean
     If section Is Nothing Then
@@ -1101,18 +1188,9 @@ Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMa
         SetValidationFailure sfcInvalidConfiguration, "Solver.LoadSteps должен быть положительным."
     ElseIf mSecantMaxRestarts < 0 Then
         SetValidationFailure sfcInvalidConfiguration, "Solver.SecantMaxRestarts не может быть отрицательным."
-    ElseIf mSecantMinStepNorm <= 0# Then
-        SetValidationFailure sfcInvalidConfiguration, "Solver.SecantMinStepNorm должен быть положительным."
     ElseIf mToleranceN <= 0# Or mToleranceMx <= 0# Or mToleranceMy <= 0# Then
         SetValidationFailure sfcInvalidConfiguration, "Допуски Solver.ToleranceN/Mx/My должны быть положительными."
-    ElseIf Not IsFiniteNumber(mDampingInitial) Or mDampingInitial <= 0# Or mDampingInitial > 1# Then
-        SetValidationFailure sfcInvalidConfiguration, "Solver.DampingInitial должен быть больше 0 и не больше 1."
-    ElseIf Not IsFiniteNumber(mMinLineSearchAlpha) Or mMinLineSearchAlpha <= 0# Or _
-            mMinLineSearchAlpha > mDampingInitial Then
-        SetValidationFailure sfcInvalidConfiguration, "Solver.MinLineSearchAlpha должен быть больше 0 и не больше Solver.DampingInitial."
-    ElseIf Not IsFiniteNumber(mMaxDeltaEpsilon0) Or Not IsFiniteNumber(mMaxDeltaKappa) Or _
-            mMaxDeltaEpsilon0 < 0# Or mMaxDeltaKappa < 0# Then
-        SetValidationFailure sfcInvalidConfiguration, "Ограничения приращений Solver.MaxDeltaEpsilon0/Kappa должны быть конечными неотрицательными числами."
+
     Else
         ValidateInputs = True
     End If
@@ -1154,6 +1232,8 @@ Public Sub ClearResult()
     mStopReason = vbNullString
     mFailureCode = sfcNone
     mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
+    mCenterEpsilon = 0#: mCenterMx = 0#: mCenterMy = 0#
+    mCenterResidualMx = 0#: mCenterResidualMy = 0#
     mNint = 0#: mMxint = 0#: mMyint = 0#
     mResidualN = 0#: mResidualMx = 0#: mResidualMy = 0#
     mRelativeResidualN = 0#: mRelativeResidualMx = 0#: mRelativeResidualMy = 0#
@@ -1168,7 +1248,6 @@ Public Sub ClearResult()
     mLoadStepsCompleted = 0
     mDiagnosticLog = vbNullString
     mLastAlpha = 0#
-    mLastDeltaScale = 0#
     mLastResidualNorm = 0#
     mLastStepNorm = 0#
     mLastMatrixConditionEstimate = 0#
@@ -1185,6 +1264,8 @@ End Sub
 ' диаграмм доступен для штатного CMaterialDiagram, используемого provider-ом.
 Private Sub CaptureMaterialContext(ByVal section As CSectionModel, ByVal concrete As Object, ByVal steel As Object)
     Set mSnapshotSection = section
+    If mFrame Is Nothing Then Set mFrame = New CSectionNumericalFrame
+    mFrame.Initialize section
     If TypeOf concrete Is CMaterialDiagram Then Set mSnapshotConcrete = concrete
     If TypeOf steel Is CMaterialDiagram Then Set mSnapshotSteel = steel
 End Sub
@@ -1277,6 +1358,17 @@ End Property
 Public Property Get Nint() As Double
     Nint = mNint
 End Property
+
+' Усилия в общем численном центре интегрируются напрямую по малым плечам.
+' Поиск предела не восстанавливает их вычитанием больших исходных моментов.
+Friend Sub NumericalEfforts(ByRef n As Double, ByRef mx As Double, ByRef my As Double)
+    n = mNint: mx = mCenterMx: my = mCenterMy
+End Sub
+
+' Физические проверки используют ту же плоскость и малые плечи, что ядро.
+Friend Function StrainAt(ByVal x As Double, ByVal y As Double) As Double
+    StrainAt = mCenterEpsilon + mKappaX * (y - mFrame.OriginY) + mKappaY * (x - mFrame.OriginX)
+End Function
 
 Public Property Get Mxint() As Double
     Mxint = mMxint
@@ -1414,36 +1506,12 @@ Public Property Let ToleranceMy(ByVal value As Double)
     mToleranceMy = value
 End Property
 
-Public Property Let LineSearchEnabled(ByVal value As Boolean)
-    mLineSearchEnabled = value
-End Property
-
-Public Property Let DampingInitial(ByVal value As Double)
-    mDampingInitial = value
-End Property
-
-Public Property Let MinLineSearchAlpha(ByVal value As Double)
-    mMinLineSearchAlpha = value
-End Property
-
 Public Property Let SolverMethod(ByVal value As String)
     mSolverMethod = value
 End Property
 
 Public Property Let SecantMaxRestarts(ByVal value As Long)
     mSecantMaxRestarts = value
-End Property
-
-Public Property Let SecantMinStepNorm(ByVal value As Double)
-    mSecantMinStepNorm = value
-End Property
-
-Public Property Let MaxDeltaEpsilon0(ByVal value As Double)
-    mMaxDeltaEpsilon0 = value
-End Property
-
-Public Property Let MaxDeltaKappa(ByVal value As Double)
-    mMaxDeltaKappa = value
 End Property
 
 ' Включает подробный журнал при пользовательском txt-отчете и диагностических
@@ -1484,17 +1552,4 @@ End Property
 Public Property Get MatrixRestartCount() As Long
     MatrixRestartCount = mMatrixRestartCount
 End Property
-
-
-
-
-
-
-
-
-
-
-
-
-
 

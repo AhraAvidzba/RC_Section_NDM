@@ -9,38 +9,48 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' ==========================================================================
-' Построение стартовой плоскости для попыток StateSolution
-' ==========================================================================
-' CStateGuessBuilder строит только начальную плоскость деформаций
-' epsilon0/kappaX/kappaY для очередной попытки решения равновесия. Он не
-' выполняет Newton/Secant-итерации и не принимает решение о статусе расчета:
-' после его работы CSectionSolver все равно заново решает полную систему НДС.
-'
-' У класса две практические роли. Первая - дать ненулевой старт штатному
-' DirectState при чистом изгибе N = 0, когда нулевая плоскость попадает ровно
-' в излом диаграммы бетона между сжатием и выключенным растяжением. Вторая -
-' подготовить старт для повторной попытки StateSolution в technical extension,
-' если первая попытка не смогла пройти горизонтальное плато диаграммы.
-'
-' Класс не выбирает материалы, не знает про расчетные профили, Capacity, Crack,
-' Excel и СП. Он получает уже готовые CMaterialDiagram и CSectionModel, после
-' чего пытается дать solver-у более осмысленный старт. Для физического
-' DirectState это старт около рабочей стороны излома диаграммы; для extension
-' это старт уже в области искусственного продолжения, где есть малая
-' касательная жесткость и Newton/Secant снова получает управляемую матрицу.
-'
-' Это не меняет физический результат и не повышает несущую способность:
-' CSectionSolver затем заново решает полное равновесие. State сохраняет
-' отдельный признак выхода за физическую диаграмму; инженерный потребитель
-' оценивает допустимость, а общая policy формирует внешний статус.
+' Стартовая оценка НДС по той же модели и диаграммам, что у основного solver.
+' Упругий/active-set старт и три способа выхода из плато дают только начальную
+' плоскость: равновесие и физический статус подтверждает CSectionSolver.
+Private mFrame As CSectionNumericalFrame ' Общая центрированная система стартовых оценок.
 
 Private Const STATE_NEAR_ZERO As Double = 0.000000000001 ' Допуск для почти нулевой стартовой плоскости.
 Private Const EXTENSION_START_FACTOR As Double = 1.02 ' Небольшой заход за физический eps_ult для старта повторного solve в extension.
-Private Const EXTENSION_GUESS_ATTEMPTS As Long = 7 ' Количество независимых стартовых оценок для повторного StateSolution.
+Private Const EXTENSION_GUESS_ATTEMPTS As Long = 3 ' Количество независимых стартовых оценок для повторного StateSolution.
 Private Const EXTENSION_ACTIVE_SET_ITERATIONS As Long = 8 ' Сколько раз уточнять кусочно-линейный набор участков диаграмм.
 Private Const ACTIVE_SET_EPSILON_TOLERANCE As Double = 0.0000000001 ' Допуск стабилизации epsilon0 в active-set уточнении.
-Private Const ACTIVE_SET_KAPPA_TOLERANCE As Double = 0.000000000001 ' Допуск стабилизации кривизн в active-set уточнении.
+
+' Стартовые оценки используют ту же систему, что и основные итерации.
+' Наружу возвращается epsilon0 в исходном начале координат; модель не сдвигается.
+Public Function BuildForDirectState(ByVal section As CSectionModel, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
+    If section Is Nothing Then Exit Function
+    InitializeFrame section
+    BuildForDirectState = BuildCenteredDirectState(section, concreteMaterial, steelMaterial, _
+        targetN, targetMx, targetMy, eps0, kx, ky)
+    If BuildForDirectState Then eps0 = mFrame.OriginalStrain(eps0, kx, ky)
+End Function
+
+' Повторные старты имеют такой же публичный координатный контракт.
+Public Function BuildAttemptForExtensionState(ByVal attemptIndex As Long, _
+        ByVal section As CSectionModel, ByVal failedService As CSectionSolver, _
+        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
+        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
+    If section Is Nothing Then Exit Function
+    If concreteMaterial Is Nothing Or steelMaterial Is Nothing Then Exit Function
+    InitializeFrame section
+    BuildAttemptForExtensionState = BuildCenteredExtensionAttempt(attemptIndex, section, failedService, _
+        concreteMaterial, steelMaterial, targetN, targetMx, targetMy, eps0, kx, ky)
+    If BuildAttemptForExtensionState Then eps0 = mFrame.OriginalStrain(eps0, kx, ky)
+End Function
+
+Private Sub InitializeFrame(ByVal section As CSectionModel)
+    If mFrame Is Nothing Then Set mFrame = New CSectionNumericalFrame
+    mFrame.Initialize section
+End Sub
 
 ' Строит стартовую плоскость для штатного прямого НДС.
 ' Метод особенно полезен для чистого изгиба N=0: старт из нулевой плоскости
@@ -50,7 +60,7 @@ Private Const ACTIVE_SET_KAPPA_TOLERANCE As Double = 0.000000000001 ' Допус
 ' кусочно-линейной диаграммы. Полученная плоскость не является результатом:
 ' она только помогает CSectionSolver начать итерации с правильной стороны
 ' излома диаграммы.
-Public Function BuildForDirectState(ByVal section As CSectionModel, _
+Private Function BuildCenteredDirectState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
@@ -67,42 +77,16 @@ Public Function BuildForDirectState(ByVal section As CSectionModel, _
         Exit Function
     End If
 
-    BuildForDirectState = TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, _
+    BuildCenteredDirectState = TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, _
         targetN, targetMx, targetMy, trialEps0, trialKx, trialKy, eps0, kx, ky, False)
-    If Not BuildForDirectState Then
+    If Not BuildCenteredDirectState Then
         ' Вырождение active-set не отменяет уже полученную упругую оценку.
         ' Она остается только стартом: равновесие проверит основной solver.
         eps0 = trialEps0
         kx = trialKx
         ky = trialKy
-        BuildForDirectState = True
+        BuildCenteredDirectState = True
     End If
-End Function
-
-' Строит стартовую плоскость для повторной попытки прямого StateSolution.
-' Метод сначала использует форму деформаций, которую уже нашел несошедшийся
-' solver: это важно для изгиба N + Mx + My, где отношение kappaX/kappaY несет
-' информацию о направлении нейтральной линии. Если такая форма непригодна,
-' используется более грубая линейная оценка по extension-ветвям материалов.
-' Это не "следующая итерация" основного solver-а, а новый старт перед новым
-' вызовом solve на той же нагрузке и той же расширенной StateSolution-диаграмме.
-Public Function BuildForExtensionState(ByVal section As CSectionModel, _
-        ByVal failedService As CSectionSolver, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
-        ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
-    If section Is Nothing Then Exit Function
-    If concreteMaterial Is Nothing Then Exit Function
-    If steelMaterial Is Nothing Then Exit Function
-
-    Dim attemptIndex As Long
-    For attemptIndex = 1 To EXTENSION_GUESS_ATTEMPTS
-        If BuildAttemptForExtensionState(attemptIndex, section, failedService, _
-                concreteMaterial, steelMaterial, targetN, targetMx, targetMy, eps0, kx, ky) Then
-            BuildForExtensionState = True
-            Exit Function
-        End If
-    Next attemptIndex
 End Function
 
 ' Возвращает число независимых вариантов стартовой плоскости.
@@ -118,10 +102,6 @@ Public Function ExtensionAttemptName(ByVal attemptIndex As Long) As String
         Case 1: ExtensionAttemptName = "равновесие по продолженной диаграмме"
         Case 2: ExtensionAttemptName = "активная зона несошедшегося состояния"
         Case 3: ExtensionAttemptName = "равномерный сдвиг в продолжение диаграммы"
-        Case 4: ExtensionAttemptName = "масштабированное несошедшееся состояние"
-        Case 5: ExtensionAttemptName = "нулевое осевое приближение"
-        Case 6: ExtensionAttemptName = "деформации арматуры по оценке усилий"
-        Case 7: ExtensionAttemptName = "начало сжатой зоны бетона"
         Case Else: ExtensionAttemptName = "неизвестное приближение"
     End Select
 End Function
@@ -130,89 +110,23 @@ End Function
 ' Варианты идут от наиболее расчетно осмысленного к более простым fallback:
 ' если один старт плохо подошел для Newton/Secant, следующий может оказаться
 ' устойчивее без изменения диаграмм и без подмены расчетной физики.
-Public Function BuildAttemptForExtensionState(ByVal attemptIndex As Long, _
+Private Function BuildCenteredExtensionAttempt(ByVal attemptIndex As Long, _
         ByVal section As CSectionModel, ByVal failedService As CSectionSolver, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
     Select Case attemptIndex
         Case 1
-            BuildAttemptForExtensionState = TryBuildGlobalExtensionEquilibrium(section, concreteMaterial, steelMaterial, _
+            BuildCenteredExtensionAttempt = TryBuildGlobalExtensionEquilibrium(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, eps0, kx, ky)
         Case 2
-            BuildAttemptForExtensionState = TryBuildFromFailedState(section, failedService, concreteMaterial, steelMaterial, _
+            BuildCenteredExtensionAttempt = TryBuildFromFailedState(section, failedService, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, eps0, kx, ky)
         Case 3
-            BuildAttemptForExtensionState = TryBuildUniformExtensionShift(failedService, concreteMaterial, steelMaterial, _
+            BuildCenteredExtensionAttempt = TryBuildUniformExtensionShift(failedService, concreteMaterial, steelMaterial, _
                 targetN, eps0, kx, ky)
-        Case 4
-            BuildAttemptForExtensionState = TryBuildScaledFailedState(failedService, concreteMaterial, steelMaterial, eps0, kx, ky)
-        Case 5
-            BuildAttemptForExtensionState = TryBuildAxialZeroGuess(concreteMaterial, steelMaterial, targetN, eps0, kx, ky)
-        Case 6
-            BuildAttemptForExtensionState = TryBuildTensionForcePlane(section, concreteMaterial, steelMaterial, _
-                targetN, targetMx, targetMy, eps0, kx, ky)
-        Case 7
-            BuildAttemptForExtensionState = TryBuildConcreteCompressionStart(section, failedService, _
-                concreteMaterial, steelMaterial, targetN, targetMx, targetMy, eps0, kx, ky)
-    End Select
-End Function
 
-' Строит поздний старт с активной сжатой зоной, когда растянутый бетон
-' выключен, а арматура на плато оставила недостаточно независимых плеч.
-' Масштабы меняют только пробную плоскость; глубина захода берется из
-' ближайшего к нулю сжатого узла фактической диаграммы, не из новой нормы.
-' Предпочтение имеет стабилизированная оценка существующего active-set.
-' Если она не получена, дается только старт с заметной сжатой зоной;
-' окончательное равновесие и физическую допустимость проверяют соседние слои.
-Private Function TryBuildConcreteCompressionStart(ByVal section As CSectionModel, _
-        ByVal failedService As CSectionSolver, ByVal concreteMaterial As CMaterialDiagram, _
-        ByVal steelMaterial As CMaterialDiagram, ByVal targetN As Double, _
-        ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
-    If section Is Nothing Then Exit Function
-    If failedService Is Nothing Then Exit Function
-    If concreteMaterial Is Nothing Then Exit Function
-    If steelMaterial Is Nothing Then Exit Function
-    If targetN <= 0# Or section.ConcreteCount <= 0 Then Exit Function
-    If concreteMaterial.GetTangentModulus(-STATE_NEAR_ZERO) <= 0# Then Exit Function
-    If concreteMaterial.GetStress(STATE_NEAR_ZERO) <> 0# Then Exit Function
-    Dim sourceKx As Double, sourceKy As Double
-    sourceKx = failedService.KappaX: sourceKy = failedService.KappaY
-    If Abs(sourceKx) + Abs(sourceKy) <= STATE_NEAR_ZERO Then Exit Function
-    Dim i As Long, minStrain As Double, compressionStep As Double
-    minStrain = PlaneStrain(failedService.Epsilon0, sourceKx, sourceKy, section.ConcreteX(1), section.ConcreteY(1))
-    For i = 2 To section.ConcreteCount
-        minStrain = MinDouble(minStrain, _
-            PlaneStrain(failedService.Epsilon0, sourceKx, sourceKy, section.ConcreteX(i), section.ConcreteY(i)))
-    Next i
-    If minStrain < 0# Then Exit Function
-    For i = concreteMaterial.PointCount To 1 Step -1
-        If concreteMaterial.PointStrain(i) < 0# Then
-            compressionStep = -concreteMaterial.PointStrain(i)
-            Exit For
-        End If
-    Next i
-    If compressionStep <= 0# Then Exit Function
-    Dim planeScale As Variant, compressionFraction As Variant, trialEps As Double
-    For Each planeScale In Array(1#, 2#, 4#, 8#)
-        For Each compressionFraction In Array(0.25, 0.5, 1#)
-            trialEps = (failedService.Epsilon0 - minStrain) * CDbl(planeScale) - _
-                compressionStep * CDbl(compressionFraction)
-            If TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-                    trialEps, sourceKx * CDbl(planeScale), sourceKy * CDbl(planeScale), _
-                    eps0, kx, ky, False, True) Then
-                TryBuildConcreteCompressionStart = True
-                Exit Function
-            End If
-        Next compressionFraction
-    Next planeScale
-    ' Старт на самом изломе около нуля снова может выключить бетон за один
-    ' шаг и оставить арматуру на одной активной линии. Это приближение дает
-    ' Newton/Secant конечную сжатую зону, не утверждая равновесие.
-    eps0 = (failedService.Epsilon0 - minStrain) * 4# + concreteMaterial.PhysicalCompressionStrain * 0.3
-    kx = sourceKx * 4#: ky = sourceKy * 4#
-    TryBuildConcreteCompressionStart = True
+    End Select
 End Function
 
 ' Использует последнюю плоскость несошедшегося solver-а как подсказку.
@@ -294,7 +208,7 @@ Private Function TryBuildFromTrialPlane(ByVal section As CSectionModel, _
         If requireExtension Then
             TryBuildFromTrialPlane = CandidateUsesExtension(section, concreteMaterial, steelMaterial, eps0, kx, ky)
         Else
-            TryBuildFromTrialPlane = Abs(eps0) + Abs(kx) + Abs(ky) > STATE_NEAR_ZERO
+            TryBuildFromTrialPlane = Abs(eps0) + mFrame.LengthScale * (Abs(kx) + Abs(ky)) > STATE_NEAR_ZERO
         End If
     End If
 End Function
@@ -464,116 +378,10 @@ Private Function TryBuildUniformExtensionShift(ByVal failedService As CSectionSo
 
     If Abs(shift) <= STATE_NEAR_ZERO Then Exit Function
 
-    eps0 = failedService.Epsilon0 + shift
+    eps0 = mFrame.CenterStrain(failedService.Epsilon0, failedService.KappaX, failedService.KappaY) + shift
     kx = failedService.KappaX
     ky = failedService.KappaY
     TryBuildUniformExtensionShift = True
-End Function
-
-' Дополнительный мягкий старт: сохраняем форму несошедшегося состояния и только
-' масштабируем ее до ближайшего physical limit. Это менее точная оценка, чем
-' линейная система по активным extension-ветвям, но она часто лучше нуля.
-Private Function TryBuildScaledFailedState(ByVal failedService As CSectionSolver, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
-        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
-    TryBuildScaledFailedState = BuildExtensionTrialPlane(failedService, concreteMaterial, steelMaterial, eps0, kx, ky)
-End Function
-
-' Если первая попытка не дала вообще никакой формы, используем знак N только
-' как аварийное начальное приближение. Полное равновесие по-прежнему будет
-' искать CSectionSolver на следующем шаге.
-Private Function TryBuildAxialZeroGuess(ByVal concreteMaterial As CMaterialDiagram, _
-        ByVal steelMaterial As CMaterialDiagram, ByVal targetN As Double, _
-        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
-    If targetN > 0# And steelMaterial.HasTensionExtension Then
-        eps0 = steelMaterial.PhysicalTensionStrain * EXTENSION_START_FACTOR
-        TryBuildAxialZeroGuess = True
-    ElseIf targetN < 0# And concreteMaterial.HasCompressionExtension Then
-        eps0 = concreteMaterial.PhysicalCompressionStrain * EXTENSION_START_FACTOR
-        TryBuildAxialZeroGuess = True
-    End If
-    If TryBuildAxialZeroGuess Then
-        ' Это самостоятельный осевой старт, а не плоскость предыдущей попытки.
-        kx = 0#
-        ky = 0#
-    End If
-End Function
-
-' Оценивает растянутую плоскость, когда часть стержней застыла на плато и
-' касательная потеряла ранг. Сначала линейное распределение усилий по арматуре
-' дает оценку напряжений, затем обратная фактическая диаграмма дает деформации.
-' По ним строится взвешенная по площадям плоскость; бетон намеренно не входит
-' в эту стартовую оценку, но обязательно входит в последующий полный solve.
-Private Function TryBuildTensionForcePlane(ByVal section As CSectionModel, _
-        ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, ByVal targetN As Double, _
-        ByVal targetMx As Double, ByVal targetMy As Double, _
-        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
-    If targetN <= 0# Then Exit Function
-    If section.RebarCount < 3 Then Exit Function
-    If Not steelMaterial.HasTensionExtension Then Exit Function
-    Dim tangent As Double, intercept As Double
-    tangent = steelMaterial.GetTangentModulus(STATE_NEAR_ZERO)
-    If tangent <= 0# Then Exit Function
-    intercept = steelMaterial.GetStress(STATE_NEAR_ZERO) - tangent * STATE_NEAR_ZERO
-
-    Dim k11 As Double, k12 As Double, k13 As Double
-    Dim k21 As Double, k22 As Double, k23 As Double
-    Dim k31 As Double, k32 As Double, k33 As Double
-    Dim n0 As Double, mx0 As Double, my0 As Double, activeCount As Long, i As Long
-    For i = 1 To section.RebarCount
-        AccumulateLinearElement tangent, tangent * STATE_NEAR_ZERO + intercept, STATE_NEAR_ZERO, _
-            section.RebarArea(i), section.RebarX(i), section.RebarY(i), activeCount, _
-            k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
-    Next i
-    Dim elasticEps0 As Double, elasticKx As Double, elasticKy As Double
-    If Not SolveLinearizedSystem(activeCount, targetN, targetMx, targetMy, _
-            k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0, _
-            elasticEps0, elasticKx, elasticKy) Then Exit Function
-
-    k11 = 0#: k12 = 0#: k13 = 0#: k21 = 0#: k22 = 0#: k23 = 0#
-    k31 = 0#: k32 = 0#: k33 = 0#: n0 = 0#: mx0 = 0#: my0 = 0#: activeCount = 0
-    Dim estimatedStress As Double, estimatedStrain As Double
-    For i = 1 To section.RebarCount
-        estimatedStress = tangent * PlaneStrain(elasticEps0, elasticKx, elasticKy, _
-            section.RebarX(i), section.RebarY(i)) + intercept
-        If Not TryStrainForSteelStress(steelMaterial, estimatedStress, estimatedStrain) Then Exit Function
-        ' Площади задают веса аппроксимации деформаций; касательный модуль
-        ' здесь не используется, чтобы не подавлять мягкую extension-ветвь.
-        AccumulateLinearElement 1#, 0#, estimatedStrain, section.RebarArea(i), _
-            section.RebarX(i), section.RebarY(i), activeCount, _
-            k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
-    Next i
-    TryBuildTensionForcePlane = SolveLinearizedSystem(activeCount, 0#, 0#, 0#, _
-        k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0, eps0, kx, ky)
-    If Not TryBuildTensionForcePlane Then Exit Function
-    Dim refinedEps0 As Double, refinedKx As Double, refinedKy As Double
-    ' Уточнение по полной модели допускается только после стабилизации;
-    ' оборванный или циклический active-set не заменяет исходную оценку.
-    If TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-            eps0, kx, ky, refinedEps0, refinedKx, refinedKy, False, True) Then
-        eps0 = refinedEps0: kx = refinedKx: ky = refinedKy
-    End If
-End Function
-
-' Читает деформацию на существующем наклонном участке диаграммы стали.
-' Экстраполяции за технические точки нет; горизонтальное плато не делится
-' на нулевой наклон. При неоднозначном напряжении берется первый участок,
-' поскольку это только старт, а не утверждение о найденном физическом State.
-Private Function TryStrainForSteelStress(ByVal steelMaterial As CMaterialDiagram, _
-        ByVal stress As Double, ByRef strain As Double) As Boolean
-    Dim i As Long, stress1 As Double, stress2 As Double
-    For i = 1 To steelMaterial.PointCount - 1
-        stress1 = steelMaterial.PointStress(i)
-        stress2 = steelMaterial.PointStress(i + 1)
-        If stress2 > stress1 Then
-            If stress >= stress1 And stress <= stress2 Then
-                strain = steelMaterial.PointStrain(i) + (stress - stress1) / (stress2 - stress1) * _
-                    (steelMaterial.PointStrain(i + 1) - steelMaterial.PointStrain(i))
-                TryStrainForSteelStress = True
-                Exit Function
-            End If
-        End If
-    Next i
 End Function
 
 ' Создает пробную плоскость из несошедшегося solver-а: либо берет уже найденное
@@ -586,12 +394,12 @@ Private Function BuildExtensionTrialPlane(ByVal failedService As CSectionSolver,
     If failedService Is Nothing Then Exit Function
 
     Dim maxAbsState As Double
-    maxAbsState = MaxDouble(Abs(failedService.Epsilon0), _
-        MaxDouble(Abs(failedService.KappaX), Abs(failedService.KappaY)))
+    maxAbsState = MaxDouble(Abs(mFrame.CenterStrain(failedService.Epsilon0, failedService.KappaX, failedService.KappaY)), _
+        mFrame.LengthScale * MaxDouble(Abs(failedService.KappaX), Abs(failedService.KappaY)))
     If maxAbsState <= STATE_NEAR_ZERO Then Exit Function
 
     If FailedStateAlreadyInExtension(failedService, concreteMaterial, steelMaterial) Then
-        eps0 = failedService.Epsilon0
+        eps0 = mFrame.CenterStrain(failedService.Epsilon0, failedService.KappaX, failedService.KappaY)
         kx = failedService.KappaX
         ky = failedService.KappaY
         BuildExtensionTrialPlane = True
@@ -614,7 +422,7 @@ Private Function BuildExtensionTrialPlane(ByVal failedService As CSectionSolver,
     End If
     If scaleFactor <= 1# Then Exit Function
 
-    eps0 = failedService.Epsilon0 * scaleFactor
+    eps0 = mFrame.CenterStrain(failedService.Epsilon0, failedService.KappaX, failedService.KappaY) * scaleFactor
     kx = failedService.KappaX * scaleFactor
     ky = failedService.KappaY * scaleFactor
     BuildExtensionTrialPlane = True
@@ -653,6 +461,8 @@ Private Sub AccumulateLinearElement(ByVal tangent As Double, ByVal stress As Dou
     Dim intercept As Double ' Свободный член линейной зависимости sigma(epsilon).
     Dim ea As Double ' Осевой коэффициент жесткости элемента E_t * A.
     Dim force0 As Double ' Постоянная часть усилия элемента от intercept * A.
+    x = (x - mFrame.OriginX) / mFrame.LengthScale
+    y = (y - mFrame.OriginY) / mFrame.LengthScale
     intercept = stress - tangent * sampleStrain
     ea = tangent * area
     force0 = intercept * area
@@ -715,14 +525,15 @@ Private Function SolveLinearizedSystem(ByVal activeCount As Long, _
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
     If Not system.Solve(k11, k12, k13, k21, k22, k23, k31, k32, k33, _
-            targetN - n0, targetMx - mx0, targetMy - my0) Then
+            targetN - n0, mFrame.CenterMx(targetN, targetMx) / mFrame.LengthScale - mx0, _
+            mFrame.CenterMy(targetN, targetMy) / mFrame.LengthScale - my0) Then
         Exit Function
     End If
 
     eps0 = system.X1
-    kx = system.X2
-    ky = system.X3
-    SolveLinearizedSystem = (Abs(eps0) + Abs(kx) + Abs(ky) > STATE_NEAR_ZERO)
+    kx = system.X2 / mFrame.LengthScale
+    ky = system.X3 / mFrame.LengthScale
+    SolveLinearizedSystem = (Abs(eps0) + mFrame.LengthScale * (Abs(kx) + Abs(ky)) > STATE_NEAR_ZERO)
 End Function
 
 ' Подталкивает глобальную растянутую оценку так, чтобы хотя бы крайние стержни
@@ -832,7 +643,7 @@ End Function
 ' Деформация точки в принятой НДМ-плоскости.
 Private Function PlaneStrain(ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal x As Double, ByVal y As Double) As Double
-    PlaneStrain = eps0 + kx * y + ky * x
+    PlaneStrain = eps0 + kx * (y - mFrame.OriginY) + ky * (x - mFrame.OriginX)
 End Function
 
 ' Проверяет, изменилась ли плоскость после очередного active-set шага.
@@ -841,8 +652,8 @@ End Function
 Private Function ExtensionPlaneClose(ByVal oldEps0 As Double, ByVal oldKx As Double, ByVal oldKy As Double, _
         ByVal newEps0 As Double, ByVal newKx As Double, ByVal newKy As Double) As Boolean
     ExtensionPlaneClose = Abs(newEps0 - oldEps0) <= ACTIVE_SET_EPSILON_TOLERANCE And _
-        Abs(newKx - oldKx) <= ACTIVE_SET_KAPPA_TOLERANCE And _
-        Abs(newKy - oldKy) <= ACTIVE_SET_KAPPA_TOLERANCE
+        mFrame.LengthScale * Abs(newKx - oldKx) <= ACTIVE_SET_EPSILON_TOLERANCE And _
+        mFrame.LengthScale * Abs(newKy - oldKy) <= ACTIVE_SET_EPSILON_TOLERANCE
 End Function
 
 ' Локальный минимум/максимум оставлены в классе, чтобы построение стартовых

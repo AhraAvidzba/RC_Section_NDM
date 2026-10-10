@@ -20,9 +20,12 @@ Implements ILimitSearchProblem
 
 Private Const STATE_ACCEPTABLE As String = "Acceptable" ' Трещина еще не образована.
 Private Const STATE_CRACK_LIMIT As String = "CrackFormationLimit" ' Достигнут критерий eps_bt,ult.
+Private Const STATE_OTHER_LIMIT As String = "OtherPhysicalLimit" ' Другой физический предел достигнут до трещины.
 Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure" ' НДС для пробной lambda не найдено.
 
 Private mCrack As CCrackFormationCalculator ' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+Private mLastAcceptable As CSectionSolver ' Подтвержденный НДС текущей поисковой сессии.
+Private mEquilibriumProbeFailed As Boolean
 
 ' Готовит критерий и рабочие поля Formation для конкретного общего пути LC.
 ' Offset/Base задаются тем же описателем, который использует Capacity.
@@ -90,6 +93,8 @@ End Property
 ' Для CrackFormation специальной подготовки перед LoadMultiplier нет:
 ' материалы и путь уже переданы вызывающим слоем.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
+    Set mLastAcceptable = Nothing
+    mEquilibriumProbeFailed = False
     mCrack.LimitSearchAppendDiagnostic "LoadMultiplier: начинаем подбор lambda_crc пробными расчетами НДС; путь " & _
         mCrack.LimitSearchCrackFormationPathDisplayName() & "."
     ILimitSearchProblem_Prepare = True
@@ -132,10 +137,10 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
     ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = mCrack.LimitSearchEvaluateUltimateResidual( _
         section, concreteMaterial, steelMaterial, loadPath, eps0, kx, ky, solver, _
-        rPath1, rPath2, rLimit, lambdaValue, state)
+        rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane)
 End Function
 
 ' Проверяет достижение трех невязок с действующими допусками Formation.
@@ -178,26 +183,6 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As L
     ILimitSearchProblem_LimitSearchUltimateMaxIterations = mCrack.LimitSearchUltimateMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_LimitSearchUltimateDampingInitial() As Double
-    ILimitSearchProblem_LimitSearchUltimateDampingInitial = mCrack.LimitSearchUltimateDampingInitial
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha() As Double
-    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = mCrack.LimitSearchUltimateMinLineSearchAlpha
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() As Boolean
-    ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled = mCrack.LimitSearchUltimateLineSearchEnabled
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0() As Double
-    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = mCrack.LimitSearchUltimateMaxDeltaEpsilon0
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As Double
-    ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = mCrack.LimitSearchUltimateMaxDeltaKappa
-End Property
-
 ' Возвращает выбранную общую траекторию LambdaMx/My/Mxy/N/NMxy; при отсутствии
 ' подготовленного descriptor использует нормализованные данные Formation.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
@@ -228,6 +213,13 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     ILimitSearchProblem_EvaluatePoint = mCrack.LimitSearchEvaluateCrackFormationLoadMultiplier( _
         request.Section, request.ConcreteMaterial, request.SteelMaterial, _
         loadPath, startSolver, lambdaValue, functionValue, probeState, solver)
+    If ILimitSearchProblem_EvaluatePoint Then
+        If probeState = STATE_ACCEPTABLE And Not solver Is Nothing Then
+            If solver.Converged Then Set mLastAcceptable = solver
+        End If
+    ElseIf probeState = STATE_NUMERICAL_FAILURE Then
+        mEquilibriumProbeFailed = True
+    End If
 End Function
 
 ' Однотипные предикаты различают допустимую пробу, критерий образования
@@ -238,7 +230,7 @@ Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As Strin
 End Function
 
 Private Function ILimitSearchProblem_IsLimitState(ByVal probeState As String) As Boolean
-    ILimitSearchProblem_IsLimitState = (probeState = STATE_CRACK_LIMIT)
+    ILimitSearchProblem_IsLimitState = (probeState = STATE_CRACK_LIMIT Or probeState = STATE_OTHER_LIMIT)
 End Function
 
 Private Function ILimitSearchProblem_IsNumericalFailureState(ByVal probeState As String) As Boolean
@@ -342,9 +334,19 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt request, loadPath, highLambda, STATE_CRACK_LIMIT, methodName, highSolver, iterations
 End Sub
 
-' Для Formation неуспешная скобка не дает отдельного аналитического предела.
-' Новая траектория или fallback выбирается orchestration-слоем вне этого callback.
+' На плато последняя допустимая силовая проба служит стартом общего Newton.
+' Принимается только реальный первый предел на исходном пути с равновесием;
+' техническая граница поиска и ошибки конфигурации сюда не направляются.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
+    If Not mEquilibriumProbeFailed Or mLastAcceptable Is Nothing Then Exit Sub
+    If mCrack.Converged Then Exit Sub
+    If mCrack.LimitSearchStoppedTerminally() Then Exit Sub
+    Dim search As CUltimateStrainSearch
+    Set search = New CUltimateStrainSearch
+    mCrack.LimitSearchAppendDiagnostic "LoadMultiplier: уточняем первый физический предел от последнего подтвержденного НДС."
+    search.RunNewton Me, request.Section, request.ConcreteMaterial, request.SteelMaterial, _
+        ILimitSearchProblem_BuildLoadPath(request), mLastAcceptable, _
+        "Не удалось подтвердить первый физический предел из последней допустимой пробы."
 End Sub
 
 ' Строит снимок из фактического Formation-исхода, сохраняя typed-причину

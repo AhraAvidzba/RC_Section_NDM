@@ -623,6 +623,9 @@ Private Sub TestBatchRectSetN200CapacityPathNDoesNotNumFail(ByRef stats As TBatc
     CheckBatchRectSetN200CapacitySolutionStrategy stats, "Auto"
     CheckBatchRectSetN200CapacitySolutionStrategy stats, "UltimateStrain"
     CheckBatchRectSetN200CapacitySolutionStrategy stats, "LoadMultiplier"
+    CheckBatchRectSetN200CapacitySolutionStrategy stats, "Auto", True
+    CheckBatchRectSetN200CapacitySolutionStrategy stats, "UltimateStrain", True
+    CheckBatchRectSetN200CapacitySolutionStrategy stats, "LoadMultiplier", True
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldMethod
@@ -636,9 +639,11 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет одну стратегию осевой несущей при N=-200 tf пользователя (+N=Compression).
-' Batch получает внутреннее растяжение и бетонный центр; силовой путь должен выбрать LoadMultiplier.
-Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchTestStats, ByVal methodName As String)
+' При N=-200 tf пользователя проверяет оба центра приложения силы.
+' Только приведенный центр означает чисто осевую ветку LoadMultiplier;
+' относительно бетонного центра арматура создает физический эксцентриситет.
+Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchTestStats, ByVal methodName As String, _
+        Optional ByVal transformedReference As Boolean = False)
     SetSystemSetting "Capacity.SolutionStrategy", methodName
 
     Dim settings As CSystemSettingsReader
@@ -656,30 +661,63 @@ Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchT
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider, transformedReference)
     batch.ApplySettings settings, units
     batch.AddCombination "G1_N200_" & methodName, 200# * 9806.65, 0#, 0#, _
         "PR1", "user N=-200 tf, lambda*N", ChrW$(&H3BB) & "*N"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.Execute
 
-    AppendLine stats, "INFO: batch.rectset.n200." & methodName & _
+    Dim prefix As String, capacity As CCapacityResult, point As CSectionStateResult
+    prefix = "batch.rectset.n200." & methodName
+    If transformedReference Then prefix = prefix & ".transformedCenter"
+    Set capacity = batch.ResultAt(1).StrengthResult.Capacity
+    AppendLine stats, "INFO: " & prefix & _
         "; capacityStatus=" & batch.ResultAt(1).StrengthResult.Capacity.Status & _
         "; limitState=" & batch.ResultAt(1).StrengthResult.Capacity.LimitState & _
         "; solutionMethod=" & batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod & _
         "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity) & _
         "; Nult=" & FormatNumberInvariant(batch.ResultAt(1).StrengthResult.Capacity.NUltimate)
-    If batch.ResultAt(1).StrengthResult.Capacity.Status = "NumFail" Then
-        AppendLine stats, "CAPACITY_DIAG: " & methodName & vbCrLf & _
+    If Not capacity.SearchResult.HasLimitPoint Then
+        AppendLine stats, "CAPACITY_REASON: " & prefix & "|code=" & capacity.ResultMeta.ResultCode & _
+            "|comment=" & capacity.ResultMeta.ResultComment
+        AppendLine stats, "CAPACITY_DIAG: " & prefix & vbCrLf & _
             Right$(batch.ResultAt(1).StrengthResult.Capacity.DiagnosticLog, 12000)
     End If
-    AssertTrue stats, "batch.rectset.n200." & methodName & ".notNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
-    AssertTrue stats, "batch.rectset.n200." & methodName & ".capacityStatus", _
+    AssertTrue stats, prefix & ".notNumFail", batch.ResultAt(1).StrengthResult.Capacity.Status <> "NumFail"
+    AssertTrue stats, prefix & ".capacityStatus", _
         batch.ResultAt(1).StrengthResult.Capacity.Status = "OK" Or batch.ResultAt(1).StrengthResult.Capacity.Status = "FAIL"
-    AssertTrue stats, "batch.rectset.n200." & methodName & ".nult", Abs(batch.ResultAt(1).StrengthResult.Capacity.NUltimate) > Abs(batch.N(1))
-    AssertTrue stats, "batch.rectset.n200." & methodName & ".solutionMethod", _
-        batch.ResultAt(1).StrengthResult.Capacity.SolutionMethod = "LoadMultiplier"
+    AssertTrue stats, prefix & ".nult", Abs(capacity.NUltimate) > Abs(batch.N(1))
+    AssertTrue stats, prefix & ".axialClassification", capacity.PureAxialForMethod = transformedReference
+    If transformedReference Or methodName = "LoadMultiplier" Then
+        AssertTrue stats, prefix & ".solutionMethod", capacity.SolutionMethod = "LoadMultiplier"
+    Else
+        AssertTrue stats, prefix & ".solutionMethod", capacity.SolutionMethod = "UltimateStrain" Or _
+            capacity.SolutionMethod = "LoadMultiplier"
+    End If
+    AssertTrue stats, prefix & ".point", capacity.SearchResult.HasLimitPoint And capacity.CapacityStateAvailable
+    If Not capacity.CapacityStateAvailable Then Exit Sub
+    Set point = capacity.StateResult
+    AssertTrue stats, prefix & ".converged", point.Converged
+    AssertTrue stats, prefix & ".physical", point.WithinPhysicalRange And Not point.ExtensionUsed
+    Dim toleranceN As Double, toleranceMx As Double, toleranceMy As Double
+    toleranceN = Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN", 5#, False)))
+    toleranceMx = Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx", 5000#, False)))
+    toleranceMy = Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy", 5000#, False)))
+    AssertClose stats, prefix & ".residualN", point.ResidualN, 0#, toleranceN
+    AssertClose stats, prefix & ".residualMx", point.ResidualMx, 0#, toleranceMx
+    AssertClose stats, prefix & ".residualMy", point.ResidualMy, 0#, toleranceMy
+    AssertClose stats, prefix & ".loadPointMx", capacity.MxUltimate, 0#, toleranceMx
+    AssertClose stats, prefix & ".loadPointMy", capacity.MyUltimate, 0#, toleranceMy
 End Sub
+
+' ДЛЯ ТЕСТОВ: отдельно проверяет осевую классификацию несимметричного сечения.
+Public Function RunRectSetAxialMethodTests() As String
+    Dim stats As TBatchTestStats
+    TestBatchRectSetN200CapacityPathNDoesNotNumFail stats
+    AppendLine stats, "TOTAL_RECTSET_AXIAL_METHOD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunRectSetAxialMethodTests = stats.Report
+End Function
 
 ' Проверяет, что явный выбор lambda*Mxy масштабирует оба пользовательских
 ' момента при постоянной продольной силе. Это основной вариант для общего
@@ -4479,7 +4517,8 @@ End Function
 ' арматура Ø32 по всем внешним и внутренним граням. Этот сценарий нужен именно
 ' для проверки StateSolution при почти предельном осевом растяжении PR2.
 Private Function BuildUserRectSetTensionBatch(ByRef referenceX As Double, ByRef referenceY As Double, _
-        Optional ByVal providerOverride As CMaterialModelProvider = Nothing) As CBatchSectionCalculator
+        Optional ByVal providerOverride As CMaterialModelProvider = Nothing, _
+        Optional ByVal transformedReference As Boolean = False) As CBatchSectionCalculator
     Dim geom As CGeometryRegion
     Set geom = RectSetGeometry(250#, 550#, 600#, 250#)
 
@@ -4500,11 +4539,21 @@ Private Function BuildUserRectSetTensionBatch(ByRef referenceX As Double, ByRef 
         Set provider = providerOverride
     End If
     CalculateConcreteSectionCentroid section, referenceX, referenceY
+    Dim profiles As CCalculationProfileCatalog
+    Set profiles = TestProfileCatalog()
+    If transformedReference Then
+        Dim props As CSectionPropertiesCalculator, valueSet As EMaterialValueSet
+        valueSet = profiles.ProfileById("PR1").StrengthSpec.ValueSet
+        Set props = New CSectionPropertiesCalculator
+        props.EnsureTransformed section, provider.ConcreteElasticModulusFromValueSet(valueSet), _
+            provider.SteelElasticModulusFromValueSet(valueSet)
+        referenceX = props.CentroidX: referenceY = props.CentroidY
+    End If
 
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, provider
-    Set batch.ProfileCatalog = TestProfileCatalog()
+    Set batch.ProfileCatalog = profiles
     Set BuildUserRectSetTensionBatch = batch
 End Function
 
@@ -5267,6 +5316,54 @@ Private Sub TestAudit02CurrentCrackedStateCacheHitCalculatesWidth(ByRef stats As
     AssertTrue stats, "audit02.currentCache.stateOK", second.CurrentStateMeta.InternalStatus = rsSuccess
 End Sub
 
+' ДЛЯ ТЕСТОВ: осевой предел на сохраненной геометрии без записи в Results.
+Public Function RunSavedAxialCapacityTests(Optional ByVal requireResolved As Boolean = True) As String
+    Dim stats As TBatchTestStats, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim materials As CMaterialModelProvider, section As CSectionModel, profiles As CCalculationProfileCatalog
+    Dim batch As CBatchSectionCalculator, result As CCombinationResult, state As CSectionStateResult
+    Dim load As Variant, i As Long, prefix As String
+    On Error GoTo Failed
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set materials = New CMaterialModelProvider: materials.Initialize settings, units
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set batch = New CBatchSectionCalculator: batch.Initialize section, materials
+    Set batch.ProfileCatalog = profiles
+    batch.ApplySettings settings, units
+    Audit03ApplyLoadReferenceForTests section, settings, units, batch
+    For Each load In Array(500#, 1000#)
+        batch.AddCombination "AXIAL_" & CStr(load), -CDbl(load) * 9806.65, 0#, 0#, "PR1", vbNullString, "Auto"
+    Next load
+    batch.Execute
+    For i = 1 To batch.Count
+        Set result = batch.ResultAt(i)
+        prefix = batch.CombinationID(i)
+        AppendLine stats, prefix & "|capacity=" & result.StrengthResult.Capacity.Status & _
+            "|lambda=" & FormatNumberInvariant(result.StrengthResult.Capacity.LambdaCapacity) & _
+            "|reason=" & result.CapacityMeta.ResultComment
+        AppendLine stats, result.StrengthResult.Capacity.DiagnosticLog
+        If requireResolved Then
+            AssertEquals stats, prefix & ".capacity", result.StrengthResult.Capacity.Status, "OK"
+            Set state = result.StateRepository.FindState(sstCapacityState)
+            AssertTrue stats, prefix & ".state", Not state Is Nothing
+            If Not state Is Nothing Then
+                AssertTrue stats, prefix & ".equilibriumN", Abs(state.ResidualN) <= Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))
+                AssertTrue stats, prefix & ".equilibriumMx", Abs(state.ResidualMx) <= Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))
+                AssertTrue stats, prefix & ".equilibriumMy", Abs(state.ResidualMy) <= Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))
+                AssertTrue stats, prefix & ".physical", state.WithinPhysicalRange
+                AppendLine stats, prefix & "|NultTf=" & FormatNumberInvariant(-state.Nint / 9806.65) & _
+                    "|minConcreteStrain=" & FormatNumberInvariant(state.MinConcreteStrain)
+            End If
+        End If
+    Next i
+    AppendLine stats, "TOTAL_SAVED_AXIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunSavedAxialCapacityTests = stats.Report
+    Exit Function
+Failed:
+    RunSavedAxialCapacityTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
+End Function
+
 ' ДЛЯ ТЕСТОВ: сравнивает чистое сжатие с той же силой и малым моментом
 ' на сохраненной пользовательской геометрии. Записывает машинные причины
 ' и деформации текущего НДС; перегрузка не подменяется успешным статусом.
@@ -5928,19 +6025,11 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     repository.Clear
     provider.LoadSteps = 1
     provider.MaxIterations = 1
-    provider.LineSearchEnabled = False
-    provider.DampingInitial = 0.1
-    provider.MaxDeltaEpsilon0 = 0.00000001
-    provider.MaxDeltaKappa = 0.000000000001
     Set state = provider.GetOrSolve(request)
     AssertTrue stats, "audit02.cache.retry.firstFailed", Not state.Converged
     AssertTrue stats, "audit02.cache.retry.notReusable", repository.FindEquivalent(request) Is Nothing
     provider.LoadSteps = 8
     provider.MaxIterations = 80
-    provider.LineSearchEnabled = True
-    provider.DampingInitial = 1#
-    provider.MaxDeltaEpsilon0 = 0.0005
-    provider.MaxDeltaKappa = 0.00001
     Set state = provider.GetOrSolve(retryRequest)
     AssertTrue stats, "audit02.cache.retry.newSolve", Not provider.LastStateWasReused
     AssertTrue stats, "audit02.cache.retry.success", state.Converged
@@ -6928,12 +7017,18 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
     SetProfileValue "Calculation.Stability.Enabled", "PR2", "No"
     SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    ' Эта историческая матрица проверяет формулы СП 63; значение возвращается.
+    SetSystemSetting "SLS.Crack.Code", "SP63"
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem
     units.LoadFromSettings settings
     extensionEnabled = settings.GetBoolean("General.DiagramExtension")
     Set provider = TestMaterialProvider(extensionEnabled)
+    If shapeName = "SavedWorkbook" Then
+        Set provider = New CMaterialModelProvider
+        provider.Initialize settings, units
+    End If
     Set section = Audit03LoadMatrixSection(shapeName)
     CalculateConcreteSectionCentroid section, referenceX, referenceY
     Set loads = Audit03NormalizedLoads(section, family)
@@ -6985,6 +7080,14 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
                     Audit03CheckCapacityPath stats, batch.ResultAt(localIndex).StrengthResult.Capacity, _
                         "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), _
                         CStr(paths(pathIndex)), Array(item(1), item(2), item(3)), referenceX, referenceY, True
+                    If shapeName = "SavedWorkbook" Then
+                        If family = "Light" Or path = "Auto" Or CStr(paths(pathIndex)) = "NMxy" Then
+                            Dim capacityMeta As CResultMeta
+                            Set capacityMeta = batch.ResultAt(localIndex).CapacityMeta
+                            AssertTrue stats, "audit03.matrix.saved.resolved." & batch.CombinationID(localIndex), _
+                                capacityMeta.InternalStatus <> rsNumericalFailure Or capacityMeta.ResultCode = rcSearchBoundReached
+                        End If
+                    End If
                 Else
                     Audit03CheckFormationPath stats, batch.ResultAt(localIndex).CrackResult.Formation, _
                         "audit03.matrix." & shapeName & "." & batch.CombinationID(localIndex), path, Array(item(1), item(2), item(3))
@@ -7027,6 +7130,14 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String) As CSection
     Dim rebars As CRebarLayout, section As CSectionModel, x As Double, y As Double, i As Long
     Set rebars = New CRebarLayout
     Select Case shapeName
+        Case "SavedWorkbook"
+            Dim savedSettings As CSystemSettingsReader, savedUnits As CUnitSystem
+            Set savedSettings = New CSystemSettingsReader: savedSettings.LoadFromWorkbook ThisWorkbook
+            Set savedUnits = New CUnitSystem: savedUnits.LoadFromSettings savedSettings
+            If savedSettings.GetRequiredString("Geometry.Source") <> "AutoCAD" Then _
+                Err.Raise vbObjectError + 4498, "Audit03LoadMatrixSection", "Для SavedWorkbook требуется сохраненная импортированная геометрия."
+            Set Audit03LoadMatrixSection = BuildWorkbookSectionModel(ThisWorkbook, savedSettings, savedUnits)
+            Exit Function
         Case "CircleSym", "CircleUneven"
             Set circleGeometry = New CGeometryCircle
             circleGeometry.InitializeByDiameter 300#, 0#, 0#
@@ -7508,6 +7619,57 @@ Failed:
     RunAudit03ExtendedOverloadEquilibriumTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' ДЛЯ ТЕСТОВ: три ранее подтвержденных равновесия импортированного сечения.
+' Нагрузки задаются независимо от стартовой плоскости; результат нельзя принять
+' как NumFail или оправдать сертификатом отсутствия решения.
+Public Function RunSavedConfirmedEquilibriumTests() As String
+    On Error GoTo Failed
+    Dim stats As TBatchTestStats, section As CSectionModel, materials As CMaterialModelProvider
+    Dim spec As CMaterialModelSpec, loads As Collection, index As Variant, method As Variant
+    Set section = Audit03LoadMatrixSection("SavedWorkbook")
+    Set materials = TestMaterialProvider(True)
+    Set spec = Audit03OverloadSpec(cpStrength)
+    Set loads = Audit03NormalizedLoads(section, "Stress")
+    Dim x As Double, y As Double
+    CalculateConcreteSectionCentroid section, x, y
+    For Each method In Array("Newton", "Secant")
+        For Each index In Array("overloadMixed0.95", "overloadMixed1", "overloadMixed1.05")
+            Dim item As Variant, load As CSectionLoadState, request As CStateRequest
+            Dim provider As CStateProvider, state As CSectionStateResult, prefix As String
+            Dim candidate As Variant, found As Boolean
+            found = False
+            For Each candidate In loads
+                If CStr(candidate(0)) = CStr(index) Then item = candidate: found = True: Exit For
+            Next candidate
+            If Not found Then Err.Raise vbObjectError + 4499, "RunSavedConfirmedEquilibriumTests", "В Stress нет нагрузки " & CStr(index)
+            Set load = New CSectionLoadState
+            load.Initialize CDbl(item(1)), CDbl(item(2)), CDbl(item(3)), x + 10#, y - 7#
+            Set request = New CStateRequest
+            request.Initialize sstStrengthState, cpStrength, spec, load.N, load.InternalMx, load.InternalMy, True, True
+            Set provider = Audit03OverloadStateProvider(section, materials, CStr(method))
+            Set state = provider.GetOrSolve(request)
+            prefix = "confirmed.saved." & CStr(method) & "." & CStr(item(0))
+            AssertTrue stats, prefix & ".converged", state.Converged
+            AssertTrue stats, prefix & ".physicalFail", state.InternalStatus = rsCheckFailed And Not state.WithinPhysicalRange
+            If state.Converged Then
+                AssertClose stats, prefix & ".N", state.ResidualN, 0#, 1#
+                AssertClose stats, prefix & ".Mx", state.ResidualMx, 0#, 1000#
+                AssertClose stats, prefix & ".My", state.ResidualMy, 0#, 1000#
+            End If
+            AppendLine stats, "CONFIRMED_SAVED: " & prefix & "|converged=" & CStr(state.Converged) & _
+                "|eps0=" & FormatNumberInvariant(state.Epsilon0) & "|kx=" & FormatNumberInvariant(state.KappaX) & _
+                "|ky=" & FormatNumberInvariant(state.KappaY) & "|solves=" & CStr(state.SolverCallCount) & _
+                "|reason=" & state.ResultComment
+            If Not state.Converged Then AppendLine stats, state.DiagnosticLog
+        Next index
+    Next method
+    AppendLine stats, "TOTAL_CONFIRMED_SAVED: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunSavedConfirmedEquilibriumTests = stats.Report
+    Exit Function
+Failed:
+    RunSavedConfirmedEquilibriumTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
 ' Создает спецификацию текущего strength/cracked state, не Formation/Capacity.
 ' Physical и equilibrium diagrams проверяются отдельно, без изменения eps_ult.
 Private Function Audit03OverloadSpec(ByVal role As ECalculationPurpose) As CMaterialModelSpec
@@ -7673,7 +7835,6 @@ Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As Stri
         Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
         Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
         Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
-        Audit03AxialGuessIsolation stats, section, concrete, steel, CLng(role)
         For Each item In loads
             Dim load As CSectionLoadState
             Set load = New CSectionLoadState
@@ -7737,23 +7898,6 @@ Failed:
     RunAudit03ExtendedStressFeasibilityTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: самостоятельный осевой fallback не наследует кривизны от
-' предыдущего вызова builder-а. Проверяется публичный путь с обоими знаками N.
-Private Sub Audit03AxialGuessIsolation(ByRef stats As TBatchTestStats, _
-        ByVal section As CSectionModel, ByVal concrete As CMaterialDiagram, _
-        ByVal steel As CMaterialDiagram, ByVal role As Long)
-    Dim builder As CStateGuessBuilder, sign As Variant, eps0 As Double, kx As Double, ky As Double
-    Set builder = New CStateGuessBuilder
-    For Each sign In Array(-1#, 1#)
-        eps0 = 9#: kx = 5#: ky = -7#
-        AssertTrue stats, "audit03.axialGuess." & CStr(role) & "." & CStr(sign) & ".built", _
-            builder.BuildAttemptForExtensionState(5, section, Nothing, concrete, steel, CDbl(sign) * 100000#, _
-                0#, 0#, eps0, kx, ky)
-        AssertClose stats, "audit03.axialGuess." & CStr(role) & "." & CStr(sign) & ".kx", kx, 0#, 0#
-        AssertClose stats, "audit03.axialGuess." & CStr(role) & "." & CStr(sign) & ".ky", ky, 0#, 0#
-    Next sign
-End Sub
-
 ' ДЛЯ ТЕСТОВ: сохраняет фактическую касательную и деформации стержней отказа.
 ' Дополнительные холодные старты служат только диагностикой существующего
 ' Newton; они не меняют результат проверяемого pipeline или его допуски.
@@ -7793,41 +7937,6 @@ Private Sub Audit03InspectStressFailure(ByRef stats As TBatchTestStats, _
                 "|ky=" & FormatNumberInvariant(guessKy) & "|rN=" & FormatNumberInvariant(guessed.Nint - load.N) & _
                 "|rMx=" & FormatNumberInvariant(guessed.Mxint - load.InternalMx) & _
                 "|rMy=" & FormatNumberInvariant(guessed.Myint - load.InternalMy)
-            If i = 7 Then
-                ' ДЛЯ ТЕСТОВ: меняем только масштаб стартовой плоскости,
-                ' сохраняя положение нулевой линии. Ни один диагностический
-                ' solve не заменяет проверяемый результат provider-а.
-                Dim planeScale As Variant
-                For Each planeScale In Array(1#, 2#, 4#, 8#, 16#, 32#)
-                    Set guessed = New CSectionSolver
-                    guessed.LoadSteps = 1: guessed.MaxIterations = 80
-                    guessed.ToleranceN = 1#: guessed.ToleranceMx = 1000#: guessed.ToleranceMy = 1000#
-                    guessed.SetInitialState guessEps * CDbl(planeScale), guessKx * CDbl(planeScale), guessKy * CDbl(planeScale)
-                    guessed.Solve section, concrete, steel, load.N, load.InternalMx, load.InternalMy
-                    AppendLine stats, "STRESS_DIAGNOSTIC_NEUTRAL: " & prefix & "|scale=" & CStr(planeScale) & _
-                        "|converged=" & CStr(guessed.Converged) & "|eps0=" & FormatNumberInvariant(guessed.Epsilon0) & _
-                        "|kx=" & FormatNumberInvariant(guessed.KappaX) & "|ky=" & FormatNumberInvariant(guessed.KappaY) & _
-                        "|rN=" & FormatNumberInvariant(guessed.ResidualN) & "|rMx=" & FormatNumberInvariant(guessed.ResidualMx) & _
-                        "|rMy=" & FormatNumberInvariant(guessed.ResidualMy) & "|reason=" & guessed.StopReason
-                Next planeScale
-                Dim compressionMargin As Variant
-                For Each compressionMargin In Array(0.000001, 0.00001, 0.0001, 0.0005, 0.001)
-                    For Each planeScale In Array(1#, 2#, 4#, 8#)
-                        Set guessed = New CSectionSolver
-                        guessed.LoadSteps = 1: guessed.MaxIterations = 80
-                        guessed.ToleranceN = 1#: guessed.ToleranceMx = 1000#: guessed.ToleranceMy = 1000#
-                        guessed.SetInitialState guessEps * CDbl(planeScale) - CDbl(compressionMargin), _
-                            guessKx * CDbl(planeScale), guessKy * CDbl(planeScale)
-                        guessed.Solve section, concrete, steel, load.N, load.InternalMx, load.InternalMy
-                        AppendLine stats, "STRESS_DIAGNOSTIC_COMPRESSION: " & prefix & "|scale=" & CStr(planeScale) & _
-                            "|margin=" & CStr(compressionMargin) & "|converged=" & CStr(guessed.Converged) & _
-                            "|eps0=" & FormatNumberInvariant(guessed.Epsilon0) & "|kx=" & FormatNumberInvariant(guessed.KappaX) & _
-                            "|ky=" & FormatNumberInvariant(guessed.KappaY) & "|rN=" & FormatNumberInvariant(guessed.ResidualN) & _
-                            "|rMx=" & FormatNumberInvariant(guessed.ResidualMx) & "|rMy=" & FormatNumberInvariant(guessed.ResidualMy) & _
-                            "|reason=" & guessed.StopReason
-                    Next planeScale
-                Next compressionMargin
-            End If
         End If
     Next i
     Dim initialStrain As Variant, diagnosticMethod As Variant
@@ -8848,14 +8957,14 @@ Private Sub TestAudit03BatchInputMessages(ByRef stats As TBatchTestStats)
         Select Case CStr(mode)
             Case "DirectState"
                 SetProfileValue "Calculation.Strength.DirectState", profileId, "Yes"
-                SetSystemSetting "Solver.DampingInitial", "2"
+                SetSystemSetting "Solver.MaxIterations", "0"
             Case "Capacity"
                 SetProfileValue "Calculation.Strength.Capacity", profileId, "Yes"
                 SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
                 SetSystemSetting "Capacity.ToleranceLambda", "0"
             Case "CrackCurrentState"
                 SetProfileValue "Calculation.Crack.Width", profileId, "Yes"
-                SetSystemSetting "Solver.DampingInitial", "2"
+                SetSystemSetting "Solver.MaxIterations", "0"
         End Select
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set batch = BuildBatchCalculator(): batch.ApplySettings settings

@@ -67,6 +67,8 @@ Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сф�
 Private mContours As CSectionContours ' Достоверные outer/opening, принадлежащие исходной геометрии.
 Private mRevision As Long ' Версия расчетной геометрии для scoped-инвалидации reusable НДС.
 Private mObservedContourRevision As Long ' Последняя учтенная версия достоверного outer/opening.
+Private mConcreteCenterValid As Boolean, mConcreteCenterRevision As Long
+Private mConcreteCenterX As Double, mConcreteCenterY As Double, mConcreteCenterArea As Double
 
 Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допуск, при котором главные локальные I считаются изотропными.
 Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
@@ -76,6 +78,7 @@ Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' До
 ' аннотации без следов предыдущего расчета.
 Public Sub Clear()
     mRevision = mRevision + 1
+    mConcreteCenterValid = False
     mSourceType = vbNullString
     mConcreteMeshSource = vbNullString
 
@@ -273,6 +276,29 @@ Public Property Get Revision() As Long
     End If
     Revision = mRevision
 End Property
+
+' Общий центр бетонной сетки без арматуры. Кэш принадлежит модели и действителен
+' только для ее текущей ревизии; плечи от первого элемента исключают большой
+' перенос чертежа из суммирования. Исходные координаты элементов не меняются.
+Public Sub ConcreteMeshCentroid(ByRef centerX As Double, ByRef centerY As Double, ByRef totalArea As Double)
+    CheckConcreteIndex 1
+    Dim currentRevision As Long
+    currentRevision = Revision
+    If Not mConcreteCenterValid Or mConcreteCenterRevision <> currentRevision Then
+        Dim x0 As Double, y0 As Double, sumArea As Double, sumX As Double, sumY As Double, i As Long
+        x0 = mConcreteX(1): y0 = mConcreteY(1)
+        For i = 1 To mConcreteCount
+            sumArea = sumArea + mConcreteArea(i)
+            sumX = sumX + mConcreteArea(i) * (mConcreteX(i) - x0)
+            sumY = sumY + mConcreteArea(i) * (mConcreteY(i) - y0)
+        Next i
+        mConcreteCenterX = x0 + sumX / sumArea
+        mConcreteCenterY = y0 + sumY / sumArea
+        mConcreteCenterArea = sumArea
+        mConcreteCenterRevision = currentRevision: mConcreteCenterValid = True
+    End If
+    centerX = mConcreteCenterX: centerY = mConcreteCenterY: totalArea = mConcreteCenterArea
+End Sub
 
 ' Назначает эквивалентным площадным оболочкам без направления от источника среднюю
 ' ориентацию известных элементов. Инвалидирует затронутый boundary-cache;

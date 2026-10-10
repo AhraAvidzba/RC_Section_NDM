@@ -123,7 +123,9 @@ Public Sub CalculateConcrete(ByVal section As CSectionModel)
 
     If mArea <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь бетонного сечения равна нулю."
 
-    FinalizeProperties t0
+    Dim centerX As Double, centerY As Double, concreteArea As Double
+    section.ConcreteMeshCentroid centerX, centerY, concreteArea
+    FinalizeProperties t0, True, centerX, centerY
     StorePreparationContext section, 1, 0#, 0#
 End Sub
 
@@ -630,9 +632,14 @@ End Function
 ' Завершает расчет: переводит моменты к центру тяжести, находит главные оси и
 ' радиусы инерции. Формулы одинаковы для бетонного и приведенного представления,
 ' потому что к этому моменту все различие уже учтено в накопленных весах.
-Private Sub FinalizeProperties(ByVal t0 As Double)
-    mCentroidX = mStaticMomentY / mArea
-    mCentroidY = mStaticMomentX / mArea
+Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCenter As Boolean = False, _
+        Optional ByVal centerX As Double = 0#, Optional ByVal centerY As Double = 0#)
+    If hasConcreteCenter Then
+        mCentroidX = centerX: mCentroidY = centerY
+    Else
+        mCentroidX = mStaticMomentY / mArea
+        mCentroidY = mStaticMomentX / mArea
+    End If
 
     mIxc = mIx - mArea * mCentroidY * mCentroidY
     mIyc = mIy - mArea * mCentroidX * mCentroidX

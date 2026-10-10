@@ -460,6 +460,7 @@ Private Function BuildFailureMeta(ByVal stateType As ESectionStateType, ByVal so
     Set meta = New CResultMeta
     meta.SetSolverFailure solver.FailureCode, ResultKindFromStateType(stateType), _
         resultComment, (solver.Iterations > 0)
+    meta.DiagnosticDetails = solver.DiagnosticLog
     Set BuildFailureMeta = meta
 End Function
 

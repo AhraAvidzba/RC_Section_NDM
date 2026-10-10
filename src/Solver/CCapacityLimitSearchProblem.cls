@@ -118,7 +118,7 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     Set solver = Nothing
     ILimitSearchProblem_EvaluatePoint = mCapacity.LimitSearchEvaluateCapacityLoadMultiplier( _
         request.Section, request.ConcreteMaterial, request.SteelMaterial, _
-        loadPath, lambdaValue, functionValue, probeState)
+        loadPath, lambdaValue, functionValue, probeState, startSolver)
     If ILimitSearchProblem_EvaluatePoint Then
         ' Возвращаем общий search-слой ровно тот solver-снимок, который capacity
         ' использовал для оценки этой lambda-точки. Без этого финальный result
@@ -131,7 +131,7 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         ' а не признание несошедшейся пробной плоскости предельной.
         If request.PureAxialForMethod And lambdaValue > 0# Then
             If mCapacity.LimitSearchCapacityStateIsNumericalFailure(probeState) Then
-                mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.Section, _
+                mCapacity.LimitSearchAcceptRetainedPhysicalCapacity request.Section, _
                     request.ConcreteMaterial, request.SteelMaterial, loadPath
                 If mCapacity.Converged Then ILimitSearchProblem_EvaluatePoint = False
             End If
@@ -241,7 +241,7 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ' На осевом плато одна и та же сила соответствует разным деформациям.
     ' Нижняя проба силовой скобки не определяет предельную плоскость: доводим
     ' ее до исходного физического предела и отдельно подтверждаем N/Mx/My.
-    If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptPureAxialRetainedCapacity _
+    If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptRetainedPhysicalCapacity _
         request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath
     ILimitSearchProblem_FinalizeAt = mCapacity.Converged
 End Function
@@ -257,23 +257,20 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
     Else
         mCapacity.LimitSearchFinalizeCapacityLoadMultiplier lowLambda, loadPath, vbNullString, methodName, lowSolver
     End If
-    If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptPureAxialRetainedCapacity _
+    If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptRetainedPhysicalCapacity _
         request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath
 End Sub
 
-' Для силового осевого пути пробует физически подтвердить сохраненную точку
-' после неудачи общего поиска. LambdaN с постоянными моментами тоже может
-' выйти на силовое плато: готовая плоскость проверяется на том же Offset/Base,
-' без замены фиксированных моментов и без признания failed probe пределом.
+' После численной неудачи уточняет предельную плоскость из сохраненного НДС.
+' Приемка требует исходного Offset/Base, равновесия всех трех усилий и
+' физического критерия; несошедшаяся lambda не становится верхней границей.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
     If mCapacity.Converged Then Exit Sub
     If mCapacity.LimitSearchHasTerminalFailure Then Exit Sub
     If Not request.ForceOnly And Not request.PureAxialForMethod Then
-        If request.SelectedLoadPath Is Nothing Then Exit Sub
-        If Not request.SelectedLoadPath.ScalesN Then Exit Sub
-        If request.SelectedLoadPath.ScalesMx Or request.SelectedLoadPath.ScalesMy Then Exit Sub
+        If Not mCapacity.LimitSearchHasFailedEquilibriumProbe Then Exit Sub
     End If
-    mCapacity.LimitSearchAcceptPureAxialRetainedCapacity request.Section, _
+    mCapacity.LimitSearchAcceptRetainedPhysicalCapacity request.Section, _
         request.ConcreteMaterial, request.SteelMaterial, ILimitSearchProblem_BuildLoadPath(request)
 End Sub
 
@@ -366,13 +363,23 @@ Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSear
         request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath)
 End Function
 
-' Выполняет один общий поиск; дополнительные старты выбираются владельцем
-' Capacity, а не отдельной реализацией численного цикла в адаптере.
+' Повторяет общий Newton с независимым стартом, подготовленным Capacity.
+' Нагрузки, критерий и численные настройки между попытками не меняются.
 Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimitSearchRequest) As Boolean
     Dim search As CUltimateStrainSearch
     Set search = New CUltimateStrainSearch
-    ILimitSearchProblem_RunUltimateAttempts = search.RunCapacityUltimateNewton( _
-        request, ILimitSearchProblem_BuildLoadPath(request))
+    Dim loadPath As CLoadPathVector, alternate As CSectionSolver
+    Set loadPath = ILimitSearchProblem_BuildLoadPath(request)
+    ILimitSearchProblem_RunUltimateAttempts = search.RunNewton(Me, request.Section, _
+        request.ConcreteMaterial, request.SteelMaterial, loadPath, Nothing, _
+        "UltimateStrain: итерации Newton не сошлись.")
+    If ILimitSearchProblem_RunUltimateAttempts Or mCapacity.LimitSearchHasTerminalFailure Then Exit Function
+    Set alternate = mCapacity.LimitSearchAlternativeUltimateStart(request.Section, _
+        request.ConcreteMaterial, request.SteelMaterial, loadPath)
+    If alternate Is Nothing Then Exit Function
+    ILimitSearchProblem_RunUltimateAttempts = search.RunNewton(Me, request.Section, _
+        request.ConcreteMaterial, request.SteelMaterial, loadPath, alternate, _
+        "UltimateStrain: повторный старт не дал подтвержденной предельной плоскости.")
 End Function
 
 ' Завершает инженерные величины Capacity после принятого UltimateStrain-решения
@@ -398,10 +405,10 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
     ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = mCapacity.LimitSearchEvaluateUltimateResidual( _
         section, concreteMaterial, steelMaterial, loadPath, eps0, kx, ky, solver, _
-        rPath1, rPath2, rLimit, lambdaValue, state)
+        rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane)
 End Function
 
 ' Передает проверку трех невязок с исходными допусками Capacity.
@@ -442,26 +449,6 @@ End Sub
 ' Однотипные настройки общего Newton из численной конфигурации Capacity.
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As Long
     ILimitSearchProblem_LimitSearchUltimateMaxIterations = mCapacity.LimitSearchUltimateMaxIterations
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateDampingInitial() As Double
-    ILimitSearchProblem_LimitSearchUltimateDampingInitial = mCapacity.LimitSearchUltimateDampingInitial
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha() As Double
-    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = mCapacity.LimitSearchUltimateMinLineSearchAlpha
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() As Boolean
-    ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled = mCapacity.LimitSearchUltimateLineSearchEnabled
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0() As Double
-    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = mCapacity.LimitSearchUltimateMaxDeltaEpsilon0
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As Double
-    ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = mCapacity.LimitSearchUltimateMaxDeltaKappa
 End Property
 
 ' Сообщает общему coordinator, что получен окончательный успех или терминальная

@@ -18,6 +18,8 @@ Option Explicit
 ' LoadMultiplier запускается через общий CLoadMultiplierSearch, без отдельной
 ' параллельной search-реализации.
 
+Private mFrame As CSectionNumericalFrame ' Тот же центр и масштаб, что у прямого НДС.
+
 ' Выполняет ветку UltimateStrain для request-а несущей способности.
 ' Чисто осевая траектория переводится в LoadMultiplier тем же правилом, что и
 ' в основной capacity-логике.
@@ -97,9 +99,7 @@ Public Function RunCapacityUltimateNewton(ByVal request As CLimitSearchRequest, 
         ByVal loadPath As CLoadPathVector) As Boolean
     If Not request.Problem.PrepareUltimate(request, loadPath) Then Exit Function
 
-    RunCapacityUltimateNewton = RunNewton(request.Problem, request.Section, _
-        request.ConcreteMaterial, request.SteelMaterial, loadPath, Nothing, _
-        "UltimateStrain: итерации Newton не сошлись.")
+    RunCapacityUltimateNewton = request.Problem.RunUltimateAttempts(request)
     request.Problem.CompleteUltimate loadPath
 End Function
 
@@ -130,11 +130,19 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     End If
     If Not ValidateNewtonSettings(context) Then Exit Function
 
+    Set mFrame = New CSectionNumericalFrame
+    If Not section Is Nothing Then
+        mFrame.Initialize section
+    End If
+
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
     context.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
         loadPath, startSolver, eps0, kx, ky
+    ' Newton меняет деформацию в центре, а не в удаленном начале чертежа.
+    ' В доменный callback передается та же физическая плоскость в исходных осях.
+    eps0 = mFrame.CenterStrain(eps0, kx, ky)
     If Not IsFiniteNumber(eps0) Or Not IsFiniteNumber(kx) Or Not IsFiniteNumber(ky) Then
         context.SetFailure sfcNumericalFailure, "Стартовая плоскость UltimateStrain содержит нечисловое или бесконечное значение."
         Exit Function
@@ -165,7 +173,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
                 loadPath.MyOffset = acceptedPath(5) And loadPath.MyBase = acceptedPath(6)
         End If
         If Not acceptedEvaluation Then
-            If Not context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
+            If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, _
                     loadPath, eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state) Then
                 Exit Function
             End If
@@ -182,6 +190,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
             ' проверку усилий: продолжаем уточнение той же физической точки.
         End If
 
+        context.AppendDiagnostic "ultimateNewton step=" & CStr(iter)
         If Not ApplyUltimateNewtonStep(context, section, concreteMaterial, steelMaterial, _
                 loadPath, eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state) Then Exit Function
         ' Принятая проба уже имеет свои residual/solver/критерий. Пробы Якобиана
@@ -195,29 +204,28 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
         End If
     Next iter
 
+    ' Последняя разрешенная поправка тоже проходит обычную финальную приемку.
+    ' Новая итерация не выполняется, бюджет поиска не увеличивается.
+    If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, _
+            loadPath, eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state) Then Exit Function
+    If context.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit) Then
+        If context.LimitSearchFinalizeUltimateResult(section, concreteMaterial, steelMaterial, _
+                loadPath, lambdaValue, solver, state, context.LimitSearchUltimateMaxIterations) Then
+            RunNewton = True
+            Exit Function
+        End If
+        If context.StoppedTerminally Then Exit Function
+    End If
     context.LimitSearchSetUltimateNumericalFailure notConvergedReason
     Exit Function
 Failed:
     ReportArithmeticOrContractFailure context, "Общий поиск UltimateStrain", Err.Number, Err.Description
 End Function
 
-' Проверяет настройки до первой пробы. Нулевой min alpha запрещен: после
-' underflow alpha=0 цикл деления уже не способен сделать следующий шаг.
+' Пользователь задает бюджет итераций; поиск длины шага автоматический.
 Private Function ValidateNewtonSettings(ByVal context As ILimitSearchProblem) As Boolean
-    Dim damping As Double, minAlpha As Double, maxDeltaEps As Double, maxDeltaKappa As Double
-    damping = context.LimitSearchUltimateDampingInitial
-    minAlpha = context.LimitSearchUltimateMinLineSearchAlpha
-    maxDeltaEps = context.LimitSearchUltimateMaxDeltaEpsilon0
-    maxDeltaKappa = context.LimitSearchUltimateMaxDeltaKappa
     If context.LimitSearchUltimateMaxIterations <= 0 Then
         context.SetFailure sfcInvalidConfiguration, "Число итераций UltimateStrain должно быть положительным."
-    ElseIf Not IsFiniteNumber(damping) Or damping <= 0# Or damping > 1# Then
-        context.SetFailure sfcInvalidConfiguration, "Начальный коэффициент демпфирования UltimateStrain должен быть больше 0 и не больше 1."
-    ElseIf Not IsFiniteNumber(minAlpha) Or minAlpha <= 0# Or minAlpha > damping Then
-        context.SetFailure sfcInvalidConfiguration, "Минимальный шаг подбора демпфирования в UltimateStrain должен быть больше 0 и не больше начального демпфирования."
-    ElseIf Not IsFiniteNumber(maxDeltaEps) Or Not IsFiniteNumber(maxDeltaKappa) Or _
-            maxDeltaEps < 0# Or maxDeltaKappa < 0# Then
-        context.SetFailure sfcInvalidConfiguration, "Ограничения приращений UltimateStrain должны быть конечными неотрицательными числами."
     Else
         ValidateNewtonSettings = True
     End If
@@ -236,8 +244,8 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
     Dim hKx As Double
     Dim hKy As Double
     hEps = MaxDouble(0.0000001, Abs(eps0) * 0.0001)
-    hKx = MaxDouble(0.000000001, Abs(kx) * 0.0001)
-    hKy = MaxDouble(0.000000001, Abs(ky) * 0.0001)
+    hKx = MaxDouble(0.0000001 / mFrame.LengthScale, Abs(kx) * 0.0001)
+    hKy = MaxDouble(0.0000001 / mFrame.LengthScale, Abs(ky) * 0.0001)
     ' У самого предела крупная разностная проба пересекает переломы диаграмм
     ' и дает производную другой активной ветви. Уменьшаем численный шаг
     ' по близости к критерию, сохраняя нижнюю границу от round-off.
@@ -273,30 +281,283 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
     If rowScale1 <= 0# Then rowScale1 = 1#
     If rowScale2 <= 0# Then rowScale2 = 1#
     If rowScale3 <= 0# Then rowScale3 = 1#
-    If Not system.Solve(j11 * hEps / rowScale1, j12 * hKx / rowScale1, j13 * hKy / rowScale1, _
-            j21 * hEps / rowScale2, j22 * hKx / rowScale2, j23 * hKy / rowScale2, _
-            j31 * hEps / rowScale3, j32 * hKx / rowScale3, j33 * hKy / rowScale3, _
-            -rPath1 / rowScale1, -rPath2 / rowScale2, -rLimit / rowScale3) Then
-        context.SetFailure system.FailureCode, _
-            "Не удалось решить линейную систему UltimateStrain: " & system.StopReason
-        Exit Function
+    Dim a(1 To 3, 1 To 3) As Double, b(1 To 3) As Double
+    a(1, 1) = j11 * hEps / rowScale1: a(1, 2) = j12 * hKx / rowScale1: a(1, 3) = j13 * hKy / rowScale1
+    a(2, 1) = j21 * hEps / rowScale2: a(2, 2) = j22 * hKx / rowScale2: a(2, 3) = j23 * hKy / rowScale2
+    a(3, 1) = j31 * hEps / rowScale3: a(3, 2) = j32 * hKx / rowScale3: a(3, 3) = j33 * hKy / rowScale3
+    b(1) = -rPath1 / rowScale1: b(2) = -rPath2 / rowScale2: b(3) = -rLimit / rowScale3
+    Dim ordinarySolved As Boolean, linearFailure As ESolverFailureCode, linearReason As String
+    ordinarySolved = system.Solve(a(1, 1), a(1, 2), a(1, 3), a(2, 1), a(2, 2), a(2, 3), _
+        a(3, 1), a(3, 2), a(3, 3), b(1), b(2), b(3))
+    linearFailure = system.FailureCode: linearReason = system.StopReason
+    If ordinarySolved Then
+        If TryUltimateDirection(context, section, concreteMaterial, steelMaterial, loadPath, _
+                eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                system.X1 * hEps, system.X2 * hKx, system.X3 * hKy) Then
+            ApplyUltimateNewtonStep = True
+            Exit Function
+        End If
+        If context.StoppedTerminally Then Exit Function
     End If
 
-    Dim dEps As Double
-    Dim dKx As Double
-    Dim dKy As Double
-    dEps = system.X1 * hEps
-    dKx = system.X2 * hKx
-    dKy = system.X3 * hKy
-    LimitUltimateIncrement context, dEps, dKx, dKy
+    ' Локальная производная на плато не видит возврата на активную ветвь.
+    ' Двусторонние секущие последовательно расширяют пробу до масштаба
+    ' текущей плоскости; результат по-прежнему принимает только line-search.
+    If mFrame.HasFullPlaneSupport Then
+        Dim horizon As Double, sample As Long, sampleStep As Double
+        horizon = 2# * MaxDouble(0.0000001, MaxDouble(Abs(eps0), _
+            mFrame.LengthScale * MaxDouble(Abs(kx), Abs(ky))))
+        For sample = 0 To 6
+            sampleStep = horizon * 10# ^ (sample - 6)
+            If TryUltimateProjectedStep(context, section, concreteMaterial, steelMaterial, loadPath, _
+                    eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                    MaxDouble(hEps, sampleStep), j31, j32, j33, horizon) Then
+                ApplyUltimateNewtonStep = True
+                Exit Function
+            End If
+            If context.StoppedTerminally Then Exit Function
+            If sample = 0 Then
+                If TryUltimateMaterialStep(context, section, concreteMaterial, steelMaterial, loadPath, _
+                        eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                        hEps, j31, j32, j33) Then
+                    ApplyUltimateNewtonStep = True
+                    Exit Function
+                End If
+                If context.StoppedTerminally Then Exit Function
+            End If
+        Next sample
+    End If
+    If Not ordinarySolved Then
+        context.SetFailure linearFailure, "Не удалось решить линейную систему UltimateStrain: " & linearReason
+    Else
+        context.LimitSearchSetUltimateNumericalFailure _
+            "Поиск по предельной деформации не сошелся: подбор шага не уменьшил невязку."
+    End If
+    Exit Function
+Failed:
+    ReportArithmeticOrContractFailure context, "Шаг Newton UltimateStrain", Err.Number, Err.Description
+End Function
 
+' Две секущие строятся в плоскости активного деформационного ограничения.
+' Поэтому проба усилий не смешивается с независимым уходом от этого предела.
+Private Function TryUltimateProjectedStep(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, ByVal loadPath As CLoadPathVector, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, ByRef rPath1 As Double, _
+        ByRef rPath2 As Double, ByRef rLimit As Double, ByRef solver As CSectionSolver, _
+        ByRef lambdaValue As Double, ByRef state As String, ByVal h As Double, _
+        ByVal limitEps As Double, ByVal limitKx As Double, ByVal limitKy As Double, _
+        ByVal horizon As Double) As Boolean
+    Dim q(1 To 3) As Double, correction(1 To 3) As Double
+    Dim v(1 To 3, 1 To 2) As Double, i As Long, j As Long
+    If Not PrepareUltimateFace(eps0, kx, ky, rLimit, limitEps, limitKx, limitKy, q, correction, v) Then Exit Function
+    Dim trial As CSectionSolver, p1 As Double, p2 As Double, p3 As Double
+    Dim trialLambda As Double, trialState As String
+    If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
+            q(1), q(2) / mFrame.LengthScale, q(3) / mFrame.LengthScale, _
+            trial, p1, p2, p3, trialLambda, trialState) Then Exit Function
+    Dim a(1 To 2, 1 To 2) As Double, b(1 To 2) As Double, matrixMagnitude As Double
+    For j = 1 To 2
+        If Not BuildUltimateProjectedColumn(context, section, concreteMaterial, steelMaterial, loadPath, _
+                q, v, j, h, a(1, j), a(2, j)) Then Exit Function
+    Next j
+    b(1) = -p1: b(2) = -p2
+    For i = 1 To 2
+        matrixMagnitude = MaxDouble(matrixMagnitude, MaxDouble(Abs(a(i, 1)), Abs(a(i, 2))))
+    Next i
+    If matrixMagnitude = 0# Then Exit Function
+    ' Общий масштаб сохраняет веса невязок. Независимое нормирование строк
+    ' изменило бы минимум резервного least-squares шага на вырожденной матрице.
+    For i = 1 To 2
+        a(i, 1) = a(i, 1) / matrixMagnitude: a(i, 2) = a(i, 2) / matrixMagnitude
+        b(i) = b(i) / matrixMagnitude
+    Next i
+    Dim system As CLinearSystem3x3
+    Set system = New CLinearSystem3x3
+    If system.Solve(a(1, 1), a(1, 2), 0#, a(2, 1), a(2, 2), 0#, 0#, 0#, 1#, b(1), b(2), 0#) Then
+        If TryUltimateProjectedDirection(context, section, concreteMaterial, steelMaterial, loadPath, _
+                eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                correction, v, h * system.X1, h * system.X2, horizon) Then
+            TryUltimateProjectedStep = True
+            Exit Function
+        End If
+        If context.StoppedTerminally Then Exit Function
+    End If
+    Dim normal(1 To 2, 1 To 2) As Double, gradient(1 To 2) As Double, k As Long
+    For i = 1 To 2
+        For k = 1 To 2
+            gradient(i) = gradient(i) + a(k, i) * b(k)
+            For j = 1 To 2
+                normal(i, j) = normal(i, j) + a(k, i) * a(k, j)
+            Next j
+        Next k
+    Next i
+    If gradient(1) = 0# And gradient(2) = 0# Then Exit Function
+    Dim mu As Double, shift As Long
+    mu = 0.00000001
+    For shift = 0 To 10
+        If system.Solve(normal(1, 1) + mu, normal(1, 2), 0#, normal(2, 1), normal(2, 2) + mu, _
+                0#, 0#, 0#, 1#, gradient(1), gradient(2), 0#) Then
+            If TryUltimateProjectedDirection(context, section, concreteMaterial, steelMaterial, loadPath, _
+                    eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                    correction, v, h * system.X1, h * system.X2, horizon) Then
+                TryUltimateProjectedStep = True
+                Exit Function
+            End If
+            If context.StoppedTerminally Then Exit Function
+        End If
+        mu = mu * 10#
+    Next shift
+End Function
+
+' Расширяется только касательная часть шага. Нормальная поправка к пределу
+' не умножается вместе с ней; финальная проба проверяет все реальные невязки.
+Private Function TryUltimateProjectedDirection(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, ByVal loadPath As CLoadPathVector, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, ByRef rPath1 As Double, _
+        ByRef rPath2 As Double, ByRef rLimit As Double, ByRef solver As CSectionSolver, _
+        ByRef lambdaValue As Double, ByRef state As String, ByRef correction() As Double, _
+        ByRef v() As Double, ByVal t1 As Double, ByVal t2 As Double, ByVal horizon As Double) As Boolean
+    Dim tangent(1 To 3) As Double, i As Long, size As Double, factor As Double, attempt As Long
+    For i = 1 To 3
+        tangent(i) = v(i, 1) * t1 + v(i, 2) * t2
+        size = MaxDouble(size, Abs(tangent(i)))
+    Next i
+    factor = 1#
+    If size > 0# And horizon > size Then factor = horizon / size
+    For attempt = 1 To 2
+        If TryUltimateDirection(context, section, concreteMaterial, steelMaterial, loadPath, _
+                eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                correction(1) + factor * tangent(1), _
+                (correction(2) + factor * tangent(2)) / mFrame.LengthScale, _
+                (correction(3) + factor * tangent(3)) / mFrame.LengthScale) Then
+            TryUltimateProjectedDirection = True
+            Exit Function
+        End If
+        If context.StoppedTerminally Or factor = 1# Then Exit Function
+        factor = 1#
+    Next attempt
+End Function
+
+' Нормальная поправка достигает активного предела, два касательных
+' направления сохраняют его. Масштабированные координаты имеют единицы деформации.
+Private Function PrepareUltimateFace(ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
+        ByVal residual As Double, ByVal limitEps As Double, ByVal limitKx As Double, ByVal limitKy As Double, _
+        ByRef q() As Double, ByRef correction() As Double, ByRef v() As Double) As Boolean
+    Dim g(1 To 3) As Double, pivot As Long, i As Long, j As Long
+    g(1) = limitEps: g(2) = limitKx / mFrame.LengthScale: g(3) = limitKy / mFrame.LengthScale
+    pivot = 1
+    For i = 2 To 3
+        If Abs(g(i)) > Abs(g(pivot)) Then pivot = i
+    Next i
+    If g(pivot) = 0# Then Exit Function
+    correction(pivot) = -residual / g(pivot)
+    q(1) = eps0 + correction(1)
+    q(2) = kx * mFrame.LengthScale + correction(2)
+    q(3) = ky * mFrame.LengthScale + correction(3)
+    For i = 1 To 3
+        If i <> pivot Then
+            j = j + 1
+            v(i, j) = 1#: v(pivot, j) = -g(i) / g(pivot)
+        End If
+    Next i
+    PrepareUltimateFace = True
+End Function
+
+' При недостаточном ранге локальной матрицы движение вдоль ее нулевого
+' направления включает следующий участок материала, не меняя физический предел.
+' Длина берется из реальных узлов диаграмм, а не из подобранной стартовой плоскости.
+Private Function TryUltimateMaterialStep(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, ByVal loadPath As CLoadPathVector, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, ByRef rPath1 As Double, _
+        ByRef rPath2 As Double, ByRef rLimit As Double, ByRef solver As CSectionSolver, _
+        ByRef lambdaValue As Double, ByRef state As String, ByVal h As Double, _
+        ByVal limitEps As Double, ByVal limitKx As Double, ByVal limitKy As Double) As Boolean
+    If Not TypeOf concreteMaterial Is CMaterialDiagram Or Not TypeOf steelMaterial Is CMaterialDiagram Then Exit Function
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Set concrete = concreteMaterial: Set steel = steelMaterial
+    Dim q(1 To 3) As Double, correction(1 To 3) As Double, v(1 To 3, 1 To 2) As Double
+    If Not PrepareUltimateFace(eps0, kx, ky, rLimit, limitEps, limitKx, limitKy, q, correction, v) Then Exit Function
+    Dim a(1 To 2, 1 To 2) As Double, j As Long
+    For j = 1 To 2
+        If Not BuildUltimateProjectedColumn(context, section, concreteMaterial, steelMaterial, loadPath, _
+                q, v, j, h, a(1, j), a(2, j)) Then Exit Function
+    Next j
+    Dim ray As Long, sign As Long, i As Long, t1 As Double, t2 As Double, size As Double
+    Dim direction(1 To 3) As Double, first As Double, second As Double, distance As Double
+    Dim baseNorm As Double
+    baseNorm = context.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
+    For ray = 1 To 4
+        Select Case ray
+            Case 1: t1 = 1#: t2 = 0#
+            Case 2: t1 = 0#: t2 = 1#
+            Case Else: t1 = -a(ray - 2, 2): t2 = a(ray - 2, 1)
+        End Select
+        For sign = 1 To -1 Step -2
+            size = 0#
+            For i = 1 To 3
+                direction(i) = sign * (v(i, 1) * t1 + v(i, 2) * t2)
+                size = MaxDouble(size, Abs(direction(i)))
+            Next i
+            If size > 0# Then
+                For i = 1 To 3
+                    direction(i) = direction(i) / size
+                Next i
+                If NonlinearMaterialTransitions(section, mFrame, concrete, steel, q, direction, first, second) Then
+                    If second = 0# Then second = 2# * first
+                    distance = first + (second - first) / 2#
+                    If distance > first Then
+                        If TryUltimatePlateauBracket(context, section, concreteMaterial, steelMaterial, loadPath, _
+                                eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                                correction(1) + distance * direction(1), _
+                                (correction(2) + distance * direction(2)) / mFrame.LengthScale, _
+                                (correction(3) + distance * direction(3)) / mFrame.LengthScale, _
+                                first / distance, 1#, baseNorm) Then
+                            TryUltimateMaterialStep = True
+                            Exit Function
+                        End If
+                        If context.StoppedTerminally Then Exit Function
+                    End If
+                End If
+            End If
+        Next sign
+    Next ray
+End Function
+
+' Двусторонняя проба вдоль касательного направления сохраняет активный предел.
+Private Function BuildUltimateProjectedColumn(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, ByVal loadPath As CLoadPathVector, _
+        ByRef q() As Double, ByRef v() As Double, ByVal column As Long, _
+        ByVal h As Double, ByRef j1 As Double, ByRef j2 As Double) As Boolean
+    Dim trial As CSectionSolver, p1 As Double, p2 As Double, p3 As Double
+    Dim n1 As Double, n2 As Double, n3 As Double, trialLambda As Double, trialState As String
+    If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
+            q(1) + h * v(1, column), (q(2) + h * v(2, column)) / mFrame.LengthScale, _
+            (q(3) + h * v(3, column)) / mFrame.LengthScale, trial, p1, p2, p3, trialLambda, trialState) Then Exit Function
+    If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
+            q(1) - h * v(1, column), (q(2) - h * v(2, column)) / mFrame.LengthScale, _
+            (q(3) - h * v(3, column)) / mFrame.LengthScale, trial, n1, n2, n3, trialLambda, trialState) Then Exit Function
+    j1 = (p1 - n1) / 2#: j2 = (p2 - n2) / 2#
+    BuildUltimateProjectedColumn = True
+End Function
+
+' Проверяет обычную или регуляризованную поправку по настоящим невязкам.
+Private Function TryUltimateDirection(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, ByVal loadPath As CLoadPathVector, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, ByRef rPath1 As Double, _
+        ByRef rPath2 As Double, ByRef rLimit As Double, ByRef solver As CSectionSolver, _
+        ByRef lambdaValue As Double, ByRef state As String, ByVal dEps As Double, _
+        ByVal dKx As Double, ByVal dKy As Double) As Boolean
+    On Error GoTo Failed
     Dim baseNorm As Double
     baseNorm = context.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
 
     Dim alpha As Double
-    alpha = context.LimitSearchUltimateDampingInitial
+    alpha = 1#
+    Dim changingAlpha As Double
 
-    Do While alpha >= context.LimitSearchUltimateMinLineSearchAlpha
+    Dim backtracks As Long
+    Do While backtracks < NONLINEAR_MAX_BACKTRACKS
+        backtracks = backtracks + 1
         Dim trialEps As Double, trialKx As Double, trialKy As Double
         trialEps = eps0 + alpha * dEps
         trialKx = kx + alpha * dKx
@@ -309,23 +570,38 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
         Dim trialSolver As CSectionSolver
         Dim trialR1 As Double, trialR2 As Double, trialRLimit As Double
         Dim trialLambda As Double, trialState As String
-        If context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
+        If EvaluateResidual(context, section, concreteMaterial, steelMaterial, _
                 loadPath, trialEps, trialKx, trialKy, _
                 trialSolver, trialR1, trialR2, trialRLimit, trialLambda, trialState) Then
             ' Уже достигнутые допуски важнее колебания нормы на уровне
             ' round-off. Итоговая приемка следующей итерации дополнительно
             ' подтверждает все усилия и физическую допустимость точки.
             If context.LimitSearchUltimateResidualReached(trialR1, trialR2, trialRLimit) Or _
-                    (Not context.LimitSearchUltimateLineSearchEnabled) Or _
-                    context.LimitSearchUltimateResidualNorm(trialR1, trialR2, trialRLimit) < baseNorm Then
+                    NonlinearStepImproves(baseNorm, context.LimitSearchUltimateResidualNorm(trialR1, trialR2, trialRLimit), alpha) Then
                 eps0 = trialEps
                 kx = trialKx
                 ky = trialKy
                 Set solver = trialSolver
                 rPath1 = trialR1: rPath2 = trialR2: rLimit = trialRLimit
                 lambdaValue = trialLambda: state = trialState
-                ApplyUltimateNewtonStep = True
+                TryUltimateDirection = True
                 Exit Function
+            End If
+            ' Между неудачной пробой вне плато и пробой на плато может
+            ' лежать узкий допустимый шаг, который деление alpha пополам
+            ' пропускает. Уточняем именно этот интервал по настоящим невязкам.
+            If trialR1 = rPath1 And trialR2 = rPath2 Then
+                If changingAlpha > alpha Then
+                    If TryUltimatePlateauBracket(context, section, concreteMaterial, steelMaterial, loadPath, _
+                            eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                            dEps, dKx, dKy, alpha, changingAlpha, baseNorm) Then
+                        TryUltimateDirection = True
+                        Exit Function
+                    End If
+                    changingAlpha = 0#
+                End If
+            Else
+                changingAlpha = alpha
             End If
         End If
         If context.StoppedTerminally Then Exit Function
@@ -338,12 +614,46 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
         alpha = nextAlpha
     Loop
 
-    context.LimitSearchSetUltimateNumericalFailure _
-        "Поиск по предельной деформации не сошелся: подбор шага не уменьшил невязку."
     Exit Function
 
 Failed:
-    ReportArithmeticOrContractFailure context, "Шаг Newton UltimateStrain", Err.Number, Err.Description
+    ReportArithmeticOrContractFailure context, "Проверка поправки UltimateStrain", Err.Number, Err.Description
+End Function
+
+' Уточняет переход с плато на активную ветвь. Нулевая производная и
+' неудачная крупная проба не означают, что между ними нет полезного шага.
+Private Function TryUltimatePlateauBracket(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, ByVal loadPath As CLoadPathVector, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, ByRef rPath1 As Double, _
+        ByRef rPath2 As Double, ByRef rLimit As Double, ByRef solver As CSectionSolver, _
+        ByRef lambdaValue As Double, ByRef state As String, ByVal dEps As Double, _
+        ByVal dKx As Double, ByVal dKy As Double, ByVal lower As Double, ByVal upper As Double, _
+        ByVal baseNorm As Double) As Boolean
+    Dim attempt As Long, alpha As Double, trialE As Double, trialX As Double, trialY As Double
+    Dim trial As CSectionSolver, r1 As Double, r2 As Double, r3 As Double
+    Dim trialLambda As Double, trialState As String, trialNorm As Double
+    For attempt = 1 To NONLINEAR_MAX_BACKTRACKS
+        alpha = lower + (upper - lower) / 2#
+        If alpha <= lower Or alpha >= upper Then Exit Function
+        trialE = eps0 + alpha * dEps: trialX = kx + alpha * dKx: trialY = ky + alpha * dKy
+        If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
+                trialE, trialX, trialY, trial, r1, r2, r3, trialLambda, trialState) Then Exit Function
+        trialNorm = context.LimitSearchUltimateResidualNorm(r1, r2, r3)
+        If context.LimitSearchUltimateResidualReached(r1, r2, r3) Or _
+                NonlinearStepImproves(baseNorm, trialNorm, alpha) Then
+            eps0 = trialE: kx = trialX: ky = trialY
+            rPath1 = r1: rPath2 = r2: rLimit = r3
+            Set solver = trial: lambdaValue = trialLambda: state = trialState
+            TryUltimatePlateauBracket = True
+            Exit Function
+        End If
+        If context.StoppedTerminally Then Exit Function
+        If (r1 = rPath1 And r2 = rPath2) Or trialNorm < baseNorm Then
+            lower = alpha
+        Else
+            upper = alpha
+        End If
+    Next attempt
 End Function
 
 ' Строит один столбец численного Якобиана для общего UltimateStrain.
@@ -356,7 +666,7 @@ Private Function BuildUltimateJacobianColumn(ByVal context As ILimitSearchProble
     Dim solver As CSectionSolver
     Dim pR1 As Double, pR2 As Double, pLimit As Double
     Dim pLambda As Double, pState As String
-    If Not context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
+    If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, _
             loadPath, eps0, kx, ky, solver, pR1, pR2, pLimit, pLambda, pState) Then Exit Function
     j1 = (pR1 - rPath1) / stepValue
     j2 = (pR2 - rPath2) / stepValue
@@ -364,27 +674,18 @@ Private Function BuildUltimateJacobianColumn(ByVal context As ILimitSearchProble
     BuildUltimateJacobianColumn = True
 End Function
 
-' Ограничивает приращения плоскости деформаций по настройкам вызывающего расчета.
-Private Sub LimitUltimateIncrement(ByVal context As ILimitSearchProblem, ByRef dEps As Double, _
-        ByRef dKx As Double, ByRef dKy As Double)
-    Dim scaleFactor As Double
-    scaleFactor = 1#
-    If context.LimitSearchUltimateMaxDeltaEpsilon0 > 0# And _
-            Abs(dEps) > context.LimitSearchUltimateMaxDeltaEpsilon0 Then
-        scaleFactor = MinDouble(scaleFactor, context.LimitSearchUltimateMaxDeltaEpsilon0 / Abs(dEps))
-    End If
-    If context.LimitSearchUltimateMaxDeltaKappa > 0# And _
-            Abs(dKx) > context.LimitSearchUltimateMaxDeltaKappa Then
-        scaleFactor = MinDouble(scaleFactor, context.LimitSearchUltimateMaxDeltaKappa / Abs(dKx))
-    End If
-    If context.LimitSearchUltimateMaxDeltaKappa > 0# And _
-            Abs(dKy) > context.LimitSearchUltimateMaxDeltaKappa Then
-        scaleFactor = MinDouble(scaleFactor, context.LimitSearchUltimateMaxDeltaKappa / Abs(dKy))
-    End If
-    dEps = dEps * scaleFactor
-    dKx = dKx * scaleFactor
-    dKy = dKy * scaleFactor
-End Sub
+' Переводит только представление плоскости. Усилия, траектория нагрузки,
+' критерий и допуски сохраняются в исходной системе координат.
+Private Function EvaluateResidual(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal loadPath As CLoadPathVector, ByVal centerStrain As Double, _
+        ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
+        ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
+        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+    EvaluateResidual = context.LimitSearchEvaluateUltimateResidual(section, concreteMaterial, steelMaterial, _
+        loadPath, centerStrain, kx, ky, _
+        solver, rPath1, rPath2, rLimit, lambdaValue, state, True)
+End Function
 
 ' Переполнение или деление на ноль в численном шаге не означают физический
 ' предел. Другие VBA-ошибки относятся к программному контракту; исходные

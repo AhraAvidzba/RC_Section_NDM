@@ -28,13 +28,7 @@ Private mMaxIterations As Long ' Максимум итераций solver-а.
 Private mToleranceN As Double ' Допуск по N.
 Private mToleranceMx As Double ' Допуск по Mx.
 Private mToleranceMy As Double ' Допуск по My.
-Private mLineSearchEnabled As Boolean ' Разрешение line search.
-Private mDampingInitial As Double ' Начальный alpha line search.
-Private mMinLineSearchAlpha As Double ' Нижняя граница alpha.
-Private mMaxDeltaEpsilon0 As Double ' Ограничение шага epsilon0.
-Private mMaxDeltaKappa As Double ' Ограничение шага кривизн.
 Private mSecantMaxRestarts As Long ' Перезапуски secant-матрицы.
-Private mSecantMinStepNorm As Double ' Минимальная норма secant-шага.
 Private mDiagnosticsEnabled As Boolean ' Нужно ли копить диагностический журнал.
 
 Private mLastRunner As CStateSolutionRunner ' Runner последнего реального solve; Nothing при cache-hit.
@@ -49,13 +43,7 @@ Private Sub Class_Initialize()
     mToleranceN = 5#
     mToleranceMx = 5000#
     mToleranceMy = 5000#
-    mLineSearchEnabled = True
-    mDampingInitial = 1#
-    mMinLineSearchAlpha = 0.03125
-    mMaxDeltaEpsilon0 = 0.0005
-    mMaxDeltaKappa = 0.00001
     mSecantMaxRestarts = 2
-    mSecantMinStepNorm = 0.000000000001
     mDiagnosticsEnabled = True
 End Sub
 
@@ -191,14 +179,8 @@ Private Sub ConfigureRunner(ByVal runner As CStateSolutionRunner)
     runner.ToleranceN = mToleranceN
     runner.ToleranceMx = mToleranceMx
     runner.ToleranceMy = mToleranceMy
-    runner.LineSearchEnabled = mLineSearchEnabled
-    runner.DampingInitial = mDampingInitial
-    runner.MinLineSearchAlpha = mMinLineSearchAlpha
     runner.SolverMethod = mSolverMethod
     runner.SecantMaxRestarts = mSecantMaxRestarts
-    runner.SecantMinStepNorm = mSecantMinStepNorm
-    runner.MaxDeltaEpsilon0 = mMaxDeltaEpsilon0
-    runner.MaxDeltaKappa = mMaxDeltaKappa
     runner.DiagnosticsEnabled = mDiagnosticsEnabled
 End Sub
 
@@ -252,32 +234,8 @@ Public Property Let ToleranceMy(ByVal value As Double)
     mToleranceMy = value
 End Property
 
-Public Property Let LineSearchEnabled(ByVal value As Boolean)
-    mLineSearchEnabled = value
-End Property
-
-Public Property Let DampingInitial(ByVal value As Double)
-    mDampingInitial = value
-End Property
-
-Public Property Let MinLineSearchAlpha(ByVal value As Double)
-    mMinLineSearchAlpha = value
-End Property
-
-Public Property Let MaxDeltaEpsilon0(ByVal value As Double)
-    mMaxDeltaEpsilon0 = value
-End Property
-
-Public Property Let MaxDeltaKappa(ByVal value As Double)
-    mMaxDeltaKappa = value
-End Property
-
 Public Property Let SecantMaxRestarts(ByVal value As Long)
     mSecantMaxRestarts = value
-End Property
-
-Public Property Let SecantMinStepNorm(ByVal value As Double)
-    mSecantMinStepNorm = value
 End Property
 
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)

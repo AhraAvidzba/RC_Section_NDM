@@ -1112,11 +1112,11 @@ End Function
 ' бетон + арматура.
 Public Sub CalculateConcreteSectionCentroid(ByVal section As CSectionModel, _
         ByRef referenceX As Double, ByRef referenceY As Double)
-    Dim props As CSectionPropertiesCalculator
-    Set props = New CSectionPropertiesCalculator
-    props.CalculateConcrete section
-    referenceX = props.CentroidX
-    referenceY = props.CentroidY
+    If section Is Nothing Then Err.Raise vbObjectError + 2200, "CSectionPropertiesCalculator", "Модель сечения не передана."
+    If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 2201, "CSectionPropertiesCalculator", "В модели сечения нет бетонных элементов."
+    Dim area As Double
+    section.ConcreteMeshCentroid referenceX, referenceY, area
+    If area <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 2202, "CSectionPropertiesCalculator", "Площадь бетонного сечения равна нулю."
 End Sub
 
 ' Возвращает центр тяжести приведенного сечения бетон + арматура.

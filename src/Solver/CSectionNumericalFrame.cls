@@ -1,0 +1,111 @@
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "CSectionNumericalFrame"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = False
+Attribute VB_Exposed = False
+Option Explicit
+
+' Центр и масштабы численных уравнений; геометрия и публичные координаты не меняются.
+Private mSection As CSectionModel
+Private mRevision As Long
+Private mOriginX As Double, mOriginY As Double, mLength As Double
+Private mSupportChecked As Boolean, mFullSupport As Boolean, mConcreteArea As Double
+
+Private Sub Class_Initialize()
+    mLength = 1#
+End Sub
+
+' Центр берется из общей подготовки бетонной сетки модели; здесь определяются
+' только численный масштаб и правила переноса, без повторного расчета центра.
+Friend Sub Initialize(ByVal section As CSectionModel)
+    If section Is mSection Then
+        If section.Revision = mRevision Then Exit Sub
+    End If
+    Dim x As Double, y As Double, area As Double, sumArea As Double, i As Long
+    section.ConcreteMeshCentroid mOriginX, mOriginY, sumArea
+    mLength = 0#
+    For i = 1 To section.ConcreteCount + section.RebarCount
+        If i <= section.ConcreteCount Then
+            section.ConcreteElementForSolver i, x, y, area
+        Else
+            section.RebarElementForSolver i - section.ConcreteCount, x, y, area
+        End If
+        x = x - mOriginX: y = y - mOriginY
+        Dim radius As Double
+        radius = Sqr(x * x + y * y)
+        If radius > mLength Then mLength = radius
+    Next i
+    ' Вырожденная геометрия остается вырожденной; масштаб не добавляет жесткости.
+    If mLength <= 0# Then mLength = 1#
+    mConcreteArea = sumArea: mSupportChecked = False
+    Set mSection = section: mRevision = section.Revision
+End Sub
+
+' Регуляризация материала допустима только при независимой геометрии трех
+' параметров плоскости. Она не исправляет сечение из одной точки или линии.
+Friend Function HasFullPlaneSupport() As Boolean
+    If mSection Is Nothing Then Exit Function
+    If Not mSupportChecked Then
+        Dim g(1 To 3, 1 To 3) As Double, i As Long, x As Double, y As Double, area As Double
+        For i = 1 To mSection.ConcreteCount + mSection.RebarCount
+            If i <= mSection.ConcreteCount Then
+                mSection.ConcreteElementForSolver i, x, y, area
+            Else
+                mSection.RebarElementForSolver i - mSection.ConcreteCount, x, y, area
+            End If
+            x = (x - mOriginX) / mLength: y = (y - mOriginY) / mLength
+            area = area / mConcreteArea
+            g(1, 1) = g(1, 1) + area
+            g(1, 2) = g(1, 2) + area * y: g(1, 3) = g(1, 3) + area * x
+            g(2, 2) = g(2, 2) + area * y * y: g(2, 3) = g(2, 3) + area * x * y
+            g(3, 3) = g(3, 3) + area * x * x
+        Next i
+        Dim system As CLinearSystem3x3
+        Set system = New CLinearSystem3x3
+        mFullSupport = system.Solve(g(1, 1), g(1, 2), g(1, 3), g(1, 2), g(2, 2), g(2, 3), _
+            g(1, 3), g(2, 3), g(3, 3), 0#, 0#, 0#)
+        mSupportChecked = True
+    End If
+    HasFullPlaneSupport = mFullSupport
+End Function
+
+Friend Function CenterStrain(ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double) As Double
+    CenterStrain = eps0 + kx * mOriginY + ky * mOriginX
+End Function
+
+Friend Function OriginalStrain(ByVal epsCenter As Double, ByVal kx As Double, ByVal ky As Double) As Double
+    OriginalStrain = epsCenter - kx * mOriginY - ky * mOriginX
+End Function
+
+' Нагрузка переносится тем же правилом, что и интеграл внутренних усилий.
+Friend Function CenterMx(ByVal n As Double, ByVal mx As Double) As Double
+    CenterMx = mx - n * mOriginY
+End Function
+
+Friend Function CenterMy(ByVal n As Double, ByVal my As Double) As Double
+    CenterMy = my - n * mOriginX
+End Function
+
+Friend Function OriginalMx(ByVal n As Double, ByVal mx As Double) As Double
+    OriginalMx = mx + n * mOriginY
+End Function
+
+Friend Function OriginalMy(ByVal n As Double, ByVal my As Double) As Double
+    OriginalMy = my + n * mOriginX
+End Function
+
+Friend Property Get OriginX() As Double
+    OriginX = mOriginX
+End Property
+
+Friend Property Get OriginY() As Double
+    OriginY = mOriginY
+End Property
+
+Friend Property Get LengthScale() As Double
+    LengthScale = mLength
+End Property

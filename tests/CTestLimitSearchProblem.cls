@@ -45,11 +45,9 @@ Private mProbeMaxLambda As Double ' Наибольшая реально пров
 Private mProbeCalls As Long ' Счетчик проб общего алгоритма.
 Private mSearchExecuted As Boolean ' ДЛЯ ТЕСТОВ: факт начала пробы или подготовки старта, независимо от ее успеха.
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
+Private mFailureAt As Double ' ДЛЯ ТЕСТОВ: неудачная проба возвращает True и нулевую невязку-заглушку.
 Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
 Private mRecoveryWithoutProgress As Boolean ' Намеренно неисправный callback recovery возвращает прежнюю границу.
-Private mUltimateDamping As Double ' ДЛЯ ТЕСТОВ: начальное демпфирование Newton.
-Private mUltimateMinAlpha As Double ' ДЛЯ ТЕСТОВ: нижняя граница line search.
-Private mUltimateMaxDeltaEps As Double ' ДЛЯ ТЕСТОВ: проверка непредставимого приращения.
 Private mUltimateInitialEps As Double ' ДЛЯ ТЕСТОВ: ненулевой старт для машинной стагнации.
 Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: line search не может уменьшить норму.
 Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: направленный отказ callback-а.
@@ -58,6 +56,7 @@ Private mFailureCode As ESolverFailureCode ' ДЛЯ ТЕСТОВ: точная �
 Private mFailureReason As String ' ДЛЯ ТЕСТОВ: последняя причина callback-а отдельно от общего журнала.
 Private mMultiplierScenario As Long ' ДЛЯ ТЕСТОВ: управляемый отказ конкретного callback-а LoadMultiplier.
 Private mFallbackCalls As Long ' ДЛЯ ТЕСТОВ: терминальная ошибка запрещает резервную финализацию.
+Private mAcceptableProbeCalls As Long ' ДЛЯ ТЕСТОВ: успешные пробы между численными отказами.
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -82,11 +81,9 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mProbeCalls = 0
     mSearchExecuted = False
     mFailureAbove = 0#
+    mFailureAt = -1#
     mStepCriterion = False
     mRecoveryWithoutProgress = False
-    mUltimateDamping = 1#
-    mUltimateMinAlpha = 0.03125
-    mUltimateMaxDeltaEps = 0.01
     mUltimateInitialEps = 0#
     mUltimateConstantNorm = False
     mUltimateScenario = 0
@@ -94,12 +91,21 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mFailureCode = sfcNone
     mFailureReason = vbNullString
     mMultiplierScenario = 0
+    mAcceptableProbeCalls = 0
     mFallbackCalls = 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
 Public Property Let FailureAbove(ByVal value As Double)
     mFailureAbove = value
+End Property
+
+Public Property Let FailureAt(ByVal value As Double)
+    mFailureAt = value
+End Property
+
+Public Property Get AcceptableProbeCalls() As Long
+    AcceptableProbeCalls = mAcceptableProbeCalls
 End Property
 
 ' ДЛЯ ТЕСТОВ: не позволяет признать соседнюю граничную lambda точным корнем.
@@ -263,7 +269,7 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
     Set solver = Nothing
     mUltimateCalls = mUltimateCalls + 1
     If mUltimateCalls = 2 Then
@@ -343,26 +349,6 @@ Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As L
     ILimitSearchProblem_LimitSearchUltimateMaxIterations = mMaxIterations
 End Property
 
-Private Property Get ILimitSearchProblem_LimitSearchUltimateDampingInitial() As Double
-    ILimitSearchProblem_LimitSearchUltimateDampingInitial = mUltimateDamping
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha() As Double
-    ILimitSearchProblem_LimitSearchUltimateMinLineSearchAlpha = mUltimateMinAlpha
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled() As Boolean
-    ILimitSearchProblem_LimitSearchUltimateLineSearchEnabled = True
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0() As Double
-    ILimitSearchProblem_LimitSearchUltimateMaxDeltaEpsilon0 = mUltimateMaxDeltaEps
-End Property
-
-Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa() As Double
-    ILimitSearchProblem_LimitSearchUltimateMaxDeltaKappa = 0.01
-End Property
-
 ' Создает универсальную траекторию Offset + lambda*Base из request.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
     If mMultiplierScenario = 14 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
@@ -388,6 +374,12 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     mProbeCalls = mProbeCalls + 1
     If lambdaValue > mProbeMaxLambda Then mProbeMaxLambda = lambdaValue
     Set solver = Nothing
+    If lambdaValue = mFailureAt Then
+        functionValue = 0#
+        probeState = PROBE_NUMFAIL
+        ILimitSearchProblem_EvaluatePoint = True
+        Exit Function
+    End If
     Select Case mMultiplierScenario
         Case 1
             If lambdaValue = 0# Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
@@ -424,6 +416,7 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     End If
     If functionValue < 0# Then
         probeState = PROBE_ACCEPTABLE
+        mAcceptableProbeCalls = mAcceptableProbeCalls + 1
     Else
         probeState = PROBE_LIMIT
     End If
@@ -445,6 +438,7 @@ Private Function ILimitSearchProblem_IsNumericalFailureState(ByVal probeState As
     ILimitSearchProblem_IsNumericalFailureState = (probeState = PROBE_NUMFAIL)
 End Function
 
+' ДЛЯ ТЕСТОВ: штатные аналитические callbacks не исключаются силовой границей.
 Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsInvalidInputState = (probeState = PROBE_INPUTERR)
 End Function
@@ -648,23 +642,15 @@ Private Sub ILimitSearchProblem_SetFailure(ByVal failureCode As ESolverFailureCo
 End Sub
 
 ' ДЛЯ ТЕСТОВ: меняет ровно один guard/численный сценарий линейной системы.
-' Первый сценарий воспроизводит бесконечное деление alpha при min alpha=0.
+' Первый сценарий проверяет конечный автоматический поиск при неизменной норме.
 Public Sub ConfigureUltimateGuardCase(ByVal scenario As Long, Optional ByVal kind As EResultKind = rkCapacity)
     Configure "Bisection", 1.25, 0.000000001, 20, resultKind:=kind
     mUltimateScenario = scenario
     Select Case scenario
         Case 1
-            mUltimateMinAlpha = 0#: mUltimateConstantNorm = True
-        Case 2
-            mUltimateDamping = 0#
-        Case 3
-            mUltimateDamping = 0.01: mUltimateMinAlpha = 0.1
+            mUltimateConstantNorm = True
         Case 4
             mMaxIterations = 0
-        Case 5
-            mUltimateMaxDeltaEps = -1#
-        Case 6
-            mUltimateInitialEps = 1#: mRootLambda = 1001#: mUltimateMaxDeltaEps = 1E-30
     End Select
 End Sub
 
@@ -691,7 +677,9 @@ Public Sub ConfigureMultiplierFaultCase(ByVal scenario As Long, ByVal searchMeth
     Configure searchMethod, 1.25, 0.000001, 80, resultKind:=kind
     mMultiplierScenario = scenario
     If scenario = 12 Then mRootLambda = 100#: mMaxLambda = 4#
-    If scenario = 15 Then mFailureAbove = 0.00000001
+    ' Резервный callback проверяется после положительной допустимой пробы.
+    ' Точная двоичная граница не зависит от ранней остановки по допуску lambda.
+    If scenario = 15 Then mFailureAbove = 0.5
 End Sub
 
 ' ДЛЯ ТЕСТОВ: наблюдает только резервный callback; основной поиск не должен

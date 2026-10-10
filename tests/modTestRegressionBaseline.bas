@@ -238,9 +238,6 @@ Private Sub ConfigureBaselineSolver(ByVal solver As CSectionSolver)
     solver.ToleranceN = 1#
     solver.ToleranceMx = 1000#
     solver.ToleranceMy = 1000#
-    solver.LineSearchEnabled = True
-    solver.MaxDeltaEpsilon0 = 0.0005
-    solver.MaxDeltaKappa = 0.00001
 End Sub
 
 ' Применяет неизменные bounds/tolerances и физические пределы контрольной Capacity-задачи.

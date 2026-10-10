@@ -371,7 +371,13 @@ Private Sub CheckExtensionConsumer(ByRef stats As TGeneralConfigStats, ByVal sys
         If CStr(enabled) = "No" Then
             capacity = batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity
         Else
-            CheckClose stats, "generalGeometry.General.DiagramExtension.capacityInvariant", batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity, capacity, 0.0000001
+            ' Масштаб исходного момента произволен, поэтому абсолютный допуск
+            ' lambda не характеризует точность. Две принятые точки сравниваем
+            ' в Н*мм с суммой их допусков равновесия (здесь по 1 Н*мм).
+            CheckClose stats, "generalGeometry.General.DiagramExtension.capacityInvariant.Mx", _
+                batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity * 200000#, capacity * 200000#, 2#
+            CheckClose stats, "generalGeometry.General.DiagramExtension.capacityInvariant.My", _
+                batch.ResultAt(1).StrengthResult.Capacity.LambdaCapacity * 100000#, capacity * 100000#, 2#
         End If
     Next enabled
     SetProfile profiles, "Calculation.Strength.Capacity", "No", "PR1"

@@ -47,6 +47,7 @@ Public Function RunGeometryTests() As String
     TestRectSetSeparateLineOffsets stats
     TestRectSetAdditionalRebarRows stats
     TestSectionModelFromGeneratedGeometry stats
+    TestConcreteMeshCenter stats
     TestRebarAnnotationAnchors stats
     TestAutoCADImporterBuildsSectionModel stats
     TestAutoCADImporterRotatedRectangleBounds stats
@@ -79,6 +80,82 @@ Failed:
     RunGeometryTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
+
+' ДЛЯ ТЕСТОВ: общий центр, инвалидация кэша и одинаковая точка у геометрии,
+' численной системы и пользовательских нагрузок, включая перенос на 1000 м.
+Public Function RunConcreteMeshCenterTests() As String
+    On Error GoTo Failed
+    Dim stats As TTestStats
+    TestConcreteMeshCenter stats
+    TestCircleCoreDistance stats
+    TestAsymmetricCoreDistanceUsesOppositeFiber stats
+    TestCoreDistanceWithProductInertiaMatchesLinearBoundary stats
+    TestRectSetPrincipalAxesAndCoreDistances stats
+    AppendLine stats, "TOTAL_CONCRETE_MESH_CENTER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunConcreteMeshCenterTests = stats.Report
+    Exit Function
+Failed:
+    RunConcreteMeshCenterTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Независимый центр двух неравных площадей и третьей добавленной площади.
+' Арматура не входит в веса, Clear и новая геометрия не оставляют старый кэш.
+Private Sub TestConcreteMeshCenter(ByRef stats As TTestStats)
+    Dim shift As Variant, section As CSectionModel, frame As CSectionNumericalFrame
+    Dim props As CSectionPropertiesCalculator, centerX As Double, centerY As Double, area As Double
+    Dim referenceX As Double, referenceY As Double, prefix As String, errorNumber As Long
+    For Each shift In Array(0#, 1000000#, -1000000#)
+        Set section = New CSectionModel
+        section.AddConcreteElement CDbl(shift), -CDbl(shift), 100#, width:=10#, height:=10#
+        section.AddConcreteElement CDbl(shift) + 40#, -CDbl(shift) + 80#, 300#, width:=30#, height:=10#
+        prefix = "meshCenter." & CStr(shift)
+        section.ConcreteMeshCentroid centerX, centerY, area
+        AssertClose stats, prefix & ".weightedX", centerX, CDbl(shift) + 30#, 0#
+        AssertClose stats, prefix & ".weightedY", centerY, -CDbl(shift) + 60#, 0#
+        AssertClose stats, prefix & ".area", area, 400#, 0#
+        section.ConcreteMeshCentroid centerX, centerY, area
+        AssertClose stats, prefix & ".repeatX", centerX, CDbl(shift) + 30#, 0#
+        AssertClose stats, prefix & ".repeatY", centerY, -CDbl(shift) + 60#, 0#
+        section.AddRebarElement CDbl(shift) + 500#, -CDbl(shift) - 400#, 200#, 0#, "A400"
+        section.ConcreteMeshCentroid centerX, centerY, area
+        AssertClose stats, prefix & ".rebarExcludedX", centerX, CDbl(shift) + 30#, 0#
+        AssertClose stats, prefix & ".rebarExcludedY", centerY, -CDbl(shift) + 60#, 0#
+        AssertClose stats, prefix & ".rebarExcludedArea", area, 400#, 0#
+        Set frame = New CSectionNumericalFrame: frame.Initialize section
+        Set props = New CSectionPropertiesCalculator: props.CalculateConcrete section
+        CalculateConcreteSectionCentroid section, referenceX, referenceY
+        AssertClose stats, prefix & ".frameX", frame.OriginX, centerX, 0#
+        AssertClose stats, prefix & ".frameY", frame.OriginY, centerY, 0#
+        AssertClose stats, prefix & ".propertiesX", props.CentroidX, centerX, 0#
+        AssertClose stats, prefix & ".propertiesY", props.CentroidY, centerY, 0#
+        AssertClose stats, prefix & ".loadReferenceX", referenceX, centerX, 0#
+        AssertClose stats, prefix & ".loadReferenceY", referenceY, centerY, 0#
+        AssertClose stats, prefix & ".originalX", section.ConcreteX(1), CDbl(shift), 0#
+        AssertClose stats, prefix & ".originalY", section.ConcreteY(2), -CDbl(shift) + 80#, 0#
+        section.AddConcreteElement CDbl(shift) - 20#, -CDbl(shift) - 40#, 400#
+        section.ConcreteMeshCentroid centerX, centerY, area
+        frame.Initialize section: props.EnsureConcrete section
+        AssertClose stats, prefix & ".changedX", centerX, CDbl(shift) + 5#, 0#
+        AssertClose stats, prefix & ".changedY", centerY, -CDbl(shift) + 10#, 0#
+        AssertClose stats, prefix & ".changedArea", area, 800#, 0#
+        AssertClose stats, prefix & ".changedFrameX", frame.OriginX, centerX, 0#
+        AssertClose stats, prefix & ".changedPropertiesY", props.CentroidY, centerY, 0#
+        section.Clear
+        On Error Resume Next
+        section.ConcreteMeshCentroid centerX, centerY, area
+        errorNumber = Err.Number: Err.Clear
+        On Error GoTo 0
+        AssertTrue stats, prefix & ".clearRejectsEmpty", errorNumber = vbObjectError + 5220
+        section.AddConcreteElement CDbl(shift) + 7#, -CDbl(shift) - 9#, 25#
+        section.ConcreteMeshCentroid centerX, centerY, area
+        frame.Initialize section: props.EnsureConcrete section
+        AssertClose stats, prefix & ".rebuiltX", centerX, CDbl(shift) + 7#, 0#
+        AssertClose stats, prefix & ".rebuiltY", centerY, -CDbl(shift) - 9#, 0#
+        AssertClose stats, prefix & ".rebuiltArea", area, 25#, 0#
+        AssertClose stats, prefix & ".rebuiltFrameX", frame.OriginX, centerX, 0#
+        AssertClose stats, prefix & ".rebuiltPropertiesY", props.CentroidY, centerY, 0#
+    Next shift
+End Sub
 
 ' Проверяет переход generated-сетки и стержней в общую CSectionModel:
 ' площади/число элементов сохраняются, расчетные ID создаются моделью,

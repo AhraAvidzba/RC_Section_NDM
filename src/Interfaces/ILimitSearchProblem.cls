@@ -209,7 +209,7 @@ Public Function LimitSearchEvaluateUltimateResidual(ByVal section As CSectionMod
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
         ByVal kx As Double, ByVal ky As Double, ByRef solver As CSectionSolver, _
         ByRef rPath1 As Double, ByRef rPath2 As Double, ByRef rLimit As Double, _
-        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
 End Function
 
 ' Проверяет допуски критерия и задает согласованную норму для line search.
@@ -236,21 +236,6 @@ End Sub
 
 ' Настройки одного Newton-цикла: лимит, демпфирование и ограничения шага.
 Public Property Get LimitSearchUltimateMaxIterations() As Long
-End Property
-
-Public Property Get LimitSearchUltimateDampingInitial() As Double
-End Property
-
-Public Property Get LimitSearchUltimateMinLineSearchAlpha() As Double
-End Property
-
-Public Property Get LimitSearchUltimateLineSearchEnabled() As Boolean
-End Property
-
-Public Property Get LimitSearchUltimateMaxDeltaEpsilon0() As Double
-End Property
-
-Public Property Get LimitSearchUltimateMaxDeltaKappa() As Double
 End Property
 
 ' Сообщает численному слою об окончательном исходе задачи, который нельзя

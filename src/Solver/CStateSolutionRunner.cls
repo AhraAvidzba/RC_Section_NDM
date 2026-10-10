@@ -32,13 +32,7 @@ Private mMaxIterations As Long ' Максимум итераций CSectionSolve
 Private mToleranceN As Double ' Допуск равновесия по N, Н.
 Private mToleranceMx As Double ' Допуск равновесия по Mx, Н*мм.
 Private mToleranceMy As Double ' Допуск равновесия по My, Н*мм.
-Private mLineSearchEnabled As Boolean ' Разрешает line search внутри Newton/Secant.
-Private mDampingInitial As Double ' Начальный коэффициент дробления шага.
-Private mMinLineSearchAlpha As Double ' Минимальный alpha перед признанием line search неудачным.
-Private mMaxDeltaEpsilon0 As Double ' Ограничение одного шага по epsilon0.
-Private mMaxDeltaKappa As Double ' Ограничение одного шага по кривизнам.
 Private mSecantMaxRestarts As Long ' Лимит перезапуска матрицы в secant-ветке.
-Private mSecantMinStepNorm As Double ' Минимальная норма шага secant до остановки.
 Private mDiagnosticsEnabled As Boolean ' Нужно ли копить подробный журнал итераций.
 
 Private mSolver As CSectionSolver ' Последний solver прямого НДС, успешный или диагностический.
@@ -61,13 +55,7 @@ Private Sub Class_Initialize()
     mToleranceN = 5#
     mToleranceMx = 5000#
     mToleranceMy = 5000#
-    mLineSearchEnabled = True
-    mDampingInitial = 1#
-    mMinLineSearchAlpha = 0.03125
-    mMaxDeltaEpsilon0 = 0.0005
-    mMaxDeltaKappa = 0.00001
     mSecantMaxRestarts = 2
-    mSecantMinStepNorm = 0.000000000001
     mDiagnosticsEnabled = True
     mWithinPhysicalRange = True
 End Sub
@@ -328,18 +316,12 @@ Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
 
     If TryRunRetry(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
             eps0, kx, ky, targetN, targetMx, targetMy, 1, _
-            "directStateActiveSet / direct target", service, False, "directStateRetry") Then
+            "directStateActiveSet / direct target", service, "directStateRetry") Then
         mInitialGuessApplied = True
         TrySolveWithDirectStateGuess = True
         Exit Function
     End If
 
-    If TryRunRetry(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-            eps0, kx, ky, targetN, targetMx, targetMy, 1, _
-            "directStateActiveSet / direct target without line search", service, True, "directStateRetry") Then
-        mInitialGuessApplied = True
-        TrySolveWithDirectStateGuess = True
-    End If
 End Function
 
 ' Выбирает старт для прямого solve-а. Если вызывающий слой передал близкое
@@ -374,13 +356,7 @@ Private Sub ConfigureSolver(ByVal solver As CSectionSolver)
     solver.ToleranceN = mToleranceN
     solver.ToleranceMx = mToleranceMx
     solver.ToleranceMy = mToleranceMy
-    solver.LineSearchEnabled = mLineSearchEnabled
-    solver.DampingInitial = mDampingInitial
-    solver.MinLineSearchAlpha = mMinLineSearchAlpha
-    solver.MaxDeltaEpsilon0 = mMaxDeltaEpsilon0
-    solver.MaxDeltaKappa = mMaxDeltaKappa
     solver.SecantMaxRestarts = mSecantMaxRestarts
-    solver.SecantMinStepNorm = mSecantMinStepNorm
     solver.DiagnosticsEnabled = mDiagnosticsEnabled
 End Sub
 
@@ -449,9 +425,8 @@ Private Function TrySolveWithExtensionWarmStart(ByVal section As CSectionModel, 
 End Function
 
 ' Проверяет одну стартовую плоскость retry-сценария.
-' Сначала пробуем сразу попасть в целевую нагрузку, затем тот же старт без
-' line search, и только после этого идем ступенями от усилий, которые уже
-' создает стартовая плоскость.
+' Сначала решаем на полной нагрузке. При неудаче идем ступенями от усилий,
+' которые уже создает стартовая плоскость; длину каждого шага выбирает solver.
 Private Function TrySolveFromExtensionGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -472,13 +447,6 @@ Private Function TrySolveFromExtensionGuess(ByVal section As CSectionModel, _
         Exit Function
     End If
 
-    If TryRunRetry(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
-            eps0, kx, ky, targetN, targetMx, targetMy, 1, _
-            attemptName & " / direct target without line search", service, True) Then
-        TrySolveFromExtensionGuess = True
-        Exit Function
-    End If
-
     TrySolveFromExtensionGuess = TryRunRetry(section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, _
         eps0, kx, ky, startState.Nint, startState.Mxint, startState.Myint, retryLoadSteps, _
         attemptName & " / stepped", service)
@@ -494,20 +462,17 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal initialN As Double, ByVal initialMx As Double, ByVal initialMy As Double, _
         ByVal loadSteps As Long, ByVal attemptName As String, ByRef service As CSectionSolver, _
-        Optional ByVal disableLineSearch As Boolean = False, _
         Optional ByVal retryKind As String = "extensionRetry") As Boolean
     Dim retry As CSectionSolver
     Set retry = New CSectionSolver
     ConfigureSolver retry
-    If disableLineSearch Then retry.LineSearchEnabled = False
     retry.LoadSteps = loadSteps
     retry.SetInitialLoadState eps0, kx, ky, initialN, initialMx, initialMy
     Dim attemptKey As Variant, previousFailure As Variant
     If RetryAttemptContextMatches(section, concreteMaterial, steelMaterial) Then
         attemptKey = Array(targetN, targetMx, targetMy, eps0, kx, ky, initialN, initialMx, initialMy, _
             loadSteps, mMaxIterations, mToleranceN, mToleranceMx, mToleranceMy, _
-            (mLineSearchEnabled And Not disableLineSearch), mDampingInitial, mMinLineSearchAlpha, _
-            mMaxDeltaEpsilon0, mMaxDeltaKappa, mSolverMethod, mSecantMaxRestarts, mSecantMinStepNorm)
+            mSolverMethod, mSecantMaxRestarts)
         If TryRestoreFailedRetryAttempt(attemptKey, previousFailure) Then
             If mDiagnosticsEnabled Then
                 AppendDiagnostic retryKind & "=" & attemptName & _
@@ -721,7 +686,7 @@ End Function
 ' Вычисляет деформацию произвольной точки по найденной solver-плоскости
 ' epsilon0/kappaX/kappaY. Используется для проверки диаграмм после решения.
 Private Function ElementStrain(ByVal solver As CSectionSolver, ByVal x As Double, ByVal y As Double) As Double
-    ElementStrain = solver.Epsilon0 + solver.KappaX * y + solver.KappaY * x
+    ElementStrain = solver.StrainAt(x, y)
 End Function
 
 ' Добавляет строку в диагностический журнал только когда диагностика включена.
@@ -811,32 +776,8 @@ Public Property Let ToleranceMy(ByVal value As Double)
     mToleranceMy = value
 End Property
 
-Public Property Let LineSearchEnabled(ByVal value As Boolean)
-    mLineSearchEnabled = value
-End Property
-
-Public Property Let DampingInitial(ByVal value As Double)
-    mDampingInitial = value
-End Property
-
-Public Property Let MinLineSearchAlpha(ByVal value As Double)
-    mMinLineSearchAlpha = value
-End Property
-
-Public Property Let MaxDeltaEpsilon0(ByVal value As Double)
-    mMaxDeltaEpsilon0 = value
-End Property
-
-Public Property Let MaxDeltaKappa(ByVal value As Double)
-    mMaxDeltaKappa = value
-End Property
-
 Public Property Let SecantMaxRestarts(ByVal value As Long)
     mSecantMaxRestarts = value
-End Property
-
-Public Property Let SecantMinStepNorm(ByVal value As Double)
-    mSecantMinStepNorm = value
 End Property
 
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
@@ -851,11 +792,11 @@ End Property
 Friend Function TestRunRetryAttempt(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, Optional ByVal epsilon0 As Double = 0#, _
-        Optional ByVal loadSteps As Long = 1, Optional ByVal disableLineSearch As Boolean = False) As Boolean
+        Optional ByVal loadSteps As Long = 1) As Boolean
     Dim service As CSectionSolver
     TestRunRetryAttempt = TryRunRetry(section, concreteMaterial, steelMaterial, _
         targetN, 0#, 0#, epsilon0, 0#, 0#, targetN, 0#, 0#, loadSteps, _
-        "проверка эквивалентности попыток", service, disableLineSearch, "testRetry")
+        "проверка эквивалентности попыток", service, "testRetry")
 End Function
 
 ' Возвращает размер ограниченной scalar-памяти для проверки ее жизненного цикла.

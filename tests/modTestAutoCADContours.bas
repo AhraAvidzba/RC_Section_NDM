@@ -1137,6 +1137,202 @@ Public Function RunRealAutoCADContourMeshTests(ByVal ownedApplication As Object,
     RunRealAutoCADContourMeshTests = modTestContourMesh.RunNativeContourMeshTests(ownedApplication, templatePath)
 End Function
 
+' ДЛЯ ТЕСТОВ: настоящий импорт одного сечения у начала координат и в 1000 м.
+' Проверяет два отверстия, неизменные исходные координаты, НДС и трещины.
+Public Function RunRealAutoCADFarOriginTests(ByVal ownedApplication As Object, _
+        ByVal templatePath As String, Optional ByVal capacityOnly As Boolean = False) As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    mNativeProgress = True
+    Dim doc As Object, fixture As Object, sheet As Object, entity As Object, region As Object
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, importer As CAutoCADSectionModelImporter
+    Dim model As CSectionModel, baseline As CSectionModel, provider As CMaterialModelProvider
+    Dim c As CMaterialDiagram, s As CMaterialDiagram, spec As CMaterialModelSpec
+    Dim frame As CSectionNumericalFrame, solver As CSectionSolver, runner As CStateSolutionRunner
+    Dim formation As CCrackFormationCalculator, crack As CCrackFormationResult, load As CSectionLoadState
+    Dim keys As Variant, values As Variant, shifts As Variant, position As Long, i As Long, testCase As Long
+    Dim curves(0 To 0) As Object, regions As Variant, center(0 To 2) As Double
+    Dim sx As Double, sy As Double, targets As Variant, target As Variant, n As Double, mx As Double, my As Double
+    Dim before As Long, reference(1 To 6, 1 To 5) As Double, statuses(1 To 6) As String
+    Dim prefix As String, x As Variant, y As Variant, writer As CNDMResultsWriter, restored As CSectionModel
+    Dim concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
+    Dim capacity As CCapacitySolver, capacityMethod As Variant, methodIndex As Long
+    Dim capacityStates(1 To 6, 1 To 2) As String
+    On Error GoTo Failed
+    NativeProgress "far: start"
+    If ownedApplication Is Nothing Then Err.Raise vbObjectError + 5502, , "Требуется собственный тестовый AutoCAD."
+    Check "far.actualAutoCAD", InStr(1, CStr(ownedApplication.FullName), "\AutoCAD 2023\acad.exe", vbTextCompare) > 0
+    If Len(templatePath) > 0 Then Set doc = ownedApplication.Documents.Add(templatePath) Else Set doc = ownedApplication.Documents.Add
+    WaitForCAD ownedApplication
+    Check "far.WCS", CLng(doc.GetVariable("WORLDUCS")) = 1
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1)
+    keys = Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", _
+        "AutoCAD.Common.OpeningContourLayer", "AutoCAD.Import.MinArea", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions")
+    values = Array("FAR_EMPTY", "FAR_REBAR", "FAR_OUTER", "FAR_OPENING", 0#, 100#, 100#, 2)
+    sheet.Cells(1, 1).Value2 = "Key": sheet.Cells(1, 2).Value2 = "Value": sheet.Cells(1, 3).Value2 = "Unit"
+    For i = 0 To UBound(keys)
+        sheet.Cells(i + 2, 1).Value2 = keys(i): sheet.Cells(i + 2, 2).Value2 = values(i): sheet.Cells(i + 2, 3).Value2 = "-"
+        If i < 4 Then doc.Layers.Add CStr(values(i))
+    Next i
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("A1:C9")
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set importer = New CAutoCADSectionModelImporter
+    Set concrete = New CConcreteMaterialParameters: concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Set steel = New CSteelMaterialParameters: steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Set provider = New CMaterialModelProvider: provider.InitializeFromParameters concrete, steel
+    Set spec = New CMaterialModelSpec: spec.Initialize "SLS(II)", "ThreeLine", "UseDiagram", "TwoLine"
+    Set c = provider.ConcreteMaterialForEquilibriumFromSpec(spec): Set s = provider.SteelMaterialForEquilibriumFromSpec(spec)
+    If capacityOnly Then
+        Set c = provider.ConcreteMaterial(cpStrength): Set s = provider.SteelMaterial(cpStrength)
+    End If
+    shifts = Array(Array(0#, 0#), Array(1000000#, -1000000#))
+    targets = Array(Array(-500# * 9806.65, 0#, 0#), Array(-1000# * 9806.65, 0#, 0#), _
+        Array(-200000#, 20000000#, 5000000#), Array(-200000#, -5000000#, 20000000#), _
+        Array(-100000#, -15000000#, -15000000#), Array(50000#, 10000000#, -2000000#))
+    For position = 0 To 1
+        ' Только собственные объекты этого тестового документа.
+        For i = doc.ModelSpace.Count - 1 To 0 Step -1: doc.ModelSpace.Item(i).Delete: Next i
+        sx = CDbl(shifts(position)(0)): sy = CDbl(shifts(position)(1))
+        Set entity = NativeRectangle(doc, 600#, 1000#, 0#, sx, sy): entity.Layer = "FAR_OUTER"
+        For Each x In Array(-125#, 125#)
+            center(0) = sx + CDbl(x): center(1) = sy
+            Set entity = doc.ModelSpace.AddCircle(center, 50#): entity.Layer = "FAR_OPENING"
+        Next x
+        For Each x In Array(-250#, 250#)
+            For Each y In Array(-450#, 0#, 450#)
+                center(0) = sx + CDbl(x): center(1) = sy + CDbl(y)
+                Set entity = doc.ModelSpace.AddCircle(center, 16#)
+                Set curves(0) = entity: regions = doc.ModelSpace.AddRegion(curves)
+                Set region = regions(LBound(regions)): region.Layer = "FAR_REBAR": entity.Delete
+            Next y
+        Next x
+        before = doc.ModelSpace.Count
+        NativeProgress "far: import position=" & CStr(position)
+        Set model = importer.ImportFromDocument(doc, settings, units)
+        NativeProgress "far: imported fibers=" & CStr(model.ConcreteCount)
+        prefix = "far." & CStr(position)
+        Check prefix & ".sourcePreserved", doc.ModelSpace.Count = before
+        Check prefix & ".imported", model.SourceType = "AutoCADImport" And model.RebarCount = 6 And model.ConcreteCount > 0
+        Check prefix & ".contours", model.Contours.Count = 12
+        If position = 0 Then
+            Set baseline = model
+        Else
+            Check prefix & ".meshCount", model.ConcreteCount = baseline.ConcreteCount
+            For i = 1 To model.ConcreteCount
+                CheckCloseFar prefix & ".fiberX." & CStr(i), model.ConcreteX(i) - sx, baseline.ConcreteX(i), 0.000001
+                CheckCloseFar prefix & ".fiberY." & CStr(i), model.ConcreteY(i) - sy, baseline.ConcreteY(i), 0.000001
+                CheckCloseFar prefix & ".fiberArea." & CStr(i), model.ConcreteArea(i), baseline.ConcreteArea(i), 0.000001
+            Next i
+        End If
+        Set frame = New CSectionNumericalFrame: frame.Initialize model
+        testCase = 0
+        For Each target In targets
+            testCase = testCase + 1: n = CDbl(target(0)): mx = CDbl(target(1)): my = CDbl(target(2))
+            prefix = "far." & CStr(position) & ".load" & CStr(testCase)
+            If capacityOnly Then
+                methodIndex = 0
+                For Each capacityMethod In Array("Auto", "LoadMultiplier")
+                    methodIndex = methodIndex + 1
+                    prefix = "far." & CStr(position) & ".load" & CStr(testCase) & "." & CStr(capacityMethod)
+                    NativeProgress prefix & ": capacity start"
+                    Set capacity = New CCapacitySolver
+                    capacity.ConcreteCompressionLimit = c.PhysicalCompressionStrain
+                    capacity.ConcreteTensionLimitEnabled = False
+                    capacity.SteelCompressionLimit = Abs(s.PhysicalCompressionStrain)
+                    capacity.SteelTensionLimit = s.PhysicalTensionStrain
+                    capacity.StrainTolerance = 0.00000001: capacity.LambdaTolerance = 0.0001
+                    capacity.SolverToleranceN = 0.1: capacity.SolverToleranceMx = 10#: capacity.SolverToleranceMy = 10#
+                    capacity.SolverMaxIterations = 100: capacity.MaxRetries = 0: capacity.SolverBaseLoadSteps = 1
+                    If CStr(capacityMethod) = "Auto" Then
+                        capacity.SolveByAutoLoadPath model, c, s, 0#, n, 0#, mx + n * frame.OriginY, 0#, my + n * frame.OriginX
+                    Else
+                        capacity.SolveByLoadPathMultiplier model, c, s, 0#, n, 0#, mx + n * frame.OriginY, 0#, my + n * frame.OriginX
+                    End If
+                    Check prefix & ".converged", capacity.Converged
+                    If Not capacity.Converged Then Err.Raise vbObjectError + 5502, , prefix & ": " & capacity.StopReason
+                    CheckCloseFar prefix & ".N", capacity.LastSolver.Nint, capacity.LambdaUltimate * n, 0.2
+                    CheckCloseFar prefix & ".Mx", frame.CenterMx(capacity.LastSolver.Nint, capacity.LastSolver.Mxint), capacity.LambdaUltimate * mx, 20#
+                    CheckCloseFar prefix & ".My", frame.CenterMy(capacity.LastSolver.Nint, capacity.LastSolver.Myint), capacity.LambdaUltimate * my, 20#
+                    CheckCloseFar prefix & ".physicalLimit", capacity.CriticalStrainUtilization, 1#, 0.00001
+                    If testCase <= 2 Then Check prefix & ".axialStrategy", capacity.SolutionMethod = "LoadMultiplier"
+                    If position = 0 Then
+                        reference(testCase, methodIndex) = capacity.LambdaUltimate
+                        capacityStates(testCase, methodIndex) = capacity.LimitState
+                    Else
+                        CheckCloseFar prefix & ".sameCapacity", capacity.LambdaUltimate, reference(testCase, methodIndex), 0.00001
+                        Check prefix & ".sameCriterion", capacity.LimitState = capacityStates(testCase, methodIndex)
+                    End If
+                    mReport = mReport & "FAR_CAPACITY: " & prefix & "; lambda=" & CStr(capacity.LambdaUltimate) & _
+                        "; criterion=" & capacity.LimitState & "; comment=" & capacity.StopReason & vbCrLf
+                Next capacityMethod
+                GoTo NextFarLoad
+            End If
+            NativeProgress prefix & ": equilibrium start"
+            Set runner = New CStateSolutionRunner: runner.LoadSteps = 8: runner.MaxIterations = 100
+            runner.ToleranceN = 0.1: runner.ToleranceMx = 10#: runner.ToleranceMy = 10#
+            runner.Solve model, c, s, n, mx + n * frame.OriginY, my + n * frame.OriginX
+            Set solver = runner.ResultSolver
+            Check prefix & ".equilibrium", solver.Converged
+            If Not solver.Converged Then Err.Raise vbObjectError + 5502, , prefix & ": " & solver.StopReason
+            CheckCloseFar prefix & ".N", solver.Nint, n, 0.2
+            CheckCloseFar prefix & ".Mx", frame.CenterMx(solver.Nint, solver.Mxint), mx, 20#
+            CheckCloseFar prefix & ".My", frame.CenterMy(solver.Nint, solver.Myint), my, 20#
+            Set load = New CSectionLoadState: load.Initialize n, mx, my, frame.OriginX, frame.OriginY
+            Set formation = New CCrackFormationCalculator
+            formation.SolverToleranceN = 0.1: formation.SolverToleranceMx = 10#: formation.SolverToleranceMy = 10#
+            formation.SolverMaxIterations = 100: formation.SolverLoadSteps = 8
+            Dim crackedSpec As CMaterialModelSpec
+            Set crackedSpec = New CMaterialModelSpec: crackedSpec.Initialize "SLS(II)", "TwoLine", "Ignore", "TwoLine"
+            NativeProgress prefix & ": formation start"
+            Set crack = formation.CheckFormation(model, provider, crackedSpec, spec, n, load.InternalMx, load.InternalMy, _
+                load, frame.OriginX, frame.OriginY)
+            Check prefix & ".noNumericalFailure", crack.ResultMeta.InternalStatus <> rsNumericalFailure
+            NativeProgress prefix & ": formation finished"
+            If position = 0 Then
+                reference(testCase, 1) = solver.StrainAt(frame.OriginX, frame.OriginY)
+                reference(testCase, 2) = solver.KappaX: reference(testCase, 3) = solver.KappaY
+                reference(testCase, 4) = crack.LambdaCrc: reference(testCase, 5) = solver.Epsilon0
+                statuses(testCase) = CStr(crack.ResultMeta.InternalStatus) & ":" & CStr(crack.CrackFormed)
+            Else
+                CheckCloseFar prefix & ".centerStrain", solver.StrainAt(frame.OriginX, frame.OriginY), reference(testCase, 1), 0.000000001
+                CheckCloseFar prefix & ".kx", solver.KappaX, reference(testCase, 2), 0.00000000001
+                CheckCloseFar prefix & ".ky", solver.KappaY, reference(testCase, 3), 0.00000000001
+                CheckCloseFar prefix & ".lambdaCrc", crack.LambdaCrc, reference(testCase, 4), 0.00001
+                CheckCloseFar prefix & ".originalEpsilon0", solver.Epsilon0, _
+                    reference(testCase, 5) - solver.KappaX * sy - solver.KappaY * sx, 0.00000001
+                Check prefix & ".sameCrackStatus", CStr(crack.ResultMeta.InternalStatus) & ":" & CStr(crack.CrackFormed) = statuses(testCase)
+            End If
+            mReport = mReport & "FAR_LOAD: " & prefix & "; N=" & CStr(n) & "; Mx=" & CStr(mx) & "; My=" & CStr(my) & _
+                "; formed=" & CStr(crack.CrackFormed) & "; lambda=" & CStr(crack.LambdaCrc) & "; comment=" & crack.ResultMeta.ResultComment & vbCrLf
+NextFarLoad:
+        Next target
+        Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model), units
+        Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
+        CheckPostAudit03ContoursEqual prefix & ".savedContours", model.Contours, restored.Contours
+        CheckCloseFar prefix & ".savedOriginalX", restored.ConcreteX(1), model.ConcreteX(1), 0.000001
+        CheckCloseFar prefix & ".savedOriginalY", restored.ConcreteY(1), model.ConcreteY(1), 0.000001
+    Next position
+    doc.SaveAs ThisWorkbook.Path & "\FarOrigin_1000m.dwg"
+    GoTo Cleanup
+Failed:
+    Check "far.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Cleanup:
+    mNativeProgress = False
+    On Error Resume Next
+    If Not doc Is Nothing Then doc.Close False
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    RunRealAutoCADFarOriginTests = mReport & "TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
+End Function
+
+' ДЛЯ ТЕСТОВ: несущая того же настоящего импорта без повторения трещинообразования.
+Public Function RunRealAutoCADFarCapacityTests(ByVal ownedApplication As Object, ByVal templatePath As String) As String
+    RunRealAutoCADFarCapacityTests = RunRealAutoCADFarOriginTests(ownedApplication, templatePath, True)
+End Function
+
+Private Sub CheckCloseFar(ByVal name As String, ByVal actual As Double, ByVal expected As Double, ByVal tolerance As Double)
+    Check name & "; difference=" & CStr(Abs(actual - expected)), Abs(actual - expected) <= tolerance
+End Sub
+
 ' ДЛЯ ТЕСТОВ: проверяет настоящий Autodesk AutoCAD в собственном новом
 ' документе. Существующие чертежи не изменяются; source-объекты сохраняют
 ' handles, площадь и число сущностей после Copy/Explode production reader-а.
