@@ -107,7 +107,7 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mHasConcreteTension = solver.HasConcreteTension
     mHasSteelCompression = solver.HasSteelCompression
     mHasSteelTension = solver.HasSteelTension
-    solver.CopyMaterialContext mSnapshotSection, mSnapshotConcrete, mSnapshotSteel, extensionUsed
+    solver.CopyMaterialContext mSnapshotSection, mSnapshotConcrete, mSnapshotSteel
     If Not mSnapshotSection Is Nothing Then mSnapshotRevision = mSnapshotSection.Revision
 End Sub
 

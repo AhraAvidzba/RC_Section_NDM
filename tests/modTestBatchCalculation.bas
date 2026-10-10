@@ -10177,7 +10177,7 @@ Public Function RunPostAudit03SnapshotOwnerTests() As String
         state.InitializeFromSolver sstStrengthState, cpStrength, spec, solver, mode = 1, mode = 0
         data = state.PrepareElementSnapshot(section)
         AssertTrue stats, "postAudit03.snapshot.materials." & CStr(mode), state.HasMaterialSnapshot
-        AssertTrue stats, "postAudit03.snapshot.points." & CStr(mode), state.ConcreteDiagramSnapshot.PointCount = 3 + 2 * mode
+        AssertTrue stats, "postAudit03.snapshot.points." & CStr(mode), state.ConcreteDiagramSnapshot.PointCount = concrete.PointCount
         For i = 1 To 4
             If i <= 2 Then
                 actualStrain = eps + 0.000001 * section.ConcreteY(i) - 0.0000005 * section.ConcreteX(i)

@@ -548,11 +548,11 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
                 AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
                     stateResult, "Concrete", _
                     stateResult.ConcreteDiagramSnapshot, _
-                    batch.ResultAt(combinationIndex).DiagramExtensionEnabled, units, written
+                    units, written
                 AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
                     stateResult, "Rebar", _
                     stateResult.SteelDiagramSnapshot, _
-                    batch.ResultAt(combinationIndex).DiagramExtensionEnabled, units, written
+                    units, written
             End If
         End If
     Next stateIndex
@@ -562,18 +562,19 @@ End Sub
 ' LoadCase намеренно не входит в ключ: если разные сочетания используют один
 ' профиль и одно named-state, материал для solver-а у них одинаковый.
 Private Function MaterialDiagramId(ByVal profileId As String, ByVal stateResult As CSectionStateResult, _
-        ByVal materialKind As String, ByVal diagramExtensionEnabled As Boolean) As String
+        ByVal materialKind As String, ByVal diagram As CMaterialDiagram) As String
     MaterialDiagramId = profileId & "|" & stateResult.StateTypeText & "|" & _
         stateResult.MaterialModelRoleText & "|" & materialKind & "|" & _
-        MaterialDiagramModeText(stateResult, diagramExtensionEnabled) & "|" & _
+        MaterialDiagramModeText(diagram) & "|" & _
         stateResult.MaterialSpec.SpecKey
 End Function
 
 ' Показывает, была ли в точках диаграммы записана физическая модель или
 ' техническое продолжение активной диаграммы равновесия.
-Private Function MaterialDiagramModeText(ByVal stateResult As CSectionStateResult, _
-        ByVal diagramExtensionEnabled As Boolean) As String
-    If stateResult.ExtensionUsed Then
+Private Function MaterialDiagramModeText(ByVal diagram As CMaterialDiagram) As String
+    MaterialDiagramModeText = "Physical"
+    If diagram Is Nothing Then Exit Function
+    If diagram.HasCompressionExtension Or diagram.HasTensionExtension Then
         MaterialDiagramModeText = "StateExtension"
     Else
         MaterialDiagramModeText = "Physical"
@@ -585,11 +586,11 @@ End Function
 Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal profileId As String, ByVal stateResult As CSectionStateResult, _
         ByVal materialKind As String, ByVal diagram As CMaterialDiagram, _
-        ByVal diagramExtensionEnabled As Boolean, ByVal units As CUnitSystem, ByVal written As Object)
+        ByVal units As CUnitSystem, ByVal written As Object)
     If diagram Is Nothing Then Exit Sub
 
     Dim diagramId As String
-    diagramId = MaterialDiagramId(profileId, stateResult, materialKind, diagramExtensionEnabled)
+    diagramId = MaterialDiagramId(profileId, stateResult, materialKind, diagram)
     If written.Exists(diagramId) Then Exit Sub
     written.Add diagramId, True
 
@@ -601,7 +602,7 @@ Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex 
         data(rowIndex, 4) = stateResult.StateTypeText
         data(rowIndex, 5) = stateResult.MaterialModelRoleText
         data(rowIndex, 6) = stateResult.MaterialSpec.SpecKey
-        data(rowIndex, 7) = MaterialDiagramModeText(stateResult, diagramExtensionEnabled)
+        data(rowIndex, 7) = MaterialDiagramModeText(diagram)
         data(rowIndex, 8) = materialKind
         data(rowIndex, 9) = pointIndex
         data(rowIndex, 10) = diagram.PointStrain(pointIndex)
@@ -789,10 +790,10 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "MaterialModelSpec", _
                 stateResult.MaterialSpec.SpecKey, "-", "Фактическая спецификация ValueSet/ConcreteDiagram/ConcreteTension/SteelDiagram."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ConcreteDiagramId", _
-                MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, stateResult, "Concrete", batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
+                MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, stateResult, "Concrete", stateResult.ConcreteDiagramSnapshot), _
                 "-", "Ссылка на бетонную диаграмму в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "RebarDiagramId", _
-                MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, stateResult, "Rebar", batch.ResultAt(combinationIndex).DiagramExtensionEnabled), _
+                MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, stateResult, "Rebar", stateResult.SteelDiagramSnapshot), _
                 "-", "Ссылка на диаграмму арматуры в rngNDMMaterialDiagrams."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Epsilon0", _
                 stateResult.Epsilon0, "-", "Деформация в исходной точке X=0, Y=0 модели (для импорта AutoCAD - начало МСК/WCS). Численный перенос к центру сечения эту точку вывода не меняет."

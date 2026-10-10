@@ -223,6 +223,10 @@ Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
 End Function
 
+' Domain выбирает масштаб merit-функции; допуски конечной приемки независимы.
+Public Property Get LimitSearchUseJacobianMeritScaling() As Boolean
+End Property
+
 ' Принимает точку только после проверки ее усилий, load path и критерия.
 Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _

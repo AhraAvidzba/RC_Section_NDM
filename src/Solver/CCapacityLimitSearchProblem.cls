@@ -426,6 +426,11 @@ Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath
         mCapacity.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
 End Function
 
+' Норма capacity уже приводит усилия и физический критерий к общей шкале.
+Private Property Get ILimitSearchProblem_LimitSearchUseJacobianMeritScaling() As Boolean
+    ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = False
+End Property
+
 ' Передает найденную плоскость на окончательное подтверждение Capacity.
 ' Вспомогательное равновесие на extension не считается физическим пределом.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _

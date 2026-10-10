@@ -1271,12 +1271,13 @@ Private Sub CaptureMaterialContext(ByVal section As CSectionModel, ByVal concret
 End Sub
 
 ' Named-state получает независимые небольшие диаграммы, не живой solver.
-' Неиспользованное численное продолжение не добавляется в physical-снимок.
+' Сохраняется вся фактическая диаграмма: продолжение бетона может участвовать
+' в вычитании бетона на месте стержня даже при физических бетонных волокнах.
 Friend Sub CopyMaterialContext(ByRef section As CSectionModel, ByRef concrete As CMaterialDiagram, _
-        ByRef steel As CMaterialDiagram, ByVal extensionUsed As Boolean)
+        ByRef steel As CMaterialDiagram)
     Set section = mSnapshotSection
-    If Not mSnapshotConcrete Is Nothing Then Set concrete = mSnapshotConcrete.Clone(Not extensionUsed)
-    If Not mSnapshotSteel Is Nothing Then Set steel = mSnapshotSteel.Clone(Not extensionUsed)
+    If Not mSnapshotConcrete Is Nothing Then Set concrete = mSnapshotConcrete.Clone
+    If Not mSnapshotSteel Is Nothing Then Set steel = mSnapshotSteel.Clone
 End Sub
 
 ' Задает стартовую плоскость деформаций для следующего solve. Используется

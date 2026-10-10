@@ -19,6 +19,8 @@ Option Explicit
 ' параллельной search-реализации.
 
 Private mFrame As CSectionNumericalFrame ' Тот же центр и масштаб, что у прямого НДС.
+Private mMeritWeight1 As Double, mMeritWeight2 As Double, mMeritWeight3 As Double
+Private mMeritScalingReady As Boolean ' Веса текущего шага по реальным строкам Якобиана; не допуски приема точки.
 
 ' Выполняет ветку UltimateStrain для request-а несущей способности.
 ' Чисто осевая траектория переводится в LoadMultiplier тем же правилом, что и
@@ -129,6 +131,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
         Exit Function
     End If
     If Not ValidateNewtonSettings(context) Then Exit Function
+    mMeritScalingReady = False
 
     Set mFrame = New CSectionNumericalFrame
     If Not section Is Nothing Then
@@ -278,6 +281,11 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
     rowScale1 = MaxDouble(Abs(j11 * hEps), MaxDouble(Abs(j12 * hKx), Abs(j13 * hKy)))
     rowScale2 = MaxDouble(Abs(j21 * hEps), MaxDouble(Abs(j22 * hKx), Abs(j23 * hKy)))
     rowScale3 = MaxDouble(Abs(j31 * hEps), MaxDouble(Abs(j32 * hKx), Abs(j33 * hKy)))
+    If context.LimitSearchUseJacobianMeritScaling Then
+        ConfigureStepResidualScales rowScale1, rowScale2, rowScale3
+    Else
+        mMeritScalingReady = False
+    End If
     If rowScale1 <= 0# Then rowScale1 = 1#
     If rowScale2 <= 0# Then rowScale2 = 1#
     If rowScale3 <= 0# Then rowScale3 = 1#
@@ -485,7 +493,7 @@ Private Function TryUltimateMaterialStep(ByVal context As ILimitSearchProblem, B
     Dim ray As Long, sign As Long, i As Long, t1 As Double, t2 As Double, size As Double
     Dim direction(1 To 3) As Double, first As Double, second As Double, distance As Double
     Dim baseNorm As Double
-    baseNorm = context.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
+    baseNorm = StepResidualNorm(context, rPath1, rPath2, rLimit)
     For ray = 1 To 4
         Select Case ray
             Case 1: t1 = 1#: t2 = 0#
@@ -549,7 +557,7 @@ Private Function TryUltimateDirection(ByVal context As ILimitSearchProblem, ByVa
         ByVal dKx As Double, ByVal dKy As Double) As Boolean
     On Error GoTo Failed
     Dim baseNorm As Double
-    baseNorm = context.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
+    baseNorm = StepResidualNorm(context, rPath1, rPath2, rLimit)
 
     Dim alpha As Double
     alpha = 1#
@@ -577,7 +585,7 @@ Private Function TryUltimateDirection(ByVal context As ILimitSearchProblem, ByVa
             ' round-off. Итоговая приемка следующей итерации дополнительно
             ' подтверждает все усилия и физическую допустимость точки.
             If context.LimitSearchUltimateResidualReached(trialR1, trialR2, trialRLimit) Or _
-                    NonlinearStepImproves(baseNorm, context.LimitSearchUltimateResidualNorm(trialR1, trialR2, trialRLimit), alpha) Then
+                    NonlinearStepImproves(baseNorm, StepResidualNorm(context, trialR1, trialR2, trialRLimit), alpha) Then
                 eps0 = trialEps
                 kx = trialKx
                 ky = trialKy
@@ -638,7 +646,7 @@ Private Function TryUltimatePlateauBracket(ByVal context As ILimitSearchProblem,
         trialE = eps0 + alpha * dEps: trialX = kx + alpha * dKx: trialY = ky + alpha * dKy
         If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
                 trialE, trialX, trialY, trial, r1, r2, r3, trialLambda, trialState) Then Exit Function
-        trialNorm = context.LimitSearchUltimateResidualNorm(r1, r2, r3)
+        trialNorm = StepResidualNorm(context, r1, r2, r3)
         If context.LimitSearchUltimateResidualReached(r1, r2, r3) Or _
                 NonlinearStepImproves(baseNorm, trialNorm, alpha) Then
             eps0 = trialE: kx = trialX: ky = trialY
@@ -723,6 +731,30 @@ Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     If value <> value Then Exit Function
     If Abs(value) > 1.797693134862315E+308 Then Exit Function
     IsFiniteNumber = True
+End Function
+
+' Для подбора шага невязки нормируются теми же строками, что и система Newton.
+' Общий множитель ограничивает веса единицей; внутри line-search они неизменны.
+' У вырожденного Якобиана сохраняется доменная норма. Прием точки отдельно
+' проверяет исходные допуски усилий и деформаций, без этих весов.
+Private Sub ConfigureStepResidualScales(ByVal scale1 As Double, ByVal scale2 As Double, ByVal scale3 As Double)
+    mMeritScalingReady = (scale1 > 0# And scale2 > 0# And scale3 > 0#)
+    If Not mMeritScalingReady Then Exit Sub
+    Dim minimum As Double
+    minimum = MinDouble(scale1, MinDouble(scale2, scale3))
+    mMeritWeight1 = minimum / scale1
+    mMeritWeight2 = minimum / scale2
+    mMeritWeight3 = minimum / scale3
+    mMeritScalingReady = (mMeritWeight1 > 0# And mMeritWeight2 > 0# And mMeritWeight3 > 0#)
+End Sub
+
+Private Function StepResidualNorm(ByVal context As ILimitSearchProblem, _
+        ByVal r1 As Double, ByVal r2 As Double, ByVal r3 As Double) As Double
+    If mMeritScalingReady Then
+        StepResidualNorm = Abs(r1) * mMeritWeight1 + Abs(r2) * mMeritWeight2 + Abs(r3) * mMeritWeight3
+    Else
+        StepResidualNorm = context.LimitSearchUltimateResidualNorm(r1, r2, r3)
+    End If
 End Function
 
 ' Утилитарный минимум без обращения к Excel.

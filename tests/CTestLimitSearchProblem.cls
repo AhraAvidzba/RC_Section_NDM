@@ -322,6 +322,10 @@ Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath
     If mUltimateConstantNorm Then ILimitSearchProblem_LimitSearchUltimateResidualNorm = 1#
 End Function
 
+Private Property Get ILimitSearchProblem_LimitSearchUseJacobianMeritScaling() As Boolean
+    ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = False
+End Property
+
 ' ДЛЯ ТЕСТОВ: сохраняет найденную аналитическую lambda, метод и число итераций.
 ' Физического state нет: приемка production-предела проверяется отдельными tests.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _

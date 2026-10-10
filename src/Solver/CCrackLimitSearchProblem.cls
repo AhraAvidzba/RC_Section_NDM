@@ -158,6 +158,11 @@ Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath
         mCrack.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
 End Function
 
+' Для образования трещины размерные и деформационные невязки уравновешивает Якобиан.
+Private Property Get ILimitSearchProblem_LimitSearchUseJacobianMeritScaling() As Boolean
+    ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = True
+End Property
+
 ' Передает кандидата Formation на окончательное подтверждение и сохранение
 ' точки. Extended-кандидат не становится физическим PreCrackState автоматически.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
