@@ -72,22 +72,55 @@ Public Sub ProjectionBounds(ByVal region As CConcreteRegion, ByVal nx As Double,
     If norm <= GEOM_TOLERANCE Then GeometryError "Направление проекции имеет нулевую длину."
     nx = nx / norm: ny = ny / norm
     If region.SegmentCount = 0 Then GeometryError "У пустой области нет крайних проекций."
-    Dim edges() As TRegionEdge, count As Long, i As Long, radius As Double, u As Double, projection As Double
+    Dim edges() As TRegionEdge, count As Long, i As Long
     region.CopyEdges edges, count
     minimum = 1E+100: maximum = -1E+100
     For i = 1 To count
-        projection = nx * edges(i).X1 + ny * edges(i).Y1
-        minimum = GeomMin(minimum, projection): maximum = GeomMax(maximum, projection)
-        projection = nx * edges(i).X2 + ny * edges(i).Y2
-        minimum = GeomMin(minimum, projection): maximum = GeomMax(maximum, projection)
-        If Abs(edges(i).Sweep) > PARAM_TOLERANCE Then
-            radius = Sqr((edges(i).X1 - edges(i).CenterX) ^ 2 + (edges(i).Y1 - edges(i).CenterY) ^ 2)
-            projection = nx * edges(i).CenterX + ny * edges(i).CenterY
-            If PointParameter(edges(i), edges(i).CenterX + radius * nx, edges(i).CenterY + radius * ny, u) Then maximum = GeomMax(maximum, projection + radius)
-            If PointParameter(edges(i), edges(i).CenterX - radius * nx, edges(i).CenterY - radius * ny, u) Then minimum = GeomMin(minimum, projection - radius)
-        End If
+        AccumulateEdgeProjection edges(i), nx, ny, minimum, maximum
     Next i
 End Sub
+
+' Общие экстремумы аналитического сегмента для области и открытого пути.
+' Направление уже единичное; проверяются также внутренние экстремумы дуги.
+Friend Sub AccumulateEdgeProjection(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal ny As Double, _
+        ByRef minimum As Double, ByRef maximum As Double)
+    Dim radius As Double, u As Double, projection As Double
+    projection = nx * edge.X1 + ny * edge.Y1
+    minimum = GeomMin(minimum, projection): maximum = GeomMax(maximum, projection)
+    projection = nx * edge.X2 + ny * edge.Y2
+    minimum = GeomMin(minimum, projection): maximum = GeomMax(maximum, projection)
+    If Abs(edge.Sweep) > PARAM_TOLERANCE Then
+        radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
+        projection = nx * edge.CenterX + ny * edge.CenterY
+        If PointParameter(edge, edge.CenterX + radius * nx, edge.CenterY + radius * ny, u) Then maximum = GeomMax(maximum, projection + radius)
+        If PointParameter(edge, edge.CenterX - radius * nx, edge.CenterY - radius * ny, u) Then minimum = GeomMin(minimum, projection - radius)
+    End If
+End Sub
+
+' Ближайшее пересечение луча с ограниченным сегментом, а не с полной прямой
+' или окружностью. Используется тот же аналитический поиск, что при clipping.
+Friend Function EdgeRayHit(ByRef edge As TRegionEdge, ByVal x As Double, ByVal y As Double, _
+        ByVal dx As Double, ByVal dy As Double, ByRef distance As Double, ByRef parameter As Double) As Boolean
+    Dim norm As Double, cuts() As Double, count As Long, i As Long, px As Double, py As Double, candidate As Double
+    norm = Sqr(dx * dx + dy * dy)
+    If norm <= GEOM_TOLERANCE Then GeometryError "Направление луча имеет нулевую длину."
+    dx = dx / norm: dy = dy / norm
+    distance = 0#: parameter = 0#
+    If PointParameter(edge, x, y, parameter) Then
+        EdgeRayHit = True
+        Exit Function
+    End If
+    HalfPlaneCuts edge, -dy, dx, -dy * x + dx * y, cuts, count
+    For i = 1 To count
+        EdgePoint edge, cuts(i), px, py
+        candidate = (px - x) * dx + (py - y) * dy
+        If candidate >= -QUERY_TOLERANCE Then
+            If Not EdgeRayHit Or candidate < distance Then
+                distance = GeomMax(0#, candidate): parameter = cuts(i): EdgeRayHit = True
+            End If
+        End If
+    Next i
+End Function
 
 ' Возвращает точные габариты каждого явно классифицированного отверстия.
 ' Геометрический генератор сетки получает весь набор независимо от типа
@@ -433,7 +466,7 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
     ProjectionBounds region, nx, ny, minimum, maximum
     ' Не разбиваем область при касании ее крайней точки. Здесь учитывается
     ' только ошибка Double при переносе координат, не геометрический допуск.
-    roundoff = 0.0000000000000035527136788005 * (Abs(minimum) + Abs(maximum) + Abs(bound) + 1#)
+    roundoff = 3.5527136788005E-15 * (Abs(minimum) + Abs(maximum) + Abs(bound) + 1#)
     If bound <= minimum + roundoff Then
         Set ClipHalfPlane = region.Clone
         Exit Function
@@ -673,6 +706,110 @@ Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double
     region.CopyEdges edges, count
     ContainsPoint = ContainsRaw(edges, count, x, y, includeBoundary)
 End Function
+
+' Общий скругленный многоугольник: Array(Array(x,y),...), радиусы и имена
+' вершин того же размера. Индексы входа не становятся идентичностью грани.
+' Вогнутый угол получает противоположный sweep; радиусы не уменьшаются.
+Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _
+        ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
+    Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
+    ReadPolygonInput pathID, vertices, radii, vertexIDs, points, radius, names, count
+    Dim raw() As TRegionEdge, i As Long, previous As Long, following As Long
+    Dim directions() As TPoint2D, lengths() As Double, distances() As Double, turns() As Double
+    Dim first() As TPoint2D, last() As TPoint2D, centers() As TPoint2D
+    ReDim raw(1 To count): ReDim directions(1 To count): ReDim lengths(1 To count)
+    ReDim distances(1 To count): ReDim turns(1 To count)
+    ReDim first(1 To count): ReDim last(1 To count): ReDim centers(1 To count)
+    For i = 1 To count
+        following = i Mod count + 1
+        raw(i).X1 = points(i).X: raw(i).Y1 = points(i).Y
+        raw(i).X2 = points(following).X: raw(i).Y2 = points(following).Y
+        lengths(i) = EdgeLength(raw(i))
+        If lengths(i) <= QUERY_TOLERANCE Then GeometryError pathID & ": нулевая грань Edge." & names(i) & "."
+        directions(i).X = (raw(i).X2 - raw(i).X1) / lengths(i)
+        directions(i).Y = (raw(i).Y2 - raw(i).Y1) / lengths(i)
+    Next i
+    Dim original As CConcreteRegion
+    Set original = BoundaryRegion(raw, count)
+    Dim cross As Double, dot As Double, side As Double
+    For i = 1 To count
+        previous = (i + count - 2) Mod count + 1
+        cross = directions(previous).X * directions(i).Y - directions(previous).Y * directions(i).X
+        dot = directions(previous).X * directions(i).X + directions(previous).Y * directions(i).Y
+        turns(i) = AngleOf(dot, cross)
+        If radius(i) > 0# Then
+            If Abs(turns(i)) <= PARAM_TOLERANCE Or Abs(Abs(turns(i)) - GEOM_PI) <= PARAM_TOLERANCE Then _
+                GeometryError pathID & ": угол вершины '" & names(i) & "' не допускает скругления."
+            distances(i) = radius(i) * Tan(Abs(turns(i)) / 2#)
+        End If
+        first(i).X = points(i).X - directions(previous).X * distances(i)
+        first(i).Y = points(i).Y - directions(previous).Y * distances(i)
+        last(i).X = points(i).X + directions(i).X * distances(i)
+        last(i).Y = points(i).Y + directions(i).Y * distances(i)
+        side = Sgn(turns(i))
+        centers(i).X = first(i).X - directions(previous).Y * radius(i) * side
+        centers(i).Y = first(i).Y + directions(previous).X * radius(i) * side
+    Next i
+    For i = 1 To count
+        following = i Mod count + 1
+        If distances(i) + distances(following) > lengths(i) + GEOM_TOLERANCE Then _
+            GeometryError pathID & ": скругления пересекаются на грани Edge." & names(i) & "; уменьшите назначенные радиусы."
+    Next i
+    Dim result As CGeometryPath, edge As TRegionEdge
+    Set result = New CGeometryPath: result.Initialize pathID
+    For i = 1 To count
+        following = i Mod count + 1
+        If radius(i) > 0# Then
+            edge.X1 = first(i).X: edge.Y1 = first(i).Y: edge.X2 = last(i).X: edge.Y2 = last(i).Y
+            edge.CenterX = centers(i).X: edge.CenterY = centers(i).Y: edge.Sweep = turns(i)
+            ValidateArc edge
+            result.Append "Corner." & names(i), edge
+        End If
+        edge.X1 = last(i).X: edge.Y1 = last(i).Y: edge.X2 = first(following).X: edge.Y2 = first(following).Y
+        edge.CenterX = 0#: edge.CenterY = 0#: edge.Sweep = 0#
+        If EdgeLength(edge) > QUERY_TOLERANCE Then result.Append "Edge." & names(i), edge
+    Next i
+    result.Seal True
+    ' Проверка конечной формы ловит и нелокальные пересечения скруглений.
+    Dim prepared As CConcreteRegion
+    Set prepared = RegionFromPath(result)
+    Set RoundedPolygon = result
+End Function
+
+' Путь хранит исходное направление и ID; область получает независимую
+' нормализацию ролей/ориентации существующим topology-движком.
+Public Function RegionFromPath(ByVal path As CGeometryPath) As CConcreteRegion
+    If path Is Nothing Then GeometryError "Путь границы не передан."
+    If Not path.IsClosed Then GeometryError "Бетонная граница должна быть замкнутой."
+    Dim edges() As TRegionEdge, i As Long
+    ReDim edges(1 To path.SegmentCount)
+    For i = 1 To path.SegmentCount: path.CopySegment i, edges(i): Next i
+    Set RegionFromPath = BoundaryRegion(edges, path.SegmentCount)
+End Function
+
+' Изолированный разбор компактного программного ввода: никакого Excel.
+Private Sub ReadPolygonInput(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, _
+        ByVal vertexIDs As Variant, ByRef points() As TPoint2D, ByRef radius() As Double, ByRef names() As String, ByRef count As Long)
+    On Error GoTo Invalid
+    count = UBound(vertices) - LBound(vertices) + 1
+    If count < 3 Or UBound(radii) - LBound(radii) + 1 <> count Or UBound(vertexIDs) - LBound(vertexIDs) + 1 <> count Then GoTo Invalid
+    ReDim points(1 To count): ReDim radius(1 To count): ReDim names(1 To count)
+    Dim i As Long, j As Long, vertex As Variant
+    For i = 1 To count
+        vertex = vertices(LBound(vertices) + i - 1)
+        If UBound(vertex) - LBound(vertex) <> 1 Then GoTo Invalid
+        points(i).X = CDbl(vertex(LBound(vertex))): points(i).Y = CDbl(vertex(LBound(vertex) + 1))
+        radius(i) = CDbl(radii(LBound(radii) + i - 1))
+        If radius(i) < 0# Then GoTo Invalid
+        names(i) = CStr(vertexIDs(LBound(vertexIDs) + i - 1))
+        If Len(Trim$(names(i))) = 0 Then GoTo Invalid
+        For j = 1 To i - 1: If names(i) = names(j) Then GoTo Invalid
+        Next j
+    Next i
+    Exit Sub
+Invalid:
+    GeometryError pathID & ": задайте не менее трех вершин Array(Array(x,y),...), столько же неотрицательных радиусов и уникальных имен вершин."
+End Sub
 
 ' Совпадение с прямым исходным ребром определяется по стороне материала,
 ' а не соглашению winding на самой границе. Для дуг и обычных пересечений
@@ -1330,7 +1467,7 @@ Private Sub HalfPlaneCuts(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal n
         norm = Sqr(nx * nx + ny * ny)
         distance = (bound - nx * edge.CenterX - ny * edge.CenterY) / norm
         If Abs(distance) > radius + QUERY_TOLERANCE Then Exit Sub
-        roundoff = 0.0000000000000035527136788005 * _
+        roundoff = 3.5527136788005E-15 * _
             ((Abs(bound) + Abs(nx * edge.CenterX) + Abs(ny * edge.CenterY)) / norm + radius + 1#)
         If Abs(Abs(distance) - radius) <= roundoff Then distance = Sgn(distance) * radius
         ' Допуск допускает касание снаружи, но не схлопывает настоящую
@@ -1419,7 +1556,7 @@ Private Function PointParameter(ByRef edge As TRegionEdge, ByVal x As Double, By
 End Function
 
 ' Возвращает точку аналитического сегмента по u от нуля до единицы.
-Private Sub EdgePoint(ByRef edge As TRegionEdge, ByVal u As Double, ByRef x As Double, ByRef y As Double)
+Friend Sub EdgePoint(ByRef edge As TRegionEdge, ByVal u As Double, ByRef x As Double, ByRef y As Double)
     If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
         x = edge.X1 + u * (edge.X2 - edge.X1): y = edge.Y1 + u * (edge.Y2 - edge.Y1)
     Else
@@ -1431,7 +1568,7 @@ Private Sub EdgePoint(ByRef edge As TRegionEdge, ByVal u As Double, ByRef x As D
 End Sub
 
 ' Возвращает касательную в направлении обхода; ее длина не нормируется.
-Private Sub EdgeTangent(ByRef edge As TRegionEdge, ByVal u As Double, ByRef tx As Double, ByRef ty As Double)
+Friend Sub EdgeTangent(ByRef edge As TRegionEdge, ByVal u As Double, ByRef tx As Double, ByRef ty As Double)
     If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
         tx = edge.X2 - edge.X1: ty = edge.Y2 - edge.Y1
     Else
@@ -1443,7 +1580,7 @@ End Sub
 
 ' Выделяет точный подотрезок/поддугу после пересечения; центр и signed sweep
 ' остаются аналитическими, поэтому площадь не зависит от плотности рисунка.
-Private Sub SubEdge(ByRef original As TRegionEdge, ByVal u1 As Double, ByVal u2 As Double, ByRef result As TRegionEdge)
+Friend Sub SubEdge(ByRef original As TRegionEdge, ByVal u1 As Double, ByVal u2 As Double, ByRef result As TRegionEdge)
     LSet result = original
     EdgePoint original, u1, result.X1, result.Y1
     EdgePoint original, u2, result.X2, result.Y2
@@ -1451,7 +1588,7 @@ Private Sub SubEdge(ByRef original As TRegionEdge, ByVal u1 As Double, ByVal u2 
 End Sub
 
 ' Обращает сегмент вместе со знаком дуги, сохраняя ту же физическую границу.
-Private Sub ReverseEdge(ByRef edge As TRegionEdge)
+Friend Sub ReverseEdge(ByRef edge As TRegionEdge)
     Dim value As Double
     value = edge.X1: edge.X1 = edge.X2: edge.X2 = value
     value = edge.Y1: edge.Y1 = edge.Y2: edge.Y2 = value
@@ -1487,7 +1624,7 @@ Private Sub ValidateArc(ByRef edge As TRegionEdge)
 End Sub
 
 ' Возвращает физическую длину сегмента для исключения вырожденных ребер.
-Private Function EdgeLength(ByRef edge As TRegionEdge) As Double
+Friend Function EdgeLength(ByRef edge As TRegionEdge) As Double
     If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
         EdgeLength = Sqr((edge.X2 - edge.X1) ^ 2 + (edge.Y2 - edge.Y1) ^ 2)
     Else

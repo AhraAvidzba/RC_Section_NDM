@@ -27,3 +27,12 @@ Runtime-списки классов, имен, OnAction и References будут
 Расширенный snapshot тоже использует исходные registry CreateGeometry/CreateRebars;
 после переноса он должен читать готовые mesh/layout из единого build, а не
 оставаться адаптером старой архитектуры.
+
+Первый новый общий слой:
+- CGeometryPath -> CSectionGeometryQuery Friend-операции; никаких solver/Excel/СП.
+- CSectionGeometryQuery.RoundedPolygon/RegionFromPath -> общий путь и прежняя topology.
+- CSectionInputTable -> массивы скаляров/адресов и CUnitSystem для конвертации;
+  типовых разборов и live Range нет. Workbook adapter и recipe context еще не подключены.
+- modTestDeclarativeGeometry -> программные fixtures, без старых генераторов.
+
+Registry/reader/layout потребители пока прежние; retirement-map остается ACTIVE.

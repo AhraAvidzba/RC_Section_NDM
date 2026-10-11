@@ -1,0 +1,98 @@
+{
+  "Stage": "Shared analytic geometry and immutable input tables",
+  "Status": "PASS",
+  "Scope": "Development tests only; legacy generators still active; not final acceptance",
+  "CapturedAt": "2026-10-11T21:31:29.8636510+03:00",
+  "PhysicsBaselineHead": "a138c2732382c826db9ac2f801facd3d533d406c",
+  "ParentCommit": "652fc59",
+  "WorkbookSHA256": "DE1B717FD5F1E89D4F52CB4858FA700FFE0F1C4758F1D9C0A812CAFBA72805F4",
+  "MainWorkbookSHA256": "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+  "Assertions": 336,
+  "GeometryRecords": 20124,
+  "CalculationRecordsPerCode": 48114,
+  "ApprovedSourceModules": 5,
+  "ActualComponents": 140,
+  "NumericLiteralBits": "3ceffffffffffffe",
+  "ArchiveSHA256": "FD83C118A16F47457820DB69EC15AE033EC371FE4850385CAEA2D7B17883E9C5",
+  "Sources": [
+    {
+      "Path": "src/Geometry/CGeometryPath.cls",
+      "SHA256": "FA5F7A3FB6084ECE93250A74790477E0212878EE2D24DDE01B3A39877AB5208E"
+    },
+    {
+      "Path": "src/Section/CSectionInputTable.cls",
+      "SHA256": "8DFB16B47A758FF27C26BA65D1EC57B9BE8E0615990D1FB99F5099D248B5642B"
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "CC66943000B2E39F40C3E4A748E1D81414CC1AFF6368E0FB801D154BD39CCCDA"
+    },
+    {
+      "Path": "tests/modTestDeclarativeGeometry.bas",
+      "SHA256": "C31BCFE22916847CDC4CA8FBF0861CA4F0E6F3AAD7AE426A1D40FA35339D0DF7"
+    },
+    {
+      "Path": "tests/modTestShapeArchitecture.bas",
+      "SHA256": "67C7D564AC34F50ACBEAD69334081231E66F1A312E599AC3818E80D259DB8E33"
+    },
+    {
+      "Path": "tools/build_workbook/Update-PrivateWorkbookCode.ps1",
+      "SHA256": "4F4658C844A87BB0E7B1E120008E107EC37526B7BD9D0F47BEF0F58D85F531B5"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GeometryBaselineCode.ps1",
+      "SHA256": "E2DD0A7BEF003F01F2A281A0230CF07A79D5623749A866EE475A20F219DAEE34"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-GeometrySnapshots.py",
+      "SHA256": "9B756E1EC8E2617167D7FA987FDB26CB133F44493C8955410A1DC9E8D42C268A"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Name": "CoreGeometry.txt",
+      "SHA256": "ECF7D8F6D1ACCB03F805C1B8FE6572B7EF16D83BA2D87D7D703DC50515FBA392",
+      "Length": 24835
+    },
+    {
+      "Name": "Geometry.txt",
+      "SHA256": "3C99911C5D6BEF91227AC871F5AAE66A00EBD606DE9F2F18C4CCE25E9B478E21",
+      "Length": 3365006
+    },
+    {
+      "Name": "GeometryComparison.json",
+      "SHA256": "38142CE067BCADC95E90C5D507D83916E90AE69ADD4E86F56455981B03BEE906",
+      "Length": 532
+    },
+    {
+      "Name": "CalculationsSP35_Off.txt",
+      "SHA256": "3CD9C74F442937DB129D0A99818718BDF806979B14D99B1A9B2BA6A014440A08",
+      "Length": 3520505
+    },
+    {
+      "Name": "CalculationsSP35Comparison.json",
+      "SHA256": "D62089DEC6CDE7F20F951290C1AC35566C6A387209C36FC6C4A0C3AF2F5C2ED3",
+      "Length": 552
+    },
+    {
+      "Name": "CalculationsSP63_Off.txt",
+      "SHA256": "CDA647F2AEA92D63318D28977DC782F11FF8892AC4EEA886ACD76B61FE92BFA1",
+      "Length": 3520498
+    },
+    {
+      "Name": "CalculationsSP63Comparison.json",
+      "SHA256": "07156732E2157F0587925C41E2CCB034E10F51CBACB9EAC6834AD7E43C2C58AA",
+      "Length": 552
+    },
+    {
+      "Name": "CodeComparison.json",
+      "SHA256": "F3C80D21C2FA30B678BFBFB96A32C9A3C5705E8AA93D5630160536D97362C43E",
+      "Length": 82149
+    },
+    {
+      "Name": "CodeUpdate.json",
+      "SHA256": "E85D95788F4BFF407E013D806D9527E10CB567FAA32B24DAD7B01F64D899C251",
+      "Length": 683
+    }
+  ]
+}

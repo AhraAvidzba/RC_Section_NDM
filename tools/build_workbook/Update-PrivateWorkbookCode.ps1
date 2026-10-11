@@ -22,6 +22,7 @@ try {
     $book=$excel.Workbooks.Open($path,0,$false)
     if ($book.ReadOnly) {throw 'Private workbook is read-only.'}
     $updated=@()
+    $componentNames=@($book.VBProject.VBComponents | ForEach-Object {$_.Name})
     foreach ($file in Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas','.cls') {
         if ($ModuleNames.Count -and $file.BaseName -notin $ModuleNames) {continue}
         $body=[regex]::Match([IO.File]::ReadAllText($file.FullName,[Text.Encoding]::UTF8),'(?ms)^Option Explicit.*').Value
@@ -62,9 +63,15 @@ Private Function CutTrace(ByRef raw() As TRegionEdge, ByVal rawCount As Long, By
 End Function
 '@
         }
-        $component=$book.VBProject.VBComponents.Item($file.BaseName)
+        if ($file.BaseName -in $componentNames) {
+            $component=$book.VBProject.VBComponents.Item($file.BaseName)
+        } else {
+            $component=$book.VBProject.VBComponents.Add($(if ($file.Extension -eq '.cls') {2} else {1}))
+            $component.Name=$file.BaseName
+            $componentNames+=,$file.BaseName
+        }
         $module=$component.CodeModule
-        $module.DeleteLines(1,$module.CountOfLines)
+        if ($module.CountOfLines) {$module.DeleteLines(1,$module.CountOfLines)}
         $module.AddFromString(($body -split '\r?\n') -join "`r`n")
         $updated += $file.BaseName
     }
