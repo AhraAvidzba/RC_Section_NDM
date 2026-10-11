@@ -1,0 +1,575 @@
+{
+  "Passed": true,
+  "Rows": [
+    {
+      "Mode": "No",
+      "Passed": true,
+      "StatusRows": 22,
+      "StatusesEqual": true,
+      "NumFailStates": [
+        "focused.SavedWorkbook.axialC1.05|StrengthState",
+        "focused.SavedWorkbook.axialC1|StrengthState",
+        "focused.SavedWorkbook.axialC2|CrackedState",
+        "focused.SavedWorkbook.axialC2|StrengthState",
+        "focused.SavedWorkbook.N2098Plateau|StrengthState",
+        "focused.SavedWorkbook.overloadMixed1|CrackedState",
+        "focused.SavedWorkbook.overloadMixed1|StrengthState",
+        "focused.SavedWorkbook.overloadMixed1000000|CrackedState",
+        "focused.SavedWorkbook.overloadMixed1000000|StrengthState"
+      ],
+      "NumFailStatesEqual": true,
+      "PointCount": 44,
+      "MaximumRelativeLambdaChange": 0.0,
+      "Points": [
+        {
+          "Before": 1.00126572998,
+          "RelativeChange": 0.0,
+          "After": 1.00126572998,
+          "Point": "focused.SavedWorkbook.axialC0.95|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialC0.95|Crack"
+        },
+        {
+          "Before": 0.905907089028,
+          "RelativeChange": 0.0,
+          "After": 0.905907089028,
+          "Point": "focused.SavedWorkbook.axialC1.05|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialC1.05|Crack"
+        },
+        {
+          "Before": 0.951202443481,
+          "RelativeChange": 0.0,
+          "After": 0.951202443481,
+          "Point": "focused.SavedWorkbook.axialC1|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialC1|Crack"
+        },
+        {
+          "Before": 0.47560122174,
+          "RelativeChange": 0.0,
+          "After": 0.47560122174,
+          "Point": "focused.SavedWorkbook.axialC2|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialC2|Crack"
+        },
+        {
+          "Before": 45.353236747882,
+          "RelativeChange": 0.0,
+          "After": 45.353236747882,
+          "Point": "focused.SavedWorkbook.axialSmall-1|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialSmall-1|Crack"
+        },
+        {
+          "Before": 19.459311900404,
+          "RelativeChange": 0.0,
+          "After": 19.459311900404,
+          "Point": "focused.SavedWorkbook.axialSmall1|Capacity"
+        },
+        {
+          "Before": 4.163161350266,
+          "RelativeChange": 0.0,
+          "After": 4.163161350266,
+          "Point": "focused.SavedWorkbook.axialSmall1|Crack"
+        },
+        {
+          "Before": 27.877501095321,
+          "RelativeChange": 0.0,
+          "After": 27.877501095321,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_0.000001|Capacity"
+        },
+        {
+          "Before": 4.189441919909,
+          "RelativeChange": 0.0,
+          "After": 4.189441919909,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_0.000001|Crack"
+        },
+        {
+          "Before": 27.598365059341,
+          "RelativeChange": 0.0,
+          "After": 27.598365059341,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_10|Capacity"
+        },
+        {
+          "Before": 4.117925568568,
+          "RelativeChange": 0.0,
+          "After": 4.117925568568,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_10|Crack"
+        },
+        {
+          "Before": 27.789008891969,
+          "RelativeChange": 0.0,
+          "After": 27.789008891969,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_1000000|Capacity"
+        },
+        {
+          "Before": 4.17043623698,
+          "RelativeChange": 0.0,
+          "After": 4.17043623698,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_1000000|Crack"
+        },
+        {
+          "Before": 15.108938575508,
+          "RelativeChange": 0.0,
+          "After": 15.108938575508,
+          "Point": "focused.SavedWorkbook.mixedC1_-1|Capacity"
+        },
+        {
+          "Before": 2.952146302085,
+          "RelativeChange": 0.0,
+          "After": 2.952146302085,
+          "Point": "focused.SavedWorkbook.mixedC1_-1|Crack"
+        },
+        {
+          "Before": 13.850698928018,
+          "RelativeChange": 0.0,
+          "After": 13.850698928018,
+          "Point": "focused.SavedWorkbook.mixedT-1_1|Capacity"
+        },
+        {
+          "Before": 1.738689701739,
+          "RelativeChange": 0.0,
+          "After": 1.738689701739,
+          "Point": "focused.SavedWorkbook.mixedT-1_1|Crack"
+        },
+        {
+          "Before": 27.789020126827,
+          "RelativeChange": 0.0,
+          "After": 27.789020126827,
+          "Point": "focused.SavedWorkbook.Mx-1|Capacity"
+        },
+        {
+          "Before": 4.130256062421,
+          "RelativeChange": 0.0,
+          "After": 4.130256062421,
+          "Point": "focused.SavedWorkbook.Mx-1|Crack"
+        },
+        {
+          "Before": 27.789008887763,
+          "RelativeChange": 0.0,
+          "After": 27.789008887763,
+          "Point": "focused.SavedWorkbook.Mx1|Capacity"
+        },
+        {
+          "Before": 4.170436474825,
+          "RelativeChange": 0.0,
+          "After": 4.170436474825,
+          "Point": "focused.SavedWorkbook.Mx1|Crack"
+        },
+        {
+          "Before": 27.877500817988,
+          "RelativeChange": 0.0,
+          "After": 27.877500817988,
+          "Point": "focused.SavedWorkbook.My-1|Capacity"
+        },
+        {
+          "Before": 4.189442250562,
+          "RelativeChange": 0.0,
+          "After": 4.189442250562,
+          "Point": "focused.SavedWorkbook.My-1|Crack"
+        },
+        {
+          "Before": 27.626061531965,
+          "RelativeChange": 0.0,
+          "After": 27.626061531965,
+          "Point": "focused.SavedWorkbook.My1|Capacity"
+        },
+        {
+          "Before": 4.520709694404,
+          "RelativeChange": 0.0,
+          "After": 4.520709694404,
+          "Point": "focused.SavedWorkbook.My1|Crack"
+        },
+        {
+          "Before": 2.034068244886,
+          "RelativeChange": 0.0,
+          "After": 2.034068244886,
+          "Point": "focused.SavedWorkbook.N1000|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.N1000|Crack"
+        },
+        {
+          "Before": 0.969206680385,
+          "RelativeChange": 0.0,
+          "After": 0.969206680385,
+          "Point": "focused.SavedWorkbook.N2098Plateau|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.N2098Plateau|Crack"
+        },
+        {
+          "Before": 4.068136489769,
+          "RelativeChange": 0.0,
+          "After": 4.068136489769,
+          "Point": "focused.SavedWorkbook.N500|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.N500|Crack"
+        },
+        {
+          "Before": 3416577446.63499,
+          "RelativeChange": 0.0,
+          "After": 3416577446.63499,
+          "Point": "focused.SavedWorkbook.N500TinyMoment|Capacity"
+        },
+        {
+          "Before": 1158819516.66153,
+          "RelativeChange": 0.0,
+          "After": 1158819516.66153,
+          "Point": "focused.SavedWorkbook.N500TinyMoment|Crack"
+        },
+        {
+          "Before": 0.511754005346,
+          "RelativeChange": 0.0,
+          "After": 0.511754005346,
+          "Point": "focused.SavedWorkbook.overloadMixed1|Capacity"
+        },
+        {
+          "Before": 0.223719635071,
+          "RelativeChange": 0.0,
+          "After": 0.223719635071,
+          "Point": "focused.SavedWorkbook.overloadMixed1|Crack"
+        },
+        {
+          "Before": 5.11754E-07,
+          "RelativeChange": 0.0,
+          "After": 5.11754E-07,
+          "Point": "focused.SavedWorkbook.overloadMixed1000000|Capacity"
+        },
+        {
+          "Before": 2.2372E-07,
+          "RelativeChange": 0.0,
+          "After": 2.2372E-07,
+          "Point": "focused.SavedWorkbook.overloadMixed1000000|Crack"
+        },
+        {
+          "Before": 2966386285569250.0,
+          "RelativeChange": 0.0,
+          "After": 2966386285569250.0,
+          "Point": "focused.SavedWorkbook.tinyMx1|Capacity"
+        },
+        {
+          "Before": 445180524921969.0,
+          "RelativeChange": 0.0,
+          "After": 445180524921969.0,
+          "Point": "focused.SavedWorkbook.tinyMx1|Crack"
+        }
+      ],
+      "BeforeSHA256": "B4502FEF662F826C49B777B3BF9EE932E5470525AE15EC918AFA62E29BA31E23",
+      "AfterSHA256": "627AB48B2E15193F74D7C7B71C9ACD21A242103B8B4E5C332017BB5EFBEE80BF"
+    },
+    {
+      "Mode": "Yes",
+      "Passed": true,
+      "StatusRows": 22,
+      "StatusesEqual": true,
+      "NumFailStates": [
+        "focused.SavedWorkbook.overloadMixed1000000|CrackedState",
+        "focused.SavedWorkbook.overloadMixed1000000|StrengthState"
+      ],
+      "NumFailStatesEqual": true,
+      "PointCount": 44,
+      "MaximumRelativeLambdaChange": 0.0,
+      "Points": [
+        {
+          "Before": 1.001265742097,
+          "RelativeChange": 0.0,
+          "After": 1.001265742097,
+          "Point": "focused.SavedWorkbook.axialC0.95|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialC0.95|Crack"
+        },
+        {
+          "Before": 0.90590710899,
+          "RelativeChange": 0.0,
+          "After": 0.90590710899,
+          "Point": "focused.SavedWorkbook.axialC1.05|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialC1.05|Crack"
+        },
+        {
+          "Before": 0.951202464418,
+          "RelativeChange": 0.0,
+          "After": 0.951202464418,
+          "Point": "focused.SavedWorkbook.axialC1|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialC1|Crack"
+        },
+        {
+          "Before": 0.475601232209,
+          "RelativeChange": 0.0,
+          "After": 0.475601232209,
+          "Point": "focused.SavedWorkbook.axialC2|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialC2|Crack"
+        },
+        {
+          "Before": 45.353236747172,
+          "RelativeChange": 0.0,
+          "After": 45.353236747172,
+          "Point": "focused.SavedWorkbook.axialSmall-1|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.axialSmall-1|Crack"
+        },
+        {
+          "Before": 19.459311620196,
+          "RelativeChange": 0.0,
+          "After": 19.459311620196,
+          "Point": "focused.SavedWorkbook.axialSmall1|Capacity"
+        },
+        {
+          "Before": 4.163161350266,
+          "RelativeChange": 0.0,
+          "After": 4.163161350266,
+          "Point": "focused.SavedWorkbook.axialSmall1|Crack"
+        },
+        {
+          "Before": 27.877239135431,
+          "RelativeChange": 0.0,
+          "After": 27.877239135431,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_0.000001|Capacity"
+        },
+        {
+          "Before": 4.189441923369,
+          "RelativeChange": 0.0,
+          "After": 4.189441923369,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_0.000001|Crack"
+        },
+        {
+          "Before": 27.598365055528,
+          "RelativeChange": 0.0,
+          "After": 27.598365055528,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_10|Capacity"
+        },
+        {
+          "Before": 4.11792556038,
+          "RelativeChange": 0.0,
+          "After": 4.11792556038,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_10|Crack"
+        },
+        {
+          "Before": 27.789008980338,
+          "RelativeChange": 0.0,
+          "After": 27.789008980338,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_1000000|Capacity"
+        },
+        {
+          "Before": 4.170436236696,
+          "RelativeChange": 0.0,
+          "After": 4.170436236696,
+          "Point": "focused.SavedWorkbook.biaxial1_-1_1000000|Crack"
+        },
+        {
+          "Before": 15.108938570273,
+          "RelativeChange": 0.0,
+          "After": 15.108938570273,
+          "Point": "focused.SavedWorkbook.mixedC1_-1|Capacity"
+        },
+        {
+          "Before": 2.952146301455,
+          "RelativeChange": 0.0,
+          "After": 2.952146301455,
+          "Point": "focused.SavedWorkbook.mixedC1_-1|Crack"
+        },
+        {
+          "Before": 13.850698932272,
+          "RelativeChange": 0.0,
+          "After": 13.850698932272,
+          "Point": "focused.SavedWorkbook.mixedT-1_1|Capacity"
+        },
+        {
+          "Before": 1.738689709156,
+          "RelativeChange": 0.0,
+          "After": 1.738689709156,
+          "Point": "focused.SavedWorkbook.mixedT-1_1|Crack"
+        },
+        {
+          "Before": 27.789020147927,
+          "RelativeChange": 0.0,
+          "After": 27.789020147927,
+          "Point": "focused.SavedWorkbook.Mx-1|Capacity"
+        },
+        {
+          "Before": 4.130256354064,
+          "RelativeChange": 0.0,
+          "After": 4.130256354064,
+          "Point": "focused.SavedWorkbook.Mx-1|Crack"
+        },
+        {
+          "Before": 27.789008977275,
+          "RelativeChange": 0.0,
+          "After": 27.789008977275,
+          "Point": "focused.SavedWorkbook.Mx1|Capacity"
+        },
+        {
+          "Before": 4.170436474546,
+          "RelativeChange": 0.0,
+          "After": 4.170436474546,
+          "Point": "focused.SavedWorkbook.Mx1|Crack"
+        },
+        {
+          "Before": 27.877238859182,
+          "RelativeChange": 0.0,
+          "After": 27.877238859182,
+          "Point": "focused.SavedWorkbook.My-1|Capacity"
+        },
+        {
+          "Before": 4.18944225399,
+          "RelativeChange": 0.0,
+          "After": 4.18944225399,
+          "Point": "focused.SavedWorkbook.My-1|Crack"
+        },
+        {
+          "Before": 27.626061554662,
+          "RelativeChange": 0.0,
+          "After": 27.626061554662,
+          "Point": "focused.SavedWorkbook.My1|Capacity"
+        },
+        {
+          "Before": 4.520695488262,
+          "RelativeChange": 0.0,
+          "After": 4.520695488262,
+          "Point": "focused.SavedWorkbook.My1|Crack"
+        },
+        {
+          "Before": 2.034068289622,
+          "RelativeChange": 0.0,
+          "After": 2.034068289622,
+          "Point": "focused.SavedWorkbook.N1000|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.N1000|Crack"
+        },
+        {
+          "Before": 0.969206633677,
+          "RelativeChange": 0.0,
+          "After": 0.969206633677,
+          "Point": "focused.SavedWorkbook.N2098Plateau|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.N2098Plateau|Crack"
+        },
+        {
+          "Before": 4.068136579244,
+          "RelativeChange": 0.0,
+          "After": 4.068136579244,
+          "Point": "focused.SavedWorkbook.N500|Capacity"
+        },
+        {
+          "Before": 0.0,
+          "RelativeChange": 0.0,
+          "After": 0.0,
+          "Point": "focused.SavedWorkbook.N500|Crack"
+        },
+        {
+          "Before": 3416577446.60325,
+          "RelativeChange": 0.0,
+          "After": 3416577446.60325,
+          "Point": "focused.SavedWorkbook.N500TinyMoment|Capacity"
+        },
+        {
+          "Before": 1158819516.80131,
+          "RelativeChange": 0.0,
+          "After": 1158819516.80131,
+          "Point": "focused.SavedWorkbook.N500TinyMoment|Crack"
+        },
+        {
+          "Before": 0.511754005303,
+          "RelativeChange": 0.0,
+          "After": 0.511754005303,
+          "Point": "focused.SavedWorkbook.overloadMixed1|Capacity"
+        },
+        {
+          "Before": 0.223719638179,
+          "RelativeChange": 0.0,
+          "After": 0.223719638179,
+          "Point": "focused.SavedWorkbook.overloadMixed1|Crack"
+        },
+        {
+          "Before": 5.11754E-07,
+          "RelativeChange": 0.0,
+          "After": 5.11754E-07,
+          "Point": "focused.SavedWorkbook.overloadMixed1000000|Capacity"
+        },
+        {
+          "Before": 2.2372E-07,
+          "RelativeChange": 0.0,
+          "After": 2.2372E-07,
+          "Point": "focused.SavedWorkbook.overloadMixed1000000|Crack"
+        },
+        {
+          "Before": 2966386295124280.0,
+          "RelativeChange": 0.0,
+          "After": 2966386295124280.0,
+          "Point": "focused.SavedWorkbook.tinyMx1|Capacity"
+        },
+        {
+          "Before": 445180523798720.0,
+          "RelativeChange": 0.0,
+          "After": 445180523798720.0,
+          "Point": "focused.SavedWorkbook.tinyMx1|Crack"
+        }
+      ],
+      "BeforeSHA256": "9DCFDA42FE9FC15DE12AB5BAC313DFA196CA253DC68D754D1A4977B999F03EAE",
+      "AfterSHA256": "BAB44F982FDADB1BCA639606A8D8E93F8DDB8789685462ECB0AAE7B8F7DC8F1D"
+    }
+  ],
+  "IndependentNumFailReviewExecuted": false
+}

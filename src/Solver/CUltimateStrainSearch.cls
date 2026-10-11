@@ -21,6 +21,7 @@ Option Explicit
 Private mFrame As CSectionNumericalFrame ' Тот же центр и масштаб, что у прямого НДС.
 Private mMeritWeight1 As Double, mMeritWeight2 As Double, mMeritWeight3 As Double
 Private mMeritScalingReady As Boolean ' Веса текущего шага по реальным строкам Якобиана; не допуски приема точки.
+Private Const INITIAL_STEP_SCALE_FACTOR As Double = 2# ' Численный радиус стартовой пробы, не физический предел.
 
 ' Выполняет ветку UltimateStrain для request-а несущей способности.
 ' Чисто осевая траектория переводится в LoadMultiplier тем же правилом, что и
@@ -159,6 +160,8 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     Dim state As String
     Dim solver As CSectionSolver
     Dim acceptedEvaluation As Boolean, acceptedRevision As Long, immutableMaterials As Boolean
+    Dim warmRestartAvailable As Boolean
+    If Not startSolver Is Nothing Then warmRestartAvailable = startSolver.Converged
     Dim acceptedPath(1 To 6) As Double ' Точный Offset/Base; без строковых или округленных ключей.
     If Not section Is Nothing And Not concreteMaterial Is Nothing And Not steelMaterial Is Nothing Then
         If TypeOf concreteMaterial Is CMaterialDiagram And TypeOf steelMaterial Is CMaterialDiagram Then
@@ -182,6 +185,17 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
             End If
         End If
 
+        ' Теплый старт на противоположном луче не уточняет требуемую ветвь.
+        ' Проверяем общий расчетный старт до дорогих проб Якобиана; отрицательная
+        ' lambda сама по себе не объявляется физическим отсутствием решения.
+        If lambdaValue < 0# Then
+            If TryRestartWarmGuess(context, section, concreteMaterial, steelMaterial, loadPath, _
+                    eps0, kx, ky, iter, warmRestartAvailable) Then
+                acceptedEvaluation = False
+                GoTo NextUltimateIteration
+            End If
+        End If
+
         If context.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit) Then
             Dim finalization As EUltimateFinalization
             finalization = context.LimitSearchFinalizeUltimateResult(section, _
@@ -191,6 +205,11 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
                     RunNewton = True
                     Exit Function
                 Case ufRejectedPoint
+                    If TryRestartWarmGuess(context, section, concreteMaterial, steelMaterial, loadPath, _
+                            eps0, kx, ky, iter, warmRestartAvailable) Then
+                        acceptedEvaluation = False
+                        GoTo NextUltimateIteration
+                    End If
                     Exit Function
                 Case ufNeedsRefinement
                 Case Else
@@ -204,7 +223,15 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
 
         context.AppendDiagnostic "ultimateNewton step=" & CStr(iter)
         If Not ApplyUltimateNewtonStep(context, section, concreteMaterial, steelMaterial, _
-                loadPath, eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state) Then Exit Function
+                loadPath, eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+                iter, warmRestartAvailable) Then
+            If TryRestartWarmGuess(context, section, concreteMaterial, steelMaterial, loadPath, _
+                    eps0, kx, ky, iter, warmRestartAvailable) Then
+                acceptedEvaluation = False
+                GoTo NextUltimateIteration
+            End If
+            Exit Function
+        End If
         ' Принятая проба уже имеет свои residual/solver/критерий. Пробы Якобиана
         ' ее не подменяют; финальное подтверждение усилий и физики остается выше.
         acceptedEvaluation = immutableMaterials
@@ -214,6 +241,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
             acceptedPath(3) = loadPath.MxOffset: acceptedPath(4) = loadPath.MxBase
             acceptedPath(5) = loadPath.MyOffset: acceptedPath(6) = loadPath.MyBase
         End If
+NextUltimateIteration:
     Next iter
 
     ' Последняя разрешенная поправка тоже проходит обычную финальную приемку.
@@ -242,6 +270,30 @@ Failed:
     ReportArithmeticOrContractFailure context, "Общий поиск UltimateStrain", Err.Number, Err.Description
 End Function
 
+' Неудачный теплый старт может попасть на другое плато или отрицательный луч.
+' Один раз возвращаемся к общему расчетному старту в оставшемся бюджете:
+' траектория, материалы, допуски и конечная физическая приемка не меняются.
+Private Function TryRestartWarmGuess(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, ByVal loadPath As CLoadPathVector, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, ByVal iteration As Long, _
+        ByRef available As Boolean) As Boolean
+    If Not available Then Exit Function
+    available = False
+    If context.StoppedTerminally Or iteration >= context.LimitSearchUltimateMaxIterations Then Exit Function
+    Dim freshEps As Double, freshKx As Double, freshKy As Double
+    context.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
+        loadPath, Nothing, freshEps, freshKx, freshKy
+    If context.StoppedTerminally Then Exit Function
+    freshEps = mFrame.CenterStrain(freshEps, freshKx, freshKy)
+    If Not IsFiniteNumber(freshEps) Or Not IsFiniteNumber(freshKx) Or Not IsFiniteNumber(freshKy) Then Exit Function
+    If freshEps = eps0 And freshKx = kx And freshKy = ky Then Exit Function
+    eps0 = freshEps: kx = freshKx: ky = freshKy
+    mMeritScalingReady = False
+    context.AppendDiagnostic "ultimateWarmRestart; usedIterations=" & CStr(iteration) & _
+        "; remainingIterations=" & CStr(context.LimitSearchUltimateMaxIterations - iteration)
+    TryRestartWarmGuess = True
+End Function
+
 ' Пользователь задает бюджет итераций; поиск длины шага автоматический.
 Private Function ValidateNewtonSettings(ByVal context As ILimitSearchProblem) As Boolean
     If context.LimitSearchUltimateMaxIterations <= 0 Then
@@ -257,7 +309,8 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
         ByVal loadPath As CLoadPathVector, ByRef eps0 As Double, _
         ByRef kx As Double, ByRef ky As Double, ByRef rPath1 As Double, _
         ByRef rPath2 As Double, ByRef rLimit As Double, ByRef solver As CSectionSolver, _
-        ByRef lambdaValue As Double, ByRef state As String) As Boolean
+        ByRef lambdaValue As Double, ByRef state As String, ByVal iteration As Long, _
+        ByRef warmRestartAvailable As Boolean) As Boolean
     On Error GoTo Failed
 
     Dim hEps As Double
@@ -323,6 +376,16 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
             Exit Function
         End If
         If context.StoppedTerminally Then Exit Function
+    End If
+
+    ' Для неудачного теплого старта сначала проверяем общий расчетный старт,
+    ' затем обычные резервные направления. Новая плоскость сразу оценивается,
+    ' поэтому принятую ранее невязку нельзя повторно использовать после возврата.
+    If TryRestartWarmGuess(context, section, concreteMaterial, steelMaterial, loadPath, _
+            eps0, kx, ky, iteration, warmRestartAvailable) Then
+        ApplyUltimateNewtonStep = EvaluateResidual(context, section, concreteMaterial, steelMaterial, _
+            loadPath, eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state)
+        Exit Function
     End If
 
     ' Локальная производная на плато не видит возврата на активную ветвь.
@@ -726,10 +789,10 @@ Private Function TryUltimateDirection(ByVal context As ILimitSearchProblem, ByVa
     baseNorm = StepResidualNorm(context, rPath1, rPath2, rLimit)
 
     Dim alpha As Double
-    alpha = 1#
+    Dim backtracks As Long
+    alpha = InitialUltimateDirectionAlpha(concreteMaterial, steelMaterial, eps0, kx, ky, dEps, dKx, dKy, backtracks)
     Dim changingAlpha As Double
 
-    Dim backtracks As Long
     Do While backtracks < NONLINEAR_MAX_BACKTRACKS
         backtracks = backtracks + 1
         Dim trialEps As Double, trialKx As Double, trialKy As Double
@@ -792,6 +855,35 @@ Private Function TryUltimateDirection(ByVal context As ILimitSearchProblem, ByVa
 
 Failed:
     ReportArithmeticOrContractFailure context, "Проверка поправки UltimateStrain", Err.Number, Err.Description
+End Function
+
+' Начальная проба соразмерна текущей плоскости и деформациям материалов.
+' Пропущенные деления пополам входят в прежний бюджет line-search. Приемка
+' остается по настоящим невязкам; для чужих или изменяемых материалов шаг прежний.
+Private Function InitialUltimateDirectionAlpha(ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
+        ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
+        ByVal dEps As Double, ByVal dKx As Double, ByVal dKy As Double, ByRef skippedBacktracks As Long) As Double
+    InitialUltimateDirectionAlpha = 1#
+    skippedBacktracks = 0
+    If concreteMaterial Is Nothing Then Exit Function
+    If steelMaterial Is Nothing Then Exit Function
+    If Not TypeOf concreteMaterial Is CMaterialDiagram Or Not TypeOf steelMaterial Is CMaterialDiagram Then Exit Function
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Set concrete = concreteMaterial: Set steel = steelMaterial
+    If Not concrete.IsFrozen Or Not steel.IsFrozen Then Exit Function
+    Dim stepScale As Double, directionScale As Double, alpha As Double
+    stepScale = MaxDouble(Abs(eps0), mFrame.LengthScale * MaxDouble(Abs(kx), Abs(ky)))
+    stepScale = MaxDouble(stepScale, MaxDouble(Abs(concrete.PhysicalCompressionStrain), Abs(concrete.PhysicalTensionStrain)))
+    stepScale = MaxDouble(stepScale, MaxDouble(Abs(steel.PhysicalCompressionStrain), Abs(steel.PhysicalTensionStrain)))
+    If stepScale <= 0# Then Exit Function
+    directionScale = MaxDouble(Abs(dEps), mFrame.LengthScale * MaxDouble(Abs(dKx), Abs(dKy)))
+    alpha = 1#
+    Do While alpha * directionScale > INITIAL_STEP_SCALE_FACTOR * stepScale
+        alpha = alpha / 2#
+        skippedBacktracks = skippedBacktracks + 1
+        If alpha <= 0# Then Exit Function
+    Loop
+    InitialUltimateDirectionAlpha = alpha
 End Function
 
 ' Уточняет переход с плато на активную ветвь. Нулевая производная и
@@ -917,7 +1009,11 @@ End Sub
 Private Function StepResidualNorm(ByVal context As ILimitSearchProblem, _
         ByVal r1 As Double, ByVal r2 As Double, ByVal r3 As Double) As Double
     If mMeritScalingReady Then
-        StepResidualNorm = Abs(r1) * mMeritWeight1 + Abs(r2) * mMeritWeight2 + Abs(r3) * mMeritWeight3
+        Dim weighted1 As Double, weighted2 As Double, weighted3 As Double, magnitude As Double
+        weighted1 = r1 * mMeritWeight1: weighted2 = r2 * mMeritWeight2: weighted3 = r3 * mMeritWeight3
+        magnitude = MaxDouble(Abs(weighted1), MaxDouble(Abs(weighted2), Abs(weighted3)))
+        If magnitude > 0# Then StepResidualNorm = magnitude * _
+            Sqr((weighted1 / magnitude) ^ 2 + (weighted2 / magnitude) ^ 2 + (weighted3 / magnitude) ^ 2)
     Else
         StepResidualNorm = context.LimitSearchUltimateResidualNorm(r1, r2, r3)
     End If

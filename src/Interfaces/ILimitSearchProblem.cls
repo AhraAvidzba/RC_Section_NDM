@@ -164,11 +164,12 @@ End Function
 
 ' Принимает уточненную скобку по физическому критерию конкретной задачи.
 ' Выбор допустимой стороны и дополнительное подтверждение не принадлежат Search.
-Public Sub FinalizeBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
+' True подтверждает точку поиска, а не завершение последующих расчетных этапов.
+Public Function FinalizeBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
         ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
-        ByVal methodName As String, ByVal iterations As Long)
-End Sub
+        ByVal methodName As String, ByVal iterations As Long) As Boolean
+End Function
 
 ' Пробует специальный подтвержденный метод после численной неудачи поиска.
 ' Если такого метода у задачи нет, ее первичная причина сохраняется.

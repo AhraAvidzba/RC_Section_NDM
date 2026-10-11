@@ -52,11 +52,17 @@ Private mUltimateInitialEps As Double ' ДЛЯ ТЕСТОВ: ненулевой 
 Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: line search не может уменьшить норму.
 Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: направленный отказ callback-а.
 Private mUltimateCalls As Long ' ДЛЯ ТЕСТОВ: число оценок невязки Newton.
+Private mUltimateGuessCalls As Long ' ДЛЯ ТЕСТОВ: ограниченный возврат к общему старту.
+Private mUltimateUsesWarmGuess As Boolean
 Private mFailureCode As ESolverFailureCode ' ДЛЯ ТЕСТОВ: точная причина остановки.
 Private mFailureReason As String ' ДЛЯ ТЕСТОВ: последняя причина callback-а отдельно от общего журнала.
 Private mMultiplierScenario As Long ' ДЛЯ ТЕСТОВ: управляемый отказ конкретного callback-а LoadMultiplier.
 Private mFallbackCalls As Long ' ДЛЯ ТЕСТОВ: терминальная ошибка запрещает резервную финализацию.
 Private mAcceptableProbeCalls As Long ' ДЛЯ ТЕСТОВ: успешные пробы между численными отказами.
+Private mFinalizationMaxWidth As Double ' ДЛЯ ТЕСТОВ: приемке нужна более узкая скобка, чем пользовательский допуск.
+Private mBracketFinalizationCalls As Long
+Private mDeferOverallCompletion As Boolean ' ДЛЯ ТЕСТОВ: последующий этап еще не выполнен, но точка поиска принята.
+Private mPointAccepted As Boolean
 
 ' Настраивает линейную тестовую задачу перед запуском общего search.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
@@ -88,12 +94,30 @@ Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
     mUltimateConstantNorm = False
     mUltimateScenario = 0
     mUltimateCalls = 0
+    mUltimateGuessCalls = 0
+    mUltimateUsesWarmGuess = False
     mFailureCode = sfcNone
     mFailureReason = vbNullString
     mMultiplierScenario = 0
     mAcceptableProbeCalls = 0
     mFallbackCalls = 0
+    mFinalizationMaxWidth = 0#
+    mBracketFinalizationCalls = 0
+    mDeferOverallCompletion = False: mPointAccepted = False
 End Sub
+
+' ДЛЯ ТЕСТОВ: отрицательная ширина моделирует постоянно неудачное уточнение.
+Public Property Let FinalizationMaxWidth(ByVal value As Double)
+    mFinalizationMaxWidth = value
+End Property
+
+Public Property Get BracketFinalizationCalls() As Long
+    BracketFinalizationCalls = mBracketFinalizationCalls
+End Property
+
+Public Property Let DeferOverallCompletion(ByVal value As Boolean)
+    mDeferOverallCompletion = value
+End Property
 
 ' ДЛЯ ТЕСТОВ: задает численную неудачу верхних проб, не физический предел.
 Public Property Let FailureAbove(ByVal value As Double)
@@ -252,6 +276,7 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
     mSearchExecuted = True
+    mUltimateGuessCalls = mUltimateGuessCalls + 1
     Select Case mUltimateScenario
         Case 18: Err.Raise 6
         Case 19: Err.Raise 9
@@ -259,6 +284,9 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         Case 21: Err.Raise 9, "CTestLimitSearchProblem", "Тестовое нарушение подготовки стартовой плоскости."
     End Select
     eps0 = mUltimateInitialEps: kx = 0#: ky = 0#
+    If mUltimateUsesWarmGuess And Not startSolver Is Nothing Then
+        eps0 = startSolver.Epsilon0: kx = startSolver.KappaX: ky = startSolver.KappaY
+    End If
 End Sub
 
 ' ДЛЯ ТЕСТОВ: вычисляет линейные невязки и считает реальные вызовы callback.
@@ -301,6 +329,7 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
     rPath2 = ky
     lambdaValue = eps0 / 0.001
     rLimit = lambdaValue - mRootLambda
+    If mUltimateScenario = 27 Then rLimit = Abs(lambdaValue) - mRootLambda
     state = PROBE_LIMIT
     ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = True
 End Function
@@ -333,6 +362,11 @@ Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal sec
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As EUltimateFinalization
     If mUltimateScenario = 23 Then Exit Function
+    If mUltimateScenario = 27 And lambdaValue < 0# Then
+        ILimitSearchProblem_SetFailure sfcNumericalFailure, "Отрицательная ветвь тестового пути."
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufRejectedPoint
+        Exit Function
+    End If
     If mUltimateScenario = 24 Or mUltimateScenario = 25 Then
         ILimitSearchProblem_SetFailure sfcNumericalFailure, "Тестовая предельная точка не принадлежит допустимому направлению пути."
         ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufRejectedPoint
@@ -552,24 +586,33 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: сохраняет выбранную сторону скобки по kind задачи, чтобы проверить
 ' generic финализацию Capacity/Formation без отдельного численного алгоритма.
-Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+Private Function ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
-        ByVal methodName As String, ByVal iterations As Long)
+        ByVal methodName As String, ByVal iterations As Long) As Boolean
+    mBracketFinalizationCalls = mBracketFinalizationCalls + 1
+    mFinalIterations = iterations
     If mMultiplierScenario = 10 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
     If mMultiplierScenario = 11 Then
         ILimitSearchProblem_SetFailure sfcInvalidConfiguration, MultiplierFaultReason()
-        Exit Sub
+        Exit Function
+    End If
+    If mFinalizationMaxWidth < 0# Or (mFinalizationMaxWidth > 0# And _
+            highLambda - lowLambda > mFinalizationMaxWidth) Then
+        ILimitSearchProblem_SetNumericalFailure "Тестовая физическая приемка требует более узкой скобки."
+        Exit Function
     End If
     Dim lambdaValue As Double
     If mKind = rkCrackFormation Then lambdaValue = highLambda Else lambdaValue = lowLambda
-    mConverged = True
+    mConverged = Not mDeferOverallCompletion
+    mPointAccepted = True
     mFinalLambda = lambdaValue
     mFinalMethod = methodName
     mLimitState = PROBE_ACCEPTABLE
     AppendDiagnosticLine "retained lambda=" & FormatNumberInvariant(lambdaValue) & _
         "; method=" & methodName
-End Sub
+    ILimitSearchProblem_FinalizeBracket = True
+End Function
 
 ' ДЛЯ ТЕСТОВ: отмечает вызов последней попытки финализации, не объявляя успех.
 Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
@@ -583,7 +626,7 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    If mConverged Then
+    If mConverged Or mPointAccepted Then
         meta.SetResult rsSuccess, rcCheckPassed, mKind, "Тестовый критерий найден."
     ElseIf mFailureCode <> sfcNone Then
         meta.SetSolverFailure mFailureCode, mKind, mDiagnosticLog, mSearchExecuted
@@ -596,7 +639,7 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     End If
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
-    result.Initialize meta, request.SolutionStrategy, mFinalMethod, mConverged, mFinalLambda, _
+    result.Initialize meta, request.SolutionStrategy, mFinalMethod, mConverged Or mPointAccepted, mFinalLambda, _
         mFinalLambda, 0#, 0#, Nothing, mLimitState, mDiagnosticLog, vbNullString, mSearchExecuted
     Set ILimitSearchProblem_BuildResult = result
 End Function
@@ -678,6 +721,18 @@ End Sub
 ' ДЛЯ ТЕСТОВ: счетчик и typed-причина для независимых assertions.
 Public Property Get UltimateCalls() As Long
     UltimateCalls = mUltimateCalls
+End Property
+
+' ДЛЯ ТЕСТОВ: теплый старт имеет два симметричных корня, принимается положительный.
+Public Sub ConfigureUltimateWarmCase(ByVal maxIterations As Long, ByVal kind As EResultKind, _
+        Optional ByVal scenario As Long = 27, Optional ByVal coldStrain As Double = 0.001)
+    ConfigureUltimateGuardCase scenario, kind
+    mMaxIterations = maxIterations: mRootLambda = 1#
+    mUltimateInitialEps = coldStrain: mUltimateUsesWarmGuess = True
+End Sub
+
+Public Property Get UltimateGuessCalls() As Long
+    UltimateGuessCalls = mUltimateGuessCalls
 End Property
 
 Public Property Get FailureCode() As ESolverFailureCode

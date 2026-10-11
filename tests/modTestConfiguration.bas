@@ -93,6 +93,7 @@ Private Sub ConfigureSearchFixture(ByVal systemRange As Object, ByVal unitRange 
     SetValue systemRange, "Capacity.SolutionStrategy", "Auto"
     SetValue systemRange, "Capacity.SearchMethod", "Bisection"
     SetValue systemRange, "SLS.Crack.InitiationSolutionStrategy", "Auto"
+    SetValue systemRange, "SLS.Crack.ToleranceLambda", 0.000001
     SetValue systemRange, "SLS.Crack.Allowable", 1#
     SetValue systemRange, "SLS.Crack.Code", "SP63"
     SetValue systemRange, "SLS.Crack.PsiMode", "User"
@@ -106,6 +107,90 @@ Private Sub ConfigureSearchFixture(ByVal systemRange As Object, ByVal unitRange 
     SetProfileValue profileRange, "Calculation.Strength.Capacity", "No", "PR2"
     SetProfileValue profileRange, "Calculation.Crack.Width", "Yes", "PR2"
 End Sub
+
+' ДЛЯ ТЕСТОВ: независимые допуски двух задач проходят через общий интерфейс;
+' ошибки нового ввода останавливают batch до решения равновесия.
+Public Function RunAudit03LambdaSettingsTests(Optional ByRef passed As Long = 0, _
+        Optional ByRef failed As Long = 0) As String
+    Dim stats As TConfigTestStats, table As Object, unitTable As Object, profileTable As Object
+    Dim saved As Variant, savedUnits As Variant, savedProfiles As Variant, configured As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim profiles As CCalculationProfileCatalog, section As CSectionModel
+    On Error GoTo FailedRun
+    Set table = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set unitTable = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
+    Set profileTable = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    saved = table.Formula: savedUnits = unitTable.Formula: savedProfiles = profileTable.Formula
+    ConfigureSearchFixture table, unitTable, profileTable
+    SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
+    SetValue table, "SLS.Crack.InitiationSolutionStrategy", "LoadMultiplier"
+    configured = table.Formula
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set section = SearchFixtureSection()
+
+    Dim capacity As CCapacitySolver, crack As CCrackFormationCalculator
+    Dim capacityAdapter As CCapacityLimitSearchProblem, crackAdapter As CCrackLimitSearchProblem
+    Dim problem As ILimitSearchProblem
+    SetValue table, "Capacity.ToleranceLambda", 0.02
+    SetValue table, "SLS.Crack.ToleranceLambda", 0.005
+    settings.LoadFromWorkbook ThisWorkbook
+    Set capacity = New CCapacitySolver: capacity.ApplySettings settings, units
+    Set crack = New CCrackFormationCalculator: crack.ApplySettings settings, units
+    Set capacityAdapter = New CCapacityLimitSearchProblem: capacityAdapter.Initialize capacity
+    Set crackAdapter = New CCrackLimitSearchProblem: crackAdapter.Initialize crack
+    Set problem = capacityAdapter
+    CheckClose stats, "lambdaSettings.capacity.adapter", problem.LambdaTolerance, 0.02, 0#
+    Set problem = crackAdapter
+    CheckClose stats, "lambdaSettings.crack.adapter", problem.LambdaTolerance, 0.005, 0#
+    CheckClose stats, "lambdaSettings.crack.owner", crack.LambdaTolerance, 0.005, 0#
+
+    Dim capacityBase As CBatchSectionCalculator, crackBase As CBatchSectionCalculator, changed As CBatchSectionCalculator
+    table.Formula = configured
+    Set capacityBase = RunConfigBatch(stats, "lambdaSettings.capacity.base", "PR1", section, provider, profiles, units)
+    Set crackBase = RunConfigBatch(stats, "lambdaSettings.crack.base", "PR2", section, provider, profiles, units)
+    SetValue table, "SLS.Crack.ToleranceLambda", 0.02
+    Set changed = RunConfigBatch(stats, "lambdaSettings.capacity.isolation", "PR1", section, provider, profiles, units)
+    CheckClose stats, "lambdaSettings.capacity.unchanged", changed.ResultAt(1).StrengthResult.Capacity.LambdaCapacity, _
+        capacityBase.ResultAt(1).StrengthResult.Capacity.LambdaCapacity, 0#
+    Check stats, "lambdaSettings.capacity.sameWork", changed.SolverCallCount = capacityBase.SolverCallCount
+    table.Formula = configured: SetValue table, "Capacity.ToleranceLambda", 0.02
+    Set changed = RunConfigBatch(stats, "lambdaSettings.crack.isolation", "PR2", section, provider, profiles, units)
+    CheckClose stats, "lambdaSettings.crack.unchanged", changed.ResultAt(1).CrackResult.Formation.LambdaCrc, _
+        crackBase.ResultAt(1).CrackResult.Formation.LambdaCrc, 0#
+    Check stats, "lambdaSettings.crack.sameWork", changed.SolverCallCount = crackBase.SolverCallCount
+
+    Dim bad As Variant, cell As Object, prefix As String, message As String, index As Long
+    For Each bad In Array(vbNullString, "abc", CVErr(2042), 0#, -1#)
+        index = index + 1: table.Formula = configured
+        Set cell = ValueCell(table, "SLS.Crack.ToleranceLambda", 2): cell.Value2 = bad
+        prefix = "lambdaSettings.invalid." & CStr(index)
+        Set changed = RunConfigBatch(stats, prefix, "PR2", section, provider, profiles, units)
+        message = changed.ResultAt(1).OverallMeta.ResultComment
+        Check stats, prefix & ".inputErr", changed.ResultAt(1).Status = "InputErr"
+        Check stats, prefix & ".noSolve", changed.SolverCallCount = 0
+        Check stats, prefix & ".key", InStr(1, message, "SLS.Crack.ToleranceLambda", vbBinaryCompare) > 0
+        Check stats, prefix & ".cell", InStr(1, message, cell.Address(False, False), vbTextCompare) > 0
+    Next bad
+    table.Formula = configured
+    Set changed = RunConfigBatch(stats, "lambdaSettings.recovery", "PR2", section, provider, profiles, units)
+    Check stats, "lambdaSettings.recovery", changed.ResultAt(1).Status <> "InputErr" And changed.SolverCallCount > 0
+    GoTo Restore
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    LogLine stats, "FAIL: lambdaSettings.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error Resume Next
+    If Not table Is Nothing And IsArray(saved) Then table.Formula = saved
+    If Not unitTable Is Nothing And IsArray(savedUnits) Then unitTable.Formula = savedUnits
+    If Not profileTable Is Nothing And IsArray(savedProfiles) Then profileTable.Formula = savedProfiles
+    On Error GoTo 0
+    LogLine stats, "TOTAL_AUDIT03_LAMBDA_SETTINGS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    passed = stats.Passed: failed = stats.Failed
+    RunAudit03LambdaSettingsTests = stats.Report
+End Function
 
 ' Меняет только селектор другого раздела на допустимые варианты. Неактивный
 ' потребитель не должен менять физическую точку, метод или число solve
@@ -200,7 +285,15 @@ Private Sub CheckCapacitySelectors(ByRef stats As TConfigTestStats, ByVal system
                 CheckClose stats, prefix & ".physicalCriterion", ratio, 1#, 0.0002
             End If
             If cap.SolutionMethod = "LoadMultiplier" Then
-                Check stats, prefix & ".activeSearchMethod", InStr(1, cap.DiagnosticLog, "searchMethod=" & CStr(method), vbBinaryCompare) > 0
+                If InStr(1, cap.DiagnosticLog, "searchMethod=", vbBinaryCompare) > 0 Then
+                    Check stats, prefix & ".activeSearchMethod", InStr(1, cap.DiagnosticLog, "searchMethod=" & CStr(method), vbBinaryCompare) > 0
+                Else
+                    ' До физической скобки выбранный одномерный метод еще не
+                    ' выполнялся. Такой выход допустим только по подтвержденной
+                    ' предельной плоскости; ее усилия и деформации проверены выше.
+                    Check stats, prefix & ".retainedPhysicalRefinement", InStr(1, cap.DiagnosticLog, _
+                        "предел подтвержден отдельной проверкой усилий и деформаций из сохраненного НДС; lambda=", vbBinaryCompare) > 0
+                End If
             ElseIf CStr(strategy) = "UltimateStrain" Then
                 If baselineUltimate = 0# Then baselineUltimate = cap.LambdaCapacity
                 CheckClose stats, prefix & ".inactiveSearchMethod", cap.LambdaCapacity, baselineUltimate, 0.0000000001

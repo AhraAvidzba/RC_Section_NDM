@@ -1,0 +1,20 @@
+﻿{
+    "Passed":  true,
+    "MainWorkbookSHA256":  "7A71E85B32876F949CC8E822D06F7D96E0C3CBE74E7D7750776335190744F827",
+    "CandidateSHA256":  "DA10AE486C920E114E55B28F7C71188B5C51E2E876402AB05022A4EFFCDB2D4F",
+    "DataBefore":  "066DA9411571A08E2164CE403D192F3A11350CCA11FDF5698C3CADBF4A454C11",
+    "DataAfter":  "066DA9411571A08E2164CE403D192F3A11350CCA11FDF5698C3CADBF4A454C11",
+    "InputsBefore":  "4DCD0B3B9C32E4C310DFF5698C0376450BB147B06640B76E48476152C19B6787",
+    "InputsAfter":  "4DCD0B3B9C32E4C310DFF5698C0376450BB147B06640B76E48476152C19B6787",
+    "ColumnWidthsPreserved":  true,
+    "NewKey":  "SLS.Crack.ToleranceLambda",
+    "Default":  0.01,
+    "InputAddress":  "B72",
+    "HelpLink":  "\u0027Справка\u0027!A1687",
+    "RightHelpBorder":  true,
+    "InheritedDropdown":  false,
+    "Idempotent":  true,
+    "UserTolerancePreserved":  true,
+    "SourceReopenedReadOnly":  true,
+    "ProductionWorkbookChanged":  false
+}

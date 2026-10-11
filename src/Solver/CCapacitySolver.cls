@@ -89,6 +89,7 @@ Private mCriticalElement As String ' ID элемента, который пер�
 Private mCriticalLimitType As String ' Тип ограничения из общего деформационного критерия.
 Private mCriticalStrainUtilization As Double ' Отношение фактической деформации к своему пределу.
 Private mUltimateMomentOnlyPath As Boolean ' True для частной UltimateStrain-постановки N=const, M=lambda*Mbase.
+Private mMeritJacobianForAffinePath As Boolean ' Масштабы шага для моментной системы и траекторий с постоянной частью.
 Private mUltimateMomentNMeritWeight As Double ' Перевод осевой невязки из долей допуска в относительную силовую ошибку.
 Private mUltimatePathMath As CLoadPathMath
 Private mUltimatePathTolerance As Double
@@ -899,6 +900,8 @@ Public Function LimitSearchPrepareCapacityUltimate(ByVal section As CSectionMode
             loadPath.NBase, loadPath.MxBase, loadPath.MyBase) Then Exit Function
     If Not ValidateUltimateStrainSettings() Then Exit Function
     mUltimateMomentOnlyPath = IsMomentOnlyLoadPath(loadPath.NBase, loadPath.MxBase, loadPath.MyBase)
+    mMeritJacobianForAffinePath = mUltimateMomentOnlyPath Or loadPath.NOffset <> 0# Or _
+        loadPath.MxOffset <> 0# Or loadPath.MyOffset <> 0#
     LimitSearchPrepareCapacityUltimate = True
 End Function
 
@@ -1010,6 +1013,12 @@ Public Function LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
             Abs(rPath2) <= mUltimatePathTolerance And Abs(rLimit) <= UltimateStrainRatioTolerance())
     End If
 End Function
+
+' Для моментной и аффинной систем масштабы строк определяет текущий Якобиан.
+' Однородная силовая траектория сохраняет норму уже масштабированного CLoadPathMath.
+Friend Property Get LimitSearchJacobianMeritForPath() As Boolean
+    LimitSearchJacobianMeritForPath = mMeritJacobianForAffinePath
+End Property
 
 ' Возвращает норму невязок для line-search общего UltimateStrain-цикла.
 ' В моментной постановке все составляющие нормы являются относительными
@@ -1791,6 +1800,7 @@ End Function
 ' и предельные деформации материалов.
 Private Sub ClearResult()
     mConverged = False
+    mMeritJacobianForAffinePath = False
     mStopReason = vbNullString
     mLimitState = vbNullString
     mUpperLimitState = vbNullString

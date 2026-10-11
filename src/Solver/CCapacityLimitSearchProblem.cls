@@ -248,10 +248,10 @@ End Function
 
 ' Финализирует сохраненную допустимую сторону уточненной скобки; проверка
 ' физического критерия остается у Capacity, включая неоднозначное осевое плато.
-Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+Private Function ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
-        ByVal methodName As String, ByVal iterations As Long)
+        ByVal methodName As String, ByVal iterations As Long) As Boolean
     If lowSolver Is Nothing Then
         mCapacity.LimitSearchFinalizeCapacityFromRetainedAcceptable lowLambda, loadPath, methodName
     Else
@@ -259,7 +259,8 @@ Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchReq
     End If
     If request.PureAxialForMethod Then mCapacity.LimitSearchAcceptRetainedPhysicalCapacity _
         request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath
-End Sub
+    ILimitSearchProblem_FinalizeBracket = mCapacity.Converged
+End Function
 
 ' После численной неудачи уточняет предельную плоскость из сохраненного НДС.
 ' Приемка требует исходного Offset/Base, равновесия всех трех усилий и
@@ -426,9 +427,9 @@ Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath
         mCapacity.LimitSearchUltimateResidualNorm(rPath1, rPath2, rLimit)
 End Function
 
-' Норма capacity уже приводит усилия и физический критерий к общей шкале.
+' Владелец численной системы выбирает ее масштабы, не меняя допуски приемки.
 Private Property Get ILimitSearchProblem_LimitSearchUseJacobianMeritScaling() As Boolean
-    ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = False
+    ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = mCapacity.LimitSearchJacobianMeritForPath
 End Property
 
 ' Передает найденную плоскость на окончательное подтверждение Capacity.

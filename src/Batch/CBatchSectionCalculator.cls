@@ -102,6 +102,7 @@ Private mCapacitySolutionStrategy As String ' Auto, LoadMultiplier или Ultima
 Private mCapacitySearchMethod As String ' Bisection, Brent или Secant для LoadMultiplier.
 Private mCapacityMaxLambda As Double ' Верхняя защитная граница lambda для расширения скобки LoadMultiplier.
 Private mCapacityToleranceLambda As Double ' Точность lambda в одномерном поиске LoadMultiplier.
+Private mCrackToleranceLambda As Double ' Точность lambda для поиска образования трещины.
 Private mCapacityToleranceStrain As Double ' Точность попадания в предельную деформацию UltimateStrain.
 Private mCapacityMaxRetries As Long ' Повторные попытки LoadMultiplier при несходимости той же lambda-точки.
 Private mCapacityBaseLoadSteps As Long ' Базовое число load steps для первой попытки lambda-точки capacity.
@@ -179,6 +180,7 @@ Private Sub Class_Initialize()
     mCapacitySearchMethod = "Bisection"
     mCapacityMaxLambda = 1024#
     mCapacityToleranceLambda = 0.01
+    mCrackToleranceLambda = 0.01
     mCapacityToleranceStrain = 0.00001
     mCapacityMaxRetries = 0
     mCapacityBaseLoadSteps = 1
@@ -255,6 +257,9 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Dim formationOptions As CCrackFormationCalculator
     Set formationOptions = New CCrackFormationCalculator
     mCrackFormationSolutionStrategy = formationOptions.NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
+    mCrackToleranceLambda = settings.GetRequiredDouble("SLS.Crack.ToleranceLambda")
+    formationOptions.LambdaTolerance = mCrackToleranceLambda
+    formationOptions.ValidateSearchSettings settings
     mWorstCombinationCriterion = settings.GetRequiredChoice("General.WorstCombinationCriterion", _
         Array("StrengthStrain", "StrengthCapacity", "Cracks", "Stability"))
     If mCrackStandardCode = "SP35" Then
@@ -1576,6 +1581,7 @@ End Sub
 Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormationCalculator, ByVal index As Long)
     formation.CrackFormationPath = mWorkingPaths(index)
     formation.CrackFormationSolutionStrategy = mCrackFormationSolutionStrategy
+    formation.LambdaTolerance = mCrackToleranceLambda
     formation.SolverLoadSteps = mSolverLoadSteps
     formation.SolverMethod = mSolverMethod
     formation.SolverMaxIterations = mSolverMaxIterations

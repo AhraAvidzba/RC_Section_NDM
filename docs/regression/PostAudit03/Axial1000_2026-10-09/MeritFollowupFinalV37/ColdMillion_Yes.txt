@@ -1,0 +1,420 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\PostAudit03\Axial1000_2026-10-09\MeritFollowupFinalV35\Cold\RC_Section_NDM.xlsm
+SOURCE_SHA256: 697DC781AA43E12B4BCF84E1180490546548C8D961CCB81D704B20705EF858C5
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e9760b3e79e040d58a96d86060fe0807\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=31068; startTicks=639273189924941574
+===== modTestBatchCalculation.RunMillionMeritCases =====
+SUITE_STARTED: modTestBatchCalculation.RunMillionMeritCases; 2026-10-11T15:36:36
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159592448; privateBytes=103211008; cpu=761.0625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162693120; privateBytes=102932480; cpu=518.25
+EXCEL_AFTER_SUITE: pid=7832; workingSet=162934784; privateBytes=103809024; cpu=503.109375
+EXCEL_AFTER_SUITE: pid=8844; workingSet=157933568; privateBytes=101601280; cpu=488.734375
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161464320; privateBytes=122417152; cpu=493.53125
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157839360; privateBytes=101986304; cpu=498.5625
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162791424; privateBytes=103260160; cpu=503.625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162222080; privateBytes=102375424; cpu=501.21875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162377728; privateBytes=123473920; cpu=501.296875
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158867456; privateBytes=101838848; cpu=490.59375
+EXCEL_AFTER_SUITE: pid=26240; workingSet=161693696; privateBytes=102285312; cpu=502.125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158289920; privateBytes=101670912; cpu=491.71875
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163033088; privateBytes=104574976; cpu=517.4375
+EXCEL_AFTER_SUITE: pid=28560; workingSet=165019648; privateBytes=104411136; cpu=507.328125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=165560320; privateBytes=111423488; cpu=512.953125
+EXCEL_AFTER_SUITE: pid=31068; workingSet=149049344; privateBytes=99053568; cpu=28
+MIXED_REPEAT|index=1
+FOCUSED_SETUP|shape=SavedWorkbook|group=Saved|mode=Yes|cases=1|fibers=45|rebars=20|offsetX=10|offsetY=-7|profile=PR3|code=SP35
+FAIL: focused.SavedWorkbook.overloadMixed1000000.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=overloadMixed1000000|elapsedSec=10.01171875|solverCalls=28
+OK: focused.SavedWorkbook.overloadMixed1000000.oneCombination
+OK: focused.SavedWorkbook.overloadMixed1000000.preparationReleased
+OK: focused.SavedWorkbook.overloadMixed1000000.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.overloadMixed1000000.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=overloadMixed1000000|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.overloadMixed1000000.direct|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.direct.reasonPresent
+OK: audit03.comments.overloadMixed1000000.direct.russianReason
+OK: audit03.comments.overloadMixed1000000.direct.readable
+OK: audit03.comments.overloadMixed1000000.direct.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.direct.ownSubtree
+META: audit03.comments.overloadMixed1000000.capacity|status=rsCheckFailed|code=PHYSICAL_LIMIT_EXCEEDED|applies=True|calculated=True|comment=Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).
+OK: audit03.comments.overloadMixed1000000.capacity.reasonPresent
+OK: audit03.comments.overloadMixed1000000.capacity.russianReason
+OK: audit03.comments.overloadMixed1000000.capacity.readable
+OK: audit03.comments.overloadMixed1000000.capacity.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.capacity.ownSubtree
+META: audit03.comments.overloadMixed1000000.formation|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.overloadMixed1000000.formation.reasonPresent
+OK: audit03.comments.overloadMixed1000000.formation.russianReason
+OK: audit03.comments.overloadMixed1000000.formation.readable
+OK: audit03.comments.overloadMixed1000000.formation.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.formation.ownSubtree
+META: audit03.comments.overloadMixed1000000.current|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.current.reasonPresent
+OK: audit03.comments.overloadMixed1000000.current.russianReason
+OK: audit03.comments.overloadMixed1000000.current.readable
+OK: audit03.comments.overloadMixed1000000.current.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.current.ownSubtree
+META: audit03.comments.overloadMixed1000000.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.width.reasonPresent
+OK: audit03.comments.overloadMixed1000000.width.russianReason
+OK: audit03.comments.overloadMixed1000000.width.readable
+OK: audit03.comments.overloadMixed1000000.width.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.width.ownSubtree
+OK: audit03.comments.overloadMixed1000000.width.dependencyOncePerIndependentStage
+META: audit03.comments.overloadMixed1000000.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.longitudinal.reasonPresent
+OK: audit03.comments.overloadMixed1000000.longitudinal.russianReason
+OK: audit03.comments.overloadMixed1000000.longitudinal.readable
+OK: audit03.comments.overloadMixed1000000.longitudinal.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.longitudinal.ownSubtree
+OK: audit03.comments.overloadMixed1000000.longitudinal.dependencyOncePerIndependentStage
+META: audit03.comments.overloadMixed1000000.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.overloadMixed1000000.widthBlockActualReason
+OK: audit03.comments.overloadMixed1000000.longitudinalBlockActualReason
+OK: audit03.comments.overloadMixed1000000.formulaNoNumFail
+OK: audit03.comments.overloadMixed1000000.strengthNoCrack
+OK: audit03.comments.overloadMixed1000000.crackNoCapacity
+OK: audit03.comments.overloadMixed1000000.overallComposition
+OK: audit03.comments.overloadMixed1000000.batchOutput
+OK: audit03.comments.overloadMixed1000000.strengthOutput
+OK: audit03.comments.overloadMixed1000000.crackOutput
+OK: audit03.comments.overloadMixed1000000.stabilityOutput
+OUTPUT: audit03.comments.overloadMixed1000000|strength=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).|crack=Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+OK: focused.SavedWorkbook.overloadMixed1000000.autoAllowedPath
+OK: focused.SavedWorkbook.overloadMixed1000000.autoMomentReason
+OK: focused.SavedWorkbook.overloadMixed1000000.autoNReason
+CASE: focused.SavedWorkbook.overloadMixed1000000|N=-20970715004391.2|Mx=3.55822488134319E+15|My=-3.5742155176994E+15|offsetX=10|offsetY=-7|path=NMxy|selection=Auto|lambda=0.000000511754|method=UltimateStrain|limit=ConcreteStrainLimit|status=FAIL
+OK: focused.SavedWorkbook.overloadMixed1000000.path
+OK: focused.SavedWorkbook.overloadMixed1000000.validInput
+OK: focused.SavedWorkbook.overloadMixed1000000.NU; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.MxU; actual=1820935834.79034; expected=1820935834.79597
+OK: focused.SavedWorkbook.overloadMixed1000000.MyU; actual=-1829119106.99253; expected=-1829119106.9986
+OK: focused.SavedWorkbook.overloadMixed1000000.stateMx; actual=10340570537.3201; expected=10340570537.3258
+OK: focused.SavedWorkbook.overloadMixed1000000.stateMy; actual=32396317590.829; expected=32396317590.8229
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalCriterion
+OK: focused.SavedWorkbook.overloadMixed1000000.finalPhysical
+CASE: focused.SavedWorkbook.overloadMixed1000000|requested=Auto|resolved=λ*NMxy|lambda=0.00000022372|Ncrc=-4691563.524078|Mcrc=1184609750.38368|point=True|formed=True
+OK: focused.SavedWorkbook.overloadMixed1000000.validInput
+OK: focused.SavedWorkbook.overloadMixed1000000.autoPath
+OK: focused.SavedWorkbook.overloadMixed1000000.preConverged
+OK: focused.SavedWorkbook.overloadMixed1000000.prePhysical
+OK: focused.SavedWorkbook.overloadMixed1000000.preNotExtended
+OK: focused.SavedWorkbook.overloadMixed1000000.postConverged
+OK: focused.SavedWorkbook.overloadMixed1000000.postPhysical
+OK: focused.SavedWorkbook.overloadMixed1000000.postNotExtended
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-10731847.3975637|Mx=10340570537.3258|My=32396317590.8229|eps0=-0.009682354126|kx=0.000003479204|ky=-0.000003550063
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.1
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.1; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.1; actual=10340570537.3201; expected=10340570537.3258
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.1; actual=32396317590.829; expected=32396317590.8229
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.1; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.1; actual=1896058766.57329; expected=1896058766.57891
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.1; actual=-1936437580.96817; expected=-1936437580.97424
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=StrengthState|converged=False|physical=False|extension=False|status=NumFail|N=-5242296114817.54|Mx=5051232642031440.|My=15824894218979800.|eps0=1288166560861750.|kx=-633654690083.574|ky=703587335882.863
+OK: focused.SavedWorkbook.overloadMixed1000000.failureNotPhysical.2
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=PostCrackState|converged=True|physical=True|extension=False|status=OK|N=-4691563.524078|Mx=4520511870.31288|My=14162462089.9897|eps0=-0.002222306172|kx=0.000000785956|ky=-0.000000802133
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.3
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.3; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.3; actual=4520511870.31288; expected=4520511870.31288
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.3; actual=14162462089.9898; expected=14162462089.9897
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.3; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.3; actual=828886194.450487; expected=828886194.450487
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.3; actual=-846538306.500239; expected=-846538306.500239
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.3
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=-4691563.524078|Mx=4520511870.31288|My=14162462089.9897|eps0=-0.00126735899|kx=0.000000448995|ky=-0.000000458358
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.4
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.4; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.4; actual=4520511632.08629; expected=4520511870.31288
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.4; actual=14162462322.6882; expected=14162462089.9897
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.4; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.4; actual=828885956.2239; expected=828886194.450487
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.4; actual=-846538073.801828; expected=-846538306.500239
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.4
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=CrackedState|converged=False|physical=False|extension=False|status=NumFail|N=-5242295364899.16|Mx=5051232053247630.|My=15824891818619800.|eps0=1288166680668870.|kx=-633654754613.683|ky=703587403534.642
+OK: focused.SavedWorkbook.overloadMixed1000000.failureNotPhysical.5
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.2
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.3
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.4
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.5
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+OK: focused.SavedWorkbook.overloadMixed1000000.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.overloadMixed1000000.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=overloadMixed1000000|overall=NumFail|capacity=FAIL|cracks=NumFail
+OK: focused.complete
+TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=1; maxSeconds=10.01171875; passed=102; failed=1
+MIXED_RESULT|repeat=1|table=rngStrengthSummaryAnchor|c1=overloadMixed1000000|c2=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).|c3=NumFail|c4=2138417808.77172|c5=377777023.965171|c6=-385779882.154957|c7=2138417808.77172|c8=362837960.092711|c9=-364468551.207538|c10=|c11=-0.0035|c12=|c13=-0.025|c14=0.025|c15=1.28816656086175E+15|c16=-633654690083.574|c17=703587335882.863|c18=-912146534978708|c19=|c20=-873791776617836|c21=|c22=-3264.3625|c23=|c24=-20300|c25=|c26=1.01810554475164|c27=0.995105615343181|c28=no|c29=|c30=NumFail|c31=|c32=-9.68235412619189E-03|c33=3.4792037085577E-06|c34=-3.55006281152578E-06|c35=ConcreteStrainLimit|c36=λ*NMxy|c37=UltimateStrain|c38=5.11754005302944E-07|c39=1094.34387865007|c40=185.683779352821|c41=-186.518240886799|c42=-0.0035|c43=|c44=-3.20446952442182E-03|c45=1.07638540927815E-03|c46=1.0158746429655|c47=0.725492543752282|c48=5.11754005302944E-07|c49=FAIL
+MIXED_RESULT|repeat=1|table=rngCrackSummaryAnchor|c1=overloadMixed1000000|c2=Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|c3=NumFail|c4=2138417808.77172|c5=377777023.965171|c6=-385779882.154957|c7=2138417808.77172|c8=362837960.092711|c9=-364468551.207538|c10=|c11=|c12=|c13=N/A|c14=|c15=λ*NMxy|c16=478.40633897182|c17=120.796576851798|c18=2.23719769359109E-07|c19=-4.6889919631079E-04|c20=1.49999999999978E-04|c21=OK|c22=-8.25222557370733E-04|c23=|c24=OK|c25=Cracked|c26=|c27=|c28=no|c29=NumFail|c30=|c31=|c32=|c33=|c34=|c35=|c36=|c37=|c38=|c39=|c40=|c41=|c42=|c43=|c44=N/A|c45=|c46=|c47=|c48=|c49=|c50=|c51=|c52=|c53=|c54=|c55=|c56=|c57=|c58=|c59=|c60=|c61=|c62=|c63=|c64=|c65=|c66=|c67=N/A|c68=|c69=|c70=|c71=|c72=N/A
+MIXED_REPEAT|index=2
+FOCUSED_SETUP|shape=SavedWorkbook|group=Saved|mode=Yes|cases=1|fibers=45|rebars=20|offsetX=10|offsetY=-7|profile=PR3|code=SP35
+OK: focused.SavedWorkbook.overloadMixed1000000.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=overloadMixed1000000|elapsedSec=7.30078125|solverCalls=28
+OK: focused.SavedWorkbook.overloadMixed1000000.oneCombination
+OK: focused.SavedWorkbook.overloadMixed1000000.preparationReleased
+OK: focused.SavedWorkbook.overloadMixed1000000.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.overloadMixed1000000.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=overloadMixed1000000|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.overloadMixed1000000.direct|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.direct.reasonPresent
+OK: audit03.comments.overloadMixed1000000.direct.russianReason
+OK: audit03.comments.overloadMixed1000000.direct.readable
+OK: audit03.comments.overloadMixed1000000.direct.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.direct.ownSubtree
+META: audit03.comments.overloadMixed1000000.capacity|status=rsCheckFailed|code=PHYSICAL_LIMIT_EXCEEDED|applies=True|calculated=True|comment=Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).
+OK: audit03.comments.overloadMixed1000000.capacity.reasonPresent
+OK: audit03.comments.overloadMixed1000000.capacity.russianReason
+OK: audit03.comments.overloadMixed1000000.capacity.readable
+OK: audit03.comments.overloadMixed1000000.capacity.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.capacity.ownSubtree
+META: audit03.comments.overloadMixed1000000.formation|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.overloadMixed1000000.formation.reasonPresent
+OK: audit03.comments.overloadMixed1000000.formation.russianReason
+OK: audit03.comments.overloadMixed1000000.formation.readable
+OK: audit03.comments.overloadMixed1000000.formation.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.formation.ownSubtree
+META: audit03.comments.overloadMixed1000000.current|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.current.reasonPresent
+OK: audit03.comments.overloadMixed1000000.current.russianReason
+OK: audit03.comments.overloadMixed1000000.current.readable
+OK: audit03.comments.overloadMixed1000000.current.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.current.ownSubtree
+META: audit03.comments.overloadMixed1000000.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.width.reasonPresent
+OK: audit03.comments.overloadMixed1000000.width.russianReason
+OK: audit03.comments.overloadMixed1000000.width.readable
+OK: audit03.comments.overloadMixed1000000.width.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.width.ownSubtree
+OK: audit03.comments.overloadMixed1000000.width.dependencyOncePerIndependentStage
+META: audit03.comments.overloadMixed1000000.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.longitudinal.reasonPresent
+OK: audit03.comments.overloadMixed1000000.longitudinal.russianReason
+OK: audit03.comments.overloadMixed1000000.longitudinal.readable
+OK: audit03.comments.overloadMixed1000000.longitudinal.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.longitudinal.ownSubtree
+OK: audit03.comments.overloadMixed1000000.longitudinal.dependencyOncePerIndependentStage
+META: audit03.comments.overloadMixed1000000.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.overloadMixed1000000.widthBlockActualReason
+OK: audit03.comments.overloadMixed1000000.longitudinalBlockActualReason
+OK: audit03.comments.overloadMixed1000000.formulaNoNumFail
+OK: audit03.comments.overloadMixed1000000.strengthNoCrack
+OK: audit03.comments.overloadMixed1000000.crackNoCapacity
+OK: audit03.comments.overloadMixed1000000.overallComposition
+OK: audit03.comments.overloadMixed1000000.batchOutput
+OK: audit03.comments.overloadMixed1000000.strengthOutput
+OK: audit03.comments.overloadMixed1000000.crackOutput
+OK: audit03.comments.overloadMixed1000000.stabilityOutput
+OUTPUT: audit03.comments.overloadMixed1000000|strength=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).|crack=Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+OK: focused.SavedWorkbook.overloadMixed1000000.autoAllowedPath
+OK: focused.SavedWorkbook.overloadMixed1000000.autoMomentReason
+OK: focused.SavedWorkbook.overloadMixed1000000.autoNReason
+CASE: focused.SavedWorkbook.overloadMixed1000000|N=-20970715004391.2|Mx=3.55822488134319E+15|My=-3.5742155176994E+15|offsetX=10|offsetY=-7|path=NMxy|selection=Auto|lambda=0.000000511754|method=UltimateStrain|limit=ConcreteStrainLimit|status=FAIL
+OK: focused.SavedWorkbook.overloadMixed1000000.path
+OK: focused.SavedWorkbook.overloadMixed1000000.validInput
+OK: focused.SavedWorkbook.overloadMixed1000000.NU; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.MxU; actual=1820935834.79034; expected=1820935834.79597
+OK: focused.SavedWorkbook.overloadMixed1000000.MyU; actual=-1829119106.99253; expected=-1829119106.9986
+OK: focused.SavedWorkbook.overloadMixed1000000.stateMx; actual=10340570537.3201; expected=10340570537.3258
+OK: focused.SavedWorkbook.overloadMixed1000000.stateMy; actual=32396317590.829; expected=32396317590.8229
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalCriterion
+OK: focused.SavedWorkbook.overloadMixed1000000.finalPhysical
+CASE: focused.SavedWorkbook.overloadMixed1000000|requested=Auto|resolved=λ*NMxy|lambda=0.00000022372|Ncrc=-4691563.524078|Mcrc=1184609750.38368|point=True|formed=True
+OK: focused.SavedWorkbook.overloadMixed1000000.validInput
+OK: focused.SavedWorkbook.overloadMixed1000000.autoPath
+OK: focused.SavedWorkbook.overloadMixed1000000.preConverged
+OK: focused.SavedWorkbook.overloadMixed1000000.prePhysical
+OK: focused.SavedWorkbook.overloadMixed1000000.preNotExtended
+OK: focused.SavedWorkbook.overloadMixed1000000.postConverged
+OK: focused.SavedWorkbook.overloadMixed1000000.postPhysical
+OK: focused.SavedWorkbook.overloadMixed1000000.postNotExtended
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-10731847.3975637|Mx=10340570537.3258|My=32396317590.8229|eps0=-0.009682354126|kx=0.000003479204|ky=-0.000003550063
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.1
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.1; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.1; actual=10340570537.3201; expected=10340570537.3258
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.1; actual=32396317590.829; expected=32396317590.8229
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.1; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.1; actual=1896058766.57329; expected=1896058766.57891
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.1; actual=-1936437580.96817; expected=-1936437580.97424
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=StrengthState|converged=False|physical=False|extension=False|status=NumFail|N=-5242296114817.54|Mx=5051232642031440.|My=15824894218979800.|eps0=1288166560861750.|kx=-633654690083.574|ky=703587335882.863
+OK: focused.SavedWorkbook.overloadMixed1000000.failureNotPhysical.2
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=PostCrackState|converged=True|physical=True|extension=False|status=OK|N=-4691563.524078|Mx=4520511870.31288|My=14162462089.9897|eps0=-0.002222306172|kx=0.000000785956|ky=-0.000000802133
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.3
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.3; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.3; actual=4520511870.31288; expected=4520511870.31288
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.3; actual=14162462089.9898; expected=14162462089.9897
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.3; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.3; actual=828886194.450487; expected=828886194.450487
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.3; actual=-846538306.500239; expected=-846538306.500239
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.3
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=-4691563.524078|Mx=4520511870.31288|My=14162462089.9897|eps0=-0.00126735899|kx=0.000000448995|ky=-0.000000458358
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.4
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.4; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.4; actual=4520511632.08629; expected=4520511870.31288
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.4; actual=14162462322.6882; expected=14162462089.9897
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.4; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.4; actual=828885956.2239; expected=828886194.450487
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.4; actual=-846538073.801828; expected=-846538306.500239
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.4
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=CrackedState|converged=False|physical=False|extension=False|status=NumFail|N=-5242295364899.16|Mx=5051232053247630.|My=15824891818619800.|eps0=1288166680668870.|kx=-633654754613.683|ky=703587403534.642
+OK: focused.SavedWorkbook.overloadMixed1000000.failureNotPhysical.5
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.2
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.3
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.4
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.5
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+OK: focused.SavedWorkbook.overloadMixed1000000.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.overloadMixed1000000.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=overloadMixed1000000|overall=NumFail|capacity=FAIL|cracks=NumFail
+OK: focused.complete
+TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=1; maxSeconds=7.30078125; passed=103; failed=0
+MIXED_RESULT|repeat=2|table=rngStrengthSummaryAnchor|c1=overloadMixed1000000|c2=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).|c3=NumFail|c4=2138417808.77172|c5=377777023.965171|c6=-385779882.154957|c7=2138417808.77172|c8=362837960.092711|c9=-364468551.207538|c10=|c11=-0.0035|c12=|c13=-0.025|c14=0.025|c15=1.28816656086175E+15|c16=-633654690083.574|c17=703587335882.863|c18=-912146534978708|c19=|c20=-873791776617836|c21=|c22=-3264.3625|c23=|c24=-20300|c25=|c26=1.01810554475164|c27=0.995105615343181|c28=no|c29=|c30=NumFail|c31=|c32=-9.68235412619189E-03|c33=3.4792037085577E-06|c34=-3.55006281152578E-06|c35=ConcreteStrainLimit|c36=λ*NMxy|c37=UltimateStrain|c38=5.11754005302944E-07|c39=1094.34387865007|c40=185.683779352821|c41=-186.518240886799|c42=-0.0035|c43=|c44=-3.20446952442182E-03|c45=1.07638540927815E-03|c46=1.0158746429655|c47=0.725492543752282|c48=5.11754005302944E-07|c49=FAIL
+MIXED_RESULT|repeat=2|table=rngCrackSummaryAnchor|c1=overloadMixed1000000|c2=Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|c3=NumFail|c4=2138417808.77172|c5=377777023.965171|c6=-385779882.154957|c7=2138417808.77172|c8=362837960.092711|c9=-364468551.207538|c10=|c11=|c12=|c13=N/A|c14=|c15=λ*NMxy|c16=478.40633897182|c17=120.796576851798|c18=2.23719769359109E-07|c19=-4.6889919631079E-04|c20=1.49999999999978E-04|c21=OK|c22=-8.25222557370733E-04|c23=|c24=OK|c25=Cracked|c26=|c27=|c28=no|c29=NumFail|c30=|c31=|c32=|c33=|c34=|c35=|c36=|c37=|c38=|c39=|c40=|c41=|c42=|c43=|c44=N/A|c45=|c46=|c47=|c48=|c49=|c50=|c51=|c52=|c53=|c54=|c55=|c56=|c57=|c58=|c59=|c60=|c61=|c62=|c63=|c64=|c65=|c66=|c67=N/A|c68=|c69=|c70=|c71=|c72=N/A
+MIXED_REPEAT|index=3
+FOCUSED_SETUP|shape=SavedWorkbook|group=Saved|mode=Yes|cases=1|fibers=45|rebars=20|offsetX=10|offsetY=-7|profile=PR3|code=SP35
+OK: focused.SavedWorkbook.overloadMixed1000000.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=overloadMixed1000000|elapsedSec=7.421875|solverCalls=28
+OK: focused.SavedWorkbook.overloadMixed1000000.oneCombination
+OK: focused.SavedWorkbook.overloadMixed1000000.preparationReleased
+OK: focused.SavedWorkbook.overloadMixed1000000.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.overloadMixed1000000.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=overloadMixed1000000|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.overloadMixed1000000.direct|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.direct.reasonPresent
+OK: audit03.comments.overloadMixed1000000.direct.russianReason
+OK: audit03.comments.overloadMixed1000000.direct.readable
+OK: audit03.comments.overloadMixed1000000.direct.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.direct.ownSubtree
+META: audit03.comments.overloadMixed1000000.capacity|status=rsCheckFailed|code=PHYSICAL_LIMIT_EXCEEDED|applies=True|calculated=True|comment=Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).
+OK: audit03.comments.overloadMixed1000000.capacity.reasonPresent
+OK: audit03.comments.overloadMixed1000000.capacity.russianReason
+OK: audit03.comments.overloadMixed1000000.capacity.readable
+OK: audit03.comments.overloadMixed1000000.capacity.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.capacity.ownSubtree
+META: audit03.comments.overloadMixed1000000.formation|status=rsSuccessWithWarning|code=CHECK_PASSED|applies=True|calculated=True|comment=Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.overloadMixed1000000.formation.reasonPresent
+OK: audit03.comments.overloadMixed1000000.formation.russianReason
+OK: audit03.comments.overloadMixed1000000.formation.readable
+OK: audit03.comments.overloadMixed1000000.formation.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.formation.ownSubtree
+META: audit03.comments.overloadMixed1000000.current|status=rsNumericalFailure|code=SINGULAR_TANGENT|applies=True|calculated=True|comment=Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.current.reasonPresent
+OK: audit03.comments.overloadMixed1000000.current.russianReason
+OK: audit03.comments.overloadMixed1000000.current.readable
+OK: audit03.comments.overloadMixed1000000.current.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.current.ownSubtree
+META: audit03.comments.overloadMixed1000000.width|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.width.reasonPresent
+OK: audit03.comments.overloadMixed1000000.width.russianReason
+OK: audit03.comments.overloadMixed1000000.width.readable
+OK: audit03.comments.overloadMixed1000000.width.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.width.ownSubtree
+OK: audit03.comments.overloadMixed1000000.width.dependencyOncePerIndependentStage
+META: audit03.comments.overloadMixed1000000.longitudinal|status=rsBlockedByDependency|code=BLOCKED_BY_DEPENDENCY|applies=True|calculated=False|comment=Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState. Не удалось решить касательную систему: Матрица вырождена.
+OK: audit03.comments.overloadMixed1000000.longitudinal.reasonPresent
+OK: audit03.comments.overloadMixed1000000.longitudinal.russianReason
+OK: audit03.comments.overloadMixed1000000.longitudinal.readable
+OK: audit03.comments.overloadMixed1000000.longitudinal.noMachinePrefix
+OK: audit03.comments.overloadMixed1000000.longitudinal.ownSubtree
+OK: audit03.comments.overloadMixed1000000.longitudinal.dependencyOncePerIndependentStage
+META: audit03.comments.overloadMixed1000000.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.overloadMixed1000000.widthBlockActualReason
+OK: audit03.comments.overloadMixed1000000.longitudinalBlockActualReason
+OK: audit03.comments.overloadMixed1000000.formulaNoNumFail
+OK: audit03.comments.overloadMixed1000000.strengthNoCrack
+OK: audit03.comments.overloadMixed1000000.crackNoCapacity
+OK: audit03.comments.overloadMixed1000000.overallComposition
+OK: audit03.comments.overloadMixed1000000.batchOutput
+OK: audit03.comments.overloadMixed1000000.strengthOutput
+OK: audit03.comments.overloadMixed1000000.crackOutput
+OK: audit03.comments.overloadMixed1000000.stabilityOutput
+OUTPUT: audit03.comments.overloadMixed1000000|strength=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).|crack=Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|stability=|batch=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+OK: focused.SavedWorkbook.overloadMixed1000000.autoAllowedPath
+OK: focused.SavedWorkbook.overloadMixed1000000.autoMomentReason
+OK: focused.SavedWorkbook.overloadMixed1000000.autoNReason
+CASE: focused.SavedWorkbook.overloadMixed1000000|N=-20970715004391.2|Mx=3.55822488134319E+15|My=-3.5742155176994E+15|offsetX=10|offsetY=-7|path=NMxy|selection=Auto|lambda=0.000000511754|method=UltimateStrain|limit=ConcreteStrainLimit|status=FAIL
+OK: focused.SavedWorkbook.overloadMixed1000000.path
+OK: focused.SavedWorkbook.overloadMixed1000000.validInput
+OK: focused.SavedWorkbook.overloadMixed1000000.NU; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.MxU; actual=1820935834.79034; expected=1820935834.79597
+OK: focused.SavedWorkbook.overloadMixed1000000.MyU; actual=-1829119106.99253; expected=-1829119106.9986
+OK: focused.SavedWorkbook.overloadMixed1000000.stateMx; actual=10340570537.3201; expected=10340570537.3258
+OK: focused.SavedWorkbook.overloadMixed1000000.stateMy; actual=32396317590.829; expected=32396317590.8229
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalCriterion
+OK: focused.SavedWorkbook.overloadMixed1000000.finalPhysical
+CASE: focused.SavedWorkbook.overloadMixed1000000|requested=Auto|resolved=λ*NMxy|lambda=0.00000022372|Ncrc=-4691563.524078|Mcrc=1184609750.38368|point=True|formed=True
+OK: focused.SavedWorkbook.overloadMixed1000000.validInput
+OK: focused.SavedWorkbook.overloadMixed1000000.autoPath
+OK: focused.SavedWorkbook.overloadMixed1000000.preConverged
+OK: focused.SavedWorkbook.overloadMixed1000000.prePhysical
+OK: focused.SavedWorkbook.overloadMixed1000000.preNotExtended
+OK: focused.SavedWorkbook.overloadMixed1000000.postConverged
+OK: focused.SavedWorkbook.overloadMixed1000000.postPhysical
+OK: focused.SavedWorkbook.overloadMixed1000000.postNotExtended
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-10731847.3975637|Mx=10340570537.3258|My=32396317590.8229|eps0=-0.009682354126|kx=0.000003479204|ky=-0.000003550063
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.1
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.1; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.1; actual=10340570537.3201; expected=10340570537.3258
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.1; actual=32396317590.829; expected=32396317590.8229
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.1; actual=-10731847.3975637; expected=-10731847.3975637
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.1; actual=1896058766.57329; expected=1896058766.57891
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.1; actual=-1936437580.96817; expected=-1936437580.97424
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=StrengthState|converged=False|physical=False|extension=False|status=NumFail|N=-5242296114817.54|Mx=5051232642031440.|My=15824894218979800.|eps0=1288166560861750.|kx=-633654690083.574|ky=703587335882.863
+OK: focused.SavedWorkbook.overloadMixed1000000.failureNotPhysical.2
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=PostCrackState|converged=True|physical=True|extension=False|status=OK|N=-4691563.524078|Mx=4520511870.31288|My=14162462089.9897|eps0=-0.002222306172|kx=0.000000785956|ky=-0.000000802133
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.3
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.3; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.3; actual=4520511870.31288; expected=4520511870.31288
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.3; actual=14162462089.9898; expected=14162462089.9897
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.3; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.3; actual=828886194.450487; expected=828886194.450487
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.3; actual=-846538306.500239; expected=-846538306.500239
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.3
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=-4691563.524078|Mx=4520511870.31288|My=14162462089.9897|eps0=-0.00126735899|kx=0.000000448995|ky=-0.000000458358
+OK: focused.SavedWorkbook.overloadMixed1000000.snapshot.4
+OK: focused.SavedWorkbook.overloadMixed1000000.originalN.4; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMx.4; actual=4520511632.08629; expected=4520511870.31288
+OK: focused.SavedWorkbook.overloadMixed1000000.originalMy.4; actual=14162462322.6882; expected=14162462089.9897
+OK: focused.SavedWorkbook.overloadMixed1000000.centerN.4; actual=-4691563.524078; expected=-4691563.524078
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMx.4; actual=828885956.2239; expected=828886194.450487
+OK: focused.SavedWorkbook.overloadMixed1000000.centerMy.4; actual=-846538073.801828; expected=-846538306.500239
+OK: focused.SavedWorkbook.overloadMixed1000000.physicalStatus.4
+FOCUSED_STATE|id=focused.SavedWorkbook.overloadMixed1000000|type=CrackedState|converged=False|physical=False|extension=False|status=NumFail|N=-5242295364899.16|Mx=5051232053247630.|My=15824891818619800.|eps0=1288166680668870.|kx=-633654754613.683|ky=703587403534.642
+OK: focused.SavedWorkbook.overloadMixed1000000.failureNotPhysical.5
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.2
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.3
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.4
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.5
+OK: focused.SavedWorkbook.overloadMixed1000000.noInputOrInternalError.1
+FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.
+OK: focused.SavedWorkbook.overloadMixed1000000.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.overloadMixed1000000.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=overloadMixed1000000|overall=NumFail|capacity=FAIL|cracks=NumFail
+OK: focused.complete
+TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Saved; cases=1; maxSeconds=7.421875; passed=103; failed=0
+MIXED_RESULT|repeat=3|table=rngStrengthSummaryAnchor|c1=overloadMixed1000000|c2=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).|c3=NumFail|c4=2138417808.77172|c5=377777023.965171|c6=-385779882.154957|c7=2138417808.77172|c8=362837960.092711|c9=-364468551.207538|c10=|c11=-0.0035|c12=|c13=-0.025|c14=0.025|c15=1.28816656086175E+15|c16=-633654690083.574|c17=703587335882.863|c18=-912146534978708|c19=|c20=-873791776617836|c21=|c22=-3264.3625|c23=|c24=-20300|c25=|c26=1.01810554475164|c27=0.995105615343181|c28=no|c29=|c30=NumFail|c31=|c32=-9.68235412619189E-03|c33=3.4792037085577E-06|c34=-3.55006281152578E-06|c35=ConcreteStrainLimit|c36=λ*NMxy|c37=UltimateStrain|c38=5.11754005302944E-07|c39=1094.34387865007|c40=185.683779352821|c41=-186.518240886799|c42=-0.0035|c43=|c44=-3.20446952442182E-03|c45=1.07638540927815E-03|c46=1.0158746429655|c47=0.725492543752282|c48=5.11754005302944E-07|c49=FAIL
+MIXED_RESULT|repeat=3|table=rngCrackSummaryAnchor|c1=overloadMixed1000000|c2=Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.|c3=NumFail|c4=2138417808.77172|c5=377777023.965171|c6=-385779882.154957|c7=2138417808.77172|c8=362837960.092711|c9=-364468551.207538|c10=|c11=|c12=|c13=N/A|c14=|c15=λ*NMxy|c16=478.40633897182|c17=120.796576851798|c18=2.23719769359109E-07|c19=-4.6889919631079E-04|c20=1.49999999999978E-04|c21=OK|c22=-8.25222557370733E-04|c23=|c24=OK|c25=Cracked|c26=|c27=|c28=no|c29=NumFail|c30=|c31=|c32=|c33=|c34=|c35=|c36=|c37=|c38=|c39=|c40=|c41=|c42=|c43=|c44=N/A|c45=|c46=|c47=|c48=|c49=|c50=|c51=|c52=|c53=|c54=|c55=|c56=|c57=|c58=|c59=|c60=|c61=|c62=|c63=|c64=|c65=|c66=|c67=N/A|c68=|c69=|c70=|c71=|c72=N/A
+TOTAL_MIXED_MERIT: completed=True
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e9760b3e79e040d58a96d86060fe0807\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunMillionMeritCases; 2026-10-11T15:37:02
+RESULTS_SAVE_REOPEN: before=41B6555A8FEEE96F5B5325155763E0EDFA3E8217C03B30D6DB70030CB0BAA2B3; after=41B6555A8FEEE96F5B5325155763E0EDFA3E8217C03B30D6DB70030CB0BAA2B3; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e9760b3e79e040d58a96d86060fe0807\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=9B13D18CA76507E3C023900FA8EF0898A1D4DF77A4AC40EB10E86D680DEFDED5; after=9B13D18CA76507E3C023900FA8EF0898A1D4DF77A4AC40EB10E86D680DEFDED5; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

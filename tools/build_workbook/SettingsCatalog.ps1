@@ -79,6 +79,7 @@ function Get-SystemSettingsCatalog {
             @("SLS.Crack.Code", "SP35", "-", "Методика ширины нормальных трещин: SP63 или SP35. Обе используют готовое текущее НДС; выбор не связан с Stability.Code."),
             @("SLS.Crack.Allowable", "0.3", "мм", "Допустимая ширина раскрытия a_crc,ult, задается пользователем по нормам и условиям эксплуатации."),
             @("SLS.Crack.InitiationSolutionStrategy", "Auto", "-", "Как искать уровень образования трещины: Auto, UltimateStrain или LoadMultiplier."),
+            @("SLS.Crack.ToleranceLambda", "0.01", "-", "Допуск интервала λ при поиске образования трещины методом LoadMultiplier, в том числе при переходе из Auto. Не меняет физические пределы материалов и допуски равновесия."),
             @("[SP63]", "", "-", ""),
             @("SLS.Crack.TensionZoneMode", "Effective", "-", "Зона бетона A_bt: Effective - эффективная зона по 2a_s и 0.5h; FullTension - вся фактически растянутая зона."),
             @("SLS.Crack.CoverDistanceMode", "GlobalExtreme", "-", "Как считать a_s: GlobalExtreme - до дальней растянутой линии всего сечения; NearestContour - до ближайшего бетонного контура по нормали."),
@@ -1070,6 +1071,11 @@ function Get-SettingInstructionLines {
             "Проверяются образование трещины, сжатие бетона, растяжение и сжатие арматуры. Если другой предел достигнут раньше трещины, он не выдается за точку трещинообразования. NotCracked требует подтвержденного допустимого НДС при исходной нагрузке.",
             "Auto сначала пробует UltimateStrain, при численной неудаче повторяет тот же путь через LoadMultiplier. Неудача поиска точки образования сама по себе не блокирует ширину при пригодном текущем НДС."
         ) }
+        "SLS.Crack.ToleranceLambda" { return @($lead) + @(
+            "Введите положительное число без единиц. Оно ограничивает разность верхней и нижней пробных λ при поиске точки образования трещины методом LoadMultiplier. λ = 1 соответствует исходному сочетанию.",
+            "Больший допуск может уменьшить число проб, но дает менее точное начальное приближение предельной нагрузки. Найденная плоскость по-прежнему проверяется по равновесию и физическим пределам материалов. Если точка не подтверждена, программа дополнительно сужает тот же интервал, не обнуляя бюджет итераций.",
+            "Настройка применяется также при переходе Auto к LoadMultiplier. Прямой поиск UltimateStrain и отдельный допуск несущей способности Capacity.ToleranceLambda она не изменяет."
+        ) }
         "SLS.Crack.Phi1" { return @($lead) + @(
             "Коэффициент длительности нагрузки φ_1 в формуле ширины СП 63. Для продолжительного раскрытия - 1,4 по п. 8.2.6.",
             "Введите применимое положительное значение на Config. Программа рассчитывает продолжительное раскрытие; отдельная процедура непродолжительного раскрытия по нескольким состояниям не реализована. Для СП 35 эта настройка не используется."
@@ -1586,7 +1592,7 @@ function Add-GuideParagraph {
         $range.Merge() | Out-Null
         # Абзац всегда текст: перенесенная часть может начинаться со знака =.
         $range.NumberFormat = "@"
-        $range.Value2 = $line
+        $range.Value2 = [string]$line
         $range.Font.Bold = [bool]$Emphasis
         $range.WrapText = $true
         $range.VerticalAlignment = -4160
@@ -2542,6 +2548,7 @@ function Add-CapacityMethodologyGuide {
     $row = Add-GuideParagraph $Sheet $row "Например, задано N = 100 тс и Mx = 50 тс·м; смещение силы добавляет еще 10 тс·м. При пути λ*N получаем N = λ·100 и Mx = 50 + λ·10. При λ*Mxy сила и ее добавка остаются постоянными: N = 100, Mx = 10 + λ·50."
     $row = Add-GuideTitle $Sheet $row "3. Поиск предельного состояния" 13
     $row = Add-GuideParagraph $Sheet $row "Capacity.SolutionStrategy: UltimateStrain решает совместную задачу равновесия и предельной деформации; LoadMultiplier уточняет λ последовательными расчетами равновесия. Auto начинает с UltimateStrain и при численной неудаче повторяет тот же путь через LoadMultiplier."
+    $row = Add-GuideParagraph $Sheet $row "Длина численного шага выбирается автоматически. Если обычный шаг UltimateStrain не улучшает решение, программа пробует резервный шаг. Успех подтверждается только равновесием и достижением физического предела с заданными допусками; сам по себе малый шаг не означает успешный расчет."
     $row = Add-GuideParagraph $Sheet $row "Для силового осевого пути λ*N и для λ*NMxy без пользовательских моментов применяется LoadMultiplier. На горизонтальном участке диаграммы прямой поиск предельной деформации может не дать единственного устойчивого решения."
     $row = Add-GuideParagraph $Sheet $row "Контролируются сжатие и растяжение бетона и стали. Растяжение бетона проверяется только при включенной растянутой ветви. Пределы берутся из диаграмм выбранной модели, а не из численных допусков." -Emphasis
     $row = Add-GuideCompositeFormula $Sheet $row @(
@@ -2593,7 +2600,7 @@ function Add-SP63CrackWidthMethodologyGuide {
 
     $row = Add-GuideTitle $Sheet $row "2. Трещинообразование и применимость расчета" 13
     $row = Add-GuideParagraph $Sheet $row "Проверка трещинообразования предшествует расчету ширины. Текущее НДС для раскрытия определяется при заданном сочетании без учета растянутого бетона."
-    $row = Add-GuideParagraph $Sheet $row "Путь поиска задается столбцом LoadPath в таблице сочетаний на Config; пустое значение означает Auto. Численный способ выбирается настройкой Config SLS.Crack.InitiationSolutionStrategy. Отдельного пути только для трещин нет."
+    $row = Add-GuideParagraph $Sheet $row "Путь поиска задается столбцом LoadPath в таблице сочетаний на Config; пустое значение означает Auto. Численный способ выбирается настройкой Config SLS.Crack.InitiationSolutionStrategy. Допуск уточнения λ методом LoadMultiplier задается отдельно в SLS.Crack.ToleranceLambda. Отдельного пути только для трещин нет."
     $row = Add-GuideFormula $Sheet $row "λ_crc ≤ 1: трещина образуется;    λ_crc > 1: трещина еще не образуется"
     $row = Add-GuideParagraph $Sheet $row "λ_crc - найденный множитель выбранной части нагрузки в момент образования трещины. λ = 1 соответствует текущему сочетанию. Нормальная трещина может быть также достоверно исключена без найденной пороговой точки; тогда выводится NotCracked."
     $row = Add-GuideParagraph $Sheet $row "Подтвержденный NotCracked исключает расчет ширины: статус проверки N/A, численная ячейка a_crc остается пустой. Это не расчетная ширина, равная нулю. Проверка продольных трещин при этом сохраняется." -Emphasis
@@ -2794,7 +2801,7 @@ function Add-SP35CrackWidthMethodologyGuide {
     $row = Add-GuideTitle $Sheet $row "1. Исходные данные и применимость" 13
     $row = Add-GuideParagraph $Sheet $row "На Config задаются SLS.Crack.Code = SP35 и Calculation.Crack.Width = Yes в профиле, назначенном сочетанию."
     $row = Add-GuideParagraph $Sheet $row "Допустимая ширина задается настройкой SLS.Crack.Allowable в INPUT Length по требованиям проекта. Автоматическое назначение допуска не предусмотрено."
-    $row = Add-GuideParagraph $Sheet $row "Проверка трещинообразования использует общий LoadPath сочетания; пустое значение принимается как Auto. Способ поиска задается SLS.Crack.InitiationSolutionStrategy. Подробные правила приведены в справке соответствующих настроек."
+    $row = Add-GuideParagraph $Sheet $row "Проверка трещинообразования использует общий LoadPath сочетания; пустое значение принимается как Auto. Способ поиска задается SLS.Crack.InitiationSolutionStrategy, допуск λ для LoadMultiplier - SLS.Crack.ToleranceLambda. Подробные правила приведены в справке соответствующих настроек."
     $row = Add-GuideParagraph $Sheet $row "При увеличении нагрузки проверяется первый достигнутый предел: образование трещины, сжатие бетона, растяжение или сжатие арматуры. Если другой предел наступает раньше трещины, он не становится точкой трещинообразования. При подтвержденном допустимом НДС исходного сочетания без трещины выводится NotCracked."
     $row = Add-GuideParagraph $Sheet $row "Подтвержденный NotCracked исключает расчет ширины: статус N/A, численная ячейка пустая. При Cracked раскрытие определяется по напряжениям текущего сочетания."
     $row = Add-GuideParagraph $Sheet $row "Неудача поиска трещинообразования не блокирует расчет ширины при найденном физически допустимом текущем НДС; причина сохраняется в комментарии. Отсутствие или физическая недопустимость текущего НДС блокирует и ширину, и продольные трещины." -Emphasis
@@ -5274,7 +5281,91 @@ function Add-MaterialDiagramTable {
     Set-WorkbookNameByBounds $Workbook $RangeName $Sheet ($HeaderRow + 1) $StartColumn ($HeaderRow + 10) ($StartColumn + 2)
 }
 
-# Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
+# Добавляет независимый допуск трещинообразования в существующую книгу.
+# Сдвигается только A:E реестра; пользовательские значения и соседние таблицы
+# не пересобираются. Повторный вызов сохраняет уже введенный допуск.
+function Update-CrackLambdaSetting {
+    param([object]$Workbook)
+    $key = "SLS.Crack.ToleranceLambda"
+    $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
+    $data = $range.Value2
+    $found = 0
+    $strategy = 0
+    for ($row = 2; $row -le $range.Rows.Count; $row++) {
+        if ([string]$data[$row, 1] -ceq $key) {
+            if ($found) { throw "В Config несколько строк $key." }
+            $found = $row
+        }
+        if ([string]$data[$row, 1] -ceq "SLS.Crack.InitiationSolutionStrategy") { $strategy = $row }
+    }
+    if (-not $strategy) { throw "В Config нет способа поиска трещинообразования." }
+    $setting = @((Get-SystemSettingsCatalog | Where-Object Name -eq "OutputSettings").Rows |
+        Where-Object { $_[0] -ceq $key })
+    if ($setting.Count -ne 1) { throw "В каталоге нет однозначного определения $key." }
+    $added = -not [bool]$found
+    if ($added) {
+        $found = $strategy + 1
+        $rowCount = $range.Rows.Count
+        $formulas = $range.Formula
+        $expanded = $range.Resize($rowCount + 1, $range.Columns.Count)
+        $tail = $expanded.Rows.Item($rowCount + 1).Value2
+        for ($column = 1; $column -le $range.Columns.Count; $column++) {
+            if ([string]$tail[1, $column] -ne '') { throw "Под реестром Config нет свободной строки для $key." }
+        }
+        # Insert меняет ссылки ROW(A...) в соседних источниках списков.
+        # Копирование снизу вверх сохраняет их и все формулы дословно.
+        for ($row = $rowCount; $row -ge $found; $row--) {
+            $target = $expanded.Rows.Item($row + 1)
+            $target.UnMerge() | Out-Null
+            $range.Rows.Item($row).Copy($target) | Out-Null
+            $rowData = New-Object 'object[,]' 1,$range.Columns.Count
+            for ($column = 1; $column -le $range.Columns.Count; $column++) {
+                $rowData[0, ($column - 1)] = $formulas[$row, $column]
+            }
+            $target.Formula = $rowData
+        }
+        $Workbook.Names.Item("rngSystemSettings").RefersTo = "='Config'!" + $expanded.Address()
+        $range = $expanded
+        $range.Rows.Item($found).UnMerge() | Out-Null
+        $range.Rows.Item($strategy).Copy($range.Rows.Item($found)) | Out-Null
+        $range.Rows.Item($found).Validation.Delete()
+        $range.Rows.Item($found).Hyperlinks.Delete()
+        $range.Cells.Item($found, 2).Value2 = [double]::Parse([string]$setting[0][1], [Globalization.CultureInfo]::InvariantCulture)
+    }
+    $range.Cells.Item([int]$found, 1).Value2 = [string]$key
+    $range.Cells.Item([int]$found, 3).Value2 = "-"
+    $range.Cells.Item([int]$found, 4).Value2 = [string]$setting[0][3]
+    $range.Cells.Item([int]$found, 2).HorizontalAlignment = -4108
+    $range.Cells.Item([int]$found, 2).VerticalAlignment = -4108
+    $guide = $Workbook.Worksheets.Item("Справка")
+    $anchor = 0
+    $last = $guide.UsedRange.Row + $guide.UsedRange.Rows.Count - 1
+    for ($row = 1; $row -le $last; $row++) {
+        if ([string]$guide.Cells.Item($row, 1).Value2 -ceq $key) { $anchor = $row; break }
+    }
+    if (-not $anchor) {
+        $anchor = $last + 2
+        $next = Add-GuideTitle $guide $anchor $key 13
+        foreach ($line in (Get-SettingInstructionLines $key ([string]$setting[0][3]))) {
+            $next = Add-GuideParagraph $guide $next $line
+        }
+        $helpRange = $guide.Range($guide.Cells.Item($anchor, 1), $guide.Cells.Item($next - 1, 6))
+        $helpRange.RowHeight = 30
+        $helpRange.Borders.LineStyle = 1
+    }
+    Add-InstructionHyperlink $range.Cells.Item($found, 5) $guide.Name $anchor
+    $newRow = $range.Rows.Item([int]$found)
+    $newRow.Borders.LineStyle = -4115
+    $newRow.Borders.Weight = 2
+    $newRow.Borders.Color = 0
+    $right = $range.Cells.Item([int]$found, 5).Borders.Item(10)
+    $right.Weight = 2
+    $right.Color = 0
+    $right.LineStyle = -4115
+    $Workbook.Application.CutCopyMode = $false
+    return @{ Added = $added; Address = $range.Cells.Item($found, 2).Address($false, $false); HelpRow = $anchor }
+}
+
 function Add-SystemSettings {
     param([object]$Sheet)
     $result = Apply-SystemSettingsLayout $Sheet.Parent $Sheet

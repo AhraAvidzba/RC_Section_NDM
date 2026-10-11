@@ -344,8 +344,7 @@ End Sub
         Insert-Counter $solver '^    RecordSectionEquilibriumSolve\r?$' @'
 Audit03RecordSolveAttempt Array(ObjPtr(section), ObjPtr(concreteMaterial), ObjPtr(steelMaterial), _
     targetN, targetMx, targetMy, mMaxIterations, mLoadSteps, mToleranceN, mToleranceMx, mToleranceMy, _
-    mLineSearchEnabled, mDampingInitial, mMinLineSearchAlpha, mMaxDeltaEpsilon0, mMaxDeltaKappa, _
-    mSolverMethod, mSecantMaxRestarts, mSecantMinStepNorm, mUseInitialState, _
+    mSolverMethod, mSecantMaxRestarts, mUseInitialState, _
     mInitialEpsilon0, mInitialKappaX, mInitialKappaY, mUseInitialLoads, _
     mInitialTargetN, mInitialTargetMx, mInitialTargetMy)
 '@

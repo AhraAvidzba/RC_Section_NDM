@@ -11,7 +11,9 @@ $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $bookPath = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Audit03')) + [IO.Path]::DirectorySeparatorChar
-if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase)) { throw 'Only isolated Audit03 fixtures may be modified.' }
+$postAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PostAudit03')) + [IO.Path]::DirectorySeparatorChar
+if (-not $bookPath.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
+    -not $bookPath.StartsWith($postAllowed, [StringComparison]::OrdinalIgnoreCase)) { throw 'Only isolated audit fixtures may be modified.' }
 $isTestClass = $TestModule -eq 'CTestLimitSearchProblem'
 if (-not $isTestClass -and $TestModule -notmatch '^modTest[A-Za-z0-9]+$') { throw 'Expected an approved test module.' }
 $extension = if ($isTestClass) { 'cls' } else { 'bas' }
@@ -56,6 +58,10 @@ try {
         $constantModule.DeleteLines(1, $constantModule.CountOfLines)
         $constantModule.AddFromString($constantBody)
     }
+    $excel.VBE.ActiveVBProject = $book.VBProject
+    $compile = $excel.VBE.CommandBars.FindControl(1,578)
+    if ($compile.Enabled) { $compile.Execute() }
+    if ($compile.Enabled) { throw 'Test module compilation failed.' }
     $book.Save()
     $book.Close($false)
     $book = $null

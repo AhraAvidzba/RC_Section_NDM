@@ -87,9 +87,10 @@ Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CL
             request.Problem.TryFinalizeAfterSearchFailure request
         Exit Sub
     End If
+    Dim pointAccepted As Boolean
     RunSearchInsideBracket request, loadPath, lowLambda, highLambda, lowSolver, highSolver, _
-        request.Problem.SearchMethod, request.Problem.LambdaTolerance, request.Problem.MaxIterations
-    If Not request.Problem.Converged Then
+        request.Problem.SearchMethod, request.Problem.LambdaTolerance, request.Problem.MaxIterations, pointAccepted
+    If Not pointAccepted And Not request.Problem.Converged Then
         If Not request.Problem.StoppedTerminally Then request.Problem.TryFinalizeAfterSearchFailure request
     End If
 End Sub
@@ -221,25 +222,65 @@ Private Sub RunSearchInsideBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highSolver As CSectionSolver, ByVal methodName As String, _
-        ByVal tolerance As Double, ByVal maxIterations As Long)
+        ByVal tolerance As Double, ByVal maxIterations As Long, ByRef pointAccepted As Boolean)
     Select Case methodName
         Case "Bisection"
             Dim iterations As Long
             request.Problem.AppendDiagnostic "searchMethod=Bisection"
             If SearchByBisectionCore(request, loadPath, lowLambda, lowSolver, highLambda, highSolver, _
                     tolerance, request.Problem.BisectionMaxIterations, iterations) Then
-                request.Problem.FinalizeBracket request, loadPath, lowLambda, lowSolver, _
-                    highLambda, highSolver, "Bisection", iterations
+                pointAccepted = FinalizeBracketWithRecovery(request, loadPath, lowLambda, lowSolver, _
+                    highLambda, highSolver, "Bisection", iterations, request.Problem.BisectionMaxIterations)
             End If
         Case "Brent"
-            SearchByBrent request, loadPath, lowLambda, highLambda, tolerance, maxIterations
+            SearchByBrent request, loadPath, lowLambda, highLambda, tolerance, maxIterations, pointAccepted
         Case "Secant"
-            SearchBySecant request, loadPath, lowLambda, highLambda, tolerance, maxIterations
+            SearchBySecant request, loadPath, lowLambda, highLambda, tolerance, maxIterations, pointAccepted
         Case Else
             request.Problem.SetInvalidInput _
                 "Метод одномерного поиска должен быть Bisection, Brent или Secant."
     End Select
 End Sub
+
+' Точность интервала не заменяет подтверждение физического предела. После
+' численной неудачи уточнения сохраняем обе равновесные стороны и сужаем ту
+' же скобку; ошибки данных/контракта не повторяются, бюджет не обнуляется.
+Private Function FinalizeBracketWithRecovery(ByVal request As CLimitSearchRequest, _
+        ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
+        ByVal lowSolver As CSectionSolver, ByVal highLambda As Double, _
+        ByVal highSolver As CSectionSolver, ByVal methodName As String, _
+        ByVal iterations As Long, ByVal maxIterations As Long) As Boolean
+    Do
+        If request.Problem.FinalizeBracket(request, loadPath, lowLambda, lowSolver, _
+                highLambda, highSolver, methodName, iterations) Then
+            FinalizeBracketWithRecovery = True
+            Exit Function
+        End If
+        If request.Problem.Converged Or request.Problem.StoppedTerminally Then Exit Function
+        If maxIterations > 0 And iterations >= maxIterations Then
+            request.Problem.SetNumericalFailure _
+                "Исчерпан бюджет поиска lambda: точность интервала достигнута, но физический предел не подтвержден."
+            Exit Function
+        End If
+        Dim width As Double, recoveryTolerance As Double
+        width = highLambda - lowLambda
+        recoveryTolerance = width / 4#
+        If recoveryTolerance <= 0# Or recoveryTolerance >= width Then
+            request.Problem.SetNumericalFailure _
+                "Уточнение физического предела остановлено: скобку lambda невозможно уменьшить."
+            Exit Function
+        End If
+        request.Problem.AppendDiagnostic "bracketFinalizationRecovery; width=" & _
+            FormatNumberInvariant(width) & "; nextWidth=" & FormatNumberInvariant(recoveryTolerance) & _
+            "; usedIterations=" & CStr(iterations)
+        Dim remaining As Long, recoveryIterations As Long
+        remaining = 0
+        If maxIterations > 0 Then remaining = maxIterations - iterations
+        If Not SearchByBisectionCore(request, loadPath, lowLambda, lowSolver, highLambda, _
+                highSolver, recoveryTolerance, remaining, recoveryIterations) Then Exit Function
+        iterations = iterations + recoveryIterations
+    Loop
+End Function
 
 ' Выполняет общий цикл bisection для уже найденной lambda-скобки.
 ' Capacity и CrackFormation используют один порядок пробных lambda-точек; различаются только
@@ -311,7 +352,8 @@ End Function
 ' если интерполяция становится рискованной.
 Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
-        ByVal highLambda As Double, ByVal tolerance As Double, ByVal maxIterations As Long)
+        ByVal highLambda As Double, ByVal tolerance As Double, ByVal maxIterations As Long, _
+        ByRef pointAccepted As Boolean)
     request.Problem.AppendDiagnostic "searchMethod=Brent"
 
     Dim a As Double, b As Double, c As Double
@@ -325,7 +367,10 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
     If Not EvaluateLimitPoint(request, loadPath, a, fa, stateA, solverA) Then Exit Sub
     If Not EvaluateLimitPoint(request, loadPath, b, fb, stateB, solverB) Then Exit Sub
     If fb = 0# And IsLimitState(request, stateB) Then
-        If FinalizeKnownProbe(request, loadPath, b, stateB, "Brent", solverB, 0) Then Exit Sub
+        If FinalizeKnownProbe(request, loadPath, b, stateB, "Brent", solverB, 0) Then
+            pointAccepted = True
+            Exit Sub
+        End If
         If request.Problem.StoppedTerminally Then Exit Sub
     End If
     If fa >= 0# Or fb <= 0# Then
@@ -362,7 +407,10 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
         tol = tolerance / 2#
         xm = (c - b) / 2#
         If fb = 0# And IsLimitState(request, stateB) Then
-            If FinalizeKnownProbe(request, loadPath, b, stateB, "Brent", solverB, iter) Then Exit Sub
+            If FinalizeKnownProbe(request, loadPath, b, stateB, "Brent", solverB, iter) Then
+                pointAccepted = True
+                Exit Sub
+            End If
             If request.Problem.StoppedTerminally Then Exit Sub
         End If
         If Abs(c - b) <= tolerance Then
@@ -370,9 +418,9 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
             ' допустимую сторону. Передаем обе сохраненные стороны доменному
             ' callback: Capacity принимает нижнюю, Formation подтверждает верхнюю.
             If IsAcceptableState(request, stateB) Then
-                request.Problem.FinalizeBracket request, loadPath, b, solverB, c, solverC, "Brent", iter
+                pointAccepted = FinalizeBracketWithRecovery(request, loadPath, b, solverB, c, solverC, "Brent", iter, maxIterations)
             ElseIf IsAcceptableState(request, stateC) Then
-                request.Problem.FinalizeBracket request, loadPath, c, solverC, b, solverB, "Brent", iter
+                pointAccepted = FinalizeBracketWithRecovery(request, loadPath, c, solverC, b, solverB, "Brent", iter, maxIterations)
             Else
                 request.Problem.SetNumericalFailure "В конечной скобке Brent не сохранена допустимая точка равновесия."
             End If
@@ -464,7 +512,8 @@ End Function
 ' но дополнительно удерживает точку внутри физической скобки.
 Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
-        ByVal highLambda As Double, ByVal tolerance As Double, ByVal maxIterations As Long)
+        ByVal highLambda As Double, ByVal tolerance As Double, ByVal maxIterations As Long, _
+        ByRef pointAccepted As Boolean)
     request.Problem.AppendDiagnostic "searchMethod=Secant"
 
     Dim x0 As Double, x1 As Double, x2 As Double
@@ -482,7 +531,10 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     If Not EvaluateLimitPoint(request, loadPath, x0, f0, state0, solver0) Then Exit Sub
     If Not EvaluateLimitPoint(request, loadPath, x1, f1, state1, solver1) Then Exit Sub
     If Abs(f1) <= tolerance And CanFinalizeSecantProbe(request, state1, solver1) Then
-        If FinalizeKnownProbe(request, loadPath, x1, state1, "Secant", solver1, 0) Then Exit Sub
+        If FinalizeKnownProbe(request, loadPath, x1, state1, "Secant", solver1, 0) Then
+            pointAccepted = True
+            Exit Sub
+        End If
         If request.Problem.StoppedTerminally Then Exit Sub
     End If
     If f0 >= 0# Or f1 <= 0# Then
@@ -497,12 +549,15 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
 
     For iter = 1 To maxIterations
         If Abs(f1) <= tolerance And CanFinalizeSecantProbe(request, state1, solver1) Then
-            If FinalizeKnownProbe(request, loadPath, x1, state1, "Secant", solver1, iter) Then Exit Sub
+            If FinalizeKnownProbe(request, loadPath, x1, state1, "Secant", solver1, iter) Then
+                pointAccepted = True
+                Exit Sub
+            End If
             If request.Problem.StoppedTerminally Then Exit Sub
         End If
         If Abs(bracketHigh - bracketLow) <= tolerance Then
-            request.Problem.FinalizeBracket request, loadPath, bracketLow, bracketLowSolver, _
-                bracketHigh, bracketHighSolver, "Secant", iter
+            pointAccepted = FinalizeBracketWithRecovery(request, loadPath, bracketLow, bracketLowSolver, _
+                bracketHigh, bracketHighSolver, "Secant", iter, maxIterations)
             Exit Sub
         End If
         If Not TrySecantCandidate(x0, x1, f0, f1, x2) Then x2 = SafeMidpoint(bracketLow, bracketHigh)
@@ -518,12 +573,15 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
         UpdateSecantBracket request, x2, f2, state2, solver2, _
             bracketLow, bracketHigh, bracketLowSolver, bracketHighSolver
         If Abs(f2) <= tolerance And CanFinalizeSecantProbe(request, state2, solver2) Then
-            If FinalizeKnownProbe(request, loadPath, x2, state2, "Secant", solver2, iter) Then Exit Sub
+            If FinalizeKnownProbe(request, loadPath, x2, state2, "Secant", solver2, iter) Then
+                pointAccepted = True
+                Exit Sub
+            End If
             If request.Problem.StoppedTerminally Then Exit Sub
         End If
         If Abs(bracketHigh - bracketLow) <= tolerance Then
-            request.Problem.FinalizeBracket request, loadPath, bracketLow, bracketLowSolver, _
-                bracketHigh, bracketHighSolver, "Secant", iter
+            pointAccepted = FinalizeBracketWithRecovery(request, loadPath, bracketLow, bracketLowSolver, _
+                bracketHigh, bracketHighSolver, "Secant", iter, maxIterations)
             Exit Sub
         End If
 

@@ -2,14 +2,17 @@
 # Existing user/SOFiPLUS instances are never edited, closed, or reused.
 param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
       [string]$ReportDirectory='docs/regression/PostAudit03/NativeCAD',
-      [ValidateSet('RunRealAutoCADContourTests','RunRealAutoCADContourFormatTests','RunRealAutoCADContourMeshTests')]
+      [ValidateSet('RunRealAutoCADContourTests','RunRealAutoCADContourFormatTests','RunRealAutoCADContourMeshTests','RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTests')]
       [string]$Macro='RunRealAutoCADContourTests')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directory=Join-Path $root $ReportDirectory
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 $path=Join-Path $directory 'RC_Section_NDM.xlsm'
-Copy-Item -LiteralPath (Join-Path $root $SourceWorkbook) -Destination $path -Force
+$sourcePath=$SourceWorkbook
+if (-not [IO.Path]::IsPathRooted($sourcePath)) { $sourcePath=Join-Path $root $sourcePath }
+$sourcePath=(Resolve-Path -LiteralPath $sourcePath).Path
+Copy-Item -LiteralPath $sourcePath -Destination $path -Force
 $class=(Get-ItemProperty -LiteralPath 'Registry::HKEY_CLASSES_ROOT\AutoCAD.Application.24.2\CLSID').'(default)'
 $server=(Get-ItemProperty -LiteralPath "Registry::HKEY_CLASSES_ROOT\CLSID\$class\LocalServer32").'(default)'
 if ($server -notlike 'C:\Program Files\Autodesk\AutoCAD 2023\acad.exe*') {throw "Unsafe CAD COM registration: $server"}
@@ -49,7 +52,8 @@ try {
     $owned=($pidValue -gt 0 -and $existing -notcontains $pidValue)
     if (-not $owned) {throw "CAD instance is not owned by this test: PID=$pidValue"}
     Write-Output "CAD_OWNED: PID=$pidValue; executable=$fullName"
-    [ordered]@{Executable=$fullName; OwnedPID=$pidValue; ExistingPIDs=$existing; UserDocumentsUsed=$false} |
+    $cadStartTicks=(Get-Process -Id $pidValue).StartTime.ToUniversalTime().Ticks
+    [ordered]@{Executable=$fullName; OwnedPID=$pidValue; StartTicks=$cadStartTicks; ExistingPIDs=$existing; UserDocumentsUsed=$false} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADOwnership.json') -Encoding UTF8
     Invoke-CadReady { $acad.Visible=$false }
     # Готовим первый документ в управляющем COM-процессе до передачи
@@ -58,10 +62,19 @@ try {
     $template=Join-Path $env:LOCALAPPDATA 'Autodesk/AutoCAD 2023/R24.2/rus/Template/acadiso.dwt'
     if (-not (Test-Path -LiteralPath $template)) {throw 'Standard AutoCAD test template is missing.'}
     $documents=Invoke-CadReady { ,$acad.GetType().InvokeMember('Documents',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null) }
-    $bootstrap=Invoke-CadReady { $documents.GetType().InvokeMember('Add',[Reflection.BindingFlags]::InvokeMethod,$null,$documents,@($template)) }
+    if ($Macro -in @('RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTests')) {
+        $bootstrap=Invoke-CadReady { $acad.Documents.Add() }
+        $template=''
+    } else {
+        $bootstrap=Invoke-CadReady { $documents.GetType().InvokeMember('Add',[Reflection.BindingFlags]::InvokeMethod,$null,$documents,@($template)) }
+    }
     Write-Output ('CAD_BOOTSTRAP_DOCUMENT: ' + [string]$bootstrap.Name)
     $excel=New-Object -ComObject Excel.Application
     $excel.Visible=$false; $excel.DisplayAlerts=$false; $excel.EnableEvents=$false; $excel.AutomationSecurity=1
+    [uint32]$excelId=0
+    [void][PostAuditCADIdentity]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd,[ref]$excelId)
+    [ordered]@{OwnedPID=[int]$excelId; StartTicks=(Get-Process -Id $excelId).StartTime.ToUniversalTime().Ticks; ProcessName='EXCEL'} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeExcelOwnership.json') -Encoding UTF8
     $book=$excel.Workbooks.Open($path)
     # The saved candidate already contains the guarded optional CAD entrypoint.
     # Test it without replacing its VBA or saving fixture mutations.

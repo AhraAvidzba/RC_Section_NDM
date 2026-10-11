@@ -172,9 +172,6 @@ $records = foreach ($field in $fresh.Fields) {
         }
         $latest = @($supplementary[4])
     }
-    if ($field.Id -eq 'Solver.MaxDeltaKappa') {
-        $contract.ValidRange = 'Конечное число >= 0; ноль отключает ограничение приращения.'
-    }
     if ($field.Id -in @('Stability.ElementLength', 'Stability.Mu1', 'Stability.Mu2')) {
         $contract.ValidRange = 'Положительное конечное число; l0 и l0^2 должны быть положительно представимы в Double.'
         $latest = @($supplementary[0], $supplementary[1], $supplementary[2])

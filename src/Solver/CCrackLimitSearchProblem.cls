@@ -338,12 +338,13 @@ End Function
 
 ' Передает верхнюю сторону скобки как кандидата достижения растягивающего
 ' критерия; финализация повторно проверяет физическую пригодность этой точки.
-Private Sub ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
+Private Function ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
-        ByVal methodName As String, ByVal iterations As Long)
-    ILimitSearchProblem_FinalizeAt request, loadPath, highLambda, STATE_CRACK_LIMIT, methodName, highSolver, iterations
-End Sub
+        ByVal methodName As String, ByVal iterations As Long) As Boolean
+    ILimitSearchProblem_FinalizeBracket = ILimitSearchProblem_FinalizeAt(request, loadPath, _
+        highLambda, STATE_CRACK_LIMIT, methodName, highSolver, iterations)
+End Function
 
 ' На плато последняя допустимая силовая проба служит стартом общего Newton.
 ' Принимается только реальный первый предел на исходном пути с равновесием;

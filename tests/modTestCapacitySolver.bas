@@ -50,6 +50,8 @@ Public Function RunCapacitySolverTests() As String
     TestNumericalPathPreparation stats
     AppendLine stats, "RUN: TestProjectedLimitRecovery"
     TestProjectedLimitRecovery stats
+    TestWarmStartRestartContract stats
+    TestUltimateStepScale stats
     AppendLine stats, "RUN: TestConcreteLimitState"
     TestConcreteLimitState stats
     AppendLine stats, "RUN: TestConcreteTensionLimitState"
@@ -638,12 +640,13 @@ Failed:
     RunAxialCapacityRegressionTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: сохраняет 15 решений прежнего ядра на плато и проверяет
-' шесть штатных поисков известного нелинейного предела с переносами.
+' ДЛЯ ТЕСТОВ: все 24 теплых старта на плато, бюджет возврата к общему старту
+' и шесть штатных поисков известного нелинейного предела с переносами.
 Public Function RunProjectedLimitRecoveryTests() As String
     Dim stats As TCapacityTestStats
     On Error GoTo Failed
     TestProjectedLimitRecovery stats
+    TestWarmStartRestartContract stats
     AppendLine stats, "TOTAL_PROJECTED_RECOVERY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunProjectedLimitRecoveryTests = stats.Report
     Exit Function
@@ -651,8 +654,80 @@ Failed:
     RunProjectedLimitRecoveryTests = stats.Report & "FAIL: projectedRecovery.runtime=" & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' ДЛЯ ТЕСТОВ: масштаб пути не меняет известный предел и его равновесие.
+Public Function RunUltimateStepScaleRegressionTests() As String
+    Dim stats As TCapacityTestStats
+    On Error GoTo Failed
+    TestUltimateStepScale stats
+    AppendLine stats, "TOTAL_ULTIMATE_STEP_SCALE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunUltimateStepScaleRegressionTests = stats.Report
+    Exit Function
+Failed:
+    RunUltimateStepScaleRegressionTests = stats.Report & "FAIL: ultimateStepScale.runtime=" & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Одна физическая плоскость задает широкий диапазон lambda при тех же усилиях.
+' Проверяются холодный старт, плато и исходные координаты удаленного чертежа.
+Private Sub TestUltimateStepScale(ByRef stats As TCapacityTestStats)
+    Dim shift As Variant, sign As Variant, factor As Variant, x As Long, y As Long, startIndex As Long
+    Dim section As CSectionModel, concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Dim known As CSectionSolver, start As CSectionSolver, cap As CCapacitySolver
+    Dim adapter As CCapacityLimitSearchProblem, problem As ILimitSearchProblem, search As CUltimateStrainSearch
+    Dim path As CLoadPathVector, prefix As String, succeeded As Boolean, expectedLambda As Double
+    For Each shift In Array(0#, -1000000#, 1000000#)
+        Set section = New CSectionModel
+        For x = -4 To 4
+            For y = -2 To 2
+                section.AddConcreteElement CDbl(shift) + 50# * x, -CDbl(shift) + 50# * y, 2500#
+            Next y
+        Next x
+        section.AddRebarElement CDbl(shift) - 160#, -CDbl(shift) - 80#, 32#, 0#, "A400"
+        section.AddRebarElement CDbl(shift) + 160#, -CDbl(shift) - 80#, 32#, 0#, "A400"
+        section.AddRebarElement CDbl(shift) - 160#, -CDbl(shift) + 80#, 32#, 0#, "A400"
+        section.AddRebarElement CDbl(shift) + 160#, -CDbl(shift) + 80#, 32#, 0#, "A400"
+        Set concrete = ProvisionalConcrete(): Set steel = ProvisionalSteel()
+        concrete.Freeze: steel.Freeze
+        For Each sign In Array(-1#, 1#)
+            Set known = New CSectionSolver
+            known.EvaluatePhysicalCenterPlane section, concrete, steel, -0.0021, CDbl(sign) * 0.000006, CDbl(sign) * 0.000004
+            For Each factor In Array(0.000001, 0.01, 1#, 10000#, 1000000#)
+                expectedLambda = 1# / CDbl(factor)
+                Set path = New CLoadPathVector
+                path.Initialize 0#, known.Nint * CDbl(factor), 0#, known.Mxint * CDbl(factor), 0#, known.Myint * CDbl(factor)
+                For startIndex = 1 To 2
+                    Set cap = New CCapacitySolver
+                    cap.ConcreteCompressionLimit = -0.0035: cap.ConcreteTensionLimit = 0#
+                    cap.SteelCompressionLimit = 0.025: cap.SteelTensionLimit = 0.025
+                    cap.SolverToleranceN = 0.001: cap.SolverToleranceMx = 200#: cap.SolverToleranceMy = 200#
+                    cap.SolverMaxIterations = 60: cap.StrainTolerance = 0.000001
+                    prefix = "ultimateStepScale." & CStr(shift) & "." & CStr(sign) & "." & CStr(factor) & "." & CStr(startIndex)
+                    Set start = Nothing
+                    If startIndex = 2 Then
+                        Set start = New CSectionSolver
+                        start.EvaluatePhysicalCenterPlane section, concrete, steel, -0.003, 0#, 0#
+                        AssertTrue stats, prefix & ".startEquilibrium", start.ConfirmEquilibrium(start.Nint, start.Mxint, start.Myint)
+                    End If
+                    Set adapter = New CCapacityLimitSearchProblem: adapter.Initialize cap: Set problem = adapter
+                    AssertTrue stats, prefix & ".prepared", cap.LimitSearchPrepareCapacityUltimate(section, concrete, steel, path)
+                    Set search = New CUltimateStrainSearch
+                    succeeded = search.RunNewton(problem, section, concrete, steel, path, start, "Не найден известный предел масштабированного пути.")
+                    cap.LimitSearchCompleteCapacityUltimate path
+                    AssertTrue stats, prefix & ".knownLimitFound." & cap.StopReason, succeeded And cap.Converged
+                    If succeeded Then
+                        AssertClose stats, prefix & ".lambda", cap.LambdaUltimate, expectedLambda, expectedLambda * 0.0001
+                        AssertEquals stats, prefix & ".criterion", cap.LimitState, "ConcreteStrainLimit"
+                        AssertTrue stats, prefix & ".equilibrium", cap.LastSolver.ConfirmEquilibrium(path.TargetN(cap.LambdaUltimate), _
+                            path.TargetMx(cap.LambdaUltimate), path.TargetMy(cap.LambdaUltimate))
+                        AssertClose stats, prefix & ".physicalStrain", cap.LastSolver.MinConcreteStrain, -0.0035, 0.000001
+                    End If
+                Next startIndex
+            Next factor
+        Next sign
+    Next shift
+End Sub
+
 Private Sub TestProjectedLimitRecovery(ByRef stats As TCapacityTestStats)
-    Dim shift As Variant, sign As Variant, x As Long, y As Long, startIndex As Long, lastStart As Long
+    Dim shift As Variant, sign As Variant, x As Long, y As Long, startIndex As Long
     Dim section As CSectionModel, concrete As CMaterialDiagram, steel As CMaterialDiagram
     Dim known As CSectionSolver, start As CSectionSolver, cap As CCapacitySolver
     Dim adapter As CCapacityLimitSearchProblem, problem As ILimitSearchProblem, search As CUltimateStrainSearch
@@ -669,19 +744,19 @@ Private Sub TestProjectedLimitRecovery(ByRef stats As TCapacityTestStats)
         section.AddRebarElement CDbl(shift) - 160#, -CDbl(shift) + 80#, 32#, 0#, "A400"
         section.AddRebarElement CDbl(shift) + 160#, -CDbl(shift) + 80#, 32#, 0#, "A400"
         Set concrete = ProvisionalConcrete(): Set steel = ProvisionalSteel()
+        concrete.Freeze: steel.Freeze
         For Each sign In Array(-1#, 1#)
             Set known = New CSectionSolver
             known.EvaluatePhysicalCenterPlane section, concrete, steel, -0.0021, CDbl(sign) * 0.000006, CDbl(sign) * 0.000004
             Set path = New CLoadPathVector: path.Initialize 0#, known.Nint, 0#, known.Mxint, 0#, known.Myint
-            lastStart = 2: If CDbl(sign) < 0# Then lastStart = 3
-            For startIndex = 1 To lastStart + 1
+            For startIndex = 1 To 5
                 Set cap = New CCapacitySolver
                 cap.ConcreteCompressionLimit = -0.0035: cap.ConcreteTensionLimit = 0#
                 cap.SteelCompressionLimit = 0.025: cap.SteelTensionLimit = 0.025
                 cap.SolverToleranceN = 0.001: cap.SolverToleranceMx = 200#: cap.SolverToleranceMy = 200#
                 cap.SolverMaxIterations = 60: cap.StrainTolerance = 0.000001
                 prefix = "projectedRecovery." & CStr(shift) & "." & CStr(sign) & "." & CStr(startIndex)
-                If startIndex > lastStart Then
+                If startIndex = 5 Then
                     prefix = prefix & ".public"
                     cap.SolveByUltimateLoadPath section, concrete, steel, 0#, path.NBase, 0#, path.MxBase, 0#, path.MyBase
                     succeeded = cap.Converged
@@ -690,6 +765,7 @@ Private Sub TestProjectedLimitRecovery(ByRef stats As TCapacityTestStats)
                         Case 1: epsilon = -0.003: kx = 0#: ky = 0#
                         Case 2: epsilon = -0.00176: kx = 0.0000004: ky = 0.0000003
                         Case 3: epsilon = -0.0032: kx = 0.000001: ky = -0.0000008
+                        Case 4: epsilon = 0.0001: kx = 0#: ky = 0#
                     End Select
                     Set start = New CSectionSolver
                     start.EvaluatePhysicalCenterPlane section, concrete, steel, epsilon, kx, ky
@@ -710,6 +786,59 @@ Private Sub TestProjectedLimitRecovery(ByRef stats As TCapacityTestStats)
             Next startIndex
         Next sign
     Next shift
+End Sub
+
+' ДЛЯ ТЕСТОВ: один возврат не сбрасывает бюджет и не скрывает терминальные ошибки.
+Private Sub TestWarmStartRestartContract(ByRef stats As TCapacityTestStats)
+    Dim kind As Variant, scenario As Long, fake As CTestLimitSearchProblem
+    Dim section As CSectionModel, start As CSectionSolver, path As CLoadPathVector
+    Dim search As CUltimateStrainSearch, succeeded As Boolean, prefix As String, budget As Long
+    Set section = New CSectionModel
+    section.AddConcreteElement -10#, -10#, 100#: section.AddConcreteElement 10#, 10#, 100#
+    Set path = New CLoadPathVector: path.Initialize 0#, 1#, 0#, 0#, 0#, 0#
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For scenario = 1 To 7
+            Set fake = New CTestLimitSearchProblem: Set search = New CUltimateStrainSearch
+            Set start = New CSectionSolver
+            start.EvaluatePhysicalStrainPlane section, LinearConcrete(), LinearSteel(), -0.001, 0#, 0#
+            If scenario <> 3 Then AssertTrue stats, "warmContract.confirmStart", start.ConfirmEquilibrium(start.Nint, start.Mxint, start.Myint)
+            budget = 2: If scenario = 2 Then budget = 1
+            fake.ConfigureUltimateWarmCase budget, CLng(kind)
+            Select Case scenario
+                Case 4
+                    Set start = Nothing
+                Case 5
+                    fake.ConfigureUltimateWarmCase budget, CLng(kind), coldStrain:=-0.001
+                Case 6
+                    start.EvaluatePhysicalStrainPlane section, LinearConcrete(), LinearSteel(), 0#, 0#, 0#
+                    AssertTrue stats, "warmContract.confirmTerminalStart", start.ConfirmEquilibrium(start.Nint, start.Mxint, start.Myint)
+                    fake.ConfigureUltimateWarmCase budget, CLng(kind), 7
+                Case 7
+                    fake.ConfigureUltimateWarmCase budget, CLng(kind), 1
+            End Select
+            succeeded = search.RunNewton(fake, Nothing, Nothing, Nothing, path, start, "Тестовый бюджет исчерпан.")
+            prefix = "warmContract." & CStr(kind) & "." & CStr(scenario)
+            AssertTrue stats, prefix & ".guessBudget", fake.UltimateGuessCalls >= 1 And fake.UltimateGuessCalls <= 2
+            If scenario = 1 Or scenario = 4 Then
+                AssertTrue stats, prefix & ".accepted", succeeded And fake.Converged
+                AssertTrue stats, prefix & ".positiveLambda", fake.FinalLambda = 1#
+                If scenario = 1 Then
+                    AssertTrue stats, prefix & ".budgetNotReset", fake.FinalIterations = 2 And fake.UltimateGuessCalls = 2
+                Else
+                    AssertTrue stats, prefix & ".coldNoRestart", fake.FinalIterations = 1 And fake.UltimateGuessCalls = 1
+                End If
+            Else
+                AssertTrue stats, prefix & ".noFalseSuccess", Not succeeded And Not fake.Converged
+                If scenario = 6 Then
+                    AssertTrue stats, prefix & ".terminalPreserved", fake.FailureCode = sfcInvalidConfiguration And fake.UltimateGuessCalls = 1
+                Else
+                    AssertTrue stats, prefix & ".numericalNotPhysical", fake.FailureCode = sfcNumericalFailure
+                End If
+                If scenario = 2 Or scenario = 3 Then AssertTrue stats, prefix & ".restartForbidden", fake.UltimateGuessCalls = 1
+                If scenario = 7 Then AssertTrue stats, prefix & ".singleRestart", fake.UltimateGuessCalls = 2
+            End If
+        Next scenario
+    Next kind
 End Sub
 
 ' ДЛЯ ТЕСТОВ: действительный двухосный UltimateStrain, переносы и разные пределы.
@@ -2870,6 +2999,73 @@ Private Sub TestAudit02GenericLoadMultiplierMatrix(ByRef stats As TCapacityTestS
     AssertTrue stats, "audit02.genericMultiplier.missingProblem.noPoint", Not result.HasLimitPoint
 End Sub
 
+' ДЛЯ ТЕСТОВ: допуск lambda не отменяет физическую приемку. Все методы и
+' оба вида задач сужают ту же скобку после численной неудачи уточнения.
+Public Function RunBracketFinalizationRecoveryTests() As String
+    Dim stats As TCapacityTestStats, kind As Variant, methodName As Variant
+    Dim problem As CTestLimitSearchProblem, request As CLimitSearchRequest
+    Dim search As CLoadMultiplierSearch, result As CLimitSearchResult, prefix As String
+    Set search = New CLoadMultiplierSearch
+    For Each kind In Array(rkCapacity, rkCrackFormation)
+        For Each methodName In Array("Bisection", "Brent", "Secant")
+            Set problem = New CTestLimitSearchProblem
+            problem.Configure CStr(methodName), 1.3, 0.02, 80, 1#, 6#, CLng(kind)
+            problem.StepCriterion = True
+            problem.FinalizationMaxWidth = 0.0002
+            Set request = New CLimitSearchRequest
+            request.InitializeWithProblem problem, CLng(kind), "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+            Set result = search.Execute(request)
+            prefix = "bracketFinalize." & CStr(kind) & "." & CStr(methodName)
+            AssertTrue stats, prefix & ".success", result.Succeeded
+            AssertTrue stats, prefix & ".point", result.HasLimitPoint
+            AssertClose stats, prefix & ".physicalAccuracy", result.LambdaUltimate, 1.3, 0.0002
+            AssertTrue stats, prefix & ".repeatedAcceptance", problem.BracketFinalizationCalls > 1
+            AssertTrue stats, prefix & ".budget", problem.FinalIterations <= 80
+            AssertTrue stats, prefix & ".recoveryLogged", InStr(1, problem.DiagnosticLog, "bracketFinalizationRecovery", vbBinaryCompare) > 0
+            AssertEquals stats, prefix & ".method", result.ActualMethod, CStr(methodName)
+        Next methodName
+    Next kind
+    Set problem = New CTestLimitSearchProblem
+    problem.Configure "Bisection", 1.3, 0.02, 7
+    problem.StepCriterion = True: problem.FinalizationMaxWidth = 0.0002
+    Set request = New CLimitSearchRequest
+    request.InitializeWithProblem problem, rkCapacity, "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+    Set result = search.Execute(request)
+    AssertTrue stats, "bracketFinalize.exhausted.noPoint", Not result.HasLimitPoint
+    AssertTrue stats, "bracketFinalize.exhausted.numerical", result.Meta.InternalStatus = rsNumericalFailure
+    AssertTrue stats, "bracketFinalize.exhausted.noBudgetReset", problem.BracketFinalizationCalls = 1
+
+    Set problem = New CTestLimitSearchProblem
+    problem.Configure "Bisection", 1.3, 0.02, 0
+    problem.StepCriterion = True: problem.FinalizationMaxWidth = -1#
+    Set request = New CLimitSearchRequest
+    request.InitializeWithProblem problem, rkCapacity, "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+    Set result = search.Execute(request)
+    AssertTrue stats, "bracketFinalize.machine.noPoint", Not result.HasLimitPoint
+    AssertTrue stats, "bracketFinalize.machine.numerical", result.Meta.InternalStatus = rsNumericalFailure
+    AssertTrue stats, "bracketFinalize.machine.bounded", problem.ProbeCalls < 100
+
+    Set problem = New CTestLimitSearchProblem
+    problem.ConfigureMultiplierFaultCase 11, "Bisection", rkCapacity
+    Set request = New CLimitSearchRequest
+    request.InitializeWithProblem problem, rkCapacity, "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+    Set result = search.Execute(request)
+    AssertTrue stats, "bracketFinalize.terminal.configuration", result.Meta.InternalStatus = rsInvalidConfiguration
+    AssertTrue stats, "bracketFinalize.terminal.once", problem.BracketFinalizationCalls = 1
+    Set problem = New CTestLimitSearchProblem
+    problem.Configure "Bisection", 1.3, 0.02, 80
+    problem.StepCriterion = True: problem.DeferOverallCompletion = True
+    Set request = New CLimitSearchRequest
+    request.InitializeWithProblem problem, rkCrackFormation, "LoadMultiplier", 0#, 1#, 0#, 0#, 0#, 0#
+    Set result = search.Execute(request)
+    AssertTrue stats, "bracketFinalize.deferred.pointAccepted", result.Succeeded And result.HasLimitPoint
+    AssertTrue stats, "bracketFinalize.deferred.ownerNotComplete", Not problem.Converged
+    AssertTrue stats, "bracketFinalize.deferred.noRepeat", problem.BracketFinalizationCalls = 1
+    AssertTrue stats, "bracketFinalize.deferred.noFallback", problem.FallbackCalls = 0
+    AppendLine stats, "TOTAL BRACKET FINALIZATION RECOVERY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunBracketFinalizationRecoveryTests = stats.Report
+End Function
+
 ' ============================== ДЛЯ ТЕСТОВ ==============================
 ' Отдельный entrypoint для watchdog: соседние Double и нулевой bisection-budget
 ' на неисправном алгоритме зависают, а не возвращают правдоподобный предел.
@@ -3298,9 +3494,37 @@ End Sub
 Public Function RunCapacityMomentMeritTests() As String
     Dim stats As TCapacityTestStats
     TestCapacityMomentMeritScaling stats
+    TestCapacityJacobianMeritSelection stats
     AppendLine stats, "TOTAL_CAPACITY_MOMENT_MERIT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunCapacityMomentMeritTests = stats.Report
 End Function
+
+' ДЛЯ ТЕСТОВ: выбор масштаба зависит только от численной формы пути, не от сечения.
+Private Sub TestCapacityJacobianMeritSelection(ByRef stats As TCapacityTestStats)
+    Dim mesh As CFiberMeshBuilder, rebars As CRebarLayout, section As CSectionModel
+    PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars
+    Set section = BuildGeneratedSectionModel(mesh, rebars)
+    Dim cap As CCapacitySolver, problem As CCapacityLimitSearchProblem, callback As ILimitSearchProblem
+    Set cap = New CCapacitySolver: ConfigureCapacity cap
+    Set problem = New CCapacityLimitSearchProblem: problem.Initialize cap: Set callback = problem
+    Dim values As Variant, item As Variant, path As CLoadPathVector, index As Long, prefix As String
+    values = Array(Array(-100000#, 0#, 0#, 100#, 0#, 200#, True), _
+        Array(0#, -100000#, 0#, 100#, 0#, 200#, False), _
+        Array(0#, -100000#, 100#, 0#, -200#, 0#, True), _
+        Array(0#, 0#, 0#, 100#, 0#, 200#, True), _
+        Array(0#, -100000#, 0#, 0#, 0#, 0#, False), _
+        Array(-100000#, 100000#, 0#, 100#, 0#, 200#, True))
+    For Each item In values
+        index = index + 1: prefix = "capacity.merit.selection." & CStr(index)
+        Set path = New CLoadPathVector
+        path.Initialize item(0), item(1), item(2), item(3), item(4), item(5)
+        AssertTrue stats, prefix & ".prepared", cap.LimitSearchPrepareCapacityUltimate( _
+            section, LinearConcrete(), LinearSteel(), path)
+        AssertTrue stats, prefix & ".scale", callback.LimitSearchUseJacobianMeritScaling = CBool(item(6))
+    Next item
+    cap.LimitSearchPrepareCapacityUltimate Nothing, Nothing, Nothing, Nothing
+    AssertTrue stats, "capacity.merit.selection.invalidReset", Not callback.LimitSearchUseJacobianMeritScaling
+End Sub
 
 ' ДЛЯ ТЕСТОВ: конечность, typed failures и реальные Capacity-маршруты.
 Public Function RunAudit03UltimateContracts() As String

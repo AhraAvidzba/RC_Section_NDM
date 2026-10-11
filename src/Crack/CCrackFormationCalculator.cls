@@ -23,7 +23,7 @@ Private Const CRACK_EQUILIBRIUM_TOLERANCE As Double = 1# ' Допуск равн
 Private Const CRACK_DIRECTION_TOLERANCE As Double = 0.001 ' Допуск сохранения направления моментного вектора в прямом поиске lambda_crc.
 Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000000001 ' Точность предельного критерия для приема State внутри физической границы диаграммы.
 Private Const CRACK_LAMBDA_BRACKET_LIMIT As Double = 1024# ' Верхняя граница служебного поиска lambda_crc, если прямой Newton не сошелся.
-Private Const CRACK_LAMBDA_BISECTION_TOLERANCE As Double = 0.000001 ' Абсолютный допуск интервала fallback-бисекции lambda_crc; физический критерий проверяется отдельно.
+Private Const CRACK_ZERO_PATH_LAMBDA As Double = 0.000001 ' Окрестность начала пути для проверки постоянной части; не точность поиска.
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
 Private Const CRACK_PATH_AUTO As String = "Auto" ' Общий Search выбирает порядок по активным компонентам сочетания.
@@ -71,6 +71,7 @@ Private mSolverMaxIterations As Long ' Максимум итераций на с
 Private mSolverToleranceN As Double ' Допуск равновесия по N, Н.
 Private mSolverToleranceMx As Double ' Допуск равновесия по Mx, Н*мм.
 Private mSolverToleranceMy As Double ' Допуск равновесия по My, Н*мм.
+Private mLambdaTolerance As Double ' Допуск интервала общего LoadMultiplier-поиска образования трещины.
 Private mSolverSecantMaxRestarts As Long ' Число перезапусков секущей матрицы.
 Private mLambdaCrc As Double ' Множитель нагрузки на пороге трещины: eps_bt,ult для общей ветки или Ncrc/N для центрального растяжения.
 Private mNcrc As Double ' Усилие образования трещины для ветки истинного центрального растяжения, Н.
@@ -103,6 +104,7 @@ Private Sub Class_Initialize()
     mSolverToleranceN = 1#
     mSolverToleranceMx = 1000#
     mSolverToleranceMy = 1000#
+    mLambdaTolerance = 0.01
     mSolverSecantMaxRestarts = 2
     mDiagnosticsEnabled = True
 End Sub
@@ -126,6 +128,8 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     mSolverToleranceN = settings.GetDouble("Solver.ToleranceN", mSolverToleranceN, False)
     mSolverToleranceMx = settings.GetDouble("Solver.ToleranceMx", mSolverToleranceMx, False)
     mSolverToleranceMy = settings.GetDouble("Solver.ToleranceMy", mSolverToleranceMy, False)
+    mLambdaTolerance = settings.GetRequiredDouble("SLS.Crack.ToleranceLambda")
+    ValidateSearchSettings settings
     If settings.HasKey("Solver.Method") Then mSolverMethod = settings.GetRawString("Solver.Method", mSolverMethod)
     mSolverSecantMaxRestarts = settings.GetLong("Solver.SecantMaxRestarts", mSolverSecantMaxRestarts, False)
 
@@ -283,12 +287,23 @@ End Sub
 Private Sub NormalizeSettings()
     mCrackFormationPath = NormalizeCrackFormationPath(mCrackFormationPath)
     mCrackFormationSolutionStrategy = NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy)
+    ValidateSearchSettings
     If mConcreteRbtSer <= 0# Then Err.Raise vbObjectError + 3711, "CCrackFormationCalculator", "Concrete.Rbt.SLS должен быть положительным для расчета трещин."
     If mConcreteEb <= 0# Then Err.Raise vbObjectError + 3712, "CCrackFormationCalculator", "Concrete.Eb должен быть положительным для расчета трещин."
     If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackFormationCalculator", "Steel.Es должен быть положительным для расчета трещин."
     If mConcreteEbt0 <= 0# Then Err.Raise vbObjectError + 3714, "CCrackFormationCalculator", "Concrete.Ebt0 должен быть положительным для проверки образования трещины."
     If mConcreteEbt2 <= 0# Then Err.Raise vbObjectError + 3715, "CCrackFormationCalculator", "Concrete.Ebt2 должен быть положительным для проверки образования трещины."
     If mConcreteEbt0 > mConcreteEbt2 Then Err.Raise vbObjectError + 3716, "CCrackFormationCalculator", "Concrete.Ebt0 не должен быть больше Concrete.Ebt2 для формулы (8.54)."
+End Sub
+
+' Численная точность скобки не меняет критерий и конечную физическую приемку.
+Public Sub ValidateSearchSettings(Optional ByVal settings As CSystemSettingsReader = Nothing)
+    If mLambdaTolerance > 0# And mLambdaTolerance <= 1.797693134862315E+308 Then Exit Sub
+    Dim message As String
+    message = "SLS.Crack.ToleranceLambda: допуск поиска множителя нагрузки должен быть положительным."
+    If Not settings Is Nothing Then message = settings.InputErrorMessage("SLS.Crack.ToleranceLambda", _
+        "Допуск поиска множителя нагрузки должен быть положительным.", "Введите число больше нуля.")
+    Err.Raise vbObjectError + 3740, "CCrackFormationCalculator", message
 End Sub
 
 ' Проверяет минимальный набор данных для предварительной проверки образования
@@ -695,7 +710,7 @@ End Sub
 
 ' Возвращает допуск бисекции для точки образования трещины.
 Public Property Get LimitSearchCrackLambdaTolerance() As Double
-    LimitSearchCrackLambdaTolerance = CRACK_LAMBDA_BISECTION_TOLERANCE
+    LimitSearchCrackLambdaTolerance = mLambdaTolerance
 End Property
 
 ' Возвращает верхнюю границу расширения скобки трещинообразования.
@@ -975,7 +990,7 @@ End Sub
 Private Function TryMarkConstantPartFormationFallback(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double) As Boolean
-    If lambdaValue > CRACK_LAMBDA_BISECTION_TOLERANCE Then Exit Function
+    If lambdaValue > CRACK_ZERO_PATH_LAMBDA Then Exit Function
     If loadPath Is Nothing Then Exit Function
 
     Dim probeN As Double
@@ -2096,6 +2111,14 @@ End Property
 
 Public Property Let CrackFormationSolutionStrategy(ByVal value As String)
     mCrackFormationSolutionStrategy = value
+End Property
+
+Public Property Get LambdaTolerance() As Double
+    LambdaTolerance = mLambdaTolerance
+End Property
+
+Public Property Let LambdaTolerance(ByVal value As Double)
+    mLambdaTolerance = value
 End Property
 
 Public Property Let SolverMethod(ByVal value As String)

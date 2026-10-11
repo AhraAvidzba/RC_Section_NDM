@@ -1,0 +1,58 @@
+﻿{
+    "Status":  "CleanCandidateVerified_NotPublished",
+    "CandidateSHA256":  "DA10AE486C920E114E55B28F7C71188B5C51E2E876402AB05022A4EFFCDB2D4F",
+    "PassedAssertions":  6030,
+    "Protocols":  7,
+    "Reports":  [
+                    {
+                        "Name":  "UltimateFrame",
+                        "PassedAssertions":  385,
+                        "ReusedUnchangedCodeAndInputs":  false,
+                        "ReportSHA256":  "6458FDA6CB360CE741EC841BA67D8AED430BFC799F12CCE65BA3DAFF2ECF1343",
+                        "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\NumericalMeritCandidateFinalV33\\UltimateFrame_No.txt"
+                    },
+                    {
+                        "Name":  "ProjectedRecovery",
+                        "PassedAssertions":  264,
+                        "ReusedUnchangedCodeAndInputs":  false,
+                        "ReportSHA256":  "08FBEF2BA5CC2A42512AB8F12A557C8559AB1ED4BA4F3E87150F5725FF7EF67D",
+                        "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\NumericalMeritCandidateFinalV33\\ProjectedRecovery_No.txt"
+                    },
+                    {
+                        "Name":  "StepScale",
+                        "PassedAssertions":  390,
+                        "ReusedUnchangedCodeAndInputs":  false,
+                        "ReportSHA256":  "548A862EE4C11F3E34333BFE37DD73B59F7F3DD12D812BF320765D89F9AAF212",
+                        "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\NumericalMeritCandidateFinalV33\\StepScale_No.txt"
+                    },
+                    {
+                        "Name":  "UltimateContracts",
+                        "PassedAssertions":  702,
+                        "ReusedUnchangedCodeAndInputs":  false,
+                        "ReportSHA256":  "94BEEAEAD322C552187677BC91B799D246AE605438B3FD567C5C46784606C12B",
+                        "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\NumericalMeritCandidateFinalV33\\UltimateContracts_No.txt"
+                    },
+                    {
+                        "Name":  "Config",
+                        "PassedAssertions":  1587,
+                        "ReusedUnchangedCodeAndInputs":  false,
+                        "ReportSHA256":  "A9B730477CA4C318109127812DC71FAD691FF6088492EE5636DD6F9F0DC5B192",
+                        "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\NumericalMeritCandidateFinalV33\\Config_No.txt"
+                    },
+                    {
+                        "Name":  "SearchConfig",
+                        "PassedAssertions":  1853,
+                        "ReusedUnchangedCodeAndInputs":  false,
+                        "ReportSHA256":  "2FB164B4C15860CAB022EB174EE1340F4ACD4D4B6E4D2AFAC20FDD2BCEE2BE64",
+                        "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\NumericalMeritCandidateFinalV33\\SearchConfig_No.txt"
+                    },
+                    {
+                        "Name":  "UniversalPath",
+                        "PassedAssertions":  849,
+                        "ReusedUnchangedCodeAndInputs":  false,
+                        "ReportSHA256":  "C5F55FC6999F6B734E303D0177B7D2BE43C7F32D75382E686387A5E1F7449F2B",
+                        "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\NumericalMeritCandidateFinalV33\\UniversalPath_No.txt"
+                    }
+                ],
+    "Compiled":  true
+}

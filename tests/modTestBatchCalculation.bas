@@ -5364,6 +5364,106 @@ Failed:
     RunSavedAxialCapacityTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
 End Function
 
+' ДЛЯ ТЕСТОВ: допуск lambda не должен создавать NumFail на плато или менять
+' физические статусы. Нагрузки получены из известных плоскостей сохраненной
+' модели; проверяются сжатие и совместное действие N/Mx/My, без записи Results.
+Public Function RunSavedCrackLambdaToleranceTests() As String
+    Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, settings As CSystemSettingsReader
+    Dim units As CUnitSystem, section As CSectionModel, materials As CMaterialModelProvider
+    Dim profiles As CCalculationProfileCatalog, batch As CBatchSectionCalculator
+    Dim evaluator As CSectionSolver, frame As CSectionNumericalFrame
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, tolerance As Variant
+    Dim result As CCombinationResult, formation As CCrackFormationResult, point As CSectionStateResult
+    Dim loads(1 To 2, 1 To 3) As Double, baseline(1 To 2, 1 To 6) As Variant
+    Dim i As Long, prefix As String, output As String
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    Set section = Audit03LoadMatrixSection("SavedWorkbook")
+    SetSystemSetting "Load.ReferenceOffsetX", "0": SetSystemSetting "Load.ReferenceOffsetY", "0"
+    SetSystemSetting "SLS.Crack.Code", "SP35"
+    SetSystemSetting "Capacity.SolutionStrategy", "LoadMultiplier"
+    SetSystemSetting "SLS.Crack.InitiationSolutionStrategy", "LoadMultiplier"
+    SetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
+    SetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
+    SetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set materials = New CMaterialModelProvider: materials.Initialize settings, units
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(profiles.ProfileById("PR3").StrengthSpec)
+    Set steel = materials.SteelMaterialForEquilibriumFromSpec(profiles.ProfileById("PR3").StrengthSpec)
+    Set frame = New CSectionNumericalFrame: frame.Initialize section
+    Set evaluator = New CSectionSolver
+    For i = 1 To 2
+        If i = 1 Then
+            evaluator.EvaluatePhysicalCenterPlane section, concrete, steel, -0.0028, _
+                0.0004 / frame.LengthScale, 0.0001 / frame.LengthScale
+        Else
+            evaluator.EvaluatePhysicalCenterPlane section, concrete, steel, -0.00005, _
+                0.0006 / frame.LengthScale, -0.0002 / frame.LengthScale
+        End If
+        loads(i, 1) = evaluator.Nint
+        loads(i, 2) = frame.CenterMx(evaluator.Nint, evaluator.Mxint)
+        loads(i, 3) = frame.CenterMy(evaluator.Nint, evaluator.Myint)
+    Next i
+    For Each tolerance In Array("0.000001", "0.01", "0.02", "0.05")
+        SetSystemSetting "SLS.Crack.ToleranceLambda", CStr(tolerance)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set batch = New CBatchSectionCalculator: batch.Initialize section, materials
+        Set batch.ProfileCatalog = profiles: batch.ApplySettings settings, units
+        Audit03ApplyLoadReferenceForTests section, settings, units, batch
+        For i = 1 To 2
+            batch.AddCombination "LAMBDA_" & CStr(i), loads(i, 1), loads(i, 2), loads(i, 3), "PR3", vbNullString, "Auto"
+        Next i
+        batch.Execute
+        For i = 1 To 2
+            Set result = batch.ResultAt(i): Set formation = result.CrackResult.Formation
+            prefix = "savedCrackLambda." & CStr(tolerance) & "." & CStr(i)
+            AssertTrue stats, prefix & ".formationNoNumericalFailure", formation.ResultMeta.InternalStatus <> rsNumericalFailure
+            AssertTrue stats, prefix & ".noInputError", result.Status <> "InputErr" And result.Status <> "CalcErr"
+            If CStr(tolerance) = "0.000001" Then
+                baseline(i, 1) = result.Status: baseline(i, 2) = formation.ResultMeta.InternalStatus
+                baseline(i, 3) = formation.ResultMeta.ResultCode
+                baseline(i, 4) = result.StrengthResult.Capacity.LambdaCapacity
+                baseline(i, 5) = formation.FormationNcrc: baseline(i, 6) = formation.Mcrc
+            Else
+                AssertEquals stats, prefix & ".status", result.Status, CStr(baseline(i, 1))
+                AssertTrue stats, prefix & ".formationStatus", formation.ResultMeta.InternalStatus = baseline(i, 2)
+                AssertTrue stats, prefix & ".formationCode", formation.ResultMeta.ResultCode = baseline(i, 3)
+                AssertClose stats, prefix & ".capacityUnchanged", result.StrengthResult.Capacity.LambdaCapacity, CDbl(baseline(i, 4)), 0#
+                AssertClose stats, prefix & ".Ncrc", formation.FormationNcrc, CDbl(baseline(i, 5)), MaxDouble(0.000001, Abs(CDbl(baseline(i, 5))) * 0.02)
+                AssertClose stats, prefix & ".Mcrc", formation.Mcrc, CDbl(baseline(i, 6)), MaxDouble(0.000001, Abs(CDbl(baseline(i, 6))) * 0.02)
+            End If
+            If formation.HasLimitPoint Then
+                Set point = formation.PreCrackState
+                AssertTrue stats, prefix & ".physicalPoint", point.Converged And point.WithinPhysicalRange And Not point.ExtensionUsed
+                AssertClose stats, prefix & ".rN", point.ResidualN, 0#, Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))
+                AssertClose stats, prefix & ".rMx", point.ResidualMx, 0#, Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))
+                AssertClose stats, prefix & ".rMy", point.ResidualMy, 0#, Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))
+            End If
+            AppendLine stats, prefix & "|status=" & result.Status & "|formationCode=" & CStr(formation.ResultMeta.ResultCode) & _
+                "|Mcrc=" & FormatNumberInvariant(formation.Mcrc) & "|comment=" & formation.ResultMeta.ResultComment
+        Next i
+    Next tolerance
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: savedCrackLambda.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    On Error GoTo RestoreFailed
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    AppendLine stats, "TOTAL_SAVED_CRACK_LAMBDA: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunSavedCrackLambdaToleranceTests = stats.Report
+    Exit Function
+RestoreFailed:
+    RunSavedCrackLambdaToleranceTests = stats.Report & "RESTORE ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
 ' ДЛЯ ТЕСТОВ: сравнивает чистое сжатие с той же силой и малым моментом
 ' на сохраненной пользовательской геометрии. Записывает машинные причины
 ' и деформации текущего НДС; перегрузка не подменяется успешным статусом.

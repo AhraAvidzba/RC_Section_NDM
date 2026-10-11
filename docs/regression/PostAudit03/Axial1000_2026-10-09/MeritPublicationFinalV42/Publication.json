@@ -1,0 +1,41 @@
+{
+  "Status": "PublishedVerifiedCandidate",
+  "PublishedAt": "2026-10-11T15:53:38.3999614+03:00",
+  "MainSHA256": "DA10AE486C920E114E55B28F7C71188B5C51E2E876402AB05022A4EFFCDB2D4F",
+  "DumpSHA256": "D8E0064A46140C865D9E6BBB53449BB5F1E01530AE9AA6290BF15647DF48DF4F",
+  "PreviousMainSHA256": "7A71E85B32876F949CC8E822D06F7D96E0C3CBE74E7D7750776335190744F827",
+  "PreviousDumpSHA256": "89FBE3D20CC23C09171A676189FE0B66155B98B37E12B6932EB460AECE55FF0E",
+  "SourceComponents": 132,
+  "ExportComponents": 137,
+  "UserDataPreserved": true,
+  "ListsAndHelpBordersVerified": true,
+  "CleanAssertions": 6030,
+  "SelectedLoads": 122,
+  "ReviewedNumericalFailures": 11,
+  "IndependentControls": 24,
+  "FollowupGates": 26,
+  "ColdTimingProtocols": [
+    {
+      "Mode": "No",
+      "Report": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\MeritFollowupFinalV37\\ColdMillion_No.txt",
+      "ReportSHA256": "84272DA6F66EDBF419BDE86C62275CA38A5F4F52BC42941D057863894AC294CB"
+    },
+    {
+      "Mode": "Yes",
+      "Report": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\MeritFollowupFinalV37\\ColdMillion_Yes.txt",
+      "ReportSHA256": "9BCB3D2BC51C6501353FB7FEF5E9D795DB04E58C36A7B2ED5DB5209B4859701A"
+    }
+  ],
+  "UserAcceptedTimingException": {
+    "Seconds": 10.01171875,
+    "LimitSeconds": 10,
+    "Mode": "Yes",
+    "Case": "overloadMixed1000000",
+    "Repeat": 1,
+    "PhysicalAssertionsPassed": true,
+    "OriginalFailureReportPreserved": true,
+    "UserInstruction": "User explicitly accepted this slight excess and requested final workbook publication"
+  },
+  "OldFullOnOffRun": false,
+  "BackupDirectory": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\MeritPublicationFinalV42"
+}
