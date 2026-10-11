@@ -16,12 +16,14 @@ D01-D24/E01-E14 выполняется после удаления замене�
 - Этап 02: IN_PROGRESS. Snapshot/context/definition/facade и сквозной builder работают; полный API еще не закрыт.
 - Этап 03: IN_PROGRESS. Аналитический путь и общая RoundedPolygon работают; offset/constraints еще не закрыты.
 - Этап 04: IN_PROGRESS. Шесть режимов, порядок от середины, совпадения/memberships и preflight счетчиков проверены; полный контракт constraints/диагностики еще не закрыт.
-- Этап 05: IN_PROGRESS. Все четыре семейства проверены отдельными рецептами; production-переключение и итоговые общие constraints еще впереди.
-- Этапы 06-11: NOT_RUN. Основная книга не изменялась; прежний production generated-маршрут еще используется.
+- Этап 05: IN_PROGRESS. Аннотации четырех семейств проверены локально; полные режимы схемы еще впереди.
+- Этап 06: LOCAL_PASS. Все четыре семейства проверены отдельными рецептами.
+- Этап 07: IN_PROGRESS. Штатный Generated-вход переключен в source/native staging; основной output пока прежний.
+- Этапы 08-11: NOT_RUN. API-гайд, полное удаление классов и конечная приемка еще впереди.
 - Baseline HEAD: a138c2732382c826db9ac2f801facd3d533d406c.
 - Baseline-книга: workbook/output/RC_Section_NDM.xlsm.
 - Резервные данные: docs/regression/GeometryDeclarative_2026-10-11/Baseline/.
-- Последний зафиксированный milestone: a5aa6cc, аналитический рецепт RoundedRectangle. Текущий локальный этап HollowRectangle описан ниже.
+- Последний зафиксированный milestone: a3a66c3, аналитический рецепт HollowRectangle. Текущий этап штатного входа описан ниже.
 
 ## Установлено По Коду
 
@@ -461,3 +463,71 @@ baseline. Итоговые числа будут получены после ret
 в HOLLOW_RECIPE_EVIDENCE.json. Проверка 127 entries архива: PASS.
 Основная книга и VBA_All_Code.txt не менялись.
 Production integration, retirement, API-гайд и конечная приемка не завершены.
+
+## Штатный Вход: Проверки В Работе
+
+BuildWorkbookSectionModel сохраняет AutoCAD snapshot-ветвь. Generated получает
+одно ReadWorkbookSectionDefinition -> registered table snapshot -> recipe ->
+definition -> CSectionBuilder. Общие Mesh.StepX/StepY/BoundarySubdivisions
+читаются одним ReadSectionMeshOptions и используются также CAD mesher-ом.
+
+Из registry удалены четыре повторных выбора geometry/rebar/annotation и
+прежние фабричные методы; оставлены регистрация, metadata, динамический выбор
+типа и вызов рецепта. Из CSystemSettingsReader удалены scan *Geometry и все
+специальные распознавания/развертки (439 строк), включая shape-specific
+ветви диагностических разделов. Material/unit/sign/plot contracts сохранены.
+Неиспользуемые ReadWorkbookGeometry/ReadWorkbookRebars/WorkbookMeshBoundarySubdivisions
+удалены. RegisteredSectionTypes предоставляет список реестра для установщика;
+штатный dropdown еще предстоит подключить к этому источнику.
+
+Текущие test snapshots используют Mesh/Rebars той же prepared-сборки,
+SourceSnapshot с повторным build удален. Counter fixtures теперь вызывают
+настоящие рецепты из Config, а не прежние специализированные builders.
+В ручном режиме capture пересчитывает только выбранную таблицу перед Value2.
+
+Фактические локальные результаты:
+- Native import/compile: PASS, изолированная ProductionRecipe-книга.
+- Пять штатных матриц побитно совпадают с принятым recipe-этапом:
+  Circle 58308, RectSet 34062, Rounded 48180, Hollow 57022, крайний Hollow 19010.
+  Три подмены comparator-а обнаружены в каждой матрице.
+- Workbook input: 281 PASS. Поврежденное неактивное имя игнорируется,
+  активное поврежденное имя отвергается, снимок/definition независимы от
+  изменения Config, metadata копируется; формула вручную обновляется 75 -> 80.
+- Circle Config: 53 PASS; Shape Config: 216 PASS. Перевод мм/см сохраняет
+  область и все координаты/диаметры арматуры, не только B/H/R.
+- Rebar counter: 29 PASS. Raw Long=2147483647 допустим; executor отклоняет
+  непредставимые активные позиции до массива, а выключенная линия не размещается.
+- Обязательные поля Circle: 524 PASS/160 случаев; все четыре формы:
+  1010 PASS. Причина, named range и фактическая ячейка сохраняются; старые
+  синтетические плоские ключи не возвращаются в runtime.
+- Общая геометрия: 439 PASS, включая положительный Long max и отклонение
+  Long max+1. Допуски предыдущих geometry assertions не менялись.
+- Полный штатный pipeline девяти fixtures, SP35/Off и SP63/Off: по 48114
+  записей, 0 расхождений с принятыми Circle/RectSet/Rounded/Hollow recipe
+  снимками. Сравнение поэлементное, включая усилия, НДС, пределы, ширину и статусы.
+
+Первый ShapeConfig unit probe ошибочно масштабировал только B/H/R, оставляя
+arm lengths в старых числах. Исправлен fixture (все длины), не геометрическая
+математика. Следующий probe ожидал удаленные плоские ключи в сообщениях;
+новая диагностика именует реальную строку и адрес. Failed reports сохранены.
+Отдельный count probe выявил неверный верхний предел generic Long reader-а;
+разделены чтение Long и preflight активных позиций. Расчетные/геометрические
+допуски не менялись. Подсказки исправления добавлены к пользовательским
+ошибкам Number/Count/Choice и отсутствующим строкам/столбцам; внутренние
+ошибки не маскируются. Failed probes остаются отдельными доказательствами.
+
+Read-only сверка VBProject: PASS, 155 компонентов, все 30 approved sources
+совпадают, unexpected/sourceMismatch=0. При первом сравнении VBE изменил
+только запись 15 числовых литералов в двух старых test modules (E-нотация и
+лишний # у дробного Double). Значения IEEE754 проверены неизменными; source
+приведен к native-написанию, verifier не ослаблен. Failed report сохранен.
+Доказательства сохранены в ProductionRecipeEvidence.zip и
+PRODUCTION_RECIPE_EVIDENCE.json; 67 archive entries проверены по SHA-256.
+Inventory оставшихся ссылок:
+647 matches в src/tests, включая определения старых классов. Перенос этих
+численных fixtures и удаление классов - следующий этап, не выполненная приемка.
+
+Старая основная книга и VBA_All_Code.txt неизменны. 12 классов/ISectionShape/
+старые численные constructors еще присутствуют только ради дальнейшего
+переноса тестов и должны быть удалены до конечной приемки. Это не финальный
+production output и не подтверждение D01-D24/E01-E14.

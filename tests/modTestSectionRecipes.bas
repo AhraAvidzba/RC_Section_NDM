@@ -3,6 +3,99 @@ Option Explicit
 
 Private mPassed As Long, mFailed As Long, mReport As String
 
+' ДЛЯ ТЕСТОВ: штатный вход читает только выбранный рецепт и сохраняет snapshot.
+Public Function RunWorkbookRecipeInputTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim config As Object, saved As Variant, fixture As Variant, rootName As String, names As Variant, name As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, typeID As String
+    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, table As CSectionInputTable
+    Dim rootRange As Object, changedName As Object, originalName As String, initialCell As Variant
+    Dim definition As CSectionDefinition, builder As CSectionBuilder, model As CSectionModel, rebuilt As CSectionModel
+    Dim mesh As TSectionMeshOptions, number As Long, reason As String, i As Long
+    Dim calculation As Long, events As Boolean, updating As Boolean, diameterCell As Object, coverCell As Object
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set registry = New CSectionTypeRegistry
+    For Each fixture In Array("Circle", "Rectangle", "RoundedMixed", "HollowOffset")
+        config.Formula = saved
+        modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        typeID = registry.SelectedRecipeType(settings): names = registry.RecipeTableNames(typeID): rootName = CStr(names(0))
+        For Each name In Array("Circle.Diameter", "RectSet.B1", "RoundedRectangle.B", "HollowRectangle.B")
+            Check "workbook.reader.noShapeKey." & CStr(fixture) & "." & CStr(name), Not settings.HasKey(CStr(name))
+        Next name
+        Set changedName = ThisWorkbook.Names(IIf(rootName = "rngCircleGeometry", "rngHollowRectangleGeometry", "rngCircleGeometry"))
+        originalName = changedName.RefersTo: changedName.RefersTo = "=#REF!"
+        Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
+        Check "workbook.inactiveName." & CStr(fixture), model.RebarCount > 0 And model.ConcreteCount > 0
+        changedName.RefersTo = originalName: Set changedName = Nothing
+        Set rootRange = ThisWorkbook.Names(rootName).RefersToRange
+        Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, names, units)
+        Set table = context.Table(rootName): initialCell = table.CellValue(1, 1)
+        rootRange.Cells(1, 1).Value2 = "CHANGED_AFTER_CAPTURE"
+        Check "workbook.table.immutable." & CStr(fixture), CStr(table.CellValue(1, 1)) = CStr(initialCell)
+        Set definition = registry.CreateDefinition(typeID, context)
+        Check "workbook.definition.sealed." & CStr(fixture), definition.IsSealed
+        rootRange.ClearContents
+        mesh = ReadSectionMeshOptions(settings, units)
+        Set rebuilt = builder.Build(definition, mesh)
+        Check "workbook.definition.meshCount." & CStr(fixture), rebuilt.ConcreteCount = model.ConcreteCount
+        Check "workbook.definition.barCount." & CStr(fixture), rebuilt.RebarCount = model.RebarCount
+        For i = 1 To model.RebarCount
+            Near "workbook.definition.x." & CStr(fixture) & "." & CStr(i), rebuilt.RebarX(i), model.RebarX(i)
+            Near "workbook.definition.y." & CStr(fixture) & "." & CStr(i), rebuilt.RebarY(i), model.RebarY(i)
+        Next i
+        config.Formula = saved
+        Set changedName = ThisWorkbook.Names(rootName): originalName = changedName.RefersTo: changedName.RefersTo = "=#REF!"
+        number = 0: reason = ""
+        On Error Resume Next
+        Set context = reader.Capture(ThisWorkbook, names, units)
+        number = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo Failed
+        changedName.RefersTo = originalName: Set changedName = Nothing
+        Check "workbook.activeName.reject." & CStr(fixture), number <> 0 And InStr(1, reason, rootName, vbBinaryCompare) > 0
+    Next fixture
+    config.Formula = saved
+    ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = "mm"
+    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set rootRange = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
+    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
+    Set diameterCell = rootRange.Cells(table.RowByKey("Circle.Diameter"), 2)
+    Set coverCell = rootRange.Cells(table.RowByKey("Rebar.AxisDistance"), 2)
+    Application.Calculation = xlCalculationManual
+    diameterCell.Value2 = 300#: coverCell.Formula = "=" & diameterCell.Address & "/4": rootRange.Calculate
+    diameterCell.Value2 = 320#
+    Near "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
+    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
+    Near "workbook.manual.capture.refreshed", table.Length(table.RowByKey("Rebar.AxisDistance"), 2, units), 80#
+    names = registry.RecipeTableNames("Circle"): names(0) = "CHANGED_COPY"
+    names = registry.RecipeTableNames("Circle")
+    Check "workbook.registry.metadata.copy", CStr(names(0)) = "rngCircleGeometry"
+    registry.RegisterRecipe "FixedMetadata", New CSectionRecipeCircle, Array()
+    i = 0: names = registry.RecipeTableNames("FixedMetadata")
+    For Each name In names: i = i + 1: Next name
+    Check "workbook.registry.emptyMetadata", i = 0
+    SetSystemInput "Geometry.Type", "FixedMetadata"
+    settings.LoadFromWorkbook ThisWorkbook
+    Check "workbook.registry.dynamicChoice", registry.SelectedRecipeType(settings) = "FixedMetadata"
+    GoTo Finished
+Failed:
+    Check "workbook.recipe.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    On Error Resume Next
+    If Not changedName Is Nothing Then changedName.RefersTo = originalName
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    On Error GoTo 0
+    RunWorkbookRecipeInputTests = mReport & "TOTAL WORKBOOK RECIPE INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
 ' ДЛЯ ТЕСТОВ: шум координаты касания не меняет дробление соседней ячейки.
 Public Function RunRecipeMeshBoundaryTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
@@ -731,15 +824,13 @@ Private Function BuildCircleRecipe(ByVal settings As CSystemSettingsReader, ByVa
 End Function
 
 Private Function BuildRecipe(ByVal typeID As String, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal builder As CSectionBuilder) As CSectionModel
-    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, recipe As ISectionRecipe
+    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext
     Dim definition As CSectionDefinition, mesh As TSectionMeshOptions
     Dim registry As CSectionTypeRegistry
     Set registry = New CSectionTypeRegistry
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, registry.RecipeTableNames(typeID), units)
-    Set recipe = registry.CreateRecipe(typeID): Set definition = recipe.CreateDefinition(context)
-    mesh.StepX = units.InputLengthToInternal(settings.GetRequiredDouble("Mesh.StepX"))
-    mesh.StepY = units.InputLengthToInternal(settings.GetRequiredDouble("Mesh.StepY"))
-    mesh.BoundarySubdivisions = ReadMeshBoundarySubdivisions(settings): mesh.MaterialID = 1
+    Set definition = registry.CreateDefinition(typeID, context)
+    mesh = ReadSectionMeshOptions(settings, units)
     Set BuildRecipe = builder.Build(definition, mesh)
 End Function
 

@@ -394,7 +394,7 @@ Private Sub TestStrainExtremaOwnership(ByRef stats As TCapacityTestStats)
     AssertTrue stats, "strainExtrema.cleared", Not solver.TryGetStrainExtrema(section, cMin, cMax, _
         cMinIndex, cMaxIndex, sMin, sMax, sMinIndex, sMaxIndex)
     AssertTrue stats, "strainBounds.cleared", Not solver.TryGetConcreteStrainBounds(section, cMin, cMax)
-    solver.EvaluatePhysicalCenterPlane section, LinearConcrete(), LinearSteel(), 0.001, 0#, 0.000000000000000000005
+    solver.EvaluatePhysicalCenterPlane section, LinearConcrete(), LinearSteel(), 0.001, 0#, 5E-21
     AssertTrue stats, "strainExtrema.rounding.fullScan", Not solver.TryGetStrainExtrema(section, cMin, cMax, _
         cMinIndex, cMaxIndex, sMin, sMax, sMinIndex, sMaxIndex)
     AssertTrue stats, "strainBounds.rounding.valuesAvailable", solver.TryGetConcreteStrainBounds(section, cMin, cMax)
@@ -509,9 +509,9 @@ Private Sub TestUltimateNumericalContextCache(ByRef stats As TCapacityTestStats)
         End If
         prefix = "ultimateContext." & CStr(phase)
         AssertTrue stats, prefix & ".warm", cap.LimitSearchEvaluateUltimateResidual(section, _
-            ProvisionalConcrete(), ProvisionalSteel(), path, -0.003#, 0.000003, -0.000002, solver, r1, r2, r3, lambda, state)
+            ProvisionalConcrete(), ProvisionalSteel(), path, -0.003, 0.000003, -0.000002, solver, r1, r2, r3, lambda, state)
         AssertTrue stats, prefix & ".cold", fresh.LimitSearchEvaluateUltimateResidual(section, _
-            ProvisionalConcrete(), ProvisionalSteel(), path, -0.003#, 0.000003, -0.000002, reference, s1, s2, s3, expected, referenceState)
+            ProvisionalConcrete(), ProvisionalSteel(), path, -0.003, 0.000003, -0.000002, reference, s1, s2, s3, expected, referenceState)
         AssertClose stats, prefix & ".lambda", lambda, expected, 0#
         AssertClose stats, prefix & ".path1", r1, s1, 0#
         AssertClose stats, prefix & ".path2", r2, s2, 0#
@@ -567,7 +567,7 @@ Private Sub TestNumericalPathPreparation(ByRef stats As TCapacityTestStats)
                 Case 13: ty = 567#
                 Case 14, 15: commonScale = Not commonScale
                 Case 16: cached.Configure 77#, 88#, 99#
-                Case 17: values(2) = 0.00000000000000000001
+                Case 17: values(2) = 1E-20
             End Select
             path.Initialize values(1), values(2), values(3), values(4), values(5), values(6)
             Set frame = New CSectionNumericalFrame: frame.Initialize section
@@ -1236,7 +1236,7 @@ Private Sub TestZeroAxialForce(ByRef stats As TCapacityTestStats)
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
     cap.ConcreteCompressionLimit = -0.0006
-    cap.SteelStrainLimit = 0.001#
+    cap.SteelStrainLimit = 0.001
     cap.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), LinearConcrete(), LinearSteel(), 0#, -5000000#, 0#
 
     AssertTrue stats, "capacity.zeroN.converged", cap.Converged
@@ -1517,7 +1517,7 @@ Private Sub CompareCapacitySolutionStrategys(ByRef stats As TCapacityTestStats, 
     ConfigureCapacity loadMethod
     If tightLimits Then
         loadMethod.ConcreteCompressionLimit = -0.0006
-        loadMethod.SteelStrainLimit = 0.001#
+        loadMethod.SteelStrainLimit = 0.001
     End If
     t0 = Timer
     loadMethod.SolveByLoadMultiplier BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), nValue, mxBase, myBase
@@ -1527,7 +1527,7 @@ Private Sub CompareCapacitySolutionStrategys(ByRef stats As TCapacityTestStats, 
     ConfigureCapacity strainMethod
     If tightLimits Then
         strainMethod.ConcreteCompressionLimit = -0.0006
-        strainMethod.SteelStrainLimit = 0.001#
+        strainMethod.SteelStrainLimit = 0.001
     End If
     t0 = Timer
     strainMethod.SolveByUltimateStrain BuildGeneratedSectionModel(mesh, rebars), ProvisionalConcrete(), ProvisionalSteel(), nValue, mxBase, myBase
@@ -1684,7 +1684,7 @@ Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTes
     Set registry = New CSectionTypeRegistry
 
     Dim section As CSectionModel
-    Set section = registry.BuildGeneratedModel(settings, units)
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
 
     Dim materialProvider As CMaterialModelProvider
     Set materialProvider = New CMaterialModelProvider
@@ -2697,14 +2697,14 @@ Private Sub TestAudit02CapacitySearchBoundary(ByRef stats As TCapacityTestStats)
         Set cap = New CCapacitySolver
         ConfigureCapacity cap
         cap.ConcreteCompressionLimit = -1#
-        cap.SteelStrainLimit = 0.001#
+        cap.SteelStrainLimit = 0.001
         cap.MaxLambda = 6#
         cap.LambdaTolerance = 0.000001
         cap.SolverToleranceN = 0.01
         cap.SearchMethod = CStr(method)
         cap.SolverToleranceMx = 1#: cap.SolverToleranceMy = 1#
         cap.SolveByLoadPathMultiplier section, LinearConcrete(), LinearSteel(), _
-            0#, stiffness * 0.001# / CDbl(root), 0#, 0#, 0#, 0#
+            0#, stiffness * 0.001 / CDbl(root), 0#, 0#, 0#, 0#
         Dim prefix As String
         prefix = "audit02.boundary." & CStr(method) & "." & CStr(root)
         If CDbl(root) <= 6# Then
@@ -2714,7 +2714,7 @@ Private Sub TestAudit02CapacitySearchBoundary(ByRef stats As TCapacityTestStats)
             AssertClose stats, prefix & ".residualN", cap.LastSolver.ResidualN, 0#, 0.01
             AssertClose stats, prefix & ".residualMx", cap.LastSolver.ResidualMx, 0#, 1#
             AssertClose stats, prefix & ".residualMy", cap.LastSolver.ResidualMy, 0#, 1#
-            AssertClose stats, prefix & ".steelLimit", cap.LastSolver.MaxAbsSteelStrain, 0.001#, 0.0000000001
+            AssertClose stats, prefix & ".steelLimit", cap.LastSolver.MaxAbsSteelStrain, 0.001, 0.0000000001
         Else
             AssertTrue stats, prefix & ".noLimit", Not cap.Converged
             AssertTrue stats, prefix & ".boundFlag", cap.SearchBoundReached
@@ -3151,7 +3151,7 @@ Private Sub TestAudit03RealCapacityPrecision(ByRef stats As TCapacityTestStats)
     Set cap = New CCapacitySolver
     ConfigureCapacity cap
     cap.SearchMethod = "Bisection"
-    cap.LambdaTolerance = 0.000000000000000001
+    cap.LambdaTolerance = 1E-18
     cap.MaxRetries = 0
     cap.DiagnosticsEnabled = True
     SaveAudit03SearchProgress stats, "START: audit03.capacity.realPrecision"
@@ -3751,8 +3751,8 @@ Private Sub TestAudit03SearchArithmeticCase(ByRef stats As TCapacityTestStats, _
     Select Case scenario
         Case 1
             AssertTrue stats, prefix & ".adjacentDistinct", adjacent > 1# And adjacent - 1# < 0.000000000000001
-            problem.Configure methodName, adjacent, 0.000000000000000001, 80, 1#, adjacent, kind
-            If methodName = "Bisection" Then problem.Configure methodName, adjacent, 0.000000000000000001, 0, 1#, adjacent, kind
+            problem.Configure methodName, adjacent, 1E-18, 80, 1#, adjacent, kind
+            If methodName = "Bisection" Then problem.Configure methodName, adjacent, 1E-18, 0, 1#, adjacent, kind
             problem.StepCriterion = True
         Case 2
             problem.Configure methodName, 1.2E+308, 1E+294, 120, 1E+308, 1.4E+308, kind

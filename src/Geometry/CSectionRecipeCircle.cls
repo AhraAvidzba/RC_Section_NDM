@@ -75,5 +75,5 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal key 
 End Function
 
 Private Sub Require(ByVal table As CSectionInputTable, ByVal key As String, ByVal condition As Boolean, ByVal reason As String)
-    If Not condition Then SectionRecipeError "CSectionRecipeCircle", reason, table.SourceReference(table.RowByKey(key), 2)
+    If Not condition Then SectionRecipeError "CSectionRecipeCircle", reason & " Исправьте указанное значение.", table.SourceReference(table.RowByKey(key), 2)
 End Sub

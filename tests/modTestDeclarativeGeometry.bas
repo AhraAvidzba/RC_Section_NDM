@@ -330,6 +330,9 @@ Public Function RunInputTableTests() As String
     cells(2, 2) = 999#: addresses(2, 2) = "Changed"
     Near "input.value.immutable", table.Number(2, 2), 4#
     Check "input.source.immutable", table.SourceReference(2, 2) = "Config!B12"
+    cells(2, 2) = 2147483647#: addresses(2, 2) = "Config!B12"
+    Set table = New CSectionInputTable: table.Initialize "rngLongBoundary", cells, addresses
+    Check "input.count.maxLong", table.Count(2, 2) = 2147483647
     For scenario = 0 To 21
         Check "input.invalid." & CStr(scenario), InvalidInputRejected(scenario)
     Next scenario
@@ -348,7 +351,7 @@ Private Function InvalidInputRejected(ByVal scenario As Long) As Boolean
         Case 0: cells(2, 2) = "four"
         Case 1: cells(2, 2) = -1#
         Case 2: cells(2, 2) = 1.5
-        Case 3: cells(2, 2) = 2147483647#
+        Case 3: cells(2, 2) = 2147483648#
         Case 4: cells(2, 2) = True
         Case 5: cells(2, 2) = CVErr(2042)
         Case 6: cells(1, 1) = "Value"

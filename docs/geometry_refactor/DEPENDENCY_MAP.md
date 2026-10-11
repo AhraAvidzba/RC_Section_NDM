@@ -117,5 +117,14 @@ ACTIVE в retirement-map до переноса остальных семейст
 - Python oracle независимо строит дуги, станции и лучевые пересечения по
   исходному INPUT. Изменения координат не скрываются изменением допусков.
 
-Все четыре семейства имеют development-рецепты. Production generated route
-еще прежний; его переключение и удаление старых потребителей впереди.
+Все четыре семейства подключены к новому source/native staging Generated route:
+- BuildWorkbookSectionModel -> ReadWorkbookSectionDefinition -> registry metadata
+  -> Capture выбранных таблиц -> CreateDefinition -> CSectionBuilder.
+- modMeshConfiguration.ReadSectionMeshOptions общий для Generated и CAD mesh.
+- CSystemSettingsReader больше не сканирует/разбирает geometry-таблицы.
+- modTestShapeArchitecture читает prepared mesh/layout без повторной сборки.
+- RegisteredSectionTypes дает установщику динамический список типов; подключение
+  dropdown еще предстоит. Основная книга и ее общий dump пока прежние.
+
+12 старых классов, ISectionShape и численные test constructors еще требуют
+retirement. Они не вызываются новым production source-входом.

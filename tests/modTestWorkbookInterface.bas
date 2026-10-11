@@ -4758,8 +4758,8 @@ Private Sub TestAudit03ReaderTinyUnits(ByRef stats As TUiTestStats, ByVal sheet 
         reader.LoadFromRange sheet.Range("A1:G3"), batch, units
         AssertTrue stats, "audit03.reader.tiny." & CStr(mode) & ".count", batch.Count = 2
         If batch.Count = 2 Then
-            AssertClose stats, "audit03.reader.tiny." & CStr(mode) & ".n", batch.N(1), 0.00000000001, 0.00000000000000000000000001
-            AssertClose stats, "audit03.reader.tiny." & CStr(mode) & ".m", batch.UserMx(2), -0.00000000001, 0.00000000000000000000000001
+            AssertClose stats, "audit03.reader.tiny." & CStr(mode) & ".n", batch.N(1), 0.00000000001, 1E-26
+            AssertClose stats, "audit03.reader.tiny." & CStr(mode) & ".m", batch.UserMx(2), -0.00000000001, 1E-26
         End If
     Next mode
     sheet.Range("B2").Value2 = 1E+308
@@ -4892,8 +4892,7 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
                 formation.ApplySettings settings
             End If
             If operation = "MeshRegistry" Then
-                Set registry = New CSectionTypeRegistry
-                integerValue = registry.MeshBoundarySubdivisions(settings)
+                integerValue = ReadMeshBoundarySubdivisions(settings)
             End If
         Case "Profiles"
             Set profiles = New CCalculationProfileCatalog

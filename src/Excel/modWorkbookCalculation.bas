@@ -1147,37 +1147,43 @@ Public Sub ClearSectionResultsForWorkbook(ByVal workbook As Object)
     ndmWriter.ClearResults workbook
 End Sub
 
-' Создает выбранную параметрическую геометрию через registry в внутренних мм.
-' Здесь нет импорта AutoCAD или построения расчетной сетки.
-Public Function ReadWorkbookGeometry(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CGeometryRegion
+' Читает только зарегистрированные таблицы выбранного рецепта и публикует
+' единое definition. После возврата ссылки на Excel в нем отсутствуют.
+Public Function ReadWorkbookSectionDefinition(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionDefinition
+    If workbook Is Nothing Or settings Is Nothing Then SectionRecipeError "ReadWorkbookSectionDefinition", "Книга и настройки Config не переданы."
     If units Is Nothing Then
-        Set units = New CUnitSystem
-        units.InitializeDefaults
+        Set units = New CUnitSystem: units.LoadFromSettings settings
     End If
-    Dim registry As CSectionTypeRegistry
-    Set registry = New CSectionTypeRegistry
-    Set ReadWorkbookGeometry = registry.CreateGeometry(settings, units)
+    Dim registry As CSectionTypeRegistry, reader As CSectionInputSnapshotReader
+    Dim context As CSectionRecipeContext, typeID As String
+    Set registry = New CSectionTypeRegistry: typeID = registry.SelectedRecipeType(settings)
+    Set reader = New CSectionInputSnapshotReader
+    Set context = reader.Capture(workbook, registry.RecipeTableNames(typeID), units)
+    Set ReadWorkbookSectionDefinition = registry.CreateDefinition(typeID, context)
 End Function
 
 ' Получает единственную модель для расчета: строит Generated по Config либо
 ' читает ранее импортированный AutoCAD snapshot из Results. Повторный импорт
 ' не выполняется; отсутствие нужного сохраненного источника является ошибкой.
-Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel
-    If units Is Nothing Then
-        Set units = New CUnitSystem
-        units.InitializeDefaults
-    End If
+Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
+        Optional ByVal units As CUnitSystem = Nothing, Optional ByRef generatedBuilder As CSectionBuilder = Nothing) As CSectionModel
     If workbook Is Nothing Then Err.Raise vbObjectError + 4130, "BuildWorkbookSectionModel", "Книга Excel не передана."
     If settings Is Nothing Then Err.Raise vbObjectError + 4131, "BuildWorkbookSectionModel", "Настройки Config не переданы."
+    If units Is Nothing Then
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+    End If
 
     Dim geometrySource As String
     geometrySource = settings.GetRequiredChoice("Geometry.Source", Array("Generated", "AutoCAD"))
 
     If StrComp(geometrySource, "Generated", vbTextCompare) = 0 Then
-        Dim registry As CSectionTypeRegistry
-        Set registry = New CSectionTypeRegistry
-        Set BuildWorkbookSectionModel = registry.BuildGeneratedModel(settings, units)
+        Dim definition As CSectionDefinition, mesh As TSectionMeshOptions
+        Set definition = ReadWorkbookSectionDefinition(workbook, settings, units)
+        mesh = ReadSectionMeshOptions(settings, units)
+        If generatedBuilder Is Nothing Then Set generatedBuilder = New CSectionBuilder
+        Set BuildWorkbookSectionModel = generatedBuilder.Build(definition, mesh)
     ElseIf StrComp(geometrySource, "AutoCAD", vbTextCompare) = 0 Then
+        Set generatedBuilder = Nothing
         If StrComp(ResultsGeometrySource(workbook), "AutoCADImport", vbTextCompare) <> 0 Then
             Err.Raise vbObjectError + 4134, "BuildWorkbookSectionModel", _
                 "Выбрано Geometry.Source = AutoCAD, но на листе Results нет предварительно импортированной AutoCAD-геометрии. " & _
@@ -1190,24 +1196,10 @@ Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settin
     End If
 End Function
 
-' Возвращает утвержденное число подъячеек границы через общий geometry registry.
-' Тот же параметр используется при построении модели, а не только на схеме.
-Public Function WorkbookMeshBoundarySubdivisions(ByVal settings As CSystemSettingsReader) As Long
-    Dim registry As CSectionTypeRegistry
-    Set registry = New CSectionTypeRegistry
-    WorkbookMeshBoundarySubdivisions = registry.MeshBoundarySubdivisions(settings)
-End Function
-
-' Строит автоматическую арматуру выбранной формы через registry и CUnitSystem.
-' Возвращает раскладку до объединения с бетонной сеткой в CSectionModel.
-Public Function ReadWorkbookRebars(ByVal workbook As Object, ByVal geometry As CGeometryRegion, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CRebarLayout
-    If units Is Nothing Then
-        Set units = New CUnitSystem
-        units.InitializeDefaults
-    End If
-    Dim registry As CSectionTypeRegistry
-    Set registry = New CSectionTypeRegistry
-    Set ReadWorkbookRebars = registry.CreateRebars(geometry, settings, units)
+' ДЛЯ СБОРКИ: тот же реестр является источником штатного списка Geometry.Type.
+Public Function RegisteredSectionTypes() As Variant
+    Dim registry As CSectionTypeRegistry: Set registry = New CSectionTypeRegistry
+    RegisteredSectionTypes = registry.RegisteredRecipeTypes
 End Function
 
 ' Форматирует числа для человекочитаемого txt-отчета без зависимости от

@@ -1,7 +1,8 @@
 # Карта Удаления Замененной Архитектуры
 
-Старые производственные узлы сейчас ACTIVE: общий маршрут еще не переключен
-и удаление не подтверждено. Готовность отдельных новых рецептов указана ниже.
+Общий source/native staging-маршрут переключен на рецепты. Старые классы
+еще остаются в численных тестах и прежней основной книге; удаление пока
+не подтверждено. Готовность отдельных новых рецептов указана ниже.
 Полезная общая математика переносится до удаления. Baseline остается только
 в отдельном неизменяемом архиве/истории, не в production fallback.
 
@@ -21,10 +22,10 @@
 | CHollowRectAnnotationBuilder | Общие annotation rules | ACTIVE |
 | ISectionShape | ISectionRecipe/CSectionDefinition | ACTIVE |
 | modGeometryPreparation.BuildConcreteGeometry | Единый общий build | ACTIVE |
-| Registry CreateShape/CreateGeometry/CreateRebars/BuildAnnotations/BuildGeneratedModel | Recipe registry/единый build | ACTIVE |
-| Reader Append*RectSet/RoundedRectangle/HollowRectangle и scan *Geometry | Рецепт через generic table source | ACTIVE |
+| Registry CreateShape/CreateGeometry/CreateRebars/BuildAnnotations/BuildGeneratedModel | Recipe registry/единый build | REMOVED_FROM_SOURCE_AND_NATIVE_STAGING |
+| Reader Append*RectSet/RoundedRectangle/HollowRectangle и scan *Geometry | Рецепт через generic table source | REMOVED_FROM_SOURCE_AND_NATIVE_STAGING |
 | CFakeMultiOpeningGeometry и старые test constructors | Definition fixtures с прежними инвариантами | ACTIVE |
-| modTestShapeArchitecture.SourceSnapshot через CreateGeometry/CreateRebars | Готовый build snapshot, прежние числовые эталоны | ACTIVE |
+| modTestShapeArchitecture.SourceSnapshot через CreateGeometry/CreateRebars | Готовый build snapshot, прежние числовые эталоны | REMOVED_FROM_SOURCE_AND_NATIVE_STAGING |
 | modRebarLayoutGeometry helpers | Сохранить единственную общую операцию либо удалить замененную | REVIEW |
 | Custom-код/UI/имена | Не создаются; в исходном inventory/Config/Results и исходниках не найдены | NOT_PRESENT_IN_BASELINE |
 

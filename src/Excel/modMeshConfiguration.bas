@@ -9,14 +9,23 @@ Option Explicit
 
 Public Function BuildConfiguredConcreteMesh(ByVal geometry As CGeometryRegion, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CFiberMeshBuilder
+    Dim options As TSectionMeshOptions, mesh As CFiberMeshBuilder
+    options = ReadSectionMeshOptions(settings, units)
+    Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geometry, options.StepX, options.StepY, options.MaterialID, options.BoundarySubdivisions
+    Set BuildConfiguredConcreteMesh = mesh
+End Function
+
+' Один нормализованный набор используется Generated-builder и CAD-сеткой.
+Public Function ReadSectionMeshOptions(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As TSectionMeshOptions
     If settings Is Nothing Or units Is Nothing Then Err.Raise vbObjectError + 4139, _
         "modMeshConfiguration", "Настройки и единицы бетонной сетки не переданы."
-    Dim mesh As CFiberMeshBuilder, stepX As Double, stepY As Double
-    stepX = ReadMeshStep(settings, units, "Mesh.StepX")
-    stepY = ReadMeshStep(settings, units, "Mesh.StepY")
-    Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geometry, stepX, stepY, 1, ReadMeshBoundarySubdivisions(settings)
-    Set BuildConfiguredConcreteMesh = mesh
+    Dim options As TSectionMeshOptions
+    options.StepX = ReadMeshStep(settings, units, "Mesh.StepX")
+    options.StepY = ReadMeshStep(settings, units, "Mesh.StepY")
+    options.BoundarySubdivisions = ReadMeshBoundarySubdivisions(settings)
+    options.MaterialID = 1
+    ReadSectionMeshOptions = options
 End Function
 
 Private Function ReadMeshStep(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal key As String) As Double

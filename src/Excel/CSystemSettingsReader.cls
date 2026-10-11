@@ -46,7 +46,6 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
     AppendNamedSettingsRangeIfExists workbook, "rngConcreteMaterialParameters"
     AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
     AppendRequiredNamedSettingsRange workbook, "rngPlotAnnotationSettings", "Подписи и размеры схемы"
-    AppendGeometrySettingsRanges workbook
     NormalizeDiagramExtensionSetting True
 End Sub
 
@@ -104,45 +103,6 @@ BrokenRange:
         "Восстановите ссылку на один непрерывный прямоугольный диапазон со всей таблицей " & _
         "в диспетчере имен Excel или используйте исправный шаблон книги."
 End Sub
-
-' Находит все входные geometry-диапазоны Config и добавляет их настройки в общий словарь.
-Private Sub AppendGeometrySettingsRanges(ByVal workbook As Object)
-    Dim nameObject As Object
-    ' Проходим по именованным диапазонам и выбираем только входные таблицы
-    ' геометрии. rngNDMSectionGeometry пропускается: это Results, а не Config.
-    For Each nameObject In workbook.Names
-        Dim rangeName As String
-        rangeName = LocalName(CStr(nameObject.Name))
-        If IsInputGeometrySettingsRangeName(rangeName) Then
-            On Error Resume Next
-            Dim settingsRange As Object
-            Set settingsRange = nameObject.RefersToRange
-            Dim rangeError As Long
-            rangeError = Err.Number
-            On Error GoTo 0
-            If rangeError = 0 And Not settingsRange Is Nothing Then AppendSettingsRange settingsRange
-        End If
-    Next nameObject
-End Sub
-
-' Убирает префикс имени книги/листа у именованного диапазона, оставляя локальное имя.
-Private Function LocalName(ByVal workbookName As String) As String
-    Dim bangPos As Long
-    bangPos = InStrRev(workbookName, "!")
-    If bangPos > 0 Then
-        LocalName = Mid$(workbookName, bangPos + 1)
-    Else
-        LocalName = workbookName
-    End If
-End Function
-
-' Определяет, является ли имя входной таблицей геометрии.
-Private Function IsInputGeometrySettingsRangeName(ByVal rangeName As String) As Boolean
-    Dim key As String
-    key = LCase$(Trim$(rangeName))
-    If key = "rngndmsectiongeometry" Then Exit Function
-    IsInputGeometrySettingsRangeName = (Left$(key, 3) = "rng" And Right$(key, 8) = "geometry")
-End Function
 
 ' Загружает настройки из одного диапазона.
 ' Этот короткий путь используют тесты и вспомогательные сценарии без полной книги.
@@ -226,8 +186,7 @@ Public Property Get MigrationWarning() As String
     MigrationWarning = mMigrationWarning
 End Property
 
-' Добавляет одну непрерывную таблицу настроек; специальные геометрические
-' форматы распознаются по шапке. Несмежные области отвергаются до Value2:
+' Добавляет одну непрерывную таблицу общих настроек. Несмежные области отвергаются до Value2:
 ' иначе Excel возвращает только первую область и часть ввода теряется.
 Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal rangeName As String = vbNullString)
     If settingsRange Is Nothing Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
@@ -285,18 +244,6 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
         Exit Sub
     End If
 
-    If IsHollowRectangleSettingsRange(data) Then
-        AppendHollowRectangleSettings data
-        Exit Sub
-    End If
-    If IsRoundedRectangleFaceSettingsRange(data) Then
-        AppendRoundedRectangleFaceSettings data
-        Exit Sub
-    End If
-    If IsRectSetFaceSettingsRange(data) Then
-        AppendRectSetFaceSettings data
-        Exit Sub
-    End If
     If IsUnitSettingsRange(data) Then
         AppendUnitSettings data
         Exit Sub
@@ -332,9 +279,7 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
             Else
                 sourceValue = vbNullString
             End If
-            If IsGeometrySettingKey(keyValue) Then
-                AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
-            ElseIf Left$(keyValue, 5) = "Plot." Then
+            If Left$(keyValue, 5) = "Plot." Then
                 AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
             Else
                 AppendSetting keyValue, _
@@ -604,373 +549,6 @@ Private Function SignQuantityKey(ByVal caption As String) As String
     End Select
 End Function
 
-' Распознает таблицу HollowRectangle по строке H/B/R/H_o/B_o/R_o.
-Private Function IsHollowRectangleSettingsRange(ByRef data As Variant) As Boolean
-    IsHollowRectangleSettingsRange = (HollowRectangleGeometryHeaderRow(data) > 0)
-End Function
-
-' Ищет строку основных размеров пустотелого скругленного прямоугольника.
-Private Function HollowRectangleGeometryHeaderRow(ByRef data As Variant) As Long
-    If UBound(data, 2) < 6 Then Exit Function
-
-    Dim rowIndex As Long
-    For rowIndex = 1 To UBound(data, 1) - 1
-        If StrComp(Trim$(CStr(data(rowIndex, 1))), "H", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 2))), "B", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 3))), "R", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 4))), "H_o", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 5))), "B_o", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 6))), "R_o", vbTextCompare) = 0 Then
-            HollowRectangleGeometryHeaderRow = rowIndex
-            Exit Function
-        End If
-    Next rowIndex
-End Function
-
-' Читает таблицу HollowRectangle: общие смещения Opening, геометрию,
-' наружную арматуру и строки Opening с автоматическим числом стержней.
-Private Sub AppendHollowRectangleSettings(ByRef data As Variant)
-    Dim geometryHeaderRow As Long
-    geometryHeaderRow = HollowRectangleGeometryHeaderRow(data)
-    If geometryHeaderRow = 0 Then Exit Sub
-
-    AppendHollowRectangleCommonSettings data, geometryHeaderRow
-
-    Dim valueRow As Long
-    valueRow = geometryHeaderRow + 1
-    AppendDeferredInputValue data, "HollowRectangle.H", valueRow, 1
-    AppendDeferredInputValue data, "HollowRectangle.B", valueRow, 2
-    AppendDeferredInputValue data, "HollowRectangle.R", valueRow, 3
-    AppendDeferredInputValue data, "HollowRectangle.OpeningH", valueRow, 4
-    AppendDeferredInputValue data, "HollowRectangle.OpeningB", valueRow, 5
-    AppendDeferredInputValue data, "HollowRectangle.OpeningR", valueRow, 6
-
-    Dim mainHeaderRow As Long
-    mainHeaderRow = FindRowWithCaption(data, "Грань", 1, geometryHeaderRow + 1)
-    Dim extraHeaderRow As Long
-    extraHeaderRow = FindRowWithCaption(data, "d2", 2, geometryHeaderRow + 1)
-    If mainHeaderRow > 0 Then AppendHollowRectangleMainRebars data, mainHeaderRow
-    If extraHeaderRow > 0 Then AppendHollowRectangleExtraRebars data, extraHeaderRow
-End Sub
-
-' Читает строки смещения отверстия над блоком геометрии.
-Private Sub AppendHollowRectangleCommonSettings(ByRef data As Variant, ByVal geometryHeaderRow As Long)
-    Dim rowIndex As Long
-    For rowIndex = 1 To geometryHeaderRow - 1
-        Dim keyValue As String
-        keyValue = Trim$(CStr(data(rowIndex, 1)))
-        If StrComp(keyValue, "HollowRectangle.InnerOffsetX", vbTextCompare) = 0 Or _
-                StrComp(keyValue, "HollowRectangle.InnerOffsetY", vbTextCompare) = 0 Then
-            Dim sourceValue As String
-            If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
-            AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
-        End If
-    Next rowIndex
-End Sub
-
-' Читает основной ряд по наружным граням и граням отверстия. Пользовательское
-' количество наружных стержней сохраняется без предварительного отбора чисел:
-' ошибочный текст должен дойти до строгого GetLong, а не выключить грань.
-' Количество на гранях отверстия служебное и определяется проекцией арматуры.
-Private Sub AppendHollowRectangleMainRebars(ByRef data As Variant, ByVal mainHeaderRow As Long)
-    Dim rowIndex As Long
-    For rowIndex = mainHeaderRow + 1 To UBound(data, 1)
-        Dim faceKey As String
-        faceKey = HollowRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
-        If Len(faceKey) = 0 Then Exit For
-        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".as", rowIndex, 2, Trim$(CStr(data(rowIndex, 6)))
-        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".d", rowIndex, 3, Trim$(CStr(data(rowIndex, 6)))
-        If Left$(faceKey, 8) <> "Opening." Then
-            Dim countKey As String
-            countKey = "HollowRectangle." & faceKey & ".n"
-            AppendDeferredInputValue data, countKey, rowIndex, 4, Trim$(CStr(data(rowIndex, 6)))
-        End If
-    Next rowIndex
-End Sub
-
-' Читает дополнительные ряды HollowRectangle и сохраняет их в единый набор ключей по граням.
-Private Sub AppendHollowRectangleExtraRebars(ByRef data As Variant, ByVal extraHeaderRow As Long)
-    Dim rowIndex As Long
-    For rowIndex = extraHeaderRow + 1 To UBound(data, 1)
-        Dim faceKey As String
-        faceKey = HollowRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
-        If Len(faceKey) = 0 Then Exit For
-        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".d_2row", rowIndex, 2, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".loc_2row", rowIndex, 3, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".bind_2row", rowIndex, 4, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".d_3row", rowIndex, 5, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".loc_3row", rowIndex, 6, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "HollowRectangle." & faceKey & ".bind_3row", rowIndex, 7, Trim$(CStr(data(rowIndex, 9)))
-    Next rowIndex
-End Sub
-
-' Переводит подпись строки HollowRectangle в устойчивый внутренний ключ грани.
-Private Function HollowRectangleFaceKey(ByVal faceCaption As String) As String
-    Select Case LCase$(Trim$(faceCaption))
-        Case "h - левая", "h-left", "h.left": HollowRectangleFaceKey = "H.Left"
-        Case "h - правая", "h-right", "h.right": HollowRectangleFaceKey = "H.Right"
-        Case "b - верхняя", "b-top", "b.top": HollowRectangleFaceKey = "B.Top"
-        Case "b - нижняя", "b-bottom", "b.bottom": HollowRectangleFaceKey = "B.Bottom"
-        Case "h_o - левая", "ho-left", "opening.h.left": HollowRectangleFaceKey = "Opening.H.Left"
-        Case "h_o - правая", "ho-right", "opening.h.right": HollowRectangleFaceKey = "Opening.H.Right"
-        Case "b_o - верхняя", "bo-top", "opening.b.top": HollowRectangleFaceKey = "Opening.B.Top"
-        Case "b_o - нижняя", "bo-bottom", "opening.b.bottom": HollowRectangleFaceKey = "Opening.B.Bottom"
-    End Select
-End Function
-
-' Распознает новую табличную компоновку RoundedRectangle: B/H, левая/правая
-' сторона и строки арматуры H/B.
-Private Function IsRoundedRectangleFaceSettingsRange(ByRef data As Variant) As Boolean
-    IsRoundedRectangleFaceSettingsRange = (RoundedRectangleGeometryHeaderRow(data) > 0)
-End Function
-
-' Ищет строку заголовков B/H в таблице скругленного прямоугольника.
-Private Function RoundedRectangleGeometryHeaderRow(ByRef data As Variant) As Long
-    If UBound(data, 2) < 3 Then Exit Function
-
-    Dim rowIndex As Long
-    For rowIndex = 1 To UBound(data, 1) - 1
-        If StrComp(Trim$(CStr(data(rowIndex, 2))), "B", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 3))), "H", vbTextCompare) = 0 Then
-            RoundedRectangleGeometryHeaderRow = rowIndex
-            Exit Function
-        End If
-    Next rowIndex
-End Function
-
-' Читает текущую таблицу RoundedRectangle и разворачивает видимые подписи
-' граней в устойчивые ключи настроек.
-Private Sub AppendRoundedRectangleFaceSettings(ByRef data As Variant)
-    Dim geometryHeaderRow As Long
-    geometryHeaderRow = RoundedRectangleGeometryHeaderRow(data)
-    If geometryHeaderRow = 0 Then Exit Sub
-
-    Dim valueRow As Long
-    valueRow = geometryHeaderRow + 1
-    AppendDeferredInputValue data, "RoundedRectangle.B", valueRow, 2
-    AppendDeferredInputValue data, "RoundedRectangle.H", valueRow, 3
-
-    Dim sideHeaderRow As Long
-    sideHeaderRow = FindRowWithCaption(data, "слева", 2, geometryHeaderRow + 1)
-    If sideHeaderRow > 0 And UBound(data, 1) >= sideHeaderRow + 4 Then
-        AppendDeferredInputValue data, "RoundedRectangle.Left.Type", sideHeaderRow + 1, 2
-        AppendDeferredInputValue data, "RoundedRectangle.Right.Type", sideHeaderRow + 1, 3
-        AppendDeferredInputValue data, "RoundedRectangle.Left.W", sideHeaderRow + 2, 2
-        AppendDeferredInputValue data, "RoundedRectangle.Right.W", sideHeaderRow + 2, 3
-        AppendDeferredInputValue data, "RoundedRectangle.Left.R1", sideHeaderRow + 3, 2
-        AppendDeferredInputValue data, "RoundedRectangle.Right.R1", sideHeaderRow + 3, 3
-        AppendDeferredInputValue data, "RoundedRectangle.Left.R2", sideHeaderRow + 4, 2
-        AppendDeferredInputValue data, "RoundedRectangle.Right.R2", sideHeaderRow + 4, 3
-    End If
-
-    Dim mainHeaderRow As Long
-    mainHeaderRow = FindRowWithCaption(data, "Грань", 1, geometryHeaderRow + 1)
-    Dim extraHeaderRow As Long
-    extraHeaderRow = FindRowWithCaption(data, "d2", 2, geometryHeaderRow + 1)
-    If mainHeaderRow > 0 Then AppendRoundedRectangleMainRebars data, mainHeaderRow
-    If extraHeaderRow > 0 Then AppendRoundedRectangleExtraRebars data, extraHeaderRow
-End Sub
-
-' Ищет служебную строку шапки внутри табличной геометрии, начиная ниже уже найденного блока размеров.
-Private Function FindRowWithCaption(ByRef data As Variant, ByVal caption As String, ByVal columnIndex As Long, ByVal startRow As Long) As Long
-    Dim rowIndex As Long
-    For rowIndex = startRow To UBound(data, 1)
-        If StrComp(Trim$(CStr(data(rowIndex, columnIndex))), caption, vbTextCompare) = 0 Then
-            FindRowWithCaption = rowIndex
-            Exit Function
-        End If
-    Next rowIndex
-End Function
-
-' Читает основной ряд арматуры RoundedRectangle по четырем смысловым граням H/B.
-Private Sub AppendRoundedRectangleMainRebars(ByRef data As Variant, ByVal mainHeaderRow As Long)
-    Dim rowIndex As Long
-    For rowIndex = mainHeaderRow + 1 To UBound(data, 1)
-        Dim faceKey As String
-        faceKey = RoundedRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
-        If Len(faceKey) = 0 Then Exit For
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".as", rowIndex, 2, Trim$(CStr(data(rowIndex, 6)))
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".d", rowIndex, 3, Trim$(CStr(data(rowIndex, 6)))
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".n", rowIndex, 4, Trim$(CStr(data(rowIndex, 6)))
-    Next rowIndex
-End Sub
-
-' Читает дополнительные ряды RoundedRectangle и сохраняет привязку каждого ряда к своей грани.
-Private Sub AppendRoundedRectangleExtraRebars(ByRef data As Variant, ByVal extraHeaderRow As Long)
-    Dim rowIndex As Long
-    For rowIndex = extraHeaderRow + 1 To UBound(data, 1)
-        Dim faceKey As String
-        faceKey = RoundedRectangleFaceKey(Trim$(CStr(data(rowIndex, 1))))
-        If Len(faceKey) = 0 Then Exit For
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".d_2row", rowIndex, 2, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".loc_2row", rowIndex, 3, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".bind_2row", rowIndex, 4, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".d_3row", rowIndex, 5, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".loc_3row", rowIndex, 6, Trim$(CStr(data(rowIndex, 9)))
-        AppendDeferredInputValue data, "RoundedRectangle." & faceKey & ".bind_3row", rowIndex, 7, Trim$(CStr(data(rowIndex, 9)))
-    Next rowIndex
-End Sub
-
-' Переводит подпись строки RoundedRectangle в устойчивый внутренний ключ грани.
-Private Function RoundedRectangleFaceKey(ByVal faceCaption As String) As String
-    Select Case LCase$(Trim$(faceCaption))
-        Case "h - левая", "h-left", "h.left": RoundedRectangleFaceKey = "H.Left"
-        Case "h - правая", "h-right", "h.right": RoundedRectangleFaceKey = "H.Right"
-        Case "b - верхняя", "b-top", "b.top": RoundedRectangleFaceKey = "B.Top"
-        Case "b - нижняя", "b-bottom", "b.bottom": RoundedRectangleFaceKey = "B.Bottom"
-    End Select
-End Function
-
-' Распознает табличную компоновку rngRectSetGeometry по заголовкам H1/B1/H2/B2.
-Private Function IsRectSetFaceSettingsRange(ByRef data As Variant) As Boolean
-    If RectSetGeometryHeaderRow(data) > 0 Then
-        IsRectSetFaceSettingsRange = True
-        Exit Function
-    End If
-
-    If UBound(data, 1) < 12 Or UBound(data, 2) < 7 Then Exit Function
-    IsRectSetFaceSettingsRange = _
-        StrComp(Trim$(CStr(data(1, 2))), "H1", vbTextCompare) = 0 And _
-        StrComp(Trim$(CStr(data(1, 3))), "B1", vbTextCompare) = 0 And _
-        StrComp(Trim$(CStr(data(1, 4))), "H2", vbTextCompare) = 0 And _
-        StrComp(Trim$(CStr(data(1, 5))), "B2", vbTextCompare) = 0
-End Function
-
-' Ищет строку заголовков H1/B1/H2/B2 в секционной таблице RectSet.
-Private Function RectSetGeometryHeaderRow(ByRef data As Variant) As Long
-    If UBound(data, 2) < 4 Then Exit Function
-
-    Dim rowIndex As Long
-    For rowIndex = 1 To UBound(data, 1) - 1
-        If StrComp(Trim$(CStr(data(rowIndex, 1))), "H1", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 2))), "B1", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 3))), "H2", vbTextCompare) = 0 And _
-                StrComp(Trim$(CStr(data(rowIndex, 4))), "B2", vbTextCompare) = 0 Then
-            RectSetGeometryHeaderRow = rowIndex
-            Exit Function
-        End If
-    Next rowIndex
-End Function
-
-' Читает табличную компоновку RectSet и разворачивает ее в ключи настроек.
-Private Sub AppendRectSetFaceSettings(ByRef data As Variant)
-    Dim geometryHeaderRow As Long
-    geometryHeaderRow = RectSetGeometryHeaderRow(data)
-    If geometryHeaderRow > 0 And UBound(data, 1) >= geometryHeaderRow + 21 And UBound(data, 2) >= 9 Then
-        AppendRectSetCommonSettings data, geometryHeaderRow
-        AppendRectSetSectionedSettings data, geometryHeaderRow
-        Exit Sub
-    End If
-
-    Dim faceColumns(1 To 4) As Long
-    Dim faceNames(1 To 4) As String
-    faceColumns(1) = 2: faceNames(1) = "H1"
-    faceColumns(2) = 3: faceNames(2) = "B1"
-    faceColumns(3) = 4: faceNames(3) = "H2"
-    faceColumns(4) = 5: faceNames(4) = "B2"
-
-    Dim i As Long
-    ' Для каждой стороны H1/B1/H2/B2 разворачиваем пары _1/_2 в обычные ключи
-    ' RectSet.<грань>.<параметр>. Solver и builder дальше не знают о форме таблицы.
-    For i = 1 To 4
-        Dim col As Long
-        Dim faceName As String
-        col = faceColumns(i)
-        faceName = faceNames(i)
-        AppendDeferredInputValue data, "RectSet." & faceName, 2, col, Trim$(CStr(data(2, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".as_1", 3, col, Trim$(CStr(data(3, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".as_2", 4, col, Trim$(CStr(data(4, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".d_1", 5, col, Trim$(CStr(data(5, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".d_2", 6, col, Trim$(CStr(data(6, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".n_1", 7, col, Trim$(CStr(data(7, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".n_2", 8, col, Trim$(CStr(data(8, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".StartOffset1", 9, col, Trim$(CStr(data(9, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".EndOffset1", 10, col, Trim$(CStr(data(10, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".StartOffset2", 11, col, Trim$(CStr(data(11, 7)))
-        AppendDeferredInputValue data, "RectSet." & faceName & ".EndOffset2", 12, col, Trim$(CStr(data(12, 7)))
-        If UBound(data, 1) >= 19 Then
-            AppendDeferredInputValue data, "RectSet." & faceName & ".d_2row_1", 14, col, Trim$(CStr(data(14, 7)))
-            AppendDeferredInputValue data, "RectSet." & faceName & ".d_2row_2", 15, col, Trim$(CStr(data(15, 7)))
-            AppendDeferredInputValue data, "RectSet." & faceName & ".d_3row_1", 16, col, Trim$(CStr(data(16, 7)))
-            AppendDeferredInputValue data, "RectSet." & faceName & ".d_3row_2", 17, col, Trim$(CStr(data(17, 7)))
-            Dim side As Long
-            For side = 1 To 2
-                AppendDeferredInputValue data, "RectSet." & faceName & ".loc_2row_" & CStr(side), 18, col, Trim$(CStr(data(18, 7)))
-                AppendDeferredInputValue data, "RectSet." & faceName & ".loc_3row_" & CStr(side), 19, col, Trim$(CStr(data(19, 7)))
-                If UBound(data, 1) >= 21 Then
-                    AppendDeferredInputValue data, "RectSet." & faceName & ".bind_2row_" & CStr(side), 20, col, Trim$(CStr(data(20, 7)))
-                    AppendDeferredInputValue data, "RectSet." & faceName & ".bind_3row_" & CStr(side), 21, col, Trim$(CStr(data(21, 7)))
-                End If
-            Next side
-        End If
-    Next i
-End Sub
-
-' Читает общие настройки RectSet над блоком H1/B1/H2/B2.
-Private Sub AppendRectSetCommonSettings(ByRef data As Variant, ByVal geometryHeaderRow As Long)
-    Dim rowIndex As Long
-    For rowIndex = 1 To geometryHeaderRow - 1
-        Dim keyValue As String
-        keyValue = Trim$(CStr(data(rowIndex, 1)))
-        If StrComp(keyValue, "RectSet.SectionType", vbTextCompare) = 0 Or _
-                StrComp(keyValue, "RectSet.UpperOffsetX", vbTextCompare) = 0 Then
-            Dim sourceValue As String
-            If UBound(data, 2) >= 4 Then sourceValue = Trim$(CStr(data(rowIndex, 4)))
-            AppendDeferredInputValue data, keyValue, rowIndex, 2, sourceValue
-        End If
-    Next rowIndex
-End Sub
-
-' Читает текущую табличную компоновку RectSet-сечения:
-' отдельный блок геометрии, блок основного армирования и блок дополнительных рядов.
-Private Sub AppendRectSetSectionedSettings(ByRef data As Variant, Optional ByVal geometryHeaderRow As Long = 2)
-    Dim valueRow As Long
-    valueRow = geometryHeaderRow + 1
-    AppendDeferredInputValue data, "RectSet.H1", valueRow, 1
-    AppendDeferredInputValue data, "RectSet.B1", valueRow, 2
-    AppendDeferredInputValue data, "RectSet.H2", valueRow, 3
-    AppendDeferredInputValue data, "RectSet.B2", valueRow, 4
-
-    Dim faceNames(1 To 8) As String
-    Dim sideIndexes(1 To 8) As Long
-    FillRectSetSectionedFaceOrder faceNames, sideIndexes
-
-    Dim i As Long
-    ' Восемь строк граней превращаются в ключи с суффиксами _1/_2.
-    For i = 1 To 8
-        Dim rowIndex As Long
-        rowIndex = geometryHeaderRow + 3 + i
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".as_" & CStr(sideIndexes(i)), rowIndex, 2, Trim$(CStr(data(rowIndex, 8)))
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".d_" & CStr(sideIndexes(i)), rowIndex, 3, Trim$(CStr(data(rowIndex, 8)))
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".n_" & CStr(sideIndexes(i)), rowIndex, 4, Trim$(CStr(data(rowIndex, 8)))
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".StartOffset" & CStr(sideIndexes(i)), rowIndex, 5, Trim$(CStr(data(rowIndex, 8)))
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".EndOffset" & CStr(sideIndexes(i)), rowIndex, 6, Trim$(CStr(data(rowIndex, 8)))
-
-        Dim extraRow As Long
-        extraRow = geometryHeaderRow + 13 + i
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".d_2row_" & CStr(sideIndexes(i)), extraRow, 2, Trim$(CStr(data(extraRow, 9)))
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".d_3row_" & CStr(sideIndexes(i)), extraRow, 5, Trim$(CStr(data(extraRow, 9)))
-        ' Каждый ввод относится только к физической грани, указанной в этой строке.
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".loc_2row_" & CStr(sideIndexes(i)), extraRow, 3, Trim$(CStr(data(extraRow, 9)))
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".bind_2row_" & CStr(sideIndexes(i)), extraRow, 4, Trim$(CStr(data(extraRow, 9)))
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".loc_3row_" & CStr(sideIndexes(i)), extraRow, 6, Trim$(CStr(data(extraRow, 9)))
-        AppendDeferredInputValue data, "RectSet." & faceNames(i) & ".bind_3row_" & CStr(sideIndexes(i)), extraRow, 7, Trim$(CStr(data(extraRow, 9)))
-    Next i
-End Sub
-
-' Задает порядок строк в секционной таблице RectSet.
-' _1 означает левую/верхнюю грань, _2 - правую/нижнюю.
-Private Sub FillRectSetSectionedFaceOrder(ByRef faceNames() As String, ByRef sideIndexes() As Long)
-    faceNames(1) = "H1": sideIndexes(1) = 1
-    faceNames(2) = "H1": sideIndexes(2) = 2
-    faceNames(3) = "B1": sideIndexes(3) = 1
-    faceNames(4) = "B1": sideIndexes(4) = 2
-    faceNames(5) = "H2": sideIndexes(5) = 1
-    faceNames(6) = "H2": sideIndexes(6) = 2
-    faceNames(7) = "B2": sideIndexes(7) = 1
-    faceNames(8) = "B2": sideIndexes(8) = 2
-End Sub
-
 ' Сохраняет значение геометрии или оформления вместе с фактическим адресом.
 ' Ошибка формулы выдается при обращении активного потребителя: чужая форма,
 ' выключенный ряд или группа аннотаций не мешают основному расчету, но чтение
@@ -987,15 +565,6 @@ Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String,
     End If
     AppendSetting key, value, value, source, rowIndex, columnIndex, valueError
 End Sub
-
-' Распознает геометрические ключи обычной двухколоночной компоновки, включая
-' таблицу круга. Условия активности определяют builders, а не Excel-reader.
-Private Function IsGeometrySettingKey(ByVal key As String) As Boolean
-    Select Case LCase$(Left$(key, InStr(1, key & ".", ".", vbBinaryCompare) - 1))
-        Case "circle", "rebar", "rectset", "roundedrectangle", "hollowrectangle"
-            IsGeometrySettingKey = True
-    End Select
-End Function
 
 ' Добавляет одну пару ключ-значение в reader.
 ' Массивы параллельные: это проще и быстрее для VBA, чем словарь с Variant-объектами,
@@ -1061,10 +630,6 @@ Private Function InputSettingsSection(ByVal key As String) As String
         Case Left$(key, 9) = "Capacity.": sectionName = "настройки несущей способности"
         Case Left$(key, 15) = "AutoCAD.Import.": sectionName = "импорт геометрии из AutoCAD"
         Case Left$(key, 5) = "Plot.": sectionName = "оформление Excel-схемы"
-        Case Left$(key, 7) = "Circle.", Left$(key, 6) = "Rebar.": sectionName = "круглое сечение"
-        Case Left$(key, 8) = "RectSet.": sectionName = "RectSet-сечение"
-        Case Left$(key, 17) = "RoundedRectangle.": sectionName = "скругленный прямоугольник"
-        Case Left$(key, 16) = "HollowRectangle.": sectionName = "пустотелый прямоугольник"
         Case Left$(key, 9) = "Geometry.", Left$(key, 5) = "Mesh.": sectionName = "геометрия и расчетная сетка"
         Case Else: sectionName = "таблица исходных настроек"
     End Select

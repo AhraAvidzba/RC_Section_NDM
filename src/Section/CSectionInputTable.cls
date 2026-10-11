@@ -73,10 +73,10 @@ Public Function Text(ByVal row As Long, ByVal column As Long, Optional ByVal def
     Dim value As Variant
     value = CellValue(row, column)
     If BlankValue(value) Then
-        If IsMissing(defaultValue) Then InputError row, column, "Обязательное поле не заполнено."
+        If IsMissing(defaultValue) Then InputError row, column, "Обязательное поле не заполнено. Введите значение."
         value = defaultValue
     End If
-    If IsNull(value) Or IsError(value) Or IsObject(value) Or IsArray(value) Then InputError row, column, "Ожидается текстовое значение."
+    If IsNull(value) Or IsError(value) Or IsObject(value) Or IsArray(value) Then InputError row, column, "Ожидается текстовое значение. Введите текст."
     Text = Trim$(CStr(value))
 End Function
 
@@ -84,24 +84,25 @@ Public Function Number(ByVal row As Long, ByVal column As Long, Optional ByVal d
     Dim value As Variant
     value = CellValue(row, column)
     If BlankValue(value) Then
-        If IsMissing(defaultValue) Then InputError row, column, "Обязательное числовое поле не заполнено."
+        If IsMissing(defaultValue) Then InputError row, column, "Обязательное числовое поле не заполнено. Введите число."
         value = defaultValue
     End If
-    If IsNull(value) Or IsError(value) Or IsObject(value) Or IsArray(value) Then InputError row, column, "Ожидается число."
-    If VarType(value) = vbBoolean Or Not IsNumeric(value) Then InputError row, column, "Ожидается число."
+    If IsNull(value) Or IsError(value) Or IsObject(value) Or IsArray(value) Then InputError row, column, "Ожидается число. Введите числовое значение."
+    If VarType(value) = vbBoolean Or Not IsNumeric(value) Then InputError row, column, "Ожидается число. Введите числовое значение."
     On Error GoTo Invalid
     Number = CDbl(value)
     Exit Function
 Invalid:
-    InputError row, column, "Число выходит за допустимый диапазон."
+    InputError row, column, "Число выходит за допустимый диапазон. Введите число меньшего модуля."
 End Function
 
-' Число позиций проверяется до выделения массивов и преобразования в Long.
+' Читает весь неотрицательный диапазон Long. Допустимость общего числа
+' активных позиций проверяет executor до выделения массива или цикла.
 Public Function Count(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Long = 0) As Long
     Dim value As Double
     value = Number(row, column, defaultValue)
-    If value < 0# Or value > GEOM_MAX_REBAR_COUNT Or Fix(value) <> value Then _
-        InputError row, column, "Число стержней должно быть целым неотрицательным и представимым счетчиком Long."
+    If value < 0# Or value > 2147483647# Or Fix(value) <> value Then _
+        InputError row, column, "Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647."
     Count = CLng(value)
 End Function
 
@@ -112,7 +113,7 @@ Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As
     For Each item In allowed
         If StrComp(value, CStr(item), vbTextCompare) = 0 Then Choice = CStr(item): Exit Function
     Next item
-    InputError row, column, "Недопустимый вариант '" & value & "'; допустимы: " & Join(allowed, ", ") & "."
+    InputError row, column, "Недопустимый вариант '" & value & "'. Выберите: " & Join(allowed, ", ") & "."
 End Function
 
 Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
@@ -127,7 +128,7 @@ Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal 
     raw = Text(row, column, vbNullString)
     If Len(raw) = 0 Or UCase$(raw) = "TODO" Then Exit Function
     value = Number(row, column)
-    If value < 0# Then InputError row, column, "Диаметр не может быть отрицательным; 0 или пустая ячейка выключают ряд."
+    If value < 0# Then InputError row, column, "Диаметр не может быть отрицательным; 0 или пустая ячейка выключают ряд. Введите неотрицательное значение."
     If units Is Nothing Then InputError row, column, "Не передана система единиц."
     OptionalDiameter = units.InputLengthToInternal(value)
 End Function
@@ -144,7 +145,7 @@ Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String
             End If
         End If
     Next column
-    If ColumnByCaption = 0 Then InputError headerRow, 1, "Не найден столбец '" & caption & "'."
+    If ColumnByCaption = 0 Then InputError headerRow, 1, "Не найден столбец '" & caption & "'. Восстановите заголовок столбца."
 End Function
 
 Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1, _
@@ -177,7 +178,7 @@ Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As L
             Next key
         End If
     Next row
-    If RowByAnyKey = 0 Then InputError firstRow, keyColumn, "Не найден параметр '" & caption & "'."
+    If RowByAnyKey = 0 Then InputError firstRow, keyColumn, "Не найден параметр '" & caption & "'. Восстановите строку параметра."
 End Function
 
 Private Function BlankValue(ByVal value As Variant) As Boolean
@@ -196,6 +197,12 @@ End Sub
 Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As String)
     Dim location As String
     location = mName
-    If row >= 1 And row <= mRows And column >= 1 And column <= mColumns Then location = mAddresses(row, column) & " (" & mName & ")"
+    If row >= 1 And row <= mRows And column >= 1 And column <= mColumns Then
+        location = mAddresses(row, column) & " (" & mName & ")"
+        ' Человекочитаемая подпись строки берется из самого снимка, без знания формы.
+        If column > 1 And VarType(mValues(row, 1)) = vbString Then
+            If Len(Trim$(CStr(mValues(row, 1)))) > 0 Then location = location & "; " & CStr(mValues(row, 1))
+        End If
+    End If
     Err.Raise vbObjectError + 5525, "CSectionInputTable", location & ": " & reason
 End Sub

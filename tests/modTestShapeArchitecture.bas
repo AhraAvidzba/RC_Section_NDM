@@ -11,7 +11,7 @@ Private Type TSnapshotWords
 End Type
 
 ' ДЛЯ ТЕСТОВ: независимый снимок сетки, всей арматуры и всех аннотаций.
-' Этот entrypoint выполняется и на книге до рефакторинга, и на новой книге.
+' Текущий build сравнивается с неизменяемыми baseline-данными архива.
 ' Вход восстанавливается; расчетные Results не записываются.
 Public Function DumpShapeArchitectureSnapshot(Optional ByVal fixtureFilter As String = "") As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
@@ -42,9 +42,13 @@ End Function
 Private Function ShapeSnapshot(ByVal fixture As String, Optional ByVal suppliedModel As CSectionModel = Nothing, _
         Optional ByVal suppliedMesh As CFiberMeshBuilder = Nothing, Optional ByVal suppliedRebars As CRebarLayout = Nothing) As String
     Dim model As CSectionModel, properties As CSectionPropertiesCalculator, annotations As CSectionAnnotations
-    Dim contours As CSectionContours, lines() As String, count As Long, i As Long, bounds As Variant
+    Dim contours As CSectionContours, lines() As String, count As Long, i As Long, bounds As Variant, builder As CSectionBuilder
     Set model = suppliedModel
-    If model Is Nothing Then Set model = FixtureModel(fixture)
+    If model Is Nothing Then
+        Set builder = New CSectionBuilder: Set model = FixtureModel(fixture, builder)
+        Set suppliedMesh = builder.Mesh: Set suppliedRebars = builder.Rebars
+    End If
+    If suppliedMesh Is Nothing Or suppliedRebars Is Nothing Then Err.Raise vbObjectError + 5292, "modTestShapeArchitecture", "Для снимка нужна одна полная prepared-сборка."
     Set properties = New CSectionPropertiesCalculator: properties.PrepareSnapshot model
     Set contours = model.Contours: Set annotations = model.Annotations
     ReDim lines(1 To model.ConcreteCount + model.RebarCount + contours.Count + annotations.Count + 4)
@@ -84,11 +88,7 @@ Private Function ShapeSnapshot(ByVal fixture As String, Optional ByVal suppliedM
             annotations.NormalX(i), annotations.NormalY(i), annotations.Text(i), annotations.Value(i), annotations.Unit(i), annotations.Comment(i)))
     Next i
     count = count + 1
-    If suppliedMesh Is Nothing Then
-        lines(count) = SourceSnapshot(fixture)
-    Else
-        lines(count) = SourceValuesSnapshot(fixture, suppliedMesh, suppliedRebars)
-    End If
+    lines(count) = SourceValuesSnapshot(fixture, suppliedMesh, suppliedRebars)
     ReDim Preserve lines(1 To count)
     ShapeSnapshot = Join(lines, vbNullString)
 End Function
@@ -98,20 +98,6 @@ Public Function PreparedShapeSnapshot(ByVal fixture As String, ByVal model As CS
         ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout) As String
     If model Is Nothing Or mesh Is Nothing Or rebars Is Nothing Then Err.Raise vbObjectError + 5292, "modTestShapeArchitecture", "Неполный prepared snapshot."
     PreparedShapeSnapshot = ShapeSnapshot(fixture, model, mesh, rebars)
-End Function
-
-' ДЛЯ ТЕСТОВ: исходные fill factor и группы layout не хранятся в model.
-' Читаем их отдельно тем же исходным pipeline; это не замер производительности.
-Private Function SourceSnapshot(ByVal fixture As String) As String
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
-    Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout
-    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set registry = New CSectionTypeRegistry
-    Set geometry = registry.CreateGeometry(settings, units)
-    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units)
-    Set rebars = registry.CreateRebars(geometry, settings, units)
-    SourceSnapshot = SourceValuesSnapshot(fixture, mesh, rebars)
 End Function
 
 Private Function SourceValuesSnapshot(ByVal fixture As String, ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout) As String
@@ -161,18 +147,17 @@ Private Function InputSnapshot(ByVal fixture As String) As String
     InputSnapshot = Join(lines, vbNullString)
 End Function
 
-Private Function FixtureModel(ByVal fixture As String) As CSectionModel
+Private Function FixtureModel(ByVal fixture As String, Optional ByVal builder As CSectionBuilder = Nothing) As CSectionModel
     ConfigureShapeFixture fixture
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Dim settings As CSystemSettingsReader, units As CUnitSystem
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set registry = New CSectionTypeRegistry
-    Set FixtureModel = registry.BuildGeneratedModel(settings, units)
+    Set FixtureModel = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
 End Function
 
 ' ДЛЯ ТЕСТОВ: одинаковый ввод baseline/new, без сборки геометрии.
 Public Sub ConfigureShapeFixture(ByVal fixture As String)
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder
     Dim shapeName As String, table As Object, factor As Double, i As Long, result As String
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -218,7 +203,7 @@ End Sub
 Public Function DumpCircleGeometryMatrix() As String
     Dim config As Object, saved As Variant, result As String, seed As CSectionModel
     Dim counts As Variant, number As Variant, scenario As Long, fixture As String
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean, factor As Double
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
@@ -237,9 +222,9 @@ Public Function DumpCircleGeometryMatrix() As String
             SetSetting "Rebar.Loc3row", IIf(scenario = 4 Or scenario = 6, "SideBySide", "Stacked")
             ThisWorkbook.Worksheets("Config").Calculate
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
-            Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+            Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
             fixture = "CircleMatrix.n" & CStr(number) & ".rows" & CStr(scenario)
-            result = result & ShapeSnapshot(fixture, model)
+            result = result & ShapeSnapshot(fixture, model, builder.Mesh, builder.Rebars)
         Next scenario
     Next number
     GoTo Finished
@@ -295,7 +280,7 @@ End Sub
 ' ДЛЯ ТЕСТОВ: неизменный старый pipeline в отдельной baseline-книге.
 Public Function DumpRectSetGeometryMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
@@ -308,8 +293,8 @@ Public Function DumpRectSetGeometryMatrix() As String
             ConfigureRectSetScenario CStr(fixture), scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
-            result = result & ShapeSnapshot("RectMatrix." & CStr(fixture) & ".case" & CStr(scenario), model)
+            Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
+            result = result & ShapeSnapshot("RectMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
         Next scenario
     Next fixture
     GoTo Finished
@@ -376,7 +361,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: фиксирует старую расчетную ломаную до аналитического переноса.
 Public Function DumpRoundedGeometryMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
@@ -389,8 +374,8 @@ Public Function DumpRoundedGeometryMatrix() As String
             ConfigureRoundedScenario scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
-            result = result & ShapeSnapshot("RoundedMatrix." & CStr(fixture) & ".case" & CStr(scenario), model)
+            Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
+            result = result & ShapeSnapshot("RoundedMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
         Next scenario
     Next fixture
     GoTo Finished
@@ -469,7 +454,7 @@ End Function
 
 Private Function HollowGeometryMatrix(ByVal firstScenario As Long, ByVal lastScenario As Long) As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
@@ -482,8 +467,8 @@ Private Function HollowGeometryMatrix(ByVal firstScenario As Long, ByVal lastSce
             ConfigureHollowScenario scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
-            result = result & ShapeSnapshot("HollowMatrix." & CStr(fixture) & ".case" & CStr(scenario), model)
+            Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
+            result = result & ShapeSnapshot("HollowMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
         Next scenario
     Next fixture
     GoTo Finished
@@ -562,10 +547,10 @@ Private Function SourceCalculations(ByVal fixtures As Variant, ByVal crackCode A
         ConfigureShapeFixture CStr(fixture)
         If roundedScenario > 0 Then ConfigureRoundedScenario roundedScenario
         If hollowScenario > 0 Then ConfigureHollowScenario hollowScenario
-        Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel, label As String
+        Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel, label As String
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+        Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
         label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
         If hollowScenario > 0 Then label = label & ".case" & CStr(hollowScenario)
         result = result & CalculationSnapshot(label, model)
@@ -658,7 +643,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: прежний Hollow preview для сопоставления длинных подписей.
 Public Function DumpHollowSourcePreview(ByVal outputDirectory As String, Optional ByVal scenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
@@ -669,7 +654,7 @@ Public Function DumpHollowSourcePreview(ByVal outputDirectory As String, Optiona
         ConfigureShapeFixture CStr(fixture): ConfigureHollowScenario scenario
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+        Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
         result = result & PreviewSnapshot(CStr(fixture) & ".case" & CStr(scenario), outputDirectory, model)
     Next fixture
     GoTo Finished

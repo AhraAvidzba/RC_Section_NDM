@@ -25,6 +25,9 @@ Public Function Capture(ByVal workbook As Object, ByVal tableNames As Variant, _
         If range Is Nothing Then SectionRecipeError "CSectionInputSnapshotReader", "Не найден диапазон '" & CStr(name) & "'."
         If range.Areas.Count <> 1 Or range.Cells.Count = 1 Then _
             SectionRecipeError "CSectionInputSnapshotReader", "Диапазон '" & CStr(name) & "' должен быть единой таблицей."
+        ' В ручном режиме обновляем формулы выбранной таблицы до одного Value2.
+        ' Неактивные таблицы и посторонние книги не пересчитываются.
+        If workbook.Application.Calculation = xlCalculationManual Then range.Calculate
         values = range.Value2
         firstRow = range.Row: firstColumn = range.Column: sheetName = range.Worksheet.Name
         ReDim addresses(1 To UBound(values, 1), 1 To UBound(values, 2))

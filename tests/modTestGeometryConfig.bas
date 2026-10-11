@@ -5,7 +5,7 @@ Option Explicit
 ' ДЛЯ ТЕСТОВ: параметры геометрии через фактический Config
 ' ==========================================================================
 ' Проверяет передачу пользовательских геометрических полей от ячеек через
-' CSystemSettingsReader/CUnitSystem и CSectionTypeRegistry к готовой форме
+' общие настройки/снимок/рецепт к готовой форме
 ' и раскладке. Не ищет равновесие и не подменяет инженерный расчет fixtures.
 ' Измененные таблицы восстанавливаются по исходным формулам даже при ошибке.
 
@@ -24,11 +24,7 @@ Public Function RunAudit03RebarCounterTests(Optional ByRef passed As Long = 0, _
     Dim stats As TGeometryConfigStats, shapeName As Variant, scenario As Long
     Dim bars As CRebarLayout, number As Long, description As String, expected As Long
     For Each shapeName In Array("RectSet", "RoundedRectangle", "HollowRectangle")
-        Select Case CStr(shapeName)
-            Case "RectSet": expected = vbObjectError + 3171
-            Case "RoundedRectangle": expected = vbObjectError + 3230
-            Case "HollowRectangle": expected = vbObjectError + 3250
-        End Select
+        expected = vbObjectError + 5530
         For scenario = 0 To 2
             Set bars = Nothing: number = 0: description = vbNullString
             On Error Resume Next
@@ -63,63 +59,62 @@ Finish:
     RunAudit03RebarCounterTests = stats.Report & "TOTAL_REBAR_COUNTER: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
-' Создает один и тот же безопасный крайний ввод для трех штатных builders.
-' Сценарии: max Long, сумма двух граней, сумма рядов, выключенная грань,
-' обычные три стержня и неактивные нижние грани режима Rectangle.
+' ДЛЯ ТЕСТОВ: общая защита счетчиков через реальный рецепт и named-ввод.
+' Сценарии не размещают миллиарды позиций: preflight обязан отказать до массива.
 Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Long) As CRebarLayout
-    Dim count1 As Long, count2 As Long, axisDistance As Double, diameter As Double, row2 As Double
-    count1 = 2147483647: axisDistance = 0#: diameter = 16#
-    Select Case scenario
-        Case 0
-            If shapeName <> "RectSet" Then axisDistance = 40#
-        Case 1: count1 = 1100000000: count2 = 1100000000
-        Case 2: count1 = 1100000000: row2 = 16#
-        Case 3: diameter = 0#: axisDistance = 40#
-        Case 4: count1 = 3: axisDistance = 40#
-        Case 5: axisDistance = 40#
+    Dim config As Object, saved As Variant, events As Boolean, fixture As String, root As Object, names As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, table As CSectionInputTable
+    Dim main As Long, extra As Long, faceCount As Long, i As Long, count1 As Long, count2 As Long, factor As Double
+    Dim definition As CSectionDefinition, geometry As CGeometryRegion, executor As CRebarRuleExecutor
+    Dim number As Long, source As String, reason As String
+    On Error GoTo Failed
+    events = Application.EnableEvents: Application.EnableEvents = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Select Case shapeName
+        Case "RectSet": fixture = "Rectangle"
+        Case "RoundedRectangle": fixture = "RoundedSimple"
+        Case "HollowRectangle": fixture = "HollowCentered"
     End Select
-    Dim inactive As Variant, active As Variant, second As Variant
-    If shapeName = "RectSet" Then
-        inactive = CounterRectFace(0, 0, 40#, 0#, 0#)
-        active = CounterRectFace(count1, count2, axisDistance, diameter, row2)
-        Dim rectBuilder As CRectSetRebarLayoutBuilder
-        Set rectBuilder = New CRectSetRebarLayoutBuilder
-        If scenario = 5 Then
-            Set CounterFixture = rectBuilder.Build(600#, 400#, 600#, 400#, 0#, 0#, inactive, active, inactive, active, "Rebar", 0#, "Rectangle")
-        Else
-            Set CounterFixture = rectBuilder.Build(600#, 400#, 600#, 400#, 0#, 0#, active, inactive, inactive, inactive, "Rebar", 0#, "Rectangle")
-        End If
-    Else
-        inactive = CounterCompactFace(0, 40#, 0#, 0#)
-        active = CounterCompactFace(count1, axisDistance, diameter, row2)
-        second = CounterCompactFace(count2, axisDistance, diameter, 0#)
-        If shapeName = "RoundedRectangle" Then
-            Dim rounded As CGeometryRoundedRectangle, roundedBuilder As CRoundedRectRebarLayoutBuilder
-            Set rounded = New CGeometryRoundedRectangle: rounded.Initialize 600#, 400#
-            Set roundedBuilder = New CRoundedRectRebarLayoutBuilder
-            Set CounterFixture = roundedBuilder.Build(rounded, active, second, inactive, inactive, "Rebar")
-        Else
-            Dim hollow As CGeometryHollowRectangle, hollowBuilder As CHollowRectRebarLayoutBuilder
-            Set hollow = New CGeometryHollowRectangle: hollow.Initialize 1000#, 1200#, 60#, 400#, 500#, 30#
-            Set hollowBuilder = New CHollowRectRebarLayoutBuilder
-            Set CounterFixture = hollowBuilder.Build(hollow, inactive, inactive, active, second, inactive, inactive, inactive, inactive, "Rebar")
-        End If
+    modTestShapeArchitecture.ConfigureShapeFixture fixture
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    Set registry = New CSectionTypeRegistry: names = registry.RecipeTableNames(shapeName)
+    Set root = ThisWorkbook.Names(CStr(names(0))).RefersToRange
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, names, units)
+    Set table = context.Table(CStr(names(0)))
+    main = table.RowByKey("as", 2): extra = table.RowByKey("d2", 2)
+    faceCount = 8: If shapeName = "RoundedRectangle" Then faceCount = 4
+    For i = 1 To faceCount
+        root.Cells(main + i, 2).Value2 = 40# / factor
+        root.Cells(main + i, 3).Value2 = 0#
+        If shapeName <> "HollowRectangle" Or i <= 4 Then root.Cells(main + i, 4).Value2 = 0
+        root.Cells(extra + i, 2).Value2 = 0#: root.Cells(extra + i, 5).Value2 = 0#
+    Next i
+    count1 = 2147483647
+    If scenario = 1 Or scenario = 2 Then count1 = 1100000000
+    If scenario = 1 Then count2 = 1100000000
+    If scenario = 4 Then count1 = 3
+    If scenario = 5 Then main = main + 4 ' Нижние грани Rectangle не используются.
+    root.Cells(main + 1, 4).Value2 = count1
+    If scenario <> 3 Then root.Cells(main + 1, 3).Value2 = 16# / factor
+    If count2 > 0 Then root.Cells(main + 2, 4).Value2 = count2: root.Cells(main + 2, 3).Value2 = 16# / factor
+    If scenario = 2 Then
+        root.Cells(extra + 1, 2).Value2 = 16# / factor
+        root.Cells(extra + 1, 3).Value2 = "Stacked": root.Cells(extra + 1, 4).Value2 = "EachBar"
     End If
-End Function
-
-' Заполняет компактную грань Rounded/Hollow: первый ряд, дополнительные ряды
-' и их положение/привязка. Неактивные диаметры остаются нулевыми.
-Private Function CounterCompactFace(ByVal count As Long, ByVal axisDistance As Double, _
-        ByVal diameter As Double, ByVal row2 As Double) As Variant
-    CounterCompactFace = Array(axisDistance, diameter, count, row2, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
-End Function
-
-' Заполняет две линии одной грани RectSet без концевых отступов; второй ряд
-' относится только к первой линии. Нижние грани можно передать неактивными.
-Private Function CounterRectFace(ByVal count1 As Long, ByVal count2 As Long, ByVal axisDistance As Double, _
-        ByVal diameter As Double, ByVal row2 As Double) As Variant
-    CounterRectFace = Array(axisDistance, axisDistance, diameter, diameter, count1, count2, _
-        0#, 0#, 0#, 0#, row2, 0#, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+    Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
+    Set executor = New CRebarRuleExecutor: Set CounterFixture = executor.Build(definition, geometry)
+    GoTo Finished
+Failed:
+    number = Err.Number: source = Err.Source: reason = Err.Description
+Finished:
+    On Error Resume Next
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.EnableEvents = events
+    On Error GoTo 0
+    If number <> 0 Then Err.Raise number, source, reason
 End Function
 
 ' Выполняет активные/неактивные варианты восьми параметров круга, границы
@@ -438,14 +433,13 @@ Private Sub CheckCircleMissingInput(ByRef stats As TGeometryConfigStats, ByVal k
     stats.Report = stats.Report & "CIRCLE_MISSING_INPUT: " & key & "; error=" & CStr(number) & "; " & description & vbCrLf
 End Sub
 
-' Читает форму штатным reader/unit/registry pipeline без создания арматуры:
-' проверка одного размера не должна зависеть от чужой раскладки стержней.
+' Проверяет бетонное domain единого definition без размещения стержней.
 Private Function ReadShape() As CGeometryRegion
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set registry = New CSectionTypeRegistry
-    Set ReadShape = registry.CreateGeometry(settings, units)
+    Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    Set ReadShape = New CGeometryRegion: ReadShape.Initialize definition.ConcreteDomain
 End Function
 
 ' Сохраняет расчетные площадь, центр и габариты. Отказ геометрии считается
@@ -555,15 +549,35 @@ End Sub
 ' внутреннюю форму. Это не меняет контракт импорта AutoCAD и его миллиметры.
 Private Sub CheckShapeUnits(ByRef stats As TGeometryConfigStats, ByVal target As Object, _
         ByVal unitRange As Object, ByVal shapeName As String)
-    Dim baseline As Variant
+    Dim baseline As Variant, baselineBars As Variant
     unitRange.Cells(2, 2).Value2 = "mm"
     ConfigureShape target, shapeName
     baseline = ShapeSnapshot(ReadShape())
+    baselineBars = RequiredGeometryRouteSnapshot(shapeName, "Rebars")
     unitRange.Cells(2, 2).Value2 = "cm"
     ConfigureShape target, shapeName, 0.1
+    ScaleRebarFixtureLengths target, shapeName, 0.1
     Check stats, "shapeConfig." & shapeName & ".units.cm", SameShape(baseline, ShapeSnapshot(ReadShape()))
+    Check stats, "shapeConfig." & shapeName & ".units.cm.rebars", SameGeometryRouteSnapshot(baselineBars, RequiredGeometryRouteSnapshot(shapeName, "Rebars"))
     unitRange.Cells(2, 2).Value2 = "mm"
     ConfigureShape target, shapeName
+    ScaleRebarFixtureLengths target, shapeName, 10#
+End Sub
+
+' Рецепт публикует пути армирования: переводим отступы/диаметры вместе с B/H/R.
+Private Sub ScaleRebarFixtureLengths(ByVal target As Object, ByVal shapeName As String, ByVal factor As Double)
+    Dim face As Variant, column As Variant, columns As Variant, value As Variant
+    If shapeName = "RectSet" Then columns = Array(2, 3, 5, 6) Else columns = Array(2, 3)
+    For Each face In RebarFieldFaces(shapeName)
+        For Each column In columns
+            value = target.Cells(CLng(face(1)), CLng(column)).Value2
+            If IsNumeric(value) Then target.Cells(CLng(face(1)), CLng(column)).Value2 = CDbl(value) * factor
+        Next column
+        For Each column In Array(2, 5)
+            value = target.Cells(CLng(face(2)), CLng(column)).Value2
+            If IsNumeric(value) Then target.Cells(CLng(face(2)), CLng(column)).Value2 = CDbl(value) * factor
+        Next column
+    Next face
 End Sub
 
 ' В другом Geometry.Type корректные изменения невыбранной таблицы не должны
@@ -616,7 +630,8 @@ Private Sub CheckHollowCounts(ByRef stats As TGeometryConfigStats, ByVal target 
             Check stats, prefix & ".reject", errorNumber <> 0
             Check stats, prefix & ".location", InStr(1, description, "Config", vbTextCompare) > 0 And _
                 InStr(1, description, target.Cells(rowIndex, 4).Address(False, False), vbTextCompare) > 0
-            Check stats, prefix & ".key", InStr(1, description, "HollowRectangle." & face & ".n", vbBinaryCompare) > 0
+            Check stats, prefix & ".parameter", InStr(1, description, CStr(target.Cells(rowIndex, 1).Value2), vbBinaryCompare) > 0 And _
+                (InStr(1, description, "Число стержней", vbBinaryCompare) > 0 Or InStr(1, description, "число", vbBinaryCompare) > 0 Or InStr(1, description, "Excel", vbBinaryCompare) > 0)
             stats.Report = stats.Report & "HOLLOW_COUNT_ERROR: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
             target.Cells(rowIndex, 4).Value2 = 3
             ReadGeometry geom, bars
@@ -778,12 +793,12 @@ End Sub
 ' Читает текущие ячейки заново и использует штатные единицы/registry;
 ' прямые вызовы чистого Build здесь не могли бы обнаружить обрыв Config-передачи.
 Private Sub ReadGeometry(ByRef geom As CGeometryRegion, ByRef bars As CRebarLayout)
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition, executor As CRebarRuleExecutor
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set registry = New CSectionTypeRegistry
-    Set geom = registry.CreateGeometry(settings, units)
-    Set bars = registry.CreateRebars(geom, settings, units)
+    Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    Set geom = New CGeometryRegion: geom.Initialize definition.ConcreteDomain
+    Set executor = New CRebarRuleExecutor: Set bars = executor.Build(definition, geom)
 End Sub
 
 ' Меняет реальную ячейку значения по ключу таблицы; отсутствие ключа является
@@ -833,8 +848,8 @@ End Sub
 ' ДЛЯ ТЕСТОВ: ОБЯЗАТЕЛЬНЫЙ ВВОД АКТИВНОЙ ГЕОМЕТРИИ
 ' ======================================================================
 
-' Проверяет реальные таблицы четырех форм двумя независимыми входами:
-' фабрика геометрии и BuildFromSettings арматуры. Не заполняет пропущенные
+' Проверяет бетонное domain и арматуру единого definition четырех форм.
+' Не заполняет пропущенные
 ' значения вместо пользователя; все Formula-массивы восстанавливает после
 ' серии, включая неудачу. Количество assertions доступно полному UI-suite.
 Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Long = 0, _
@@ -882,7 +897,7 @@ Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Lo
                     Err.Clear
                     On Error GoTo FailedRun
                     Check stats, prefix & ".reject", errorNumber <> 0
-                    Check stats, prefix & ".key", InStr(1, description, CStr(item(0)), vbBinaryCompare) > 0
+                    Check stats, prefix & ".namedRange", InStr(1, description, CStr(names(i + 2)), vbBinaryCompare) > 0
                     Check stats, prefix & ".address", InStr(1, description, "Config", vbTextCompare) > 0 And _
                         InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
                     stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & _
@@ -951,23 +966,12 @@ End Sub
 ' формы перед builder-ом: так тест обнаруживает его собственные defaults.
 ' Снимок арматуры содержит все координаты/диаметры, а не только общий count.
 Private Function RequiredGeometryRouteSnapshot(ByVal shape As String, ByVal route As String) As Variant
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
-    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-    Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set registry = New CSectionTypeRegistry
+    Dim geom As CGeometryRegion, bars As CRebarLayout
+    ReadGeometry geom, bars
     If route = "Geometry" Then
-        RequiredGeometryRouteSnapshot = ShapeSnapshot(registry.CreateGeometry(settings, units))
+        RequiredGeometryRouteSnapshot = ShapeSnapshot(geom)
         Exit Function
     End If
-    Dim circleBuilder As CCircleRebarLayoutBuilder, rect As CRectSetRebarLayoutBuilder
-    Dim rounded As CRoundedRectRebarLayoutBuilder, hollow As CHollowRectRebarLayoutBuilder
-    Dim bars As CRebarLayout
-    Select Case shape
-        Case "Circle": Set circleBuilder = New CCircleRebarLayoutBuilder: Set bars = circleBuilder.BuildFromSettings(settings, units)
-        Case "RectSet": Set rect = New CRectSetRebarLayoutBuilder: Set bars = rect.BuildFromSettings(settings, units)
-        Case "RoundedRectangle": Set rounded = New CRoundedRectRebarLayoutBuilder: Set bars = rounded.BuildFromSettings(settings, units)
-        Case "HollowRectangle": Set hollow = New CHollowRectRebarLayoutBuilder: Set bars = hollow.BuildFromSettings(settings, units)
-    End Select
     Dim values() As Double, i As Long
     ReDim values(0 To bars.Count * 3)
     values(0) = bars.Count
