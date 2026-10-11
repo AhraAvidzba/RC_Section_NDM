@@ -18,6 +18,7 @@ Public RemainderPlacement As ERemainderPlacement
 Public TangentOffset As Double
 Public NormalOffset As Double
 Public EverySecond As Boolean
+Public IncomingTangentAtJoint As Boolean
 Public DirectionX As Double
 Public DirectionY As Double
 Public SkipMissingProjection As Boolean
@@ -45,6 +46,7 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.EndMode = EndMode: rule.RemainderPlacement = RemainderPlacement
     rule.TangentOffset = TangentOffset: rule.NormalOffset = NormalOffset
     rule.EverySecond = EverySecond
+    rule.IncomingTangentAtJoint = IncomingTangentAtJoint
     rule.DirectionX = DirectionX: rule.DirectionY = DirectionY
     rule.SkipMissingProjection = SkipMissingProjection
     rule.Publication = Publication: rule.PlacementCheck = PlacementCheck

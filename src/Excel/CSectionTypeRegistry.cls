@@ -33,6 +33,7 @@ Private Sub Class_Initialize()
     Set mRecipeTables = CreateObject("Scripting.Dictionary"): mRecipeTables.CompareMode = vbTextCompare
     RegisterRecipe "Circle", New CSectionRecipeCircle, Array("rngCircleGeometry")
     RegisterRecipe "RectSet", New CSectionRecipeRectSet, Array("rngRectSetGeometry")
+    RegisterRecipe "RoundedRectangle", New CSectionRecipeRoundedRectangle, Array("rngRoundedRectangleGeometry")
 End Sub
 
 ' Единственная регистрация рецепта и метаданных его ввода. Старые методы

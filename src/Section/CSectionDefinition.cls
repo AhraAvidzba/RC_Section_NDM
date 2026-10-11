@@ -241,23 +241,25 @@ Private Function LoopContours(ByVal index As Long, ByVal forceOuter As Boolean) 
 End Function
 
 Private Sub AppendLoop(ByVal result As CSectionContours, ByVal index As Long, ByVal forceOuter As Boolean)
-    Dim path As CGeometryPath, role As String, edge As TRegionEdge, radius As Double, i As Long, contourID As String
+    Dim path As CGeometryPath, role As String, edge As TRegionEdge, radius As Double, i As Long, contourID As String, comment As String
     Set path = Me.Path(mLoops(index).PathID)
     role = "Outer"
     If mLoops(index).Role = LoopOpening And Not forceOuter Then role = "Opening"
     For i = 1 To path.SegmentCount
         path.CopySegment i, edge
+        comment = mLoops(index).Comment
+        If edge.Sweep <> 0# And Len(mLoops(index).ArcComment) > 0 Then comment = mLoops(index).ArcComment
         contourID = path.SegmentID(i)
         If IsArray(mLoops(index).ContourIDs) Then contourID = CStr(mLoops(index).ContourIDs(LBound(mLoops(index).ContourIDs) + i - 1))
         If edge.Sweep = 0# Then
-            result.AddContourLine contourID, edge.X1, edge.Y1, edge.X2, edge.Y2, mLoops(index).Comment, mLoops(index).LoopID, role
+            result.AddContourLine contourID, edge.X1, edge.Y1, edge.X2, edge.Y2, comment, mLoops(index).LoopID, role
         Else
             radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
             If Abs(edge.Sweep) = 2# * GEOM_PI Then
-                result.AddContourCircle contourID, edge.CenterX, edge.CenterY, radius, mLoops(index).Comment, mLoops(index).LoopID, role
+                result.AddContourCircle contourID, edge.CenterX, edge.CenterY, radius, comment, mLoops(index).LoopID, role
             Else
                 result.AddContourArc contourID, edge.X1, edge.Y1, edge.X2, edge.Y2, edge.CenterX, edge.CenterY, radius, _
-                    edge.Sweep, mLoops(index).Comment, mLoops(index).LoopID, role
+                    edge.Sweep, comment, mLoops(index).LoopID, role
             End If
         End If
     Next i

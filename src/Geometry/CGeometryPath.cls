@@ -148,19 +148,24 @@ Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As S
     Set BetweenAnchors = result
 End Function
 
-' Параметр - пройденная длина в мм. На стыке выбирается исходящая
-' касательная; на последнем конце - касательная последнего сегмента.
+' Параметр - пройденная длина в мм. По умолчанию на стыке выбирается
+' исходящая касательная; incomingTangentAtJoint сохраняет входящее направление.
 Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Double, _
-        ByRef tangentX As Double, ByRef tangentY As Double)
+        ByRef tangentX As Double, ByRef tangentY As Double, Optional ByVal incomingTangentAtJoint As Boolean = False)
     RequireSealed
     distance = CheckedDistance(distance)
     Dim lo As Long, hi As Long, middle As Long, parameter As Double, norm As Double
     lo = 1: hi = mCount
     Do While lo < hi
         middle = lo + (hi - lo) \ 2
-        If distance < mStations(middle) Then hi = middle Else lo = middle + 1
+        If distance < mStations(middle) Or (incomingTangentAtJoint And distance <= mStations(middle) + GEOM_TOLERANCE) Then
+            hi = middle
+        Else
+            lo = middle + 1
+        End If
     Loop
     parameter = (distance - mStations(lo - 1)) / (mStations(lo) - mStations(lo - 1))
+    parameter = GeomMax(0#, GeomMin(1#, parameter))
     mQuery.EdgePoint mEdges(lo), parameter, x, y
     mQuery.EdgeTangent mEdges(lo), parameter, tangentX, tangentY
     norm = Sqr(tangentX * tangentX + tangentY * tangentY)

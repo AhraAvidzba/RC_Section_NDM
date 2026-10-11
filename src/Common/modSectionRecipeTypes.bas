@@ -58,6 +58,7 @@ Public Type TSectionLoop
     Role As ESectionLoopRole
     ParentID As String
     Comment As String
+    ArcComment As String
     ContourIDs As Variant
 End Type
 
@@ -78,6 +79,7 @@ Public Type TRebarRule
     TangentOffset As Double
     NormalOffset As Double
     EverySecond As Boolean
+    IncomingTangentAtJoint As Boolean
     DirectionX As Double
     DirectionY As Double
     SkipMissingProjection As Boolean
@@ -105,6 +107,8 @@ Public Type TSectionAnnotation
     NormalX As Double
     NormalY As Double
     Value As Double
+    DisplayIncrement As Double
+    ReverseDirection As Boolean
     Comment As String
 End Type
 
@@ -133,4 +137,13 @@ End Type
 Public Sub SectionRecipeError(ByVal owner As String, ByVal reason As String, Optional ByVal sourceReference As String = "")
     If Len(sourceReference) > 0 Then reason = sourceReference & ": " & reason
     Err.Raise vbObjectError + 5530, owner, reason
+End Sub
+
+' Добавляет адрес исходных параметров к ошибке общего геометрического слоя;
+' непредвиденные ошибки сохраняют свой исходный код и источник.
+Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal sourceReference As String)
+    Dim number As Long, source As String, reason As String
+    number = Err.Number: source = Err.Source: reason = Err.Description
+    If source = "CSectionGeometryQuery" Or source = "CGeometryPath" Then SectionRecipeError owner, reason, sourceReference
+    Err.Raise number, source, reason
 End Sub

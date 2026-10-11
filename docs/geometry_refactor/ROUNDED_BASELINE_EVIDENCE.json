@@ -1,0 +1,37 @@
+{
+  "Stage": "RoundedRectangle pre-migration baseline",
+  "Status": "PASS",
+  "CapturedAt": "2026-10-12T00:11:00.9799262+03:00",
+  "Fixtures": 24,
+  "Records": 48180,
+  "ExactRepeat": true,
+  "CodeScope": "Original production code; only modTestShapeArchitecture instrumentation changed",
+  "WorkbookSHA256": "E1021D9A1FF80529BCCDF780643D52CA9105C969BED163D49BABE20865BB69BA",
+  "OriginalComponents": 137,
+  "UnexpectedModules": 0,
+  "PhysicsBaselineHead": "a138c2732382c826db9ac2f801facd3d533d406c",
+  "InstrumentationSHA256": "3D4B292ABC3FB60BC4E6626D402C63BF691BDCA03DD2C4511D090C509C81209B",
+  "ArchiveSHA256": "B7E58E0D848F2253B72B12F1C5CCDC0EBEEACB05AF97C8F30B9BB5A7CF44C712",
+  "Artifacts": [
+    {
+      "Path": "Matrix.txt",
+      "SHA256": "7C8364B8828F55124F431AD2E73F762B47BDA2C06585784F412668F18E0F1497"
+    },
+    {
+      "Path": "MatrixRepeat.txt",
+      "SHA256": "94345CC6BCE73C52FA6DF8F0DBA608BD021E487F35DAF0B7CDEE556E81ACCEB2"
+    },
+    {
+      "Path": "RepeatComparison.json",
+      "SHA256": "E097061D7A4B0CD6F49BAA3F2F94CEDEAD2ED6084D48925B60C3CF6FA204DFC6"
+    },
+    {
+      "Path": "CodeComparison.json",
+      "SHA256": "93A084636AA46B7E2B73D14455DD69CA4E44CC276F728D59475B8C00FA161849"
+    },
+    {
+      "Path": "CodeUpdate.json",
+      "SHA256": "21572EC9DB0E9A2CA94DFB661F0906229901AE294AEF5BFEEDD25AE082E814A3"
+    }
+  ]
+}

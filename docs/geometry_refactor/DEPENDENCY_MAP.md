@@ -83,3 +83,23 @@ ACTIVE в retirement-map до переноса остальных семейст
   общий query/path; в фасаде нет выбора конкретной формы.
 - Сложный рецепт разделяется внутренними методами ввода/геометрии/армирования/
   аннотаций; это не новые обязательные классы и не дополнительный маршрут.
+
+Сквозной development-маршрут RoundedRectangle:
+- CSectionRecipeRoundedRectangle -> generic input snapshot; ReadDimensions,
+  AddGeometry, AddReinforcement, AddDimensions показывают последовательность.
+- Shape descriptors -> query RoundedPolygon/OffsetRoundedPolygon -> именованные
+  Chain B.Top/B.Bottom/H.Left/H.Right. В рецепте нет расчета дуг/касательных
+  или обхода сетки; старый CGeometryRoundedRectangle не вызывается.
+- CRebarRuleOptions.IncomingTangentAtJoint -> общий CGeometryPath.AtDistance;
+  параметр задает направление на острой вершине, не выбирает тип сечения.
+- RuleBounds -> RebarRowExtentLabel; диапазон фактических основных позиций
+  используется только для аннотации, не для повторного размещения стержней.
+- DisplayIncrement округляет только справочное значение размера; реальные
+  концы линии и расчетная геометрия не меняются.
+- SectionRecipeGeometryError добавляет source reference к ошибке query/path,
+  непредвиденные ошибки сохраняет с исходным кодом/источником.
+- Verify-RoundedRecipeOracle использует только input и независимые формулы
+  в Python, не фактические VBA пути/позиции как ожидаемый результат.
+
+Старые три RoundedRectangle-компонента остаются ACTIVE в production до
+общего retirement. HollowRectangle еще использует прежний generated route.

@@ -187,7 +187,7 @@ Private Sub PrepareIndependent(ByVal index As Long)
             first = mPositionCount + 1
             For i = LBound(stations) To UBound(stations)
                 ordinal = ordinal + 1
-                path.AtDistance CDbl(stations(i)), position.X, position.Y, position.TangentX, position.TangentY
+                path.AtDistance CDbl(stations(i)), position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = CDbl(stations(i)): position.RuleIndex = index
                 position.RootRuleIndex = index: position.RootOrdinal = ordinal: position.SourceOrdinal = ordinal
                 position.RootPublicationRank = ordinal
@@ -241,6 +241,21 @@ Friend Function RuleEnds(ByVal ruleID As String, ByRef startX As Double, ByRef s
     RuleEnds = True
 End Function
 
+' Аннотация измеряет подготовленный ряд; зависимые дополнительные позиции
+' не меняют его базовую привязку. Координаты стержней не пересчитываются.
+Friend Function RuleBounds(ByVal ruleID As String, ByRef minX As Double, ByRef maxX As Double, _
+        ByRef minY As Double, ByRef maxY As Double) As Boolean
+    Dim index As Long, i As Long
+    index = mDefinition.RuleIndex(ruleID)
+    If mCount(index) = 0 Then Exit Function
+    minX = 1E+100: minY = 1E+100: maxX = -1E+100: maxY = -1E+100
+    For i = mStart(index) To mStart(index) + mCount(index) - 1
+        minX = GeomMin(minX, mPositions(i).X): maxX = GeomMax(maxX, mPositions(i).X)
+        minY = GeomMin(minY, mPositions(i).Y): maxY = GeomMax(maxY, mPositions(i).Y)
+    Next i
+    RuleBounds = True
+End Function
+
 Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
     Dim i As Long, ordinal As Long, position As TRebarPosition
     For i = mStart(source) To mStart(source) + mCount(source) - 1
@@ -289,7 +304,7 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 mSkippedProjections = mSkippedProjections + 1
             Else
                 Set path = mDefinition.Path(bestID)
-                path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY
+                path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = bestStation: position.PathID = bestID: position.RuleIndex = index
                 position.SourceOrdinal = ordinal
                 position.SourcePositionID = PositionID(index, ordinal, mPositions(i).SourcePositionID)

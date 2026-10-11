@@ -147,19 +147,37 @@ Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String
     If ColumnByCaption = 0 Then InputError headerRow, 1, "Не найден столбец '" & caption & "'."
 End Function
 
-Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1) As Long
-    Dim row As Long, value As Variant
-    CheckCell 1, keyColumn
-    For row = 1 To mRows
+Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1, _
+        Optional ByVal firstRow As Long = 1, Optional ByVal lastRow As Long = 0) As Long
+    RowByKey = RowByAnyKey(Array(key), keyColumn, firstRow, lastRow)
+End Function
+
+' Подблок и допустимые подписи задает рецепт. Снимок знает лишь границы
+' поиска; совпадения в другом подблоке не делают локальный ключ неоднозначным.
+Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As Long = 1, _
+        Optional ByVal firstRow As Long = 1, Optional ByVal lastRow As Long = 0) As Long
+    Dim row As Long, value As Variant, key As Variant, caption As String
+    If lastRow = 0 Then lastRow = mRows
+    CheckCell firstRow, keyColumn: CheckCell lastRow, keyColumn
+    If lastRow < firstRow Then InputError firstRow, keyColumn, "Конец подблока находится раньше начала."
+    If Not IsArray(keys) Then InputError firstRow, keyColumn, "Допустимые подписи должны быть массивом строк."
+    For Each key In keys
+        If VarType(key) <> vbString Then InputError firstRow, keyColumn, "Подпись поиска должна быть строкой."
+        If Len(Trim$(CStr(key))) = 0 Then InputError firstRow, keyColumn, "Подпись поиска должна быть непустой строкой."
+    Next key
+    caption = Join(keys, " / ")
+    For row = firstRow To lastRow
         value = CellValue(row, keyColumn)
         If Not BlankValue(value) Then
-            If StrComp(Trim$(CStr(value)), key, vbTextCompare) = 0 Then
-                If RowByKey > 0 Then InputError row, keyColumn, "Повторный ключ '" & key & "'."
-                RowByKey = row
-            End If
+            For Each key In keys
+                If StrComp(Trim$(CStr(value)), CStr(key), vbTextCompare) = 0 Then
+                    If RowByAnyKey > 0 Then InputError row, keyColumn, "Повторный ключ '" & caption & "'."
+                    RowByAnyKey = row: Exit For
+                End If
+            Next key
         End If
     Next row
-    If RowByKey = 0 Then InputError 1, keyColumn, "Не найден параметр '" & key & "'."
+    If RowByAnyKey = 0 Then InputError firstRow, keyColumn, "Не найден параметр '" & caption & "'."
 End Function
 
 Private Function BlankValue(ByVal value As Variant) As Boolean

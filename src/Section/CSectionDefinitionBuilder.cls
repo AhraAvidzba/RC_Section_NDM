@@ -103,20 +103,21 @@ Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)
     mDefinition.AddGroup groupID, pathIDs
 End Sub
 
-Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant)
+Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", _
+        Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "")
     RequireOpen
     Dim value As TSectionLoop
-    value.LoopID = loopID: value.PathID = pathID: value.Role = LoopOuter: value.Comment = comment
+    value.LoopID = loopID: value.PathID = pathID: value.Role = LoopOuter: value.Comment = comment: value.ArcComment = arcComment
     If Not IsMissing(contourIDs) Then value.ContourIDs = contourIDs
     mDefinition.AddLoop value
 End Sub
 
 Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, _
-        Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant)
+        Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "")
     RequireOpen
     Dim value As TSectionLoop
     value.LoopID = loopID: value.PathID = pathID: value.Role = LoopOpening
-    value.ParentID = parentOuterID: value.Comment = comment
+    value.ParentID = parentOuterID: value.Comment = comment: value.ArcComment = arcComment
     If Not IsMissing(contourIDs) Then value.ContourIDs = contourIDs
     mDefinition.AddLoop value
 End Sub
@@ -196,12 +197,13 @@ End Sub
 
 Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String, _
         ByVal startX As Double, ByVal endX As Double, ByVal placementY As Double, _
-        Optional ByVal normalY As Double = 1#, Optional ByVal comment As String = "")
+        Optional ByVal normalY As Double = 1#, Optional ByVal comment As String = "", Optional ByVal displayIncrement As Double = 0#)
     RequireOpen
+    If displayIncrement < 0# Then SectionRecipeError "CSectionDefinitionBuilder", "Шаг округления подписи не может быть отрицательным."
     Dim value As TSectionAnnotation
     value.AnnotationID = annotationID: value.Kind = "BetweenPoints": value.Name = name
     value.StartX = startX: value.EndX = endX: value.StartY = placementY: value.EndY = placementY
-    value.NormalY = normalY: value.Value = endX - startX: value.Comment = comment
+    value.NormalY = normalY: value.Value = endX - startX: value.Comment = comment: value.DisplayIncrement = displayIncrement
     mDefinition.AddAnnotation value
 End Sub
 
@@ -220,6 +222,16 @@ Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal 
     Dim value As TSectionAnnotation
     value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarRowLabel": value.Target = ruleID: value.Name = groupID
     value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance
+    mDefinition.AddAnnotation value
+End Sub
+
+' Подпись по фактическим экстремумам основного ряда, а не по всей траектории.
+Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, _
+        Optional ByVal axisDistance As Double = 0#, Optional ByVal reverseDirection As Boolean = False)
+    RequireOpen
+    Dim value As TSectionAnnotation
+    value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarRowExtentLabel": value.Target = ruleID: value.Name = groupID
+    value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance: value.ReverseDirection = reverseDirection
     mDefinition.AddAnnotation value
 End Sub
 

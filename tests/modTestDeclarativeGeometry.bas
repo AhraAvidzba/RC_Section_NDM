@@ -132,6 +132,7 @@ Public Function RunPathTests() As String
     TestLine
     TestArcs
     TestCompoundPath
+    TestJointTangents
     TestSegmentation
     TestRays
     Dim scenario As Long
@@ -313,6 +314,8 @@ Public Function RunInputTableTests() As String
     Check "input.columns", table.ColumnCount = 3
     Check "input.caption", table.ColumnByCaption(1, "value") = 2
     Check "input.key", table.RowByKey("diameter") = 4
+    Check "input.key.scoped", table.RowByKey("Count", 1, 2, 3) = 2
+    Check "input.key.alias", table.RowByAnyKey(Array("Unknown", "Diameter"), 1, 3, 4) = 4
     Near "input.number", table.Number(2, 2), 4#
     Check "input.count", table.Count(2, 2) = 4
     Check "input.choice", table.Choice(2, 3, Array("Stacked", "SideBySide")) = "Stacked"
@@ -327,7 +330,7 @@ Public Function RunInputTableTests() As String
     cells(2, 2) = 999#: addresses(2, 2) = "Changed"
     Near "input.value.immutable", table.Number(2, 2), 4#
     Check "input.source.immutable", table.SourceReference(2, 2) = "Config!B12"
-    For scenario = 0 To 16
+    For scenario = 0 To 21
         Check "input.invalid." & CStr(scenario), InvalidInputRejected(scenario)
     Next scenario
     GoTo Finished
@@ -369,6 +372,11 @@ Private Function InvalidInputRejected(ByVal scenario As Long) As Boolean
         Case 12: value = table.RowByKey("Missing")
         Case 13: value = table.OptionalDiameter(2, 2, units)
         Case 16: value = table.ColumnByCaption(1, "Missing")
+        Case 17: value = table.RowByKey("Count", 1, 2, 1)
+        Case 18: value = table.RowByKey("Count", 1, 3, 4)
+        Case 19: value = table.RowByAnyKey(Array("Key", "Count"))
+        Case 20: value = table.RowByAnyKey("Count")
+        Case 21: value = table.RowByAnyKey(Array(""))
     End Select
     Exit Function
 Rejected:
@@ -498,6 +506,23 @@ Private Sub TestCompoundPath()
 End Sub
 
 ' G09: разбиение той же дуги на 25 частей не меняет точки или касательные.
+Private Sub TestJointTangents()
+    Dim path As CGeometryPath, x As Double, y As Double, tx As Double, ty As Double
+    Set path = New CGeometryPath: path.Initialize "Joint"
+    path.AddLine "Incoming", 0#, 0#, 100#, 0#
+    path.AddLine "Outgoing", 100#, 0#, 100#, 100#
+    path.Seal
+    path.AtDistance 100#, x, y, tx, ty
+    Near "joint.default.tx", tx, 0#: Near "joint.default.ty", ty, 1#
+    path.AtDistance 100#, x, y, tx, ty, True
+    Near "joint.incoming.x", x, 100#: Near "joint.incoming.y", y, 0#
+    Near "joint.incoming.tx", tx, 1#: Near "joint.incoming.ty", ty, 0#
+    path.AtDistance 100# + GEOM_TOLERANCE / 2#, x, y, tx, ty, True
+    Near "joint.roundoff.x", x, 100#: Near "joint.roundoff.y", y, 0#
+    path.AtDistance 100# + 2# * GEOM_TOLERANCE, x, y, tx, ty, True
+    Near "joint.after.tx", tx, 0#: Near "joint.after.ty", ty, 1#
+End Sub
+
 Private Sub TestSegmentation()
     Dim whole As CGeometryPath, split As CGeometryPath, i As Long, startAngle As Double, sweep As Double
     Dim x1 As Double, y1 As Double, tx1 As Double, ty1 As Double, x2 As Double, y2 As Double, tx2 As Double, ty2 As Double

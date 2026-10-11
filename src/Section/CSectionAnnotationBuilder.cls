@@ -17,11 +17,12 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     annotations.Clear
     For i = 1 To definition.AnnotationCount
         definition.CopyAnnotation i, value
-        If value.Kind <> "RebarRowLabel" And value.Kind <> "BetweenPoints" Then TargetBounds definition, value.Target, minX, maxX, minY, maxY
+        If value.Kind <> "RebarRowLabel" And value.Kind <> "RebarRowExtentLabel" And value.Kind <> "BetweenPoints" Then _
+            TargetBounds definition, value.Target, minX, maxX, minY, maxY
         Select Case value.Kind
             Case "BetweenPoints"
                 annotations.AddDimension value.AnnotationID, value.StartX, value.StartY, value.EndX, value.EndY, _
-                    value.NormalX, value.NormalY, value.Name, value.Value, value.Comment
+                    value.NormalX, value.NormalY, value.Name, DisplayValue(value.Value, value.DisplayIncrement), value.Comment
             Case "VerticalExtent"
                 annotations.AddDimension value.AnnotationID, value.StartX, minY, value.EndX, maxY, _
                     value.NormalX, value.NormalY, value.Name, maxY - minY, value.Comment
@@ -45,6 +46,26 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                 If rules.RuleEnds(value.Target, value.StartX, value.StartY, value.EndX, value.EndY) Then _
                     rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
                         value.NormalX, value.NormalY, value.Value
+            Case "RebarRowExtentLabel"
+                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
+                If rules.RuleBounds(value.Target, minX, maxX, minY, maxY) Then
+                    If Abs(value.NormalY) >= Abs(value.NormalX) Then
+                        value.StartX = minX: value.EndX = maxX
+                        If value.NormalY >= 0# Then value.StartY = maxY Else value.StartY = minY
+                        value.EndY = value.StartY
+                    Else
+                        value.StartY = minY: value.EndY = maxY
+                        If value.NormalX >= 0# Then value.StartX = maxX Else value.StartX = minX
+                        value.EndX = value.StartX
+                    End If
+                    If value.ReverseDirection Then
+                        Dim swap As Double
+                        swap = value.StartX: value.StartX = value.EndX: value.EndX = swap
+                        swap = value.StartY: value.StartY = value.EndY: value.EndY = swap
+                    End If
+                    rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
+                        value.NormalX, value.NormalY, value.Value
+                End If
             Case Else
                 SectionRecipeError "CSectionAnnotationBuilder", "Неизвестное измерение '" & value.Kind & "'."
         End Select
@@ -53,6 +74,13 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     Set labels = New CRebarGroupAnnotationBuilder
     labels.AddRebarLabels annotations, rebars
 End Sub
+
+' Округляется только справочная подпись. Концы размерной линии и расчетная
+' геометрия сохраняют исходную точность, включая размеры меньше шага.
+Private Function DisplayValue(ByVal value As Double, ByVal increment As Double) As Double
+    If increment < 0# Then SectionRecipeError "CSectionAnnotationBuilder", "Шаг округления подписи не может быть отрицательным."
+    If increment = 0# Then DisplayValue = value Else DisplayValue = Sgn(value) * Int(Abs(value) / increment + 0.5) * increment
+End Function
 
 Private Sub TargetBounds(ByVal definition As CSectionDefinition, ByVal target As String, _
         ByRef minX As Double, ByRef maxX As Double, ByRef minY As Double, ByRef maxY As Double)

@@ -193,11 +193,11 @@ Public Sub ConfigureShapeFixture(ByVal fixture As String)
             table.Cells(3, 2).Value2 = fixture: table.Cells(4, 2).Value2 = -50# / factor
             table.Cells(8, 1).Value2 = 400# / factor: table.Cells(8, 2).Value2 = 300# / factor
             table.Cells(8, 3).Value2 = 200# / factor: table.Cells(8, 4).Value2 = 600# / factor
-        Case "RoundedSimple", "RoundedTapered", "RoundedMixed"
+        Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
             shapeName = "RoundedRectangle": Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
             table.Cells(3, 2).Value2 = 600# / factor: table.Cells(3, 3).Value2 = 400# / factor
-            table.Cells(7, 2).Value2 = IIf(fixture = "RoundedTapered", "Tapered", "Simple")
-            table.Cells(7, 3).Value2 = IIf(fixture = "RoundedSimple", "Simple", "Tapered")
+            table.Cells(7, 2).Value2 = IIf(fixture = "RoundedTapered" Or fixture = "RoundedMixedLeft", "Tapered", "Simple")
+            table.Cells(7, 3).Value2 = IIf(fixture = "RoundedSimple" Or fixture = "RoundedMixedLeft", "Simple", "Tapered")
             table.Cells(8, 2).Value2 = 100# / factor: table.Cells(8, 3).Value2 = 130# / factor
             table.Cells(9, 2).Value2 = 30# / factor: table.Cells(9, 3).Value2 = 40# / factor
             table.Cells(10, 2).Value2 = 20# / factor: table.Cells(10, 3).Value2 = 25# / factor
@@ -321,6 +321,87 @@ Finished:
     DumpRectSetGeometryMatrix = result
 End Function
 
+' ДЛЯ ТЕСТОВ: одинаковая матрица двух независимых сторон и активных дуг.
+Public Sub ConfigureRoundedScenario(ByVal scenario As Long)
+    Dim table As Object, data As Variant, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim factor As Double, mainHeader As Long, extraHeader As Long, i As Long, row As Long, extra As Long
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange: data = table.Value2
+    mainHeader = FixtureHeaderRow(data, "Грань", 1): extraHeader = FixtureHeaderRow(data, "d2", 2)
+    If scenario = 0 Then Exit Sub
+    If scenario = 1 Then
+        table.Cells(9, 2).Value2 = 80# / factor: table.Cells(9, 3).Value2 = 100# / factor
+        table.Cells(10, 2).Value2 = 40# / factor: table.Cells(10, 3).Value2 = 50# / factor
+    ElseIf scenario = 2 Then
+        table.Cells(9, 2).Value2 = 0#: table.Cells(9, 3).Value2 = 0#
+        table.Cells(10, 2).Value2 = 0#: table.Cells(10, 3).Value2 = 0#
+    End If
+    For i = 1 To 4
+        row = mainHeader + i: extra = extraHeader + i
+        table.Cells(row, 2).Value2 = (35# + 5# * CDbl(i)) / factor
+        table.Cells(row, 3).Value2 = 20# / factor
+        table.Cells(row, 4).Value2 = IIf(i <= 2, 7, 5)
+        table.Cells(extra, 2).Value2 = 16# / factor: table.Cells(extra, 5).Value2 = 12# / factor
+        table.Cells(extra, 3).Value2 = IIf(scenario = 3 And i Mod 2 = 0, "SideBySide", "Stacked")
+        table.Cells(extra, 6).Value2 = IIf(scenario = 3 And i Mod 2 = 1, "SideBySide", "Stacked")
+        table.Cells(extra, 4).Value2 = IIf(i Mod 2 = 0, "EverySecondBar", "EachBar")
+        table.Cells(extra, 7).Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
+        If scenario = 4 Then
+            table.Cells(row, 4).Value2 = 1: table.Cells(extra, 2).Value2 = 0#
+            table.Cells(extra, 3).Value2 = "inactive value": table.Cells(extra, 4).Value2 = "inactive value"
+        End If
+    Next i
+    If scenario = 5 Then
+        table.Cells(mainHeader + 3, 4).Value2 = 0
+        table.Cells(mainHeader + 3, 2).Value2 = "inactive value"
+        table.Cells(extraHeader + 3, 2).Value2 = "inactive value"
+        For i = 2 To 3
+            If CStr(table.Cells(7, i).Value2) = "Simple" Then
+                table.Cells(8, i).Value2 = "inactive value": table.Cells(10, i).Value2 = "inactive value"
+            End If
+        Next i
+    End If
+    ThisWorkbook.Worksheets("Config").Calculate
+End Sub
+
+Private Function FixtureHeaderRow(ByRef data As Variant, ByVal caption As String, ByVal column As Long) As Long
+    Dim row As Long
+    For row = LBound(data, 1) To UBound(data, 1)
+        If StrComp(Trim$(CStr(data(row, column))), caption, vbTextCompare) = 0 Then FixtureHeaderRow = row: Exit Function
+    Next row
+    Err.Raise vbObjectError + 5590, "modTestShapeArchitecture", "Не найдена шапка fixture: " & caption
+End Function
+
+' ДЛЯ ТЕСТОВ: фиксирует старую расчетную ломаную до аналитического переноса.
+Public Function DumpRoundedGeometryMatrix() As String
+    Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
+        For scenario = 0 To 5
+            config.Formula = saved
+            ConfigureShapeFixture "Circle": ConfigureShapeFixture CStr(fixture)
+            ConfigureRoundedScenario scenario
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+            result = result & ShapeSnapshot("RoundedMatrix." & CStr(fixture) & ".case" & CStr(scenario), model)
+        Next scenario
+    Next fixture
+    GoTo Finished
+Failed:
+    result = result & "FAIL: Rounded baseline matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    DumpRoundedGeometryMatrix = result
+End Function
+
 ' ДЛЯ ТЕСТОВ: одинаковый AddBar benchmark без Excel/solver внутри замера.
 Public Function DumpRebarLayoutPerformance() As String
     Dim count As Variant, repeat As Long, i As Long, layout As CRebarLayout, started As Double, elapsed As Double
@@ -348,6 +429,17 @@ End Function
 ' Три назначения материалов и четыре направления нагрузки на каждую форму;
 ' затем общий пакет несущей способности, трещинообразования и ширины СП 35.
 Public Function DumpShapeCalculationSnapshot(Optional ByVal crackCode As String = "SP35") As String
+    DumpShapeCalculationSnapshot = SourceCalculations(Array("Circle", "Rectangle", "LSection", "TwoRectangles", _
+        "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset"), crackCode)
+End Function
+
+' ДЛЯ ТЕСТОВ: исходный расчет четырех RoundedRectangle, включая точные
+' контуры и прежние позиции арматуры. Вторая проба активирует радиусные пути.
+Public Function DumpRoundedSourceCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
+    DumpRoundedSourceCalculations = SourceCalculations(Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, scenario)
+End Function
+
+Private Function SourceCalculations(ByVal fixtures As Variant, ByVal crackCode As String, Optional ByVal roundedScenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
@@ -366,9 +458,16 @@ Public Function DumpShapeCalculationSnapshot(Optional ByVal crackCode As String 
         End Select
     Next i
     SetSetting "SLS.Crack.Code", crackCode
-    For Each fixture In Array("Circle", "Rectangle", "LSection", "TwoRectangles", _
-            "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset")
-        result = result & CalculationSnapshot(CStr(fixture))
+    ConfigureShapeFixture "Circle"
+    For Each fixture In fixtures
+        ConfigureShapeFixture CStr(fixture)
+        If roundedScenario > 0 Then ConfigureRoundedScenario roundedScenario
+        Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel, label As String
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+        label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
+        result = result & CalculationSnapshot(label, model)
     Next fixture
     GoTo Finished
 Failed:
@@ -376,7 +475,7 @@ Failed:
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    DumpShapeCalculationSnapshot = result
+    SourceCalculations = result
 End Function
 
 Private Function CalculationSnapshot(ByVal fixture As String, Optional ByVal suppliedModel As CSectionModel = Nothing) As String

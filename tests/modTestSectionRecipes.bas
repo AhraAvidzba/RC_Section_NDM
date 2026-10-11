@@ -106,12 +106,66 @@ Public Function RunRecipeRuleTests() As String
     TestPublicationAndCoincidence
     TestLayoutIndex
     TestAdjacentRectangles
+    TestAnnotationMeasurements
+    TestRuleJointTangents
     GoTo Finished
 Failed:
     Check "rules.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunRecipeRuleTests = mReport & "TOTAL RECIPE RULES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+Private Sub TestRuleJointTangents()
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim builder As CSectionBuilder, model As CSectionModel, incoming As Long
+    For incoming = 0 To 1
+        Set facade = RuleFacade
+        Set path = New CGeometryPath: path.Initialize "Joint"
+        path.AddLine "Incoming", 0#, 0#, 100#, 0#
+        path.AddLine "Outgoing", 100#, 0#, 100#, 100#
+        path.Seal: facade.AddPath path
+        Set options = New CRebarRuleOptions: options.IncomingTangentAtJoint = (incoming = 1)
+        facade.RebarAtStations "JointMain", path.ID, Array(100#), 10#, options
+        options.IncomingTangentAtJoint = Not options.IncomingTangentAtJoint
+        Set options = New CRebarRuleOptions: options.NormalOffset = 10#
+        facade.RebarDependent "JointExtra", "JointMain", 10#, options
+        Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+        If incoming = 1 Then
+            Near "joint.rule.incoming.x", model.RebarX(2), 100#: Near "joint.rule.incoming.y", model.RebarY(2), 10#
+        Else
+            Near "joint.rule.default.x", model.RebarX(2), 90#: Near "joint.rule.default.y", model.RebarY(2), 0#
+        End If
+    Next incoming
+End Sub
+
+Private Sub TestAnnotationMeasurements()
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim builder As CSectionBuilder, model As CSectionModel, annotations As CSectionAnnotations
+    Dim minX As Double, maxX As Double, minY As Double, maxY As Double
+    Set facade = RuleFacade
+    Set path = facade.ArcPath("Curve", 0#, 0#, 100#, 0#, GEOM_PI / 2#)
+    Set options = New CRebarRuleOptions: options.AnnotationGroup = "CurveBars": options.EndMode = ExcludeBoth
+    facade.RebarByCount "CurveMain", path.ID, 3, 10#, options
+    facade.RebarRowExtentLabel "CurveBars", "CurveMain", -1#, 0#, 20#, True
+    facade.HorizontalDistance "REF", "Reference", 0#, 123.6, 200#, 1#, "", 1#
+    facade.HorizontalDistance "NEG", "Negative", 0#, -123.6, 200#, 1#, "", 1#
+    facade.HorizontalDistance "EXACT", "Exact", 0#, 123.6, 200#
+    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+    Check "measurements.rule.bounds", builder.Rules.RuleBounds("CurveMain", minX, maxX, minY, maxY)
+    Near "measurements.min.x", minX, 100# * Cos(3# * GEOM_PI / 8#)
+    Near "measurements.max.x", maxX, 100# * Cos(GEOM_PI / 8#)
+    Near "measurements.min.y", minY, 100# * Sin(GEOM_PI / 8#)
+    Near "measurements.max.y", maxY, 100# * Sin(3# * GEOM_PI / 8#)
+    Near "measurements.anchor.x", builder.Rebars.AnnotationStartX(1), minX
+    Near "measurements.anchor.start", builder.Rebars.AnnotationStartY(1), maxY
+    Near "measurements.anchor.end", builder.Rebars.AnnotationEndY(1), minY
+    Set annotations = model.Annotations
+    Near "measurements.round.positive", annotations.Value(1), 124#
+    Near "measurements.round.negative", annotations.Value(2), -124#
+    Near "measurements.round.exact", annotations.Value(3), 123.6
+    Near "measurements.coordinates.unchanged", annotations.EndX(1), 123.6
+    Check "measurements.count", AnnotatedBarCount(annotations) = 3
+End Sub
 
 Private Sub TestPublicationAndCoincidence()
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions, builder As CSectionBuilder
@@ -410,6 +464,76 @@ Rejected:
     CircleInputCase = (Len(expectedReference) > 0 And InStr(1, Err.Description, expectedReference, vbBinaryCompare) > 0)
 End Function
 
+' ДЛЯ ТЕСТОВ: активные/неактивные поля и адресность RoundedRectangle.
+Public Function RunRoundedRecipeInputTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim config As Object, saved As Variant, scenario As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For scenario = 0 To 13
+        config.Formula = saved
+        Check "rounded.input." & CStr(scenario), RoundedInputCase(scenario)
+    Next scenario
+    GoTo Finished
+Failed:
+    Check "rounded.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.EnableEvents = events: Application.ScreenUpdating = updating
+    RunRoundedRecipeInputTests = mReport & "TOTAL ROUNDED INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
+    Dim range As Object, row As Long, column As Long, valid As Boolean, reference As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
+    Dim context As CSectionRecipeContext, table As CSectionInputTable, recipe As ISectionRecipe, definition As CSectionDefinition
+    Dim builder As CSectionBuilder, model As CSectionModel, mesh As TSectionMeshOptions
+    On Error GoTo Rejected
+    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set range = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
+    Select Case scenario
+        Case 0: row = 13: column = 4: range.Cells(row, column).Value2 = 1.5
+        Case 1: row = 13: column = 3: range.Cells(row, column).Value2 = -1#
+        Case 2: row = 13: column = 2: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 3).Value2) / 2#
+        Case 3: row = 19: column = 2: range.Cells(row, column).Value2 = -1#
+        Case 4: row = 19: column = 3: range.Cells(19, 2).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
+        Case 5: row = 19: column = 4: range.Cells(19, 2).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
+        Case 6
+            valid = True: range.Cells(8, 2).Value2 = "inactive": range.Cells(10, 2).Value2 = "inactive"
+        Case 7
+            valid = True: range.Cells(13, 4).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
+            range.Cells(19, 2).Value2 = "inactive": range.Cells(19, 3).Value2 = "inactive"
+        Case 8
+            valid = True: range.Cells(13, 3).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
+            range.Cells(19, 2).Value2 = "inactive": range.Cells(19, 3).Value2 = "inactive"
+        Case 9
+            valid = True: range.Cells(19, 2).Value2 = 0: range.Cells(19, 5).Value2 = 0
+            range.Cells(19, 3).Value2 = "inactive": range.Cells(19, 4).Value2 = "inactive"
+        Case 10: row = 9: column = 2: range.Cells(row, column).Value2 = 1000#
+        Case 11
+            valid = True: range.Cells(7, 2).Value2 = "Tapered": range.Cells(8, 2).Value2 = 100#
+            range.Cells(9, 2).Value2 = 220#: range.Cells(10, 2).Value2 = 0#
+        Case 12: valid = True: range.Cells(9, 2).Value2 = 200#: range.Cells(9, 3).Value2 = 200#
+        Case 13: row = 13: column = 2: range.Cells(row, column).Value2 = 380#
+    End Select
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngRoundedRectangleGeometry"), units)
+    Set table = context.Table("rngRoundedRectangleGeometry")
+    If Not valid Then reference = table.SourceReference(row, column)
+    Set recipe = New CSectionRecipeRoundedRectangle: Set definition = recipe.CreateDefinition(context)
+    mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
+    Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
+    RoundedInputCase = valid
+    Exit Function
+Rejected:
+    RoundedInputCase = (Not valid And Len(reference) > 0 And InStr(1, Err.Description, reference, vbBinaryCompare) > 0)
+    If Not RoundedInputCase Then mReport = mReport & "ROUNDED INPUT DETAIL: " & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+End Function
+
 ' ДЛЯ ТЕСТОВ: сквозная сборка рецепта без старой geometry/layout/annotation.
 Public Function DumpCircleRecipeMatrix() As String
     Dim config As Object, saved As Variant, result As String, counts As Variant, number As Variant, scenario As Long
@@ -519,6 +643,36 @@ Finished:
     DumpRectSetRecipeMatrix = result
 End Function
 
+' ДЛЯ ТЕСТОВ: точные пути общего builder на тех же 24 исходных fixtures.
+Public Function DumpRoundedRecipeMatrix() As String
+    Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
+        For scenario = 0 To 5
+            config.Formula = saved
+            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.ConfigureRoundedScenario scenario
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set builder = New CSectionBuilder: Set model = BuildRecipe("RoundedRectangle", settings, units, builder)
+            result = result & modTestShapeArchitecture.PreparedShapeSnapshot("RoundedMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
+        Next scenario
+    Next fixture
+    GoTo Finished
+Failed:
+    result = result & "FAIL: Rounded recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    DumpRoundedRecipeMatrix = result
+End Function
+
 ' ДЛЯ ТЕСТОВ: сумма готовых подписей в полной матрице перенесенных рецептов.
 Public Function RunRecipeAnnotationCountTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
@@ -553,6 +707,17 @@ Public Function RunRecipeAnnotationCountTests() As String
             modTestShapeArchitecture.ConfigureRectSetScenario CStr(fixture), scenario
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
             Set builder = New CSectionBuilder: Set model = BuildRecipe("RectSet", settings, units, builder)
+            Check "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
+        Next scenario
+    Next fixture
+    For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
+        For scenario = 0 To 5
+            config.Formula = saved
+            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.ConfigureRoundedScenario scenario
+            settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
+            Set builder = New CSectionBuilder: Set model = BuildRecipe("RoundedRectangle", settings, units, builder)
             Check "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
         Next scenario
     Next fixture
@@ -617,7 +782,91 @@ Public Function DumpRectSetRecipeCalculations(Optional ByVal crackCode As String
     DumpRectSetRecipeCalculations = RecipeCalculations("RectSet", Array("Rectangle", "LSection", "TwoRectangles"), crackCode)
 End Function
 
-Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Variant, ByVal crackCode As String) As String
+Public Function DumpRoundedRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
+    DumpRoundedRecipeCalculations = RecipeCalculations("RoundedRectangle", _
+        Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode)
+End Function
+
+Public Function DumpRoundedRecipeArcCalculations(Optional ByVal crackCode As String = "SP35") As String
+    DumpRoundedRecipeArcCalculations = RecipeCalculations("RoundedRectangle", _
+        Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, 1)
+End Function
+
+' ДЛЯ ТЕСТОВ: независимое суммирование N/Mx/My вне solver для новых дуг.
+' Площадь стали замещает бетон; вычитается напряжение бетона в той же точке.
+Public Function RunRoundedRecipeEquilibriumTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim config As Object, saved As Variant, fixture As Variant, events As Boolean, updating As Boolean
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
+    On Error GoTo Failed
+    events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
+        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        modTestShapeArchitecture.ConfigureRoundedScenario 1
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set builder = New CSectionBuilder: Set model = BuildRecipe("RoundedRectangle", settings, units, builder)
+        CheckModelEquilibrium CStr(fixture), model, settings, units
+    Next fixture
+    GoTo Finished
+Failed:
+    Check "equilibrium.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.EnableEvents = events: Application.ScreenUpdating = updating
+    RunRoundedRecipeEquilibriumTests = mReport & "TOTAL ROUNDED EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+Private Sub CheckModelEquilibrium(ByVal fixture As String, ByVal model As CSectionModel, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
+    Dim props As CSectionPropertiesCalculator, provider As CMaterialModelProvider, solver As CSectionSolver
+    Dim purpose As Variant, loadIndex As Long, i As Long, concrete As Object, steel As Object
+    Dim n As Double, mx As Double, my As Double, minX As Double, maxX As Double, minY As Double, maxY As Double
+    Dim sn As Double, smx As Double, smy As Double, x As Double, y As Double, strain As Double, force As Double, prefix As String
+    Set props = New CSectionPropertiesCalculator: props.CalculateConcrete model
+    props.CalculateProjection model, 1#, 0#, False, minX, maxX
+    props.CalculateProjection model, 0#, 1#, False, minY, maxY
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    For Each purpose In Array(cpStrength, cpMcrc, cpCrackedNDS)
+        Set concrete = provider.ConcreteMaterial(CLng(purpose)): Set steel = provider.SteelMaterial(CLng(purpose))
+        For loadIndex = 0 To 3
+            prefix = "equilibrium." & fixture & "." & CStr(purpose) & "." & CStr(loadIndex)
+            n = -2# * props.Area: mx = n * props.CentroidY: my = n * props.CentroidX
+            If loadIndex = 1 Or loadIndex = 3 Then mx = mx + props.Area * (maxY - minY) * 0.2
+            If loadIndex = 2 Or loadIndex = 3 Then my = my - props.Area * (maxX - minX) * 0.15
+            Set solver = New CSectionSolver: solver.ApplySettings settings, units
+            solver.Solve model, concrete, steel, n, mx, my
+            Check prefix & ".converged", solver.Converged
+            If Not solver.Converged Then GoTo NextLoad
+            sn = 0#: smx = 0#: smy = 0#
+            For i = 1 To model.ConcreteCount
+                x = model.ConcreteX(i): y = model.ConcreteY(i)
+                strain = solver.Epsilon0 + solver.KappaX * y + solver.KappaY * x
+                force = concrete.StressAtStrain(strain) * model.ConcreteArea(i)
+                sn = sn + force: smx = smx + force * y: smy = smy + force * x
+            Next i
+            For i = 1 To model.RebarCount
+                x = model.RebarX(i): y = model.RebarY(i)
+                strain = solver.Epsilon0 + solver.KappaX * y + solver.KappaY * x
+                force = (steel.StressAtStrain(strain) - concrete.StressAtStrain(strain)) * model.RebarArea(i)
+                sn = sn + force: smx = smx + force * y: smy = smy + force * x
+            Next i
+            Check prefix & ".sum.N", Abs(sn - solver.Nint) <= 0.0000001 + Abs(sn) * 0.000000000001
+            Check prefix & ".sum.Mx", Abs(smx - solver.Mxint) <= 0.0001 + Abs(smx) * 0.000000000001
+            Check prefix & ".sum.My", Abs(smy - solver.Myint) <= 0.0001 + Abs(smy) * 0.000000000001
+            Near prefix & ".residual.N", sn - n, solver.ResidualN
+            Near prefix & ".residual.Mx", smx - mx, solver.ResidualMx
+            Near prefix & ".residual.My", smy - my, solver.ResidualMy
+NextLoad:
+        Next loadIndex
+    Next purpose
+End Sub
+
+Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Variant, ByVal crackCode As String, _
+        Optional ByVal roundedScenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, settings As CSystemSettingsReader, units As CUnitSystem
     Dim profiles As Object, i As Long, key As String, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean, fixture As Variant
@@ -639,10 +888,13 @@ Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Va
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     For Each fixture In fixtures
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        If roundedScenario > 0 Then modTestShapeArchitecture.ConfigureRoundedScenario roundedScenario
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
-        result = result & modTestShapeArchitecture.PreparedCalculationSnapshot(CStr(fixture), model)
+        Dim label As String
+        label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
+        result = result & modTestShapeArchitecture.PreparedCalculationSnapshot(label, model)
     Next fixture
     GoTo Finished
 Failed:
@@ -662,7 +914,18 @@ Public Function DumpRectSetRecipePreview(ByVal outputDirectory As String) As Str
     DumpRectSetRecipePreview = RecipePreview("RectSet", Array("Rectangle", "LSection", "TwoRectangles"), outputDirectory)
 End Function
 
-Private Function RecipePreview(ByVal typeID As String, ByVal fixtures As Variant, ByVal outputDirectory As String) As String
+Public Function DumpRoundedRecipePreview(ByVal outputDirectory As String) As String
+    DumpRoundedRecipePreview = RecipePreview("RoundedRectangle", _
+        Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), outputDirectory)
+End Function
+
+Public Function DumpRoundedRecipeArcPreview(ByVal outputDirectory As String) As String
+    DumpRoundedRecipeArcPreview = RecipePreview("RoundedRectangle", _
+        Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), outputDirectory, 1)
+End Function
+
+Private Function RecipePreview(ByVal typeID As String, ByVal fixtures As Variant, ByVal outputDirectory As String, _
+        Optional ByVal roundedScenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, settings As CSystemSettingsReader, units As CUnitSystem
     Dim builder As CSectionBuilder, model As CSectionModel, calculation As Long, events As Boolean, updating As Boolean, fixture As Variant
     On Error GoTo Failed
@@ -672,10 +935,13 @@ Private Function RecipePreview(ByVal typeID As String, ByVal fixtures As Variant
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     For Each fixture In fixtures
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        If roundedScenario > 0 Then modTestShapeArchitecture.ConfigureRoundedScenario roundedScenario
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
-        result = result & modTestShapeArchitecture.PreparedPreviewSnapshot(CStr(fixture), model, outputDirectory)
+        Dim label As String
+        label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
+        result = result & modTestShapeArchitecture.PreparedPreviewSnapshot(label, model, outputDirectory)
     Next fixture
     GoTo Finished
 Failed:
