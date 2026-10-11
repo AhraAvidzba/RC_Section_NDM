@@ -34,6 +34,7 @@ Private Sub Class_Initialize()
     RegisterRecipe "Circle", New CSectionRecipeCircle, Array("rngCircleGeometry")
     RegisterRecipe "RectSet", New CSectionRecipeRectSet, Array("rngRectSetGeometry")
     RegisterRecipe "RoundedRectangle", New CSectionRecipeRoundedRectangle, Array("rngRoundedRectangleGeometry")
+    RegisterRecipe "HollowRectangle", New CSectionRecipeHollowRectangle, Array("rngHollowRectangleGeometry")
 End Sub
 
 ' Единственная регистрация рецепта и метаданных его ввода. Старые методы

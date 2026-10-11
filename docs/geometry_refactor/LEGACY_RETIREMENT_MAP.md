@@ -51,8 +51,14 @@ recipe/build, SP35/SP63 и native preview. Старые три RectSet-комп�
 SP35/SP63 и Excel preview проверены. Новый рецепт не использует прежние
 geometry/rebar/annotation classes. Три старых компонента пока ACTIVE только
 в прежнем production/baseline route. Их нельзя удалить до переключения
-потребителей и переноса HollowRectangle, который еще использует старую
-RoundedRectangle-математику.
+потребителей. HollowRectangle уже имеет отдельный development-рецепт;
+его крайние формы еще проверяются.
+
+Локальный HollowRectangle: новый рецепт не вызывает прежние три компонента
+и RoundedRectangle-геометрию. Общий Projected/Dependent executor обрабатывает
+нормали и связанные ряды; общий query строит дуги и отверстие. Старые три
+Hollow-компонента остаются ACTIVE в production и baseline harness до общего
+переключения. Это еще не завершенный retirement.
 
 Итоговый счетчик: NativeInventory baseline содержит 98 Type=2, 34 Type=1
 и 5 Type=100. Verify-GeometryBaselineCode теперь сохраняет отдельные counts

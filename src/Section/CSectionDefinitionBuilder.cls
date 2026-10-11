@@ -242,6 +242,20 @@ Public Function Finish() As CSectionDefinition
     Set Finish = mDefinition
 End Function
 
+' Геометрическая сторона крайнего ряда и направление подписи независимы:
+' у отверстия подпись обращена в пустоту, а ряд выбирается со стороны бетона.
+Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String, ByVal directionX As Double, ByVal directionY As Double, _
+        ByVal normalX As Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#)
+    RequireOpen
+    If Abs(directionX * directionX + directionY * directionY - 1#) > GEOM_TOLERANCE Then _
+        SectionRecipeError "CSectionDefinitionBuilder", "Направление крайнего ряда должно быть единичным."
+    Dim value As TSectionAnnotation
+    value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarRowExtremeLabel": value.Target = ruleID: value.Name = groupID
+    value.DirectionX = directionX: value.DirectionY = directionY
+    value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance
+    mDefinition.AddAnnotation value
+End Sub
+
 Private Sub RequireOpen()
     If mDefinition Is Nothing Or mFinished Then SectionRecipeError "CSectionDefinitionBuilder", "Фасад не открыт для описания сечения."
 End Sub

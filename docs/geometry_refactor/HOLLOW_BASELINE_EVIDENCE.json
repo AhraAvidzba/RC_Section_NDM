@@ -1,0 +1,45 @@
+{
+  "Stage": "HollowRectangle baseline before recipe",
+  "Status": "PASS",
+  "ParentCommit": "a5aa6cc",
+  "WorkbookSHA256": "0195975AB1F4CE443C049D385AB14B297333C9CC0A15894C733469CEB5F887F7",
+  "MainWorkbookSHA256": "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+  "Fixtures": 16,
+  "Records": 57022,
+  "Repeat": "BIT_EXACT",
+  "ComparatorMutations": 3,
+  "Source": {
+    "Path": "tests/modTestShapeArchitecture.bas",
+    "SHA256": "489DD3B4C7B485E1D6656A5272FE3D3F41EC019D2BCA9612151FF1407701B6F3"
+  },
+  "ProductionComponentsChanged": false,
+  "Artifacts": [
+    {
+      "Path": "CodeUpdate.json",
+      "SHA256": "D8213030628168394A6E48F735A7AFF7E213EA7D600E7C09FA359E126D2C18F6"
+    },
+    {
+      "Path": "CodeComparison.json",
+      "SHA256": "A619A58D9F8381B3B6ABD543B597A731F3F7D35B77D1564F726E150C9D34166F"
+    },
+    {
+      "Path": "Matrix1.txt",
+      "SHA256": "F1EEA7AF4EACA67FFC8616D3A57CAB9BC22D8D4BBD31B624FBC4B22FA7D8F7C7"
+    },
+    {
+      "Path": "Matrix2.txt",
+      "SHA256": "0D438099FAA4D07BDEE7376F1A8F1FCF5631632442671919D457268816BCA5E5"
+    },
+    {
+      "Path": "RepeatComparison.json",
+      "SHA256": "C5BC8AECBC577E624BC7ABEFF5848344C42064CD5F4BB8F831E5D250FDD096C5"
+    },
+    {
+      "Path": "Instrumentation.bas",
+      "SHA256": "489DD3B4C7B485E1D6656A5272FE3D3F41EC019D2BCA9612151FF1407701B6F3"
+    }
+  ],
+  "ArchivedInstrumentation": "HollowBaseline/Instrumentation.bas",
+  "ArchiveSHA256": "2730A02FB1F8046E98EEF9BA7E3A6CFD17C59DD580B3CDB8484E5D4C544D9751",
+  "ArchiveBytes": 8644676
+}

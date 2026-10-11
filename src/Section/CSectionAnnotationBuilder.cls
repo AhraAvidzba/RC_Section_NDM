@@ -17,7 +17,7 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     annotations.Clear
     For i = 1 To definition.AnnotationCount
         definition.CopyAnnotation i, value
-        If value.Kind <> "RebarRowLabel" And value.Kind <> "RebarRowExtentLabel" And value.Kind <> "BetweenPoints" Then _
+        If value.Kind <> "RebarRowLabel" And value.Kind <> "RebarRowExtentLabel" And value.Kind <> "RebarRowExtremeLabel" And value.Kind <> "BetweenPoints" Then _
             TargetBounds definition, value.Target, minX, maxX, minY, maxY
         Select Case value.Kind
             Case "BetweenPoints"
@@ -60,6 +60,16 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                     End If
                     If value.ReverseDirection Then
                         Dim swap As Double
+                        swap = value.StartX: value.StartX = value.EndX: value.EndX = swap
+                        swap = value.StartY: value.StartY = value.EndY: value.EndY = swap
+                    End If
+                    rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
+                        value.NormalX, value.NormalY, value.Value
+                End If
+            Case "RebarRowExtremeLabel"
+                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
+                If rules.RuleExtremeEnds(value.Target, value.DirectionX, value.DirectionY, value.StartX, value.StartY, value.EndX, value.EndY) Then
+                    If value.DirectionY < 0# Then
                         swap = value.StartX: value.StartX = value.EndX: value.EndX = swap
                         swap = value.StartY: value.StartY = value.EndY: value.EndY = swap
                     End If

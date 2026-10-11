@@ -256,6 +256,26 @@ Friend Function RuleBounds(ByVal ruleID As String, ByRef minX As Double, ByRef m
     RuleBounds = True
 End Function
 
+' Привязка к самому удаленному ряду вдоль заданной нормали. Стержни на
+' наклонных/дуговых участках не расширяют подпись прямого крайнего ряда.
+Friend Function RuleExtremeEnds(ByVal ruleID As String, ByVal nx As Double, ByVal ny As Double, _
+        ByRef startX As Double, ByRef startY As Double, ByRef endX As Double, ByRef endY As Double) As Boolean
+    Dim index As Long, i As Long, projection As Double, best As Double, along As Double, first As Double, last As Double
+    index = mDefinition.RuleIndex(ruleID): best = -1E+100
+    For i = mStart(index) To mStart(index) + mCount(index) - 1
+        projection = mPositions(i).X * nx + mPositions(i).Y * ny
+        along = mPositions(i).X * ny - mPositions(i).Y * nx
+        If Not RuleExtremeEnds Or projection > best + GEOM_TOLERANCE Then
+            best = projection: first = along: last = along
+            startX = mPositions(i).X: startY = mPositions(i).Y: endX = startX: endY = startY
+            RuleExtremeEnds = True
+        ElseIf Abs(projection - best) <= GEOM_TOLERANCE Then
+            If along < first Then first = along: startX = mPositions(i).X: startY = mPositions(i).Y
+            If along > last Then last = along: endX = mPositions(i).X: endY = mPositions(i).Y
+        End If
+    Next i
+End Function
+
 Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
     Dim i As Long, ordinal As Long, position As TRebarPosition
     For i = mStart(source) To mStart(source) + mCount(source) - 1
@@ -277,6 +297,7 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
     Dim ids As Variant, id As Variant, path As CGeometryPath, i As Long, ordinal As Long, targetIndex As Long
     Dim prepared As Collection
     Dim position As TRebarPosition, station As Double, ray As Double, bestRay As Double, bestStation As Double, bestID As String
+    Dim directionX As Double, directionY As Double, successful As Long
     ids = mDefinition.TargetPaths(mRules(index).Target)
     Set prepared = New Collection
     For Each id In ids
@@ -291,9 +312,14 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
         position = mPositions(i)
         If Not mRules(index).EverySecond Or position.SourceOrdinal Mod 2 = 1 Then
             bestID = "": bestRay = 1E+100
+            directionX = mRules(index).DirectionX: directionY = mRules(index).DirectionY
+            If mRules(index).SourceNormalSign <> 0# Then
+                directionX = -position.TangentY * mRules(index).SourceNormalSign
+                directionY = position.TangentX * mRules(index).SourceNormalSign
+            End If
             For targetIndex = 1 To prepared.Count
                 Set path = prepared(targetIndex)
-                If path.RayHit(position.X, position.Y, mRules(index).DirectionX, mRules(index).DirectionY, station, ray) Then
+                If path.RayHit(position.X, position.Y, directionX, directionY, station, ray) Then
                     If ray < bestRay Then
                         bestRay = ray: bestStation = station + mRules(index).StartSetback: bestID = path.ID
                     End If
@@ -307,6 +333,11 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = bestStation: position.PathID = bestID: position.RuleIndex = index
                 position.SourceOrdinal = ordinal
+                successful = successful + 1
+                If mRules(index).SuccessfulProjectionOrdinal Then position.SourceOrdinal = successful
+                If mRules(index).NewPublicationRoot Then
+                    position.RootRuleIndex = index: position.RootOrdinal = successful: position.RootPublicationRank = successful
+                End If
                 position.SourcePositionID = PositionID(index, ordinal, mPositions(i).SourcePositionID)
                 AppendPosition position
             End If
@@ -414,7 +445,8 @@ Private Sub ValidateOptions(ByVal index As Long)
             If .Step <= 0# Then RuleError index, "Шаг должен быть положительным."
         End If
         If .Mode = ProjectFrom Then
-            If Sqr(.DirectionX * .DirectionX + .DirectionY * .DirectionY) <= GEOM_TOLERANCE Then RuleError index, "Не задано направление проекции."
+            If .SourceNormalSign <> -1# And .SourceNormalSign <> 0# And .SourceNormalSign <> 1# Then RuleError index, "Знак местной нормали должен быть -1, 0 или 1."
+            If .SourceNormalSign = 0# And Sqr(.DirectionX * .DirectionX + .DirectionY * .DirectionY) <= GEOM_TOLERANCE Then RuleError index, "Не задано направление проекции."
         End If
     End With
 End Sub

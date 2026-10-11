@@ -21,6 +21,9 @@ Public EverySecond As Boolean
 Public IncomingTangentAtJoint As Boolean
 Public DirectionX As Double
 Public DirectionY As Double
+Public SourceNormalSign As Double
+Public SuccessfulProjectionOrdinal As Boolean
+Public NewPublicationRoot As Boolean
 Public SkipMissingProjection As Boolean
 Public Publication As ERebarPublication
 Public PositionOrder As ERebarPositionOrder
@@ -48,6 +51,8 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.EverySecond = EverySecond
     rule.IncomingTangentAtJoint = IncomingTangentAtJoint
     rule.DirectionX = DirectionX: rule.DirectionY = DirectionY
+    rule.SourceNormalSign = SourceNormalSign
+    rule.SuccessfulProjectionOrdinal = SuccessfulProjectionOrdinal: rule.NewPublicationRoot = NewPublicationRoot
     rule.SkipMissingProjection = SkipMissingProjection
     rule.Publication = Publication: rule.PlacementCheck = PlacementCheck
     rule.PositionOrder = PositionOrder: rule.Coincidence = Coincidence

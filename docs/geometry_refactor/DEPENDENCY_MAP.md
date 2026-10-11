@@ -102,4 +102,20 @@ ACTIVE в retirement-map до переноса остальных семейст
   в Python, не фактические VBA пути/позиции как ожидаемый результат.
 
 Старые три RoundedRectangle-компонента остаются ACTIVE в production до
-общего retirement. HollowRectangle еще использует прежний generated route.
+общего retirement.
+
+Сквозной development-маршрут HollowRectangle:
+- Один рецепт: ReadDimensions/ReadFaces -> AddGeometry -> AddReinforcement ->
+  AddDimensions. Наружный контур и Opening объявляются на уровне definition.
+- Общие RoundedPolygon/OffsetRoundedPolygon/Chain задают точные дуги;
+  при исчезновении прямой грани именованная цепочка начинается на дуге.
+- RebarProjected получает локальную нормаль исходного пути. Номер после
+  успешных проекций и самостоятельный публикационный корень заданы options;
+  общий executor не выбирает тип сечения.
+- RebarRowExtremeLabel использует крайние основные стержни на одной опорной
+  линии, не повторный подбор или расчет положения арматуры.
+- Python oracle независимо строит дуги, станции и лучевые пересечения по
+  исходному INPUT. Изменения координат не скрываются изменением допусков.
+
+Все четыре семейства имеют development-рецепты. Production generated route
+еще прежний; его переключение и удаление старых потребителей впереди.

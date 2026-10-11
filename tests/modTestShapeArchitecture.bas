@@ -402,6 +402,99 @@ Finished:
     DumpRoundedGeometryMatrix = result
 End Function
 
+' ДЛЯ ТЕСТОВ: одинаковые параметры HollowRectangle для baseline и рецепта.
+Public Sub ConfigureHollowScenario(ByVal scenario As Long)
+    Dim table As Object, data As Variant, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim factor As Double, mainHeader As Long, extraHeader As Long, i As Long, row As Long, extra As Long
+    If scenario = 0 Then Exit Sub
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    Set table = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange: data = table.Value2
+    mainHeader = FixtureHeaderRow(data, "as", 2): extraHeader = FixtureHeaderRow(data, "d2", 2)
+    table.Cells(7, 3).Value2 = 180# / factor: table.Cells(7, 6).Value2 = 90# / factor
+    If scenario = 2 Or scenario = 6 Then table.Cells(7, 6).Value2 = 0#
+    If scenario = 8 Or scenario = 9 Then
+        table.Cells(7, 1).Value2 = IIf(scenario = 8, 600#, 1000#) / factor
+        table.Cells(7, 2).Value2 = 1000# / factor
+        table.Cells(7, 3).Value2 = IIf(scenario = 8, 300#, 500#) / factor
+        table.Cells(7, 4).Value2 = IIf(scenario = 8, 200#, 400#) / factor
+        table.Cells(7, 5).Value2 = 400# / factor
+        table.Cells(7, 6).Value2 = IIf(scenario = 8, 100#, 200#) / factor
+    End If
+    If scenario = 10 Then table.Cells(7, 3).Value2 = 0#: table.Cells(7, 6).Value2 = 0#
+    If scenario = 3 Then
+        table.Cells(3, 2).Value2 = 160# / factor: table.Cells(4, 2).Value2 = -180# / factor
+    End If
+    For i = 1 To 8
+        row = mainHeader + i: extra = extraHeader + i
+        table.Cells(row, 2).Value2 = (35# + 5# * CDbl(i)) / factor
+        table.Cells(row, 3).Value2 = 20# / factor
+        If i <= 4 Then table.Cells(row, 4).Value2 = IIf(i <= 2, 7, 9)
+        table.Cells(extra, 2).Value2 = 16# / factor: table.Cells(extra, 5).Value2 = 12# / factor
+        table.Cells(extra, 3).Value2 = IIf(scenario = 4 And i Mod 2 = 0, "SideBySide", "Stacked")
+        table.Cells(extra, 6).Value2 = IIf(scenario = 4 And i Mod 2 = 1, "SideBySide", "Stacked")
+        table.Cells(extra, 4).Value2 = IIf(i Mod 2 = 0, "EverySecondBar", "EachBar")
+        table.Cells(extra, 7).Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
+        If scenario = 5 Then
+            If i <= 4 Then table.Cells(row, 4).Value2 = 1
+            table.Cells(extra, 2).Value2 = 0#
+            table.Cells(extra, 3).Value2 = "inactive value": table.Cells(extra, 4).Value2 = "inactive value"
+        End If
+        If scenario = 6 And i = 5 Then
+            table.Cells(row, 3).Value2 = 0#
+            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 5).Value2 = "inactive value"
+        End If
+        If scenario = 7 And i = 3 Then
+            table.Cells(row, 4).Value2 = 0
+            table.Cells(row, 2).Value2 = "inactive value"
+            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 5).Value2 = "inactive value"
+        End If
+        If (scenario = 8 Or scenario = 9) And (i = 1 Or i = 2 Or i = 5 Or i = 6) Then
+            table.Cells(row, 3).Value2 = 0#: If i <= 4 Then table.Cells(row, 4).Value2 = 0
+            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 5).Value2 = "inactive value"
+        End If
+    Next i
+    ThisWorkbook.Worksheets("Config").Calculate
+End Sub
+
+' ДЛЯ ТЕСТОВ: старая геометрия/проекции до переноса HollowRectangle.
+Public Function DumpHollowGeometryMatrix() As String
+    DumpHollowGeometryMatrix = HollowGeometryMatrix(0, 7)
+End Function
+
+' ДЛЯ ТЕСТОВ: исчезнувшие прямые при предельных радиусах и оба нулевых радиуса.
+Public Function DumpHollowEdgeGeometryMatrix() As String
+    DumpHollowEdgeGeometryMatrix = HollowGeometryMatrix(8, 10)
+End Function
+
+Private Function HollowGeometryMatrix(ByVal firstScenario As Long, ByVal lastScenario As Long) As String
+    Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each fixture In Array("HollowCentered", "HollowOffset")
+        For scenario = firstScenario To lastScenario
+            config.Formula = saved
+            ConfigureShapeFixture "Circle": ConfigureShapeFixture CStr(fixture)
+            ConfigureHollowScenario scenario
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+            result = result & ShapeSnapshot("HollowMatrix." & CStr(fixture) & ".case" & CStr(scenario), model)
+        Next scenario
+    Next fixture
+    GoTo Finished
+Failed:
+    result = result & "FAIL: Hollow baseline matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    HollowGeometryMatrix = result
+End Function
+
 ' ДЛЯ ТЕСТОВ: одинаковый AddBar benchmark без Excel/solver внутри замера.
 Public Function DumpRebarLayoutPerformance() As String
     Dim count As Variant, repeat As Long, i As Long, layout As CRebarLayout, started As Double, elapsed As Double
@@ -439,7 +532,13 @@ Public Function DumpRoundedSourceCalculations(Optional ByVal crackCode As String
     DumpRoundedSourceCalculations = SourceCalculations(Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, scenario)
 End Function
 
-Private Function SourceCalculations(ByVal fixtures As Variant, ByVal crackCode As String, Optional ByVal roundedScenario As Long = 0) As String
+' ДЛЯ ТЕСТОВ: отдельная baseline-книга с прежней production-сборкой Hollow.
+Public Function DumpHollowSourceCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
+    DumpHollowSourceCalculations = SourceCalculations(Array("HollowCentered", "HollowOffset"), crackCode, 0, scenario)
+End Function
+
+Private Function SourceCalculations(ByVal fixtures As Variant, ByVal crackCode As String, Optional ByVal roundedScenario As Long = 0, _
+        Optional ByVal hollowScenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
     Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
@@ -462,11 +561,13 @@ Private Function SourceCalculations(ByVal fixtures As Variant, ByVal crackCode A
     For Each fixture In fixtures
         ConfigureShapeFixture CStr(fixture)
         If roundedScenario > 0 Then ConfigureRoundedScenario roundedScenario
+        If hollowScenario > 0 Then ConfigureHollowScenario hollowScenario
         Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel, label As String
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
         label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
+        If hollowScenario > 0 Then label = label & ".case" & CStr(hollowScenario)
         result = result & CalculationSnapshot(label, model)
     Next fixture
     GoTo Finished
@@ -554,6 +655,32 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: реальные Chart/Shapes и PNG геометрических эталонов.
 ' Results меняется только в закрываемой без сохранения fixture-книге runner-а.
+' ДЛЯ ТЕСТОВ: прежний Hollow preview для сопоставления длинных подписей.
+Public Function DumpHollowSourcePreview(ByVal outputDirectory As String, Optional ByVal scenario As Long = 0) As String
+    Dim config As Object, saved As Variant, result As String, fixture As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = True
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    ConfigureShapeFixture "Circle"
+    For Each fixture In Array("HollowCentered", "HollowOffset")
+        ConfigureShapeFixture CStr(fixture): ConfigureHollowScenario scenario
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+        result = result & PreviewSnapshot(CStr(fixture) & ".case" & CStr(scenario), outputDirectory, model)
+    Next fixture
+    GoTo Finished
+Failed:
+    result = result & "FAIL: source Hollow preview; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    DumpHollowSourcePreview = result
+End Function
+
 Public Function DumpShapePreviewSnapshot(ByVal outputDirectory As String, Optional ByVal fixtureFilter As String = "") As String
     Dim config As Object, saved As Variant, calculation As Long, events As Boolean, updating As Boolean
     Dim result As String, fixture As Variant

@@ -3,6 +3,48 @@ Option Explicit
 
 Private mPassed As Long, mFailed As Long, mReport As String
 
+' ДЛЯ ТЕСТОВ: шум координаты касания не меняет дробление соседней ячейки.
+Public Function RunRecipeMeshBoundaryTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
+    Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, reference As CFiberMeshBuilder
+    Dim delta As Variant, i As Long, found As Boolean
+    For Each delta In Array(0#, 0.000000000001, -0.000000000001)
+        Set facade = New CSectionDefinitionBuilder: facade.Initialize "MeshTouch"
+        Set path = facade.RectanglePath("Outer", 0#, 0#, 160#, 120#): facade.Outer "OUTER", path.ID
+        Set path = facade.RectanglePath("Hole", 50#, 30#, 20#, 10# + CDbl(delta)): facade.Opening "HOLE", path.ID, "OUTER"
+        Set definition = facade.Finish
+        Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
+        Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 40#, 20#, 1, 2
+        found = False
+        For i = 1 To mesh.FiberCount
+            If Abs(mesh.FiberX(i) - 60#) <= GEOM_TOLERANCE And Abs(mesh.FiberY(i) - 50#) <= GEOM_TOLERANCE Then
+                Near "mesh.touch.full.area." & CStr(delta), mesh.FiberArea(i), 800#
+                found = True
+            End If
+        Next i
+        Check "mesh.touch.full.cell." & CStr(delta), found
+        If reference Is Nothing Then
+            Set reference = mesh
+        Else
+            Check "mesh.touch.count." & CStr(delta), mesh.FiberCount = reference.FiberCount
+            If mesh.FiberCount = reference.FiberCount Then
+                For i = 1 To mesh.FiberCount
+                    Near "mesh.touch.x." & CStr(i), mesh.FiberX(i), reference.FiberX(i)
+                    Near "mesh.touch.y." & CStr(i), mesh.FiberY(i), reference.FiberY(i)
+                    Near "mesh.touch.area." & CStr(i), mesh.FiberArea(i), reference.FiberArea(i)
+                Next i
+            End If
+        End If
+    Next delta
+    GoTo Finished
+Failed:
+    Check "mesh.touch.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunRecipeMeshBoundaryTests = mReport & "TOTAL RECIPE MESH BOUNDARY: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
 ' ДЛЯ ТЕСТОВ: общие правила без таблиц типов или старых раскладчиков.
 Public Function RunRecipeRuleTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
@@ -108,12 +150,59 @@ Public Function RunRecipeRuleTests() As String
     TestAdjacentRectangles
     TestAnnotationMeasurements
     TestRuleJointTangents
+    TestProjectionNormalsAndOrdinals
     GoTo Finished
 Failed:
     Check "rules.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunRecipeRuleTests = mReport & "TOTAL RECIPE RULES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+Private Sub TestProjectionNormalsAndOrdinals()
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim builder As CSectionBuilder, model As CSectionModel, mode As Long, i As Long
+    Set facade = RuleFacade
+    Set path = facade.ArcPath("SourceCurve", 0#, 0#, 100#, 0#, GEOM_PI / 2#)
+    Set options = New CRebarRuleOptions: options.AnnotationGroup = "CurveBars"
+    facade.RebarByCount "CurveMain", path.ID, 3, 10#, options
+    Set path = facade.ArcPath("TargetCurve", 0#, 0#, 200#, 0#, GEOM_PI / 2#)
+    Set options = New CRebarRuleOptions: options.SourceNormalSign = -1#: options.NewPublicationRoot = True
+    facade.RebarProjected "Radial", path.ID, "CurveMain", 10#, options
+    options.SourceNormalSign = 1#
+    facade.RebarRowExtremeLabel "CurveBars", "CurveMain", 0#, 1#, 0#, 1#
+    Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+    Check "projection.normal.count", model.RebarCount = 6
+    For i = 1 To 3
+        Near "projection.normal.x." & CStr(i), model.RebarX(i + 3), 2# * model.RebarX(i)
+        Near "projection.normal.y." & CStr(i), model.RebarY(i + 3), 2# * model.RebarY(i)
+    Next i
+    Near "extreme.anchor.start", builder.Rebars.AnnotationStartX(1), 0#
+    Near "extreme.anchor.end", builder.Rebars.AnnotationEndX(1), 0#
+    Near "extreme.anchor.y", builder.Rebars.AnnotationStartY(1), 100#
+    For mode = 0 To 1
+        Set facade = RuleFacade
+        facade.RebarByCount "Base", "Row", 4, 10#
+        Set path = facade.LinePath("LimitedTarget", 20#, 100#, 80#, 100#)
+        Set options = New CRebarRuleOptions: options.DirectionY = 1#: options.SkipMissingProjection = True
+        options.SuccessfulProjectionOrdinal = (mode = 1): options.NewPublicationRoot = True
+        options.Publication = PublishPerSourcePosition
+        facade.RebarProjected "Projected", path.ID, "Base", 10#, options
+        options.SuccessfulProjectionOrdinal = Not options.SuccessfulProjectionOrdinal
+        Set options = New CRebarRuleOptions: options.EverySecond = True: options.NormalOffset = 10#
+        options.Publication = PublishPerSourcePosition
+        facade.RebarDependent "Extra", "Projected", 10#, options
+        Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
+        Check "projection.ordinal.count." & CStr(mode), model.RebarCount = 7 And builder.Rules.SkippedProjections = 2
+        Near "projection.publication.first." & CStr(mode), model.RebarY(4), 0#
+        If mode = 1 Then
+            Near "projection.ordinal.success.x", model.RebarX(6), 100# / 3#
+            Near "projection.ordinal.success.y", model.RebarY(6), 110#
+        Else
+            Near "projection.ordinal.source.x", model.RebarX(7), 200# / 3#
+            Near "projection.ordinal.source.y", model.RebarY(7), 110#
+        End If
+    Next mode
+End Sub
 
 Private Sub TestRuleJointTangents()
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
@@ -534,6 +623,73 @@ Rejected:
     If Not RoundedInputCase Then mReport = mReport & "ROUNDED INPUT DETAIL: " & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 End Function
 
+' ДЛЯ ТЕСТОВ: адресность размеров/проекционных ограничителей и неактивные поля.
+Public Function RunHollowRecipeInputTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim config As Object, saved As Variant, scenario As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For scenario = 0 To 13
+        config.Formula = saved
+        Check "hollow.input." & CStr(scenario), HollowInputCase(scenario)
+    Next scenario
+    GoTo Finished
+Failed:
+    Check "hollow.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.EnableEvents = events: Application.ScreenUpdating = updating
+    RunHollowRecipeInputTests = mReport & "TOTAL HOLLOW INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+Private Function HollowInputCase(ByVal scenario As Long) As Boolean
+    Dim range As Object, row As Long, column As Long, valid As Boolean, reference As String, factor As Double
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
+    Dim context As CSectionRecipeContext, table As CSectionInputTable, recipe As ISectionRecipe, definition As CSectionDefinition
+    Dim builder As CSectionBuilder, model As CSectionModel, mesh As TSectionMeshOptions
+    On Error GoTo Rejected
+    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    modTestShapeArchitecture.ConfigureShapeFixture "HollowCentered"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    Set range = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
+    Select Case scenario
+        Case 0: row = 13: column = 4: range.Cells(row, column).Value2 = 1.5
+        Case 1: row = 13: column = 3: range.Cells(row, column).Value2 = -1#
+        Case 2: row = 13: column = 2: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 3).Value2) / 2#
+        Case 3: row = 15: column = 2: range.Cells(15, 3).Value2 = 0#: range.Cells(row, column).Value2 = -1#
+        Case 4: row = 7: column = 6: range.Cells(row, column).Value2 = -1#
+        Case 5: row = 3: column = 2: range.Cells(row, column).Value2 = 1000# / factor
+        Case 6
+            valid = True: range.Cells(13, 4).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
+            range.Cells(23, 2).Value2 = "inactive": range.Cells(23, 5).Value2 = "inactive"
+        Case 7
+            valid = True: range.Cells(15, 3).Value2 = 0#: range.Cells(25, 2).Value2 = "inactive"
+            range.Cells(25, 5).Value2 = "inactive"
+        Case 8: row = 15: column = 2: range.Cells(7, 6).Value2 = 0#: range.Cells(15, 3).Value2 = 0#: range.Cells(row, column).Value2 = "bad"
+        Case 9
+            valid = True: range.Cells(23, 2).Value2 = 0#: range.Cells(23, 5).Value2 = 0#
+            range.Cells(23, 3).Value2 = "inactive": range.Cells(23, 4).Value2 = "inactive"
+        Case 10: row = 7: column = 6: range.Cells(row, column).Value2 = 1000# / factor
+        Case 11: valid = True: range.Cells(7, 3).Value2 = 500# / factor
+        Case 12: row = 23: column = 4: range.Cells(23, 2).Value2 = 16# / factor: range.Cells(row, column).Value2 = "bad"
+        Case 13: row = 13: column = 4: range.Cells(13, 3).Value2 = 0#: range.Cells(row, column).Value2 = 1.5
+    End Select
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry"), units)
+    Set table = context.Table("rngHollowRectangleGeometry")
+    If Not valid Then reference = table.SourceReference(row, column)
+    Set recipe = New CSectionRecipeHollowRectangle: Set definition = recipe.CreateDefinition(context)
+    mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
+    Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
+    HollowInputCase = valid
+    Exit Function
+Rejected:
+    HollowInputCase = (Not valid And Len(reference) > 0 And InStr(1, Err.Description, reference, vbBinaryCompare) > 0)
+    If Not HollowInputCase Then mReport = mReport & "HOLLOW INPUT DETAIL: " & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+End Function
+
 ' ДЛЯ ТЕСТОВ: сквозная сборка рецепта без старой geometry/layout/annotation.
 Public Function DumpCircleRecipeMatrix() As String
     Dim config As Object, saved As Variant, result As String, counts As Variant, number As Variant, scenario As Long
@@ -673,6 +829,45 @@ Finished:
     DumpRoundedRecipeMatrix = result
 End Function
 
+' ДЛЯ ТЕСТОВ: точные дуги и проекции для 16 исходных Hollow fixtures.
+Public Function DumpHollowRecipeMatrix() As String
+    DumpHollowRecipeMatrix = HollowRecipeMatrix(0, 7)
+End Function
+
+' ДЛЯ ТЕСТОВ: отсутствующие прямые участки и sharp frame тем же рецептом.
+Public Function DumpHollowRecipeEdgeMatrix() As String
+    DumpHollowRecipeEdgeMatrix = HollowRecipeMatrix(8, 10)
+End Function
+
+Private Function HollowRecipeMatrix(ByVal firstScenario As Long, ByVal lastScenario As Long) As String
+    Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each fixture In Array("HollowCentered", "HollowOffset")
+        For scenario = firstScenario To lastScenario
+            config.Formula = saved
+            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.ConfigureHollowScenario scenario
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set builder = New CSectionBuilder: Set model = BuildRecipe("HollowRectangle", settings, units, builder)
+            result = result & modTestShapeArchitecture.PreparedShapeSnapshot("HollowMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
+        Next scenario
+    Next fixture
+    GoTo Finished
+Failed:
+    result = result & "FAIL: Hollow recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    HollowRecipeMatrix = result
+End Function
+
 ' ДЛЯ ТЕСТОВ: сумма готовых подписей в полной матрице перенесенных рецептов.
 Public Function RunRecipeAnnotationCountTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
@@ -718,6 +913,17 @@ Public Function RunRecipeAnnotationCountTests() As String
             modTestShapeArchitecture.ConfigureRoundedScenario scenario
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
             Set builder = New CSectionBuilder: Set model = BuildRecipe("RoundedRectangle", settings, units, builder)
+            Check "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
+        Next scenario
+    Next fixture
+    For Each fixture In Array("HollowCentered", "HollowOffset")
+        For scenario = 0 To 10
+            config.Formula = saved
+            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.ConfigureHollowScenario scenario
+            settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
+            Set builder = New CSectionBuilder: Set model = BuildRecipe("HollowRectangle", settings, units, builder)
             Check "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
         Next scenario
     Next fixture
@@ -857,16 +1063,64 @@ Private Sub CheckModelEquilibrium(ByVal fixture As String, ByVal model As CSecti
             Check prefix & ".sum.N", Abs(sn - solver.Nint) <= 0.0000001 + Abs(sn) * 0.000000000001
             Check prefix & ".sum.Mx", Abs(smx - solver.Mxint) <= 0.0001 + Abs(smx) * 0.000000000001
             Check prefix & ".sum.My", Abs(smy - solver.Myint) <= 0.0001 + Abs(smy) * 0.000000000001
-            Near prefix & ".residual.N", sn - n, solver.ResidualN
-            Near prefix & ".residual.Mx", smx - mx, solver.ResidualMx
-            Near prefix & ".residual.My", smy - my, solver.ResidualMy
+            ' Независимые суммы проверены выше в размерном допуске. Невязка
+            ' обязана соответствовать опубликованному усилию, а не иной сумме,
+            ' где вычитание больших близких чисел усиливает округление Double.
+            Near prefix & ".residual.N", solver.Nint - n, solver.ResidualN
+            Near prefix & ".residual.Mx", solver.Mxint - mx, solver.ResidualMx
+            Near prefix & ".residual.My", solver.Myint - my, solver.ResidualMy
 NextLoad:
         Next loadIndex
     Next purpose
 End Sub
 
+' ДЛЯ ТЕСТОВ: стандартные, дуговые, Ro=0 и смещенные проекции.
+Public Function DumpHollowRecipeCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
+    DumpHollowRecipeCalculations = RecipeCalculations("HollowRectangle", Array("HollowCentered", "HollowOffset"), crackCode, 0, scenario)
+End Function
+
+' ДЛЯ ТЕСТОВ: суммирование сил отдельно от solver на всех четырех Hollow-сценариях.
+Public Function RunHollowRecipeEquilibriumTests() As String
+    RunHollowRecipeEquilibriumTests = HollowRecipeEquilibrium(0, 3)
+End Function
+
+' ДЛЯ ТЕСТОВ: исчезнувшие прямые грани, полный круг и острые углы.
+Public Function RunHollowRecipeEdgeEquilibriumTests() As String
+    RunHollowRecipeEdgeEquilibriumTests = HollowRecipeEquilibrium(8, 10)
+End Function
+
+Private Function HollowRecipeEquilibrium(ByVal firstScenario As Long, ByVal lastScenario As Long) As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim config As Object, saved As Variant, fixture As Variant, scenario As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each fixture In Array("HollowCentered", "HollowOffset")
+        For scenario = firstScenario To lastScenario
+            config.Formula = saved
+            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+            modTestShapeArchitecture.ConfigureHollowScenario scenario
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set builder = New CSectionBuilder: Set model = BuildRecipe("HollowRectangle", settings, units, builder)
+            CheckModelEquilibrium CStr(fixture) & ".case" & CStr(scenario), model, settings, units
+        Next scenario
+    Next fixture
+    GoTo Finished
+Failed:
+    Check "hollow.equilibrium.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    HollowRecipeEquilibrium = mReport & "TOTAL HOLLOW EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
 Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Variant, ByVal crackCode As String, _
-        Optional ByVal roundedScenario As Long = 0) As String
+        Optional ByVal roundedScenario As Long = 0, Optional ByVal hollowScenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, settings As CSystemSettingsReader, units As CUnitSystem
     Dim profiles As Object, i As Long, key As String, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean, fixture As Variant
@@ -889,11 +1143,13 @@ Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Va
     For Each fixture In fixtures
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         If roundedScenario > 0 Then modTestShapeArchitecture.ConfigureRoundedScenario roundedScenario
+        If hollowScenario > 0 Then modTestShapeArchitecture.ConfigureHollowScenario hollowScenario
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
         Dim label As String
         label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
+        If hollowScenario > 0 Then label = label & ".case" & CStr(hollowScenario)
         result = result & modTestShapeArchitecture.PreparedCalculationSnapshot(label, model)
     Next fixture
     GoTo Finished
@@ -924,8 +1180,13 @@ Public Function DumpRoundedRecipeArcPreview(ByVal outputDirectory As String) As 
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), outputDirectory, 1)
 End Function
 
+' ДЛЯ ТЕСТОВ: настоящий Excel preview стандартных/измененных Hollow-сценариев.
+Public Function DumpHollowRecipePreview(ByVal outputDirectory As String, Optional ByVal scenario As Long = 0) As String
+    DumpHollowRecipePreview = RecipePreview("HollowRectangle", Array("HollowCentered", "HollowOffset"), outputDirectory, 0, scenario)
+End Function
+
 Private Function RecipePreview(ByVal typeID As String, ByVal fixtures As Variant, ByVal outputDirectory As String, _
-        Optional ByVal roundedScenario As Long = 0) As String
+        Optional ByVal roundedScenario As Long = 0, Optional ByVal hollowScenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, settings As CSystemSettingsReader, units As CUnitSystem
     Dim builder As CSectionBuilder, model As CSectionModel, calculation As Long, events As Boolean, updating As Boolean, fixture As Variant
     On Error GoTo Failed
@@ -936,11 +1197,13 @@ Private Function RecipePreview(ByVal typeID As String, ByVal fixtures As Variant
     For Each fixture In fixtures
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         If roundedScenario > 0 Then modTestShapeArchitecture.ConfigureRoundedScenario roundedScenario
+        If hollowScenario > 0 Then modTestShapeArchitecture.ConfigureHollowScenario hollowScenario
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
         Dim label As String
         label = CStr(fixture): If roundedScenario > 0 Then label = label & ".Arc"
+        If hollowScenario > 0 Then label = label & ".case" & CStr(hollowScenario)
         result = result & modTestShapeArchitecture.PreparedPreviewSnapshot(label, model, outputDirectory)
     Next fixture
     GoTo Finished

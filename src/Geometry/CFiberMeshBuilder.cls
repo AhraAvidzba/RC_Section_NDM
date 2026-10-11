@@ -111,8 +111,10 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
                 GetCornerStatus geometry, cellMinX, cellMinY, stepX, stepY, allCornersInside, anyCornerInside
                 If allCornersInside Then
                     For openingIndex = 1 To openingCount
-                        If cellMinX < openingBounds(openingIndex, 2) And cellMinX + stepX > openingBounds(openingIndex, 1) And _
-                                cellMinY < openingBounds(openingIndex, 4) And cellMinY + stepY > openingBounds(openingIndex, 3) Then
+                        ' Касание габарита не пересекает площадь: шум последних
+                        ' разрядов аналитической дуги не должен дробить всю ячейку.
+                        If cellMinX < openingBounds(openingIndex, 2) - GEOM_TOLERANCE And cellMinX + stepX > openingBounds(openingIndex, 1) + GEOM_TOLERANCE And _
+                                cellMinY < openingBounds(openingIndex, 4) - GEOM_TOLERANCE And cellMinY + stepY > openingBounds(openingIndex, 3) + GEOM_TOLERANCE Then
                             allCornersInside = False
                             Exit For
                         End If

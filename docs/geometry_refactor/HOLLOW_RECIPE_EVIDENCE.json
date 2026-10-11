@@ -1,0 +1,673 @@
+{
+  "Stage": "HollowRectangle analytic recipe migration",
+  "Status": "PASS_WITH_DOCUMENTED_ANALYTIC_CHANGE",
+  "Scope": "Development milestone only; production integration, retirement, API guide and final acceptance pending",
+  "CapturedAt": "2026-10-12T01:55:32.0805896+03:00",
+  "ParentCommit": "a5aa6cc",
+  "PhysicsBaselineHead": "a138c2732382c826db9ac2f801facd3d533d406c",
+  "MainWorkbookSHA256": "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+  "Workbooks": [
+    {
+      "Path": "HollowRecipe/RC_Section_NDM.xlsm",
+      "SHA256": "E01ADC5271077E94754EFB64ACE6D302ED6F387E7298B796EDDD0D0FD201B6F6"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/RC_Section_NDM.xlsm",
+      "SHA256": "A52064D325FBB5130E66D102F060616F3ED33316E06A180F6583EC057B5A5AD1"
+    },
+    {
+      "Path": "HollowEdgeBaseline/RC_Section_NDM.xlsm",
+      "SHA256": "3A42B734090B9CAD8DBDF27A954DADF8EF2DA768BCC24BB6F5A8D84F5FEB791B"
+    }
+  ],
+  "BaselineArchiveSHA256": "2730A02FB1F8046E98EEF9BA7E3A6CFD17C59DD580B3CDB8484E5D4C544D9751",
+  "Assertions": {
+    "CoreGeometry": 438,
+    "RebarRules": 187,
+    "MeshBoundaryTouch": 158,
+    "HollowInput": 14,
+    "AnnotationCount": 92,
+    "HollowEquilibrium": 672,
+    "EdgeEquilibriumOff": 504,
+    "EdgeEquilibriumOn": 504,
+    "RoundedEquilibriumRegression": 336
+  },
+  "Geometry": {
+    "OrdinaryFixtures": 16,
+    "OrdinaryRecords": 57022,
+    "EdgeFixtures": 6,
+    "EdgeRecords": 19010,
+    "ExactRepeats": true,
+    "FinalOrdinaryInvariance": "BIT_EXACT",
+    "IndependentAnalyticOracle": "PASS",
+    "OracleMutationChecks": 4,
+    "EquivalentUndirectedAxes": 2,
+    "RawDiffRetained": true
+  },
+  "Calculations": {
+    "Codes": [
+      "SP35",
+      "SP63"
+    ],
+    "Mode": "Off",
+    "Scenarios": [
+      0,
+      1,
+      3
+    ],
+    "FixturesPerScenario": 2,
+    "DiscreteStatusChanges": 0,
+    "Classification": "REVIEWED_ANALYTIC_CHANGE",
+    "MaxCapacityPercent": 0.11627508594809711,
+    "MaxCrackPercent": 0.050908278712488673,
+    "MaxWidthPercent": 0.201018560635184,
+    "MaxAreaPercent": 0.18472889644238213,
+    "FinalGeometryInvarianceProvesOrdinaryCalculationsUnaffectedByMeshTouchFix": true
+  },
+  "Preview": {
+    "InspectedNewPNGs": 12,
+    "InspectedBaselinePNGs": 2,
+    "DenseLabelsPreexisting": true,
+    "FullCalculationPlotModes": "NOT_RUN"
+  },
+  "ExactRegressionRecords": {
+    "Circle": 58308,
+    "RectSet": 34062,
+    "Rounded": 48180,
+    "OriginalNine": 20124
+  },
+  "BaselineComponentCounts": {
+    "StandardModules": 34,
+    "Classes": 98,
+    "DocumentModules": 5,
+    "Other": 0
+  },
+  "ActualComponentCounts": {
+    "StandardModules": 37,
+    "Classes": 113,
+    "DocumentModules": 5,
+    "Other": 0
+  },
+  "AddedComponents": [
+    {
+      "Name": "CGeometryPath",
+      "Type": 2
+    },
+    {
+      "Name": "CRebarRuleExecutor",
+      "Type": 2
+    },
+    {
+      "Name": "CRebarRuleOptions",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionAnnotationBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionDefinition",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionDefinitionBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionInputSnapshotReader",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionInputTable",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionRecipeCircle",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionRecipeContext",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionRecipeHollowRectangle",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionRecipeRectSet",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionRecipeRoundedRectangle",
+      "Type": 2
+    },
+    {
+      "Name": "ISectionRecipe",
+      "Type": 2
+    },
+    {
+      "Name": "modSectionRecipeTypes",
+      "Type": 1
+    },
+    {
+      "Name": "modTestDeclarativeGeometry",
+      "Type": 1
+    },
+    {
+      "Name": "modTestSectionRecipes",
+      "Type": 1
+    }
+  ],
+  "RemovedComponents": [],
+  "ApprovedSourceChecks": 24,
+  "UnexpectedModules": 0,
+  "SourceMismatchCount": 0,
+  "ProductionChanged": false,
+  "RetirementCompleted": false,
+  "Sources": [
+    {
+      "Path": "src/Common/modSectionRecipeTypes.bas",
+      "SHA256": "7026236D44A056B659E7604B3C587BF5E5F01577AD0CF709938D06331C2B8E8D"
+    },
+    {
+      "Path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "SHA256": "5C2B724545F84B95AB1E5C6C6610E3417F76951C95B96399865CE8A90AB5A6AB"
+    },
+    {
+      "Path": "src/Excel/CSectionTypeRegistry.cls",
+      "SHA256": "2C8F880BC945458065540D0FB63AD986DB6AC5C6E6EC446C391B446DDA0B9852"
+    },
+    {
+      "Path": "src/Geometry/CFiberMeshBuilder.cls",
+      "SHA256": "E31F5D51875240F301E8269BF881215CC20A40AD78126B875A0868C7974A7A68"
+    },
+    {
+      "Path": "src/Geometry/CGeometryPath.cls",
+      "SHA256": "E1811B3F7CD98BBA49528D65EEEAB241F4D90D6168824AA63B50BD48D956034D"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeCircle.cls",
+      "SHA256": "0B3B8D60FDD9B18E202A4262FE165D1BCAEF3C13F7941F54BAE835382A49F15A"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "SHA256": "0875A827A915C29C8E8C21E837B4E549A918BB34A00CFB9DC38CB7F6B0A1DFB4"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRectSet.cls",
+      "SHA256": "34524FA72F9132ECA04DC1FD4A4777BD5AFF52B3B6C218EF123CA12BAB62415B"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "SHA256": "17FAAAE0866F3195CCC77025053DCF542B60C3EB571F0429F9B7818E48285BD9"
+    },
+    {
+      "Path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "SHA256": "B875DFCC3EF8A1A20A32556FF531E132986E42F9E4F03A0CE17909831AB03D0A"
+    },
+    {
+      "Path": "src/Section/CRebarLayout.cls",
+      "SHA256": "3FAFB0238199D7C7E8D7DE120D85241D091AC7DCF48B8BDB76EED1F57C7BC8B4"
+    },
+    {
+      "Path": "src/Section/CRebarRuleExecutor.cls",
+      "SHA256": "5616AAE2947CE7DDA2D903B7B8B308F2E2423CCF6251DBA84FB89FE490856732"
+    },
+    {
+      "Path": "src/Section/CRebarRuleOptions.cls",
+      "SHA256": "4CA3AD67DBFD8112BAC72441651348FBFD4C58A87EBCC19768AC4D875D04609A"
+    },
+    {
+      "Path": "src/Section/CSectionAnnotationBuilder.cls",
+      "SHA256": "62E6E77AEF9DCA66B499A237C16E6D0348F56B89784E0800C29909E43693D634"
+    },
+    {
+      "Path": "src/Section/CSectionBuilder.cls",
+      "SHA256": "65BAA91410E84109EAE807E527A833376F4FE131A9EEAF4562E8E4A25589AA56"
+    },
+    {
+      "Path": "src/Section/CSectionDefinition.cls",
+      "SHA256": "6823E2061390798EEB251C9D86FC143C49FFD58F236A19774320B09009A50B06"
+    },
+    {
+      "Path": "src/Section/CSectionDefinitionBuilder.cls",
+      "SHA256": "F58FAB5CC03548D0A54288C066E82826831003794C4C9D036C26016EE2F322A4"
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "51D17A6036307E0A3BE252214D99CBE3F338D3439FDFF5FFD929D27FA6FDD057"
+    },
+    {
+      "Path": "src/Section/CSectionInputTable.cls",
+      "SHA256": "9845601DD7CBAAF5DADC27AC502D9446B8CB3C42890186CC1AA935C019510A8F"
+    },
+    {
+      "Path": "src/Section/CSectionRecipeContext.cls",
+      "SHA256": "212F4D66C928C127C97E68F9C448600B121E5265EFB50041EA28FD32CE95AFCF"
+    },
+    {
+      "Path": "src/Section/ISectionRecipe.cls",
+      "SHA256": "D24E5030241812FED466B7D03A7CB10A8724E5FB5C6B38C7F75A61A5368744C3"
+    },
+    {
+      "Path": "tests/modTestDeclarativeGeometry.bas",
+      "SHA256": "9FC3D096C9253D6B89F321B9A54E7FF132E2957C50C4B32533F9F865E2C53385"
+    },
+    {
+      "Path": "tests/modTestSectionRecipes.bas",
+      "SHA256": "FBAC5CA22BD36AF0230D2374510CA322AE6B70C571FEB61A5496355E8DFD12FB"
+    },
+    {
+      "Path": "tests/modTestShapeArchitecture.bas",
+      "SHA256": "E6271DA3322046A5D674F8D7E1FFFCF5E8F95237948319E6638A3BD6869F0F45"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-GeometrySnapshots.py",
+      "SHA256": "257047E2C3EC63CB47007D5191393286117BB29BE14305445B7B7FDC3E2B977C"
+    },
+    {
+      "Path": "tools/build_workbook/Summarize-RoundedBehaviorChanges.py",
+      "SHA256": "6B3D256E299CDE6F51D35FFB4739E3FFF845F9EE2459590F934FA904903CCDD3"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-HollowRecipeOracle.py",
+      "SHA256": "FF73929B88C540CC7886FDD58035EFE717CC9B32C44FB974A6464DDE24FCE6B5"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-RoundedRecipeOracle.py",
+      "SHA256": "50693F8453F5F18E84421B485429E6D1D8361DB83D8BB80A20725C9F8DE78A19"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "HollowRecipe/AnalyticOracle1.json",
+      "SHA256": "C69989EE1C59BA0249E04FE22B545EDB4AF9EE57662049AF1D5BA253B1749C3A"
+    },
+    {
+      "Path": "HollowRecipe/AnalyticOracleFinal.json",
+      "SHA256": "1E1FCFA4E0DF6B1DF64B668A12303A9FF4EA621349D0957336ED3C7B325AE744"
+    },
+    {
+      "Path": "HollowRecipe/AnnotationCountFinal.txt",
+      "SHA256": "7742BD5830DEEBBCFE6E6AA20EDEF1A1044F9E354228F94DE36073CEBAAD7968"
+    },
+    {
+      "Path": "HollowRecipe/AnnotationCounts1.txt",
+      "SHA256": "5ED734B035795695BC59554F45857CA6800DF6B9B6C0FC9E3DAE14601C63DB90"
+    },
+    {
+      "Path": "HollowRecipe/BaselineComparison1.json",
+      "SHA256": "9DC086FFB0D32CDF8708D56CD7012CCD21F0E8C059A127ACA448CFD98758F748"
+    },
+    {
+      "Path": "HollowRecipe/CalculationBehaviorMetrics.json",
+      "SHA256": "2DE3C6156A378C3B287C13C69A7F5CAC396B8ABBBB029F79201EDE11AAD01B5E"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP35_case0_No.comparison.json",
+      "SHA256": "AC89DF6F9FFF18E37AB7E1D5CC641CC1D6D817485E14315A8A90FEA950E06968"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP35_case0_No.txt",
+      "SHA256": "04736B31E89CCBD45759B8A6AE142A631255019AD3BA3537944253E58B1F3511"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP35_case1_No.comparison.json",
+      "SHA256": "42A4ABF95C7A08A323CC58D61093D178E5DD2ECC0A5EC6E2CB309C881F799C44"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP35_case1_No.txt",
+      "SHA256": "0D92981BB7615579AC3AAB27B70A605E3A186C9AD72E3C9EB376B517CF660D98"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP35_case3_No.comparison.json",
+      "SHA256": "F0564785133F840F4D5D18BDDDC40A095772DFBEBE1C71C70B8C67C4D4921E0C"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP35_case3_No.txt",
+      "SHA256": "68EF3036D549DBB9A698012FD63310FEDB2A31F7CA16A4E12CA031368867D7B2"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP63_case0_No.comparison.json",
+      "SHA256": "3D8B67689A1DD1ED11E9E9E14130556FCE5823F35A8239E804D46A036BE39F5D"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP63_case0_No.txt",
+      "SHA256": "4F6E7EA9C1E8F2F3649A182CC73B5A45A04D381F1B53089148E05ABE91EC9D55"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP63_case1_No.comparison.json",
+      "SHA256": "6E54107B894CA08B3E773EE43B3F8738A0E8221EA2EF45F9BA284C0D27CEDA21"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP63_case1_No.txt",
+      "SHA256": "4236667119FC62F81E106AE0B74FB4F5B51E6918BEBCA149FABF31545E500BEF"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP63_case3_No.comparison.json",
+      "SHA256": "1D2F239CE87ECA12EBEEA7018EEC409C81CB5757A8DF4F727728DEFB1A5AD73E"
+    },
+    {
+      "Path": "HollowRecipe/Calculations_SP63_case3_No.txt",
+      "SHA256": "FE3A415BCB44C767A93C7291F77B2C07964047D15351C0183CE42BE9F0F9DC8D"
+    },
+    {
+      "Path": "HollowRecipe/CircleComparison.json",
+      "SHA256": "2CC9B0FCAE943AE6A7EB1DFC701031E2159187E1EF1B74CFF0C33A3B7FA55C9E"
+    },
+    {
+      "Path": "HollowRecipe/CircleFinal.txt",
+      "SHA256": "345423309C94D89D81EBF1F863A3343AD89827FDF80E5AB4AC3CF3B26F201BEB"
+    },
+    {
+      "Path": "HollowRecipe/CircleFinalComparison.json",
+      "SHA256": "AB445D29263AC33EB5885CB0BEEF4A6102B838EDFE83523280C3AB5399E1F3E4"
+    },
+    {
+      "Path": "HollowRecipe/CircleMatrix.txt",
+      "SHA256": "744AFA179539602AAFB545AA3CCB6EE00AD1A672BB0B1643C456F7828ECDCD14"
+    },
+    {
+      "Path": "HollowRecipe/CodeComparison.json",
+      "SHA256": "6D339DD8EBAE7D340923D33063E973B6ACC344696F4520DC6BF231C48B9F985B"
+    },
+    {
+      "Path": "HollowRecipe/CodeUpdate.json",
+      "SHA256": "EF33F787851A0B41F423DA4B30B6DAC538F5AED559D3EA02055E6A3A4B9EF105"
+    },
+    {
+      "Path": "HollowRecipe/CoreFinal.txt",
+      "SHA256": "E643976BE4BD5B0D023215ADA7D3892D85377C645AE4948227C36BBBB96BD96E"
+    },
+    {
+      "Path": "HollowRecipe/CoreTests.txt",
+      "SHA256": "4064BFA1B5DDEF8C189BF714CF61777B86B99F341A9DF58899BFB35F8AC47868"
+    },
+    {
+      "Path": "HollowRecipe/EdgeAnalyticOracleFinal1.json",
+      "SHA256": "0F73C92AD7C7C6F5847019C3C1FC54ED81F981FCF425A1250660113A837CB7BA"
+    },
+    {
+      "Path": "HollowRecipe/EdgeAnalyticOracleFinal2.json",
+      "SHA256": "94341048871D90428D20F2CC02FE5F53F14D29EC013067449DC264BB569D9686"
+    },
+    {
+      "Path": "HollowRecipe/EdgeAnalyticProbeFailed.json",
+      "SHA256": "E23AEF35047FA1456E0ADD5B46A223A749A2B5039E2E4E434021826EDB2D6BD6"
+    },
+    {
+      "Path": "HollowRecipe/EdgeBoundaryProbeFailed.json",
+      "SHA256": "8A0CD01A82BB9A51D0B5AB3A27347109621D77B0B8B762215FCD6603DF84036D"
+    },
+    {
+      "Path": "HollowRecipe/EdgeEquilibriumNo.txt",
+      "SHA256": "10160C67E04CA4EE3625BA1E41257D4E4D8BBB9A17AB170FA016EDF9EE7CB18F"
+    },
+    {
+      "Path": "HollowRecipe/EdgeEquilibriumYes.txt",
+      "SHA256": "97DB5E5F293B852731AD8C7FFD75586CD2C2F5247C9AC9218C6B4EDDD34E232C"
+    },
+    {
+      "Path": "HollowRecipe/EdgeFinalRepeat.json",
+      "SHA256": "F05653406574DADFCBD3803D22B5748E265F925B2F3E3173736EEE962BE67CF5"
+    },
+    {
+      "Path": "HollowRecipe/EdgeMatrix1.txt",
+      "SHA256": "EE60D3532FA9A82DAFFD41BBEE327F2ED19760F0366BEA9EFB69E3039BC06A25"
+    },
+    {
+      "Path": "HollowRecipe/EdgeMatrix2.txt",
+      "SHA256": "D4A49F037D90271703C85F60D614D686120D557D7C8746903AA194F01A9BF745"
+    },
+    {
+      "Path": "HollowRecipe/EdgeMatrixFinal1.txt",
+      "SHA256": "6C3B5D710A5699EC82137BBF55DE695867AF392C3BE77CC16345B16579E89E1A"
+    },
+    {
+      "Path": "HollowRecipe/EdgeMatrixFinal2.txt",
+      "SHA256": "8AEF6DFB455ED5BBB83D39997D8AFA507429C3CD25A02B57D186ABF12C0B4125"
+    },
+    {
+      "Path": "HollowRecipe/EdgeRawFinalComparison.json",
+      "SHA256": "168474A4C4CF877A65E1286D40D653F805384B231C65F359116F9B9364737A75"
+    },
+    {
+      "Path": "HollowRecipe/Equilibrium_ResidualHarnessProbeFailed.txt",
+      "SHA256": "79F746896E32CC3DE230C27F6CA41EC944AE1EB7C9BB57AE745265CA22E84BB6"
+    },
+    {
+      "Path": "HollowRecipe/EquilibriumTests.txt",
+      "SHA256": "2A86E9F54DAB62508B043047EEE31759767551DE0174C7167139DF30507CDB7C"
+    },
+    {
+      "Path": "HollowRecipe/FinalOrdinaryInvariance.json",
+      "SHA256": "B40F78C54F41130EAE83C7F8FD010D4F7FC517C953CE70D2D9F9B78AFC101529"
+    },
+    {
+      "Path": "HollowRecipe/InputFinal.txt",
+      "SHA256": "2A9159E95D9D49773BD653071B9AEC4E00E56614CFE98E3AE33D1E16C3B1A248"
+    },
+    {
+      "Path": "HollowRecipe/InputTests1.txt",
+      "SHA256": "DDFF0011AEC2D201901AC2AA7BCFA6655B97E00315FCF2769789BE29DB637843"
+    },
+    {
+      "Path": "HollowRecipe/Matrix1.txt",
+      "SHA256": "3ED8F2135CDFC119A6308743E7B999D2360E871E73E25B4E1315AEF938346E12"
+    },
+    {
+      "Path": "HollowRecipe/Matrix2.txt",
+      "SHA256": "8D9D2D5A3EFDF7CD6F8328B6B73D565550FB7E5E7A43CEE8E07CE1D932C58476"
+    },
+    {
+      "Path": "HollowRecipe/MatrixFinal.txt",
+      "SHA256": "D7192818ADA02CE3A09175346F8D0B0F56173B41DDF13FFB42C24AD29BE07C46"
+    },
+    {
+      "Path": "HollowRecipe/MatrixFinal2.txt",
+      "SHA256": "DDB8A2C4F7FC710BE0D62F4E52E095FCE7131F1D54D0075E7B793B21D9619D3B"
+    },
+    {
+      "Path": "HollowRecipe/MeshBoundary.txt",
+      "SHA256": "D97DE218358438AA9BAB7F5347F458563E85E1AB2A98AA965EF33255FED39B7D"
+    },
+    {
+      "Path": "HollowRecipe/NativeExcelPreview8.txt",
+      "SHA256": "66C81908079FBB35DE6575F2CBC2756DFA46F1DE4EE362A39C3496FF70B6C96B"
+    },
+    {
+      "Path": "HollowRecipe/NativeExcelPreview9.txt",
+      "SHA256": "6CF8A007EAA068299392A3D272EE429430DAC6FA175474F3DDB638A31BA76D2F"
+    },
+    {
+      "Path": "HollowRecipe/OriginalNineFinal.txt",
+      "SHA256": "F4FFE2008D885FF102A117C9F4E08FC35311794FE756F03B1514833F684508C0"
+    },
+    {
+      "Path": "HollowRecipe/OriginalNineFinalComparison.json",
+      "SHA256": "013089FB2731E95D08796B1D26D5C6B4EE2774FA773D8C0AF488ED70210CC01C"
+    },
+    {
+      "Path": "HollowRecipe/Preview0.txt",
+      "SHA256": "52D48E1CB221D5B9841F46C0D4F06446D2C94AFEAFAA593AC77FCA725E6D38D6"
+    },
+    {
+      "Path": "HollowRecipe/Preview1.txt",
+      "SHA256": "E4069C22753B6832EA1D746F15E25CD8F1B79CDBB12501B149406698B28633C3"
+    },
+    {
+      "Path": "HollowRecipe/Preview2.txt",
+      "SHA256": "3DCD9B57C7901F5AEC5E74D9AD22F592A7683BF1A616D996B359A998279FBBAD"
+    },
+    {
+      "Path": "HollowRecipe/Preview3.txt",
+      "SHA256": "9A6EFC0749D1FED0DC47F88B659E9D0F4E13310974F35A5C4BA6243B8BFE1EEF"
+    },
+    {
+      "Path": "HollowRecipe/RectSetComparison.json",
+      "SHA256": "9960D829619CACFAAF6FFC074B5816596883AD5D5BABDF6FFC79D0FD0A61C620"
+    },
+    {
+      "Path": "HollowRecipe/RectSetFinal.txt",
+      "SHA256": "313D9B5950A5528F7D97426B542BF734B5E1403B013E66D1A45067F294628716"
+    },
+    {
+      "Path": "HollowRecipe/RectSetFinalComparison.json",
+      "SHA256": "658DCC019AB773E891A72C1AE47AD75D3AB0787FB20C0E69B6FBB6342D1A6610"
+    },
+    {
+      "Path": "HollowRecipe/RectSetMatrix.txt",
+      "SHA256": "313E6C9EAC232F8F964675C0D9983CFEAABFA925207887F520426C631FCD1414"
+    },
+    {
+      "Path": "HollowRecipe/RepeatComparison.json",
+      "SHA256": "8D399F5180848B316AFE08FFD91E84073319147EE90E6CF42571C7C4A1F02264"
+    },
+    {
+      "Path": "HollowRecipe/RoundedComparison.json",
+      "SHA256": "EF446D1FFAC30FFDD2B8492C44223F2A68DA0CB640F1C46F9CA12308D0C9CE57"
+    },
+    {
+      "Path": "HollowRecipe/RoundedEquilibrium.txt",
+      "SHA256": "3EEECF49B7B8CEE012EC241FF3E8A16F44C8A690FDC06FE4E3F7BB767870AC45"
+    },
+    {
+      "Path": "HollowRecipe/RoundedFinal.txt",
+      "SHA256": "855BDA46866460AAD4A82530E59F5E71B05598248493CDBDBD5680382541B94C"
+    },
+    {
+      "Path": "HollowRecipe/RoundedFinalComparison.json",
+      "SHA256": "D0D6A525FCEE1FA65684A4F7C51751F674AD320C3595602EC5F21D91A87FEEE1"
+    },
+    {
+      "Path": "HollowRecipe/RoundedMatrix.txt",
+      "SHA256": "7B80E814772803A52A0BFFC1BD2F1F1D714B121CB1541DF6C43EC42CA5A7D31B"
+    },
+    {
+      "Path": "HollowRecipe/RuleFinal.txt",
+      "SHA256": "250F74555DA536BB03031BF4D633C55BB8212D43A0B7EFD67EA77C13791188EE"
+    },
+    {
+      "Path": "HollowRecipe/RuleTests1.txt",
+      "SHA256": "EE44290344BAE0D1FE434371C1B05A349EEA646BA3BC1482D68207D53AC6FFA3"
+    },
+    {
+      "Path": "HollowRecipe/Preview0/HollowCentered.png",
+      "SHA256": "A99DB4B6FC437027E6C0171642E5143A92225867109E76FFC8AA3013F4BBDCE5"
+    },
+    {
+      "Path": "HollowRecipe/Preview0/HollowOffset.png",
+      "SHA256": "9A65B92B40ADA8B4BCA72218E090BB439CE7B314D5BF823F1036272B966E3094"
+    },
+    {
+      "Path": "HollowRecipe/Preview1/HollowCentered.case1.png",
+      "SHA256": "71605C48CD468EEFC33BAC23F3C40119DF44E859F47EEC293894D79C38A111CD"
+    },
+    {
+      "Path": "HollowRecipe/Preview1/HollowOffset.case1.png",
+      "SHA256": "0DD0B44623B77D11F99C7A09674A5278FCAAE21A7C4F3AE63D4ED8FE91DE6C95"
+    },
+    {
+      "Path": "HollowRecipe/Preview2/HollowCentered.case2.png",
+      "SHA256": "39FE3FBA69CB91FFFA728DB9D65F5209BC725F005AE3D7BC2205BDA683385867"
+    },
+    {
+      "Path": "HollowRecipe/Preview2/HollowOffset.case2.png",
+      "SHA256": "C5E47F95BB4A7555D15C2B8457056623213839A28234221758860773A16F8D28"
+    },
+    {
+      "Path": "HollowRecipe/Preview3/HollowCentered.case3.png",
+      "SHA256": "9F7755D46DD9DF5AC834D2CBFCA8AB69C69AAB3CC517D190E0D598A03663AF06"
+    },
+    {
+      "Path": "HollowRecipe/Preview3/HollowOffset.case3.png",
+      "SHA256": "4112DF4EA37A0BE1F2EF8D505E8AB733125F7CC75F91F453E679F9E7900CCF43"
+    },
+    {
+      "Path": "HollowRecipe/Preview8/HollowCentered.case8.png",
+      "SHA256": "6027B3682CDDAE5DE0F9D4FF817C5387237865F0F7621A6611F33E7BBAD2496F"
+    },
+    {
+      "Path": "HollowRecipe/Preview8/HollowOffset.case8.png",
+      "SHA256": "CF7EAA77DC64FAA0F68C85254340540EB7584E9C50443FFEF7063A93B4DBE9A1"
+    },
+    {
+      "Path": "HollowRecipe/Preview9/HollowCentered.case9.png",
+      "SHA256": "11312454F3D80B1683D2EEB8B6D998C619BACDFAD568BAC2B7A191D7ECBAA366"
+    },
+    {
+      "Path": "HollowRecipe/Preview9/HollowOffset.case9.png",
+      "SHA256": "18360AEF2A5AEDC51672E6BEABA57B1A50AEE2ED4B222C46DE336D5F0F1045D0"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/Calculations_SP35_case0_No.txt",
+      "SHA256": "F75C1A339357D80097206FB0D6B6E707A47084BF93C67531B15B0CE017C7A455"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/Calculations_SP35_case1_No.txt",
+      "SHA256": "76F74B11EB92A1C168EF81C9F5AC4BBFB2A105F4E30B2C528874052BC933866B"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/Calculations_SP35_case3_No.txt",
+      "SHA256": "FB6D26AC9327D72D7740F22F1302684BFF52F0588169A9F83B43647887A64EF1"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/Calculations_SP63_case0_No.txt",
+      "SHA256": "DC36EA5CD9C285DB3FC0B232B283DF7F51C8254D84171F8AF580BCADA5D5DB21"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/Calculations_SP63_case1_No.txt",
+      "SHA256": "53A7D97A8E4E1ADD499F18E992A08F6F164716C407E0DBA43733902D925FFDD4"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/Calculations_SP63_case3_No.txt",
+      "SHA256": "7259A1DC990D2E62FE6887477C202AAEAB307A7D1055ABADC2B2CB2EE8669AD8"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/CodeComparison.json",
+      "SHA256": "22D0921544FAEC541F9FF2F7C76420BBB4AE5903BDD21903DCF454BE29F7CE73"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/CodeUpdate.json",
+      "SHA256": "04DAB7AEFAD6BA4A6C76ABB66BDE32E4B3A768D8B22DC6E8C28BA742AD7ABDF6"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/NativeExcelPreview1.txt",
+      "SHA256": "8D7A753C230E4A16F2B467B29745B723336053088632386E2079B1AC456B0E28"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/Preview1/HollowCentered.case1.png",
+      "SHA256": "5A999943CC31FD9FA27698A49B74B764E37FBD6C75648782003B1B1BC90B4DB6"
+    },
+    {
+      "Path": "HollowCalculationsBaseline/Preview1/HollowOffset.case1.png",
+      "SHA256": "836E403475FC84E14E1B7EB6163072ECD88E1BE9B447CB45E5B06817EE06FB61"
+    },
+    {
+      "Path": "HollowEdgeBaseline/CodeComparison.json",
+      "SHA256": "8AB49DE71D535452F6F7AAB89B6C81FCB1830063673B214AFA751DCC17C2C637"
+    },
+    {
+      "Path": "HollowEdgeBaseline/CodeUpdate.json",
+      "SHA256": "7539571241463EE7DE2B9F9CCA76B6F1666380055F621B6B3AEAEB0B1DFA250C"
+    },
+    {
+      "Path": "HollowEdgeBaseline/Matrix1.txt",
+      "SHA256": "133B0D4BA35E10EDEAFB4D39ABD8D205E96C8EC015CC4408ED128C66710F1579"
+    },
+    {
+      "Path": "HollowEdgeBaseline/Matrix2.txt",
+      "SHA256": "8B672A7ADA1E736485428F4FB9CBB9E63B9C79C15170E23F0A1978C3073735E2"
+    },
+    {
+      "Path": "HollowEdgeBaseline/RepeatComparison.json",
+      "SHA256": "AD3C5B27CCC4A56774CC4346AF2A9DBD97365B69F5C04FD07CAD782ED7378A10"
+    }
+  ],
+  "ArchiveSHA256": "5066D83C63106FC8322A49BD6E67837D3E3BA5FE9B6072597A9B22E6082CFF57",
+  "ArchiveBytes": 52059950
+}

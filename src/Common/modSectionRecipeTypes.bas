@@ -82,6 +82,9 @@ Public Type TRebarRule
     IncomingTangentAtJoint As Boolean
     DirectionX As Double
     DirectionY As Double
+    SourceNormalSign As Double
+    SuccessfulProjectionOrdinal As Boolean
+    NewPublicationRoot As Boolean
     SkipMissingProjection As Boolean
     Publication As ERebarPublication
     PositionOrder As ERebarPositionOrder
@@ -106,6 +109,8 @@ Public Type TSectionAnnotation
     EndY As Double
     NormalX As Double
     NormalY As Double
+    DirectionX As Double
+    DirectionY As Double
     Value As Double
     DisplayIncrement As Double
     ReverseDirection As Boolean
