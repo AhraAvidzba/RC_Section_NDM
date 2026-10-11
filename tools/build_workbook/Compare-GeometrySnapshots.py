@@ -149,14 +149,24 @@ def main():
     parser.add_argument("actual", type=Path)
     parser.add_argument("--exact", action="store_true")
     parser.add_argument("--skip-input", action="store_true")
+    parser.add_argument("--fixture", action="append", default=[], help="Compare only these explicitly selected fixtures")
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     expected, actual = read_snapshot(args.baseline), read_snapshot(args.actual)
+    if args.fixture:
+        requested = set(args.fixture)
+        for label, records in (("baseline", expected), ("actual", actual)):
+            missing = requested - {row[0] for row in records}
+            if missing:
+                raise ValueError(f"Missing requested fixtures in {label}: {sorted(missing)}")
+        expected = [row for row in expected if row[0] in requested]
+        actual = [row for row in actual if row[0] in requested]
     errors = compare(expected, actual, args.exact, args.skip_input)
     payload = {
         "status": "FAIL" if errors else "PASS", "baseline": str(args.baseline), "actual": str(args.actual),
         "exact": args.exact, "skip_input": args.skip_input, "records": len(actual),
+        "requested_fixtures": args.fixture,
         "fixtures": sorted({row[0] for row in actual}), "errors": errors,
         "mutation_tests": mutation_tests(expected) if args.self_test else [],
     }

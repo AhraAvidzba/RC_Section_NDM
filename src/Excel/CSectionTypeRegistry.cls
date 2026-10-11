@@ -26,6 +26,45 @@ Private Const TYPE_RECTSET As String = "rectset" ' Ключ сечения из 
 Private Const TYPE_ROUNDED_RECTANGLE As String = "roundedrectangle" ' Ключ скругленного прямоугольника.
 Private Const TYPE_HOLLOW_RECTANGLE As String = "hollowrectangle" ' Ключ пустотелого скругленного прямоугольника.
 
+Private mRecipes As Object, mRecipeTables As Object
+
+Private Sub Class_Initialize()
+    Set mRecipes = CreateObject("Scripting.Dictionary"): mRecipes.CompareMode = vbTextCompare
+    Set mRecipeTables = CreateObject("Scripting.Dictionary"): mRecipeTables.CompareMode = vbTextCompare
+    RegisterRecipe "Circle", New CSectionRecipeCircle, Array("rngCircleGeometry")
+End Sub
+
+' Единственная регистрация рецепта и метаданных его ввода. Старые методы
+' ниже еще нужны миграционному baseline и удаляются после переноса семейств.
+Public Sub RegisterRecipe(ByVal typeID As String, ByVal recipe As ISectionRecipe, ByVal tableNames As Variant)
+    If Len(Trim$(typeID)) = 0 Or recipe Is Nothing Then SectionRecipeError "CSectionTypeRegistry", "Не заданы тип и рецепт."
+    If mRecipes.Exists(typeID) Then SectionRecipeError "CSectionTypeRegistry", "Повторная регистрация типа '" & typeID & "'."
+    If Not IsArray(tableNames) Then SectionRecipeError "CSectionTypeRegistry", "Имена таблиц должны быть массивом строк."
+    Dim names() As String, i As Long, count As Long
+    count = UBound(tableNames) - LBound(tableNames) + 1
+    ReDim names(0 To count - 1)
+    For i = 0 To count - 1
+        If VarType(tableNames(LBound(tableNames) + i)) <> vbString Then SectionRecipeError "CSectionTypeRegistry", "Имя таблицы должно быть строкой."
+        names(i) = CStr(tableNames(LBound(tableNames) + i))
+        If Len(Trim$(names(i))) = 0 Then SectionRecipeError "CSectionTypeRegistry", "Имя таблицы не может быть пустым."
+    Next i
+    mRecipes.Add typeID, recipe: mRecipeTables.Add typeID, names
+End Sub
+
+Public Function CreateRecipe(ByVal typeID As String) As ISectionRecipe
+    If Not mRecipes.Exists(typeID) Then SectionRecipeError "CSectionTypeRegistry", "Не зарегистрирован рецепт '" & typeID & "'."
+    Set CreateRecipe = mRecipes(typeID)
+End Function
+
+Public Function RecipeTableNames(ByVal typeID As String) As Variant
+    If Not mRecipeTables.Exists(typeID) Then SectionRecipeError "CSectionTypeRegistry", "Не зарегистрирован ввод типа '" & typeID & "'."
+    RecipeTableNames = mRecipeTables(typeID)
+End Function
+
+Public Function RegisteredRecipeTypes() As Variant
+    RegisteredRecipeTypes = mRecipes.Keys
+End Function
+
 ' Возвращает нормализованный тип встроенной геометрии из Config.
 ' Все публичные методы registry пользуются одним и тем же значением, поэтому
 ' новая форма регистрируется в одном месте и не расползается по workbook-коду.

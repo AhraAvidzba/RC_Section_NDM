@@ -25,8 +25,18 @@
 | CFakeMultiOpeningGeometry и старые test constructors | Definition fixtures с прежними инвариантами | ACTIVE |
 | modTestShapeArchitecture.SourceSnapshot через CreateGeometry/CreateRebars | Готовый build snapshot, прежние числовые эталоны | ACTIVE |
 | modRebarLayoutGeometry helpers | Сохранить единственную общую операцию либо удалить замененную | REVIEW |
-| Custom-код/UI/имена | Не создаются; адресная инвентаризация существования | NOT_CHECKED |
+| Custom-код/UI/имена | Не создаются; в исходном inventory/Config/Results и исходниках не найдены | NOT_PRESENT_IN_BASELINE |
 
 Для каждой строки нужны: потребители исходников/tests/runners, новый метод,
 поэлементный regression, удаление файла, отсутствие ссылок и VBProject manifest.
 Не считать удаление файла достаточным доказательством очистки книги.
+
+Локальный этап Circle: новый рецепт и общий сборщик проходят 28 fixtures,
+SP35/SP63 и native preview. Три старых Circle-компонента пока ACTIVE в
+production и старом baseline harness; это не завершенный retirement.
+Перед итоговой приемкой удалить их файлы, потребителей и VBProject-записи.
+
+Custom: поиск по src/tests/tools/AGENTS/README для CustomSection/rngCustom/
+CGeometryCustom/CSectionRecipeCustom и по полным исходным NativeInventory,
+Config/Results JSON не дал совпадений. Пользовательские данные не удалялись.
+Повторить проверку полного итогового VBProject/UI при финальной сборке.

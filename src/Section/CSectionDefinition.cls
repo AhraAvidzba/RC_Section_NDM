@@ -1,0 +1,276 @@
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "CSectionDefinition"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = False
+Attribute VB_Exposed = False
+Option Explicit
+
+' Неизменяемое описание формы, путей, армирования и аннотаций.
+' После публикации содержит только подготовленную геометрию и данные;
+' заполнение доступно лишь общему фасаду, Excel/context не сохраняются.
+Private mTypeID As String, mVersion As Long, mSealed As Boolean
+Private mPaths As Object, mGroups As Object
+Private mLoops() As TSectionLoop, mLoopCount As Long
+Private mRules() As TRebarRule, mRuleCount As Long
+Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long
+Private mRegion As CConcreteRegion
+
+Friend Sub Initialize(ByVal typeID As String, ByVal version As Long)
+    If Len(mTypeID) > 0 Then DefinitionError "Определение уже создано."
+    If Len(Trim$(typeID)) = 0 Or version < 1 Then DefinitionError "Не заданы тип и версия определения."
+    mTypeID = typeID: mVersion = version
+    Set mPaths = CreateObject("Scripting.Dictionary"): mPaths.CompareMode = vbBinaryCompare
+    Set mGroups = CreateObject("Scripting.Dictionary"): mGroups.CompareMode = vbBinaryCompare
+End Sub
+
+Public Property Get TypeID() As String: TypeID = mTypeID: End Property
+Public Property Get SchemaVersion() As Long: SchemaVersion = mVersion: End Property
+Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property
+Public Property Get PathCount() As Long: PathCount = mPaths.Count: End Property
+Public Property Get LoopCount() As Long: LoopCount = mLoopCount: End Property
+Public Property Get RuleCount() As Long: RuleCount = mRuleCount: End Property
+Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
+
+Public Function Path(ByVal pathID As String) As CGeometryPath
+    If Not mPaths.Exists(pathID) Then DefinitionError "Не найден путь '" & pathID & "'."
+    Set Path = mPaths(pathID)
+End Function
+
+' Группа - снимок имен независимых путей, не фиктивный составной путь.
+Public Function TargetPaths(ByVal targetID As String) As Variant
+    If mPaths.Exists(targetID) Then
+        TargetPaths = Array(targetID)
+    ElseIf mGroups.Exists(targetID) Then
+        TargetPaths = mGroups(targetID)
+    Else
+        DefinitionError "Не найден путь или группа '" & targetID & "'."
+    End If
+End Function
+
+Public Function ConcreteDomain() As CConcreteRegion
+    RequireSealed
+    Set ConcreteDomain = mRegion.Clone
+End Function
+
+Friend Sub AddPath(ByVal path As CGeometryPath)
+    RequireMutable
+    If path Is Nothing Then DefinitionError "Путь не передан."
+    If Not path.IsSealed Then DefinitionError "Путь '" & path.ID & "' еще не подготовлен."
+    If mPaths.Exists(path.ID) Or mGroups.Exists(path.ID) Then DefinitionError "Повторный ID пути '" & path.ID & "'."
+    mPaths.Add path.ID, path
+End Sub
+
+Friend Sub AddGroup(ByVal groupID As String, ByVal pathIDs As Variant)
+    RequireMutable
+    If Len(Trim$(groupID)) = 0 Then DefinitionError "Не задан ID группы."
+    If mPaths.Exists(groupID) Or mGroups.Exists(groupID) Then DefinitionError "Повторный ID группы '" & groupID & "'."
+    If Not IsArray(pathIDs) Then DefinitionError "Группа должна содержать массив ID путей."
+    Dim names() As String, i As Long, j As Long, count As Long
+    count = UBound(pathIDs) - LBound(pathIDs) + 1
+    If count < 1 Then DefinitionError "Группа не может быть пустой."
+    ReDim names(0 To count - 1)
+    For i = 0 To count - 1
+        names(i) = CStr(pathIDs(LBound(pathIDs) + i))
+        If Not mPaths.Exists(names(i)) Then DefinitionError "Не найден путь группы '" & names(i) & "'."
+        For j = 0 To i - 1
+            If names(i) = names(j) Then DefinitionError "Повторный путь в группе '" & groupID & "'."
+        Next j
+    Next i
+    mGroups.Add groupID, names
+End Sub
+
+Friend Sub AddLoop(ByRef value As TSectionLoop)
+    RequireMutable
+    If value.Role <> LoopOuter And value.Role <> LoopOpening Then DefinitionError "Неизвестная роль контура."
+    If Len(Trim$(value.LoopID)) = 0 Then DefinitionError "Не задан ID контура."
+    Dim i As Long, path As CGeometryPath
+    Set path = Me.Path(value.PathID)
+    If Not path.IsClosed Then DefinitionError "Контур '" & value.LoopID & "' использует открытый путь."
+    For i = 1 To mLoopCount
+        If mLoops(i).LoopID = value.LoopID Then DefinitionError "Повторный ID контура '" & value.LoopID & "'."
+    Next i
+    If value.Role = LoopOuter And Len(value.ParentID) > 0 Then DefinitionError "Наружный контур не имеет родительского отверстия."
+    If value.Role = LoopOpening And Len(value.ParentID) = 0 Then DefinitionError "Для отверстия не указан наружный контур."
+    If IsArray(value.ContourIDs) Then
+        If UBound(value.ContourIDs) - LBound(value.ContourIDs) + 1 <> path.SegmentCount Then _
+            DefinitionError "Число ID контурных сегментов не совпадает с путем."
+        For i = LBound(value.ContourIDs) To UBound(value.ContourIDs)
+            If VarType(value.ContourIDs(i)) <> vbString Then DefinitionError "ID контурного сегмента должен быть текстом."
+        Next i
+    ElseIf Not IsEmpty(value.ContourIDs) Then
+        DefinitionError "ID контурных сегментов должны быть массивом строк."
+    End If
+    mLoopCount = mLoopCount + 1: ReDim Preserve mLoops(1 To mLoopCount)
+    mLoops(mLoopCount) = value
+End Sub
+
+Friend Sub AddRule(ByRef value As TRebarRule)
+    RequireMutable
+    If Len(Trim$(value.RuleID)) = 0 Then DefinitionError "Не задан ID правила арматуры."
+    Dim i As Long
+    For i = 1 To mRuleCount
+        If mRules(i).RuleID = value.RuleID Then DefinitionError "Повторный ID правила '" & value.RuleID & "'."
+    Next i
+    If IsArray(value.ExplicitStations) Then
+        For i = LBound(value.ExplicitStations) To UBound(value.ExplicitStations)
+            If IsObject(value.ExplicitStations(i)) Or IsArray(value.ExplicitStations(i)) Then _
+                DefinitionError "Явные позиции должны содержать только числа."
+            If VarType(value.ExplicitStations(i)) = vbBoolean Or Not IsNumeric(value.ExplicitStations(i)) Then _
+                DefinitionError "Явная станция должна быть числом."
+        Next i
+    ElseIf Not IsEmpty(value.ExplicitStations) Then
+        DefinitionError "Явные станции должны быть массивом чисел."
+    End If
+    mRuleCount = mRuleCount + 1: ReDim Preserve mRules(1 To mRuleCount)
+    mRules(mRuleCount) = value
+End Sub
+
+Friend Sub AddAnnotation(ByRef value As TSectionAnnotation)
+    RequireMutable
+    If Len(Trim$(value.AnnotationID)) = 0 Then DefinitionError "Не задан ID аннотации."
+    Dim i As Long
+    For i = 1 To mAnnotationCount
+        If mAnnotations(i).AnnotationID = value.AnnotationID Then DefinitionError "Повторный ID аннотации '" & value.AnnotationID & "'."
+    Next i
+    mAnnotationCount = mAnnotationCount + 1: ReDim Preserve mAnnotations(1 To mAnnotationCount)
+    mAnnotations(mAnnotationCount) = value
+End Sub
+
+Friend Sub CopyRule(ByVal index As Long, ByRef value As TRebarRule)
+    If index < 1 Or index > mRuleCount Then DefinitionError "Номер правила вне определения."
+    value = mRules(index)
+End Sub
+
+Friend Sub CopyAnnotation(ByVal index As Long, ByRef value As TSectionAnnotation)
+    If index < 1 Or index > mAnnotationCount Then DefinitionError "Номер аннотации вне определения."
+    value = mAnnotations(index)
+End Sub
+
+Friend Function RuleIndex(ByVal ruleID As String) As Long
+    Dim i As Long
+    For i = 1 To mRuleCount
+        If mRules(i).RuleID = ruleID Then RuleIndex = i: Exit Function
+    Next i
+    DefinitionError "Не найден исходный ряд '" & ruleID & "'."
+End Function
+
+' Общая topology проверяет фактическое вложение в заявленный Outer, все
+' отверстия и независимые области. Нельзя переопределить Role по имени.
+Friend Sub Seal()
+    RequireMutable
+    If mLoopCount = 0 Then DefinitionError "Не задан наружный контур бетона."
+    Dim query As CSectionGeometryQuery, outers As Collection, parent As CConcreteRegion
+    Dim outerByID As Object, region As CConcreteRegion, one As CConcreteRegion, i As Long, unused As CConcreteRegion
+    Set query = New CSectionGeometryQuery: Set outers = New Collection
+    Set outerByID = CreateObject("Scripting.Dictionary"): outerByID.CompareMode = vbBinaryCompare
+    For i = 1 To mLoopCount
+        If mLoops(i).Role = LoopOuter Then
+            Set one = query.RegionFromContours(LoopContours(i, True))
+            ValidateOneLoop query, one
+            outers.Add one: outerByID.Add mLoops(i).LoopID, one
+        End If
+    Next i
+    Set region = query.MergeDisjointRegions(outers)
+    For i = 1 To mLoopCount
+        If mLoops(i).Role = LoopOpening Then
+            If Not outerByID.Exists(mLoops(i).ParentID) Then DefinitionError "Не найден Outer отверстия '" & mLoops(i).LoopID & "'."
+            Set one = query.RegionFromContours(LoopContours(i, True))
+            ValidateOneLoop query, one
+            Set parent = outerByID(mLoops(i).ParentID)
+            Set unused = query.SubtractContainedRegion(parent, one)
+            Set region = query.SubtractContainedRegion(region, one)
+        End If
+    Next i
+    Dim visiting() As Long
+    If mRuleCount > 0 Then
+        ReDim visiting(1 To mRuleCount)
+        For i = 1 To mRuleCount: ValidateRuleGraph i, visiting: Next i
+    End If
+    ' Тот же формат и тот же query, что у прежней сборки: механическая сетка
+    ' не заменяется аналитическими свойствами и не получает другой источник.
+    Set mRegion = query.RegionFromContours(MaterialContours())
+    mSealed = True
+End Sub
+
+Private Sub ValidateOneLoop(ByVal query As CSectionGeometryQuery, ByVal region As CConcreteRegion)
+    Dim edges() As TRegionEdge, count As Long, checked As CConcreteRegion
+    region.CopyEdges edges, count
+    Set checked = query.BoundaryRegion(edges, count)
+    If checked.LoopCount <> 1 Then DefinitionError "Один Loop должен содержать одну замкнутую границу."
+End Sub
+
+Private Sub ValidateRuleGraph(ByVal index As Long, ByRef visiting() As Long)
+    If visiting(index) = 2 Then Exit Sub
+    If visiting(index) = 1 Then DefinitionError "Циклическая зависимость ряда '" & mRules(index).RuleID & "'."
+    visiting(index) = 1
+    Dim ids As Variant, source As Long
+    If mRules(index).Enabled Then
+        If mRules(index).Mode <> DependentOffset Then ids = TargetPaths(mRules(index).Target)
+        If mRules(index).Mode = DependentOffset Or mRules(index).Mode = ProjectFrom Then
+            source = RuleIndex(mRules(index).SourceRuleID)
+            ValidateRuleGraph source, visiting
+        End If
+    End If
+    visiting(index) = 2
+End Sub
+
+Public Function MaterialContours() As CSectionContours
+    Dim result As CSectionContours, i As Long
+    Set result = New CSectionContours
+    For i = 1 To mLoopCount: AppendLoop result, i, False: Next i
+    Set MaterialContours = result
+End Function
+
+Public Sub WriteContours(ByVal result As CSectionContours)
+    RequireSealed
+    If result Is Nothing Then DefinitionError "Контейнер контуров не передан."
+    result.Clear
+    Dim i As Long
+    For i = 1 To mLoopCount: AppendLoop result, i, False: Next i
+End Sub
+
+Private Function LoopContours(ByVal index As Long, ByVal forceOuter As Boolean) As CSectionContours
+    Dim result As CSectionContours
+    Set result = New CSectionContours
+    AppendLoop result, index, forceOuter
+    Set LoopContours = result
+End Function
+
+Private Sub AppendLoop(ByVal result As CSectionContours, ByVal index As Long, ByVal forceOuter As Boolean)
+    Dim path As CGeometryPath, role As String, edge As TRegionEdge, radius As Double, i As Long, contourID As String
+    Set path = Me.Path(mLoops(index).PathID)
+    role = "Outer"
+    If mLoops(index).Role = LoopOpening And Not forceOuter Then role = "Opening"
+    For i = 1 To path.SegmentCount
+        path.CopySegment i, edge
+        contourID = path.SegmentID(i)
+        If IsArray(mLoops(index).ContourIDs) Then contourID = CStr(mLoops(index).ContourIDs(LBound(mLoops(index).ContourIDs) + i - 1))
+        If edge.Sweep = 0# Then
+            result.AddContourLine contourID, edge.X1, edge.Y1, edge.X2, edge.Y2, mLoops(index).Comment, mLoops(index).LoopID, role
+        Else
+            radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
+            If Abs(edge.Sweep) = 2# * GEOM_PI Then
+                result.AddContourCircle contourID, edge.CenterX, edge.CenterY, radius, mLoops(index).Comment, mLoops(index).LoopID, role
+            Else
+                result.AddContourArc contourID, edge.X1, edge.Y1, edge.X2, edge.Y2, edge.CenterX, edge.CenterY, radius, _
+                    edge.Sweep, mLoops(index).Comment, mLoops(index).LoopID, role
+            End If
+        End If
+    Next i
+End Sub
+
+Private Sub RequireMutable()
+    If Len(mTypeID) = 0 Or mSealed Then DefinitionError "Определение не открыто для заполнения."
+End Sub
+
+Private Sub RequireSealed()
+    If Not mSealed Then DefinitionError "Определение еще не опубликовано."
+End Sub
+
+Private Sub DefinitionError(ByVal reason As String)
+    SectionRecipeError "CSectionDefinition", "Определение '" & mTypeID & "': " & reason
+End Sub

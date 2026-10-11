@@ -707,6 +707,37 @@ Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double
     ContainsPoint = ContainsRaw(edges, count, x, y, includeBoundary)
 End Function
 
+' Минимальное расстояние до фактической границы из отрезков и дуг.
+' Проверка полного диска стержня дополняет, но не заменяет ContainsPoint.
+Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double) As Double
+    RequireRegion region
+    Dim edges() As TRegionEdge, count As Long, i As Long, dx As Double, dy As Double
+    Dim u As Double, px As Double, py As Double, norm As Double, radius As Double, distance As Double
+    region.CopyEdges edges, count
+    If count = 0 Then GeometryError "У пустой области нет расстояния до границы."
+    BoundaryDistance = 1E+100
+    For i = 1 To count
+        distance = Sqr((x - edges(i).X1) ^ 2 + (y - edges(i).Y1) ^ 2)
+        distance = GeomMin(distance, Sqr((x - edges(i).X2) ^ 2 + (y - edges(i).Y2) ^ 2))
+        If edges(i).Sweep = 0# Then
+            dx = edges(i).X2 - edges(i).X1: dy = edges(i).Y2 - edges(i).Y1
+            u = ((x - edges(i).X1) * dx + (y - edges(i).Y1) * dy) / (dx * dx + dy * dy)
+            u = GeomMax(0#, GeomMin(1#, u))
+            EdgePoint edges(i), u, px, py
+            distance = Sqr((x - px) ^ 2 + (y - py) ^ 2)
+        Else
+            dx = x - edges(i).CenterX: dy = y - edges(i).CenterY
+            norm = Sqr(dx * dx + dy * dy)
+            radius = Sqr((edges(i).X1 - edges(i).CenterX) ^ 2 + (edges(i).Y1 - edges(i).CenterY) ^ 2)
+            If norm > QUERY_TOLERANCE Then
+                px = edges(i).CenterX + radius * dx / norm: py = edges(i).CenterY + radius * dy / norm
+                If PointParameter(edges(i), px, py, u) Then distance = GeomMin(distance, Abs(norm - radius))
+            End If
+        End If
+        BoundaryDistance = GeomMin(BoundaryDistance, distance)
+    Next i
+End Function
+
 ' Общий скругленный многоугольник: Array(Array(x,y),...), радиусы и имена
 ' вершин того же размера. Индексы входа не становятся идентичностью грани.
 ' Вогнутый угол получает противоположный sweep; радиусы не уменьшаются.

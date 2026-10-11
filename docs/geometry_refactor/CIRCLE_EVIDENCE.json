@@ -1,0 +1,187 @@
+{
+  "Stage": "Declarative definition, common builder/rules and Circle recipe",
+  "Status": "PASS",
+  "Scope": "Development route only; production and legacy retirement still pending",
+  "CapturedAt": "2026-10-11T22:30:29.1553916+03:00",
+  "PhysicsBaselineHead": "a138c2732382c826db9ac2f801facd3d533d406c",
+  "ParentCommit": "f3954052",
+  "WorkbookSHA256": "B379C1F4C2F0DAE22FCB8F61C89FB27FA34B4683BE6F30633CDEDAA56BD1CF73",
+  "MainWorkbookSHA256": "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+  "RuleAssertions": 60,
+  "DefinitionAssertions": 15,
+  "InputAssertions": 5,
+  "CoreAssertions": 336,
+  "GeometryFixtures": 28,
+  "GeometryRecords": 58308,
+  "CalculationRecordsPerCode": 4754,
+  "DirectNDSPerCode": 12,
+  "BatchPerCode": 2,
+  "PreviewRecords": 405,
+  "ActualComponents": 152,
+  "ApprovedSourceModules": 18,
+  "UnexpectedModules": 0,
+  "SourceMismatchCount": 0,
+  "MaxBarCoordinateDeltaMm": {
+    "Y": 2.2737367544323206E-13,
+    "X": 4.263256414560601E-13
+  },
+  "ArchiveSHA256": "404944ED0305347CA10D85B5DE410FD41051E1EBBF5BBFE57B98F47059D5E96D",
+  "Sources": [
+    {
+      "Path": "src/Common/modSectionRecipeTypes.bas",
+      "SHA256": "152B11037596245352CBABFC36F2A8778D841A3B73371E6925B8BCDBA8CDC078"
+    },
+    {
+      "Path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "SHA256": "5C2B724545F84B95AB1E5C6C6610E3417F76951C95B96399865CE8A90AB5A6AB"
+    },
+    {
+      "Path": "src/Excel/CSectionTypeRegistry.cls",
+      "SHA256": "50081BC507684D3F76F1988989CE62CF2A68298A6A6ED5D69865BA6059A56EBF"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeCircle.cls",
+      "SHA256": "8384574950945CABD8BE2E7D7E52DF583563187B0C09A28303F5AC9424686AC2"
+    },
+    {
+      "Path": "src/Section/CRebarRuleExecutor.cls",
+      "SHA256": "7B870459D632AF0B36A71C3A60DA5A94DDDF5CF8914F2E7C0D9C17E4C0C842CD"
+    },
+    {
+      "Path": "src/Section/CRebarRuleOptions.cls",
+      "SHA256": "2FB6D47F64DC66F4F579496E3DB30F00639265391396B892DD14040EF06979DA"
+    },
+    {
+      "Path": "src/Section/CSectionAnnotationBuilder.cls",
+      "SHA256": "7A2E36167F5BFC806616708729C81D5CF3018109B1FA00C98AB6C7B673256D0C"
+    },
+    {
+      "Path": "src/Section/CSectionBuilder.cls",
+      "SHA256": "19B844BA5DCF76E1F2439A92808E4BBF06681CDBB0FDC4AE1702CE9CA7915F88"
+    },
+    {
+      "Path": "src/Section/CSectionDefinition.cls",
+      "SHA256": "DB5F15109BC69232CB072F18FEE6F3278C7A7FC24986B463A10BE5CEB7AE6586"
+    },
+    {
+      "Path": "src/Section/CSectionDefinitionBuilder.cls",
+      "SHA256": "56AD506772B570CCCDF0C1F6E0F2EE33159B4C83612D8C2FD6A11148B6D11AA1"
+    },
+    {
+      "Path": "src/Section/CSectionRecipeContext.cls",
+      "SHA256": "212F4D66C928C127C97E68F9C448600B121E5265EFB50041EA28FD32CE95AFCF"
+    },
+    {
+      "Path": "src/Section/ISectionRecipe.cls",
+      "SHA256": "D24E5030241812FED466B7D03A7CB10A8724E5FB5C6B38C7F75A61A5368744C3"
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "14CDDEB5C7C25D15842D99437B00175983AF3AED73923DF5D581E92B00D561D8"
+    },
+    {
+      "Path": "tests/modTestSectionRecipes.bas",
+      "SHA256": "BEDF5ED8427F821BF1BEDAB0AC8221858A762128E891BB4464573D745A2FAFAD"
+    },
+    {
+      "Path": "tests/modTestShapeArchitecture.bas",
+      "SHA256": "371595AB34DE9A55A2FD990C3C4FD000FE25DB42E1143A131DA72C982EFB8CA7"
+    },
+    {
+      "Path": "tools/build_workbook/Compare-GeometrySnapshots.py",
+      "SHA256": "65006F74797F13C14E3F2E384E60E98DA1C53028F2A27B68DAE2F6C491B52DAC"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Name": "Actual\\CalculationsSP35_Off.txt",
+      "SHA256": "4E2460568E362D04C8E4781B4D95BF39F3FEEB2F5F8530896A7F2FBED6542949",
+      "Length": 322294
+    },
+    {
+      "Name": "Actual\\CalculationsSP35Comparison.json",
+      "SHA256": "EBB54DA24FEB5DDA52752100923AEC867874F836A4DEEFD42F85B4D82C461B54",
+      "Length": 435
+    },
+    {
+      "Name": "Actual\\CalculationsSP63_Off.txt",
+      "SHA256": "74F23C8B830EC86092842CD71DA7E9D1ECDD17C007C9CD5D009F4C253A05ADE8",
+      "Length": 322288
+    },
+    {
+      "Name": "Actual\\CalculationsSP63Comparison.json",
+      "SHA256": "2D8D284FBA150F77C28E079A9271CD888F56A1B289778033BD4EC5EFE6730EB6",
+      "Length": 435
+    },
+    {
+      "Name": "Actual\\CircleMatrix.txt",
+      "SHA256": "7E1B7F9355FB6D2A4A12D2F7B683D34F5C9C14EB828CE1D8DE3E946B8D68E0D5",
+      "Length": 10069580
+    },
+    {
+      "Name": "Actual\\CodeComparison.json",
+      "SHA256": "769BAAED809E8B5C5341C4440A8DF8B2955756F08708E56B87E2BDCA19E6030E",
+      "Length": 86931
+    },
+    {
+      "Name": "Actual\\CoreGeometry.txt",
+      "SHA256": "3440A41F576E12EA9A670DBBFA49170115F3F762DAA8FCD92F003F73EEC1C913",
+      "Length": 24845
+    },
+    {
+      "Name": "Actual\\DefinitionTests.txt",
+      "SHA256": "748831EAA338B0D3F8D1BC72F366B122A16A8D20A4C7E27C17D91D72364BCA71",
+      "Length": 2961
+    },
+    {
+      "Name": "Actual\\InputTests.txt",
+      "SHA256": "40A96920670795F981CD1910ADC42FA6A5EB0538BF3B06A05B4B0601CF7B3637",
+      "Length": 2671
+    },
+    {
+      "Name": "Actual\\MatrixComparison.json",
+      "SHA256": "9B81B4DC53F73FFDA59FDEC2B170C6FF199B59F3735D26C84DB461C72D1C90BC",
+      "Length": 1472
+    },
+    {
+      "Name": "Actual\\Preview.txt",
+      "SHA256": "171A17B9650B9632CFF0F3F2AAA65B451B37A2CA8F668A925FD525B5CCF28CF7",
+      "Length": 62327
+    },
+    {
+      "Name": "Actual\\PreviewComparison.json",
+      "SHA256": "261E416FB767EE496BD67FB3F21CCB18BBB2FDF992A7CDE35E973DF7EBDF2E23",
+      "Length": 408
+    },
+    {
+      "Name": "Actual\\RuleTests.txt",
+      "SHA256": "0AACC2738CC0FA2395931BEC35D80CDA495971884A29289A3D2210503A5D449B",
+      "Length": 4959
+    },
+    {
+      "Name": "Actual\\PNG\\Circle.png",
+      "SHA256": "A867CDF23AF934254F34721032BC4F87B75AEDA0BE69F7ABFA8575EF5918A364",
+      "Length": 59711
+    },
+    {
+      "Name": "Original\\CircleMatrixBaseline.txt",
+      "SHA256": "293E109FE1F901C89A83794BD29674671770461C1A8A12EC01949E8386136F8B",
+      "Length": 10069602
+    },
+    {
+      "Name": "Original\\CircleMatrixBaselineRepeat.txt",
+      "SHA256": "64C0BB0EA72743B26C4A20B69A324A100A1D58E7DCB709DD094C3C1A7B382944",
+      "Length": 10069594
+    },
+    {
+      "Name": "Original\\CircleMatrixCodeComparison.json",
+      "SHA256": "A1A6B80567536EBB3175348265A1A59B59F7882CEF20BCD86A6A10C813E11D69",
+      "Length": 32077
+    },
+    {
+      "Name": "Original\\CircleMatrixRepeatComparison.json",
+      "SHA256": "C468B1E02F7942F65786363DD27908315C3D8C7FF9E299B5832BED25EF5DD3D1",
+      "Length": 1270
+    }
+  ]
+}

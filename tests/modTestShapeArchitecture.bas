@@ -39,10 +39,12 @@ Finished:
     DumpShapeArchitectureSnapshot = result
 End Function
 
-Private Function ShapeSnapshot(ByVal fixture As String) As String
+Private Function ShapeSnapshot(ByVal fixture As String, Optional ByVal suppliedModel As CSectionModel = Nothing, _
+        Optional ByVal suppliedMesh As CFiberMeshBuilder = Nothing, Optional ByVal suppliedRebars As CRebarLayout = Nothing) As String
     Dim model As CSectionModel, properties As CSectionPropertiesCalculator, annotations As CSectionAnnotations
     Dim contours As CSectionContours, lines() As String, count As Long, i As Long, bounds As Variant
-    Set model = FixtureModel(fixture)
+    Set model = suppliedModel
+    If model Is Nothing Then Set model = FixtureModel(fixture)
     Set properties = New CSectionPropertiesCalculator: properties.PrepareSnapshot model
     Set contours = model.Contours: Set annotations = model.Annotations
     ReDim lines(1 To model.ConcreteCount + model.RebarCount + contours.Count + annotations.Count + 4)
@@ -81,9 +83,21 @@ Private Function ShapeSnapshot(ByVal fixture As String) As String
             annotations.StartX(i), annotations.StartY(i), annotations.EndX(i), annotations.EndY(i), _
             annotations.NormalX(i), annotations.NormalY(i), annotations.Text(i), annotations.Value(i), annotations.Unit(i), annotations.Comment(i)))
     Next i
-    count = count + 1: lines(count) = SourceSnapshot(fixture)
+    count = count + 1
+    If suppliedMesh Is Nothing Then
+        lines(count) = SourceSnapshot(fixture)
+    Else
+        lines(count) = SourceValuesSnapshot(fixture, suppliedMesh, suppliedRebars)
+    End If
     ReDim Preserve lines(1 To count)
     ShapeSnapshot = Join(lines, vbNullString)
+End Function
+
+' ДЛЯ ТЕСТОВ: только фактический результат новой сборки, без прежних builders.
+Public Function PreparedShapeSnapshot(ByVal fixture As String, ByVal model As CSectionModel, _
+        ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout) As String
+    If model Is Nothing Or mesh Is Nothing Or rebars Is Nothing Then Err.Raise vbObjectError + 5292, "modTestShapeArchitecture", "Неполный prepared snapshot."
+    PreparedShapeSnapshot = ShapeSnapshot(fixture, model, mesh, rebars)
 End Function
 
 ' ДЛЯ ТЕСТОВ: исходные fill factor и группы layout не хранятся в model.
@@ -97,6 +111,10 @@ Private Function SourceSnapshot(ByVal fixture As String) As String
     Set geometry = registry.CreateGeometry(settings, units)
     Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units)
     Set rebars = registry.CreateRebars(geometry, settings, units)
+    SourceSnapshot = SourceValuesSnapshot(fixture, mesh, rebars)
+End Function
+
+Private Function SourceValuesSnapshot(ByVal fixture As String, ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout) As String
     Dim lines() As String, count As Long, i As Long
     ReDim lines(1 To mesh.FiberCount + rebars.Count + rebars.AnnotationCount + 1)
     For i = 1 To mesh.FiberCount
@@ -116,7 +134,7 @@ Private Function SourceSnapshot(ByVal fixture As String) As String
             rebars.AnnotationNormalX(i), rebars.AnnotationNormalY(i), rebars.AnnotationAxisDistance(i)))
     Next i
     count = count + 1: lines(count) = InputSnapshot(fixture)
-    SourceSnapshot = Join(lines, vbNullString)
+    SourceValuesSnapshot = Join(lines, vbNullString)
 End Function
 
 Private Function InputSnapshot(ByVal fixture As String) As String
@@ -144,6 +162,16 @@ Private Function InputSnapshot(ByVal fixture As String) As String
 End Function
 
 Private Function FixtureModel(ByVal fixture As String) As CSectionModel
+    ConfigureShapeFixture fixture
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set registry = New CSectionTypeRegistry
+    Set FixtureModel = registry.BuildGeneratedModel(settings, units)
+End Function
+
+' ДЛЯ ТЕСТОВ: одинаковый ввод baseline/new, без сборки геометрии.
+Public Sub ConfigureShapeFixture(ByVal fixture As String)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
     Dim shapeName As String, table As Object, factor As Double, i As Long, result As String
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -183,9 +211,44 @@ Private Function FixtureModel(ByVal fixture As String) As CSectionModel
     End Select
     SetSetting "Geometry.Type", shapeName
     ThisWorkbook.Worksheets("Config").Calculate
-    settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
-    Set registry = New CSectionTypeRegistry
-    Set FixtureModel = registry.BuildGeneratedModel(settings, units)
+End Sub
+
+' ДЛЯ ТЕСТОВ: расширенный baseline Circle до переноса на рецепт.
+' Каждая схема дополнительных рядов проверяется с четным/нечетным n.
+Public Function DumpCircleGeometryMatrix() As String
+    Dim config As Object, saved As Variant, result As String, seed As CSectionModel
+    Dim counts As Variant, number As Variant, scenario As Long, fixture As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean, factor As Double
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set seed = FixtureModel("Circle")
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    counts = Array(2, 3, 12, 13)
+    For Each number In counts
+        For scenario = 0 To 6
+            SetSetting "Rebar.Count", CLng(number)
+            SetSetting "Rebar.Diameter2", IIf(scenario = 0 Or scenario = 2, 0#, 16# / factor)
+            SetSetting "Rebar.Diameter3", IIf(scenario = 0 Or scenario = 1, 0#, 12# / factor)
+            SetSetting "Rebar.Loc2row", IIf(scenario = 5 Or scenario = 6, "SideBySide", "Stacked")
+            SetSetting "Rebar.Loc3row", IIf(scenario = 4 Or scenario = 6, "SideBySide", "Stacked")
+            ThisWorkbook.Worksheets("Config").Calculate
+            settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
+            Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+            fixture = "CircleMatrix.n" & CStr(number) & ".rows" & CStr(scenario)
+            result = result & ShapeSnapshot(fixture, model)
+        Next scenario
+    Next number
+    GoTo Finished
+Failed:
+    result = result & "FAIL: Circle matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    DumpCircleGeometryMatrix = result
 End Function
 
 ' ДЛЯ ТЕСТОВ: расчетный эталон до/после рефакторинга без изменения Results.
@@ -223,10 +286,11 @@ Finished:
     DumpShapeCalculationSnapshot = result
 End Function
 
-Private Function CalculationSnapshot(ByVal fixture As String) As String
+Private Function CalculationSnapshot(ByVal fixture As String, Optional ByVal suppliedModel As CSectionModel = Nothing) As String
     Dim model As CSectionModel, props As CSectionPropertiesCalculator
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
-    Set model = FixtureModel(fixture)
+    Set model = suppliedModel
+    If model Is Nothing Then Set model = FixtureModel(fixture)
     Set props = New CSectionPropertiesCalculator: props.CalculateConcrete model
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -273,6 +337,12 @@ Private Function CalculationSnapshot(ByVal fixture As String) As String
     CalculationSnapshot = result
 End Function
 
+' ДЛЯ ТЕСТОВ: расчеты только переданной новой модели.
+Public Function PreparedCalculationSnapshot(ByVal fixture As String, ByVal model As CSectionModel) As String
+    If model Is Nothing Then Err.Raise vbObjectError + 5292, "modTestShapeArchitecture", "Расчетная модель не передана."
+    PreparedCalculationSnapshot = CalculationSnapshot(fixture, model)
+End Function
+
 ' ДЛЯ ТЕСТОВ: фактическая плоскость и выбранные материалы для каждого элемента.
 ' StrainAt сохраняет численный frame solver-а, включая удаленные координаты.
 Private Function ElementStateSnapshot(ByVal fixture As String, ByVal stateID As String, ByVal model As CSectionModel, _
@@ -312,14 +382,15 @@ Finished:
     DumpShapePreviewSnapshot = result
 End Function
 
-Private Function PreviewSnapshot(ByVal fixture As String, ByVal outputDirectory As String) As String
+Private Function PreviewSnapshot(ByVal fixture As String, ByVal outputDirectory As String, Optional ByVal suppliedModel As CSectionModel = Nothing) As String
     Dim stage As String
     On Error GoTo Failed
     stage = "build"
     Dim model As CSectionModel, properties As CSectionPropertiesCalculator
     Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CNDMResultsWriter
     Dim reader As CSectionPlotDataReader, plotter As CSectionPlotter
-    Set model = FixtureModel(fixture)
+    Set model = suppliedModel
+    If model Is Nothing Then Set model = FixtureModel(fixture)
     Set properties = New CSectionPropertiesCalculator: properties.PrepareSnapshot model
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -364,6 +435,12 @@ Private Function PreviewSnapshot(ByVal fixture As String, ByVal outputDirectory 
     Exit Function
 Failed:
     Err.Raise Err.Number, "modTestShapeArchitecture.PreviewSnapshot", fixture & "; " & stage & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: Results -> reader -> plotter для переданной новой модели.
+Public Function PreparedPreviewSnapshot(ByVal fixture As String, ByVal model As CSectionModel, ByVal outputDirectory As String) As String
+    If model Is Nothing Then Err.Raise vbObjectError + 5292, "modTestShapeArchitecture", "Модель схемы не передана."
+    PreparedPreviewSnapshot = PreviewSnapshot(fixture, outputDirectory, model)
 End Function
 
 Private Function Row(ByVal fixture As String, ByVal kind As String, ByVal id As String, ByVal values As Variant) As String

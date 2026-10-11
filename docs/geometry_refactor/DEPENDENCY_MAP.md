@@ -36,3 +36,21 @@ Runtime-списки классов, имен, OnAction и References будут
 - modTestDeclarativeGeometry -> программные fixtures, без старых генераторов.
 
 Registry/reader/layout потребители пока прежние; retirement-map остается ACTIVE.
+
+Сквозной development-маршрут Circle:
+- CSectionTypeRegistry.RegisterRecipe -> ISectionRecipe + имена input tables;
+  одна регистрация Circle. Production selection пока прежний до полного переноса.
+- CSectionInputSnapshotReader -> CSectionInputTable/CSectionRecipeContext:
+  по одному Value2 на таблицу, адреса формируются без COM-чтения каждой ячейки.
+- CSectionRecipeCircle -> CSectionDefinitionBuilder -> CSectionDefinition:
+  никаких CGeometryCircle/CCircleRebarLayoutBuilder/CCircleAnnotationBuilder.
+- CSectionBuilder -> CGeometryRegion/CFiberMeshBuilder/CRebarRuleExecutor/
+  CSectionModelBuilder/CSectionAnnotationBuilder; нет ветвления по TypeID.
+- CSectionAnnotationBuilder -> CRebarGroupAnnotationBuilder, один формат подписи.
+- CRebarRuleExecutor -> CGeometryPath и query.BoundaryDistance для полного диска;
+  NDM/СП35-группы не смешиваются с группами геометрических путей.
+- modTestSectionRecipes -> реальная новая модель; Prepared*Snapshot читает
+  mesh/layout этой же сборки, не реконструирует их через прежний registry.
+
+Старый test SourceSnapshot сохранен только для baseline/немигрированных
+семейств. Удаляется вместе с остальными замененными потребителями до приемки.
