@@ -90,13 +90,8 @@ Private mCriticalLimitType As String ' Тип ограничения из общ
 Private mCriticalStrainUtilization As Double ' Отношение фактической деформации к своему пределу.
 Private mUltimateMomentOnlyPath As Boolean ' True для частной UltimateStrain-постановки N=const, M=lambda*Mbase.
 Private mUltimateMomentNMeritWeight As Double ' Перевод осевой невязки из долей допуска в относительную силовую ошибку.
-Private mUltimateFrame As CSectionNumericalFrame
-Private mUltimateNumericalPath As CLoadPathVector
 Private mUltimatePathMath As CLoadPathMath
-Private mUltimateForceScale As Double, mUltimatePathTolerance As Double
-Private mUltimatePathSection As CSectionModel, mUltimatePathRevision As Long
-Private mUltimateSourcePath As CLoadPathVector
-Private mUltimateSourceTolerances(1 To 3) As Double
+Private mUltimatePathTolerance As Double
 Private mProbeCacheCount As Long ' Сколько ячеек cache реально заполнено.
 Private mProbeCacheNextSlot As Long ' Следующая ячейка кольцевого cache для записи.
 Private mProbeCacheLambda(1 To PROBE_CACHE_SIZE) As Double ' Lambda ранее посчитанной точки поиска.
@@ -342,10 +337,9 @@ Private Sub AcceptRetainedPhysicalCapacity(ByVal section As CSectionModel, _
         mLastAcceptableSolver.Epsilon0 * strainScale, _
         mLastAcceptableSolver.KappaX * strainScale, _
         mLastAcceptableSolver.KappaY * strainScale
-    Dim math As CLoadPathMath
-    Set math = NewLoadPathMath()
+    PrepareUltimateNumericalPath section, loadPath
     Dim boundaryLambda As Double
-    boundaryLambda = math.Lambda(boundarySolver.Nint, boundarySolver.Mxint, boundarySolver.Myint, loadPath)
+    boundaryLambda = mUltimatePathMath.NumericalLambda(boundarySolver)
     If boundaryLambda <= 0# Then Exit Sub
     If boundaryLambda > mMaxLambda Then
         ' Проекция усилий может округлиться за техническую границу скобки.
@@ -637,13 +631,7 @@ Private Function EvaluateUltimateLoadPathResidual(ByVal section As CSectionModel
     Set mLastSolver = solver
     UpdateCriticalState section, concreteMaterial, solver
 
-    Dim numericalN As Double, numericalMx As Double, numericalMy As Double
-    solver.NumericalEfforts numericalN, numericalMx, numericalMy
-    numericalMx = numericalMx / mUltimateFrame.LengthScale
-    numericalMy = numericalMy / mUltimateFrame.LengthScale
-    lambdaValue = mUltimatePathMath.Lambda(numericalN, numericalMx, numericalMy, mUltimateNumericalPath)
-    mUltimatePathMath.BuildResiduals numericalN, numericalMx, numericalMy, _
-        mUltimateNumericalPath, lambdaValue, rPath1, rPath2, mUltimateForceScale
+    mUltimatePathMath.BuildNumericalResiduals solver, lambdaValue, rPath1, rPath2
     rLimit = mCriticalStrainUtilization - 1#
     state = CriticalLimitState()
 
@@ -937,47 +925,33 @@ Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
             loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase, _
             eps0, kx, ky
     End If
+    ' Упругая оценка при перегрузке может оказаться далеко за диаграммой.
+    ' Ограничиваем только старт общим критерием всех материалов, не усилия
+    ' пути и не допуски. Переданную готовую плоскость выше не меняем.
+    Dim initialState As CSectionSolver, builder As CStateGuessBuilder
+    Set initialState = New CSectionSolver
+    initialState.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
+    UpdateCriticalState section, concreteMaterial, initialState
+    If mCriticalStrainUtilization > 1# Then
+        Set builder = New CStateGuessBuilder
+        builder.ScaleToPhysicalLimit section, mCriticalStrainUtilization, eps0, kx, ky
+    End If
 End Sub
 
 ' Численный контекст нужен и отдельной оценке плоскости, не только поиску.
 ' Повторное использование допускается лишь при точном совпадении геометрии,
 ' шести компонент пути и трех допусков; входной изменяемый path не сохраняется.
 Private Sub PrepareUltimateNumericalPath(ByVal section As CSectionModel, ByVal loadPath As CLoadPathVector)
-    If section Is mUltimatePathSection Then
-        If Not mUltimateSourcePath Is Nothing Then
-            If section.Revision = mUltimatePathRevision And _
-                    loadPath.NOffset = mUltimateSourcePath.NOffset And loadPath.NBase = mUltimateSourcePath.NBase And _
-                    loadPath.MxOffset = mUltimateSourcePath.MxOffset And loadPath.MxBase = mUltimateSourcePath.MxBase And _
-                    loadPath.MyOffset = mUltimateSourcePath.MyOffset And loadPath.MyBase = mUltimateSourcePath.MyBase And _
-                    mSolverToleranceN = mUltimateSourceTolerances(1) And _
-                    mSolverToleranceMx = mUltimateSourceTolerances(2) And mSolverToleranceMy = mUltimateSourceTolerances(3) Then Exit Sub
-        End If
-    End If
-    Dim frame As CSectionNumericalFrame, forceScale As Double
-    Set frame = New CSectionNumericalFrame: frame.Initialize section
-    Set mUltimateFrame = frame
+    If mUltimatePathMath Is Nothing Then Set mUltimatePathMath = New CLoadPathMath
+    mUltimatePathMath.PrepareNumericalPath section, loadPath, mSolverToleranceN, mSolverToleranceMx, mSolverToleranceMy, True
+    Dim frame As CSectionNumericalFrame
+    Set frame = mUltimatePathMath.NumericalFrame
     mUltimateOriginX = frame.OriginX: mUltimateOriginY = frame.OriginY
-    Set mUltimateNumericalPath = LoadPathFromComponents(loadPath.NOffset, loadPath.NBase, _
-        frame.CenterMx(loadPath.NOffset, loadPath.MxOffset) / frame.LengthScale, _
-        frame.CenterMx(loadPath.NBase, loadPath.MxBase) / frame.LengthScale, _
-        frame.CenterMy(loadPath.NOffset, loadPath.MyOffset) / frame.LengthScale, _
-        frame.CenterMy(loadPath.NBase, loadPath.MyBase) / frame.LengthScale)
-    mUltimateForceScale = MaxDouble(1#, MaxDouble(Abs(mUltimateNumericalPath.NOffset), _
-        MaxDouble(Abs(mUltimateNumericalPath.NBase), MaxDouble(Abs(mUltimateNumericalPath.MxOffset), _
-        MaxDouble(Abs(mUltimateNumericalPath.MxBase), MaxDouble(Abs(mUltimateNumericalPath.MyOffset), _
-        Abs(mUltimateNumericalPath.MyBase)))))))
-    Set mUltimatePathMath = New CLoadPathMath
-    mUltimatePathMath.Configure mUltimateForceScale, mUltimateForceScale, mUltimateForceScale
-    mUltimatePathTolerance = MinDouble(mSolverToleranceN, _
-        MinDouble(mSolverToleranceMx, mSolverToleranceMy) / frame.LengthScale) / mUltimateForceScale
+    mUltimatePathTolerance = mUltimatePathMath.NumericalPathTolerance
+    Dim forceScale As Double
     forceScale = MaxDouble(1#, MaxDouble(Abs(loadPath.NOffset), _
         Sqr(loadPath.MxBase * loadPath.MxBase + loadPath.MyBase * loadPath.MyBase) / frame.LengthScale))
     mUltimateMomentNMeritWeight = MaxDouble(mSolverToleranceN, Abs(loadPath.NOffset) * 0.000000001) / forceScale
-    Set mUltimateSourcePath = LoadPathFromComponents(loadPath.NOffset, loadPath.NBase, _
-        loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase)
-    Set mUltimatePathSection = section: mUltimatePathRevision = section.Revision
-    mUltimateSourceTolerances(1) = mSolverToleranceN
-    mUltimateSourceTolerances(2) = mSolverToleranceMx: mUltimateSourceTolerances(3) = mSolverToleranceMy
 End Sub
 
 ' Строит независимый старт по фактической жесткости и активным ветвям материалов.
@@ -1064,6 +1038,14 @@ Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel
         ByVal lambdaValue As Double, ByVal solver As CSectionSolver, _
         ByVal state As String, ByVal iterations As Long) As Boolean
     If solver Is Nothing Then Exit Function
+    If Not IsValidUltimateLambda(lambdaValue, loadPath.NOffset, loadPath.NBase, _
+            loadPath.MxBase, loadPath.MyBase, loadPath.MxOffset, loadPath.MyOffset) Then
+        Dim rejectionReason As String
+        rejectionReason = "UltimateStrain: найден недопустимый lambda: " & FormatNumberInvariant(lambdaValue)
+        AppendSearchDiagnostic rejectionReason
+        LimitSearchSetFailure sfcNumericalFailure, rejectionReason
+        Exit Function
+    End If
     solver.ToleranceN = mSolverToleranceN
     solver.ToleranceMx = mSolverToleranceMx
     solver.ToleranceMy = mSolverToleranceMy
@@ -1076,17 +1058,12 @@ Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel
         Exit Function
     End If
     Set mLastSolver = solver
-    If Not IsValidUltimateLambda(lambdaValue, loadPath.NOffset, loadPath.NBase, _
-            loadPath.MxBase, loadPath.MyBase, loadPath.MxOffset, loadPath.MyOffset) Then
-        mLimitState = STATE_NUMERICAL_FAILURE
-        mStopReason = "UltimateStrain: найден недопустимый lambda: " & FormatNumberInvariant(lambdaValue)
-        Exit Function
-    End If
     StoreLoadPathUltimateComponents lambdaValue, loadPath.NOffset, loadPath.NBase, _
         loadPath.MxBase, loadPath.MyBase, loadPath.MxOffset, loadPath.MyOffset
     mLimitState = state
     mUpperLimitState = state
     mConverged = True
+    mFailureCode = sfcNone
     LimitSearchFinalizeUltimateResult = True
 End Function
 
@@ -1160,14 +1137,6 @@ Private Sub FinalizeLoadMultiplierSearch(ByVal lambdaValue As Double, _
     mStopReason = "Поиск несущей способности методом " & methodName & _
         " сошелся; верхняя граница подтверждена: " & CapacityStateDisplayName(mUpperLimitState) & "."
 End Sub
-
-' Создает общий helper load-path с текущими solver tolerance capacity.
-Private Function NewLoadPathMath() As CLoadPathMath
-    Dim math As CLoadPathMath
-    Set math = New CLoadPathMath
-    math.Configure mSolverToleranceN, mSolverToleranceMx, mSolverToleranceMy
-    Set NewLoadPathMath = math
-End Function
 
 ' Упаковывает компонентную форму CCapacitySolver в общий CLoadPathVector, чтобы
 ' вся математика lambda-траектории проходила через CLoadPathMath.

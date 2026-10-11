@@ -26,6 +26,7 @@ Private mStrains() As Double ' Узлы диаграммы по деформац
 Private mStresses() As Double ' Напряжения в узлах диаграммы, МПа во внутренней системе.
 Private mSegmentTangent() As Double ' Заранее рассчитанный наклон каждого линейного участка диаграммы, МПа.
 Private mSegmentIntercept() As Double ' Свободный член sigma = E_t * epsilon + b для быстрого расчета stress.
+Private mTransitionStrains() As Double, mTransitionCount As Long ' Только узлы с изменением наклона, включая переходы на крайнее плато.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова расчетных методов до загрузки точек.
 Private mFrozen As Boolean ' Опубликованный provider-ом материал больше не допускает изменения общей ссылки.
@@ -290,6 +291,38 @@ Private Sub BuildSegmentCache()
     For i = 1 To mPointCount - 1
         mSegmentTangent(i) = (mStresses(i + 1) - mStresses(i)) / (mStrains(i + 1) - mStrains(i))
         mSegmentIntercept(i) = mStresses(i) - mSegmentTangent(i) * mStrains(i)
+    Next i
+    ReDim mTransitionStrains(1 To mPointCount)
+    mTransitionCount = 0
+    Dim leftSlope As Double, rightSlope As Double
+    For i = 1 To mPointCount
+        leftSlope = 0#: rightSlope = 0#
+        If i > 1 Then leftSlope = mSegmentTangent(i - 1)
+        If i < mPointCount Then rightSlope = mSegmentTangent(i)
+        If leftSlope <> rightSlope Then
+            mTransitionCount = mTransitionCount + 1
+            mTransitionStrains(mTransitionCount) = mStrains(i)
+        End If
+    Next i
+End Sub
+
+' Ближайшие два изменения активной ветви вдоль заданного приращения.
+' Наклоны уже подготовлены вместе с диаграммой; порядок узлов и арифметика
+' расстояний остаются такими же, как в поузловом переборе общего solver-а.
+Friend Sub CollectStrainTransitions(ByVal strain As Double, ByVal delta As Double, _
+        ByRef first As Double, ByRef second As Double)
+    EnsureInitialized
+    If delta = 0# Then Exit Sub
+    Dim i As Long, distance As Double
+    For i = 1 To mTransitionCount
+        distance = (mTransitionStrains(i) - strain) / delta
+        If distance > 0# And strain + distance * delta <> strain Then
+            If first = 0# Or distance < first Then
+                second = first: first = distance
+            ElseIf distance > first Then
+                If second = 0# Or distance < second Then second = distance
+            End If
+        End If
     Next i
 End Sub
 

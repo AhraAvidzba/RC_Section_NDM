@@ -9,6 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Const STRAIN_EXTREMA_ROUNDING_MARGIN As Double = 1.77635683940025E-15            ' 8 epsilon Double; неоднозначное округление отношения требует обычного обхода.
+
 ' ==========================================================================
 ' Решатель равновесия N + Mx + My
 ' ==========================================================================
@@ -93,6 +95,11 @@ Private mPhysicalEvaluationForces(1 To 3) As Double ' Экстремумы/K о�
 Private mForceEvaluationValid As Boolean, mForceEvaluationRevision As Long
 Private mForceEvaluationPlane(1 To 3) As Double, mForceEvaluationForces(1 To 3) As Double
 Private mEvaluationReuseCount As Long, mTangentBuildCount As Long ' Технические счетчики фактической работы, не инженерные результаты.
+Private mConcreteMinStrainIndex As Long, mConcreteMaxStrainIndex As Long
+Private mSteelMinStrainIndex As Long, mSteelMaxStrainIndex As Long
+Private mStrainExtremaValid As Boolean, mStrainExtremaRevision As Long
+Private mStrainExtremaAmbiguous As Boolean ' Почти равные разные деформации могут дать одинаковое отношение к пределу после округления.
+Private mStrainExtremaPlane(1 To 3) As Double ' Экстремумы принадлежат только этой центрированной плоскости и ревизии модели.
 
 ' ------------------------------
 ' Настройки по умолчанию
@@ -906,6 +913,10 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         mTangentBuildCount = mTangentBuildCount + 1
     End If
     If physical Then
+        mStrainExtremaValid = False
+        mStrainExtremaAmbiguous = False
+        mConcreteMinStrainIndex = 0: mConcreteMaxStrainIndex = 0
+        mSteelMinStrainIndex = 0: mSteelMaxStrainIndex = 0
         mMinConcreteStrain = 1E+100
         mMaxConcreteStrain = -1E+100
         mMaxConcreteCompressionStress = 0#
@@ -947,8 +958,14 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         xCoord = xCoord - originX: yCoord = yCoord - originY
         strain = eps0 + kx * yCoord + ky * xCoord
         If physical Then
-            If strain < mMinConcreteStrain Then mMinConcreteStrain = strain
-            If strain > mMaxConcreteStrain Then mMaxConcreteStrain = strain
+            If strain < mMinConcreteStrain Then
+                If Abs(strain - mMinConcreteStrain) <= Abs(strain) * STRAIN_EXTREMA_ROUNDING_MARGIN Then mStrainExtremaAmbiguous = True
+                mMinConcreteStrain = strain: mConcreteMinStrainIndex = i
+            End If
+            If strain > mMaxConcreteStrain Then
+                If Abs(strain - mMaxConcreteStrain) <= Abs(strain) * STRAIN_EXTREMA_ROUNDING_MARGIN Then mStrainExtremaAmbiguous = True
+                mMaxConcreteStrain = strain: mConcreteMaxStrainIndex = i
+            End If
         End If
         If concreteDiagram Is Nothing Then
             stress = concreteMaterial.GetStress(strain)
@@ -983,8 +1000,14 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
             xCoord = xCoord - originX: yCoord = yCoord - originY
             strain = eps0 + kx * yCoord + ky * xCoord
             If physical Then
-                If strain < mMinSteelStrain Then mMinSteelStrain = strain
-                If strain > mMaxSteelStrain Then mMaxSteelStrain = strain
+                If strain < mMinSteelStrain Then
+                    If Abs(strain - mMinSteelStrain) <= Abs(strain) * STRAIN_EXTREMA_ROUNDING_MARGIN Then mStrainExtremaAmbiguous = True
+                    mMinSteelStrain = strain: mSteelMinStrainIndex = i
+                End If
+                If strain > mMaxSteelStrain Then
+                    If Abs(strain - mMaxSteelStrain) <= Abs(strain) * STRAIN_EXTREMA_ROUNDING_MARGIN Then mStrainExtremaAmbiguous = True
+                    mMaxSteelStrain = strain: mSteelMaxStrainIndex = i
+                End If
                 If Abs(strain) > mMaxAbsSteelStrain Then mMaxAbsSteelStrain = Abs(strain)
             End If
             If steelDiagram Is Nothing Then
@@ -1030,6 +1053,9 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         If Not mHasConcreteTension Then mMaxConcreteStress = 0#
         If Not mHasSteelCompression Then mMinSteelStress = 0#
         If Not mHasSteelTension Then mMaxSteelStress = 0#
+        mStrainExtremaRevision = section.Revision
+        mStrainExtremaPlane(1) = eps0: mStrainExtremaPlane(2) = kx: mStrainExtremaPlane(3) = ky
+        mStrainExtremaValid = True
     End If
     If buildTangent Then BuildOriginalTangent
     If reusable Then
@@ -1224,6 +1250,7 @@ End Function
 Public Sub ClearResult()
     mEvaluationReuseEnabled = False
     mPhysicalEvaluationValid = False: mForceEvaluationValid = False
+    mStrainExtremaValid = False
     mEvaluationReuseCount = 0: mTangentBuildCount = 0
     Set mSnapshotSection = Nothing
     Set mSnapshotConcrete = Nothing
@@ -1258,6 +1285,40 @@ Public Sub ClearResult()
     mInternalNewtonCallCount = 0
     ClearTangent
 End Sub
+
+' Общий критерий предельных деформаций использует уже вычисленные экстремумы.
+' После изменения модели или плоскости этот путь запрещен; равные значения
+' сохраняют первый индекс, как последовательный обход элементов.
+Friend Function TryGetStrainExtrema(ByVal section As CSectionModel, _
+        ByRef concreteMin As Double, ByRef concreteMax As Double, _
+        ByRef concreteMinIndex As Long, ByRef concreteMaxIndex As Long, _
+        ByRef steelMin As Double, ByRef steelMax As Double, _
+        ByRef steelMinIndex As Long, ByRef steelMaxIndex As Long) As Boolean
+    If mStrainExtremaAmbiguous Then Exit Function
+    If Not StrainExtremaContextMatches(section) Then Exit Function
+    concreteMin = mMinConcreteStrain: concreteMax = mMaxConcreteStrain
+    concreteMinIndex = mConcreteMinStrainIndex: concreteMaxIndex = mConcreteMaxStrainIndex
+    steelMin = mMinSteelStrain: steelMax = mMaxSteelStrain
+    steelMinIndex = mSteelMinStrainIndex: steelMaxIndex = mSteelMaxStrainIndex
+    TryGetStrainExtrema = True
+End Function
+
+' Для выбора растянутого критерия нужны только значения, без выбора элемента
+' при равенстве отношений. Почти совпадающие значения здесь не неоднозначны.
+Friend Function TryGetConcreteStrainBounds(ByVal section As CSectionModel, _
+        ByRef minimum As Double, ByRef maximum As Double) As Boolean
+    If Not StrainExtremaContextMatches(section) Then Exit Function
+    minimum = mMinConcreteStrain: maximum = mMaxConcreteStrain
+    TryGetConcreteStrainBounds = True
+End Function
+
+Private Function StrainExtremaContextMatches(ByVal section As CSectionModel) As Boolean
+    If Not mStrainExtremaValid Then Exit Function
+    If Not section Is mSnapshotSection Then Exit Function
+    If section.Revision <> mStrainExtremaRevision Then Exit Function
+    StrainExtremaContextMatches = (mCenterEpsilon = mStrainExtremaPlane(1) And _
+        mKappaX = mStrainExtremaPlane(2) And mKappaY = mStrainExtremaPlane(3))
+End Function
 
 ' Запоминает контекст последней оценки без объектов на каждое волокно.
 ' Протокол произвольного материала в solver сохраняется; серийный снимок

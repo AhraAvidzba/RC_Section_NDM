@@ -87,10 +87,11 @@ End Sub
 ' в общий отчет запуска.
 Public Sub AddBlock(ByVal title As String, ByVal body As String)
     If Not mEnabled Then Exit Sub
-    If Len(Trim$(body)) = 0 Then Exit Sub
+    body = Trim$(body)
+    If Len(body) = 0 Then Exit Sub
 
     AddRawLine TimePrefix() & " " & Trim$(title)
-    AddRawLine Trim$(body)
+    AddRawLine body
 End Sub
 
 ' Фиксирует ошибку перед сохранением отчета. Ошибка не подавляется: вызывающий
@@ -384,21 +385,17 @@ Private Function CompactCrackDiagnosticText(ByVal body As String) As String
         lineText = Trim$(lines(i))
         If Len(lineText) = 0 Then
             ' Пустые строки внутри diagnostic-блока не несут смысла.
-        ElseIf Left$(lineText, Len("lambda_crc_iter=")) = "lambda_crc_iter=" Then
-            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
-        ElseIf Left$(lineText, Len("lambda_crc_path_iter=")) = "lambda_crc_path_iter=" Then
-            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         ElseIf lineText = "initialGuess=warmStartSolver" Then
             warmStartCount = warmStartCount + 1
         Else
-            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, lineText
         End If
     Next i
 
     If warmStartCount > 0 Then _
         AppendReportPart parts, partCount, "Для повторных НДС использовалась стартовая плоскость из предыдущего близкого решения; повторов: " & CStr(warmStartCount) & "."
 
-    CompactCrackDiagnosticText = JoinReportParts(parts, partCount)
+    CompactCrackDiagnosticText = TranslateDiagnosticLine(JoinReportParts(parts, partCount))
 End Function
 
 ' Сжимает diagnostic CStateSolutionRunner. Особенно важно убрать десятки
@@ -417,14 +414,12 @@ Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As Str
         lineText = Trim$(lines(i))
         If Len(lineText) = 0 Then
             ' Пропускаем.
-        ElseIf Left$(lineText, Len("step=")) = "step=" Then
-            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         ElseIf lineText = "initialGuess=warmStartSolver" Then
             warmStartCount = warmStartCount + 1
         ElseIf lineText = "initialGuess=directStateActiveSet" Then
             activeGuessCount = activeGuessCount + 1
         Else
-            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, lineText
         End If
     Next i
 
@@ -433,7 +428,7 @@ Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As Str
     If activeGuessCount > 0 Then _
         AppendReportPart parts, partCount, "Стартовая плоскость: подобрана по активной зоне сечения; повторов: " & CStr(activeGuessCount) & "."
 
-    CompactStateSolutionDiagnosticText = JoinReportParts(parts, partCount)
+    CompactStateSolutionDiagnosticText = TranslateDiagnosticLine(JoinReportParts(parts, partCount))
 End Function
 
 ' Сжимает диагностический блок поиска несущей способности. Полный список
@@ -452,78 +447,104 @@ Private Function CompactCapacityDiagnosticText(ByVal body As String) As String
         lineText = Trim$(lines(i))
         If Len(lineText) = 0 Then
             ' Пропускаем.
-        ElseIf Left$(lineText, Len("probe=")) = "probe=" Then
-            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
         Else
-            AppendReportPart parts, partCount, TranslateDiagnosticLine(lineText)
+            AppendReportPart parts, partCount, lineText
         End If
     Next i
 
-    CompactCapacityDiagnosticText = JoinReportParts(parts, partCount)
+    CompactCapacityDiagnosticText = TranslateDiagnosticLine(JoinReportParts(parts, partCount))
 End Function
 
-' Переводит короткие машинные diagnostic-строки в более понятные фразы.
+' Переводит маркеры всего блока, не изменяя исходную диагностику решателей.
 Private Function TranslateDiagnosticLine(ByVal lineText As String) As String
     Dim translated As String
     translated = lineText
-    If translated = "ultimatePath pureAxial redirected=LoadMultiplier" Or _
-            translated = "Силовая траектория UltimateStrain перенаправлена на LoadMultiplier." Then
-        TranslateDiagnosticLine = "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
-        Exit Function
-    End If
-    translated = Replace$(translated, "ultimatePath iter=", "итерация UltimateStrain по общей lambda-траектории=")
-    translated = Replace$(translated, "ultimate iter=", "итерация UltimateStrain по моментной траектории=")
-    translated = Replace$(translated, "lambda_crc=", "Найден lambda_crc=")
-    translated = Replace$(translated, "lambda_crc_iter=", "итерация прямого поиска lambda_crc=")
-    translated = Replace$(translated, "lambda_crc_path_iter=", "итерация UltimateStrain по lambda-траектории lambda_crc=")
-    translated = Replace$(translated, "lambda_crc_load_probe=", "точка LoadMultiplier lambda_crc=")
-    translated = Replace$(translated, "iterations=", "итераций=")
-    translated = Replace$(translated, "method=", "метод=")
-    translated = Replace$(translated, "formation=Ncrc", "Образование трещины найдено по центральному растяжению Ncrc")
-    translated = Replace$(translated, "search=", "Поиск: ")
-    translated = Replace$(translated, "searchMethod=", "метод поиска=")
-    translated = Replace$(translated, "secantGuard=insideBracket", "защита Secant=точка возвращена внутрь скобки")
-    translated = Replace$(translated, "rawLambda=", "исходная lambda=")
-    translated = Replace$(translated, "guardedLambda=", "защищенная lambda=")
-    translated = Replace$(translated, "bracketLow=", "нижняя граница=")
-    translated = Replace$(translated, "bracketHigh=", "верхняя граница=")
-    translated = Replace$(translated, "probe=", "точка lambda=")
-    translated = Replace$(translated, "step=", "шаг=")
-    translated = Replace$(translated, "iter=", "итерация=")
-    translated = Replace$(translated, "directStateRetry=", "повтор прямого НДС=")
-    translated = Replace$(translated, "extensionRetry=", "повтор после выхода за диаграмму=")
-    translated = Replace$(translated, "directStateActiveSet", "активная зона прямого НДС")
-    translated = Replace$(translated, "warmStartSolver", "предыдущее близкое решение")
-    translated = Replace$(translated, "direct target", "целевая нагрузка")
-    translated = Replace$(translated, "stepped", "ступенчатая нагрузка")
-    translated = Replace$(translated, "attempt=", "повтор НДС=")
-    translated = Replace$(translated, "converged=True", "сошлось=да")
-    translated = Replace$(translated, "converged=False", "сошлось=нет")
-    translated = Replace$(translated, "state=", "состояние=")
-    translated = Replace$(translated, "stop=", "причина=")
-    translated = Replace$(translated, "lineSearchUsed=", "line search использован=")
-    translated = Replace$(translated, "lineSearchIterations=", "итераций line search=")
-    translated = Replace$(translated, "internalForceEvaluationCount=", "оценок внутренних усилий=")
-    translated = Replace$(translated, "internalNewtonCallCount=", "вызовов Newton=")
-    translated = Replace$(translated, "result=converged", "результат=сошлось")
-    translated = Replace$(translated, "result=failed", "результат=не сошлось")
-    translated = Replace$(translated, "rPath1=", "невязка пути 1=")
-    translated = Replace$(translated, "rPath2=", "невязка пути 2=")
-    translated = Replace$(translated, "rLimit=", "невязка предельной деформации=")
-    translated = Replace$(translated, "rDir=", "невязка направления=")
-    translated = Replace$(translated, "residual=", "невязка образования трещины=")
-    translated = Replace$(translated, "rN=", "невязка N=")
-    translated = Replace$(translated, "rMomentDir=", "невязка направления момента=")
-    translated = Replace$(translated, "eps_bt_ult=", "eps_bt,ult=")
-    translated = Replace$(translated, "residualN=", "невязка N=")
-    translated = Replace$(translated, "residualMx=", "невязка Mx=")
-    translated = Replace$(translated, "residualMy=", "невязка My=")
-    translated = Replace$(translated, "critical=", "критический элемент=")
-    translated = Replace$(translated, "minConcreteStrain=", "мин. деформация бетона=")
-    translated = Replace$(translated, "maxConcreteStrain=", "макс. деформация бетона=")
-    translated = Replace$(translated, "maxAbsSteelStrain=", "макс. модуль деформации арматуры=")
+    ReplaceDiagnosticMarker translated, "ultimateTrustRegion flat trial rejected; original recovery remains available", _
+        "Резервная проба на плато отклонена; прежний подбор шага сохранен."
+    ReplaceDiagnosticMarker translated, "ultimateTrustRegion attempt=", "Резервный шаг на активном пределе: проба="
+    ReplaceDiagnosticMarker translated, "; rho=", "; соответствие прогноза="
+    ReplaceWholeDiagnosticLine translated, "ultimatePath pureAxial redirected=LoadMultiplier", "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
+    ReplaceWholeDiagnosticLine translated, "Силовая траектория UltimateStrain перенаправлена на LoadMultiplier.", "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
+    ReplaceDiagnosticMarker translated, "ultimatePath iter=", "итерация UltimateStrain по общей lambda-траектории="
+    ReplaceDiagnosticMarker translated, "ultimate iter=", "итерация UltimateStrain по моментной траектории="
+    ReplaceDiagnosticMarker translated, "lambda_crc=", "Найден lambda_crc="
+    ReplaceDiagnosticMarker translated, "lambda_crc_iter=", "итерация прямого поиска lambda_crc="
+    ReplaceDiagnosticMarker translated, "lambda_crc_path_iter=", "итерация UltimateStrain по lambda-траектории lambda_crc="
+    ReplaceDiagnosticMarker translated, "lambda_crc_load_probe=", "точка LoadMultiplier lambda_crc="
+    ReplaceDiagnosticMarker translated, "iterations=", "итераций="
+    ReplaceDiagnosticMarker translated, "method=", "метод="
+    ReplaceDiagnosticMarker translated, "formation=Ncrc", "Образование трещины найдено по центральному растяжению Ncrc"
+    ReplaceDiagnosticMarker translated, "search=", "Поиск: "
+    ReplaceDiagnosticMarker translated, "searchMethod=", "метод поиска="
+    ReplaceDiagnosticMarker translated, "secantGuard=insideBracket", "защита Secant=точка возвращена внутрь скобки"
+    ReplaceDiagnosticMarker translated, "rawLambda=", "исходная lambda="
+    ReplaceDiagnosticMarker translated, "guardedLambda=", "защищенная lambda="
+    ReplaceDiagnosticMarker translated, "bracketLow=", "нижняя граница="
+    ReplaceDiagnosticMarker translated, "bracketHigh=", "верхняя граница="
+    ReplaceDiagnosticMarker translated, "probe=", "точка lambda="
+    ReplaceDiagnosticMarker translated, "step=", "шаг="
+    ReplaceDiagnosticMarker translated, "iter=", "итерация="
+    ReplaceDiagnosticMarker translated, "directStateRetry=", "повтор прямого НДС="
+    ReplaceDiagnosticMarker translated, "extensionRetry=", "повтор после выхода за диаграмму="
+    ReplaceDiagnosticMarker translated, "directStateActiveSet", "активная зона прямого НДС"
+    ReplaceDiagnosticMarker translated, "warmStartSolver", "предыдущее близкое решение"
+    ReplaceDiagnosticMarker translated, "direct target", "целевая нагрузка"
+    ReplaceDiagnosticMarker translated, "stepped", "ступенчатая нагрузка"
+    ReplaceDiagnosticMarker translated, "attempt=", "повтор НДС="
+    ReplaceDiagnosticMarker translated, "converged=True", "сошлось=да"
+    ReplaceDiagnosticMarker translated, "converged=False", "сошлось=нет"
+    ReplaceDiagnosticMarker translated, "state=", "состояние="
+    ReplaceDiagnosticMarker translated, "stop=", "причина="
+    ReplaceDiagnosticMarker translated, "lineSearchUsed=", "line search использован="
+    ReplaceDiagnosticMarker translated, "lineSearchIterations=", "итераций line search="
+    ReplaceDiagnosticMarker translated, "internalForceEvaluationCount=", "оценок внутренних усилий="
+    ReplaceDiagnosticMarker translated, "internalNewtonCallCount=", "вызовов Newton="
+    ReplaceDiagnosticMarker translated, "result=converged", "результат=сошлось"
+    ReplaceDiagnosticMarker translated, "result=failed", "результат=не сошлось"
+    ReplaceDiagnosticMarker translated, "rPath1=", "невязка пути 1="
+    ReplaceDiagnosticMarker translated, "rPath2=", "невязка пути 2="
+    ReplaceDiagnosticMarker translated, "rLimit=", "невязка предельной деформации="
+    ReplaceDiagnosticMarker translated, "rDir=", "невязка направления="
+    ReplaceDiagnosticMarker translated, "residual=", "невязка образования трещины="
+    ReplaceDiagnosticMarker translated, "rN=", "невязка N="
+    ReplaceDiagnosticMarker translated, "rMomentDir=", "невязка направления момента="
+    ReplaceDiagnosticMarker translated, "eps_bt_ult=", "eps_bt,ult="
+    ReplaceDiagnosticMarker translated, "residualN=", "невязка N="
+    ReplaceDiagnosticMarker translated, "residualMx=", "невязка Mx="
+    ReplaceDiagnosticMarker translated, "residualMy=", "невязка My="
+    ReplaceDiagnosticMarker translated, "critical=", "критический элемент="
+    ReplaceDiagnosticMarker translated, "minConcreteStrain=", "мин. деформация бетона="
+    ReplaceDiagnosticMarker translated, "maxConcreteStrain=", "макс. деформация бетона="
+    ReplaceDiagnosticMarker translated, "maxAbsSteelStrain=", "макс. модуль деформации арматуры="
     TranslateDiagnosticLine = translated
 End Function
+
+' Не копирует большой блок при отсутствии маркера; порядок замен сохранен.
+Private Sub ReplaceDiagnosticMarker(ByRef text As String, ByVal marker As String, ByVal replacement As String)
+    If InStr(1, text, marker, vbBinaryCompare) > 0 Then text = Replace$(text, marker, replacement, 1, -1, vbBinaryCompare)
+End Sub
+
+' Особое правило действует только на целую строку, включая первую и последнюю.
+Private Sub ReplaceWholeDiagnosticLine(ByRef text As String, ByVal marker As String, ByVal replacement As String)
+    Dim position As Long, nextPosition As Long, searchFrom As Long, startsLine As Boolean, endsLine As Boolean
+    searchFrom = 1
+    position = InStr(searchFrom, text, marker, vbBinaryCompare)
+    Do While position > 0
+        startsLine = (position = 1)
+        If position > 2 Then startsLine = (Mid$(text, position - 2, 2) = vbCrLf)
+        nextPosition = position + Len(marker)
+        endsLine = (nextPosition > Len(text))
+        If Not endsLine Then endsLine = (Mid$(text, nextPosition, 2) = vbCrLf)
+        If startsLine And endsLine Then
+            text = Left$(text, position - 1) & replacement & Mid$(text, nextPosition)
+            searchFrom = position + Len(replacement)
+        Else
+            searchFrom = nextPosition
+        End If
+        If searchFrom > Len(text) Then Exit Do
+        position = InStr(searchFrom, text, marker, vbBinaryCompare)
+    Loop
+End Sub
 
 ' Пишет в txt-отчет подробные данные фильтра устойчивости по двум главным
 ' плоскостям. Таблица Results остается основным машинным выводом, а этот блок

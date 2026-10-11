@@ -420,6 +420,95 @@ Private Sub TestExecutionReportFile(ByRef stats As TUiTestStats)
     SetSystemSetting "General.ExecutionReportEnabled", "No"
 End Sub
 
+' ДЛЯ ТЕСТОВ: проверяет точный текст трех видов диагностики через публичный отчет,
+' без решения НДС. Пробелы, регистр и специальные целые строки проверяются строго.
+Public Function RunExecutionReportFormattingTests() As String
+    Dim stats As TUiTestStats, settings As CSystemSettingsReader, report As CExecutionReport
+    Dim oldEnabled As Boolean, captured As Boolean
+    On Error GoTo Failed
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    oldEnabled = settings.GetRequiredBoolean("General.ExecutionReportEnabled"): captured = True
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    settings.LoadFromWorkbook ThisWorkbook
+    Set report = New CExecutionReport: report.Initialize ThisWorkbook, settings
+
+    Dim axial As String, axialRu As String, redirected As String
+    axial = "ultimatePath pureAxial redirected=LoadMultiplier"
+    axialRu = "Силовая траектория UltimateStrain перенаправлена на LoadMultiplier."
+    redirected = "Силовая траектория lambda*N перенаправлена на LoadMultiplier, потому что UltimateStrain для нее вырождается."
+    Dim bodies As Variant, expected As Variant, titles As Variant
+    bodies = Array(axial, axialRu, axial & vbCrLf & axialRu, "prefix " & axial, axial & " suffix", _
+        axial & vbLf & axial, UCase$(axial), " " & vbCrLf & "  " & axial & "  " & vbCrLf & " ", _
+        "lambda_crc_path_iter=2; iter=3", "rN=0; converged=True; converged=False", _
+        "Кириллица: " & ChrW(&H3BB) & "; R2; мм" & ChrW(&HB2), _
+        "searchMethod=Brent; method=Bisection; iterations=3; probe=1; residualMx=0; residualMy=0", _
+        axial & vbCrLf & "prefix " & axial & vbCrLf & axial, _
+        "initialGuess=warmStartSolver", "initialGuess=directStateActiveSet", "   ", _
+        "ultimateTrustRegion attempt=2; rho=0.5", _
+        "ultimateTrustRegion flat trial rejected; original recovery remains available")
+    expected = Array(redirected, redirected, redirected & vbCrLf & redirected, "prefix " & axial, axial & " suffix", _
+        axial & vbLf & axial, UCase$(axial), redirected, _
+        "итерация UltimateStrain по lambda-траектории lambda_crc=2; итерация=3", _
+        "невязка N=0; сошлось=да; сошлось=нет", "Кириллица: " & ChrW(&H3BB) & "; R2; мм" & ChrW(&HB2), _
+        "метод поиска=Brent; метод=Bisection; итераций=3; точка lambda=1; невязка Mx=0; невязка My=0", _
+        redirected & vbCrLf & "prefix " & axial & vbCrLf & redirected, _
+        "initialGuess=предыдущее близкое решение", "initialGuess=активная зона прямого НДС", vbNullString, _
+        "Резервный шаг на активном пределе: проба=2; соответствие прогноза=0.5", _
+        "Резервная проба на плато отклонена; прежний подбор шага сохранен.")
+    titles = Array("Диагностика расчета трещин", "Сценарий прямого StateSolution", "Диагностика поиска несущей способности")
+    Dim kind As Long, i As Long, title As String, body As String
+    For kind = 0 To UBound(titles)
+        For i = 0 To UBound(bodies)
+            title = CStr(titles(kind)) & " FORMAT_CASE_" & CStr(kind) & "_" & Format$(i, "00")
+            body = CStr(bodies(i))
+            report.AddDiagnosticBlock title, body
+            AssertTrue stats, "report.format.inputUnchanged." & CStr(kind) & "." & CStr(i), _
+                StrComp(body, CStr(bodies(i)), vbBinaryCompare) = 0
+            report.AddStep "FORMAT_END_" & CStr(kind) & "_" & Format$(i, "00")
+        Next i
+    Next kind
+    report.Save "FORMAT_COMPLETE"
+
+    Dim text As String, startAt As Long, endAt As Long, actual As String, wanted As String
+    text = ReadTextFile(report.FilePath)
+    For kind = 0 To UBound(titles)
+        For i = 0 To UBound(bodies)
+            title = CStr(titles(kind)) & " FORMAT_CASE_" & CStr(kind) & "_" & Format$(i, "00")
+            startAt = InStr(1, text, title, vbBinaryCompare)
+            wanted = CStr(expected(i))
+            If i = 13 And kind = 0 Then wanted = "Для повторных НДС использовалась стартовая плоскость из предыдущего близкого решения; повторов: 1."
+            If i = 13 And kind = 1 Then wanted = "Стартовая плоскость: использовано предыдущее близкое решение; повторов: 1."
+            If i = 14 And kind = 1 Then wanted = "Стартовая плоскость: подобрана по активной зоне сечения; повторов: 1."
+            If Len(wanted) = 0 Then
+                AssertTrue stats, "report.format.emptySkipped." & CStr(kind), startAt = 0
+            Else
+                AssertTrue stats, "report.format.title." & CStr(kind) & "." & CStr(i), startAt > 0
+                If startAt > 0 Then
+                    startAt = startAt + Len(title) + Len(vbCrLf)
+                    endAt = InStr(startAt, text, "FORMAT_END_" & CStr(kind) & "_" & Format$(i, "00"), vbBinaryCompare)
+                    AssertTrue stats, "report.format.end." & CStr(kind) & "." & CStr(i), endAt > 0
+                    If endAt > 0 Then
+                        endAt = InStrRev(text, vbCrLf, endAt, vbBinaryCompare)
+                        actual = Mid$(text, startAt, endAt - startAt)
+                        AssertTrue stats, "report.format.exact." & CStr(kind) & "." & CStr(i), StrComp(actual, wanted, vbBinaryCompare) = 0
+                        If StrComp(actual, wanted, vbBinaryCompare) <> 0 Then AppendLine stats, "actual=" & actual & "; expected=" & wanted
+                    End If
+                End If
+            End If
+        Next i
+    Next kind
+    GoTo Finished
+Failed:
+    AssertTrue stats, "report.format.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If captured Then
+        If oldEnabled Then SetSystemSetting "General.ExecutionReportEnabled", "Yes" Else SetSystemSetting "General.ExecutionReportEnabled", "No"
+    End If
+    On Error GoTo 0
+    RunExecutionReportFormattingTests = stats.Report & "TOTAL_REPORT_FORMATTING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
 ' Проверяет защиту пользовательского сценария расчета от лишней работы Excel.
 ' Макрос временно отключает события, экран, предупреждения и автопересчет,
 ' но после завершения должен вернуть настройки текущего Excel.Application

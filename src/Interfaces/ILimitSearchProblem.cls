@@ -227,11 +227,12 @@ End Function
 Public Property Get LimitSearchUseJacobianMeritScaling() As Boolean
 End Property
 
-' Принимает точку только после проверки ее усилий, load path и критерия.
+' Принимает точку после проверки усилий, load path и критерия. Отказ точки
+' завершает эту попытку, но не запрещает другой разрешенный старт или путь.
 Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As Boolean
+        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As EUltimateFinalization
 End Function
 
 ' Сохраняет реальную численную неудачу общего Newton-цикла.

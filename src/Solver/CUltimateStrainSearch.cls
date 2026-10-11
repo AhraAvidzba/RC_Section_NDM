@@ -183,11 +183,20 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
         End If
 
         If context.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit) Then
-            If context.LimitSearchFinalizeUltimateResult(section, _
-                    concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iter) Then
-                RunNewton = True
-                Exit Function
-            End If
+            Dim finalization As EUltimateFinalization
+            finalization = context.LimitSearchFinalizeUltimateResult(section, _
+                concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iter)
+            Select Case finalization
+                Case ufAccepted
+                    RunNewton = True
+                    Exit Function
+                Case ufRejectedPoint
+                    Exit Function
+                Case ufNeedsRefinement
+                Case Else
+                    context.SetFailure sfcInternalError, "Неизвестный исход приемки предельной точки UltimateStrain."
+                    Exit Function
+            End Select
             If context.StoppedTerminally Then Exit Function
             ' Достижение внутренних residual-допусков не отменяет финальную
             ' проверку усилий: продолжаем уточнение той же физической точки.
@@ -212,11 +221,19 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, _
             loadPath, eps0, kx, ky, solver, rPath1, rPath2, rLimit, lambdaValue, state) Then Exit Function
     If context.LimitSearchUltimateResidualReached(rPath1, rPath2, rLimit) Then
-        If context.LimitSearchFinalizeUltimateResult(section, concreteMaterial, steelMaterial, _
-                loadPath, lambdaValue, solver, state, context.LimitSearchUltimateMaxIterations) Then
-            RunNewton = True
-            Exit Function
-        End If
+        finalization = context.LimitSearchFinalizeUltimateResult(section, concreteMaterial, steelMaterial, _
+            loadPath, lambdaValue, solver, state, context.LimitSearchUltimateMaxIterations)
+        Select Case finalization
+            Case ufAccepted
+                RunNewton = True
+                Exit Function
+            Case ufRejectedPoint
+                Exit Function
+            Case ufNeedsRefinement
+            Case Else
+                context.SetFailure sfcInternalError, "Неизвестный исход приемки предельной точки UltimateStrain."
+                Exit Function
+        End Select
         If context.StoppedTerminally Then Exit Function
     End If
     context.LimitSearchSetUltimateNumericalFailure notConvergedReason
@@ -363,6 +380,15 @@ Private Function TryUltimateProjectedStep(ByVal context As ILimitSearchProblem, 
     If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
             q(1), q(2) / mFrame.LengthScale, q(3) / mFrame.LengthScale, _
             trial, p1, p2, p3, trialLambda, trialState) Then Exit Function
+    ' Нормальная поправка сама может достигнуть предела на плато.
+    ' Ее принимают только реальные невязки задачи, не локальная модель шага.
+    If context.LimitSearchUltimateResidualReached(p1, p2, p3) Then
+        eps0 = q(1): kx = q(2) / mFrame.LengthScale: ky = q(3) / mFrame.LengthScale
+        rPath1 = p1: rPath2 = p2: rLimit = p3
+        Set solver = trial: lambdaValue = trialLambda: state = trialState
+        TryUltimateProjectedStep = True
+        Exit Function
+    End If
     Dim a(1 To 2, 1 To 2) As Double, b(1 To 2) As Double, matrixMagnitude As Double
     For j = 1 To 2
         If Not BuildUltimateProjectedColumn(context, section, concreteMaterial, steelMaterial, loadPath, _
@@ -379,6 +405,15 @@ Private Function TryUltimateProjectedStep(ByVal context As ILimitSearchProblem, 
         a(i, 1) = a(i, 1) / matrixMagnitude: a(i, 2) = a(i, 2) / matrixMagnitude
         b(i) = b(i) / matrixMagnitude
     Next i
+    ' Dogleg ограничивает шаг по качеству локальной модели. При отказе
+    ' сохраняются прежние Newton/least-squares направления и их line-search.
+    If TryProjectedTrustRegion(context, section, concreteMaterial, steelMaterial, loadPath, _
+            eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
+            q, v, a, b, matrixMagnitude, h, horizon) Then
+        TryUltimateProjectedStep = True
+        Exit Function
+    End If
+    If context.StoppedTerminally Then Exit Function
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3
     If system.Solve(a(1, 1), a(1, 2), 0#, a(2, 1), a(2, 2), 0#, 0#, 0#, 1#, b(1), b(2), 0#) Then
@@ -416,6 +451,137 @@ Private Function TryUltimateProjectedStep(ByVal context As ILimitSearchProblem, 
         mu = mu * 10#
     Next shift
 End Function
+
+' Два касательных направления активного предела: Newton внутри радиуса,
+' Cauchy или соединяющий их dogleg на границе. Радиус уменьшается при
+' плохом прогнозе; допуски и окончательная приемка принадлежат задаче.
+Private Function TryProjectedTrustRegion(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
+        ByVal concreteMaterial As Object, ByVal steelMaterial As Object, ByVal loadPath As CLoadPathVector, _
+        ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double, ByRef rPath1 As Double, _
+        ByRef rPath2 As Double, ByRef rLimit As Double, ByRef solver As CSectionSolver, _
+        ByRef lambdaValue As Double, ByRef state As String, ByRef q() As Double, _
+        ByRef v() As Double, ByRef a() As Double, ByRef b() As Double, ByVal matrixMagnitude As Double, _
+        ByVal h As Double, ByVal horizon As Double) As Boolean
+    Dim system As CLinearSystem3x3, hasNewton As Boolean, newton1 As Double, newton2 As Double
+    Set system = New CLinearSystem3x3
+    hasNewton = system.Solve(a(1, 1), a(1, 2), 0#, a(2, 1), a(2, 2), 0#, 0#, 0#, 1#, b(1), b(2), 0#)
+    If hasNewton Then newton1 = system.X1: newton2 = system.X2
+    Dim g1 As Double, g2 As Double, ag1 As Double, ag2 As Double, gNorm As Double, agNorm As Double
+    g1 = a(1, 1) * b(1) + a(2, 1) * b(2)
+    g2 = a(1, 2) * b(1) + a(2, 2) * b(2)
+    gNorm = ProjectedVectorNorm(g1, g2)
+    If gNorm = 0# Then Exit Function
+    ag1 = a(1, 1) * (g1 / gNorm) + a(1, 2) * (g2 / gNorm)
+    ag2 = a(2, 1) * (g1 / gNorm) + a(2, 2) * (g2 / gNorm)
+    agNorm = ProjectedVectorNorm(ag1, ag2)
+    If agNorm = 0# Then Exit Function
+    Dim cauchyLength As Double, cauchy1 As Double, cauchy2 As Double
+    cauchyLength = (gNorm / agNorm) / agNorm
+    cauchy1 = (g1 / gNorm) * cauchyLength: cauchy2 = (g2 / gNorm) * cauchyLength
+    Dim fullLength As Double, radius As Double, baseNorm As Double, attempt As Long
+    If hasNewton Then fullLength = ProjectedVectorNorm(newton1, newton2) Else fullLength = cauchyLength
+    radius = horizon / h
+    If radius <= 0# Then Exit Function
+    baseNorm = StepResidualNorm(context, rPath1, rPath2, rLimit)
+    For attempt = 1 To NONLINEAR_MAX_BACKTRACKS
+        Dim s1 As Double, s2 As Double, stepLength As Double, alpha As Double
+        ProjectedDogleg g1 / gNorm, g2 / gNorm, cauchy1, cauchy2, cauchyLength, _
+            hasNewton, newton1, newton2, fullLength, radius, s1, s2
+        stepLength = ProjectedVectorNorm(s1, s2)
+        If stepLength = 0# Then Exit Function
+        Dim ap1 As Double, ap2 As Double, predicted As Double
+        ap1 = a(1, 1) * s1 + a(1, 2) * s2
+        ap2 = a(2, 1) * s1 + a(2, 2) * s2
+        predicted = 2# * (g1 * s1 + g2 * s2) - ap1 * ap1 - ap2 * ap2
+        If predicted <= 0# Then Exit Function
+        Dim trialE As Double, trialX As Double, trialY As Double
+        trialE = q(1) + h * (v(1, 1) * s1 + v(1, 2) * s2)
+        trialX = (q(2) + h * (v(2, 1) * s1 + v(2, 2) * s2)) / mFrame.LengthScale
+        trialY = (q(3) + h * (v(3, 1) * s1 + v(3, 2) * s2)) / mFrame.LengthScale
+        If trialE = eps0 And trialX = kx And trialY = ky Then Exit Function
+        Dim trial As CSectionSolver, t1 As Double, t2 As Double, t3 As Double
+        Dim trialLambda As Double, trialState As String, rho As Double, actual As Double
+        If Not EvaluateResidual(context, section, concreteMaterial, steelMaterial, loadPath, _
+                trialE, trialX, trialY, trial, t1, t2, t3, trialLambda, trialState) Then Exit Function
+        ' Разность квадратов без вычитания двух огромных близких норм.
+        actual = (b(1) - t1 / matrixMagnitude) * (b(1) + t1 / matrixMagnitude) + _
+            (b(2) - t2 / matrixMagnitude) * (b(2) + t2 / matrixMagnitude)
+        rho = actual / predicted
+        alpha = 1#
+        If fullLength > stepLength Then alpha = stepLength / fullLength
+        If context.LimitSearchUltimateResidualReached(t1, t2, t3) Or _
+                (rho >= 0.001 And NonlinearStepImproves(baseNorm, StepResidualNorm(context, t1, t2, t3), alpha)) Then
+            If Not context.LimitSearchUltimateResidualReached(t1, t2, t3) Then
+                If ProjectedMaterialsAreFlat(section, concreteMaterial, steelMaterial, trialE, trialX, trialY) Then
+                    context.AppendDiagnostic "ultimateTrustRegion flat trial rejected; original recovery remains available"
+                    Exit Function
+                End If
+            End If
+            eps0 = trialE: kx = trialX: ky = trialY
+            rPath1 = t1: rPath2 = t2: rLimit = t3
+            Set solver = trial: lambdaValue = trialLambda: state = trialState
+            context.AppendDiagnostic "ultimateTrustRegion attempt=" & CStr(attempt) & "; rho=" & CStr(rho)
+            TryProjectedTrustRegion = True
+            Exit Function
+        End If
+        If context.StoppedTerminally Then Exit Function
+        radius = 0.25 * MinDouble(radius, stepLength)
+    Next attempt
+End Function
+
+' Улучшившая норму, но полностью горизонтальная проба может запереть
+' следующий шаг на плато. Тогда оставляем прежнее восстановление; достигнутое
+' равновесие выше принимается независимо от касательной материалов.
+Private Function ProjectedMaterialsAreFlat(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
+        ByVal steelMaterial As Object, ByVal epsCenter As Double, ByVal kx As Double, ByVal ky As Double) As Boolean
+    If Not TypeOf concreteMaterial Is CMaterialDiagram Then Exit Function
+    If Not TypeOf steelMaterial Is CMaterialDiagram Then Exit Function
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, strain As Double, i As Long
+    Set concrete = concreteMaterial: Set steel = steelMaterial
+    For i = 1 To section.ConcreteCount
+        strain = epsCenter + kx * (section.ConcreteY(i) - mFrame.OriginY) + ky * (section.ConcreteX(i) - mFrame.OriginX)
+        If concrete.GetTangentModulus(strain) <> 0# Then Exit Function
+    Next i
+    For i = 1 To section.RebarCount
+        strain = epsCenter + kx * (section.RebarY(i) - mFrame.OriginY) + ky * (section.RebarX(i) - mFrame.OriginX)
+        If steel.GetTangentModulus(strain) <> 0# Then Exit Function
+        If concrete.GetTangentModulus(strain) <> 0# Then Exit Function
+    Next i
+    ProjectedMaterialsAreFlat = True
+End Function
+
+' Устойчивая длина в масштабированных координатах без квадратов больших чисел.
+Private Function ProjectedVectorNorm(ByVal x As Double, ByVal y As Double) As Double
+    Dim magnitude As Double
+    magnitude = MaxDouble(Abs(x), Abs(y))
+    If magnitude > 0# Then ProjectedVectorNorm = magnitude * Sqr((x / magnitude) ^ 2 + (y / magnitude) ^ 2)
+End Function
+
+Private Sub ProjectedDogleg(ByVal gradient1 As Double, ByVal gradient2 As Double, _
+        ByVal c1 As Double, ByVal c2 As Double, ByVal cLength As Double, _
+        ByVal hasNewton As Boolean, ByVal n1 As Double, ByVal n2 As Double, ByVal nLength As Double, _
+        ByVal radius As Double, ByRef s1 As Double, ByRef s2 As Double)
+    If hasNewton And nLength <= radius Then
+        s1 = n1: s2 = n2
+    ElseIf cLength >= radius Then
+        s1 = gradient1 * radius: s2 = gradient2 * radius
+    ElseIf hasNewton Then
+        Dim d1 As Double, d2 As Double, size As Double, aa As Double, dot As Double, gap As Double, tau As Double
+        size = MaxDouble(radius, nLength)
+        d1 = (n1 - c1) / size: d2 = (n2 - c2) / size
+        aa = d1 * d1 + d2 * d2
+        If aa = 0# Then
+            s1 = c1: s2 = c2
+            Exit Sub
+        End If
+        dot = (c1 / size) * d1 + (c2 / size) * d2
+        gap = (radius / size) ^ 2 - (cLength / size) ^ 2
+        tau = (-dot + Sqr(dot * dot + aa * gap)) / aa
+        s1 = c1 + tau * (n1 - c1): s2 = c2 + tau * (n2 - c2)
+    Else
+        s1 = c1: s2 = c2
+    End If
+End Sub
 
 ' Расширяется только касательная часть шага. Нормальная поправка к пределу
 ' не умножается вместе с ней; финальная проба проверяет все реальные невязки.

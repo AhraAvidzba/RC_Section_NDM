@@ -168,9 +168,15 @@ End Property
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As Boolean
-    ILimitSearchProblem_LimitSearchFinalizeUltimateResult = mCrack.LimitSearchFinalizeUltimateResult( _
-        section, concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iterations)
+        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As EUltimateFinalization
+    If mCrack.LimitSearchFinalizeUltimateResult(section, concreteMaterial, steelMaterial, _
+            loadPath, lambdaValue, solver, state, iterations) Then
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufAccepted
+    ElseIf lambdaValue < 0# Then
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufRejectedPoint
+    Else
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufNeedsRefinement
+    End If
 End Function
 
 ' Сохраняет причину численной остановки UltimateStrain в Formation-задаче.

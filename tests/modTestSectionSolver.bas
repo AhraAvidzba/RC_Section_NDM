@@ -32,6 +32,7 @@ Public Function RunSectionSolverTests() As String
     TestLinearMaterialEquilibrium stats
     TestLinearMaterialWithRebarReplacement stats
     TestCenteredNumericalFrame stats
+    TestContinuationStates stats
     TestFinalAllowedCorrection stats
     TestDiagramConcreteCentralCompression stats
     TestDiagramConcreteWithRebar stats
@@ -76,6 +77,76 @@ Public Function RunCenteredNumericalTests() As String
 Failed:
     RunCenteredNumericalTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
+
+' ДЛЯ ТЕСТОВ: известные нелинейные НДС, старт от другого равновесия и перенос ±1000 м.
+Public Function RunContinuationStateTests() As String
+    Dim stats As TSectionSolverTestStats
+    On Error GoTo Failed
+    TestContinuationStates stats
+    AppendLine stats, "TOTAL_CONTINUATION_STATES: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunContinuationStateTests = stats.Report
+    Exit Function
+Failed:
+    RunContinuationStateTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Известное поле дает контрольные усилия независимым суммированием волокон.
+Private Sub TestContinuationStates(ByRef stats As TSectionSolverTestStats)
+    Dim section As CSectionModel, concrete As CMaterialDiagram, steel As CMaterialDiagram
+    Dim frame As CSectionNumericalFrame, solver As CSectionSolver, method As Variant, shift As Variant
+    Dim physical As CStateSolutionRunner: Set physical = New CStateSolutionRunner
+    Dim shape As Variant, n As Double, mx As Double, my As Double, eps0 As Double, kx As Double, ky As Double
+    Dim initialN As Double, initialMx As Double, initialMy As Double, prefix As String
+    Set concrete = ProvisionalConcrete(): Set steel = ProvisionalSteel()
+    For Each method In Array("Newton", "Secant")
+        For Each shift In Array(0#, -1000000#, 1000000#)
+            Set section = NumericalFrameTestSection(1#, CDbl(shift), 0#)
+            Set frame = New CSectionNumericalFrame: frame.Initialize section
+            For Each shape In Array(Array(-0.0007, 0#, 0#), Array(-0.0007, 0.000004, 0.000002), _
+                    Array(-0.0007, -0.000002, 0.000004), Array(0.0004, 0.000002, -0.000003))
+                kx = shape(1): ky = shape(2): eps0 = frame.OriginalStrain(shape(0), kx, ky)
+                IndependentPlaneForces section, concrete, steel, eps0, kx, ky, n, mx, my
+                Set solver = New CSectionSolver
+                solver.SolverMethod = CStr(method): solver.LoadSteps = 4: solver.MaxIterations = 80
+                solver.ToleranceN = 0.001: solver.ToleranceMx = 200#: solver.ToleranceMy = 200#
+                solver.Solve section, concrete, steel, n, mx, my
+                prefix = "continuation." & CStr(method) & "." & CStr(shift) & "." & CStr(shape(1))
+                AssertTrue stats, prefix & ".converged." & solver.StopReason, solver.Converged
+                AssertTrue stats, prefix & ".budget", solver.Iterations <= 320
+                AssertTrue stats, prefix & ".physical", physical.StateWithinPhysicalRange(section, solver, concrete, steel)
+                AssertClose stats, prefix & ".N", solver.Nint, n, 0.001
+                AssertClose stats, prefix & ".Mx", solver.Mxint, mx, 200#
+                AssertClose stats, prefix & ".My", solver.Myint, my, 200#
+                ' Стартовые усилия принадлежат той же плоскости и диаграммам.
+                eps0 = frame.OriginalStrain(shape(0) / 2#, kx / 2#, ky / 2#)
+                IndependentPlaneForces section, concrete, steel, eps0, kx / 2#, ky / 2#, initialN, initialMx, initialMy
+                solver.SetInitialLoadState eps0, kx / 2#, ky / 2#, initialN, initialMx, initialMy
+                solver.Solve section, concrete, steel, n, mx, my
+                AssertTrue stats, prefix & ".warm.converged." & solver.StopReason, solver.Converged
+                AssertTrue stats, prefix & ".warm.budget", solver.Iterations <= 320
+                AssertTrue stats, prefix & ".warm.physical", physical.StateWithinPhysicalRange(section, solver, concrete, steel)
+                AssertClose stats, prefix & ".warm.N", solver.Nint, n, 0.001
+                AssertClose stats, prefix & ".warm.Mx", solver.Mxint, mx, 200#
+                AssertClose stats, prefix & ".warm.My", solver.Myint, my, 200#
+            Next shape
+        Next shift
+    Next method
+    ' Предел напряжения бетона 15.5 МПа: 20 МПа на всей площади недостижимы.
+    Set section = New CSectionModel
+    section.AddConcreteElement -100#, -100#, 2500#
+    section.AddConcreteElement -100#, 100#, 2500#
+    section.AddConcreteElement 100#, -100#, 2500#
+    section.AddConcreteElement 100#, 100#, 2500#
+    Set solver = New CSectionSolver
+    solver.LoadSteps = 1: solver.MaxIterations = 80
+    solver.ToleranceN = 0.001: solver.ToleranceMx = 0.1: solver.ToleranceMy = 0.1
+    solver.Solve section, concrete, steel, -200000#, 0#, 0#
+    AssertTrue stats, "continuation.impossible.notConverged", Not solver.Converged
+    AssertTrue stats, "continuation.impossible.numericalCode", _
+        solver.FailureCode = sfcNumericalFailure Or solver.FailureCode = sfcSingularTangent
+    AssertTrue stats, "continuation.impossible.budget", solver.Iterations <= 80
+    AppendLine stats, "CONTINUATION_IMPOSSIBLE: iterations=" & CStr(solver.Iterations) & "; completed=" & CStr(solver.LoadStepsCompleted)
+End Sub
 
 ' Одна и та же несимметричная модель переносится, поворачивается и масштабируется.
 ' Проверка усилий независима от нового ядра: прямое суммирование в исходных осях.

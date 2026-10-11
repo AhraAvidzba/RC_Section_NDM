@@ -23,7 +23,7 @@ Private Const CRACK_EQUILIBRIUM_TOLERANCE As Double = 1# ' Допуск равн
 Private Const CRACK_DIRECTION_TOLERANCE As Double = 0.001 ' Допуск сохранения направления моментного вектора в прямом поиске lambda_crc.
 Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000000001 ' Точность предельного критерия для приема State внутри физической границы диаграммы.
 Private Const CRACK_LAMBDA_BRACKET_LIMIT As Double = 1024# ' Верхняя граница служебного поиска lambda_crc, если прямой Newton не сошелся.
-Private Const CRACK_LAMBDA_BISECTION_TOLERANCE As Double = 0.000001 ' Относительная точность fallback-бисекции lambda_crc.
+Private Const CRACK_LAMBDA_BISECTION_TOLERANCE As Double = 0.000001 ' Абсолютный допуск интервала fallback-бисекции lambda_crc; физический критерий проверяется отдельно.
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
 Private Const CRACK_PATH_AUTO As String = "Auto" ' Общий Search выбирает порядок по активным компонентам сочетания.
@@ -84,6 +84,7 @@ Private mRequestedLoadPath As String ' Исходный выбор LC; нуже�
 Private mCurrentLoadBelowFormationCriterion As Boolean ' На этом пути lambda=1 имеет допустимое равновесие без достижения критерия трещины.
 Private mSearchReferenceX As Double ' Центр, относительно которого проверяется осевая составляющая выбранного пути, мм.
 Private mSearchReferenceY As Double ' Центр, относительно которого проверяется осевая составляющая выбранного пути, мм.
+Private mNumericalPathMath As CLoadPathMath ' Общая подготовка пути и точный кэш численной системы.
 
 ' ------------------------------
 ' Настройки по умолчанию
@@ -750,9 +751,8 @@ End Function
 ' относительной ошибки критерия. Условия приема State здесь не меняются.
 Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
-    Dim loadPathMath As CLoadPathMath
-    Set loadPathMath = NewLoadPathMath()
-    LimitSearchUltimateResidualNorm = loadPathMath.ResidualNorm(rPath1, rPath2, rLimit, _
+    If mNumericalPathMath Is Nothing Then Set mNumericalPathMath = New CLoadPathMath
+    LimitSearchUltimateResidualNorm = mNumericalPathMath.ResidualNorm(rPath1, rPath2, rLimit, _
         CRACK_EQUILIBRIUM_TOLERANCE / CRACK_STRAIN_RATIO_TOLERANCE)
 End Function
 
@@ -1039,11 +1039,9 @@ Private Function EvaluateCrcLoadPathResidual(ByVal section As CSectionModel, _
         Exit Function
     End If
 
-    Dim loadPathMath As CLoadPathMath
-    Set loadPathMath = NewLoadPathMath()
-    lambdaValue = loadPathMath.Lambda(solver.Nint, solver.Mxint, solver.Myint, loadPath)
-    loadPathMath.BuildResiduals solver.Nint, solver.Mxint, solver.Myint, _
-        loadPath, lambdaValue, rPath1, rPath2
+    If mNumericalPathMath Is Nothing Then Set mNumericalPathMath = New CLoadPathMath
+    mNumericalPathMath.PrepareNumericalPath section, loadPath, mSolverToleranceN, mSolverToleranceMx, mSolverToleranceMy
+    mNumericalPathMath.BuildNumericalResiduals solver, lambdaValue, rPath1, rPath2
 
     Dim minConcreteStrain As Double
     Dim maxConcreteStrain As Double
@@ -1084,16 +1082,6 @@ Failed:
     End Select
     LimitSearchSetFailure failureCode, _
         "Не удалось оценить плоскость деформаций при поиске образования трещины: " & description
-End Function
-
-' Создает общий helper lambda-траектории с допусками crack solver-а.
-' Порог классификации осевой силы сюда не передается: маленький ненулевой
-' момент также задает корректную масштабируемую компоненту пути.
-Private Function NewLoadPathMath() As CLoadPathMath
-    Dim loadPathMath As CLoadPathMath
-    Set loadPathMath = New CLoadPathMath
-    loadPathMath.Configure mSolverToleranceN, mSolverToleranceMx, mSolverToleranceMy
-    Set NewLoadPathMath = loadPathMath
 End Function
 
 ' Получает физическое состояние на найденном пороге через общий provider или
@@ -1821,6 +1809,11 @@ End Function
 
 ' Максимальная растягивающая деформация бетонных КЭ по сохраненной плоскости.
 Private Function MaxConcreteStrain(ByVal solver As CSectionSolver, ByVal section As CSectionModel) As Double
+    Dim minimum As Double, maximum As Double
+    If solver.TryGetConcreteStrainBounds(section, minimum, maximum) Then
+        MaxConcreteStrain = MaxDouble(0#, maximum)
+        Exit Function
+    End If
     Dim i As Long
     For i = 1 To section.ConcreteCount
         MaxConcreteStrain = MaxDouble(MaxConcreteStrain, ConcreteStrain(solver, section, i))
@@ -1838,6 +1831,7 @@ End Function
 ' по СП 63 п. 8.1.30.
 Private Sub ConcreteStrainBounds(ByVal solver As CSectionSolver, ByVal section As CSectionModel, _
         ByRef minStrain As Double, ByRef maxStrain As Double)
+    If solver.TryGetConcreteStrainBounds(section, minStrain, maxStrain) Then Exit Sub
     Dim i As Long
     For i = 1 To section.ConcreteCount
         Dim strain As Double

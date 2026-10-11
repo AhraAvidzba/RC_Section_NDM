@@ -41,6 +41,7 @@ Public Function RunMaterialDiagramTests() As String
     TestAudit03MaterialConfigBehavior stats
     TestAudit03MaterialControlUnits stats
     TestAudit03PublishedMaterialDiagrams stats
+    TestCachedMaterialTransitions stats
 
     AppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -51,6 +52,98 @@ Failed:
     RunMaterialDiagramTests = "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
+
+' ДЛЯ ТЕСТОВ: кэш переломов сравнивается с прямым перебором всех узлов.
+Public Function RunMaterialTransitionTests() As String
+    On Error GoTo Failed
+    Dim stats As TMaterialTestStats
+    TestCachedMaterialTransitions stats
+    AppendLine stats, "TOTAL_MATERIAL_TRANSITIONS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunMaterialTransitionTests = stats.Report
+    Exit Function
+Failed:
+    RunMaterialTransitionTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+Private Sub TestCachedMaterialTransitions(ByRef stats As TMaterialTestStats)
+    Dim kind As Variant, valueSet As Variant, tension As Variant, mode As Variant
+    Dim provider As CMaterialModelProvider, spec As CMaterialModelSpec, diagram As CMaterialDiagram
+    Dim prefix As String
+    For Each kind In Array("TwoLine", "ThreeLine")
+        For Each valueSet In Array("ULS(I)", "SLS(II)")
+            For Each tension In Array("Ignore", "UseDiagram")
+                For Each mode In Array(False, True)
+                    Set provider = TestProvider(diagramExtensionEnabled:=CBool(mode))
+                    Set spec = New CMaterialModelSpec
+                    spec.Initialize CStr(valueSet), CStr(kind), CStr(tension), CStr(kind)
+                    prefix = "materialTransitions." & spec.SpecKey & "." & CStr(mode)
+                    Set diagram = provider.ConcreteMaterialForEquilibriumFromSpec(spec)
+                    AssertMaterialTransitions stats, prefix & ".concrete", diagram
+                    Set diagram = provider.SteelMaterialForEquilibriumFromSpec(spec)
+                    AssertMaterialTransitions stats, prefix & ".steel", diagram
+                Next mode
+            Next tension
+        Next valueSet
+    Next kind
+    Dim strains(1 To 3) As Double, stresses(1 To 3) As Double
+    strains(1) = -0.001: strains(2) = 0#: strains(3) = 0.001
+    stresses(1) = -100#: stresses(2) = 0#: stresses(3) = 100#
+    Set diagram = New CMaterialDiagram
+    diagram.InitializeFromArrays strains, stresses, 3
+    AssertMaterialTransitions stats, "materialTransitions.collinear", diagram
+    stresses(3) = 50#
+    diagram.InitializeFromArrays strains, stresses, 3
+    AssertMaterialTransitions stats, "materialTransitions.reinitialized", diagram
+    AssertMaterialTransitions stats, "materialTransitions.clone", diagram.Clone
+End Sub
+
+Private Sub AssertMaterialTransitions(ByRef stats As TMaterialTestStats, ByVal prefix As String, _
+        ByVal diagram As CMaterialDiagram)
+    Dim i As Long, j As Long, strain As Double, delta As Variant, seed As Variant, samples As Variant
+    Dim first As Double, second As Double, expectedFirst As Double, expectedSecond As Double, name As String
+    samples = Array(-10#, -0.05, -0.0035, -0.001, 0#, 0.00015, 0.001, 0.025, 10#)
+    For i = 1 To diagram.PointCount + UBound(samples) + 1
+        If i <= diagram.PointCount Then strain = diagram.PointStrain(i) Else strain = CDbl(samples(i - diagram.PointCount - 1))
+        j = 0
+        For Each delta In Array(-0.01, -0.0001, -0.000000000001, 0#, 0.000000000001, 0.0001, 0.01)
+            j = j + 1
+            For Each seed In Array(0#, 0.125)
+                first = CDbl(seed): second = 4# * CDbl(seed)
+                expectedFirst = first: expectedSecond = second
+                MaterialTransitionOracle diagram, strain, CDbl(delta), expectedFirst, expectedSecond
+                diagram.CollectStrainTransitions strain, CDbl(delta), first, second
+                name = prefix & "." & CStr(i) & "." & CStr(j) & "." & CStr(seed)
+                AssertClose stats, name & ".first", first, expectedFirst, 0#
+                AssertClose stats, name & ".second", second, expectedSecond, 0#
+            Next seed
+        Next delta
+    Next i
+End Sub
+
+' Независимый oracle сохраняет прежний поузловой расчет наклонов и расстояний.
+Private Sub MaterialTransitionOracle(ByVal diagram As CMaterialDiagram, ByVal strain As Double, _
+        ByVal delta As Double, ByRef first As Double, ByRef second As Double)
+    If delta = 0# Then Exit Sub
+    Dim i As Long, leftSlope As Double, rightSlope As Double, node As Double, distance As Double
+    For i = 1 To diagram.PointCount
+        node = diagram.PointStrain(i)
+        leftSlope = 0#: rightSlope = 0#
+        If i > 1 Then leftSlope = (diagram.PointStress(i) - diagram.PointStress(i - 1)) / _
+            (node - diagram.PointStrain(i - 1))
+        If i < diagram.PointCount Then rightSlope = (diagram.PointStress(i + 1) - diagram.PointStress(i)) / _
+            (diagram.PointStrain(i + 1) - node)
+        If leftSlope <> rightSlope Then
+            distance = (node - strain) / delta
+            If distance > 0# And strain + distance * delta <> strain Then
+                If first = 0# Or distance < first Then
+                    second = first: first = distance
+                ElseIf distance > first Then
+                    If second = 0# Or distance < second Then second = distance
+                End If
+            End If
+        End If
+    Next i
+End Sub
 
 ' ДЛЯ ТЕСТОВ: независимые сопротивления, модули и пределы двух ветвей стали.
 Public Function RunAsymmetricSteelStrengthTests() As String

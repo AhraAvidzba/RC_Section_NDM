@@ -67,6 +67,14 @@ Public Enum ESolverFailureCode
     sfcInternalError = 5        ' Отсутствует обязательный программный объект либо нарушен внутренний контракт.
 End Enum
 
+' Исход приемки предельной точки: уточнение допуска отличается от отказа
+' самой точки, например при пределе в отрицательном направлении lambda.
+Public Enum EUltimateFinalization
+    ufNeedsRefinement = 0
+    ufAccepted = 1
+    ufRejectedPoint = 2
+End Enum
+
 ' Возвращает каноническое имя внутреннего статуса для diagnostic/report.
 Public Function ResultInternalStatusToText(ByVal value As EResultInternalStatus) As String
     Select Case value

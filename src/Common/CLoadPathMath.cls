@@ -30,6 +30,12 @@ Private mToleranceN As Double ' Допуск равновесия по N, Н.
 Private mToleranceMx As Double ' Допуск равновесия по Mx, Н*мм.
 Private mToleranceMy As Double ' Допуск равновесия по My, Н*мм.
 Private mBaseTolerance As Double ' Явный optional-порог API; production использует точное отличие Base от нуля.
+Private mNumericalFrame As CSectionNumericalFrame
+Private mNumericalPath As CLoadPathVector, mSourcePath As CLoadPathVector
+Private mPathSection As CSectionModel, mPathRevision As Long
+Private mSourceTolerances(1 To 3) As Double
+Private mCommonNumericalScale As Boolean, mNumericalReady As Boolean
+Private mForceScale As Double, mPathTolerance As Double
 
 ' Инициализирует расчетные допуски равновесия значениями, совместимыми с default solver.
 Private Sub Class_Initialize()
@@ -66,6 +72,7 @@ End Function
 ' масштабируется: допуск равновесия не является фильтром заданной нагрузки.
 Public Sub Configure(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
         ByVal toleranceMy As Double, Optional ByVal baseTolerance As Double = DEFAULT_BASE_TOLERANCE)
+    mNumericalReady = False
     mToleranceN = Abs(toleranceN)
     mToleranceMx = Abs(toleranceMx)
     mToleranceMy = Abs(toleranceMy)
@@ -74,6 +81,92 @@ Public Sub Configure(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
     If mToleranceMx <= 0# Then mToleranceMx = 5000#
     If mToleranceMy <= 0# Then mToleranceMy = 5000#
 End Sub
+
+' Подготавливает одну и ту же траекторию в центре бетона для разных поисков.
+' Моменты делятся на геометрический масштаб, но конечные допуски solver-а
+' не меняются. Ключ содержит точные значения, а не ссылку на изменяемый path.
+Friend Sub PrepareNumericalPath(ByVal section As CSectionModel, ByVal loadPath As CLoadPathVector, _
+        ByVal toleranceN As Double, ByVal toleranceMx As Double, ByVal toleranceMy As Double, _
+        Optional ByVal commonForceScale As Boolean = False)
+    ' Технический журнал сохраняет стандартный текст VBA; потребитель дает понятное пояснение.
+    If section Is Nothing Or loadPath Is Nothing Then Err.Raise 91, "CLoadPathMath"
+    If NumericalPathMatches(section, loadPath, toleranceN, toleranceMx, toleranceMy, commonForceScale) Then Exit Sub
+    mNumericalReady = False
+    If mNumericalFrame Is Nothing Then Set mNumericalFrame = New CSectionNumericalFrame
+    mNumericalFrame.Initialize section
+    Set mNumericalPath = New CLoadPathVector
+    mNumericalPath.Initialize loadPath.NOffset, loadPath.NBase, _
+        mNumericalFrame.CenterMx(loadPath.NOffset, loadPath.MxOffset) / mNumericalFrame.LengthScale, _
+        mNumericalFrame.CenterMx(loadPath.NBase, loadPath.MxBase) / mNumericalFrame.LengthScale, _
+        mNumericalFrame.CenterMy(loadPath.NOffset, loadPath.MyOffset) / mNumericalFrame.LengthScale, _
+        mNumericalFrame.CenterMy(loadPath.NBase, loadPath.MyBase) / mNumericalFrame.LengthScale
+    mForceScale = MaxDouble(1#, MaxDouble(Abs(mNumericalPath.NOffset), _
+        MaxDouble(Abs(mNumericalPath.NBase), MaxDouble(Abs(mNumericalPath.MxOffset), _
+        MaxDouble(Abs(mNumericalPath.MxBase), MaxDouble(Abs(mNumericalPath.MyOffset), Abs(mNumericalPath.MyBase)))))))
+    If commonForceScale Then
+        Configure mForceScale, mForceScale, mForceScale
+    Else
+        Configure toleranceN, toleranceMx / mNumericalFrame.LengthScale, toleranceMy / mNumericalFrame.LengthScale
+    End If
+    mPathTolerance = MinDouble(toleranceN, MinDouble(toleranceMx, toleranceMy) / mNumericalFrame.LengthScale) / mForceScale
+    Set mSourcePath = New CLoadPathVector
+    mSourcePath.Initialize loadPath.NOffset, loadPath.NBase, loadPath.MxOffset, loadPath.MxBase, loadPath.MyOffset, loadPath.MyBase
+    Set mPathSection = section: mPathRevision = section.Revision
+    mSourceTolerances(1) = toleranceN: mSourceTolerances(2) = toleranceMx: mSourceTolerances(3) = toleranceMy
+    mCommonNumericalScale = commonForceScale: mNumericalReady = True
+End Sub
+
+Private Function NumericalPathMatches(ByVal section As CSectionModel, ByVal loadPath As CLoadPathVector, _
+        ByVal toleranceN As Double, ByVal toleranceMx As Double, ByVal toleranceMy As Double, _
+        ByVal commonForceScale As Boolean) As Boolean
+    If Not mNumericalReady Then Exit Function
+    If Not section Is mPathSection Then Exit Function
+    If section.Revision <> mPathRevision Or commonForceScale <> mCommonNumericalScale Then Exit Function
+    NumericalPathMatches = loadPath.NOffset = mSourcePath.NOffset And loadPath.NBase = mSourcePath.NBase And _
+        loadPath.MxOffset = mSourcePath.MxOffset And loadPath.MxBase = mSourcePath.MxBase And _
+        loadPath.MyOffset = mSourcePath.MyOffset And loadPath.MyBase = mSourcePath.MyBase And _
+        toleranceN = mSourceTolerances(1) And toleranceMx = mSourceTolerances(2) And toleranceMy = mSourceTolerances(3)
+End Function
+
+' Берет центрированные интегралы напрямую: вычитание N*координата из уже
+' восстановленного большого момента потеряло бы точность удаленного сечения.
+Friend Sub BuildNumericalResiduals(ByVal solver As CSectionSolver, ByRef lambdaValue As Double, _
+        ByRef rPath1 As Double, ByRef rPath2 As Double)
+    RequireNumericalPath
+    Dim n As Double, mx As Double, my As Double, residualScale As Double
+    solver.NumericalEfforts n, mx, my
+    mx = mx / mNumericalFrame.LengthScale: my = my / mNumericalFrame.LengthScale
+    lambdaValue = Lambda(n, mx, my, mNumericalPath)
+    If mCommonNumericalScale Then residualScale = mForceScale
+    BuildResiduals n, mx, my, mNumericalPath, lambdaValue, rPath1, rPath2, residualScale
+End Sub
+
+Friend Function NumericalLambda(ByVal solver As CSectionSolver) As Double
+    RequireNumericalPath
+    Dim n As Double, mx As Double, my As Double
+    solver.NumericalEfforts n, mx, my
+    NumericalLambda = Lambda(n, mx / mNumericalFrame.LengthScale, my / mNumericalFrame.LengthScale, mNumericalPath)
+End Function
+
+Private Sub RequireNumericalPath()
+    If Not mNumericalReady Then _
+        Err.Raise vbObjectError + 3845, "CLoadPathMath", "Численная траектория нагружения не подготовлена."
+End Sub
+
+Friend Property Get NumericalFrame() As CSectionNumericalFrame
+    RequireNumericalPath
+    Set NumericalFrame = mNumericalFrame
+End Property
+
+Friend Property Get NumericalForceScale() As Double
+    RequireNumericalPath
+    NumericalForceScale = mForceScale
+End Property
+
+Friend Property Get NumericalPathTolerance() As Double
+    RequireNumericalPath
+    NumericalPathTolerance = mPathTolerance
+End Property
 
 ' Возвращает lambda по опорной масштабируемой компоненте. Опорная компонента
 ' выбирается не по абсолютной величине, а по отношению к допуску своей
@@ -214,4 +307,8 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     Else
         MaxDouble = b
     End If
+End Function
+
+Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
+    If a < b Then MinDouble = a Else MinDouble = b
 End Function

@@ -331,13 +331,23 @@ End Property
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As Boolean
+        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As EUltimateFinalization
+    If mUltimateScenario = 23 Then Exit Function
+    If mUltimateScenario = 24 Or mUltimateScenario = 25 Then
+        ILimitSearchProblem_SetFailure sfcNumericalFailure, "Тестовая предельная точка не принадлежит допустимому направлению пути."
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufRejectedPoint
+        Exit Function
+    End If
+    If mUltimateScenario = 26 Then
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = 99
+        Exit Function
+    End If
     mConverged = True
     mFinalLambda = lambdaValue
     mFinalMethod = "UltimateStrain"
     mFinalIterations = iterations
     mLimitState = state
-    ILimitSearchProblem_LimitSearchFinalizeUltimateResult = True
+    ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufAccepted
 End Function
 
 ' ДЛЯ ТЕСТОВ: фиксирует численную остановку и ее причину без найденной точки.
@@ -655,6 +665,13 @@ Public Sub ConfigureUltimateGuardCase(ByVal scenario As Long, Optional ByVal kin
             mUltimateConstantNorm = True
         Case 4
             mMaxIterations = 0
+        Case 22, 23
+            mRootLambda = 1#: mUltimateInitialEps = 0.001 - 0.000000000000001
+            mTolerance = 0.000000000000001
+        Case 24, 26
+            mRootLambda = 1#: mUltimateInitialEps = 0.001
+        Case 25
+            mRootLambda = 1#: mMaxIterations = 1
     End Select
 End Sub
 

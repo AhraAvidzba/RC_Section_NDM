@@ -436,9 +436,15 @@ End Property
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
-        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As Boolean
-    ILimitSearchProblem_LimitSearchFinalizeUltimateResult = mCapacity.LimitSearchFinalizeUltimateResult( _
-        section, concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, state, iterations)
+        ByVal solver As CSectionSolver, ByVal state As String, ByVal iterations As Long) As EUltimateFinalization
+    If mCapacity.LimitSearchFinalizeUltimateResult(section, concreteMaterial, steelMaterial, _
+            loadPath, lambdaValue, solver, state, iterations) Then
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufAccepted
+    ElseIf lambdaValue <= 0# Then
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufRejectedPoint
+    Else
+        ILimitSearchProblem_LimitSearchFinalizeUltimateResult = ufNeedsRefinement
+    End If
 End Function
 
 ' Сохраняет численную остановку UltimateStrain у владельца Capacity-результата.
