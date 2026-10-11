@@ -12,60 +12,91 @@ Implements ISectionRecipe
 
 ' Один рецепт Rectangle/LSection/TwoRectangles: свой табличный ввод,
 ' смежные прямоугольники, восемь смысловых граней и зависимые ряды.
+Private Type TRectSetDimensions
+    Shape As String
+    Header As Long
+    B1 As Double
+    H1 As Double
+    B2 As Double
+    H2 As Double
+    Offset As Double
+End Type
+
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
-    Dim shape As String, header As Long, b1 As Double, h1 As Double, b2 As Double, h2 As Double, offset As Double
-    Dim upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath, contourIDs() As String, i As Long
+    Dim sizes As TRectSetDimensions, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
     Set table = context.Table("rngRectSetGeometry")
     Set units = context.Units
-    shape = table.Choice(table.RowByKey("RectSet.SectionType"), 2, _
-        Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
-    If shape = "RectSet" Then shape = "LSection"
-    If shape <> "Rectangle" And shape <> "LSection" Then shape = "TwoRectangles"
-    header = table.RowByKey("H1")
-    h1 = table.Length(header + 1, 1, units)
-    b1 = table.Length(header + 1, 2, units)
-    Require table, header + 1, 1, h1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
-    Require table, header + 1, 2, b1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
-    If shape <> "Rectangle" Then
-        h2 = table.Length(header + 1, 3, units)
-        b2 = table.Length(header + 1, 4, units)
-        Require table, header + 1, 3, h2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
-        Require table, header + 1, 4, b2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
-        If shape = "LSection" Then Require table, header + 1, 2, b1 < b2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
-    End If
-    If shape = "TwoRectangles" Then
-        i = table.RowByKey("RectSet.UpperOffsetX")
-        offset = table.Length(i, 2, units)
-        Require table, i, 2, offset < b2 - GEOM_TOLERANCE And offset + b1 > GEOM_TOLERANCE, _
-            "Верхний и нижний прямоугольники должны иметь общий участок по X."
-    End If
+    ReadDimensions table, units, sizes
     Set facade = New CSectionDefinitionBuilder
     facade.Initialize "RectSet"
-    Set upper = facade.RectanglePath("Upper", offset, h2, b1, h1)
-    If shape = "Rectangle" Then
+    AddGeometry facade, sizes, upper, lower, outer
+    AddRectangleRows facade, table, units, sizes.Header, 0, sizes.Offset, sizes.H2, sizes.B1, sizes.H1
+    If sizes.Shape <> "Rectangle" Then AddRectangleRows facade, table, units, sizes.Header, 4, 0#, 0#, sizes.B2, sizes.H2
+    AddDimensions facade, sizes, upper, lower, outer
+    Set ISectionRecipe_CreateDefinition = facade.Finish
+End Function
+
+' Каждый вариант читает только свои активные размеры; отсутствующая нижняя
+' часть Rectangle не требует заполнения полей остальных двух вариантов.
+Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions)
+    sizes.Shape = table.Choice(table.RowByKey("RectSet.SectionType"), 2, _
+        Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
+    If sizes.Shape = "RectSet" Then sizes.Shape = "LSection"
+    If sizes.Shape <> "Rectangle" And sizes.Shape <> "LSection" Then sizes.Shape = "TwoRectangles"
+    sizes.Header = table.RowByKey("H1")
+    sizes.H1 = table.Length(sizes.Header + 1, 1, units)
+    sizes.B1 = table.Length(sizes.Header + 1, 2, units)
+    Require table, sizes.Header + 1, 1, sizes.H1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
+    Require table, sizes.Header + 1, 2, sizes.B1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
+    If sizes.Shape <> "Rectangle" Then
+        sizes.H2 = table.Length(sizes.Header + 1, 3, units)
+        sizes.B2 = table.Length(sizes.Header + 1, 4, units)
+        Require table, sizes.Header + 1, 3, sizes.H2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
+        Require table, sizes.Header + 1, 4, sizes.B2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
+        If sizes.Shape = "LSection" Then Require table, sizes.Header + 1, 2, sizes.B1 < sizes.B2, _
+            "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
+    End If
+    If sizes.Shape = "TwoRectangles" Then
+        Dim row As Long
+        row = table.RowByKey("RectSet.UpperOffsetX")
+        sizes.Offset = table.Length(row, 2, units)
+        Require table, row, 2, sizes.Offset < sizes.B2 - GEOM_TOLERANCE And sizes.Offset + sizes.B1 > GEOM_TOLERANCE, _
+            "Верхний и нижний прямоугольники должны иметь общий участок по X."
+    End If
+End Sub
+
+' LSection и TwoRectangles имеют одно построение; различаются размеры и
+' допустимое смещение, а не общий алгоритм объединения прямоугольников.
+Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, _
+        ByRef upper As CGeometryPath, ByRef lower As CGeometryPath, ByRef outer As CGeometryPath)
+    Set upper = facade.RectanglePath("Upper", sizes.Offset, sizes.H2, sizes.B1, sizes.H1)
+    If sizes.Shape = "Rectangle" Then
         Set outer = upper
     Else
-        Set lower = facade.RectanglePath("Lower", 0#, 0#, b2, h2)
-        Set outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, b2, h2), Array(offset, h2, b1, h1)))
+        Set lower = facade.RectanglePath("Lower", 0#, 0#, sizes.B2, sizes.H2)
+        Set outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, sizes.B2, sizes.H2), _
+            Array(sizes.Offset, sizes.H2, sizes.B1, sizes.H1)))
     End If
+    Dim contourIDs() As String, i As Long
     ReDim contourIDs(0 To outer.SegmentCount - 1)
     For i = 1 To outer.SegmentCount
         contourIDs(i - 1) = "CONTOUR_LINE_" & CStr(i)
     Next i
     facade.Outer "OUTER", outer.ID, "Сегмент контура сечения.", contourIDs
-    AddRectangleRows facade, table, units, header, 0, offset, h2, b1, h1
-    If shape <> "Rectangle" Then AddRectangleRows facade, table, units, header, 4, 0#, 0#, b2, h2
+End Sub
+
+Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, _
+        ByVal upper As CGeometryPath, ByVal lower As CGeometryPath, ByVal outer As CGeometryPath)
     facade.HorizontalExtent "DIM_B", outer.ID, "B", 0#, -1#, "Общая ширина RectSet-сечения."
-    facade.VerticalExtent "DIM_H", outer.ID, "H", GeomMin(0#, offset), -1#, "Общая высота RectSet-сечения."
-    facade.HorizontalExtent "DIM_TOP_WIDTH", upper.ID, "B1", h1 + h2, 1#, "Ширина верхнего прямоугольника RectSet-сечения."
-    If shape <> "Rectangle" Then
-        facade.VerticalExtent "DIM_RIGHT_HEIGHT", lower.ID, "H2", b2, 1#, "Высота нижнего прямоугольника RectSet-сечения."
-        If Abs(offset) > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_UPPER_OFFSET_X", ChrW$(&H394), 0#, offset, h2, 1#, _
+    facade.VerticalExtent "DIM_H", outer.ID, "H", GeomMin(0#, sizes.Offset), -1#, "Общая высота RectSet-сечения."
+    facade.HorizontalExtent "DIM_TOP_WIDTH", upper.ID, "B1", sizes.H1 + sizes.H2, 1#, "Ширина верхнего прямоугольника RectSet-сечения."
+    If sizes.Shape <> "Rectangle" Then
+        facade.VerticalExtent "DIM_RIGHT_HEIGHT", lower.ID, "H2", sizes.B2, 1#, "Высота нижнего прямоугольника RectSet-сечения."
+        If Abs(sizes.Offset) > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_UPPER_OFFSET_X", ChrW$(&H394), 0#, sizes.Offset, sizes.H2, 1#, _
             "Горизонтальное смещение верхнего прямоугольника относительно базового положения."
     End If
-    Set ISectionRecipe_CreateDefinition = facade.Finish
-End Function
+End Sub
 
 ' База отступов - полная длина грани, не линия, укороченная соседним as.
 ' Направления обхода и касательного SideBySide заданы явно в рецепте.

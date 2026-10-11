@@ -73,3 +73,13 @@ Registry/reader/layout потребители пока прежние; retiremen
 
 Production-ветви registry/reader пока прежние; все заменяемые узлы остаются
 ACTIVE в retirement-map до переноса остальных семейств и удаления потребителей.
+
+Подготовка аналитического переноса RoundedRectangle/HollowRectangle:
+- CSectionGeometryQuery.OffsetRoundedPolygon -> существующие RoundedPolygon/
+  BoundaryRegion, согласованные опорные прямые и аналитические радиусы.
+- CGeometryPath -> именованные привязки/цепочки и origin intervals; направление
+  исходного пути не нормализуется вместе с бетонной областью.
+- CSectionDefinitionBuilder.Chain/Transform/OffsetRoundedPolygon -> только
+  общий query/path; в фасаде нет выбора конкретной формы.
+- Сложный рецепт разделяется внутренними методами ввода/геометрии/армирования/
+  аннотаций; это не новые обязательные классы и не дополнительный маршрут.

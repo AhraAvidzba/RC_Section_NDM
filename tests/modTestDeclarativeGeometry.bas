@@ -8,9 +8,122 @@ Private mPassed As Long, mFailed As Long, mReport As String
 Public Function RunCoreGeometryTests() As String
     Dim result As String
     result = RunPathTests()
+    result = result & RunPathAnchorTests()
     result = result & RunRoundedPolygonTests()
+    result = result & RunRoundedOffsetTests()
     result = result & RunInputTableTests()
     RunCoreGeometryTests = result
+End Function
+
+' ДЛЯ ТЕСТОВ: именованные цепочки, обход через начало и source map.
+Public Function RunPathAnchorTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Dim path As CGeometryPath, part As CGeometryPath, changed As CGeometryPath, edge As TRegionEdge
+    Dim query As CSectionGeometryQuery, facade As CSectionDefinitionBuilder, definition As CSectionDefinition
+    Dim x As Double, y As Double, tx As Double, ty As Double, scenario As Long
+    Set path = CompoundPath
+    Near "anchor.named.station", path.AnchorStation("Corner", 0.5), 100# + 12.5 * GEOM_PI
+    Set part = path.BetweenAnchors("Chain", "Bottom", 0.25, "Corner", 0.5)
+    Check "anchor.chain.id", part.ID = "Chain" And Not part.IsClosed
+    Check "anchor.chain.count", part.SegmentCount = 2
+    Near "anchor.chain.length", part.Length, 75# + 12.5 * GEOM_PI
+    Check "anchor.chain.source.path", part.SourcePathID(1) = "Outer.Mixed" And part.SourcePathID(2) = "Outer.Mixed"
+    Check "anchor.chain.source.segment", part.SourceSegmentID(1) = "Bottom" And part.SourceSegmentID(2) = "Corner"
+    Near "anchor.chain.source.first", part.SourceStartParameter(1), 0.25
+    Near "anchor.chain.source.last", part.SourceEndParameter(2), 0.5
+    Set part = path.Slice(20#, 80#): Set changed = part.Reversed
+    Near "anchor.reverse.source.first", changed.SourceStartParameter(1), 0.8
+    Near "anchor.reverse.source.last", changed.SourceEndParameter(1), 0.2
+    Set part = changed.Slice(10#, 50#)
+    Near "anchor.nested.source.first", part.SourceStartParameter(1), 0.7
+    Near "anchor.nested.source.last", part.SourceEndParameter(1), 0.3
+    Set changed = part.Transformed(1000#, -2000#, GEOM_PI / 2#, True): Set part = changed.WithID("Moved")
+    Check "anchor.transform.id", part.ID = "Moved" And part.SegmentID(1) = "Bottom"
+    Check "anchor.transform.source", part.SourcePathID(1) = "Outer.Mixed" And part.SourceSegmentID(1) = "Bottom"
+    Near "anchor.transform.source.first", part.SourceStartParameter(1), 0.7
+    Near "anchor.transform.source.last", part.SourceEndParameter(1), 0.3
+    part.AtDistance 0#, x, y, tx, ty
+    Near "anchor.transform.x", x, 1000#: Near "anchor.transform.y", y, -1930#
+    Near "anchor.source.unchanged", path.Length, 150# + 25# * GEOM_PI
+    Set path = CirclePath
+    Set part = path.BetweenAnchors("Wrap", "Circumference", 0.75, "Circumference", 0.25)
+    Check "anchor.wrap.count", part.SegmentCount = 2 And Not part.IsClosed
+    Check "anchor.wrap.unique.ids", part.SegmentID(1) <> part.SegmentID(2)
+    Check "anchor.wrap.source", part.SourceSegmentID(1) = "Circumference" And part.SourceSegmentID(2) = "Circumference"
+    Near "anchor.wrap.length", part.Length, 10# * GEOM_PI
+    Near "anchor.wrap.first.start", part.SourceStartParameter(1), 0.75
+    Near "anchor.wrap.first.end", part.SourceEndParameter(1), 1#
+    Near "anchor.wrap.second.start", part.SourceStartParameter(2), 0#
+    Near "anchor.wrap.second.end", part.SourceEndParameter(2), 0.25
+    part.AtDistance part.Length / 2#, x, y, tx, ty
+    Near "anchor.wrap.no.chord.x", x, 10#: Near "anchor.wrap.no.chord.y", y, 0#
+    Set part = path.BetweenAnchors("Reverse", "Circumference", 0.75, "Circumference", 0.25, False)
+    Check "anchor.reverse.count", part.SegmentCount = 1
+    Near "anchor.reverse.length", part.Length, 10# * GEOM_PI
+    Near "anchor.reverse.first", part.SourceStartParameter(1), 0.75
+    Near "anchor.reverse.last", part.SourceEndParameter(1), 0.25
+    part.AtDistance part.Length / 2#, x, y, tx, ty
+    Near "anchor.reverse.other.side.x", x, -10#: Near "anchor.reverse.other.side.y", y, 0#
+    part.CopySegment 1, edge: Near "anchor.reverse.sweep", edge.Sweep, -GEOM_PI
+    Set part = path.BetweenAnchors("Loop", "Circumference", 0.25, "Circumference", 0.25, True, True)
+    Check "anchor.full.loop.closed", part.IsClosed And part.SegmentCount = 2
+    Near "anchor.full.loop.length", part.Length, path.Length
+    Set part = path.BetweenAnchors("Seam", "Circumference", 1#, "Circumference", 0#, True, True)
+    Check "anchor.seam.loop.closed", part.IsClosed And part.SegmentCount = 1
+    Near "anchor.seam.loop.length", part.Length, path.Length
+    Set part = path.BetweenAnchors("SeamReverse", "Circumference", 0#, "Circumference", 1#, False, True)
+    Check "anchor.seam.reverse.closed", part.IsClosed
+    Near "anchor.seam.reverse.source.first", part.SourceStartParameter(1), 1#
+    Set query = New CSectionGeometryQuery
+    Set path = query.RoundedPolygon("Sharp", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
+    Set part = path.BetweenAnchors("NamedSide", "Edge.BR", 0#, "Edge.TR", 0#)
+    Check "anchor.zero.radius.named.edge", part.SegmentCount = 1 And part.SegmentID(1) = "Edge.BR"
+    Near "anchor.zero.radius.length", part.Length, 80#
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "AnchorFixture"
+    Set path = facade.RoundedPolygon("Outer", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
+    facade.Outer "Concrete", path.ID
+    Set part = facade.Chain("Side", "Outer", "Edge.BR", 0#, "Edge.TR", 0#)
+    Set changed = facade.Transform("MovedSide", "Side", 1000000#, -1000000#)
+    Set definition = facade.Finish
+    Check "anchor.facade.registered", definition.PathCount = 3 And definition.IsSealed
+    Check "anchor.facade.source", changed.SourcePathID(1) = "Outer" And changed.SourceSegmentID(1) = "Edge.BR"
+    changed.AtDistance 0#, x, y, tx, ty
+    Near "anchor.facade.moved.x", x, 1000100#: Near "anchor.facade.moved.y", y, -1000000#
+    For scenario = 0 To 9: Check "anchor.invalid." & CStr(scenario), InvalidAnchorRejected(scenario): Next scenario
+    GoTo Finished
+Failed:
+    Check "anchor.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunPathAnchorTests = mReport & "TOTAL PATH ANCHORS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+Private Function InvalidAnchorRejected(ByVal scenario As Long) As Boolean
+    On Error GoTo Rejected
+    Dim path As CGeometryPath, part As CGeometryPath, query As CSectionGeometryQuery, station As Double
+    Set path = CirclePath
+    Select Case scenario
+        Case 0: station = path.AnchorStation("Missing")
+        Case 1: station = path.AnchorStation("Circumference", -0.1)
+        Case 2: station = path.AnchorStation("Circumference", 1.1)
+        Case 3: Set part = path.BetweenAnchors("Same", "Circumference", 0.25, "Circumference", 0.25)
+        Case 4: Set part = path.BetweenAnchors("Seam", "Circumference", 1#, "Circumference", 0#)
+        Case 5: Set part = path.BetweenAnchors("Seam", "Circumference", 0#, "Circumference", 1#)
+        Case 6
+            Set path = CompoundPath
+            Set part = path.BetweenAnchors("WrongDirection", "Right", 0#, "Bottom", 0#)
+        Case 7
+            Set path = CompoundPath
+            Set part = path.BetweenAnchors("OpenLoop", "Bottom", 0.5, "Bottom", 0.5, True, True)
+        Case 8
+            Set query = New CSectionGeometryQuery
+            Set path = query.RoundedPolygon("Sharp", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
+            station = path.AnchorStation("Corner.BL")
+        Case 9: Set part = path.WithID("")
+    End Select
+    Exit Function
+Rejected:
+    InvalidAnchorRejected = (Err.Source = "CGeometryPath" And Err.Number = vbObjectError + 5520)
 End Function
 
 Public Function RunPathTests() As String
@@ -94,6 +207,81 @@ Failed:
     Check "rounded.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunRoundedPolygonTests = mReport & "TOTAL ROUNDED POLYGONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: точные offset-дуги, вогнутый угол и независимость от обхода.
+Public Function RunRoundedOffsetTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Dim query As CSectionGeometryQuery, path As CGeometryPath, region As CConcreteRegion
+    Dim original As CGeometryPath, originalRegion As CConcreteRegion, edge As TRegionEdge
+    Dim vertices As Variant, radii As Variant, names As Variant, scenario As Long, x As Double, y As Double, tx As Double, ty As Double
+    Set query = New CSectionGeometryQuery
+    radii = Array(10#, 10#, 10#, 10#)
+    Set original = query.RoundedPolygon("Base", RectangleVertices, radii, RectangleNames)
+    Set path = query.OffsetRoundedPolygon("Inward", RectangleVertices, radii, RectangleNames, 5#)
+    Check "offset.closed", path.IsClosed And path.SegmentCount = 8
+    Near "offset.rectangle.length", path.Length, 280# + 10# * GEOM_PI
+    Set region = query.RegionFromPath(path)
+    Near "offset.rectangle.area", region.Area, 6300# - 100# + 25# * GEOM_PI
+    path.CopySegment path.SegmentIndex("Corner.BL"), edge
+    Near "offset.rectangle.radius", Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2), 5#
+    Near "offset.rectangle.center.x", edge.CenterX, 10#: Near "offset.rectangle.center.y", edge.CenterY, 10#
+    Near "offset.original.unchanged", original.Length, 280# + 20# * GEOM_PI
+    Set path = query.OffsetRoundedPolygon("Outward", RectangleVertices, radii, RectangleNames, -5#)
+    Set region = query.RegionFromPath(path)
+    Near "offset.outward.area", region.Area, 9900# - 900# + 225# * GEOM_PI
+    Set path = query.OffsetRoundedPolygon("VanishedArc", RectangleVertices, radii, RectangleNames, 15#)
+    Check "offset.vanished.arc.count", path.SegmentCount = 4
+    Check "offset.vanished.arc.named.edge", path.SegmentID(path.SegmentIndex("Edge.BL")) = "Edge.BL"
+    Set region = query.RegionFromPath(path)
+    Near "offset.vanished.arc.area", region.Area, 3500#
+    Set path = query.OffsetRoundedPolygon("SharpOutward", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames, -5#)
+    Check "offset.sharp.preserved", path.SegmentCount = 4
+    Set region = query.RegionFromPath(path): Near "offset.sharp.area", region.Area, 9900#
+    Set path = query.OffsetRoundedPolygon("Clockwise", Array(Array(0#, 0#), Array(0#, 80#), Array(100#, 80#), Array(100#, 0#)), _
+        radii, Array("BL", "TL", "TR", "BR"), 5#)
+    Set region = query.RegionFromPath(path): Near "offset.clockwise.area", region.Area, 6300# - 100# + 25# * GEOM_PI
+    path.CopySegment path.SegmentIndex("Corner.BL"), edge
+    Near "offset.clockwise.sweep", edge.Sweep, -GEOM_PI / 2#
+    vertices = Array(Array(0#, 0#), Array(100#, 0#), Array(100#, 40#), Array(40#, 40#), Array(40#, 100#), Array(0#, 100#))
+    radii = Array(5#, 5#, 5#, 5#, 5#, 5#): names = Array("BL", "BR", "Arm", "Inside", "TR", "TL")
+    Set original = query.RoundedPolygon("ConcaveBase", vertices, radii, names)
+    Set originalRegion = query.RegionFromPath(original)
+    Set path = query.OffsetRoundedPolygon("ConcaveOffset", vertices, radii, names, 2#)
+    path.CopySegment path.SegmentIndex("Corner.Inside"), edge
+    Near "offset.concave.radius", Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2), 7#
+    Near "offset.concave.center.x", edge.CenterX, 45#: Near "offset.concave.center.y", edge.CenterY, 45#
+    Near "offset.concave.sweep", edge.Sweep, -GEOM_PI / 2#
+    Set region = query.RegionFromPath(path): Near "offset.concave.area", region.Area, 5616# + 4# - GEOM_PI
+    path.AtDistance path.Length / 7#, x, y, tx, ty
+    Near "offset.boundary.distance", query.BoundaryDistance(originalRegion, x, y), 2#
+    vertices = Array(Array(1000000#, -1000000#), Array(1000100#, -1000000#), _
+        Array(1000100#, -999920#), Array(1000000#, -999920#))
+    Set path = query.OffsetRoundedPolygon("Far", vertices, Array(10#, 10#, 10#, 10#), RectangleNames, 5#)
+    Set region = query.RegionFromPath(path): Near "offset.far.area", region.Area, 6300# - 100# + 25# * GEOM_PI
+    path.CopySegment path.SegmentIndex("Corner.BL"), edge
+    Near "offset.far.center.x", edge.CenterX, 1000010#: Near "offset.far.center.y", edge.CenterY, -999990#
+    For scenario = 0 To 2: Check "offset.invalid." & CStr(scenario), InvalidOffsetRejected(scenario): Next scenario
+    GoTo Finished
+Failed:
+    Check "offset.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunRoundedOffsetTests = mReport & "TOTAL ROUNDED OFFSET: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+Private Function InvalidOffsetRejected(ByVal scenario As Long) As Boolean
+    On Error GoTo Rejected
+    Dim query As CSectionGeometryQuery, path As CGeometryPath
+    Set query = New CSectionGeometryQuery
+    Select Case scenario
+        Case 0: Set path = query.OffsetRoundedPolygon("Collapsed", RectangleVertices, Array(10#, 10#, 10#, 10#), RectangleNames, 50#)
+        Case 1: Set path = query.OffsetRoundedPolygon("Reversed", RectangleVertices, Array(10#, 10#, 10#, 10#), RectangleNames, 100#)
+        Case 2: Set path = query.OffsetRoundedPolygon("InvalidBase", RectangleVertices, Array(60#, 60#, 60#, 60#), RectangleNames, 50#)
+    End Select
+    Exit Function
+Rejected:
+    InvalidOffsetRejected = (Err.Source = "CSectionGeometryQuery" And Err.Number = vbObjectError + 5401)
 End Function
 
 Private Function RectangleVertices() As Variant

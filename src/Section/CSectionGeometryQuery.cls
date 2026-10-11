@@ -807,6 +807,67 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
     Set RoundedPolygon = result
 End Function
 
+' Согласованный offset всего скругленного многоугольника. Положительное
+' расстояние направлено внутрь его площади независимо от обхода; для пути
+' от отверстия в бетон потребитель задает отрицательное расстояние.
+' Исходные острые углы остаются острыми, уменьшившаяся до нуля дуга исчезает.
+Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _
+        ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
+    Dim original As CGeometryPath
+    Set original = RoundedPolygon(pathID, vertices, radii, vertexIDs)
+    If distance = 0# Then Set OffsetRoundedPolygon = original: Exit Function
+
+    Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
+    ReadPolygonInput pathID, vertices, radii, vertexIDs, points, radius, names, count
+    Dim directions() As TPoint2D, shifted() As TPoint2D, i As Long, following As Long, previous As Long
+    Dim length As Double, signedArea As Double, orientation As Double
+    ReDim directions(1 To count): ReDim shifted(1 To count)
+    For i = 1 To count
+        following = i Mod count + 1
+        directions(i).X = points(following).X - points(i).X
+        directions(i).Y = points(following).Y - points(i).Y
+        length = Sqr(directions(i).X ^ 2 + directions(i).Y ^ 2)
+        directions(i).X = directions(i).X / length: directions(i).Y = directions(i).Y / length
+        signedArea = signedArea + (points(i).X - points(1).X) * (points(following).Y - points(1).Y) - _
+            (points(following).X - points(1).X) * (points(i).Y - points(1).Y)
+    Next i
+    orientation = Sgn(signedArea)
+    Dim cross As Double, dot As Double, beforeX As Double, beforeY As Double, afterX As Double, afterY As Double, parameter As Double
+    Dim shiftedVertices() As Variant, shiftedRadii() As Variant
+    ReDim shiftedVertices(0 To count - 1): ReDim shiftedRadii(0 To count - 1)
+    For i = 1 To count
+        previous = (i + count - 2) Mod count + 1
+        beforeX = points(i).X - orientation * directions(previous).Y * distance
+        beforeY = points(i).Y + orientation * directions(previous).X * distance
+        afterX = points(i).X - orientation * directions(i).Y * distance
+        afterY = points(i).Y + orientation * directions(i).X * distance
+        cross = directions(previous).X * directions(i).Y - directions(previous).Y * directions(i).X
+        If Abs(cross) <= PARAM_TOLERANCE Then
+            dot = directions(previous).X * directions(i).X + directions(previous).Y * directions(i).Y
+            If dot <= 0# Then GeometryError pathID & ": смещение не определено в развороте вершины '" & names(i) & "'."
+            shifted(i).X = afterX: shifted(i).Y = afterY
+        Else
+            parameter = ((afterX - beforeX) * directions(i).Y - (afterY - beforeY) * directions(i).X) / cross
+            shifted(i).X = beforeX + parameter * directions(previous).X
+            shifted(i).Y = beforeY + parameter * directions(previous).Y
+        End If
+        shiftedVertices(i - 1) = Array(shifted(i).X, shifted(i).Y)
+        If radius(i) > 0# Then
+            shiftedRadii(i - 1) = GeomMax(0#, radius(i) - distance * orientation * Sgn(cross))
+        Else
+            shiftedRadii(i - 1) = 0#
+        End If
+    Next i
+    For i = 1 To count
+        following = i Mod count + 1
+        dot = directions(i).X * (shifted(following).X - shifted(i).X) + _
+            directions(i).Y * (shifted(following).Y - shifted(i).Y)
+        If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": смещенный путь исчез или изменил топологию на грани Edge." & names(i) & "."
+    Next i
+    ' Существующий topology-контракт проверяет самопересечения и радиусы.
+    Set OffsetRoundedPolygon = RoundedPolygon(pathID, shiftedVertices, shiftedRadii, vertexIDs)
+End Function
+
 ' Путь хранит исходное направление и ID; область получает независимую
 ' нормализацию ролей/ориентации существующим topology-движком.
 Public Function RegionFromPath(ByVal path As CGeometryPath) As CConcreteRegion

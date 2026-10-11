@@ -56,10 +56,35 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
     mDefinition.AddPath RoundedPolygon
 End Function
 
+Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _
+        ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
+    RequireOpen
+    Set OffsetRoundedPolygon = mQuery.OffsetRoundedPolygon(pathID, vertices, radii, vertexIDs, distance)
+    mDefinition.AddPath OffsetRoundedPolygon
+End Function
+
 Public Sub AddPath(ByVal path As CGeometryPath)
     RequireOpen
     mDefinition.AddPath path
 End Sub
+
+Public Function Chain(ByVal pathID As String, ByVal sourcePathID As String, _
+        ByVal startSegmentID As String, ByVal startParameter As Double, ByVal endSegmentID As String, ByVal endParameter As Double, _
+        Optional ByVal forward As Boolean = True, Optional ByVal fullLoopIfSame As Boolean = False) As CGeometryPath
+    RequireOpen
+    Dim source As CGeometryPath
+    Set source = mDefinition.Path(sourcePathID)
+    Set Chain = source.BetweenAnchors(pathID, startSegmentID, startParameter, endSegmentID, endParameter, forward, fullLoopIfSame)
+    mDefinition.AddPath Chain
+End Function
+
+Public Function Transform(ByVal pathID As String, ByVal sourcePathID As String, ByVal shiftX As Double, ByVal shiftY As Double, _
+        Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False) As CGeometryPath
+    RequireOpen
+    Dim source As CGeometryPath, result As CGeometryPath
+    Set source = mDefinition.Path(sourcePathID): Set result = source.Transformed(shiftX, shiftY, rotation, reflectX)
+    Set Transform = result.WithID(pathID): mDefinition.AddPath Transform
+End Function
 
 Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double) As CGeometryPath
     RequireOpen

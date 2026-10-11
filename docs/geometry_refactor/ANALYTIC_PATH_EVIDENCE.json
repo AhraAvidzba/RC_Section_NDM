@@ -1,0 +1,241 @@
+{
+  "Stage": "Analytic polygon offsets, named chains, source map and readable recipes",
+  "Status": "PASS",
+  "Scope": "Common development layer only; Rounded/Hollow recipe migration and final production acceptance pending",
+  "CapturedAt": "2026-10-12T00:02:50.0760661+03:00",
+  "ParentCommit": "d08d9152",
+  "PhysicsBaselineHead": "a138c2732382c826db9ac2f801facd3d533d406c",
+  "MainWorkbookSHA256": "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+  "WorkbookSHA256": "EE4B6ADD9BB8AF23BE6009A096CE012C3AF9C8350E46B7A786376CB2EFD70DF1",
+  "Assertions": {
+    "AnalyticPaths": 266,
+    "Anchors": 58,
+    "RoundedPolygon": 36,
+    "RoundedOffset": 27,
+    "InputTable": 34,
+    "RebarRules": 152,
+    "AnnotationCount": 46
+  },
+  "ExactRegressionRecords": {
+    "RectSet": 34062,
+    "Circle": 58308,
+    "OriginalNineFixtures": 20124
+  },
+  "CalculationScope": "No numerical rerun: new offset/chain not connected to family recipes; existing definition output bit-identical",
+  "BaselineComponentCounts": {
+    "StandardModules": 34,
+    "Classes": 98,
+    "DocumentModules": 5,
+    "Other": 0
+  },
+  "ActualComponentCounts": {
+    "StandardModules": 37,
+    "Classes": 111,
+    "DocumentModules": 5,
+    "Other": 0
+  },
+  "AddedComponents": [
+    {
+      "Name": "CGeometryPath",
+      "Type": 2
+    },
+    {
+      "Name": "CRebarRuleExecutor",
+      "Type": 2
+    },
+    {
+      "Name": "CRebarRuleOptions",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionAnnotationBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionDefinition",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionDefinitionBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionInputSnapshotReader",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionInputTable",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionRecipeCircle",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionRecipeContext",
+      "Type": 2
+    },
+    {
+      "Name": "CSectionRecipeRectSet",
+      "Type": 2
+    },
+    {
+      "Name": "ISectionRecipe",
+      "Type": 2
+    },
+    {
+      "Name": "modSectionRecipeTypes",
+      "Type": 1
+    },
+    {
+      "Name": "modTestDeclarativeGeometry",
+      "Type": 1
+    },
+    {
+      "Name": "modTestSectionRecipes",
+      "Type": 1
+    }
+  ],
+  "RemovedComponents": [],
+  "FinalComponentCountsPending": true,
+  "ApprovedSourceModules": 21,
+  "UnexpectedModules": 0,
+  "SourceMismatchCount": 0,
+  "ArchiveSHA256": "6203AB7BCC7E655E7DBDB07B48EA4D7B310310D1BBE57FC594CDDBAD97CEF677",
+  "Sources": [
+    {
+      "Path": "src/Common/modSectionRecipeTypes.bas",
+      "SHA256": "8E9A75161063F2928C0A7FF2460F667201324E809644EC3F8A5EC241485B4CF5"
+    },
+    {
+      "Path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "SHA256": "5C2B724545F84B95AB1E5C6C6610E3417F76951C95B96399865CE8A90AB5A6AB"
+    },
+    {
+      "Path": "src/Excel/CSectionTypeRegistry.cls",
+      "SHA256": "A3E0EA60A1AED9450A16E84E40B3F8F047316D2EDEF30FF64765D01B6C6535FD"
+    },
+    {
+      "Path": "src/Geometry/CGeometryPath.cls",
+      "SHA256": "E1F02210926045F459B049DEDC76D050E49133DDA20AD4D1F8551EFD1963FC7D"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeCircle.cls",
+      "SHA256": "0B3B8D60FDD9B18E202A4262FE165D1BCAEF3C13F7941F54BAE835382A49F15A"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRectSet.cls",
+      "SHA256": "34524FA72F9132ECA04DC1FD4A4777BD5AFF52B3B6C218EF123CA12BAB62415B"
+    },
+    {
+      "Path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "SHA256": "B875DFCC3EF8A1A20A32556FF531E132986E42F9E4F03A0CE17909831AB03D0A"
+    },
+    {
+      "Path": "src/Section/CRebarLayout.cls",
+      "SHA256": "3FAFB0238199D7C7E8D7DE120D85241D091AC7DCF48B8BDB76EED1F57C7BC8B4"
+    },
+    {
+      "Path": "src/Section/CRebarRuleExecutor.cls",
+      "SHA256": "D65A99F2263288B0187C0A29A77B781BF69181CFFCC9162DD4F762CD5D01F843"
+    },
+    {
+      "Path": "src/Section/CRebarRuleOptions.cls",
+      "SHA256": "F474E631896FBDA398D83D955852FD46F3A85808C8CBBD3134451C0D4EC0FCC4"
+    },
+    {
+      "Path": "src/Section/CSectionAnnotationBuilder.cls",
+      "SHA256": "B2A20518475B404E516364F885269E4FCCB88981D9BF7862BD6D630FBBB40F21"
+    },
+    {
+      "Path": "src/Section/CSectionBuilder.cls",
+      "SHA256": "65BAA91410E84109EAE807E527A833376F4FE131A9EEAF4562E8E4A25589AA56"
+    },
+    {
+      "Path": "src/Section/CSectionDefinition.cls",
+      "SHA256": "DB5F15109BC69232CB072F18FEE6F3278C7A7FC24986B463A10BE5CEB7AE6586"
+    },
+    {
+      "Path": "src/Section/CSectionDefinitionBuilder.cls",
+      "SHA256": "AB29BFAB0E0A6E9790508327202C727C23ED1AB31B380F119B540805617B571F"
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "51D17A6036307E0A3BE252214D99CBE3F338D3439FDFF5FFD929D27FA6FDD057"
+    },
+    {
+      "Path": "src/Section/CSectionInputTable.cls",
+      "SHA256": "8DFB16B47A758FF27C26BA65D1EC57B9BE8E0615990D1FB99F5099D248B5642B"
+    },
+    {
+      "Path": "src/Section/CSectionRecipeContext.cls",
+      "SHA256": "212F4D66C928C127C97E68F9C448600B121E5265EFB50041EA28FD32CE95AFCF"
+    },
+    {
+      "Path": "src/Section/ISectionRecipe.cls",
+      "SHA256": "D24E5030241812FED466B7D03A7CB10A8724E5FB5C6B38C7F75A61A5368744C3"
+    },
+    {
+      "Path": "tests/modTestDeclarativeGeometry.bas",
+      "SHA256": "E6A677DF0DD8357EDE3B2374EBC1BB686A5EEF36B14F8CC9CE8B5CC64FEC1EF9"
+    },
+    {
+      "Path": "tests/modTestSectionRecipes.bas",
+      "SHA256": "C2D072BB6CD442C1A5288A382A2627065659E6D13804BD171CF5E36BC2475B91"
+    },
+    {
+      "Path": "tests/modTestShapeArchitecture.bas",
+      "SHA256": "81B688B0969FA4F5BE09FF3EF7733BB5FDA01315BDFF8501787D8BB80C3A3E58"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "CodeUpdate.json",
+      "SHA256": "0130E73C1D487B8797C7EF9006D9AF2C132DB0F3D9908BF8AFB91497C6F3967F"
+    },
+    {
+      "Path": "CodeComparison.json",
+      "SHA256": "89A541F55A13056E21D8B42BD3A80AE670CAD33FCCBBA78DFC2849DC048AF2FF"
+    },
+    {
+      "Path": "CoreGeometry.txt",
+      "SHA256": "13B9E9206E7A7CD0A39DCC8178231A7091E8361108ABFEBA14E978B056E16ABF"
+    },
+    {
+      "Path": "RuleTests.txt",
+      "SHA256": "E669EF5B7AB109CCFEE0814069326444FF1B9DA442321BC1079A5CCAB10AA68E"
+    },
+    {
+      "Path": "AnnotationCounts.txt",
+      "SHA256": "91D084F494D5928E2A4DE9542386E73AF99130A461A257EBF20E9364736812EF"
+    },
+    {
+      "Path": "RectSetMatrix.txt",
+      "SHA256": "24482274EA2017B1067F901EABAB7CFE55E9700921542E4F242FEB1A8A2BDBF8"
+    },
+    {
+      "Path": "RectSetMatrixComparison.json",
+      "SHA256": "6DAED982200D80B109205AE8DB6B78C035E6CFDFBA5E9D40C2BD0A6B1F933101"
+    },
+    {
+      "Path": "CircleMatrix.txt",
+      "SHA256": "B6E4BB38CF6B52F4BE25B69DFF5FCF38A7FB10DD9E0FD347CB674E8D25FFA085"
+    },
+    {
+      "Path": "CircleMatrixComparison.json",
+      "SHA256": "8A0845AC40FBBF39EC5B648C40D0A23D24A7B966DA44D8D2C179A6E5953A718C"
+    },
+    {
+      "Path": "UnmigratedGeometrySmoke.txt",
+      "SHA256": "B3758C51065A2C14BE0B699D82254BBEEFC64EAE92141E1D970D486C5E1BBB6C"
+    },
+    {
+      "Path": "UnmigratedGeometryComparison.json",
+      "SHA256": "5244C08183C865FE0B25EB6EACE311B1744F7227D883ED5EB4DC18A0C8D0F7C4"
+    }
+  ]
+}

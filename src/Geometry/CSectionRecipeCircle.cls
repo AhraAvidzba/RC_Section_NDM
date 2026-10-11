@@ -16,11 +16,15 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
     Dim diameter As Double, axisDistance As Double, count As Long, d As Double, d2 As Double, d3 As Double
     Dim loc2 As String, loc3 As String, options As CRebarRuleOptions, path As CGeometryPath, skipped As Double
+
+    ' Ввод: дополнительные поля читаются только для активных рядов.
     Set table = context.Table("rngCircleGeometry"): Set units = context.Units
     diameter = table.Length(table.RowByKey("Circle.Diameter"), 2, units)
     Require table, "Circle.Diameter", diameter > 0#, "Диаметр бетонного круга должен быть положительным."
     count = table.Count(table.RowByKey("Rebar.Count"), 2)
     d = table.OptionalDiameter(table.RowByKey("Rebar.Diameter"), 2, units)
+
+    ' Геометрия: наружная окружность и точная траектория осей стержней.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Circle"
     Set path = facade.CirclePath("CONTOUR_CIRCLE", 0#, 0#, diameter / 2#)
     facade.Outer "OUTER", path.ID, "Круговой контур сечения."
@@ -34,6 +38,8 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         If d2 > 0# Then loc2 = table.Choice(table.RowByKey("Rebar.Loc2row"), 2, Array("Stacked", "SideBySide"))
         If d3 > 0# Then loc3 = table.Choice(table.RowByKey("Rebar.Loc3row"), 2, Array("Stacked", "SideBySide"))
         Set path = facade.CirclePath("Circle.Axis", 0#, 0#, diameter / 2# - axisDistance)
+
+        ' Арматура: основной ряд и зависимые дополнительные ряды.
         Set options = New CRebarRuleOptions
         options.EndMode = ClosedUniform: options.SourcePrefix = "B": options.AnnotationGroup = "Circle"
         options.Publication = PublishPerSourcePosition: options.Comment = "Круг: основной ряд арматуры"
@@ -50,6 +56,8 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         End If
         facade.RebarLabel "Circle", path.ID, 0#, 1#, axisDistance
     End If
+
+    ' Аннотации: размер и подпись фактической арматуры.
     facade.VerticalExtent "DIM_CIRCLE_D", "CONTOUR_CIRCLE", "D", -diameter / 2#, -1#, "Диаметр параметрического круглого сечения."
     Set ISectionRecipe_CreateDefinition = facade.Finish
 End Function

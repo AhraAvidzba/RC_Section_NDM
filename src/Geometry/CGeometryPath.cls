@@ -15,6 +15,8 @@ Private Const PATH_TOLERANCE As Double = 0.000001 ' Допуск стыков, �
 Private mID As String
 Private mEdges() As TRegionEdge
 Private mSegmentIDs() As String
+Private mSourcePathIDs() As String, mSourceSegmentIDs() As String
+Private mSourceStart() As Double, mSourceEnd() As Double
 Private mStations() As Double
 Private mCount As Long, mCapacity As Long
 Private mSealed As Boolean, mClosed As Boolean
@@ -60,6 +62,8 @@ Public Sub Seal(Optional ByVal closed As Boolean = False)
     End If
     ReDim Preserve mEdges(1 To mCount)
     ReDim Preserve mSegmentIDs(1 To mCount)
+    ReDim Preserve mSourcePathIDs(1 To mCount): ReDim Preserve mSourceSegmentIDs(1 To mCount)
+    ReDim Preserve mSourceStart(1 To mCount): ReDim Preserve mSourceEnd(1 To mCount)
     ReDim Preserve mStations(0 To mCount)
     mCapacity = mCount: mClosed = closed: mSealed = True
 End Sub
@@ -73,12 +77,75 @@ Public Property Get SegmentID(ByVal index As Long) As String
     CheckIndex index: SegmentID = mSegmentIDs(index)
 End Property
 
+Public Property Get SourcePathID(ByVal index As Long) As String
+    CheckIndex index: SourcePathID = mSourcePathIDs(index)
+End Property
+
+Public Property Get SourceSegmentID(ByVal index As Long) As String
+    CheckIndex index: SourceSegmentID = mSourceSegmentIDs(index)
+End Property
+
+Public Property Get SourceStartParameter(ByVal index As Long) As Double
+    CheckIndex index: SourceStartParameter = mSourceStart(index)
+End Property
+
+Public Property Get SourceEndParameter(ByVal index As Long) As Double
+    CheckIndex index: SourceEndParameter = mSourceEnd(index)
+End Property
+
 Public Function SegmentIndex(ByVal segmentID As String) As Long
     Dim i As Long
     For i = 1 To mCount
         If StrComp(mSegmentIDs(i), segmentID, vbBinaryCompare) = 0 Then SegmentIndex = i: Exit Function
     Next i
     PathError "Не найден сегмент '" & segmentID & "'."
+End Function
+
+' Привязка задается именем сегмента и долей его длины, а не номером в массиве.
+Public Function AnchorStation(ByVal segmentID As String, Optional ByVal parameter As Double = 0#) As Double
+    RequireSealed
+    If parameter < 0# Or parameter > 1# Then PathError "Параметр привязки должен быть от 0 до 1."
+    Dim index As Long
+    index = SegmentIndex(segmentID)
+    AnchorStation = mStations(index - 1) + parameter * (mStations(index) - mStations(index - 1))
+End Function
+
+Public Function WithID(ByVal pathID As String) As CGeometryPath
+    RequireSealed
+    Dim result As CGeometryPath, i As Long
+    Set result = New CGeometryPath: result.Initialize pathID
+    For i = 1 To mCount
+        result.Append mSegmentIDs(i), mEdges(i), mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceStart(i), mSourceEnd(i)
+    Next i
+    result.Seal mClosed: Set WithID = result
+End Function
+
+' На замкнутом контуре направление обхода задается явно. Обход через начало
+' не добавляет хорду; части сегмента сохраняют исходные ID и интервалы.
+Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As String, ByVal startParameter As Double, _
+        ByVal endSegmentID As String, ByVal endParameter As Double, Optional ByVal forward As Boolean = True, _
+        Optional ByVal fullLoopIfSame As Boolean = False) As CGeometryPath
+    RequireSealed
+    Dim result As CGeometryPath, part As CGeometryPath, first As Double, last As Double
+    If Not forward Then
+        Set part = BetweenAnchors(pathID, endSegmentID, endParameter, startSegmentID, startParameter, True, fullLoopIfSame)
+        Set BetweenAnchors = part.Reversed: Exit Function
+    End If
+    first = AnchorStation(startSegmentID, startParameter): last = AnchorStation(endSegmentID, endParameter)
+    If mClosed Then
+        If first >= mStations(mCount) - PATH_TOLERANCE Then first = 0#
+        If last >= mStations(mCount) - PATH_TOLERANCE Then last = 0#
+    End If
+    If last > first + PATH_TOLERANCE Then
+        Set part = Slice(first, last): Set BetweenAnchors = part.WithID(pathID): Exit Function
+    End If
+    If Not mClosed Then PathError "Привязки открытого пути не соответствуют выбранному направлению."
+    If Abs(first - last) <= PATH_TOLERANCE And Not fullLoopIfSame Then PathError "Привязки совпадают; полный обход должен быть задан явно."
+    Set result = New CGeometryPath: result.Initialize pathID
+    AppendInterval result, first, mStations(mCount)
+    AppendInterval result, 0#, last
+    result.Seal (Abs(first - last) <= PATH_TOLERANCE)
+    Set BetweenAnchors = result
 End Function
 
 ' Параметр - пройденная длина в мм. На стыке выбирается исходящая
@@ -126,11 +193,36 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
         If last > first + PATH_TOLERANCE Then
             segmentLength = mStations(i) - mStations(i - 1)
             mQuery.SubEdge mEdges(i), (first - mStations(i - 1)) / segmentLength, (last - mStations(i - 1)) / segmentLength, edge
-            result.Append mSegmentIDs(i), edge
+            result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), _
+                OriginParameter(i, (first - mStations(i - 1)) / segmentLength), OriginParameter(i, (last - mStations(i - 1)) / segmentLength)
         End If
     Next i
     result.Seal (mClosed And startDistance = 0# And endDistance = mStations(mCount))
     Set Slice = result
+End Function
+
+Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double, ByVal last As Double)
+    If last <= first + PATH_TOLERANCE Then Exit Sub
+    Dim part As CGeometryPath, i As Long, edge As TRegionEdge, name As String, suffix As Long
+    Set part = Slice(first, last)
+    For i = 1 To part.SegmentCount
+        part.CopySegment i, edge: name = part.SegmentID(i): suffix = 1
+        Do While result.HasSegmentID(name)
+            suffix = suffix + 1: name = part.SegmentID(i) & ".Part" & CStr(suffix)
+        Loop
+        result.Append name, edge, part.SourcePathID(i), part.SourceSegmentID(i), part.SourceStartParameter(i), part.SourceEndParameter(i)
+    Next i
+End Sub
+
+Private Function OriginParameter(ByVal index As Long, ByVal parameter As Double) As Double
+    OriginParameter = mSourceStart(index) + parameter * (mSourceEnd(index) - mSourceStart(index))
+End Function
+
+Friend Function HasSegmentID(ByVal segmentID As String) As Boolean
+    Dim i As Long
+    For i = 1 To mCount
+        If StrComp(mSegmentIDs(i), segmentID, vbBinaryCompare) = 0 Then HasSegmentID = True: Exit Function
+    Next i
 End Function
 
 Public Function Reversed() As CGeometryPath
@@ -139,7 +231,7 @@ Public Function Reversed() As CGeometryPath
     Set result = New CGeometryPath: result.Initialize mID
     For i = mCount To 1 Step -1
         LSet edge = mEdges(i): mQuery.ReverseEdge edge
-        result.Append mSegmentIDs(i), edge
+        result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceEnd(i), mSourceStart(i)
     Next i
     result.Seal mClosed
     Set Reversed = result
@@ -161,7 +253,7 @@ Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, _
             TransformPoint edge.CenterX, edge.CenterY, shiftX, shiftY, cosine, sine, reflectX
             If reflectX Then edge.Sweep = -edge.Sweep
         End If
-        result.Append mSegmentIDs(i), edge
+        result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceStart(i), mSourceEnd(i)
     Next i
     result.Seal mClosed
     Set Transformed = result
@@ -192,7 +284,8 @@ Friend Sub CopySegment(ByVal index As Long, ByRef edge As TRegionEdge)
     LSet edge = mEdges(index)
 End Sub
 
-Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge)
+Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge, Optional ByVal sourcePathID As String = "", _
+        Optional ByVal sourceSegmentID As String = "", Optional ByVal sourceStart As Double = 0#, Optional ByVal sourceEnd As Double = 1#)
     RequireMutable
     If Len(Trim$(segmentID)) = 0 Then PathError "Не задан ID сегмента."
     Dim i As Long, segmentLength As Double
@@ -209,10 +302,16 @@ Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge)
         mCapacity = GeomMax(4#, CDbl(mCapacity) * 2#)
         ReDim Preserve mEdges(1 To mCapacity)
         ReDim Preserve mSegmentIDs(1 To mCapacity)
+        ReDim Preserve mSourcePathIDs(1 To mCapacity): ReDim Preserve mSourceSegmentIDs(1 To mCapacity)
+        ReDim Preserve mSourceStart(1 To mCapacity): ReDim Preserve mSourceEnd(1 To mCapacity)
         ReDim Preserve mStations(0 To mCapacity)
     End If
     mCount = mCount + 1
     LSet mEdges(mCount) = edge: mSegmentIDs(mCount) = segmentID
+    If Len(sourcePathID) = 0 Then sourcePathID = mID
+    If Len(sourceSegmentID) = 0 Then sourceSegmentID = segmentID
+    mSourcePathIDs(mCount) = sourcePathID: mSourceSegmentIDs(mCount) = sourceSegmentID
+    mSourceStart(mCount) = sourceStart: mSourceEnd(mCount) = sourceEnd
     mStations(mCount) = mStations(mCount - 1) + segmentLength
 End Sub
 
