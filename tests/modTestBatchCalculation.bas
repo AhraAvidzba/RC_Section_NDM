@@ -17,6 +17,61 @@ Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутрен
 Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
 Private mAudit03ResourceTrace As Boolean ' ДЛЯ ТЕСТОВ: отдельный журнал размеров Excel, не влияющий на расчет и assertions.
 
+' ДЛЯ ТЕСТОВ: счетчики всего batch, сброс и независимый сохраненный снимок.
+Public Function RunBatchWorkStatsTests() As String
+    Dim stats As TBatchTestStats, batch As CBatchSectionCalculator, section As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CBatchResultWriter
+    Dim profiles As Object, oldProfiles As Variant, system As Object, oldSystem As Variant
+    On Error GoTo Failed
+    Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    Set system = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    oldProfiles = profiles.Formula: oldSystem = system.Formula
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "Yes"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set batch = BuildBatchCalculator(True, section): batch.ApplySettings settings, units
+    batch.AddCombination "COUNT_1", -100000#, 2000000#, 1000000#, "PR1", "", "Auto"
+    batch.AddCombination "COUNT_2", -50000#, -1000000#, 1500000#, "PR1", "", "Auto"
+    batch.Execute
+    Dim calls As Long, starts As Long, iterations As Long, ultimateIterations As Long
+    calls = batch.SolverCallCount: starts = batch.UltimateStrainStartCount
+    iterations = batch.SolverIterationCount: ultimateIterations = batch.UltimateStrainIterationCount
+    AssertTrue stats, "batch.workStats.actualCalls", calls = SectionEquilibriumSolveCount() And calls > 0
+    AssertTrue stats, "batch.workStats.actualStarts", starts = modSolverWorkStats.UltimateStrainStartCount() And starts > 0
+    AssertTrue stats, "batch.workStats.actualIterations", iterations = SectionEquilibriumIterationCount() And iterations > 0
+    AssertTrue stats, "batch.workStats.actualUltimateIterations", ultimateIterations = modSolverWorkStats.UltimateStrainIterationCount() And ultimateIterations > 0
+    ResetSectionEquilibriumSolveCount
+    AssertTrue stats, "batch.workStats.independentSnapshot", batch.SolverCallCount = calls And batch.SolverIterationCount = iterations And _
+        batch.UltimateStrainStartCount = starts And batch.UltimateStrainIterationCount = ultimateIterations
+    Set writer = New CBatchResultWriter
+    writer.WriteSummary ThisWorkbook, batch, units, section
+    Dim anchor As Object
+    Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1)
+    AssertClose stats, "batch.workStats.outputCalls", CDbl(anchor.Offset(2, 0).Value2), CDbl(calls), 0#
+    AssertClose stats, "batch.workStats.outputStarts", CDbl(anchor.Offset(0, 6).Value2), CDbl(starts), 0#
+    AssertClose stats, "batch.workStats.outputIterations", CDbl(anchor.Offset(1, 6).Value2), CDbl(iterations), 0#
+    AssertClose stats, "batch.workStats.outputUltimateIterations", CDbl(anchor.Offset(2, 6).Value2), CDbl(ultimateIterations), 0#
+    AssertTrue stats, "batch.workStats.writerNoSolve", SectionEquilibriumSolveCount() = 0 And modSolverWorkStats.UltimateStrainStartCount() = 0
+    AssertTrue stats, "batch.workStats.noWrap", Not CBool(anchor.Offset(0, 6).Resize(3, 7).WrapText)
+    AssertTrue stats, "batch.workStats.labelMerge", anchor.Offset(0, 7).MergeArea.Columns.Count = 6
+    AssertTrue stats, "batch.workStats.rightBorder", anchor.Offset(0, 12).Borders(10).LineStyle <> -4142
+    batch.Execute
+    AssertTrue stats, "batch.workStats.newRunNotAccumulated", batch.SolverCallCount = calls And batch.SolverIterationCount = iterations And _
+        batch.UltimateStrainStartCount = starts And batch.UltimateStrainIterationCount = ultimateIterations
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.workStats.runtime; " & CStr(Err.Number) & "; " & Err.Description
+Restore:
+    If IsArray(oldProfiles) Then profiles.Formula = oldProfiles
+    If IsArray(oldSystem) Then system.Formula = oldSystem
+    RunBatchWorkStatsTests = stats.Report & "TOTAL_BATCH_WORK_STATS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
 ' Выполняет пакетные регрессии профилей, путей, typed results, reuse и вывода.
 ' Общий отчет сохраняет отдельные причины failure и количество assertions.
 Public Function RunBatchCalculationTests() As String
@@ -363,6 +418,83 @@ Finished:
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
     RunPostAudit03SnapshotRepeatTests = stats.Report & "TOTAL_POSTAUDIT03_REPEAT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: Results сохраняет использованные диаграммы, а не новый Config.
+Public Function RunPlateauResultsDiagramTests() As String
+    Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, fixture As Object, sheet As Object
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim section As CSectionModel, batch As CBatchSectionCalculator, props As CSectionPropertiesCalculator
+    Dim writer As CNDMResultsWriter, state As CSectionStateResult, diagram As CMaterialDiagram
+    Dim names As Variant, columns As Variant, slopeMode As Variant, extensionMode As Variant
+    Dim data As Variant, i As Long, row As Long, point As Long, solves As Long, prefix As String
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
+        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+    columns = Array(1, 12, 29, 48, 56, 69)
+    For i = 0 To UBound(names)
+        fixture.Names.Add CStr(names(i)), "=Results!" & sheet.Cells(20, CLng(columns(i))).Address
+    Next i
+    Set writer = New CNDMResultsWriter
+    For Each slopeMode In Array("No", "Yes")
+        For Each extensionMode In Array("No", "Yes")
+            SetSystemSetting "Solver.PlateauSlope.Enabled", CStr(slopeMode)
+            SetSystemSetting "General.DiagramExtension", CStr(extensionMode)
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+            Set batch = BuildBatchCalculator(False, section)
+            batch.Initialize section, provider: Set batch.ProfileCatalog = TestProfileCatalog()
+            batch.ApplySettings settings, units
+            batch.AddCombination "DIAGRAM", -100000#, 1000000#, 200000#, "PR1", "", "Auto"
+            batch.Execute
+            prefix = "plateau.results." & CStr(slopeMode) & "." & CStr(extensionMode)
+            AssertTrue stats, prefix & ".stateCount", batch.ResultAt(1).StateRepository.StateCount = 1
+            Set state = batch.ResultAt(1).StateRepository.StateAt(1)
+            AssertTrue stats, prefix & ".materialsSaved", state.HasMaterialSnapshot
+            Set props = PrepareSectionSnapshot(section, provider)
+            solves = SectionEquilibriumSolveCount()
+            If CStr(slopeMode) = "Yes" Then
+                SetSystemSetting "Solver.PlateauSlope.Enabled", "No"
+            Else
+                SetSystemSetting "Solver.PlateauSlope.Enabled", "Yes"
+            End If
+            writer.WriteResults fixture, section, props, batch, units
+            data = PostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
+            AssertTrue stats, prefix & ".pointRows", UBound(data, 1) > 1
+            For row = 2 To UBound(data, 1)
+                If CStr(data(row, 8)) = "Concrete" Then
+                    Set diagram = provider.ConcreteMaterialForEquilibriumFromSpec(state.MaterialSpec)
+                Else
+                    AssertEquals stats, prefix & ".material", CStr(data(row, 8)), "Rebar"
+                    Set diagram = provider.SteelMaterialForEquilibriumFromSpec(state.MaterialSpec)
+                End If
+                point = CLng(data(row, 9))
+                AssertClose stats, prefix & ".strain." & CStr(row), CDbl(data(row, 10)), diagram.PointStrain(point), 0.000000000001
+                AssertClose stats, prefix & ".stress." & CStr(row), units.OutputStressToInternal(CDbl(data(row, 11))), diagram.PointStress(point), 0.00000001
+            Next row
+            AssertTrue stats, prefix & ".writerNoSolve", SectionEquilibriumSolveCount() = solves
+        Next extensionMode
+    Next slopeMode
+    GoTo Finished
+Failed:
+    AssertTrue stats, "plateau.results.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    RunPlateauResultsDiagramTests = stats.Report & "TOTAL_PLATEAU_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
 ' ДЛЯ ТЕСТОВ: читает только непрерывную таблицу под одноячеечным якорем.
@@ -6847,7 +6979,7 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
         AssertTrue stats, prefix & ".longitudinalBlockActualReason", _
             InStr(1, result.LongitudinalCrackMeta.ResultComment, result.CrackCurrentStateMeta.ResultComment, vbBinaryCompare) > 0
     End If
-    If Not result.CrackResult.Formation.HasLimitPoint And result.CrackWidthMeta.Calculated Then
+    If result.CrackResult.Width.StandardCode = "SP63" And Not result.CrackResult.Formation.HasLimitPoint And result.CrackWidthMeta.Calculated Then
         AssertClose stats, prefix & ".formationUnavailablePsi1", result.CrackResult.Width.PsiS, 1#, 0#
         AssertTrue stats, prefix & ".formationUnavailableWarning", _
             InStr(1, result.CrackWidthMeta.ResultComment, "Предупреждение", vbTextCompare) > 0
@@ -7451,7 +7583,7 @@ End Sub
 ' не вызывается, и отдельные тесты проверяют сохранность исходного PsiS.
 Private Sub Audit03CheckAppliedPsiMode(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
         ByVal settings As CSystemSettingsReader, ByVal prefix As String)
-    If Not result.CrackWidthMeta.Calculated Then Exit Sub
+    If result.CrackResult.Width.StandardCode <> "SP63" Or Not result.CrackWidthMeta.Calculated Then Exit Sub
     If Not Audit03HasUsableFormationData(result) Then
         AssertClose stats, prefix & ".formationUnavailablePsi1", result.CrackResult.Width.PsiS, 1#, 0#
         AssertTrue stats, prefix & ".formationUnavailableWarning", _

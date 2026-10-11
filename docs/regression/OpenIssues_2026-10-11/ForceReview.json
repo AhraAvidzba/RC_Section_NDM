@@ -1,0 +1,222 @@
+{
+  "SourceSHA256": "ADC33F19913BE25A75B1BD79BB21C34CF3F0052B68380E958F4543C938721D9C",
+  "ModelSHA256": "ECD20C0C4E7EF3726CFAE6E1209DDC5A9D63DD5AD43022DB8C42588FA5A9952C",
+  "ReviewedStates": 11,
+  "ProvenImpossible": 11,
+  "Inconclusive": 0,
+  "ReviewedMessages": 18,
+  "AllNumericalMessagesCovered": true,
+  "Records": [
+    {
+      "Case": "focused.SavedWorkbook.axialC1",
+      "Mode": "No",
+      "State": "StrengthState",
+      "MaterialRole": "PR1",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 624568.2656609546,
+        "ToleranceN": 0.002097721371111447,
+        "Direction": [
+          -0.6915692810809446,
+          0.4438669259920308,
+          -0.5698368902375225
+        ],
+        "ProjectedTargetN": 14879342.375322012,
+        "SupportN": 14254774.109661058
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.overloadMixed1",
+      "Mode": "No",
+      "State": "StrengthState",
+      "MaterialRole": "PR1",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 8563368.23202079,
+        "ToleranceN": 0.0023589140096517964,
+        "Direction": [
+          -0.5403219490866177,
+          0.5950009207283972,
+          -0.5950009207283615
+        ],
+        "ProjectedTargetN": 20419610.943839606,
+        "SupportN": 11856242.711818816
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.overloadMixed1",
+      "Mode": "No",
+      "State": "CrackedState",
+      "MaterialRole": "PR2",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 5247165.802101776,
+        "ToleranceN": 0.0026544965493167,
+        "Direction": [
+          -0.5314222936261057,
+          0.5989951359723931,
+          -0.5989951359723911
+        ],
+        "ProjectedTargetN": 20293990.67347748,
+        "SupportN": 15046824.871375702
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.axialC1.05",
+      "Mode": "No",
+      "State": "StrengthState",
+      "MaterialRole": "PR1",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 1411534.2244575955,
+        "ToleranceN": 0.002202607439667013,
+        "Direction": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "ProjectedTargetN": 22019250.7546107,
+        "SupportN": 20607716.530153103
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.axialC2",
+      "Mode": "No",
+      "State": "StrengthState",
+      "MaterialRole": "PR1",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 21333713.478629194,
+        "ToleranceN": 0.004195442742222884,
+        "Direction": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "ProjectedTargetN": 41941430.0087823,
+        "SupportN": 20607716.530153103
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.axialC2",
+      "Mode": "No",
+      "State": "CrackedState",
+      "MaterialRole": "PR2",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 15396464.5156153,
+        "ToleranceN": 0.004195442742222884,
+        "Direction": [
+          -1.0,
+          -0.0,
+          -0.0
+        ],
+        "ProjectedTargetN": 41941430.0087823,
+        "SupportN": 26544965.493166998
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.overloadMixed1000000",
+      "Mode": "No",
+      "State": "StrengthState",
+      "MaterialRole": "PR1",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 22255016723357.51,
+        "ToleranceN": 2358.9140096517963,
+        "Direction": [
+          -0.6915692810809446,
+          0.4438669259920308,
+          -0.5698368902375225
+        ],
+        "ProjectedTargetN": 22255030978131.62,
+        "SupportN": 14254774.109661058
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.overloadMixed1000000",
+      "Mode": "No",
+      "State": "CrackedState",
+      "MaterialRole": "PR2",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 22255012617032.02,
+        "ToleranceN": 2358.9140096517963,
+        "Direction": [
+          -0.6915692810809446,
+          0.4438669259920308,
+          -0.5698368902375225
+        ],
+        "ProjectedTargetN": 22255030978131.62,
+        "SupportN": 18361099.599830102
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.N2098Plateau",
+      "Mode": "No",
+      "State": "StrengthState",
+      "MaterialRole": "PR1",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 358304.8443528637,
+        "ToleranceN": 0.0020607716530153105,
+        "Direction": [
+          -0.6629610867394754,
+          0.40036501790585705,
+          -0.6326060779872862
+        ],
+        "ProjectedTargetN": 14027716.777105285,
+        "SupportN": 13669411.932752421
+      },
+      "ReportSHA256": "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2"
+    },
+    {
+      "Case": "focused.SavedWorkbook.overloadMixed1000000",
+      "Mode": "Yes",
+      "State": "StrengthState",
+      "MaterialRole": "PR1",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 22252961565343.008,
+        "ToleranceN": 2358.9140096517963,
+        "Direction": [
+          -0.6915692810809446,
+          0.4438669259920308,
+          -0.5698368902375225
+        ],
+        "ProjectedTargetN": 22255030978131.62,
+        "SupportN": 2069412788.6125913
+      },
+      "ReportSHA256": "E5FD84C5C005C4AF88881865A2E1E86C595D198B0829DF0C9842F82E77D24749"
+    },
+    {
+      "Case": "focused.SavedWorkbook.overloadMixed1000000",
+      "Mode": "Yes",
+      "State": "CrackedState",
+      "MaterialRole": "PR2",
+      "Certificate": {
+        "ImpossibleByBound": true,
+        "ViolationN": 22252957451291.465,
+        "ToleranceN": 2358.9140096517963,
+        "Direction": [
+          -0.6915692810809446,
+          0.4438669259920308,
+          -0.5698368902375225
+        ],
+        "ProjectedTargetN": 22255030978131.62,
+        "SupportN": 2073526840.1557047
+      },
+      "ReportSHA256": "E5FD84C5C005C4AF88881865A2E1E86C595D198B0829DF0C9842F82E77D24749"
+    }
+  ],
+  "ProductionPrecheckAdded": false,
+  "Scope": "Full requested NDS targets, not partial load steps; not a proof about all lambda paths."
+}

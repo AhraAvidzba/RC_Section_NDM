@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-11 15:05:25
+Date: 2026-10-11 19:46:13
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -182,7 +182,7 @@ LINES: 0
 ====================================================================================================
 COMPONENT: CBatchSectionCalculator
 TYPE: 2
-LINES: 2159
+LINES: 2184
 ====================================================================================================
 Option Explicit
 
@@ -240,6 +240,9 @@ Private mCrackGoverningCombinationIndex As Long ' Индекс LC с миним�
 Private mWorstCombinationIndex As Long ' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
 Private mWorstCombinationCriterion As String ' StrengthStrain, StrengthCapacity, Cracks или Stability.
 Private mSolverCallCount As Long ' Сколько раз за batch запускался CSectionSolver.Solve для поиска равновесия НДС.
+Private mSolverIterationCount As Long ' Снимок всех фактически выполненных итераций НДС.
+Private mUltimateStrainStartCount As Long ' Снимок попыток предельного поиска с начальных плоскостей.
+Private mUltimateStrainIterationCount As Long ' Снимок итераций общего UltimateStrain для прочности и трещин.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
 Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для диагностики batch-потока.
 Private mTransformedReferenceValid(1 To 2) As Boolean ' Кэш центров приведенного сечения для ULS/SLS внутри одного batch.
@@ -615,6 +618,9 @@ Public Sub ClearCombinations()
     mWorstCombinationIndex = 0
     mElapsedSeconds = 0#
     mSolverCallCount = 0
+    mSolverIterationCount = 0
+    mUltimateStrainStartCount = 0
+    mUltimateStrainIterationCount = 0
     mDiagnosticLog = vbNullString
     mLoadReferenceX = 0#
     mLoadReferenceY = 0#
@@ -886,6 +892,9 @@ Public Sub Execute()
     mCrackGoverningCombinationIndex = 0
     mWorstCombinationIndex = 0
     mSolverCallCount = 0
+    mSolverIterationCount = 0
+    mUltimateStrainStartCount = 0
+    mUltimateStrainIterationCount = 0
     mDiagnosticLog = vbNullString
     ResetSectionEquilibriumSolveCount
     ReportStep "Начат пакетный расчет. Количество сочетаний: " & CStr(mCount) & "."
@@ -918,7 +927,11 @@ Public Sub Execute()
     SelectWorstCombination
     stage = "Finalize"
     mSolverCallCount = SectionEquilibriumSolveCount()
+    mSolverIterationCount = SectionEquilibriumIterationCount()
+    mUltimateStrainStartCount = modSolverWorkStats.UltimateStrainStartCount()
+    mUltimateStrainIterationCount = modSolverWorkStats.UltimateStrainIterationCount()
     mElapsedSeconds = Timer - t0
+    If mElapsedSeconds < 0# Then mElapsedSeconds = mElapsedSeconds + 86400#
     ReportStep "Пакетный расчет завершен. Время: " & FormatNumberInvariant(mElapsedSeconds) & " с."
     ReleaseRunPreparation
     Exit Sub
@@ -2205,6 +2218,18 @@ End Property
 
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
+End Property
+
+Public Property Get SolverIterationCount() As Long
+    SolverIterationCount = mSolverIterationCount
+End Property
+
+Public Property Get UltimateStrainStartCount() As Long
+    UltimateStrainStartCount = mUltimateStrainStartCount
+End Property
+
+Public Property Get UltimateStrainIterationCount() As Long
+    UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Property
 
 Public Property Get elapsedSeconds() As Double
@@ -6636,23 +6661,27 @@ End Function
 ====================================================================================================
 COMPONENT: modSolverWorkStats
 TYPE: 1
-LINES: 27
+LINES: 57
 ====================================================================================================
 Option Explicit
 
 ' ==========================================================================
-' Единый счетчик тяжелых запусков CSectionSolver
+' Единые счетчики фактической работы решателей
 ' ==========================================================================
-' Модуль хранит один общий для расчетного запуска счетчик фактических попыток
-' найти равновесное НДС через CSectionSolver.Solve. Верхние уровни batch,
-' capacity и crack не должны восстанавливать это число через свои итерации:
-' источником правды является сам CSectionSolver.
+' Счетчики меняются в самих численных циклах, включая неудачные попытки.
+' Batch сохраняет их снимок: последующие расчеты не меняют готовую сводку.
 
 Private mSectionEquilibriumSolveCount As Long ' Количество фактических запусков CSectionSolver.Solve после валидации входа.
+Private mSectionEquilibriumIterationCount As Long ' Итерации Newton/Secant на всех ступенях и стартах НДС.
+Private mUltimateStrainStartCount As Long ' Начальные плоскости общего UltimateStrain и реальные теплые перезапуски.
+Private mUltimateStrainIterationCount As Long ' Итерации общего предельного поиска, без проб Якобиана и line-search.
 
 ' Сбрасывает счетчик перед новым пакетным расчетом.
 Public Sub ResetSectionEquilibriumSolveCount()
     mSectionEquilibriumSolveCount = 0
+    mSectionEquilibriumIterationCount = 0
+    mUltimateStrainStartCount = 0
+    mUltimateStrainIterationCount = 0
 End Sub
 
 ' Регистрирует одну реальную попытку CSectionSolver подобрать равновесие.
@@ -6663,6 +6692,32 @@ End Sub
 ' Возвращает число запусков CSectionSolver.Solve с последнего сброса.
 Public Function SectionEquilibriumSolveCount() As Long
     SectionEquilibriumSolveCount = mSectionEquilibriumSolveCount
+End Function
+
+' Одна итерация фактически начатого цикла равновесия, а не интегрирование пробы.
+Public Sub RecordSectionEquilibriumIteration()
+    mSectionEquilibriumIterationCount = mSectionEquilibriumIterationCount + 1
+End Sub
+
+Public Function SectionEquilibriumIterationCount() As Long
+    SectionEquilibriumIterationCount = mSectionEquilibriumIterationCount
+End Function
+
+' Каждая новая попытка с плоскости, включая повторную, считается отдельно.
+Public Sub RecordUltimateStrainStart()
+    mUltimateStrainStartCount = mUltimateStrainStartCount + 1
+End Sub
+
+Public Function UltimateStrainStartCount() As Long
+    UltimateStrainStartCount = mUltimateStrainStartCount
+End Function
+
+Public Sub RecordUltimateStrainIteration()
+    mUltimateStrainIterationCount = mUltimateStrainIterationCount + 1
+End Sub
+
+Public Function UltimateStrainIterationCount() As Long
+    UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Function
 
 
@@ -13121,7 +13176,7 @@ End Property
 ====================================================================================================
 COMPONENT: CBatchResultWriter
 TYPE: 2
-LINES: 841
+LINES: 855
 ====================================================================================================
 Option Explicit
 
@@ -13409,7 +13464,7 @@ Private Sub ClearCrackSummary(ByVal Workbook As Object)
 End Sub
 
 ' Заполняет четыре верхние строки summary: worst-сочетание, комментарий,
-' число вызовов CSectionSolver и общее время расчета.
+' число вызовов CSectionSolver, стартов UltimateStrain, итерации и время.
 Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     data(1, 1) = batch.WorstCombinationID
     data(1, 2) = "Определяющее сочетание"
@@ -13419,6 +13474,12 @@ Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCal
     data(3, 2) = "Количество решений НДС"
     data(4, 1) = batch.elapsedSeconds
     data(4, 2) = "Время расчета, с"
+    data(1, 7) = batch.UltimateStrainStartCount
+    data(1, 8) = "Количество стартов UltimateStrain"
+    data(2, 7) = batch.SolverIterationCount
+    data(2, 8) = "Количество итераций НДС"
+    data(3, 7) = batch.UltimateStrainIterationCount
+    data(3, 8) = "Количество итераций UltimateStrain"
 End Sub
 
 ' Заполняет верхний уровень шапки compact summary: статусы и коэффициенты
@@ -13747,6 +13808,8 @@ Private Sub FormatSummary(ByVal Workbook As Object, ByVal target As Object, ByVa
     stage = "HeaderStyle"
     target.offset(0, 0).Resize(META_ROWS, 5).Interior.color = HEADER_COLOR
     target.offset(0, 1).Resize(META_ROWS, 4).font.Italic = True
+    target.offset(0, 6).Resize(3, 7).Interior.color = HEADER_COLOR
+    target.offset(0, 7).Resize(3, 6).font.Italic = True
     target.offset(GROUP_HEADER_ROW - 1, 0).Resize(WORST_HEADER_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).Interior.color = HEADER_COLOR
     target.offset(GROUP_HEADER_ROW - 1, 0).Resize(COLUMN_HEADER_LAST_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).font.Bold = True
     target.rows.item(COMMENT_HEADER_ROW).font.Bold = False
@@ -13757,6 +13820,9 @@ Private Sub FormatSummary(ByVal Workbook As Object, ByVal target As Object, ByVa
     MergeSummaryBlock target, 2, 2, 2, 5
     MergeSummaryBlock target, 3, 3, 2, 5
     MergeSummaryBlock target, 4, 4, 2, 5
+    MergeSummaryBlock target, 1, 1, 8, 13
+    MergeSummaryBlock target, 2, 2, 8, 13
+    MergeSummaryBlock target, 3, 3, 8, 13
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_ID, SUM_COL_ID
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_COMMENT, SUM_COL_COMMENT
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESULT_COMMENT, SUM_COL_RESULT_COMMENT
@@ -13787,6 +13853,8 @@ Private Sub FormatSummary(ByVal Workbook As Object, ByVal target As Object, ByVa
     target.rows.item(COMMENT_HEADER_ROW).HorizontalAlignment = -4131
     target.offset(0, 0).Resize(META_ROWS, 1).HorizontalAlignment = -4108
     target.offset(0, 1).Resize(META_ROWS, 4).HorizontalAlignment = -4131
+    target.offset(0, 6).Resize(3, 1).HorizontalAlignment = -4108
+    target.offset(0, 6).Resize(3, 1).NumberFormat = "0"
     target.offset(GROUP_HEADER_ROW - 1, 0).Resize(COLUMN_HEADER_LAST_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).WrapText = True
     target.rows.item(COMMENT_HEADER_ROW).WrapText = False
     target.rows.item(WORST_HEADER_ROW).WrapText = False
@@ -13806,6 +13874,7 @@ Private Sub FormatSummary(ByVal Workbook As Object, ByVal target As Object, ByVa
 
     stage = "Borders"
     ApplySummaryBorders target.offset(0, 0).Resize(META_ROWS, 5)
+    ApplySummaryBorders target.offset(0, 6).Resize(3, 7)
     ApplySummaryBorders target.offset(GROUP_HEADER_ROW - 1, 0).Resize(target.rows.count - GROUP_HEADER_ROW + 1, SUM_COL_OVERALL_STATUS)
     ApplySummaryBorders target.offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 1).Resize(target.rows.count - GROUP_HEADER_ROW + 1, _
         SUM_COL_STATUS_SP63_P2 - SUM_COL_STATUS_STRAIN + 1)
@@ -27712,7 +27781,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
 TYPE: 1
-LINES: 1289
+LINES: 1292
 ====================================================================================================
 Option Explicit
 
@@ -28084,6 +28153,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
     report.AddSection "Расчет сочетаний"
     batch.Execute
     report.AddValue "Время batch-расчета", FormatReportNumber(batch.elapsedSeconds) & " с"
+    report.AddValue "Количество стартов UltimateStrain", CStr(batch.UltimateStrainStartCount)
+    report.AddValue "Количество итераций НДС", CStr(batch.SolverIterationCount)
+    report.AddValue "Количество итераций UltimateStrain", CStr(batch.UltimateStrainIterationCount)
 
     Dim summaryWriter As CBatchResultWriter
     Set summaryWriter = New CBatchResultWriter
@@ -32303,7 +32375,7 @@ End Function
 ====================================================================================================
 COMPONENT: CMaterialModelProvider
 TYPE: 2
-LINES: 864
+LINES: 903
 ====================================================================================================
 Option Explicit
 
@@ -32327,6 +32399,7 @@ Private Const SLOT_CRACKED_NDS As Long = 3 ' Массивный слот физ�
 Private Const STATE_EXTENSION_E_FACTOR As Double = 0.01 ' Жесткость extension: 1% от начального модуля E.
 Private Const STATE_EXTENSION_STRAIN_LIMIT As Double = 10# ' Техническая дальняя точка extension; не является eps_ult.
 Private Const EXTENSION_TOLERANCE As Double = 0.000000000001 ' Допуск, чтобы не добавлять почти совпадающую extension-точку.
+Private Const PLATEAU_SLOPE_E_FACTOR As Double = 0.0001 ' Согласованный наклон ненулевого физического плато: 0.01% от E своей ветви.
 
 Private mConcreteParameters As CConcreteMaterialParameters ' Исходные параметры бетона из Config.
 Private mSteelParameters As CSteelMaterialParameters ' Исходные параметры арматуры из Config.
@@ -32349,6 +32422,7 @@ Private mSteelTensionResistance(1 To 3) As Double ' Rs/Rs,ser выбранной
 Private mConcreteElasticModulus(1 To 3) As Double ' Eb выбранной бетонной модели, МПа.
 Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной модели арматуры, МПа.
 Private mDiagramExtensionEnabled As Boolean ' Разрешает numerical extension для задач равновесия solver-а.
+Private mPlateauSlopeEnabled As Boolean ' Меняет точки физической диаграммы до ее публикации, а не только касательную solver-а.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
 Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
 Private mRevision As Long ' Версия набора материалов и effective Extension после переинициализации.
@@ -32367,6 +32441,7 @@ Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal un
     mSteelParameters.LoadFromSettings settings, units
 
     mDiagramExtensionEnabled = ReadDiagramExtensionSetting(settings)
+    mPlateauSlopeEnabled = settings.GetBoolean("Solver.PlateauSlope.Enabled", False)
 
     BuildPurpose cpStrength, "I", _
         settings.GetString("Diagram.Strength.Concrete", "TwoLine"), _
@@ -32460,7 +32535,7 @@ Private Function BuildConcreteTwoLine(ByVal LimitStateGroup As String, ByVal ten
         eps(5) = mConcreteParameters.ebt2: sig(5) = rbt
     End If
 
-    Set BuildConcreteTwoLine = DiagramFromArrays(eps, sig, count)
+    Set BuildConcreteTwoLine = DiagramFromArrays(eps, sig, count, mConcreteParameters.eb, mConcreteParameters.ebt)
 End Function
 
 ' Строит трехлинейную бетонную диаграмму. Средняя точка 0.6*R/E
@@ -32492,7 +32567,7 @@ Private Function BuildConcreteThreeLine(ByVal LimitStateGroup As String, ByVal t
         eps(7) = mConcreteParameters.ebt2: sig(7) = rbt
     End If
 
-    Set BuildConcreteThreeLine = DiagramFromArrays(eps, sig, count)
+    Set BuildConcreteThreeLine = DiagramFromArrays(eps, sig, count, mConcreteParameters.eb, mConcreteParameters.ebt)
 End Function
 
 ' Выбирает формулу диаграммы арматуры.
@@ -32518,7 +32593,7 @@ Private Function BuildSteelTwoLine(ByVal LimitStateGroup As String) As CMaterial
     eps(4) = rs / mSteelParameters.es: sig(4) = rs
     eps(5) = mSteelParameters.twoLineEs2: sig(5) = rs
 
-    Set BuildSteelTwoLine = DiagramFromArrays(eps, sig, 5)
+    Set BuildSteelTwoLine = DiagramFromArrays(eps, sig, 5, mSteelParameters.esc, mSteelParameters.es)
 End Function
 
 ' Строит трехлинейную диаграмму арматуры с расчетными точками перелома.
@@ -32553,17 +32628,46 @@ Private Function BuildSteelThreeLine(ByVal LimitStateGroup As String) As CMateri
     eps(8) = epsSPl: sig(8) = 1.1 * rs
     eps(9) = mSteelParameters.threeLineEs2: sig(9) = 1.1 * rs
 
-    Set BuildSteelThreeLine = DiagramFromArrays(eps, sig, 9)
+    Set BuildSteelThreeLine = DiagramFromArrays(eps, sig, 9, mSteelParameters.esc, mSteelParameters.es)
 End Function
 
 ' Создает CMaterialDiagram из массивов физических точек.
-Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long) As CMaterialDiagram
+Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, _
+        ByVal compressionE As Double, ByVal tensionE As Double) As CMaterialDiagram
     Dim diagram As CMaterialDiagram
     Set diagram = New CMaterialDiagram
+    If mPlateauSlopeEnabled Then ApplyPlateauSlope strains, stresses, pointCount, compressionE, tensionE
     diagram.InitializeFromArrays strains, stresses, pointCount
     diagram.Freeze
     Set DiagramFromArrays = diagram
 End Function
+
+' Обход от начала координат сохраняет начало каждого плато и непрерывность.
+' Stress и Tangent затем интерполируют одни точки. Нулевая выключенная ветвь
+' не активируется; пределы деформаций и отдельное numerical extension не меняются.
+Private Sub ApplyPlateauSlope(ByRef strains() As Double, ByRef stresses() As Double, ByVal count As Long, _
+        ByVal compressionE As Double, ByVal tensionE As Double)
+    Dim zero As Long, i As Long, previous As Double, original As Double, offset As Double
+    For i = 1 To count
+        If strains(i) = 0# And stresses(i) = 0# Then zero = i: Exit For
+    Next i
+    If zero = 0 Then Err.Raise vbObjectError + 3246, "CMaterialModelProvider", "В диаграмме отсутствует начало координат."
+    For i = zero - 1 To 1 Step -1
+        original = stresses(i)
+        If original <> 0# And original = previous Then _
+            offset = offset + PLATEAU_SLOPE_E_FACTOR * compressionE * (strains(i) - strains(i + 1))
+        stresses(i) = original + offset
+        previous = original
+    Next i
+    previous = 0#: offset = 0#
+    For i = zero + 1 To count
+        original = stresses(i)
+        If original <> 0# And original = previous Then _
+            offset = offset + PLATEAU_SLOPE_E_FACTOR * tensionE * (strains(i) - strains(i - 1))
+        stresses(i) = original + offset
+        previous = original
+    Next i
+End Sub
 
 ' Создает копию физической диаграммы с дополнительными техническими точками
 ' для равновесного solve. Физические eps_ult передаются в CMaterialDiagram
@@ -33112,6 +33216,11 @@ Public Property Get diagramExtensionEnabled() As Boolean
     diagramExtensionEnabled = mDiagramExtensionEnabled
 End Property
 
+Public Property Get plateauSlopeEnabled() As Boolean
+    EnsureInitialized
+    plateauSlopeEnabled = mPlateauSlopeEnabled
+End Property
+
 ' Возвращает версию неизменяемого набора материалов текущего запуска.
 ' Repository использует ее вместе с identity provider-а, а не с именем профиля.
 Public Property Get revision() As Long
@@ -33152,7 +33261,8 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
         Optional ByVal mcrcSteelDiagram As String = "TwoLine", _
         Optional ByVal crackedConcreteDiagram As String = "TwoLine", _
         Optional ByVal crackedSteelDiagram As String = "TwoLine", _
-        Optional ByVal diagramExtensionEnabled As Boolean = True)
+        Optional ByVal diagramExtensionEnabled As Boolean = True, _
+        Optional ByVal plateauSlopeEnabled As Boolean = False)
     If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
     If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
 
@@ -33162,6 +33272,7 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
     Set mSteelParameters = steelParameters.clone
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
     mDiagramExtensionEnabled = diagramExtensionEnabled
+    mPlateauSlopeEnabled = plateauSlopeEnabled
     BuildPurpose cpStrength, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
     BuildPurpose cpMcrc, "II", mcrcConcreteDiagram, "UseDiagram", mcrcSteelDiagram
     BuildPurpose cpCrackedNDS, "II", crackedConcreteDiagram, "Ignore", crackedSteelDiagram
@@ -36928,7 +37039,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionGeometryQuery
 TYPE: 2
-LINES: 1515
+LINES: 1583
 ====================================================================================================
 Option Explicit
 
@@ -37348,6 +37459,24 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
     norm = Sqr(nx * nx + ny * ny)
     If norm <= GEOM_TOLERANCE Then GeometryError "Нормаль отсечения имеет нулевую длину."
     nx = nx / norm: ny = ny / norm: bound = bound / norm
+    If region.SegmentCount = 0 Then
+        Set ClipHalfPlane = region.clone
+        Exit Function
+    End If
+    Dim minimum As Double, maximum As Double, roundoff As Double
+    ProjectionBounds region, nx, ny, minimum, maximum
+    ' Не разбиваем область при касании ее крайней точки. Здесь учитывается
+    ' только ошибка Double при переносе координат, не геометрический допуск.
+    roundoff = 3.5527136788005E-15 * (Abs(minimum) + Abs(maximum) + Abs(bound) + 1#)
+    If bound <= minimum + roundoff Then
+        Set ClipHalfPlane = region.clone
+        Exit Function
+    ElseIf bound >= maximum - roundoff Then
+        Dim emptyEdges() As TRegionEdge
+        Set ClipHalfPlane = MakeRegion(emptyEdges, 0, region.source, region.SectionRevision)
+        ClipHalfPlane.SetOwner region.OwnerID, region.standard, region.AnchorID
+        Exit Function
+    End If
     Dim raw() As TRegionEdge, rawCount As Long, output() As TRegionEdge, outputCount As Long
     region.CopyEdges raw, rawCount
     Dim cuts() As Double, cutCount As Long, lineCuts() As Double, lineCount As Long
@@ -37364,21 +37493,27 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
         Next j
         For j = 1 To cutCount - 1
             EdgePoint raw(i), 0.5 * (cuts(j) + cuts(j + 1)), x, y
-            If nx * x + ny * y > bound + QUERY_TOLERANCE Then
+            ' Короткая поддуга возле касания может целиком лежать внутри,
+            ' но ближе допуска к прямой. Ее удаление разрывает контур.
+            If nx * x + ny * y > bound Then
                 SubEdge raw(i), cuts(j), cuts(j + 1), piece
-                AppendEdge output, outputCount, piece
+                ' Совпадающий с прямой отрезок создается ниже один раз.
+                If Abs(piece.sweep) > PARAM_TOLERANCE Or _
+                        Abs(nx * piece.x1 + ny * piece.y1 - bound) > QUERY_TOLERANCE Or _
+                        Abs(nx * piece.x2 + ny * piece.y2 - bound) > QUERY_TOLERANCE Then _
+                    AppendEdge output, outputCount, piece
             End If
         Next j
     Next i
 
-    ' Новые ребра линии отсечения замыкают материал слева. Проверка смещенной
-    ' внутрь точки отличает касание от участка с ненулевой площадью.
+    ' Между соседними пересечениями принадлежность постоянна. Проверяем
+    ' саму середину: фиксированное смещение может перескочить узкий сегмент.
     SortScalars lineCuts, lineCount
     Dim s1 As Double, s2 As Double, mid As Double
     For i = 1 To lineCount - 1
         s1 = lineCuts(i): s2 = lineCuts(i + 1): mid = 0.5 * (s1 + s2)
         x = nx * bound + ny * mid: y = ny * bound - nx * mid
-        If ContainsRaw(raw, rawCount, x + nx * QUERY_TOLERANCE * 8#, y + ny * QUERY_TOLERANCE * 8#, False) Then
+        If CutLineHasMaterial(raw, rawCount, nx, ny, bound, x, y) Then
             AddLine output, outputCount, nx * bound + ny * s1, ny * bound - nx * s1, _
                 nx * bound + ny * s2, ny * bound - nx * s2
         End If
@@ -37571,6 +37706,28 @@ Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double
     Dim edges() As TRegionEdge, count As Long
     region.CopyEdges edges, count
     ContainsPoint = ContainsRaw(edges, count, x, y, includeBoundary)
+End Function
+
+' Совпадение с прямым исходным ребром определяется по стороне материала,
+' а не соглашению winding на самой границе. Для дуг и обычных пересечений
+' середина между соседними точками находится внутри материала либо пустоты.
+Private Function CutLineHasMaterial(ByRef edges() As TRegionEdge, ByVal count As Long, _
+        ByVal nx As Double, ByVal ny As Double, ByVal bound As Double, _
+        ByVal x As Double, ByVal y As Double) As Boolean
+    Dim i As Long, u As Double
+    For i = 1 To count
+        If Abs(edges(i).sweep) <= PARAM_TOLERANCE Then
+            If Abs(nx * edges(i).x1 + ny * edges(i).y1 - bound) <= QUERY_TOLERANCE And _
+                    Abs(nx * edges(i).x2 + ny * edges(i).y2 - bound) <= QUERY_TOLERANCE Then
+                If PointParameter(edges(i), x, y, u) Then
+                    CutLineHasMaterial = nx * (edges(i).y1 - edges(i).y2) + _
+                        ny * (edges(i).x2 - edges(i).x1) > 0#
+                    Exit Function
+                End If
+            End If
+        End If
+    Next i
+    CutLineHasMaterial = ContainsRaw(edges, count, x, y, False)
 End Function
 
 ' При дискретизации формы наружная граница входит в бетон, граница проема -
@@ -38002,15 +38159,21 @@ End Sub
 Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal source As String, ByVal revision As Long) As CConcreteRegion
     Dim ordered() As TRegionEdge, loopCount As Long, area As Double, i As Long
-    Dim loopAreas() As Double, loopOpening() As Boolean
+    Dim loopAreas() As Double, loopOpening() As Boolean, originX() As Double, originY() As Double
+    Dim seenLoop() As Boolean
     StitchLoops edges, count, ordered, loopCount, False
     If loopCount > 0 Then
         ReDim loopAreas(1 To loopCount)
         ReDim loopOpening(1 To loopCount)
+        ReDim originX(1 To loopCount): ReDim originY(1 To loopCount): ReDim seenLoop(1 To loopCount)
     End If
     For i = 1 To count
         Dim contribution As Double
-        contribution = EdgeSignedArea(ordered(i))
+        If Not seenLoop(ordered(i).loopID) Then
+            originX(ordered(i).loopID) = ordered(i).x1: originY(ordered(i).loopID) = ordered(i).y1
+            seenLoop(ordered(i).loopID) = True
+        End If
+        contribution = EdgeSignedArea(ordered(i), originX(ordered(i).loopID), originY(ordered(i).loopID))
         area = area + contribution
         loopAreas(ordered(i).loopID) = loopAreas(ordered(i).loopID) + contribution
     Next i
@@ -38085,22 +38248,35 @@ End Sub
 
 ' Возвращает signed площадь одного замкнутого контура, не теряя аналитический вклад дуг.
 Private Function SignedLoopArea(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal loopID As Long) As Double
-    Dim i As Long
+    Dim i As Long, originX As Double, originY As Double, found As Boolean
     For i = 1 To count
-        If edges(i).loopID = loopID Then SignedLoopArea = SignedLoopArea + EdgeSignedArea(edges(i))
+        If edges(i).loopID = loopID Then
+            If Not found Then
+                originX = edges(i).x1: originY = edges(i).y1: found = True
+            End If
+            SignedLoopArea = SignedLoopArea + EdgeSignedArea(edges(i), originX, originY)
+        End If
     Next i
 End Function
 
 ' Интеграл (x*dy-y*dx)/2 для отрезка или дуги окружности. Радиусы/углы не
 ' переводятся в пользовательские единицы, поэтому результат всегда мм2.
-Private Function EdgeSignedArea(ByRef edge As TRegionEdge) As Double
-    If Abs(edge.sweep) <= PARAM_TOLERANCE Then
-        EdgeSignedArea = 0.5 * (edge.x1 * edge.y2 - edge.x2 * edge.y1)
-    Else
-        Dim radiusSquared As Double
+Private Function EdgeSignedArea(ByRef edge As TRegionEdge, Optional ByVal originX As Double = 0#, _
+        Optional ByVal originY As Double = 0#) As Double
+    EdgeSignedArea = 0.5 * ((edge.x1 - originX) * (edge.y2 - originY) - _
+        (edge.x2 - originX) * (edge.y1 - originY))
+    If Abs(edge.sweep) > PARAM_TOLERANCE Then
+        Dim radiusSquared As Double, segmentAngle As Double, square As Double
         radiusSquared = (edge.x1 - edge.centerX) ^ 2 + (edge.y1 - edge.centerY) ^ 2
-        EdgeSignedArea = 0.5 * (edge.centerX * (edge.y2 - edge.y1) - _
-            edge.centerY * (edge.x2 - edge.x1) + radiusSquared * edge.sweep)
+        ' Площадь между хордой и дугой без вычитания больших глобальных
+        ' координат; ряд сохраняет точность при почти касательном отсечении.
+        If Abs(edge.sweep) < 0.01 Then
+            square = edge.sweep * edge.sweep
+            segmentAngle = edge.sweep * square * (1# / 6# - square / 120# + square * square / 5040#)
+        Else
+            segmentAngle = edge.sweep - Sin(edge.sweep)
+        End If
+        EdgeSignedArea = EdgeSignedArea + 0.5 * radiusSquared * segmentAngle
     End If
 End Function
 
@@ -38183,16 +38359,19 @@ Private Sub HalfPlaneCuts(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal n
         End If
     Else
         Dim radius As Double, norm As Double, distance As Double, bx As Double, by As Double, offset As Double
+        Dim roundoff As Double
         radius = Sqr((edge.x1 - edge.centerX) ^ 2 + (edge.y1 - edge.centerY) ^ 2)
         norm = Sqr(nx * nx + ny * ny)
         distance = (bound - nx * edge.centerX - ny * edge.centerY) / norm
         If Abs(distance) > radius + QUERY_TOLERANCE Then Exit Sub
-        ' При аналитическом касании вычитание перенесенных координат может
-        ' дать две ложные близкие точки. В пределах линейного допуска это
-        ' одна точка касания, одинаковая для clipping и material intervals.
-        If Abs(Abs(distance) - radius) <= QUERY_TOLERANCE Then distance = Sgn(distance) * radius
+        roundoff = 3.5527136788005E-15 * _
+            ((Abs(bound) + Abs(nx * edge.centerX) + Abs(ny * edge.centerY)) / norm + radius + 1#)
+        If Abs(Abs(distance) - radius) <= roundoff Then distance = Sgn(distance) * radius
+        ' Допуск допускает касание снаружи, но не схлопывает настоящую
+        ' секущую изнутри: даже малая глубина дает два разных конца дуги.
+        If Abs(distance) > radius Then distance = Sgn(distance) * radius
         bx = edge.centerX + nx / norm * distance: by = edge.centerY + ny / norm * distance
-        offset = Sqr(GeomMax(radius * radius - distance * distance, 0#))
+        offset = Sqr(GeomMax((radius - Abs(distance)) * (radius + Abs(distance)), 0#))
         If PointParameter(edge, bx - ny / norm * offset, by + nx / norm * offset, u) Then AddScalar cuts, count, u
         If PointParameter(edge, bx + ny / norm * offset, by - nx / norm * offset, u) Then AddScalar cuts, count, u
     End If
@@ -44178,7 +44357,7 @@ End Function
 ====================================================================================================
 COMPONENT: CLimitSearchCoordinator
 TYPE: 2
-LINES: 283
+LINES: 291
 ====================================================================================================
 Option Explicit
 
@@ -44398,11 +44577,18 @@ Private Function ExecuteCrackFormationCurrentPath(ByVal request As CLimitSearchR
             Set multiplier = New CLoadMultiplierSearch
             Set ExecuteCrackFormationCurrentPath = multiplier.Execute(request)
         Case "UltimateStrain"
-            Dim ultimate As CUltimateStrainSearch
-            Set ultimate = New CUltimateStrainSearch
-            Set ExecuteCrackFormationCurrentPath = ultimate.ExecuteCrackFormation(request)
+            ' При масштабировании только N сохраняем путь с его постоянными
+            ' моментами. Отрицательная lambda не доказывает NotCracked:
+            ' первая физическая граница подтверждается общим LoadMultiplier.
+            Dim forcePathFallback As Boolean
+            forcePathFallback = request.forceOnly
+            If Not request.SelectedLoadPath Is Nothing Then
+                forcePathFallback = request.SelectedLoadPath.ScalesN And _
+                    Not request.SelectedLoadPath.ScalesMx And Not request.SelectedLoadPath.ScalesMy
+            End If
+            Set ExecuteCrackFormationCurrentPath = ExecuteUltimateStrategyCrackFormation(request, forcePathFallback)
         Case "Auto"
-            Set ExecuteCrackFormationCurrentPath = ExecuteAutoStrategyCrackFormation(request)
+            Set ExecuteCrackFormationCurrentPath = ExecuteUltimateStrategyCrackFormation(request, True)
         Case Else
             Dim invalidResult As CLimitSearchResult
             Set invalidResult = New CLimitSearchResult
@@ -44413,21 +44599,22 @@ Private Function ExecuteCrackFormationCurrentPath(ByVal request As CLimitSearchR
     End Select
 End Function
 
-' Внутренняя Auto-стратегия одного crack-пути: сначала прямой критерий
-' UltimateStrain, затем fallback LoadMultiplier, если прямой поиск не дал
-' принятого результата и не завершился физически окончательным состоянием.
-Private Function ExecuteAutoStrategyCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
+' Общая численная политика одного crack-пути: UltimateStrain, затем при
+' разрешенном резерве LoadMultiplier. Auto разрешает резерв для всех путей;
+' явный UltimateStrain - для масштабирования N без масштабирования моментов.
+Private Function ExecuteUltimateStrategyCrackFormation(ByVal request As CLimitSearchRequest, _
+        ByVal allowMultiplierFallback As Boolean) As CLimitSearchResult
     Dim ultimate As CUltimateStrainSearch
     Set ultimate = New CUltimateStrainSearch
 
     Dim firstResult As CLimitSearchResult
     Set firstResult = ultimate.ExecuteCrackFormation(request)
     If firstResult.succeeded Then
-        Set ExecuteAutoStrategyCrackFormation = firstResult
+        Set ExecuteUltimateStrategyCrackFormation = firstResult
         Exit Function
     End If
-    If request.problem.StoppedTerminally Then
-        Set ExecuteAutoStrategyCrackFormation = firstResult
+    If request.problem.StoppedTerminally Or Not allowMultiplierFallback Then
+        Set ExecuteUltimateStrategyCrackFormation = firstResult
         Exit Function
     End If
 
@@ -44445,7 +44632,7 @@ Private Function ExecuteAutoStrategyCrackFormation(ByVal request As CLimitSearch
     Set secondResult = multiplier.Execute(request)
     If Not secondResult.succeeded And Len(request.problem.StopReason) = 0 Then _
         request.problem.SetStopReasonIfEmpty firstStopReason
-    Set ExecuteAutoStrategyCrackFormation = secondResult
+    Set ExecuteUltimateStrategyCrackFormation = secondResult
 End Function
 
 ' Нормализует пользовательскую строку стратегии без зависимости от Config-reader.
@@ -46132,7 +46319,7 @@ End Property
 ====================================================================================================
 COMPONENT: CSectionSolver
 TYPE: 2
-LINES: 1619
+LINES: 1621
 ====================================================================================================
 Option Explicit
 
@@ -46470,6 +46657,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
     Dim iter As Long
     For iter = 1 To mMaxIterations
         mIterations = mIterations + 1
+        RecordSectionEquilibriumIteration
 
         ' Считаем текущие внутренние усилия и касательную матрицу для этой
         ' плоскости деформаций. После этого можно проверить, достигнуто ли
@@ -46563,6 +46751,7 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
     Dim iter As Long
     For iter = 1 To mMaxIterations
         mIterations = mIterations + 1
+        RecordSectionEquilibriumIteration
         mLastResidualNorm = ResidualNorm(mResidualN, mCenterResidualMx, mCenterResidualMy, targetN, targetMx, targetMy)
 
         If IsConverged(targetN, targetMx, targetMy) Then
@@ -49372,7 +49561,7 @@ End Property
 ====================================================================================================
 COMPONENT: CUltimateStrainSearch
 TYPE: 2
-LINES: 1023
+LINES: 1026
 ====================================================================================================
 Option Explicit
 
@@ -49509,6 +49698,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
+    RecordUltimateStrainStart
     context.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
         loadPath, startSolver, eps0, kx, ky
     ' Newton меняет деформацию в центре, а не в удаленном начале чертежа.
@@ -49539,6 +49729,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     End If
 
     For iter = 1 To context.LimitSearchUltimateMaxIterations
+        RecordUltimateStrainIteration
         If acceptedEvaluation Then
             acceptedEvaluation = section.revision = acceptedRevision And _
                 loadPath.nOffset = acceptedPath(1) And loadPath.nBase = acceptedPath(2) And _
@@ -49654,6 +49845,7 @@ Private Function TryRestartWarmGuess(ByVal context As ILimitSearchProblem, ByVal
     freshEps = mFrame.centerStrain(freshEps, freshKx, freshKy)
     If Not IsFiniteNumber(freshEps) Or Not IsFiniteNumber(freshKx) Or Not IsFiniteNumber(freshKy) Then Exit Function
     If freshEps = eps0 And freshKx = kx And freshKy = ky Then Exit Function
+    RecordUltimateStrainStart
     eps0 = freshEps: kx = freshKx: ky = freshKy
     mMeritScalingReady = False
     context.AppendDiagnostic "ultimateWarmRestart; usedIterations=" & CStr(iteration) & _
@@ -57613,7 +57805,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 10328
+LINES: 10460
 ====================================================================================================
 Option Explicit
 
@@ -57632,6 +57824,61 @@ End Type
 Private Const TEST_TF_M_IN_NMM As Double = 9806650# ' 1 tf*m во внутренних Н*мм.
 Private Const TEST_DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m = 4903.325 Н*мм/мм.
 Private mAudit03ResourceTrace As Boolean ' ДЛЯ ТЕСТОВ: отдельный журнал размеров Excel, не влияющий на расчет и assertions.
+
+' ДЛЯ ТЕСТОВ: счетчики всего batch, сброс и независимый сохраненный снимок.
+Public Function RunBatchWorkStatsTests() As String
+    Dim stats As TBatchTestStats, batch As CBatchSectionCalculator, section As CSectionModel
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CBatchResultWriter
+    Dim profiles As Object, oldProfiles As Variant, system As Object, oldSystem As Variant
+    On Error GoTo Failed
+    Set profiles = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
+    Set system = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
+    oldProfiles = profiles.formula: oldSystem = system.formula
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "Yes"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set batch = BuildBatchCalculator(True, section): batch.ApplySettings settings, units
+    batch.AddCombination "COUNT_1", -100000#, 2000000#, 1000000#, "PR1", "", "Auto"
+    batch.AddCombination "COUNT_2", -50000#, -1000000#, 1500000#, "PR1", "", "Auto"
+    batch.Execute
+    Dim calls As Long, starts As Long, iterations As Long, ultimateIterations As Long
+    calls = batch.SolverCallCount: starts = batch.UltimateStrainStartCount
+    iterations = batch.SolverIterationCount: ultimateIterations = batch.UltimateStrainIterationCount
+    AssertTrue stats, "batch.workStats.actualCalls", calls = SectionEquilibriumSolveCount() And calls > 0
+    AssertTrue stats, "batch.workStats.actualStarts", starts = modSolverWorkStats.UltimateStrainStartCount() And starts > 0
+    AssertTrue stats, "batch.workStats.actualIterations", iterations = SectionEquilibriumIterationCount() And iterations > 0
+    AssertTrue stats, "batch.workStats.actualUltimateIterations", ultimateIterations = modSolverWorkStats.UltimateStrainIterationCount() And ultimateIterations > 0
+    ResetSectionEquilibriumSolveCount
+    AssertTrue stats, "batch.workStats.independentSnapshot", batch.SolverCallCount = calls And batch.SolverIterationCount = iterations And _
+        batch.UltimateStrainStartCount = starts And batch.UltimateStrainIterationCount = ultimateIterations
+    Set writer = New CBatchResultWriter
+    writer.WriteSummary ThisWorkbook, batch, units, section
+    Dim anchor As Object
+    Set anchor = ThisWorkbook.names.item("rngBatchSummary").RefersToRange.cells(1, 1)
+    AssertClose stats, "batch.workStats.outputCalls", CDbl(anchor.offset(2, 0).value2), CDbl(calls), 0#
+    AssertClose stats, "batch.workStats.outputStarts", CDbl(anchor.offset(0, 6).value2), CDbl(starts), 0#
+    AssertClose stats, "batch.workStats.outputIterations", CDbl(anchor.offset(1, 6).value2), CDbl(iterations), 0#
+    AssertClose stats, "batch.workStats.outputUltimateIterations", CDbl(anchor.offset(2, 6).value2), CDbl(ultimateIterations), 0#
+    AssertTrue stats, "batch.workStats.writerNoSolve", SectionEquilibriumSolveCount() = 0 And modSolverWorkStats.UltimateStrainStartCount() = 0
+    AssertTrue stats, "batch.workStats.noWrap", Not CBool(anchor.offset(0, 6).Resize(3, 7).WrapText)
+    AssertTrue stats, "batch.workStats.labelMerge", anchor.offset(0, 7).MergeArea.columns.count = 6
+    AssertTrue stats, "batch.workStats.rightBorder", anchor.offset(0, 12).Borders(10).LineStyle <> -4142
+    batch.Execute
+    AssertTrue stats, "batch.workStats.newRunNotAccumulated", batch.SolverCallCount = calls And batch.SolverIterationCount = iterations And _
+        batch.UltimateStrainStartCount = starts And batch.UltimateStrainIterationCount = ultimateIterations
+    GoTo Restore
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: batch.workStats.runtime; " & CStr(Err.number) & "; " & Err.description
+Restore:
+    If IsArray(oldProfiles) Then profiles.formula = oldProfiles
+    If IsArray(oldSystem) Then system.formula = oldSystem
+    RunBatchWorkStatsTests = stats.report & "TOTAL_BATCH_WORK_STATS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
 
 ' Выполняет пакетные регрессии профилей, путей, typed results, reuse и вывода.
 ' Общий отчет сохраняет отдельные причины failure и количество assertions.
@@ -57979,6 +58226,83 @@ Finished:
     If Not fixture Is Nothing Then fixture.Close False
     On Error GoTo 0
     RunPostAudit03SnapshotRepeatTests = stats.report & "TOTAL_POSTAUDIT03_REPEAT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' ДЛЯ ТЕСТОВ: Results сохраняет использованные диаграммы, а не новый Config.
+Public Function RunPlateauResultsDiagramTests() As String
+    Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, fixture As Object, sheet As Object
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim section As CSectionModel, batch As CBatchSectionCalculator, props As CSectionPropertiesCalculator
+    Dim writer As CNDMResultsWriter, state As CSectionStateResult, diagram As CMaterialDiagram
+    Dim names As Variant, columns As Variant, slopeMode As Variant, extensionMode As Variant
+    Dim data As Variant, i As Long, row As Long, point As Long, solves As Long, prefix As String
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.names.item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.formula: savedProfiles = profileRange.formula
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.name = "Results"
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
+        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+    columns = Array(1, 12, 29, 48, 56, 69)
+    For i = 0 To UBound(names)
+        fixture.names.Add CStr(names(i)), "=Results!" & sheet.cells(20, CLng(columns(i))).address
+    Next i
+    Set writer = New CNDMResultsWriter
+    For Each slopeMode In Array("No", "Yes")
+        For Each extensionMode In Array("No", "Yes")
+            SetSystemSetting "Solver.PlateauSlope.Enabled", CStr(slopeMode)
+            SetSystemSetting "General.DiagramExtension", CStr(extensionMode)
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+            Set batch = BuildBatchCalculator(False, section)
+            batch.Initialize section, provider: Set batch.ProfileCatalog = TestProfileCatalog()
+            batch.ApplySettings settings, units
+            batch.AddCombination "DIAGRAM", -100000#, 1000000#, 200000#, "PR1", "", "Auto"
+            batch.Execute
+            prefix = "plateau.results." & CStr(slopeMode) & "." & CStr(extensionMode)
+            AssertTrue stats, prefix & ".stateCount", batch.ResultAt(1).StateRepository.stateCount = 1
+            Set state = batch.ResultAt(1).StateRepository.StateAt(1)
+            AssertTrue stats, prefix & ".materialsSaved", state.HasMaterialSnapshot
+            Set props = PrepareSectionSnapshot(section, provider)
+            solves = SectionEquilibriumSolveCount()
+            If CStr(slopeMode) = "Yes" Then
+                SetSystemSetting "Solver.PlateauSlope.Enabled", "No"
+            Else
+                SetSystemSetting "Solver.PlateauSlope.Enabled", "Yes"
+            End If
+            writer.writeResults fixture, section, props, batch, units
+            data = PostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
+            AssertTrue stats, prefix & ".pointRows", UBound(data, 1) > 1
+            For row = 2 To UBound(data, 1)
+                If CStr(data(row, 8)) = "Concrete" Then
+                    Set diagram = provider.ConcreteMaterialForEquilibriumFromSpec(state.materialSpec)
+                Else
+                    AssertEquals stats, prefix & ".material", CStr(data(row, 8)), "Rebar"
+                    Set diagram = provider.SteelMaterialForEquilibriumFromSpec(state.materialSpec)
+                End If
+                point = CLng(data(row, 9))
+                AssertClose stats, prefix & ".strain." & CStr(row), CDbl(data(row, 10)), diagram.PointStrain(point), 0.000000000001
+                AssertClose stats, prefix & ".stress." & CStr(row), units.OutputStressToInternal(CDbl(data(row, 11))), diagram.PointStress(point), 0.00000001
+            Next row
+            AssertTrue stats, prefix & ".writerNoSolve", SectionEquilibriumSolveCount() = solves
+        Next extensionMode
+    Next slopeMode
+    GoTo Finished
+Failed:
+    AssertTrue stats, "plateau.results.runtime." & CStr(Err.number) & "." & Err.description, False
+Finished:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.formula = savedProfiles
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    RunPlateauResultsDiagramTests = stats.report & "TOTAL_PLATEAU_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
 ' ДЛЯ ТЕСТОВ: читает только непрерывную таблицу под одноячеечным якорем.
@@ -64463,7 +64787,7 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
         AssertTrue stats, prefix & ".longitudinalBlockActualReason", _
             InStr(1, result.LongitudinalCrackMeta.resultComment, result.CrackCurrentStateMeta.resultComment, vbBinaryCompare) > 0
     End If
-    If Not result.crackResult.formation.HasLimitPoint And result.CrackWidthMeta.calculated Then
+    If result.crackResult.width.StandardCode = "SP63" And Not result.crackResult.formation.HasLimitPoint And result.CrackWidthMeta.calculated Then
         AssertClose stats, prefix & ".formationUnavailablePsi1", result.crackResult.width.PsiS, 1#, 0#
         AssertTrue stats, prefix & ".formationUnavailableWarning", _
             InStr(1, result.CrackWidthMeta.resultComment, "Предупреждение", vbTextCompare) > 0
@@ -65067,7 +65391,7 @@ End Sub
 ' не вызывается, и отдельные тесты проверяют сохранность исходного PsiS.
 Private Sub Audit03CheckAppliedPsiMode(ByRef stats As TBatchTestStats, ByVal result As CCombinationResult, _
         ByVal settings As CSystemSettingsReader, ByVal prefix As String)
-    If Not result.CrackWidthMeta.calculated Then Exit Sub
+    If result.crackResult.width.StandardCode <> "SP63" Or Not result.CrackWidthMeta.calculated Then Exit Sub
     If Not Audit03HasUsableFormationData(result) Then
         AssertClose stats, prefix & ".formationUnavailablePsi1", result.crackResult.width.PsiS, 1#, 0#
         AssertTrue stats, prefix & ".formationUnavailableWarning", _
@@ -67947,7 +68271,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestCapacitySolver
 TYPE: 1
-LINES: 4063
+LINES: 4108
 ====================================================================================================
 Option Explicit
 
@@ -68766,8 +69090,15 @@ Private Sub TestWarmStartRestartContract(ByRef stats As TCapacityTestStats)
                 Case 7
                     fake.ConfigureUltimateWarmCase budget, CLng(kind), 1
             End Select
+            ResetSectionEquilibriumSolveCount
             succeeded = search.RunNewton(fake, Nothing, Nothing, Nothing, path, start, "Тестовый бюджет исчерпан.")
             prefix = "warmContract." & CStr(kind) & "." & CStr(scenario)
+            Dim expectedStarts As Long
+            expectedStarts = 1
+            If scenario = 1 Or scenario = 7 Then expectedStarts = 2
+            AssertTrue stats, prefix & ".actualStartCount", UltimateStrainStartCount() = expectedStarts
+            AssertTrue stats, prefix & ".iterationCount", UltimateStrainIterationCount() >= 1 And UltimateStrainIterationCount() <= budget
+            AssertTrue stats, prefix & ".noEquilibriumSolve", SectionEquilibriumSolveCount() = 0 And SectionEquilibriumIterationCount() = 0
             AssertTrue stats, prefix & ".guessBudget", fake.UltimateGuessCalls >= 1 And fake.UltimateGuessCalls <= 2
             If scenario = 1 Or scenario = 4 Then
                 AssertTrue stats, prefix & ".accepted", succeeded And fake.Converged
@@ -68790,6 +69121,44 @@ Private Sub TestWarmStartRestartContract(ByRef stats As TCapacityTestStats)
         Next scenario
     Next kind
 End Sub
+
+' ДЛЯ ТЕСТОВ: реальные циклы, ошибочный ввод и теплые перезапуски.
+' Пробы интегрирования не являются решениями НДС или отдельными итерациями.
+Public Function RunSolverWorkStatsTests() As String
+    Dim stats As TCapacityTestStats
+    On Error GoTo Failed
+    Dim section As CSectionModel, solver As CSectionSolver, method As Variant
+    Set section = New CSectionModel
+    section.AddConcreteElement -10#, -10#, 100#
+    section.AddConcreteElement 10#, -10#, 100#
+    section.AddConcreteElement -10#, 10#, 100#
+    section.AddConcreteElement 10#, 10#, 100#
+    Dim calls As Long, iterations As Long
+    ResetSectionEquilibriumSolveCount
+    For Each method In Array("Newton", "Secant")
+        Set solver = New CSectionSolver
+        solver.SolverMethod = CStr(method)
+        solver.loadSteps = 3
+        solver.solve section, LinearConcrete(), LinearSteel(), -1000#, 100#, -200#
+        calls = calls + 1: iterations = iterations + solver.iterations
+        AssertTrue stats, "workStats." & CStr(method) & ".solved", solver.Converged
+        AssertTrue stats, "workStats." & CStr(method) & ".calls", SectionEquilibriumSolveCount() = calls
+        AssertTrue stats, "workStats." & CStr(method) & ".allIterations", SectionEquilibriumIterationCount() = iterations
+    Next method
+    solver.EvaluatePhysicalStrainPlane section, LinearConcrete(), LinearSteel(), -0.001, 0#, 0#
+    AssertTrue stats, "workStats.integrationNotSolve", SectionEquilibriumSolveCount() = calls And SectionEquilibriumIterationCount() = iterations
+    solver.maxIterations = 0
+    solver.solve section, LinearConcrete(), LinearSteel(), -1000#, 100#, -200#
+    AssertTrue stats, "workStats.invalidInputNotCounted", SectionEquilibriumSolveCount() = calls And SectionEquilibriumIterationCount() = iterations
+    TestWarmStartRestartContract stats
+    ResetSectionEquilibriumSolveCount
+    AssertTrue stats, "workStats.resetAll", SectionEquilibriumSolveCount() = 0 And SectionEquilibriumIterationCount() = 0 And _
+        UltimateStrainStartCount() = 0 And UltimateStrainIterationCount() = 0
+    RunSolverWorkStatsTests = stats.report & "TOTAL_SOLVER_WORK_STATS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    Exit Function
+Failed:
+    RunSolverWorkStatsTests = stats.report & "FAIL: workStats.runtime; " & CStr(Err.number) & "; " & Err.description
+End Function
 
 ' ДЛЯ ТЕСТОВ: действительный двухосный UltimateStrain, переносы и разные пределы.
 Public Function RunUltimateFrameRegressionTests() As String
@@ -81984,7 +82353,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestGeometryQuery
 TYPE: 1
-LINES: 835
+LINES: 884
 ====================================================================================================
 Option Explicit
 
@@ -82013,6 +82382,55 @@ Private Sub Check(ByVal name As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
+' ДЛЯ ТЕСТОВ: касание около стыка четвертей окружности не разрывает
+' сохраняемую дугу. Проверяются повороты, обе стороны и удаленные координаты.
+Public Function RunTangentClipRegressionTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Dim query As CSectionGeometryQuery, region As CConcreteRegion, clipped As CConcreteRegion
+    Set query = New CSectionGeometryQuery
+    Dim shift As Variant, angle As Variant, side As Variant, inset As Variant
+    Dim cx As Double, cy As Double, nx As Double, ny As Double, distance As Double, bound As Double
+    Dim expected As Double, prefix As String
+    For Each shift In Array(0#, -3198.9061596318, 1000000#, -1000000#)
+        cx = CDbl(shift): cy = CDbl(shift) / 4#
+        Set region = query.circleRegion(cx, cy, 500#)
+        For Each angle In Array(0#, -1.22075814077587E-04, 1.22075814077587E-04, GEOM_PI / 4#, GEOM_PI / 2#, GEOM_PI)
+            nx = Cos(CDbl(angle)): ny = Sin(CDbl(angle))
+            For Each side In Array(-1#, 1#)
+                For Each inset In Array(-0.0001, -0.000004, -0.000001, 0#, 0.000001, 0.000004, 0.0001, 1#, 10#)
+                    distance = CDbl(side) * (500# - CDbl(inset))
+                    bound = nx * cx + ny * cy + distance
+                    prefix = "tangentClip." & CStr(shift) & "." & CStr(angle) & "." & CStr(side) & "." & CStr(inset)
+                    Set clipped = query.ClipHalfPlane(region, nx, ny, bound)
+                    expected = CircleHalfPlaneArea(500#, distance)
+                    CheckNear prefix & ".area", clipped.area, expected, 0.001
+                    CheckClosed prefix, clipped
+                    If expected > 0.001 Then Check prefix & ".hasContour", clipped.SegmentCount > 0
+                    CheckNear prefix & ".sourceUnchanged", region.area, GEOM_PI * 250000#, 0.001
+                Next inset
+            Next side
+        Next angle
+    Next shift
+    RunTangentClipRegressionTests = mReport & "TOTAL_TANGENT_CLIP: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
+    Exit Function
+Failed:
+    RunTangentClipRegressionTests = mReport & "FAIL: tangentClip.runtime; " & CStr(Err.number) & "; " & Err.description & "; case=" & prefix
+End Function
+
+' Независимая аналитическая площадь кругового сегмента при n >= distance.
+Private Function CircleHalfPlaneArea(ByVal radius As Double, ByVal distance As Double) As Double
+    If distance >= radius Then Exit Function
+    If distance <= -radius Then
+        CircleHalfPlaneArea = GEOM_PI * radius * radius
+        Exit Function
+    End If
+    Dim angle As Double, height As Double
+    height = Sqr(radius * radius - distance * distance)
+    angle = GEOM_PI / 2# - Atn(distance / height)
+    CircleHalfPlaneArea = radius * radius * angle - distance * height
+End Function
 
 ' ДЛЯ ТЕСТОВ: готовит четыре точки контура без геометрического калькулятора.
 Private Function Rectangle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As Variant
@@ -83688,7 +84106,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestMaterialDiagrams
 TYPE: 1
-LINES: 1229
+LINES: 1395
 ====================================================================================================
 Option Explicit
 
@@ -83733,6 +84151,7 @@ Public Function RunMaterialDiagramTests() As String
     TestAudit03MaterialControlUnits stats
     TestAudit03PublishedMaterialDiagrams stats
     TestCachedMaterialTransitions stats
+    TestPlateauSlope stats
 
     AppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -83742,6 +84161,150 @@ Public Function RunMaterialDiagramTests() As String
 Failed:
     RunMaterialDiagramTests = "RUNTIME ERROR: " & CStr(Err.number) & _
         "; source=" & Err.source & "; description=" & Err.description
+End Function
+
+' ДЛЯ ТЕСТОВ: согласованность Stress/Tangent всех ветвей и инвалидация кэша.
+Public Function RunPlateauSlopeTests() As String
+    On Error GoTo Failed
+    Dim stats As TMaterialTestStats
+    TestPlateauSlope stats
+    AppendLine stats, "TOTAL_PLATEAU_SLOPE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunPlateauSlopeTests = stats.report
+    Exit Function
+Failed:
+    RunPlateauSlopeTests = stats.report & "RUNTIME ERROR: " & CStr(Err.number) & "; " & Err.description
+End Function
+
+Private Sub TestPlateauSlope(ByRef stats As TMaterialTestStats)
+    Dim concrete As New CConcreteMaterialParameters, steel As New CSteelMaterialParameters
+    Dim reference As CMaterialModelProvider, provider As CMaterialModelProvider, spec As CMaterialModelSpec
+    Dim extension As Variant, enabled As Variant, kind As Variant, valueSet As Variant, tension As Variant
+    Dim baseline As CMaterialDiagram, diagram As CMaterialDiagram, equilibrium As CMaterialDiagram
+    Dim clone As CMaterialDiagram, i As Long, material As Long, compressionE As Double, tensionE As Double
+    Dim alpha As Double, strain As Double, expected As Double, h As Double, prefix As String, revision As Long
+    concrete.Initialize 14.5, 1.05, 18.5, 1.6, 30000#, 27000#, rbMc2:=22#
+    steel.Initialize 310#, 350#, 360#, 400#, 205000#, 200000#, 0.018, 0.025, 0.014, 0.015
+    For Each extension In Array(False, True)
+        For Each enabled In Array(False, True)
+            Set reference = New CMaterialModelProvider
+            reference.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=CBool(extension)
+            Set provider = New CMaterialModelProvider
+            provider.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=CBool(extension), plateauSlopeEnabled:=CBool(enabled)
+            alpha = 0#: If CBool(enabled) Then alpha = 0.0001
+            For Each kind In Array("TwoLine", "ThreeLine")
+                For Each valueSet In Array("ULS(I)", "SLS(II)")
+                    For Each tension In Array("Ignore", "UseDiagram")
+                        Set spec = New CMaterialModelSpec: spec.Initialize CStr(valueSet), CStr(kind), CStr(tension), CStr(kind)
+                        For material = 0 To 1
+                            If material = 0 Then
+                                Set baseline = reference.ConcreteMaterialFromSpec(spec)
+                                Set diagram = provider.ConcreteMaterialFromSpec(spec)
+                                Set equilibrium = provider.ConcreteMaterialForEquilibriumFromSpec(spec)
+                                compressionE = concrete.eb: tensionE = concrete.ebt
+                            Else
+                                Set baseline = reference.SteelMaterialFromSpec(spec)
+                                Set diagram = provider.SteelMaterialFromSpec(spec)
+                                Set equilibrium = provider.SteelMaterialForEquilibriumFromSpec(spec)
+                                compressionE = steel.esc: tensionE = steel.es
+                            End If
+                            prefix = "plateau." & CStr(extension) & "." & CStr(enabled) & "." & spec.SpecKey & "." & CStr(material)
+                            Set clone = equilibrium.clone(True)
+                            AssertClose stats, prefix & ".compressionLimit", equilibrium.PhysicalCompressionStrain, baseline.PhysicalCompressionStrain, 0#
+                            AssertClose stats, prefix & ".tensionLimit", equilibrium.PhysicalTensionStrain, baseline.PhysicalTensionStrain, 0#
+                            AssertTrue stats, prefix & ".frozen", diagram.IsFrozen And equilibrium.IsFrozen
+                            For i = 1 To baseline.pointCount
+                                expected = PlateauExpectedStress(baseline, i, alpha, compressionE, tensionE)
+                                AssertClose stats, prefix & ".node." & CStr(i), diagram.PointStress(i), expected, 0.000000001
+                                AssertClose stats, prefix & ".strain." & CStr(i), diagram.PointStrain(i), baseline.PointStrain(i), 0#
+                                AssertClose stats, prefix & ".clone." & CStr(i), clone.PointStress(i), diagram.PointStress(i), 0#
+                            Next i
+                            For i = 1 To baseline.pointCount - 1
+                                strain = (baseline.PointStrain(i) + baseline.PointStrain(i + 1)) / 2#
+                                expected = baseline.GetTangentModulus(strain)
+                                If expected = 0# And baseline.GetStress(strain) <> 0# Then
+                                    If strain < 0# Then expected = alpha * compressionE Else expected = alpha * tensionE
+                                End If
+                                AssertClose stats, prefix & ".tangent." & CStr(i), diagram.GetTangentModulus(strain), expected, 0.0000001
+                                h = (baseline.PointStrain(i + 1) - baseline.PointStrain(i)) / 1000#
+                                AssertClose stats, prefix & ".derivative." & CStr(i), _
+                                    (diagram.GetStress(strain + h) - diagram.GetStress(strain - h)) / (2# * h), diagram.GetTangentModulus(strain), 0.00001
+                            Next i
+                            If material = 0 And CStr(tension) = "Ignore" Then
+                                AssertClose stats, prefix & ".ignoredStress", equilibrium.GetStress(0.1), 0#, 0#
+                                AssertClose stats, prefix & ".ignoredTangent", equilibrium.GetTangentModulus(0.1), 0#, 0#
+                            End If
+                            If CBool(extension) Then
+                                AssertClose stats, prefix & ".compressionExtension", equilibrium.GetTangentModulus(-1#), 0.01 * compressionE, 0.0000001
+                                If baseline.HasPhysicalTensionLimit Then _
+                                    AssertClose stats, prefix & ".tensionExtension", equilibrium.GetTangentModulus(1#), 0.01 * tensionE, 0.0000001
+                            End If
+                        Next material
+                    Next tension
+                Next valueSet
+            Next kind
+            revision = provider.revision
+            expected = diagram.PointStress(1)
+            provider.InitializeFromParameters concrete, steel, plateauSlopeEnabled:=Not CBool(enabled)
+            AssertTrue stats, "plateau.cache.newRevision", provider.revision > revision
+            AssertClose stats, "plateau.cache.oldSnapshot", diagram.PointStress(1), expected, 0#
+            AssertTrue stats, "plateau.cache.newMode", provider.plateauSlopeEnabled = Not CBool(enabled)
+        Next enabled
+    Next extension
+    TestPlateauSlopeSetting stats
+End Sub
+
+' Независимый oracle суммирует длины исходных плоских участков между нулем и узлом.
+Private Function PlateauExpectedStress(ByVal baseline As CMaterialDiagram, ByVal index As Long, _
+        ByVal alpha As Double, ByVal compressionE As Double, ByVal tensionE As Double) As Double
+    Dim i As Long, change As Double
+    For i = 2 To baseline.pointCount
+        If baseline.PointStress(i) <> 0# And baseline.PointStress(i) = baseline.PointStress(i - 1) Then
+            If baseline.PointStrain(i) <= 0# And index < i Then _
+                change = change - alpha * compressionE * (baseline.PointStrain(i) - baseline.PointStrain(i - 1))
+            If baseline.PointStrain(i - 1) >= 0# And index >= i Then _
+                change = change + alpha * tensionE * (baseline.PointStrain(i) - baseline.PointStrain(i - 1))
+        End If
+    Next i
+    PlateauExpectedStress = baseline.PointStress(index) + change
+End Function
+
+Private Sub TestPlateauSlopeSetting(ByRef stats As TMaterialTestStats)
+    Dim cell As Object, original As Variant, choice As Variant, provider As CMaterialModelProvider
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, errorNumber As Long, description As String
+    On Error GoTo Failed
+    Set cell = PlateauSettingCell()
+    If cell Is Nothing Then Err.Raise 5, , "В Config отсутствует Solver.PlateauSlope.Enabled."
+    original = cell.formula
+    For Each choice In Array("No", "Yes")
+        cell.value2 = CStr(choice)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+        AssertTrue stats, "plateau.setting." & CStr(choice), provider.plateauSlopeEnabled = (CStr(choice) = "Yes")
+    Next choice
+    cell.value2 = "invalid"
+    settings.LoadFromWorkbook ThisWorkbook
+    On Error Resume Next
+    provider.Initialize settings, units
+    errorNumber = Err.number: description = Err.description: Err.clear
+    On Error GoTo Failed
+    AssertTrue stats, "plateau.setting.invalidRejected", errorNumber <> 0 And InStr(1, description, "Solver.PlateauSlope.Enabled", vbBinaryCompare) > 0
+Restore:
+    If Not cell Is Nothing Then cell.formula = original
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: plateau.setting.runtime; " & Err.description
+    Resume Restore
+End Sub
+
+Private Function PlateauSettingCell() As Object
+    Dim table As Object, values As Variant, row As Long
+    Set table = ThisWorkbook.names.item("rngSystemSettings").RefersToRange
+    values = table.value2
+    For row = 2 To table.rows.count
+        If CStr(values(row, 1)) = "Solver.PlateauSlope.Enabled" Then Set PlateauSettingCell = table.cells(row, 2): Exit Function
+    Next row
 End Function
 
 ' ДЛЯ ТЕСТОВ: кэш переломов сравнивается с прямым перебором всех узлов.
@@ -84565,15 +85128,28 @@ End Function
 
 ' Выполняет обычный production-маршрут чтения всей книги и преобразования
 ' единиц. InitializeFromParameters намеренно не используется в этой проверке.
-Private Function Audit03MaterialConfigProvider() As CMaterialModelProvider
+Private Function Audit03MaterialConfigProvider(Optional ByVal useCurrentPlateau As Boolean = False) As CMaterialModelProvider
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim cell As Object, original As Variant, number As Long, source As String, description As String
+    On Error GoTo Failed
+    ' Эти oracle-тесты сверяют исходные нормативные точки. Наклон проверяется отдельно.
+    If Not useCurrentPlateau Then Set cell = PlateauSettingCell()
+    If Not cell Is Nothing Then original = cell.formula: cell.value2 = "No"
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem
     units.LoadFromSettings settings
     Set provider = New CMaterialModelProvider
     provider.Initialize settings, units
+    If Not cell Is Nothing Then cell.formula = original
     Set Audit03MaterialConfigProvider = provider
+    Exit Function
+Failed:
+    number = Err.number: source = Err.source: description = Err.description
+    On Error Resume Next
+    If Not cell Is Nothing Then cell.formula = original
+    On Error GoTo 0
+    Err.Raise number, source, description
 End Function
 
 ' Перехватывает только контролируемую попытку прочитать неверный материал.
@@ -84678,7 +85254,7 @@ End Function
 
 ' ==================== ДЛЯ ТЕСТОВ: ЕДИНИЦЫ КОНТРОЛЬНЫХ ТОЧЕК ====================
 
-' Проверяет настоящие формульные точки Config в пяти INPUT-единицах Stress.
+' Проверяет точки Config при Yes/No в пяти INPUT-единицах Stress.
 ' Таблица не решает НДС: ее 52 узла сопоставляются с физическими диаграммами
 ' provider-а. Подписи таблицы и графиков должны называть единицу ее чисел,
 ' а численные формулы должны сохранять прямые ссылки и обычную арифметику.
@@ -84691,6 +85267,7 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
     Dim key As String, previousKey As String, pointIndex As Long, rowIndex As Long, columnIndex As Long
     Dim prefix As String, formula As String, pattern As Object, baselineFactor As Double, factor As Double
     Dim solveCount As Long, expectedPoints As Long
+    Dim slopeCell As Object, savedSlope As Variant, slopeMode As Variant
     On Error GoTo Failed
     solveCount = SectionEquilibriumSolveCount()
     Set config = ThisWorkbook.Worksheets.item("Config")
@@ -84704,11 +85281,16 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
         If CStr(unitRange.cells(rowIndex, 1).value2) = "Stress" Then Set stressCell = unitRange.cells(rowIndex, 2)
     Next rowIndex
     If stressCell Is Nothing Then Err.Raise vbObjectError + 9905, "TestAudit03MaterialControlUnits", "В Config нет INPUT-единицы Stress."
+    Set slopeCell = PlateauSettingCell()
+    If slopeCell Is Nothing Then Err.Raise 5, , "В Config нет настройки наклона плато."
+    savedSlope = slopeCell.formula
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     baselineFactor = units.InputStressToInternal(1#)
     Set pattern = CreateObject("VBScript.RegExp")
-    pattern.pattern = "^=(\$?[A-Z]+\$?[1-9][0-9]*|[0-9]+(\.[0-9]+)?|[+\-*/()]|\s)+$"
+    pattern.pattern = "^=(\$?[A-Z]+\$?[1-9][0-9]*|[0-9]+(\.[0-9]+)?|IF|""Yes""|[,+\-*/()=]|\s)+$"
+    For Each slopeMode In Array("No", "Yes")
+    slopeCell.value2 = CStr(slopeMode)
     For Each unitName In Array("MPa", "kPa", "Pa", "kgf/cm2", "tf/m2")
         concreteRange.formula = savedConcrete: steelRange.formula = savedSteel
         stressCell.value2 = CStr(unitName)
@@ -84718,8 +85300,8 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
         Audit03RescaleControlMaterialInputs concreteRange, baselineFactor / factor
         Audit03RescaleControlMaterialInputs steelRange, baselineFactor / factor
         config.Calculate
-        Set provider = Audit03MaterialConfigProvider()
-        prefix = "audit03.materialControls." & CStr(unitName)
+        Set provider = Audit03MaterialConfigProvider(True)
+        prefix = "audit03.materialControls." & CStr(slopeMode) & "." & CStr(unitName)
         AssertTrue stats, prefix & ".tableUnit", CStr(title.offset(1, 5).value2) = ChrW$(&H3C3) & ", " & CStr(unitName)
         For Each chartName In Array("chMaterialConcreteDiagram", "chMaterialSteelDiagram")
             AssertTrue stats, prefix & ".chartUnit." & CStr(chartName), _
@@ -84759,8 +85341,9 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
             Next columnIndex
         Next rowIndex
         AssertTrue stats, prefix & ".pointCount." & previousKey, pointIndex = expectedPoints
-        AppendLine stats, "MATERIAL_CONTROL_UNITS: unit=" & CStr(unitName) & "; points=52; table=" & title.address(False, False)
+        AppendLine stats, "MATERIAL_CONTROL_UNITS: plateau=" & CStr(slopeMode) & "; unit=" & CStr(unitName) & "; points=52; table=" & title.address(False, False)
     Next unitName
+    Next slopeMode
     AssertTrue stats, "audit03.materialControls.noSolve", solveCount = SectionEquilibriumSolveCount()
     GoTo Restore
 Failed:
@@ -84771,6 +85354,7 @@ Restore:
     If Not IsEmpty(savedConcrete) Then concreteRange.formula = savedConcrete
     If Not IsEmpty(savedSteel) Then steelRange.formula = savedSteel
     If Not IsEmpty(savedUnits) Then unitRange.formula = savedUnits
+    If Not IsEmpty(savedSlope) Then slopeCell.formula = savedSlope
     If Not config Is Nothing Then config.Calculate
     On Error GoTo 0
 End Sub
@@ -101215,7 +101799,7 @@ Private Function ExpectedConfigDropdownOptions(ByVal key As String) As String
         Case "AutoCAD.Export.ContourFormat": ExpectedConfigDropdownOptions = "Region|Polyline"
         Case "AutoCAD.Export.PrincipalAxesMode", "Plot.PrincipalAxesMode": ExpectedConfigDropdownOptions = "Transformed|Concrete|None"
         Case "Plot.LegendMode": ExpectedConfigDropdownOptions = "Separate|Common"
-        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", _
+        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", "Solver.PlateauSlope.Enabled", _
                 "AutoCAD.Export.NeutralLineEnabled", "AutoCAD.Export.LoadPointEnabled", "AutoCAD.Export.ContourEnabled", _
                 "AutoCAD.Export.ExportCrackInteractionContour", "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", _
                 "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.NeutralLineEnabled", "Plot.LoadApplicationPointEnabled", _

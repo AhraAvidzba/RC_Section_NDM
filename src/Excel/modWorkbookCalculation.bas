@@ -369,6 +369,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddSection "Расчет сочетаний"
     batch.Execute
     report.AddValue "Время batch-расчета", FormatReportNumber(batch.ElapsedSeconds) & " с"
+    report.AddValue "Количество стартов UltimateStrain", CStr(batch.UltimateStrainStartCount)
+    report.AddValue "Количество итераций НДС", CStr(batch.SolverIterationCount)
+    report.AddValue "Количество итераций UltimateStrain", CStr(batch.UltimateStrainIterationCount)
 
     Dim summaryWriter As CBatchResultWriter
     Set summaryWriter = New CBatchResultWriter

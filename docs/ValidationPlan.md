@@ -20,6 +20,17 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.
 
 Направленные наборы: `Run-GeometryTests.ps1`, `Run-MaterialTests.ps1`, `Run-SectionSolverTests.ps1`, `Run-CapacityTests.ps1`, `Run-CrackTests.ps1`, `Run-SP35FocusedTests.ps1`, `Run-BatchTests.ps1`, `Run-WorkbookInterfaceTests.ps1`, `Run-RegressionBaselineTests.ps1`.
 
+Малый наклон плато: `modTestMaterialDiagrams.RunPlateauSlopeTests` проверяет
+согласованность напряжений и производной, отдельные сжатые/растянутые ветви,
+TwoLine/ThreeLine, I/II ГПС, выключенный растянутый бетон, продолжение, Clone,
+инвалидацию кэша и переключатель Config. Сравнительный эксперимент:
+`Run-PlateauSlopeExperiment.ps1`; измерительные модули из tools не включать в
+рабочую книгу. Отчет: `docs/reports/performance/PlateauSlope_2026-10-11.md`.
+`RunAudit03MaterialControlUnitsTests` сверяет все 52 координаты Config при
+Yes/No в пяти единицах напряжений. `RunPlateauResultsDiagramTests` проверяет
+фактически сохраненные диаграммы Results при Yes/No и обоих режимах
+продолжения, включая смену Config после расчета без изменения снимка.
+
 Генерация бетона по CAD-контурам: макрос `modTestContourMesh.RunContourMeshTests` через `Run-SP35FocusedTests.ps1`. Реальный AutoCAD: `Run-PostAudit03NativeCAD.ps1 -Macro RunRealAutoCADContourMeshTests`. Проверяются сетки, несколько отверстий, единицы, сохранение Results, пары расчетов Generated/CAD и экспорт без повторного решения.
 
 Центрирование и физические границы: `RunConcreteMeshCenterTests` проверяет
@@ -27,6 +38,13 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.
 пределы бетона и стали; `RunAsymmetricSteelStrengthTests` - разные характеристики
 стали на сжатие и растяжение. Эти макросы запускаются через
 `Run-Audit03Watchdog.ps1` на отдельной копии книги.
+
+Почти касательные отсечения и точность площади на удаленных координатах:
+`RunTangentClipRegressionTests` и `RunGeometryQueryTests`. Счетчики реальных
+стартов и итераций: `RunSolverWorkStatsTests`, `RunBatchWorkStatsTests`.
+Исправленные +My и явный UltimateStrain с λ*N воспроизводит
+`OpenIssuesProbe.bas`, только в изолированной копии через
+`Prepare-FocusedAcceptance.ps1 -ExtraHelperFile OpenIssuesProbe.bas`.
 
 `RunLimitGuessScalingTests` проверяет старт предельного поиска при большой
 перегрузке и переносах; `RunConcreteMeshCenterTests` также проверяет кэш

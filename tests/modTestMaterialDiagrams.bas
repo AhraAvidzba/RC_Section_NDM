@@ -42,6 +42,7 @@ Public Function RunMaterialDiagramTests() As String
     TestAudit03MaterialControlUnits stats
     TestAudit03PublishedMaterialDiagrams stats
     TestCachedMaterialTransitions stats
+    TestPlateauSlope stats
 
     AppendLine stats, "TOTAL_MATERIAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -51,6 +52,150 @@ Public Function RunMaterialDiagramTests() As String
 Failed:
     RunMaterialDiagramTests = "RUNTIME ERROR: " & CStr(Err.Number) & _
         "; source=" & Err.Source & "; description=" & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: согласованность Stress/Tangent всех ветвей и инвалидация кэша.
+Public Function RunPlateauSlopeTests() As String
+    On Error GoTo Failed
+    Dim stats As TMaterialTestStats
+    TestPlateauSlope stats
+    AppendLine stats, "TOTAL_PLATEAU_SLOPE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunPlateauSlopeTests = stats.Report
+    Exit Function
+Failed:
+    RunPlateauSlopeTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+Private Sub TestPlateauSlope(ByRef stats As TMaterialTestStats)
+    Dim concrete As New CConcreteMaterialParameters, steel As New CSteelMaterialParameters
+    Dim reference As CMaterialModelProvider, provider As CMaterialModelProvider, spec As CMaterialModelSpec
+    Dim extension As Variant, enabled As Variant, kind As Variant, valueSet As Variant, tension As Variant
+    Dim baseline As CMaterialDiagram, diagram As CMaterialDiagram, equilibrium As CMaterialDiagram
+    Dim clone As CMaterialDiagram, i As Long, material As Long, compressionE As Double, tensionE As Double
+    Dim alpha As Double, strain As Double, expected As Double, h As Double, prefix As String, revision As Long
+    concrete.Initialize 14.5, 1.05, 18.5, 1.6, 30000#, 27000#, rbMc2:=22#
+    steel.Initialize 310#, 350#, 360#, 400#, 205000#, 200000#, 0.018, 0.025, 0.014, 0.015
+    For Each extension In Array(False, True)
+        For Each enabled In Array(False, True)
+            Set reference = New CMaterialModelProvider
+            reference.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=CBool(extension)
+            Set provider = New CMaterialModelProvider
+            provider.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=CBool(extension), plateauSlopeEnabled:=CBool(enabled)
+            alpha = 0#: If CBool(enabled) Then alpha = 0.0001
+            For Each kind In Array("TwoLine", "ThreeLine")
+                For Each valueSet In Array("ULS(I)", "SLS(II)")
+                    For Each tension In Array("Ignore", "UseDiagram")
+                        Set spec = New CMaterialModelSpec: spec.Initialize CStr(valueSet), CStr(kind), CStr(tension), CStr(kind)
+                        For material = 0 To 1
+                            If material = 0 Then
+                                Set baseline = reference.ConcreteMaterialFromSpec(spec)
+                                Set diagram = provider.ConcreteMaterialFromSpec(spec)
+                                Set equilibrium = provider.ConcreteMaterialForEquilibriumFromSpec(spec)
+                                compressionE = concrete.Eb: tensionE = concrete.Ebt
+                            Else
+                                Set baseline = reference.SteelMaterialFromSpec(spec)
+                                Set diagram = provider.SteelMaterialFromSpec(spec)
+                                Set equilibrium = provider.SteelMaterialForEquilibriumFromSpec(spec)
+                                compressionE = steel.Esc: tensionE = steel.Es
+                            End If
+                            prefix = "plateau." & CStr(extension) & "." & CStr(enabled) & "." & spec.SpecKey & "." & CStr(material)
+                            Set clone = equilibrium.Clone(True)
+                            AssertClose stats, prefix & ".compressionLimit", equilibrium.PhysicalCompressionStrain, baseline.PhysicalCompressionStrain, 0#
+                            AssertClose stats, prefix & ".tensionLimit", equilibrium.PhysicalTensionStrain, baseline.PhysicalTensionStrain, 0#
+                            AssertTrue stats, prefix & ".frozen", diagram.IsFrozen And equilibrium.IsFrozen
+                            For i = 1 To baseline.PointCount
+                                expected = PlateauExpectedStress(baseline, i, alpha, compressionE, tensionE)
+                                AssertClose stats, prefix & ".node." & CStr(i), diagram.PointStress(i), expected, 0.000000001
+                                AssertClose stats, prefix & ".strain." & CStr(i), diagram.PointStrain(i), baseline.PointStrain(i), 0#
+                                AssertClose stats, prefix & ".clone." & CStr(i), clone.PointStress(i), diagram.PointStress(i), 0#
+                            Next i
+                            For i = 1 To baseline.PointCount - 1
+                                strain = (baseline.PointStrain(i) + baseline.PointStrain(i + 1)) / 2#
+                                expected = baseline.GetTangentModulus(strain)
+                                If expected = 0# And baseline.GetStress(strain) <> 0# Then
+                                    If strain < 0# Then expected = alpha * compressionE Else expected = alpha * tensionE
+                                End If
+                                AssertClose stats, prefix & ".tangent." & CStr(i), diagram.GetTangentModulus(strain), expected, 0.0000001
+                                h = (baseline.PointStrain(i + 1) - baseline.PointStrain(i)) / 1000#
+                                AssertClose stats, prefix & ".derivative." & CStr(i), _
+                                    (diagram.GetStress(strain + h) - diagram.GetStress(strain - h)) / (2# * h), diagram.GetTangentModulus(strain), 0.00001
+                            Next i
+                            If material = 0 And CStr(tension) = "Ignore" Then
+                                AssertClose stats, prefix & ".ignoredStress", equilibrium.GetStress(0.1), 0#, 0#
+                                AssertClose stats, prefix & ".ignoredTangent", equilibrium.GetTangentModulus(0.1), 0#, 0#
+                            End If
+                            If CBool(extension) Then
+                                AssertClose stats, prefix & ".compressionExtension", equilibrium.GetTangentModulus(-1#), 0.01 * compressionE, 0.0000001
+                                If baseline.HasPhysicalTensionLimit Then _
+                                    AssertClose stats, prefix & ".tensionExtension", equilibrium.GetTangentModulus(1#), 0.01 * tensionE, 0.0000001
+                            End If
+                        Next material
+                    Next tension
+                Next valueSet
+            Next kind
+            revision = provider.Revision
+            expected = diagram.PointStress(1)
+            provider.InitializeFromParameters concrete, steel, plateauSlopeEnabled:=Not CBool(enabled)
+            AssertTrue stats, "plateau.cache.newRevision", provider.Revision > revision
+            AssertClose stats, "plateau.cache.oldSnapshot", diagram.PointStress(1), expected, 0#
+            AssertTrue stats, "plateau.cache.newMode", provider.PlateauSlopeEnabled = Not CBool(enabled)
+        Next enabled
+    Next extension
+    TestPlateauSlopeSetting stats
+End Sub
+
+' Независимый oracle суммирует длины исходных плоских участков между нулем и узлом.
+Private Function PlateauExpectedStress(ByVal baseline As CMaterialDiagram, ByVal index As Long, _
+        ByVal alpha As Double, ByVal compressionE As Double, ByVal tensionE As Double) As Double
+    Dim i As Long, change As Double
+    For i = 2 To baseline.PointCount
+        If baseline.PointStress(i) <> 0# And baseline.PointStress(i) = baseline.PointStress(i - 1) Then
+            If baseline.PointStrain(i) <= 0# And index < i Then _
+                change = change - alpha * compressionE * (baseline.PointStrain(i) - baseline.PointStrain(i - 1))
+            If baseline.PointStrain(i - 1) >= 0# And index >= i Then _
+                change = change + alpha * tensionE * (baseline.PointStrain(i) - baseline.PointStrain(i - 1))
+        End If
+    Next i
+    PlateauExpectedStress = baseline.PointStress(index) + change
+End Function
+
+Private Sub TestPlateauSlopeSetting(ByRef stats As TMaterialTestStats)
+    Dim cell As Object, original As Variant, choice As Variant, provider As CMaterialModelProvider
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, errorNumber As Long, description As String
+    On Error GoTo Failed
+    Set cell = PlateauSettingCell()
+    If cell Is Nothing Then Err.Raise 5, , "В Config отсутствует Solver.PlateauSlope.Enabled."
+    original = cell.Formula
+    For Each choice In Array("No", "Yes")
+        cell.Value2 = CStr(choice)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+        AssertTrue stats, "plateau.setting." & CStr(choice), provider.PlateauSlopeEnabled = (CStr(choice) = "Yes")
+    Next choice
+    cell.Value2 = "invalid"
+    settings.LoadFromWorkbook ThisWorkbook
+    On Error Resume Next
+    provider.Initialize settings, units
+    errorNumber = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo Failed
+    AssertTrue stats, "plateau.setting.invalidRejected", errorNumber <> 0 And InStr(1, description, "Solver.PlateauSlope.Enabled", vbBinaryCompare) > 0
+Restore:
+    If Not cell Is Nothing Then cell.Formula = original
+    Exit Sub
+Failed:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: plateau.setting.runtime; " & Err.Description
+    Resume Restore
+End Sub
+
+Private Function PlateauSettingCell() As Object
+    Dim table As Object, values As Variant, row As Long
+    Set table = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    values = table.Value2
+    For row = 2 To table.Rows.Count
+        If CStr(values(row, 1)) = "Solver.PlateauSlope.Enabled" Then Set PlateauSettingCell = table.Cells(row, 2): Exit Function
+    Next row
 End Function
 
 ' ДЛЯ ТЕСТОВ: кэш переломов сравнивается с прямым перебором всех узлов.
@@ -874,15 +1019,28 @@ End Function
 
 ' Выполняет обычный production-маршрут чтения всей книги и преобразования
 ' единиц. InitializeFromParameters намеренно не используется в этой проверке.
-Private Function Audit03MaterialConfigProvider() As CMaterialModelProvider
+Private Function Audit03MaterialConfigProvider(Optional ByVal useCurrentPlateau As Boolean = False) As CMaterialModelProvider
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
+    Dim cell As Object, original As Variant, number As Long, source As String, description As String
+    On Error GoTo Failed
+    ' Эти oracle-тесты сверяют исходные нормативные точки. Наклон проверяется отдельно.
+    If Not useCurrentPlateau Then Set cell = PlateauSettingCell()
+    If Not cell Is Nothing Then original = cell.Formula: cell.Value2 = "No"
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem
     units.LoadFromSettings settings
     Set provider = New CMaterialModelProvider
     provider.Initialize settings, units
+    If Not cell Is Nothing Then cell.Formula = original
     Set Audit03MaterialConfigProvider = provider
+    Exit Function
+Failed:
+    number = Err.Number: source = Err.Source: description = Err.Description
+    On Error Resume Next
+    If Not cell Is Nothing Then cell.Formula = original
+    On Error GoTo 0
+    Err.Raise number, source, description
 End Function
 
 ' Перехватывает только контролируемую попытку прочитать неверный материал.
@@ -987,7 +1145,7 @@ End Function
 
 ' ==================== ДЛЯ ТЕСТОВ: ЕДИНИЦЫ КОНТРОЛЬНЫХ ТОЧЕК ====================
 
-' Проверяет настоящие формульные точки Config в пяти INPUT-единицах Stress.
+' Проверяет точки Config при Yes/No в пяти INPUT-единицах Stress.
 ' Таблица не решает НДС: ее 52 узла сопоставляются с физическими диаграммами
 ' provider-а. Подписи таблицы и графиков должны называть единицу ее чисел,
 ' а численные формулы должны сохранять прямые ссылки и обычную арифметику.
@@ -1000,6 +1158,7 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
     Dim key As String, previousKey As String, pointIndex As Long, rowIndex As Long, columnIndex As Long
     Dim prefix As String, formula As String, pattern As Object, baselineFactor As Double, factor As Double
     Dim solveCount As Long, expectedPoints As Long
+    Dim slopeCell As Object, savedSlope As Variant, slopeMode As Variant
     On Error GoTo Failed
     solveCount = SectionEquilibriumSolveCount()
     Set config = ThisWorkbook.Worksheets.Item("Config")
@@ -1013,11 +1172,16 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
         If CStr(unitRange.Cells(rowIndex, 1).Value2) = "Stress" Then Set stressCell = unitRange.Cells(rowIndex, 2)
     Next rowIndex
     If stressCell Is Nothing Then Err.Raise vbObjectError + 9905, "TestAudit03MaterialControlUnits", "В Config нет INPUT-единицы Stress."
+    Set slopeCell = PlateauSettingCell()
+    If slopeCell Is Nothing Then Err.Raise 5, , "В Config нет настройки наклона плато."
+    savedSlope = slopeCell.Formula
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     baselineFactor = units.InputStressToInternal(1#)
     Set pattern = CreateObject("VBScript.RegExp")
-    pattern.Pattern = "^=(\$?[A-Z]+\$?[1-9][0-9]*|[0-9]+(\.[0-9]+)?|[+\-*/()]|\s)+$"
+    pattern.Pattern = "^=(\$?[A-Z]+\$?[1-9][0-9]*|[0-9]+(\.[0-9]+)?|IF|""Yes""|[,+\-*/()=]|\s)+$"
+    For Each slopeMode In Array("No", "Yes")
+    slopeCell.Value2 = CStr(slopeMode)
     For Each unitName In Array("MPa", "kPa", "Pa", "kgf/cm2", "tf/m2")
         concreteRange.Formula = savedConcrete: steelRange.Formula = savedSteel
         stressCell.Value2 = CStr(unitName)
@@ -1027,8 +1191,8 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
         Audit03RescaleControlMaterialInputs concreteRange, baselineFactor / factor
         Audit03RescaleControlMaterialInputs steelRange, baselineFactor / factor
         config.Calculate
-        Set provider = Audit03MaterialConfigProvider()
-        prefix = "audit03.materialControls." & CStr(unitName)
+        Set provider = Audit03MaterialConfigProvider(True)
+        prefix = "audit03.materialControls." & CStr(slopeMode) & "." & CStr(unitName)
         AssertTrue stats, prefix & ".tableUnit", CStr(title.Offset(1, 5).Value2) = ChrW$(&H3C3) & ", " & CStr(unitName)
         For Each chartName In Array("chMaterialConcreteDiagram", "chMaterialSteelDiagram")
             AssertTrue stats, prefix & ".chartUnit." & CStr(chartName), _
@@ -1068,8 +1232,9 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
             Next columnIndex
         Next rowIndex
         AssertTrue stats, prefix & ".pointCount." & previousKey, pointIndex = expectedPoints
-        AppendLine stats, "MATERIAL_CONTROL_UNITS: unit=" & CStr(unitName) & "; points=52; table=" & title.Address(False, False)
+        AppendLine stats, "MATERIAL_CONTROL_UNITS: plateau=" & CStr(slopeMode) & "; unit=" & CStr(unitName) & "; points=52; table=" & title.Address(False, False)
     Next unitName
+    Next slopeMode
     AssertTrue stats, "audit03.materialControls.noSolve", solveCount = SectionEquilibriumSolveCount()
     GoTo Restore
 Failed:
@@ -1080,6 +1245,7 @@ Restore:
     If Not IsEmpty(savedConcrete) Then concreteRange.Formula = savedConcrete
     If Not IsEmpty(savedSteel) Then steelRange.Formula = savedSteel
     If Not IsEmpty(savedUnits) Then unitRange.Formula = savedUnits
+    If Not IsEmpty(savedSlope) Then slopeCell.Formula = savedSlope
     If Not config Is Nothing Then config.Calculate
     On Error GoTo 0
 End Sub

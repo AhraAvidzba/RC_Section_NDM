@@ -29,6 +29,7 @@ Private Const SLOT_CRACKED_NDS As Long = 3 ' Массивный слот физ�
 Private Const STATE_EXTENSION_E_FACTOR As Double = 0.01 ' Жесткость extension: 1% от начального модуля E.
 Private Const STATE_EXTENSION_STRAIN_LIMIT As Double = 10# ' Техническая дальняя точка extension; не является eps_ult.
 Private Const EXTENSION_TOLERANCE As Double = 0.000000000001 ' Допуск, чтобы не добавлять почти совпадающую extension-точку.
+Private Const PLATEAU_SLOPE_E_FACTOR As Double = 0.0001 ' Согласованный наклон ненулевого физического плато: 0.01% от E своей ветви.
 
 Private mConcreteParameters As CConcreteMaterialParameters ' Исходные параметры бетона из Config.
 Private mSteelParameters As CSteelMaterialParameters ' Исходные параметры арматуры из Config.
@@ -51,6 +52,7 @@ Private mSteelTensionResistance(1 To 3) As Double ' Rs/Rs,ser выбранной
 Private mConcreteElasticModulus(1 To 3) As Double ' Eb выбранной бетонной модели, МПа.
 Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной модели арматуры, МПа.
 Private mDiagramExtensionEnabled As Boolean ' Разрешает numerical extension для задач равновесия solver-а.
+Private mPlateauSlopeEnabled As Boolean ' Меняет точки физической диаграммы до ее публикации, а не только касательную solver-а.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
 Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
 Private mRevision As Long ' Версия набора материалов и effective Extension после переинициализации.
@@ -69,6 +71,7 @@ Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal un
     mSteelParameters.LoadFromSettings settings, units
 
     mDiagramExtensionEnabled = ReadDiagramExtensionSetting(settings)
+    mPlateauSlopeEnabled = settings.GetBoolean("Solver.PlateauSlope.Enabled", False)
 
     BuildPurpose cpStrength, "I", _
         settings.GetString("Diagram.Strength.Concrete", "TwoLine"), _
@@ -162,7 +165,7 @@ Private Function BuildConcreteTwoLine(ByVal limitStateGroup As String, ByVal ten
         eps(5) = mConcreteParameters.Ebt2: sig(5) = rbt
     End If
 
-    Set BuildConcreteTwoLine = DiagramFromArrays(eps, sig, count)
+    Set BuildConcreteTwoLine = DiagramFromArrays(eps, sig, count, mConcreteParameters.Eb, mConcreteParameters.Ebt)
 End Function
 
 ' Строит трехлинейную бетонную диаграмму. Средняя точка 0.6*R/E
@@ -194,7 +197,7 @@ Private Function BuildConcreteThreeLine(ByVal limitStateGroup As String, ByVal t
         eps(7) = mConcreteParameters.Ebt2: sig(7) = rbt
     End If
 
-    Set BuildConcreteThreeLine = DiagramFromArrays(eps, sig, count)
+    Set BuildConcreteThreeLine = DiagramFromArrays(eps, sig, count, mConcreteParameters.Eb, mConcreteParameters.Ebt)
 End Function
 
 ' Выбирает формулу диаграммы арматуры.
@@ -220,7 +223,7 @@ Private Function BuildSteelTwoLine(ByVal limitStateGroup As String) As CMaterial
     eps(4) = rs / mSteelParameters.Es: sig(4) = rs
     eps(5) = mSteelParameters.TwoLineEs2: sig(5) = rs
 
-    Set BuildSteelTwoLine = DiagramFromArrays(eps, sig, 5)
+    Set BuildSteelTwoLine = DiagramFromArrays(eps, sig, 5, mSteelParameters.Esc, mSteelParameters.Es)
 End Function
 
 ' Строит трехлинейную диаграмму арматуры с расчетными точками перелома.
@@ -255,17 +258,46 @@ Private Function BuildSteelThreeLine(ByVal limitStateGroup As String) As CMateri
     eps(8) = epsSPl: sig(8) = 1.1 * rs
     eps(9) = mSteelParameters.ThreeLineEs2: sig(9) = 1.1 * rs
 
-    Set BuildSteelThreeLine = DiagramFromArrays(eps, sig, 9)
+    Set BuildSteelThreeLine = DiagramFromArrays(eps, sig, 9, mSteelParameters.Esc, mSteelParameters.Es)
 End Function
 
 ' Создает CMaterialDiagram из массивов физических точек.
-Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long) As CMaterialDiagram
+Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, _
+        ByVal compressionE As Double, ByVal tensionE As Double) As CMaterialDiagram
     Dim diagram As CMaterialDiagram
     Set diagram = New CMaterialDiagram
+    If mPlateauSlopeEnabled Then ApplyPlateauSlope strains, stresses, pointCount, compressionE, tensionE
     diagram.InitializeFromArrays strains, stresses, pointCount
     diagram.Freeze
     Set DiagramFromArrays = diagram
 End Function
+
+' Обход от начала координат сохраняет начало каждого плато и непрерывность.
+' Stress и Tangent затем интерполируют одни точки. Нулевая выключенная ветвь
+' не активируется; пределы деформаций и отдельное numerical extension не меняются.
+Private Sub ApplyPlateauSlope(ByRef strains() As Double, ByRef stresses() As Double, ByVal count As Long, _
+        ByVal compressionE As Double, ByVal tensionE As Double)
+    Dim zero As Long, i As Long, previous As Double, original As Double, offset As Double
+    For i = 1 To count
+        If strains(i) = 0# And stresses(i) = 0# Then zero = i: Exit For
+    Next i
+    If zero = 0 Then Err.Raise vbObjectError + 3246, "CMaterialModelProvider", "В диаграмме отсутствует начало координат."
+    For i = zero - 1 To 1 Step -1
+        original = stresses(i)
+        If original <> 0# And original = previous Then _
+            offset = offset + PLATEAU_SLOPE_E_FACTOR * compressionE * (strains(i) - strains(i + 1))
+        stresses(i) = original + offset
+        previous = original
+    Next i
+    previous = 0#: offset = 0#
+    For i = zero + 1 To count
+        original = stresses(i)
+        If original <> 0# And original = previous Then _
+            offset = offset + PLATEAU_SLOPE_E_FACTOR * tensionE * (strains(i) - strains(i - 1))
+        stresses(i) = original + offset
+        previous = original
+    Next i
+End Sub
 
 ' Создает копию физической диаграммы с дополнительными техническими точками
 ' для равновесного solve. Физические eps_ult передаются в CMaterialDiagram
@@ -814,6 +846,11 @@ Public Property Get DiagramExtensionEnabled() As Boolean
     DiagramExtensionEnabled = mDiagramExtensionEnabled
 End Property
 
+Public Property Get PlateauSlopeEnabled() As Boolean
+    EnsureInitialized
+    PlateauSlopeEnabled = mPlateauSlopeEnabled
+End Property
+
 ' Возвращает версию неизменяемого набора материалов текущего запуска.
 ' Repository использует ее вместе с identity provider-а, а не с именем профиля.
 Public Property Get Revision() As Long
@@ -854,7 +891,8 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
         Optional ByVal mcrcSteelDiagram As String = "TwoLine", _
         Optional ByVal crackedConcreteDiagram As String = "TwoLine", _
         Optional ByVal crackedSteelDiagram As String = "TwoLine", _
-        Optional ByVal diagramExtensionEnabled As Boolean = True)
+        Optional ByVal diagramExtensionEnabled As Boolean = True, _
+        Optional ByVal plateauSlopeEnabled As Boolean = False)
     If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
     If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
 
@@ -864,6 +902,7 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
     Set mSteelParameters = steelParameters.Clone
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
     mDiagramExtensionEnabled = diagramExtensionEnabled
+    mPlateauSlopeEnabled = plateauSlopeEnabled
     BuildPurpose cpStrength, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
     BuildPurpose cpMcrc, "II", mcrcConcreteDiagram, "UseDiagram", mcrcSteelDiagram
     BuildPurpose cpCrackedNDS, "II", crackedConcreteDiagram, "Ignore", crackedSteelDiagram

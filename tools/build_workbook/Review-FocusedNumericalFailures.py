@@ -57,9 +57,19 @@ def main():
             certificate = model.check(group["Mode"], profile, *targets[state["id"]])
             records.append({"Case": state["id"], "Mode": group["Mode"], "State": state["type"],
                             "MaterialRole": profile, "Certificate": certificate, "ReportSHA256": digest(path)})
+    reviewed_cases = {(record["Case"].removeprefix("focused." + manifest["Shape"] + "."), record["Mode"])
+                      for record in records if record["Certificate"]["ImpossibleByBound"]}
+    messages = stage["NumericalFailuresForReview"]
+    messages_covered = all(
+        (fields(message["Detail"])["id"], message["Mode"]) in reviewed_cases
+        and fields(message["Detail"])["shape"] == manifest["Shape"]
+        and fields(message["Detail"])["kind"] == "1"
+        for message in messages
+    )
     output = {"SourceSHA256": stage["SourceSHA256"], "ModelSHA256": digest(args.model),
               "ReviewedStates": len(records), "ProvenImpossible": sum(r["Certificate"]["ImpossibleByBound"] for r in records),
               "Inconclusive": sum(not r["Certificate"]["ImpossibleByBound"] for r in records),
+              "ReviewedMessages": len(messages), "AllNumericalMessagesCovered": messages_covered,
               "Records": records, "ProductionPrecheckAdded": False,
               "Scope": "Full requested NDS targets, not partial load steps; not a proof about all lambda paths."}
     args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")

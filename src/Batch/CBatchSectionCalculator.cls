@@ -63,6 +63,9 @@ Private mCrackGoverningCombinationIndex As Long ' Индекс LC с миним�
 Private mWorstCombinationIndex As Long ' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
 Private mWorstCombinationCriterion As String ' StrengthStrain, StrengthCapacity, Cracks или Stability.
 Private mSolverCallCount As Long ' Сколько раз за batch запускался CSectionSolver.Solve для поиска равновесия НДС.
+Private mSolverIterationCount As Long ' Снимок всех фактически выполненных итераций НДС.
+Private mUltimateStrainStartCount As Long ' Снимок попыток предельного поиска с начальных плоскостей.
+Private mUltimateStrainIterationCount As Long ' Снимок итераций общего UltimateStrain для прочности и трещин.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
 Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для диагностики batch-потока.
 Private mTransformedReferenceValid(1 To 2) As Boolean ' Кэш центров приведенного сечения для ULS/SLS внутри одного batch.
@@ -438,6 +441,9 @@ Public Sub ClearCombinations()
     mWorstCombinationIndex = 0
     mElapsedSeconds = 0#
     mSolverCallCount = 0
+    mSolverIterationCount = 0
+    mUltimateStrainStartCount = 0
+    mUltimateStrainIterationCount = 0
     mDiagnosticLog = vbNullString
     mLoadReferenceX = 0#
     mLoadReferenceY = 0#
@@ -709,6 +715,9 @@ Public Sub Execute()
     mCrackGoverningCombinationIndex = 0
     mWorstCombinationIndex = 0
     mSolverCallCount = 0
+    mSolverIterationCount = 0
+    mUltimateStrainStartCount = 0
+    mUltimateStrainIterationCount = 0
     mDiagnosticLog = vbNullString
     ResetSectionEquilibriumSolveCount
     ReportStep "Начат пакетный расчет. Количество сочетаний: " & CStr(mCount) & "."
@@ -741,7 +750,11 @@ Public Sub Execute()
     SelectWorstCombination
     stage = "Finalize"
     mSolverCallCount = SectionEquilibriumSolveCount()
+    mSolverIterationCount = SectionEquilibriumIterationCount()
+    mUltimateStrainStartCount = modSolverWorkStats.UltimateStrainStartCount()
+    mUltimateStrainIterationCount = modSolverWorkStats.UltimateStrainIterationCount()
     mElapsedSeconds = Timer - t0
+    If mElapsedSeconds < 0# Then mElapsedSeconds = mElapsedSeconds + 86400#
     ReportStep "Пакетный расчет завершен. Время: " & FormatNumberInvariant(mElapsedSeconds) & " с."
     ReleaseRunPreparation
     Exit Sub
@@ -2028,6 +2041,18 @@ End Property
 
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
+End Property
+
+Public Property Get SolverIterationCount() As Long
+    SolverIterationCount = mSolverIterationCount
+End Property
+
+Public Property Get UltimateStrainStartCount() As Long
+    UltimateStrainStartCount = mUltimateStrainStartCount
+End Property
+
+Public Property Get UltimateStrainIterationCount() As Long
+    UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Property
 
 Public Property Get ElapsedSeconds() As Double

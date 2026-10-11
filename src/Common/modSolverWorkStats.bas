@@ -2,18 +2,22 @@ Attribute VB_Name = "modSolverWorkStats"
 Option Explicit
 
 ' ==========================================================================
-' Единый счетчик тяжелых запусков CSectionSolver
+' Единые счетчики фактической работы решателей
 ' ==========================================================================
-' Модуль хранит один общий для расчетного запуска счетчик фактических попыток
-' найти равновесное НДС через CSectionSolver.Solve. Верхние уровни batch,
-' capacity и crack не должны восстанавливать это число через свои итерации:
-' источником правды является сам CSectionSolver.
+' Счетчики меняются в самих численных циклах, включая неудачные попытки.
+' Batch сохраняет их снимок: последующие расчеты не меняют готовую сводку.
 
 Private mSectionEquilibriumSolveCount As Long ' Количество фактических запусков CSectionSolver.Solve после валидации входа.
+Private mSectionEquilibriumIterationCount As Long ' Итерации Newton/Secant на всех ступенях и стартах НДС.
+Private mUltimateStrainStartCount As Long ' Начальные плоскости общего UltimateStrain и реальные теплые перезапуски.
+Private mUltimateStrainIterationCount As Long ' Итерации общего предельного поиска, без проб Якобиана и line-search.
 
 ' Сбрасывает счетчик перед новым пакетным расчетом.
 Public Sub ResetSectionEquilibriumSolveCount()
     mSectionEquilibriumSolveCount = 0
+    mSectionEquilibriumIterationCount = 0
+    mUltimateStrainStartCount = 0
+    mUltimateStrainIterationCount = 0
 End Sub
 
 ' Регистрирует одну реальную попытку CSectionSolver подобрать равновесие.
@@ -24,4 +28,30 @@ End Sub
 ' Возвращает число запусков CSectionSolver.Solve с последнего сброса.
 Public Function SectionEquilibriumSolveCount() As Long
     SectionEquilibriumSolveCount = mSectionEquilibriumSolveCount
+End Function
+
+' Одна итерация фактически начатого цикла равновесия, а не интегрирование пробы.
+Public Sub RecordSectionEquilibriumIteration()
+    mSectionEquilibriumIterationCount = mSectionEquilibriumIterationCount + 1
+End Sub
+
+Public Function SectionEquilibriumIterationCount() As Long
+    SectionEquilibriumIterationCount = mSectionEquilibriumIterationCount
+End Function
+
+' Каждая новая попытка с плоскости, включая повторную, считается отдельно.
+Public Sub RecordUltimateStrainStart()
+    mUltimateStrainStartCount = mUltimateStrainStartCount + 1
+End Sub
+
+Public Function UltimateStrainStartCount() As Long
+    UltimateStrainStartCount = mUltimateStrainStartCount
+End Function
+
+Public Sub RecordUltimateStrainIteration()
+    mUltimateStrainIterationCount = mUltimateStrainIterationCount + 1
+End Sub
+
+Public Function UltimateStrainIterationCount() As Long
+    UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Function

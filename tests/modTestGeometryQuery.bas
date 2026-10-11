@@ -27,6 +27,55 @@ Private Sub Check(ByVal name As String, ByVal condition As Boolean)
     End If
 End Sub
 
+' ДЛЯ ТЕСТОВ: касание около стыка четвертей окружности не разрывает
+' сохраняемую дугу. Проверяются повороты, обе стороны и удаленные координаты.
+Public Function RunTangentClipRegressionTests() As String
+    mPassed = 0: mFailed = 0: mReport = vbNullString
+    On Error GoTo Failed
+    Dim query As CSectionGeometryQuery, region As CConcreteRegion, clipped As CConcreteRegion
+    Set query = New CSectionGeometryQuery
+    Dim shift As Variant, angle As Variant, side As Variant, inset As Variant
+    Dim cx As Double, cy As Double, nx As Double, ny As Double, distance As Double, bound As Double
+    Dim expected As Double, prefix As String
+    For Each shift In Array(0#, -3198.9061596318, 1000000#, -1000000#)
+        cx = CDbl(shift): cy = CDbl(shift) / 4#
+        Set region = query.CircleRegion(cx, cy, 500#)
+        For Each angle In Array(0#, -0.000122075814077587, 0.000122075814077587, GEOM_PI / 4#, GEOM_PI / 2#, GEOM_PI)
+            nx = Cos(CDbl(angle)): ny = Sin(CDbl(angle))
+            For Each side In Array(-1#, 1#)
+                For Each inset In Array(-0.0001, -0.000004, -0.000001, 0#, 0.000001, 0.000004, 0.0001, 1#, 10#)
+                    distance = CDbl(side) * (500# - CDbl(inset))
+                    bound = nx * cx + ny * cy + distance
+                    prefix = "tangentClip." & CStr(shift) & "." & CStr(angle) & "." & CStr(side) & "." & CStr(inset)
+                    Set clipped = query.ClipHalfPlane(region, nx, ny, bound)
+                    expected = CircleHalfPlaneArea(500#, distance)
+                    CheckNear prefix & ".area", clipped.Area, expected, 0.001
+                    CheckClosed prefix, clipped
+                    If expected > 0.001 Then Check prefix & ".hasContour", clipped.SegmentCount > 0
+                    CheckNear prefix & ".sourceUnchanged", region.Area, GEOM_PI * 250000#, 0.001
+                Next inset
+            Next side
+        Next angle
+    Next shift
+    RunTangentClipRegressionTests = mReport & "TOTAL_TANGENT_CLIP: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
+    Exit Function
+Failed:
+    RunTangentClipRegressionTests = mReport & "FAIL: tangentClip.runtime; " & CStr(Err.Number) & "; " & Err.Description & "; case=" & prefix
+End Function
+
+' Независимая аналитическая площадь кругового сегмента при n >= distance.
+Private Function CircleHalfPlaneArea(ByVal radius As Double, ByVal distance As Double) As Double
+    If distance >= radius Then Exit Function
+    If distance <= -radius Then
+        CircleHalfPlaneArea = GEOM_PI * radius * radius
+        Exit Function
+    End If
+    Dim angle As Double, height As Double
+    height = Sqr(radius * radius - distance * distance)
+    angle = GEOM_PI / 2# - Atn(distance / height)
+    CircleHalfPlaneArea = radius * radius * angle - distance * height
+End Function
+
 ' ДЛЯ ТЕСТОВ: готовит четыре точки контура без геометрического калькулятора.
 Private Function Rectangle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As Variant
     Dim points(1 To 4, 1 To 2) As Double

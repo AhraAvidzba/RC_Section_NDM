@@ -1,0 +1,645 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\OpenIssues_2026-10-11\FocusedV2\RC_Section_NDM.xlsm
+SOURCE_SHA256: B094A55AA65D6AF6581A4CB7D0BC10CB7B053705D3694E5518904A42CA0BA769
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9686691221d4900bcd7b5663f0c225a\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=26188; startTicks=639273340115945949
+===== modTestBatchCalculation.RunFocusedAcceptanceCases =====
+SUITE_STARTED: modTestBatchCalculation.RunFocusedAcceptanceCases; 2026-10-11T19:46:56
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159846400; privateBytes=103411712; cpu=902.5625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162959360; privateBytes=102957056; cpu=605.1875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163160064; privateBytes=104103936; cpu=588.140625
+EXCEL_AFTER_SUITE: pid=8844; workingSet=157974528; privateBytes=101629952; cpu=574.28125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161505280; privateBytes=122429440; cpu=577.5
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157990912; privateBytes=102158336; cpu=584.734375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162856960; privateBytes=103321600; cpu=588.328125
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162287616; privateBytes=102440960; cpu=588.625
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162385920; privateBytes=123396096; cpu=588.484375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158986240; privateBytes=101969920; cpu=574.328125
+EXCEL_AFTER_SUITE: pid=26188; workingSet=147050496; privateBytes=101281792; cpu=11.109375
+EXCEL_AFTER_SUITE: pid=26240; workingSet=161951744; privateBytes=102215680; cpu=587.65625
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158416896; privateBytes=101818368; cpu=576.421875
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163155968; privateBytes=104595456; cpu=603.328125
+EXCEL_AFTER_SUITE: pid=28560; workingSet=165068800; privateBytes=104484864; cpu=593.78125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166055936; privateBytes=111742976; cpu=597.046875
+FOCUSED_SETUP|shape=SavedWorkbook|group=Paths|mode=Yes|cases=6|fibers=45|rebars=20|offsetX=10|offsetY=-7|profile=PR3|code=SP35
+OK: focused.SavedWorkbook.pathAuto.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=pathAuto|elapsedSec=3.6796875|solverCalls=3
+OK: focused.SavedWorkbook.pathAuto.oneCombination
+OK: focused.SavedWorkbook.pathAuto.preparationReleased
+OK: focused.SavedWorkbook.pathAuto.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.pathAuto.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=pathAuto|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.pathAuto.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathAuto.direct.russianReason
+OK: audit03.comments.pathAuto.direct.readable
+OK: audit03.comments.pathAuto.direct.noMachinePrefix
+META: audit03.comments.pathAuto.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.pathAuto.capacity.russianReason
+OK: audit03.comments.pathAuto.capacity.readable
+OK: audit03.comments.pathAuto.capacity.noMachinePrefix
+META: audit03.comments.pathAuto.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathAuto.formation.russianReason
+OK: audit03.comments.pathAuto.formation.readable
+OK: audit03.comments.pathAuto.formation.noMachinePrefix
+META: audit03.comments.pathAuto.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathAuto.current.russianReason
+OK: audit03.comments.pathAuto.current.readable
+OK: audit03.comments.pathAuto.current.noMachinePrefix
+META: audit03.comments.pathAuto.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathAuto.width.russianReason
+OK: audit03.comments.pathAuto.width.readable
+OK: audit03.comments.pathAuto.width.noMachinePrefix
+META: audit03.comments.pathAuto.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 2.323 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.pathAuto.longitudinal.russianReason
+OK: audit03.comments.pathAuto.longitudinal.readable
+OK: audit03.comments.pathAuto.longitudinal.noMachinePrefix
+META: audit03.comments.pathAuto.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.pathAuto.formulaNoNumFail
+OK: audit03.comments.pathAuto.strengthNoCrack
+OK: audit03.comments.pathAuto.crackNoCapacity
+OK: audit03.comments.pathAuto.overallComposition
+OK: audit03.comments.pathAuto.batchOutput
+OK: audit03.comments.pathAuto.strengthOutput
+OK: audit03.comments.pathAuto.crackOutput
+OK: audit03.comments.pathAuto.stabilityOutput
+OUTPUT: audit03.comments.pathAuto|strength=|crack=|stability=|batch=
+OK: focused.SavedWorkbook.pathAuto.autoAllowedPath
+CASE: focused.SavedWorkbook.pathAuto|N=-1048535.75021956|Mx=177911244.067159|My=-107226465.530982|offsetX=10|offsetY=-7|path=Mxy|selection=Auto|lambda=15.110963841407|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.SavedWorkbook.pathAuto.path
+OK: focused.SavedWorkbook.pathAuto.validInput
+OK: focused.SavedWorkbook.pathAuto.NU; actual=-1048535.74338259; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.MxU; actual=2688410376.57185; expected=2688410376.07863
+OK: focused.SavedWorkbook.pathAuto.MyU; actual=-1620295242.81001; expected=-1620295243.48057
+OK: focused.SavedWorkbook.pathAuto.stateMx; actual=3520805878.97091; expected=3520805883.90533
+OK: focused.SavedWorkbook.pathAuto.stateMy; actual=1723639159.26607; expected=1723639180.39961
+OK: focused.SavedWorkbook.pathAuto.physicalCriterion
+OK: focused.SavedWorkbook.pathAuto.finalPhysical
+CASE: focused.SavedWorkbook.pathAuto|requested=Auto|resolved=λ*Mxy|lambda=2.952159745874|Ncrc=-1048535.75021956|Mcrc=624928316.422148|point=True|formed=False
+OK: focused.SavedWorkbook.pathAuto.validInput
+OK: focused.SavedWorkbook.pathAuto.autoPath
+OK: focused.SavedWorkbook.pathAuto.preConverged
+OK: focused.SavedWorkbook.pathAuto.prePhysical
+OK: focused.SavedWorkbook.pathAuto.preNotExtended
+FOCUSED_STATE|id=focused.SavedWorkbook.pathAuto|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=3520805883.90533|My=1723639180.39961|eps0=-0.009176263976|kx=0.00000907522|ky=-0.000005585936
+OK: focused.SavedWorkbook.pathAuto.snapshot.1
+OK: focused.SavedWorkbook.pathAuto.originalN.1; actual=-1048535.74338259; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.originalMx.1; actual=3520805878.97091; expected=3520805883.90533
+OK: focused.SavedWorkbook.pathAuto.originalMy.1; actual=1723639159.26607; expected=1723639180.39961
+OK: focused.SavedWorkbook.pathAuto.centerN.1; actual=-1048535.74338259; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.centerMx.1; actual=2695750126.77553; expected=2695750126.33017
+OK: focused.SavedWorkbook.pathAuto.centerMy.1; actual=-1630780600.24383; expected=-1630780600.98277
+OK: focused.SavedWorkbook.pathAuto.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.pathAuto|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000160954402|kx=0.000000101827|ky=-0.000000064735
+OK: focused.SavedWorkbook.pathAuto.snapshot.2
+OK: focused.SavedWorkbook.pathAuto.originalN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.originalMx.2; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathAuto.originalMy.2; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathAuto.centerN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.centerMx.2; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathAuto.centerMy.2; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathAuto.physicalStatus.2
+FOCUSED_STATE|id=focused.SavedWorkbook.pathAuto|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1357617920.90007|My=3027384768.64731|eps0=-0.00039583266|kx=0.000000313375|ky=-0.000000192458
+OK: focused.SavedWorkbook.pathAuto.snapshot.3
+OK: focused.SavedWorkbook.pathAuto.originalN.3; actual=-1048535.7490708; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.originalMx.3; actual=1357617919.99615; expected=1357617920.90007
+OK: focused.SavedWorkbook.pathAuto.originalMy.3; actual=3027384765.13094; expected=3027384768.64731
+OK: focused.SavedWorkbook.pathAuto.centerN.3; actual=-1048535.7490708; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.centerMx.3; actual=532562163.324907; expected=532562163.324907
+OK: focused.SavedWorkbook.pathAuto.centerMy.3; actual=-327035012.576409; expected=-327035012.735069
+OK: focused.SavedWorkbook.pathAuto.physicalStatus.3
+FOCUSED_STATE|id=focused.SavedWorkbook.pathAuto|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000272633637|kx=0.000000167889|ky=-0.000000106587
+OK: focused.SavedWorkbook.pathAuto.snapshot.4
+OK: focused.SavedWorkbook.pathAuto.originalN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.originalMx.4; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathAuto.originalMy.4; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathAuto.centerN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathAuto.centerMx.4; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathAuto.centerMy.4; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathAuto.physicalStatus.4
+OK: focused.SavedWorkbook.pathAuto.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathAuto.noInputOrInternalError.2
+OK: focused.SavedWorkbook.pathAuto.noInputOrInternalError.3
+OK: focused.SavedWorkbook.pathAuto.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathAuto.noInputOrInternalError.4
+OK: focused.SavedWorkbook.pathAuto.noInputOrInternalError.5
+OK: focused.SavedWorkbook.pathAuto.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathAuto.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.pathAuto.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=pathAuto|overall=OK|capacity=OK|cracks=OK
+OK: focused.SavedWorkbook.pathMx.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=pathMx|elapsedSec=1.0078125|solverCalls=3
+OK: focused.SavedWorkbook.pathMx.oneCombination
+OK: focused.SavedWorkbook.pathMx.preparationReleased
+OK: focused.SavedWorkbook.pathMx.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.pathMx.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=pathMx|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.pathMx.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathMx.direct.russianReason
+OK: audit03.comments.pathMx.direct.readable
+OK: audit03.comments.pathMx.direct.noMachinePrefix
+META: audit03.comments.pathMx.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.pathMx.capacity.russianReason
+OK: audit03.comments.pathMx.capacity.readable
+OK: audit03.comments.pathMx.capacity.noMachinePrefix
+META: audit03.comments.pathMx.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathMx.formation.russianReason
+OK: audit03.comments.pathMx.formation.readable
+OK: audit03.comments.pathMx.formation.noMachinePrefix
+META: audit03.comments.pathMx.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathMx.current.russianReason
+OK: audit03.comments.pathMx.current.readable
+OK: audit03.comments.pathMx.current.noMachinePrefix
+META: audit03.comments.pathMx.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathMx.width.russianReason
+OK: audit03.comments.pathMx.width.readable
+OK: audit03.comments.pathMx.width.noMachinePrefix
+META: audit03.comments.pathMx.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 2.323 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.pathMx.longitudinal.russianReason
+OK: audit03.comments.pathMx.longitudinal.readable
+OK: audit03.comments.pathMx.longitudinal.noMachinePrefix
+META: audit03.comments.pathMx.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.pathMx.formulaNoNumFail
+OK: audit03.comments.pathMx.strengthNoCrack
+OK: audit03.comments.pathMx.crackNoCapacity
+OK: audit03.comments.pathMx.overallComposition
+OK: audit03.comments.pathMx.batchOutput
+OK: audit03.comments.pathMx.strengthOutput
+OK: audit03.comments.pathMx.crackOutput
+OK: audit03.comments.pathMx.stabilityOutput
+OUTPUT: audit03.comments.pathMx|strength=|crack=|stability=|batch=
+CASE: focused.SavedWorkbook.pathMx|N=-1048535.75021956|Mx=177911244.067159|My=-107226465.530982|offsetX=10|offsetY=-7|path=Mx|selection=Mx|lambda=17.60644950071|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.SavedWorkbook.pathMx.path
+OK: focused.SavedWorkbook.pathMx.validInput
+OK: focused.SavedWorkbook.pathMx.NU; actual=-1048535.97513525; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.MxU; actual=3132385332.70254; expected=3132385334.27695
+OK: focused.SavedWorkbook.pathMx.MyU; actual=-107226549.828953; expected=-107226465.530982
+OK: focused.SavedWorkbook.pathMx.stateMx; actual=3964781019.08186; expected=3964780842.10365
+OK: focused.SavedWorkbook.pathMx.stateMy; actual=3236708591.34038; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMx.physicalCriterion
+OK: focused.SavedWorkbook.pathMx.finalPhysical
+CASE: focused.SavedWorkbook.pathMx|requested=λ*Mx|resolved=λ*Mx|lambda=3.352173573356|Ncrc=-1048535.75021956|Mcrc=615076286.246568|point=True|formed=False
+OK: focused.SavedWorkbook.pathMx.validInput
+OK: focused.SavedWorkbook.pathMx.fixedPath
+OK: focused.SavedWorkbook.pathMx.preConverged
+OK: focused.SavedWorkbook.pathMx.prePhysical
+OK: focused.SavedWorkbook.pathMx.preNotExtended
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMx|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=3964780842.10365|My=3236707958.3492|eps0=0.007784329498|kx=0.000009924025|ky=-0.000000440185
+OK: focused.SavedWorkbook.pathMx.snapshot.1
+OK: focused.SavedWorkbook.pathMx.originalN.1; actual=-1048535.97513525; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.originalMx.1; actual=3964781019.08186; expected=3964780842.10365
+OK: focused.SavedWorkbook.pathMx.originalMy.1; actual=3236708591.34038; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMx.centerN.1; actual=-1048535.97513525; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.centerMx.1; actual=3139725084.52849; expected=3139725084.52849
+OK: focused.SavedWorkbook.pathMx.centerMy.1; actual=-117711909.580305; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathMx.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMx|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000160954402|kx=0.000000101827|ky=-0.000000064735
+OK: focused.SavedWorkbook.pathMx.snapshot.2
+OK: focused.SavedWorkbook.pathMx.originalN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.originalMx.2; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMx.originalMy.2; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMx.centerN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.centerMx.2; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathMx.centerMy.2; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathMx.physicalStatus.2
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMx|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1428784878.5916|My=3236707958.3492|eps0=0.000028459374|kx=0.000000352922|ky=-0.000000069372
+OK: focused.SavedWorkbook.pathMx.snapshot.3
+OK: focused.SavedWorkbook.pathMx.originalN.3; actual=-1048535.65267219; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.originalMx.3; actual=1428784801.83502; expected=1428784878.5916
+OK: focused.SavedWorkbook.pathMx.originalMy.3; actual=3236707631.92394; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMx.centerN.3; actual=-1048535.65267219; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.centerMx.3; actual=603729121.016441; expected=603729121.016441
+OK: focused.SavedWorkbook.pathMx.centerMy.3; actual=-117711837.390088; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathMx.physicalStatus.3
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMx|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000272633637|kx=0.000000167889|ky=-0.000000106587
+OK: focused.SavedWorkbook.pathMx.snapshot.4
+OK: focused.SavedWorkbook.pathMx.originalN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.originalMx.4; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMx.originalMy.4; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMx.centerN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMx.centerMx.4; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathMx.centerMy.4; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathMx.physicalStatus.4
+OK: focused.SavedWorkbook.pathMx.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMx.noInputOrInternalError.2
+OK: focused.SavedWorkbook.pathMx.noInputOrInternalError.3
+OK: focused.SavedWorkbook.pathMx.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMx.noInputOrInternalError.4
+OK: focused.SavedWorkbook.pathMx.noInputOrInternalError.5
+OK: focused.SavedWorkbook.pathMx.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMx.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.pathMx.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=pathMx|overall=OK|capacity=OK|cracks=OK
+OK: focused.SavedWorkbook.pathMy.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=pathMy|elapsedSec=1.0078125|solverCalls=3
+OK: focused.SavedWorkbook.pathMy.oneCombination
+OK: focused.SavedWorkbook.pathMy.preparationReleased
+OK: focused.SavedWorkbook.pathMy.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.pathMy.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=pathMy|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.pathMy.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathMy.direct.russianReason
+OK: audit03.comments.pathMy.direct.readable
+OK: audit03.comments.pathMy.direct.noMachinePrefix
+META: audit03.comments.pathMy.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.pathMy.capacity.russianReason
+OK: audit03.comments.pathMy.capacity.readable
+OK: audit03.comments.pathMy.capacity.noMachinePrefix
+META: audit03.comments.pathMy.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathMy.formation.russianReason
+OK: audit03.comments.pathMy.formation.readable
+OK: audit03.comments.pathMy.formation.noMachinePrefix
+META: audit03.comments.pathMy.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathMy.current.russianReason
+OK: audit03.comments.pathMy.current.readable
+OK: audit03.comments.pathMy.current.noMachinePrefix
+META: audit03.comments.pathMy.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathMy.width.russianReason
+OK: audit03.comments.pathMy.width.readable
+OK: audit03.comments.pathMy.width.noMachinePrefix
+META: audit03.comments.pathMy.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 2.323 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.pathMy.longitudinal.russianReason
+OK: audit03.comments.pathMy.longitudinal.readable
+OK: audit03.comments.pathMy.longitudinal.noMachinePrefix
+META: audit03.comments.pathMy.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.pathMy.formulaNoNumFail
+OK: audit03.comments.pathMy.strengthNoCrack
+OK: audit03.comments.pathMy.crackNoCapacity
+OK: audit03.comments.pathMy.overallComposition
+OK: audit03.comments.pathMy.batchOutput
+OK: audit03.comments.pathMy.strengthOutput
+OK: audit03.comments.pathMy.crackOutput
+OK: audit03.comments.pathMy.stabilityOutput
+OUTPUT: audit03.comments.pathMy|strength=|crack=|stability=|batch=
+CASE: focused.SavedWorkbook.pathMy|N=-1048535.75021956|Mx=177911244.067159|My=-107226465.530982|offsetX=10|offsetY=-7|path=My|selection=My|lambda=29.555193120841|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.SavedWorkbook.pathMy.path
+OK: focused.SavedWorkbook.pathMy.validInput
+OK: focused.SavedWorkbook.pathMy.NU; actual=-1048535.75026643; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.MxU; actual=177911244.070755; expected=177911244.067159
+OK: focused.SavedWorkbook.pathMy.MyU; actual=-3169098896.43289; expected=-3169098896.43335
+OK: focused.SavedWorkbook.pathMy.stateMx; actual=1010306751.93466; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMy.stateMy; actual=174835527.596786; expected=174835527.446832
+OK: focused.SavedWorkbook.pathMy.physicalCriterion
+OK: focused.SavedWorkbook.pathMy.finalPhysical
+CASE: focused.SavedWorkbook.pathMy|requested=λ*My|resolved=λ*My|lambda=5.390731282252|Ncrc=-1048535.75021956|Mcrc=616943828.010886|point=True|formed=False
+OK: focused.SavedWorkbook.pathMy.validInput
+OK: focused.SavedWorkbook.pathMy.fixedPath
+OK: focused.SavedWorkbook.pathMy.preConverged
+OK: focused.SavedWorkbook.pathMy.prePhysical
+OK: focused.SavedWorkbook.pathMy.preNotExtended
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMy|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=174835527.446832|eps0=-0.03744554113|kx=0.00000085384|ky=-0.000012465413
+OK: focused.SavedWorkbook.pathMy.snapshot.1
+OK: focused.SavedWorkbook.pathMy.originalN.1; actual=-1048535.75026644; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.originalMx.1; actual=1010306751.93467; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMy.originalMy.1; actual=174835527.596799; expected=174835527.446832
+OK: focused.SavedWorkbook.pathMy.centerN.1; actual=-1048535.75026644; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.centerMx.1; actual=185250994.32262; expected=185250994.318696
+OK: focused.SavedWorkbook.pathMy.centerMy.1; actual=-3179584253.93555; expected=-3179584253.93555
+OK: focused.SavedWorkbook.pathMy.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMy|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000160954402|kx=0.000000101827|ky=-0.000000064735
+OK: focused.SavedWorkbook.pathMy.snapshot.2
+OK: focused.SavedWorkbook.pathMy.originalN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.originalMx.2; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMy.originalMy.2; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMy.centerN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.centerMx.2; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathMy.centerMy.2; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathMy.physicalStatus.2
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMy|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=2765905361.85701|eps0=-0.0010440194|kx=0.000000108095|ky=-0.000000344415
+OK: focused.SavedWorkbook.pathMy.snapshot.3
+OK: focused.SavedWorkbook.pathMy.originalN.3; actual=-1048535.8767689; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.originalMx.3; actual=1010306829.59673; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMy.originalMy.3; actual=2765905766.70691; expected=2765905361.85701
+OK: focused.SavedWorkbook.pathMy.centerN.3; actual=-1048535.8767689; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.centerMx.3; actual=185250972.444366; expected=185250994.318696
+OK: focused.SavedWorkbook.pathMy.centerMy.3; actual=-588514419.525376; expected=-588514419.525376
+OK: focused.SavedWorkbook.pathMy.physicalStatus.3
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMy|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000272633637|kx=0.000000167889|ky=-0.000000106587
+OK: focused.SavedWorkbook.pathMy.snapshot.4
+OK: focused.SavedWorkbook.pathMy.originalN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.originalMx.4; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMy.originalMy.4; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMy.centerN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMy.centerMx.4; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathMy.centerMy.4; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathMy.physicalStatus.4
+OK: focused.SavedWorkbook.pathMy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMy.noInputOrInternalError.2
+OK: focused.SavedWorkbook.pathMy.noInputOrInternalError.3
+OK: focused.SavedWorkbook.pathMy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMy.noInputOrInternalError.4
+OK: focused.SavedWorkbook.pathMy.noInputOrInternalError.5
+OK: focused.SavedWorkbook.pathMy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMy.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.pathMy.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=pathMy|overall=OK|capacity=OK|cracks=OK
+OK: focused.SavedWorkbook.pathMxy.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=pathMxy|elapsedSec=1.0078125|solverCalls=3
+OK: focused.SavedWorkbook.pathMxy.oneCombination
+OK: focused.SavedWorkbook.pathMxy.preparationReleased
+OK: focused.SavedWorkbook.pathMxy.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.pathMxy.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=pathMxy|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.pathMxy.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathMxy.direct.russianReason
+OK: audit03.comments.pathMxy.direct.readable
+OK: audit03.comments.pathMxy.direct.noMachinePrefix
+META: audit03.comments.pathMxy.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.pathMxy.capacity.russianReason
+OK: audit03.comments.pathMxy.capacity.readable
+OK: audit03.comments.pathMxy.capacity.noMachinePrefix
+META: audit03.comments.pathMxy.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathMxy.formation.russianReason
+OK: audit03.comments.pathMxy.formation.readable
+OK: audit03.comments.pathMxy.formation.noMachinePrefix
+META: audit03.comments.pathMxy.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathMxy.current.russianReason
+OK: audit03.comments.pathMxy.current.readable
+OK: audit03.comments.pathMxy.current.noMachinePrefix
+META: audit03.comments.pathMxy.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathMxy.width.russianReason
+OK: audit03.comments.pathMxy.width.readable
+OK: audit03.comments.pathMxy.width.noMachinePrefix
+META: audit03.comments.pathMxy.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 2.323 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.pathMxy.longitudinal.russianReason
+OK: audit03.comments.pathMxy.longitudinal.readable
+OK: audit03.comments.pathMxy.longitudinal.noMachinePrefix
+META: audit03.comments.pathMxy.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.pathMxy.formulaNoNumFail
+OK: audit03.comments.pathMxy.strengthNoCrack
+OK: audit03.comments.pathMxy.crackNoCapacity
+OK: audit03.comments.pathMxy.overallComposition
+OK: audit03.comments.pathMxy.batchOutput
+OK: audit03.comments.pathMxy.strengthOutput
+OK: audit03.comments.pathMxy.crackOutput
+OK: audit03.comments.pathMxy.stabilityOutput
+OUTPUT: audit03.comments.pathMxy|strength=|crack=|stability=|batch=
+CASE: focused.SavedWorkbook.pathMxy|N=-1048535.75021956|Mx=177911244.067159|My=-107226465.530982|offsetX=10|offsetY=-7|path=Mxy|selection=Mxy|lambda=15.110963841407|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.SavedWorkbook.pathMxy.path
+OK: focused.SavedWorkbook.pathMxy.validInput
+OK: focused.SavedWorkbook.pathMxy.NU; actual=-1048535.74338259; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.MxU; actual=2688410376.57185; expected=2688410376.07863
+OK: focused.SavedWorkbook.pathMxy.MyU; actual=-1620295242.81001; expected=-1620295243.48057
+OK: focused.SavedWorkbook.pathMxy.stateMx; actual=3520805878.97091; expected=3520805883.90533
+OK: focused.SavedWorkbook.pathMxy.stateMy; actual=1723639159.26607; expected=1723639180.39961
+OK: focused.SavedWorkbook.pathMxy.physicalCriterion
+OK: focused.SavedWorkbook.pathMxy.finalPhysical
+CASE: focused.SavedWorkbook.pathMxy|requested=λ*Mxy|resolved=λ*Mxy|lambda=2.952159745874|Ncrc=-1048535.75021956|Mcrc=624928316.422148|point=True|formed=False
+OK: focused.SavedWorkbook.pathMxy.validInput
+OK: focused.SavedWorkbook.pathMxy.fixedPath
+OK: focused.SavedWorkbook.pathMxy.preConverged
+OK: focused.SavedWorkbook.pathMxy.prePhysical
+OK: focused.SavedWorkbook.pathMxy.preNotExtended
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMxy|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=3520805883.90533|My=1723639180.39961|eps0=-0.009176263976|kx=0.00000907522|ky=-0.000005585936
+OK: focused.SavedWorkbook.pathMxy.snapshot.1
+OK: focused.SavedWorkbook.pathMxy.originalN.1; actual=-1048535.74338259; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.originalMx.1; actual=3520805878.97091; expected=3520805883.90533
+OK: focused.SavedWorkbook.pathMxy.originalMy.1; actual=1723639159.26607; expected=1723639180.39961
+OK: focused.SavedWorkbook.pathMxy.centerN.1; actual=-1048535.74338259; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.centerMx.1; actual=2695750126.77553; expected=2695750126.33017
+OK: focused.SavedWorkbook.pathMxy.centerMy.1; actual=-1630780600.24383; expected=-1630780600.98277
+OK: focused.SavedWorkbook.pathMxy.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMxy|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000160954402|kx=0.000000101827|ky=-0.000000064735
+OK: focused.SavedWorkbook.pathMxy.snapshot.2
+OK: focused.SavedWorkbook.pathMxy.originalN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.originalMx.2; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMxy.originalMy.2; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMxy.centerN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.centerMx.2; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathMxy.centerMy.2; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathMxy.physicalStatus.2
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMxy|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1357617920.90007|My=3027384768.64731|eps0=-0.00039583266|kx=0.000000313375|ky=-0.000000192458
+OK: focused.SavedWorkbook.pathMxy.snapshot.3
+OK: focused.SavedWorkbook.pathMxy.originalN.3; actual=-1048535.7490708; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.originalMx.3; actual=1357617919.99615; expected=1357617920.90007
+OK: focused.SavedWorkbook.pathMxy.originalMy.3; actual=3027384765.13094; expected=3027384768.64731
+OK: focused.SavedWorkbook.pathMxy.centerN.3; actual=-1048535.7490708; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.centerMx.3; actual=532562163.324907; expected=532562163.324907
+OK: focused.SavedWorkbook.pathMxy.centerMy.3; actual=-327035012.576409; expected=-327035012.735069
+OK: focused.SavedWorkbook.pathMxy.physicalStatus.3
+FOCUSED_STATE|id=focused.SavedWorkbook.pathMxy|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000272633637|kx=0.000000167889|ky=-0.000000106587
+OK: focused.SavedWorkbook.pathMxy.snapshot.4
+OK: focused.SavedWorkbook.pathMxy.originalN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.originalMx.4; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathMxy.originalMy.4; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathMxy.centerN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathMxy.centerMx.4; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathMxy.centerMy.4; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathMxy.physicalStatus.4
+OK: focused.SavedWorkbook.pathMxy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMxy.noInputOrInternalError.2
+OK: focused.SavedWorkbook.pathMxy.noInputOrInternalError.3
+OK: focused.SavedWorkbook.pathMxy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMxy.noInputOrInternalError.4
+OK: focused.SavedWorkbook.pathMxy.noInputOrInternalError.5
+OK: focused.SavedWorkbook.pathMxy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathMxy.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.pathMxy.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=pathMxy|overall=OK|capacity=OK|cracks=OK
+OK: focused.SavedWorkbook.pathN.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=pathN|elapsedSec=1.234375|solverCalls=22
+OK: focused.SavedWorkbook.pathN.oneCombination
+OK: focused.SavedWorkbook.pathN.preparationReleased
+OK: focused.SavedWorkbook.pathN.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.pathN.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=pathN|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.pathN.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathN.direct.russianReason
+OK: audit03.comments.pathN.direct.readable
+OK: audit03.comments.pathN.direct.noMachinePrefix
+META: audit03.comments.pathN.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.pathN.capacity.russianReason
+OK: audit03.comments.pathN.capacity.readable
+OK: audit03.comments.pathN.capacity.noMachinePrefix
+META: audit03.comments.pathN.formation|status=rsSuccessWithWarning|code=CRACK_NOT_FORMED|applies=True|calculated=True|comment=При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 23.973111352407; отдельная точка трещинообразования на этом пути не определяется.
+OK: audit03.comments.pathN.formation.reasonPresent
+OK: audit03.comments.pathN.formation.russianReason
+OK: audit03.comments.pathN.formation.readable
+OK: audit03.comments.pathN.formation.noMachinePrefix
+OK: audit03.comments.pathN.formation.ownSubtree
+META: audit03.comments.pathN.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathN.current.russianReason
+OK: audit03.comments.pathN.current.readable
+OK: audit03.comments.pathN.current.noMachinePrefix
+META: audit03.comments.pathN.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 23.973111352407; отдельная точка трещинообразования на этом пути не определяется.
+OK: audit03.comments.pathN.width.russianReason
+OK: audit03.comments.pathN.width.readable
+OK: audit03.comments.pathN.width.noMachinePrefix
+META: audit03.comments.pathN.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 2.323 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.pathN.longitudinal.russianReason
+OK: audit03.comments.pathN.longitudinal.readable
+OK: audit03.comments.pathN.longitudinal.noMachinePrefix
+META: audit03.comments.pathN.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.pathN.formulaNoNumFail
+OK: audit03.comments.pathN.formationWarningPreserved
+OK: audit03.comments.pathN.strengthNoCrack
+OK: audit03.comments.pathN.crackNoCapacity
+OK: audit03.comments.pathN.overallComposition
+OK: audit03.comments.pathN.batchOutput
+OK: audit03.comments.pathN.strengthOutput
+OK: audit03.comments.pathN.crackOutput
+OK: audit03.comments.pathN.stabilityOutput
+OUTPUT: audit03.comments.pathN|strength=|crack=Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 23.973111352407; отдельная точка трещинообразования на этом пути не определяется.|stability=|batch=Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 23.973111352407; отдельная точка трещинообразования на этом пути не определяется.
+CASE: focused.SavedWorkbook.pathN|N=-1048535.75021956|Mx=177911244.067159|My=-107226465.530982|offsetX=10|offsetY=-7|path=N|selection=N|lambda=18.494006542658|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.SavedWorkbook.pathN.path
+OK: focused.SavedWorkbook.pathN.validInput
+OK: focused.SavedWorkbook.pathN.NU; actual=-19391627.0247709; expected=-19391627.0247709
+OK: focused.SavedWorkbook.pathN.MxU; actual=177911218.188583; expected=177911244.067159
+OK: focused.SavedWorkbook.pathN.MyU; actual=-107226438.58401; expected=-107226465.530982
+OK: focused.SavedWorkbook.pathN.stateMx; actual=15572239186.0143; expected=15572239211.8929
+OK: focused.SavedWorkbook.pathN.stateMy; actual=61735518674.8742; expected=61735518647.9273
+OK: focused.SavedWorkbook.pathN.physicalCriterion
+OK: focused.SavedWorkbook.pathN.finalPhysical
+CASE: focused.SavedWorkbook.pathN|requested=λ*N|resolved=λ*N|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=False
+OK: focused.SavedWorkbook.pathN.validInput
+OK: focused.SavedWorkbook.pathN.fixedPath
+FOCUSED_STATE|id=focused.SavedWorkbook.pathN|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-19391627.0247709|Mx=15572239211.8929|My=61735518647.9273|eps0=-0.006507588541|kx=0.000001861714|ky=-0.00000179395
+OK: focused.SavedWorkbook.pathN.snapshot.1
+OK: focused.SavedWorkbook.pathN.originalN.1; actual=-19391627.0247709; expected=-19391627.0247709
+OK: focused.SavedWorkbook.pathN.originalMx.1; actual=15572239186.0143; expected=15572239211.8929
+OK: focused.SavedWorkbook.pathN.originalMy.1; actual=61735518674.8742; expected=61735518647.9273
+OK: focused.SavedWorkbook.pathN.centerN.1; actual=-19391627.0247709; expected=-19391627.0247709
+OK: focused.SavedWorkbook.pathN.centerMx.1; actual=313652607.36198; expected=313652633.240558
+OK: focused.SavedWorkbook.pathN.centerMy.1; actual=-301142708.831718; expected=-301142735.778688
+OK: focused.SavedWorkbook.pathN.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.pathN|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000160954402|kx=0.000000101827|ky=-0.000000064735
+OK: focused.SavedWorkbook.pathN.snapshot.2
+OK: focused.SavedWorkbook.pathN.originalN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathN.originalMx.2; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathN.originalMy.2; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathN.centerN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathN.centerMx.2; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathN.centerMy.2; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathN.physicalStatus.2
+FOCUSED_STATE|id=focused.SavedWorkbook.pathN|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000272633637|kx=0.000000167889|ky=-0.000000106587
+OK: focused.SavedWorkbook.pathN.snapshot.3
+OK: focused.SavedWorkbook.pathN.originalN.3; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathN.originalMx.3; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathN.originalMy.3; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathN.centerN.3; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathN.centerMx.3; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathN.centerMy.3; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathN.physicalStatus.3
+OK: focused.SavedWorkbook.pathN.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathN.noInputOrInternalError.2
+OK: focused.SavedWorkbook.pathN.noInputOrInternalError.3
+OK: focused.SavedWorkbook.pathN.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathN.noInputOrInternalError.4
+OK: focused.SavedWorkbook.pathN.noInputOrInternalError.5
+OK: focused.SavedWorkbook.pathN.noInputOrInternalError.3
+OK: focused.SavedWorkbook.pathN.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.pathN.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=pathN|overall=OK|capacity=OK|cracks=OK
+OK: focused.SavedWorkbook.pathNMxy.within10Seconds
+FOCUSED_TIME|shape=SavedWorkbook|id=pathNMxy|elapsedSec=0.9453125|solverCalls=2
+OK: focused.SavedWorkbook.pathNMxy.oneCombination
+OK: focused.SavedWorkbook.pathNMxy.preparationReleased
+OK: focused.SavedWorkbook.pathNMxy.mechanicalNoRepeatedMaterialPreparation
+OK: focused.SavedWorkbook.pathNMxy.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=pathNMxy|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.pathNMxy.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathNMxy.direct.russianReason
+OK: audit03.comments.pathNMxy.direct.readable
+OK: audit03.comments.pathNMxy.direct.noMachinePrefix
+META: audit03.comments.pathNMxy.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.pathNMxy.capacity.russianReason
+OK: audit03.comments.pathNMxy.capacity.readable
+OK: audit03.comments.pathNMxy.capacity.noMachinePrefix
+META: audit03.comments.pathNMxy.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathNMxy.formation.russianReason
+OK: audit03.comments.pathNMxy.formation.readable
+OK: audit03.comments.pathNMxy.formation.noMachinePrefix
+META: audit03.comments.pathNMxy.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.pathNMxy.current.russianReason
+OK: audit03.comments.pathNMxy.current.readable
+OK: audit03.comments.pathNMxy.current.noMachinePrefix
+META: audit03.comments.pathNMxy.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.pathNMxy.width.russianReason
+OK: audit03.comments.pathNMxy.width.readable
+OK: audit03.comments.pathNMxy.width.noMachinePrefix
+META: audit03.comments.pathNMxy.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 2.323 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.pathNMxy.longitudinal.russianReason
+OK: audit03.comments.pathNMxy.longitudinal.readable
+OK: audit03.comments.pathNMxy.longitudinal.noMachinePrefix
+META: audit03.comments.pathNMxy.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.pathNMxy.formulaNoNumFail
+OK: audit03.comments.pathNMxy.strengthNoCrack
+OK: audit03.comments.pathNMxy.crackNoCapacity
+OK: audit03.comments.pathNMxy.overallComposition
+OK: audit03.comments.pathNMxy.batchOutput
+OK: audit03.comments.pathNMxy.strengthOutput
+OK: audit03.comments.pathNMxy.crackOutput
+OK: audit03.comments.pathNMxy.stabilityOutput
+OUTPUT: audit03.comments.pathNMxy|strength=|crack=|stability=|batch=
+CASE: focused.SavedWorkbook.pathNMxy|N=-1048535.75021956|Mx=177911244.067159|My=-107226465.530982|offsetX=10|offsetY=-7|path=NMxy|selection=NMxy|lambda=11.370588602592|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.SavedWorkbook.pathNMxy.path
+OK: focused.SavedWorkbook.pathNMxy.validInput
+OK: focused.SavedWorkbook.pathNMxy.NU; actual=-11922468.6508568; expected=-11922468.6508568
+OK: focused.SavedWorkbook.pathNMxy.MxU; actual=2022955412.38197; expected=2022955564.06302
+OK: focused.SavedWorkbook.pathNMxy.MyU; actual=-1219227799.10641; expected=-1219228026.86281
+OK: focused.SavedWorkbook.pathNMxy.stateMx; actual=11487782286.525; expected=11487782438.2061
+OK: focused.SavedWorkbook.pathNMxy.stateMy; actual=36803274848.8808; expected=36803274621.1244
+OK: focused.SavedWorkbook.pathNMxy.physicalCriterion
+OK: focused.SavedWorkbook.pathNMxy.finalPhysical
+CASE: focused.SavedWorkbook.pathNMxy|requested=λ*NMxy|resolved=λ*NMxy|lambda=6.167324008092|Ncrc=-6466659.70567215|Mcrc=1353445519.0508|point=True|formed=False
+OK: focused.SavedWorkbook.pathNMxy.validInput
+OK: focused.SavedWorkbook.pathNMxy.fixedPath
+OK: focused.SavedWorkbook.pathNMxy.preConverged
+OK: focused.SavedWorkbook.pathNMxy.prePhysical
+OK: focused.SavedWorkbook.pathNMxy.preNotExtended
+FOCUSED_STATE|id=focused.SavedWorkbook.pathNMxy|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=-11922468.6508568|Mx=11487782438.2061|My=36803274621.1244|eps0=-0.006172639123|kx=0.000004081792|ky=-0.000002554458
+OK: focused.SavedWorkbook.pathNMxy.snapshot.1
+OK: focused.SavedWorkbook.pathNMxy.originalN.1; actual=-11922468.6508568; expected=-11922468.6508568
+OK: focused.SavedWorkbook.pathNMxy.originalMx.1; actual=11487782286.525; expected=11487782438.2061
+OK: focused.SavedWorkbook.pathNMxy.originalMy.1; actual=36803274848.8808; expected=36803274621.1244
+OK: focused.SavedWorkbook.pathNMxy.centerN.1; actual=-11922468.6508568; expected=-11922468.6508568
+OK: focused.SavedWorkbook.pathNMxy.centerMx.1; actual=2106412692.93797; expected=2106412844.61901
+OK: focused.SavedWorkbook.pathNMxy.centerMy.1; actual=-1338452485.61497; expected=-1338452713.37138
+OK: focused.SavedWorkbook.pathNMxy.physicalStatus.1
+FOCUSED_STATE|id=focused.SavedWorkbook.pathNMxy|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000160954402|kx=0.000000101827|ky=-0.000000064735
+OK: focused.SavedWorkbook.pathNMxy.snapshot.2
+OK: focused.SavedWorkbook.pathNMxy.originalN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathNMxy.originalMx.2; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathNMxy.originalMy.2; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathNMxy.centerN.2; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathNMxy.centerMx.2; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathNMxy.centerMy.2; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathNMxy.physicalStatus.2
+FOCUSED_STATE|id=focused.SavedWorkbook.pathNMxy|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=-6466659.70567215|Mx=6230889086.49272|My=19961826698.7104|eps0=-0.001057060681|kx=0.00000066411|ky=-0.000000422898
+OK: focused.SavedWorkbook.pathNMxy.snapshot.3
+OK: focused.SavedWorkbook.pathNMxy.originalN.3; actual=-6466659.70567215; expected=-6466659.70567215
+OK: focused.SavedWorkbook.pathNMxy.originalMx.3; actual=6230889135.54966; expected=6230889086.49272
+OK: focused.SavedWorkbook.pathNMxy.originalMy.3; actual=19961826679.1017; expected=19961826698.7104
+OK: focused.SavedWorkbook.pathNMxy.centerN.3; actual=-6466659.70567215; expected=-6466659.70567215
+OK: focused.SavedWorkbook.pathNMxy.centerMx.3; actual=1142502953.84161; expected=1142502904.78467
+OK: focused.SavedWorkbook.pathNMxy.centerMy.3; actual=-725966971.837617; expected=-725966952.228828
+OK: focused.SavedWorkbook.pathNMxy.physicalStatus.3
+FOCUSED_STATE|id=focused.SavedWorkbook.pathNMxy|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=-1048535.75021956|Mx=1010306751.89385|My=3236707958.3492|eps0=-0.000272633637|kx=0.000000167889|ky=-0.000000106587
+OK: focused.SavedWorkbook.pathNMxy.snapshot.4
+OK: focused.SavedWorkbook.pathNMxy.originalN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathNMxy.originalMx.4; actual=1010306751.89385; expected=1010306751.89385
+OK: focused.SavedWorkbook.pathNMxy.originalMy.4; actual=3236707958.3492; expected=3236707958.3492
+OK: focused.SavedWorkbook.pathNMxy.centerN.4; actual=-1048535.75021956; expected=-1048535.75021956
+OK: focused.SavedWorkbook.pathNMxy.centerMx.4; actual=185250994.318696; expected=185250994.318696
+OK: focused.SavedWorkbook.pathNMxy.centerMy.4; actual=-117711823.033177; expected=-117711823.033177
+OK: focused.SavedWorkbook.pathNMxy.physicalStatus.4
+OK: focused.SavedWorkbook.pathNMxy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathNMxy.noInputOrInternalError.2
+OK: focused.SavedWorkbook.pathNMxy.noInputOrInternalError.3
+OK: focused.SavedWorkbook.pathNMxy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathNMxy.noInputOrInternalError.4
+OK: focused.SavedWorkbook.pathNMxy.noInputOrInternalError.5
+OK: focused.SavedWorkbook.pathNMxy.noInputOrInternalError.1
+OK: focused.SavedWorkbook.pathNMxy.output.rngStrengthSummaryAnchor
+OK: focused.SavedWorkbook.pathNMxy.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=pathNMxy|overall=OK|capacity=OK|cracks=OK
+OK: focused.complete
+TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Paths; cases=6; maxSeconds=3.6796875; passed=510; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9686691221d4900bcd7b5663f0c225a\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunFocusedAcceptanceCases; 2026-10-11T19:47:06
+RESULTS_SAVE_REOPEN: before=B6DDE8420D7FBAEAACB4D8BF436DF586044421D9E0AB7CA2471CB1AB989DA844; after=B6DDE8420D7FBAEAACB4D8BF436DF586044421D9E0AB7CA2471CB1AB989DA844; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9686691221d4900bcd7b5663f0c225a\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=B90CECF2C4DCD1C47E4787640F55022B855B51EF8FC5227A60A8B416D7F47357; after=B90CECF2C4DCD1C47E4787640F55022B855B51EF8FC5227A60A8B416D7F47357; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1,0 +1,147 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\OpenIssues_2026-10-11\Candidate\RC_Section_NDM.xlsm
+SOURCE_SHA256: FCCBD86F6605F8DB5C20F21361635D15A32DA1A3CC6864761692F26BE05747D2
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_789606afaeff416284f509ee4fcb222b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=33380; startTicks=639273328721873655
+===== RunSolverWorkStatsTests =====
+SUITE_STARTED: RunSolverWorkStatsTests; 2026-10-11T19:27:56
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159875072; privateBytes=103481344; cpu=886.703125
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162955264; privateBytes=102952960; cpu=594.765625
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163143680; privateBytes=104095744; cpu=577.703125
+EXCEL_AFTER_SUITE: pid=8844; workingSet=157982720; privateBytes=101642240; cpu=563.84375
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161472512; privateBytes=122396672; cpu=566.796875
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157949952; privateBytes=102088704; cpu=574.515625
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162852864; privateBytes=103321600; cpu=577.75
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162275328; privateBytes=102395904; cpu=578.296875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162398208; privateBytes=123412480; cpu=577.859375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158900224; privateBytes=101810176; cpu=564.453125
+EXCEL_AFTER_SUITE: pid=26240; workingSet=161951744; privateBytes=102219776; cpu=577.28125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158334976; privateBytes=101670912; cpu=566.125
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163090432; privateBytes=104493056; cpu=592.5625
+EXCEL_AFTER_SUITE: pid=28560; workingSet=164974592; privateBytes=104316928; cpu=583.328125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166019072; privateBytes=111706112; cpu=586.6875
+EXCEL_AFTER_SUITE: pid=33380; workingSet=128106496; privateBytes=82644992; cpu=4.546875
+OK: workStats.Newton.solved
+OK: workStats.Newton.calls
+OK: workStats.Newton.allIterations
+OK: workStats.Secant.solved
+OK: workStats.Secant.calls
+OK: workStats.Secant.allIterations
+OK: workStats.integrationNotSolve
+OK: workStats.invalidInputNotCounted
+OK: warmContract.confirmStart
+OK: warmContract.2.1.actualStartCount
+OK: warmContract.2.1.iterationCount
+OK: warmContract.2.1.noEquilibriumSolve
+OK: warmContract.2.1.guessBudget
+OK: warmContract.2.1.accepted
+OK: warmContract.2.1.positiveLambda
+OK: warmContract.2.1.budgetNotReset
+OK: warmContract.confirmStart
+OK: warmContract.2.2.actualStartCount
+OK: warmContract.2.2.iterationCount
+OK: warmContract.2.2.noEquilibriumSolve
+OK: warmContract.2.2.guessBudget
+OK: warmContract.2.2.noFalseSuccess
+OK: warmContract.2.2.numericalNotPhysical
+OK: warmContract.2.2.restartForbidden
+OK: warmContract.2.3.actualStartCount
+OK: warmContract.2.3.iterationCount
+OK: warmContract.2.3.noEquilibriumSolve
+OK: warmContract.2.3.guessBudget
+OK: warmContract.2.3.noFalseSuccess
+OK: warmContract.2.3.numericalNotPhysical
+OK: warmContract.2.3.restartForbidden
+OK: warmContract.confirmStart
+OK: warmContract.2.4.actualStartCount
+OK: warmContract.2.4.iterationCount
+OK: warmContract.2.4.noEquilibriumSolve
+OK: warmContract.2.4.guessBudget
+OK: warmContract.2.4.accepted
+OK: warmContract.2.4.positiveLambda
+OK: warmContract.2.4.coldNoRestart
+OK: warmContract.confirmStart
+OK: warmContract.2.5.actualStartCount
+OK: warmContract.2.5.iterationCount
+OK: warmContract.2.5.noEquilibriumSolve
+OK: warmContract.2.5.guessBudget
+OK: warmContract.2.5.noFalseSuccess
+OK: warmContract.2.5.numericalNotPhysical
+OK: warmContract.confirmStart
+OK: warmContract.confirmTerminalStart
+OK: warmContract.2.6.actualStartCount
+OK: warmContract.2.6.iterationCount
+OK: warmContract.2.6.noEquilibriumSolve
+OK: warmContract.2.6.guessBudget
+OK: warmContract.2.6.noFalseSuccess
+OK: warmContract.2.6.terminalPreserved
+OK: warmContract.confirmStart
+OK: warmContract.2.7.actualStartCount
+OK: warmContract.2.7.iterationCount
+OK: warmContract.2.7.noEquilibriumSolve
+OK: warmContract.2.7.guessBudget
+OK: warmContract.2.7.noFalseSuccess
+OK: warmContract.2.7.numericalNotPhysical
+OK: warmContract.2.7.singleRestart
+OK: warmContract.confirmStart
+OK: warmContract.3.1.actualStartCount
+OK: warmContract.3.1.iterationCount
+OK: warmContract.3.1.noEquilibriumSolve
+OK: warmContract.3.1.guessBudget
+OK: warmContract.3.1.accepted
+OK: warmContract.3.1.positiveLambda
+OK: warmContract.3.1.budgetNotReset
+OK: warmContract.confirmStart
+OK: warmContract.3.2.actualStartCount
+OK: warmContract.3.2.iterationCount
+OK: warmContract.3.2.noEquilibriumSolve
+OK: warmContract.3.2.guessBudget
+OK: warmContract.3.2.noFalseSuccess
+OK: warmContract.3.2.numericalNotPhysical
+OK: warmContract.3.2.restartForbidden
+OK: warmContract.3.3.actualStartCount
+OK: warmContract.3.3.iterationCount
+OK: warmContract.3.3.noEquilibriumSolve
+OK: warmContract.3.3.guessBudget
+OK: warmContract.3.3.noFalseSuccess
+OK: warmContract.3.3.numericalNotPhysical
+OK: warmContract.3.3.restartForbidden
+OK: warmContract.confirmStart
+OK: warmContract.3.4.actualStartCount
+OK: warmContract.3.4.iterationCount
+OK: warmContract.3.4.noEquilibriumSolve
+OK: warmContract.3.4.guessBudget
+OK: warmContract.3.4.accepted
+OK: warmContract.3.4.positiveLambda
+OK: warmContract.3.4.coldNoRestart
+OK: warmContract.confirmStart
+OK: warmContract.3.5.actualStartCount
+OK: warmContract.3.5.iterationCount
+OK: warmContract.3.5.noEquilibriumSolve
+OK: warmContract.3.5.guessBudget
+OK: warmContract.3.5.noFalseSuccess
+OK: warmContract.3.5.numericalNotPhysical
+OK: warmContract.confirmStart
+OK: warmContract.confirmTerminalStart
+OK: warmContract.3.6.actualStartCount
+OK: warmContract.3.6.iterationCount
+OK: warmContract.3.6.noEquilibriumSolve
+OK: warmContract.3.6.guessBudget
+OK: warmContract.3.6.noFalseSuccess
+OK: warmContract.3.6.terminalPreserved
+OK: warmContract.confirmStart
+OK: warmContract.3.7.actualStartCount
+OK: warmContract.3.7.iterationCount
+OK: warmContract.3.7.noEquilibriumSolve
+OK: warmContract.3.7.guessBudget
+OK: warmContract.3.7.noFalseSuccess
+OK: warmContract.3.7.numericalNotPhysical
+OK: warmContract.3.7.singleRestart
+OK: workStats.resetAll
+TOTAL_SOLVER_WORK_STATS: passed=117; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_789606afaeff416284f509ee4fcb222b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunSolverWorkStatsTests; 2026-10-11T19:27:57
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

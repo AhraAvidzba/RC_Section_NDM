@@ -1,0 +1,155 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\OpenIssues_2026-10-11\ReleaseV3\RC_Section_NDM.xlsm
+SOURCE_SHA256: F1AC14392077A15D288B113B4AA29273497CE4192FF6493D0286686AE202616A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_256b6b28cd654e02a195f1dc2218d437\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=29412; startTicks=639273335022089815
+===== RunPlateauResultsDiagramTests =====
+SUITE_STARTED: RunPlateauResultsDiagramTests; 2026-10-11T19:38:27
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159875072; privateBytes=103440384; cpu=889.953125
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162975744; privateBytes=103010304; cpu=596.828125
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163143680; privateBytes=104054784; cpu=579.796875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=158007296; privateBytes=101707776; cpu=565.96875
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161497088; privateBytes=122417152; cpu=569
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157921280; privateBytes=102023168; cpu=576.5
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162885632; privateBytes=103387136; cpu=579.90625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162320384; privateBytes=102477824; cpu=580.5
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162410496; privateBytes=123424768; cpu=580.015625
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158978048; privateBytes=101969920; cpu=566.6875
+EXCEL_AFTER_SUITE: pid=26240; workingSet=162000896; privateBytes=102297600; cpu=579.65625
+EXCEL_AFTER_SUITE: pid=27008; workingSet=132845568; privateBytes=80211968; cpu=39.546875
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158371840; privateBytes=101740544; cpu=568.25
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163217408; privateBytes=104693760; cpu=594.984375
+EXCEL_AFTER_SUITE: pid=28560; workingSet=165007360; privateBytes=104349696; cpu=585.734375
+EXCEL_AFTER_SUITE: pid=29412; workingSet=133095424; privateBytes=104550400; cpu=6.296875
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166006784; privateBytes=111620096; cpu=588.84375
+OK: plateau.results.No.No.stateCount
+OK: plateau.results.No.No.materialsSaved
+OK: plateau.results.No.No.pointRows
+OK: plateau.results.No.No.strain.2; actual=-0.0035; expected=-0.0035
+OK: plateau.results.No.No.stress.2; actual=-15.5; expected=-15.5
+OK: plateau.results.No.No.strain.3; actual=-0.002; expected=-0.002
+OK: plateau.results.No.No.stress.3; actual=-15.5; expected=-15.5
+OK: plateau.results.No.No.strain.4; actual=-0.000286153846; expected=-0.000286153846
+OK: plateau.results.No.No.stress.4; actual=-9.3; expected=-9.3
+OK: plateau.results.No.No.strain.5; actual=0.; expected=0.
+OK: plateau.results.No.No.stress.5; actual=0.; expected=0.
+OK: plateau.results.No.No.material
+OK: plateau.results.No.No.strain.6; actual=-0.025; expected=-0.025
+OK: plateau.results.No.No.stress.6; actual=-350.; expected=-350.
+OK: plateau.results.No.No.material
+OK: plateau.results.No.No.strain.7; actual=-0.00175; expected=-0.00175
+OK: plateau.results.No.No.stress.7; actual=-350.; expected=-350.
+OK: plateau.results.No.No.material
+OK: plateau.results.No.No.strain.8; actual=0.; expected=0.
+OK: plateau.results.No.No.stress.8; actual=0.; expected=0.
+OK: plateau.results.No.No.material
+OK: plateau.results.No.No.strain.9; actual=0.00175; expected=0.00175
+OK: plateau.results.No.No.stress.9; actual=350.; expected=350.
+OK: plateau.results.No.No.material
+OK: plateau.results.No.No.strain.10; actual=0.025; expected=0.025
+OK: plateau.results.No.No.stress.10; actual=350.; expected=350.
+OK: plateau.results.No.No.writerNoSolve
+OK: plateau.results.No.Yes.stateCount
+OK: plateau.results.No.Yes.materialsSaved
+OK: plateau.results.No.Yes.pointRows
+OK: plateau.results.No.Yes.strain.2; actual=-10.; expected=-10.
+OK: plateau.results.No.Yes.stress.2; actual=-3264.3625; expected=-3264.3625
+OK: plateau.results.No.Yes.strain.3; actual=-0.0035; expected=-0.0035
+OK: plateau.results.No.Yes.stress.3; actual=-15.5; expected=-15.5
+OK: plateau.results.No.Yes.strain.4; actual=-0.002; expected=-0.002
+OK: plateau.results.No.Yes.stress.4; actual=-15.5; expected=-15.5
+OK: plateau.results.No.Yes.strain.5; actual=-0.000286153846; expected=-0.000286153846
+OK: plateau.results.No.Yes.stress.5; actual=-9.3; expected=-9.3
+OK: plateau.results.No.Yes.strain.6; actual=0.; expected=0.
+OK: plateau.results.No.Yes.stress.6; actual=0.; expected=0.
+OK: plateau.results.No.Yes.material
+OK: plateau.results.No.Yes.strain.7; actual=-10.; expected=-10.
+OK: plateau.results.No.Yes.stress.7; actual=-20300.; expected=-20300.
+OK: plateau.results.No.Yes.material
+OK: plateau.results.No.Yes.strain.8; actual=-0.025; expected=-0.025
+OK: plateau.results.No.Yes.stress.8; actual=-350.; expected=-350.
+OK: plateau.results.No.Yes.material
+OK: plateau.results.No.Yes.strain.9; actual=-0.00175; expected=-0.00175
+OK: plateau.results.No.Yes.stress.9; actual=-350.; expected=-350.
+OK: plateau.results.No.Yes.material
+OK: plateau.results.No.Yes.strain.10; actual=0.; expected=0.
+OK: plateau.results.No.Yes.stress.10; actual=0.; expected=0.
+OK: plateau.results.No.Yes.material
+OK: plateau.results.No.Yes.strain.11; actual=0.00175; expected=0.00175
+OK: plateau.results.No.Yes.stress.11; actual=350.; expected=350.
+OK: plateau.results.No.Yes.material
+OK: plateau.results.No.Yes.strain.12; actual=0.025; expected=0.025
+OK: plateau.results.No.Yes.stress.12; actual=350.; expected=350.
+OK: plateau.results.No.Yes.material
+OK: plateau.results.No.Yes.strain.13; actual=10.; expected=10.
+OK: plateau.results.No.Yes.stress.13; actual=20300.; expected=20300.
+OK: plateau.results.No.Yes.writerNoSolve
+OK: plateau.results.Yes.No.stateCount
+OK: plateau.results.Yes.No.materialsSaved
+OK: plateau.results.Yes.No.pointRows
+OK: plateau.results.Yes.No.strain.2; actual=-0.0035; expected=-0.0035
+OK: plateau.results.Yes.No.stress.2; actual=-15.504875; expected=-15.504875
+OK: plateau.results.Yes.No.strain.3; actual=-0.002; expected=-0.002
+OK: plateau.results.Yes.No.stress.3; actual=-15.5; expected=-15.5
+OK: plateau.results.Yes.No.strain.4; actual=-0.000286153846; expected=-0.000286153846
+OK: plateau.results.Yes.No.stress.4; actual=-9.3; expected=-9.3
+OK: plateau.results.Yes.No.strain.5; actual=0.; expected=0.
+OK: plateau.results.Yes.No.stress.5; actual=0.; expected=0.
+OK: plateau.results.Yes.No.material
+OK: plateau.results.Yes.No.strain.6; actual=-0.025; expected=-0.025
+OK: plateau.results.Yes.No.stress.6; actual=-350.465; expected=-350.465
+OK: plateau.results.Yes.No.material
+OK: plateau.results.Yes.No.strain.7; actual=-0.00175; expected=-0.00175
+OK: plateau.results.Yes.No.stress.7; actual=-350.; expected=-350.
+OK: plateau.results.Yes.No.material
+OK: plateau.results.Yes.No.strain.8; actual=0.; expected=0.
+OK: plateau.results.Yes.No.stress.8; actual=0.; expected=0.
+OK: plateau.results.Yes.No.material
+OK: plateau.results.Yes.No.strain.9; actual=0.00175; expected=0.00175
+OK: plateau.results.Yes.No.stress.9; actual=350.; expected=350.
+OK: plateau.results.Yes.No.material
+OK: plateau.results.Yes.No.strain.10; actual=0.025; expected=0.025
+OK: plateau.results.Yes.No.stress.10; actual=350.465; expected=350.465
+OK: plateau.results.Yes.No.writerNoSolve
+OK: plateau.results.Yes.Yes.stateCount
+OK: plateau.results.Yes.Yes.materialsSaved
+OK: plateau.results.Yes.Yes.pointRows
+OK: plateau.results.Yes.Yes.strain.2; actual=-10.; expected=-10.
+OK: plateau.results.Yes.Yes.stress.2; actual=-3264.367375; expected=-3264.367375
+OK: plateau.results.Yes.Yes.strain.3; actual=-0.0035; expected=-0.0035
+OK: plateau.results.Yes.Yes.stress.3; actual=-15.504875; expected=-15.504875
+OK: plateau.results.Yes.Yes.strain.4; actual=-0.002; expected=-0.002
+OK: plateau.results.Yes.Yes.stress.4; actual=-15.5; expected=-15.5
+OK: plateau.results.Yes.Yes.strain.5; actual=-0.000286153846; expected=-0.000286153846
+OK: plateau.results.Yes.Yes.stress.5; actual=-9.3; expected=-9.3
+OK: plateau.results.Yes.Yes.strain.6; actual=0.; expected=0.
+OK: plateau.results.Yes.Yes.stress.6; actual=0.; expected=0.
+OK: plateau.results.Yes.Yes.material
+OK: plateau.results.Yes.Yes.strain.7; actual=-10.; expected=-10.
+OK: plateau.results.Yes.Yes.stress.7; actual=-20300.465; expected=-20300.465
+OK: plateau.results.Yes.Yes.material
+OK: plateau.results.Yes.Yes.strain.8; actual=-0.025; expected=-0.025
+OK: plateau.results.Yes.Yes.stress.8; actual=-350.465; expected=-350.465
+OK: plateau.results.Yes.Yes.material
+OK: plateau.results.Yes.Yes.strain.9; actual=-0.00175; expected=-0.00175
+OK: plateau.results.Yes.Yes.stress.9; actual=-350.; expected=-350.
+OK: plateau.results.Yes.Yes.material
+OK: plateau.results.Yes.Yes.strain.10; actual=0.; expected=0.
+OK: plateau.results.Yes.Yes.stress.10; actual=0.; expected=0.
+OK: plateau.results.Yes.Yes.material
+OK: plateau.results.Yes.Yes.strain.11; actual=0.00175; expected=0.00175
+OK: plateau.results.Yes.Yes.stress.11; actual=350.; expected=350.
+OK: plateau.results.Yes.Yes.material
+OK: plateau.results.Yes.Yes.strain.12; actual=0.025; expected=0.025
+OK: plateau.results.Yes.Yes.stress.12; actual=350.465; expected=350.465
+OK: plateau.results.Yes.Yes.material
+OK: plateau.results.Yes.Yes.strain.13; actual=10.; expected=10.
+OK: plateau.results.Yes.Yes.stress.13; actual=20300.465; expected=20300.465
+OK: plateau.results.Yes.Yes.writerNoSolve
+TOTAL_PLATEAU_RESULTS: passed=124; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_256b6b28cd654e02a195f1dc2218d437\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunPlateauResultsDiagramTests; 2026-10-11T19:38:29
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

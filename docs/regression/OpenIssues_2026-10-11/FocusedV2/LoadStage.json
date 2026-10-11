@@ -1,0 +1,271 @@
+﻿{
+    "Passed":  false,
+    "LoadStageComplete":  true,
+    "AcceptanceComplete":  false,
+    "SourceSHA256":  "ADC33F19913BE25A75B1BD79BB21C34CF3F0052B68380E958F4543C938721D9C",
+    "ProbeSHA256":  "B094A55AA65D6AF6581A4CB7D0BC10CB7B053705D3694E5518904A42CA0BA769",
+    "ElapsedSeconds":  634.8598479,
+    "LimitSeconds":  900,
+    "Groups":  [
+                   {
+                       "Shape":  "RectSet",
+                       "Group":  "Generated",
+                       "Mode":  "No",
+                       "Completed":  true,
+                       "ExpectedCases":  8,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/RectSet_Generated_No.txt",
+                       "ReportSHA256":  "0A0F0357BC7CEC68A3CECA1596666EFD6BD9BC14E3E8F9A9C684BF729C77EE08",
+                       "Cases":  8,
+                       "MaximumSeconds":  4.03125,
+                       "Passed":  714,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "RectSet",
+                       "Group":  "Generated",
+                       "Mode":  "Yes",
+                       "Completed":  true,
+                       "ExpectedCases":  8,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/RectSet_Generated_Yes.txt",
+                       "ReportSHA256":  "D5B5691D76218D5F2EC5107FECA795D0ADE3D2C4C00D503219F6827EF9D8E8A7",
+                       "Cases":  8,
+                       "MaximumSeconds":  3.7109375,
+                       "Passed":  683,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "Circle",
+                       "Group":  "Generated",
+                       "Mode":  "No",
+                       "Completed":  true,
+                       "ExpectedCases":  8,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/Circle_Generated_No.txt",
+                       "ReportSHA256":  "AE2BEB8AE387ACB3A8C460CB970296FAE4BC29A03E1EC0B7A3CCF71E8F276457",
+                       "Cases":  8,
+                       "MaximumSeconds":  3.890625,
+                       "Passed":  714,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "Circle",
+                       "Group":  "Generated",
+                       "Mode":  "Yes",
+                       "Completed":  true,
+                       "ExpectedCases":  8,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/Circle_Generated_Yes.txt",
+                       "ReportSHA256":  "B665A58127089A47A34DED18065C202039A3712AB0AE294F52A78BA7D247EA98",
+                       "Cases":  8,
+                       "MaximumSeconds":  3.7109375,
+                       "Passed":  683,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "RoundedRectangle",
+                       "Group":  "Generated",
+                       "Mode":  "No",
+                       "Completed":  true,
+                       "ExpectedCases":  8,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/RoundedRectangle_Generated_No.txt",
+                       "ReportSHA256":  "2E07A9EC33A99E654F4205A4B0CA8EB9D05F6B9DACEE0800689E59D2324209CF",
+                       "Cases":  8,
+                       "MaximumSeconds":  3.8984375,
+                       "Passed":  714,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "RoundedRectangle",
+                       "Group":  "Generated",
+                       "Mode":  "Yes",
+                       "Completed":  true,
+                       "ExpectedCases":  8,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/RoundedRectangle_Generated_Yes.txt",
+                       "ReportSHA256":  "C1873AEA469F52799D3312D2A2DA3E3E7E4B158C14D06B2B174CE8F7A181A972",
+                       "Cases":  8,
+                       "MaximumSeconds":  3.921875,
+                       "Passed":  683,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "HollowRectangle",
+                       "Group":  "Generated",
+                       "Mode":  "No",
+                       "Completed":  true,
+                       "ExpectedCases":  8,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/HollowRectangle_Generated_No.txt",
+                       "ReportSHA256":  "D426D6871CD3CB900C6997E2FD0CEFEA44291FD9D2EECF9052015C84F2D11E3E",
+                       "Cases":  8,
+                       "MaximumSeconds":  3.96875,
+                       "Passed":  714,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "HollowRectangle",
+                       "Group":  "Generated",
+                       "Mode":  "Yes",
+                       "Completed":  true,
+                       "ExpectedCases":  8,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/HollowRectangle_Generated_Yes.txt",
+                       "ReportSHA256":  "EE8C0AD8E8FE01FD42B8E0585C2B0C44D7007E773CCBAB85BFA17DF47D4FF7D8",
+                       "Cases":  8,
+                       "MaximumSeconds":  4.15625,
+                       "Passed":  683,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "SavedWorkbook",
+                       "Group":  "Saved",
+                       "Mode":  "No",
+                       "Completed":  true,
+                       "ExpectedCases":  23,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt",
+                       "ReportSHA256":  "BDCE766ECA9E9D2DB921FF3D116D6C1DE6284C16FD2F8EEC9E6F440B270304F2",
+                       "Cases":  23,
+                       "MaximumSeconds":  7.3125,
+                       "Passed":  1947,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "SavedWorkbook",
+                       "Group":  "Saved",
+                       "Mode":  "Yes",
+                       "Completed":  true,
+                       "ExpectedCases":  23,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_Yes.txt",
+                       "ReportSHA256":  "E5FD84C5C005C4AF88881865A2E1E86C595D198B0829DF0C9842F82E77D24749",
+                       "Cases":  23,
+                       "MaximumSeconds":  6.140625,
+                       "Passed":  1914,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "SavedWorkbook",
+                       "Group":  "Paths",
+                       "Mode":  "No",
+                       "Completed":  true,
+                       "ExpectedCases":  6,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Paths_No.txt",
+                       "ReportSHA256":  "5FEC2FE4F8C53957B890A187BDA38F4D853732EF1793CE181D97AED3F23B8EBF",
+                       "Cases":  6,
+                       "MaximumSeconds":  3.5859375,
+                       "Passed":  533,
+                       "Failed":  0
+                   },
+                   {
+                       "Shape":  "SavedWorkbook",
+                       "Group":  "Paths",
+                       "Mode":  "Yes",
+                       "Completed":  true,
+                       "ExpectedCases":  6,
+                       "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Paths_Yes.txt",
+                       "ReportSHA256":  "9973744F97088C4319A1152D40D3A8B8B7EBE4271E555EBB9940C6DB1B1B9386",
+                       "Cases":  6,
+                       "MaximumSeconds":  3.6796875,
+                       "Passed":  510,
+                       "Failed":  0
+                   }
+               ],
+    "NumericalFailuresForReview":  [
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1|kind=1|reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.951317, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.225971354357; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 20.601 МПа; допускаемое Rb,mc2 = 14.600 МПа.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.511789, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: При увеличении нагрузки другой физический предел бетона или арматуры достигнут до образования нормальной трещины и раньше заданной нагрузки, при lambda = 0.286369916199. Путь λ*N: Не удалось найти равновесие в начальной точке пути трещинообразования. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1.05|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1.05|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.906016, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.167591766055; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 21.631 МПа; допускаемое Rb,mc2 = 14.600 МПа.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.475659, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При увеличении нагрузки другой физический предел бетона или арматуры достигнут до образования нормальной трещины и раньше заданной нагрузки, при lambda = 0.61298567578.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=N2098Plateau|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=N2098Plateau|kind=1|reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.969324, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.249176381694; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 20.218 МПа; допускаемое Rb,mc2 = 14.600 МПа.",
+                                           "Mode":  "No",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_No.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "Yes",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_Yes.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена.",
+                                           "Mode":  "Yes",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_Yes.txt"
+                                       },
+                                       {
+                                           "Detail":  "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.",
+                                           "Mode":  "Yes",
+                                           "Report":  "docs/regression/OpenIssues_2026-10-11/FocusedV2/SavedWorkbook_Saved_Yes.txt"
+                                       }
+                                   ],
+    "StopReason":  "",
+    "Error":  "",
+    "SourceUnchanged":  true,
+    "ProductionUnchanged":  true,
+    "RemainingPlanStages":  [
+                                "Batch15",
+                                "NativeCAD",
+                                "StabilityAndAsymmetricSteel",
+                                "IndependentControl",
+                                "FinalOutput"
+                            ],
+    "ExhaustiveSuiteExecuted":  false
+}

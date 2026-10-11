@@ -1,0 +1,31 @@
+﻿{
+    "SourceSHA256":  "3117BC11929039CD64130A79AFA9E76F4FD703FCA73331A58DA269C985683742",
+    "ReleaseSHA256":  "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+    "InputsPreserved":  true,
+    "SaveReopenExact":  true,
+    "RepeatExact":  true,
+    "Measurements":  [
+                         {
+                             "Run":  1,
+                             "Seconds":  4.21491119998973,
+                             "ExactResults":  true,
+                             "InputsPreserved":  true
+                         },
+                         {
+                             "Run":  2,
+                             "Seconds":  1.07406289997743,
+                             "ExactResults":  true,
+                             "InputsPreserved":  true
+                         },
+                         {
+                             "Run":  3,
+                             "Seconds":  1.1494560999563,
+                             "ExactResults":  true,
+                             "InputsPreserved":  true
+                         }
+                     ],
+    "ResultsFingerprint":  "26EED21046640386E77DDF02CAEC6B7DFA9B8F0886087BB3A7DC8F5003368A7D",
+    "PassiveSolveCount":  0,
+    "PassiveExportExact":  true,
+    "ProductionChanged":  false
+}

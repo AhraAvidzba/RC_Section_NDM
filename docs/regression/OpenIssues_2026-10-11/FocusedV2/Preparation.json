@@ -1,0 +1,15 @@
+﻿{
+    "Created":  "2026-10-11T19:34:38.4674206+03:00",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\OpenIssues_2026-10-11\\Candidate\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "ADC33F19913BE25A75B1BD79BB21C34CF3F0052B68380E958F4543C938721D9C",
+    "ProbeWorkbookSHA256":  "B094A55AA65D6AF6581A4CB7D0BC10CB7B053705D3694E5518904A42CA0BA769",
+    "HelperSHA256":  "EBB9399968C5428F3D1F88A2D4600552F91A66E70C776B48BA6EF2807C91C145",
+    "ExtraHelperSHA256":  "84DAC87B62A293DA17F87FE9750D1C65CC391079C27535E14E26119A347217EC",
+    "Compiled":  true,
+    "ModifiedComponents":  [
+                               "modWorkbookCalculation",
+                               "modTestBatchCalculation"
+                           ],
+    "CalculationExecuted":  false,
+    "ProductionChanged":  false
+}

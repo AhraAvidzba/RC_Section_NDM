@@ -343,6 +343,7 @@ Private Function SolveNewtonLoadStep(ByVal section As CSectionModel, _
     Dim iter As Long
     For iter = 1 To mMaxIterations
         mIterations = mIterations + 1
+        RecordSectionEquilibriumIteration
 
         ' Считаем текущие внутренние усилия и касательную матрицу для этой
         ' плоскости деформаций. После этого можно проверить, достигнуто ли
@@ -436,6 +437,7 @@ Private Function SolveSecantLoadStep(ByVal section As CSectionModel, _
     Dim iter As Long
     For iter = 1 To mMaxIterations
         mIterations = mIterations + 1
+        RecordSectionEquilibriumIteration
         mLastResidualNorm = ResidualNorm(mResidualN, mCenterResidualMx, mCenterResidualMy, targetN, targetMx, targetMy)
 
         If IsConverged(targetN, targetMx, targetMy) Then

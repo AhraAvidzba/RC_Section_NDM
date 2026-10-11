@@ -1,0 +1,11 @@
+﻿{
+    "Captured":  "2026-10-11T19:45:23.4307554+03:00",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\PostAudit03\\Axial1000_2026-10-09\\..\\..\\OpenIssues_2026-10-11\\Candidate\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "ADC33F19913BE25A75B1BD79BB21C34CF3F0052B68380E958F4543C938721D9C",
+    "DataSHA256":  "ECD20C0C4E7EF3726CFAE6E1209DDC5A9D63DD5AD43022DB8C42588FA5A9952C",
+    "HelperSHA256":  "CB8D791F6334E8A8E72457C2F46483F1849A221A8E6BC2992B7E75A321F335D4",
+    "IsolatedCopyOnly":  true,
+    "Component":  "modTestBatchCalculation",
+    "Macro":  "DumpFocusedForceBounds",
+    "Shape":  "SavedWorkbook"
+}

@@ -1,0 +1,58 @@
+﻿[
+    {
+        "Mode":  "No",
+        "Chart":  "chMaterialConcreteDiagram",
+        "Series":  1,
+        "Points":  5,
+        "SHA256":  "9F90C3A7903DEF7314E1251566184A509C289E3ADB19ABBCD8B396EC61A83035"
+    },
+    {
+        "Mode":  "No",
+        "Chart":  "chMaterialConcreteDiagram",
+        "Series":  2,
+        "Points":  7,
+        "SHA256":  "F30FCFAA571784121006B533C0ED89601EF8FC3B36B80E82A7336661FD0A9E11"
+    },
+    {
+        "Mode":  "No",
+        "Chart":  "chMaterialSteelDiagram",
+        "Series":  1,
+        "Points":  5,
+        "SHA256":  "EE02E3100B55A0CCA66454EF88B23B524C0F1B5C718B5F672F2E9745A370A37D"
+    },
+    {
+        "Mode":  "No",
+        "Chart":  "chMaterialSteelDiagram",
+        "Series":  2,
+        "Points":  9,
+        "SHA256":  "02AC4AF22602355BC1F0C83EA6C831CAEAD29E4031807ECAFEF9FCF8337F0511"
+    },
+    {
+        "Mode":  "Yes",
+        "Chart":  "chMaterialConcreteDiagram",
+        "Series":  1,
+        "Points":  5,
+        "SHA256":  "292BB3ADFDC9CCD6712CF561B2E41B08981905AAE3AD85307654EF37CA4BF8FA"
+    },
+    {
+        "Mode":  "Yes",
+        "Chart":  "chMaterialConcreteDiagram",
+        "Series":  2,
+        "Points":  7,
+        "SHA256":  "3EEB18C4BECD6DE46D2550D8AEABE8BFFA069608D35FCE84A71403B10CF7150B"
+    },
+    {
+        "Mode":  "Yes",
+        "Chart":  "chMaterialSteelDiagram",
+        "Series":  1,
+        "Points":  5,
+        "SHA256":  "D4EBA81F7029018A1119085EBE5069F362E8756992436172284768822E6784A0"
+    },
+    {
+        "Mode":  "Yes",
+        "Chart":  "chMaterialSteelDiagram",
+        "Series":  2,
+        "Points":  9,
+        "SHA256":  "DFA071BF3CB2C6BA5B730BBCF7198E2CF8FD02C602CD49DD10E5EBDC569E7EA0"
+    }
+]

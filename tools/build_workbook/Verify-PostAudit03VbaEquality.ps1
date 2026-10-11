@@ -7,8 +7,11 @@ $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $export=(Resolve-Path -LiteralPath (Join-Path $root $ExportPath)).Path
 $report=[IO.Path]::GetFullPath((Join-Path $root $ReportPath))
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PostAudit03'))+[IO.Path]::DirectorySeparatorChar
-if (-not $export.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -or
-    -not $report.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Verification evidence must remain inside PostAudit03.'}
+$openIssuesAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/OpenIssues_2026-10-11'))+[IO.Path]::DirectorySeparatorChar
+foreach ($path in @($export,$report)) {
+    if (-not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and
+        -not $path.StartsWith($openIssuesAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Verification evidence must remain inside its regression directory.'}
+}
 $lines=[IO.File]::ReadAllLines($export,[Text.Encoding]::UTF8)
 $components=@{}; $types=@{}
 for($i=0;$i -lt $lines.Length;$i++) {

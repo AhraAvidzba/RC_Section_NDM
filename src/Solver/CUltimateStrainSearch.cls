@@ -142,6 +142,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     Dim eps0 As Double
     Dim kx As Double
     Dim ky As Double
+    RecordUltimateStrainStart
     context.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
         loadPath, startSolver, eps0, kx, ky
     ' Newton меняет деформацию в центре, а не в удаленном начале чертежа.
@@ -172,6 +173,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     End If
 
     For iter = 1 To context.LimitSearchUltimateMaxIterations
+        RecordUltimateStrainIteration
         If acceptedEvaluation Then
             acceptedEvaluation = section.Revision = acceptedRevision And _
                 loadPath.NOffset = acceptedPath(1) And loadPath.NBase = acceptedPath(2) And _
@@ -287,6 +289,7 @@ Private Function TryRestartWarmGuess(ByVal context As ILimitSearchProblem, ByVal
     freshEps = mFrame.CenterStrain(freshEps, freshKx, freshKy)
     If Not IsFiniteNumber(freshEps) Or Not IsFiniteNumber(freshKx) Or Not IsFiniteNumber(freshKy) Then Exit Function
     If freshEps = eps0 And freshKx = kx And freshKy = ky Then Exit Function
+    RecordUltimateStrainStart
     eps0 = freshEps: kx = freshKx: ky = freshKy
     mMeritScalingReady = False
     context.AppendDiagnostic "ultimateWarmRestart; usedIterations=" & CStr(iteration) & _

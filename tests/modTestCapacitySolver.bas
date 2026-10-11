@@ -816,8 +816,15 @@ Private Sub TestWarmStartRestartContract(ByRef stats As TCapacityTestStats)
                 Case 7
                     fake.ConfigureUltimateWarmCase budget, CLng(kind), 1
             End Select
+            ResetSectionEquilibriumSolveCount
             succeeded = search.RunNewton(fake, Nothing, Nothing, Nothing, path, start, "Тестовый бюджет исчерпан.")
             prefix = "warmContract." & CStr(kind) & "." & CStr(scenario)
+            Dim expectedStarts As Long
+            expectedStarts = 1
+            If scenario = 1 Or scenario = 7 Then expectedStarts = 2
+            AssertTrue stats, prefix & ".actualStartCount", UltimateStrainStartCount() = expectedStarts
+            AssertTrue stats, prefix & ".iterationCount", UltimateStrainIterationCount() >= 1 And UltimateStrainIterationCount() <= budget
+            AssertTrue stats, prefix & ".noEquilibriumSolve", SectionEquilibriumSolveCount() = 0 And SectionEquilibriumIterationCount() = 0
             AssertTrue stats, prefix & ".guessBudget", fake.UltimateGuessCalls >= 1 And fake.UltimateGuessCalls <= 2
             If scenario = 1 Or scenario = 4 Then
                 AssertTrue stats, prefix & ".accepted", succeeded And fake.Converged
@@ -840,6 +847,44 @@ Private Sub TestWarmStartRestartContract(ByRef stats As TCapacityTestStats)
         Next scenario
     Next kind
 End Sub
+
+' ДЛЯ ТЕСТОВ: реальные циклы, ошибочный ввод и теплые перезапуски.
+' Пробы интегрирования не являются решениями НДС или отдельными итерациями.
+Public Function RunSolverWorkStatsTests() As String
+    Dim stats As TCapacityTestStats
+    On Error GoTo Failed
+    Dim section As CSectionModel, solver As CSectionSolver, method As Variant
+    Set section = New CSectionModel
+    section.AddConcreteElement -10#, -10#, 100#
+    section.AddConcreteElement 10#, -10#, 100#
+    section.AddConcreteElement -10#, 10#, 100#
+    section.AddConcreteElement 10#, 10#, 100#
+    Dim calls As Long, iterations As Long
+    ResetSectionEquilibriumSolveCount
+    For Each method In Array("Newton", "Secant")
+        Set solver = New CSectionSolver
+        solver.SolverMethod = CStr(method)
+        solver.LoadSteps = 3
+        solver.Solve section, LinearConcrete(), LinearSteel(), -1000#, 100#, -200#
+        calls = calls + 1: iterations = iterations + solver.Iterations
+        AssertTrue stats, "workStats." & CStr(method) & ".solved", solver.Converged
+        AssertTrue stats, "workStats." & CStr(method) & ".calls", SectionEquilibriumSolveCount() = calls
+        AssertTrue stats, "workStats." & CStr(method) & ".allIterations", SectionEquilibriumIterationCount() = iterations
+    Next method
+    solver.EvaluatePhysicalStrainPlane section, LinearConcrete(), LinearSteel(), -0.001, 0#, 0#
+    AssertTrue stats, "workStats.integrationNotSolve", SectionEquilibriumSolveCount() = calls And SectionEquilibriumIterationCount() = iterations
+    solver.MaxIterations = 0
+    solver.Solve section, LinearConcrete(), LinearSteel(), -1000#, 100#, -200#
+    AssertTrue stats, "workStats.invalidInputNotCounted", SectionEquilibriumSolveCount() = calls And SectionEquilibriumIterationCount() = iterations
+    TestWarmStartRestartContract stats
+    ResetSectionEquilibriumSolveCount
+    AssertTrue stats, "workStats.resetAll", SectionEquilibriumSolveCount() = 0 And SectionEquilibriumIterationCount() = 0 And _
+        UltimateStrainStartCount() = 0 And UltimateStrainIterationCount() = 0
+    RunSolverWorkStatsTests = stats.Report & "TOTAL_SOLVER_WORK_STATS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    Exit Function
+Failed:
+    RunSolverWorkStatsTests = stats.Report & "FAIL: workStats.runtime; " & CStr(Err.Number) & "; " & Err.Description
+End Function
 
 ' ДЛЯ ТЕСТОВ: действительный двухосный UltimateStrain, переносы и разные пределы.
 Public Function RunUltimateFrameRegressionTests() As String

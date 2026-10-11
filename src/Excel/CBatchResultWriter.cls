@@ -293,7 +293,7 @@ Private Sub ClearCrackSummary(ByVal workbook As Object)
 End Sub
 
 ' Заполняет четыре верхние строки summary: worst-сочетание, комментарий,
-' число вызовов CSectionSolver и общее время расчета.
+' число вызовов CSectionSolver, стартов UltimateStrain, итерации и время.
 Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     data(1, 1) = batch.WorstCombinationID
     data(1, 2) = "Определяющее сочетание"
@@ -303,6 +303,12 @@ Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCal
     data(3, 2) = "Количество решений НДС"
     data(4, 1) = batch.ElapsedSeconds
     data(4, 2) = "Время расчета, с"
+    data(1, 7) = batch.UltimateStrainStartCount
+    data(1, 8) = "Количество стартов UltimateStrain"
+    data(2, 7) = batch.SolverIterationCount
+    data(2, 8) = "Количество итераций НДС"
+    data(3, 7) = batch.UltimateStrainIterationCount
+    data(3, 8) = "Количество итераций UltimateStrain"
 End Sub
 
 ' Заполняет верхний уровень шапки compact summary: статусы и коэффициенты
@@ -631,6 +637,8 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     stage = "HeaderStyle"
     target.Offset(0, 0).Resize(META_ROWS, 5).Interior.Color = HEADER_COLOR
     target.Offset(0, 1).Resize(META_ROWS, 4).Font.Italic = True
+    target.Offset(0, 6).Resize(3, 7).Interior.Color = HEADER_COLOR
+    target.Offset(0, 7).Resize(3, 6).Font.Italic = True
     target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(WORST_HEADER_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).Interior.Color = HEADER_COLOR
     target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(COLUMN_HEADER_LAST_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).Font.Bold = True
     target.Rows.Item(COMMENT_HEADER_ROW).Font.Bold = False
@@ -641,6 +649,9 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     MergeSummaryBlock target, 2, 2, 2, 5
     MergeSummaryBlock target, 3, 3, 2, 5
     MergeSummaryBlock target, 4, 4, 2, 5
+    MergeSummaryBlock target, 1, 1, 8, 13
+    MergeSummaryBlock target, 2, 2, 8, 13
+    MergeSummaryBlock target, 3, 3, 8, 13
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_ID, SUM_COL_ID
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_COMMENT, SUM_COL_COMMENT
     MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESULT_COMMENT, SUM_COL_RESULT_COMMENT
@@ -671,6 +682,8 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Rows.Item(COMMENT_HEADER_ROW).HorizontalAlignment = -4131
     target.Offset(0, 0).Resize(META_ROWS, 1).HorizontalAlignment = -4108
     target.Offset(0, 1).Resize(META_ROWS, 4).HorizontalAlignment = -4131
+    target.Offset(0, 6).Resize(3, 1).HorizontalAlignment = -4108
+    target.Offset(0, 6).Resize(3, 1).NumberFormat = "0"
     target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(COLUMN_HEADER_LAST_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).WrapText = True
     target.Rows.Item(COMMENT_HEADER_ROW).WrapText = False
     target.Rows.Item(WORST_HEADER_ROW).WrapText = False
@@ -690,6 +703,7 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
 
     stage = "Borders"
     ApplySummaryBorders target.Offset(0, 0).Resize(META_ROWS, 5)
+    ApplySummaryBorders target.Offset(0, 6).Resize(3, 7)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, SUM_COL_OVERALL_STATUS)
     ApplySummaryBorders target.Offset(GROUP_HEADER_ROW - 1, SUM_COL_STATUS_STRAIN - 1).Resize(target.Rows.Count - GROUP_HEADER_ROW + 1, _
         SUM_COL_STATUS_SP63_P2 - SUM_COL_STATUS_STRAIN + 1)

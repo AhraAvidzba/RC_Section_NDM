@@ -10,13 +10,17 @@ $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $allowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Audit03')) + [IO.Path]::DirectorySeparatorChar
 $postAuditAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PostAudit03')) + [IO.Path]::DirectorySeparatorChar
 $performanceAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Performance')) + [IO.Path]::DirectorySeparatorChar
+$plateauAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PlateauSlope_2026-10-11')) + [IO.Path]::DirectorySeparatorChar
+$openIssuesAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/OpenIssues_2026-10-11')) + [IO.Path]::DirectorySeparatorChar
 $source = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $output = [IO.Path]::GetFullPath((Join-Path $root $OutputPath))
 foreach ($path in @($source, $output)) {
     if (-not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($postAuditAllowed, [StringComparison]::OrdinalIgnoreCase) -and
-        -not $path.StartsWith($performanceAllowed, [StringComparison]::OrdinalIgnoreCase)) {
-        throw 'Read-only export paths must stay in Audit03/PostAudit03/Performance evidence.'
+        -not $path.StartsWith($performanceAllowed, [StringComparison]::OrdinalIgnoreCase) -and
+        -not $path.StartsWith($plateauAllowed, [StringComparison]::OrdinalIgnoreCase) -and
+        -not $path.StartsWith($openIssuesAllowed, [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'Read-only export paths must stay in their regression evidence directory.'
     }
 }
 if (Test-Path -LiteralPath $output) { throw 'Export already exists; use a new evidence path.' }

@@ -425,6 +425,24 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
     norm = Sqr(nx * nx + ny * ny)
     If norm <= GEOM_TOLERANCE Then GeometryError "Нормаль отсечения имеет нулевую длину."
     nx = nx / norm: ny = ny / norm: bound = bound / norm
+    If region.SegmentCount = 0 Then
+        Set ClipHalfPlane = region.Clone
+        Exit Function
+    End If
+    Dim minimum As Double, maximum As Double, roundoff As Double
+    ProjectionBounds region, nx, ny, minimum, maximum
+    ' Не разбиваем область при касании ее крайней точки. Здесь учитывается
+    ' только ошибка Double при переносе координат, не геометрический допуск.
+    roundoff = 0.0000000000000035527136788005 * (Abs(minimum) + Abs(maximum) + Abs(bound) + 1#)
+    If bound <= minimum + roundoff Then
+        Set ClipHalfPlane = region.Clone
+        Exit Function
+    ElseIf bound >= maximum - roundoff Then
+        Dim emptyEdges() As TRegionEdge
+        Set ClipHalfPlane = MakeRegion(emptyEdges, 0, region.Source, region.SectionRevision)
+        ClipHalfPlane.SetOwner region.OwnerID, region.Standard, region.AnchorID
+        Exit Function
+    End If
     Dim raw() As TRegionEdge, rawCount As Long, output() As TRegionEdge, outputCount As Long
     region.CopyEdges raw, rawCount
     Dim cuts() As Double, cutCount As Long, lineCuts() As Double, lineCount As Long
@@ -441,21 +459,27 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
         Next j
         For j = 1 To cutCount - 1
             EdgePoint raw(i), 0.5 * (cuts(j) + cuts(j + 1)), x, y
-            If nx * x + ny * y > bound + QUERY_TOLERANCE Then
+            ' Короткая поддуга возле касания может целиком лежать внутри,
+            ' но ближе допуска к прямой. Ее удаление разрывает контур.
+            If nx * x + ny * y > bound Then
                 SubEdge raw(i), cuts(j), cuts(j + 1), piece
-                AppendEdge output, outputCount, piece
+                ' Совпадающий с прямой отрезок создается ниже один раз.
+                If Abs(piece.Sweep) > PARAM_TOLERANCE Or _
+                        Abs(nx * piece.X1 + ny * piece.Y1 - bound) > QUERY_TOLERANCE Or _
+                        Abs(nx * piece.X2 + ny * piece.Y2 - bound) > QUERY_TOLERANCE Then _
+                    AppendEdge output, outputCount, piece
             End If
         Next j
     Next i
 
-    ' Новые ребра линии отсечения замыкают материал слева. Проверка смещенной
-    ' внутрь точки отличает касание от участка с ненулевой площадью.
+    ' Между соседними пересечениями принадлежность постоянна. Проверяем
+    ' саму середину: фиксированное смещение может перескочить узкий сегмент.
     SortScalars lineCuts, lineCount
     Dim s1 As Double, s2 As Double, mid As Double
     For i = 1 To lineCount - 1
         s1 = lineCuts(i): s2 = lineCuts(i + 1): mid = 0.5 * (s1 + s2)
         x = nx * bound + ny * mid: y = ny * bound - nx * mid
-        If ContainsRaw(raw, rawCount, x + nx * QUERY_TOLERANCE * 8#, y + ny * QUERY_TOLERANCE * 8#, False) Then
+        If CutLineHasMaterial(raw, rawCount, nx, ny, bound, x, y) Then
             AddLine output, outputCount, nx * bound + ny * s1, ny * bound - nx * s1, _
                 nx * bound + ny * s2, ny * bound - nx * s2
         End If
@@ -648,6 +672,28 @@ Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double
     Dim edges() As TRegionEdge, count As Long
     region.CopyEdges edges, count
     ContainsPoint = ContainsRaw(edges, count, x, y, includeBoundary)
+End Function
+
+' Совпадение с прямым исходным ребром определяется по стороне материала,
+' а не соглашению winding на самой границе. Для дуг и обычных пересечений
+' середина между соседними точками находится внутри материала либо пустоты.
+Private Function CutLineHasMaterial(ByRef edges() As TRegionEdge, ByVal count As Long, _
+        ByVal nx As Double, ByVal ny As Double, ByVal bound As Double, _
+        ByVal x As Double, ByVal y As Double) As Boolean
+    Dim i As Long, u As Double
+    For i = 1 To count
+        If Abs(edges(i).Sweep) <= PARAM_TOLERANCE Then
+            If Abs(nx * edges(i).X1 + ny * edges(i).Y1 - bound) <= QUERY_TOLERANCE And _
+                    Abs(nx * edges(i).X2 + ny * edges(i).Y2 - bound) <= QUERY_TOLERANCE Then
+                If PointParameter(edges(i), x, y, u) Then
+                    CutLineHasMaterial = nx * (edges(i).Y1 - edges(i).Y2) + _
+                        ny * (edges(i).X2 - edges(i).X1) > 0#
+                    Exit Function
+                End If
+            End If
+        End If
+    Next i
+    CutLineHasMaterial = ContainsRaw(edges, count, x, y, False)
 End Function
 
 ' При дискретизации формы наружная граница входит в бетон, граница проема -
@@ -1079,15 +1125,21 @@ End Sub
 Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal source As String, ByVal revision As Long) As CConcreteRegion
     Dim ordered() As TRegionEdge, loopCount As Long, area As Double, i As Long
-    Dim loopAreas() As Double, loopOpening() As Boolean
+    Dim loopAreas() As Double, loopOpening() As Boolean, originX() As Double, originY() As Double
+    Dim seenLoop() As Boolean
     StitchLoops edges, count, ordered, loopCount, False
     If loopCount > 0 Then
         ReDim loopAreas(1 To loopCount)
         ReDim loopOpening(1 To loopCount)
+        ReDim originX(1 To loopCount): ReDim originY(1 To loopCount): ReDim seenLoop(1 To loopCount)
     End If
     For i = 1 To count
         Dim contribution As Double
-        contribution = EdgeSignedArea(ordered(i))
+        If Not seenLoop(ordered(i).LoopID) Then
+            originX(ordered(i).LoopID) = ordered(i).X1: originY(ordered(i).LoopID) = ordered(i).Y1
+            seenLoop(ordered(i).LoopID) = True
+        End If
+        contribution = EdgeSignedArea(ordered(i), originX(ordered(i).LoopID), originY(ordered(i).LoopID))
         area = area + contribution
         loopAreas(ordered(i).LoopID) = loopAreas(ordered(i).LoopID) + contribution
     Next i
@@ -1162,22 +1214,35 @@ End Sub
 
 ' Возвращает signed площадь одного замкнутого контура, не теряя аналитический вклад дуг.
 Private Function SignedLoopArea(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal loopID As Long) As Double
-    Dim i As Long
+    Dim i As Long, originX As Double, originY As Double, found As Boolean
     For i = 1 To count
-        If edges(i).LoopID = loopID Then SignedLoopArea = SignedLoopArea + EdgeSignedArea(edges(i))
+        If edges(i).LoopID = loopID Then
+            If Not found Then
+                originX = edges(i).X1: originY = edges(i).Y1: found = True
+            End If
+            SignedLoopArea = SignedLoopArea + EdgeSignedArea(edges(i), originX, originY)
+        End If
     Next i
 End Function
 
 ' Интеграл (x*dy-y*dx)/2 для отрезка или дуги окружности. Радиусы/углы не
 ' переводятся в пользовательские единицы, поэтому результат всегда мм2.
-Private Function EdgeSignedArea(ByRef edge As TRegionEdge) As Double
-    If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
-        EdgeSignedArea = 0.5 * (edge.X1 * edge.Y2 - edge.X2 * edge.Y1)
-    Else
-        Dim radiusSquared As Double
+Private Function EdgeSignedArea(ByRef edge As TRegionEdge, Optional ByVal originX As Double = 0#, _
+        Optional ByVal originY As Double = 0#) As Double
+    EdgeSignedArea = 0.5 * ((edge.X1 - originX) * (edge.Y2 - originY) - _
+        (edge.X2 - originX) * (edge.Y1 - originY))
+    If Abs(edge.Sweep) > PARAM_TOLERANCE Then
+        Dim radiusSquared As Double, segmentAngle As Double, square As Double
         radiusSquared = (edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2
-        EdgeSignedArea = 0.5 * (edge.CenterX * (edge.Y2 - edge.Y1) - _
-            edge.CenterY * (edge.X2 - edge.X1) + radiusSquared * edge.Sweep)
+        ' Площадь между хордой и дугой без вычитания больших глобальных
+        ' координат; ряд сохраняет точность при почти касательном отсечении.
+        If Abs(edge.Sweep) < 0.01 Then
+            square = edge.Sweep * edge.Sweep
+            segmentAngle = edge.Sweep * square * (1# / 6# - square / 120# + square * square / 5040#)
+        Else
+            segmentAngle = edge.Sweep - Sin(edge.Sweep)
+        End If
+        EdgeSignedArea = EdgeSignedArea + 0.5 * radiusSquared * segmentAngle
     End If
 End Function
 
@@ -1260,16 +1325,19 @@ Private Sub HalfPlaneCuts(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal n
         End If
     Else
         Dim radius As Double, norm As Double, distance As Double, bx As Double, by As Double, offset As Double
+        Dim roundoff As Double
         radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
         norm = Sqr(nx * nx + ny * ny)
         distance = (bound - nx * edge.CenterX - ny * edge.CenterY) / norm
         If Abs(distance) > radius + QUERY_TOLERANCE Then Exit Sub
-        ' При аналитическом касании вычитание перенесенных координат может
-        ' дать две ложные близкие точки. В пределах линейного допуска это
-        ' одна точка касания, одинаковая для clipping и material intervals.
-        If Abs(Abs(distance) - radius) <= QUERY_TOLERANCE Then distance = Sgn(distance) * radius
+        roundoff = 0.0000000000000035527136788005 * _
+            ((Abs(bound) + Abs(nx * edge.CenterX) + Abs(ny * edge.CenterY)) / norm + radius + 1#)
+        If Abs(Abs(distance) - radius) <= roundoff Then distance = Sgn(distance) * radius
+        ' Допуск допускает касание снаружи, но не схлопывает настоящую
+        ' секущую изнутри: даже малая глубина дает два разных конца дуги.
+        If Abs(distance) > radius Then distance = Sgn(distance) * radius
         bx = edge.CenterX + nx / norm * distance: by = edge.CenterY + ny / norm * distance
-        offset = Sqr(GeomMax(radius * radius - distance * distance, 0#))
+        offset = Sqr(GeomMax((radius - Abs(distance)) * (radius + Abs(distance)), 0#))
         If PointParameter(edge, bx - ny / norm * offset, by + nx / norm * offset, u) Then AddScalar cuts, count, u
         If PointParameter(edge, bx + ny / norm * offset, by - nx / norm * offset, u) Then AddScalar cuts, count, u
     End If

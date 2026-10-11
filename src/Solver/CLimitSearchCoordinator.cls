@@ -225,11 +225,18 @@ Private Function ExecuteCrackFormationCurrentPath(ByVal request As CLimitSearchR
             Set multiplier = New CLoadMultiplierSearch
             Set ExecuteCrackFormationCurrentPath = multiplier.Execute(request)
         Case "UltimateStrain"
-            Dim ultimate As CUltimateStrainSearch
-            Set ultimate = New CUltimateStrainSearch
-            Set ExecuteCrackFormationCurrentPath = ultimate.ExecuteCrackFormation(request)
+            ' При масштабировании только N сохраняем путь с его постоянными
+            ' моментами. Отрицательная lambda не доказывает NotCracked:
+            ' первая физическая граница подтверждается общим LoadMultiplier.
+            Dim forcePathFallback As Boolean
+            forcePathFallback = request.ForceOnly
+            If Not request.SelectedLoadPath Is Nothing Then
+                forcePathFallback = request.SelectedLoadPath.ScalesN And _
+                    Not request.SelectedLoadPath.ScalesMx And Not request.SelectedLoadPath.ScalesMy
+            End If
+            Set ExecuteCrackFormationCurrentPath = ExecuteUltimateStrategyCrackFormation(request, forcePathFallback)
         Case "Auto"
-            Set ExecuteCrackFormationCurrentPath = ExecuteAutoStrategyCrackFormation(request)
+            Set ExecuteCrackFormationCurrentPath = ExecuteUltimateStrategyCrackFormation(request, True)
         Case Else
             Dim invalidResult As CLimitSearchResult
             Set invalidResult = New CLimitSearchResult
@@ -240,21 +247,22 @@ Private Function ExecuteCrackFormationCurrentPath(ByVal request As CLimitSearchR
     End Select
 End Function
 
-' Внутренняя Auto-стратегия одного crack-пути: сначала прямой критерий
-' UltimateStrain, затем fallback LoadMultiplier, если прямой поиск не дал
-' принятого результата и не завершился физически окончательным состоянием.
-Private Function ExecuteAutoStrategyCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
+' Общая численная политика одного crack-пути: UltimateStrain, затем при
+' разрешенном резерве LoadMultiplier. Auto разрешает резерв для всех путей;
+' явный UltimateStrain - для масштабирования N без масштабирования моментов.
+Private Function ExecuteUltimateStrategyCrackFormation(ByVal request As CLimitSearchRequest, _
+        ByVal allowMultiplierFallback As Boolean) As CLimitSearchResult
     Dim ultimate As CUltimateStrainSearch
     Set ultimate = New CUltimateStrainSearch
 
     Dim firstResult As CLimitSearchResult
     Set firstResult = ultimate.ExecuteCrackFormation(request)
     If firstResult.Succeeded Then
-        Set ExecuteAutoStrategyCrackFormation = firstResult
+        Set ExecuteUltimateStrategyCrackFormation = firstResult
         Exit Function
     End If
-    If request.Problem.StoppedTerminally Then
-        Set ExecuteAutoStrategyCrackFormation = firstResult
+    If request.Problem.StoppedTerminally Or Not allowMultiplierFallback Then
+        Set ExecuteUltimateStrategyCrackFormation = firstResult
         Exit Function
     End If
 
@@ -272,7 +280,7 @@ Private Function ExecuteAutoStrategyCrackFormation(ByVal request As CLimitSearch
     Set secondResult = multiplier.Execute(request)
     If Not secondResult.Succeeded And Len(request.Problem.StopReason) = 0 Then _
         request.Problem.SetStopReasonIfEmpty firstStopReason
-    Set ExecuteAutoStrategyCrackFormation = secondResult
+    Set ExecuteUltimateStrategyCrackFormation = secondResult
 End Function
 
 ' Нормализует пользовательскую строку стратегии без зависимости от Config-reader.

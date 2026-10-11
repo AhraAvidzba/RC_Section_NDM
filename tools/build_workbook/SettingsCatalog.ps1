@@ -30,6 +30,7 @@ function Get-SystemSettingsCatalog {
         @{ Name = "SolverSettings"; Title = "[Настройки решателя НДС]"; Rows = @(
             @("[Общие настройки]", "", "-", ""),
             @("Solver.Method", "Newton", "-", "Метод поиска равновесия НДС. Допустимо только Newton или Secant; пустое или неизвестное значение считается ошибкой исходных данных."),
+            @("Solver.PlateauSlope.Enabled", "Yes", "-", "Yes - небольшой согласованный наклон ненулевых плато бетона и арматуры: Et = 0.0001·E соответствующей ветви. Помогает сходимости, немного меняет напряжения. No - исходные горизонтальные плато. Предельные деформации не меняются."),
             @("Solver.MaxIterations", "80", "шт", "Применяется к Newton и Secant. Максимальное число итераций на ступень нагрузки; увеличение повышает шанс сходимости, но увеличивает время."),
             @("Solver.LoadSteps", "1", "шт", "Применяется к Newton и Secant. Число ступеней приложения нагрузки в прямом НДМ; больше ступеней обычно устойчивее, но медленнее."),
             @("Solver.ToleranceN", "0.0001", "Н", "Применяется к Newton и Secant. Абсолютный допуск равновесия по продольной силе в выбранной INPUT-единице силы; значение переводится во внутренние Н."),
@@ -823,6 +824,13 @@ function Get-SettingInstructionLines {
             "Искомые параметры плоскости деформаций: ε_0, κ_x и κ_y.",
             "Выбор влияет на прямое НДС и пробные состояния поиска LoadMultiplier. UltimateStrain решает отдельную предельную задачу. Пустой или неизвестный метод дает InputErr, а не скрытое переключение."
         ) }
+        "Solver.PlateauSlope.Enabled" { return @($lead) + @(
+            "На Config в общих настройках решателя выберите Yes для стабилизации поиска на горизонтальных плато. No возвращает исходную строго горизонтальную диаграмму и прежние алгоритмы решения.",
+            "При Yes ненулевые плато получают наклон Et = α·E, где α = 0.0001 (0.01%), E - модуль соответствующей ветви: Eb/Ebt для бетона, Esc/Es для арматуры. Это численная настройка программы, не нормативный коэффициент.",
+            "Напряжение в начале плато сохраняется; далее оно немного изменяется вместе с деформацией. Напряжения и касательная жесткость определяются по одной диаграмме. Поэтому несущая способность, образование и раскрытие трещин могут немного измениться; полного совпадения Yes/No не требуется.",
+            "Предельные деформации не изменяются. Выключенный растянутый бетон остается выключенным. Настройка независима от General.DiagramExtension, которое продолжает диаграммы за физическими пределами.",
+            "Контрольные точки и графики материалов на Config учитывают текущее положение переключателя. Results сохраняет фактически использованные диаграммы последнего расчета, включая наклон и разрешенное продолжение. После изменения переключателя выполните расчет заново."
+        ) }
         "Solver.MaxIterations" { return @($lead) + @(
             "Максимальное число итераций на ступени нагрузки.",
             "Если равновесие не найдено за это число итераций, пользовательский статус получает NumFail, а подробная причина остается во внутренней диагностике.",
@@ -1069,7 +1077,7 @@ function Get-SettingInstructionLines {
             "Выберите способ поиска точки образования нормальной трещины. Физический путь задается отдельно столбцом LoadPath в таблице сочетаний на Config.",
             "UltimateStrain напрямую ищет равновесие на первом деформационном пределе. LoadMultiplier подбирает множитель нагрузки λ пробными расчетами и уточняет найденную предельную плоскость. λ = 1 соответствует исходному сочетанию.",
             "Проверяются образование трещины, сжатие бетона, растяжение и сжатие арматуры. Если другой предел достигнут раньше трещины, он не выдается за точку трещинообразования. NotCracked требует подтвержденного допустимого НДС при исходной нагрузке.",
-            "Auto сначала пробует UltimateStrain, при численной неудаче повторяет тот же путь через LoadMultiplier. Неудача поиска точки образования сама по себе не блокирует ширину при пригодном текущем НДС."
+            "Auto сначала пробует UltimateStrain, при численной неудаче повторяет тот же путь через LoadMultiplier. На пути λ*N такой резерв используется и при явно выбранном UltimateStrain: постоянные моменты и эксцентриситет не меняются. Отрицательный λ сам по себе не означает отсутствие трещины. Неудача поиска точки образования не блокирует ширину при пригодном текущем НДС."
         ) }
         "SLS.Crack.ToleranceLambda" { return @($lead) + @(
             "Введите положительное число без единиц. Оно ограничивает разность верхней и нижней пробных λ при поиске точки образования трещины методом LoadMultiplier. λ = 1 соответствует исходному сочетанию.",
@@ -2516,6 +2524,7 @@ function Add-DirectStateMethodologyGuide {
     $row = Add-GuideTitle $Sheet $row "4. Численный метод и параметры итераций" 13
     $row = Add-GuideParagraph $Sheet $row "Solver.Method выбирает самостоятельные схемы Newton или Secant. Newton использует касательную жесткость сечения; Secant уточняет приближенную матрицу чувствительности по предыдущим состояниям."
     $row = Add-GuideParagraph $Sheet $row "Solver.MaxIterations ограничивает число итераций на ступени нагрузки. Solver.LoadSteps задает число ступеней; их увеличение может повысить устойчивость сходимости ценой дополнительного времени."
+    $row = Add-GuideParagraph $Sheet $row "Solver.PlateauSlope.Enabled = Yes добавляет ненулевым плато бетона и арматуры малый согласованный наклон 0.0001·E своей ветви для улучшения сходимости. Это немного меняет напряжения, но не предельные деформации. No возвращает исходные горизонтальные плато; выключенный растянутый бетон не включается."
     $row = Add-GuideParagraph $Sheet $row "Решатель автоматически пробует полный шаг и уменьшает его, если равновесие ухудшается. Расчет ведется относительно центра бетонной сетки; исходные координаты геометрии и точка, к которой относится ε_0 в Results, не меняются."
     $row = Add-GuideParagraph $Sheet $row "На Config задаются метод, допуски равновесия, число ступеней нагрузки и бюджет итераций. Для Secant настройка Solver.SecantMaxRestarts ограничивает число перестроений приближенной матрицы. Малый шаг сам по себе не означает найденное равновесие."
     $row = Add-GuideTitle $Sheet $row "5. Продолжение диаграмм и статус" 13
@@ -3120,6 +3129,10 @@ function Add-StabilityMethodologyGuide {
 # Здесь описываются не настройки Config, а смысл основных выходных диапазонов
 # расчетного снимка, особенно геометрические характеристики бетонного и
 # приведенного сечения.
+function Get-BatchSummaryInstruction {
+    return "Над сводкой показаны время полного расчета и объем поиска: вызовы решателя НДС, его итерации, старты и итерации UltimateStrain. Старт - реально предпринятая попытка с начальной плоскостью; учитываются и неудачные попытки. Счетчики суммируются по всем сочетаниям одного запуска и обнуляются перед следующим."
+}
+
 function Add-ResultsSheetGuide {
     param([object]$Sheet, [int]$StartRow)
 
@@ -3130,6 +3143,7 @@ function Add-ResultsSheetGuide {
     $row++
     $row = Add-GuideTitle $Sheet $row "1. Сводка и подробные проверки" 13
     $row = Add-GuideParagraph $Sheet $row "В верхней сводке одна строка на сочетание: общий статус, прочность, трещины, устойчивость и запасы. Worst означает определяющее сочетание; критерий выбирается на Config в General.WorstCombinationCriterion. N/A не означает успех: проверка может быть выключена, неприменима или не иметь обязательного результата. Причина указана рядом."
+    $row = Add-GuideParagraph $Sheet $row (Get-BatchSummaryInstruction)
     $row = Add-GuideParagraph $Sheet $row "Блок прочности содержит текущее НДС и найденное предельное состояние; блок трещин - трещинообразование, ширину нормальных и проверку продольных трещин; блок устойчивости - продольный изгиб и итоговые усилия. Методики приведены выше."
     $row = Add-GuideParagraph $Sheet $row "ResultComment содержит расчетную ветвь, причину отказа или пропуска, предупреждения и адреса ошибок ввода. Общий комментарий объединяет сообщения отдельных проверок."
     $row++
@@ -3981,7 +3995,7 @@ function Add-CalculationProfilesTable {
 # Служебные точки диаграмм нужны только как независимый контроль Config.
 # Расчетное ядро их не читает: те же формулы реализованы в CMaterialModelProvider.
 function Add-MaterialDiagramControlTables {
-    param([object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
+    param([object]$Sheet, [int]$HeaderRow, [int]$StartColumn, [switch]$CoordinatesOnly)
 
     function New-MaterialParameterRef {
         param([string]$RangeName, [string]$ParameterName, [int]$ValueColumn)
@@ -3994,20 +4008,23 @@ function Add-MaterialDiagramControlTables {
         throw "Не найден параметр $ParameterName в диапазоне $RangeName для контрольных точек диаграмм."
     }
 
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Контрольные точки диаграмм"
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
-    $headers = @("Материал", "ГПС", "Тип", "Ветвь", "ε", "")
-    for ($i = 0; $i -lt $headers.Count; $i++) {
-        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
-        $cell.Value2 = $headers[$i]
-        $cell.Font.Bold = $true
-        $cell.Interior.Color = 14277081
+    if (-not $CoordinatesOnly) {
+        $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = "Контрольные точки диаграмм"
+        $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
+        $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
+        $headers = @("Материал", "ГПС", "Тип", "Ветвь", "ε", "")
+        for ($i = 0; $i -lt $headers.Count; $i++) {
+            $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
+            $cell.Value2 = $headers[$i]
+            $cell.Font.Bold = $true
+            $cell.Interior.Color = 14277081
+        }
+        # Формулы используют INPUT-значения; подпись следует их единице.
+        $stressUnitRef = New-MaterialParameterRef "rngUnitSettings" "Stress" 2
+        $Sheet.Cells.Item($HeaderRow, $StartColumn + 5).Formula = '="σ, "&' + $stressUnitRef
     }
-    # Численные формулы используют исходные INPUT-значения материалов, поэтому
-    # подпись напряжения следует их единице, а не внутренней единице решателя.
-    $stressUnitRef = New-MaterialParameterRef "rngUnitSettings" "Stress" 2
-    $Sheet.Cells.Item($HeaderRow, $StartColumn + 5).Formula = '="σ, "&' + $stressUnitRef
+    $slopeRef = New-MaterialParameterRef "rngSystemSettings" "Solver.PlateauSlope.Enabled" 2
+    $slopeFactor = 'IF({0}="Yes",0.0001,0)' -f $slopeRef
 
     $concreteGroups = @(
         @{ Group = "I"; Rb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.ULS(I)" 2); Rbt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.ULS(I)" 3); Eb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 2); Ebt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 3) },
@@ -4045,18 +4062,18 @@ function Add-MaterialDiagramControlTables {
         $rbt = $g["Rbt"]
         $eb = $g["Eb"]
         $ebt = $g["Ebt"]
-        $rows.Add(@("Concrete", $group, "TwoLine", "Compression", ("=-{0}" -f $concreteEb2), ("=-{0}" -f $rb))) | Out-Null
+        $rows.Add(@("Concrete", $group, "TwoLine", "Compression", ("=-{0}" -f $concreteEb2), ("=-({0}+{1}*{2}*({3}-{4}))" -f $rb, $slopeFactor, $eb, $concreteEb2, $concreteEb1Red))) | Out-Null
         $rows.Add(@("Concrete", $group, "TwoLine", "Compression", ("=-{0}" -f $concreteEb1Red), ("=-{0}" -f $rb))) | Out-Null
         $rows.Add(@("Concrete", $group, "TwoLine", "Zero", "0", "0")) | Out-Null
         $rows.Add(@("Concrete", $group, "TwoLine", "Tension", ("={0}" -f $concreteEbt1Red), ("={0}" -f $rbt))) | Out-Null
-        $rows.Add(@("Concrete", $group, "TwoLine", "Tension", ("={0}" -f $concreteEbt2), ("={0}" -f $rbt))) | Out-Null
-        $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", ("=-{0}" -f $concreteEb2), ("=-{0}" -f $rb))) | Out-Null
+        $rows.Add(@("Concrete", $group, "TwoLine", "Tension", ("={0}" -f $concreteEbt2), ("={0}+{1}*{2}*({3}-{4})" -f $rbt, $slopeFactor, $ebt, $concreteEbt2, $concreteEbt1Red))) | Out-Null
+        $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", ("=-{0}" -f $concreteEb2), ("=-({0}+{1}*{2}*({3}-{4}))" -f $rb, $slopeFactor, $eb, $concreteEb2, $concreteEb0))) | Out-Null
         $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", ("=-{0}" -f $concreteEb0), ("=-{0}" -f $rb))) | Out-Null
         $rows.Add(@("Concrete", $group, "ThreeLine", "Compression", ("=-0.6*{0}/{1}" -f $rb, $eb), ("=-0.6*{0}" -f $rb))) | Out-Null
         $rows.Add(@("Concrete", $group, "ThreeLine", "Zero", "0", "0")) | Out-Null
         $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", ("=0.6*{0}/{1}" -f $rbt, $ebt), ("=0.6*{0}" -f $rbt))) | Out-Null
         $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", ("={0}" -f $concreteEbt0), ("={0}" -f $rbt))) | Out-Null
-        $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", ("={0}" -f $concreteEbt2), ("={0}" -f $rbt))) | Out-Null
+        $rows.Add(@("Concrete", $group, "ThreeLine", "Tension", ("={0}" -f $concreteEbt2), ("={0}+{1}*{2}*({3}-{4})" -f $rbt, $slopeFactor, $ebt, $concreteEbt2, $concreteEbt0))) | Out-Null
     }
     foreach ($g in $steelGroups) {
         $group = $g["Group"]
@@ -4070,12 +4087,12 @@ function Add-MaterialDiagramControlTables {
         $epsS0 = "({0}/{1}+0.002)" -f $rs, $es
         $epsS1 = "(0.9*{0}/{1})" -f $rs, $es
         $epsSPl = "(2*{0}-{1})" -f $epsS0, $epsS1
-        $rows.Add(@("Steel", $group, "TwoLine", "Compression", ("=-{0}" -f $steelTwoLineEsc2), ("=-{0}" -f $rsc))) | Out-Null
+        $rows.Add(@("Steel", $group, "TwoLine", "Compression", ("=-{0}" -f $steelTwoLineEsc2), ("=-({0}+{1}*{2}*({3}-{0}/{2}))" -f $rsc, $slopeFactor, $esc, $steelTwoLineEsc2))) | Out-Null
         $rows.Add(@("Steel", $group, "TwoLine", "Compression", ("=-{0}/{1}" -f $rsc, $esc), ("=-{0}" -f $rsc))) | Out-Null
         $rows.Add(@("Steel", $group, "TwoLine", "Zero", "0", "0")) | Out-Null
         $rows.Add(@("Steel", $group, "TwoLine", "Tension", ("={0}/{1}" -f $rs, $es), ("={0}" -f $rs))) | Out-Null
-        $rows.Add(@("Steel", $group, "TwoLine", "Tension", ("={0}" -f $steelTwoLineEs2), ("={0}" -f $rs))) | Out-Null
-        $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $steelThreeLineEsc2), ("=-1.1*{0}" -f $rsc))) | Out-Null
+        $rows.Add(@("Steel", $group, "TwoLine", "Tension", ("={0}" -f $steelTwoLineEs2), ("={0}+{1}*{2}*({3}-{0}/{2})" -f $rs, $slopeFactor, $es, $steelTwoLineEs2))) | Out-Null
+        $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $steelThreeLineEsc2), ("=-(1.1*{0}+{1}*{2}*({3}-{4}))" -f $rsc, $slopeFactor, $esc, $steelThreeLineEsc2, $epsScPl))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $epsScPl), ("=-1.1*{0}" -f $rsc))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $epsSc0), ("=-{0}" -f $rsc))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Compression", ("=-{0}" -f $epsSc1), ("=-0.9*{0}" -f $rsc))) | Out-Null
@@ -4083,11 +4100,12 @@ function Add-MaterialDiagramControlTables {
         $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $epsS1), ("=0.9*{0}" -f $rs))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $epsS0), ("={0}" -f $rs))) | Out-Null
         $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $epsSPl), ("=1.1*{0}" -f $rs))) | Out-Null
-        $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $steelThreeLineEs2), ("=1.1*{0}" -f $rs))) | Out-Null
+        $rows.Add(@("Steel", $group, "ThreeLine", "Tension", ("={0}" -f $steelThreeLineEs2), ("=1.1*{0}+{1}*{2}*({3}-{4})" -f $rs, $slopeFactor, $es, $steelThreeLineEs2, $epsSPl))) | Out-Null
     }
 
     for ($r = 0; $r -lt $rows.Count; $r++) {
         for ($c = 0; $c -lt $rows[$r].Count; $c++) {
+            if ($CoordinatesOnly -and $c -lt 4) {continue}
             $value = [string]$rows[$r][$c]
             $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c)
             if ($value.StartsWith("=")) {
@@ -4103,10 +4121,12 @@ function Add-MaterialDiagramControlTables {
         }
     }
 
-    $dataRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow + $rows.Count, $StartColumn + 5))
-    $dataRange.Borders.LineStyle = 1
-    $dataRange.Borders.Weight = 2
-    $dataRange.Columns.AutoFit() | Out-Null
+    if (-not $CoordinatesOnly) {
+        $dataRange = $Sheet.Range($Sheet.Cells.Item($HeaderRow, $StartColumn), $Sheet.Cells.Item($HeaderRow + $rows.Count, $StartColumn + 5))
+        $dataRange.Borders.LineStyle = 1
+        $dataRange.Borders.Weight = 2
+        $dataRange.Columns.AutoFit() | Out-Null
+    }
 }
 
 function Remove-MaterialDiagramCharts {
@@ -4522,6 +4542,7 @@ function Apply-SystemSettingsLayout {
         "Stability.PhiLMode" = @("Auto", "PhiL2")
         "Geometry.Type" = @("RoundedRectangle", "HollowRectangle", "Circle", "RectSet")
         "Solver.Method" = @("Newton", "Secant")
+        "Solver.PlateauSlope.Enabled" = @("Yes", "No")
         "General.DiagramExtension" = @("Yes", "No")
         "Capacity.SolutionStrategy" = @("Auto", "UltimateStrain", "LoadMultiplier")
         "Capacity.SearchMethod" = @("Bisection", "Brent", "Secant")
@@ -5364,6 +5385,83 @@ function Update-CrackLambdaSetting {
     $right.LineStyle = -4115
     $Workbook.Application.CutCopyMode = $false
     return @{ Added = $added; Address = $range.Cells.Item($found, 2).Address($false, $false); HelpRow = $anchor }
+}
+
+# Дополняет существующий реестр без пересборки соседних таблиц и их списков.
+# Копирование снизу вверх сохраняет формулы ROW(A...) скрытых источников.
+function Update-SolverPlateauSlopeSetting {
+    param([object]$Workbook)
+    $key = "Solver.PlateauSlope.Enabled"
+    $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
+    $data = $range.Value2
+    $found = 0; $method = 0; $extension = 0
+    for ($row = 2; $row -le $range.Rows.Count; $row++) {
+        if ([string]$data[$row, 1] -ceq $key) {
+            if ($found) { throw "В Config несколько строк $key." }
+            $found = $row
+        }
+        if ([string]$data[$row, 1] -ceq "Solver.Method") { $method = $row }
+        if ([string]$data[$row, 1] -ceq "General.DiagramExtension") { $extension = $row }
+    }
+    if (-not $method -or -not $extension) { throw "В Config нет обязательных настроек решателя." }
+    $definition = @((Get-SystemSettingsCatalog | Where-Object Name -eq "SolverSettings").Rows | Where-Object { $_[0] -ceq $key })
+    if ($definition.Count -ne 1) { throw "Неоднозначное определение $key в каталоге." }
+    $list = [string]$range.Cells.Item($extension, 2).Validation.Formula1
+    $options = @($range.Worksheet.Range($list.Substring(1)).Value2 | ForEach-Object { [string]$_ })
+    if (($options -join '|') -cne 'Yes|No') { throw "Источник списка Yes/No поврежден." }
+    $added = -not [bool]$found
+    if ($added) {
+        $found = $method + 1
+        $rowCount = $range.Rows.Count
+        $formulas = $range.Formula
+        $expanded = $range.Resize($rowCount + 1, $range.Columns.Count)
+        $tail = $expanded.Rows.Item($rowCount + 1).Value2
+        for ($column = 1; $column -le $range.Columns.Count; $column++) {
+            if ([string]$tail[1, $column] -ne '') { throw "Под Config нет свободной строки." }
+        }
+        for ($row = $rowCount; $row -ge $found; $row--) {
+            $target = $expanded.Rows.Item($row + 1)
+            $target.UnMerge() | Out-Null
+            $range.Rows.Item($row).Copy($target) | Out-Null
+            $values = New-Object 'object[,]' 1,$range.Columns.Count
+            for ($column = 1; $column -le $range.Columns.Count; $column++) { $values[0, ($column - 1)] = $formulas[$row, $column] }
+            $target.Formula = $values
+        }
+        $Workbook.Names.Item("rngSystemSettings").RefersTo = "='Config'!" + $expanded.Address()
+        $range = $expanded
+        $range.Rows.Item($found).UnMerge() | Out-Null
+        $range.Rows.Item($method).Copy($range.Rows.Item($found)) | Out-Null
+        $range.Rows.Item($found).Validation.Delete()
+        $range.Rows.Item($found).Hyperlinks.Delete()
+        $range.Cells.Item($found, 2).Value2 = "Yes"
+    }
+    $range.Cells.Item([int]$found, 1).Value2 = $key
+    $range.Cells.Item([int]$found, 3).Value2 = "-"
+    $range.Cells.Item([int]$found, 4).Value2 = [string]$definition[0][3]
+    $cell = $range.Cells.Item([int]$found, 2)
+    $cell.HorizontalAlignment = -4108; $cell.VerticalAlignment = -4108
+    $cell.Validation.Delete(); $cell.Validation.Add(3, 1, 1, $list)
+    $guide = $Workbook.Worksheets.Item("Справка")
+    $last = $guide.UsedRange.Row + $guide.UsedRange.Rows.Count - 1
+    $anchor = 0
+    for ($row = 1; $row -le $last; $row++) {
+        if ([string]$guide.Cells.Item($row, 1).Value2 -ceq $key) { $anchor = $row; break }
+    }
+    if (-not $anchor) {
+        $anchor = $last + 2
+        $next = Add-GuideTitle $guide $anchor $key 13
+        foreach ($line in (Get-SettingInstructionLines $key ([string]$definition[0][3]))) { $next = Add-GuideParagraph $guide $next $line }
+        $help = $guide.Range($guide.Cells.Item($anchor, 1), $guide.Cells.Item($next - 1, 6))
+        $help.RowHeight = 30; $help.Borders.LineStyle = 1
+    }
+    Add-InstructionHyperlink $range.Cells.Item($found, 5) $guide.Name $anchor
+    $range.Rows.Item([int]$found).Borders.LineStyle = -4115
+    $range.Rows.Item([int]$found).Borders.Weight = 2
+    $range.Rows.Item([int]$found).Borders.Color = 0
+    $right = $range.Cells.Item([int]$found, 5).Borders.Item(10)
+    $right.Weight = 2; $right.Color = 0; $right.LineStyle = -4115
+    $Workbook.Application.CutCopyMode = $false
+    return @{ Added = $added; Address = $cell.Address($false, $false); HelpRow = $anchor; Options = $options }
 }
 
 function Add-SystemSettings {

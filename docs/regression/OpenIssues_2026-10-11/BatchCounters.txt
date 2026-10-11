@@ -1,0 +1,44 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\OpenIssues_2026-10-11\Candidate\RC_Section_NDM.xlsm
+SOURCE_SHA256: FCCBD86F6605F8DB5C20F21361635D15A32DA1A3CC6864761692F26BE05747D2
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6bdedadece1c4eefa2f0a6d0116adfff\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=29212; startTicks=639273328814021435
+===== RunBatchWorkStatsTests =====
+SUITE_STARTED: RunBatchWorkStatsTests; 2026-10-11T19:28:06
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159875072; privateBytes=103481344; cpu=886.828125
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162955264; privateBytes=102952960; cpu=594.875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163143680; privateBytes=104095744; cpu=577.75
+EXCEL_AFTER_SUITE: pid=8844; workingSet=157982720; privateBytes=101642240; cpu=563.90625
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161472512; privateBytes=122396672; cpu=566.921875
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157937664; privateBytes=102076416; cpu=574.59375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162852864; privateBytes=103321600; cpu=577.796875
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162275328; privateBytes=102395904; cpu=578.34375
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162398208; privateBytes=123412480; cpu=577.875
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158900224; privateBytes=101810176; cpu=564.578125
+EXCEL_AFTER_SUITE: pid=26240; workingSet=161927168; privateBytes=102191104; cpu=577.328125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158334976; privateBytes=101670912; cpu=566.25
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163090432; privateBytes=104493056; cpu=592.671875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=164974592; privateBytes=104316928; cpu=583.46875
+EXCEL_AFTER_SUITE: pid=29212; workingSet=132894720; privateBytes=85700608; cpu=6.171875
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166019072; privateBytes=111706112; cpu=586.78125
+OK: batch.workStats.actualCalls
+OK: batch.workStats.actualStarts
+OK: batch.workStats.actualIterations
+OK: batch.workStats.actualUltimateIterations
+OK: batch.workStats.independentSnapshot
+OK: batch.workStats.outputCalls; actual=2.; expected=2.
+OK: batch.workStats.outputStarts; actual=2.; expected=2.
+OK: batch.workStats.outputIterations; actual=5.; expected=5.
+OK: batch.workStats.outputUltimateIterations; actual=13.; expected=13.
+OK: batch.workStats.writerNoSolve
+OK: batch.workStats.noWrap
+OK: batch.workStats.labelMerge
+OK: batch.workStats.rightBorder
+OK: batch.workStats.newRunNotAccumulated
+TOTAL_BATCH_WORK_STATS: passed=14; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_6bdedadece1c4eefa2f0a6d0116adfff\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunBatchWorkStatsTests; 2026-10-11T19:28:08
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True
