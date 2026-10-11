@@ -61,6 +61,18 @@ Public Sub AddPath(ByVal path As CGeometryPath)
     mDefinition.AddPath path
 End Sub
 
+Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double) As CGeometryPath
+    RequireOpen
+    Set RectanglePath = mQuery.AdjacentRectangles(pathID, Array(Array(x, y, width, height)))
+    mDefinition.AddPath RectanglePath
+End Function
+
+Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As Variant) As CGeometryPath
+    RequireOpen
+    Set AdjacentRectangles = mQuery.AdjacentRectangles(pathID, rectangles)
+    mDefinition.AddPath AdjacentRectangles
+End Function
+
 Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)
     RequireOpen
     mDefinition.AddGroup groupID, pathIDs
@@ -157,11 +169,31 @@ Public Sub HorizontalExtent(ByVal annotationID As String, ByVal target As String
     mDefinition.AddAnnotation value
 End Sub
 
+Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String, _
+        ByVal startX As Double, ByVal endX As Double, ByVal placementY As Double, _
+        Optional ByVal normalY As Double = 1#, Optional ByVal comment As String = "")
+    RequireOpen
+    Dim value As TSectionAnnotation
+    value.AnnotationID = annotationID: value.Kind = "BetweenPoints": value.Name = name
+    value.StartX = startX: value.EndX = endX: value.StartY = placementY: value.EndY = placementY
+    value.NormalY = normalY: value.Value = endX - startX: value.Comment = comment
+    mDefinition.AddAnnotation value
+End Sub
+
 Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As Double, ByVal normalY As Double, _
         Optional ByVal axisDistance As Double = 0#)
     RequireOpen
     Dim value As TSectionAnnotation
     value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarLabel": value.Target = target: value.Name = groupID
+    value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance
+    mDefinition.AddAnnotation value
+End Sub
+
+Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, _
+        Optional ByVal axisDistance As Double = 0#)
+    RequireOpen
+    Dim value As TSectionAnnotation
+    value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarRowLabel": value.Target = ruleID: value.Name = groupID
     value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance
     mDefinition.AddAnnotation value
 End Sub

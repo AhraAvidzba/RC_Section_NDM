@@ -15,6 +15,18 @@ function TextHash([string]$value) {
     try {return [BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($value))).Replace('-','')}
     finally {$sha.Dispose()}
 }
+function ComponentCounts($inventory) {
+    $counts=[ordered]@{StandardModules=0;Classes=0;DocumentModules=0;Other=0}
+    foreach ($component in $inventory.Values) {
+        switch ([int]$component.Type) {
+            1 {$counts.StandardModules++}
+            2 {$counts.Classes++}
+            100 {$counts.DocumentModules++}
+            default {$counts.Other++}
+        }
+    }
+    return $counts
+}
 function Normalize-IdentifierCase([string]$body) {
     # VBE changes identifier capitalization across the entire project at compile.
     # Keep literals, comments, punctuation and whitespace exact.
@@ -84,7 +96,9 @@ try {
     $unexpected=@($changes | Where-Object {-not $_.Allowed})
     $sourceMismatches=@($sourceChecks | Where-Object {-not $_.Matches})
     for ($i=0;$i -lt $paths.Count;$i++) {if ((Get-FileHash -LiteralPath $paths[$i]).Hash -cne $before[$i]) {throw 'Read-only comparison changed a workbook.'}}
-    $result=[ordered]@{Status=$(if ($unexpected.Count -or $sourceMismatches.Count) {'FAIL'} else {'PASS'});ExcelVersion=[string]$excel.Version;ExcelBuild=[string]$excel.Build;BaselineSHA256=$before[0];ActualSHA256=$before[1];Components=$inventories[0].Count;ActualComponents=$inventories[1].Count;Changes=$changes;SourceChecks=$sourceChecks;SourceMismatchCount=$sourceMismatches.Count;UnexpectedCount=$unexpected.Count;ReadOnly=$true}
+    $added=@($changes | Where-Object {-not $_.Baseline} | ForEach-Object {[ordered]@{Name=$_.Name;Type=$_.Actual.Type}})
+    $removed=@($changes | Where-Object {-not $_.Actual} | ForEach-Object {[ordered]@{Name=$_.Name;Type=$_.Baseline.Type}})
+    $result=[ordered]@{Status=$(if ($unexpected.Count -or $sourceMismatches.Count) {'FAIL'} else {'PASS'});ExcelVersion=[string]$excel.Version;ExcelBuild=[string]$excel.Build;BaselineSHA256=$before[0];ActualSHA256=$before[1];Components=$inventories[0].Count;ActualComponents=$inventories[1].Count;BaselineComponentCounts=(ComponentCounts $inventories[0]);ActualComponentCounts=(ComponentCounts $inventories[1]);AddedComponents=$added;RemovedComponents=$removed;Changes=$changes;SourceChecks=$sourceChecks;SourceMismatchCount=$sourceMismatches.Count;UnexpectedCount=$unexpected.Count;ReadOnly=$true}
     $result | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $root $ReportPath) -Encoding UTF8
     Write-Output ('BASELINE_CODE_COMPARISON: status='+$result.Status+'; components='+$result.Components+'; changes='+$changes.Count+'; unexpected='+$unexpected.Count)
     if ($unexpected.Count) {throw ('Unexpected code changes: '+(($unexpected | ForEach-Object Name) -join ', '))}

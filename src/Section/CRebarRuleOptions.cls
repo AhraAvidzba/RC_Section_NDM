@@ -22,6 +22,8 @@ Public DirectionX As Double
 Public DirectionY As Double
 Public SkipMissingProjection As Boolean
 Public Publication As ERebarPublication
+Public PositionOrder As ERebarPositionOrder
+Public Coincidence As ERebarCoincidence
 Public PlacementCheck As ERebarPlacementCheck
 Public SourcePrefix As String
 Public SourceSuffix As String
@@ -33,6 +35,8 @@ Private Sub Class_Initialize()
     EndMode = IncludeBoth
     RemainderPlacement = RemainderCenter
     Publication = PublishByRule
+    PositionOrder = AlongPath
+    Coincidence = RejectCoincidence
     PlacementCheck = CheckCenter
 End Sub
 
@@ -44,6 +48,7 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.DirectionX = DirectionX: rule.DirectionY = DirectionY
     rule.SkipMissingProjection = SkipMissingProjection
     rule.Publication = Publication: rule.PlacementCheck = PlacementCheck
+    rule.PositionOrder = PositionOrder: rule.Coincidence = Coincidence
     rule.SourcePrefix = SourcePrefix: rule.SourceSuffix = SourceSuffix
     rule.AnnotationGroup = AnnotationGroup: rule.Comment = Comment
     rule.SourceReference = SourceReference

@@ -251,6 +251,99 @@ Finished:
     DumpCircleGeometryMatrix = result
 End Function
 
+' ДЛЯ ТЕСТОВ: ввод расширенной RectSet-матрицы без сборки формы.
+Public Sub ConfigureRectSetScenario(ByVal fixture As String, ByVal scenario As Long)
+    Dim table As Object, settings As CSystemSettingsReader, units As CUnitSystem, factor As Double
+    Dim i As Long, row As Long, extra As Long, count As Long
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    factor = units.InputLengthToInternal(1#)
+    Set table = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
+    If scenario = 0 Then Exit Sub
+    For i = 1 To 8
+        row = 10 + i: extra = 20 + i
+        If fixture = "Rectangle" And i > 4 Then GoTo InactiveSide
+        count = 5
+        If scenario = 2 Then count = 3
+        If scenario = 4 Then count = 1
+        table.Cells(row, 4).Value2 = count
+        table.Cells(row, 5).Value2 = 70# / factor
+        table.Cells(row, 6).Value2 = 90# / factor
+        table.Cells(extra, 2).Value2 = IIf(scenario = 4, 0#, 16# / factor)
+        table.Cells(extra, 5).Value2 = 12# / factor
+        table.Cells(extra, 3).Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 0), "SideBySide", "Stacked")
+        table.Cells(extra, 6).Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 1), "SideBySide", "Stacked")
+        table.Cells(extra, 4).Value2 = IIf(scenario = 2 Or i Mod 2 = 0, "EverySecondBar", "EachBar")
+        table.Cells(extra, 7).Value2 = IIf(scenario = 4 Or i Mod 2 = 1, "EverySecondBar", "EachBar")
+        If scenario = 4 Then table.Cells(extra, 3).Value2 = "inactive value"
+InactiveSide:
+    Next i
+    If scenario = 5 Then
+        table.Cells(14, 4).Value2 = 0
+        table.Cells(14, 2).Value2 = "inactive value"
+        table.Cells(14, 5).Value2 = "inactive value"
+        table.Cells(24, 2).Value2 = "inactive value"
+        If fixture = "Rectangle" Then
+            table.Cells(8, 3).Value2 = "inactive value": table.Cells(8, 4).Value2 = "inactive value"
+            For i = 15 To 18: table.Cells(i, 3).Value2 = "inactive value": Next i
+        End If
+        If fixture <> "TwoRectangles" Then table.Cells(4, 2).Value2 = "inactive value"
+    End If
+    ThisWorkbook.Worksheets("Config").Calculate
+End Sub
+
+' ДЛЯ ТЕСТОВ: неизменный старый pipeline в отдельной baseline-книге.
+Public Function DumpRectSetGeometryMatrix() As String
+    Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
+        For scenario = 0 To 5
+            config.Formula = saved
+            ConfigureShapeFixture "Circle": ConfigureShapeFixture CStr(fixture)
+            ConfigureRectSetScenario CStr(fixture), scenario
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set registry = New CSectionTypeRegistry: Set model = registry.BuildGeneratedModel(settings, units)
+            result = result & ShapeSnapshot("RectMatrix." & CStr(fixture) & ".case" & CStr(scenario), model)
+        Next scenario
+    Next fixture
+    GoTo Finished
+Failed:
+    result = result & "FAIL: RectSet baseline matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    DumpRectSetGeometryMatrix = result
+End Function
+
+' ДЛЯ ТЕСТОВ: одинаковый AddBar benchmark без Excel/solver внутри замера.
+Public Function DumpRebarLayoutPerformance() As String
+    Dim count As Variant, repeat As Long, i As Long, layout As CRebarLayout, started As Double, elapsed As Double
+    Dim result As String
+    On Error GoTo Failed
+    For Each count In Array(1000, 2000, 4000, 8000)
+        For repeat = 1 To 3
+            Set layout = New CRebarLayout
+            started = Timer
+            For i = 1 To CLng(count)
+                layout.AddBar "P" & CStr(i), 1000000# + CDbl(i) * 37#, -1000000# + CDbl(i Mod 17) * 43#, 20#, 0#, "Rebar"
+            Next i
+            elapsed = Timer - started
+            If elapsed < 0# Then elapsed = elapsed + 86400#
+            result = result & "LAYOUT_PERF|" & CStr(count) & "|" & CStr(repeat) & "|" & Replace$(CStr(elapsed), ",", ".") & "|" & CStr(layout.Count) & vbCrLf
+        Next repeat
+    Next count
+    DumpRebarLayoutPerformance = result
+    Exit Function
+Failed:
+    DumpRebarLayoutPerformance = result & "FAIL: layout performance; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+End Function
+
 ' ДЛЯ ТЕСТОВ: расчетный эталон до/после рефакторинга без изменения Results.
 ' Три назначения материалов и четыре направления нагрузки на каждую форму;
 ' затем общий пакет несущей способности, трещинообразования и ширины СП 35.

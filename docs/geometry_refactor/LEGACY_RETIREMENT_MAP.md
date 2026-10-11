@@ -40,3 +40,13 @@ Custom: поиск по src/tests/tools/AGENTS/README для CustomSection/rngCu
 CGeometryCustom/CSectionRecipeCustom и по полным исходным NativeInventory,
 Config/Results JSON не дал совпадений. Пользовательские данные не удалялись.
 Повторить проверку полного итогового VBProject/UI при финальной сборке.
+
+Локальный RectSet: три стандартные формы и 18 вариантов проходят общий
+recipe/build, SP35/SP63 и native preview. Старые три RectSet-компонента
+пока ACTIVE только в прежнем production/baseline-маршруте. Новый рецепт
+их не использует. Удаление выполняется после оставшихся семей.
+
+Итоговый счетчик: NativeInventory baseline содержит 98 Type=2, 34 Type=1
+и 5 Type=100. Verify-GeometryBaselineCode теперь сохраняет отдельные counts
+и поименные AddedComponents/RemovedComponents; итоговые числа следует взять
+из проверки конечной книги, а не суммировать временные milestone-коммиты.

@@ -818,6 +818,55 @@ Public Function RegionFromPath(ByVal path As CGeometryPath) As CConcreteRegion
     Set RegionFromPath = BoundaryRegion(edges, path.SegmentCount)
 End Function
 
+' Точное объединение смежных неперекрывающихся прямоугольников.
+' Это не Boolean Union произвольных пересекающихся фигур: внутренние
+' пересечения запрещены, общий результат должен иметь одну внешнюю границу.
+Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As Variant) As CGeometryPath
+    If Not IsArray(rectangles) Then GeometryError "Прямоугольники должны быть массивом четверок x/y/B/H."
+    Dim bounds() As Double, n As Long, i As Long, j As Long, rect As Variant, start As Long
+    n = UBound(rectangles) - LBound(rectangles) + 1
+    If n <= 0 Then GeometryError "Не задан ни один прямоугольник."
+    ReDim bounds(1 To n, 1 To 4)
+    For i = 1 To n
+        rect = rectangles(LBound(rectangles) + i - 1)
+        If Not IsArray(rect) Then GeometryError "Прямоугольник должен содержать x/y/B/H."
+        start = LBound(rect)
+        If UBound(rect) - start <> 3 Then GeometryError "Прямоугольник должен содержать четыре числа."
+        bounds(i, 1) = CDbl(rect(start)): bounds(i, 2) = CDbl(rect(start + 1))
+        If CDbl(rect(start + 2)) <= 0# Or CDbl(rect(start + 3)) <= 0# Then GeometryError "Ширина и высота прямоугольника должны быть положительными."
+        bounds(i, 3) = bounds(i, 1) + CDbl(rect(start + 2))
+        bounds(i, 4) = bounds(i, 2) + CDbl(rect(start + 3))
+        For j = 1 To i - 1
+            If GeomMin(bounds(i, 3), bounds(j, 3)) - GeomMax(bounds(i, 1), bounds(j, 1)) > QUERY_TOLERANCE And _
+                GeomMin(bounds(i, 4), bounds(j, 4)) - GeomMax(bounds(i, 2), bounds(j, 2)) > QUERY_TOLERANCE Then _
+                GeometryError "Объединение допускает только смежные прямоугольники без пересечения внутренних площадей."
+        Next j
+    Next i
+    Dim raw() As TRegionEdge, count As Long, edge As TRegionEdge, boundary() As TRegionEdge, boundaryCount As Long
+    Dim region As CConcreteRegion, result As CGeometryPath
+    For i = 1 To n
+        edge.Sweep = 0#: edge.LoopID = i
+        edge.X1 = bounds(i, 1): edge.Y1 = bounds(i, 2): edge.X2 = bounds(i, 3): edge.Y2 = bounds(i, 2)
+        AppendEdge raw, count, edge
+        edge.X1 = bounds(i, 3): edge.Y1 = bounds(i, 2): edge.X2 = bounds(i, 3): edge.Y2 = bounds(i, 4)
+        AppendEdge raw, count, edge
+        edge.X1 = bounds(i, 3): edge.Y1 = bounds(i, 4): edge.X2 = bounds(i, 1): edge.Y2 = bounds(i, 4)
+        AppendEdge raw, count, edge
+        edge.X1 = bounds(i, 1): edge.Y1 = bounds(i, 4): edge.X2 = bounds(i, 1): edge.Y2 = bounds(i, 2)
+        AppendEdge raw, count, edge
+    Next i
+    NormalizeBoundary raw, count, boundary, boundaryCount
+    Set region = BoundaryRegion(boundary, boundaryCount)
+    If region.LoopCount <> 1 Then GeometryError "Прямоугольники должны образовывать одну связную область без отверстий."
+    region.CopyEdges boundary, boundaryCount
+    Set result = New CGeometryPath: result.Initialize pathID
+    For i = 1 To boundaryCount
+        result.AddLine pathID & "." & CStr(i), boundary(i).X1, boundary(i).Y1, boundary(i).X2, boundary(i).Y2
+    Next i
+    result.Seal True
+    Set AdjacentRectangles = result
+End Function
+
 ' Изолированный разбор компактного программного ввода: никакого Excel.
 Private Sub ReadPolygonInput(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, _
         ByVal vertexIDs As Variant, ByRef points() As TPoint2D, ByRef radius() As Double, ByRef names() As String, ByRef count As Long)

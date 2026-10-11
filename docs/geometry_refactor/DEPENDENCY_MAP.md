@@ -54,3 +54,22 @@ Registry/reader/layout потребители пока прежние; retiremen
 
 Старый test SourceSnapshot сохранен только для baseline/немигрированных
 семейств. Удаляется вместе с остальными замененными потребителями до приемки.
+
+Сквозной development-маршрут RectSet:
+- Одна регистрация CSectionRecipeRectSet; одна таблица rngRectSetGeometry.
+- Рецепт описывает Rectangle/LSection/TwoRectangles и восемь граней, без
+  CGeometryRectSet/CRectSetRebarLayoutBuilder/CRectSetAnnotationBuilder.
+- Общий query.AdjacentRectangles -> NormalizeBoundary/BoundaryRegion;
+  только смежные неперекрывающиеся прямоугольники, без нового Boolean engine.
+- CRebarRuleExecutor -> отдельные ordinal/publication rank, явные coincidence
+  policies и preflight. CRebarLayout -> точная проверка кандидатов по индексу,
+  геометрическая capacity, physical bar/memberships.
+- CSectionAnnotationBuilder -> общий RuleEnds для подписи ряда; существующий
+  форматировщик считает реальные стержни только по группе владельца;
+  дополнительные memberships сохраняют трассировку, но не входят в подписи.
+- Compare-GeometrySnapshots записывает bijection только source/layout имен
+  сгенерированной арматуры. Контурные роли, ID модели и физические поля не
+  переименовываются и не исключаются из сравнения.
+
+Production-ветви registry/reader пока прежние; все заменяемые узлы остаются
+ACTIVE в retirement-map до переноса остальных семейств и удаления потребителей.

@@ -32,7 +32,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Set modelBuilder = New CSectionModelBuilder: Set model = modelBuilder.BuildFromGenerated(mesh, rebars)
     definition.WriteContours model.Contours
     Set annotationBuilder = New CSectionAnnotationBuilder
-    annotationBuilder.Build definition, rebars, model.Annotations
+    annotationBuilder.Build definition, rebars, model.Annotations, rules
     Set mMesh = mesh: Set mRebars = rebars: Set mRules = rules
     Set Build = model
 End Function

@@ -122,6 +122,39 @@ def compare(expected, actual, exact=False, skip_input=False):
     return errors
 
 
+def map_generated_rebar_names(expected, actual):
+    """Record one-to-one provenance names; never alias contours or model IDs."""
+    column = 3 + FIELDS["BAR"].index("source")
+    before = {tuple(row[:3]): row for row in expected if row[1] == "BAR"}
+    after = {tuple(row[:3]): row for row in actual if row[1] == "BAR"}
+    if before.keys() != after.keys():
+        raise ValueError("Generated name mapping requires the same physical bar IDs")
+    aliases, used_before, used_after, proof = {}, set(), set(), []
+    for key, left in before.items():
+        right = after[key]
+        old, new = decode(left[column]), decode(right[column])
+        if not isinstance(old, str) or not isinstance(new, str) or not old or not new:
+            raise ValueError(f"Missing generated provenance name: {key}")
+        old_key, new_key = (key[0], old), (key[0], new)
+        if old_key in used_before or new_key in used_after:
+            raise ValueError(f"Ambiguous generated provenance name: {key}")
+        used_before.add(old_key)
+        used_after.add(new_key)
+        aliases[new_key] = old
+        if old != new:
+            proof.append({"fixture": key[0], "bar_id": key[2], "before": old, "after": new})
+    mapped = [row[:] for row in actual]
+    for row in mapped:
+        if row[1] == "BAR":
+            row[column] = before[tuple(row[:3])][column]
+        elif row[1] == "LAYOUT":
+            key = (row[0], row[2])
+            if key not in aliases:
+                raise ValueError(f"Layout has no corresponding physical bar: {key}")
+            row[2] = aliases[key]
+    return mapped, proof
+
+
 def mutation_tests(records):
     checks = []
     for kind, field in (("CONCRETE", "x"), ("BAR", "diameter"), ("CONTOUR", "role")):
@@ -151,6 +184,7 @@ def main():
     parser.add_argument("--skip-input", action="store_true")
     parser.add_argument("--fixture", action="append", default=[], help="Compare only these explicitly selected fixtures")
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--map-generated-rebar-names", action="store_true", help="Record a bijection of bar source/layout names; compare every geometric and physical field unchanged")
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     expected, actual = read_snapshot(args.baseline), read_snapshot(args.actual)
@@ -162,11 +196,15 @@ def main():
                 raise ValueError(f"Missing requested fixtures in {label}: {sorted(missing)}")
         expected = [row for row in expected if row[0] in requested]
         actual = [row for row in actual if row[0] in requested]
+    name_mapping = []
+    if args.map_generated_rebar_names:
+        actual, name_mapping = map_generated_rebar_names(expected, actual)
     errors = compare(expected, actual, args.exact, args.skip_input)
     payload = {
         "status": "FAIL" if errors else "PASS", "baseline": str(args.baseline), "actual": str(args.actual),
         "exact": args.exact, "skip_input": args.skip_input, "records": len(actual),
         "requested_fixtures": args.fixture,
+        "generated_rebar_name_mapping": name_mapping,
         "fixtures": sorted({row[0] for row in actual}), "errors": errors,
         "mutation_tests": mutation_tests(expected) if args.self_test else [],
     }

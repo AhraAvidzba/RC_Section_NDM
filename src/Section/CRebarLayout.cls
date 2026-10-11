@@ -25,6 +25,10 @@ Private mSteelClass() As String
 Private mComment() As String
 Private mBarAnnotationGroupName() As String
 Private mCount As Long
+Private mCapacity As Long
+Private mIDs As Object
+Private mPositionBuckets As Object
+Private mMemberships As Object
 
 Private mAnnotationGroupName() As String
 Private mAnnotationStartX() As Double
@@ -49,6 +53,10 @@ Public Sub Clear()
     Erase mComment
     Erase mBarAnnotationGroupName
     mCount = 0
+    mCapacity = 0
+    Set mIDs = Nothing
+    Set mPositionBuckets = Nothing
+    Set mMemberships = Nothing
 
     Erase mAnnotationGroupName
     Erase mAnnotationStartX
@@ -82,27 +90,16 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
     End If
     If actualArea <= 0# Then Err.Raise vbObjectError + 3102, "CRebarLayout", "Площадь арматуры должна быть положительной."
 
-    Dim i As Long
-    For i = 1 To mCount
-        If StrComp(mBarID(i), barName, vbTextCompare) = 0 Then Err.Raise vbObjectError + 3103, "CRebarLayout", "Дублирующийся ID стержня: " & barName
-        If Abs(mX(i) - xCoord) <= GEOM_TOLERANCE And Abs(mY(i) - yCoord) <= GEOM_TOLERANCE Then
-            Err.Raise vbObjectError + 3104, "CRebarLayout", "Дублирующиеся координаты стержней."
-        End If
-    Next i
+    EnsureIndexes
+    If mIDs.Exists(barName) Then Err.Raise vbObjectError + 3103, "CRebarLayout", "Дублирующийся ID стержня: " & barName
+    If FindBarAt(xCoord, yCoord) > 0 Then Err.Raise vbObjectError + 3104, "CRebarLayout", "Дублирующиеся координаты стержней."
 
     If Not geometry Is Nothing Then
         If Not geometry.ContainsPoint(xCoord, yCoord) Then Err.Raise vbObjectError + 3105, "CRebarLayout", "Центр стержня находится вне бетонного сечения."
     End If
 
+    EnsureCapacity
     mCount = mCount + 1
-    ReDim Preserve mBarID(1 To mCount)
-    ReDim Preserve mX(1 To mCount)
-    ReDim Preserve mY(1 To mCount)
-    ReDim Preserve mDiameter(1 To mCount)
-    ReDim Preserve mArea(1 To mCount)
-    ReDim Preserve mSteelClass(1 To mCount)
-    ReDim Preserve mComment(1 To mCount)
-    ReDim Preserve mBarAnnotationGroupName(1 To mCount)
 
     mBarID(mCount) = barName
     mX(mCount) = xCoord
@@ -112,7 +109,108 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
     mSteelClass(mCount) = steelClass
     mComment(mCount) = comment
     mBarAnnotationGroupName(mCount) = Trim$(annotationGroupName)
+    mIDs.Add barName, mCount
+    IndexPosition mCount
+    AddMembership mCount, annotationGroupName
 End Sub
+
+Private Sub EnsureIndexes()
+    If Not mIDs Is Nothing Then Exit Sub
+    Set mIDs = CreateObject("Scripting.Dictionary")
+    mIDs.CompareMode = vbTextCompare
+    Set mPositionBuckets = CreateObject("Scripting.Dictionary")
+    Set mMemberships = CreateObject("Scripting.Dictionary")
+End Sub
+
+Private Sub EnsureCapacity()
+    If mCount < mCapacity Then Exit Sub
+    mCapacity = CLng(GeomMin(GEOM_MAX_REBAR_COUNT, GeomMax(16#, CDbl(mCapacity) * 2#)))
+    ReDim Preserve mBarID(1 To mCapacity)
+    ReDim Preserve mX(1 To mCapacity)
+    ReDim Preserve mY(1 To mCapacity)
+    ReDim Preserve mDiameter(1 To mCapacity)
+    ReDim Preserve mArea(1 To mCapacity)
+    ReDim Preserve mSteelClass(1 To mCapacity)
+    ReDim Preserve mComment(1 To mCapacity)
+    ReDim Preserve mBarAnnotationGroupName(1 To mCapacity)
+End Sub
+
+' Квантование служит только индексом кандидатов. Решение о совпадении
+' всегда принимается по исходным координатам с прежним GEOM_TOLERANCE.
+Private Function PositionBin(ByVal coordinate As Double) As Double
+    If Abs(coordinate) > 1E+290 Then
+        PositionBin = coordinate
+    Else
+        PositionBin = Int(coordinate / (4# * GEOM_TOLERANCE))
+    End If
+End Function
+
+Private Function PositionKey(ByVal binX As Double, ByVal binY As Double) As String
+    PositionKey = Format$(binX, "0") & "|" & Format$(binY, "0")
+End Function
+
+Private Sub IndexPosition(ByVal index As Long)
+    Dim key As String, bucket As Collection
+    key = PositionKey(PositionBin(mX(index)), PositionBin(mY(index)))
+    If mPositionBuckets.Exists(key) Then
+        Set bucket = mPositionBuckets(key)
+    Else
+        Set bucket = New Collection
+        mPositionBuckets.Add key, bucket
+    End If
+    bucket.Add index
+End Sub
+
+' Поиск в соседних ячейках покрывает точки по обе стороны границы bucket.
+' При нескольких кандидатах владелец - первый опубликованный стержень.
+Public Function FindBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Long
+    If mCount = 0 Then Exit Function
+    Dim bx As Double, by As Double, dx As Long, dy As Long, key As String
+    Dim bucket As Collection, candidate As Variant, index As Long
+    bx = PositionBin(xCoord): by = PositionBin(yCoord)
+    For dx = -1 To 1
+        For dy = -1 To 1
+            key = PositionKey(bx + dx, by + dy)
+            If mPositionBuckets.Exists(key) Then
+                Set bucket = mPositionBuckets(key)
+                For Each candidate In bucket
+                    index = CLng(candidate)
+                    If Abs(mX(index) - xCoord) <= GEOM_TOLERANCE And Abs(mY(index) - yCoord) <= GEOM_TOLERANCE Then
+                        If FindBarAt = 0 Or index < FindBarAt Then FindBarAt = index
+                    End If
+                Next candidate
+            End If
+        Next dy
+    Next dx
+End Function
+
+' Membership не создает второй физический стержень и не меняет его площадь.
+Public Sub AddMembership(ByVal index As Long, ByVal groupName As String)
+    CheckIndex index
+    groupName = Trim$(groupName)
+    If Len(groupName) = 0 Then Exit Sub
+    EnsureIndexes
+    Dim groups As Object, key As String
+    key = CStr(index)
+    If mMemberships.Exists(key) Then
+        Set groups = mMemberships(key)
+    Else
+        Set groups = CreateObject("Scripting.Dictionary")
+        groups.CompareMode = vbTextCompare
+        mMemberships.Add key, groups
+    End If
+    If Not groups.Exists(groupName) Then groups.Add groupName, True
+End Sub
+
+Public Property Get BarMemberships(ByVal index As Long) As Variant
+    CheckIndex index
+    EnsureIndexes
+    If mMemberships.Exists(CStr(index)) Then
+        BarMemberships = mMemberships(CStr(index)).Keys
+    Else
+        BarMemberships = Array()
+    End If
+End Property
 
 Public Property Get Count() As Long
     Count = mCount
@@ -121,13 +219,7 @@ End Property
 ' Общий поиск уже созданного стержня для сопряжений граней и проекций.
 ' AddBar по-прежнему отклоняет дубли; решение пропустить позицию принимает builder.
 Public Function HasBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Boolean
-    Dim i As Long
-    For i = 1 To mCount
-        If Abs(mX(i) - xCoord) <= GEOM_TOLERANCE And Abs(mY(i) - yCoord) <= GEOM_TOLERANCE Then
-            HasBarAt = True
-            Exit Function
-        End If
-    Next i
+    HasBarAt = (FindBarAt(xCoord, yCoord) > 0)
 End Function
 
 Public Property Get BarID(ByVal index As Long) As String

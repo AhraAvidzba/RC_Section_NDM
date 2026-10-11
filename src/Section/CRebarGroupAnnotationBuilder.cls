@@ -12,9 +12,9 @@ Option Explicit
 ' ==========================================================================
 ' Сборка групповых подписей арматуры
 ' ==========================================================================
-' Класс объединяет стержни одной смысловой грани в компактный текст вида
-' 6Ø32 или 6Ø32 + 3Ø20. Он не ищет стержни по координатам: принадлежность
-' к грани должна прийти от конкретного rebar builder-а.
+' Класс объединяет стержни смысловой группы в компактную подпись по диаметрам.
+' Для подписи используется только группа владельца физического стержня.
+' Дополнительные смысловые связи совпавшей позиции не увеличивают подписи.
 
 ' Дополняет существующие аннотации подписями по готовым смысловым группам
 ' и диаметрам. Контуры не очищает, принадлежность стержней к граням не меняет.
@@ -30,7 +30,7 @@ Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars
     Dim i As Long
     For i = 1 To rebars.Count
         Dim groupName As String
-        groupName = Trim$(rebars.BarAnnotationGroupName(i))
+        groupName = rebars.BarAnnotationGroupName(i)
         If Len(groupName) > 0 Then
             Dim diameterText As String
             diameterText = FormatNumberInvariant(rebars.Diameter(i))
@@ -70,6 +70,8 @@ Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars
                 rebars.AnnotationStartX(i), rebars.AnnotationStartY(i), _
                 rebars.AnnotationEndX(i), rebars.AnnotationEndY(i), _
                 rebars.AnnotationNormalX(i), rebars.AnnotationNormalY(i), CStr(labels(groupName))
+            ' Несколько привязок одной группы не создают повторную подпись.
+            labels.Remove groupName
         End If
     Next i
 End Sub

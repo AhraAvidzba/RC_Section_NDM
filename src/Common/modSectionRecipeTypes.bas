@@ -36,6 +36,17 @@ Public Enum ERebarPublication
     PublishPerSourcePosition = 2
 End Enum
 
+Public Enum ERebarPositionOrder
+    AlongPath = 1
+    FromPathMiddle = 2
+End Enum
+
+Public Enum ERebarCoincidence
+    RejectCoincidence = 1
+    MergeIdentical = 2
+    KeepPublishedOwner = 3
+End Enum
+
 Public Enum ERebarPlacementCheck
     CheckCenter = 1
     CheckFullDisk = 2
@@ -71,6 +82,8 @@ Public Type TRebarRule
     DirectionY As Double
     SkipMissingProjection As Boolean
     Publication As ERebarPublication
+    PositionOrder As ERebarPositionOrder
+    Coincidence As ERebarCoincidence
     PlacementCheck As ERebarPlacementCheck
     SourcePrefix As String
     SourceSuffix As String
@@ -111,6 +124,7 @@ Public Type TRebarPosition
     RuleIndex As Long
     RootRuleIndex As Long
     RootOrdinal As Long
+    RootPublicationRank As Long
     SourceOrdinal As Long
     SourcePositionID As String
     PathID As String

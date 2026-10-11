@@ -11,13 +11,17 @@ Option Explicit
 
 ' Общая интерпретация модельных измерений и привязок. Оформление и положение
 ' в пикселях остаются в существующих layout/plotter; контуры не меняются.
-Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarLayout, ByVal annotations As CSectionAnnotations)
+Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarLayout, ByVal annotations As CSectionAnnotations, _
+        Optional ByVal rules As CRebarRuleExecutor = Nothing)
     Dim value As TSectionAnnotation, i As Long, minX As Double, maxX As Double, minY As Double, maxY As Double
     annotations.Clear
     For i = 1 To definition.AnnotationCount
         definition.CopyAnnotation i, value
-        TargetBounds definition, value.Target, minX, maxX, minY, maxY
+        If value.Kind <> "RebarRowLabel" And value.Kind <> "BetweenPoints" Then TargetBounds definition, value.Target, minX, maxX, minY, maxY
         Select Case value.Kind
+            Case "BetweenPoints"
+                annotations.AddDimension value.AnnotationID, value.StartX, value.StartY, value.EndX, value.EndY, _
+                    value.NormalX, value.NormalY, value.Name, value.Value, value.Comment
             Case "VerticalExtent"
                 annotations.AddDimension value.AnnotationID, value.StartX, minY, value.EndX, maxY, _
                     value.NormalX, value.NormalY, value.Name, maxY - minY, value.Comment
@@ -36,6 +40,11 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                 End If
                 rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
                     value.NormalX, value.NormalY, value.Value
+            Case "RebarRowLabel"
+                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
+                If rules.RuleEnds(value.Target, value.StartX, value.StartY, value.EndX, value.EndY) Then _
+                    rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
+                        value.NormalX, value.NormalY, value.Value
             Case Else
                 SectionRecipeError "CSectionAnnotationBuilder", "Неизвестное измерение '" & value.Kind & "'."
         End Select
