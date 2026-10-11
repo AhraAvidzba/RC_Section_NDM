@@ -1,44 +1,146 @@
 Attribute VB_Name = "modTestShapeArchitecture"
 Option Explicit
 
+' Сохраняем все биты Double, а не 15 разрядов отображения CStr.
+Private Type TSnapshotDouble
+    value As Double
+End Type
+Private Type TSnapshotWords
+    low As Long
+    high As Long
+End Type
+
 ' ДЛЯ ТЕСТОВ: независимый снимок сетки, всей арматуры и всех аннотаций.
 ' Этот entrypoint выполняется и на книге до рефакторинга, и на новой книге.
 ' Вход восстанавливается; расчетные Results не записываются.
-Public Function DumpShapeArchitectureSnapshot() As String
+Public Function DumpShapeArchitectureSnapshot(Optional ByVal fixtureFilter As String = "") As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
+    Dim calculation As Long, events As Boolean, updating As Boolean, found As Boolean
     On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
     Set config = ThisWorkbook.Worksheets("Config").UsedRange
     saved = config.Formula
+    result = "SNAPSHOT_FORMAT: 2; doubles=IEEE754-hex; units=mm,mm2,mm4,rad,N,Nmm,MPa" & vbCrLf
     For Each fixture In Array("Circle", "Rectangle", "LSection", "TwoRectangles", _
             "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset")
-        result = result & ShapeSnapshot(CStr(fixture))
+        If Len(fixtureFilter) = 0 Or CStr(fixture) = fixtureFilter Then
+            found = True
+            result = result & ShapeSnapshot(CStr(fixture))
+        End If
     Next fixture
+    If Not found Then Err.Raise vbObjectError + 5292, "modTestShapeArchitecture", "Неизвестный fixture: " & fixtureFilter
     GoTo Finished
 Failed:
     result = result & "FAIL: snapshot; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpShapeArchitectureSnapshot = result
 End Function
 
 Private Function ShapeSnapshot(ByVal fixture As String) As String
     Dim model As CSectionModel, properties As CSectionPropertiesCalculator, annotations As CSectionAnnotations
-    Dim result As String, i As Long
+    Dim contours As CSectionContours, lines() As String, count As Long, i As Long, bounds As Variant
     Set model = FixtureModel(fixture)
-    Set properties = New CSectionPropertiesCalculator: properties.CalculateConcrete model
-    result = Row(fixture, "PROPS", "concrete", Array(model.ConcreteCount, model.RebarCount, _
-        properties.Area, properties.CentroidX, properties.CentroidY, properties.Ixc, properties.Iyc, properties.Ixyc))
+    Set properties = New CSectionPropertiesCalculator: properties.PrepareSnapshot model
+    Set contours = model.Contours: Set annotations = model.Annotations
+    ReDim lines(1 To model.ConcreteCount + model.RebarCount + contours.Count + annotations.Count + 4)
+    count = count + 1
+    lines(count) = Row(fixture, "MODEL", "source", Array(model.SourceType, model.ConcreteMeshSource, _
+        model.ConcreteCount, model.RebarCount, contours.Count, annotations.Count))
+    count = count + 1
+    lines(count) = Row(fixture, "PROPS", "concrete", Array(properties.Area, properties.StaticMomentX, _
+        properties.StaticMomentY, properties.CentroidX, properties.CentroidY, properties.Ix, properties.Iy, properties.Ixy, _
+        properties.Ixc, properties.Iyc, properties.Ixyc, properties.PrincipalI1, properties.PrincipalI2, _
+        properties.PrincipalAngleRad, properties.RadiusX, properties.RadiusY, properties.PrincipalRadius1, properties.PrincipalRadius2))
+    bounds = properties.SnapshotBounds
+    count = count + 1: lines(count) = Row(fixture, "BOUNDS", "concrete", bounds)
+    For i = 1 To model.ConcreteCount
+        count = count + 1
+        lines(count) = Row(fixture, "CONCRETE", model.ConcreteID(i), Array(model.ConcreteX(i), model.ConcreteY(i), _
+            model.ConcreteArea(i), model.ConcreteMaterialID(i), model.ConcreteShapeType(i), model.ConcreteWidth(i), _
+            model.ConcreteHeight(i), model.ConcreteRotation(i), model.ConcreteLocalIx(i), model.ConcreteLocalIy(i), _
+            model.ConcreteLocalIxy(i), model.ConcreteSourceName(i), model.ConcreteSourceHandle(i), model.ConcreteComment(i)))
+    Next i
+    For i = 1 To contours.Count
+        count = count + 1
+        lines(count) = Row(fixture, "CONTOUR", contours.ContourID(i), Array(contours.SegmentType(i), contours.LoopID(i), _
+            contours.LoopRole(i), contours.StartX(i), contours.StartY(i), contours.EndX(i), contours.EndY(i), _
+            contours.CenterX(i), contours.CenterY(i), contours.Radius(i), contours.SweepAngle(i), contours.SourceID(i), contours.Comment(i)))
+    Next i
     For i = 1 To model.RebarCount
-        result = result & Row(fixture, "BAR", model.RebarID(i), Array(model.RebarX(i), model.RebarY(i), _
-            model.RebarDiameter(i), model.RebarArea(i), model.RebarSteelClass(i), model.RebarComment(i)))
+        count = count + 1
+        lines(count) = Row(fixture, "BAR", model.RebarID(i), Array(model.RebarX(i), model.RebarY(i), _
+            model.RebarDiameter(i), model.RebarArea(i), model.RebarMaterialID(i), model.RebarSteelClass(i), _
+            model.RebarSourceName(i), model.RebarSourceHandle(i), model.RebarComment(i)))
     Next i
-    Set annotations = model.Annotations
     For i = 1 To annotations.Count
-        result = result & Row(fixture, "ANNOTATION", annotations.AnnotationID(i), Array(annotations.AnnotationType(i), _
+        count = count + 1
+        lines(count) = Row(fixture, "ANNOTATION", annotations.AnnotationID(i), Array(annotations.AnnotationType(i), _
             annotations.StartX(i), annotations.StartY(i), annotations.EndX(i), annotations.EndY(i), _
-            annotations.NormalX(i), annotations.NormalY(i), annotations.Text(i), annotations.Value(i), annotations.Comment(i)))
+            annotations.NormalX(i), annotations.NormalY(i), annotations.Text(i), annotations.Value(i), annotations.Unit(i), annotations.Comment(i)))
     Next i
-    ShapeSnapshot = result
+    count = count + 1: lines(count) = SourceSnapshot(fixture)
+    ReDim Preserve lines(1 To count)
+    ShapeSnapshot = Join(lines, vbNullString)
+End Function
+
+' ДЛЯ ТЕСТОВ: исходные fill factor и группы layout не хранятся в model.
+' Читаем их отдельно тем же исходным pipeline; это не замер производительности.
+Private Function SourceSnapshot(ByVal fixture As String) As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, registry As CSectionTypeRegistry
+    Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set registry = New CSectionTypeRegistry
+    Set geometry = registry.CreateGeometry(settings, units)
+    Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units)
+    Set rebars = registry.CreateRebars(geometry, settings, units)
+    Dim lines() As String, count As Long, i As Long
+    ReDim lines(1 To mesh.FiberCount + rebars.Count + rebars.AnnotationCount + 1)
+    For i = 1 To mesh.FiberCount
+        count = count + 1
+        lines(count) = Row(fixture, "FIBER", CStr(i), Array(mesh.FiberX(i), mesh.FiberY(i), mesh.FiberArea(i), _
+            mesh.FiberFillFactor(i), mesh.FiberWidth(i), mesh.FiberHeight(i), mesh.FiberMaterialID(i)))
+    Next i
+    For i = 1 To rebars.Count
+        count = count + 1
+        lines(count) = Row(fixture, "LAYOUT", rebars.BarID(i), Array(rebars.X(i), rebars.Y(i), rebars.Diameter(i), _
+            rebars.Area(i), rebars.SteelClass(i), rebars.BarAnnotationGroupName(i), rebars.Comment(i)))
+    Next i
+    For i = 1 To rebars.AnnotationCount
+        count = count + 1
+        lines(count) = Row(fixture, "ANCHOR", rebars.AnnotationGroupName(i), Array(rebars.AnnotationStartX(i), _
+            rebars.AnnotationStartY(i), rebars.AnnotationEndX(i), rebars.AnnotationEndY(i), _
+            rebars.AnnotationNormalX(i), rebars.AnnotationNormalY(i), rebars.AnnotationAxisDistance(i)))
+    Next i
+    count = count + 1: lines(count) = InputSnapshot(fixture)
+    SourceSnapshot = Join(lines, vbNullString)
+End Function
+
+Private Function InputSnapshot(ByVal fixture As String) As String
+    Dim name As Variant, table As Object, values As Variant, formulas As Variant, i As Long, j As Long
+    Dim lines() As String, count As Long, capacity As Long
+    For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
+            "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCircleGeometry", _
+            "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngCalculationProfiles")
+        Set table = ThisWorkbook.Names(CStr(name)).RefersToRange
+        values = table.Value2: formulas = table.Formula
+        capacity = capacity + table.Rows.Count * table.Columns.Count
+        ReDim Preserve lines(1 To capacity)
+        For i = 1 To table.Rows.Count
+            For j = 1 To table.Columns.Count
+                If Not IsEmpty(values(i, j)) Then
+                    count = count + 1
+                    lines(count) = Row(fixture, "INPUT", CStr(name) & "." & CStr(i) & "." & CStr(j), _
+                        Array(values(i, j), formulas(i, j)))
+                End If
+            Next j
+        Next i
+    Next name
+    ReDim Preserve lines(1 To count)
+    InputSnapshot = Join(lines, vbNullString)
 End Function
 
 Private Function FixtureModel(ByVal fixture As String) As CSectionModel
@@ -80,6 +182,7 @@ Private Function FixtureModel(ByVal fixture As String) As CSectionModel
             table.Cells(4, 2).Value2 = IIf(fixture = "HollowOffset", 50#, 0#) / factor
     End Select
     SetSetting "Geometry.Type", shapeName
+    ThisWorkbook.Worksheets("Config").Calculate
     settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
     Set registry = New CSectionTypeRegistry
     Set FixtureModel = registry.BuildGeneratedModel(settings, units)
@@ -90,7 +193,10 @@ End Function
 ' затем общий пакет несущей способности, трещинообразования и ширины СП 35.
 Public Function DumpShapeCalculationSnapshot(Optional ByVal crackCode As String = "SP35") As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
+    Dim calculation As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
     Dim profiles As Object, i As Long, key As String
     Set profiles = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange
@@ -113,6 +219,7 @@ Failed:
     result = result & "FAIL: calculation snapshot; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpShapeCalculationSnapshot = result
 End Function
 
@@ -138,7 +245,13 @@ Private Function CalculationSnapshot(ByVal fixture As String) As String
             solver.Solve model, provider.ConcreteMaterial(CLng(purpose)), provider.SteelMaterial(CLng(purpose)), n, mx, my
             result = result & Row(fixture, "NDS", CStr(purpose) & "." & CStr(loadIndex), Array( _
                 solver.Converged, solver.Epsilon0, solver.KappaX, solver.KappaY, solver.Nint, solver.Mxint, solver.Myint, _
-                solver.MinConcreteStress, solver.MaxConcreteStress, solver.MinSteelStress, solver.MaxSteelStress))
+                solver.MinConcreteStress, solver.MaxConcreteStress, solver.MinSteelStress, solver.MaxSteelStress, _
+                solver.ResidualN, solver.ResidualMx, solver.ResidualMy, solver.MinConcreteStrain, solver.MaxConcreteStrain, _
+                solver.MinSteelStrain, solver.MaxSteelStrain))
+            result = result & Row(fixture, "LOAD", CStr(purpose) & "." & CStr(loadIndex), _
+                Array(n, mx, my, props.CentroidX, props.CentroidY))
+            If solver.Converged Then result = result & ElementStateSnapshot(fixture, CStr(purpose) & "." & CStr(loadIndex), _
+                model, solver, provider.ConcreteMaterial(CLng(purpose)), provider.SteelMaterial(CLng(purpose)))
         Next loadIndex
     Next purpose
     Dim profiles As CCalculationProfileCatalog, batch As CBatchSectionCalculator, combination As CCombinationResult
@@ -160,11 +273,129 @@ Private Function CalculationSnapshot(ByVal fixture As String) As String
     CalculationSnapshot = result
 End Function
 
+' ДЛЯ ТЕСТОВ: фактическая плоскость и выбранные материалы для каждого элемента.
+' StrainAt сохраняет численный frame solver-а, включая удаленные координаты.
+Private Function ElementStateSnapshot(ByVal fixture As String, ByVal stateID As String, ByVal model As CSectionModel, _
+        ByVal solver As CSectionSolver, ByVal concrete As Object, ByVal steel As Object) As String
+    Dim lines() As String, i As Long, strain As Double
+    ReDim lines(1 To model.ConcreteCount + model.RebarCount)
+    For i = 1 To model.ConcreteCount
+        strain = solver.StrainAt(model.ConcreteX(i), model.ConcreteY(i))
+        lines(i) = Row(fixture, "FIBER_STATE", stateID & "." & model.ConcreteID(i), Array(strain, concrete.StressAtStrain(strain)))
+    Next i
+    For i = 1 To model.RebarCount
+        strain = solver.StrainAt(model.RebarX(i), model.RebarY(i))
+        lines(model.ConcreteCount + i) = Row(fixture, "BAR_STATE", stateID & "." & model.RebarID(i), Array(strain, steel.StressAtStrain(strain)))
+    Next i
+    ElementStateSnapshot = Join(lines, vbNullString)
+End Function
+
+' ДЛЯ ТЕСТОВ: реальные Chart/Shapes и PNG геометрических эталонов.
+' Results меняется только в закрываемой без сохранения fixture-книге runner-а.
+Public Function DumpShapePreviewSnapshot(ByVal outputDirectory As String, Optional ByVal fixtureFilter As String = "") As String
+    Dim config As Object, saved As Variant, calculation As Long, events As Boolean, updating As Boolean
+    Dim result As String, fixture As Variant
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = True
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each fixture In Array("Circle", "Rectangle", "LSection", "TwoRectangles", _
+            "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset")
+        If Len(fixtureFilter) = 0 Or CStr(fixture) = fixtureFilter Then result = result & PreviewSnapshot(CStr(fixture), outputDirectory)
+    Next fixture
+    GoTo Finished
+Failed:
+    result = result & "FAIL: preview snapshot; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    DumpShapePreviewSnapshot = result
+End Function
+
+Private Function PreviewSnapshot(ByVal fixture As String, ByVal outputDirectory As String) As String
+    Dim stage As String
+    On Error GoTo Failed
+    stage = "build"
+    Dim model As CSectionModel, properties As CSectionPropertiesCalculator
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CNDMResultsWriter
+    Dim reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Set model = FixtureModel(fixture)
+    Set properties = New CSectionPropertiesCalculator: properties.PrepareSnapshot model
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    stage = "write preview"
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, model, properties, units
+    stage = "read preview"
+    Set reader = New CSectionPlotDataReader: reader.LoadGeometryPreviewFromWorkbook ThisWorkbook, settings
+    stage = "draw"
+    Set plotter = New CSectionPlotter: plotter.Draw ThisWorkbook, reader, settings
+    Dim container As Object, chart As Object, shape As Object, series As Object
+    Dim result As String, i As Long, j As Long, xs As Variant, ys As Variant, shapeText As String
+    stage = "chart metrics"
+    Set container = ThisWorkbook.Worksheets("Расчет").ChartObjects("chtNDMSectionPlot")
+    Set chart = container.Chart
+    ' Geometry-only reader использует подпись импорта; эти fixtures сгенерированы.
+    chart.Shapes("NDMPlot_Title").TextFrame2.TextRange.Text = "Сгенерированная геометрия: " & fixture
+    result = Row(fixture, "PLOT", "container", Array(container.Left, container.Top, container.Width, container.Height, _
+        chart.PlotArea.Left, chart.PlotArea.Top, chart.PlotArea.Width, chart.PlotArea.Height, _
+        chart.SeriesCollection.Count, chart.Shapes.Count))
+    For i = 1 To chart.SeriesCollection.Count
+        stage = "series " & CStr(i)
+        Set series = chart.SeriesCollection(i)
+        xs = series.XValues: ys = series.Values
+        For j = LBound(xs) To UBound(xs)
+            result = result & Row(fixture, "PLOT_POINT", CStr(i) & "." & CStr(j), Array(CStr(series.Name), CDbl(xs(j)), CDbl(ys(j))))
+        Next j
+    Next i
+    For Each shape In chart.Shapes
+        stage = "shape " & CStr(shape.Name)
+        shapeText = vbNullString
+        If CLng(shape.Type) = 17 Or CLng(shape.Type) = 1 Then
+            If shape.TextFrame2.HasText Then shapeText = CStr(shape.TextFrame2.TextRange.Text)
+        End If
+        result = result & Row(fixture, "PLOT_SHAPE", CStr(shape.Name), Array(CLng(shape.Type), _
+            CDbl(shape.Left), CDbl(shape.Top), CDbl(shape.Width), CDbl(shape.Height), CDbl(shape.Rotation), shapeText))
+    Next shape
+    stage = "export PNG"
+    chart.Refresh
+    If Not chart.Export(outputDirectory & Application.PathSeparator & fixture & ".png", "PNG") Then _
+        Err.Raise vbObjectError + 5294, "modTestShapeArchitecture", "Excel не сохранил PNG: " & fixture
+    PreviewSnapshot = result
+    Exit Function
+Failed:
+    Err.Raise Err.Number, "modTestShapeArchitecture.PreviewSnapshot", fixture & "; " & stage & "; " & Err.Description
+End Function
+
 Private Function Row(ByVal fixture As String, ByVal kind As String, ByVal id As String, ByVal values As Variant) As String
     Dim item As Variant
-    Row = fixture & vbTab & kind & vbTab & id
-    For Each item In values: Row = Row & vbTab & CStr(item): Next item
+    Row = EscapeField(fixture) & vbTab & EscapeField(kind) & vbTab & EscapeField(id)
+    For Each item In values: Row = Row & vbTab & SnapshotValue(item): Next item
     Row = Row & vbCrLf
+End Function
+
+Private Function SnapshotValue(ByVal value As Variant) As String
+    Dim number As TSnapshotDouble, words As TSnapshotWords
+    Select Case VarType(value)
+        Case vbDouble, vbSingle, vbCurrency, vbDecimal
+            number.value = CDbl(value): LSet words = number
+            SnapshotValue = "d:" & Right$("00000000" & Hex$(words.high), 8) & Right$("00000000" & Hex$(words.low), 8)
+        Case vbByte, vbInteger, vbLong
+            SnapshotValue = "i:" & CStr(value)
+        Case vbBoolean
+            If value Then SnapshotValue = "b:1" Else SnapshotValue = "b:0"
+        Case vbEmpty
+            SnapshotValue = "e:"
+        Case vbNull
+            SnapshotValue = "n:"
+        Case vbString
+            SnapshotValue = "s:" & EscapeField(CStr(value))
+        Case Else
+            Err.Raise vbObjectError + 5293, "modTestShapeArchitecture", "Неподдерживаемое значение snapshot: " & CStr(VarType(value))
+    End Select
+End Function
+
+Private Function EscapeField(ByVal value As String) As String
+    EscapeField = Replace(Replace(Replace(Replace(value, "%", "%25"), vbTab, "%09"), vbCr, "%0D"), vbLf, "%0A")
 End Function
 
 Private Sub SetSetting(ByVal key As String, ByVal value As Variant)

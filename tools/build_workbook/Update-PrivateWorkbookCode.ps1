@@ -1,6 +1,7 @@
 # Updates source modules in an isolated workbook; never writes the production file.
 param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
+    [string[]]$ModuleNames = @(),
     [switch]$TraceGeometry
 )
 $ErrorActionPreference='Stop'
@@ -22,6 +23,7 @@ try {
     if ($book.ReadOnly) {throw 'Private workbook is read-only.'}
     $updated=@()
     foreach ($file in Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas','.cls') {
+        if ($ModuleNames.Count -and $file.BaseName -notin $ModuleNames) {continue}
         $body=[regex]::Match([IO.File]::ReadAllText($file.FullName,[Text.Encoding]::UTF8),'(?ms)^Option Explicit.*').Value
         if (-not $body) {throw ('Source body missing: '+$file.FullName)}
         if ($TraceGeometry -and $file.BaseName -eq 'CSectionGeometryQuery') {
@@ -66,6 +68,7 @@ End Function
         $module.AddFromString(($body -split '\r?\n') -join "`r`n")
         $updated += $file.BaseName
     }
+    if ($ModuleNames.Count -and @($ModuleNames | Where-Object {$_ -notin $updated}).Count) {throw 'Requested source module was not found.'}
     $excel.VBE.ActiveVBProject=$book.VBProject
     $compile=$excel.VBE.CommandBars.FindControl(1,578)
     if ($null -eq $compile) {throw 'Compile command unavailable.'}

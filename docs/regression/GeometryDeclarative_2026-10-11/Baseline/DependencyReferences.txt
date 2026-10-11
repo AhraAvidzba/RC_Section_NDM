@@ -1,0 +1,729 @@
+tests\CFakeMultiOpeningGeometry.cls:5:Attribute VB_Name = "CFakeMultiOpeningGeometry"
+tests\CFakeMultiOpeningGeometry.cls:15:' Реализует только обязательный ISectionShape. Наружная форма 100 x 100 мм
+tests\CFakeMultiOpeningGeometry.cls:20:Implements ISectionShape
+tests\CFakeMultiOpeningGeometry.cls:22:Private mOuter As CGeometryRectSet
+tests\CFakeMultiOpeningGeometry.cls:27:    If openingCount < 1 Or openingCount > 5 Then Err.Raise vbObjectError + 5283, "CFakeMultiOpeningGeometry", "Неверное число отверстий теста."
+tests\CFakeMultiOpeningGeometry.cls:28:    Set mOuter = New CGeometryRectSet
+tests\CFakeMultiOpeningGeometry.cls:44:Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+tests\CFakeMultiOpeningGeometry.cls:49:    ISectionShape_IsValid = mOuter.IsValid(message)
+tests\CFakeMultiOpeningGeometry.cls:54:Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
+tests\modTestBatchCalculation.bas:4569:    Dim geom As CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:4570:    Set geom = New CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:4575:    mesh.BuildMesh BuildConcreteGeometry(geom), 30#, 20#, 1
+tests\modTestBatchCalculation.bas:4579:    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4580:    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4581:    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4582:    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4599:    Dim geom As CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:4600:    Set geom = New CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:4605:    mesh.BuildMesh BuildConcreteGeometry(geom), 30#, 20#, 1
+tests\modTestBatchCalculation.bas:4609:    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4610:    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4611:    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4612:    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4695:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestBatchCalculation.bas:4696:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestBatchCalculation.bas:4912:    Dim geom As CGeometryCircle
+tests\modTestBatchCalculation.bas:4913:    Set geom = New CGeometryCircle
+tests\modTestBatchCalculation.bas:4915:    Set CircleGeometry = BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4921:    Dim geom As CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:4922:    Set geom = New CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:4924:    Set RoundedRectangleGeometry = BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4930:    Dim geom As CGeometryRectSet
+tests\modTestBatchCalculation.bas:4931:    Set geom = New CGeometryRectSet
+tests\modTestBatchCalculation.bas:4933:    Set RectSetGeometry = BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:4940:    Dim builder As CCircleRebarLayoutBuilder
+tests\modTestBatchCalculation.bas:4941:    Set builder = New CCircleRebarLayoutBuilder
+tests\modTestBatchCalculation.bas:4949:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestBatchCalculation.bas:4950:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestBatchCalculation.bas:6393:    Dim geom As CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:6394:    Set geom = New CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:6398:    mesh.BuildMesh BuildConcreteGeometry(geom), 30#, 20#, 1
+tests\modTestBatchCalculation.bas:6401:    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:6402:    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:6403:    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:6404:    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestBatchCalculation.bas:7360:    Dim geometry As CGeometryRegion, circleGeometry As CGeometryCircle, rounded As CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:7361:    Dim hollow As CGeometryHollowRectangle, rectset As CGeometryRectSet, mesh As CFiberMeshBuilder
+tests\modTestBatchCalculation.bas:7374:            Set circleGeometry = New CGeometryCircle
+tests\modTestBatchCalculation.bas:7376:            Set geometry = BuildConcreteGeometry(circleGeometry)
+tests\modTestBatchCalculation.bas:7384:            Set rectset = New CGeometryRectSet
+tests\modTestBatchCalculation.bas:7391:            Set geometry = BuildConcreteGeometry(rectset)
+tests\modTestBatchCalculation.bas:7393:            Set rounded = New CGeometryRoundedRectangle
+tests\modTestBatchCalculation.bas:7399:            Set geometry = BuildConcreteGeometry(rounded)
+tests\modTestBatchCalculation.bas:7401:            Set hollow = New CGeometryHollowRectangle
+tests\modTestBatchCalculation.bas:7407:            Set geometry = BuildConcreteGeometry(hollow)
+tests\modTestContourMesh.bas:192:    Dim circleGeometry As CGeometryCircle, rect As CGeometryRoundedRectangle
+tests\modTestContourMesh.bas:193:    Dim hollow As CGeometryHollowRectangle, rectset As CGeometryRectSet
+tests\modTestContourMesh.bas:196:            Set circleGeometry = New CGeometryCircle: circleGeometry.InitializeByDiameter 300#
+tests\modTestContourMesh.bas:197:            Set ControlGeometry = BuildConcreteGeometry(circleGeometry)
+tests\modTestContourMesh.bas:199:            Set rectset = New CGeometryRectSet
+tests\modTestContourMesh.bas:203:            Set ControlGeometry = BuildConcreteGeometry(rectset)
+tests\modTestContourMesh.bas:205:            Set rect = New CGeometryRoundedRectangle: rect.Initialize 300#, 400#, 40#, 40#, 40#, 40#, 13#, -27#
+tests\modTestContourMesh.bas:206:            Set ControlGeometry = BuildConcreteGeometry(rect)
+tests\modTestContourMesh.bas:208:            Set hollow = New CGeometryHollowRectangle: hollow.Initialize 400#, 500#, 35#, 200#, 280#, 25#, 17#, -23#
+tests\modTestContourMesh.bas:209:            Set ControlGeometry = BuildConcreteGeometry(hollow)
+tests\modTestCapacitySolver.bas:1030:    Dim geom As CGeometryCircle
+tests\modTestCapacitySolver.bas:1031:    Set geom = New CGeometryCircle
+tests\modTestCapacitySolver.bas:1036:    mesh.BuildMesh BuildConcreteGeometry(geom), 10#, 10#, 1
+tests\modTestCapacitySolver.bas:1040:    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1041:    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1042:    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1043:    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1389:    Dim geom As CGeometryRectSet
+tests\modTestCapacitySolver.bas:1393:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+tests\modTestCapacitySolver.bas:1401:    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1402:    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1403:    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1404:    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1420:    Dim geom As CGeometryRectSet
+tests\modTestCapacitySolver.bas:1424:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+tests\modTestCapacitySolver.bas:1432:    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1433:    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1434:    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1435:    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1549:    Dim geom As CGeometryCircle
+tests\modTestCapacitySolver.bas:1550:    Set geom = New CGeometryCircle
+tests\modTestCapacitySolver.bas:1555:    mesh.BuildMesh BuildConcreteGeometry(geom), 12#, 12#, 1
+tests\modTestCapacitySolver.bas:1559:    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1560:    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1561:    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1562:    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:1687:    Set section = registry.BuildGeneratedModel(settings, units)
+tests\modTestCapacitySolver.bas:2245:    Dim geom As CGeometryRectSet
+tests\modTestCapacitySolver.bas:2246:    Set geom = New CGeometryRectSet
+tests\modTestCapacitySolver.bas:2251:    mesh.BuildMesh BuildConcreteGeometry(geom), 50#, 50#, 1
+tests\modTestCapacitySolver.bas:2253:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestCapacitySolver.bas:2254:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestCapacitySolver.bas:2536:    Dim geom As CGeometryRoundedRectangle
+tests\modTestCapacitySolver.bas:2538:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), stepSize)
+tests\modTestCapacitySolver.bas:2544:Private Function SymmetricRebars(ByVal geom As CGeometryRoundedRectangle, ByVal xAbs As Double, ByVal yAbs As Double) As CRebarLayout
+tests\modTestCapacitySolver.bas:2547:    rebars.AddBar "B1", -xAbs, -yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:2548:    rebars.AddBar "B2", xAbs, -yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:2549:    rebars.AddBar "B3", -xAbs, yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:2550:    rebars.AddBar "B4", xAbs, yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestCapacitySolver.bas:2555:Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRoundedRectangle
+tests\modTestCapacitySolver.bas:2556:    Dim geom As CGeometryRoundedRectangle
+tests\modTestCapacitySolver.bas:2557:    Set geom = New CGeometryRoundedRectangle
+tests\modTestCapacitySolver.bas:2564:Private Function CapacityAsymmetricGeometry() As CGeometryRectSet
+tests\modTestCapacitySolver.bas:2565:    Dim geom As CGeometryRectSet
+tests\modTestCapacitySolver.bas:2566:    Set geom = New CGeometryRectSet
+tests\modTestConfiguration.bas:240:    Dim geometry As CGeometryCircle, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+tests\modTestConfiguration.bas:241:    Set geometry = New CGeometryCircle: geometry.InitializeByDiameter 300#
+tests\modTestConfiguration.bas:242:    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geometry), 20#, 20#, 1, 2
+tests\modTestConfiguration.bas:247:        rebars.AddBar "R" & CStr(i + 1), 120# * Cos(angle), 120# * Sin(angle), 16#, 0#, "A400", vbNullString, BuildConcreteGeometry(geometry)
+tests\modTestLoadTableConfig.bas:361:    Dim geometry As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+tests\modTestLoadTableConfig.bas:362:    Set geometry = New CGeometryRoundedRectangle
+tests\modTestLoadTableConfig.bas:365:    mesh.BuildMesh BuildConcreteGeometry(geometry), 30#, 20#, 1
+tests\modTestLoadTableConfig.bas:367:    rebars.AddBar "A", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestLoadTableConfig.bas:368:    rebars.AddBar "B", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestLoadTableConfig.bas:369:    rebars.AddBar "C", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestLoadTableConfig.bas:370:    rebars.AddBar "D", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestGeometry.bas:171:    Dim geom As CGeometryCircle
+tests\modTestGeometry.bas:172:    Set geom = New CGeometryCircle
+tests\modTestGeometry.bas:177:    mesh.BuildMesh BuildConcreteGeometry(geom), 50#, 50#, 1, 2
+tests\modTestGeometry.bas:181:    rebars.AddBar "CircleSourceName-1", 100#, 0#, 20#, 0#, "A400", "source name", BuildConcreteGeometry(geom)
+tests\modTestGeometry.bas:182:    rebars.AddBar "CircleSourceName-2", -100#, 0#, 20#, 0#, "A400", "source name", BuildConcreteGeometry(geom)
+tests\modTestGeometry.bas:199:    Dim circleBuilder As CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:200:    Set circleBuilder = New CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:211:    Dim rectsetBuilder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:212:    Set rectsetBuilder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:230:    Dim zeroFaceBuilder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:231:    Set zeroFaceBuilder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:248:    Dim geom As CGeometryCircle
+tests\modTestGeometry.bas:249:    Set geom = New CGeometryCircle
+tests\modTestGeometry.bas:253:    mesh.BuildMesh BuildConcreteGeometry(geom), 50#, 50#, 1, 2
+tests\modTestGeometry.bas:257:    Dim annotationBuilder As CCircleAnnotationBuilder
+tests\modTestGeometry.bas:258:    Set annotationBuilder = New CCircleAnnotationBuilder
+tests\modTestGeometry.bas:852:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:853:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:857:    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
+tests\modTestGeometry.bas:871:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:872:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:962:    Dim geom As CGeometryRectSet
+tests\modTestGeometry.bas:963:    Set geom = New CGeometryRectSet
+tests\modTestGeometry.bas:970:    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(available)
+tests\modTestGeometry.bas:971:    BuildConcreteGeometry(geom).AnalyticalCentroid available, centroidX, centroidY
+tests\modTestGeometry.bas:977:    AssertTrue stats, "rectset.contains.lower", BuildConcreteGeometry(geom).ContainsPoint(580#, 20#)
+tests\modTestGeometry.bas:978:    AssertTrue stats, "rectset.contains.vertical", BuildConcreteGeometry(geom).ContainsPoint(100#, 700#)
+tests\modTestGeometry.bas:979:    AssertTrue stats, "rectset.excludes.cutout", Not BuildConcreteGeometry(geom).ContainsPoint(500#, 700#)
+tests\modTestGeometry.bas:983:    centerMesh.BuildMesh BuildConcreteGeometry(geom), 80#, 80#, 1
+tests\modTestGeometry.bas:987:    subcellMesh.BuildMesh BuildConcreteGeometry(geom), 80#, 80#, 1, 4
+tests\modTestGeometry.bas:1006:    Dim rectangle As CGeometryRectSet
+tests\modTestGeometry.bas:1007:    Set rectangle = New CGeometryRectSet
+tests\modTestGeometry.bas:1013:    AssertClose stats, "rectset.rectangle.area", BuildConcreteGeometry(rectangle).AnalyticalArea(available), 250# * 550#, 0.000001
+tests\modTestGeometry.bas:1015:    BuildConcreteGeometry(rectangle).AnalyticalCentroid available, cx, cy
+tests\modTestGeometry.bas:1019:    AssertTrue stats, "rectset.rectangle.containsUpper", BuildConcreteGeometry(rectangle).ContainsPoint(100#, 500#)
+tests\modTestGeometry.bas:1020:    AssertTrue stats, "rectset.rectangle.excludesOldLower", Not BuildConcreteGeometry(rectangle).ContainsPoint(500#, 20#)
+tests\modTestGeometry.bas:1022:    Dim lsection As CGeometryRectSet
+tests\modTestGeometry.bas:1023:    Dim twoZero As CGeometryRectSet
+tests\modTestGeometry.bas:1024:    Set lsection = New CGeometryRectSet
+tests\modTestGeometry.bas:1025:    Set twoZero = New CGeometryRectSet
+tests\modTestGeometry.bas:1028:    AssertClose stats, "rectset.twoZero.areaEqualsL", BuildConcreteGeometry(twoZero).AnalyticalArea(available), BuildConcreteGeometry(lsection).AnalyticalArea(available), 0.000001
+tests\modTestGeometry.bas:1031:    AssertTrue stats, "rectset.twoZero.cutout", Not BuildConcreteGeometry(twoZero).ContainsPoint(500#, 700#)
+tests\modTestGeometry.bas:1033:    Dim tshape As CGeometryRectSet
+tests\modTestGeometry.bas:1034:    Set tshape = New CGeometryRectSet
+tests\modTestGeometry.bas:1040:    AssertTrue stats, "rectset.tshape.containsFlange", BuildConcreteGeometry(tshape).ContainsPoint(-100#, 300#)
+tests\modTestGeometry.bas:1041:    AssertTrue stats, "rectset.tshape.containsWeb", BuildConcreteGeometry(tshape).ContainsPoint(125#, 100#)
+tests\modTestGeometry.bas:1043:    Dim shifted As CGeometryRectSet
+tests\modTestGeometry.bas:1044:    Set shifted = New CGeometryRectSet
+tests\modTestGeometry.bas:1046:    BuildConcreteGeometry(shifted).AnalyticalCentroid available, cx, cy
+tests\modTestGeometry.bas:1050:    AssertTrue stats, "rectset.shifted.containsUpper", BuildConcreteGeometry(shifted).ContainsPoint(250#, 700#)
+tests\modTestGeometry.bas:1051:    AssertTrue stats, "rectset.shifted.excludesOldUpper", Not BuildConcreteGeometry(shifted).ContainsPoint(50#, 700#)
+tests\modTestGeometry.bas:1053:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1054:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1076:    Dim geom As CGeometryRectSet
+tests\modTestGeometry.bas:1077:    Set geom = New CGeometryRectSet
+tests\modTestGeometry.bas:1082:    mesh.BuildMesh BuildConcreteGeometry(geom), 25#, 25#, 1, 2
+tests\modTestGeometry.bas:1092:    Dim rebarBuilder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1093:    Set rebarBuilder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1193:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1194:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1239:    Dim geom As CGeometryRectSet
+tests\modTestGeometry.bas:1240:    Set geom = New CGeometryRectSet
+tests\modTestGeometry.bas:1245:        AssertTrue stats, "rectset.rebar.inside." & CStr(i), BuildConcreteGeometry(geom).ContainsPoint(layout.X(i), layout.Y(i))
+tests\modTestGeometry.bas:1257:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1258:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1279:    Dim builder As CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:1280:    Set builder = New CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:1345:    Dim geom As CGeometryCircle
+tests\modTestGeometry.bas:1346:    Set geom = New CGeometryCircle
+tests\modTestGeometry.bas:1351:    centerMesh.BuildMesh BuildConcreteGeometry(geom), 40#, 40#, 1
+tests\modTestGeometry.bas:1355:    subcellMesh.BuildMesh BuildConcreteGeometry(geom), 40#, 40#, 1, 4
+tests\modTestGeometry.bas:1377:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1378:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1383:    mesh.BuildMesh BuildConcreteGeometry(geom), 25#, 15#, 1, 1
+tests\modTestGeometry.bas:1400:    Dim geom As CGeometryCircle
+tests\modTestGeometry.bas:1401:    Set geom = New CGeometryCircle
+tests\modTestGeometry.bas:1408:    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(available)
+tests\modTestGeometry.bas:1409:    BuildConcreteGeometry(geom).AnalyticalCentroid available, centroidX, centroidY
+tests\modTestGeometry.bas:1412:    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
+tests\modTestGeometry.bas:1430:    Dim geom As CGeometryCircle
+tests\modTestGeometry.bas:1431:    Set geom = New CGeometryCircle
+tests\modTestGeometry.bas:1436:    mesh.BuildMesh BuildConcreteGeometry(geom), 2.5, 2.5, 1
+tests\modTestGeometry.bas:1486:    Dim geom As CGeometryRectSet
+tests\modTestGeometry.bas:1487:    Set geom = New CGeometryRectSet
+tests\modTestGeometry.bas:1492:    mesh.BuildMesh BuildConcreteGeometry(geom), 25#, 25#, 1, 2
+tests\modTestGeometry.bas:1494:    Dim rebarBuilder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1495:    Set rebarBuilder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:1659:    Dim geom As CGeometryCircle
+tests\modTestGeometry.bas:1660:    Set geom = New CGeometryCircle
+tests\modTestGeometry.bas:1664:    Set props = MeshProps(BuildConcreteGeometry(geom), 20#, 20#)
+tests\modTestGeometry.bas:1674:    Dim geom As CGeometryCircle
+tests\modTestGeometry.bas:1676:    Set geom = New CGeometryCircle
+tests\modTestGeometry.bas:1680:    Set geom = New CGeometryCircle
+tests\modTestGeometry.bas:1688:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1689:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1694:    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(areaAvailable)
+tests\modTestGeometry.bas:1697:    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
+tests\modTestGeometry.bas:1711:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1712:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1717:    Set props25 = MeshProps(BuildConcreteGeometry(geom), 25#, 25#)
+tests\modTestGeometry.bas:1718:    Set props125 = MeshProps(BuildConcreteGeometry(geom), 12.5, 12.5)
+tests\modTestGeometry.bas:1721:    AssertTrue stats, "rounded.tapered.centroid.inside", BuildConcreteGeometry(geom).ContainsPoint(props125.CentroidX, props125.CentroidY)
+tests\modTestGeometry.bas:1723:        BuildConcreteGeometry(geom).MaxX > geom.RightBaseX And BuildConcreteGeometry(geom).MaxX < geom.RightBaseX + geom.RightW
+tests\modTestGeometry.bas:1724:    AssertClose stats, "rounded.tapered.height", BuildConcreteGeometry(geom).MaxY - BuildConcreteGeometry(geom).MinY, 180#, 0.000001
+tests\modTestGeometry.bas:1728:    Dim wideGeom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1729:    Set wideGeom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1745:    AssertClose stats, "rounded.tapered.variableAngle.maxX", BuildConcreteGeometry(wideGeom).MaxX, expectedNoseMaxX, 0.000001
+tests\modTestGeometry.bas:1747:        BuildConcreteGeometry(wideGeom).MaxX < wideGeom.RightBaseX + wideGeom.RightW
+tests\modTestGeometry.bas:1749:    Dim largeR1 As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1750:    Set largeR1 = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1755:    Dim overlappingRadii As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1756:    Set overlappingRadii = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1764:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1765:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1773:    Dim builder As CRoundedRectAnnotationBuilder
+tests\modTestGeometry.bas:1774:    Set builder = New CRoundedRectAnnotationBuilder
+tests\modTestGeometry.bas:1790:            RoundedDisplayLength(BuildConcreteGeometry(geom).MaxX - geom.RightBaseX), 0.000001
+tests\modTestGeometry.bas:1840:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1841:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1844:    Dim builder As CRoundedRectRebarLayoutBuilder
+tests\modTestGeometry.bas:1845:    Set builder = New CRoundedRectRebarLayoutBuilder
+tests\modTestGeometry.bas:1908:    Dim simpleGeom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1909:    Set simpleGeom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:1941:        AssertTrue stats, "rounded.rebar.inside." & CStr(i), BuildConcreteGeometry(geom).ContainsPoint(layout.X(i), layout.Y(i))
+tests\modTestGeometry.bas:1949:    Dim geom As CGeometryHollowRectangle
+tests\modTestGeometry.bas:1950:    Set geom = New CGeometryHollowRectangle
+tests\modTestGeometry.bas:1958:    areaValue = BuildConcreteGeometry(geom).AnalyticalArea(available)
+tests\modTestGeometry.bas:1964:    BuildConcreteGeometry(geom).AnalyticalCentroid available, cx, cy
+tests\modTestGeometry.bas:1968:    AssertTrue stats, "hollow.geometry.outerConcrete", BuildConcreteGeometry(geom).ContainsPoint(0#, 350#)
+tests\modTestGeometry.bas:1969:    AssertTrue stats, "hollow.geometry.openingExcluded", Not BuildConcreteGeometry(geom).ContainsPoint(0#, 0#)
+tests\modTestGeometry.bas:1970:    AssertTrue stats, "hollow.geometry.outsideExcluded", Not BuildConcreteGeometry(geom).ContainsPoint(260#, 0#)
+tests\modTestGeometry.bas:1972:    Dim offsetGeom As CGeometryHollowRectangle
+tests\modTestGeometry.bas:1973:    Set offsetGeom = New CGeometryHollowRectangle
+tests\modTestGeometry.bas:1975:    areaValue = BuildConcreteGeometry(offsetGeom).AnalyticalArea(available)
+tests\modTestGeometry.bas:1976:    BuildConcreteGeometry(offsetGeom).AnalyticalCentroid available, cx, cy
+tests\modTestGeometry.bas:1986:    Dim geom As CGeometryHollowRectangle
+tests\modTestGeometry.bas:1987:    Set geom = New CGeometryHollowRectangle
+tests\modTestGeometry.bas:1995:    Dim builder As CHollowRectAnnotationBuilder
+tests\modTestGeometry.bas:1996:    Set builder = New CHollowRectAnnotationBuilder
+tests\modTestGeometry.bas:2011:    Dim geom As CGeometryHollowRectangle
+tests\modTestGeometry.bas:2012:    Set geom = New CGeometryHollowRectangle
+tests\modTestGeometry.bas:2015:    Dim builder As CHollowRectRebarLayoutBuilder
+tests\modTestGeometry.bas:2016:    Set builder = New CHollowRectRebarLayoutBuilder
+tests\modTestGeometry.bas:2080:        AssertTrue stats, "hollow.rebar.inside." & CStr(i), BuildConcreteGeometry(geom).ContainsPoint(layout.X(i), layout.Y(i))
+tests\modTestGeometry.bas:2089:    Dim geom As CGeometryHollowRectangle
+tests\modTestGeometry.bas:2090:    Set geom = New CGeometryHollowRectangle
+tests\modTestGeometry.bas:2093:    Dim builder As CHollowRectRebarLayoutBuilder
+tests\modTestGeometry.bas:2094:    Set builder = New CHollowRectRebarLayoutBuilder
+tests\modTestGeometry.bas:2137:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2138:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2148:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2149:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2156:    Set p50 = MeshProps(BuildConcreteGeometry(geom), 50#, 50#)
+tests\modTestGeometry.bas:2157:    Set p25 = MeshProps(BuildConcreteGeometry(geom), 25#, 25#)
+tests\modTestGeometry.bas:2158:    Set p125 = MeshProps(BuildConcreteGeometry(geom), 12.5, 12.5)
+tests\modTestGeometry.bas:2185:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2186:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2191:    builder.BuildMesh BuildConcreteGeometry(geom), 10#, 10#, 1
+tests\modTestGeometry.bas:2287:    Dim geom As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2289:    Set geom = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2296:        ByVal geom As CGeometryRoundedRectangle, ByVal stepX As Double, ByVal stepY As Double)
+tests\modTestGeometry.bas:2301:    builder.BuildMesh BuildConcreteGeometry(geom), stepX, stepY, 1
+tests\modTestGeometry.bas:2318:    Dim builder As CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:2319:    Set builder = New CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:2340:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:2341:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:2433:    Dim builder As CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:2434:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometry.bas:2635:    Dim builder As CCircleRebarLayoutBuilder, layout As CRebarLayout
+tests\modTestGeometry.bas:2636:    Set builder = New CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:2684:    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:2694:    Set builder = New CCircleRebarLayoutBuilder
+tests\modTestGeometry.bas:2763:Private Function GeometryPreparationFails(ByVal shape As ISectionShape) As Boolean
+tests\modTestGeometry.bas:2766:    Set geometry = BuildConcreteGeometry(shape)
+tests\modTestGeometry.bas:2774:    Dim rounded As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2775:    Set rounded = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2776:    Dim hollow As CGeometryHollowRectangle
+tests\modTestGeometry.bas:2777:    Set hollow = New CGeometryHollowRectangle
+tests\modTestGeometry.bas:2786:    AssertTrue stats, "audit03.geometry.rounded.firstCenter", BuildConcreteGeometry(rounded).ContainsPoint(0#, 0#)
+tests\modTestGeometry.bas:2793:    Dim freshRounded As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2794:    Set freshRounded = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2799:        BuildConcreteGeometry(rounded).GetExtremePoints contourX, contourY
+tests\modTestGeometry.bas:2808:    AssertTrue stats, "audit03.geometry.hollow.opening", Not BuildConcreteGeometry(hollow).ContainsPoint(40#, -30#)
+tests\modTestGeometry.bas:2815:    Dim freshHollow As CGeometryHollowRectangle
+tests\modTestGeometry.bas:2816:    Set freshHollow = New CGeometryHollowRectangle
+tests\modTestGeometry.bas:2819:    AssertTrue stats, "audit03.geometry.hollow.newOpening", Not BuildConcreteGeometry(hollow).ContainsPoint(-30#, 20#)
+tests\modTestGeometry.bas:2826:    Set roundedDomain = BuildConcreteGeometry(rounded): Set freshRoundedDomain = BuildConcreteGeometry(freshRounded)
+tests\modTestGeometry.bas:2827:    Set hollowDomain = BuildConcreteGeometry(hollow): Set freshHollowDomain = BuildConcreteGeometry(freshHollow)
+tests\modTestGeometry.bas:2842:    AssertTrue stats, "audit03.geometry.hollow.outerBoundary", BuildConcreteGeometry(hollow).ContainsPoint(225#, 0#)
+tests\modTestGeometry.bas:2843:    AssertTrue stats, "audit03.geometry.hollow.openingBoundary", Not BuildConcreteGeometry(hollow).ContainsPoint(60#, 20#)
+tests\modTestGeometry.bas:2845:    AssertClose stats, "audit03.geometry.rounded.reinitArea", BuildConcreteGeometry(rounded).AnalyticalArea(available), BuildConcreteGeometry(freshRounded).AnalyticalArea(freshAvailable), 0#
+tests\modTestGeometry.bas:2847:    AssertClose stats, "audit03.geometry.hollow.reinitArea", BuildConcreteGeometry(hollow).AnalyticalArea(available), BuildConcreteGeometry(freshHollow).AnalyticalArea(freshAvailable), 0#
+tests\modTestGeometry.bas:2858:    Dim hollow As CGeometryHollowRectangle, mesh As CFiberMeshBuilder
+tests\modTestGeometry.bas:2864:    Set hollow = New CGeometryHollowRectangle
+tests\modTestGeometry.bas:2874:        mesh.BuildMesh BuildConcreteGeometry(hollow), 100#, 100#, 2, 10
+tests\modTestGeometry.bas:2885:            If Not BuildConcreteGeometry(hollow).ContainsPoint(mesh.FiberX(i), mesh.FiberY(i)) Then invalidCenters = invalidCenters + 1
+tests\modTestGeometry.bas:2903:    Dim rectangle As CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2904:    Set rectangle = New CGeometryRoundedRectangle
+tests\modTestGeometry.bas:2906:    mesh.BuildMesh BuildConcreteGeometry(rectangle), 100#, 100#, 2, 10
+tests\modTestCrackWidth.bas:760:    Dim geom As CGeometryRoundedRectangle
+tests\modTestCrackWidth.bas:761:    Set geom = New CGeometryRoundedRectangle
+tests\modTestCrackWidth.bas:767:    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
+tests\modTestCrackWidth.bas:772:    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:773:    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:774:    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:775:    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:796:    Dim geom As CGeometryCircle
+tests\modTestCrackWidth.bas:797:    Set geom = New CGeometryCircle
+tests\modTestCrackWidth.bas:802:    mesh.BuildMesh BuildConcreteGeometry(geom), 15#, 15#, 1
+tests\modTestCrackWidth.bas:806:    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:807:    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:808:    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:809:    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:827:    Dim geom As CGeometryRoundedRectangle
+tests\modTestCrackWidth.bas:828:    Set geom = New CGeometryRoundedRectangle
+tests\modTestCrackWidth.bas:833:    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
+tests\modTestCrackWidth.bas:837:    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:838:    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:839:    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:840:    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:1565:    Dim geom As CGeometryRoundedRectangle
+tests\modTestCrackWidth.bas:1566:    Set geom = New CGeometryRoundedRectangle
+tests\modTestCrackWidth.bas:1570:    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
+tests\modTestCrackWidth.bas:1573:    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:1574:    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:1575:    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestCrackWidth.bas:1576:    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+tests\modTestGeometryQuery.bas:444:    Dim geometry As CGeometryHollowRectangle, section As CSectionModel
+tests\modTestGeometryQuery.bas:445:    Dim annotations As CHollowRectAnnotationBuilder, rebars As CRebarLayout
+tests\modTestGeometryQuery.bas:448:    Set geometry = New CGeometryHollowRectangle
+tests\modTestGeometryQuery.bas:452:    Set annotations = New CHollowRectAnnotationBuilder: Set rebars = New CRebarLayout
+tests\modTestGeometryQuery.bas:744:    Dim kind As Variant, shape As ISectionShape, geometry As CGeometryRegion, circleGeometry As CGeometryCircle, rectSet As CGeometryRectSet
+tests\modTestGeometryQuery.bas:745:    Dim rounded As CGeometryRoundedRectangle, hollow As CGeometryHollowRectangle
+tests\modTestGeometryQuery.bas:749:    Dim circleLabels As CCircleAnnotationBuilder, rectLabels As CRectSetAnnotationBuilder
+tests\modTestGeometryQuery.bas:750:    Dim roundedLabels As CRoundedRectAnnotationBuilder, hollowLabels As CHollowRectAnnotationBuilder
+tests\modTestGeometryQuery.bas:754:                Set circleGeometry = New CGeometryCircle: circleGeometry.InitializeByDiameter 100#
+tests\modTestGeometryQuery.bas:757:                Set rectSet = New CGeometryRectSet: rectSet.Initialize 100#, 100#, 0#, 0#, 0#, 0#, 0#, "Rectangle"
+tests\modTestGeometryQuery.bas:760:                Set rounded = New CGeometryRoundedRectangle: rounded.Initialize 100#, 100#, 10#, 10#, 10#, 10#
+tests\modTestGeometryQuery.bas:763:                Set hollow = New CGeometryHollowRectangle: hollow.Initialize 100#, 100#, 10#, 40#, 60#, 5#
+tests\modTestGeometryQuery.bas:766:        Set geometry = BuildConcreteGeometry(shape)
+tests\modTestGeometryQuery.bas:783:            Case "Circle": Set circleLabels = New CCircleAnnotationBuilder: circleLabels.Build model, circleGeometry, bars
+tests\modTestGeometryQuery.bas:784:            Case "RectSet": Set rectLabels = New CRectSetAnnotationBuilder: rectLabels.Build model, rectSet, bars
+tests\modTestGeometryQuery.bas:785:            Case "RoundedRectangle": Set roundedLabels = New CRoundedRectAnnotationBuilder: roundedLabels.Build model, rounded, bars
+tests\modTestGeometryQuery.bas:786:            Case "HollowRectangle": Set hollowLabels = New CHollowRectAnnotationBuilder: hollowLabels.Build model, hollow, bars
+tests\modTestGeometryQuery.bas:801:    Dim fixture As CFakeMultiOpeningGeometry, shape As ISectionShape, geometry As CGeometryRegion, count As Variant, i As Long
+tests\modTestGeometryQuery.bas:807:        Set fixture = New CFakeMultiOpeningGeometry: fixture.Initialize CLng(count): Set shape = fixture
+tests\modTestGeometryQuery.bas:808:        Set geometry = BuildConcreteGeometry(shape)
+src\Interfaces\ISectionShape.cls:5:Attribute VB_Name = "ISectionShape"
+src\Geometry\modGeometryPreparation.bas:6:Public Function BuildConcreteGeometry(ByVal shape As ISectionShape) As CGeometryRegion
+src\Geometry\modGeometryPreparation.bas:14:    Set BuildConcreteGeometry = New CGeometryRegion
+src\Geometry\modGeometryPreparation.bas:15:    BuildConcreteGeometry.Initialize query.RegionFromContours(contours)
+tests\modTestGeometryConfig.bas:85:        Dim rectBuilder As CRectSetRebarLayoutBuilder
+tests\modTestGeometryConfig.bas:86:        Set rectBuilder = New CRectSetRebarLayoutBuilder
+tests\modTestGeometryConfig.bas:97:            Dim rounded As CGeometryRoundedRectangle, roundedBuilder As CRoundedRectRebarLayoutBuilder
+tests\modTestGeometryConfig.bas:98:            Set rounded = New CGeometryRoundedRectangle: rounded.Initialize 600#, 400#
+tests\modTestGeometryConfig.bas:99:            Set roundedBuilder = New CRoundedRectRebarLayoutBuilder
+tests\modTestGeometryConfig.bas:102:            Dim hollow As CGeometryHollowRectangle, hollowBuilder As CHollowRectRebarLayoutBuilder
+tests\modTestGeometryConfig.bas:103:            Set hollow = New CGeometryHollowRectangle: hollow.Initialize 1000#, 1200#, 60#, 400#, 500#, 30#
+tests\modTestGeometryConfig.bas:104:            Set hollowBuilder = New CHollowRectRebarLayoutBuilder
+tests\modTestGeometryConfig.bas:448:    Set ReadShape = registry.CreateGeometry(settings, units)
+tests\modTestGeometryConfig.bas:785:    Set geom = registry.CreateGeometry(settings, units)
+tests\modTestGeometryConfig.bas:786:    Set bars = registry.CreateRebars(geom, settings, units)
+tests\modTestGeometryConfig.bas:959:        RequiredGeometryRouteSnapshot = ShapeSnapshot(registry.CreateGeometry(settings, units))
+tests\modTestGeometryConfig.bas:962:    Dim circleBuilder As CCircleRebarLayoutBuilder, rect As CRectSetRebarLayoutBuilder
+tests\modTestGeometryConfig.bas:963:    Dim rounded As CRoundedRectRebarLayoutBuilder, hollow As CHollowRectRebarLayoutBuilder
+tests\modTestGeometryConfig.bas:966:        Case "Circle": Set circleBuilder = New CCircleRebarLayoutBuilder: Set bars = circleBuilder.BuildFromSettings(settings, units)
+tests\modTestGeometryConfig.bas:967:        Case "RectSet": Set rect = New CRectSetRebarLayoutBuilder: Set bars = rect.BuildFromSettings(settings, units)
+tests\modTestGeometryConfig.bas:968:        Case "RoundedRectangle": Set rounded = New CRoundedRectRebarLayoutBuilder: Set bars = rounded.BuildFromSettings(settings, units)
+tests\modTestGeometryConfig.bas:969:        Case "HollowRectangle": Set hollow = New CHollowRectRebarLayoutBuilder: Set bars = hollow.BuildFromSettings(settings, units)
+tests\modTestWorkbookInterface.bas:3769:    Dim geom As CGeometryCircle
+tests\modTestWorkbookInterface.bas:3770:    Set geom = New CGeometryCircle
+tests\modTestWorkbookInterface.bas:3777:    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
+tests\modTestWorkbookInterface.bas:3779:    Dim builder As CCircleRebarLayoutBuilder
+tests\modTestWorkbookInterface.bas:3780:    Set builder = New CCircleRebarLayoutBuilder
+tests\modTestWorkbookInterface.bas:4872:    Dim mesh As CFiberMeshBuilder, geometry As CGeometryRoundedRectangle
+tests\modTestWorkbookInterface.bas:4903:            Set geometry = New CGeometryRoundedRectangle
+tests\modTestWorkbookInterface.bas:4907:                Case "MeshAxis": mesh.BuildMesh BuildConcreteGeometry(geometry), 1E-308, 25#
+tests\modTestWorkbookInterface.bas:4908:                Case "MeshProduct": mesh.BuildMesh BuildConcreteGeometry(geometry), 0.001, 0.001
+tests\modTestWorkbookInterface.bas:4909:                Case "MeshBoundary": mesh.BuildMesh BuildConcreteGeometry(geometry), 25#, 25#, 1, 0
+tests\modTestWorkbookInterface.bas:4910:                Case "MeshSubcellProduct": mesh.BuildMesh BuildConcreteGeometry(geometry), 25#, 25#, 1, 2147483647
+tests\modTestWorkbookInterface.bas:5411:    Dim units As CUnitSystem, builder As CRectSetRebarLayoutBuilder
+tests\modTestWorkbookInterface.bas:5424:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestWorkbookInterface.bas:5517:    Dim builder As CRectSetRebarLayoutBuilder, layout As CRebarLayout, changed As CRebarLayout
+tests\modTestWorkbookInterface.bas:5520:    Set builder = New CRectSetRebarLayoutBuilder
+tests\modTestWorkbookInterface.bas:5807:    Dim section As CSectionModel, mesh As CFiberMeshBuilder, geom As CGeometryCircle, rebars As CRebarLayout
+tests\modTestWorkbookInterface.bas:5808:    Dim rebarBuilder As CCircleRebarLayoutBuilder, snapshot As CNDMResultsWriter, summary As CBatchResultWriter
+tests\modTestWorkbookInterface.bas:5838:    Set geom = New CGeometryCircle: geom.InitializeByDiameter 300#
+tests\modTestWorkbookInterface.bas:5839:    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
+tests\modTestWorkbookInterface.bas:5840:    Set rebarBuilder = New CCircleRebarLayoutBuilder
+src\Excel\modWorkbookCalculation.bas:1159:    Set ReadWorkbookGeometry = registry.CreateGeometry(settings, units)
+src\Excel\modWorkbookCalculation.bas:1179:        Set BuildWorkbookSectionModel = registry.BuildGeneratedModel(settings, units)
+src\Excel\modWorkbookCalculation.bas:1210:    Set ReadWorkbookRebars = registry.CreateRebars(geometry, settings, units)
+tools\build_workbook\Export-Audit03ConfigRegistry.ps1:111:            $consumer = 'CSystemSettingsReader -> CSectionTypeRegistry -> CGeometryCircle / CCircleRebarLayoutBuilder'
+src\Geometry\CGeometryRoundedRectangle.cls:5:Attribute VB_Name = "CGeometryRoundedRectangle"
+src\Geometry\CGeometryRoundedRectangle.cls:24:Implements ISectionShape
+src\Geometry\CGeometryRoundedRectangle.cls:508:    If contours Is Nothing Then Err.Raise vbObjectError + 5283, "CGeometryRoundedRectangle", "Контейнер контуров сечения не передан."
+src\Geometry\CGeometryRoundedRectangle.cls:510:    If Not IsValid(message) Then Err.Raise vbObjectError + 5283, "CGeometryRoundedRectangle", message
+src\Geometry\CGeometryRoundedRectangle.cls:997:Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+src\Geometry\CGeometryRoundedRectangle.cls:998:    ISectionShape_IsValid = IsValid(message)
+src\Geometry\CGeometryRoundedRectangle.cls:1001:Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
+tests\modTestRegressionBaseline.bas:56:    Dim geom As CGeometryCircle
+tests\modTestRegressionBaseline.bas:57:    Set geom = New CGeometryCircle
+tests\modTestRegressionBaseline.bas:62:    mesh.BuildMesh BuildConcreteGeometry(geom), meshStep, meshStep, 1, boundarySubdivisions
+tests\modTestRegressionBaseline.bas:64:    Dim rebarBuilder As CCircleRebarLayoutBuilder
+tests\modTestRegressionBaseline.bas:65:    Set rebarBuilder = New CCircleRebarLayoutBuilder
+tests\modTestRegressionBaseline.bas:93:    Dim geom As CGeometryCircle
+tests\modTestRegressionBaseline.bas:94:    Set geom = New CGeometryCircle
+tests\modTestRegressionBaseline.bas:99:    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1, 1
+tests\modTestRegressionBaseline.bas:101:    Dim rebarBuilder As CCircleRebarLayoutBuilder
+tests\modTestRegressionBaseline.bas:102:    Set rebarBuilder = New CCircleRebarLayoutBuilder
+tests\modTestRegressionBaseline.bas:194:    Dim geom As CGeometryCircle
+tests\modTestRegressionBaseline.bas:195:    Set geom = New CGeometryCircle
+tests\modTestRegressionBaseline.bas:200:    mesh.BuildMesh BuildConcreteGeometry(geom), meshStep, meshStep, 1, 1
+tests\modTestRegressionBaseline.bas:202:    Dim rebarBuilder As CCircleRebarLayoutBuilder
+tests\modTestRegressionBaseline.bas:203:    Set rebarBuilder = New CCircleRebarLayoutBuilder
+tests\modTestProfileConfig.bas:600:    Dim geometry As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+tests\modTestProfileConfig.bas:602:    Set geometry = New CGeometryRoundedRectangle: geometry.Initialize 300#, 200#, 0#, 0#, 0#, 0#
+tests\modTestProfileConfig.bas:603:    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geometry), 30#, 20#, 1
+tests\modTestProfileConfig.bas:605:    rebars.AddBar "A", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestProfileConfig.bas:606:    rebars.AddBar "B", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestProfileConfig.bas:607:    rebars.AddBar "C", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestProfileConfig.bas:608:    rebars.AddBar "D", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestProfileConfig.bas:731:    Dim geometry As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+tests\modTestProfileConfig.bas:733:    Set geometry = New CGeometryRoundedRectangle: geometry.Initialize 200#, 300#, 0#, 0#, 0#, 0#
+tests\modTestProfileConfig.bas:734:    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geometry), 20#, 30#, 1
+tests\modTestProfileConfig.bas:736:    rebars.AddBar "A", -60#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestProfileConfig.bas:737:    rebars.AddBar "B", 60#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestProfileConfig.bas:738:    rebars.AddBar "C", -60#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestProfileConfig.bas:739:    rebars.AddBar "D", 60#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+tests\modTestSectionSolver.bas:348:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:351:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+tests\modTestSectionSolver.bas:358:    Dim circleGeom As CGeometryCircle
+tests\modTestSectionSolver.bas:359:    Set circleGeom = New CGeometryCircle
+tests\modTestSectionSolver.bas:363:    circleMesh.BuildMesh BuildConcreteGeometry(circleGeom), 20#, 20#, 1
+tests\modTestSectionSolver.bas:524:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:527:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+tests\modTestSectionSolver.bas:558:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:561:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+tests\modTestSectionSolver.bas:564:    rebars.AddBar "B1", -60#, -30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:565:    rebars.AddBar "B2", 60#, -30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:566:    rebars.AddBar "B3", -60#, 30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:567:    rebars.AddBar "B4", 60#, 30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:598:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:601:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+tests\modTestSectionSolver.bas:623:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:626:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+tests\modTestSectionSolver.bas:629:    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:630:    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:631:    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:632:    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:647:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:650:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+tests\modTestSectionSolver.bas:665:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:668:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+tests\modTestSectionSolver.bas:671:    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:672:    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:673:    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:674:    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+tests\modTestSectionSolver.bas:705:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:708:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+tests\modTestSectionSolver.bas:736:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:739:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+tests\modTestSectionSolver.bas:824:Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:825:    Dim geom As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:826:    Set geom = New CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:986:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 10#), Nothing)
+tests\modTestSectionSolver.bas:1050:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+tests\modTestSectionSolver.bas:1151:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+tests\modTestSectionSolver.bas:1249:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+tests\modTestSectionSolver.bas:1306:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+tests\modTestSectionSolver.bas:1360:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+tests\modTestSectionSolver.bas:1466:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+tests\modTestSectionSolver.bas:1512:    Set otherSection = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+tests\modTestSectionSolver.bas:1579:    Dim geometry As CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:1580:    Set geometry = New CGeometryRoundedRectangle
+tests\modTestSectionSolver.bas:1587:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(geometry), 20#), Nothing)
+tests\modTestSectionSolver.bas:1661:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 10#), Nothing)
+tests\modTestSectionSolver.bas:1879:    Dim geom As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, section As CSectionModel
+tests\modTestSectionSolver.bas:1883:    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+tests\modTestSectionSolver.bas:2033:    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+src\Geometry\CGeometryRectSet.cls:5:Attribute VB_Name = "CGeometryRectSet"
+src\Geometry\CGeometryRectSet.cls:21:Implements ISectionShape
+src\Geometry\CGeometryRectSet.cls:284:    If contours Is Nothing Then Err.Raise vbObjectError + 5283, "CGeometryRectSet", "Контейнер контуров сечения не передан."
+src\Geometry\CGeometryRectSet.cls:286:    If Not IsValid(message) Then Err.Raise vbObjectError + 5283, "CGeometryRectSet", message
+src\Geometry\CGeometryRectSet.cls:299:Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+src\Geometry\CGeometryRectSet.cls:300:    ISectionShape_IsValid = IsValid(message)
+src\Geometry\CGeometryRectSet.cls:303:Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
+src\Geometry\CGeometryHollowRectangle.cls:5:Attribute VB_Name = "CGeometryHollowRectangle"
+src\Geometry\CGeometryHollowRectangle.cls:20:' CGeometryRoundedRectangle. Этот класс только задает ответственность
+src\Geometry\CGeometryHollowRectangle.cls:24:Implements ISectionShape
+src\Geometry\CGeometryHollowRectangle.cls:26:Private mOuter As CGeometryRoundedRectangle ' Наружная бетонная граница.
+src\Geometry\CGeometryHollowRectangle.cls:27:Private mOpening As CGeometryRoundedRectangle ' Граница пустоты; внутри нее бетона нет.
+src\Geometry\CGeometryHollowRectangle.cls:28:Private mOuterRotated As CGeometryRoundedRectangle ' Наружная граница в системе u=Y, v=-X для H/B-раскладки.
+src\Geometry\CGeometryHollowRectangle.cls:29:Private mOpeningRotated As CGeometryRoundedRectangle ' Opening в повернутой системе; используется только для линий арматуры.
+src\Geometry\CGeometryHollowRectangle.cls:61:    Set mOuter = New CGeometryRoundedRectangle
+src\Geometry\CGeometryHollowRectangle.cls:64:    Set mOpening = New CGeometryRoundedRectangle
+src\Geometry\CGeometryHollowRectangle.cls:72:    Set mOuterRotated = New CGeometryRoundedRectangle
+src\Geometry\CGeometryHollowRectangle.cls:75:    Set mOpeningRotated = New CGeometryRoundedRectangle
+src\Geometry\CGeometryHollowRectangle.cls:193:    Dim target As CGeometryRoundedRectangle
+src\Geometry\CGeometryHollowRectangle.cls:220:    Dim target As CGeometryRoundedRectangle
+src\Geometry\CGeometryHollowRectangle.cls:285:    If contours Is Nothing Then Err.Raise vbObjectError + 5283, "CGeometryHollowRectangle", "Контейнер контуров сечения не передан."
+src\Geometry\CGeometryHollowRectangle.cls:287:    If Not IsValid(message) Then Err.Raise vbObjectError + 5283, "CGeometryHollowRectangle", message
+src\Geometry\CGeometryHollowRectangle.cls:341:Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+src\Geometry\CGeometryHollowRectangle.cls:342:    ISectionShape_IsValid = IsValid(message)
+src\Geometry\CGeometryHollowRectangle.cls:345:Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
+src\Geometry\CGeometryCircle.cls:5:Attribute VB_Name = "CGeometryCircle"
+src\Geometry\CGeometryCircle.cls:19:Implements ISectionShape
+src\Geometry\CGeometryCircle.cls:89:    If contours Is Nothing Then Err.Raise vbObjectError + 5283, "CGeometryCircle", "Контейнер контуров сечения не передан."
+src\Geometry\CGeometryCircle.cls:91:    If Not IsValid(message) Then Err.Raise vbObjectError + 5283, "CGeometryCircle", message
+src\Geometry\CGeometryCircle.cls:98:Private Function ISectionShape_IsValid(ByRef message As String) As Boolean
+src\Geometry\CGeometryCircle.cls:99:    ISectionShape_IsValid = IsValid(message)
+src\Geometry\CGeometryCircle.cls:102:Private Sub ISectionShape_BuildContours(ByVal contours As CSectionContours)
+tests\modTestShapeArchitecture.bas:97:    Set geometry = registry.CreateGeometry(settings, units)
+tests\modTestShapeArchitecture.bas:99:    Set rebars = registry.CreateRebars(geometry, settings, units)
+tests\modTestShapeArchitecture.bas:188:    Set FixtureModel = registry.BuildGeneratedModel(settings, units)
+src\Excel\CSectionTypeRegistry.cls:52:Public Function CreateShape(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As ISectionShape
+src\Excel\CSectionTypeRegistry.cls:54:    Dim circleGeometry As CGeometryCircle ' Конкретная математическая форма круга.
+src\Excel\CSectionTypeRegistry.cls:55:    Dim rectSetGeometry As CGeometryRectSet ' Математическая форма из одного/двух прямоугольников.
+src\Excel\CSectionTypeRegistry.cls:56:    Dim roundedGeometry As CGeometryRoundedRectangle ' Конкретная математическая форма скругленного прямоугольника.
+src\Excel\CSectionTypeRegistry.cls:57:    Dim hollowGeometry As CGeometryHollowRectangle ' Пустотелая форма: внешний RoundedRectangle минус Opening.
+src\Excel\CSectionTypeRegistry.cls:61:            Set circleGeometry = New CGeometryCircle
+src\Excel\CSectionTypeRegistry.cls:63:            Set CreateShape = circleGeometry
+src\Excel\CSectionTypeRegistry.cls:66:            Set rectSetGeometry = New CGeometryRectSet
+src\Excel\CSectionTypeRegistry.cls:79:            Set CreateShape = rectSetGeometry
+src\Excel\CSectionTypeRegistry.cls:82:            Set roundedGeometry = New CGeometryRoundedRectangle
+src\Excel\CSectionTypeRegistry.cls:100:            Set CreateShape = roundedGeometry
+src\Excel\CSectionTypeRegistry.cls:103:            Set hollowGeometry = New CGeometryHollowRectangle
+src\Excel\CSectionTypeRegistry.cls:113:            Set CreateShape = hollowGeometry
+src\Excel\CSectionTypeRegistry.cls:118:Public Function CreateGeometry(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CGeometryRegion
+src\Excel\CSectionTypeRegistry.cls:119:    Set CreateGeometry = BuildConcreteGeometry(CreateShape(settings, units))
+src\Excel\CSectionTypeRegistry.cls:126:Public Function CreateRebars(ByVal geometry As CGeometryRegion, ByVal settings As CSystemSettingsReader, _
+src\Excel\CSectionTypeRegistry.cls:128:    Dim circleRebars As CCircleRebarLayoutBuilder ' Генератор раскладки арматуры для кругового сечения.
+src\Excel\CSectionTypeRegistry.cls:129:    Dim rectSetRebars As CRectSetRebarLayoutBuilder ' Генератор раскладки арматуры для RectSet-сечения.
+src\Excel\CSectionTypeRegistry.cls:130:    Dim roundedRebars As CRoundedRectRebarLayoutBuilder ' Генератор арматуры для RoundedRectangle-сечения.
+src\Excel\CSectionTypeRegistry.cls:131:    Dim hollowRebars As CHollowRectRebarLayoutBuilder ' Генератор арматуры для HollowRectangle-сечения.
+src\Excel\CSectionTypeRegistry.cls:135:            Set circleRebars = New CCircleRebarLayoutBuilder
+src\Excel\CSectionTypeRegistry.cls:136:            Set CreateRebars = circleRebars.BuildFromSettings(settings, units, concrete:=geometry)
+src\Excel\CSectionTypeRegistry.cls:139:            Set rectSetRebars = New CRectSetRebarLayoutBuilder
+src\Excel\CSectionTypeRegistry.cls:140:            Set CreateRebars = rectSetRebars.BuildFromSettings(settings, units, geometry)
+src\Excel\CSectionTypeRegistry.cls:143:            Set roundedRebars = New CRoundedRectRebarLayoutBuilder
+src\Excel\CSectionTypeRegistry.cls:144:            Set CreateRebars = roundedRebars.BuildFromSettings(settings, units, geometry)
+src\Excel\CSectionTypeRegistry.cls:147:            Set hollowRebars = New CHollowRectRebarLayoutBuilder
+src\Excel\CSectionTypeRegistry.cls:148:            Set CreateRebars = hollowRebars.BuildFromSettings(settings, units, geometry)
+src\Excel\CSectionTypeRegistry.cls:158:Public Sub BuildAnnotations(ByVal model As CSectionModel, ByVal shape As ISectionShape, _
+src\Excel\CSectionTypeRegistry.cls:163:    Dim circleAnnotations As CCircleAnnotationBuilder ' Формирует semantic-размеры и подписи арматуры для круга.
+src\Excel\CSectionTypeRegistry.cls:164:    Dim rectSetAnnotations As CRectSetAnnotationBuilder ' Формирует semantic-аннотации для граней RectSet-сечения.
+src\Excel\CSectionTypeRegistry.cls:165:    Dim roundedAnnotations As CRoundedRectAnnotationBuilder ' Формирует semantic-аннотации скругленного прямоугольника.
+src\Excel\CSectionTypeRegistry.cls:166:    Dim hollowAnnotations As CHollowRectAnnotationBuilder ' Формирует semantic-аннотации наружного контура и Opening.
+src\Excel\CSectionTypeRegistry.cls:172:            Set circleAnnotations = New CCircleAnnotationBuilder
+src\Excel\CSectionTypeRegistry.cls:173:            Dim circleShape As CGeometryCircle: Set circleShape = shape
+src\Excel\CSectionTypeRegistry.cls:177:            Set rectSetAnnotations = New CRectSetAnnotationBuilder
+src\Excel\CSectionTypeRegistry.cls:178:            Dim rectSet As CGeometryRectSet: Set rectSet = shape
+src\Excel\CSectionTypeRegistry.cls:182:            Set roundedAnnotations = New CRoundedRectAnnotationBuilder
+src\Excel\CSectionTypeRegistry.cls:183:            Dim rounded As CGeometryRoundedRectangle: Set rounded = shape
+src\Excel\CSectionTypeRegistry.cls:187:            Set hollowAnnotations = New CHollowRectAnnotationBuilder
+src\Excel\CSectionTypeRegistry.cls:188:            Dim hollow As CGeometryHollowRectangle: Set hollow = shape
+src\Excel\CSectionTypeRegistry.cls:197:Public Function BuildGeneratedModel(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CSectionModel
+src\Excel\CSectionTypeRegistry.cls:198:    Dim shape As ISectionShape, geometry As CGeometryRegion
+src\Excel\CSectionTypeRegistry.cls:199:    Set shape = CreateShape(settings, units)
+src\Excel\CSectionTypeRegistry.cls:200:    Set geometry = BuildConcreteGeometry(shape)
+src\Excel\CSectionTypeRegistry.cls:206:    Set rebars = CreateRebars(geometry, settings, units)
+src\Excel\CSectionTypeRegistry.cls:223:    Set BuildGeneratedModel = model
+src\Section\CCircleAnnotationBuilder.cls:5:Attribute VB_Name = "CCircleAnnotationBuilder"
+src\Section\CCircleAnnotationBuilder.cls:22:Public Sub Build(ByVal model As CSectionModel, ByVal geometry As CGeometryCircle, ByVal rebars As CRebarLayout)
+src\Section\CCircleAnnotationBuilder.cls:23:    If model Is Nothing Then Err.Raise vbObjectError + 5295, "CCircleAnnotationBuilder", "Модель сечения не передана."
+src\Section\CCircleAnnotationBuilder.cls:24:    If geometry Is Nothing Then Err.Raise vbObjectError + 5296, "CCircleAnnotationBuilder", "Геометрия круглого сечения не передана."
+src\Section\CCircleRebarLayoutBuilder.cls:5:Attribute VB_Name = "CCircleRebarLayoutBuilder"
+src\Section\CCircleRebarLayoutBuilder.cls:33:    If settings Is Nothing Then Err.Raise vbObjectError + 3162, "CCircleRebarLayoutBuilder", "Настройки Config не переданы."
+src\Section\CCircleRebarLayoutBuilder.cls:34:    If units Is Nothing Then Err.Raise vbObjectError + 3163, "CCircleRebarLayoutBuilder", "Система единиц не передана."
+src\Section\CCircleRebarLayoutBuilder.cls:39:    If diameter <= 0# Then Err.Raise vbObjectError + 3150, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:41:    If Not settings.HasKey("Rebar.Count") Then Err.Raise vbObjectError + 4310, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:44:    If barCount < 0 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:49:        If barCount < 2 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:52:        If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3153, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:54:        If axisDistance >= diameter / 2# Then Err.Raise vbObjectError + 3154, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:85:    If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:92:    If value < 0# Then Err.Raise vbObjectError + errorCode, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:108:    Dim geom As CGeometryCircle
+src\Section\CCircleRebarLayoutBuilder.cls:109:    Set geom = New CGeometryCircle
+src\Section\CCircleRebarLayoutBuilder.cls:112:    If mConcreteGeometry Is Nothing Then Set mConcreteGeometry = BuildConcreteGeometry(geom)
+src\Section\CCircleRebarLayoutBuilder.cls:136:        Err.Raise vbObjectError + 3164, "CCircleRebarLayoutBuilder", _
+src\Section\CCircleRebarLayoutBuilder.cls:170:    If layout.Count <> expectedCount Then Err.Raise vbObjectError + 3160, "CCircleRebarLayoutBuilder", "Количество созданных стержней не совпадает с заданным."
+src\Section\CCircleRebarLayoutBuilder.cls:175:        Err.Raise vbObjectError + 3161, "CCircleRebarLayoutBuilder", "Центр тяжести первого ряда арматуры не совпадает с центром круга."
+src\Section\CCircleRebarLayoutBuilder.cls:185:Private Sub AddAdditionalCircleBar(ByVal layout As CRebarLayout, ByVal geom As CGeometryCircle, _
+src\Section\CCircleRebarLayoutBuilder.cls:233:    If diameter <= 0# Then Err.Raise vbObjectError + 3150, "CCircleRebarLayoutBuilder", "Circle.Diameter должен быть положительным."
+src\Section\CCircleRebarLayoutBuilder.cls:234:    If barCount < 0 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", "Rebar.Count не может быть отрицательным."
+src\Section\CCircleRebarLayoutBuilder.cls:235:    If barDiameter < 0# Then Err.Raise vbObjectError + 3152, "CCircleRebarLayoutBuilder", "Rebar.Diameter не может быть отрицательным."
+src\Section\CCircleRebarLayoutBuilder.cls:236:    If row2Diameter < 0# Then Err.Raise vbObjectError + 3155, "CCircleRebarLayoutBuilder", "Rebar.Diameter2 не может быть отрицательным."
+src\Section\CCircleRebarLayoutBuilder.cls:237:    If row3Diameter < 0# Then Err.Raise vbObjectError + 3156, "CCircleRebarLayoutBuilder", "Rebar.Diameter3 не может быть отрицательным."
+src\Section\CCircleRebarLayoutBuilder.cls:241:    If barCount < 2 Then Err.Raise vbObjectError + 3151, "CCircleRebarLayoutBuilder", "Rebar.Count должен быть равен 0 или быть не меньше 2."
+src\Section\CCircleRebarLayoutBuilder.cls:242:    If row2Diameter > 0# And Not IsSupportedRowLocation(row2Location) Then Err.Raise vbObjectError + 3157, "CCircleRebarLayoutBuilder", "Rebar.Loc2row должен быть SideBySide или Stacked."
+src\Section\CCircleRebarLayoutBuilder.cls:243:    If row3Diameter > 0# And Not IsSupportedRowLocation(row3Location) Then Err.Raise vbObjectError + 3158, "CCircleRebarLayoutBuilder", "Rebar.Loc3row должен быть SideBySide или Stacked."
+src\Section\CCircleRebarLayoutBuilder.cls:244:    If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3153, "CCircleRebarLayoutBuilder", "Rebar.AxisDistance должен быть больше Rebar.Diameter/2."
+src\Section\CCircleRebarLayoutBuilder.cls:245:    If axisDistance >= diameter / 2# Then Err.Raise vbObjectError + 3154, "CCircleRebarLayoutBuilder", "Rebar.AxisDistance должен быть меньше Circle.Diameter/2."
+src\Section\CCircleRebarLayoutBuilder.cls:251:Private Sub ValidateBarInsideCircle(ByVal geom As CGeometryCircle, ByVal centerX As Double, ByVal centerY As Double, _
+src\Section\CCircleRebarLayoutBuilder.cls:258:        Err.Raise vbObjectError + 3159, "CCircleRebarLayoutBuilder", "Стержень дополнительного ряда Rebar.Diameter2/3 не помещается внутри круглого сечения."
+src\Section\CHollowRectRebarLayoutBuilder.cls:5:Attribute VB_Name = "CHollowRectRebarLayoutBuilder"
+src\Section\CHollowRectRebarLayoutBuilder.cls:30:    If settings Is Nothing Then Err.Raise vbObjectError + 3240, "CHollowRectRebarLayoutBuilder", "Настройки Config не переданы."
+src\Section\CHollowRectRebarLayoutBuilder.cls:31:    If units Is Nothing Then Err.Raise vbObjectError + 3241, "CHollowRectRebarLayoutBuilder", "Система единиц не передана."
+src\Section\CHollowRectRebarLayoutBuilder.cls:33:    Dim geom As CGeometryHollowRectangle
+src\Section\CHollowRectRebarLayoutBuilder.cls:34:    Set geom = New CGeometryHollowRectangle
+src\Section\CHollowRectRebarLayoutBuilder.cls:59:Public Function Build(ByVal geom As CGeometryHollowRectangle, _
+src\Section\CHollowRectRebarLayoutBuilder.cls:65:    If geom Is Nothing Then Err.Raise vbObjectError + 3242, "CHollowRectRebarLayoutBuilder", "Геометрия HollowRectangle не передана."
+src\Section\CHollowRectRebarLayoutBuilder.cls:68:    If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3243, "CHollowRectRebarLayoutBuilder", message
+src\Section\CHollowRectRebarLayoutBuilder.cls:70:    If mConcreteGeometry Is Nothing Then Set mConcreteGeometry = BuildConcreteGeometry(geom)
+src\Section\CHollowRectRebarLayoutBuilder.cls:78:    If requestedPositions > GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3250, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:135:        If Not settings.HasKey(countKey) Then Err.Raise vbObjectError + 4310, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:138:        If barCount < 0 Then Err.Raise vbObjectError + 3250, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:145:        If axisDistance < 0# Then Err.Raise vbObjectError + 3252, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:150:        If axisDistance <= diameter / 2# Then Err.Raise vbObjectError + 3252, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:171:    If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:178:    If value < 0# Then Err.Raise vbObjectError + errorCode, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:186:Private Sub AddHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryHollowRectangle, _
+src\Section\CHollowRectRebarLayoutBuilder.cls:203:    If lengthValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 3244, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:240:Private Sub AddSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryHollowRectangle, _
+src\Section\CHollowRectRebarLayoutBuilder.cls:258:    If totalLength <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 3245, "CHollowRectRebarLayoutBuilder", _
+src\Section\CHollowRectRebarLayoutBuilder.cls:291:Private Sub AddProjectedHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryHollowRectangle, _
+src\Section\CHollowRectRebarLayoutBuilder.cls:374:Private Sub AddProjectedSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryHollowRectangle, _
+src\Section\CHollowRectRebarLayoutBuilder.cls:462:    If barCount < 0 Then Err.Raise vbObjectError + 3250, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": количество стержней n должно быть нулевым или положительным."
+src\Section\CHollowRectRebarLayoutBuilder.cls:463:    If diameter < 0# Then Err.Raise vbObjectError + 3251, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": диаметр d стержней первого ряда не может быть отрицательным."
+src\Section\CHollowRectRebarLayoutBuilder.cls:472:    If diameter < 0# Then Err.Raise vbObjectError + 3251, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": диаметр d стержней первого ряда не может быть отрицательным."
+src\Section\CHollowRectRebarLayoutBuilder.cls:474:    If axisDistance <= diameter / 2# Then Err.Raise vbObjectError + 3252, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": расстояние as до оси стержня должно быть больше d/2."
+src\Section\CHollowRectRebarLayoutBuilder.cls:475:    If FaceRow2Diameter(settings) < 0# Or FaceRow3Diameter(settings) < 0# Then Err.Raise vbObjectError + 3253, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": диаметры дополнительных рядов d2 и d3 должны быть неотрицательными."
+src\Section\CHollowRectRebarLayoutBuilder.cls:476:    If FaceRow2Diameter(settings) > 0# And Not RebarRowLocationIsValid(FaceRow2Location(settings)) Then Err.Raise vbObjectError + 3254, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": положение второго ряда должно быть SideBySide или Stacked."
+src\Section\CHollowRectRebarLayoutBuilder.cls:477:    If FaceRow3Diameter(settings) > 0# And Not RebarRowLocationIsValid(FaceRow3Location(settings)) Then Err.Raise vbObjectError + 3255, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": положение третьего ряда должно быть SideBySide или Stacked."
+src\Section\CHollowRectRebarLayoutBuilder.cls:478:    If FaceRow2Diameter(settings) > 0# And Not RebarRowBindingIsValid(FaceRow2Binding(settings)) Then Err.Raise vbObjectError + 3256, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": привязка второго ряда должна быть EachBar или EverySecondBar."
+src\Section\CHollowRectRebarLayoutBuilder.cls:479:    If FaceRow3Diameter(settings) > 0# And Not RebarRowBindingIsValid(FaceRow3Binding(settings)) Then Err.Raise vbObjectError + 3257, "CHollowRectRebarLayoutBuilder", HollowFaceDisplayName(faceName) & ": привязка третьего ряда должна быть EachBar или EverySecondBar."
+src\Section\CHollowRectAnnotationBuilder.cls:5:Attribute VB_Name = "CHollowRectAnnotationBuilder"
+src\Section\CHollowRectAnnotationBuilder.cls:21:Public Sub Build(ByVal model As CSectionModel, ByVal geometry As CGeometryHollowRectangle, ByVal rebars As CRebarLayout)
+src\Section\CHollowRectAnnotationBuilder.cls:22:    If model Is Nothing Then Err.Raise vbObjectError + 5315, "CHollowRectAnnotationBuilder", "Модель сечения не передана."
+src\Section\CHollowRectAnnotationBuilder.cls:23:    If geometry Is Nothing Then Err.Raise vbObjectError + 5316, "CHollowRectAnnotationBuilder", "Геометрия HollowRectangle не передана."
+src\Section\CHollowRectAnnotationBuilder.cls:30:    Dim hollow As CGeometryHollowRectangle
+src\Section\CHollowRectAnnotationBuilder.cls:42:Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal hollow As CGeometryHollowRectangle)
+src\Section\CRectSetRebarLayoutBuilder.cls:5:Attribute VB_Name = "CRectSetRebarLayoutBuilder"
+src\Section\CRectSetRebarLayoutBuilder.cls:36:    If settings Is Nothing Then Err.Raise vbObjectError + 3190, "CRectSetRebarLayoutBuilder", "Настройки Config не переданы."
+src\Section\CRectSetRebarLayoutBuilder.cls:37:    If units Is Nothing Then Err.Raise vbObjectError + 3191, "CRectSetRebarLayoutBuilder", "Система единиц не передана."
+src\Section\CRectSetRebarLayoutBuilder.cls:86:        If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CRectSetRebarLayoutBuilder", _
+src\Section\CRectSetRebarLayoutBuilder.cls:89:        If values(side + 3) < 0 Then Err.Raise vbObjectError + 3171, "CRectSetRebarLayoutBuilder", _
+src\Section\CRectSetRebarLayoutBuilder.cls:95:            If values(side - 1) <= values(side + 1) / 2# Then Err.Raise vbObjectError + 3173, "CRectSetRebarLayoutBuilder", _
+src\Section\CRectSetRebarLayoutBuilder.cls:127:    Err.Raise number, "CRectSetRebarLayoutBuilder", lineLabel & ", " & rowLabel & ": " & description
+src\Section\CRectSetRebarLayoutBuilder.cls:136:    If value < 0# Then Err.Raise vbObjectError + 3174, "CRectSetRebarLayoutBuilder", _
+src\Section\CRectSetRebarLayoutBuilder.cls:145:    If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CRectSetRebarLayoutBuilder", _
+src\Section\CRectSetRebarLayoutBuilder.cls:152:    If value < 0# Then Err.Raise vbObjectError + errorCode, "CRectSetRebarLayoutBuilder", _
+src\Section\CRectSetRebarLayoutBuilder.cls:170:    Dim geom As CGeometryRectSet
+src\Section\CRectSetRebarLayoutBuilder.cls:171:    Set geom = New CGeometryRectSet
+src\Section\CRectSetRebarLayoutBuilder.cls:174:    If mConcreteGeometry Is Nothing Then Set mConcreteGeometry = BuildConcreteGeometry(geom)
+src\Section\CRectSetRebarLayoutBuilder.cls:181:    If requestedPositions > GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3171, "CRectSetRebarLayoutBuilder", _
+src\Section\CRectSetRebarLayoutBuilder.cls:236:' при отказе возвращается инженерное пояснение CGeometryRectSet.
+src\Section\CRectSetRebarLayoutBuilder.cls:239:    Dim geom As CGeometryRectSet
+src\Section\CRectSetRebarLayoutBuilder.cls:241:    Set geom = New CGeometryRectSet
+src\Section\CRectSetRebarLayoutBuilder.cls:243:    If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3170, "CRectSetRebarLayoutBuilder", message
+src\Section\CRectSetRebarLayoutBuilder.cls:250:Private Function RebarDiagnosticPerimeter(ByVal geom As CGeometryRectSet, ByVal upperWidth As Double, _
+src\Section\CRectSetRebarLayoutBuilder.cls:349:    If barCount < 0 Then Err.Raise vbObjectError + 3171, "CRectSetRebarLayoutBuilder", lineLabel & ": количество стержней n должно быть нулевым или положительным."
+src\Section\CRectSetRebarLayoutBuilder.cls:350:    If barDiameter < 0# Then Err.Raise vbObjectError + 3172, "CRectSetRebarLayoutBuilder", lineLabel & ": диаметр d стержней первого ряда не может быть отрицательным."
+src\Section\CRectSetRebarLayoutBuilder.cls:352:    If axisDistance <= barDiameter / 2# Then Err.Raise vbObjectError + 3173, "CRectSetRebarLayoutBuilder", lineLabel & ": расстояние as до оси стержня должно быть больше d/2."
+src\Section\CRectSetRebarLayoutBuilder.cls:353:    If startOffset < 0# Or endOffset < 0# Then Err.Raise vbObjectError + 3174, "CRectSetRebarLayoutBuilder", lineLabel & ": отступы t нач. и t кон. должны быть неотрицательными."
+src\Section\CRectSetRebarLayoutBuilder.cls:358:    If usableLength < -GEOM_TOLERANCE Then Err.Raise vbObjectError + 3175, "CRectSetRebarLayoutBuilder", lineLabel & ": сумма отступов t нач. + t кон. превышает длину грани."
+src\Section\CRectSetRebarLayoutBuilder.cls:589:    If row2Diameter < 0# Or row3Diameter < 0# Then Err.Raise vbObjectError + 3180, "CRectSetRebarLayoutBuilder", faceName & ": диаметры дополнительных рядов d_2row и d_3row должны быть неотрицательными."
+src\Section\CRectSetRebarLayoutBuilder.cls:590:    If row2Diameter > 0# And Not RebarRowLocationIsValid(row2Location) Then Err.Raise vbObjectError + 3182, "CRectSetRebarLayoutBuilder", faceName & ": loc_2row должен быть SideBySide или Stacked."
+src\Section\CRectSetRebarLayoutBuilder.cls:591:    If row3Diameter > 0# And Not RebarRowLocationIsValid(row3Location) Then Err.Raise vbObjectError + 3183, "CRectSetRebarLayoutBuilder", faceName & ": loc_3row должен быть SideBySide или Stacked."
+src\Section\CRectSetRebarLayoutBuilder.cls:592:    If row2Diameter > 0# And Not RebarRowBindingIsValid(row2Binding) Then Err.Raise vbObjectError + 3184, "CRectSetRebarLayoutBuilder", faceName & ": bind_2row должен быть EachBar или EverySecondBar."
+src\Section\CRectSetRebarLayoutBuilder.cls:593:    If row3Diameter > 0# And Not RebarRowBindingIsValid(row3Binding) Then Err.Raise vbObjectError + 3185, "CRectSetRebarLayoutBuilder", faceName & ": bind_3row должен быть EachBar или EverySecondBar."
+src\Section\CRectSetAnnotationBuilder.cls:5:Attribute VB_Name = "CRectSetAnnotationBuilder"
+src\Section\CRectSetAnnotationBuilder.cls:22:Public Sub Build(ByVal model As CSectionModel, ByVal geometry As CGeometryRectSet, ByVal rebars As CRebarLayout)
+src\Section\CRectSetAnnotationBuilder.cls:23:    If model Is Nothing Then Err.Raise vbObjectError + 5300, "CRectSetAnnotationBuilder", "Модель сечения не передана."
+src\Section\CRectSetAnnotationBuilder.cls:24:    If geometry Is Nothing Then Err.Raise vbObjectError + 5301, "CRectSetAnnotationBuilder", "Геометрия RectSet-сечения не передана."
+src\Section\CRectSetAnnotationBuilder.cls:37:Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geometry As CGeometryRectSet)
+src\Section\CRectSetAnnotationBuilder.cls:47:    Dim rectSet As CGeometryRectSet
+src\Section\CRoundedRectAnnotationBuilder.cls:5:Attribute VB_Name = "CRoundedRectAnnotationBuilder"
+src\Section\CRoundedRectAnnotationBuilder.cls:22:Public Sub Build(ByVal model As CSectionModel, ByVal geometry As CGeometryRoundedRectangle, ByVal rebars As CRebarLayout)
+src\Section\CRoundedRectAnnotationBuilder.cls:23:    If model Is Nothing Then Err.Raise vbObjectError + 5305, "CRoundedRectAnnotationBuilder", "Модель сечения не передана."
+src\Section\CRoundedRectAnnotationBuilder.cls:24:    If geometry Is Nothing Then Err.Raise vbObjectError + 5306, "CRoundedRectAnnotationBuilder", "Геометрия скругленного прямоугольника не передана."
+src\Section\CRoundedRectAnnotationBuilder.cls:37:Private Sub AddDimensions(ByVal annotations As CSectionAnnotations, ByVal geometry As CGeometryRoundedRectangle)
+src\Section\CRoundedRectAnnotationBuilder.cls:38:    Dim rounded As CGeometryRoundedRectangle
+src\Section\CRoundedRectAnnotationBuilder.cls:41:    Set concrete = BuildConcreteGeometry(rounded)
+src\Section\CRoundedRectRebarLayoutBuilder.cls:5:Attribute VB_Name = "CRoundedRectRebarLayoutBuilder"
+src\Section\CRoundedRectRebarLayoutBuilder.cls:30:    If settings Is Nothing Then Err.Raise vbObjectError + 3220, "CRoundedRectRebarLayoutBuilder", "Настройки Config не переданы."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:31:    If units Is Nothing Then Err.Raise vbObjectError + 3221, "CRoundedRectRebarLayoutBuilder", "Система единиц не передана."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:33:    Dim geom As CGeometryRoundedRectangle
+src\Section\CRoundedRectRebarLayoutBuilder.cls:34:    Set geom = New CGeometryRoundedRectangle
+src\Section\CRoundedRectRebarLayoutBuilder.cls:64:Public Function Build(ByVal geom As CGeometryRoundedRectangle, _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:68:    If geom Is Nothing Then Err.Raise vbObjectError + 3222, "CRoundedRectRebarLayoutBuilder", "Геометрия RoundedRectangle не передана."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:71:    If Not geom.IsValid(message) Then Err.Raise vbObjectError + 3223, "CRoundedRectRebarLayoutBuilder", message
+src\Section\CRoundedRectRebarLayoutBuilder.cls:73:    If mConcreteGeometry Is Nothing Then Set mConcreteGeometry = BuildConcreteGeometry(geom)
+src\Section\CRoundedRectRebarLayoutBuilder.cls:79:    If requestedPositions > GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3230, "CRoundedRectRebarLayoutBuilder", _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:112:    If Not settings.HasKey(countKey) Then Err.Raise vbObjectError + 4310, "CRoundedRectRebarLayoutBuilder", _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:115:    If count < 0 Then Err.Raise vbObjectError + 3230, "CRoundedRectRebarLayoutBuilder", _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:121:        If axisDistance <= diameter / 2# Then Err.Raise vbObjectError + 3232, "CRoundedRectRebarLayoutBuilder", _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:142:    If Not settings.HasKey(key) Then Err.Raise vbObjectError + 4310, "CRoundedRectRebarLayoutBuilder", _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:149:    If value < 0# Then Err.Raise vbObjectError + errorCode, "CRoundedRectRebarLayoutBuilder", _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:159:Private Sub AddHorizontalFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryRoundedRectangle, _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:179:    If lengthValue <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 3224, "CRoundedRectRebarLayoutBuilder", _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:217:Private Sub AddSideFace(ByVal layout As CRebarLayout, ByVal geom As CGeometryRoundedRectangle, _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:237:    If totalLength <= GEOM_TOLERANCE Then Err.Raise vbObjectError + 3225, "CRoundedRectRebarLayoutBuilder", _
+src\Section\CRoundedRectRebarLayoutBuilder.cls:349:    If barCount < 0 Then Err.Raise vbObjectError + 3230, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": количество стержней n должно быть нулевым или положительным."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:350:    If diameter < 0# Then Err.Raise vbObjectError + 3231, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": диаметр d стержней первого ряда не может быть отрицательным."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:352:    If axisDistance <= diameter / 2# Then Err.Raise vbObjectError + 3232, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": расстояние as до оси стержня должно быть больше d/2."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:353:    If row2Diameter < 0# Or row3Diameter < 0# Then Err.Raise vbObjectError + 3233, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": диаметры дополнительных рядов d2 и d3 должны быть неотрицательными."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:354:    If row2Diameter > 0# And Not RebarRowLocationIsValid(row2Location) Then Err.Raise vbObjectError + 3234, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": положение второго ряда должно быть SideBySide или Stacked."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:355:    If row3Diameter > 0# And Not RebarRowLocationIsValid(row3Location) Then Err.Raise vbObjectError + 3235, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": положение третьего ряда должно быть SideBySide или Stacked."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:356:    If row2Diameter > 0# And Not RebarRowBindingIsValid(row2Binding) Then Err.Raise vbObjectError + 3236, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": привязка второго ряда должна быть EachBar или EverySecondBar."
+src\Section\CRoundedRectRebarLayoutBuilder.cls:357:    If row3Diameter > 0# And Not RebarRowBindingIsValid(row3Binding) Then Err.Raise vbObjectError + 3237, "CRoundedRectRebarLayoutBuilder", RoundedFaceDisplayName(faceName) & ": привязка третьего ряда должна быть EachBar или EverySecondBar."
+tools\build_workbook\Refresh-Stage09.ps1:282:        "src/Geometry/CGeometryCircle.cls",
+tools\build_workbook\Refresh-Stage09.ps1:283:        "src/Geometry/CGeometryRoundedRectangle.cls",
+tools\build_workbook\Refresh-Stage09.ps1:284:        "src/Section/CCircleRebarLayoutBuilder.cls",
+tools\build_workbook\Run-Audit03PerformanceComparison.ps1:376:    Dim geom As CGeometryHollowRectangle
+tools\build_workbook\Run-Audit03PerformanceComparison.ps1:377:    Set geom = New CGeometryHollowRectangle
+tools\build_workbook\Test-Audit03SourceContracts.ps1:118:foreach ($path in @('src/Geometry/CGeometryRoundedRectangle.cls', 'src/Geometry/CGeometryHollowRectangle.cls')) {

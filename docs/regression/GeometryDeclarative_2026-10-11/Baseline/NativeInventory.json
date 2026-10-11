@@ -1,0 +1,3489 @@
+﻿{
+    "CapturedAt":  "2026-10-11T20:17:10.0002269+03:00",
+    "ExcelVersion":  "16.0",
+    "ExcelBuild":  "10417",
+    "ExcelExecutable":  "C:\\Program Files (x86)\\Microsoft Office\\Root\\Office16\\EXCEL.EXE",
+    "Calculation":  -4105,
+    "Names":  [
+                  {
+                      "Name":  "Расчет!Print_Area",
+                      "RefersTo":  "=Расчет!$A$1:$AJ$60",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngBatchSummary",
+                      "RefersTo":  "=Results!$A$1",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngCalculationProfiles",
+                      "RefersTo":  "=Config!$H$36:$N$67",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngCircleGeometry",
+                      "RefersTo":  "=Config!$H$86:$K$95",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngConcreteMaterialParameters",
+                      "RefersTo":  "=Config!$H$26:$M$33",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngCrackSummaryAnchor",
+                      "RefersTo":  "=Results!$A$85",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngHollowRectangleGeometry",
+                      "RefersTo":  "=Config!$H$153:$P$180",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngLoadCombinations",
+                      "RefersTo":  "=Config!$O$3:$U$33",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngNDMElementResults",
+                      "RefersTo":  "=Results!$A$156",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngNDMMaterialDiagrams",
+                      "RefersTo":  "=Results!$BD$156",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngNDMSectionAnnotations",
+                      "RefersTo":  "=Results!$BQ$156",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngNDMSectionContours",
+                      "RefersTo":  "=Results!$AC$156",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngNDMSectionGeometry",
+                      "RefersTo":  "=Results!$L$156",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngNDMSectionProperties",
+                      "RefersTo":  "=Results!$AV$156",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngPlotAnnotationSettings",
+                      "RefersTo":  "=Config!$H$70:$M$83",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngRectSetGeometry",
+                      "RefersTo":  "=Config!$H$98:$P$125",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngRoundedRectangleGeometry",
+                      "RefersTo":  "=Config!$H$128:$P$149",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngSignConventionSettings",
+                      "RefersTo":  "=Config!$H$12:$J$15",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngSP35Table721",
+                      "RefersTo":  "=Config!$AI$60:$AP$78",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngStabilityDurationLoads",
+                      "RefersTo":  "=Config!$P$37:$S$67",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngStabilitySummaryAnchor",
+                      "RefersTo":  "=Results!$A$122",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngSteelMaterialParameters",
+                      "RefersTo":  "=Config!$H$18:$M$23",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngStrengthSummaryAnchor",
+                      "RefersTo":  "=Results!$A$49",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngSystemSettings",
+                      "RefersTo":  "=Config!$A$3:$E$138",
+                      "Visible":  true
+                  },
+                  {
+                      "Name":  "rngUnitSettings",
+                      "RefersTo":  "=Config!$H$3:$K$9",
+                      "Visible":  true
+                  }
+              ],
+    "Components":  [
+                       {
+                           "Name":  "ЭтаКнига",
+                           "Type":  100,
+                           "Lines":  148,
+                           "CodeSHA256":  "B0C85BBB532C87B6428FE08FA55D2E75223675E5B104B002C990FE42E4FDCC08"
+                       },
+                       {
+                           "Name":  "Лист1",
+                           "Type":  100,
+                           "Lines":  0,
+                           "CodeSHA256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+                       },
+                       {
+                           "Name":  "Лист2",
+                           "Type":  100,
+                           "Lines":  0,
+                           "CodeSHA256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+                       },
+                       {
+                           "Name":  "Лист3",
+                           "Type":  100,
+                           "Lines":  0,
+                           "CodeSHA256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+                       },
+                       {
+                           "Name":  "Лист4",
+                           "Type":  100,
+                           "Lines":  0,
+                           "CodeSHA256":  "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+                       },
+                       {
+                           "Name":  "CBatchSectionCalculator",
+                           "Type":  2,
+                           "Lines":  2184,
+                           "CodeSHA256":  "F31FF13DF36E5DD2082593B761A4DA4F104F92477026B2D360B49A54FA5C4C09"
+                       },
+                       {
+                           "Name":  "CCalculationProfile",
+                           "Type":  2,
+                           "Lines":  288,
+                           "CodeSHA256":  "7D9646D521BEB63228CE3B1F94B67FBB9846F98BBBD61411183A5ABD1F7246B1"
+                       },
+                       {
+                           "Name":  "CCalculationProfileCatalog",
+                           "Type":  2,
+                           "Lines":  320,
+                           "CodeSHA256":  "DC0B037449AF01975DC964CE49393D4429D9EC10B3CB181DE057E75215BCE645"
+                       },
+                       {
+                           "Name":  "CCombinationResult",
+                           "Type":  2,
+                           "Lines":  358,
+                           "CodeSHA256":  "3455F500302FCE88C947DC6667FCAF6697736EAB03F83613713E904B65EF3DBD"
+                       },
+                       {
+                           "Name":  "CDirectStateResult",
+                           "Type":  2,
+                           "Lines":  160,
+                           "CodeSHA256":  "BAE5E1E9CEC9185B48B6C692274204D9CCE168544089E800B19E0CA848A2B494"
+                       },
+                       {
+                           "Name":  "CSectionStateResult",
+                           "Type":  2,
+                           "Lines":  511,
+                           "CodeSHA256":  "A3288815DD2778AA21139426BD354BC572FF9E5E2D8116D2378326B7B3DE94AA"
+                       },
+                       {
+                           "Name":  "CStateProvider",
+                           "Type":  2,
+                           "Lines":  236,
+                           "CodeSHA256":  "F02869BF08087D87D0E2828EA948E8CBE1DCCA54314A3239F9D8FF3F8E5E3066"
+                       },
+                       {
+                           "Name":  "CStateRepository",
+                           "Type":  2,
+                           "Lines":  192,
+                           "CodeSHA256":  "C9AA4F33A6DE60E11E2476AAC236E5372B6F146F5BDE4AFE78DCBC7466A64BDF"
+                       },
+                       {
+                           "Name":  "CStateRequest",
+                           "Type":  2,
+                           "Lines":  98,
+                           "CodeSHA256":  "EE3FBD0E9A7A6CE556C86BCA2FC644470DC214C52D3E0FC09E78C1079AE9346E"
+                       },
+                       {
+                           "Name":  "CStrengthResult",
+                           "Type":  2,
+                           "Lines":  134,
+                           "CodeSHA256":  "803B4C1516AA7D9A40B68D9E50F78C9163B67240F9D4B06FFCD4C9AB1C17218B"
+                       },
+                       {
+                           "Name":  "CLoadPathDescriptor",
+                           "Type":  2,
+                           "Lines":  285,
+                           "CodeSHA256":  "94B32C235F42EA398649CE630DE6E573A0CE71E9A0350723862335E7D25CA293"
+                       },
+                       {
+                           "Name":  "CLoadPathMath",
+                           "Type":  2,
+                           "Lines":  307,
+                           "CodeSHA256":  "3A82D7D068498B11C011AABC61A24A90F0F8D69EF8B44D0D96A20E36E29FA3EA"
+                       },
+                       {
+                           "Name":  "CLoadPathVector",
+                           "Type":  2,
+                           "Lines":  92,
+                           "CodeSHA256":  "777D6DBB563684B7D3AEBCB5684B48C2FB77149227BFDB8CAB2A0ED9C27D3166"
+                       },
+                       {
+                           "Name":  "CMomentZeroFilter",
+                           "Type":  2,
+                           "Lines":  60,
+                           "CodeSHA256":  "A6EC32658F0B112FB795B5E21C016ACA88B41FC9B558D8CE58456FAB4692CAD4"
+                       },
+                       {
+                           "Name":  "CResultMeta",
+                           "Type":  2,
+                           "Lines":  195,
+                           "CodeSHA256":  "FA46AF52AF7824648AA553C61854342C272C5D7D66E75CB6DD5DBEA1B424314E"
+                       },
+                       {
+                           "Name":  "CResultStatusPolicy",
+                           "Type":  2,
+                           "Lines":  186,
+                           "CodeSHA256":  "6471F7FF3CCDD80805FC18EC44C9C45928F0CBE529787D78551A049D9A9F618A"
+                       },
+                       {
+                           "Name":  "CSectionLoadState",
+                           "Type":  2,
+                           "Lines":  163,
+                           "CodeSHA256":  "DE05B2A9D7411801956C3E511507C79D16BFE28DFCA1473A34D687C8F40A2B73"
+                       },
+                       {
+                           "Name":  "modCalculationPurpose",
+                           "Type":  1,
+                           "Lines":  307,
+                           "CodeSHA256":  "3E620E1A876C5F22D24F1406616A3E76264663D2CC5EDFE8CF62145865BC886B"
+                       },
+                       {
+                           "Name":  "modGeometryTypes",
+                           "Type":  1,
+                           "Lines":  149,
+                           "CodeSHA256":  "76DE59E725A229C75850FBBB1CF7235F6857B5212144DDAFB41DFFB1BFBB11D5"
+                       },
+                       {
+                           "Name":  "modResultStatus",
+                           "Type":  1,
+                           "Lines":  134,
+                           "CodeSHA256":  "AC6DA387329DB56D8C38494AB39C09115F16AB65223091EB7FE3AC22274D8D8B"
+                       },
+                       {
+                           "Name":  "modSolverWorkStats",
+                           "Type":  1,
+                           "Lines":  57,
+                           "CodeSHA256":  "AE2FCA743DF81E20EE0C0773E02E82F74378E359B03024F507FBA14D2BA56F7E"
+                       },
+                       {
+                           "Name":  "CCrackFormationCalculator",
+                           "Type":  2,
+                           "Lines":  2155,
+                           "CodeSHA256":  "3A0FCF217D09FCDA97BDE1B2D28863E9300E4BDFF963D1178B1FE96D1D4D901B"
+                       },
+                       {
+                           "Name":  "CCrackFormationResult",
+                           "Type":  2,
+                           "Lines":  235,
+                           "CodeSHA256":  "FA9ED6E1F2296B152E0C1C5D7F4B0F2B38D51052D774DF07893F0209D009DC34"
+                       },
+                       {
+                           "Name":  "CCrackResult",
+                           "Type":  2,
+                           "Lines":  187,
+                           "CodeSHA256":  "F159B3E4E12D1742D1B755845684814423AE071FC7B3C4DDB539CFA37679949A"
+                       },
+                       {
+                           "Name":  "CCrackWidthCalculator",
+                           "Type":  2,
+                           "Lines":  1625,
+                           "CodeSHA256":  "F4B6FDD45F09B56486DE47C0566AA7E659D4BED1579B6B69E282C7B038364887"
+                       },
+                       {
+                           "Name":  "CCrackWidthResult",
+                           "Type":  2,
+                           "Lines":  286,
+                           "CodeSHA256":  "4A05A07C1CD9506AF94C43520F083117FF8018C964624493D79DBBA7238007C7"
+                       },
+                       {
+                           "Name":  "CLongitudinalCrackCalculator",
+                           "Type":  2,
+                           "Lines":  87,
+                           "CodeSHA256":  "EA64E9FB1359852963466F6EDBF4B4BEC53E2F8794FEC0ABE6D72EB719D69C89"
+                       },
+                       {
+                           "Name":  "CLongitudinalCrackResult",
+                           "Type":  2,
+                           "Lines":  89,
+                           "CodeSHA256":  "7F7123C214DE4F6371997CCE98207F18022190354B1641FF0B7CA217AFDD4318"
+                       },
+                       {
+                           "Name":  "CSP35CrackData",
+                           "Type":  2,
+                           "Lines":  635,
+                           "CodeSHA256":  "7B4C83F9013C5FD37F088BEB36238B3D2F598EF47C1A1610688BC60332F2C46F"
+                       },
+                       {
+                           "Name":  "CAutoCADContourReader",
+                           "Type":  2,
+                           "Lines":  184,
+                           "CodeSHA256":  "09778B0E6621545954C533175C14055A35AAB3799AD91249090476DD0F9BDAAB"
+                       },
+                       {
+                           "Name":  "CAutoCADSectionModelImporter",
+                           "Type":  2,
+                           "Lines":  909,
+                           "CodeSHA256":  "27D2B4E8904E180807D10994F4037362D64800B84F9BA20E103C1BBEE8405F66"
+                       },
+                       {
+                           "Name":  "CBatchResultWriter",
+                           "Type":  2,
+                           "Lines":  855,
+                           "CodeSHA256":  "2579128DFEDC354055FBA76BEDA0FDDA2F047131A4A029FCE4F7A9E17877784D"
+                       },
+                       {
+                           "Name":  "CCrackSummaryWriter",
+                           "Type":  2,
+                           "Lines":  1066,
+                           "CodeSHA256":  "EA3EA0FC21FAAC391E3A5AA779217ABEE734EFF74964CDD39441F1A6B9174BEF"
+                       },
+                       {
+                           "Name":  "CExcelAppStateGuard",
+                           "Type":  2,
+                           "Lines":  87,
+                           "CodeSHA256":  "E7E08CC61756C8EE555883B78C59286EA5B1F3B5EEFD92CF6AEC15383D3E5B9B"
+                       },
+                       {
+                           "Name":  "CExecutionReport",
+                           "Type":  2,
+                           "Lines":  673,
+                           "CodeSHA256":  "614F50FF4E81FD87A560853A30A46943AE28197999ADD1C98193801F057064C2"
+                       },
+                       {
+                           "Name":  "CLoadCombinationReader",
+                           "Type":  2,
+                           "Lines":  185,
+                           "CodeSHA256":  "52C21EBC3D08B7C4BF943A77438F580687D84F573609504C38212A0D28BFC3C5"
+                       },
+                       {
+                           "Name":  "CNDMResultsWriter",
+                           "Type":  2,
+                           "Lines":  1543,
+                           "CodeSHA256":  "934414495D14BFB9553C07DB2AA8C820B4BAFD002E42B7FF68778E37FC868FFD"
+                       },
+                       {
+                           "Name":  "CPlotAnnotationLayout",
+                           "Type":  2,
+                           "Lines":  498,
+                           "CodeSHA256":  "4D61DBBD4E7DC64A6327A667F0CDC70843CFBB627F9ED40B234F078B72DB757C"
+                       },
+                       {
+                           "Name":  "CSectionPlotDataReader",
+                           "Type":  2,
+                           "Lines":  1203,
+                           "CodeSHA256":  "4B5641458EB55B5DB87F9E0E0D8616EE00F7BE3056F3BD1D3F535B1F59FD23AC"
+                       },
+                       {
+                           "Name":  "CSectionPlotter",
+                           "Type":  2,
+                           "Lines":  2103,
+                           "CodeSHA256":  "72304F388EF0A46C0CE6BBE0B92E7F88A059CF90E9D913A6B26554326AD9C5F4"
+                       },
+                       {
+                           "Name":  "CSectionTypeRegistry",
+                           "Type":  2,
+                           "Lines":  224,
+                           "CodeSHA256":  "54E5DD483AEF263A8CF5026FB9547D627584E1A47C7B177274F7EF04DAE1B936"
+                       },
+                       {
+                           "Name":  "CStabilitySummaryWriter",
+                           "Type":  2,
+                           "Lines":  885,
+                           "CodeSHA256":  "4A457DC3B3A77F8FC6C31563CA03E5115EF8C70BE74AC788A54FB0F3FB1D65B6"
+                       },
+                       {
+                           "Name":  "CStrengthSummaryWriter",
+                           "Type":  2,
+                           "Lines":  814,
+                           "CodeSHA256":  "3FCC2B828EFC28106541411F8FDA7891B5F0F9C5D730F3C883486076C9F520AC"
+                       },
+                       {
+                           "Name":  "CSystemSettingsReader",
+                           "Type":  2,
+                           "Lines":  1349,
+                           "CodeSHA256":  "B041B6551EA05359A9110451D227C447EF36CD8D2F59FD3D20AC91F181B8B834"
+                       },
+                       {
+                           "Name":  "CUnitSystem",
+                           "Type":  2,
+                           "Lines":  402,
+                           "CodeSHA256":  "F37A61C6B65A8534EAD00067CD92C7C3C0D8F64CD884FE79AEE11ADDDA7F3F22"
+                       },
+                       {
+                           "Name":  "modAutoCADStressExport",
+                           "Type":  1,
+                           "Lines":  2516,
+                           "CodeSHA256":  "70B59865BE1E139932652C0E66D1954786B6827F52B8ABCA3786B5FB651E6C16"
+                       },
+                       {
+                           "Name":  "modMeshConfiguration",
+                           "Type":  1,
+                           "Lines":  50,
+                           "CodeSHA256":  "17E325E7D654144BEC9C12F56AAB6EE4588452ECBD722DE4CBD575F347E1796E"
+                       },
+                       {
+                           "Name":  "modStatusFormatting",
+                           "Type":  1,
+                           "Lines":  50,
+                           "CodeSHA256":  "B172CC3DCE13CA1C1199545795E8254ACBAAF1D6E165455FDEB50F1DC63071BF"
+                       },
+                       {
+                           "Name":  "modWorkbookCalculation",
+                           "Type":  1,
+                           "Lines":  1292,
+                           "CodeSHA256":  "B2846D73D3B854227208E645C2171957E0B65D7280147409817DEB859BD46F42"
+                       },
+                       {
+                           "Name":  "modWorkbookMessages",
+                           "Type":  1,
+                           "Lines":  50,
+                           "CodeSHA256":  "5AB5AC21A2B0F3A7052B36A02F04535D44DE3F9E2B292AA437DFE7BE9C814C58"
+                       },
+                       {
+                           "Name":  "CFiberMeshBuilder",
+                           "Type":  2,
+                           "Lines":  263,
+                           "CodeSHA256":  "4D21A672B611CDD65EDF8076B63F82D203DF7CF57E6D690CE662FAF161000B9E"
+                       },
+                       {
+                           "Name":  "CGeometryCircle",
+                           "Type":  2,
+                           "Lines":  97,
+                           "CodeSHA256":  "4E551D8886F37683311095528C8500AE09EB902001F709A3413A5CA0B576787B"
+                       },
+                       {
+                           "Name":  "CGeometryHollowRectangle",
+                           "Type":  2,
+                           "Lines":  340,
+                           "CodeSHA256":  "6A20EA8BBC1CCEB174FC616578EFAE8A6C5329039DAAC2D719F52AD4FFBE06DE"
+                       },
+                       {
+                           "Name":  "CGeometryRectSet",
+                           "Type":  2,
+                           "Lines":  298,
+                           "CodeSHA256":  "D74F6916B43903457A6D0324FB2299AC0843382380A1C6B161EE17317119C6C8"
+                       },
+                       {
+                           "Name":  "CGeometryRegion",
+                           "Type":  2,
+                           "Lines":  94,
+                           "CodeSHA256":  "FCA48ADCCA9562E555048F8AE30D527BB06D91258903848CD18111798A345C40"
+                       },
+                       {
+                           "Name":  "CGeometryRoundedRectangle",
+                           "Type":  2,
+                           "Lines":  996,
+                           "CodeSHA256":  "4B8CF0F01E441A0AAFC09A195098EBCC4AF6B734446797449353F3C621D6D958"
+                       },
+                       {
+                           "Name":  "modGeometryPreparation",
+                           "Type":  1,
+                           "Lines":  16,
+                           "CodeSHA256":  "F88D2DB19B5B226C2BA91EC0BA70824D06AD0D2F9BA9C63AA704D057DC8096BD"
+                       },
+                       {
+                           "Name":  "ILimitSearchProblem",
+                           "Type":  2,
+                           "Lines":  266,
+                           "CodeSHA256":  "089825B594FD780634F251CCF2BAEF4527F641C253734E8B7D98741614393291"
+                       },
+                       {
+                           "Name":  "ISectionShape",
+                           "Type":  2,
+                           "Lines":  11,
+                           "CodeSHA256":  "331C92313FA634EDCD261AA47D45C8A8F92BE569811072BAE798D6F7C7C0012E"
+                       },
+                       {
+                           "Name":  "CConcreteMaterialParameters",
+                           "Type":  2,
+                           "Lines":  179,
+                           "CodeSHA256":  "CAF333400A4E44B0F5C481F0C02661A6CA8627F98C06B38F2A198E49F968CD72"
+                       },
+                       {
+                           "Name":  "CLinearConcreteMaterial",
+                           "Type":  2,
+                           "Lines":  50,
+                           "CodeSHA256":  "C34E7B7B444ADC6C3BA7F159102C9F213F828E25B15291DE339569878D3844CA"
+                       },
+                       {
+                           "Name":  "CLinearSteelMaterial",
+                           "Type":  2,
+                           "Lines":  50,
+                           "CodeSHA256":  "88959482DB6C186D656EC1A8AE9C20E6437FC351AE1A043E07F7CCE34F8634DB"
+                       },
+                       {
+                           "Name":  "CMaterialDiagram",
+                           "Type":  2,
+                           "Lines":  502,
+                           "CodeSHA256":  "5598E42A904FC97E585293950432C1A90122E720B3A0513D15F7D28BCBFF17B2"
+                       },
+                       {
+                           "Name":  "CMaterialModelProvider",
+                           "Type":  2,
+                           "Lines":  903,
+                           "CodeSHA256":  "F29EFD4FF19A5E4E3DEB7085C5C05A9AFBFB051BD9749D9543C7BC0DF9AA0DB8"
+                       },
+                       {
+                           "Name":  "CMaterialModelSpec",
+                           "Type":  2,
+                           "Lines":  94,
+                           "CodeSHA256":  "D4557CE51395F302F7B42926C76DE14253AA01C054694E74A5BECE71BDEEB4B1"
+                       },
+                       {
+                           "Name":  "CSteelMaterialParameters",
+                           "Type":  2,
+                           "Lines":  157,
+                           "CodeSHA256":  "9D3E714355A0DCAAA809834B50E7D62D3C57FA537CA81263863FDE97FA3DCF53"
+                       },
+                       {
+                           "Name":  "CCircleAnnotationBuilder",
+                           "Type":  2,
+                           "Lines":  29,
+                           "CodeSHA256":  "F57DFF89C8D1458D46F27B83BBC522CBEF519D763B3A993B9AD7ABF983A84A00"
+                       },
+                       {
+                           "Name":  "CCircleRebarLayoutBuilder",
+                           "Type":  2,
+                           "Lines":  293,
+                           "CodeSHA256":  "7A57C1363E0F891977755DDBC0A19A5E62FF7E7EF275FE95735BA9C2F776D721"
+                       },
+                       {
+                           "Name":  "CConcreteRegion",
+                           "Type":  2,
+                           "Lines":  136,
+                           "CodeSHA256":  "154D3476001136EF46584646C103538EC698A58CAFF4269763558C6B2EA3FE5A"
+                       },
+                       {
+                           "Name":  "CHollowRectAnnotationBuilder",
+                           "Type":  2,
+                           "Lines":  55,
+                           "CodeSHA256":  "D823E17BE078AC9AAC2206B47419B4442B094B32C29F703A013FE282C14F80DA"
+                       },
+                       {
+                           "Name":  "CHollowRectRebarLayoutBuilder",
+                           "Type":  2,
+                           "Lines":  740,
+                           "CodeSHA256":  "388DDA30878A037AE8300344CD3CCAA24287FBDDBA3192BC0081A993DAB17D27"
+                       },
+                       {
+                           "Name":  "CRebarGroupAnnotationBuilder",
+                           "Type":  2,
+                           "Lines":  81,
+                           "CodeSHA256":  "E10B070D68DA928BC0F839BF4CFE0941515F5957A1E829C6F06DCB3082B91C60"
+                       },
+                       {
+                           "Name":  "CRebarLayout",
+                           "Type":  2,
+                           "Lines":  252,
+                           "CodeSHA256":  "61E1A6C703F3AB072E7F06C76BA1B8C8A2AEFEFE6103FC387D1260B8A996AA81"
+                       },
+                       {
+                           "Name":  "CRectSetAnnotationBuilder",
+                           "Type":  2,
+                           "Lines":  58,
+                           "CodeSHA256":  "EF07858985253731A9D7F677BD95D55649FE06BEE7D21AAA360840294B62549A"
+                       },
+                       {
+                           "Name":  "CRectSetRebarLayoutBuilder",
+                           "Type":  2,
+                           "Lines":  766,
+                           "CodeSHA256":  "36F0C4DFC9EC702B8D19B6F33EC0C6BF50785430B41F51873C265F1DB453705C"
+                       },
+                       {
+                           "Name":  "CRoundedRectAnnotationBuilder",
+                           "Type":  2,
+                           "Lines":  66,
+                           "CodeSHA256":  "CD6D2139C1DC73184DFBF5A2E192BB003F5D555ECA4DE1DF053BBC0294FB54DE"
+                       },
+                       {
+                           "Name":  "CRoundedRectRebarLayoutBuilder",
+                           "Type":  2,
+                           "Lines":  418,
+                           "CodeSHA256":  "9F89D7B49DE86E2B2B4558E1E6667C545072D5206236DC93966C86201D09463B"
+                       },
+                       {
+                           "Name":  "CSectionAnnotations",
+                           "Type":  2,
+                           "Lines":  364,
+                           "CodeSHA256":  "E0B943DB8295C16AC57436A58ADCEAEB80D13C8FDD4C12C11245024967A38190"
+                       },
+                       {
+                           "Name":  "CSectionContours",
+                           "Type":  2,
+                           "Lines":  156,
+                           "CodeSHA256":  "B53D6DC39B75138313B357277260AA72FE687CB3B79294D0B7F446AC4301811E"
+                       },
+                       {
+                           "Name":  "CSectionGeometryQuery",
+                           "Type":  2,
+                           "Lines":  1583,
+                           "CodeSHA256":  "06C5E151D5E6205CFD7484276FFB5BDD8E373CD214A7D98E5FD02C6299E88A17"
+                       },
+                       {
+                           "Name":  "CSectionModel",
+                           "Type":  2,
+                           "Lines":  973,
+                           "CodeSHA256":  "07AC0DF764D4C2305CB1B26AA79B677E19B1EC8F3CE0598D8CC99FA8608E4DE7"
+                       },
+                       {
+                           "Name":  "CSectionModelBuilder",
+                           "Type":  2,
+                           "Lines":  60,
+                           "CodeSHA256":  "455B49AD35B5BFA09AEF00A8A94470ED6A636F3512AD8D962011FEFB7F9AC5F2"
+                       },
+                       {
+                           "Name":  "CSectionPropertiesCalculator",
+                           "Type":  2,
+                           "Lines":  808,
+                           "CodeSHA256":  "8F21E5CE89BC8627633765C2BB4C5F29F741F181C4DFC8DD34A4315B9047BD35"
+                       },
+                       {
+                           "Name":  "modRebarLayoutGeometry",
+                           "Type":  1,
+                           "Lines":  78,
+                           "CodeSHA256":  "EF661E633D1D82746AB7EE9D6E3FC6C167B73466BAB2532CDDAE16FA406A39F8"
+                       },
+                       {
+                           "Name":  "CCapacityCalculator",
+                           "Type":  2,
+                           "Lines":  332,
+                           "CodeSHA256":  "CEC238115FB082DC3982DF34204D49E3F6F8488A0E0E538801F2A5329931A548"
+                       },
+                       {
+                           "Name":  "CCapacityLimitSearchProblem",
+                           "Type":  2,
+                           "Lines":  494,
+                           "CodeSHA256":  "33DDB5FC4A64C102AA2BD0ABB044960A6E4144432A151BBA3027E6CFD55130D1"
+                       },
+                       {
+                           "Name":  "CCapacityResult",
+                           "Type":  2,
+                           "Lines":  411,
+                           "CodeSHA256":  "76B93C17028CF27299B68BC803EDE58906B9C0FDAEC4A9014934E07F7679C68B"
+                       },
+                       {
+                           "Name":  "CCapacitySolver",
+                           "Type":  2,
+                           "Lines":  2121,
+                           "CodeSHA256":  "D9B413D5C43312FF5743305B5AE2FE0C519292C5A4CD7CB8D59EF75B39FB59A4"
+                       },
+                       {
+                           "Name":  "CCrackLimitSearchProblem",
+                           "Type":  2,
+                           "Lines":  398,
+                           "CodeSHA256":  "40AB242F3432F6C89EC84B937B1D9A659841CD34D552C5675CD3D661F17B79FF"
+                       },
+                       {
+                           "Name":  "CLimitSearchCoordinator",
+                           "Type":  2,
+                           "Lines":  291,
+                           "CodeSHA256":  "E417A324C8868D33A6B152047FE6C4F43174BB98181EDA745AFFCD063D2C8317"
+                       },
+                       {
+                           "Name":  "CLimitSearchRequest",
+                           "Type":  2,
+                           "Lines":  302,
+                           "CodeSHA256":  "C87F439F0EF349A0C3276F6BF8F887C4C05A88D7C06627E5075D6E4AF164DB6A"
+                       },
+                       {
+                           "Name":  "CLimitSearchResult",
+                           "Type":  2,
+                           "Lines":  215,
+                           "CodeSHA256":  "D198B9628DF7BBE0E41981B4EE849C39E3ED8AF839D4D383F61720E1E73234A6"
+                       },
+                       {
+                           "Name":  "CLinearSystem3x3",
+                           "Type":  2,
+                           "Lines":  201,
+                           "CodeSHA256":  "BD42C4966F058595E5C7FD745AAB2475735E60EFFA6258A0766015B204692E66"
+                       },
+                       {
+                           "Name":  "CLoadMultiplierSearch",
+                           "Type":  2,
+                           "Lines":  823,
+                           "CodeSHA256":  "9FACA26A1C4B8C87F40B11942018B2D3CDF77715A2BCD3A756A015BA3B2A78AC"
+                       },
+                       {
+                           "Name":  "CSectionNumericalFrame",
+                           "Type":  2,
+                           "Lines":  94,
+                           "CodeSHA256":  "26666F6DB2AAC220E8C25514A016E08445A9AC11146BDEC172902F7AB17EECFE"
+                       },
+                       {
+                           "Name":  "CSectionSolver",
+                           "Type":  2,
+                           "Lines":  1621,
+                           "CodeSHA256":  "9356AE358931B142A1945AA638BF66D7D08EAE467F78ED899C004B6BA43657A0"
+                       },
+                       {
+                           "Name":  "CSectionStrainLimits",
+                           "Type":  2,
+                           "Lines":  123,
+                           "CodeSHA256":  "EF1F331E0617F39DAC33CF8D740C7A12AB8A96ADF98B66D73CC40AC7EF0EB8BE"
+                       },
+                       {
+                           "Name":  "CStateGuessBuilder",
+                           "Type":  2,
+                           "Lines":  675,
+                           "CodeSHA256":  "3880B77171F705CEB1A58AA25DDC69E35DB3ED2045B4B5A031AE9D74505F4F32"
+                       },
+                       {
+                           "Name":  "CStateSolutionRunner",
+                           "Type":  2,
+                           "Lines":  799,
+                           "CodeSHA256":  "2402F9FC85062D5BC76BB3D6D45BBD1D1FD6FE571C39D2F57C7FC7CDBFCF4A14"
+                       },
+                       {
+                           "Name":  "CUltimateStrainSearch",
+                           "Type":  2,
+                           "Lines":  1026,
+                           "CodeSHA256":  "E89A9ADCC0C2FEBEA45664DE4C4D181B27720C0787FE3458E6D0866C429D5DEA"
+                       },
+                       {
+                           "Name":  "modLimitSearchRequestFactory",
+                           "Type":  1,
+                           "Lines":  43,
+                           "CodeSHA256":  "390C831E72548032BC18F6710C18D0E75A0513AA1B011768E5802038836A394A"
+                       },
+                       {
+                           "Name":  "modNonlinearStepControl",
+                           "Type":  1,
+                           "Lines":  47,
+                           "CodeSHA256":  "A3BFE2C6DC5CC2B5AE2F1C49E5EDE2059264E010D814C234D977B08A49AE7F7E"
+                       },
+                       {
+                           "Name":  "CStabilityCalculator",
+                           "Type":  2,
+                           "Lines":  1652,
+                           "CodeSHA256":  "AA011BA6770D1AC2A21146F7EA8BD47ACE79FE16C2CD7D43DE9B80202D9EDB08"
+                       },
+                       {
+                           "Name":  "CStabilityResult",
+                           "Type":  2,
+                           "Lines":  580,
+                           "CodeSHA256":  "24E7581DC508DA6B00EF70939BE20075D7EC92CA02E0F88B8F6FBE93D4531AC6"
+                       },
+                       {
+                           "Name":  "CFakeAcadContour",
+                           "Type":  2,
+                           "Lines":  173,
+                           "CodeSHA256":  "47D1E59DEAF41D5EA9C6A625C9CB09DE308655E728DDEEB258B12833508CF9B2"
+                       },
+                       {
+                           "Name":  "CFakeAcadContourExport",
+                           "Type":  2,
+                           "Lines":  160,
+                           "CodeSHA256":  "A983A28E1B98932FC26646D15E478C3B0F8EC2BE9A65C60DDE2C82A19657C075"
+                       },
+                       {
+                           "Name":  "CFakeAcadDocument",
+                           "Type":  2,
+                           "Lines":  48,
+                           "CodeSHA256":  "AC3328D9531813DE0BE742349D10AD4D114996AAFBCB160A97850110ECDB7EEA"
+                       },
+                       {
+                           "Name":  "CFakeAcadLine",
+                           "Type":  2,
+                           "Lines":  58,
+                           "CodeSHA256":  "CD4EB31C81954D62AB837AD5FFA34B01D1896F979E455F33370E593D2ACF2E67"
+                       },
+                       {
+                           "Name":  "CFakeAcadRegion",
+                           "Type":  2,
+                           "Lines":  123,
+                           "CodeSHA256":  "C81EA10D793E6C18D48254AD9F0479DD65BC31A5B1E56A2E8B706D028F3D5ED2"
+                       },
+                       {
+                           "Name":  "CFakeMultiOpeningGeometry",
+                           "Type":  2,
+                           "Lines":  54,
+                           "CodeSHA256":  "1F9EC7A89C77D5AC27C76906F22241A514E08C4548DD4A703EC8E280F2A8EBD4"
+                       },
+                       {
+                           "Name":  "CTestLimitSearchProblem",
+                           "Type":  2,
+                           "Lines":  764,
+                           "CodeSHA256":  "B289651B0844C810C4C88C60E313702A1C61BD691DBDD8BA2074B36B2E74A3C1"
+                       },
+                       {
+                           "Name":  "modTestAutoCADConfig",
+                           "Type":  1,
+                           "Lines":  1284,
+                           "CodeSHA256":  "E0906825C84F16E8D2A513238B8D584E9B2E56052B50BE4856F13BCB885BD8D9"
+                       },
+                       {
+                           "Name":  "modTestAutoCADContours",
+                           "Type":  1,
+                           "Lines":  2148,
+                           "CodeSHA256":  "F8BF857A5AA1EE6C1ED482647D92126230CFDF1B63C85C5ED1ED21B1FD3D4151"
+                       },
+                       {
+                           "Name":  "modTestBatchCalculation",
+                           "Type":  1,
+                           "Lines":  10460,
+                           "CodeSHA256":  "27E39FC1D48023B2349BB94924377BE001B98FF927C53F82F857F4F9798EB830"
+                       },
+                       {
+                           "Name":  "modTestCapacitySolver",
+                           "Type":  1,
+                           "Lines":  4108,
+                           "CodeSHA256":  "3FC7CDEFBEAA1F393B402B63C01847B87E9033CDBC8DF1E3B010BCF8CF26C93D"
+                       },
+                       {
+                           "Name":  "modTestConfiguration",
+                           "Type":  1,
+                           "Lines":  2317,
+                           "CodeSHA256":  "B53BC83F72E6DF7AEF51543A75DAC2DDC2CDC7BBB94AB1ABD1694E4FF99FE536"
+                       },
+                       {
+                           "Name":  "modTestContourMesh",
+                           "Type":  1,
+                           "Lines":  611,
+                           "CodeSHA256":  "6E9ED480F83A122E994398FEB11234090A5A3FA69C8B29463A48BDA4ABD8D292"
+                       },
+                       {
+                           "Name":  "modTestCrackWidth",
+                           "Type":  1,
+                           "Lines":  1941,
+                           "CodeSHA256":  "4DE01956CCD5464112C276030A540B4AA19C27BC120DCD8376E6FB4753E64814"
+                       },
+                       {
+                           "Name":  "modTestGeneralGeometryConfig",
+                           "Type":  1,
+                           "Lines":  575,
+                           "CodeSHA256":  "88B8A8AD277078E1EA98240B02F1B6E6926FF07D492F941AF6DAF9A13B39C43A"
+                       },
+                       {
+                           "Name":  "modTestGeometry",
+                           "Type":  1,
+                           "Lines":  2942,
+                           "CodeSHA256":  "7755411ABDB791CA572EA28CCFD091AC37CE33D46277473494BBAEB1D9F90096"
+                       },
+                       {
+                           "Name":  "modTestGeometryConfig",
+                           "Type":  1,
+                           "Lines":  1546,
+                           "CodeSHA256":  "ADBC94F1521F374E800B2065CD200E917D225DAF11EA8894C5E69B9C8326E8C4"
+                       },
+                       {
+                           "Name":  "modTestGeometryQuery",
+                           "Type":  1,
+                           "Lines":  884,
+                           "CodeSHA256":  "0B761ED99F12254D3D37CF32B2995F28DD87A519A60A3F158EE1FFF48EDD743D"
+                       },
+                       {
+                           "Name":  "modTestLoadTableConfig",
+                           "Type":  1,
+                           "Lines":  857,
+                           "CodeSHA256":  "4237CFE06B2E33BC0CDFFFC975A5C2EB1913A67331833766E5EAEF5C4AF82F36"
+                       },
+                       {
+                           "Name":  "modTestMaterialDiagrams",
+                           "Type":  1,
+                           "Lines":  1395,
+                           "CodeSHA256":  "876BDF81FC93F8C81B8AB7A0A70A00E9BC3C06687CD67226A4864D8896C60381"
+                       },
+                       {
+                           "Name":  "modTestPerformance",
+                           "Type":  1,
+                           "Lines":  1116,
+                           "CodeSHA256":  "76B222484CAA10C1AD3B4CA6B001F9167CF805A3C6B32E5BCEACB55634E4F679"
+                       },
+                       {
+                           "Name":  "modTestPlotConfig",
+                           "Type":  1,
+                           "Lines":  1607,
+                           "CodeSHA256":  "7D1E5C6C5924BB69C61FEABF7B1453D91565C2D3F5712C22518BAD88815F195B"
+                       },
+                       {
+                           "Name":  "modTestProfileConfig",
+                           "Type":  1,
+                           "Lines":  1646,
+                           "CodeSHA256":  "3E70A50B6F4CF9241C5508A73796920A4141D21A03824FC0C096E80D639C21AE"
+                       },
+                       {
+                           "Name":  "modTestRegressionBaseline",
+                           "Type":  1,
+                           "Lines":  380,
+                           "CodeSHA256":  "2257C8EE25CD45CEDDCB125DB3C7EE6A022BFE4D69299FCC5A71C97C44778F33"
+                       },
+                       {
+                           "Name":  "modTestSectionSolver",
+                           "Type":  1,
+                           "Lines":  2094,
+                           "CodeSHA256":  "86B55B5646E1AE5249E979EFFFB3C0FA26DC0E7967509AEA3052EB437AA69BC6"
+                       },
+                       {
+                           "Name":  "modTestShapeArchitecture",
+                           "Type":  1,
+                           "Lines":  180,
+                           "CodeSHA256":  "B8808003D5C2916E494FC43C338A57C01225FDA80AB493C5881285288FEABAE4"
+                       },
+                       {
+                           "Name":  "modTestSP35CrackWidth",
+                           "Type":  1,
+                           "Lines":  1381,
+                           "CodeSHA256":  "9A5BD35C2153E8E344914B577C275EB3380A1F5463A97019507BF04CFBA637F0"
+                       },
+                       {
+                           "Name":  "modTestWorkbookInterface",
+                           "Type":  1,
+                           "Lines":  7958,
+                           "CodeSHA256":  "389D789FCE5A4195E0492B9D7BBCF86ED66DD3A6FC98811EFE4CA019ECE4B4A2"
+                       }
+                   ],
+    "References":  [
+                       {
+                           "Name":  "VBA",
+                           "GUID":  "{000204EF-0000-0000-C000-000000000046}",
+                           "Major":  4,
+                           "Minor":  2,
+                           "FullPath":  "C:\\Program Files (x86)\\Common Files\\Microsoft Shared\\VBA\\VBA7.1\\VBE7.DLL",
+                           "Broken":  false
+                       },
+                       {
+                           "Name":  "Excel",
+                           "GUID":  "{00020813-0000-0000-C000-000000000046}",
+                           "Major":  1,
+                           "Minor":  9,
+                           "FullPath":  "C:\\Program Files (x86)\\Microsoft Office\\Root\\Office16\\EXCEL.EXE",
+                           "Broken":  false
+                       },
+                       {
+                           "Name":  "stdole",
+                           "GUID":  "{00020430-0000-0000-C000-000000000046}",
+                           "Major":  2,
+                           "Minor":  0,
+                           "FullPath":  "C:\\Windows\\SysWOW64\\stdole2.tlb",
+                           "Broken":  false
+                       },
+                       {
+                           "Name":  "Office",
+                           "GUID":  "{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}",
+                           "Major":  2,
+                           "Minor":  8,
+                           "FullPath":  "C:\\Program Files (x86)\\Common Files\\Microsoft Shared\\OFFICE16\\MSO.DLL",
+                           "Broken":  false
+                       }
+                   ],
+    "Sheets":  [
+                   {
+                       "Name":  "Config",
+                       "CodeName":  "Лист1",
+                       "UsedRange":  "$A$1:$IO$501",
+                       "Visible":  -1,
+                       "Shapes":  [
+                                      {
+                                          "Name":  "chMaterialConcreteDiagram",
+                                          "Type":  3,
+                                          "Left":  1916.2501220703125,
+                                          "Top":  0,
+                                          "Width":  453.54000854492188,
+                                          "Height":  249,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "chMaterialSteelDiagram",
+                                          "Type":  3,
+                                          "Left":  1916.2501220703125,
+                                          "Top":  267,
+                                          "Width":  453.54000854492188,
+                                          "Height":  255,
+                                          "OnAction":  ""
+                                      }
+                                  ]
+                   },
+                   {
+                       "Name":  "Справка",
+                       "CodeName":  "Лист2",
+                       "UsedRange":  "$A$1:$F$1704",
+                       "Visible":  -1,
+                       "Shapes":  [
+                                      {
+                                          "Name":  "NDMHelpFormula_001",
+                                          "Type":  13,
+                                          "Left":  518.75,
+                                          "Top":  40.5,
+                                          "Width":  245,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_002",
+                                          "Type":  13,
+                                          "Left":  518.5,
+                                          "Top":  40.5,
+                                          "Width":  245.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_003",
+                                          "Type":  13,
+                                          "Left":  534,
+                                          "Top":  40.5,
+                                          "Width":  214.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_004",
+                                          "Type":  13,
+                                          "Left":  421.75,
+                                          "Top":  40.5,
+                                          "Width":  439,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_005",
+                                          "Type":  13,
+                                          "Left":  555.75,
+                                          "Top":  60.75,
+                                          "Width":  171,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_006",
+                                          "Type":  13,
+                                          "Left":  439.5,
+                                          "Top":  60.75,
+                                          "Width":  403.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_007",
+                                          "Type":  13,
+                                          "Left":  540.5,
+                                          "Top":  60.75,
+                                          "Width":  201.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_008",
+                                          "Type":  13,
+                                          "Left":  575.25,
+                                          "Top":  60.75,
+                                          "Width":  132,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_009",
+                                          "Type":  13,
+                                          "Left":  533,
+                                          "Top":  81,
+                                          "Width":  216.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_010",
+                                          "Type":  13,
+                                          "Left":  461,
+                                          "Top":  81,
+                                          "Width":  360.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_011",
+                                          "Type":  13,
+                                          "Left":  372,
+                                          "Top":  81,
+                                          "Width":  538.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_012",
+                                          "Type":  13,
+                                          "Left":  547.25,
+                                          "Top":  81,
+                                          "Width":  188,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_013",
+                                          "Type":  13,
+                                          "Left":  507.25,
+                                          "Top":  81,
+                                          "Width":  268,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_014",
+                                          "Type":  13,
+                                          "Left":  538.5,
+                                          "Top":  81,
+                                          "Width":  205.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_015",
+                                          "Type":  13,
+                                          "Left":  580.75,
+                                          "Top":  81,
+                                          "Width":  121,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_016",
+                                          "Type":  13,
+                                          "Left":  537.75,
+                                          "Top":  81,
+                                          "Width":  207,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_017",
+                                          "Type":  13,
+                                          "Left":  466,
+                                          "Top":  81,
+                                          "Width":  350.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_018",
+                                          "Type":  13,
+                                          "Left":  513.25,
+                                          "Top":  81,
+                                          "Width":  256,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_019",
+                                          "Type":  13,
+                                          "Left":  557.25,
+                                          "Top":  81,
+                                          "Width":  168,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_020",
+                                          "Type":  13,
+                                          "Left":  556.5,
+                                          "Top":  81,
+                                          "Width":  169.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_021",
+                                          "Type":  13,
+                                          "Left":  495,
+                                          "Top":  81,
+                                          "Width":  292.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_022",
+                                          "Type":  13,
+                                          "Left":  513,
+                                          "Top":  81,
+                                          "Width":  256.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_023",
+                                          "Type":  13,
+                                          "Left":  485.25,
+                                          "Top":  81,
+                                          "Width":  312,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_024",
+                                          "Type":  13,
+                                          "Left":  500.75,
+                                          "Top":  81,
+                                          "Width":  281,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_025",
+                                          "Type":  13,
+                                          "Left":  570.75,
+                                          "Top":  81,
+                                          "Width":  141,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_026",
+                                          "Type":  13,
+                                          "Left":  576.25,
+                                          "Top":  81,
+                                          "Width":  130,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_027",
+                                          "Type":  13,
+                                          "Left":  567.5,
+                                          "Top":  81,
+                                          "Width":  147.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_028",
+                                          "Type":  13,
+                                          "Left":  548.25,
+                                          "Top":  81,
+                                          "Width":  186,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_029",
+                                          "Type":  13,
+                                          "Left":  515.75,
+                                          "Top":  81,
+                                          "Width":  251,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_030",
+                                          "Type":  13,
+                                          "Left":  471,
+                                          "Top":  81,
+                                          "Width":  340.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_031",
+                                          "Type":  13,
+                                          "Left":  311.25,
+                                          "Top":  81,
+                                          "Width":  660,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_032",
+                                          "Type":  13,
+                                          "Left":  581.25,
+                                          "Top":  81,
+                                          "Width":  120,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_033",
+                                          "Type":  13,
+                                          "Left":  524.75,
+                                          "Top":  81,
+                                          "Width":  233,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_034",
+                                          "Type":  13,
+                                          "Left":  465.25,
+                                          "Top":  81,
+                                          "Width":  352,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_035",
+                                          "Type":  13,
+                                          "Left":  582.25,
+                                          "Top":  81,
+                                          "Width":  118,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_036",
+                                          "Type":  13,
+                                          "Left":  311.25,
+                                          "Top":  81,
+                                          "Width":  660,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_037",
+                                          "Type":  13,
+                                          "Left":  460.75,
+                                          "Top":  81,
+                                          "Width":  361,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_038",
+                                          "Type":  13,
+                                          "Left":  311.25,
+                                          "Top":  81,
+                                          "Width":  660,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_039",
+                                          "Type":  13,
+                                          "Left":  527.5,
+                                          "Top":  81,
+                                          "Width":  227.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_040",
+                                          "Type":  13,
+                                          "Left":  524.25,
+                                          "Top":  81,
+                                          "Width":  234,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_041",
+                                          "Type":  13,
+                                          "Left":  466.5,
+                                          "Top":  81,
+                                          "Width":  349.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_042",
+                                          "Type":  13,
+                                          "Left":  412,
+                                          "Top":  81,
+                                          "Width":  458.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_043",
+                                          "Type":  13,
+                                          "Left":  505.75,
+                                          "Top":  81,
+                                          "Width":  271,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_044",
+                                          "Type":  13,
+                                          "Left":  528.25,
+                                          "Top":  81,
+                                          "Width":  226,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_045",
+                                          "Type":  13,
+                                          "Left":  538.5,
+                                          "Top":  81,
+                                          "Width":  205.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_046",
+                                          "Type":  13,
+                                          "Left":  311.25,
+                                          "Top":  81,
+                                          "Width":  660,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_047",
+                                          "Type":  13,
+                                          "Left":  384.5,
+                                          "Top":  101.25,
+                                          "Width":  513.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_048",
+                                          "Type":  13,
+                                          "Left":  589.25,
+                                          "Top":  101.25,
+                                          "Width":  104,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_049",
+                                          "Type":  13,
+                                          "Left":  541.5,
+                                          "Top":  101.25,
+                                          "Width":  199.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_050",
+                                          "Type":  13,
+                                          "Left":  578,
+                                          "Top":  101.25,
+                                          "Width":  126.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_051",
+                                          "Type":  13,
+                                          "Left":  583,
+                                          "Top":  101.25,
+                                          "Width":  116.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_052",
+                                          "Type":  13,
+                                          "Left":  537.75,
+                                          "Top":  101.25,
+                                          "Width":  207,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_053",
+                                          "Type":  13,
+                                          "Left":  484.5,
+                                          "Top":  101.25,
+                                          "Width":  313.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_054",
+                                          "Type":  13,
+                                          "Left":  550,
+                                          "Top":  101.25,
+                                          "Width":  182.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_055",
+                                          "Type":  13,
+                                          "Left":  584.75,
+                                          "Top":  101.25,
+                                          "Width":  113,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_056",
+                                          "Type":  13,
+                                          "Left":  360.75,
+                                          "Top":  101.25,
+                                          "Width":  561,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_057",
+                                          "Type":  13,
+                                          "Left":  506.75,
+                                          "Top":  101.25,
+                                          "Width":  269,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_058",
+                                          "Type":  13,
+                                          "Left":  582.5,
+                                          "Top":  101.25,
+                                          "Width":  117.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_059",
+                                          "Type":  13,
+                                          "Left":  550.75,
+                                          "Top":  101.25,
+                                          "Width":  181,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_060",
+                                          "Type":  13,
+                                          "Left":  503.75,
+                                          "Top":  101.25,
+                                          "Width":  275,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_061",
+                                          "Type":  13,
+                                          "Left":  576,
+                                          "Top":  101.25,
+                                          "Width":  130.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_062",
+                                          "Type":  13,
+                                          "Left":  579.25,
+                                          "Top":  101.25,
+                                          "Width":  124,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_063",
+                                          "Type":  13,
+                                          "Left":  569.5,
+                                          "Top":  101.25,
+                                          "Width":  143.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_064",
+                                          "Type":  13,
+                                          "Left":  481,
+                                          "Top":  101.25,
+                                          "Width":  320.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_065",
+                                          "Type":  13,
+                                          "Left":  477,
+                                          "Top":  101.25,
+                                          "Width":  328.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_066",
+                                          "Type":  13,
+                                          "Left":  587.75,
+                                          "Top":  101.25,
+                                          "Width":  107,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_067",
+                                          "Type":  13,
+                                          "Left":  549,
+                                          "Top":  101.25,
+                                          "Width":  184.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_068",
+                                          "Type":  13,
+                                          "Left":  465.25,
+                                          "Top":  101.25,
+                                          "Width":  352,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_069",
+                                          "Type":  13,
+                                          "Left":  536.5,
+                                          "Top":  101.25,
+                                          "Width":  209.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_070",
+                                          "Type":  13,
+                                          "Left":  590.75,
+                                          "Top":  101.25,
+                                          "Width":  101,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_071",
+                                          "Type":  13,
+                                          "Left":  581.75,
+                                          "Top":  101.25,
+                                          "Width":  119,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_072",
+                                          "Type":  13,
+                                          "Left":  496.25,
+                                          "Top":  101.25,
+                                          "Width":  290,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_073",
+                                          "Type":  13,
+                                          "Left":  504.75,
+                                          "Top":  101.25,
+                                          "Width":  273,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_074",
+                                          "Type":  13,
+                                          "Left":  564.5,
+                                          "Top":  101.25,
+                                          "Width":  153.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_075",
+                                          "Type":  13,
+                                          "Left":  589.25,
+                                          "Top":  23172.001953125,
+                                          "Width":  104,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      },
+                                      {
+                                          "Name":  "NDMHelpFormula_076",
+                                          "Type":  13,
+                                          "Left":  593,
+                                          "Top":  23172.001953125,
+                                          "Width":  96.5,
+                                          "Height":  0,
+                                          "OnAction":  ""
+                                      }
+                                  ]
+                   },
+                   {
+                       "Name":  "Расчет",
+                       "CodeName":  "Лист3",
+                       "UsedRange":  "$A$1:$AJ$60",
+                       "Visible":  -1,
+                       "Shapes":  [
+                                      {
+                                          "Name":  "btnRunSectionCalculation",
+                                          "Type":  1,
+                                          "Left":  885,
+                                          "Top":  61.5,
+                                          "Width":  235,
+                                          "Height":  32,
+                                          "OnAction":  "RunSectionCalculation"
+                                      },
+                                      {
+                                          "Name":  "btnImportGeometryFromAutoCAD",
+                                          "Type":  1,
+                                          "Left":  885,
+                                          "Top":  101.5,
+                                          "Width":  235,
+                                          "Height":  32,
+                                          "OnAction":  "ImportGeometryFromAutoCAD"
+                                      },
+                                      {
+                                          "Name":  "btnClearAutoCADDrawing",
+                                          "Type":  1,
+                                          "Left":  885,
+                                          "Top":  141.5,
+                                          "Width":  235,
+                                          "Height":  32,
+                                          "OnAction":  "ClearAutoCADDrawing"
+                                      },
+                                      {
+                                          "Name":  "btnExportStressToAutoCAD",
+                                          "Type":  1,
+                                          "Left":  885,
+                                          "Top":  181.5,
+                                          "Width":  235,
+                                          "Height":  32,
+                                          "OnAction":  "ExportSectionStressToAutoCAD"
+                                      },
+                                      {
+                                          "Name":  "btnUpdateSectionPlot",
+                                          "Type":  1,
+                                          "Left":  885,
+                                          "Top":  221.5,
+                                          "Width":  235,
+                                          "Height":  32,
+                                          "OnAction":  "UpdateSectionPlot"
+                                      },
+                                      {
+                                          "Name":  "chtNDMSectionPlot",
+                                          "Type":  3,
+                                          "Left":  1077,
+                                          "Top":  0,
+                                          "Width":  820,
+                                          "Height":  540,
+                                          "OnAction":  ""
+                                      }
+                                  ]
+                   },
+                   {
+                       "Name":  "Results",
+                       "CodeName":  "Лист4",
+                       "UsedRange":  "$A$1:$CL$336",
+                       "Visible":  -1,
+                       "Shapes":  [
+
+                                  ]
+                   }
+               ],
+    "ConfigValidation":  [
+                             {
+                                 "Address":  "$J$42",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$42",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$42",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$42",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$43",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$43",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$43",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$43",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$44",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$44",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$44",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$44",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$45",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$45",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$45",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$45",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$5",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$6",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$7",
+                                 "Type":  3,
+                                 "Formula1":  "=$HI$1:$HI$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$8",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$12",
+                                 "Type":  3,
+                                 "Formula1":  "=$HG$1:$HG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$13",
+                                 "Type":  3,
+                                 "Formula1":  "=$HP$1:$HP$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$22",
+                                 "Type":  3,
+                                 "Formula1":  "=$HQ$1:$HQ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$23",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$72",
+                                 "Type":  3,
+                                 "Formula1":  "=$HR$1:$HR$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$34",
+                                 "Type":  3,
+                                 "Formula1":  "=$HR$1:$HR$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$40",
+                                 "Type":  3,
+                                 "Formula1":  "=$HS$1:$HS$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$70",
+                                 "Type":  3,
+                                 "Formula1":  "=$HJ$1:$HJ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$48",
+                                 "Type":  3,
+                                 "Formula1":  "=$HJ$1:$HJ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$52",
+                                 "Type":  3,
+                                 "Formula1":  "=$HK$1:$HK$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$53",
+                                 "Type":  3,
+                                 "Formula1":  "=$HL$1:$HL$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$54",
+                                 "Type":  3,
+                                 "Formula1":  "=$HL$1:$HL$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$55",
+                                 "Type":  3,
+                                 "Formula1":  "=$HM$1:$HM$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$58",
+                                 "Type":  3,
+                                 "Formula1":  "=$HN$1:$HN$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$59",
+                                 "Type":  3,
+                                 "Formula1":  "=$HO$1:$HO$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$75",
+                                 "Type":  3,
+                                 "Formula1":  "=$HZ$1:$HZ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$76",
+                                 "Type":  3,
+                                 "Formula1":  "=$IA$1:$IA$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$79",
+                                 "Type":  3,
+                                 "Formula1":  "=$HW$1:$HW$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$81",
+                                 "Type":  3,
+                                 "Formula1":  "=$HX$1:$HX$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$82",
+                                 "Type":  3,
+                                 "Formula1":  "=$HY$1:$HY$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$88",
+                                 "Type":  3,
+                                 "Formula1":  "=$HT$1:$HT$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$89",
+                                 "Type":  3,
+                                 "Formula1":  "=$HU$1:$HU$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$90",
+                                 "Type":  3,
+                                 "Formula1":  "=$HV$1:$HV$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$127",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$128",
+                                 "Type":  3,
+                                 "Formula1":  "=$IC$1:$IC$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$129",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$130",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$132",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$133",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$134",
+                                 "Type":  3,
+                                 "Formula1":  "=$ID$1:$ID$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$94",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$95",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$118",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$118",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$119",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$119",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$120",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$120",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$121",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$121",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$122",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$122",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$123",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$123",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$124",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$124",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$125",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$125",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$118",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$118",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$119",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$119",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$120",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$120",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$121",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$121",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$122",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$122",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$123",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$123",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$124",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$124",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$125",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$125",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$146",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$146",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$147",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$147",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$148",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$148",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$149",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$149",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$146",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$146",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$147",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$147",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$148",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$148",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$149",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$149",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$173",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$173",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$174",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$174",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$175",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$175",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$176",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$176",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$177",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$177",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$178",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$178",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$179",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$179",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$180",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$180",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$173",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$173",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$174",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$174",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$175",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$175",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$176",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$176",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$177",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$177",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$178",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$178",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$179",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$179",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$180",
+                                 "Type":  3,
+                                 "Formula1":  "=$HC$1:$HC$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$N$180",
+                                 "Type":  3,
+                                 "Formula1":  "=$HD$1:$HD$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$47",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$47",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$47",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$47",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$54",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$54",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$54",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$54",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$55",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$55",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$55",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$55",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$57",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$57",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$57",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$57",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$59",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$59",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$59",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$59",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$60",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$60",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$60",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$60",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$62",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$62",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$62",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$62",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$49",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$49",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$49",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$49",
+                                 "Type":  3,
+                                 "Formula1":  "=$IF$1:$IF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$50",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$50",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$50",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$50",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$51",
+                                 "Type":  3,
+                                 "Formula1":  "=$IH$1:$IH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$51",
+                                 "Type":  3,
+                                 "Formula1":  "=$IH$1:$IH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$51",
+                                 "Type":  3,
+                                 "Formula1":  "=$IH$1:$IH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$51",
+                                 "Type":  3,
+                                 "Formula1":  "=$IH$1:$IH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$52",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$52",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$52",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$52",
+                                 "Type":  3,
+                                 "Formula1":  "=$IG$1:$IG$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$64",
+                                 "Type":  3,
+                                 "Formula1":  "=$II$1:$II$5",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$64",
+                                 "Type":  3,
+                                 "Formula1":  "=$II$1:$II$5",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$64",
+                                 "Type":  3,
+                                 "Formula1":  "=$II$1:$II$5",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$64",
+                                 "Type":  3,
+                                 "Formula1":  "=$II$1:$II$5",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$65",
+                                 "Type":  3,
+                                 "Formula1":  "=$IJ$1:$IJ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$65",
+                                 "Type":  3,
+                                 "Formula1":  "=$IJ$1:$IJ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$L$65",
+                                 "Type":  3,
+                                 "Formula1":  "=$IJ$1:$IJ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$M$65",
+                                 "Type":  3,
+                                 "Formula1":  "=$IJ$1:$IJ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$74",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$121",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$122",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$123",
+                                 "Type":  3,
+                                 "Formula1":  "=$IE$1:$IE$501",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$124",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$125",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$4",
+                                 "Type":  3,
+                                 "Formula1":  "=$GR$1:$GR$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$5",
+                                 "Type":  3,
+                                 "Formula1":  "=$GS$1:$GS$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$6",
+                                 "Type":  3,
+                                 "Formula1":  "=$GT$1:$GT$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$7",
+                                 "Type":  3,
+                                 "Formula1":  "=$GU$1:$GU$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$8",
+                                 "Type":  3,
+                                 "Formula1":  "=$GV$1:$GV$5",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$9",
+                                 "Type":  3,
+                                 "Formula1":  "=$GW$1:$GW$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$4",
+                                 "Type":  3,
+                                 "Formula1":  "=$GR$1:$GR$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$5",
+                                 "Type":  3,
+                                 "Formula1":  "=$GS$1:$GS$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$6",
+                                 "Type":  3,
+                                 "Formula1":  "=$GT$1:$GT$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$7",
+                                 "Type":  3,
+                                 "Formula1":  "=$GU$1:$GU$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$8",
+                                 "Type":  3,
+                                 "Formula1":  "=$GV$1:$GV$5",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$K$9",
+                                 "Type":  3,
+                                 "Formula1":  "=$GW$1:$GW$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$13",
+                                 "Type":  3,
+                                 "Formula1":  "=$GY$1:$GY$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$14",
+                                 "Type":  3,
+                                 "Formula1":  "=$GZ$1:$GZ$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$15",
+                                 "Type":  3,
+                                 "Formula1":  "=$HA$1:$HA$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$100",
+                                 "Type":  3,
+                                 "Formula1":  "=$HE$1:$HE$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$134",
+                                 "Type":  3,
+                                 "Formula1":  "=$HF$1:$HF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$134",
+                                 "Type":  3,
+                                 "Formula1":  "=$HF$1:$HF$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$71",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$71",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$72",
+                                 "Type":  3,
+                                 "Formula1":  "=$IK$1:$IK$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$72",
+                                 "Type":  3,
+                                 "Formula1":  "=$IK$1:$IK$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$I$77",
+                                 "Type":  3,
+                                 "Formula1":  "=$IL$1:$IL$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$77",
+                                 "Type":  3,
+                                 "Formula1":  "=$IL$1:$IL$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$80",
+                                 "Type":  3,
+                                 "Formula1":  "=$IM$1:$IM$5",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$J$81",
+                                 "Type":  3,
+                                 "Formula1":  "=$IN$1:$IN$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$4",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$4",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$5",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$5",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$6",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$6",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$7",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$7",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$8",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$8",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$9",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$9",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$10",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$10",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$11",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$11",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$12",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$12",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$13",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$13",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$14",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$14",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$15",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$15",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$16",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$16",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$17",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$17",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$18",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$18",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$19",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$19",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$20",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$20",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$21",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$21",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$22",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$22",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$23",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$23",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$24",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$24",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$25",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$25",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$26",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$26",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$27",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$27",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$28",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$28",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$29",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$29",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$30",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$30",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$31",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$31",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$32",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$32",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$S$33",
+                                 "Type":  3,
+                                 "Formula1":  "=$HB$1:$HB$4",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$T$33",
+                                 "Type":  3,
+                                 "Formula1":  "=$GX$1:$GX$6",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$101",
+                                 "Type":  3,
+                                 "Formula1":  "=$IE$1:$IE$501",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$102",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$103",
+                                 "Type":  3,
+                                 "Formula1":  "=$IC$1:$IC$3",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$104",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$105",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$106",
+                                 "Type":  3,
+                                 "Formula1":  "=$IO$1:$IO$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$107",
+                                 "Type":  3,
+                                 "Formula1":  "=$HH$1:$HH$2",
+                                 "Formula2":  ""
+                             },
+                             {
+                                 "Address":  "$B$108",
+                                 "Type":  3,
+                                 "Formula1":  "=$IB$1:$IB$2",
+                                 "Formula2":  ""
+                             }
+                         ]
+}
