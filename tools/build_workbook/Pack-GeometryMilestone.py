@@ -38,7 +38,13 @@ def main() -> None:
                  "tools/build_workbook/Verify-GeometryBaselineCode.ps1", "tools/build_workbook/Run-Audit03Watchdog.ps1",
                  "tools/build_workbook/Run-Audit02ModeTests.ps1", "tools/build_workbook/Compare-GeometrySnapshots.py",
                  "tools/build_workbook/Inventory-GeometryEvidence.py", "tools/build_workbook/Pack-GeometryMilestone.py",
-                 "tools/build_workbook/GeometryExampleSupport.ps1"]:
+                 "tools/build_workbook/GeometryExampleSupport.ps1",
+                 "tools/build_workbook/Build-SectionRecipeApi.py", "tools/build_workbook/SectionRecipeApiText.py",
+                 "tools/build_workbook/Build_SectionRecipeApiSupport.py", "tools/build_workbook/Build-SectionRecipeApiExamples.py",
+                 "tools/build_workbook/Build-SectionRecipeGuide.py", "tools/build_workbook/SectionRecipeGuide.ps1",
+                 "tools/build_workbook/Update-SectionRecipeGuide.ps1", "tools/build_workbook/Verify-SectionRecipeGuide.py",
+                 "tools/build_workbook/Summarize-SectionRecipeGuide.py",
+                 "tools/build_workbook/Build-Workbook.ps1"]:
         files.add(root / name)
     entries = []
     archive.parent.mkdir(parents=True, exist_ok=True)

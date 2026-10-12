@@ -541,6 +541,7 @@ function Add-CalculationButtons {
 
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
+. (Join-Path $PSScriptRoot "SectionRecipeGuide.ps1")
 $fullOutputPath = Join-Path $root $OutputPath
 $outputDir = Split-Path -Parent $fullOutputPath
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
@@ -587,6 +588,8 @@ try {
 
     $systemRanges = Add-SystemSettings $system
     Add-SettingsInstructions $workbook $system $instructions
+    # Последний содержательный раздел добавляется после старых формул/рисунков.
+    Update-SectionRecipeGuide $workbook ([string]$root) | Out-Null
     # Hyperlink-стиль Excel может сбросить рамку ячейки Подробнее.
     # Финальную обводку делаем после добавления всех ссылок Config.
     Apply-ConfigNamedRangeBorders $workbook

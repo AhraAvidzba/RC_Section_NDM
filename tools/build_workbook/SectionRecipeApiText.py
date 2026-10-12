@@ -402,7 +402,11 @@ def purpose(member):
 def parameter_meaning(member, parameter):
     import re
     name, passing = parameter["name"], parameter["passing"]
-    if name in PARAMETERS: meaning = PARAMETERS[name]
+    if name == "savedUnit" and member["name"] == "OutputFourthPowerLengthToInternal":
+        meaning = "Базовая единица длины сохранённого Results: mm/cm/m; степень 4 применяет сам метод. Не передавайте mm4/cm4/m4. Пустая строка использует текущую output-длину."
+    elif name == "seedPlane" and member["name"] == "SampleMaterialIntervals":
+        meaning = "Signed нормальная координата опорной плоскости, мм, относительно начала section XY; это скаляр Double, не объект плоскости."
+    elif name in PARAMETERS: meaning = PARAMETERS[name]
     elif re.fullmatch(r"(?:center|origin|point|start|end)?[XYxy][12]?", name): meaning = "Модельная координата " + name + ", мм; знаки соответствуют section XY/WCS."
     elif name in ("x", "y", "x1", "y1", "x2", "y2", "width", "height"): meaning = "Координата/размер " + name + ", мм; размеры width/height положительны."
     elif name in ("tangentX", "tangentY"): meaning = "Компонента единичной касательной, без размерности."

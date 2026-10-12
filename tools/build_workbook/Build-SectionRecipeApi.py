@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import re
@@ -107,6 +108,28 @@ def inventory() -> dict:
             "sourceHashes": {source: hashlib.sha256((ROOT / source).read_bytes()).hexdigest() for source in SOURCES}}
 
 
+def verify_catalog(actual: dict, saved: dict, content: str, examples: dict):
+    for key in ("members", "sourceHashes"):
+        if saved[key] != actual[key]: raise ValueError("API manifest is stale: " + key)
+    anchors = re.findall(r'<a id="([^"]+)"></a>', content)
+    if anchors != [member["anchor"] for member in actual["members"]]: raise ValueError("Catalog members/anchors differ")
+    for member in actual["members"]:
+        pattern = r'(?s)<a id="' + re.escape(member["anchor"]) + r'"></a>\s*### ' + re.escape(member["id"]) + r'\s+(.*?)(?=<a id=|\Z)'
+        block = re.search(pattern, content)
+        if not block or "```vb\n" + member["signature"] + "\n```" not in block[1]:
+            raise ValueError("Catalog signature differs: " + member["id"])
+        example = examples["examples"].get(member["id"])
+        if not example or not example["nativeRoots"]: raise ValueError("Missing verified example: " + member["id"])
+        lines = (ROOT / example["source"]).read_text(encoding="utf-8-sig").splitlines()
+        raw = "\n".join(lines[example["line"]-1:example["line"]-1+len(example["code"].splitlines())])
+        if raw != example["code"]: raise ValueError("Example source moved/changed: " + member["id"])
+        if "```vb\n" + example["code"] + "\n```" not in block[1]: raise ValueError("Example text differs: " + member["id"])
+    for collection in ("sourceHashes", "reportHashes"):
+        for name, expected in examples[collection].items():
+            if hashlib.sha256((ROOT/name).read_bytes()).hexdigest() != expected:
+                raise ValueError("Example/evidence changed: " + name)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inventory", action="store_true")
@@ -114,12 +137,34 @@ def main():
     parser.add_argument("--semantics-check", action="store_true")
     parser.add_argument("--sync-example", action="store_true")
     parser.add_argument("--render-draft", action="store_true")
+    parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     actual = inventory()
+    if args.self_test:
+        saved = json.loads((DOCS / "SECTION_RECIPE_API_MANIFEST.json").read_text(encoding="utf-8-sig"))
+        content = (DOCS / "SECTION_RECIPE_API.md").read_text(encoding="utf-8-sig")
+        examples = json.loads((DOCS / "SECTION_RECIPE_API_EXAMPLES.json").read_text(encoding="utf-8-sig"))
+        verify_catalog(actual, saved, content, examples)
+        altered = copy.deepcopy(saved); altered["members"][0]["signature"] += " As StaleSignature"
+        probes = [(altered, content), (saved, content.replace(actual["members"][0]["signature"], "Public Sub RemovedMethod()", 1)),
+                  (saved, content.replace('<a id="'+actual["members"][0]["anchor"]+'"></a>', '', 1))]
+        detected = 0
+        for candidate, text in probes:
+            try: verify_catalog(actual, candidate, text, examples)
+            except ValueError: detected += 1
+        if detected != len(probes): raise ValueError("A stale manifest/doc mutation was accepted")
+        print(json.dumps({"status": "API_CATALOG_MUTATION_GUARDS_PASS", "members": len(actual["members"]), "detected": detected}))
+        return
     if args.render_draft:
         from SectionRecipeApiText import purpose, parameter_meaning, LIFECYCLE, ERRORS
-        lines = ["# SECTION_RECIPE_API: каталог текущих сигнатур", "",
-                 "Стадия: DRAFT. Сигнатуры, defaults, параметры и жизненный цикл синхронизированы с source; минимальные компилируемые примеры/ссылки и native Help ещё проверяются. Это не закрытый E04/E12.", "",
+        examples_path = DOCS / "SECTION_RECIPE_API_EXAMPLES.json"
+        examples = json.loads(examples_path.read_text(encoding="utf-8-sig")) if examples_path.exists() else {"examples": {}}
+        option_source = (ROOT / "src/Section/CRebarRuleOptions.cls").read_text(encoding="utf-8-sig")
+        initialization = re.search(r"(?s)Private Sub Class_Initialize\(\)(.*?)End Sub", option_source).group(1)
+        explicit_defaults = dict(re.findall(r"(?m)^\s*(\w+) = ([^\r\n]+)", initialization))
+        ready = examples.get("status") == "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH"
+        status = "Сигнатуры, defaults и каждый контекстный вызов синхронизированы с source; native entrypoint/журнал указан у каждого члена. Workbook-расположение фиксирует NativeMap.json, итоговая приёмка книги — отдельный отчёт." if ready else "Стадия: DRAFT. Примеры/ссылки ещё сопоставляются; E04/E12 остаются открытыми."
+        lines = ["# SECTION_RECIPE_API: каталог текущих сигнатур", "", status, "",
                  actual["scope"], "", "Внутри мм/мм²/Н/Н*мм/МПа; углы в радианах. ByRef/Optional/default приведены в точной сигнатуре. Полный общий фасад и исходный класс представлены в ADDING_SECTION_TYPE.md.", ""]
         owner = None
         for member in actual["members"]:
@@ -139,13 +184,29 @@ def main():
                 lines.append("")
             if member.get("fields"):
                 lines.extend(["Поля/селекторы по source:", "", "```vb", *member["fields"], "```", ""])
+            if member["owner"] == "CRebarRuleOptions":
+                implicit = {"String": "vbNullString", "Double": "0#", "Boolean": "False", "Long": "0"}
+                default = explicit_defaults.get(member["name"], implicit.get(member["resultType"], "0"))
+                lines.extend(["Default после New: " + default + ". Поле изменяется до объявления правила; facade копирует его значение.", ""])
             if member.get("resultType"):
-                lines.extend(["Результат: " + member["resultType"] + ". Смысл результата и дальнейшее использование описаны выше; возвращаемый sealed snapshot не изменяется этим чтением.", ""])
+                label = "Тип записываемого поля" if member["kind"] == "Field" else "Тип результата"
+                lines.extend([label + ": " + member["resultType"] + ". Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.", ""])
             lines.extend(["Жизненный цикл: " + LIFECYCLE[owner], "",
                           "Ошибки/исправление: " + ERRORS.get(owner, "Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом."), "",
                           "Source: " + member["source"] + ":" + str(member["line"]), ""])
+            example = examples["examples"].get(member["id"])
+            if example:
+                lines.extend(["Минимальный вызов; требуемый контекст: " + example["context"], "",
+                              "```vb", example["code"].strip("\n"), "```", "",
+                              "Полный контекст: " + example["source"] + ":" + str(example["line"]) + ".", ""])
+                for proof in example["nativeRoots"]:
+                    lines.extend(["Native entrypoint: " + proof["entryPoint"] + "; журнал: " + proof["reports"][-1] + ".", ""])
+                if not example["nativeRoots"]:
+                    lines.extend(["Статус примера: вызов найден; native coverage ещё не подтверждено.", ""])
+            else:
+                lines.extend(["Статус примера: проверенный вызов ещё не сопоставлен. Требование каталога остаётся открытым.", ""])
         (DOCS / "SECTION_RECIPE_API.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-        print(json.dumps({"status": "DOCUMENTATION_DRAFT", "members": len(actual["members"]), "missingSemantics": 0}))
+        print(json.dumps({"status": "DOCUMENTATION_CALLS_SYNCHRONIZED" if ready else "DOCUMENTATION_DRAFT", "members": len(actual["members"]), "missingSemantics": 0}))
         return
     if args.sync_example:
         guide = DOCS / "ADDING_SECTION_TYPE.md"
@@ -154,7 +215,13 @@ def main():
         pattern = r"(?s)(<!-- complete-example:start -->).*?(<!-- complete-example:end -->)"
         if len(re.findall(pattern, content)) != 1: raise ValueError("Complete-example block is not unique")
         code = example.read_text(encoding="utf-8-sig").rstrip()
-        guide.write_text(re.sub(pattern, lambda match: match[1] + "\n```vb\n" + code + "\n```\n" + match[2], content), encoding="utf-8")
+        content = re.sub(pattern, lambda match: match[1] + "\n```vb\n" + code + "\n```\n" + match[2], content)
+        advanced_source = (ROOT / "tests/modTestRecipeApiCatalogue.bas").read_text(encoding="utf-8-sig")
+        advanced = re.search(r"(?ms)^Public Function AdvancedGuideDefinition\(.*?^End Function", advanced_source).group()
+        advanced_pattern = r"(?s)(<!-- advanced-example:start -->).*?(<!-- advanced-example:end -->)"
+        if len(re.findall(advanced_pattern, content)) != 1: raise ValueError("Advanced-example block is not unique")
+        content = re.sub(advanced_pattern, lambda match: match[1] + "\n```vb\n" + advanced + "\n```\n" + match[2], content)
+        guide.write_text(content, encoding="utf-8")
         print(json.dumps({"status": "COMPLETE_CLASS_SYNCHRONIZED", "sourceSHA256": hashlib.sha256(example.read_bytes()).hexdigest()}))
         return
     if args.semantics_check:
@@ -171,9 +238,10 @@ def main():
     target = DOCS / "SECTION_RECIPE_API_MANIFEST.json"
     if args.check:
         saved = json.loads(target.read_text(encoding="utf-8-sig"))
-        for key in ("members", "sourceHashes"):
-            if saved[key] != actual[key]: raise ValueError(f"API manifest is stale: {key}")
-        print(json.dumps({"status": "SOURCE_MANIFEST_MATCH", "members": len(actual["members"])}))
+        content = (DOCS / "SECTION_RECIPE_API.md").read_text(encoding="utf-8-sig")
+        examples = json.loads((DOCS / "SECTION_RECIPE_API_EXAMPLES.json").read_text(encoding="utf-8-sig"))
+        verify_catalog(actual, saved, content, examples)
+        print(json.dumps({"status": "SOURCE_MANIFEST_DOC_EXAMPLES_MATCH", "members": len(actual["members"])}))
     else:
         target.write_text(json.dumps(actual, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({"status": actual["status"], "members": len(actual["members"])}))

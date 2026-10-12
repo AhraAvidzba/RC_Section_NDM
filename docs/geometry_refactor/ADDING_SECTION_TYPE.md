@@ -295,6 +295,82 @@ Coincidence задаёт RejectCoincidence/MergeIdentical/KeepPublishedOwner.
 Это не нормативный минимальный зазор. CheckCenter и CheckFullDisk — отдельные
 проверки размещения относительно бетона/отверстий.
 
+## Расширенные фрагменты: один общий контекст
+
+Ниже самостоятельная программная fixture фасада. Она показывает путь
+«дуга + наклонная + дуга носа + наклонная + дуга», независимые пути одной
+группы, ненулевые setbacks, переключение ByCount на ByMaxStep, ось внутреннего
+ряда от Opening, ProjectFrom с пропусками и связанные дополнительные позиции.
+Вертикальный размер и подпись используют выбранную геометрию/фактический ряд.
+
+Для переноса в полный класс замените декларативную часть его Describe:
+локальные Dim разместите в начале метода, вызовы после facade.Initialize,
+а последнюю строку Set AdvancedGuideDefinition замените на Set Describe.
+Здесь размеры во внутренних мм; при использовании своего блока Config
+подставляйте значения, уже переведённые через context.Units.
+
+Функция доступна целиком в tests/modTestRecipeApiCatalogue.bas; её вызовы
+False/True выполняет RunAdvancedGuideExamples в отдельной книге. Она не
+регистрирует ещё один production-тип и не добавляет UI-диапазоны. На полном
+круговом target проекций явно задаётся ClosedUniform; разрешённые пропуски
+не перераспределяют оставшиеся позиции.
+
+<!-- advanced-example:start -->
+```vb
+Public Function AdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSectionDefinition
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim a As Double, b As Double, c As Double
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "GuideFragments"
+    Set path = facade.RectanglePath("Concrete", -300#, -400#, 1000#, 800#)
+    facade.Outer "Outer", "Concrete"
+    Set path = facade.CirclePath("Hole", 0#, -250#, 50#)
+    facade.Opening "Opening", "Hole", "Outer"
+    ' Боковой путь: дуга + наклонная + дуга носа + наклонная + дуга.
+    a = 100# / Sqr(2#): b = 300# + 50# / Sqr(2#): c = 50# / Sqr(2#)
+    Set path = New CGeometryPath: path.Initialize "Nose"
+    path.AddArc "HeelLow", 0#, 0#, 100#, -GEOM_PI / 2#, GEOM_PI / 4#
+    path.AddLine "InclinedLow", a, -a, b, -c
+    path.AddArc "NoseArc", 300#, 0#, 50#, -GEOM_PI / 4#, GEOM_PI / 2#
+    path.AddLine "InclinedHigh", b, c, a, a
+    path.AddArc "HeelHigh", 0#, 0#, 100#, GEOM_PI / 4#, GEOM_PI / 4#
+    path.Seal: facade.AddPath path
+    Set path = facade.Chain("Side", "Nose", "HeelLow", 0#, "HeelHigh", 1#)
+    facade.RebarAtStations "SideBars", "Side", Array(50#, 200#, 400#, 600#), 10#
+    ' Одна группа, два независимых пути: количество/шаг применяется PerPath.
+    Set path = facade.LinePath("RowA", -150#, 250#, 50#, 250#)
+    Set path = facade.LinePath("RowB", 250#, 200#, 500#, 200#)
+    facade.PathGroup "Independent", Array("RowA", "RowB")
+    Set options = New CRebarRuleOptions
+    options.DistributionScope = PerPath: options.StartSetback = 20#: options.EndSetback = 30#
+    options.AnnotationGroup = "RowsLabel"
+    options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
+    If useMaxStep Then
+        facade.RebarByMaxStep "Rows", "Independent", 100#, 10#, options
+    Else
+        facade.RebarByCount "Rows", "Independent", 4, 10#, options
+    End If
+    ' Внутренний ряд — наружу от CCW-грани отверстия, без ручных координат баров.
+    Set path = facade.Offset("HoleAxis", "Hole", -30#)
+    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
+    options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
+    facade.RebarByCount "Inner", "HoleAxis", 6, 8#, options
+    Set path = facade.LinePath("BasePath", -150#, -350#, 150#, -350#)
+    facade.RebarByCount "Base", "BasePath", 4, 10#
+    ' Два из четырёх лучей попадают на конечную круговую ось; пропуски явные.
+    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
+    options.DirectionY = 1#: options.SkipMissingProjection = True
+    options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
+    facade.RebarProjected "Projected", "HoleAxis", "Base", 6#, options
+    ' Связанные дополнительные позиции по локальной нормали, каждая вторая.
+    Set options = New CRebarRuleOptions: options.NormalOffset = 10#: options.EverySecond = True
+    options.SourceSuffix = "_Extra": facade.RebarDependent "Extra", "Base", 10#, options
+    facade.VerticalExtent "Height", "Concrete", "H", 740#
+    facade.RebarRowLabel "RowsLabel", "Rows", 0#, 1#, 50#
+    Set AdvancedGuideDefinition = facade.Finish
+End Function
+```
+<!-- advanced-example:end -->
+
 ## Измерения, подписи и диагностика
 
 Dimension измеряет Horizontal/Vertical/Aligned между именованными точками.
