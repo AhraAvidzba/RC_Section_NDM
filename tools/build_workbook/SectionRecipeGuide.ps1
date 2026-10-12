@@ -13,6 +13,8 @@ function Get-RecipeGuideContentBottom($Sheet) {
     return $bottom
 }
 
+. (Join-Path $PSScriptRoot 'HelpOutline.ps1')
+
 function Get-RecipeGuideRowRuns($Addresses) {
     $first=0;$last=0
     foreach ($address in $Addresses) {
@@ -51,7 +53,7 @@ function Update-SectionRecipeGuide {
         $application.Calculation=-4135
         $layoutPath=Join-Path $Root 'docs/geometry_refactor/SECTION_RECIPE_GUIDE_LAYOUT.json'
         $layout=Get-Content -LiteralPath $layoutPath -Raw -Encoding UTF8 | ConvertFrom-Json
-        if ($layout.schema -ne 1) {throw 'Unsupported guide layout schema.'}
+        if ($layout.schema -ne 2) {throw 'Unsupported guide layout schema.'}
         foreach ($property in $layout.sourceHashes.PSObject.Properties) {
             if ((Get-FileHash -LiteralPath (Join-Path $Root $property.Name)).Hash.ToLowerInvariant() -cne $property.Value) {
                 throw ('Guide content is stale: '+$property.Name)
@@ -68,7 +70,7 @@ function Update-SectionRecipeGuide {
             if ($old.Worksheet.Name -cne $sheet.Name -or $old.Column -ne 1 -or $old.Columns.Count -ne 6 -or $old.Rows.Count -lt 3) {throw 'Guide owner range is invalid.'}
             if ([string]$sheet.Cells.Item($oldStart,1).Value2 -cne $layout.title) {throw 'Guide owner title was changed; refusing to clear user content.'}
             $footer=[string]$sheet.Cells.Item($oldEnd,1).Value2
-            if ($footer -notmatch '^NDM\.RECIPE\.GUIDE/1\|([0-9a-f]{64})\|[0-9a-f]{64}$') {throw 'Guide owner footer is invalid.'}
+            if ($footer -notmatch '^NDM\.RECIPE\.GUIDE/[12]\|([0-9a-f]{64})\|[0-9a-f]{64}$') {throw 'Guide owner footer is invalid.'}
             $expected=$Matches[1]
             $oldLines=@(Get-RecipeGuideNativeLines $sheet $oldStart ($oldEnd-1))
             if ((Get-RecipeGuideTextHash $oldLines) -cne $expected) {throw 'Guide owner content was edited; refusing to clear user content.'}
@@ -80,7 +82,15 @@ function Update-SectionRecipeGuide {
             $old.UnMerge();$old.Clear() | Out-Null
         }
         $bottom=Get-RecipeGuideContentBottom $sheet
-        $start=$bottom+3;$end=$start+$layout.rows.Count-1
+        $start=$bottom+3
+        # Короткий блок повторно записывается в своё свободное место перед Config.
+        if ($oldStart -gt 0) {
+            $oldCount=$oldEnd-$oldStart+1
+            if ($layout.rows.Count -gt $oldCount) {Resize-HelpEmptyRows $Workbook $sheet ($oldEnd+1) ($layout.rows.Count-$oldCount) $true}
+            elseif ($layout.rows.Count -lt $oldCount) {Resize-HelpEmptyRows $Workbook $sheet ($oldStart+$layout.rows.Count) ($oldCount-$layout.rows.Count) $false}
+            $start=$oldStart
+        }
+        $end=$start+$layout.rows.Count-1
         $range=$sheet.Range($sheet.Cells.Item($start,1),$sheet.Cells.Item($end,6))
         $width=[double]$range.Width
         if ($width -lt 400) {throw 'Help columns are too narrow for readable guide text.'}
@@ -119,7 +129,7 @@ function Update-SectionRecipeGuide {
             if ($style -in 'title','h1') {$size=16;$pointPerCharacter=9.8}
             elseif ($style -in 'h2','h3') {$size=13;$pointPerCharacter=8}
             # Консервативная оценка с запасом; длинная строка остаётся одним
-            # исходным значением, чтобы полный VBA-класс можно было скопировать.
+            # исходным значением, чтобы пояснение или вызов можно было скопировать.
             $characters=[Math]::Max(20,[Math]::Floor(($width-16)/$pointPerCharacter))
             $lines=[Math]::Max(1,[Math]::Ceiling(([string]$layout.rows[$i].text).Length/$characters))
             $height=[Math]::Min(409,($size+7)*$lines+3)
@@ -188,12 +198,14 @@ function Update-SectionRecipeGuide {
             }
             throw ('Native guide text differs from source: '+($different | ConvertTo-Json -Compress))
         }
-        if ((Get-RecipeGuideContentBottom $sheet) -ne $end) {throw 'Guide is not the last content section.'}
+        $outline=Set-HelpSectionOrderAndOutline $Workbook
+        $range=$Workbook.Names.Item('rngSectionRecipeGuide').RefersToRange
+        $start=[int]$range.Row;$end=$start+[int]$range.Rows.Count-1
         $apiRows=[ordered]@{}
         foreach ($property in $layout.api.PSObject.Properties) {$apiRows[$property.Name]=$start+[int]$property.Value}
         return [ordered]@{Status='NATIVE_GUIDE_TEXT_MATCH';StartRow=$start;EndRow=$end;OldStartRow=$oldStart;OldEndRow=$oldEnd;
             PreviousContentBottom=$bottom;WidthPoints=$width;Rows=$layout.rows.Count;Members=$layout.members;
-            BodySHA256=$layout.bodySHA256;ApiStatus=$layout.apiStatus;ApiRows=$apiRows;SectionRows=$sectionRows}
+            BodySHA256=$layout.bodySHA256;ApiStatus=$layout.apiStatus;ApiRows=$apiRows;SectionRows=$sectionRows;Outline=$outline}
     } finally {
         $application.Calculation=$saved.Calculation
         $application.ScreenUpdating=$saved.ScreenUpdating

@@ -165,7 +165,7 @@ def main():
         ready = examples.get("status") == "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH"
         status = "Сигнатуры, defaults и каждый контекстный вызов синхронизированы с source; native entrypoint/журнал указан у каждого члена. Workbook-расположение фиксирует NativeMap.json, итоговая приёмка книги — отдельный отчёт." if ready else "Стадия: DRAFT. Примеры/ссылки ещё сопоставляются; E04/E12 остаются открытыми."
         lines = ["# SECTION_RECIPE_API: каталог текущих сигнатур", "", status, "",
-                 actual["scope"], "", "Внутри мм/мм²/Н/Н*мм/МПа; углы в радианах. ByRef/Optional/default приведены в точной сигнатуре. Полный общий фасад и исходный класс представлены в ADDING_SECTION_TYPE.md.", ""]
+                 actual["scope"], "", "Внутри мм/мм²/Н/Н*мм/МПа; углы в радианах. ByRef/Optional/default приведены в точной сигнатуре. Краткий порядок подключения — в ADDING_SECTION_TYPE.md; полный API — в modSectionRecipeApiGuide, тела методов — в исходных классах VBE.", ""]
         owner = None
         for member in actual["members"]:
             if member["owner"] != owner:
@@ -209,20 +209,9 @@ def main():
         print(json.dumps({"status": "DOCUMENTATION_CALLS_SYNCHRONIZED" if ready else "DOCUMENTATION_DRAFT", "members": len(actual["members"]), "missingSemantics": 0}))
         return
     if args.sync_example:
-        guide = DOCS / "ADDING_SECTION_TYPE.md"
-        example = DOCS / "examples/CSectionRecipeRoundedTrapezoid.cls"
-        content = guide.read_text(encoding="utf-8")
-        pattern = r"(?s)(<!-- complete-example:start -->).*?(<!-- complete-example:end -->)"
-        if len(re.findall(pattern, content)) != 1: raise ValueError("Complete-example block is not unique")
-        code = example.read_text(encoding="utf-8-sig").rstrip()
-        content = re.sub(pattern, lambda match: match[1] + "\n```vb\n" + code + "\n```\n" + match[2], content)
-        advanced_source = (ROOT / "tests/modTestRecipeApiCatalogue.bas").read_text(encoding="utf-8-sig")
-        advanced = re.search(r"(?ms)^Public Function AdvancedGuideDefinition\(.*?^End Function", advanced_source).group()
-        advanced_pattern = r"(?s)(<!-- advanced-example:start -->).*?(<!-- advanced-example:end -->)"
-        if len(re.findall(advanced_pattern, content)) != 1: raise ValueError("Advanced-example block is not unique")
-        content = re.sub(advanced_pattern, lambda match: match[1] + "\n```vb\n" + advanced + "\n```\n" + match[2], content)
-        guide.write_text(content, encoding="utf-8")
-        print(json.dumps({"status": "COMPLETE_CLASS_SYNCHRONIZED", "sourceSHA256": hashlib.sha256(example.read_bytes()).hexdigest()}))
+        # Новая цель пользователя запрещает встраивать тела классов/методов.
+        # Флаг сохранён для прежних команд, но полного дубликата больше не создаёт.
+        print(json.dumps({"status": "EXAMPLES_REFERENCED_IN_SOURCE_ONLY", "embeddedBodies": 0}))
         return
     if args.semantics_check:
         from SectionRecipeApiText import purpose, parameter_meaning

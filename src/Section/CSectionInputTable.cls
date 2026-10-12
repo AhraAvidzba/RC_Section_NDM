@@ -133,12 +133,12 @@ Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As C
     Length = units.InputLengthToInternal(Number(row, column))
 End Function
 
-' Прежний пользовательский смысл: пусто/TODO/0 выключают ряд, отрицательное
-' значение является ошибкой. Конвертация длины выполняется только CUnitSystem.
+' Пустая ячейка или ноль выключают ряд. Текст и отрицательный диаметр
+' отклоняются; положительный диаметр переводится в мм через CUnitSystem.
 Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
     Dim raw As String, value As Double
     raw = Text(row, column, vbNullString)
-    If Len(raw) = 0 Or UCase$(raw) = "TODO" Then Exit Function
+    If Len(raw) = 0 Then Exit Function
     value = Number(row, column)
     If value < 0# Then InputError row, column, "Диаметр не может быть отрицательным; 0 или пустая ячейка выключают ряд. Введите неотрицательное значение."
     If units Is Nothing Then InputError row, column, "Не передана система единиц."

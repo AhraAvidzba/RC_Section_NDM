@@ -724,7 +724,7 @@ Public Function RunHollowRecipeInputTests() As String
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
-    For scenario = 0 To 13
+    For scenario = 0 To 19
         config.Formula = saved
         Check "hollow.input." & CStr(scenario), HollowInputCase(scenario)
     Next scenario
@@ -769,6 +769,12 @@ Private Function HollowInputCase(ByVal scenario As Long) As Boolean
         Case 11: valid = True: range.Cells(7, 3).Value2 = 500# / factor
         Case 12: row = 23: column = 4: range.Cells(23, 2).Value2 = 16# / factor: range.Cells(row, column).Value2 = "bad"
         Case 13: row = 13: column = 4: range.Cells(13, 3).Value2 = 0#: range.Cells(row, column).Value2 = 1.5
+        Case 14: row = 13: column = 3: range.Cells(row, column).Value2 = "-"
+        Case 15: row = 23: column = 2: range.Cells(row, column).Value2 = "-"
+        Case 16: row = 23: column = 5: range.Cells(row, column).Value2 = "-"
+        Case 17: row = 23: column = 2: range.Cells(row, column).Value2 = "TODO"
+        Case 18: valid = True: range.Cells(23, 2).ClearContents: range.Cells(23, 5).ClearContents
+        Case 19: valid = True: range.Cells(13, 3).ClearContents
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry"), units)
     Set table = context.Table("rngHollowRectangleGeometry")

@@ -20,8 +20,12 @@ if($ReferenceExportPath) {
     }
 }
 function Normalize-Code([string]$body) {
+    $original=$body
     $body=[regex]::Match($body,'(?ms)^Option Explicit.*').Value.Replace("`r`n","`n").TrimEnd()
-    if(-not $body) {throw 'Missing Option Explicit body.'}
+    if(-not $body) {
+        $body=($original -split "`r?`n" | Where-Object {$_ -notmatch '^Attribute VB_Name = '}) -join "`n"
+        if(-not $body -or @($body -split "`n" | Where-Object {$_.Trim() -and $_ -notmatch "^\s*'"}).Count) {throw 'Missing Option Explicit or comment-only body.'}
+    }
     $builder=New-Object Text.StringBuilder
     foreach($line in $body.Split("`n")) {
         $inString=$false

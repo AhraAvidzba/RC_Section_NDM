@@ -301,7 +301,7 @@ Public Function RunInputTableTests() As String
     Dim table As CSectionInputTable, units As CUnitSystem, scenario As Long
     cells(1, 1) = "Key": cells(1, 2) = "Value": cells(1, 3) = "Mode"
     cells(2, 1) = "Count": cells(2, 2) = 4#: cells(2, 3) = "stacked"
-    cells(3, 1) = "Disabled": cells(3, 2) = "TODO"
+    cells(3, 1) = "Disabled": cells(3, 2) = 0#
     cells(4, 1) = "Diameter": cells(4, 2) = 16#
     For row = 1 To 4
         For column = 1 To 3
@@ -323,7 +323,7 @@ Public Function RunInputTableTests() As String
     Check "input.source", table.SourceReference(2, 2) = "Config!B12"
     Check "input.blank", table.IsBlank(4, 3)
     Near "input.number.default", table.Number(4, 3, 7#), 7#
-    Near "input.optional.todo", table.OptionalDiameter(3, 2, units), 0#
+    Near "input.optional.zero", table.OptionalDiameter(3, 2, units), 0#
     Near "input.optional.blank", table.OptionalDiameter(3, 3, units), 0#
     Near "input.optional.active", table.OptionalDiameter(4, 2, units), 16#
     Near "input.length", table.Length(4, 2, units), 16#
@@ -333,7 +333,7 @@ Public Function RunInputTableTests() As String
     cells(2, 2) = 2147483647#: addresses(2, 2) = "Config!B12"
     Set table = New CSectionInputTable: table.Initialize "rngLongBoundary", cells, addresses
     Check "input.count.maxLong", table.Count(2, 2) = 2147483647
-    For scenario = 0 To 21
+    For scenario = 0 To 24
         Check "input.invalid." & CStr(scenario), InvalidInputRejected(scenario)
     Next scenario
     GoTo Finished
@@ -361,6 +361,9 @@ Private Function InvalidInputRejected(ByVal scenario As Long) As Boolean
         Case 13: cells(2, 2) = -1#
         Case 14: cells(2, 2) = Array(1#, 2#)
         Case 15: Set cells(2, 2) = New CUnitSystem
+        Case 22: cells(2, 2) = "-"
+        Case 23: cells(2, 2) = "TODO"
+        Case 24: cells(2, 2) = "diameter"
     End Select
     Set table = New CSectionInputTable: table.Initialize "rngInvalid", cells
     Set units = New CUnitSystem: units.InitializeDefaults
@@ -373,7 +376,7 @@ Private Function InvalidInputRejected(ByVal scenario As Long) As Boolean
         Case 10: table.Initialize "Second", cells
         Case 11: value = table.Number(3, 2)
         Case 12: value = table.RowByKey("Missing")
-        Case 13: value = table.OptionalDiameter(2, 2, units)
+        Case 13, 22, 23, 24: value = table.OptionalDiameter(2, 2, units)
         Case 16: value = table.ColumnByCaption(1, "Missing")
         Case 17: value = table.RowByKey("Count", 1, 2, 1)
         Case 18: value = table.RowByKey("Count", 1, 3, 4)
@@ -385,6 +388,7 @@ Private Function InvalidInputRejected(ByVal scenario As Long) As Boolean
 Rejected:
     InvalidInputRejected = (Err.Source = "CSectionInputTable" And Err.Number = vbObjectError + 5525)
     If scenario = 0 Then InvalidInputRejected = InvalidInputRejected And InStr(1, Err.Description, "rngInvalid[2,2]", vbBinaryCompare) > 0
+    If scenario >= 22 Then InvalidInputRejected = InvalidInputRejected And InStr(1, Err.Description, "rngInvalid[2,2]", vbBinaryCompare) > 0
 End Function
 
 Private Function InvalidPolygonRejected(ByVal scenario As Long) As Boolean

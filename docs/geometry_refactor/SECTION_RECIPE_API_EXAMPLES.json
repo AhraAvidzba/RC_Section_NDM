@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "status": "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH",
-  "members": 276,
+  "members": 275,
   "examples": {
     "ISectionRecipe.CreateDefinition": {
       "source": "tests/modTestSectionRecipes.bas",
@@ -45,6 +45,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -62,7 +63,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -107,6 +109,7 @@
         {
           "entryPoint": "modTestDeclarativeExamples.RunRoundedFrameExampleTests",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/E09.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt"
           ]
@@ -123,6 +126,7 @@
         {
           "entryPoint": "modTestDeclarativeExamples.RunRoundedFrameExampleTests",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/E09.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt"
           ]
@@ -139,6 +143,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -231,7 +236,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -264,7 +270,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -435,7 +442,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -512,37 +520,24 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
     },
     "CSectionDefinitionBuilder.RebarDependent": {
-      "source": "tests/modTestSectionRecipes.bas",
-      "line": 198,
-      "routine": "RunRecipeRuleTests",
-      "code": "    facade.RebarDependent \"Extra\", \"Base\", 10#, options",
-      "context": "В теле modTestSectionRecipes.RunRecipeRuleTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestGeometryConfig.bas",
+      "line": 77,
+      "routine": "CheckRuleCounterBinding",
+      "code": "    facade.RebarDependent \"Third\", \"Main\", 10#, options",
+      "context": "В теле modTestGeometryConfig.CheckRuleCounterBinding с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestSectionRecipes.RunRecipeRuleTests",
+          "entryPoint": "modTestGeometryConfig.RunAudit03RebarCounterTests",
           "reports": [
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RectSetRules/RuleTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/MeasurementRuleTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/RuleTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/RuleTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/RuleTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/RuleFinal.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/RuleTests1.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RectSetEvidencePack/Actual/RuleTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/RuleTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.failed-probe.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/RebarCounters.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt"
           ]
         }
       ]
@@ -559,7 +554,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -574,6 +570,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -794,6 +791,7 @@
         {
           "entryPoint": "modTestDeclarativeExamples.RunRoundedFrameExampleTests",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/E09.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt"
           ]
@@ -861,28 +859,16 @@
       ]
     },
     "CSectionDefinitionBuilder.Finish": {
-      "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 88,
-      "routine": "RunPathAnchorTests",
+      "source": "tests/modTestContourMesh.bas",
+      "line": 216,
+      "routine": "ControlGeometry",
       "code": "    Set definition = facade.Finish",
-      "context": "В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.",
+      "context": "В теле modTestContourMesh.ControlGeometry с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestDeclarativeGeometry.RunCoreGeometryTests",
+          "entryPoint": "modTestContourMesh.RunContourMeshTests",
           "reports": [
-            "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/CoreTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreFinal.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/CoreTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt"
           ]
         }
       ]
@@ -943,6 +929,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -950,7 +937,7 @@
     },
     "CGeometryPath.AddLine": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 585,
+      "line": 589,
       "routine": "CompoundPath",
       "code": "    path.AddLine \"Bottom\", 0#, 0#, 100#, 0#",
       "context": "В теле modTestDeclarativeGeometry.CompoundPath с его подготовленными локальными объектами/входом.",
@@ -983,7 +970,7 @@
     },
     "CGeometryPath.AddArc": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 601,
+      "line": 605,
       "routine": "InvalidPathRejected",
       "code": "        Case 3: path.AddArc \"ZeroSweep\", 0#, 0#, 1#, 0#, 0#",
       "context": "В теле modTestDeclarativeGeometry.InvalidPathRejected с его подготовленными локальными объектами/входом.",
@@ -1016,7 +1003,7 @@
     },
     "CGeometryPath.Seal": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 517,
+      "line": 521,
       "routine": "TestJointTangents",
       "code": "    path.Seal",
       "context": "В теле modTestDeclarativeGeometry.TestJointTangents с его подготовленными локальными объектами/входом.",
@@ -1100,7 +1087,7 @@
     },
     "CGeometryPath.IsSealed": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 430,
+      "line": 434,
       "routine": "TestLine",
       "code": "    Check \"line.sealed\", changed.IsSealed And path.IsSealed",
       "context": "В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.",
@@ -1133,7 +1120,7 @@
     },
     "CGeometryPath.IsClosed": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 472,
+      "line": 476,
       "routine": "TestArcs",
       "code": "    Check \"circle.closed\", path.IsClosed",
       "context": "В теле modTestDeclarativeGeometry.TestArcs с его подготовленными локальными объектами/входом.",
@@ -1166,7 +1153,7 @@
     },
     "CGeometryPath.Length": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 604,
+      "line": 608,
       "routine": "InvalidPathRejected",
       "code": "        Case 6: value = path.Length",
       "context": "В теле modTestDeclarativeGeometry.InvalidPathRejected с его подготовленными локальными объектами/входом.",
@@ -1199,7 +1186,7 @@
     },
     "CGeometryPath.SegmentID": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 499,
+      "line": 503,
       "routine": "TestCompoundPath",
       "code": "    Check \"compound.slice.id\", part.SegmentID(2) = \"Corner\"",
       "context": "В теле modTestDeclarativeGeometry.TestCompoundPath с его подготовленными локальными объектами/входом.",
@@ -1267,6 +1254,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -1454,7 +1442,7 @@
     },
     "CGeometryPath.ProjectionBounds": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 418,
+      "line": 422,
       "routine": "TestLine",
       "code": "    path.ProjectionBounds 2#, 0#, minimum, maximum",
       "context": "В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.",
@@ -1514,7 +1502,7 @@
     },
     "CGeometryPath.Reversed": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 420,
+      "line": 424,
       "routine": "TestLine",
       "code": "    Set changed = path.Reversed",
       "context": "В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.",
@@ -1547,7 +1535,7 @@
     },
     "CGeometryPath.Transformed": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 424,
+      "line": 428,
       "routine": "TestLine",
       "code": "    Set changed = path.Transformed(10#, 20#, GEOM_PI / 2#)",
       "context": "В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.",
@@ -1580,7 +1568,7 @@
     },
     "CGeometryPath.RayHit": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 554,
+      "line": 558,
       "routine": "TestRays",
       "code": "    Check \"ray.circle.hit\", path.RayHit(-20#, 0#, 2#, 0#, station, distance)",
       "context": "В теле modTestDeclarativeGeometry.TestRays с его подготовленными локальными объектами/входом.",
@@ -1983,6 +1971,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -2256,6 +2245,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -2361,6 +2351,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -2378,7 +2369,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -2453,6 +2445,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -2475,17 +2468,17 @@
       ]
     },
     "CRebarRuleOptions.SourceReference": {
-      "source": "tests/modTestRecipeApiCatalogue.bas",
-      "line": 109,
-      "routine": "RunApiGeometryReadExamples",
-      "code": "    options.StartSetback = 20#: options.EndSetback = 30#: options.Comment = \"Guide\": options.SourceReference = \"ProgramInputs.Row\"",
-      "context": "В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestGeometryConfig.bas",
+      "line": 72,
+      "routine": "CheckRuleCounterBinding",
+      "code": "    Set options = New CRebarRuleOptions: options.SourceReference = \"CounterBinding.Main\"",
+      "context": "В теле modTestGeometryConfig.CheckRuleCounterBinding с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeApiCatalogue.RunApiGeometryReadExamples",
+          "entryPoint": "modTestGeometryConfig.RunAudit03RebarCounterTests",
           "reports": [
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt"
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/RebarCounters.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt"
           ]
         }
       ]
@@ -2502,7 +2495,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -2519,7 +2513,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -2536,7 +2531,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -2569,7 +2565,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -2586,7 +2583,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -2603,14 +2601,15 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
     },
     "CSectionInputTable.Initialize": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 373,
+      "line": 376,
       "routine": "InvalidInputRejected",
       "code": "        Case 10: table.Initialize \"Second\", cells",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -2804,7 +2803,7 @@
     },
     "CSectionInputTable.Number": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 374,
+      "line": 377,
       "routine": "InvalidInputRejected",
       "code": "        Case 11: value = table.Number(3, 2)",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -2870,7 +2869,7 @@
     },
     "CSectionInputTable.Choice": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 372,
+      "line": 375,
       "routine": "InvalidInputRejected",
       "code": "        Case 9: value = table.Choice(2, 2, Array(\"Stacked\", \"SideBySide\"))",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -2936,10 +2935,10 @@
     },
     "CSectionInputTable.OptionalDiameter": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 376,
-      "routine": "InvalidInputRejected",
-      "code": "        Case 13: value = table.OptionalDiameter(2, 2, units)",
-      "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
+      "line": 326,
+      "routine": "RunInputTableTests",
+      "code": "    Near \"input.optional.zero\", table.OptionalDiameter(3, 2, units), 0#",
+      "context": "В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
           "entryPoint": "modTestDeclarativeGeometry.RunCoreGeometryTests",
@@ -2969,7 +2968,7 @@
     },
     "CSectionInputTable.ColumnByCaption": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 370,
+      "line": 373,
       "routine": "InvalidInputRejected",
       "code": "        Case 6: value = table.ColumnByCaption(1, \"Value\")",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -3019,7 +3018,7 @@
     },
     "CSectionInputTable.RowByAnyKey": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 381,
+      "line": 384,
       "routine": "InvalidInputRejected",
       "code": "        Case 20: value = table.RowByAnyKey(\"Count\")",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -3097,7 +3096,7 @@
     },
     "CSectionRecipeContext.Table": {
       "source": "tests/modTestGeometryConfig.bas",
-      "line": 85,
+      "line": 116,
       "routine": "CounterFixture",
       "code": "    Set table = context.Table(CStr(names(0)))",
       "context": "В теле modTestGeometryConfig.CounterFixture с его подготовленными локальными объектами/входом.",
@@ -3223,7 +3222,7 @@
     },
     "CSectionTypeRegistry.CreateDefinition": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 832,
+      "line": 838,
       "routine": "BuildRecipe",
       "code": "    Set definition = registry.CreateDefinition(typeID, context)",
       "context": "В теле modTestSectionRecipes.BuildRecipe с его подготовленными локальными объектами/входом.",
@@ -3279,6 +3278,7 @@
         {
           "entryPoint": "modTestDeclarativeExamples.RunRoundedFrameExampleTests",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/E09.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt"
           ]
@@ -3393,6 +3393,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -3410,7 +3411,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3427,7 +3429,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3444,7 +3447,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3461,7 +3465,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3478,7 +3483,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3495,7 +3501,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3512,7 +3519,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3545,7 +3553,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3562,7 +3571,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3579,7 +3589,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3596,7 +3607,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3613,7 +3625,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3630,7 +3643,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -3663,7 +3677,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -4313,17 +4328,16 @@
       ]
     },
     "CConcreteRegion.LoopCount": {
-      "source": "tests/modTestGeometryQuery.bas",
-      "line": 375,
-      "routine": "TestPostAudit03RegionClone",
+      "source": "tests/modTestAutoCADContours.bas",
+      "line": 1024,
+      "routine": "CheckNestedRegion",
       "code": "    For i = 1 To region.LoopCount",
-      "context": "В теле modTestGeometryQuery.TestPostAudit03RegionClone с его подготовленными локальными объектами/входом.",
+      "context": "В теле modTestAutoCADContours.CheckNestedRegion с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestGeometryQuery.RunGeometryQueryTests",
+          "entryPoint": "modTestAutoCADContours.RunAutoCADContourTests",
           "reports": [
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt"
           ]
         }
       ]
@@ -4346,7 +4360,7 @@
     },
     "CConcreteRegion.Area": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1035,
+      "line": 1041,
       "routine": "TestAdjacentRectangles",
       "code": "    Near \"adjacent.area\", region.Area, 240000#",
       "context": "В теле modTestSectionRecipes.TestAdjacentRectangles с его подготовленными локальными объектами/входом.",
@@ -4482,7 +4496,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -4515,7 +4530,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -4532,7 +4548,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -4634,17 +4651,16 @@
       ]
     },
     "CSectionGeometryQuery.BoundaryRegion": {
-      "source": "tests/modTestGeometryQuery.bas",
-      "line": 477,
-      "routine": "TestHollowArcJunctions",
-      "code": "        Set rotated = query.BoundaryRegion(raw, count, \"HollowJunctionFixture\")",
-      "context": "В теле modTestGeometryQuery.TestHollowArcJunctions с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestAutoCADContours.bas",
+      "line": 514,
+      "routine": "CheckImportedContourDimensions",
+      "code": "            Set region = query.BoundaryRegion(raw, count)",
+      "context": "В теле modTestAutoCADContours.CheckImportedContourDimensions с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestGeometryQuery.RunGeometryQueryTests",
+          "entryPoint": "modTestAutoCADContours.RunAutoCADContourTests",
           "reports": [
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt"
           ]
         }
       ]
@@ -4698,17 +4714,16 @@
       ]
     },
     "CSectionGeometryQuery.SubtractContainedRegion": {
-      "source": "tests/modTestRecipeApiCatalogue.bas",
-      "line": 125,
-      "routine": "RunApiGeometryReadExamples",
-      "code": "    Set opening = query.CircleRegion(0#, 0#, 20#): Set frame = query.SubtractContainedRegion(region, opening)",
-      "context": "В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestContourMesh.bas",
+      "line": 485,
+      "routine": "CheckArbitraryDomains",
+      "code": "    Set region = query.SubtractContainedRegion(region, query.CircleRegion(70#, 70#, 23#))",
+      "context": "В теле modTestContourMesh.CheckArbitraryDomains с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeApiCatalogue.RunApiGeometryReadExamples",
+          "entryPoint": "modTestContourMesh.RunContourMeshTests",
           "reports": [
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt"
           ]
         }
       ]
@@ -4795,7 +4810,7 @@
     },
     "CSectionGeometryQuery.ContainsPoint": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1037,
+      "line": 1043,
       "routine": "TestAdjacentRectangles",
       "code": "    Check \"adjacent.lower\", query.ContainsPoint(region, 500#, 100#)",
       "context": "В теле modTestSectionRecipes.TestAdjacentRectangles с его подготовленными локальными объектами/входом.",
@@ -4942,7 +4957,7 @@
     },
     "CSectionGeometryQuery.AdjacentRectangles": {
       "source": "tests/modTestSectionRecipes.bas",
-      "line": 1058,
+      "line": 1064,
       "routine": "InvalidAdjacentRejected",
       "code": "    Set path = query.AdjacentRectangles(\"Bad\", Array(Array(0#, 0#, 100#, 100#), rect))",
       "context": "В теле modTestSectionRecipes.InvalidAdjacentRejected с его подготовленными локальными объектами/входом.",
@@ -5120,6 +5135,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -5241,6 +5257,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         }
@@ -5258,7 +5275,8 @@
           "reports": [
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt"
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
           ]
         }
       ]
@@ -5520,6 +5538,7 @@
         {
           "entryPoint": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
           "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt"
           ]
         },
@@ -5574,22 +5593,6 @@
         }
       ]
     },
-    "modGeometryTypes.RebarRequestedPositionCount": {
-      "source": "tests/modTestGeometryConfig.bas",
-      "line": 50,
-      "routine": "RunAudit03RebarCounterTests",
-      "code": "    Near stats, \"rebarCounter.binding.even\", RebarRequestedPositionCount(6, 16#, 12#, 10#, \"EverySecondBar\", \"EachBar\"), 15#",
-      "context": "В теле modTestGeometryConfig.RunAudit03RebarCounterTests с его подготовленными локальными объектами/входом.",
-      "nativeRoots": [
-        {
-          "entryPoint": "modTestGeometryConfig.RunAudit03RebarCounterTests",
-          "reports": [
-            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/RebarCounters.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt"
-          ]
-        }
-      ]
-    },
     "modGeometryTypes.BuildGeneratedSectionModel": {
       "source": "tests/modTestGeometry.bas",
       "line": 1379,
@@ -5613,17 +5616,19 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "a53ee221b409e43b9d574a52ae06ebdfbf6710f1659fc8df31ce901e6b5ab49f",
+    "tests/modTestAutoCADContours.bas": "430ed8e1569e2012430d8b82d73cd25fcc28a4e2d618279c7f0f5bd14088676b",
+    "tests/modTestContourMesh.bas": "56adc60a81c08f162e4701bdc4dffa81874c8b3d3e7468b34c1d8dd90a880d17",
     "tests/modTestDeclarativeExamples.bas": "8f0c58eebdafe605b0244f11c6f680414f3def1360a7bce481783b70c4170b30",
-    "tests/modTestDeclarativeGeometry.bas": "5ae54d3e2b35ce4e241788e75629a371e7bf7e0dbb483f680c44867c2b081a4c",
+    "tests/modTestDeclarativeGeometry.bas": "e9d3412a59f189bea30775d5f3877b8c3dcf42bb9ffcc2de72e10967083e1600",
     "tests/modTestGeometry.bas": "306ebe9ce9d259f10fc25dc9894ce1c311f534ad2307d023978b8aa48aaf47f2",
-    "tests/modTestGeometryConfig.bas": "bfc9ee357e5059bc6ab50991e03ea5c5c8e1d028120217c23913c4289efeab84",
+    "tests/modTestGeometryConfig.bas": "8a48ec6d472c527aed217e5b0b4eeab3635d099be807e068a6c256df9a7bb189",
     "tests/modTestGeometryQuery.bas": "98df7fd22a84276405a3af0f7c8239f174f99bf5a186cd27d183f69be178de4f",
     "tests/modTestRecipeAnnotations.bas": "63eafeaa8bd03f91d1f2994276c24a5e23ae4f7f71b1de6b0c4694410b46968c",
     "tests/modTestRecipeApiCatalogue.bas": "2970507fc2593687f69111427eff7ce0c59dea3cdf74326c4b890f5aa6b50dad",
     "tests/modTestRecipeOperations.bas": "90e4c5609337c447932ac93de74b110255af716e30be866351c65365d5e07891",
     "tests/modTestRecipeSetbacks.bas": "8ffb354ceba0cb426cc515d8bb2e7a8e8f5fc17c035132d6d8d91792b75136cb",
     "tests/modTestRegressionBaseline.bas": "4746f5d372721d618c373191cb722536b0d127ce692c54dd6db59bc36d673607",
-    "tests/modTestSectionRecipes.bas": "fc26cc9a5c2074b4874e31cc7c74e96fa5273641c7b6e78cb9236a254da35ac2",
+    "tests/modTestSectionRecipes.bas": "76a8b7eb0aec4bbcc7e1d00476b4e213230ff45e84e1b0c26ff70eea11eb9dcc",
     "tests/modTestSectionSolver.bas": "76dba87d0fc4c1ceeefbc84d364dd9d6bc9a81965f553481524b653d4b1577d3"
   },
   "reportHashes": {
@@ -5694,6 +5699,8 @@
     "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalMetadataSnapshot.txt": "2c35f6b01759ddf6b6d380b95cb2a68cce1126893fe1d944da58ca876102c48b",
     "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt": "bb62c3d59e35573fdb97749b77cc6e699cd8609e0cf7db3c9993bade1d6cd4ac",
     "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt": "9f0facbdb33f61eedfcb1e6cf2371da12c992dbcff15b8c1ccbf4edd3e2fff1e",
+    "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt": "1b9ae679f5d2298a3032e31c1cfb30ab937493b2dad3fb4099bb45e4715ed0aa",
+    "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt": "4689f727494825c7436167a4615d488519e92dd9fa12c52d252aad0291662adb",
     "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt": "576d003feee0f5fd324fed3f399af446837e2ba0f9b454d6f08a372d217ad09b",
     "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt": "c0056a6828c405c94d646aa8d971dd99bbc3f2dc1713d57a2622d1da70f34a72",
     "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt": "af444c65a0a324592c4ef2bec9d8905c5a2571c39407ee5f8f3069c01a796082",
