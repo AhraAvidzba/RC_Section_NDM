@@ -2,7 +2,7 @@
 
 ## Фактическое Состояние 12.10.2026
 
-**SOURCE_AND_NATIVE_STAGING_PASS / OUTPUT_PENDING.** Из source и отдельной
+**VERIFIED_PUBLISHED.** Из source, проверочных книг и основного output
 post-retirement книги удалены все 12 специализированных geometry/rebar/
 annotation classes, ISectionShape, modGeometryPreparation и
 modRebarLayoutGeometry (15 компонентов). CFakeMultiOpeningGeometry удалён
@@ -136,3 +136,13 @@ RetiredModules: source должен уже отсутствовать, document/
 запрещены, факт удаления проверяется по baseline/native inventory. Обновление
 разрешено только в docs/regression; основная книга защищена хешем.
 Проверка отказа при существующем source CSectionModel: PASS, книга неизменна.
+
+## Итоговая опубликованная книга 12.10.2026
+
+Read-only native readback `PublishedSourceEquality.json`: 147 компонентов,
+142 source + 5 document MATCH. Ни одного из 15 retired компонентов нет;
+контрольная трапеция и измерительный harness в production отсутствуют.
+`CFakeMultiOpeningGeometry`, удалённый более ранним этапом, также отсутствует.
+Основной output обновлён, source и actual dump согласованы. Ранние записи
+о pending/native staging выше сохранены как история; текущий статус —
+VERIFIED_PUBLISHED. Подробности FINAL_REPORT.md/FINAL_ACCEPTANCE_EVIDENCE.json.

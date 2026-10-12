@@ -98,7 +98,7 @@ def main():
         "preview": {"records": preview["records"], "reviewedChanges": len(preview["errors"]),
             "classification": "Only Hollow rebar/display coordinates follow independently checked analytic projection",
             "images": 9, "stressStrainImages": 18, "specialModeImages": 8,
-            "reviewed": ["StressContact.png", "StrainContact.png", "PlotModesPNG/PERF_01_Stress.png",
+            "reviewed": ["PreviewContact.png", "StressContact.png", "StrainContact.png", "PlotModesPNG/PERF_01_Stress.png",
                          "PlotModesPNG/Resize_NoLabels.png", "PlotModesPNG/MissingState.png"]},
         "performance": {"scope": "Nine single-LC full workflows plus one full mixed profile; three staged HollowOffset samples",
             "baselineFullSeconds": before, "actualFullSeconds": after, "mixedFullSeconds": mixed,
@@ -110,6 +110,9 @@ def main():
             "earlierBlockedStatusSuperseded": True, "userDocumentsUsed": False},
         "preservation": data, "guidePreservation": guide, "sourceEquality": {k:v for k,v in equality.items() if k not in ("Checks", "GeneratedDocumentChecks")},
         "publication": publication,
+        "publishedReadback": ({"status": "PASS" if read(RELEASE / "PublishedSourceEquality.json")["AllPassed"] else "FAIL",
+            "path": relative(RELEASE / "PublishedSourceEquality.json"), "components": 147, "sourceUnchanged": True}
+            if (RELEASE / "PublishedSourceEquality.json").exists() else None),
         "notRun": [{"id": "FULL_ON_OFF", "status": "NOT_RUN", "reason": "User chose directed checks"},
                    {"id": "FULL_EXCEL_UI", "status": "NOT_RUN", "reason": "User chose directed checks"}],
         "failedProbes": ["FamilySP35Comparison.json", "FamilySP63Comparison.json", "PreviewComparison.json",
@@ -126,10 +129,17 @@ def main():
         "I": ["DECLARATIVE_API_EVIDENCE.json", "FINAL_ACCEPTANCE_EVIDENCE.json"],
         "E": ["ONE_CLASS_EVIDENCE.json", "NATIVE_GUIDE_EVIDENCE.json", "CONFIG_SETBACK_EVIDENCE.json", "FINAL_ACCEPTANCE_EVIDENCE.json"],
         "D": ["FINAL_ACCEPTANCE_EVIDENCE.json", "LEGACY_RETIREMENT_MAP.md", "FINAL_REPORT.md"]}
+    runtime_ids = {
+        "G": "modTestGeometry.RunGeometryTests; modTestDeclarativeGeometry.RunCoreGeometryTests; modTestRecipeOperations.RunRecipeOperationTests",
+        "R": "modTestSectionRecipes.RunRecipeRuleTests; ConfigSetback native reports; family oracle comparisons",
+        "A": "modTestRecipeOperations.RunRecipeMeasurementTests; modTestPlotConfig.RunAudit03GeneralPlotTests; modFinalGeometryChecks.RunDirectedPlotModes",
+        "I": "modTestWorkbookInterface.RunAudit03ReadLifecycleTests; modTestSectionSolver.RunCenteredNumericalTests; saved snapshot native reports",
+        "E": "modTestRoundedTrapezoidExample.RunExampleBuildTests; modTestRoundedTrapezoidExample.RunExampleInputTests; modTestRecipeApiCatalogue native examples; guide native updater",
+        "D": "FinalAcceptance runtime reports, source/native comparisons and publication guards"}
     for requirement in manifest["Requirements"]:
         rid = requirement["Id"]
         requirement.update(Status="PASS" if publication or rid != "D24" else "NOT_RUN",
-            TestId="DIRECTED_REQUIREMENT_COVERAGE_"+rid, CodeCommit=commit,
+            TestId=runtime_ids[rid[0]], CodeCommit=commit,
             WorkbookSHA256=sha(book), ExecutedAt=evidence["dateUTC"],
             Evidence=["docs/geometry_refactor/"+name for name in groups[rid[0]]],
             Notes="Реальные native логи и точные source/model сравнения перечислены в связанных evidence. Полные on/off и UI наборы не запускались по выбору пользователя; адресное покрытие соответствует §14.4.")

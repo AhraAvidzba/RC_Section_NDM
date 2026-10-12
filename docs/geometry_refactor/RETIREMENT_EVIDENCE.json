@@ -1,6 +1,6 @@
 {
   "status": "SOURCE_AND_NATIVE_STAGING_PASS",
-  "outputStatus": "PENDING",
+  "outputStatus": "VERIFIED_PUBLISHED",
   "scope": "15 retired components and migrated test consumers; directed checks only",
   "parentCommit": "e333dc8c4a4ebfff8967288c3e64c4d3b462e942",
   "nativeWorkbookSHA256": "B31A0D5614F89965DC76FCE377D811D01704F4B82FCB56BC547745772909DEBD",
@@ -159,5 +159,9 @@
     "One-class example and workbook API guide",
     "Directed final acceptance",
     "Preserve and update production workbook and code dump"
-  ]
+  ],
+  "finalWorkbookSHA256": "8c93df48b2551ee95da7d4984a721f210ebecf066c8fd5b956dda9c28c412e89",
+  "finalVBComponentCount": 147,
+  "retiredPresentFinal": [],
+  "finalReadbackEvidence": "docs/regression/GeometryDeclarative_2026-10-12/FinalRelease/PublishedSourceEquality.json"
 }

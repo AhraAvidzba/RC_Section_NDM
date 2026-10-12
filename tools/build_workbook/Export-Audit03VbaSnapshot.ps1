@@ -15,7 +15,11 @@ $openIssuesAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Op
 $geometryAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/GeometryDeclarative_2026-10-12')) + [IO.Path]::DirectorySeparatorChar
 $source = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $output = [IO.Path]::GetFullPath((Join-Path $root $OutputPath))
+$publishedWorkbook = Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
 foreach ($path in @($source, $output)) {
+    # Итоговая приёмка может читать именно опубликованную книгу. Это исключение
+    # только для source; dump по-прежнему создаётся в evidence, без Save/macros.
+    if ($path -eq $source -and $source -eq $publishedWorkbook) {continue}
     if (-not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($postAuditAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($performanceAllowed, [StringComparison]::OrdinalIgnoreCase) -and
