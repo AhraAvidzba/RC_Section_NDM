@@ -416,4 +416,3 @@ Private Function ValidMySign(ByVal value As String, ByVal settingKey As String, 
         Case Else: Err.Raise vbObjectError + 4538, "CUnitSystem", settings.InputErrorMessage(settingKey, "Правило знака момента My не распознано.", "Выберите +X tension или -X tension: знак X обозначает сторону растяжения при положительном My.")
     End Select
 End Function
-

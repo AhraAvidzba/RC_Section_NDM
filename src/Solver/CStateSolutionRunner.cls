@@ -725,7 +725,7 @@ Public Property Get Converged() As Boolean
     If Not mSolver Is Nothing Then Converged = mSolver.Converged
 End Property
 
-' Фактическая причина завершения расчёта или поиска.
+' Последний solver прямого НДС, успешный или диагностический.
 Public Property Get StopReason() As String
     If Not mSolver Is Nothing Then StopReason = mSolver.StopReason
 End Property
@@ -755,7 +755,7 @@ Public Property Get InitialGuessApplied() As Boolean
     InitialGuessApplied = mInitialGuessApplied
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Короткие строки о retry-попытках прямого НДС.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
@@ -819,4 +819,3 @@ End Function
 Friend Property Get TestRetryAttemptCount() As Long
     If Not mRetryAttemptFailures Is Nothing Then TestRetryAttemptCount = mRetryAttemptFailures.Count
 End Property
-

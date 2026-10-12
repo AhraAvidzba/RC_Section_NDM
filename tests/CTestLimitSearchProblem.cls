@@ -176,27 +176,27 @@ Public Property Get IterationLimitHit() As Boolean
     IterationLimitHit = mIterationLimitHit
 End Property
 
-' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
+' True, если search финализировал точку.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
-' Признак достигнутого физического предела по проверяемому критерию.
+' Последний машинный статус fake-задачи.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Накопленный диагностический текст.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Тип результата, публикуемого данной задачей предельного поиска.
+' Вид результата, через который запускается общий search.
 Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = mKind
 End Property
 
-' Начальный шаг множителя нагрузки lambda для предельного поиска.
+' Начальный шаг расширения скобки.
 Private Property Get ILimitSearchProblem_InitialLambdaStep() As Double
     ILimitSearchProblem_InitialLambdaStep = mInitialStep
 End Property
@@ -221,7 +221,7 @@ Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
     ILimitSearchProblem_BisectionMaxIterations = mMaxIterations
 End Property
 
-' Настроенный метод поиска предела для данной задачи.
+' Проверяемый одномерный метод search.
 Private Property Get ILimitSearchProblem_SearchMethod() As String
     ILimitSearchProblem_SearchMethod = mSearchMethod
 End Property

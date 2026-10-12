@@ -320,7 +320,7 @@ Public Property Get Status() As String
     Status = policy.ExternalStatus(ResultMeta)
 End Property
 
-' Признак достигнутого физического предела по проверяемому критерию.
+' Физическая причина предела или текст ошибки.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property

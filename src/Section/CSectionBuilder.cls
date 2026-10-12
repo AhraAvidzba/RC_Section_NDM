@@ -16,7 +16,7 @@ Private mMesh As CFiberMeshBuilder
 Private mRebars As CRebarLayout
 Private mRules As CRebarRuleExecutor
 
-' Единая сборка definition→область→сетка/правила→CSectionModel→аннотации; не ветвится по типу.
+' Единая сборка definition -> область -> сетка/правила -> CSectionModel -> аннотации; не ветвится по типу.
 Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions As TSectionMeshOptions) As CSectionModel
     Set mMesh = Nothing: Set mRebars = Nothing: Set mRules = Nothing
     If definition Is Nothing Then SectionRecipeError "CSectionBuilder", "Определение не передано."

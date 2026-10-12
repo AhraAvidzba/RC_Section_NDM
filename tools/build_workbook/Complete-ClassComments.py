@@ -9,6 +9,7 @@ import json
 import re
 from pathlib import Path
 from SectionRecipeApiText import purpose
+from VbeCommentText import readable
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('audit', Path(__file__).with_name('Audit-ClassComments.py'))
@@ -64,14 +65,13 @@ def main():
             if not description and key in members:
                 description = purpose(members[key])
             if not description and m['kind'].startswith('Property'):
-                description = meanings['properties'].get(key) or meanings['properties'].get(m['name'])
-                if not description: description = property_field_meaning(lines, m['line']-1)
+                description = meanings['properties'].get(key) or property_field_meaning(lines, m['line']-1) or meanings['properties'].get(m['name'])
             if not description: description = meanings['methods'].get(m['name'])
             if description:
                 # Короткие физические пояснения сохраняются рядом с методом;
                 # длинные исходные описания разбиваются без изменения смысла.
                 import textwrap
-                comments = ["' "+s for s in textwrap.wrap(description, 94, break_long_words=False, break_on_hyphens=False)]
+                comments = ["' "+s for s in textwrap.wrap(readable(description), 94, break_long_words=False, break_on_hyphens=False)]
                 additions.append((m['line']-1, comments))
             else:
                 unresolved.append({'owner': owner, 'name': m['name'], 'kind': m['kind'], 'line': m['line'], 'body': '\n'.join(lines[m['line']-1:m['line']+5])})

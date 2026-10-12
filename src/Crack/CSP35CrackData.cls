@@ -548,7 +548,7 @@ End Property
 Public Property Get GroupBarCount(ByVal index As Long) As Long
     GroupBarCount = mGroupBars(index)
 End Property
-' Суммарная площадь арматуры неделимой группы, мм².
+' Суммарная площадь арматуры неделимой группы, мм^2.
 Public Property Get GroupArea(ByVal index As Long) As Double
     GroupArea = mGroupArea(index)
 End Property
@@ -568,7 +568,7 @@ End Property
 Public Property Get BarDiameter(ByVal index As Long) As Double
     BarDiameter = mBarDiameter(index)
 End Property
-' Площадь физического стержня, мм².
+' Площадь физического стержня, мм^2.
 Public Property Get BarArea(ByVal index As Long) As Double
     BarArea = mBarArea(index)
 End Property

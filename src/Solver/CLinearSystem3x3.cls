@@ -168,17 +168,17 @@ Public Property Get Solved() As Boolean
     Solved = mSolved
 End Property
 
-' Первая компонента решения системы 3×3.
+' Первая компонента решения системы 3x3.
 Public Property Get X1() As Double
     X1 = mX1
 End Property
 
-' Вторая компонента решения системы 3×3.
+' Вторая компонента решения системы 3x3.
 Public Property Get X2() As Double
     X2 = mX2
 End Property
 
-' Третья компонента решения системы 3×3.
+' Третья компонента решения системы 3x3.
 Public Property Get X3() As Double
     X3 = mX3
 End Property
@@ -209,7 +209,6 @@ End Property
 Public Property Get AbsoluteResidual() As Double
     AbsoluteResidual = mAbsoluteResidual
 End Property
-
 
 
 

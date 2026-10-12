@@ -1400,12 +1400,12 @@ Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     IsFiniteNumber = (value = value And Abs(value) < 1E+100)
 End Function
 
-' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
+' True, если равновесие достигнуто в заданных допусках по N/Mx/My.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
-' Фактическая причина завершения расчёта или поиска.
+' Русское пояснение итога; машинная причина хранится отдельно в mFailureCode.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
@@ -1576,7 +1576,7 @@ Public Property Get Tangent(ByVal rowIndex As Long, ByVal columnIndex As Long) A
     Tangent = mK(rowIndex, columnIndex)
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Текстовый журнал ключевых итераций для тестов и диагностики.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
@@ -1678,4 +1678,3 @@ End Property
 Public Property Get MatrixRestartCount() As Long
     MatrixRestartCount = mMatrixRestartCount
 End Property
-

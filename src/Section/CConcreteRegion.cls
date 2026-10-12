@@ -114,7 +114,7 @@ Public Property Get LoopIsOpening(ByVal index As Long) As Boolean
     If index < 1 Or index > mLoopCount Then Err.Raise vbObjectError + 5400, "CConcreteRegion", "Номер замкнутого контура области вне допустимого диапазона."
     LoopIsOpening = mLoopOpening(index)
 End Property
-' Аналитическая площадь материальной области, мм²; не механическая A сетки.
+' Аналитическая площадь материальной области, мм^2; не механическая A сетки.
 Public Property Get Area() As Double
     Area = mArea
 End Property

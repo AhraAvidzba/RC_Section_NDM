@@ -195,12 +195,12 @@ Public Property Get PostCrackState() As CSectionStateResult
     Set PostCrackState = mPostCrackState
 End Property
 
-' Фактическая причина завершения расчёта или поиска.
+' Короткая причина остановки formation-этапа.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Подробная диагностика search-этапа.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property

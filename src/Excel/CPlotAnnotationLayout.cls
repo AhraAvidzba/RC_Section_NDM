@@ -501,19 +501,19 @@ End Function
 Public Property Get Count() As Long: Count = mCount: End Property
 ' Тип layout-элемента: линия или текст.
 Public Property Get ItemKind(ByVal index As Long) As String: ItemKind = mKind(index): End Property
-' Первая компонента решения системы 3×3.
+' Для линии: X начала; для текста: left.
 Public Property Get X1(ByVal index As Long) As Double: X1 = mX1(index): End Property
 ' Для линии: Y начала; для текста: top.
 Public Property Get Y1(ByVal index As Long) As Double: Y1 = mY1(index): End Property
-' Вторая компонента решения системы 3×3.
+' Для линии: X конца; для текста: width.
 Public Property Get X2(ByVal index As Long) As Double: X2 = mX2(index): End Property
 ' Для линии: Y конца; для текста: height.
 Public Property Get Y2(ByVal index As Long) As Double: Y2 = mY2(index): End Property
-' Сохранённый текст подписи выбранной аннотации.
+' Текст подписи; для линий пусто.
 Public Property Get Text(ByVal index As Long) As String: Text = mText(index): End Property
 ' Поворот текстового блока в градусах.
 Public Property Get Rotation(ByVal index As Long) As Double: Rotation = mRotation(index): End Property
-' ДЛЯ ТЕСТОВ: цвет имитируемого экспортируемого объекта.
+' Цвет элемента Chart.Shape.
 Public Property Get Color(ByVal index As Long) As Long: Color = mColor(index): End Property
 ' Толщина линии; для текста не используется.
 Public Property Get Weight(ByVal index As Long) As Double: Weight = mWeight(index): End Property

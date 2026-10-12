@@ -76,7 +76,7 @@ Public Sub InitializeRegion(ByVal curve As CFakeAcadContourExport)
     mArea = Abs(mArea)
 End Sub
 
-' Площадь выбранного элемента, мм².
+' Площадь выбранного элемента, мм^2.
 Public Property Get Area() As Double
     Area = mArea
 End Property

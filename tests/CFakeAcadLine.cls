@@ -60,7 +60,7 @@ Public Property Get Layer() As String
     Layer = mLayer
 End Property
 
-' ДЛЯ ТЕСТОВ: признак удаления только имитируемого временного объекта.
+' ДЛЯ ТЕСТОВ: факт вызова Delete, без изменения чужих COM-объектов.
 Public Property Get Deleted() As Boolean
     Deleted = mDeleted
 End Property

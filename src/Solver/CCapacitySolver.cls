@@ -1955,17 +1955,17 @@ Public Property Get LimitSearchMaxIterations() As Long
     LimitSearchMaxIterations = mSolverMaxIterations
 End Property
 
-' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
+' True, если выбранный метод capacity нашел предельное состояние.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
-' Фактическая причина завершения расчёта или поиска.
+' Причина остановки capacity solver для вывода в результаты и тесты.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
-' Признак достигнутого физического предела по проверяемому критерию.
+' Физический или численный статус найденного предела.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property
@@ -2005,8 +2005,7 @@ Public Property Get SafetyFactor() As Double
     SafetyFactor = mSafetyFactor
 End Property
 
-' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
-' этого класса.
+' Использование несущей способности: 1 / lambdaUltimate.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
@@ -2156,12 +2155,12 @@ Public Property Get RetryCount() As Long
     RetryCount = mRetryCount
 End Property
 
-' Деформация критического элемента, задающего максимальное использование предела.
+' Деформация критического волокна или стержня.
 Public Property Get CriticalStrain() As Double
     CriticalStrain = mCriticalStrain
 End Property
 
-' Идентификатор критического бетонного элемента или стержня арматуры.
+' ID элемента, который первым определил предельное состояние.
 Public Property Get CriticalElement() As String
     CriticalElement = mCriticalElement
 End Property

@@ -281,12 +281,12 @@ Public Property Get WithinPhysicalRange() As Boolean
     WithinPhysicalRange = mWithinPhysicalRange
 End Property
 
-' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
+' Сошелся ли solver, из которого взята плоскость.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
-' Фактическая причина завершения расчёта или поиска.
+' Служебная причина остановки solver-а.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
@@ -402,7 +402,7 @@ Public Property Get IterationCount() As Long
     IterationCount = mIterationCount
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Диагностика runner-а или solver-а для последующего result graph.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property

@@ -708,7 +708,7 @@ Public Sub Clear()
     mLastCalculationSeconds = 0#
 End Sub
 
-' Площадь выбранного элемента, мм².
+' Площадь текущего представления: бетонная или приведенная к бетону, мм2.
 Public Property Get Area() As Double
     Area = mArea
 End Property
@@ -823,7 +823,6 @@ End Function
 Public Property Get LastCalculationSeconds() As Double
     LastCalculationSeconds = mLastCalculationSeconds
 End Property
-
 
 
 

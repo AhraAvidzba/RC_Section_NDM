@@ -1805,7 +1805,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
-' Количество записей, сохранённых в контейнере этого класса.
+' Сколько сочетаний реально добавлено в пакет.
 Public Property Get Count() As Long
     Count = mCount
 End Property
@@ -2093,7 +2093,7 @@ Public Property Get ElapsedSeconds() As Double
     ElapsedSeconds = mElapsedSeconds
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Короткий текстовый журнал по LC для диагностики batch-потока.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property

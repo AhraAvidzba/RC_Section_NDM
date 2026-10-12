@@ -44,7 +44,7 @@ Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = rkCapacity
 End Property
 
-' Начальный шаг множителя нагрузки lambda для предельного поиска.
+' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 Private Property Get ILimitSearchProblem_InitialLambdaStep() As Double
     ILimitSearchProblem_InitialLambdaStep = mCapacity.LimitSearchInitialLambdaStep
 End Property
@@ -70,7 +70,7 @@ Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
     ILimitSearchProblem_BisectionMaxIterations = 0
 End Property
 
-' Настроенный метод поиска предела для данной задачи.
+' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 Private Property Get ILimitSearchProblem_SearchMethod() As String
     ILimitSearchProblem_SearchMethod = mCapacity.LimitSearchCapacitySearchMethod()
 End Property

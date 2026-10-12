@@ -83,7 +83,7 @@ Public Function IsValid(ByRef message As String) As Boolean
     End If
 End Function
 
-' Возвращает площадь по аналитическим контурам с учётом отверстий, мм².
+' Возвращает площадь по аналитическим контурам с учётом отверстий, мм^2.
 Public Function AnalyticalArea(ByRef available As Boolean) As Double
     available = Not mRegion Is Nothing
     If available Then AnalyticalArea = mRegion.Area

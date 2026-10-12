@@ -64,4 +64,3 @@ Public Sub AppendConcreteMesh(ByVal model As CSectionModel, ByVal mesh As CFiber
             mesh.FiberArea(i) * mesh.FiberFillFactor(i) * mesh.FiberWidth(i) * mesh.FiberWidth(i) / 12#, 0#
     Next i
 End Sub
-

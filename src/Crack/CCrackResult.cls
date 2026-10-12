@@ -86,7 +86,7 @@ Public Property Get Formation() As CCrackFormationResult
     Set Formation = mFormation
 End Property
 
-' Полная ширина геометрической области по X, мм.
+' Результат формульного расчета a_crc.
 Public Property Get Width() As CCrackWidthResult
     Set Width = mWidth
 End Property

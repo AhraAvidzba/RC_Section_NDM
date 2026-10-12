@@ -158,13 +158,12 @@ Private Function ResultKindLabel() As String
     End Select
 End Function
 
-' Внутренний статус результата; не является пользовательским подтверждением нормативной
-' пригодности.
+' Внутренний статус, на котором работает расчетная логика.
 Public Property Get InternalStatus() As EResultInternalStatus
     InternalStatus = mInternalStatus
 End Property
 
-' Публичный код состояния результата, определённый общей политикой статусов.
+' Машинный код точной причины результата.
 Public Property Get ResultCode() As EResultCode
     ResultCode = mResultCode
 End Property
@@ -174,12 +173,12 @@ Public Property Get ResultKind() As EResultKind
     ResultKind = mResultKind
 End Property
 
-' Пояснение результата с фактической причиной и доступной привязкой к вводным данным.
+' Короткое русское пояснение для пользователя и report.
 Public Property Get ResultComment() As String
     ResultComment = mResultComment
 End Property
 
-' Пояснение результата с фактической причиной и доступной привязкой к вводным данным.
+' Короткое русское пояснение для пользователя и report.
 Public Property Let ResultComment(ByVal value As String)
     mResultComment = value
 End Property

@@ -1117,6 +1117,14 @@ Finished:
     RunRoundedRecipeEquilibriumTests = mReport & "TOTAL ROUNDED EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' ДЛЯ ТЕСТОВ: независимые суммы для переданной граничной модели без смены fixture.
+Public Function ReviewModelEquilibrium(ByVal fixture As String, ByVal model As CSectionModel, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByRef passed As Long, ByRef failed As Long) As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    CheckModelEquilibrium fixture, model, settings, units
+    passed = mPassed: failed = mFailed: ReviewModelEquilibrium = mReport
+End Function
+
 Private Sub CheckModelEquilibrium(ByVal fixture As String, ByVal model As CSectionModel, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
     Dim props As CSectionPropertiesCalculator, provider As CMaterialModelProvider, solver As CSectionSolver

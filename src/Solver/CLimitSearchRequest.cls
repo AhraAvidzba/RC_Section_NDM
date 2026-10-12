@@ -232,7 +232,7 @@ Public Property Get ResultKind() As EResultKind
     ResultKind = mResultKind
 End Property
 
-' Фактически выбранная траектория поиска трещинообразования.
+' Текущий общий путь LambdaMx/My/Mxy/N/NMxy; при низкоуровневом запросе допустим Auto.
 Public Property Get CrackFormationPath() As String
     CrackFormationPath = mCrackFormationPath
 End Property

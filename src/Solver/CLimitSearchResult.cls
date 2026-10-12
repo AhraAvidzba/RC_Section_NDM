@@ -163,17 +163,17 @@ Public Property Get SearchExecuted() As Boolean
     SearchExecuted = mSearchExecuted
 End Property
 
-' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
+' Найдена точка, а не только завершена процедура.
 Public Property Get Converged() As Boolean
     Converged = mHasLimitPoint
 End Property
 
-' Фактическая причина завершения расчёта или поиска.
+' Машинный исход, подготовленный владельцем задачи.
 Public Property Get StopReason() As String
     StopReason = mMeta.ResultComment
 End Property
 
-' Признак достигнутого физического предела по проверяемому критерию.
+' Код управляющего критерия, без интерпретации.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property
@@ -218,7 +218,7 @@ Public Property Get LastSolverDiagnosticLog() As String
     LastSolverDiagnosticLog = mLastSolverDiagnosticLog
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Независимый текстовый снимок всего поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property

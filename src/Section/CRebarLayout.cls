@@ -255,7 +255,7 @@ Public Property Get Diameter(ByVal index As Long) As Double
     Diameter = mDiameter(index)
 End Property
 
-' Площадь выбранного элемента, мм².
+' Площадь выбранного элемента, мм^2.
 Public Property Get Area(ByVal index As Long) As Double
     CheckIndex index
     Area = mArea(index)
@@ -368,7 +368,6 @@ End Sub
 Private Sub CheckAnnotationIndex(ByVal index As Long)
     If index < 1 Or index > mAnnotationCount Then Err.Raise vbObjectError + 3107, "CRebarLayout", "Индекс аннотации арматуры вне допустимого диапазона."
 End Sub
-
 
 
 

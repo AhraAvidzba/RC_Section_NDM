@@ -1314,7 +1314,7 @@ End Property
 
 
 
-' Фактическая причина завершения расчёта или поиска.
+' Инженерная причина результата или предупреждение по готовым входным состояниям.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
@@ -1377,15 +1377,14 @@ End Property
 
 
 
-' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
-' этого класса.
+' Коэффициент использования по трещине: a_crc / a_crc,ult.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
 
 
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Текстовая диагностика выбора зоны, арматуры, ls и psi_s.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property

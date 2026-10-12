@@ -2006,7 +2006,7 @@ Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
-' Фактическая причина завершения расчёта или поиска.
+' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
@@ -2031,7 +2031,7 @@ Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Журнал собирается при чтении, без копирования всего текста каждой пробы.
 Public Property Get DiagnosticLog() As String
     If mDiagnosticDirty Then
         mDiagnosticLog = Join(mDiagnosticLines, vbNullString)
@@ -2120,7 +2120,7 @@ Public Property Set StateProvider(ByVal value As CStateProvider)
     Set mStateProvider = value
 End Property
 
-' Фактически выбранная траектория поиска трещинообразования.
+' Auto либо LambdaMx/My/Mxy/N/NMxy: масштабируемая часть LC общего LoadPath.
 Public Property Let CrackFormationPath(ByVal value As String)
     mCrackFormationPath = value
 End Property

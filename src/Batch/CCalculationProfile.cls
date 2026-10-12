@@ -175,7 +175,7 @@ Public Property Get DisplayName() As String
     DisplayName = mDisplayName
 End Property
 
-' Сохранённое объяснение критического физического ограничения.
+' Короткое описание для пользователя.
 Public Property Get Description() As String
     Description = mDescription
 End Property

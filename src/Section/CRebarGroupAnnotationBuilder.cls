@@ -87,4 +87,3 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     If Right$(textValue, 1) = "." Then textValue = Left$(textValue, Len(textValue) - 1)
     FormatNumberInvariant = textValue
 End Function
-

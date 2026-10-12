@@ -1119,25 +1119,25 @@ Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal un
     OutputCurvatureToInternalByUnit = value / mUnits.InternalCurvatureToOutput(1#, unitText)
 End Function
 
-' Количество записей, сохранённых в контейнере этого класса.
+' Количество элементов, у которых есть геометрия и результат выбранного LC.
 Public Property Get Count() As Long: Count = mCount: End Property
 ' ID элемента для связи геометрии, результатов и подписей.
 Public Property Get ElementID(ByVal index As Long) As String: ElementID = mElementID(index): End Property
 ' Concrete/Rebar; Plotter использует это для выбора маркера.
 Public Property Get MaterialType(ByVal index As Long) As String: MaterialType = mMaterialType(index): End Property
-' Координата X выбранного элемента модели, мм.
+' X элемента во внутренних мм после чтения snapshot.
 Public Property Get X(ByVal index As Long) As Double: X = mX(index): End Property
-' Координата Y выбранного элемента модели, мм.
+' Y элемента во внутренних мм после чтения snapshot.
 Public Property Get Y(ByVal index As Long) As Double: Y = mY(index): End Property
-' Площадь выбранного элемента, мм².
+' Площадь элемента во внутренних мм2 после чтения snapshot.
 Public Property Get Area(ByVal index As Long) As Double: Area = mArea(index): End Property
-' Диаметр выбранного физического стержня, мм.
+' Диаметр арматуры; для бетона обычно 0.
 Public Property Get Diameter(ByVal index As Long) As Double: Diameter = mDiameter(index): End Property
 ' Статус интерпретации оболочки: Rectangle, Equivalent rectangle, Equivalent square.
 Public Property Get ShapeType(ByVal index As Long) As String: ShapeType = mShapeType(index): End Property
-' Полная ширина геометрической области по X, мм.
+' Реальная ширина бетонного элемента, если она сохранена в snapshot.
 Public Property Get Width(ByVal index As Long) As Double: Width = mWidth(index): End Property
-' Полная высота геометрической области по Y, мм.
+' Реальная высота бетонного элемента, если она сохранена в snapshot.
 Public Property Get Height(ByVal index As Long) As Double: Height = mHeight(index): End Property
 ' Поворот прямоугольного бетонного элемента, рад; для fallback-а может хранить средний угол
 ' сетки.
@@ -1174,13 +1174,13 @@ Public Property Get ResultPrecision() As Long: ResultPrecision = mResultPrecisio
 Public Property Get LengthUnit() As String: LengthUnit = mLengthUnit: End Property
 ' Единица площади после чтения Results; для Plotter это всегда mm2.
 Public Property Get AreaUnit() As String: AreaUnit = mAreaUnit: End Property
-' Минимальная координата X геометрической области, мм.
+' Левая граница бетонной расчетной модели.
 Public Property Get MinX() As Double: MinX = mMinX: End Property
-' Максимальная координата X геометрической области, мм.
+' Правая граница бетонной расчетной модели.
 Public Property Get MaxX() As Double: MaxX = mMaxX: End Property
-' Минимальная координата Y геометрической области, мм.
+' Нижняя граница бетонной расчетной модели.
 Public Property Get MinY() As Double: MinY = mMinY: End Property
-' Максимальная координата Y геометрической области, мм.
+' Верхняя граница бетонной расчетной модели.
 Public Property Get MaxY() As Double: MaxY = mMaxY: End Property
 ' X центра тяжести приведенного сечения.
 Public Property Get CentroidX() As Double: CentroidX = mCentroidX: End Property
@@ -1238,24 +1238,23 @@ Public Property Get PhysicalDiagramWarningRequired() As Boolean
     Set policy = New CResultStatusPolicy
     PhysicalDiagramWarningRequired = (mExtensionUsed Or policy.ToUserStatus(mStateStatus) = policy.Fail)
 End Property
-' Количество привязок арматурных подписей в раскладке.
+' Количество semantic-аннотаций, прочитанных из Results.
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 ' Dimension, RebarLabel, Outline и другие типы оформления.
 Public Property Get AnnotationType(ByVal index As Long) As String: AnnotationType = mAnnotationType(index): End Property
-' Координата X начала выбранной привязки арматурной подписи, мм.
+' Начало линии/размера в координатах модели.
 Public Property Get AnnotationStartX(ByVal index As Long) As Double: AnnotationStartX = mAnnotationStartX(index): End Property
-' Координата Y начала выбранной привязки арматурной подписи, мм.
+' Начало линии/размера в координатах модели.
 Public Property Get AnnotationStartY(ByVal index As Long) As Double: AnnotationStartY = mAnnotationStartY(index): End Property
-' Координата X конца выбранной привязки арматурной подписи, мм.
+' Конец линии/размера в координатах модели.
 Public Property Get AnnotationEndX(ByVal index As Long) As Double: AnnotationEndX = mAnnotationEndX(index): End Property
-' Координата Y конца выбранной привязки арматурной подписи, мм.
+' Конец линии/размера в координатах модели.
 Public Property Get AnnotationEndY(ByVal index As Long) As Double: AnnotationEndY = mAnnotationEndY(index): End Property
-' Компонента X направления вынесения выбранной арматурной подписи.
+' Наружная нормаль semantic-аннотации.
 Public Property Get AnnotationNormalX(ByVal index As Long) As Double: AnnotationNormalX = mAnnotationNormalX(index): End Property
-' Компонента Y направления вынесения выбранной арматурной подписи.
+' Наружная нормаль semantic-аннотации.
 Public Property Get AnnotationNormalY(ByVal index As Long) As Double: AnnotationNormalY = mAnnotationNormalY(index): End Property
 ' Готовый текст подписи или размера.
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property
 ' Отдает готовый проверенный угол; plotter не разбирает текст Results повторно.
 Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: AnnotationSweepAngle = mAnnotationSweepAngle(index): End Property
-

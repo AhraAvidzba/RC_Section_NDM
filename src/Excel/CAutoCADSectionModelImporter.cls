@@ -913,4 +913,3 @@ End Function
 Public Property Get DebugEdgeProbeCount() As Long
     DebugEdgeProbeCount = mEdgeProbeCount
 End Property
-

@@ -223,12 +223,12 @@ Public Property Get CentralTensionBranch() As Boolean
     CentralTensionBranch = mCentralTensionBranch
 End Property
 
-' Фактическая причина завершения расчёта или поиска.
+' Пользовательская причина остановки/итога.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
-' Накопленный диагностический журнал текущего расчёта или поиска.
+' Техническая диагностика подготовки данных и формулы.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
