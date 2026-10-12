@@ -440,8 +440,8 @@ function Get-ConfigFormattingTables {
     param([object]$Workbook)
 
     $composite = @{
-        rngRoundedRectangleGeometry = @(@(1, 2, 5), @(5, 5, 5), @(11, 5, 6), @(17, 5, 9))
-        rngHollowRectangleGeometry = @(@(1, 3, 4), @(5, 2, 7), @(9, 9, 6), @(19, 9, 9))
+        rngRoundedRectangleGeometry = @(@(1, 2, 5), @(5, 5, 5), @(11, 5, 8), @(17, 5, 9))
+        rngHollowRectangleGeometry = @(@(1, 3, 4), @(5, 2, 7), @(9, 9, 8), @(19, 9, 9))
         rngRectSetGeometry = @(@(1, 3, 4), @(6, 2, 5), @(9, 9, 8), @(19, 9, 9))
     }
     foreach ($rangeName in (Get-ConfigNamedRangeNames)) {
@@ -4540,7 +4540,6 @@ function Apply-SystemSettingsLayout {
         "Stability.AccidentalEccentricityMode" = @("AutoWithL", "AutoWith$($mu)L", "User")
         "Stability.AccidentalEccentricityPlanes" = @("OnlyMomentPlane", "BothPlanes")
         "Stability.PhiLMode" = @("Auto", "PhiL2")
-        "Geometry.Type" = @("RoundedRectangle", "HollowRectangle", "Circle", "RectSet")
         "Solver.Method" = @("Newton", "Secant")
         "Solver.PlateauSlope.Enabled" = @("Yes", "No")
         "General.DiagramExtension" = @("Yes", "No")

@@ -26,8 +26,8 @@ D01-D24/E01-E14 выполняется после удаления замене�
 - Baseline HEAD: a138c2732382c826db9ac2f801facd3d533d406c.
 - Baseline-книга: workbook/output/RC_Section_NDM.xlsm.
 - Резервные данные: docs/regression/GeometryDeclarative_2026-10-11/Baseline/.
-- Последний зафиксированный milestone при возобновлении: 4b8f86af,
-  перенос геометрических примитивов и отверстий. Текущий этап описан ниже.
+- Последний зафиксированный milestone: ab9b0b5, source/native retirement;
+  перед ним e333dc8 завершил workbook fixtures. Текущий этап описан ниже.
 
 ## Установлено В Исходном Baseline
 
@@ -676,3 +676,31 @@ on/off и Excel UI прогоны не разрешены; дальнейшая 
 D20/D24. Далее: довести обязательный API, доступность setbacks на Config,
 контрольный один-класс-рецепт и полный последний раздел листа Справка;
 провести адресную итоговую приёмку и подготовить книгу с сохранением данных.
+
+## Config Setbacks: Source/Native Этап 12.10.2026
+
+Новые поля StartSetback/EndSetback доступны на основных строках
+RoundedRectangle/HollowRectangle. Явный modSectionRecipeSetup обновляет
+старые таблицы один раз, переносит только unit/comment и сохраняет as/d/n,
+extra rows, RectSet setbacks и LC. Повтор не заменяет ненулевой ввод нулями.
+Circle содержит пояснение о неприменимости к полному ClosedUniform.
+Список типов берётся из реестра; одно новое имя rngSectionRecipeTypes.
+
+765 geometry + 28 input + 55 migration/state + 20 actual offsets + 75 unit
+assertions PASS. 20376 geometry records совпадают побитно с retirement
+milestone при новых нулях. Из этого сравнения исключён изменённый формат
+INPUT, отдельно проверенный независимой XML-сверкой 4507 named cells:
+все прежние данные/formulas/references сохранены; одно обоснованное новое имя.
+Полная информация и команды: CONFIG_SETBACKS.md.
+
+Native updater/source comparison и неизменность основной книги проверяются
+в ConfigSetbacks staging. Ошибочные пробы сохранены; watchdog на ошибочном
+handler-цикле был TIMEOUT, после исправления аварийный сценарий PASS.
+Книгу и её данные не приняли по одному наличию macro или исходника.
+
+Обязательные остатки ТЗ: полный общий API (в том числе все measurements,
+явные scopes/constraints и диагностические контракты), один-класс-пример,
+API manifest/гайд в последнем разделе реальной Справки, адресная итоговая
+приёмка и подготовка основного output/VBA_All_Code.txt. Не начинать перенос
+четырёх семейств заново; сохранённые доказательства и локальные коммиты
+остаются контрольными точками. Полные тяжёлые on/off/UI прогоны не разрешены.

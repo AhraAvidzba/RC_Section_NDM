@@ -1,0 +1,67 @@
+{
+  "status": "SOURCE_AND_NATIVE_STAGING_PASS",
+  "outputStatus": "PENDING",
+  "parentCommit": "ab9b0b585522d20c3edc2e66d8ef8f137722c733",
+  "nativeWorkbookSHA256": "2973C67BDBFA436D75B48CE52F16954DA0482E78685EB362FCA598F9F5C49377",
+  "components": {
+    "StandardModules": 38,
+    "Classes": 99,
+    "DocumentModules": 5,
+    "Other": 0
+  },
+  "addedComponents": [
+    {
+      "Name": "modSectionRecipeSetup",
+      "Type": 1
+    },
+    {
+      "Name": "modTestRecipeSetbacks",
+      "Type": 1
+    }
+  ],
+  "sourceMismatchCount": 0,
+  "unexpectedCount": 0,
+  "reports": [
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
+      "sha256": "12de22fc04c62e669b70559dd9c4d09b96da8a6e0b62536e106493cb35aac268",
+      "status": "PASS",
+      "totals": [
+        "TOTAL: passed=765; failed=0",
+        "TOTAL ROUNDED INPUT: passed=14; failed=0",
+        "TOTAL HOLLOW INPUT: passed=14; failed=0"
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
+      "sha256": "6a9995837ac78c981bed8f684ca9df2b8dab00f4000a3e3304982c5fc9dbff45",
+      "status": "PASS",
+      "totals": [
+        "TOTAL_RECIPE_CONFIG_MIGRATION: passed=55; failed=0",
+        "TOTAL_RECIPE_SETBACK_INPUT: passed=20; failed=0"
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackUnits.txt",
+      "sha256": "91e50de2b5d58b645f009597ad4d03c5ec5ed1fc2ea6552209e9909a241a6e91",
+      "status": "PASS",
+      "totals": [
+        "TOTAL_RECIPE_SETBACK_UNITS: passed=75; failed=0"
+      ]
+    }
+  ],
+  "assertionsPassed": 943,
+  "assertionsFailed": 0,
+  "geometryRecordsComparedExactly": 20376,
+  "inputComparison": {
+    "checkedCells": 4507,
+    "addedNames": [
+      "rngSectionRecipeTypes"
+    ],
+    "removedNames": []
+  },
+  "geometryInputExclusion": "Changed UI format only; covered independently by XML preservation check",
+  "archive": "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbackEvidence.zip",
+  "archiveSHA256": "bb586af5b30c87020043b891a8817b8aa28622079292b60b8f835a802670bf45",
+  "archiveEntries": 184
+}

@@ -32,6 +32,8 @@ Private Type THollowFace
     AxisDistance As Double
     Diameter As Double
     Count As Long
+    StartSetback As Double
+    EndSetback As Double
     D2 As Double
     D3 As Double
     Location2 As String
@@ -80,6 +82,7 @@ End Sub
 ' при R_o=0 они ограничивают соседние проекции. Остальные неактивные поля не читаются.
 Private Sub ReadFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As THollowInput, ByRef faces() As THollowFace)
     Dim ids As Variant, captions As Variant, aliases As Variant, i As Long, row As Long, extra As Long, active As Boolean
+    Dim startColumn As Long, endColumn As Long
     ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right", "Opening.B.Top", "Opening.B.Bottom", "Opening.H.Left", "Opening.H.Right")
     captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая", "B_o - верхняя", "B_o - нижняя", "H_o - левая", "H_o - правая")
     aliases = Array("B-top", "B-bottom", "H-left", "H-right", "bo-top", "bo-bottom", "ho-left", "ho-right")
@@ -91,12 +94,20 @@ Private Sub ReadFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSys
             If i <= 4 Then .Count = table.Count(row, 4)
             .Diameter = table.OptionalDiameter(row, 3, units)
             active = (.Diameter > 0# And (i > 4 Or .Count > 0))
+            If i > 4 Then active = active And faces(i - 4).Count > 0 And faces(i - 4).Diameter > 0#
             If i > 4 Or active Then
                 .AxisDistance = table.Length(row, 2, units)
                 Require table, row, 2, .AxisDistance >= 0#, "Расстояние до оси не может быть отрицательным."
             End If
             If active Then
                 Require table, row, 2, .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра."
+                startColumn = table.ColumnByCaption(sizes.MainHeader, "StartSetback")
+                endColumn = table.ColumnByCaption(sizes.MainHeader, "EndSetback")
+                .StartSetback = table.Length(row, startColumn, units)
+                .EndSetback = table.Length(row, endColumn, units)
+                Require table, row, startColumn, .StartSetback >= 0#, "StartSetback не может быть отрицательным."
+                Require table, row, endColumn, .EndSetback >= 0#, "EndSetback не может быть отрицательным."
+                .Source = .Source & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
                 extra = table.RowByAnyKey(Array(.Caption, .ID, aliases(i - 1)), 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 8)
                 .D2 = table.OptionalDiameter(extra, 2, units): .D3 = table.OptionalDiameter(extra, 5, units)
                 If .D2 > 0# Then
@@ -149,6 +160,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         If faces(i).Diameter = 0# Or faces(base).Count = 0 Or faces(base).Diameter = 0# Then GoTo NextFace
         Set path = AxisPath(facade, sizes, faces, i)
         Set options = New CRebarRuleOptions
+        options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback
         options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner
         options.IncomingTangentAtJoint = True: options.AnnotationGroup = faces(i).ID
         options.SourceReference = faces(i).Source

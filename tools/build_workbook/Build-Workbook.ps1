@@ -672,6 +672,7 @@ try {
 
     Import-VbaSourceTree $workbook $root
     Add-WorkbookEventHandlers $workbook
+    $excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.UpdateSectionRecipeConfig")
 
     $workbook.SaveAs($fullOutputPath, 52)
     Write-Output "Workbook built: $fullOutputPath"

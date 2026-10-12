@@ -111,6 +111,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
     Dim faces As Variant, captions As Variant, index As Long, row As Long, extra As Long, count As Long
     Dim groupID As String, diameter As Double, axisDistance As Double, options As CRebarRuleOptions, path As CGeometryPath
     Dim nx As Double, ny As Double, normalSign As Double, d2 As Double, d3 As Double, loc2 As String, loc3 As String, distance As Double
+    Dim startColumn As Long, endColumn As Long
     faces = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
     captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая")
     For index = 0 To 3
@@ -130,10 +131,16 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         End Select
         Set options = New CRebarRuleOptions
         If index >= 2 Then options.EndMode = ExcludeBoth
+        startColumn = table.ColumnByCaption(sizes.MainHeader, "StartSetback")
+        endColumn = table.ColumnByCaption(sizes.MainHeader, "EndSetback")
+        options.StartSetback = table.Length(row, startColumn, units)
+        options.EndSetback = table.Length(row, endColumn, units)
+        Require table, row, startColumn, options.StartSetback >= 0#, "StartSetback не может быть отрицательным."
+        Require table, row, endColumn, options.EndSetback >= 0#, "EndSetback не может быть отрицательным."
         options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner
         options.IncomingTangentAtJoint = True
         options.AnnotationGroup = groupID: options.Comment = "RoundedRectangle: " & CStr(captions(index)) & " грань, ряд 1"
-        options.SourceReference = table.SourceReference(row, 2)
+        options.SourceReference = table.SourceReference(row, 2) & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
         facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options
         extra = table.RowByAnyKey(Array(captions(index), Replace$(groupID, ".", "-"), groupID), 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 4)
         d2 = table.OptionalDiameter(extra, 2, units): d3 = table.OptionalDiameter(extra, 5, units)
