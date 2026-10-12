@@ -827,3 +827,31 @@ PerPath, setbacks 20/30, ByCount/ByMaxStep, внутренний ряд, Project
 dump, адресные обязательные расчётные/CAD/performance проверки и итоговую
 матрицу требований. Полные долгие on/off/UI по выбору пользователя не запускать.
 Цель ещё не считать достигнутой.
+
+## Финальный кандидат и восстановление из source 12.10.2026
+
+Создан FinalCandidate, импортированы все 142 актуальные source components,
+native compile PASS, всего 147 с document modules. Актуальный read-only dump
+снят. Проверка пользовательских значений/формул: 6277 непустых ячеек,
+ровно 63 обоснованных изменения Config; LC/Results/расчётный лист сохранены.
+Исправлено служебное имя области печати через существующий XML helper.
+Добавлены только rngSectionRecipeTypes/rngSectionRecipeGuide; old names intact.
+Основной output ещё исходный 769C60CE...; кандидат 86172120... не опубликован.
+
+Штатная чистая FreshBuild восстановлена без legacy, картинки изолированы от
+чужих output/formula_images. Устранён Value2 binder в общей сборке отдельным
+типизированным setter; failed probes сохранены. Native fresh reference:
+142 source + 5 generated document bodies MATCH. FreshGuide save/reopen,
+идемпотентность, состояния/навигация PASS, 2 PNG просмотрены.
+
+6383 адресных native assertions PASS: core smoke95, capacity74, crack41,
+stability100, repeat snapshot6059, batch counters14. Snapshot Results hash
+равен после reopen. Неуспешное объединение двух macro с reopen отклонено
+runner до исполнения, затем выполнены отдельные проверки.
+
+Native CAD явно BLOCKED: COM класс указывает на SOFiPLUS, не Autodesk acad.exe;
+runner такой server не использует, пользовательские документы не трогались.
+Подробности FINAL_PREPARATION_STAGE.md и FinalCandidate/FreshBuild evidence.
+Следующий этап — требования/семейства/состояния, fake/passive CAD и performance,
+итоговые отчёты и безопасная публикация книги/dump. Тяжёлые полные on/off/UI
+не разрешены. Цель активна, окончательное выполнение ещё не доказано.

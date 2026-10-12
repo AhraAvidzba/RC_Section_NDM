@@ -44,6 +44,8 @@ def main() -> None:
                  "tools/build_workbook/Build-SectionRecipeGuide.py", "tools/build_workbook/SectionRecipeGuide.ps1",
                  "tools/build_workbook/Update-SectionRecipeGuide.ps1", "tools/build_workbook/Verify-SectionRecipeGuide.py",
                  "tools/build_workbook/Summarize-SectionRecipeGuide.py",
+                 "tools/build_workbook/Verify-GeometryReleaseData.py", "tools/build_workbook/Export-Audit03VbaSnapshot.ps1",
+                 "tools/build_workbook/Test-RecipeGuideBulkWrite.ps1", "tools/build_workbook/Compare-PerformanceVba.ps1",
                  "tools/build_workbook/Build-Workbook.ps1"]:
         files.add(root / name)
     entries = []

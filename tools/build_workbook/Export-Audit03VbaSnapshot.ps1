@@ -12,6 +12,7 @@ $postAuditAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Pos
 $performanceAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Performance')) + [IO.Path]::DirectorySeparatorChar
 $plateauAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PlateauSlope_2026-10-11')) + [IO.Path]::DirectorySeparatorChar
 $openIssuesAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/OpenIssues_2026-10-11')) + [IO.Path]::DirectorySeparatorChar
+$geometryAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/GeometryDeclarative_2026-10-12')) + [IO.Path]::DirectorySeparatorChar
 $source = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $output = [IO.Path]::GetFullPath((Join-Path $root $OutputPath))
 foreach ($path in @($source, $output)) {
@@ -19,7 +20,8 @@ foreach ($path in @($source, $output)) {
         -not $path.StartsWith($postAuditAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($performanceAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($plateauAllowed, [StringComparison]::OrdinalIgnoreCase) -and
-        -not $path.StartsWith($openIssuesAllowed, [StringComparison]::OrdinalIgnoreCase)) {
+        -not $path.StartsWith($openIssuesAllowed, [StringComparison]::OrdinalIgnoreCase) -and
+        -not $path.StartsWith($geometryAllowed, [StringComparison]::OrdinalIgnoreCase)) {
         throw 'Read-only export paths must stay in their regression evidence directory.'
     }
 }
@@ -29,11 +31,17 @@ $excel = $null
 $book = $null
 $text = New-Object Text.StringBuilder
 $componentCount = 0
+$ownedPid=0;$ownedTicks=0
+Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class VbaSnapshotWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr hWnd,out uint id);}'
 try {
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 3
+    $excel.EnableEvents=$false
+    [uint32]$id=0;[void][VbaSnapshotWindow]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd,[ref]$id)
+    $ownedPid=[int]$id;$ownedTicks=(Get-Process -Id $ownedPid).StartTime.ToUniversalTime().Ticks
+    Write-Output ('OWNED_EXCEL: id='+$ownedPid+'; utcStartTicks='+$ownedTicks)
     $book = $excel.Workbooks.Open($source, 0, $true)
     if (-not $book.ReadOnly) { throw 'Verification workbook must be read-only.' }
     [void]$text.AppendLine('VBA PROJECT EXPORT')
@@ -57,6 +65,11 @@ try {
     if ($excel) {
         $excel.Quit()
         [Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel) | Out-Null
+    }
+    [GC]::Collect();[GC]::WaitForPendingFinalizers()
+    if ($ownedPid) {
+        $owned=Get-Process -Id $ownedPid -ErrorAction SilentlyContinue
+        if ($owned -and $owned.ProcessName -eq 'EXCEL' -and $owned.StartTime.ToUniversalTime().Ticks -eq $ownedTicks) {Stop-Process -Id $ownedPid -Force}
     }
 }
 $afterHash = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash

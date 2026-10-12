@@ -1,7 +1,8 @@
 ﻿# скрипт собирает рабочую книгу Excel из исходных VBA-модулей, настроек и шаблонной структуры листов.
 
 param(
-    [string]$OutputPath = "workbook/output/RC_Section_NDM.xlsm"
+    [string]$OutputPath = "workbook/output/RC_Section_NDM.xlsm",
+    [string]$FormulaImageDirectory = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -542,6 +543,13 @@ function Add-CalculationButtons {
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
 . (Join-Path $PSScriptRoot "SectionRecipeGuide.ps1")
+if (-not [string]::IsNullOrWhiteSpace($FormulaImageDirectory)) {
+    $script:FormulaImageDir = [IO.Path]::GetFullPath((Join-Path $root $FormulaImageDirectory))
+    $workspace = [IO.Path]::GetFullPath([string]$root) + [IO.Path]::DirectorySeparatorChar
+    if (-not ($script:FormulaImageDir + [IO.Path]::DirectorySeparatorChar).StartsWith($workspace, [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'Formula image output must stay inside the workspace.'
+    }
+}
 $fullOutputPath = Join-Path $root $OutputPath
 $outputDir = Split-Path -Parent $fullOutputPath
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
@@ -679,6 +687,11 @@ try {
 
     $workbook.SaveAs($fullOutputPath, 52)
     Write-Output "Workbook built: $fullOutputPath"
+}
+catch {
+    [ordered]@{Status='FAIL';Reason=$_.Exception.Message;ScriptStackTrace=$_.ScriptStackTrace} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $outputDir ('BuildFailed_'+(Get-Date -Format 'yyyyMMdd_HHmmss')+'.json')) -Encoding UTF8
+    throw
 }
 finally {
     if ($workbook -ne $null) {

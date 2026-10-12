@@ -35,6 +35,12 @@ function Get-RecipeGuideNativeLines($Sheet,[int]$First,[int]$Last) {
     }
 }
 
+function Set-RecipeGuideMatrix($Target,[object[,]]$Matrix) {
+    # Отдельный типизированный call-site для массива: общая сборка прежде
+    # записывает скаляры в Value2 через тот же PowerShell COM adapter.
+    $Target.Value2=$Matrix
+}
+
 function Update-SectionRecipeGuide {
     param([Parameter(Mandatory=$true)]$Workbook,[Parameter(Mandatory=$true)][string]$Root)
     $application=$Workbook.Application
@@ -99,7 +105,7 @@ function Update-SectionRecipeGuide {
                 $values[$i,$column]=$text
             }
         }
-        $range.Value2=$values
+        Set-RecipeGuideMatrix $range $values
         $range.Font.Name='Arial';$range.Font.Size=11;$range.Font.Color=0
         $range.WrapText=$true;$range.VerticalAlignment=-4160;$range.HorizontalAlignment=-4131
         $range.Borders.LineStyle=1;$range.Borders.Color=14277081
