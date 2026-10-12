@@ -21,6 +21,11 @@ Private mStations() As Double
 Private mCount As Long, mCapacity As Long
 Private mSealed As Boolean, mClosed As Boolean
 Private mQuery As CSectionGeometryQuery
+Private mDiagnostic As CGeometryDiagnostic
+
+Public Property Get LastDiagnostic() As CGeometryDiagnostic
+    Set LastDiagnostic = mDiagnostic
+End Property
 
 Public Sub Initialize(ByVal pathID As String)
     If Len(mID) > 0 Then PathError "Путь уже инициализирован."
@@ -41,8 +46,8 @@ End Sub
 Public Sub AddArc(ByVal segmentID As String, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal radius As Double, ByVal startAngle As Double, ByVal sweep As Double)
     RequireMutable
-    If radius <= 0# Then PathError "Радиус дуги должен быть положительным."
-    If Abs(sweep) <= 0.0000000001 Or Abs(sweep) > 2# * GEOM_PI Then PathError "Угол дуги должен быть ненулевым и не больше полного оборота."
+    If radius <= 0# Then PathError "Радиус дуги должен быть положительным.", "INVALID_RADIUS", segmentID, radius
+    If Abs(sweep) <= 0.0000000001 Or Abs(sweep) > 2# * GEOM_PI Then PathError "Угол дуги должен быть ненулевым и не больше полного оборота.", "INVALID_SWEEP", segmentID, sweep
     Dim edge As TRegionEdge
     edge.CenterX = centerX: edge.CenterY = centerY: edge.Sweep = sweep
     edge.X1 = centerX + radius * Cos(startAngle): edge.Y1 = centerY + radius * Sin(startAngle)
@@ -98,7 +103,7 @@ Public Function SegmentIndex(ByVal segmentID As String) As Long
     For i = 1 To mCount
         If StrComp(mSegmentIDs(i), segmentID, vbBinaryCompare) = 0 Then SegmentIndex = i: Exit Function
     Next i
-    PathError "Не найден сегмент '" & segmentID & "'."
+    PathError "Не найден сегмент '" & segmentID & "'.", "MISSING_SEGMENT", segmentID
 End Function
 
 ' Привязка задается именем сегмента и долей его длины, а не номером в массиве.
@@ -350,6 +355,9 @@ Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then PathError "Номер сегмента вне допустимого диапазона."
 End Sub
 
-Private Sub PathError(ByVal description As String)
+Private Sub PathError(ByVal description As String, Optional ByVal code As String = "PATH_INVALID", _
+        Optional ByVal relatedEntityID As String = "", Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
+    Set mDiagnostic = New CGeometryDiagnostic
+    mDiagnostic.Initialize code, mID, relatedEntityID, description, detail1, detail2
     Err.Raise vbObjectError + 5520, "CGeometryPath", "Путь '" & mID & "': " & description
 End Sub

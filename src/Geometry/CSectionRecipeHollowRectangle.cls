@@ -212,12 +212,17 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     If index > 4 Then
         B = sizes.Bo: H = sizes.Ho: radius = sizes.Ro: x = sizes.Xo: y = sizes.Yo: offset = -offset
         If radius <= GEOM_TOLERANCE Then
+            facade.Source faces(index).ID, faces(index).Source
             If base <= 2 Then
                 y = y + IIf(base = 1, 1#, -1#) * (H / 2# - offset)
-                Set AxisPath = facade.LinePath(faces(index).ID, x - B / 2# - faces(7).AxisDistance, y, x + B / 2# + faces(8).AxisDistance, y)
+                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x - B / 2#, y, x + B / 2#, y)
+                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 1#, 0#, x - B / 2# - faces(7).AxisDistance, _
+                    1#, 0#, x + B / 2# + faces(8).AxisDistance)
             Else
                 x = x + IIf(base = 3, -1#, 1#) * (B / 2# - offset)
-                Set AxisPath = facade.LinePath(faces(index).ID, x, y - H / 2# - faces(6).AxisDistance, x, y + H / 2# + faces(5).AxisDistance)
+                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x, y - H / 2#, x, y + H / 2#)
+                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 0#, 1#, y - H / 2# - faces(6).AxisDistance, _
+                    0#, 1#, y + H / 2# + faces(5).AxisDistance)
             End If
             Exit Function
         End If

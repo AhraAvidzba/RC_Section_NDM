@@ -13,11 +13,16 @@ Option Explicit
 ' После публикации содержит только подготовленную геометрию и данные;
 ' заполнение доступно лишь общему фасаду, Excel/context не сохраняются.
 Private mTypeID As String, mVersion As Long, mSealed As Boolean
-Private mPaths As Object, mGroups As Object
+Private mPaths As Object, mGroups As Object, mAnchors As Object, mSources As Object
 Private mLoops() As TSectionLoop, mLoopCount As Long
 Private mRules() As TRebarRule, mRuleCount As Long
 Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long
 Private mRegion As CConcreteRegion
+Private mDiagnostic As CGeometryDiagnostic
+
+Public Property Get LastDiagnostic() As CGeometryDiagnostic
+    Set LastDiagnostic = mDiagnostic
+End Property
 
 Friend Sub Initialize(ByVal typeID As String, ByVal version As Long)
     If Len(mTypeID) > 0 Then DefinitionError "Определение уже создано."
@@ -25,7 +30,31 @@ Friend Sub Initialize(ByVal typeID As String, ByVal version As Long)
     mTypeID = typeID: mVersion = version
     Set mPaths = CreateObject("Scripting.Dictionary"): mPaths.CompareMode = vbBinaryCompare
     Set mGroups = CreateObject("Scripting.Dictionary"): mGroups.CompareMode = vbBinaryCompare
+    Set mAnchors = CreateObject("Scripting.Dictionary"): mAnchors.CompareMode = vbBinaryCompare
+    Set mSources = CreateObject("Scripting.Dictionary"): mSources.CompareMode = vbBinaryCompare
 End Sub
+
+Friend Sub AddAnchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Double)
+    RequireMutable
+    If Len(Trim$(anchorID)) = 0 Or mAnchors.Exists(anchorID) Then DefinitionError "Пустой или повторный ID привязки '" & anchorID & "'."
+    mAnchors.Add anchorID, Array(x, y)
+End Sub
+
+' Возвращаются скаляры: изменение переменных вызывающей стороны не меняет снимок.
+Public Sub AnchorCoordinates(ByVal anchorID As String, ByRef x As Double, ByRef y As Double)
+    If Not mAnchors.Exists(anchorID) Then DefinitionError "Не найдена привязка '" & anchorID & "'.", anchorID, "MISSING_ANCHOR"
+    x = CDbl(mAnchors(anchorID)(0)): y = CDbl(mAnchors(anchorID)(1))
+End Sub
+
+Friend Sub AddSource(ByVal entityID As String, ByVal reference As String)
+    RequireMutable
+    If Len(Trim$(entityID)) = 0 Or Len(Trim$(reference)) = 0 Then DefinitionError "ID и исходная ссылка обязательны."
+    mSources(entityID) = reference
+End Sub
+
+Public Function SourceReference(ByVal entityID As String) As String
+    If mSources.Exists(entityID) Then SourceReference = CStr(mSources(entityID))
+End Function
 
 Public Property Get TypeID() As String: TypeID = mTypeID: End Property
 Public Property Get SchemaVersion() As Long: SchemaVersion = mVersion: End Property
@@ -36,7 +65,7 @@ Public Property Get RuleCount() As Long: RuleCount = mRuleCount: End Property
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 
 Public Function Path(ByVal pathID As String) As CGeometryPath
-    If Not mPaths.Exists(pathID) Then DefinitionError "Не найден путь '" & pathID & "'."
+    If Not mPaths.Exists(pathID) Then DefinitionError "Не найден путь '" & pathID & "'.", pathID, "MISSING_PATH"
     Set Path = mPaths(pathID)
 End Function
 
@@ -110,6 +139,7 @@ End Sub
 
 Friend Sub AddRule(ByRef value As TRebarRule)
     RequireMutable
+    If value.DistributionScope <> PerPath Then DefinitionError "Правило '" & value.RuleID & "': поддерживается DistributionScope=PerPath."
     If Len(Trim$(value.RuleID)) = 0 Then DefinitionError "Не задан ID правила арматуры."
     Dim i As Long
     For i = 1 To mRuleCount
@@ -190,10 +220,39 @@ Friend Sub Seal()
         ReDim visiting(1 To mRuleCount)
         For i = 1 To mRuleCount: ValidateRuleGraph i, visiting: Next i
     End If
+    For i = 1 To mAnnotationCount: ValidateAnnotation mAnnotations(i): Next i
     ' Тот же формат и тот же query, что у прежней сборки: механическая сетка
     ' не заменяется аналитическими свойствами и не получает другой источник.
     Set mRegion = query.RegionFromContours(MaterialContours())
     mSealed = True
+End Sub
+
+' Ошибочные привязки/измерения выявляются до сетки и НДС. Рецепт не может
+' опубликовать размер по исчезнувшей дуге либо несуществующему правилу.
+Private Sub ValidateAnnotation(ByRef value As TSectionAnnotation)
+    Dim ids As Variant, path As CGeometryPath, edge As TRegionEdge, unused As Long
+    Select Case value.Kind
+        Case "Anchors.Horizontal", "Anchors.Vertical", "Anchors.Aligned"
+            RequireAnnotationAnchor value.AnnotationID, value.StartAnchorID
+            RequireAnnotationAnchor value.AnnotationID, value.EndAnchorID
+        Case "Text", "PathLength"
+            RequireAnnotationAnchor value.AnnotationID, value.StartAnchorID
+            If value.Kind = "PathLength" Then ids = TargetPaths(value.Target)
+        Case "Radius", "Diameter"
+            Set path = Me.Path(value.Target): path.CopySegment path.SegmentIndex(value.SegmentID), edge
+            If edge.Sweep = 0# Then DefinitionError "Измерение радиуса/диаметра требует аналитическую дугу.", value.AnnotationID, "MEASUREMENT_TARGET"
+        Case "VerticalExtent", "HorizontalExtent", "RebarLabel"
+            ids = TargetPaths(value.Target)
+        Case "RebarRowLabel", "RebarRowExtentLabel", "RebarRowExtremeLabel"
+            unused = RuleIndex(value.Target)
+        Case "BetweenPoints"
+        Case Else
+            DefinitionError "Неизвестное измерение '" & value.Kind & "'.", value.AnnotationID, "MEASUREMENT_KIND"
+    End Select
+End Sub
+
+Private Sub RequireAnnotationAnchor(ByVal annotationID As String, ByVal anchorID As String)
+    If Not mAnchors.Exists(anchorID) Then DefinitionError "Не найдена привязка '" & anchorID & "'.", annotationID, "MISSING_ANCHOR", anchorID
 End Sub
 
 Private Sub ValidateOneLoop(ByVal query As CSectionGeometryQuery, ByVal region As CConcreteRegion)
@@ -273,6 +332,14 @@ Private Sub RequireSealed()
     If Not mSealed Then DefinitionError "Определение еще не опубликовано."
 End Sub
 
-Private Sub DefinitionError(ByVal reason As String)
-    SectionRecipeError "CSectionDefinition", "Определение '" & mTypeID & "': " & reason
+Private Sub DefinitionError(ByVal reason As String, Optional ByVal entityID As String = "", _
+        Optional ByVal code As String = "DEFINITION_INVALID", Optional ByVal relatedEntityID As String = "")
+    Dim reference As String
+    If Len(entityID) = 0 Then entityID = mTypeID
+    If Not mSources Is Nothing Then
+        If mSources.Exists(entityID) Then reference = CStr(mSources(entityID))
+    End If
+    Set mDiagnostic = New CGeometryDiagnostic
+    mDiagnostic.Initialize code, entityID, relatedEntityID, reason, 0#, 0#, reference
+    SectionRecipeError "CSectionDefinition", "Определение '" & mTypeID & "': " & reason, reference
 End Sub

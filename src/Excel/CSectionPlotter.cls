@@ -1258,6 +1258,9 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
                 layout.AddDimension data.AnnotationStartX(i), data.AnnotationStartY(i), _
                     data.AnnotationEndX(i), data.AnnotationEndY(i), data.AnnotationNormalX(i), _
                     data.AnnotationNormalY(i), data.AnnotationText(i)
+            ElseIf StrComp(data.AnnotationType(i), "MEASUREMENT_LABEL", vbTextCompare) = 0 Or _
+                    StrComp(data.AnnotationType(i), "TEXT_ANNOTATION", vbTextCompare) = 0 Then
+                layout.AddPointLabel data.AnnotationStartX(i), data.AnnotationStartY(i), data.AnnotationText(i)
             End If
         Next i
     End If

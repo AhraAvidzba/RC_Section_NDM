@@ -14,6 +14,7 @@ Option Explicit
 Public StartSetback As Double
 Public EndSetback As Double
 Public EndMode As ERebarEndMode
+Public DistributionScope As ERebarDistributionScope
 Public RemainderPlacement As ERemainderPlacement
 Public TangentOffset As Double
 Public NormalOffset As Double
@@ -29,6 +30,7 @@ Public Publication As ERebarPublication
 Public PositionOrder As ERebarPositionOrder
 Public Coincidence As ERebarCoincidence
 Public PlacementCheck As ERebarPlacementCheck
+Public OverlapPolicy As ERebarOverlapPolicy
 Public SourcePrefix As String
 Public SourceSuffix As String
 Public AnnotationGroup As String
@@ -37,15 +39,18 @@ Public SourceReference As String
 
 Private Sub Class_Initialize()
     EndMode = IncludeBoth
+    DistributionScope = PerPath
     RemainderPlacement = RemainderCenter
     Publication = PublishByRule
     PositionOrder = AlongPath
     Coincidence = RejectCoincidence
     PlacementCheck = CheckCenter
+    OverlapPolicy = ReportOverlap
 End Sub
 
 Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.StartSetback = StartSetback: rule.EndSetback = EndSetback
+    rule.DistributionScope = DistributionScope
     rule.EndMode = EndMode: rule.RemainderPlacement = RemainderPlacement
     rule.TangentOffset = TangentOffset: rule.NormalOffset = NormalOffset
     rule.EverySecond = EverySecond
@@ -56,6 +61,7 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.SkipMissingProjection = SkipMissingProjection
     rule.Publication = Publication: rule.PlacementCheck = PlacementCheck
     rule.PositionOrder = PositionOrder: rule.Coincidence = Coincidence
+    rule.OverlapPolicy = OverlapPolicy
     rule.SourcePrefix = SourcePrefix: rule.SourceSuffix = SourceSuffix
     rule.AnnotationGroup = AnnotationGroup: rule.Comment = Comment
     rule.SourceReference = SourceReference

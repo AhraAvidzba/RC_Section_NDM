@@ -758,7 +758,7 @@ End Sub
 ' нормали или координат неуспешной пробы не является повреждением подписи.
 Private Function IsPlotLabelAnnotation(ByVal annotationType As String) As Boolean
     Select Case UCase$(Trim$(annotationType))
-        Case "DIMENSION", "REBAR_ANNOTATION"
+        Case "DIMENSION", "REBAR_ANNOTATION", "MEASUREMENT_LABEL", "TEXT_ANNOTATION"
             IsPlotLabelAnnotation = True
     End Select
 End Function

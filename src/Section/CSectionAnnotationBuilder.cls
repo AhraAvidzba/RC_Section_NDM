@@ -19,9 +19,17 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     annotations.Clear
     For i = 1 To definition.AnnotationCount
         definition.CopyAnnotation i, value
-        If value.Kind <> "RebarRowLabel" And value.Kind <> "RebarRowExtentLabel" And value.Kind <> "RebarRowExtremeLabel" And value.Kind <> "BetweenPoints" Then _
-            TargetBounds definition, value.Target, minX, maxX, minY, maxY
         Select Case value.Kind
+            Case "VerticalExtent", "HorizontalExtent", "RebarLabel"
+                TargetBounds definition, value.Target, minX, maxX, minY, maxY
+        End Select
+        Select Case value.Kind
+            Case "Anchors.Horizontal", "Anchors.Vertical", "Anchors.Aligned"
+                AnchorDimension definition, value, annotations
+            Case "Radius", "Diameter"
+                ArcDimension definition, value, annotations
+            Case "PathLength", "Text"
+                PointLabel definition, value, annotations
             Case "BetweenPoints"
                 annotations.AddDimension value.AnnotationID, value.StartX, value.StartY, value.EndX, value.EndY, _
                     value.NormalX, value.NormalY, value.Name, DisplayValue(value.Value, value.DisplayIncrement), value.Comment
@@ -85,6 +93,60 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     Dim labels As CRebarGroupAnnotationBuilder
     Set labels = New CRebarGroupAnnotationBuilder
     labels.AddRebarLabels annotations, rebars
+End Sub
+
+' Горизонтальная/вертикальная проекция и расстояние по соединяющей линии
+' имеют разные значения. Размещение проекции использует первую привязку.
+Private Sub AnchorDimension(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)
+    definition.AnchorCoordinates value.StartAnchorID, value.StartX, value.StartY
+    definition.AnchorCoordinates value.EndAnchorID, value.EndX, value.EndY
+    Select Case value.Kind
+        Case "Anchors.Horizontal"
+            value.Value = Abs(value.EndX - value.StartX): value.EndY = value.StartY
+        Case "Anchors.Vertical"
+            value.Value = Abs(value.EndY - value.StartY): value.EndX = value.StartX
+        Case "Anchors.Aligned"
+            value.Value = Sqr((value.EndX - value.StartX) ^ 2 + (value.EndY - value.StartY) ^ 2)
+    End Select
+    If value.Value <= GEOM_TOLERANCE Then SectionRecipeError "CSectionAnnotationBuilder", "Размер '" & value.AnnotationID & "' имеет нулевую длину.", definition.SourceReference(value.AnnotationID)
+    If value.NormalX = 0# And value.NormalY = 0# Then
+        value.NormalX = -(value.EndY - value.StartY) / value.Value
+        value.NormalY = (value.EndX - value.StartX) / value.Value
+    End If
+    annotations.AddDimension value.AnnotationID, value.StartX, value.StartY, value.EndX, value.EndY, _
+        value.NormalX, value.NormalY, value.Name, value.Value, value.Comment
+End Sub
+
+' Измеряется выбранный аналитический сегмент, а не bbox или соседняя дуга.
+Private Sub ArcDimension(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)
+    Dim path As CGeometryPath, edge As TRegionEdge, tx As Double, ty As Double, radiusValue As Double
+    Set path = definition.Path(value.Target)
+    path.CopySegment path.SegmentIndex(value.SegmentID), edge
+    If edge.Sweep = 0# Then SectionRecipeError "CSectionAnnotationBuilder", "Размер '" & value.AnnotationID & "' требует дугу или окружность.", definition.SourceReference(value.AnnotationID)
+    path.AtDistance path.AnchorStation(value.SegmentID, value.Value), value.EndX, value.EndY, tx, ty
+    radiusValue = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
+    value.StartX = edge.CenterX: value.StartY = edge.CenterY: value.Value = radiusValue
+    If value.Kind = "Diameter" Then
+        value.StartX = 2# * edge.CenterX - value.EndX: value.StartY = 2# * edge.CenterY - value.EndY
+        value.Value = 2# * radiusValue
+    End If
+    annotations.AddDimension value.AnnotationID, value.StartX, value.StartY, value.EndX, value.EndY, tx, ty, value.Name, value.Value, value.Comment
+End Sub
+
+Private Sub PointLabel(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)
+    definition.AnchorCoordinates value.StartAnchorID, value.StartX, value.StartY
+    If value.Kind = "Text" Then
+        annotations.AddAnnotation "TEXT_ANNOTATION", value.AnnotationID, value.StartX, value.StartY, value.StartX, value.StartY, _
+            0#, 0#, value.Name, 0#, vbNullString, value.Comment
+    Else
+        Dim ids As Variant, id As Variant, path As CGeometryPath
+        ids = definition.TargetPaths(value.Target): value.Value = 0#
+        For Each id In ids
+            Set path = definition.Path(CStr(id)): value.Value = value.Value + path.Length
+        Next id
+        annotations.AddAnnotation "MEASUREMENT_LABEL", value.AnnotationID, value.StartX, value.StartY, value.StartX, value.StartY, _
+            0#, 0#, value.Name, value.Value, "Length", value.Comment
+    End If
 End Sub
 
 ' Округляется только справочная подпись. Концы размерной линии и расчетная

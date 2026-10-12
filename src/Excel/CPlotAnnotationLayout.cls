@@ -222,6 +222,17 @@ Public Sub AddDimension(ByVal startX As Double, ByVal startY As Double, ByVal en
     AddText textLeft, textTop, textWidth, textHeight, textValue, rotation, mDimensionColor, True, mDimensionFontSize
 End Sub
 
+' Текстовая модельная привязка использует общую типографику размеров.
+' Она показывается вместе с размерами, без фиктивной размерной линии.
+Public Sub AddPointLabel(ByVal x As Double, ByVal y As Double, ByVal textValue As String)
+    If Not mDimensionsEnabled Then Exit Sub
+    Dim widthValue As Double, heightValue As Double
+    widthValue = MaxDouble(90# * mVisualScale, Len(textValue) * mDimensionFontSize * 0.62)
+    heightValue = 1.8 * mDimensionFontSize
+    AddText ModelToChartX(x) - widthValue / 2#, ModelToChartY(y) - heightValue / 2#, _
+        widthValue, heightValue, textValue, 0#, mDimensionColor, True, mDimensionFontSize
+End Sub
+
 ' ------------------------------
 ' Групповая подпись арматуры
 ' ------------------------------

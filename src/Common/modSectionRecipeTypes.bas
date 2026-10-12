@@ -25,6 +25,11 @@ Public Enum ERebarDistribution
     DependentOffset = 6
 End Enum
 
+' Количество/шаг применяется независимо к каждому непрерывному пути группы.
+Public Enum ERebarDistributionScope
+    PerPath = 1
+End Enum
+
 Public Enum ERemainderPlacement
     RemainderStart = 1
     RemainderEnd = 2
@@ -52,6 +57,13 @@ Public Enum ERebarPlacementCheck
     CheckFullDisk = 2
 End Enum
 
+' Контакт допустим. Отрицательный геометрический зазор всегда диагностируется;
+' запрет задается явно, чтобы не изменить исторические зависимые ряды.
+Public Enum ERebarOverlapPolicy
+    ReportOverlap = 1
+    RejectOverlap = 2
+End Enum
+
 Public Type TSectionLoop
     PathID As String
     LoopID As String
@@ -66,6 +78,7 @@ Public Type TRebarRule
     RuleID As String
     Target As String
     Mode As ERebarDistribution
+    DistributionScope As ERebarDistributionScope
     Enabled As Boolean
     Diameter As Double
     SteelClass As String
@@ -90,6 +103,7 @@ Public Type TRebarRule
     PositionOrder As ERebarPositionOrder
     Coincidence As ERebarCoincidence
     PlacementCheck As ERebarPlacementCheck
+    OverlapPolicy As ERebarOverlapPolicy
     SourcePrefix As String
     SourceSuffix As String
     AnnotationGroup As String
@@ -102,6 +116,9 @@ Public Type TSectionAnnotation
     AnnotationID As String
     Kind As String
     Target As String
+    SegmentID As String
+    StartAnchorID As String
+    EndAnchorID As String
     Name As String
     StartX As Double
     StartY As Double

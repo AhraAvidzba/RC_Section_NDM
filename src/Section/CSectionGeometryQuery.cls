@@ -26,6 +26,124 @@ Private mSection As CSectionModel
 Private mRevision As Long
 Private mDomain As CConcreteRegion ' Неизменная область одной модели/query-session; потребитель получает clone.
 Private mDomainBuildCount As Long ' Число успешных подготовок за жизнь query, включая смену контекста.
+Private mDiagnostic As CGeometryDiagnostic
+
+Public Property Get LastDiagnostic() As CGeometryDiagnostic
+    Set LastDiagnostic = mDiagnostic
+End Property
+
+' Изометрия точек совпадает с преобразованием сегментов/привязок.
+Public Sub TransformCoordinates(ByRef x As Double, ByRef y As Double, ByVal shiftX As Double, ByVal shiftY As Double, _
+        Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False)
+    Dim newX As Double, cosine As Double, sine As Double
+    cosine = Cos(rotation): sine = Sin(rotation)
+    If reflectX Then y = -y
+    newX = cosine * x - sine * y + shiftX
+    y = sine * x + cosine * y + shiftY: x = newX
+End Sub
+
+' Положительный offset идет слева от направления пути. У гладких стыков
+' линии/дуги сохраняется касание, острые line/line стыки получают miter.
+' Негладкие сопряжения с дугой требуют явного RoundedPolygon; не склеиваются.
+Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath, ByVal distance As Double) As CGeometryPath
+    If source Is Nothing Then GeometryError "Не передан исходный путь.", "MISSING_PATH", pathID
+    Dim edges() As TRegionEdge, original As TRegionEdge, i As Long, following As Long, count As Long
+    Dim radiusValue As Double, radialScale As Double, tx As Double, ty As Double, length As Double, result As CGeometryPath
+    count = source.SegmentCount: ReDim edges(1 To count)
+    For i = 1 To count
+        source.CopySegment i, edges(i)
+        If edges(i).Sweep = 0# Then
+            length = EdgeLength(edges(i)): tx = (edges(i).X2 - edges(i).X1) / length: ty = (edges(i).Y2 - edges(i).Y1) / length
+            edges(i).X1 = edges(i).X1 - ty * distance: edges(i).X2 = edges(i).X2 - ty * distance
+            edges(i).Y1 = edges(i).Y1 + tx * distance: edges(i).Y2 = edges(i).Y2 + tx * distance
+        Else
+            radiusValue = Sqr((edges(i).X1 - edges(i).CenterX) ^ 2 + (edges(i).Y1 - edges(i).CenterY) ^ 2)
+            radialScale = (radiusValue - Sgn(edges(i).Sweep) * distance) / radiusValue
+            If radialScale <= QUERY_TOLERANCE / radiusValue Then GeometryError "Смещенная дуга исчезла; уменьшите offset или задайте другой участок.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), radiusValue, distance
+            edges(i).X1 = edges(i).CenterX + (edges(i).X1 - edges(i).CenterX) * radialScale
+            edges(i).Y1 = edges(i).CenterY + (edges(i).Y1 - edges(i).CenterY) * radialScale
+            edges(i).X2 = edges(i).CenterX + (edges(i).X2 - edges(i).CenterX) * radialScale
+            edges(i).Y2 = edges(i).CenterY + (edges(i).Y2 - edges(i).CenterY) * radialScale
+        End If
+    Next i
+    For i = 1 To count
+        following = i + 1
+        If following > count Then
+            If Not source.IsClosed Then Exit For
+            following = 1
+        End If
+        JoinOffsetEdges pathID, source.SegmentID(i), edges(i), edges(following)
+    Next i
+    Dim sourceFirst As Double, sourceLast As Double, lengthSquared As Double, span As Double
+    Set result = New CGeometryPath: result.Initialize pathID
+    For i = 1 To count
+        source.CopySegment i, original
+        sourceFirst = source.SourceStartParameter(i): sourceLast = source.SourceEndParameter(i)
+        If edges(i).Sweep = 0# Then
+            If (edges(i).X2 - edges(i).X1) * (original.X2 - original.X1) + (edges(i).Y2 - edges(i).Y1) * (original.Y2 - original.Y1) <= QUERY_TOLERANCE Then _
+                GeometryError "Offset изменил направление или уничтожил сегмент.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), distance
+            ' Miter меняет продольные границы линии. Отображение возвращает
+            ' параметр исходной грани, а не прежние 0/1 после сокращения.
+            tx = original.X2 - original.X1: ty = original.Y2 - original.Y1
+            lengthSquared = tx * tx + ty * ty: span = sourceLast - sourceFirst
+            sourceLast = sourceFirst + span * ((edges(i).X2 - original.X1) * tx + (edges(i).Y2 - original.Y1) * ty) / lengthSquared
+            sourceFirst = sourceFirst + span * ((edges(i).X1 - original.X1) * tx + (edges(i).Y1 - original.Y1) * ty) / lengthSquared
+        End If
+        result.Append source.SegmentID(i), edges(i), source.SourcePathID(i), source.SourceSegmentID(i), sourceFirst, sourceLast
+    Next i
+    result.Seal source.IsClosed
+    ' Проверяется топология замкнутой границы, а не выбирается ее длинная часть.
+    Dim region As CConcreteRegion
+    If result.IsClosed Then Set region = RegionFromPath(result)
+    Set OffsetPath = result
+End Function
+
+Private Sub JoinOffsetEdges(ByVal pathID As String, ByVal segmentID As String, ByRef first As TRegionEdge, ByRef second As TRegionEdge)
+    If Sqr((first.X2 - second.X1) ^ 2 + (first.Y2 - second.Y1) ^ 2) <= QUERY_TOLERANCE Then Exit Sub
+    If first.Sweep <> 0# Or second.Sweep <> 0# Then GeometryError "Негладкий стык с дугой: задайте согласованное скругление.", "OFFSET_JOINT", pathID, segmentID
+    Dim ax As Double, ay As Double, bx As Double, by As Double, cross As Double, parameter As Double
+    ax = first.X2 - first.X1: ay = first.Y2 - first.Y1: bx = second.X2 - second.X1: by = second.Y2 - second.Y1
+    cross = ax * by - ay * bx
+    If Abs(cross) <= PARAM_TOLERANCE * Sqr((ax * ax + ay * ay) * (bx * bx + by * by)) Then _
+        GeometryError "Невозможно состыковать параллельные смещенные линии.", "OFFSET_JOINT", pathID, segmentID
+    parameter = ((second.X1 - first.X1) * by - (second.Y1 - first.Y1) * bx) / cross
+    first.X2 = first.X1 + parameter * ax: first.Y2 = first.Y1 + parameter * ay
+    second.X1 = first.X2: second.Y1 = first.Y2
+End Sub
+
+' Две поперечные плоскости ограничивают или продлевают одну осевую линию.
+' Отсчет задается геометрией, независимо от наличия стержней на ограничителе.
+Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryPath, _
+        ByVal startNX As Double, ByVal startNY As Double, ByVal startBound As Double, _
+        ByVal endNX As Double, ByVal endNY As Double, ByVal endBound As Double) As CGeometryPath
+    If source Is Nothing Then GeometryError "Не передана ограничиваемая линия.", "MISSING_PATH", pathID
+    Dim edge As TRegionEdge, tx As Double, ty As Double, length As Double, first As Double, last As Double, denom As Double
+    If source.SegmentCount <> 1 Then GeometryError "Ограничение плоскостями требует одну прямую линию.", "CONSTRAINT_TARGET", pathID, source.ID
+    source.CopySegment 1, edge
+    If edge.Sweep <> 0# Then GeometryError "Ограничение плоскостями требует прямую линию.", "CONSTRAINT_TARGET", pathID, source.ID
+    length = EdgeLength(edge): tx = (edge.X2 - edge.X1) / length: ty = (edge.Y2 - edge.Y1) / length
+    denom = startNX * tx + startNY * ty
+    If Abs(denom) <= PARAM_TOLERANCE Then GeometryError "Начальный ограничитель параллелен линии.", "CONSTRAINT_PARALLEL", pathID, source.ID
+    first = (startBound - startNX * edge.X1 - startNY * edge.Y1) / denom
+    denom = endNX * tx + endNY * ty
+    If Abs(denom) <= PARAM_TOLERANCE Then GeometryError "Конечный ограничитель параллелен линии.", "CONSTRAINT_PARALLEL", pathID, source.ID
+    last = (endBound - endNX * edge.X1 - endNY * edge.Y1) / denom
+    If last <= first + QUERY_TOLERANCE Then GeometryError "Ограничители уничтожили или развернули линию.", "CONSTRAINT_DISAPPEARED", pathID, source.ID, first, last
+    Dim result As CGeometryPath, startParameter As Double, endParameter As Double
+    startParameter = source.SourceStartParameter(1) + (source.SourceEndParameter(1) - source.SourceStartParameter(1)) * first / length
+    endParameter = source.SourceStartParameter(1) + (source.SourceEndParameter(1) - source.SourceStartParameter(1)) * last / length
+    edge.X2 = edge.X1 + last * tx: edge.Y2 = edge.Y1 + last * ty
+    edge.X1 = edge.X1 + first * tx: edge.Y1 = edge.Y1 + first * ty
+    ' Координатные ограничения задают координату точно, без потери разрядов
+    ' на вычитании и повторном сложении большого смещения начала линии.
+    If startNY = 0# Then edge.X1 = startBound / startNX
+    If startNX = 0# Then edge.Y1 = startBound / startNY
+    If endNY = 0# Then edge.X2 = endBound / endNX
+    If endNX = 0# Then edge.Y2 = endBound / endNY
+    Set result = New CGeometryPath: result.Initialize pathID
+    result.Append source.SegmentID(1), edge, source.SourcePathID(1), source.SourceSegmentID(1), startParameter, endParameter
+    result.Seal: Set ConstrainLine = result
+End Function
 
 ' Привязывает query-session к модели. Достоверные Contours задают полную
 ' область бетона; сетка используется только при отсутствии наружного контура.
@@ -784,7 +902,7 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
     For i = 1 To count
         following = i Mod count + 1
         If distances(i) + distances(following) > lengths(i) + GEOM_TOLERANCE Then _
-            GeometryError pathID & ": скругления пересекаются на грани Edge." & names(i) & "; уменьшите назначенные радиусы."
+            GeometryError pathID & ": скругления пересекаются на грани Edge." & names(i) & "; уменьшите назначенные радиусы.", "FILLET_OVERLAP", pathID, "Edge." & names(i), radius(i), radius(following)
     Next i
     Dim result As CGeometryPath, edge As TRegionEdge
     Set result = New CGeometryPath: result.Initialize pathID
@@ -862,7 +980,7 @@ Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As V
         following = i Mod count + 1
         dot = directions(i).X * (shifted(following).X - shifted(i).X) + _
             directions(i).Y * (shifted(following).Y - shifted(i).Y)
-        If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": смещенный путь исчез или изменил топологию на грани Edge." & names(i) & "."
+        If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": смещенный путь исчез или изменил топологию на грани Edge." & names(i) & ".", "OFFSET_DISAPPEARED", pathID, "Edge." & names(i), distance, dot
     Next i
     ' Существующий topology-контракт проверяет самопересечения и радиусы.
     Set OffsetRoundedPolygon = RoundedPolygon(pathID, shiftedVertices, shiftedRadii, vertexIDs)
@@ -1863,6 +1981,10 @@ End Sub
 
 ' Выдает ошибку геометрического контракта. Engineering-слой преобразует ее
 ' через общую ResultMeta/status policy; geometry не назначает display-статусы.
-Private Sub GeometryError(ByVal description As String)
+Private Sub GeometryError(ByVal description As String, Optional ByVal code As String = "GEOMETRY_INVALID", _
+        Optional ByVal entityID As String = "", Optional ByVal relatedEntityID As String = "", _
+        Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
+    Set mDiagnostic = New CGeometryDiagnostic
+    mDiagnostic.Initialize code, entityID, relatedEntityID, description, detail1, detail2
     Err.Raise vbObjectError + 5401, "CSectionGeometryQuery", description
 End Sub

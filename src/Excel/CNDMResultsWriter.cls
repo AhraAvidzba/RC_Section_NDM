@@ -31,7 +31,7 @@ Private Const CONTOUR_COLUMNS As Long = 17 ' Компактные аналити
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
 Private Const ANNOTATION_COLUMNS As Long = 22 ' Аннотации и принадлежность готовой области трещин; старые поля 1..13 сохранены.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Каталог уникальных точек диаграмм, переданных solver-ам.
-Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 71 ' Строки общих свойств сечения до LC-зависимых блоков.
+Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 72 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
 Private Const STATE_SECTION_PROPERTY_ROWS As Long = 13 ' Строки metadata одного сохраненного named-state.
 Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Общая синяя строка находится на две строки выше нижних snapshot-якорей.
@@ -335,6 +335,7 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         data(rowIndex, 13) = 0#
         data(rowIndex, 14) = 0#
         data(rowIndex, 15) = section.RebarComment(i)
+        If Len(section.RebarRecipeTrace(i)) > 0 Then data(rowIndex, 15) = data(rowIndex, 15) & vbLf & "RecipeTrace:" & section.RebarRecipeTrace(i)
         rowIndex = rowIndex + 1
     Next i
 
@@ -423,6 +424,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.ConcreteMeshSource", section.ConcreteMeshSource, "-", "Источник бетонной сетки: Generated, AutoCADRegions или AutoCADContours."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.Revision, "-", "Версия геометрии, к которой относятся состояния и расчетные области этого снимка."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.RecipeDiagnostics", section.GeometryDiagnosticsText, "-", "Запрошенные/созданные позиции, совпадения, пропуски и конфликты. StationStep и CenterStep в мм; для связанного ряда StationStep относится к исходному пути."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetX."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetY."
     PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов расчетной модели."
@@ -925,7 +927,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
     Dim data() As Variant
-    ReDim data(1 To 45, 1 To SECTION_PROPERTY_COLUMNS)
+    ReDim data(1 To 46, 1 To SECTION_PROPERTY_COLUMNS)
     PutSectionPropertyHeaders data
 
     Dim rowIndex As Long
@@ -942,6 +944,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.ConcreteMeshSource", section.ConcreteMeshSource, "-", "Источник бетонной сетки: Generated, AutoCADRegions или AutoCADContours."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.Revision, "-", "Версия геометрии сохраненного снимка."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.RecipeDiagnostics", section.GeometryDiagnosticsText, "-", "Фактическая диагностика сохраненной сборки. StationStep и CenterStep в мм; для связанного ряда StationStep относится к исходному пути."
 
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = snapshot
@@ -1352,7 +1355,7 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
         ByVal units As CUnitSystem) As String
     Dim annotationType As String
     annotationType = annotations.AnnotationType(annotationIndex)
-    If StrComp(annotationType, "DIMENSION", vbTextCompare) <> 0 Then
+    If StrComp(annotationType, "DIMENSION", vbTextCompare) <> 0 And StrComp(annotationType, "MEASUREMENT_LABEL", vbTextCompare) <> 0 Then
         OutputAnnotationText = annotations.Text(annotationIndex)
         Exit Function
     End If

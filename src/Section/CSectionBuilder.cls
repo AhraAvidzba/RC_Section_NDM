@@ -30,6 +30,11 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Set rules = New CRebarRuleExecutor: Set rebars = rules.Build(definition, geometry)
     If rebars.Count = 0 Then SectionRecipeError "CSectionBuilder", "Для параметрического сечения не задан ни один стержень арматуры."
     Set modelBuilder = New CSectionModelBuilder: Set model = modelBuilder.BuildFromGenerated(mesh, rebars)
+    model.GeometryDiagnosticsText = rules.DiagnosticsText
+    Dim i As Long
+    For i = 1 To rules.PositionCount
+        model.AppendRebarRecipeTrace rules.PositionPhysicalOwner(i), rules.PositionRuleID(i), rules.PositionPathID(i), rules.PositionSourceID(i)
+    Next i
     definition.WriteContours model.Contours
     Set annotationBuilder = New CSectionAnnotationBuilder
     annotationBuilder.Build definition, rebars, model.Annotations, rules

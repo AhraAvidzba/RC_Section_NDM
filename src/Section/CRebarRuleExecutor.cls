@@ -9,6 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Const DIAGNOSTIC_RECORD_LIMIT As Long = 128 ' Счетчики полные; подробные образцы ограничены по памяти.
+
 ' Универсальное исполнение правил: аналитические станции, зависимости,
 ' конечные проекции и отдельный порядок публикации физических стержней.
 Private mDefinition As CSectionDefinition
@@ -16,28 +18,133 @@ Private mRules() As TRebarRule, mState() As Long, mStart() As Long, mCount() As 
 Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long
 Private mSkippedProjections As Long
 Private mMergedPositions As Long, mConflicts As Long
+Private mCreatedPhysical As Long
+Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long
+Private mDiagnostic As CGeometryDiagnostic, mDiagnostics As Collection
+Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long
+Private mPhysicalRule() As Long, mPhysicalCapacity As Long
+Private mPhysicalOwner() As Long
+Private mDiagnosticRecordsOmitted As Long
 
 Public Property Get RequestedPositions() As Long: RequestedPositions = mPositionCount + mSkippedProjections: End Property
-Public Property Get CreatedPositions() As Long: CreatedPositions = mPositionCount - mMergedPositions: End Property
+Public Property Get CreatedPositions() As Long: CreatedPositions = mCreatedPhysical: End Property
 Public Property Get SkippedProjections() As Long: SkippedProjections = mSkippedProjections: End Property
 Public Property Get MergedPositions() As Long: MergedPositions = mMergedPositions: End Property
 Public Property Get Conflicts() As Long: Conflicts = mConflicts: End Property
+Public Property Get BarOverlaps() As Long: BarOverlaps = mBarOverlaps: End Property
+Public Property Get DiagnosticRecordsOmitted() As Long: DiagnosticRecordsOmitted = mDiagnosticRecordsOmitted: End Property
+Public Property Get LastDiagnostic() As CGeometryDiagnostic: Set LastDiagnostic = mDiagnostic: End Property
+Public Property Get DiagnosticCount() As Long
+    If Not mDiagnostics Is Nothing Then DiagnosticCount = mDiagnostics.Count
+End Property
+
+Public Function DiagnosticAt(ByVal index As Long) As CGeometryDiagnostic
+    Set DiagnosticAt = mDiagnostics(index)
+End Function
+
+' Связь всех заявленных позиций с физическим владельцем остается явной,
+' в том числе при Merge/KeepPublishedOwner. Номер соответствует CRebarLayout.
+Public Property Get PositionCount() As Long: PositionCount = mPositionCount: End Property
+Public Function PositionRuleID(ByVal index As Long) As String
+    PositionRuleID = mRules(mPositions(index).RuleIndex).RuleID
+End Function
+Public Function PositionPathID(ByVal index As Long) As String: PositionPathID = mPositions(index).PathID: End Function
+Public Function PositionSourceID(ByVal index As Long) As String: PositionSourceID = mPositions(index).SourcePositionID: End Function
+Public Function PositionPhysicalOwner(ByVal index As Long) As Long: PositionPhysicalOwner = mPhysicalOwner(index): End Function
+
+' Диагностика не подменяет физическое число requested-числом. StationStep
+' измеряется по аналитической длине пути, а не по хорде между центрами.
+Public Function RuleTrace(ByVal ruleID As String) As String
+    Dim index As Long, minStep As Double, maxStep As Double, stepCount As Long, minChord As Double, maxChord As Double
+    If mDefinition Is Nothing Then RuleError 0, "Правила еще не выполнялись."
+    index = mDefinition.RuleIndex(ruleID)
+    RuleStepBounds ruleID, stepCount, minStep, maxStep, minChord, maxChord
+    RuleTrace = "Rule=" & ruleID & "; Requested=" & CStr(mCount(index) + mSkippedByRule(index)) & _
+        "; Created=" & CStr(mCreatedByRule(index)) & "; Merged=" & CStr(mMergedByRule(index)) & _
+        "; Skipped=" & CStr(mSkippedByRule(index)) & "; StationSteps=" & CStr(stepCount) & _
+        "; StationStepMin=" & CStr(minStep) & "; StationStepMax=" & CStr(maxStep) & _
+        "; CenterStepMin=" & CStr(minChord) & "; CenterStepMax=" & CStr(maxChord)
+End Function
+
+' Все длины в мм. StationStep относится к пути (для DependentOffset -
+' исходному); CenterStep - хорда между заявленными центрами. Замыкание
+' учитывается отдельно, несвязанные пути группы никогда не соединяются.
+Public Sub RuleStepBounds(ByVal ruleID As String, ByRef stepCount As Long, ByRef minStep As Double, ByRef maxStep As Double, _
+        ByRef minChord As Double, ByRef maxChord As Double)
+    If mDefinition Is Nothing Then RuleError 0, "Правила еще не выполнялись."
+    Dim index As Long, i As Long, previous As Object, first As Object, id As Variant, path As CGeometryPath, step As Double
+    index = mDefinition.RuleIndex(ruleID)
+    Set previous = CreateObject("Scripting.Dictionary"): previous.CompareMode = vbBinaryCompare
+    Set first = CreateObject("Scripting.Dictionary"): first.CompareMode = vbBinaryCompare
+    stepCount = 0: minStep = 1E+100: maxStep = 0#: minChord = 1E+100: maxChord = 0#
+    For i = mStart(index) To mStart(index) + mCount(index) - 1
+        id = mPositions(i).PathID
+        If previous.Exists(id) Then
+            step = Abs(mPositions(i).Station - mPositions(CLng(previous(id))).Station)
+            AccumulateSpacing i, CLng(previous(id)), step, stepCount, minStep, maxStep, minChord, maxChord
+        Else
+            first.Add id, i
+        End If
+        previous(id) = i
+    Next i
+    For Each id In first.Keys
+        Set path = mDefinition.Path(CStr(id))
+        If path.IsClosed Then
+            step = path.Length - Abs(mPositions(CLng(previous(id))).Station - mPositions(CLng(first(id))).Station)
+            AccumulateSpacing CLng(first(id)), CLng(previous(id)), GeomMax(0#, step), stepCount, minStep, maxStep, minChord, maxChord
+        End If
+    Next id
+    If stepCount = 0 Then minStep = 0#: minChord = 0#
+End Sub
+
+Private Sub AccumulateSpacing(ByVal first As Long, ByVal last As Long, ByVal step As Double, ByRef count As Long, _
+        ByRef minStep As Double, ByRef maxStep As Double, ByRef minChord As Double, ByRef maxChord As Double)
+    Dim chord As Double
+    count = count + 1: minStep = GeomMin(minStep, step): maxStep = GeomMax(maxStep, step)
+    chord = Sqr((mPositions(first).X - mPositions(last).X) ^ 2 + (mPositions(first).Y - mPositions(last).Y) ^ 2)
+    minChord = GeomMin(minChord, chord): maxChord = GeomMax(maxChord, chord)
+End Sub
+
+Public Function DiagnosticsText() As String
+    Dim i As Long
+    DiagnosticsText = "Requested=" & CStr(RequestedPositions) & "; Created=" & CStr(CreatedPositions) & _
+        "; Merged=" & CStr(MergedPositions) & "; Skipped=" & CStr(SkippedProjections) & _
+        "; Conflicts=" & CStr(Conflicts) & "; BarOverlaps=" & CStr(BarOverlaps) & _
+        "; DiagnosticRecordsOmitted=" & CStr(DiagnosticRecordsOmitted) & vbCrLf
+    If Not mDefinition Is Nothing Then
+        For i = 1 To mDefinition.RuleCount: DiagnosticsText = DiagnosticsText & RuleTrace(mRules(i).RuleID) & vbCrLf: Next i
+    End If
+End Function
 
 Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion) As CRebarLayout
+    ' Даже отказ до подготовки начинает новый отчет, без счетчиков и ID
+    ' предыдущего успешного запуска того же исполнителя.
+    Set mDefinition = Nothing
+    mPositionCount = 0: mCapacity = 0: mSkippedProjections = 0: Erase mPositions
+    mMergedPositions = 0: mConflicts = 0: mBarOverlaps = 0: mPhysicalCapacity = 0: mCreatedPhysical = 0
+    mDiagnosticRecordsOmitted = 0
+    Set mDiagnostic = Nothing: Set mDiagnostics = New Collection
+    Set mBarBuckets = CreateObject("Scripting.Dictionary"): Erase mPhysicalRule
+    Erase mPhysicalOwner: Erase mRules: Erase mState: Erase mStart: Erase mCount
+    Erase mSkippedByRule: Erase mMergedByRule: Erase mCreatedByRule
     If definition Is Nothing Or geometry Is Nothing Then RuleError 0, "Определение и бетонная область обязательны."
     If Not definition.IsSealed Then RuleError 0, "Определение еще не опубликовано."
     Set mDefinition = definition
-    mPositionCount = 0: mCapacity = 0: mSkippedProjections = 0: Erase mPositions
-    mMergedPositions = 0: mConflicts = 0
     Dim ruleCount As Long, i As Long, result As CRebarLayout
     ruleCount = definition.RuleCount
     Set result = New CRebarLayout
     If ruleCount = 0 Then Set Build = result: Exit Function
     ReDim mRules(1 To ruleCount): ReDim mState(1 To ruleCount)
     ReDim mStart(1 To ruleCount): ReDim mCount(1 To ruleCount)
+    ReDim mSkippedByRule(1 To ruleCount): ReDim mMergedByRule(1 To ruleCount): ReDim mCreatedByRule(1 To ruleCount)
     For i = 1 To ruleCount: definition.CopyRule i, mRules(i): Next i
+    mBarBinSize = 1#
+    For i = 1 To ruleCount
+        If mRules(i).Enabled Then mBarBinSize = GeomMax(mBarBinSize, mRules(i).Diameter)
+    Next i
     Preflight
     For i = 1 To ruleCount: PrepareRule i: Next i
+    If mPositionCount > 0 Then ReDim mPhysicalOwner(1 To mPositionCount) Else Erase mPhysicalOwner
     Dim order() As Long, scratch() As Long, index As Long, position As TRebarPosition
     Dim region As CConcreteRegion, query As CSectionGeometryQuery, owner As Long, identical As Boolean
     Set region = definition.ConcreteDomain: Set query = New CSectionGeometryQuery
@@ -52,30 +159,82 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
                 identical = (result.Diameter(owner) = mRules(index).Diameter And _
                     StrComp(result.SteelClass(owner), mRules(index).SteelClass, vbTextCompare) = 0)
                 If mRules(index).Coincidence = RejectCoincidence Then _
-                    RuleError index, "Позиция совпадает со стержнем '" & result.BarID(owner) & "'; политика объединения не задана."
+                    RuleError index, "Позиция совпадает со стержнем '" & result.BarID(owner) & "'; политика объединения не задана.", "COINCIDENCE", result.BarID(owner), position.X, position.Y
                 If Not identical And mRules(index).Coincidence = MergeIdentical Then _
-                    RuleError index, "Совпавшие позиции имеют разные диаметры или материалы."
+                    RuleError index, "Совпавшие позиции имеют разные диаметры или материалы.", "COINCIDENCE_CONFLICT", result.BarID(owner), result.Diameter(owner), mRules(index).Diameter
                 ValidatePlacement index, result.X(owner), result.Y(owner), result.Diameter(owner), position.SourcePositionID, geometry, region, query
-                If Not identical Then mConflicts = mConflicts + 1
+                If Not identical Then
+                    mConflicts = mConflicts + 1
+                    AddDiagnostic index, "COINCIDENCE_OWNER", result.BarID(owner), "Сохранен явно заданный опубликованный владелец.", result.Diameter(owner), mRules(index).Diameter
+                End If
                 mMergedPositions = mMergedPositions + 1
+                mMergedByRule(index) = mMergedByRule(index) + 1
+                mPhysicalOwner(order(i)) = owner
                 result.AddMembership owner, mRules(index).AnnotationGroup
                 GoTo NextPosition
             End If
             ValidatePlacement index, position.X, position.Y, mRules(index).Diameter, position.SourcePositionID, geometry, region, query
+            CheckNeighbors index, position, result
             result.AddBar position.SourcePositionID, position.X, position.Y, mRules(index).Diameter, 0#, _
                 mRules(index).SteelClass, mRules(index).Comment, geometry, mRules(index).AnnotationGroup
+            mCreatedByRule(index) = mCreatedByRule(index) + 1
+            mCreatedPhysical = mCreatedPhysical + 1
+            mPhysicalOwner(order(i)) = result.Count
+            IndexPhysicalBar result, index
 NextPosition:
         Next i
     End If
     Set Build = result
 End Function
 
+' Пространственный индекс только выбирает кандидатов. Зазор вычисляется
+' по исходным Double и двум радиусам; касание связанных рядов допускается.
+Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition, ByVal result As CRebarLayout)
+    Dim bx As Double, by As Double, dx As Long, dy As Long, key As String, bucket As Collection, candidate As Variant
+    Dim gap As Double, other As Long
+    bx = Int(position.X / mBarBinSize): by = Int(position.Y / mBarBinSize)
+    For dx = -1 To 1
+        For dy = -1 To 1
+            key = Format$(bx + dx, "0") & "|" & Format$(by + dy, "0")
+            If mBarBuckets.Exists(key) Then
+                Set bucket = mBarBuckets(key)
+                For Each candidate In bucket
+                    other = CLng(candidate)
+                    gap = Sqr((position.X - result.X(other)) ^ 2 + (position.Y - result.Y(other)) ^ 2) - _
+                        (mRules(index).Diameter + result.Diameter(other)) / 2#
+                    If gap < -GEOM_TOLERANCE Then
+                        mBarOverlaps = mBarOverlaps + 1
+                        If mRules(index).OverlapPolicy = RejectOverlap Or mRules(mPhysicalRule(other)).OverlapPolicy = RejectOverlap Then _
+                            RuleError index, "Диски стержней пересекаются; измените шаг или смещения связанных рядов.", "BAR_OVERLAP", result.BarID(other), gap, mRules(index).Diameter
+                        AddDiagnostic index, "BAR_OVERLAP", result.BarID(other), "Отрицательный геометрический зазор между дисками стержней.", gap, mRules(index).Diameter
+                    End If
+                Next candidate
+            End If
+        Next dy
+    Next dx
+End Sub
+
+Private Sub IndexPhysicalBar(ByVal result As CRebarLayout, ByVal ruleIndex As Long)
+    Dim key As String, bucket As Collection, index As Long
+    index = result.Count
+    If index > mPhysicalCapacity Then
+        mPhysicalCapacity = CLng(GeomMin(GEOM_MAX_REBAR_COUNT, GeomMax(16#, CDbl(mPhysicalCapacity) * 2#)))
+        ReDim Preserve mPhysicalRule(1 To mPhysicalCapacity)
+    End If
+    mPhysicalRule(index) = ruleIndex
+    key = Format$(Int(result.X(index) / mBarBinSize), "0") & "|" & Format$(Int(result.Y(index) / mBarBinSize), "0")
+    If mBarBuckets.Exists(key) Then Set bucket = mBarBuckets(key) Else Set bucket = New Collection: mBarBuckets.Add key, bucket
+    bucket.Add index
+End Sub
+
 Private Sub ValidatePlacement(ByVal index As Long, ByVal x As Double, ByVal y As Double, ByVal diameter As Double, _
         ByVal positionID As String, ByVal geometry As CGeometryRegion, ByVal region As CConcreteRegion, ByVal query As CSectionGeometryQuery)
-    If Not geometry.ContainsPoint(x, y) Then RuleError index, "Ось стержня '" & positionID & "' вне бетона. Уменьшите смещение или измените положение ряда."
+    If Not geometry.ContainsPoint(x, y) Then RuleError index, "Ось стержня '" & positionID & "' вне бетона. Уменьшите смещение или измените положение ряда.", "BAR_CENTER_OUTSIDE", positionID, x, y
     If mRules(index).PlacementCheck = CheckFullDisk Then
-        If query.BoundaryDistance(region, x, y) + GEOM_TOLERANCE < diameter / 2# Then _
-            RuleError index, "Стержень '" & positionID & "' не помещается целиком внутри бетона. Уменьшите диаметр или измените положение ряда."
+        Dim cover As Double
+        cover = query.BoundaryDistance(region, x, y)
+        If cover + GEOM_TOLERANCE < diameter / 2# Then _
+            RuleError index, "Стержень '" & positionID & "' не помещается целиком внутри бетона. Уменьшите диаметр или измените положение ряда.", "BAR_DISK_OUTSIDE", positionID, cover, diameter / 2#
     End If
 End Sub
 
@@ -326,8 +485,10 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 End If
             Next targetIndex
             If Len(bestID) = 0 Then
-                If Not mRules(index).SkipMissingProjection Then RuleError index, "Нет пересечения исходной позиции с целевым рабочим путем."
+                If Not mRules(index).SkipMissingProjection Then RuleError index, "Нет пересечения исходной позиции с целевым рабочим путем.", "PROJECTION_MISSING", position.SourcePositionID, position.X, position.Y
                 mSkippedProjections = mSkippedProjections + 1
+                mSkippedByRule(index) = mSkippedByRule(index) + 1
+                AddDiagnostic index, "PROJECTION_MISSING", position.SourcePositionID, "Исходная позиция пропущена: нет hit на конечной целевой траектории.", position.X, position.Y
             Else
                 Set path = mDefinition.Path(bestID)
                 path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
@@ -437,6 +598,7 @@ Private Sub ValidateOptions(ByVal index As Long)
         If .StartSetback < 0# Or .EndSetback < 0# Then RuleError index, "Концевые отступы не могут быть отрицательными."
         If .EndMode < IncludeBoth Or .EndMode > ClosedUniform Then RuleError index, "Неизвестное правило концов."
         If .PlacementCheck <> CheckCenter And .PlacementCheck <> CheckFullDisk Then RuleError index, "Неизвестная проверка размещения."
+        If .OverlapPolicy <> ReportOverlap And .OverlapPolicy <> RejectOverlap Then RuleError index, "Неизвестная политика пересечения дисков."
         If .Publication <> PublishByRule And .Publication <> PublishPerSourcePosition Then RuleError index, "Неизвестный порядок публикации."
         If .PositionOrder <> AlongPath And .PositionOrder <> FromPathMiddle Then RuleError index, "Неизвестный порядок позиций."
         If .Coincidence < RejectCoincidence Or .Coincidence > KeepPublishedOwner Then RuleError index, "Неизвестная политика совпадений."
@@ -514,8 +676,24 @@ Private Function BeforePosition(ByVal a As Long, ByVal b As Long) As Boolean
     BeforePosition = (a <= b)
 End Function
 
-Private Sub RuleError(ByVal index As Long, ByVal reason As String)
+Private Sub AddDiagnostic(ByVal index As Long, ByVal code As String, ByVal relatedEntityID As String, ByVal reason As String, _
+        Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
+    Dim entityID As String, reference As String
+    If index > 0 Then
+        entityID = mRules(index).RuleID: reference = mRules(index).SourceReference
+        If Len(reference) = 0 Then reference = mDefinition.SourceReference(entityID)
+    End If
+    Set mDiagnostic = New CGeometryDiagnostic
+    mDiagnostic.Initialize code, entityID, relatedEntityID, reason, detail1, detail2, reference
+    If mDiagnostics Is Nothing Then Set mDiagnostics = New Collection
+    If mDiagnostics.Count < DIAGNOSTIC_RECORD_LIMIT Then mDiagnostics.Add mDiagnostic Else mDiagnosticRecordsOmitted = mDiagnosticRecordsOmitted + 1
+End Sub
+
+Private Sub RuleError(ByVal index As Long, ByVal reason As String, Optional ByVal code As String = "RULE_INVALID", _
+        Optional ByVal relatedEntityID As String = "", Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
+    If code = "COINCIDENCE" Or code = "COINCIDENCE_CONFLICT" Or code = "BAR_OVERLAP" Then mConflicts = mConflicts + 1
+    AddDiagnostic index, code, relatedEntityID, reason, detail1, detail2
     Dim reference As String
-    If index > 0 Then reference = mRules(index).SourceReference: reason = "Ряд '" & mRules(index).RuleID & "': " & reason
+    If index > 0 Then reference = mDiagnostic.SourceReference: reason = "Ряд '" & mRules(index).RuleID & "': " & reason
     SectionRecipeError "CRebarRuleExecutor", reason, reference
 End Sub

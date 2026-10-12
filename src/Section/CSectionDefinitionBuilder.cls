@@ -68,6 +68,66 @@ Public Sub AddPath(ByVal path As CGeometryPath)
     mDefinition.AddPath path
 End Sub
 
+' Привязки принадлежат модели; пиксельные координаты в рецепте не используются.
+Public Sub Anchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Double)
+    RequireOpen
+    mDefinition.AddAnchor anchorID, x, y
+End Sub
+
+Public Sub PathAnchor(ByVal anchorID As String, ByVal pathID As String, ByVal segmentID As String, Optional ByVal parameter As Double = 0#)
+    RequireOpen
+    Dim path As CGeometryPath, x As Double, y As Double, tx As Double, ty As Double
+    Set path = mDefinition.Path(pathID)
+    path.AtDistance path.AnchorStation(segmentID, parameter), x, y, tx, ty
+    mDefinition.AddAnchor anchorID, x, y
+End Sub
+
+Public Sub Source(ByVal entityID As String, ByVal sourceReference As String)
+    RequireOpen
+    mDefinition.AddSource entityID, sourceReference
+End Sub
+
+Public Sub TransformAnchor(ByVal anchorID As String, ByVal sourceAnchorID As String, ByVal shiftX As Double, ByVal shiftY As Double, _
+        Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False)
+    RequireOpen
+    Dim x As Double, y As Double
+    mDefinition.AnchorCoordinates sourceAnchorID, x, y
+    mQuery.TransformCoordinates x, y, shiftX, shiftY, rotation, reflectX
+    mDefinition.AddAnchor anchorID, x, y
+End Sub
+
+Public Function Offset(ByVal pathID As String, ByVal sourcePathID As String, ByVal signedLeftDistance As Double) As CGeometryPath
+    RequireOpen
+    On Error GoTo Failed
+    Set Offset = mQuery.OffsetPath(pathID, mDefinition.Path(sourcePathID), signedLeftDistance)
+    mDefinition.AddPath Offset
+    Exit Function
+Failed:
+    SectionRecipeGeometryError "CSectionDefinitionBuilder", mDefinition.SourceReference(pathID)
+End Function
+
+Public Function ConstrainLine(ByVal pathID As String, ByVal sourcePathID As String, _
+        ByVal startNX As Double, ByVal startNY As Double, ByVal startBound As Double, _
+        ByVal endNX As Double, ByVal endNY As Double, ByVal endBound As Double) As CGeometryPath
+    RequireOpen
+    On Error GoTo Failed
+    Set ConstrainLine = mQuery.ConstrainLine(pathID, mDefinition.Path(sourcePathID), startNX, startNY, startBound, endNX, endNY, endBound)
+    mDefinition.AddPath ConstrainLine
+    Exit Function
+Failed:
+    SectionRecipeGeometryError "CSectionDefinitionBuilder", mDefinition.SourceReference(pathID)
+End Function
+
+Public Property Get LastGeometryDiagnostic() As CGeometryDiagnostic
+    Dim raw As CGeometryDiagnostic, mapped As CGeometryDiagnostic
+    If mQuery Is Nothing Then Exit Property
+    Set raw = mQuery.LastDiagnostic
+    If raw Is Nothing Then Exit Property
+    Set mapped = New CGeometryDiagnostic
+    mapped.Initialize raw.Code, raw.EntityID, raw.RelatedEntityID, raw.Reason, raw.Detail1, raw.Detail2, mDefinition.SourceReference(raw.EntityID)
+    Set LastGeometryDiagnostic = mapped
+End Property
+
 Public Function Chain(ByVal pathID As String, ByVal sourcePathID As String, _
         ByVal startSegmentID As String, ByVal startParameter As Double, ByVal endSegmentID As String, ByVal endParameter As Double, _
         Optional ByVal forward As Boolean = True, Optional ByVal fullLoopIfSame As Boolean = False) As CGeometryPath
@@ -204,6 +264,70 @@ Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String
     value.AnnotationID = annotationID: value.Kind = "BetweenPoints": value.Name = name
     value.StartX = startX: value.EndX = endX: value.StartY = placementY: value.EndY = placementY
     value.NormalY = normalY: value.Value = endX - startX: value.Comment = comment: value.DisplayIncrement = displayIncrement
+    mDefinition.AddAnnotation value
+End Sub
+
+Public Sub VerticalDistance(ByVal annotationID As String, ByVal name As String, _
+        ByVal startY As Double, ByVal endY As Double, ByVal placementX As Double, _
+        Optional ByVal normalX As Double = -1#, Optional ByVal comment As String = "")
+    RequireOpen
+    Dim value As TSectionAnnotation
+    value.AnnotationID = annotationID: value.Kind = "BetweenPoints": value.Name = name
+    value.StartX = placementX: value.EndX = placementX: value.StartY = startY: value.EndY = endY
+    value.NormalX = normalX: value.Value = Abs(endY - startY): value.Comment = comment
+    mDefinition.AddAnnotation value
+End Sub
+
+' Размер между именованными привязками: Horizontal/Vertical/Aligned.
+Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String, ByVal endAnchorID As String, _
+        ByVal name As String, Optional ByVal measurement As String = "Aligned", _
+        Optional ByVal normalX As Double = 0#, Optional ByVal normalY As Double = 0#, Optional ByVal comment As String = "")
+    RequireOpen
+    If measurement <> "Horizontal" And measurement <> "Vertical" And measurement <> "Aligned" Then _
+        SectionRecipeError "CSectionDefinitionBuilder", "Measurement должен быть Horizontal, Vertical или Aligned."
+    Dim value As TSectionAnnotation
+    value.AnnotationID = annotationID: value.Kind = "Anchors." & measurement: value.Name = name
+    value.StartAnchorID = startAnchorID: value.EndAnchorID = endAnchorID
+    value.NormalX = normalX: value.NormalY = normalY: value.Comment = comment
+    mDefinition.AddAnnotation value
+End Sub
+
+Public Sub PathLength(ByVal annotationID As String, ByVal target As String, ByVal placementAnchorID As String, _
+        Optional ByVal name As String = "L", Optional ByVal comment As String = "")
+    RequireOpen
+    Dim value As TSectionAnnotation
+    value.AnnotationID = annotationID: value.Kind = "PathLength": value.Target = target
+    value.StartAnchorID = placementAnchorID: value.Name = name: value.Comment = comment
+    mDefinition.AddAnnotation value
+End Sub
+
+Public Sub Radius(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, _
+        Optional ByVal parameter As Double = 0.5, Optional ByVal name As String = "R", Optional ByVal comment As String = "")
+    CircularDimension annotationID, pathID, segmentID, parameter, name, comment, False
+End Sub
+
+Public Sub Diameter(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, _
+        Optional ByVal parameter As Double = 0.5, Optional ByVal name As String = "D", Optional ByVal comment As String = "")
+    CircularDimension annotationID, pathID, segmentID, parameter, name, comment, True
+End Sub
+
+Private Sub CircularDimension(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, _
+        ByVal parameter As Double, ByVal name As String, ByVal comment As String, ByVal diameter As Boolean)
+    RequireOpen
+    If parameter < 0# Or parameter > 1# Then SectionRecipeError "CSectionDefinitionBuilder", "Параметр точки дуги должен лежать в [0;1]."
+    Dim value As TSectionAnnotation
+    value.AnnotationID = annotationID: value.Kind = "Radius": If diameter Then value.Kind = "Diameter"
+    value.Target = pathID: value.SegmentID = segmentID: value.Value = parameter
+    value.Name = name: value.Comment = comment
+    mDefinition.AddAnnotation value
+End Sub
+
+Public Sub Text(ByVal annotationID As String, ByVal anchorID As String, ByVal textValue As String, _
+        Optional ByVal comment As String = "")
+    RequireOpen
+    Dim value As TSectionAnnotation
+    value.AnnotationID = annotationID: value.Kind = "Text": value.StartAnchorID = anchorID
+    value.Name = textValue: value.Comment = comment
     mDefinition.AddAnnotation value
 End Sub
 

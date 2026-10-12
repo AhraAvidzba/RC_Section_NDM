@@ -60,6 +60,8 @@ Private mRebarDiameter() As Double ' Диаметр стержня, мм.
 Private mRebarSteelClass() As String ' Расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
 Private mRebarMaterialID() As Long ' Идентификатор материала стержня; текущий solver получает единую диаграмму арматуры.
 Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
+Private mRebarRecipeTrace() As String ' Происхождение всех позиций физического стержня; metadata, не геометрия.
+Private mGeometryDiagnostics As String
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 Private mRebarCapacity As Long ' Резерв арматуры живет только вместе с этой моделью.
 
@@ -114,6 +116,7 @@ Public Sub Clear()
     Erase mRebarSteelClass
     Erase mRebarMaterialID
     Erase mRebarComment
+    Erase mRebarRecipeTrace: mGeometryDiagnostics = vbNullString
     mRebarCount = 0
     mRebarCapacity = 0
 
@@ -142,6 +145,34 @@ End Property
 Public Property Get ConcreteMeshSource() As String
     ConcreteMeshSource = mConcreteMeshSource
 End Property
+
+Public Property Let GeometryDiagnosticsText(ByVal value As String)
+    mGeometryDiagnostics = value
+End Property
+
+Public Property Get GeometryDiagnosticsText() As String
+    GeometryDiagnosticsText = mGeometryDiagnostics
+End Property
+
+' Metadata не меняет A/I и revision. Все заявленные принадлежности одного
+' физического стержня сохраняются; разделители в смысловых ID экранируются.
+Public Sub AppendRebarRecipeTrace(ByVal index As Long, ByVal ruleID As String, ByVal pathID As String, ByVal sourcePositionID As String)
+    CheckRebarIndex index
+    If Len(mRebarRecipeTrace(index)) > 0 Then mRebarRecipeTrace(index) = mRebarRecipeTrace(index) & ";"
+    mRebarRecipeTrace(index) = mRebarRecipeTrace(index) & "RuleId=" & TraceToken(ruleID) & _
+        "|PathId=" & TraceToken(pathID) & "|SourcePositionId=" & TraceToken(sourcePositionID)
+End Sub
+
+Public Property Get RebarRecipeTrace(ByVal index As Long) As String
+    CheckRebarIndex index
+    RebarRecipeTrace = mRebarRecipeTrace(index)
+End Property
+
+Private Function TraceToken(ByVal value As String) As String
+    value = Replace$(value, "%", "%25"): value = Replace$(value, "|", "%7C"): value = Replace$(value, ";", "%3B")
+    value = Replace$(value, "=", "%3D"): value = Replace$(value, vbCr, "%0D"): value = Replace$(value, vbLf, "%0A")
+    TraceToken = value
+End Function
 
 ' Добавляет одно бетонное волокно или импортированную бетонную область.
 ' Координаты и площадь уже должны быть во внутренних единицах проекта. Метод
@@ -264,6 +295,7 @@ Private Sub EnsureRebarCapacity(ByVal required As Long, Optional ByVal exactSize
     ReDim Preserve mRebarSteelClass(1 To capacity)
     ReDim Preserve mRebarMaterialID(1 To capacity)
     ReDim Preserve mRebarComment(1 To capacity)
+    ReDim Preserve mRebarRecipeTrace(1 To capacity)
     mRebarCapacity = capacity
 End Sub
 

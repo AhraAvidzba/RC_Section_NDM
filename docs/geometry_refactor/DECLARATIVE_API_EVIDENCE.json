@@ -1,0 +1,142 @@
+{
+  "Schema": 1,
+  "Status": "DIRECTED_NATIVE_PASS",
+  "Date": "2026-10-12",
+  "NativeWorkbook": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/RC_Section_NDM.xlsm",
+  "NativeSHA256": "968508E94E37C3F48838A6FE187B26A61A936D90D338002DF9ED3F8643BAA219",
+  "ProductionSHA256": "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+  "ProductionUpdated": false,
+  "CodeComparison": {
+    "Status": "PASS",
+    "ApprovedSourceCount": 18,
+    "SourceMismatchCount": 0,
+    "UnexpectedCount": 0,
+    "Components": {
+      "StandardModules": 40,
+      "Classes": 100,
+      "DocumentModules": 5,
+      "Other": 0
+    }
+  },
+  "Suites": [
+    {
+      "Failed": 0,
+      "Report": "FinalOperations.txt",
+      "Name": "Operations",
+      "Passed": 32
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalOperations.txt",
+      "Name": "Diagnostics",
+      "Passed": 35
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalOperations.txt",
+      "Name": "Rules",
+      "Passed": 187
+    },
+    {
+      "Failed": 0,
+      "Report": "ApiCore.txt",
+      "Name": "Definition",
+      "Passed": 15
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalApiAnnotations.txt",
+      "Name": "Measurements",
+      "Passed": 39
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalMetadataSnapshot.txt",
+      "Name": "AnnotationSnapshot",
+      "Passed": 24
+    },
+    {
+      "Failed": 0,
+      "Report": "Consumers.txt",
+      "Name": "GeometryQuery",
+      "Passed": 1319
+    },
+    {
+      "Failed": 0,
+      "Report": "Consumers.txt",
+      "Name": "ContourOwnership",
+      "Passed": 520
+    },
+    {
+      "Failed": 0,
+      "Report": "Consumers.txt",
+      "Name": "ImportedUnits",
+      "Passed": 228
+    },
+    {
+      "Failed": 0,
+      "Report": "Consumers.txt",
+      "Name": "SectionSolver",
+      "Passed": 2834
+    },
+    {
+      "Failed": 0,
+      "Report": "Consumers.txt",
+      "Name": "CenteredNumerical",
+      "Passed": 449
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalGeometry.txt",
+      "Name": "Geometry",
+      "Passed": 765
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalGeometry.txt",
+      "Name": "SetbackInput",
+      "Passed": 20
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalGeometry.txt",
+      "Name": "SetbackUnits",
+      "Passed": 75
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalGeometry.txt",
+      "Name": "NamedAnnotations",
+      "Passed": 425
+    },
+    {
+      "Failed": 0,
+      "Report": "FinalApiAnnotations.txt",
+      "Name": "RegressionBaseline",
+      "Passed": 39
+    }
+  ],
+  "Assertions": 7006,
+  "ExactGeometry": {
+    "Status": "PASS",
+    "Records": 20376,
+    "Report": "ExactGeometryComparison.json",
+    "Mutations": 3,
+    "SkipInput": true
+  },
+  "Visual": {
+    "Status": "DIRECTED_VISUAL_PASS",
+    "ReopenReport": "PreviewReopen.txt",
+    "DenseProbe": "RecipeAnnotations.DenseProbe.png",
+    "PNG": "RecipeAnnotations.png"
+  },
+  "FullOnOffUIMatrices": "NOT_RUN_USER_REQUESTED_DIRECTED_ONLY",
+  "Outstanding": [
+    "Full API manifest/catalog",
+    "One-class example and E09",
+    "Final Help section and updater",
+    "Directed final integration/CAD/performance",
+    "Production workbook and VBA_All_Code.txt",
+    "Final acceptance reports"
+  ]
+}
