@@ -15,7 +15,15 @@ $path=(Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression'))+[IO.Path]::DirectorySeparatorChar
 if (-not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only isolated evidence workbooks may be updated.'}
 $production=Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
-$productionHash=(Get-FileHash -LiteralPath $production).Hash
+function Get-OpenWorkbookHash([string]$Path) {
+    # Excel держит исходную книгу открытой. Разрешение совместного чтения
+    # не меняет файл; сравнение до/после всё равно обнаруживает его сохранение.
+    $stream=[IO.File]::Open($Path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite)
+    $digest=[Security.Cryptography.SHA256]::Create()
+    try {[BitConverter]::ToString($digest.ComputeHash($stream)).Replace('-','')}
+    finally {$digest.Dispose();$stream.Dispose()}
+}
+$productionHash=Get-OpenWorkbookHash $production
 if ($EntryPointNames.Count -and ($ModuleNames.Count -ne 1 -or $RetiredModules.Count -or $TraceGeometry)) {throw 'Entry-point instrumentation requires exactly one module and no retirement/trace.'}
 foreach ($name in $EntryPointNames) {if ($name -notmatch '^[A-Za-z][A-Za-z0-9_]*$') {throw ('Invalid entry-point name: '+$name)}}
 $sourceFiles=@(Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas','.cls')
@@ -49,6 +57,10 @@ try {
     foreach ($file in $sourceFiles) {
         if ($ModuleNames.Count -and $file.BaseName -notin $ModuleNames) {continue}
         $body=[regex]::Match([IO.File]::ReadAllText($file.FullName,[Text.Encoding]::UTF8),'(?ms)^Option Explicit.*').Value
+        if (-not $body -and $file.BaseName -eq 'modSectionRecipeApiGuide') {
+            $body=([IO.File]::ReadAllLines($file.FullName,[Text.Encoding]::UTF8) | Where-Object {$_ -notmatch '^Attribute VB_Name = '}) -join "`r`n"
+            if (@($body -split "`r?`n" | Where-Object {$_.Trim() -and $_ -notmatch "^\s*'"}).Count) {throw 'API guide must contain comments only.'}
+        }
         if (-not $body) {throw ('Source body missing: '+$file.FullName)}
         if ($file.BaseName -eq 'CSectionTypeRegistry') {$body=Add-GeometryExampleRegistration $body $RecipeRegistration}
         if ($TraceGeometry -and $file.BaseName -eq 'CSectionGeometryQuery') {
@@ -124,7 +136,7 @@ End Function
         throw 'Private VBA compilation failed.'
     }
     $book.Save();$book.Close($false);$book=$null
-    if ((Get-FileHash -LiteralPath $production).Hash -cne $productionHash) {throw 'Production changed during preparation.'}
+    if ((Get-OpenWorkbookHash $production) -cne $productionHash) {throw 'Production changed during preparation.'}
     [ordered]@{Workbook=$path;WorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash;ProductionSHA256=$productionHash;Compiled=$true;Modules=$updated;RetiredModules=$removed;EntryPointNames=$EntryPointNames;TraceGeometry=[bool]$TraceGeometry;ProductionChanged=$false} |
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path (Split-Path -Parent $path) 'CodeUpdate.json') -Encoding UTF8
     Write-Output ('PRIVATE_CODE_READY: modules='+$updated.Count+'; production unchanged=True')

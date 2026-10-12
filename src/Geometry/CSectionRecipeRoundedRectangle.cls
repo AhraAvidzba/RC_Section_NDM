@@ -8,6 +8,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Декларативный рецепт прямоугольника с независимыми скруглёнными сторонами
+' ==========================================================================
 Implements ISectionRecipe
 
 ' Рецепт RoundedRectangle: независимые Simple/Tapered-стороны, четыре
@@ -27,6 +31,8 @@ Private Type TRoundedInput
     GeometrySource As String
 End Type
 
+' Описывает контуры, арматурные правила и размеры выбранного рецепта. Сетку и физические стержни
+' строит общий CSectionBuilder.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
     Dim sizes As TRoundedInput, outer As CGeometryPath
@@ -99,6 +105,7 @@ InvalidGeometry:
     SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sizes.GeometrySource
 End Function
 
+' Добавляет исходную вершину, её смысловой ID и назначенный радиус скругления.
 Private Sub AddCorner(ByRef points() As Variant, ByRef radii() As Variant, ByRef names() As Variant, _
         ByRef count As Long, ByVal name As String, ByVal x As Double, ByVal y As Double, ByVal radius As Double)
     points(count) = Array(x, y): radii(count) = radius: names(count) = name: count = count + 1
@@ -170,19 +177,29 @@ End Sub
 Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, _
         ByVal groupID As String, ByVal axisDistance As Double, ByVal sourceReference As String) As CGeometryPath
     On Error GoTo InvalidPath
-    Dim offset As CGeometryPath
+    Dim offset As CGeometryPath, startID As String, endID As String, startAt As Double, endAt As Double
     Set offset = facade.OffsetRoundedPolygon("Offset." & groupID, sizes.Vertices, sizes.Radii, sizes.VertexIDs, axisDistance)
     Select Case groupID
         Case "B.Top": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.TL", 1#)
         Case "B.Bottom": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.BR", 1#, "Edge.BR", 0#, False)
-        Case "H.Left": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.BR", 1#, False)
-        Case "H.Right": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 1#, "Edge.BR", 0#)
+        Case "H.Left"
+            startID = "Edge.TL": startAt = 0#: endID = "Edge.BR": endAt = 1#
+            If Not offset.HasSegmentID(startID) Then startID = "Corner.TL": startAt = 1#
+            If Not offset.HasSegmentID(endID) Then endID = "Corner.BL": endAt = 0#
+            Set AxisPath = facade.Chain(groupID, offset.ID, startID, startAt, endID, endAt, False)
+        Case "H.Right"
+            startID = "Edge.TL": startAt = 1#: endID = "Edge.BR": endAt = 0#
+            If Not offset.HasSegmentID(startID) Then startID = "Corner.TR": startAt = 0#
+            If Not offset.HasSegmentID(endID) Then endID = "Corner.BR": endAt = 1#
+            Set AxisPath = facade.Chain(groupID, offset.ID, startID, startAt, endID, endAt)
     End Select
     Exit Function
 InvalidPath:
     SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sourceReference
 End Function
 
+' Описывает смещение и привязку дополнительного ряда относительно основного, сохраняя смысловую
+' группу.
 Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, _
         ByVal groupID As String, ByVal caption As String, ByVal rowNumber As Long, ByVal location As String, _
         ByVal distance As Double, ByVal normalSign As Double) As CRebarRuleOptions
@@ -196,6 +213,7 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row 
     Set AdditionalOptions = options
 End Function
 
+' Описывает габариты и размерные привязки рецепта отдельно от расчётных контуров.
 Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal outer As CGeometryPath)
     Dim minX As Double, maxX As Double
     outer.ProjectionBounds 1#, 0#, minX, maxX
@@ -210,6 +228,7 @@ Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
             "Фактический вынос правого края бетона относительно правого торца базы B.", 1#
 End Sub
 
+' Проверяет ограничение рецепта; ошибка содержит фактический адрес параметра во входной таблице.
 Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)
     If Not condition Then SectionRecipeError "CSectionRecipeRoundedRectangle", reason, table.SourceReference(row, column)
 End Sub

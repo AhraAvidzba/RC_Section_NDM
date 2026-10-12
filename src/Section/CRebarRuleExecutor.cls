@@ -9,6 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+' ==========================================================================
+' Общий исполнитель арматурных правил: позиции, зависимости, проекции и публикация
+' ==========================================================================
+
 Private Const DIAGNOSTIC_RECORD_LIMIT As Long = 128 ' Счетчики полные; подробные образцы ограничены по памяти.
 
 ' Универсальное исполнение правил: аналитические станции, зависимости,
@@ -26,18 +30,28 @@ Private mPhysicalRule() As Long, mPhysicalCapacity As Long
 Private mPhysicalOwner() As Long
 Private mDiagnosticRecordsOmitted As Long
 
+' Все запрошенные позиции, включая пропущенные проекции; это не число физических стержней.
 Public Property Get RequestedPositions() As Long: RequestedPositions = mPositionCount + mSkippedProjections: End Property
+' Действительно добавленные физические стержни текущего Build, даже при отказе в середине.
 Public Property Get CreatedPositions() As Long: CreatedPositions = mCreatedPhysical: End Property
+' Число явно разрешённых пропусков target hit.
 Public Property Get SkippedProjections() As Long: SkippedProjections = mSkippedProjections: End Property
+' Число заявленных позиций, объединённых с физическим владельцем.
 Public Property Get MergedPositions() As Long: MergedPositions = mMergedPositions: End Property
+' Число несовместимых/отклонённых совпадений или запрещённых пересечений по явной политике.
 Public Property Get Conflicts() As Long: Conflicts = mConflicts: End Property
+' Полное число пар с отрицательным геометрическим зазором дисков; касание не включается.
 Public Property Get BarOverlaps() As Long: BarOverlaps = mBarOverlaps: End Property
+' Число событий сверх 128 сохранённых подробных образцов; полные счётчики не сокращаются.
 Public Property Get DiagnosticRecordsOmitted() As Long: DiagnosticRecordsOmitted = mDiagnosticRecordsOmitted: End Property
+' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic: Set LastDiagnostic = mDiagnostic: End Property
+' Число сохранённых подробных immutable образцов, 0..128.
 Public Property Get DiagnosticCount() As Long
     If Not mDiagnostics Is Nothing Then DiagnosticCount = mDiagnostics.Count
 End Property
 
+' Читает immutable подробный образец 1..DiagnosticCount; максимум 128 образцов, счётчики полные.
 Public Function DiagnosticAt(ByVal index As Long) As CGeometryDiagnostic
     Set DiagnosticAt = mDiagnostics(index)
 End Function
@@ -45,11 +59,16 @@ End Function
 ' Связь всех заявленных позиций с физическим владельцем остается явной,
 ' в том числе при Merge/KeepPublishedOwner. Номер соответствует CRebarLayout.
 Public Property Get PositionCount() As Long: PositionCount = mPositionCount: End Property
+' ID правила заявленной позиции, включая объединённые позиции.
 Public Function PositionRuleID(ByVal index As Long) As String
     PositionRuleID = mRules(mPositions(index).RuleIndex).RuleID
 End Function
+' ID геометрического пути заявленной позиции.
 Public Function PositionPathID(ByVal index As Long) As String: PositionPathID = mPositions(index).PathID: End Function
+' Смысловой SourcePositionId, из которого публиковался физический стержень.
 Public Function PositionSourceID(ByVal index As Long) As String: PositionSourceID = mPositions(index).SourcePositionID: End Function
+' Индекс физического владельца в итоговом CRebarLayout; объединённые позиции имеют одного
+' владельца.
 Public Function PositionPhysicalOwner(ByVal index As Long) As Long: PositionPhysicalOwner = mPhysicalOwner(index): End Function
 
 ' Диагностика не подменяет физическое число requested-числом. StationStep
@@ -97,6 +116,8 @@ Public Sub RuleStepBounds(ByVal ruleID As String, ByRef stepCount As Long, ByRef
     If stepCount = 0 Then minStep = 0#: minChord = 0#
 End Sub
 
+' Накапливает длину станции по пути и расстояние между центрами отдельно, чтобы дуга не
+' заменялась хордой.
 Private Sub AccumulateSpacing(ByVal first As Long, ByVal last As Long, ByVal step As Double, ByRef count As Long, _
         ByRef minStep As Double, ByRef maxStep As Double, ByRef minChord As Double, ByRef maxChord As Double)
     Dim chord As Double
@@ -105,6 +126,8 @@ Private Sub AccumulateSpacing(ByVal first As Long, ByVal last As Long, ByVal ste
     minChord = GeomMin(minChord, chord): maxChord = GeomMax(maxChord, chord)
 End Sub
 
+' Полный текстовый отчёт счётчиков и всех RuleTrace; численные длины в мм независимо от output
+' units.
 Public Function DiagnosticsText() As String
     Dim i As Long
     DiagnosticsText = "Requested=" & CStr(RequestedPositions) & "; Created=" & CStr(CreatedPositions) & _
@@ -116,6 +139,8 @@ Public Function DiagnosticsText() As String
     End If
 End Function
 
+' Исполняет опубликованные правила в готовой бетонной области и возвращает физическую раскладку;
+' mesh не строит.
 Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion) As CRebarLayout
     ' Даже отказ до подготовки начинает новый отчет, без счетчиков и ID
     ' предыдущего успешного запуска того же исполнителя.
@@ -214,6 +239,7 @@ Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition
     Next dx
 End Sub
 
+' Индексирует опубликованный физический стержень для контроля совпадений и пересечений.
 Private Sub IndexPhysicalBar(ByVal result As CRebarLayout, ByVal ruleIndex As Long)
     Dim key As String, bucket As Collection, index As Long
     index = result.Count
@@ -227,6 +253,7 @@ Private Sub IndexPhysicalBar(ByVal result As CRebarLayout, ByVal ruleIndex As Lo
     bucket.Add index
 End Sub
 
+' Проверяет положение и геометрическую допустимость заявленного стержня в бетонной области.
 Private Sub ValidatePlacement(ByVal index As Long, ByVal x As Double, ByVal y As Double, ByVal diameter As Double, _
         ByVal positionID As String, ByVal geometry As CGeometryRegion, ByVal region As CConcreteRegion, ByVal query As CSectionGeometryQuery)
     If Not geometry.ContainsPoint(x, y) Then RuleError index, "Ось стержня '" & positionID & "' вне бетона. Уменьшите смещение или измените положение ряда.", "BAR_CENTER_OUTSIDE", positionID, x, y
@@ -251,6 +278,8 @@ Private Sub Preflight()
     Next i
 End Sub
 
+' Оценивает число позиций до выделения массивов; EverySecond учитывается отдельно на каждом
+' независимом пути.
 Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef counts() As Double)
     If state(index) = 2 Then Exit Sub
     If state(index) = 1 Then RuleError index, "Циклическая зависимость рядов."
@@ -262,7 +291,16 @@ Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef count
             source = mDefinition.RuleIndex(mRules(index).SourceRuleID)
             EstimateRule source, state, counts
             counts(index) = counts(source)
-            If mRules(index).EverySecond And mRules(source).Mode <= ExplicitPositions Then counts(index) = -Int(-counts(index) / 2#)
+            If mRules(index).EverySecond And mRules(source).Mode <= ExplicitPositions And counts(source) > 0# Then
+                ' PerPath отсчитывает 1,3,... заново на каждой траектории.
+                ' Округление общей суммы занижало нечётные независимые ряды.
+                counts(index) = 0#
+                ids = mDefinition.TargetPaths(mRules(source).Target)
+                For Each id In ids
+                    Set path = mDefinition.Path(CStr(id))
+                    counts(index) = counts(index) - Int(-PositionCountFor(source, path) / 2#)
+                Next id
+            End If
         Else
             ids = mDefinition.TargetPaths(mRules(index).Target)
             For Each id In ids
@@ -276,6 +314,8 @@ Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef count
     state(index) = 2
 End Sub
 
+' Вычисляет число станций одного пути с учётом режима шага и включения концов, без размещения
+' стержней.
 Private Function PositionCountFor(ByVal index As Long, ByVal path As CGeometryPath) As Double
     Dim intervals As Double, length As Double
     length = path.Length - mRules(index).StartSetback - mRules(index).EndSetback
@@ -335,6 +375,8 @@ Private Sub PrepareRule(ByVal index As Long)
     mState(index) = 2
 End Sub
 
+' Строит независимые станции: локальный номер начинается с 1 на каждом пути, а ID и порядок
+' публикации остаются сквозными.
 Private Sub PrepareIndependent(ByVal index As Long)
     Dim ids As Variant, id As Variant, path As CGeometryPath, stations As Variant, ordinal As Long, i As Long
     Dim position As TRebarPosition, first As Long
@@ -348,7 +390,10 @@ Private Sub PrepareIndependent(ByVal index As Long)
                 ordinal = ordinal + 1
                 path.AtDistance CDbl(stations(i)), position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = CDbl(stations(i)): position.RuleIndex = index
-                position.RootRuleIndex = index: position.RootOrdinal = ordinal: position.SourceOrdinal = ordinal
+                position.RootRuleIndex = index: position.RootOrdinal = ordinal
+                ' ID и порядок публикации сквозные; отбор зависимого ряда
+                ' выполняется по локальной геометрической позиции пути.
+                position.SourceOrdinal = i - LBound(stations) + 1
                 position.RootPublicationRank = ordinal
                 position.PathID = CStr(id)
                 position.SourcePositionID = PositionID(index, ordinal, "")
@@ -370,6 +415,7 @@ Private Sub RankFromMiddle(ByVal first As Long, ByVal last As Long, ByVal length
     For i = first To last: mPositions(order(i)).RootPublicationRank = base + i - first + 1: Next i
 End Sub
 
+' Упорядочивает внутренние позиции ряда, сохраняя заданный порядок его конечных стержней.
 Private Sub SortMiddle(ByRef order() As Long, ByRef scratch() As Long, ByVal first As Long, ByVal last As Long, ByVal middleStation As Double)
     If first >= last Then Exit Sub
     Dim middle As Long, a As Long, b As Long, out As Long, takeA As Boolean
@@ -390,6 +436,7 @@ Private Sub SortMiddle(ByRef order() As Long, ByRef scratch() As Long, ByVal fir
     For out = first To last: order(out) = scratch(out): Next out
 End Sub
 
+' Находит крайние станции правила для отдельной публикации концов ряда.
 Friend Function RuleEnds(ByVal ruleID As String, ByRef startX As Double, ByRef startY As Double, ByRef endX As Double, ByRef endY As Double) As Boolean
     Dim index As Long, last As Long
     index = mDefinition.RuleIndex(ruleID)
@@ -435,6 +482,7 @@ Friend Function RuleExtremeEnds(ByVal ruleID As String, ByVal nx As Double, ByVa
     Next i
 End Function
 
+' Размещает зависимый ряд от исходных позиций, сохраняя локальный отсчёт и корневую связь.
 Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
     Dim i As Long, ordinal As Long, position As TRebarPosition
     For i = mStart(source) To mStart(source) + mCount(source) - 1
@@ -493,7 +541,8 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 Set path = mDefinition.Path(bestID)
                 path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = bestStation: position.PathID = bestID: position.RuleIndex = index
-                position.SourceOrdinal = ordinal
+                ' Обычная проекция сохраняет локальный SourceOrdinal источника,
+                ' включая пропуски. Hollow явно запрашивает успешный отсчёт ниже.
                 successful = successful + 1
                 If mRules(index).SuccessfulProjectionOrdinal Then position.SourceOrdinal = successful
                 If mRules(index).NewPublicationRoot Then
@@ -506,6 +555,7 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
     Next i
 End Sub
 
+' Возвращает аналитические станции выбранного режима раскладки на рабочем интервале пути.
 Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) As Variant
     ValidateWorkInterval index, path
     Dim length As Double, first As Double, last As Double, count As Double, intervals As Double
@@ -559,6 +609,8 @@ Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) A
     StationsFor = stations
 End Function
 
+' Строит станции с точным шагом и заданным режимом концов; несовместимый шаг не округляется
+' молча.
 Private Function FixedStations(ByVal index As Long, ByVal path As CGeometryPath, ByVal first As Double, ByVal length As Double) As Variant
     Dim count As Double, intervals As Double, start As Double, step As Double, stations() As Double, i As Long, kept As Long, station As Double
     step = mRules(index).Step: intervals = length / step
@@ -592,6 +644,7 @@ Private Function FixedStations(ByVal index As Long, ByVal path As CGeometryPath,
     ReDim Preserve stations(0 To kept - 1): FixedStations = stations
 End Function
 
+' Проверяет параметры активного правила до построения позиций и зависимостей.
 Private Sub ValidateOptions(ByVal index As Long)
     With mRules(index)
         If .Diameter <= 0# Then RuleError index, "Диаметр активного ряда должен быть положительным."
@@ -613,6 +666,7 @@ Private Sub ValidateOptions(ByVal index As Long)
     End With
 End Sub
 
+' Проверяет ненулевой рабочий интервал после концевых отступов.
 Private Sub ValidateWorkInterval(ByVal index As Long, ByVal path As CGeometryPath)
     If mRules(index).StartSetback + mRules(index).EndSetback > path.Length + GEOM_TOLERANCE Then RuleError index, "Концевые отступы превышают длину пути."
     If path.IsClosed Then
@@ -623,6 +677,7 @@ Private Sub ValidateWorkInterval(ByVal index As Long, ByVal path As CGeometryPat
     End If
 End Sub
 
+' Создаёт уникальный ID исходной позиции из правила и сквозного номера.
 Private Function PositionID(ByVal index As Long, ByVal ordinal As Long, ByVal sourceID As String) As String
     Dim prefix As String
     prefix = mRules(index).SourcePrefix
@@ -634,6 +689,7 @@ Private Function PositionID(ByVal index As Long, ByVal ordinal As Long, ByVal so
     End If
 End Function
 
+' Добавляет заявленную позицию в буфер, сохраняя правило, источник и порядок публикации.
 Private Sub AppendPosition(ByRef value As TRebarPosition)
     If mPositionCount >= GEOM_MAX_REBAR_COUNT Then RuleError value.RuleIndex, "Суммарное количество позиций превышает диапазон счетчиков."
     If mPositionCount = mCapacity Then
@@ -664,6 +720,8 @@ Private Sub SortOrder(ByRef order() As Long, ByRef scratch() As Long, ByVal firs
     For out = first To last: order(out) = scratch(out): Next out
 End Sub
 
+' Сравнивает приоритеты публикации двух позиций; совпадение координат не меняет владельца
+' произвольно.
 Private Function BeforePosition(ByVal a As Long, ByVal b As Long) As Boolean
     Dim keyA As Long, keyB As Long, ordinalA As Long, ordinalB As Long
     keyA = mPositions(a).RuleIndex: keyB = mPositions(b).RuleIndex
@@ -676,6 +734,8 @@ Private Function BeforePosition(ByVal a As Long, ByVal b As Long) As Boolean
     BeforePosition = (a <= b)
 End Function
 
+' Сохраняет диагностическую запись; подробные образцы ограничены по памяти, итоговые счётчики
+' остаются полными.
 Private Sub AddDiagnostic(ByVal index As Long, ByVal code As String, ByVal relatedEntityID As String, ByVal reason As String, _
         Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
     Dim entityID As String, reference As String
@@ -689,6 +749,7 @@ Private Sub AddDiagnostic(ByVal index As Long, ByVal code As String, ByVal relat
     If mDiagnostics.Count < DIAGNOSTIC_RECORD_LIMIT Then mDiagnostics.Add mDiagnostic Else mDiagnosticRecordsOmitted = mDiagnosticRecordsOmitted + 1
 End Sub
 
+' Выдаёт ошибку арматурного правила с ID и исходным адресом параметра.
 Private Sub RuleError(ByVal index As Long, ByVal reason As String, Optional ByVal code As String = "RULE_INVALID", _
         Optional ByVal relatedEntityID As String = "", Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
     If code = "COINCIDENCE" Or code = "COINCIDENCE_CONFLICT" Or code = "BAR_OVERLAP" Then mConflicts = mConflicts + 1

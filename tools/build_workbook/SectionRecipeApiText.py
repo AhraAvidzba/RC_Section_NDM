@@ -256,7 +256,6 @@ METHODS = {
         "GeomMax": "Максимум двух чисел одной размерности, без преобразования единиц.",
         "GeomMin": "Минимум двух чисел одной размерности.",
         "ReadContourArcSweep": "Читает согласованный signed sweep точной контурной дуги, не выбирая произвольные несовместимые входы.",
-        "RebarRequestedPositionCount": "Проверяет запрошенное число позиций основного/дополнительных рядов до выделения массива.",
         "BuildGeneratedSectionModel": "Общий тонкий adapter mesh/layout→CSectionModel; автор рецепта использует CSectionBuilder, а не отдельный генератор типа.",
     },
 }
@@ -320,7 +319,7 @@ OPTIONS = {
     "RemainderPlacement": "RemainderStart/End/Center: положение остатка для точного шага.",
     "TangentOffset": "Локальное связанное смещение вдоль касательной, мм; signed, не независимый шаг ряда.",
     "NormalOffset": "Локальное связанное смещение по левой нормали (-ty,tx), мм; signed.",
-    "EverySecond": "Брать каждую вторую исходную позицию по SourceOrdinal, начиная с первой.",
+    "EverySecond": "Брать локальные исходные позиции 1, 3, ... отдельно на каждом пути; SuccessfulProjectionOrdinal задаёт отдельный отсчёт успешных проекций.",
     "IncomingTangentAtJoint": "На станции стыка брать входящую касательную вместо default outgoing.",
     "DirectionX": "Глобальная X направления ProjectFrom, используется при SourceNormalSign=0.",
     "DirectionY": "Глобальная Y направления ProjectFrom; направление не нулевое.",

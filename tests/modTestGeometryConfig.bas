@@ -46,10 +46,10 @@ Public Function RunAudit03RebarCounterTests(Optional ByRef passed As Long = 0, _
     Next shapeName
     Set bars = CounterFixture("RectSet", 5)
     Check stats, "rebarCounter.RectSet.inactiveLower", bars.Count = 0
-    Near stats, "rebarCounter.binding.odd", RebarRequestedPositionCount(5, 16#, 12#, 10#, "EverySecondBar", "EverySecondBar"), 11#
-    Near stats, "rebarCounter.binding.even", RebarRequestedPositionCount(6, 16#, 12#, 10#, "EverySecondBar", "EachBar"), 15#
-    Near stats, "rebarCounter.binding.maxLong", RebarRequestedPositionCount(2147483647, 16#, 12#, 0#, "EverySecondBar", "EachBar"), 3221225471#
-    Near stats, "rebarCounter.binding.disabled", RebarRequestedPositionCount(2147483647, 0#, 12#, 10#, "EachBar", "EachBar"), 0#
+    CheckRuleCounterBinding stats, 5, 16#, True, 11, False
+    CheckRuleCounterBinding stats, 6, 16#, False, 15, False
+    CheckRuleCounterBinding stats, 2147483647, 16#, True, 0, True
+    CheckRuleCounterBinding stats, 2147483647, 0#, True, 0, False
     GoTo Finish
 FailedRun:
     stats.Failed = stats.Failed + 1
@@ -58,6 +58,37 @@ Finish:
     passed = stats.Passed: failed = stats.Failed
     RunAudit03RebarCounterTests = stats.Report & "TOTAL_REBAR_COUNTER: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
+
+' Проверяет нечётность, выключение и переполнение на рабочем executor.
+' Большое число обязано завершиться в Preflight до выделения позиций.
+Private Sub CheckRuleCounterBinding(ByRef stats As TGeometryConfigStats, ByVal count As Long, _
+        ByVal diameter As Double, ByVal thirdEverySecond As Boolean, ByVal expected As Long, ByVal overflow As Boolean)
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim definition As CSectionDefinition, geometry As CGeometryRegion, executor As CRebarRuleExecutor
+    Dim bars As CRebarLayout, number As Long, reason As String, label As String
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "CounterBinding"
+    Set path = facade.CirclePath("Outer", 0#, 0#, 10000#): facade.Outer "OUTER", path.ID
+    Set path = facade.LinePath("Axis", -100#, 0#, 100#, 0#)
+    Set options = New CRebarRuleOptions: options.SourceReference = "CounterBinding.Main"
+    facade.RebarByCount "Main", path.ID, count, diameter, options
+    Set options = New CRebarRuleOptions: options.EverySecond = True: options.NormalOffset = 30#
+    facade.RebarDependent "Second", "Main", 12#, options
+    Set options = New CRebarRuleOptions: options.EverySecond = thirdEverySecond: options.NormalOffset = 60#
+    facade.RebarDependent "Third", "Main", 10#, options
+    Set definition = facade.Finish: Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
+    Set executor = New CRebarRuleExecutor
+    On Error Resume Next
+    Set bars = executor.Build(definition, geometry): number = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    label = "rebarCounter.binding." & CStr(count) & ".d" & CStr(diameter)
+    If overflow Then
+        Check stats, label & ".typed", number = vbObjectError + 5530
+        Check stats, label & ".beforeAllocation", executor.PositionCount = 0 And InStr(reason, "счетчиков") > 0
+    Else
+        Check stats, label & ".success", number = 0
+        If Not bars Is Nothing Then Check stats, label & ".physical", bars.Count = expected
+    End If
+End Sub
 
 ' ДЛЯ ТЕСТОВ: общая защита счетчиков через реальный рецепт и named-ввод.
 ' Сценарии не размещают миллиарды позиций: preflight обязан отказать до массива.
