@@ -29,7 +29,7 @@ def main() -> None:
     for folder in [args.evidence, *args.extra_evidence]:
         files.update(p for p in (root / folder).rglob("*") if p.is_file() and
                      p.suffix.lower() in {".txt", ".json", ".xlsm", ".png"})
-    for folder in ["src", "tests"]:
+    for folder in ["src", "tests", "docs/geometry_refactor/examples"]:
         files.update(p for p in (root / folder).rglob("*") if p.is_file() and
                      p.suffix.lower() in {".bas", ".cls", ".frm", ".frx", ".py"})
     files.update(p for p in (root / "docs/geometry_refactor").glob("*")
@@ -37,7 +37,8 @@ def main() -> None:
     for name in ["AGENTS.md", "README.md", "tools/build_workbook/Update-PrivateWorkbookCode.ps1",
                  "tools/build_workbook/Verify-GeometryBaselineCode.ps1", "tools/build_workbook/Run-Audit03Watchdog.ps1",
                  "tools/build_workbook/Run-Audit02ModeTests.ps1", "tools/build_workbook/Compare-GeometrySnapshots.py",
-                 "tools/build_workbook/Inventory-GeometryEvidence.py", "tools/build_workbook/Pack-GeometryMilestone.py"]:
+                 "tools/build_workbook/Inventory-GeometryEvidence.py", "tools/build_workbook/Pack-GeometryMilestone.py",
+                 "tools/build_workbook/GeometryExampleSupport.ps1"]:
         files.add(root / name)
     entries = []
     archive.parent.mkdir(parents=True, exist_ok=True)

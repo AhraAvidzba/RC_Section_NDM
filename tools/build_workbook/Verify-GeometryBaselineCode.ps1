@@ -4,10 +4,14 @@ param(
     [string]$ActualPath='docs/regression/GeometryDeclarative_2026-10-11/BaselineInstrumented/RC_Section_NDM.xlsm',
     [string]$ReportPath='docs/regression/GeometryDeclarative_2026-10-11/BaselineInstrumented/CodeComparison.json',
     [string[]]$ApprovedModules=@('modTestShapeArchitecture'),
-    [string[]]$RetiredModules=@()
+    [string[]]$RetiredModules=@(),
+    [string[]]$ExampleFiles=@(),
+    [string[]]$RecipeRegistration=@()
 )
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
+. (Join-Path $PSScriptRoot 'GeometryExampleSupport.ps1')
+$exampleSources=@(Get-GeometryExampleFiles $root $ExampleFiles)
 $paths=@((Resolve-Path -LiteralPath (Join-Path $root $BaselinePath)).Path,(Resolve-Path -LiteralPath (Join-Path $root $ActualPath)).Path)
 $before=@($paths | ForEach-Object {(Get-FileHash -LiteralPath $_).Hash})
 Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class GeometryBaselineWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr hWnd,out uint id);}'
@@ -47,9 +51,11 @@ foreach ($name in $RetiredModules) {
 }
 foreach ($name in $ApprovedModules) {
     $files=@(Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object {$_.BaseName -eq $name -and $_.Extension -in '.bas','.cls'})
+    $files+=@($exampleSources | Where-Object BaseName -eq $name)
     if ($files.Count -ne 1) {throw ('Approved source module is not unique: '+$name)}
     $body=[regex]::Match([IO.File]::ReadAllText($files[0].FullName,[Text.Encoding]::UTF8),'(?ms)^Option Explicit.*').Value
     if (-not $body) {throw ('Approved source body is missing: '+$name)}
+    if ($name -eq 'CSectionTypeRegistry') {$body=Add-GeometryExampleRegistration $body $RecipeRegistration}
     $body=($body -replace "`r`n","`n").TrimEnd("`r","`n")
     $sourceBodies[$name]=$body
     $approved[$name]=[ordered]@{Type=$(if ($files[0].Extension -eq '.cls') {2} else {1});IdentifierCaseSHA256=(TextHash (Normalize-IdentifierCase $body));SourceSHA256=(Get-FileHash -LiteralPath $files[0].FullName).Hash}

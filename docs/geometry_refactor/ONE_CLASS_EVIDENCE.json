@@ -1,0 +1,75 @@
+{
+  "Schema": 1,
+  "Status": "DIRECTED_ONE_CLASS_PASS",
+  "Date": "2026-10-12",
+  "Recipe": "docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls",
+  "Registration": "RegisterRecipe \"RoundedTrapezoid\", New CSectionRecipeRoundedTrapezoid, Array(\"rngRoundedTrapezoidGeometry\")",
+  "NativeSHA256": "ACD803DE0C7318DF34B4963337CF0ADD65256BFD59A7B83900A6ABCA91CB96C5",
+  "CodeComparison": {
+    "SourceMismatchCount": 0,
+    "UnexpectedCount": 0,
+    "ProductionChanges": [
+      "CSectionTypeRegistry: one registration line"
+    ],
+    "Before": 145,
+    "Added": [
+      {
+        "Name": "CSectionRecipeRoundedTrapezoid",
+        "Type": 2
+      },
+      {
+        "Name": "modTestDeclarativeExamples",
+        "Type": 1
+      },
+      {
+        "Name": "modTestRoundedTrapezoidExample",
+        "Type": 1
+      }
+    ],
+    "Status": "PASS",
+    "After": 148
+  },
+  "Suites": [
+    {
+      "Passed": 94,
+      "Name": "Build",
+      "Report": "InputAndBuild.txt"
+    },
+    {
+      "Passed": 250,
+      "Name": "Input",
+      "Report": "InputAndBuild.txt"
+    },
+    {
+      "Passed": 12,
+      "Name": "E09",
+      "Report": "InputAndBuild.txt"
+    },
+    {
+      "Passed": 7,
+      "FullWorkflowSeconds": 2.21484375,
+      "Name": "Workflow1200",
+      "Report": "Workflow1200.txt"
+    },
+    {
+      "Passed": 7,
+      "FullWorkflowSeconds": 1.60546875,
+      "Name": "Workflow1400",
+      "Report": "Workflow1400.txt"
+    }
+  ],
+  "Assertions": 370,
+  "ReopenReports": [
+    "Workflow1200.txt",
+    "Workflow1400.txt",
+    "E09Preview.txt"
+  ],
+  "ProductionRegistryContainsDemo": false,
+  "ProductionUpdated": false,
+  "Outstanding": [
+    "Full API manifest/catalog",
+    "Last Help section and updater",
+    "Final directed acceptance",
+    "Production workbook/dump and final reports"
+  ]
+}

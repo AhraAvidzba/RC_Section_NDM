@@ -4,10 +4,13 @@ param(
     [string[]]$ModuleNames = @(),
     [string[]]$RetiredModules = @(),
     [string[]]$EntryPointNames = @(),
+    [string[]]$ExampleFiles = @(),
+    [string[]]$RecipeRegistration = @(),
     [switch]$TraceGeometry
 )
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
+. (Join-Path $PSScriptRoot 'GeometryExampleSupport.ps1')
 $path=(Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression'))+[IO.Path]::DirectorySeparatorChar
 if (-not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only isolated evidence workbooks may be updated.'}
@@ -16,6 +19,8 @@ $productionHash=(Get-FileHash -LiteralPath $production).Hash
 if ($EntryPointNames.Count -and ($ModuleNames.Count -ne 1 -or $RetiredModules.Count -or $TraceGeometry)) {throw 'Entry-point instrumentation requires exactly one module and no retirement/trace.'}
 foreach ($name in $EntryPointNames) {if ($name -notmatch '^[A-Za-z][A-Za-z0-9_]*$') {throw ('Invalid entry-point name: '+$name)}}
 $sourceFiles=@(Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas','.cls')
+$sourceFiles+=@(Get-GeometryExampleFiles $root $ExampleFiles)
+if ($RecipeRegistration.Count -and ('CSectionTypeRegistry' -notin $ModuleNames -or $RecipeRegistration[1] -notin $ModuleNames)) {throw 'Example registration must import both registry and recipe.'}
 foreach ($name in $RetiredModules) {
     if ($name -notmatch '^[A-Za-z][A-Za-z0-9_]*$' -or $name -in $ModuleNames) {throw ('Invalid retirement: '+$name)}
     if (@($sourceFiles | Where-Object BaseName -eq $name).Count) {throw ('Retired source still exists: '+$name)}
@@ -45,6 +50,7 @@ try {
         if ($ModuleNames.Count -and $file.BaseName -notin $ModuleNames) {continue}
         $body=[regex]::Match([IO.File]::ReadAllText($file.FullName,[Text.Encoding]::UTF8),'(?ms)^Option Explicit.*').Value
         if (-not $body) {throw ('Source body missing: '+$file.FullName)}
+        if ($file.BaseName -eq 'CSectionTypeRegistry') {$body=Add-GeometryExampleRegistration $body $RecipeRegistration}
         if ($TraceGeometry -and $file.BaseName -eq 'CSectionGeometryQuery') {
             $body=$body.Replace('Option Explicit',"Option Explicit`r`nPrivate mCutTrace As String")
             $body=$body.Replace('    Set ClipHalfPlane = MakeRegion',"    mCutTrace = CutTrace(raw, rawCount, nx, ny, bound, lineCuts, lineCount)`r`n    Set ClipHalfPlane = MakeRegion")
