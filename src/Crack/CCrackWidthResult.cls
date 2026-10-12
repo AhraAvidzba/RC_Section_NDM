@@ -112,98 +112,123 @@ Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property
 
+' a_crc, мм.
 Public Property Get CrackWidth() As Double
     CrackWidth = mCrackWidth
 End Property
 
+' a_crc,ult, мм.
 Public Property Get AllowableCrackWidth() As Double
     AllowableCrackWidth = mAllowableCrackWidth
 End Property
 
+' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
+' этого класса.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
 
+' Коэффициент длительности нагрузки.
 Public Property Get Phi1() As Double
     Phi1 = mPhi1
 End Property
 
+' Коэффициент поверхности арматуры.
 Public Property Get Phi2() As Double
     Phi2 = mPhi2
 End Property
 
+' Коэффициент характера работы элемента.
 Public Property Get Phi3() As Double
     Phi3 = mPhi3
 End Property
 
+' Коэффициент неравномерности деформаций арматуры.
 Public Property Get PsiS() As Double
     PsiS = mPsiS
 End Property
 
+' Среднее напряжение выбранной растянутой арматуры.
 Public Property Get SigmaS() As Double
     SigmaS = mSigmaS
 End Property
 
+' Напряжение той же группы стержней при образовании трещины.
 Public Property Get SigmaSCrc() As Double
     SigmaSCrc = mSigmaSCrc
 End Property
 
+' Модуль упругости арматуры для ручной проверки a_crc.
 Public Property Get SteelEs() As Double
     SteelEs = mSteelEs
 End Property
 
+' Площадь выбранной растянутой арматуры.
 Public Property Get AsTension() As Double
     AsTension = mAsTension
 End Property
 
+' Площадь растянутого бетона принятой зоны взаимодействия.
 Public Property Get Abt() As Double
     Abt = mAbt
 End Property
 
+' Эквивалентный диаметр выбранной арматуры.
 Public Property Get DsEquivalent() As Double
     DsEquivalent = mDsEquivalent
 End Property
 
+' l_s0 до нормативных ограничений.
 Public Property Get CrackSpacingRaw() As Double
     CrackSpacingRaw = mCrackSpacingRaw
 End Property
 
+' Принятое l_s после ограничений.
 Public Property Get CrackSpacing() As Double
     CrackSpacing = mCrackSpacing
 End Property
 
+' Число выбранных стержней.
 Public Property Get TensionRebarCount() As Long
     TensionRebarCount = mTensionRebarCount
 End Property
 
+' Имена выбранных стержней.
 Public Property Get TensionRebarIds() As String
     TensionRebarIds = mTensionRebarIds
 End Property
 
+' Полная высота по нормали к нейтральной линии.
 Public Property Get SectionDepthH() As Double
     SectionDepthH = mSectionDepthH
 End Property
 
+' Расстояние от растянутой поверхности до крайней арматуры.
 Public Property Get CoverA() As Double
     CoverA = mCoverA
 End Property
 
+' Фактическая высота растянутой зоны.
 Public Property Get TensionDepth() As Double
     TensionDepth = mTensionDepth
 End Property
 
+' Принятая высота зоны взаимодействия.
 Public Property Get EffectiveZoneDepth() As Double
     EffectiveZoneDepth = mEffectiveZoneDepth
 End Property
 
+' True для ветки центрального растяжения.
 Public Property Get CentralTensionBranch() As Boolean
     CentralTensionBranch = mCentralTensionBranch
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
@@ -219,18 +244,23 @@ End Property
 Public Property Get StandardCode() As String
     StandardCode = mStandardCode
 End Property
+' Закрытые для изменения якорные данные с реальными стержнями всех рядов.
 Public Property Get SP35Data() As CSP35CrackData
     Set SP35Data = mSP35Data
 End Property
+' Индекс максимальной ширины в сохраненных якорных данных.
 Public Property Get SP35CriticalCandidate() As Long
     SP35CriticalCandidate = mSP35CriticalCandidate
 End Property
+' Радиус армирования в мм и размерный psi в см.
 Public Property Get SP35ReinforcementRadius() As Double
     SP35ReinforcementRadius = mSP35Radius
 End Property
+' Рассчитанный коэффициент psi_cm выбранной области СП35.
 Public Property Get SP35PsiCm() As Double
     SP35PsiCm = mSP35PsiCm
 End Property
+' Индекс максимальной ширины в сохраненных якорных данных.
 Public Property Get CriticalAnchorGroupID() As String
     If mSP35CriticalCandidate > 0 Then CriticalAnchorGroupID = "G" & CStr(mSP35Data.CandidateAnchorGroup(mSP35CriticalCandidate))
 End Property

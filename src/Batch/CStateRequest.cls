@@ -70,10 +70,12 @@ Private Function BoolKey(ByVal value As Boolean) As String
     If value Then BoolKey = "1" Else BoolKey = "0"
 End Function
 
+' Какое named-state нужно получить.
 Public Property Get StateType() As ESectionStateType
     StateType = mStateType
 End Property
 
+' Роль материала: Strength, CrackInitiation, CrackedState.
 Public Property Get MaterialRole() As ECalculationPurpose
     MaterialRole = mMaterialRole
 End Property
@@ -84,22 +86,27 @@ Public Property Get MaterialSpec() As CMaterialModelSpec
     If Not mMaterialSpec Is Nothing Then Set MaterialSpec = mMaterialSpec.Clone
 End Property
 
+' Целевая продольная сила, Н.
 Public Property Get TargetN() As Double
     TargetN = mTargetN
 End Property
 
+' Целевой момент Mx, Н*мм.
 Public Property Get TargetMx() As Double
     TargetMx = mTargetMx
 End Property
 
+' Целевой момент My, Н*мм.
 Public Property Get TargetMy() As Double
     TargetMy = mTargetMy
 End Property
 
+' True, если для равновесия state разрешена диаграмма с technical extension.
 Public Property Get UseDiagramExtension() As Boolean
     UseDiagramExtension = mUseDiagramExtension
 End Property
 
+' Solve-option: можно ли пробовать дополнительные стартовые плоскости.
 Public Property Get AllowRetryStarts() As Boolean
     AllowRetryStarts = mAllowRetryStarts
 End Property

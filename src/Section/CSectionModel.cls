@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -124,10 +124,12 @@ Public Sub Clear()
     Set mContours = New CSectionContours
 End Sub
 
+' Диагностическая метка источника модели: Generated, AutoCADImport и т.п.
 Public Property Let SourceType(ByVal value As String)
     mSourceType = Trim$(value)
 End Property
 
+' Диагностическая метка источника модели: Generated, AutoCADImport и т.п.
 Public Property Get SourceType() As String
     SourceType = mSourceType
 End Property
@@ -142,14 +144,17 @@ Public Property Let ConcreteMeshSource(ByVal value As String)
     End Select
 End Property
 
+' Способ получения бетонных элементов, отдельно от источника арматуры/контуров.
 Public Property Get ConcreteMeshSource() As String
     ConcreteMeshSource = mConcreteMeshSource
 End Property
 
+' Сохранённая диагностика сборки геометрии для публикации в Results.
 Public Property Let GeometryDiagnosticsText(ByVal value As String)
     mGeometryDiagnostics = value
 End Property
 
+' Сохранённая диагностика сборки геометрии для публикации в Results.
 Public Property Get GeometryDiagnosticsText() As String
     GeometryDiagnosticsText = mGeometryDiagnostics
 End Property
@@ -163,11 +168,13 @@ Public Sub AppendRebarRecipeTrace(ByVal index As Long, ByVal ruleID As String, B
         "|PathId=" & TraceToken(pathID) & "|SourcePositionId=" & TraceToken(sourcePositionID)
 End Sub
 
+' Происхождение всех позиций физического стержня; metadata, не геометрия.
 Public Property Get RebarRecipeTrace(ByVal index As Long) As String
     CheckRebarIndex index
     RebarRecipeTrace = mRebarRecipeTrace(index)
 End Property
 
+' Экранирует текстовое поле геометрической трассировки для однозначного разделения записей.
 Private Function TraceToken(ByVal value As String) As String
     value = Replace$(value, "%", "%25"): value = Replace$(value, "|", "%7C"): value = Replace$(value, ";", "%3B")
     value = Replace$(value, "=", "%3D"): value = Replace$(value, vbCr, "%0D"): value = Replace$(value, vbLf, "%0A")
@@ -761,39 +768,47 @@ Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
     mRevision = mRevision + 1
 End Sub
 
+' Фактическое число бетонных элементов в модели.
 Public Property Get ConcreteCount() As Long
     ConcreteCount = mConcreteCount
 End Property
 
+' Фактическое число стержней в модели.
 Public Property Get RebarCount() As Long
     RebarCount = mRebarCount
 End Property
 
+' Расчетные имена бетонных элементов: C1, C2, ...
 Public Property Get ConcreteID(ByVal index As Long) As String
     CheckConcreteIndex index
     ConcreteID = mConcreteID(index)
 End Property
 
+' Необязательное исходное имя области для трассировки.
 Public Property Get ConcreteSourceName(ByVal index As Long) As String
     CheckConcreteIndex index
     ConcreteSourceName = mConcreteSourceName(index)
 End Property
 
+' Необязательный AutoCAD handle для поиска исходного Region.
 Public Property Get ConcreteSourceHandle(ByVal index As Long) As String
     CheckConcreteIndex index
     ConcreteSourceHandle = mConcreteSourceHandle(index)
 End Property
 
+' X центра тяжести бетонного элемента во внутренней системе координат, мм.
 Public Property Get ConcreteX(ByVal index As Long) As Double
     CheckConcreteIndex index
     ConcreteX = mConcreteX(index)
 End Property
 
+' Y центра тяжести бетонного элемента во внутренней системе координат, мм.
 Public Property Get ConcreteY(ByVal index As Long) As Double
     CheckConcreteIndex index
     ConcreteY = mConcreteY(index)
 End Property
 
+' Площадь бетонного элемента, мм2.
 Public Property Get ConcreteArea(ByVal index As Long) As Double
     CheckConcreteIndex index
     ConcreteArea = mConcreteArea(index)
@@ -810,11 +825,13 @@ Public Sub ConcreteElementForSolver(ByVal index As Long, ByRef xCoord As Double,
     area = mConcreteArea(index)
 End Sub
 
+' Идентификатор материала элемента; текущий solver получает единую диаграмму бетона.
 Public Property Get ConcreteMaterialID(ByVal index As Long) As Long
     CheckConcreteIndex index
     ConcreteMaterialID = mConcreteMaterialID(index)
 End Property
 
+' Геометрическое представление выбранной бетонной ячейки.
 Public Property Get ConcreteShapeType(ByVal index As Long) As String
     CheckConcreteIndex index
     ConcreteShapeType = ConcreteBoundaryShapeType(index)
@@ -881,31 +898,37 @@ Public Property Get ConcreteLocalIxy(ByVal index As Long) As Double
     ConcreteLocalIxy = localIxy
 End Property
 
+' Короткая диагностическая заметка для Results.
 Public Property Get ConcreteComment(ByVal index As Long) As String
     CheckConcreteIndex index
     ConcreteComment = mConcreteComment(index)
 End Property
 
+' Расчетные имена стержней: R1, R2, ...
 Public Property Get RebarID(ByVal index As Long) As String
     CheckRebarIndex index
     RebarID = mRebarID(index)
 End Property
 
+' Необязательный AutoCAD handle арматурного Region.
 Public Property Get RebarSourceHandle(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSourceHandle = mRebarSourceHandle(index)
 End Property
 
+' X центра стержня, мм.
 Public Property Get RebarX(ByVal index As Long) As Double
     CheckRebarIndex index
     RebarX = mRebarX(index)
 End Property
 
+' Y центра стержня, мм.
 Public Property Get RebarY(ByVal index As Long) As Double
     CheckRebarIndex index
     RebarY = mRebarY(index)
 End Property
 
+' Площадь стержня, мм2.
 Public Property Get RebarArea(ByVal index As Long) As Double
     CheckRebarIndex index
     RebarArea = mRebarArea(index)
@@ -922,16 +945,19 @@ Public Sub RebarElementForSolver(ByVal index As Long, ByRef xCoord As Double, _
     area = mRebarArea(index)
 End Sub
 
+' Диаметр стержня, мм.
 Public Property Get RebarDiameter(ByVal index As Long) As Double
     CheckRebarIndex index
     RebarDiameter = mRebarDiameter(index)
 End Property
 
+' Идентификатор материала стержня; текущий solver получает единую диаграмму арматуры.
 Public Property Get RebarMaterialID(ByVal index As Long) As Long
     CheckRebarIndex index
     RebarMaterialID = mRebarMaterialID(index)
 End Property
 
+' Диагностическая заметка о грани, ряде или источнике стержня.
 Public Property Get RebarComment(ByVal index As Long) As String
     CheckRebarIndex index
     RebarComment = mRebarComment(index)
@@ -1006,6 +1032,7 @@ Public Property Get RebarSourceName(ByVal index As Long) As String
     RebarSourceName = mRebarSourceName(index)
 End Property
 
+' Расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
 Public Property Get RebarSteelClass(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSteelClass = mRebarSteelClass(index)

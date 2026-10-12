@@ -165,30 +165,37 @@ Public Function ValidateForCalculation(ByRef errorText As String) As Boolean
     ValidateForCalculation = True
 End Function
 
+' Стабильный ID столбца профиля, например PR1.
 Public Property Get ProfileId() As String
     ProfileId = mProfileId
 End Property
 
+' Человекочитаемое имя профиля.
 Public Property Get DisplayName() As String
     DisplayName = mDisplayName
 End Property
 
+' Сохранённое объяснение критического физического ограничения.
 Public Property Get Description() As String
     Description = mDescription
 End Property
 
+' Запрошено StrengthState.
 Public Property Get StrengthDirectStateEnabled() As Boolean
     StrengthDirectStateEnabled = mStrengthDirectState
 End Property
 
+' Запрошена несущая способность.
 Public Property Get StrengthCapacityEnabled() As Boolean
     StrengthCapacityEnabled = mStrengthCapacity
 End Property
 
+' Запрошен расчет раскрытия нормальных трещин.
 Public Property Get CrackWidthEnabled() As Boolean
     CrackWidthEnabled = mCrackWidth
 End Property
 
+' Запрошена устойчивость; ее отказ не отменяет остальные проверки сочетания.
 Public Property Get StabilityEnabled() As Boolean
     StabilityEnabled = mStabilityEnabled
 End Property
@@ -204,18 +211,22 @@ Public Property Get StabilityValueSet() As EMaterialValueSet
     End If
 End Property
 
+' Название набора нормативных параметров для устойчивости, выбранного профилем.
 Public Property Get StabilityValueSetText() As String
     StabilityValueSetText = MaterialValueSetToText(StabilityValueSet)
 End Property
 
+' Материальная модель прочности.
 Public Property Get StrengthSpec() As CMaterialModelSpec
     Set StrengthSpec = mStrengthSpec
 End Property
 
+' Материальная модель проверки образования нормальной трещины.
 Public Property Get CrackInitiationSpec() As CMaterialModelSpec
     Set CrackInitiationSpec = mCrackInitiationSpec
 End Property
 
+' Материальная модель НДС с раскрытой трещиной.
 Public Property Get CrackedStateSpec() As CMaterialModelSpec
     Set CrackedStateSpec = mCrackedStateSpec
 End Property
@@ -230,6 +241,7 @@ Public Property Get VisualizationState() As ESectionStateType
     End If
 End Property
 
+' Выбранное профилем состояние НДС для схемы.
 Public Property Get VisualizationStateText() As String
     VisualizationStateText = SectionStateTypeToText(VisualizationState)
 End Property
@@ -244,6 +256,7 @@ Public Property Get VisualizationQuantity() As EVisualizationQuantity
     End If
 End Property
 
+' Выбранное профилем поле схемы: напряжения или деформации.
 Public Property Get VisualizationQuantityText() As String
     VisualizationQuantityText = VisualizationQuantityToText(VisualizationQuantity)
 End Property

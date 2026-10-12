@@ -307,6 +307,7 @@ Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
     End If
 End Function
 
+' Итоговый reusable named-state CapacityState, если он найден.
 Public Property Get StateResult() As CSectionStateResult
     Set StateResult = mStateResult
 End Property
@@ -319,34 +320,42 @@ Public Property Get Status() As String
     Status = policy.ExternalStatus(ResultMeta)
 End Property
 
+' Признак достигнутого физического предела по проверяемому критерию.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property
 
+' Фактически принятая ветка: UltimateStrain или LoadMultiplier.
 Public Property Get SolutionMethod() As String
     SolutionMethod = mSolutionMethod
 End Property
 
+' Нормализованный ключ capacity load path.
 Public Property Get PathResolved() As String
     PathResolved = mPathResolved
 End Property
 
+' Найденный множитель lambda.
 Public Property Get LambdaCapacity() As Double
     LambdaCapacity = mLambdaCapacity
 End Property
 
+' Использование несущей способности.
 Public Property Get UtilCapacity() As Double
     UtilCapacity = mUtilCapacity
 End Property
 
+' Предельная N в точке приложения нагрузки.
 Public Property Get NUltimate() As Double
     NUltimate = mNUltimate
 End Property
 
+' Предельный Mx в точке приложения нагрузки.
 Public Property Get MxUltimate() As Double
     MxUltimate = mMxUltimate
 End Property
 
+' Предельный My в точке приложения нагрузки.
 Public Property Get MyUltimate() As Double
     MyUltimate = mMyUltimate
 End Property
@@ -357,18 +366,22 @@ Public Property Get CapacityStateN() As Double
     If Not mStateResult Is Nothing Then CapacityStateN = mStateResult.Nint
 End Property
 
+' Итоговый reusable named-state CapacityState, если он найден.
 Public Property Get CapacityStateMx() As Double
     If Not mStateResult Is Nothing Then CapacityStateMx = mStateResult.Mxint
 End Property
 
+' Итоговый reusable named-state CapacityState, если он найден.
 Public Property Get CapacityStateMy() As Double
     If Not mStateResult Is Nothing Then CapacityStateMy = mStateResult.Myint
 End Property
 
+' Модуль полного предельного момента в точке приложения нагрузки.
 Public Property Get MomentUltimate() As Double
     MomentUltimate = mMomentUltimate
 End Property
 
+' Итоговый reusable named-state CapacityState, если он найден.
 Public Property Get CapacityStateAvailable() As Boolean
     CapacityStateAvailable = Not mStateResult Is Nothing
 End Property
@@ -379,14 +392,17 @@ Public Property Get CapacityEpsilon0() As Double
     If Not mStateResult Is Nothing Then CapacityEpsilon0 = mStateResult.Epsilon0
 End Property
 
+' Итоговый reusable named-state CapacityState, если он найден.
 Public Property Get CapacityKappaX() As Double
     If Not mStateResult Is Nothing Then CapacityKappaX = mStateResult.KappaX
 End Property
 
+' Итоговый reusable named-state CapacityState, если он найден.
 Public Property Get CapacityKappaY() As Double
     If Not mStateResult Is Nothing Then CapacityKappaY = mStateResult.KappaY
 End Property
 
+' True, если capacity-calculator выбрал осевую численную ветку после переноса нагрузок к центру.
 Public Property Get PureAxialForMethod() As Boolean
     PureAxialForMethod = mPureAxialForMethod
 End Property

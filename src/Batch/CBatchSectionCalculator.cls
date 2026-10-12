@@ -789,6 +789,8 @@ Friend Property Get CrackDomainBuildCount() As Long
     CrackDomainBuildCount = mCrackDomainBuildCount
 End Property
 
+' Число фактических подготовок механических массивов в текущем запуске batch, без повторных
+' solve.
 Friend Property Get MechanicalPreparationBuildCount() As Long
     MechanicalPreparationBuildCount = mMechanicalPreparationBuildCount
 End Property
@@ -1803,10 +1805,12 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
+' Количество записей, сохранённых в контейнере этого класса.
 Public Property Get Count() As Long
     Count = mCount
 End Property
 
+' Исходные данные LC, прочитанные из фактических строк rngLoadCombinations.
 Public Property Get CombinationID(ByVal index As Long) As String
     CombinationID = mInputs(index).CombinationID
 End Property
@@ -1817,6 +1821,7 @@ Public Property Get SourceDataOffset(ByVal index As Long) As Long
     SourceDataOffset = mInputs(index).SourceDataOffset
 End Property
 
+' Исходные данные LC, прочитанные из фактических строк rngLoadCombinations.
 Public Property Get CombinationName(ByVal index As Long) As String
     CombinationName = mInputs(index).Comment
 End Property
@@ -1827,50 +1832,62 @@ Public Property Get InputProfileId(ByVal index As Long) As String
     InputProfileId = mInputs(index).ProfileId
 End Property
 
+' Рабочие усилия текущего запуска; исходная строка не изменяется.
 Public Property Get N(ByVal index As Long) As Double
     N = mWorkingLoads(index).N
 End Property
 
+' Рабочие усилия текущего запуска; исходная строка не изменяется.
 Public Property Get Mx(ByVal index As Long) As Double
     Mx = mWorkingLoads(index).InternalMx
 End Property
 
+' Рабочие усилия текущего запуска; исходная строка не изменяется.
 Public Property Get My(ByVal index As Long) As Double
     My = mWorkingLoads(index).InternalMy
 End Property
 
+' Рабочие усилия текущего запуска; исходная строка не изменяется.
 Public Property Get UserMx(ByVal index As Long) As Double
     UserMx = mWorkingLoads(index).LoadPointMx
 End Property
 
+' Рабочие усилия текущего запуска; исходная строка не изменяется.
 Public Property Get UserMy(ByVal index As Long) As Double
     UserMy = mWorkingLoads(index).LoadPointMy
 End Property
 
+' X точки приложения нагрузки относительно расчетной модели, мм.
 Public Property Get LoadReferenceX() As Double
     LoadReferenceX = mLoadReferenceX
 End Property
 
+' Y точки приложения нагрузки относительно расчетной модели, мм.
 Public Property Get LoadReferenceY() As Double
     LoadReferenceY = mLoadReferenceY
 End Property
 
+' Смещение точки нагрузки от центра тяжести бетонного сечения по X, мм.
 Public Property Get LoadReferenceOffsetX() As Double
     LoadReferenceOffsetX = mLoadReferenceOffsetX
 End Property
 
+' Смещение точки нагрузки от центра тяжести бетонного сечения по Y, мм.
 Public Property Get LoadReferenceOffsetY() As Double
     LoadReferenceOffsetY = mLoadReferenceOffsetY
 End Property
 
+' Геометрическая длина элемента l, мм.
 Public Property Get StabilityElementLength() As Double
     StabilityElementLength = mStabilityElementLength
 End Property
 
+' Коэффициент расчетной длины для первой главной плоскости.
 Public Property Get StabilityMu1() As Double
     StabilityMu1 = mStabilityMu1
 End Property
 
+' Коэффициент расчетной длины для второй главной плоскости.
 Public Property Get StabilityMu2() As Double
     StabilityMu2 = mStabilityMu2
 End Property
@@ -1884,6 +1901,7 @@ Public Property Get ResultAt(ByVal index As Long) As CCombinationResult
     Set ResultAt = mResults(index)
 End Property
 
+' Рабочие усилия текущего запуска; исходная строка не изменяется.
 Public Property Get StabilityLoadPointMx(ByVal index As Long) As Double
     StabilityLoadPointMx = mWorkingLoads(index).LoadPointMx
 End Property
@@ -1922,18 +1940,22 @@ Public Property Get CrackReferenceMy(ByVal index As Long) As Double
     CrackReferenceMy = LoadStateForCombination(index).MyAboutPoint(referenceX)
 End Property
 
+' Усилие N в принятой точке приложения для проверки трещинообразования, Н.
 Public Property Get CrackLoadPointN(ByVal index As Long) As Double
     CrackLoadPointN = LoadStateForCombination(index).N
 End Property
 
+' Усилие Mx в принятой точке приложения для проверки трещинообразования, Н·мм.
 Public Property Get CrackLoadPointMx(ByVal index As Long) As Double
     CrackLoadPointMx = LoadStateForCombination(index).LoadPointMx
 End Property
 
+' Усилие My в принятой точке приложения для проверки трещинообразования, Н·мм.
 Public Property Get CrackLoadPointMy(ByVal index As Long) As Double
     CrackLoadPointMy = LoadStateForCombination(index).LoadPointMy
 End Property
 
+' Единая точка выдачи диаграмм для Strength/CrackInitiation/CrackedNDS.
 Public Property Get CrackSteelElasticModulus() As Double
     CrackSteelElasticModulus = mMaterialProvider.SteelElasticModulus(cpCrackedNDS)
 End Property
@@ -1999,10 +2021,12 @@ Public Property Get GoverningCombinationIndex() As Long
     GoverningCombinationIndex = mGoverningCombinationIndex
 End Property
 
+' Индекс LC, который стал определяющим в batch summary.
 Public Property Get GoverningCombinationID() As String
     If mGoverningCombinationIndex > 0 Then GoverningCombinationID = mInputs(mGoverningCombinationIndex).CombinationID
 End Property
 
+' Индекс LC, который стал определяющим в batch summary.
 Public Property Get GoverningCombinationName() As String
     If mGoverningCombinationIndex > 0 Then GoverningCombinationName = mInputs(mGoverningCombinationIndex).Comment
 End Property
@@ -2013,10 +2037,12 @@ Public Property Get CrackGoverningCombinationIndex() As Long
     CrackGoverningCombinationIndex = mCrackGoverningCombinationIndex
 End Property
 
+' Индекс LC с минимальным запасом по раскрытию трещин.
 Public Property Get CrackGoverningCombinationID() As String
     If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationID = mInputs(mCrackGoverningCombinationIndex).CombinationID
 End Property
 
+' Индекс LC с минимальным запасом по раскрытию трещин.
 Public Property Get CrackGoverningCombinationName() As String
     If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationName = mInputs(mCrackGoverningCombinationIndex).Comment
 End Property
@@ -2027,38 +2053,47 @@ Public Property Get WorstCombinationIndex() As Long
     WorstCombinationIndex = mWorstCombinationIndex
 End Property
 
+' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
 Public Property Get WorstCombinationID() As String
     If mWorstCombinationIndex > 0 Then WorstCombinationID = mInputs(mWorstCombinationIndex).CombinationID
 End Property
 
+' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
 Public Property Get WorstCombinationName() As String
     If mWorstCombinationIndex > 0 Then WorstCombinationName = mInputs(mWorstCombinationIndex).Comment
 End Property
 
+' StrengthStrain, StrengthCapacity, Cracks или Stability.
 Public Property Get WorstCombinationCriterion() As String
     WorstCombinationCriterion = mWorstCombinationCriterion
 End Property
 
+' Сколько раз за batch запускался CSectionSolver.Solve для поиска равновесия НДС.
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
+' Снимок всех фактически выполненных итераций НДС.
 Public Property Get SolverIterationCount() As Long
     SolverIterationCount = mSolverIterationCount
 End Property
 
+' Снимок попыток предельного поиска с начальных плоскостей.
 Public Property Get UltimateStrainStartCount() As Long
     UltimateStrainStartCount = mUltimateStrainStartCount
 End Property
 
+' Снимок итераций общего UltimateStrain для прочности и трещин.
 Public Property Get UltimateStrainIterationCount() As Long
     UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Property
 
+' Полное время пакетного расчета, сек.
 Public Property Get ElapsedSeconds() As Double
     ElapsedSeconds = mElapsedSeconds
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
@@ -2128,14 +2163,17 @@ Public Property Get StrengthReferenceMy(ByVal index As Long) As Double
     StrengthReferenceMy = LoadStateForCombination(index).MyAboutPoint(referenceX)
 End Property
 
+' Усилие N в принятой точке приложения для проверки прочности, Н.
 Public Property Get StrengthLoadPointN(ByVal index As Long) As Double
     StrengthLoadPointN = LoadStateForCombination(index).N
 End Property
 
+' Усилие Mx в принятой точке приложения для проверки прочности, Н·мм.
 Public Property Get StrengthLoadPointMx(ByVal index As Long) As Double
     StrengthLoadPointMx = LoadStateForCombination(index).LoadPointMx
 End Property
 
+' Усилие My в принятой точке приложения для проверки прочности, Н·мм.
 Public Property Get StrengthLoadPointMy(ByVal index As Long) As Double
     StrengthLoadPointMy = LoadStateForCombination(index).LoadPointMy
 End Property
@@ -2147,16 +2185,19 @@ Public Property Get StrengthDirectStateRequested(ByVal index As Long) As Boolean
         StrengthDirectStateRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthDirectStateEnabled
 End Property
 
+' Каталог расчетных профилей PR1/PR2/... из Config.
 Public Property Get StrengthCapacityRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         StrengthCapacityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthCapacityEnabled
 End Property
 
+' Каталог расчетных профилей PR1/PR2/... из Config.
 Public Property Get CrackWidthRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         CrackWidthRequested = mProfiles.ProfileById(mInputs(index).ProfileId).CrackWidthEnabled
 End Property
 
+' Каталог расчетных профилей PR1/PR2/... из Config.
 Public Property Get StabilityRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         StabilityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StabilityEnabled

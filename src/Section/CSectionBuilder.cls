@@ -16,6 +16,7 @@ Private mMesh As CFiberMeshBuilder
 Private mRebars As CRebarLayout
 Private mRules As CRebarRuleExecutor
 
+' Единая сборка definition→область→сетка/правила→CSectionModel→аннотации; не ветвится по типу.
 Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions As TSectionMeshOptions) As CSectionModel
     Set mMesh = Nothing: Set mRebars = Nothing: Set mRules = Nothing
     If definition Is Nothing Then SectionRecipeError "CSectionBuilder", "Определение не передано."
@@ -42,16 +43,20 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Set Build = model
 End Function
 
+' CFiberMeshBuilder только последней успешно собранной модели; готовую сетку повторно не
+' создавайте.
 Public Property Get Mesh() As CFiberMeshBuilder
     If mMesh Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной сетки."
     Set Mesh = mMesh
 End Property
 
+' Физическая раскладка последней успешной сборки; совпадения уже обработаны явно.
 Public Property Get Rebars() As CRebarLayout
     If mRebars Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной арматуры."
     Set Rebars = mRebars
 End Property
 
+' Исполнитель последней успешной сборки с фактическими счётчиками/шагами/происхождением.
 Public Property Get Rules() As CRebarRuleExecutor
     If mRules Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно исполненных правил."
     Set Rules = mRules

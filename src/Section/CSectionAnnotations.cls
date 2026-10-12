@@ -106,65 +106,81 @@ Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, B
     AddAnnotation "REBAR_ANNOTATION", annotationID, startX, startY, endX, endY, normalX, normalY, labelText, 0#, vbNullString, commentValue
 End Sub
 
+' Количество записей, сохранённых в контейнере этого класса.
 Public Property Get Count() As Long
     Count = mCount
 End Property
 
+' Контейнер semantic-аннотаций рассчитанного сечения Здесь хранятся размеры и групповые подписи
+' арматуры. Writer дополняет их LC-зависимыми расчетными областями трещин в
+' rngNDMSectionAnnotations. Исходные outer/opening принадлежат CSectionContours и
+' геометрическому снимку, поэтому не смешиваются с оформлением или результатами проверок.
 Public Property Get AnnotationType(ByVal index As Long) As String
     CheckIndex index
     AnnotationType = mType(index)
 End Property
 
+' Уникальный смысловой ID выбранной аннотации.
 Public Property Get AnnotationID(ByVal index As Long) As String
     CheckIndex index
     AnnotationID = mAnnotationID(index)
 End Property
 
+' Координата X начала выбранной геометрической записи, мм.
 Public Property Get StartX(ByVal index As Long) As Double
     CheckIndex index
     StartX = mStartX(index)
 End Property
 
+' Координата Y начала выбранной геометрической записи, мм.
 Public Property Get StartY(ByVal index As Long) As Double
     CheckIndex index
     StartY = mStartY(index)
 End Property
 
+' Координата X конца выбранной геометрической записи, мм.
 Public Property Get EndX(ByVal index As Long) As Double
     CheckIndex index
     EndX = mEndX(index)
 End Property
 
+' Координата Y конца выбранной геометрической записи, мм.
 Public Property Get EndY(ByVal index As Long) As Double
     CheckIndex index
     EndY = mEndY(index)
 End Property
 
+' Компонента X направления нормали выбранной геометрической записи.
 Public Property Get NormalX(ByVal index As Long) As Double
     CheckIndex index
     NormalX = mNormalX(index)
 End Property
 
+' Компонента Y направления нормали выбранной геометрической записи.
 Public Property Get NormalY(ByVal index As Long) As Double
     CheckIndex index
     NormalY = mNormalY(index)
 End Property
 
+' Сохранённый текст подписи выбранной аннотации.
 Public Property Get Text(ByVal index As Long) As String
     CheckIndex index
     Text = mText(index)
 End Property
 
+' Сохранённое числовое значение аннотации в единицах её Unit.
 Public Property Get Value(ByVal index As Long) As Double
     CheckIndex index
     Value = mValue(index)
 End Property
 
+' Обозначение размерности сохранённого значения аннотации.
 Public Property Get Unit(ByVal index As Long) As String
     CheckIndex index
     Unit = mUnit(index)
 End Property
 
+' Сохранённое пояснение выбранной записи без нового расчёта.
 Public Property Get Comment(ByVal index As Long) As String
     CheckIndex index
     Comment = mComment(index)

@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -211,66 +211,82 @@ Public Function DisplayNameForKey(ByVal loadPathKey As String) As String
     End Select
 End Function
 
+' Нормализованный внутренний ключ lambda-траектории.
 Public Property Get Key() As String
     Key = mKey
 End Property
 
+' Нормализованный внутренний ключ lambda-траектории.
 Public Property Get DisplayName() As String
     DisplayName = DisplayNameForKey(mKey)
 End Property
 
+' False только при явном неизвестном значении пользователя.
 Public Property Get Valid() As Boolean
     Valid = mValid
 End Property
 
+' Человекочитаемая причина InputErr.
 Public Property Get ErrorMessage() As String
     ErrorMessage = mErrorMessage
 End Property
 
+' True, если путь удалось выбрать явно или по умолчанию.
 Public Property Get HasPath() As Boolean
     HasPath = mHasPath
 End Property
 
+' True, если выбранный путь содержит ненулевую масштабируемую компоненту.
 Public Property Get HasScaledLoad() As Boolean
     HasScaledLoad = mHasScaledLoad
 End Property
 
+' True для lambda*N и lambda*NMxy без пользовательских Mx/My.
 Public Property Get ForceOnly() As Boolean
     ForceOnly = mForceOnly
 End Property
 
+' Масштабируется ли продольная сила N.
 Public Property Get ScalesN() As Boolean
     ScalesN = mScalesN
 End Property
 
+' Масштабируется ли пользовательский Mx.
 Public Property Get ScalesMx() As Boolean
     ScalesMx = mScalesMx
 End Property
 
+' Масштабируется ли пользовательский My.
 Public Property Get ScalesMy() As Boolean
     ScalesMy = mScalesMy
 End Property
 
+' Общий вектор Offset + lambda*Base для передачи в solver.
 Public Property Get NOffset() As Double
     NOffset = mPath.NOffset
 End Property
 
+' Общий вектор Offset + lambda*Base для передачи в solver.
 Public Property Get NBase() As Double
     NBase = mPath.NBase
 End Property
 
+' Общий вектор Offset + lambda*Base для передачи в solver.
 Public Property Get MxOffset() As Double
     MxOffset = mPath.MxOffset
 End Property
 
+' Общий вектор Offset + lambda*Base для передачи в solver.
 Public Property Get MxBase() As Double
     MxBase = mPath.MxBase
 End Property
 
+' Общий вектор Offset + lambda*Base для передачи в solver.
 Public Property Get MyOffset() As Double
     MyOffset = mPath.MyOffset
 End Property
 
+' Общий вектор Offset + lambda*Base для передачи в solver.
 Public Property Get MyBase() As Double
     MyBase = mPath.MyBase
 End Property

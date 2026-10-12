@@ -673,6 +673,7 @@ Private Sub AppendReportPart(ByRef parts() As String, ByRef count As Long, ByVal
     count = count + 1
 End Sub
 
+' Собирает части диагностического отчёта в исходном порядке, пропуская пустые части.
 Private Function JoinReportParts(ByRef parts() As String, ByVal count As Long) As String
     If count = 0 Then Exit Function
     ReDim Preserve parts(0 To count - 1)

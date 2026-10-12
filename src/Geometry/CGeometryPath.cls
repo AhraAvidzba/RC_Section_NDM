@@ -23,10 +23,12 @@ Private mSealed As Boolean, mClosed As Boolean
 Private mQuery As CSectionGeometryQuery
 Private mDiagnostic As CGeometryDiagnostic
 
+' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic
     Set LastDiagnostic = mDiagnostic
 End Property
 
+' Создаёт mutable путь с непустым ID один раз.
 Public Sub Initialize(ByVal pathID As String)
     If Len(mID) > 0 Then PathError "Путь уже инициализирован."
     If Len(Trim$(pathID)) = 0 Then PathError "Не задан ID пути."
@@ -34,6 +36,7 @@ Public Sub Initialize(ByVal pathID As String)
     Set mQuery = New CSectionGeometryQuery
 End Sub
 
+' Добавляет прямой сегмент с устойчивым ID; начало совпадает с предыдущим концом.
 Public Sub AddLine(ByVal segmentID As String, ByVal x1 As Double, ByVal y1 As Double, _
         ByVal x2 As Double, ByVal y2 As Double)
     Dim edge As TRegionEdge
@@ -73,31 +76,42 @@ Public Sub Seal(Optional ByVal closed As Boolean = False)
     mCapacity = mCount: mClosed = closed: mSealed = True
 End Sub
 
+' Смысловой ID этого пути.
 Public Property Get ID() As String: ID = mID: End Property
+' Число аналитических line/arc сегментов.
 Public Property Get SegmentCount() As Long: SegmentCount = mCount: End Property
+' Опубликован ли объект; published геометрия не изменяется.
 Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property
+' Замкнут ли фактический путь, без фиктивного соединения.
 Public Property Get IsClosed() As Boolean: RequireSealed: IsClosed = mClosed: End Property
+' Точная суммарная длина пути, мм.
 Public Property Get Length() As Double: RequireSealed: Length = mStations(mCount): End Property
+' Возвращает смысловой ID сегмента по индексу.
 Public Property Get SegmentID(ByVal index As Long) As String
     CheckIndex index: SegmentID = mSegmentIDs(index)
 End Property
 
+' ID исходного пути сегмента после slice/transform/offset.
 Public Property Get SourcePathID(ByVal index As Long) As String
     CheckIndex index: SourcePathID = mSourcePathIDs(index)
 End Property
 
+' Смысловой исходный ID сегмента, сохраняемый при распаде/переименовании результата.
 Public Property Get SourceSegmentID(ByVal index As Long) As String
     CheckIndex index: SourceSegmentID = mSourceSegmentIDs(index)
 End Property
 
+' Начальный параметр исходного сегмента; может выйти за [0;1] при явном продлении прямой.
 Public Property Get SourceStartParameter(ByVal index As Long) As Double
     CheckIndex index: SourceStartParameter = mSourceStart(index)
 End Property
 
+' Конечный параметр исходного сегмента, включая обращённый обход.
 Public Property Get SourceEndParameter(ByVal index As Long) As Double
     CheckIndex index: SourceEndParameter = mSourceEnd(index)
 End Property
 
+' Разрешает существующий смысловой ID в текущий индекс; исчезнувшая дуга даёт MISSING_SEGMENT.
 Public Function SegmentIndex(ByVal segmentID As String) As Long
     Dim i As Long
     For i = 1 To mCount
@@ -115,6 +129,7 @@ Public Function AnchorStation(ByVal segmentID As String, Optional ByVal paramete
     AnchorStation = mStations(index - 1) + parameter * (mStations(index) - mStations(index - 1))
 End Function
 
+' Копирует опубликованный путь с новым ID, сохраняя сегментные ссылки и исходное происхождение.
 Public Function WithID(ByVal pathID As String) As CGeometryPath
     RequireSealed
     Dim result As CGeometryPath, i As Long
@@ -177,6 +192,7 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
     tangentX = tangentX / norm: tangentY = tangentY / norm
 End Sub
 
+' Возвращает действительные min/max проекции по нормированному направлению, с экстремумами дуг.
 Public Sub ProjectionBounds(ByVal directionX As Double, ByVal directionY As Double, _
         ByRef minimum As Double, ByRef maximum As Double)
     RequireSealed
@@ -211,6 +227,7 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
     Set Slice = result
 End Function
 
+' Добавляет аналитические части сегментов между станциями пути, сохраняя линии и дуги.
 Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double, ByVal last As Double)
     If last <= first + PATH_TOLERANCE Then Exit Sub
     Dim part As CGeometryPath, i As Long, edge As TRegionEdge, name As String, suffix As Long
@@ -224,10 +241,13 @@ Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double,
     Next i
 End Sub
 
+' Переводит локальный параметр обрезанного сегмента в параметр исходного сегмента.
 Private Function OriginParameter(ByVal index As Long, ByVal parameter As Double) As Double
     OriginParameter = mSourceStart(index) + parameter * (mSourceEnd(index) - mSourceStart(index))
 End Function
 
+' Проверяет наличие смыслового сегмента; исчезнувшая при скруглении прямая не считается
+' существующей.
 Friend Function HasSegmentID(ByVal segmentID As String) As Boolean
     Dim i As Long
     For i = 1 To mCount
@@ -235,6 +255,8 @@ Friend Function HasSegmentID(ByVal segmentID As String) As Boolean
     Next i
 End Function
 
+' Копирует путь с обратным порядком сегментов/обходом; signed sweep и source parameters
+' обращаются.
 Public Function Reversed() As CGeometryPath
     RequireSealed
     Dim result As CGeometryPath, i As Long, edge As TRegionEdge
@@ -288,12 +310,14 @@ Public Function RayHit(ByVal originX As Double, ByVal originY As Double, ByVal d
     Next i
 End Function
 
+' Копирует данные аналитического сегмента в переданную структуру без изменения пути.
 Friend Sub CopySegment(ByVal index As Long, ByRef edge As TRegionEdge)
     RequireSealed
     CheckIndex index
     LSet edge = mEdges(index)
 End Sub
 
+' Присоединяет сегменты другого пути с проверкой геометрической непрерывности.
 Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge, Optional ByVal sourcePathID As String = "", _
         Optional ByVal sourceSegmentID As String = "", Optional ByVal sourceStart As Double = 0#, Optional ByVal sourceEnd As Double = 1#)
     RequireMutable
@@ -325,6 +349,7 @@ Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge, Optional
     mStations(mCount) = mStations(mCount - 1) + segmentLength
 End Sub
 
+' Применяет жёсткое преобразование к координатам точки, сохраняя внутренние мм.
 Private Sub TransformPoint(ByRef x As Double, ByRef y As Double, ByVal shiftX As Double, ByVal shiftY As Double, _
         ByVal cosine As Double, ByVal sine As Double, ByVal reflectX As Boolean)
     Dim newX As Double
@@ -333,28 +358,34 @@ Private Sub TransformPoint(ByRef x As Double, ByRef y As Double, ByVal shiftX As
     y = sine * x + cosine * y + shiftY: x = newX
 End Sub
 
+' Сравнивает координаты двух точек в геометрическом допуске.
 Private Function PointsCoincide(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As Boolean
     PointsCoincide = (Sqr((x2 - x1) ^ 2 + (y2 - y1) ^ 2) <= PATH_TOLERANCE)
 End Function
 
+' Проверяет допустимость станции на пути и нормализует только пограничную погрешность.
 Private Function CheckedDistance(ByVal distance As Double) As Double
     If distance < -PATH_TOLERANCE Or distance > mStations(mCount) + PATH_TOLERANCE Then PathError "Позиция выходит за пределы длины пути."
     CheckedDistance = GeomMax(0#, GeomMin(mStations(mCount), distance))
 End Function
 
+' Запрещает изменение геометрического объекта после его запечатывания.
 Private Sub RequireMutable()
     If Len(mID) = 0 Then PathError "Путь не инициализирован."
     If mSealed Then PathError "Опубликованный путь нельзя изменять."
 End Sub
 
+' Требует завершённую проверенную геометрию перед её использованием.
 Private Sub RequireSealed()
     If Not mSealed Then PathError "Путь еще не подготовлен и не опубликован."
 End Sub
 
+' Проверяет индекс перед обращением к массивам геометрического объекта.
 Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then PathError "Номер сегмента вне допустимого диапазона."
 End Sub
 
+' Выдаёт геометрическую ошибку с ID пути и фактической причиной.
 Private Sub PathError(ByVal description As String, Optional ByVal code As String = "PATH_INVALID", _
         Optional ByVal relatedEntityID As String = "", Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
     Set mDiagnostic = New CGeometryDiagnostic

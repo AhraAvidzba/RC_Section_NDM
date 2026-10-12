@@ -714,6 +714,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
+' Последний solver прямого НДС, успешный или диагностический.
 Public Property Get ResultSolver() As CSectionSolver
     Set ResultSolver = mSolver
 End Property
@@ -724,62 +725,77 @@ Public Property Get Converged() As Boolean
     If Not mSolver Is Nothing Then Converged = mSolver.Converged
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     If Not mSolver Is Nothing Then StopReason = mSolver.StopReason
 End Property
 
+' Последний solver прямого НДС, успешный или диагностический.
 Public Property Get Iterations() As Long
     If Not mSolver Is Nothing Then Iterations = mSolver.Iterations
 End Property
 
+' Сколько раз runner действительно запускал CSectionSolver.Solve.
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
+' True, если найденное состояние попало в technical extension.
 Public Property Get ExtensionUsed() As Boolean
     ExtensionUsed = mExtensionUsed
 End Property
 
+' True, если все элементы остались в физических eps-пределах.
 Public Property Get WithinPhysicalRange() As Boolean
     WithinPhysicalRange = mWithinPhysicalRange
 End Property
 
+' True, если стартовая плоскость была задана не нулевой.
 Public Property Get InitialGuessApplied() As Boolean
     InitialGuessApplied = mInitialGuessApplied
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+' Newton или Secant для прямого равновесия.
 Public Property Let SolverMethod(ByVal value As String)
     mSolverMethod = value
 End Property
 
+' Число ступеней приложения нагрузки.
 Public Property Let LoadSteps(ByVal value As Long)
     mLoadSteps = value
 End Property
 
+' Максимум итераций CSectionSolver на одной ступени.
 Public Property Let MaxIterations(ByVal value As Long)
     mMaxIterations = value
 End Property
 
+' Допуск равновесия по N, Н.
 Public Property Let ToleranceN(ByVal value As Double)
     mToleranceN = value
 End Property
 
+' Допуск равновесия по Mx, Н*мм.
 Public Property Let ToleranceMx(ByVal value As Double)
     mToleranceMx = value
 End Property
 
+' Допуск равновесия по My, Н*мм.
 Public Property Let ToleranceMy(ByVal value As Double)
     mToleranceMy = value
 End Property
 
+' Лимит перезапуска матрицы в secant-ветке.
 Public Property Let SecantMaxRestarts(ByVal value As Long)
     mSecantMaxRestarts = value
 End Property
 
+' Нужно ли копить подробный журнал итераций.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property

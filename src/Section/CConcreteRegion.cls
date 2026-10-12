@@ -99,9 +99,11 @@ End Property
 Public Property Get BoundaryProbes() As Variant
     BoundaryProbes = mBoundaryProbes
 End Property
+' Число сохранённых диагностических проб P/Q.
 Public Property Get BoundaryProbeCount() As Long
     If IsArray(mBoundaryProbes) Then BoundaryProbeCount = UBound(mBoundaryProbes, 1)
 End Property
+' Число подготовленных материальных loops.
 Public Property Get LoopCount() As Long
     LoopCount = mLoopCount
 End Property
@@ -112,21 +114,28 @@ Public Property Get LoopIsOpening(ByVal index As Long) As Boolean
     If index < 1 Or index > mLoopCount Then Err.Raise vbObjectError + 5400, "CConcreteRegion", "Номер замкнутого контура области вне допустимого диапазона."
     LoopIsOpening = mLoopOpening(index)
 End Property
+' Аналитическая площадь материальной области, мм²; не механическая A сетки.
 Public Property Get Area() As Double
     Area = mArea
 End Property
+' Скалярное происхождение подготовленной области.
 Public Property Get Source() As String
     Source = mSource
 End Property
+' Ревизия исходной модели, к которой относится область.
 Public Property Get SectionRevision() As Long
     SectionRevision = mSectionRevision
 End Property
+' Инженерный владелец области; назначается coordinator, не геометрической классификацией.
 Public Property Get OwnerID() As String
     OwnerID = mOwnerID
 End Property
+' Скалярная нормативная принадлежность инженерного владельца; geometry не вычисляет нормативные
+' коэффициенты.
 Public Property Get Standard() As String
     Standard = mStandard
 End Property
+' Скалярный ID сохранённой инженерной области.
 Public Property Get AnchorID() As String
     AnchorID = mAnchorID
 End Property

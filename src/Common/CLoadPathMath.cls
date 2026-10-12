@@ -58,6 +58,7 @@ Public Function IsPureAxialLoadPath(ByVal nOffset As Double, ByVal nBase As Doub
         IsZeroMomentAboutPoint(nBase, myBase, referenceX)
 End Function
 
+' Проверяет оба момента относительно заданной точки приложения с численным масштабом задачи.
 Private Function IsZeroMomentAboutPoint(ByVal n As Double, ByVal moment As Double, ByVal coordinate As Double) As Boolean
     Dim transfer As Double, roundoff As Double
     transfer = n * coordinate
@@ -116,6 +117,8 @@ Friend Sub PrepareNumericalPath(ByVal section As CSectionModel, ByVal loadPath A
     mCommonNumericalScale = commonForceScale: mNumericalReady = True
 End Sub
 
+' Проверяет принадлежность состояния заданной нагрузочной траектории в нормированной системе
+' координат.
 Private Function NumericalPathMatches(ByVal section As CSectionModel, ByVal loadPath As CLoadPathVector, _
         ByVal toleranceN As Double, ByVal toleranceMx As Double, ByVal toleranceMy As Double, _
         ByVal commonForceScale As Boolean) As Boolean
@@ -141,6 +144,7 @@ Friend Sub BuildNumericalResiduals(ByVal solver As CSectionSolver, ByRef lambdaV
     BuildResiduals n, mx, my, mNumericalPath, lambdaValue, rPath1, rPath2, residualScale
 End Sub
 
+' Определяет множитель нагрузки по нормированной траектории; не подменяет проверку равновесия.
 Friend Function NumericalLambda(ByVal solver As CSectionSolver) As Double
     RequireNumericalPath
     Dim n As Double, mx As Double, my As Double
@@ -148,21 +152,25 @@ Friend Function NumericalLambda(ByVal solver As CSectionSolver) As Double
     NumericalLambda = Lambda(n, mx / mNumericalFrame.LengthScale, my / mNumericalFrame.LengthScale, mNumericalPath)
 End Function
 
+' Отклоняет вызов до подготовки численной траектории и масштабов усилий.
 Private Sub RequireNumericalPath()
     If Not mNumericalReady Then _
         Err.Raise vbObjectError + 3845, "CLoadPathMath", "Численная траектория нагружения не подготовлена."
 End Sub
 
+' Подготовленная численная система координат и масштабов усилий.
 Friend Property Get NumericalFrame() As CSectionNumericalFrame
     RequireNumericalPath
     Set NumericalFrame = mNumericalFrame
 End Property
 
+' Положительный масштаб осевой силы для численной траектории, Н.
 Friend Property Get NumericalForceScale() As Double
     RequireNumericalPath
     NumericalForceScale = mForceScale
 End Property
 
+' Допуск совпадения состояния с нормированной нагрузочной траекторией.
 Friend Property Get NumericalPathTolerance() As Double
     RequireNumericalPath
     NumericalPathTolerance = mPathTolerance
@@ -309,6 +317,7 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     End If
 End Function
 
+' Возвращает меньшее из двух значений Double без изменения размерности.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function

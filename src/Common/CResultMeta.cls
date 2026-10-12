@@ -158,38 +158,48 @@ Private Function ResultKindLabel() As String
     End Select
 End Function
 
+' Внутренний статус результата; не является пользовательским подтверждением нормативной
+' пригодности.
 Public Property Get InternalStatus() As EResultInternalStatus
     InternalStatus = mInternalStatus
 End Property
 
+' Публичный код состояния результата, определённый общей политикой статусов.
 Public Property Get ResultCode() As EResultCode
     ResultCode = mResultCode
 End Property
 
+' Контекст результата: direct state, capacity, cracks, stability.
 Public Property Get ResultKind() As EResultKind
     ResultKind = mResultKind
 End Property
 
+' Пояснение результата с фактической причиной и доступной привязкой к вводным данным.
 Public Property Get ResultComment() As String
     ResultComment = mResultComment
 End Property
 
+' Пояснение результата с фактической причиной и доступной привязкой к вводным данным.
 Public Property Let ResultComment(ByVal value As String)
     mResultComment = value
 End Property
 
+' Технические подробности solver/search, если они нужны.
 Public Property Get DiagnosticDetails() As String
     DiagnosticDetails = mDiagnosticDetails
 End Property
 
+' Технические подробности solver/search, если они нужны.
 Public Property Let DiagnosticDetails(ByVal value As String)
     mDiagnosticDetails = value
 End Property
 
+' Ветка относится к LC; blocked сохраняет True, хотя нужных данных нет.
 Public Property Get Applies() As Boolean
     Applies = mApplies
 End Property
 
+' Выполнялся собственный solve/search/формульный расчет, не только проверка применимости.
 Public Property Get Calculated() As Boolean
     Calculated = mCalculated
 End Property

@@ -20,10 +20,13 @@ Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long
 Private mRegion As CConcreteRegion
 Private mDiagnostic As CGeometryDiagnostic
 
+' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic
     Set LastDiagnostic = mDiagnostic
 End Property
 
+' Задаёт уникальное имя нового определения сечения; повторная инициализация готового определения
+' запрещена.
 Friend Sub Initialize(ByVal typeID As String, ByVal version As Long)
     If Len(mTypeID) > 0 Then DefinitionError "Определение уже создано."
     If Len(Trim$(typeID)) = 0 Or version < 1 Then DefinitionError "Не заданы тип и версия определения."
@@ -34,6 +37,7 @@ Friend Sub Initialize(ByVal typeID As String, ByVal version As Long)
     Set mSources = CreateObject("Scripting.Dictionary"): mSources.CompareMode = vbBinaryCompare
 End Sub
 
+' Добавляет именованную точку привязки; повторный ID отклоняется.
 Friend Sub AddAnchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Double)
     RequireMutable
     If Len(Trim$(anchorID)) = 0 Or mAnchors.Exists(anchorID) Then DefinitionError "Пустой или повторный ID привязки '" & anchorID & "'."
@@ -46,24 +50,34 @@ Public Sub AnchorCoordinates(ByVal anchorID As String, ByRef x As Double, ByRef 
     x = CDbl(mAnchors(anchorID)(0)): y = CDbl(mAnchors(anchorID)(1))
 End Sub
 
+' Сохраняет связь смыслового объекта с адресом его входного параметра для диагностики.
 Friend Sub AddSource(ByVal entityID As String, ByVal reference As String)
     RequireMutable
     If Len(Trim$(entityID)) = 0 Or Len(Trim$(reference)) = 0 Then DefinitionError "ID и исходная ссылка обязательны."
     mSources(entityID) = reference
 End Sub
 
+' Читает скалярный SourceMap по ID; отсутствующая связь возвращает пустую строку.
 Public Function SourceReference(ByVal entityID As String) As String
     If mSources.Exists(entityID) Then SourceReference = CStr(mSources(entityID))
 End Function
 
+' Смысловое имя типа опубликованного определения.
 Public Property Get TypeID() As String: TypeID = mTypeID: End Property
+' Положительная версия схемы определения.
 Public Property Get SchemaVersion() As Long: SchemaVersion = mVersion: End Property
+' Опубликован ли объект; published геометрия не изменяется.
 Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property
+' Число зарегистрированных путей.
 Public Property Get PathCount() As Long: PathCount = mPaths.Count: End Property
+' Число подготовленных материальных loops.
 Public Property Get LoopCount() As Long: LoopCount = mLoopCount: End Property
+' Число объявленных правил, включая выключенные.
 Public Property Get RuleCount() As Long: RuleCount = mRuleCount: End Property
+' Число объявленных annotation rules.
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 
+' Читает опубликованный неизменяемый путь по ID.
 Public Function Path(ByVal pathID As String) As CGeometryPath
     If Not mPaths.Exists(pathID) Then DefinitionError "Не найден путь '" & pathID & "'.", pathID, "MISSING_PATH"
     Set Path = mPaths(pathID)
@@ -80,11 +94,14 @@ Public Function TargetPaths(ByVal targetID As String) As Variant
     End If
 End Function
 
+' Возвращает clone подготовленной бетонной области, без Excel или повторной интерпретации
+' рецепта.
 Public Function ConcreteDomain() As CConcreteRegion
     RequireSealed
     Set ConcreteDomain = mRegion.Clone
 End Function
 
+' Добавляет аналитический путь с уникальным ID в определение сечения.
 Friend Sub AddPath(ByVal path As CGeometryPath)
     RequireMutable
     If path Is Nothing Then DefinitionError "Путь не передан."
@@ -93,6 +110,7 @@ Friend Sub AddPath(ByVal path As CGeometryPath)
     mPaths.Add path.ID, path
 End Sub
 
+' Добавляет именованную группу существующих путей, сохраняя их порядок.
 Friend Sub AddGroup(ByVal groupID As String, ByVal pathIDs As Variant)
     RequireMutable
     If Len(Trim$(groupID)) = 0 Then DefinitionError "Не задан ID группы."
@@ -112,6 +130,7 @@ Friend Sub AddGroup(ByVal groupID As String, ByVal pathIDs As Variant)
     mGroups.Add groupID, names
 End Sub
 
+' Добавляет замкнутую бетонную границу с ролью Outer или Opening.
 Friend Sub AddLoop(ByRef value As TSectionLoop)
     RequireMutable
     If value.Role <> LoopOuter And value.Role <> LoopOpening Then DefinitionError "Неизвестная роль контура."
@@ -137,6 +156,7 @@ Friend Sub AddLoop(ByRef value As TSectionLoop)
     mLoops(mLoopCount) = value
 End Sub
 
+' Сохраняет арматурное правило и его независимый снимок options.
 Friend Sub AddRule(ByRef value As TRebarRule)
     RequireMutable
     If value.DistributionScope <> PerPath Then DefinitionError "Правило '" & value.RuleID & "': поддерживается DistributionScope=PerPath."
@@ -159,6 +179,7 @@ Friend Sub AddRule(ByRef value As TRebarRule)
     mRules(mRuleCount) = value
 End Sub
 
+' Добавляет декларативное описание размера или подписи без дублирования бетонного контура.
 Friend Sub AddAnnotation(ByRef value As TSectionAnnotation)
     RequireMutable
     If Len(Trim$(value.AnnotationID)) = 0 Then DefinitionError "Не задан ID аннотации."
@@ -170,16 +191,19 @@ Friend Sub AddAnnotation(ByRef value As TSectionAnnotation)
     mAnnotations(mAnnotationCount) = value
 End Sub
 
+' Возвращает копию структуры правила, сохраняя неизменность опубликованного определения.
 Friend Sub CopyRule(ByVal index As Long, ByRef value As TRebarRule)
     If index < 1 Or index > mRuleCount Then DefinitionError "Номер правила вне определения."
     value = mRules(index)
 End Sub
 
+' Возвращает копию декларативной аннотации для общего построителя.
 Friend Sub CopyAnnotation(ByVal index As Long, ByRef value As TSectionAnnotation)
     If index < 1 Or index > mAnnotationCount Then DefinitionError "Номер аннотации вне определения."
     value = mAnnotations(index)
 End Sub
 
+' Находит правило по уникальному смысловому ID; неизвестная зависимость является ошибкой.
 Friend Function RuleIndex(ByVal ruleID As String) As Long
     Dim i As Long
     For i = 1 To mRuleCount
@@ -251,10 +275,12 @@ Private Sub ValidateAnnotation(ByRef value As TSectionAnnotation)
     End Select
 End Sub
 
+' Проверяет наличие точки привязки, необходимой для аннотации.
 Private Sub RequireAnnotationAnchor(ByVal annotationID As String, ByVal anchorID As String)
     If Not mAnchors.Exists(anchorID) Then DefinitionError "Не найдена привязка '" & anchorID & "'.", annotationID, "MISSING_ANCHOR", anchorID
 End Sub
 
+' Проверяет замкнутость и геометрическую пригодность одной бетонной границы.
 Private Sub ValidateOneLoop(ByVal query As CSectionGeometryQuery, ByVal region As CConcreteRegion)
     Dim edges() As TRegionEdge, count As Long, checked As CConcreteRegion
     region.CopyEdges edges, count
@@ -262,6 +288,7 @@ Private Sub ValidateOneLoop(ByVal query As CSectionGeometryQuery, ByVal region A
     If checked.LoopCount <> 1 Then DefinitionError "Один Loop должен содержать одну замкнутую границу."
 End Sub
 
+' Проверяет зависимости арматурных правил и отклоняет циклы до исполнения.
 Private Sub ValidateRuleGraph(ByVal index As Long, ByRef visiting() As Long)
     If visiting(index) = 2 Then Exit Sub
     If visiting(index) = 1 Then DefinitionError "Циклическая зависимость ряда '" & mRules(index).RuleID & "'."
@@ -277,6 +304,7 @@ Private Sub ValidateRuleGraph(ByVal index As Long, ByRef visiting() As Long)
     visiting(index) = 2
 End Sub
 
+' Возвращает отдельный контейнер аналитических материальных Outer/Opening.
 Public Function MaterialContours() As CSectionContours
     Dim result As CSectionContours, i As Long
     Set result = New CSectionContours
@@ -284,6 +312,8 @@ Public Function MaterialContours() As CSectionContours
     Set MaterialContours = result
 End Function
 
+' Записывает единственный контурный snapshot в переданный контейнер; destination предварительно
+' очищается.
 Public Sub WriteContours(ByVal result As CSectionContours)
     RequireSealed
     If result Is Nothing Then DefinitionError "Контейнер контуров не передан."
@@ -292,6 +322,7 @@ Public Sub WriteContours(ByVal result As CSectionContours)
     For i = 1 To mLoopCount: AppendLoop result, i, False: Next i
 End Sub
 
+' Преобразует аналитические сегменты одной границы в общий контейнер контуров.
 Private Function LoopContours(ByVal index As Long, ByVal forceOuter As Boolean) As CSectionContours
     Dim result As CSectionContours
     Set result = New CSectionContours
@@ -299,6 +330,7 @@ Private Function LoopContours(ByVal index As Long, ByVal forceOuter As Boolean) 
     Set LoopContours = result
 End Function
 
+' Передаёт сегменты границы с её ролью и источником в выходной контейнер.
 Private Sub AppendLoop(ByVal result As CSectionContours, ByVal index As Long, ByVal forceOuter As Boolean)
     Dim path As CGeometryPath, role As String, edge As TRegionEdge, radius As Double, i As Long, contourID As String, comment As String
     Set path = Me.Path(mLoops(index).PathID)
@@ -324,14 +356,17 @@ Private Sub AppendLoop(ByVal result As CSectionContours, ByVal index As Long, By
     Next i
 End Sub
 
+' Запрещает изменение геометрического объекта после его запечатывания.
 Private Sub RequireMutable()
     If Len(mTypeID) = 0 Or mSealed Then DefinitionError "Определение не открыто для заполнения."
 End Sub
 
+' Требует завершённую проверенную геометрию перед её использованием.
 Private Sub RequireSealed()
     If Not mSealed Then DefinitionError "Определение еще не опубликовано."
 End Sub
 
+' Выдаёт понятную ошибку определения сечения с сохранённой связью с вводом.
 Private Sub DefinitionError(ByVal reason As String, Optional ByVal entityID As String = "", _
         Optional ByVal code As String = "DEFINITION_INVALID", Optional ByVal relatedEntityID As String = "")
     Dim reference As String

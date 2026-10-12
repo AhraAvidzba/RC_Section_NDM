@@ -76,12 +76,15 @@ Public Sub InitializeRegion(ByVal curve As CFakeAcadContourExport)
     mArea = Abs(mArea)
 End Sub
 
+' Площадь выбранного элемента, мм².
 Public Property Get Area() As Double
     Area = mArea
 End Property
+' ДЛЯ ТЕСТОВ: тип имитируемого объекта AutoCAD.
 Public Property Get ObjectName() As String
     ObjectName = mObjectName
 End Property
+' ДЛЯ ТЕСТОВ: номер операции создания Region с принудительной ошибкой.
 Public Property Let FailRegionAt(ByVal value As Long)
     mFailRegionAt = value
 End Property
@@ -112,24 +115,31 @@ End Property
 Public Property Let Layer(ByVal value As String)
     mLayer = value
 End Property
+' ДЛЯ ТЕСТОВ: имя слоя имитируемого объекта AutoCAD.
 Public Property Get Layer() As String
     Layer = mLayer
 End Property
+' ДЛЯ ТЕСТОВ: цвет имитируемого экспортируемого объекта.
 Public Property Let Color(ByVal value As Long)
     mColor = value
 End Property
+' ДЛЯ ТЕСТОВ: цвет имитируемого экспортируемого объекта.
 Public Property Get Color() As Long
     Color = mColor
 End Property
+' ДЛЯ ТЕСТОВ: признак фактической замкнутости имитируемого объекта.
 Public Property Let Closed(ByVal value As Boolean)
     mClosed = value
 End Property
+' ДЛЯ ТЕСТОВ: признак фактической замкнутости имитируемого объекта.
 Public Property Get Closed() As Boolean
     Closed = mClosed
 End Property
+' ДЛЯ ТЕСТОВ: массив координат вершин имитируемой полилинии, мм.
 Public Property Get Coordinates() As Variant
     Coordinates = mCoordinates
 End Property
+' ДЛЯ ТЕСТОВ: признак удаления только имитируемого временного объекта.
 Public Property Get Deleted() As Boolean
     Deleted = mDeleted
 End Property
@@ -138,6 +148,8 @@ End Property
 Public Sub SetBulge(ByVal index As Long, ByVal value As Double)
     mBulges(CStr(index)) = value
 End Sub
+' ДЛЯ ТЕСТОВ: возвращает заданный bulge сегмента полилинии для проверки экспорта аналитической
+' дуги.
 Public Function BulgeAt(ByVal index As Long) As Double
     If mBulges.Exists(CStr(index)) Then BulgeAt = mBulges(CStr(index))
 End Function
@@ -145,6 +157,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: Update не изменяет геометрию; Delete отмечает недопустимую очистку.
 Public Sub Update()
 End Sub
+' ДЛЯ ТЕСТОВ: отмечает удаление временного объекта без воздействия на настоящий AutoCAD.
 Public Sub Delete()
     mDeleted = True
 End Sub
@@ -153,6 +166,7 @@ End Sub
 Public Property Get Document() As Object
     Set Document = Me
 End Property
+' ДЛЯ ТЕСТОВ: зарегистрированные приложения XData имитируемого документа.
 Public Property Get RegisteredApplications() As Object
     Dim apps As Object: Set apps = CreateObject("Scripting.Dictionary")
     apps.Add "RC_SECTION_NDM", Me
@@ -163,6 +177,8 @@ End Property
 Public Sub SetXData(ByVal codes As Variant, ByVal values As Variant)
     mCodes = codes: mValues = values
 End Sub
+' ДЛЯ ТЕСТОВ: возвращает сохранённые XData и учитывает чтение для проверки полного обхода
+' объектов.
 Public Sub GetXData(ByVal appName As String, ByRef codes As Variant, ByRef values As Variant)
     codes = mCodes: values = mValues
 End Sub

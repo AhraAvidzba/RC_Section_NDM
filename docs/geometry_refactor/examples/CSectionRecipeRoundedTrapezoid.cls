@@ -8,6 +8,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Учебный рецепт скруглённой трапеции через общий декларативный фасад
+' ==========================================================================
 Implements ISectionRecipe
 
 ' Рабочий пример нового типа: скругленная трапеция с круглым отверстием.
@@ -27,6 +31,8 @@ Private Type TInputs
     Source As String
 End Type
 
+' Описывает контуры, арматурные правила и размеры выбранного рецепта. Сетку и физические стержни
+' строит общий CSectionBuilder.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, parameters As TInputs
     Set table = context.Table("rngRoundedTrapezoidGeometry"): Set units = context.Units
@@ -61,6 +67,7 @@ Public Function ProgramDefinition(Optional ByVal bottomWidth As Double = 1200#, 
     Set ProgramDefinition = Describe(parameters, Nothing)
 End Function
 
+' Читает размер из снимка таблицы и переводит во внутренние мм через CUnitSystem.
 Private Function ReadLength(ByVal table As CSectionInputTable, ByVal key As String, ByVal units As CUnitSystem) As Double
     ReadLength = table.Length(table.RowByKey(key), 2, units)
     If ReadLength <= 0# Then SectionRecipeError "CSectionRecipeRoundedTrapezoid", "Размер должен быть положительным. Исправьте указанный параметр.", table.SourceReference(table.RowByKey(key), 2)

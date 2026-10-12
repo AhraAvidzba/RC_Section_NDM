@@ -99,6 +99,7 @@ Public Property Get Status() As String
     Status = policy.ExternalStatus(mMeta)
 End Property
 
+' Единственный численный снимок named state.
 Public Property Get StateAvailable() As Boolean
     StateAvailable = Not mState Is Nothing
 End Property
@@ -115,6 +116,7 @@ Public Property Get ExtensionUsed() As Boolean
     If Not mState Is Nothing Then ExtensionUsed = mState.ExtensionUsed
 End Property
 
+' Настройка глобального Extension при запуске.
 Public Property Get ExtensionEnabled() As Boolean
     ExtensionEnabled = mExtensionEnabled
 End Property

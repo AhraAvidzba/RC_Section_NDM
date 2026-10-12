@@ -15,6 +15,7 @@ Private mRevision As Long
 Private mOriginX As Double, mOriginY As Double, mLength As Double
 Private mSupportChecked As Boolean, mFullSupport As Boolean, mConcreteArea As Double
 
+' Задаёт единичный численный масштаб и нулевое начало до подготовки геометрии.
 Private Sub Class_Initialize()
     mLength = 1#
 End Sub
@@ -63,10 +64,12 @@ Friend Function HasFullPlaneSupport() As Boolean
     HasFullPlaneSupport = mFullSupport
 End Function
 
+' Переносит epsilon0 в начало численной системы, сохраняя то же линейное поле деформаций.
 Friend Function CenterStrain(ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double) As Double
     CenterStrain = eps0 + kx * mOriginY + ky * mOriginX
 End Function
 
+' Возвращает epsilon0 в исходные координаты сечения без изменения поля деформаций.
 Friend Function OriginalStrain(ByVal epsCenter As Double, ByVal kx As Double, ByVal ky As Double) As Double
     OriginalStrain = epsCenter - kx * mOriginY - ky * mOriginX
 End Function
@@ -76,26 +79,32 @@ Friend Function CenterMx(ByVal n As Double, ByVal mx As Double) As Double
     CenterMx = mx - n * mOriginY
 End Function
 
+' Переносит My к численному началу с учётом осевой силы N и смещения по X.
 Friend Function CenterMy(ByVal n As Double, ByVal my As Double) As Double
     CenterMy = my - n * mOriginX
 End Function
 
+' Возвращает Mx к исходному началу с учётом N и смещения по Y.
 Friend Function OriginalMx(ByVal n As Double, ByVal mx As Double) As Double
     OriginalMx = mx + n * mOriginY
 End Function
 
+' Возвращает My к исходному началу с учётом N и смещения по X.
 Friend Function OriginalMy(ByVal n As Double, ByVal my As Double) As Double
     OriginalMy = my + n * mOriginX
 End Function
 
+' Координата X численного начала относительно исходной модели, мм.
 Friend Property Get OriginX() As Double
     OriginX = mOriginX
 End Property
 
+' Координата Y численного начала относительно исходной модели, мм.
 Friend Property Get OriginY() As Double
     OriginY = mOriginY
 End Property
 
+' Положительный масштаб длины для нормирования кривизн, мм.
 Friend Property Get LengthScale() As Double
     LengthScale = mLength
 End Property

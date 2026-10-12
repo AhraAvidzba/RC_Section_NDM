@@ -322,250 +322,367 @@ Public Property Get Code() As String
     Code = mCode
 End Property
 
+' Диагностическое имя расчетной ветви.
 Public Property Get Branch() As String
     Branch = mBranch
 End Property
 
+' X точки, относительно которой выполнен перенос нагрузок.
 Public Property Get ReferenceX() As Double
     ReferenceX = mReferenceX
 End Property
 
+' Y точки, относительно которой выполнен перенос нагрузок.
 Public Property Get ReferenceY() As Double
     ReferenceY = mReferenceY
 End Property
 
+' Итоговая продольная сила для последующего НДМ.
 Public Property Get DesignN() As Double
     DesignN = mDesignN
 End Property
 
+' Итоговый Mx после учета устойчивости/фильтров.
 Public Property Get DesignMx() As Double
     DesignMx = mDesignMx
 End Property
 
+' Итоговый My после учета устойчивости/фильтров.
 Public Property Get DesignMy() As Double
     DesignMy = mDesignMy
 End Property
 
+' Длительная/постоянная часть N.
 Public Property Get SustainedN() As Double
     SustainedN = mSustainedN
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: исходный момент. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Moment1() As Double
     Moment1 = mMoment1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: исходный момент. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Moment2() As Double
     Moment2 = mMoment2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: длительная часть момента. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get SustainedMoment1() As Double
     SustainedMoment1 = mSustainedMoment1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: длительная часть момента. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get SustainedMoment2() As Double
     SustainedMoment2 = mSustainedMoment2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: расчётный момент после учёта устойчивости.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get DesignMoment1() As Double
     DesignMoment1 = mDesignMoment1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: расчётный момент после учёта устойчивости.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get DesignMoment2() As Double
     DesignMoment2 = mDesignMoment2
 End Property
 
+' Критическая продольная сила по определяющей плоскости устойчивости, Н.
 Public Property Get CriticalForce() As Double
     CriticalForce = mCriticalForce
 End Property
 
+' Определяющий коэффициент запаса устойчивости.
 Public Property Get ReserveFactor() As Double
     ReserveFactor = mReserveFactor
 End Property
 
+' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
+' этого класса.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: критическая сила. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Ncr1() As Double
     Ncr1 = mNcr1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: критическая сила. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Ncr2() As Double
     Ncr2 = mNcr2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: предельная сила. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Nultimate1() As Double
     Nultimate1 = mNultimate1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: предельная сила. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Nultimate2() As Double
     Nultimate2 = mNultimate2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: коэффициент запаса. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Reserve1() As Double
     Reserve1 = mReserve1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: коэффициент запаса. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Reserve2() As Double
     Reserve2 = mReserve2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: коэффициент увеличения эксцентриситета.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Eta1() As Double
     Eta1 = mEta1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: коэффициент увеличения эксцентриситета.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Eta2() As Double
     Eta2 = mEta2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: коэффициент длительности. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PhiL1() As Double
     PhiL1 = mPhiL1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: коэффициент длительности. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PhiL2() As Double
     PhiL2 = mPhiL2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: табличная ветвь коэффициента длительности.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PhiLTable1() As String
     PhiLTable1 = mPhiLTable1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: табличная ветвь коэффициента длительности.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PhiLTable2() As String
     PhiLTable2 = mPhiLTable2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: коэффициент доли длительного момента.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PhiM1() As Double
     PhiM1 = mPhiM1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: коэффициент доли длительного момента.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PhiM2() As Double
     PhiM2 = mPhiM2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: итоговый коэффициент для жёсткости. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PhiValue1() As Double
     PhiValue1 = mPhiValue1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: итоговый коэффициент для жёсткости. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PhiValue2() As Double
     PhiValue2 = mPhiValue2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: коэффициент влияния предварительного
+' напряжения в выбранной ветви. Значение определяет CStabilityCalculator по выбранным нормам и
+' Config.
 Public Property Get PhiP1() As Double
     PhiP1 = mPhiP1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: коэффициент влияния предварительного
+' напряжения в выбранной ветви. Значение определяет CStabilityCalculator по выбранным нормам и
+' Config.
 Public Property Get PhiP2() As Double
     PhiP2 = mPhiP2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: эксцентриситет силы. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Eccentricity1() As Double
     Eccentricity1 = mEccentricity1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: эксцентриситет силы. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Eccentricity2() As Double
     Eccentricity2 = mEccentricity2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: случайный эксцентриситет. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get AccidentalEcc1() As Double
     AccidentalEcc1 = mAccidentalEcc1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: случайный эксцентриситет. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get AccidentalEcc2() As Double
     AccidentalEcc2 = mAccidentalEcc2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: расчётная длина. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get EffectiveLength1() As Double
     EffectiveLength1 = mEffectiveLength1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: расчётная длина. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get EffectiveLength2() As Double
     EffectiveLength2 = mEffectiveLength2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: гибкость. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Slenderness1() As Double
     Slenderness1 = mSlenderness1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: гибкость. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Slenderness2() As Double
     Slenderness2 = mSlenderness2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: размер сечения в плоскости. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Depth1() As Double
     Depth1 = mDepth1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: размер сечения в плоскости. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Depth2() As Double
     Depth2 = mDepth2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: радиус инерции. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Radius1() As Double
     Radius1 = mRadius1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: радиус инерции. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Radius2() As Double
     Radius2 = mRadius2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: расстояние ядра сечения. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get CoreDistance1() As Double
     CoreDistance1 = mCoreDistance1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: расстояние ядра сечения. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get CoreDistance2() As Double
     CoreDistance2 = mCoreDistance2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: относительный эксцентриситет. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Delta1() As Double
     Delta1 = mDelta1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: относительный эксцентриситет. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Delta2() As Double
     Delta2 = mDelta2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: коэффициент бетонной части жёсткости.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Kb1() As Double
     Kb1 = mKb1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: коэффициент бетонной части жёсткости.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Kb2() As Double
     Kb2 = mKb2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: коэффициент арматурной части жёсткости.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Ks1() As Double
     Ks1 = mKs1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: коэффициент арматурной части жёсткости.
+' Значение определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get Ks2() As Double
     Ks2 = mKs2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: расчётная жёсткость. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get StiffnessD1() As Double
     StiffnessD1 = mStiffnessD1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: расчётная жёсткость. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get StiffnessD2() As Double
     StiffnessD2 = mStiffnessD2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: принятая расчётная ветвь. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PlaneBranch1() As String
     PlaneBranch1 = mPlaneBranch1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: принятая расчётная ветвь. Значение определяет
+' CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PlaneBranch2() As String
     PlaneBranch2 = mPlaneBranch2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: признак применимости проверки. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PlaneApplicable1() As Boolean
     PlaneApplicable1 = mPlaneApplicable1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: признак применимости проверки. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PlaneApplicable2() As Boolean
     PlaneApplicable2 = mPlaneApplicable2
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 1: признак выполнения проверки. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PlanePassed1() As Boolean
     PlanePassed1 = mPlanePassed1
 End Property
 
+' Сохранённый параметр устойчивости в плоскости 2: признак выполнения проверки. Значение
+' определяет CStabilityCalculator по выбранным нормам и Config.
 Public Property Get PlanePassed2() As Boolean
     PlanePassed2 = mPlanePassed2
 End Property

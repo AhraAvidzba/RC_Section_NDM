@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -214,14 +214,17 @@ Public Function OutputCurvatureToInternal(ByVal value As Double) As Double
     OutputCurvatureToInternal = value * CurvatureFactorToInvMm(mOutputCurvature)
 End Function
 
+' Возвращает текущий output selector LengthUnit, без преобразования или округления данных.
 Public Property Get OutputLengthUnit() As String
     OutputLengthUnit = mOutputLength
 End Property
 
+' Возвращает текущий output selector AreaUnit, без преобразования или округления данных.
 Public Property Get OutputAreaUnit() As String
     OutputAreaUnit = mOutputArea
 End Property
 
+' Возвращает текущий output selector MomentUnit, без преобразования или округления данных.
 Public Property Get OutputMomentUnit() As String
     OutputMomentUnit = mOutputMoment
 End Property
@@ -231,6 +234,7 @@ Public Property Get InputMomentPerLengthUnit() As String
     InputMomentPerLengthUnit = mInputMoment & "/" & mInputLength
 End Property
 
+' Возвращает текущий output selector ForceUnit, без преобразования или округления данных.
 Public Property Get OutputForceUnit() As String
     OutputForceUnit = mOutputForce
 End Property
@@ -240,22 +244,27 @@ Public Property Get OutputForceLengthSquaredUnit() As String
     OutputForceLengthSquaredUnit = mOutputForce & "*" & mOutputLength & "2"
 End Property
 
+' Возвращает текущий output selector StressUnit, без преобразования или округления данных.
 Public Property Get OutputStressUnit() As String
     OutputStressUnit = mOutputStress
 End Property
 
+' Возвращает текущий output selector CurvatureUnit, без преобразования или округления данных.
 Public Property Get OutputCurvatureUnit() As String
     OutputCurvatureUnit = mOutputCurvature
 End Property
 
+' Возвращает текущий output selector SignN, без преобразования или округления данных.
 Public Property Get OutputSignN() As String
     OutputSignN = mSignN
 End Property
 
+' Возвращает текущий output selector SignMx, без преобразования или округления данных.
 Public Property Get OutputSignMx() As String
     OutputSignMx = mSignMx
 End Property
 
+' Возвращает текущий output selector SignMy, без преобразования или округления данных.
 Public Property Get OutputSignMy() As String
     OutputSignMy = mSignMy
 End Property

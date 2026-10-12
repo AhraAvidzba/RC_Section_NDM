@@ -8,6 +8,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Декларативный рецепт круглого сечения и трёх арматурных рядов
+' ==========================================================================
 Implements ISectionRecipe
 
 ' Рецепт Circle: свой ввод, точный круг, основной и связанные ряды.
@@ -63,6 +67,8 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Set ISectionRecipe_CreateDefinition = facade.Finish
 End Function
 
+' Описывает смещение и привязку дополнительного ряда относительно основного, сохраняя смысловую
+' группу.
 Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal key As String, ByVal suffix As String, _
         ByVal location As String, ByVal distance As Double) As CRebarRuleOptions
     Dim options As CRebarRuleOptions
@@ -75,6 +81,7 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal key 
     Set AdditionalOptions = options
 End Function
 
+' Проверяет ограничение рецепта; ошибка содержит фактический адрес параметра во входной таблице.
 Private Sub Require(ByVal table As CSectionInputTable, ByVal key As String, ByVal condition As Boolean, ByVal reason As String)
     If Not condition Then SectionRecipeError "CSectionRecipeCircle", reason & " Исправьте указанное значение.", table.SourceReference(table.RowByKey(key), 2)
 End Sub

@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -131,22 +131,27 @@ Public Property Get InternalMy() As Double
     InternalMy = MyAboutPoint(0#)
 End Property
 
+' Продольная сила во внутренних единицах, Н.
 Public Property Get N() As Double
     N = mN
 End Property
 
+' Mx относительно точки приложения нагрузки, Н*мм.
 Public Property Get LoadPointMx() As Double
     LoadPointMx = mLoadPointMx
 End Property
 
+' My относительно точки приложения нагрузки, Н*мм.
 Public Property Get LoadPointMy() As Double
     LoadPointMy = mLoadPointMy
 End Property
 
+' X точки приложения продольной силы в координатах модели, мм.
 Public Property Get LoadReferenceX() As Double
     LoadReferenceX = mLoadReferenceX
 End Property
 
+' Y точки приложения продольной силы в координатах модели, мм.
 Public Property Get LoadReferenceY() As Double
     LoadReferenceY = mLoadReferenceY
 End Property

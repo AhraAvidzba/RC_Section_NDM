@@ -466,37 +466,48 @@ End Function
 Public Property Get CandidateCount() As Long
     CandidateCount = mCandidateCount
 End Property
+' Число подготовленных неделимых арматурных групп СП35.
 Public Property Get GroupCount() As Long
     GroupCount = mGroupCount
 End Property
+' Снимки той же геометрии, площадь которой пойдет в формулу.
 Public Property Get CandidateRegion(ByVal index As Long) As CConcreteRegion
     CheckCandidate index
     If Not mZones(index) Is Nothing Then Set CandidateRegion = mZones(index).Clone
 End Property
+' Снимки той же геометрии, площадь которой пойдет в формулу.
 Public Property Get CandidateAvailable(ByVal index As Long) As Boolean
     CheckCandidate index: CandidateAvailable = Not mZones(index) Is Nothing
 End Property
+' Для кандидата массив [группа, локальный ряд]; только включенные группы.
 Public Property Get CandidateRows(ByVal index As Long) As Variant
     CheckCandidate index: CandidateRows = mRows(index)
 End Property
+' Индекс опорной группы рассматриваемой области трещин СП35.
 Public Property Get CandidateAnchorGroup(ByVal index As Long) As Long
     CheckCandidate index: CandidateAnchorGroup = mAnchorGroup(index)
 End Property
+' Индекс стержня, задающего напряжение выбранного кандидата СП35.
 Public Property Get CandidateStressBar(ByVal index As Long) As Long
     CheckCandidate index: CandidateStressBar = mStressBar(index)
 End Property
+' Фактические напряжения заданного НДС, МПа.
 Public Property Get CandidateSigmaS(ByVal index As Long) As Double
     CheckCandidate index: CandidateSigmaS = mBarStress(mStressBar(index))
 End Property
+' Сумма произведений beta на диаметр для кандидата области СП35.
 Public Property Get CandidateBetaDiameterSum(ByVal index As Long) As Double
     CheckCandidate index: CandidateBetaDiameterSum = mBetaDiameterSum(index)
 End Property
+' Диаметр группы, задающей боковую границу кандидата, мм.
 Public Property Get CandidateSideDiameter(ByVal index As Long) As Double
     CheckCandidate index: CandidateSideDiameter = mSideDiameter(index)
 End Property
+' Диаметр арматуры указанного ряда кандидата, мм.
 Public Property Get CandidateRowDiameter(ByVal index As Long) As Double
     CheckCandidate index: CandidateRowDiameter = mRowDiameter(index)
 End Property
+' Радиус взаимодействия у боковой границы кандидата, мм.
 Public Property Get CandidateSideRadius(ByVal index As Long) As Double
     CheckCandidate index: CandidateSideRadius = mSideRadius(index)
 End Property
@@ -505,87 +516,115 @@ End Property
 Public Property Get CandidateLeftDistance(ByVal index As Long) As Double
     CheckCandidate index: CandidateLeftDistance = mLeftDistance(index)
 End Property
+' Расстояние до правой боковой границы кандидата, мм.
 Public Property Get CandidateRightDistance(ByVal index As Long) As Double
     CheckCandidate index: CandidateRightDistance = mRightDistance(index)
 End Property
+' Радиус области кандидата по нормали к нейтральной линии, мм.
 Public Property Get CandidateNormalRadius(ByVal index As Long) As Double
     CheckCandidate index: CandidateNormalRadius = mNormalRadius(index)
 End Property
+' Индекс опорного ряда выбранного кандидата области СП35.
 Public Property Get CandidateReferenceRow(ByVal index As Long) As Long
     CheckCandidate index: CandidateReferenceRow = mReferenceRow(index)
 End Property
+' Число арматурных рядов внутри выбранного кандидата СП35.
 Public Property Get CandidateRowCount(ByVal index As Long) As Long
     CheckCandidate index: CandidateRowCount = mRowCount(index)
 End Property
+' 0 - стержень не растянут; иначе неделимая связная группа.
 Public Property Get BarGroup(ByVal index As Long) As Long
     BarGroup = mBarGroup(index)
 End Property
+' Центр по реальным площадям As.
 Public Property Get GroupX(ByVal index As Long) As Double
     GroupX = mGroupX(index)
 End Property
+' Координата центра группы в подготовленной системе СП35, мм.
 Public Property Get GroupY(ByVal index As Long) As Double
     GroupY = mGroupY(index)
 End Property
+' Число физических стержней внутри неделимой группы СП35.
 Public Property Get GroupBarCount(ByVal index As Long) As Long
     GroupBarCount = mGroupBars(index)
 End Property
+' Суммарная площадь арматуры неделимой группы, мм².
 Public Property Get GroupArea(ByVal index As Long) As Double
     GroupArea = mGroupArea(index)
 End Property
+' Сохраненный коэффициент группы для формулы и пассивного вывода.
 Public Property Get GroupBeta(ByVal index As Long) As Double
     GroupBeta = mGroupBeta(index)
 End Property
+' Смысловой ряд исходных групп; не определяет боковые границы.
 Public Property Get GroupRow(ByVal index As Long) As Long
     GroupRow = mGroupRow(index)
 End Property
+' Собственные копии для результата, не чтение измененной модели позже.
 Public Property Get BarID(ByVal index As Long) As String
     BarID = mBarID(index)
 End Property
+' Диаметр физического стержня подготовленной группы, мм.
 Public Property Get BarDiameter(ByVal index As Long) As Double
     BarDiameter = mBarDiameter(index)
 End Property
+' Площадь физического стержня, мм².
 Public Property Get BarArea(ByVal index As Long) As Double
     BarArea = mBarArea(index)
 End Property
+' Деформация физического стержня в подготовленном текущем НДС.
 Public Property Get BarStrain(ByVal index As Long) As Double
     BarStrain = mBarStrain(index)
 End Property
+' Компонента X направления нормали выбранной геометрической записи.
 Public Property Get NormalX() As Double
     NormalX = mNx
 End Property
+' Компонента Y направления нормали выбранной геометрической записи.
 Public Property Get NormalY() As Double
     NormalY = mNy
 End Property
+' Координата проекции нейтральной линии в системе области СП35, мм.
 Public Property Get NeutralProjection() As Double
     NeutralProjection = mNeutralN
 End Property
+' Допуск объединения соседних стержней в неделимую группу, мм.
 Public Property Get GroupGapTolerance() As Double
     GroupGapTolerance = mGapTolerance
 End Property
+' Допуск разделения арматурных рядов, мм; сам по себе не меняет границы области.
 Public Property Get RowTolerance() As Double
     RowTolerance = mRowTolerance
 End Property
+' Порог проекции t / полного расстояния L ближайшего соседа.
 Public Property Get NeighborRatioLimit() As Double
     NeighborRatioLimit = mNeighborRatioLimit
 End Property
+' Выбранный способ определения диаметра для радиуса взаимодействия СП35.
 Public Property Get RadiusDiameterMode() As String
     RadiusDiameterMode = mDiameterMode
 End Property
+' Выбранный способ определения радиуса взаимодействия СП35.
 Public Property Get InteractionRadiusMode() As String
     InteractionRadiusMode = mRadiusMode
 End Property
+' Признак ветви центрального растяжения при построении областей СП35.
 Public Property Get CentralTension() As Boolean
     CentralTension = mCentralTension
 End Property
+' Версия исходной геометрии, зафиксированная при подготовке.
 Public Property Get SectionRevision() As Long
     SectionRevision = mSectionRevision
 End Property
+' Радиус взаимодействия арматуры рассматриваемого кандидата, мм.
 Public Property Get CandidateReinforcementRadius(ByVal index As Long) As Double
     CheckCandidate index: CandidateReinforcementRadius = mCandidateRadius(index)
 End Property
+' Коэффициент psi_cm рассматриваемого кандидата СП35.
 Public Property Get CandidatePsiCm(ByVal index As Long) As Double
     CheckCandidate index: CandidatePsiCm = mCandidatePsi(index)
 End Property
+' Ширина нормальной трещины рассматриваемого кандидата, мм.
 Public Property Get CandidateCrackWidth(ByVal index As Long) As Double
     CheckCandidate index: CandidateCrackWidth = mCandidateWidth(index)
 End Property

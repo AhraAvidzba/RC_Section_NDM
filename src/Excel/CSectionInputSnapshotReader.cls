@@ -43,6 +43,7 @@ Public Function Capture(ByVal workbook As Object, ByVal tableNames As Variant, _
     Set Capture = result
 End Function
 
+' Переводит номер столбца Excel в буквенный адрес для привязки ошибки к исходной ячейке.
 Private Function ColumnName(ByVal column As Long) As String
     Do While column > 0
         column = column - 1

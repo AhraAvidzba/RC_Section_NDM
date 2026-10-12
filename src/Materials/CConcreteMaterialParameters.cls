@@ -97,54 +97,67 @@ Private Sub RequirePositive(ByVal settings As CSystemSettingsReader, ByVal key A
     Err.Raise vbObjectError + errorCode, "CConcreteMaterialParameters", message
 End Sub
 
+' Расчетное сопротивление бетона сжатию для I ГПС, МПа.
 Public Property Get RbULS() As Double
     RbULS = mRbULS
 End Property
 
+' Расчетное сопротивление бетона растяжению для I ГПС, МПа.
 Public Property Get RbtULS() As Double
     RbtULS = mRbtULS
 End Property
 
+' Сопротивление бетона сжатию для II ГПС, МПа.
 Public Property Get RbSLS() As Double
     RbSLS = mRbSLS
 End Property
 
+' Сопротивление бетона растяжению Rbt,ser для II ГПС, МПа.
 Public Property Get RbtSLS() As Double
     RbtSLS = mRbtSLS
 End Property
 
+' Допустимое сжатие бетона для проверки продольных трещин по СП 35, МПа.
 Public Property Get RbMc2() As Double
     RbMc2 = mRbMc2
 End Property
 
+' Начальный модуль бетона при сжатии, МПа.
 Public Property Get Eb() As Double
     Eb = mEb
 End Property
 
+' Начальный модуль бетона при растяжении, МПа; default по СП равен Eb.
 Public Property Get Ebt() As Double
     Ebt = mEbt
 End Property
 
+' Пользовательская деформация eps_b1,red для двухлинейной сжатой ветви.
 Public Property Get Eb1Red() As Double
     Eb1Red = mEb1Red
 End Property
 
+' Пользовательская деформация eps_bt1,red для двухлинейной растянутой ветви.
 Public Property Get Ebt1Red() As Double
     Ebt1Red = mEbt1Red
 End Property
 
+' Пользовательская деформация eps_b0 для трехлинейной сжатой ветви.
 Public Property Get Eb0() As Double
     Eb0 = mEb0
 End Property
 
+' Пользовательская деформация eps_bt0 для трехлинейной растянутой ветви.
 Public Property Get Ebt0() As Double
     Ebt0 = mEbt0
 End Property
 
+' Предельная деформация eps_b2 для TwoLine/ThreeLine при сжатии.
 Public Property Get Eb2() As Double
     Eb2 = mEb2
 End Property
 
+' Предельная деформация eps_bt2 для TwoLine/ThreeLine при растяжении.
 Public Property Get Ebt2() As Double
     Ebt2 = mEbt2
 End Property

@@ -61,6 +61,7 @@ Public Function BuildAttemptForExtensionState(ByVal attemptIndex As Long, _
     If BuildAttemptForExtensionState Then eps0 = mFrame.OriginalStrain(eps0, kx, ky)
 End Function
 
+' Готовит численную систему координат и масштабов для начального приближения НДС.
 Private Sub InitializeFrame(ByVal section As CSectionModel)
     If mFrame Is Nothing Then Set mFrame = New CSectionNumericalFrame
     mFrame.Initialize section

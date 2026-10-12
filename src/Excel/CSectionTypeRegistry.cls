@@ -13,6 +13,7 @@ Option Explicit
 ' Реестр не разбирает ячейки и не строит сетку, арматуру или аннотации.
 Private mRecipes As Object, mRecipeTables As Object
 
+' Регистрирует штатные рецепты и независимые именованные таблицы их ввода.
 Private Sub Class_Initialize()
     Set mRecipes = CreateObject("Scripting.Dictionary"): mRecipes.CompareMode = vbTextCompare
     Set mRecipeTables = CreateObject("Scripting.Dictionary"): mRecipeTables.CompareMode = vbTextCompare
@@ -40,20 +41,24 @@ Public Sub RegisterRecipe(ByVal typeID As String, ByVal recipe As ISectionRecipe
     mRecipes.Add typeID, recipe: mRecipeTables.Add typeID, tableNames
 End Sub
 
+' Возвращает зарегистрированный объект по TypeID; неизвестный тип — ошибка.
 Public Function CreateRecipe(ByVal typeID As String) As ISectionRecipe
     If Not mRecipes.Exists(typeID) Then SectionRecipeError "CSectionTypeRegistry", "Не зарегистрирован рецепт '" & typeID & "'."
     Set CreateRecipe = mRecipes(typeID)
 End Function
 
+' Возвращает независимый массив имён ввода, пустой для программного рецепта.
 Public Function RecipeTableNames(ByVal typeID As String) As Variant
     If Not mRecipeTables.Exists(typeID) Then SectionRecipeError "CSectionTypeRegistry", "Не зарегистрирован ввод типа '" & typeID & "'."
     RecipeTableNames = mRecipeTables(typeID)
 End Function
 
+' Возвращает фактически зарегистрированные TypeID — источник штатного списка Config.
 Public Function RegisteredRecipeTypes() As Variant
     RegisteredRecipeTypes = mRecipes.Keys
 End Function
 
+' Читает обязательный Geometry.Type через settings и проверяет его по реестру.
 Public Function SelectedRecipeType(ByVal settings As CSystemSettingsReader) As String
     If settings Is Nothing Then SectionRecipeError "CSectionTypeRegistry", "Настройки Config не переданы."
     SelectedRecipeType = settings.GetRequiredChoice("Geometry.Type", RegisteredRecipeTypes)

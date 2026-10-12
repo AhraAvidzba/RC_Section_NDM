@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -499,18 +499,33 @@ End Function
 ' Ниже только чтение уже рассчитанного layout. Plotter проходит по этим
 ' массивам и создает Chart.Shapes с нужными координатами, цветами и стрелками.
 Public Property Get Count() As Long: Count = mCount: End Property
+' Тип layout-элемента: линия или текст.
 Public Property Get ItemKind(ByVal index As Long) As String: ItemKind = mKind(index): End Property
+' Первая компонента решения системы 3×3.
 Public Property Get X1(ByVal index As Long) As Double: X1 = mX1(index): End Property
+' Для линии: Y начала; для текста: top.
 Public Property Get Y1(ByVal index As Long) As Double: Y1 = mY1(index): End Property
+' Вторая компонента решения системы 3×3.
 Public Property Get X2(ByVal index As Long) As Double: X2 = mX2(index): End Property
+' Для линии: Y конца; для текста: height.
 Public Property Get Y2(ByVal index As Long) As Double: Y2 = mY2(index): End Property
+' Сохранённый текст подписи выбранной аннотации.
 Public Property Get Text(ByVal index As Long) As String: Text = mText(index): End Property
+' Поворот текстового блока в градусах.
 Public Property Get Rotation(ByVal index As Long) As Double: Rotation = mRotation(index): End Property
+' ДЛЯ ТЕСТОВ: цвет имитируемого экспортируемого объекта.
 Public Property Get Color(ByVal index As Long) As Long: Color = mColor(index): End Property
+' Толщина линии; для текста не используется.
 Public Property Get Weight(ByVal index As Long) As Double: Weight = mWeight(index): End Property
+' Нужно ли делать текст полужирным.
 Public Property Get Bold(ByVal index As Long) As Boolean: Bold = mBold(index): End Property
+' Нужно ли добавить стрелки с обеих сторон линии.
 Public Property Get Arrowheads(ByVal index As Long) As Boolean: Arrowheads = mArrowheads(index): End Property
+' Размер шрифта конкретной текстовой подписи.
 Public Property Get FontSize(ByVal index As Long) As Double: FontSize = mFontSize(index): End Property
+' Общий масштаб оформления относительно базового размера Chart.
 Public Property Get VisualScale() As Double: VisualScale = mVisualScale: End Property
+' Активна ли группа размеров; выключенные параметры не читаются.
 Public Property Get DimensionsEnabled() As Boolean: DimensionsEnabled = mDimensionsEnabled: End Property
+' Активна ли группа подписей арматуры.
 Public Property Get RebarLabelsEnabled() As Boolean: RebarLabelsEnabled = mRebarLabelsEnabled: End Property

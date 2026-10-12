@@ -1777,12 +1777,14 @@ Private Sub AppendDiagnosticLine(ByVal message As String)
     mDiagnosticDirty = True
 End Sub
 
+' Заменяет накопленный диагностический журнал подготовленным текстом без повторного решения.
 Private Sub ReplaceDiagnosticLog(ByVal text As String)
     mDiagnosticLog = text: mDiagnosticJoined = text: mDiagnosticDirty = False
     Erase mDiagnosticLines
     mDiagnosticCount = 0: mDiagnosticCapacity = 0
 End Sub
 
+' Возвращает собранный журнал поиска для публикации в результате.
 Private Function DiagnosticText() As String
     If mDiagnosticDirty Then
         Dim lines() As String, i As Long
@@ -1933,6 +1935,7 @@ Public Property Get LimitSearchInitialLambdaStep() As Double
     LimitSearchInitialLambdaStep = mInitialLambdaStep
 End Property
 
+' Отказ равновесия, не исчерпание допуска/бюджета одномерного поиска.
 Public Property Get LimitSearchHasFailedEquilibriumProbe() As Boolean
     LimitSearchHasFailedEquilibriumProbe = mLastProbeNumericalFailure
 End Property
@@ -1952,82 +1955,104 @@ Public Property Get LimitSearchMaxIterations() As Long
     LimitSearchMaxIterations = mSolverMaxIterations
 End Property
 
+' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
+' Признак достигнутого физического предела по проверяемому критерию.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property
 
+' Статус верхней границы при LoadMultiplier.
 Public Property Get UpperLimitState() As String
     UpperLimitState = mUpperLimitState
 End Property
 
+' Предельный множитель к выбранной lambda-траектории нагрузки.
 Public Property Get LambdaUltimate() As Double
     LambdaUltimate = mLambdaUltimate
 End Property
 
+' Предельная продольная сила, если N входит в масштабируемый путь.
 Public Property Get NUltimate() As Double
     NUltimate = mNUltimate
 End Property
 
+' Результирующий предельный момент sqrt(MxUltimate^2 + MyUltimate^2).
 Public Property Get MomentUltimate() As Double
     MomentUltimate = mMomentUltimate
 End Property
 
+' Предельный Mx, если Mx входит в масштабируемый путь.
 Public Property Get MxUltimate() As Double
     MxUltimate = mMxUltimate
 End Property
 
+' Предельный My, если My входит в масштабируемый путь.
 Public Property Get MyUltimate() As Double
     MyUltimate = mMyUltimate
 End Property
 
+' Коэффициент запаса по capacity; сейчас совпадает с lambdaUltimate.
 Public Property Get SafetyFactor() As Double
     SafetyFactor = mSafetyFactor
 End Property
 
+' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
+' этого класса.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
 
+' Число внешних итераций поиска несущей способности.
 Public Property Get Iterations() As Long
     Iterations = mIterations
 End Property
 
+' Невязка направления/момента в найденном предельном состоянии.
 Public Property Get MomentEquilibriumResidual() As Double
     MomentEquilibriumResidual = mMomentEquilibriumResidual
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = DiagnosticText()
 End Property
 
+' Отключает подробный журнал в массовом пользовательском расчете без txt-отчета.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
 
+' Последний внутренний расчет равновесия, успешный или диагностический.
 Public Property Get LastSolver() As CSectionSolver
     Set LastSolver = mLastSolver
 End Property
 
+' Предельная сжимающая деформация бетона.
 Public Property Let ConcreteCompressionLimit(ByVal value As Double)
     mConcreteCompressionLimit = value
 End Property
 
+' Предельная растягивающая деформация бетона, если растянутая ветвь включена материалной
+' моделью.
 Public Property Let ConcreteTensionLimit(ByVal value As Double)
     mConcreteTensionLimit = value
 End Property
 
+' True, когда растянутый бетон реально ограничивает предельное состояние.
 Public Property Let ConcreteTensionLimitEnabled(ByVal value As Boolean)
     mConcreteTensionLimitEnabled = value
 End Property
 
+' Модуль предельной сжимающей деформации арматуры.
 Public Property Let SteelStrainLimit(ByVal value As Double)
     mSteelCompressionLimit = Abs(value)
     mSteelTensionLimit = Abs(value)
@@ -2038,66 +2063,82 @@ Public Property Let SteelCompressionLimit(ByVal value As Double)
     mSteelCompressionLimit = Abs(value)
 End Property
 
+' Предельная растягивающая деформация арматуры.
 Public Property Let SteelTensionLimit(ByVal value As Double)
     mSteelTensionLimit = Abs(value)
 End Property
 
+' Точность одномерного поиска lambda для LoadMultiplier.
 Public Property Let LambdaTolerance(ByVal value As Double)
     mLambdaTolerance = value
 End Property
 
+' Допуск достижения предельной деформации для UltimateStrain.
 Public Property Let StrainTolerance(ByVal value As Double)
     mStrainTolerance = value
 End Property
 
+' Алгоритм одномерного поиска LoadMultiplier: Bisection, Brent или Secant.
 Public Property Let SearchMethod(ByVal value As String)
     mSearchMethod = value
 End Property
 
+' Алгоритм одномерного поиска LoadMultiplier: Bisection, Brent или Secant.
 Public Property Get SearchMethod() As String
     SearchMethod = mSearchMethod
 End Property
 
+' Фактическая ветка, которая дала принятый результат: UltimateStrain или LoadMultiplier.
 Public Property Get SolutionMethod() As String
     SolutionMethod = mSolutionMethod
 End Property
 
+' Верхняя граница расширения скобки LoadMultiplier, чтобы поиск не уходил бесконечно.
 Public Property Let MaxLambda(ByVal value As Double)
     mMaxLambda = value
 End Property
 
+' Первый шаг расширения lambda при поиске расчетной скобки.
 Public Property Let InitialLambdaStep(ByVal value As Double)
     mInitialLambdaStep = value
 End Property
 
+' Допустимые повторы той же lambda-точки после NumericalFailure.
 Public Property Let MaxRetries(ByVal value As Long)
     mMaxRetries = value
 End Property
 
+' Базовое число ступеней CSectionSolver для первой попытки lambda-точки.
 Public Property Let SolverBaseLoadSteps(ByVal value As Long)
     mSolverBaseLoadSteps = value
 End Property
 
+' Максимум внешних/внутренних итераций capacity-поиска.
 Public Property Let SolverMaxIterations(ByVal value As Long)
     mSolverMaxIterations = value
 End Property
 
+' Допуск внутреннего равновесия CSectionSolver по N.
 Public Property Let SolverToleranceN(ByVal value As Double)
     mSolverToleranceN = value
 End Property
 
+' Допуск внутреннего равновесия CSectionSolver по Mx.
 Public Property Let SolverToleranceMx(ByVal value As Double)
     mSolverToleranceMx = value
 End Property
 
+' Допуск внутреннего равновесия CSectionSolver по My.
 Public Property Let SolverToleranceMy(ByVal value As Double)
     mSolverToleranceMy = value
 End Property
 
+' Метод внутреннего CSectionSolver: Newton или Secant.
 Public Property Let SolverMethod(ByVal value As String)
     mSolverMethod = value
 End Property
 
+' Настройка рестартов внутреннего secant-решателя.
 Public Property Let SolverSecantMaxRestarts(ByVal value As Long)
     mSolverSecantMaxRestarts = value
 End Property
@@ -2115,14 +2156,17 @@ Public Property Get RetryCount() As Long
     RetryCount = mRetryCount
 End Property
 
+' Деформация критического элемента, задающего максимальное использование предела.
 Public Property Get CriticalStrain() As Double
     CriticalStrain = mCriticalStrain
 End Property
 
+' Идентификатор критического бетонного элемента или стержня арматуры.
 Public Property Get CriticalElement() As String
     CriticalElement = mCriticalElement
 End Property
 
+' Отношение фактической деформации к своему пределу.
 Public Property Get CriticalStrainUtilization() As Double
     CriticalStrainUtilization = mCriticalStrainUtilization
 End Property

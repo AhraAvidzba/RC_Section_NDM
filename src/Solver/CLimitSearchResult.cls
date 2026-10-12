@@ -143,34 +143,42 @@ Public Property Get RequestedStrategy() As String
     RequestedStrategy = mRequestedStrategy
 End Property
 
+' Способ определения точки: численный метод либо аналитический Ncrc.
 Public Property Get ActualMethod() As String
     ActualMethod = mActualMethod
 End Property
 
+' Машинный исход, подготовленный владельцем задачи.
 Public Property Get ResultKind() As EResultKind
     ResultKind = mMeta.ResultKind
 End Property
 
+' Машинный исход, подготовленный владельцем задачи.
 Public Property Get Succeeded() As Boolean
     Succeeded = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
 
+' Численный поиск действительно запускался.
 Public Property Get SearchExecuted() As Boolean
     SearchExecuted = mSearchExecuted
 End Property
 
+' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
 Public Property Get Converged() As Boolean
     Converged = mHasLimitPoint
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mMeta.ResultComment
 End Property
 
+' Признак достигнутого физического предела по проверяемому критерию.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property
 
+' Множитель нагрузки в найденной точке.
 Public Property Get LambdaUltimate() As Double
     LambdaUltimate = mLambdaUltimate
 End Property
@@ -205,18 +213,22 @@ Public Property Get MyUltimate() As Double
     End If
 End Property
 
+' Журнал финального равновесия.
 Public Property Get LastSolverDiagnosticLog() As String
     LastSolverDiagnosticLog = mLastSolverDiagnosticLog
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+' Найдена точка, а не только завершена процедура.
 Public Property Get HasLimitPoint() As Boolean
     HasLimitPoint = mHasLimitPoint
 End Property
 
+' Единственный снимок НДС найденной точки.
 Public Property Get PointState() As CSectionStateResult
     Set PointState = mPointState
 End Property

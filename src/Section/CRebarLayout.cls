@@ -114,6 +114,7 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
     AddMembership mCount, annotationGroupName
 End Sub
 
+' Создаёт индексы координат и смысловых групп для поиска совпавших физических стержней.
 Private Sub EnsureIndexes()
     If Not mIDs Is Nothing Then Exit Sub
     Set mIDs = CreateObject("Scripting.Dictionary")
@@ -122,6 +123,7 @@ Private Sub EnsureIndexes()
     Set mMemberships = CreateObject("Scripting.Dictionary")
 End Sub
 
+' Расширяет массивы арматуры блоками, сохраняя опубликованные стержни.
 Private Sub EnsureCapacity()
     If mCount < mCapacity Then Exit Sub
     mCapacity = CLng(GeomMin(GEOM_MAX_REBAR_COUNT, GeomMax(16#, CDbl(mCapacity) * 2#)))
@@ -145,10 +147,12 @@ Private Function PositionBin(ByVal coordinate As Double) As Double
     End If
 End Function
 
+' Строит ключ пространственного индекса арматуры для поиска ближайших совпадений.
 Private Function PositionKey(ByVal binX As Double, ByVal binY As Double) As String
     PositionKey = Format$(binX, "0") & "|" & Format$(binY, "0")
 End Function
 
+' Включает физический стержень в индекс координат без повторного добавления в раскладку.
 Private Sub IndexPosition(ByVal index As Long)
     Dim key As String, bucket As Collection
     key = PositionKey(PositionBin(mX(index)), PositionBin(mY(index)))
@@ -202,6 +206,8 @@ Public Sub AddMembership(ByVal index As Long, ByVal groupName As String)
     If Not groups.Exists(groupName) Then groups.Add groupName, True
 End Sub
 
+' Все смысловые принадлежности физического стержня; они не создают дополнительные физические
+' стержни.
 Public Property Get BarMemberships(ByVal index As Long) As Variant
     CheckIndex index
     EnsureIndexes
@@ -212,6 +218,7 @@ Public Property Get BarMemberships(ByVal index As Long) As Variant
     End If
 End Property
 
+' Количество записей, сохранённых в контейнере этого класса.
 Public Property Get Count() As Long
     Count = mCount
 End Property
@@ -222,41 +229,52 @@ Public Function HasBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Bool
     HasBarAt = (FindBarAt(xCoord, yCoord) > 0)
 End Function
 
+' Промежуточный список стержней до CSectionModel CRebarLayout хранит координаты, диаметры и
+' диагностические подписи стержней, сформированных раскладчиком. Затем CSectionModelBuilder
+' переносит эти данные в единую расчетную модель и присваивает расчетные имена R1/R2/....
 Public Property Get BarID(ByVal index As Long) As String
     CheckIndex index
     BarID = mBarID(index)
 End Property
 
+' Координата X выбранного элемента модели, мм.
 Public Property Get X(ByVal index As Long) As Double
     CheckIndex index
     X = mX(index)
 End Property
 
+' Координата Y выбранного элемента модели, мм.
 Public Property Get Y(ByVal index As Long) As Double
     CheckIndex index
     Y = mY(index)
 End Property
 
+' Диаметр выбранного физического стержня, мм.
 Public Property Get Diameter(ByVal index As Long) As Double
     CheckIndex index
     Diameter = mDiameter(index)
 End Property
 
+' Площадь выбранного элемента, мм².
 Public Property Get Area(ByVal index As Long) As Double
     CheckIndex index
     Area = mArea(index)
 End Property
 
+' Принадлежность выбранного стержня к материалу арматуры.
 Public Property Get SteelClass(ByVal index As Long) As String
     CheckIndex index
     SteelClass = mSteelClass(index)
 End Property
 
+' Сохранённое пояснение выбранной записи без нового расчёта.
 Public Property Get Comment(ByVal index As Long) As String
     CheckIndex index
     Comment = mComment(index)
 End Property
 
+' Смысловая группа владельца физического стержня, используемая для подписи количества и
+' диаметра.
 Public Property Get BarAnnotationGroupName(ByVal index As Long) As String
     CheckIndex index
     BarAnnotationGroupName = mBarAnnotationGroupName(index)
@@ -288,45 +306,54 @@ Public Sub AddAnnotationAnchor(ByVal groupName As String, ByVal startX As Double
     mAnnotationAxisDistance(mAnnotationCount) = axisDistance
 End Sub
 
+' Количество привязок арматурных подписей в раскладке.
 Public Property Get AnnotationCount() As Long
     AnnotationCount = mAnnotationCount
 End Property
 
+' Смысловая группа выбранной привязки арматурной подписи.
 Public Property Get AnnotationGroupName(ByVal index As Long) As String
     CheckAnnotationIndex index
     AnnotationGroupName = mAnnotationGroupName(index)
 End Property
 
+' Координата X начала выбранной привязки арматурной подписи, мм.
 Public Property Get AnnotationStartX(ByVal index As Long) As Double
     CheckAnnotationIndex index
     AnnotationStartX = mAnnotationStartX(index)
 End Property
 
+' Координата Y начала выбранной привязки арматурной подписи, мм.
 Public Property Get AnnotationStartY(ByVal index As Long) As Double
     CheckAnnotationIndex index
     AnnotationStartY = mAnnotationStartY(index)
 End Property
 
+' Координата X конца выбранной привязки арматурной подписи, мм.
 Public Property Get AnnotationEndX(ByVal index As Long) As Double
     CheckAnnotationIndex index
     AnnotationEndX = mAnnotationEndX(index)
 End Property
 
+' Координата Y конца выбранной привязки арматурной подписи, мм.
 Public Property Get AnnotationEndY(ByVal index As Long) As Double
     CheckAnnotationIndex index
     AnnotationEndY = mAnnotationEndY(index)
 End Property
 
+' Компонента X направления вынесения выбранной арматурной подписи.
 Public Property Get AnnotationNormalX(ByVal index As Long) As Double
     CheckAnnotationIndex index
     AnnotationNormalX = mAnnotationNormalX(index)
 End Property
 
+' Компонента Y направления вынесения выбранной арматурной подписи.
 Public Property Get AnnotationNormalY(ByVal index As Long) As Double
     CheckAnnotationIndex index
     AnnotationNormalY = mAnnotationNormalY(index)
 End Property
 
+' Расстояние от исходной границы до оси ряда выбранной привязки, мм.
 Public Property Get AnnotationAxisDistance(ByVal index As Long) As Double
     CheckAnnotationIndex index
     AnnotationAxisDistance = mAnnotationAxisDistance(index)

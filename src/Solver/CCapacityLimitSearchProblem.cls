@@ -39,22 +39,27 @@ Public Sub Initialize(ByVal capacitySolver As CCapacitySolver)
     Set mCapacity = capacitySolver
 End Sub
 
+' Тип результата, публикуемого данной задачей предельного поиска.
 Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = rkCapacity
 End Property
 
+' Начальный шаг множителя нагрузки lambda для предельного поиска.
 Private Property Get ILimitSearchProblem_InitialLambdaStep() As Double
     ILimitSearchProblem_InitialLambdaStep = mCapacity.LimitSearchInitialLambdaStep
 End Property
 
+' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 Private Property Get ILimitSearchProblem_MaxLambda() As Double
     ILimitSearchProblem_MaxLambda = mCapacity.LimitSearchMaxLambda
 End Property
 
+' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 Private Property Get ILimitSearchProblem_LambdaTolerance() As Double
     ILimitSearchProblem_LambdaTolerance = mCapacity.LimitSearchLambdaTolerance
 End Property
 
+' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mCapacity.LimitSearchMaxIterations
 End Property
@@ -65,18 +70,22 @@ Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
     ILimitSearchProblem_BisectionMaxIterations = 0
 End Property
 
+' Настроенный метод поиска предела для данной задачи.
 Private Property Get ILimitSearchProblem_SearchMethod() As String
     ILimitSearchProblem_SearchMethod = mCapacity.LimitSearchCapacitySearchMethod()
 End Property
 
+' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 Private Property Get ILimitSearchProblem_Converged() As Boolean
     ILimitSearchProblem_Converged = mCapacity.Converged
 End Property
 
+' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mCapacity.LimitState
 End Property
 
+' Доменный расчетчик несущей способности и владелец capacity-диагностики.
 Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     If Not mCapacity Is Nothing Then ILimitSearchProblem_DiagnosticLog = mCapacity.DiagnosticLog
 End Property
@@ -146,14 +155,18 @@ Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As Strin
     ILimitSearchProblem_IsAcceptableState = mCapacity.LimitSearchCapacityStateIsAcceptable(probeState)
 End Function
 
+' Проверяет физический предельный статус задачи; численная несходимость сама по себе не означает
+' разрушение.
 Private Function ILimitSearchProblem_IsLimitState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsLimitState = mCapacity.LimitSearchCapacityStateIsPhysicalLimit(probeState)
 End Function
 
+' Распознаёт численную неудачу отдельно от физического предела.
 Private Function ILimitSearchProblem_IsNumericalFailureState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsNumericalFailureState = mCapacity.LimitSearchCapacityStateIsNumericalFailure(probeState)
 End Function
 
+' Распознаёт ошибку исходных данных, при которой смена поискового пути недопустима.
 Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsInvalidInputState = mCapacity.LimitSearchCapacityStateIsInvalidInput(probeState)
 End Function

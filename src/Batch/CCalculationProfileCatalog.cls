@@ -308,6 +308,7 @@ Private Function FindProfile(ByVal profileId As String) As Long
     Next i
 End Function
 
+' Количество записей, сохранённых в контейнере этого класса.
 Public Property Get Count() As Long
     Count = mCount
 End Property

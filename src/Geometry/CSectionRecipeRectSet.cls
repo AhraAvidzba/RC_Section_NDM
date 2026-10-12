@@ -8,6 +8,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Декларативный рецепт Rectangle, LSection и TwoRectangles
+' ==========================================================================
 Implements ISectionRecipe
 
 ' Один рецепт Rectangle/LSection/TwoRectangles: свой табличный ввод,
@@ -22,6 +26,8 @@ Private Type TRectSetDimensions
     Offset As Double
 End Type
 
+' Описывает контуры, арматурные правила и размеры выбранного рецепта. Сетку и физические стержни
+' строит общий CSectionBuilder.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
     Dim sizes As TRectSetDimensions, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
@@ -86,6 +92,7 @@ Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes A
     facade.Outer "OUTER", outer.ID, "Сегмент контура сечения.", contourIDs
 End Sub
 
+' Описывает габариты и размерные привязки рецепта отдельно от расчётных контуров.
 Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, _
         ByVal upper As CGeometryPath, ByVal lower As CGeometryPath, ByVal outer As CGeometryPath)
     facade.HorizontalExtent "DIM_B", outer.ID, "B", 0#, -1#, "Общая ширина RectSet-сечения."
@@ -161,6 +168,8 @@ NextSide:
     Next side
 End Sub
 
+' Описывает смещение и привязку дополнительного ряда относительно основного, сохраняя смысловую
+' группу.
 Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, _
         ByVal groupID As String, ByVal label As String, ByVal rowNumber As Long, ByVal location As String, _
         ByVal distance As Double, ByVal sideSign As Double) As CRebarRuleOptions
@@ -176,6 +185,7 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row 
     Set AdditionalOptions = options
 End Function
 
+' Проверяет ограничение рецепта; ошибка содержит фактический адрес параметра во входной таблице.
 Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)
     If Not condition Then SectionRecipeError "CSectionRecipeRectSet", reason, table.SourceReference(row, column)
 End Sub

@@ -40,6 +40,7 @@ Public Sub SetLegacyContourTag(ByVal value As Boolean)
     mLegacyContourTag = value
 End Sub
 
+' ДЛЯ ТЕСТОВ: число чтений XData объекта AutoCAD.
 Public Property Get XDataReads() As Long
     XDataReads = mXDataReads
 End Property
@@ -98,42 +99,55 @@ End Sub
 Public Property Get ObjectName() As String
     ObjectName = mKind
 End Property
+' ДЛЯ ТЕСТОВ: имя слоя имитируемого объекта AutoCAD.
 Public Property Get Layer() As String
     Layer = mLayer
 End Property
+' ДЛЯ ТЕСТОВ: устойчивый идентификатор имитируемого объекта AutoCAD.
 Public Property Get Handle() As String
     Handle = mHandle
 End Property
+' ДЛЯ ТЕСТОВ: признак фактической замкнутости имитируемого объекта.
 Public Property Get Closed() As Boolean
     Closed = mClosed
 End Property
+' ДЛЯ ТЕСТОВ: высота объекта относительно WCS, мм.
 Public Property Get Elevation() As Double
     Elevation = mElevation
 End Property
+' ДЛЯ ТЕСТОВ: нормаль плоскости имитируемого объекта AutoCAD.
 Public Property Get Normal() As Variant
     Normal = mNormal
 End Property
+' ДЛЯ ТЕСТОВ: координаты начала имитируемого сегмента в WCS.
 Public Property Get StartPoint() As Variant
     StartPoint = mStart
 End Property
+' ДЛЯ ТЕСТОВ: координаты конца имитируемого сегмента в WCS.
 Public Property Get EndPoint() As Variant
     EndPoint = mEnd
 End Property
+' ДЛЯ ТЕСТОВ: координаты центра имитируемой дуги в WCS.
 Public Property Get Center() As Variant
     Center = mCenter
 End Property
+' ДЛЯ ТЕСТОВ: радиус имитируемой дуги, мм.
 Public Property Get Radius() As Double
     Radius = mRadius
 End Property
+' ДЛЯ ТЕСТОВ: угол обхода имитируемой дуги, радианы.
 Public Property Get TotalAngle() As Double
     TotalAngle = mAngle
 End Property
+' ДЛЯ ТЕСТОВ: признак удаления только имитируемого временного объекта.
 Public Property Get Deleted() As Boolean
     Deleted = mDeleted
 End Property
+' ДЛЯ ТЕСТОВ: последняя временная копия имитируемого объекта.
 Public Property Get LastCopy() As CFakeAcadContour
     Set LastCopy = mLastCopy
 End Property
+' ДЛЯ ТЕСТОВ: сегменты, возвращаемые разбиением имитируемого объекта.
 Public Property Get ExplodedPieces() As Collection
     Set ExplodedPieces = mExploded
 End Property

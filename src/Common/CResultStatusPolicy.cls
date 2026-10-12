@@ -25,30 +25,37 @@ Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка пользо
 Private Const STATUS_CALCERR As String = "CalcErr" ' Внутренняя ошибка программы или несформированный result.
 Private Const STATUS_NA As String = "N/A" ' Расчет не запрошен, неприменим или заблокирован зависимостью.
 
+' Код успешной применимой проверки по общей политике статусов.
 Public Property Get OK() As String
     OK = STATUS_OK
 End Property
 
+' Код физического невыполнения применимой проверки.
 Public Property Get Fail() As String
     Fail = STATUS_FAIL
 End Property
 
+' Код непригодности базового состояния для зависимой проверки.
 Public Property Get BaseFail() As String
     BaseFail = STATUS_BASEFAIL
 End Property
 
+' Код численной неудачи; не означает доказанное физическое разрушение.
 Public Property Get NumFail() As String
     NumFail = STATUS_NUMFAIL
 End Property
 
+' Код ошибки исходных данных, требующей исправления ввода.
 Public Property Get InputErr() As String
     InputErr = STATUS_INPUTERR
 End Property
 
+' Код вычислительной ошибки с сохранением её причины.
 Public Property Get CalcErr() As String
     CalcErr = STATUS_CALCERR
 End Property
 
+' Код неприменимой или не запрошенной проверки.
 Public Property Get NotApplicable() As String
     NotApplicable = STATUS_NA
 End Property

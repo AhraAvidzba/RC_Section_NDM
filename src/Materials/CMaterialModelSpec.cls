@@ -64,38 +64,47 @@ Public Function SpecKey() As String
     End If
 End Function
 
+' True, если все четыре поля успешно заданы.
 Public Property Get IsComplete() As Boolean
     IsComplete = mComplete
 End Property
 
+' ULS(I) или SLS(II).
 Public Property Get ValueSet() As EMaterialValueSet
     ValueSet = mValueSet
 End Property
 
+' TwoLine или ThreeLine для бетона.
 Public Property Get ConcreteDiagram() As EConcreteDiagramKind
     ConcreteDiagram = mConcreteDiagram
 End Property
 
+' Ignore или UseDiagram для растянутого бетона.
 Public Property Get ConcreteTension() As EConcreteTensionKind
     ConcreteTension = mConcreteTension
 End Property
 
+' TwoLine или ThreeLine для арматуры.
 Public Property Get SteelDiagram() As ESteelDiagramKind
     SteelDiagram = mSteelDiagram
 End Property
 
+' ULS(I) или SLS(II).
 Public Property Get ValueSetText() As String
     ValueSetText = MaterialValueSetToText(mValueSet)
 End Property
 
+' TwoLine или ThreeLine для бетона.
 Public Property Get ConcreteDiagramText() As String
     ConcreteDiagramText = ConcreteDiagramKindToText(mConcreteDiagram)
 End Property
 
+' Ignore или UseDiagram для растянутого бетона.
 Public Property Get ConcreteTensionText() As String
     ConcreteTensionText = ConcreteTensionKindToText(mConcreteTension)
 End Property
 
+' TwoLine или ThreeLine для арматуры.
 Public Property Get SteelDiagramText() As String
     SteelDiagramText = SteelDiagramKindToText(mSteelDiagram)
 End Property

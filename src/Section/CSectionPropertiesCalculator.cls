@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -92,9 +92,11 @@ Public Sub ValidateSnapshot(ByVal section As CSectionModel, Optional ByVal requi
     If requireTransformed And mTransformedSnapshot Is Nothing Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Приведенные характеристики снимка не подготовлены."
 End Sub
 
+' MinX/MaxX/MinY/MaxY по прежним оболочкам элементов.
 Public Property Get SnapshotBounds() As Variant
     SnapshotBounds = mSnapshotBounds
 End Property
+' Готовое приведенное представление того же снимка.
 Public Property Get TransformedSnapshot() As CSectionPropertiesCalculator
     Set TransformedSnapshot = mTransformedSnapshot
 End Property
@@ -706,74 +708,92 @@ Public Sub Clear()
     mLastCalculationSeconds = 0#
 End Sub
 
+' Площадь выбранного элемента, мм².
 Public Property Get Area() As Double
     Area = mArea
 End Property
 
+' Статический момент относительно оси X: сумма A*y.
 Public Property Get StaticMomentX() As Double
     StaticMomentX = mStaticMomentX
 End Property
 
+' Статический момент относительно оси Y: сумма A*x.
 Public Property Get StaticMomentY() As Double
     StaticMomentY = mStaticMomentY
 End Property
 
+' X центра тяжести текущего представления сечения.
 Public Property Get CentroidX() As Double
     CentroidX = mCentroidX
 End Property
 
+' Y центра тяжести текущего представления сечения.
 Public Property Get CentroidY() As Double
     CentroidY = mCentroidY
 End Property
 
+' Момент инерции относительно исходной оси X.
 Public Property Get Ix() As Double
     Ix = mIx
 End Property
 
+' Момент инерции относительно исходной оси Y.
 Public Property Get Iy() As Double
     Iy = mIy
 End Property
 
+' Центробежный момент инерции относительно исходных осей.
 Public Property Get Ixy() As Double
     Ixy = mIxy
 End Property
 
+' Центральный момент инерции относительно оси X через центр тяжести.
 Public Property Get Ixc() As Double
     Ixc = mIxc
 End Property
 
+' Центральный момент инерции относительно оси Y через центр тяжести.
 Public Property Get Iyc() As Double
     Iyc = mIyc
 End Property
 
+' Центральный центробежный момент инерции.
 Public Property Get Ixyc() As Double
     Ixyc = mIxyc
 End Property
 
+' Больший главный центральный момент инерции.
 Public Property Get PrincipalI1() As Double
     PrincipalI1 = mPrincipalI1
 End Property
 
+' Меньший главный центральный момент инерции.
 Public Property Get PrincipalI2() As Double
     PrincipalI2 = mPrincipalI2
 End Property
 
+' Угол от +X к физической главной оси 1, для которой момент инерции равен I1.
 Public Property Get PrincipalAngleRad() As Double
     PrincipalAngleRad = mPrincipalAngleRad
 End Property
 
+' Радиус инерции относительно центральной оси X.
 Public Property Get RadiusX() As Double
     RadiusX = mRadiusX
 End Property
 
+' Радиус инерции относительно центральной оси Y.
 Public Property Get RadiusY() As Double
     RadiusY = mRadiusY
 End Property
 
+' Радиус инерции по главной оси I1.
 Public Property Get PrincipalRadius1() As Double
     PrincipalRadius1 = mPrincipalRadius1
 End Property
 
+' Радиус инерции по главной оси I2.
 Public Property Get PrincipalRadius2() As Double
     PrincipalRadius2 = mPrincipalRadius2
 End Property
@@ -799,6 +819,7 @@ Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
+' Время последнего расчета свойств для диагностики производительности.
 Public Property Get LastCalculationSeconds() As Double
     LastCalculationSeconds = mLastCalculationSeconds
 End Property

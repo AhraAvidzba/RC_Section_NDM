@@ -135,6 +135,7 @@ Public Property Get DirectStateMeta() As CResultMeta
     Set DirectStateMeta = mStrengthResult.DirectMeta
 End Property
 
+' DirectState и Capacity.
 Public Property Get CapacityMeta() As CResultMeta
     Set CapacityMeta = mStrengthResult.CapacityMeta
 End Property
@@ -335,6 +336,7 @@ Friend Sub SetProfileId(ByVal value As String)
     mProfileId = value
 End Sub
 
+' Глобальная настройка на момент запуска LC.
 Public Property Get DiagramExtensionEnabled() As Boolean
     DiagramExtensionEnabled = mDiagramExtensionEnabled
 End Property

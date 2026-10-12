@@ -15,6 +15,7 @@ Private mTables As Object
 Private mUnits As CUnitSystem
 Private mSealed As Boolean
 
+' Открывает контекст с подготовленной системой единиц один раз.
 Public Sub Initialize(ByVal units As CUnitSystem)
     If Not mTables Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Контекст уже создан."
     If units Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Система единиц не передана."
@@ -23,6 +24,7 @@ Public Sub Initialize(ByVal units As CUnitSystem)
     mTables.CompareMode = vbTextCompare
 End Sub
 
+' Добавляет immutable input snapshot с уникальным именем до Seal.
 Public Sub AddTable(ByVal table As CSectionInputTable)
     If mTables Is Nothing Or mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст не открыт для заполнения."
     If table Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Таблица не передана."
@@ -31,17 +33,20 @@ Public Sub AddTable(ByVal table As CSectionInputTable)
     mTables.Add table.Name, table
 End Sub
 
+' Закрывает состав таблиц; после этого добавление невозможно.
 Public Sub Seal()
     If mTables Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Контекст не инициализирован."
     mSealed = True
 End Sub
 
+' Возвращает снимок зарегистрированного блока по имени; отсутствие — ошибка, не fallback.
 Public Function Table(ByVal tableName As String) As CSectionInputTable
     If Not mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст еще не опубликован."
     If Not mTables.Exists(tableName) Then SectionRecipeError "CSectionRecipeContext", "Не передана таблица '" & tableName & "'."
     Set Table = mTables(tableName)
 End Function
 
+' Система единиц внешнего workflow; не перезагружайте её из Excel в рецепте.
 Public Property Get Units() As CUnitSystem
     If Not mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст еще не опубликован."
     Set Units = mUnits

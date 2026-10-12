@@ -52,14 +52,17 @@ Public Property Get ObjectName() As String
     ObjectName = "AcDbRegion"
 End Property
 
+' ДЛЯ ТЕСТОВ: имя слоя имитируемого объекта AutoCAD.
 Public Property Get Layer() As String
     Layer = mLayer
 End Property
 
+' ДЛЯ ТЕСТОВ: устойчивый идентификатор имитируемого объекта AutoCAD.
 Public Property Get Handle() As String
     Handle = mHandle
 End Property
 
+' Площадь выбранного элемента, мм².
 Public Property Get Area() As Double
     Area = mArea
 End Property

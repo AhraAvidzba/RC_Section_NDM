@@ -51,6 +51,7 @@ Public Property Get GeometryReads() As Long
     GeometryReads = mGeometryReads
 End Property
 
+' ДЛЯ ТЕСТОВ: число чтений системных переменных имитируемого документа.
 Public Property Get VariableReads() As Long
     VariableReads = mVariableReads
 End Property

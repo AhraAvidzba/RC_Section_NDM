@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -182,6 +182,7 @@ Private Sub RemoveSettingAt(ByVal index As Long)
     mCount = mCount - 1
 End Sub
 
+' Предупреждение о конфликте старого и канонического ключа Extension.
 Public Property Get MigrationWarning() As String
     MigrationWarning = mMigrationWarning
 End Property

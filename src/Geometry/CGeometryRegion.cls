@@ -39,21 +39,27 @@ Public Sub Initialize(ByVal region As CConcreteRegion)
     mQuery.ProjectionBounds mRegion, 0#, 1#, mMinY, mMaxY
     mQuery.RegionCentroid mRegion, mCentroidX, mCentroidY
 End Sub
+' Минимальная координата X геометрической области, мм.
 Public Property Get MinX() As Double
     MinX = mMinX
 End Property
+' Максимальная координата X геометрической области, мм.
 Public Property Get MaxX() As Double
     MaxX = mMaxX
 End Property
+' Минимальная координата Y геометрической области, мм.
 Public Property Get MinY() As Double
     MinY = mMinY
 End Property
+' Максимальная координата Y геометрической области, мм.
 Public Property Get MaxY() As Double
     MaxY = mMaxY
 End Property
+' Полная ширина геометрической области по X, мм.
 Public Property Get Width() As Double
     Width = mMaxX - mMinX
 End Property
+' Полная высота геометрической области по Y, мм.
 Public Property Get Height() As Double
     Height = mMaxY - mMinY
 End Property
@@ -65,6 +71,7 @@ Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     ContainsPoint = mQuery.ContainsMeshPoint(mRegion, mEdges, mEdgeCount, X, Y)
 End Function
 
+' Возвращает пригодность подготовленной геометрической области для общего построения сетки.
 Public Function IsValid(ByRef message As String) As Boolean
     message = vbNullString
     If mRegion Is Nothing Then
@@ -76,6 +83,7 @@ Public Function IsValid(ByRef message As String) As Boolean
     End If
 End Function
 
+' Возвращает площадь по аналитическим контурам с учётом отверстий, мм².
 Public Function AnalyticalArea(ByRef available As Boolean) As Double
     available = Not mRegion Is Nothing
     If available Then AnalyticalArea = mRegion.Area
@@ -87,11 +95,13 @@ Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByR
     X = mCentroidX: Y = mCentroidY
 End Sub
 
+' Возвращает крайние точки области по заданному направлению для геометрических проекций.
 Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     If mRegion Is Nothing Then Err.Raise vbObjectError + 5290, "CGeometryRegion", "Точный контур бетона не инициализирован."
     mQuery.MeshExtremePoints mEdges, mEdgeCount, pointX, pointY
 End Sub
 
+' Передаёт подготовленные Outer/Opening в единый контейнер контуров модели.
 Public Sub BuildContours(ByVal contours As CSectionContours)
     If contours Is Nothing Then Err.Raise vbObjectError + 5290, "CGeometryRegion", "Контейнер контуров не передан."
     Dim message As String

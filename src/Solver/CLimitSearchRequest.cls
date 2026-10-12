@@ -156,10 +156,12 @@ Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
     mReferenceY = 0#
 End Sub
 
+' Общий callback инженерной задачи для LimitSearch.
 Public Property Get Problem() As ILimitSearchProblem
     Set Problem = mProblem
 End Property
 
+' Расчетная модель сечения, общая для всех lambda-проб.
 Public Property Get Section() As CSectionModel
     Set Section = mSection
 End Property
@@ -170,82 +172,102 @@ Public Property Get MaterialSpec() As CMaterialModelSpec
     If Not mMaterialSpec Is Nothing Then Set MaterialSpec = mMaterialSpec.Clone
 End Property
 
+' Диаграмма бетона для выбранной инженерной задачи.
 Public Property Get ConcreteMaterial() As Object
     Set ConcreteMaterial = mConcreteMaterial
 End Property
 
+' Диаграмма арматуры для выбранной инженерной задачи.
 Public Property Get SteelMaterial() As Object
     Set SteelMaterial = mSteelMaterial
 End Property
 
+' Auto, UltimateStrain или LoadMultiplier.
 Public Property Get SolutionStrategy() As String
     SolutionStrategy = mSolutionStrategy
 End Property
 
+' Постоянная часть N в траектории N = N0 + lambda*Nbase.
 Public Property Get NOffset() As Double
     NOffset = mNOffset
 End Property
 
+' Масштабируемая часть N в lambda-траектории.
 Public Property Get NBase() As Double
     NBase = mNBase
 End Property
 
+' Постоянная часть Mx.
 Public Property Get MxOffset() As Double
     MxOffset = mMxOffset
 End Property
 
+' Масштабируемая часть Mx.
 Public Property Get MxBase() As Double
     MxBase = mMxBase
 End Property
 
+' Постоянная часть My.
 Public Property Get MyOffset() As Double
     MyOffset = mMyOffset
 End Property
 
+' Масштабируемая часть My.
 Public Property Get MyBase() As Double
     MyBase = mMyBase
 End Property
 
+' True, если выбранная capacity-траектория масштабирует только N.
 Public Property Get ForceOnly() As Boolean
     ForceOnly = mForceOnly
 End Property
 
+' True, если после переноса к расчетному центру траектория остается чисто осевой.
 Public Property Get PureAxialForMethod() As Boolean
     PureAxialForMethod = mPureAxialForMethod
 End Property
 
+' Инженерный смысл поиска: capacity, crack formation и т.п.
 Public Property Get ResultKind() As EResultKind
     ResultKind = mResultKind
 End Property
 
+' Фактически выбранная траектория поиска трещинообразования.
 Public Property Get CrackFormationPath() As String
     CrackFormationPath = mCrackFormationPath
 End Property
 
+' Полная N текущего сочетания для служебных стартов CrackFormation.
 Public Property Get TargetN() As Double
     TargetN = mTargetN
 End Property
 
+' Полный Mx текущего сочетания во внутренней системе координат.
 Public Property Get TargetMx() As Double
     TargetMx = mTargetMx
 End Property
 
+' Полный My текущего сочетания во внутренней системе координат.
 Public Property Get TargetMy() As Double
     TargetMy = mTargetMy
 End Property
 
+' Mx относительно точки, в которой строится Mcrc.
 Public Property Get MomentMxAtReference() As Double
     MomentMxAtReference = mMomentMxAtReference
 End Property
 
+' My относительно точки, в которой строится Mcrc.
 Public Property Get MomentMyAtReference() As Double
     MomentMyAtReference = mMomentMyAtReference
 End Property
 
+' X расчетной точки CrackFormation во внутренней системе координат.
 Public Property Get ReferenceX() As Double
     ReferenceX = mReferenceX
 End Property
 
+' Y расчетной точки CrackFormation во внутренней системе координат.
 Public Property Get ReferenceY() As Double
     ReferenceY = mReferenceY
 End Property
@@ -287,14 +309,17 @@ Public Property Get HasLoadPathSelection() As Boolean
     HasLoadPathSelection = Not mLoadState Is Nothing
 End Property
 
+' Общий путь LC; Auto и пустой ввод нормализованы одинаково.
 Public Property Get RequestedLoadPath() As String
     RequestedLoadPath = mRequestedLoadPath
 End Property
 
+' Нормализованное сочетание в единственной пользовательской точке приложения.
 Public Property Get LoadState() As CSectionLoadState
     Set LoadState = mLoadState
 End Property
 
+' Конкретная траектория текущей search-session, общая для обоих критериев.
 Public Property Get SelectedLoadPath() As CLoadPathDescriptor
     Set SelectedLoadPath = mSelectedLoadPath
 End Property

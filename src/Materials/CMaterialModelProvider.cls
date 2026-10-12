@@ -841,11 +841,13 @@ Public Function SteelElasticModulus(ByVal purpose As ECalculationPurpose) As Dou
     SteelElasticModulus = mSteelElasticModulus(PhysicalPurposeSlot(purpose))
 End Function
 
+' Разрешает numerical extension для задач равновесия solver-а.
 Public Property Get DiagramExtensionEnabled() As Boolean
     EnsureInitialized
     DiagramExtensionEnabled = mDiagramExtensionEnabled
 End Property
 
+' Меняет точки физической диаграммы до ее публикации, а не только касательную solver-а.
 Public Property Get PlateauSlopeEnabled() As Boolean
     EnsureInitialized
     PlateauSlopeEnabled = mPlateauSlopeEnabled
@@ -865,6 +867,7 @@ Public Property Get ConcreteParameters() As CConcreteMaterialParameters
     Set ConcreteParameters = mConcreteParameters.Clone
 End Property
 
+' Исходные параметры арматуры из Config.
 Public Property Get SteelParameters() As CSteelMaterialParameters
     EnsureInitialized
     Set SteelParameters = mSteelParameters.Clone

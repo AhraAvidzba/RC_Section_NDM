@@ -202,9 +202,11 @@ End Function
 Public Property Get HasMaterialSnapshot() As Boolean
     HasMaterialSnapshot = Not mSnapshotConcrete Is Nothing And Not mSnapshotSteel Is Nothing
 End Property
+' Неизменяемая фактическая диаграмма бетона.
 Public Property Get ConcreteDiagramSnapshot() As CMaterialDiagram
     Set ConcreteDiagramSnapshot = mSnapshotConcrete
 End Property
+' Неизменяемая фактическая диаграмма арматуры.
 Public Property Get SteelDiagramSnapshot() As CMaterialDiagram
     Set SteelDiagramSnapshot = mSnapshotSteel
 End Property
@@ -228,18 +230,22 @@ Private Sub CaptureEquilibriumData(ByVal solver As CSectionSolver)
     mLastResidualNorm = solver.LastResidualNorm
 End Sub
 
+' Какое именованное состояние рассчитано.
 Public Property Get StateType() As ESectionStateType
     StateType = mStateType
 End Property
 
+' Какое именованное состояние рассчитано.
 Public Property Get StateTypeText() As String
     StateTypeText = SectionStateTypeToText(mStateType)
 End Property
 
+' Смысловая роль модели материала.
 Public Property Get MaterialModelRole() As ECalculationPurpose
     MaterialModelRole = mMaterialModelRole
 End Property
 
+' Смысловая роль модели материала.
 Public Property Get MaterialModelRoleText() As String
     MaterialModelRoleText = MaterialModelRoleToText(mMaterialModelRole)
 End Property
@@ -250,30 +256,37 @@ Public Property Get MaterialSpec() As CMaterialModelSpec
     If Not mMaterialSpec Is Nothing Then Set MaterialSpec = mMaterialSpec.Clone
 End Property
 
+' Деформация в начале координат расчетной модели.
 Public Property Get Epsilon0() As Double
     Epsilon0 = mEpsilon0
 End Property
 
+' Кривизна kappaX, 1/мм.
 Public Property Get KappaX() As Double
     KappaX = mKappaX
 End Property
 
+' Кривизна kappaY, 1/мм.
 Public Property Get KappaY() As Double
     KappaY = mKappaY
 End Property
 
+' True, если найденное состояние дошло до numerical extension.
 Public Property Get ExtensionUsed() As Boolean
     ExtensionUsed = mExtensionUsed
 End Property
 
+' True, если state принят в пределах физической диаграммы.
 Public Property Get WithinPhysicalRange() As Boolean
     WithinPhysicalRange = mWithinPhysicalRange
 End Property
 
+' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
@@ -298,126 +311,158 @@ Public Property Get ResultMeta() As CResultMeta
     End If
 End Property
 
+' Внутренний статус результата; не является пользовательским подтверждением нормативной
+' пригодности.
 Public Property Get InternalStatus() As EResultInternalStatus
     InternalStatus = ResultMeta.InternalStatus
 End Property
 
+' Публичный код состояния результата, определённый общей политикой статусов.
 Public Property Get ResultCode() As EResultCode
     ResultCode = ResultMeta.ResultCode
 End Property
 
+' Пояснение результата с фактической причиной и доступной привязкой к вводным данным.
 Public Property Get ResultComment() As String
     ResultComment = ResultMeta.ResultComment
 End Property
 
+' Целевое N named-state, Н.
 Public Property Get TargetN() As Double
     TargetN = mTargetN
 End Property
 
+' Целевой Mx named-state, Н*мм.
 Public Property Get TargetMx() As Double
     TargetMx = mTargetMx
 End Property
 
+' Целевой My named-state, Н*мм.
 Public Property Get TargetMy() As Double
     TargetMy = mTargetMy
 End Property
 
+' Внутреннее N, полученное интегрированием напряжений, Н.
 Public Property Get Nint() As Double
     Nint = mNint
 End Property
 
+' Внутренний Mx, полученный интегрированием напряжений, Н*мм.
 Public Property Get Mxint() As Double
     Mxint = mMxint
 End Property
 
+' Внутренний My, полученный интегрированием напряжений, Н*мм.
 Public Property Get Myint() As Double
     Myint = mMyint
 End Property
 
+' Невязка Nint - Ntarget, Н.
 Public Property Get ResidualN() As Double
     ResidualN = mResidualN
 End Property
 
+' Невязка Mxint - Mxtarget, Н*мм.
 Public Property Get ResidualMx() As Double
     ResidualMx = mResidualMx
 End Property
 
+' Невязка Myint - Mytarget, Н*мм.
 Public Property Get ResidualMy() As Double
     ResidualMy = mResidualMy
 End Property
 
+' Относительная невязка по N для диагностики качества состояния.
 Public Property Get RelativeResidualN() As Double
     RelativeResidualN = mRelativeResidualN
 End Property
 
+' Относительная невязка по Mx для диагностики качества состояния.
 Public Property Get RelativeResidualMx() As Double
     RelativeResidualMx = mRelativeResidualMx
 End Property
 
+' Относительная невязка по My для диагностики качества состояния.
 Public Property Get RelativeResidualMy() As Double
     RelativeResidualMy = mRelativeResidualMy
 End Property
 
+' Норма невязки последней оценки solver-а.
 Public Property Get LastResidualNorm() As Double
     LastResidualNorm = mLastResidualNorm
 End Property
 
+' Число запусков CSectionSolver.Solve, связанных с получением state.
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
+' Число итераций последнего solver-а, давшего state.
 Public Property Get IterationCount() As Long
     IterationCount = mIterationCount
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+' Минимальная деформация бетона в этом named-state.
 Public Property Get MinConcreteStrain() As Double
     MinConcreteStrain = mMinConcreteStrain
 End Property
 
+' Максимальная деформация бетона в этом named-state.
 Public Property Get MaxConcreteStrain() As Double
     MaxConcreteStrain = mMaxConcreteStrain
 End Property
 
+' Минимальная деформация арматуры в этом named-state.
 Public Property Get MinSteelStrain() As Double
     MinSteelStrain = mMinSteelStrain
 End Property
 
+' Максимальная деформация арматуры в этом named-state.
 Public Property Get MaxSteelStrain() As Double
     MaxSteelStrain = mMaxSteelStrain
 End Property
 
+' Наиболее сжимающее напряжение бетона со знаком.
 Public Property Get MinConcreteStress() As Double
     MinConcreteStress = mMinConcreteStress
 End Property
 
+' Наиболее растягивающее напряжение бетона со знаком.
 Public Property Get MaxConcreteStress() As Double
     MaxConcreteStress = mMaxConcreteStress
 End Property
 
+' Наиболее сжимающее напряжение арматуры со знаком.
 Public Property Get MinSteelStress() As Double
     MinSteelStress = mMinSteelStress
 End Property
 
+' Наиболее растягивающее напряжение арматуры со знаком.
 Public Property Get MaxSteelStress() As Double
     MaxSteelStress = mMaxSteelStress
 End Property
 
+' True, если в состоянии реально есть сжатый бетон.
 Public Property Get HasConcreteCompression() As Boolean
     HasConcreteCompression = mHasConcreteCompression
 End Property
 
+' True, если бетон реально работает на растяжение.
 Public Property Get HasConcreteTension() As Boolean
     HasConcreteTension = mHasConcreteTension
 End Property
 
+' True, если есть сжатая арматура.
 Public Property Get HasSteelCompression() As Boolean
     HasSteelCompression = mHasSteelCompression
 End Property
 
+' True, если есть растянутая арматура.
 Public Property Get HasSteelTension() As Boolean
     HasSteelTension = mHasSteelTension
 End Property

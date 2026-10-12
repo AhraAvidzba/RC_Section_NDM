@@ -202,42 +202,52 @@ Private Function SteelMaterialForRequest(ByVal request As CStateRequest) As CMat
     End If
 End Function
 
+' Runner последнего реального solve; Nothing при cache-hit.
 Public Property Get LastRunner() As CStateSolutionRunner
     Set LastRunner = mLastRunner
 End Property
 
+' True, если state взят из repository.
 Public Property Get LastStateWasReused() As Boolean
     LastStateWasReused = mLastStateWasReused
 End Property
 
+' Newton или Secant.
 Public Property Let SolverMethod(ByVal value As String)
     mSolverMethod = value
 End Property
 
+' Число ступеней приложения нагрузки.
 Public Property Let LoadSteps(ByVal value As Long)
     mLoadSteps = value
 End Property
 
+' Максимум итераций solver-а.
 Public Property Let MaxIterations(ByVal value As Long)
     mMaxIterations = value
 End Property
 
+' Допуск по N.
 Public Property Let ToleranceN(ByVal value As Double)
     mToleranceN = value
 End Property
 
+' Допуск по Mx.
 Public Property Let ToleranceMx(ByVal value As Double)
     mToleranceMx = value
 End Property
 
+' Допуск по My.
 Public Property Let ToleranceMy(ByVal value As Double)
     mToleranceMy = value
 End Property
 
+' Перезапуски secant-матрицы.
 Public Property Let SecantMaxRestarts(ByVal value As Long)
     mSecantMaxRestarts = value
 End Property
 
+' Нужно ли копить диагностический журнал.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property

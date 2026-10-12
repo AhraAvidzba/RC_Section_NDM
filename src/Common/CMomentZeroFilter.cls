@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -62,6 +62,7 @@ Public Function NormalizeMoment(ByVal momentValue As Double, ByVal concreteDepth
     End If
 End Function
 
+' Внутреннее значение порога: Н*мм/мм.
 Public Property Get MomentPerDepth() As Double
     MomentPerDepth = mMomentPerDepth
 End Property

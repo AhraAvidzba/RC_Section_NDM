@@ -74,26 +74,32 @@ Public Function TargetMy(ByVal lambdaValue As Double) As Double
     TargetMy = mMyOffset + lambdaValue * mMyBase
 End Function
 
+' Постоянная часть N, Н.
 Public Property Get NOffset() As Double
     NOffset = mNOffset
 End Property
 
+' Масштабируемая часть N, Н.
 Public Property Get NBase() As Double
     NBase = mNBase
 End Property
 
+' Постоянная часть Mx относительно начала модели, Н*мм.
 Public Property Get MxOffset() As Double
     MxOffset = mMxOffset
 End Property
 
+' Масштабируемая часть Mx, Н*мм.
 Public Property Get MxBase() As Double
     MxBase = mMxBase
 End Property
 
+' Постоянная часть My относительно начала модели, Н*мм.
 Public Property Get MyOffset() As Double
     MyOffset = mMyOffset
 End Property
 
+' Масштабируемая часть My, Н*мм.
 Public Property Get MyBase() As Double
     MyBase = mMyBase
 End Property

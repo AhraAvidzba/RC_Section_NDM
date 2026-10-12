@@ -37,6 +37,8 @@ Public AnnotationGroup As String
 Public Comment As String
 Public SourceReference As String
 
+' Задаёт реальные defaults раскладки, проекции, совпадений и публикации для нового объекта
+' options.
 Private Sub Class_Initialize()
     EndMode = IncludeBoth
     DistributionScope = PerPath
@@ -48,6 +50,8 @@ Private Sub Class_Initialize()
     OverlapPolicy = ReportOverlap
 End Sub
 
+' Копирует параметры options в декларативное правило, отделяя его от последующих изменений
+' объекта.
 Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.StartSetback = StartSetback: rule.EndSetback = EndSetback
     rule.DistributionScope = DistributionScope

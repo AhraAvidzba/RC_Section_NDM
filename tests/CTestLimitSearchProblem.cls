@@ -111,10 +111,12 @@ Public Property Let FinalizationMaxWidth(ByVal value As Double)
     mFinalizationMaxWidth = value
 End Property
 
+' ДЛЯ ТЕСТОВ: число завершений поиска внутри найденного интервала lambda.
 Public Property Get BracketFinalizationCalls() As Long
     BracketFinalizationCalls = mBracketFinalizationCalls
 End Property
 
+' ДЛЯ ТЕСТОВ: последующий этап еще не выполнен, но точка поиска принята.
 Public Property Let DeferOverallCompletion(ByVal value As Boolean)
     mDeferOverallCompletion = value
 End Property
@@ -124,10 +126,12 @@ Public Property Let FailureAbove(ByVal value As Double)
     mFailureAbove = value
 End Property
 
+' ДЛЯ ТЕСТОВ: неудачная проба возвращает True и нулевую невязку-заглушку.
 Public Property Let FailureAt(ByVal value As Double)
     mFailureAt = value
 End Property
 
+' ДЛЯ ТЕСТОВ: успешные пробы между численными отказами.
 Public Property Get AcceptableProbeCalls() As Long
     AcceptableProbeCalls = mAcceptableProbeCalls
 End Property
@@ -147,54 +151,67 @@ Public Property Get ProbeMaxLambda() As Double
     ProbeMaxLambda = mProbeMaxLambda
 End Property
 
+' Счетчик проб общего алгоритма.
 Public Property Get ProbeCalls() As Long
     ProbeCalls = mProbeCalls
 End Property
 
+' Lambda, фактически принятая общим search.
 Public Property Get FinalLambda() As Double
     FinalLambda = mFinalLambda
 End Property
 
+' Метод, которым была принята итоговая точка.
 Public Property Get FinalMethod() As String
     FinalMethod = mFinalMethod
 End Property
 
+' Число итераций, переданное при финализации.
 Public Property Get FinalIterations() As Long
     FinalIterations = mFinalIterations
 End Property
 
+' True, если search остановился по лимиту итераций.
 Public Property Get IterationLimitHit() As Boolean
     IterationLimitHit = mIterationLimitHit
 End Property
 
+' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
+' Признак достигнутого физического предела по проверяемому критерию.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+' Тип результата, публикуемого данной задачей предельного поиска.
 Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = mKind
 End Property
 
+' Начальный шаг множителя нагрузки lambda для предельного поиска.
 Private Property Get ILimitSearchProblem_InitialLambdaStep() As Double
     ILimitSearchProblem_InitialLambdaStep = mInitialStep
 End Property
 
+' Техническая верхняя граница lambda.
 Private Property Get ILimitSearchProblem_MaxLambda() As Double
     ILimitSearchProblem_MaxLambda = mMaxLambda
 End Property
 
+' Допуск lambda-скобки, передаваемый общему search.
 Private Property Get ILimitSearchProblem_LambdaTolerance() As Double
     ILimitSearchProblem_LambdaTolerance = mTolerance
 End Property
 
+' Лимит итераций для проверки T02.
 Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mMaxIterations
 End Property
@@ -204,18 +221,22 @@ Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
     ILimitSearchProblem_BisectionMaxIterations = mMaxIterations
 End Property
 
+' Настроенный метод поиска предела для данной задачи.
 Private Property Get ILimitSearchProblem_SearchMethod() As String
     ILimitSearchProblem_SearchMethod = mSearchMethod
 End Property
 
+' True, если search финализировал точку.
 Private Property Get ILimitSearchProblem_Converged() As Boolean
     ILimitSearchProblem_Converged = mConverged
 End Property
 
+' Последний машинный статус fake-задачи.
 Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mLimitState
 End Property
 
+' Накопленный диагностический текст.
 Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     ILimitSearchProblem_DiagnosticLog = mDiagnosticLog
 End Property
@@ -351,6 +372,7 @@ Private Function ILimitSearchProblem_LimitSearchUltimateResidualNorm(ByVal rPath
     If mUltimateConstantNorm Then ILimitSearchProblem_LimitSearchUltimateResidualNorm = 1#
 End Function
 
+' ДЛЯ ТЕСТОВ: признак масштабирования функции качества по матрице Якоби.
 Private Property Get ILimitSearchProblem_LimitSearchUseJacobianMeritScaling() As Boolean
     ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = False
 End Property
@@ -478,10 +500,13 @@ Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As Strin
     ILimitSearchProblem_IsAcceptableState = (probeState = PROBE_ACCEPTABLE)
 End Function
 
+' Проверяет физический предельный статус задачи; численная несходимость сама по себе не означает
+' разрушение.
 Private Function ILimitSearchProblem_IsLimitState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsLimitState = (probeState = PROBE_LIMIT)
 End Function
 
+' Распознаёт численную неудачу отдельно от физического предела.
 Private Function ILimitSearchProblem_IsNumericalFailureState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsNumericalFailureState = (probeState = PROBE_NUMFAIL)
 End Function
@@ -651,6 +676,7 @@ Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
         mFailureCode = sfcInvalidInput Or mFailureCode = sfcInternalError)
 End Property
 
+' Последний машинный статус fake-задачи.
 Private Property Get ILimitSearchProblem_StopReason() As String
     ILimitSearchProblem_StopReason = mLimitState
 End Property
@@ -731,10 +757,12 @@ Public Sub ConfigureUltimateWarmCase(ByVal maxIterations As Long, ByVal kind As 
     mUltimateInitialEps = coldStrain: mUltimateUsesWarmGuess = True
 End Sub
 
+' ДЛЯ ТЕСТОВ: ограниченный возврат к общему старту.
 Public Property Get UltimateGuessCalls() As Long
     UltimateGuessCalls = mUltimateGuessCalls
 End Property
 
+' ДЛЯ ТЕСТОВ: точная причина остановки.
 Public Property Get FailureCode() As ESolverFailureCode
     FailureCode = mFailureCode
 End Property

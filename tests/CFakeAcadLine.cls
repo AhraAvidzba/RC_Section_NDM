@@ -60,6 +60,7 @@ Public Property Get Layer() As String
     Layer = mLayer
 End Property
 
+' ДЛЯ ТЕСТОВ: признак удаления только имитируемого временного объекта.
 Public Property Get Deleted() As Boolean
     Deleted = mDeleted
 End Property

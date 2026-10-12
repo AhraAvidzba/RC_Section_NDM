@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -159,22 +159,31 @@ ScaledNorm:
         (Abs(b1) / rhsScale + Abs(b2) / rhsScale + Abs(b3) / rhsScale)
 End Function
 
+' Решение маленькой линейной системы 3x3 Этот класс нужен Newton/Secant-решателям для поправок
+' epsilon0/kappaX/kappaY. Он работает только с числами, не знает о геометрии, материалах и
+' Excel, и возвращает машинную и понятную текстовую причину отказа. Вырождение матрицы
+' отличается от непредставимой арифметики; диагностический масштаб правой части не должен мешать
+' получению корректной поправки.
 Public Property Get Solved() As Boolean
     Solved = mSolved
 End Property
 
+' Первая компонента решения системы 3×3.
 Public Property Get X1() As Double
     X1 = mX1
 End Property
 
+' Вторая компонента решения системы 3×3.
 Public Property Get X2() As Double
     X2 = mX2
 End Property
 
+' Третья компонента решения системы 3×3.
 Public Property Get X3() As Double
     X3 = mX3
 End Property
 
+' Относительная невязка решённой линейной системы.
 Public Property Get RelativeResidual() As Double
     RelativeResidual = mRelativeResidual
 End Property
@@ -185,6 +194,7 @@ Public Property Get FailureCode() As ESolverFailureCode
     FailureCode = mFailureCode
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property

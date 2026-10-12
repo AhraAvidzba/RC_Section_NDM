@@ -28,6 +28,7 @@ Private mDomain As CConcreteRegion ' Неизменная область одн�
 Private mDomainBuildCount As Long ' Число успешных подготовок за жизнь query, включая смену контекста.
 Private mDiagnostic As CGeometryDiagnostic
 
+' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic
     Set LastDiagnostic = mDiagnostic
 End Property
@@ -98,6 +99,8 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
     Set OffsetPath = result
 End Function
 
+' Соединяет аналитические смещённые сегменты по их пересечениям, сохраняя допустимые линии и
+' дуги.
 Private Sub JoinOffsetEdges(ByVal pathID As String, ByVal segmentID As String, ByRef first As TRegionEdge, ByRef second As TRegionEdge)
     If Sqr((first.X2 - second.X1) ^ 2 + (first.Y2 - second.Y1) ^ 2) <= QUERY_TOLERANCE Then Exit Sub
     If first.Sweep <> 0# Or second.Sweep <> 0# Then GeometryError "Негладкий стык с дугой: задайте согласованное скругление.", "OFFSET_JOINT", pathID, segmentID

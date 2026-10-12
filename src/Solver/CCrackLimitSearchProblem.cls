@@ -47,22 +47,27 @@ Public Sub Initialize(ByVal crackCalculator As CCrackFormationCalculator)
     Set mCrack = crackCalculator
 End Sub
 
+' Тип результата, публикуемого данной задачей предельного поиска.
 Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = rkCrackFormation
 End Property
 
+' Начальный шаг множителя нагрузки lambda для предельного поиска.
 Private Property Get ILimitSearchProblem_InitialLambdaStep() As Double
     ILimitSearchProblem_InitialLambdaStep = 1#
 End Property
 
+' Доменный расчетчик трещинообразования и владелец crack-диагностики.
 Private Property Get ILimitSearchProblem_MaxLambda() As Double
     ILimitSearchProblem_MaxLambda = mCrack.LimitSearchCrackBracketLimit
 End Property
 
+' Доменный расчетчик трещинообразования и владелец crack-диагностики.
 Private Property Get ILimitSearchProblem_LambdaTolerance() As Double
     ILimitSearchProblem_LambdaTolerance = mCrack.LimitSearchCrackLambdaTolerance
 End Property
 
+' Доменный расчетчик трещинообразования и владелец crack-диагностики.
 Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mCrack.LimitSearchCrackMaxIterations
 End Property
@@ -72,14 +77,17 @@ Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
     ILimitSearchProblem_BisectionMaxIterations = mCrack.LimitSearchCrackMaxIterations
 End Property
 
+' Настроенный метод поиска предела для данной задачи.
 Private Property Get ILimitSearchProblem_SearchMethod() As String
     ILimitSearchProblem_SearchMethod = "Bisection"
 End Property
 
+' Доменный расчетчик трещинообразования и владелец crack-диагностики.
 Private Property Get ILimitSearchProblem_Converged() As Boolean
     ILimitSearchProblem_Converged = mCrack.Converged
 End Property
 
+' Доменный расчетчик трещинообразования и владелец crack-диагностики.
 Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mCrack.StopReason
 End Property
@@ -240,14 +248,18 @@ Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As Strin
     ILimitSearchProblem_IsAcceptableState = (probeState = STATE_ACCEPTABLE)
 End Function
 
+' Проверяет физический предельный статус задачи; численная несходимость сама по себе не означает
+' разрушение.
 Private Function ILimitSearchProblem_IsLimitState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsLimitState = (probeState = STATE_CRACK_LIMIT Or probeState = STATE_OTHER_LIMIT)
 End Function
 
+' Распознаёт численную неудачу отдельно от физического предела.
 Private Function ILimitSearchProblem_IsNumericalFailureState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsNumericalFailureState = (probeState = STATE_NUMERICAL_FAILURE)
 End Function
 
+' Распознаёт ошибку исходных данных, при которой смена поискового пути недопустима.
 Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsInvalidInputState = False
 End Function
@@ -373,6 +385,7 @@ Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = mCrack.LimitSearchStoppedTerminally()
 End Property
 
+' Доменный расчетчик трещинообразования и владелец crack-диагностики.
 Private Property Get ILimitSearchProblem_StopReason() As String
     ILimitSearchProblem_StopReason = mCrack.StopReason
 End Property

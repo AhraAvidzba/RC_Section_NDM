@@ -8,6 +8,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Декларативный рецепт полого прямоугольника с конечными проекциями арматуры
+' ==========================================================================
 Implements ISectionRecipe
 
 ' Рецепт скругленной рамки: Outer/Opening, наружные ряды и их проекции.
@@ -43,6 +47,8 @@ Private Type THollowFace
     Source As String
 End Type
 
+' Описывает контуры, арматурные правила и размеры выбранного рецепта. Сетку и физические стержни
+' строит общий CSectionBuilder.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     On Error GoTo InvalidGeometry
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
@@ -60,6 +66,8 @@ InvalidGeometry:
     SectionRecipeGeometryError "CSectionRecipeHollowRectangle", sizes.GeometrySource
 End Function
 
+' Читает активные размеры рецепта, проверяет допустимость и переводит длины в мм через
+' CUnitSystem.
 Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As THollowInput)
     Dim row As Long, column As Long
     row = table.RowByKey("H", 1) + 1
@@ -123,11 +131,14 @@ Private Sub ReadFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSys
     Next i
 End Sub
 
+' Описывает аналитическую бетонную границу рецепта через общий фасад, без построения расчётной
+' сетки.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput)
     AddBoundary facade, "OUTER", "Outer.Shape", sizes.B, sizes.H, sizes.R, 0#, 0#, False
     AddBoundary facade, "OPENING", "Opening.Shape", sizes.Bo, sizes.Ho, sizes.Ro, sizes.Xo, sizes.Yo, True
 End Sub
 
+' Добавляет именованную бетонную границу и её сегменты, сохраняя назначенные скругления.
 Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal shapeID As String, _
         ByVal B As Double, ByVal H As Double, ByVal radius As Double, ByVal x As Double, ByVal y As Double, ByVal opening As Boolean)
     Dim shape As CGeometryPath, boundary As CGeometryPath, edge As TRegionEdge, ids() As String, i As Long, part As String, first As String
@@ -147,11 +158,13 @@ Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID 
     End If
 End Sub
 
+' Возвращает исходные вершины прямоугольной границы в порядке обхода.
 Private Function Corners(ByVal B As Double, ByVal H As Double, ByVal x As Double, ByVal y As Double) As Variant
     Corners = Array(Array(x - B / 2#, y + H / 2#), Array(x + B / 2#, y + H / 2#), _
         Array(x + B / 2#, y - H / 2#), Array(x - B / 2#, y - H / 2#))
 End Function
 
+' Описывает активные ряды и их зависимости; отключённая грань не создаёт стержней и подписи.
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace)
     Dim i As Long, base As Long, path As CGeometryPath, options As CRebarRuleOptions
     Dim normalSign As Double, nx As Double, ny As Double, distance As Double, annotationSign As Double
@@ -247,6 +260,7 @@ InvalidPath:
     SectionRecipeGeometryError "CSectionRecipeHollowRectangle", faces(index).Source
 End Function
 
+' Задаёт привязку и смещение дополнительного ряда без повторной раскладки исходных позиций.
 Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long, ByVal location As String, ByVal binding As String, ByVal distance As Double, ByVal normalSign As Double) As CRebarRuleOptions
     Dim options As CRebarRuleOptions
     Set options = New CRebarRuleOptions
@@ -257,6 +271,7 @@ Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long
     Set ExtraOptions = options
 End Function
 
+' Описывает габариты и размерные привязки рецепта отдельно от расчётных контуров.
 Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput)
     facade.HorizontalDistance "DIM_B", "B", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, "Наружная ширина HollowRectangle."
     facade.VerticalExtent "DIM_H", "OUTER.Boundary", "H", -sizes.B / 2#, -1#, "Наружная высота HollowRectangle."
@@ -264,6 +279,7 @@ Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     facade.VerticalExtent "DIM_H_OPENING", "OPENING.Boundary", "H_o", sizes.B / 2#, 1#, "Высота внутреннего отверстия Opening."
 End Sub
 
+' Проверяет ограничение рецепта; ошибка содержит фактический адрес параметра во входной таблице.
 Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)
     If Not condition Then SectionRecipeError "CSectionRecipeHollowRectangle", reason, table.SourceReference(row, column)
 End Sub

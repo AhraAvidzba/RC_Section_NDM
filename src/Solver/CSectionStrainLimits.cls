@@ -74,6 +74,8 @@ Public Sub Evaluate(ByVal section As CSectionModel, ByVal solver As CSectionSolv
     End If
 End Sub
 
+' Проверяет экстремумы сжатия и активного растяжения бетона по подготовленным предельным
+' деформациям.
 Private Sub EvaluateConcrete(ByVal section As CSectionModel, ByVal index As Long, ByVal strain As Double)
     If index = 0 Then Exit Sub
     Dim ratio As Double
@@ -88,6 +90,7 @@ Private Sub EvaluateConcrete(ByVal section As CSectionModel, ByVal index As Long
     End If
 End Sub
 
+' Проверяет сжатие и растяжение арматуры, сохраняя критический стержень и использование предела.
 Private Sub EvaluateSteel(ByVal section As CSectionModel, ByVal index As Long, ByVal strain As Double)
     If index = 0 Then Exit Sub
     Dim ratio As Double
@@ -102,6 +105,7 @@ Private Sub EvaluateSteel(ByVal section As CSectionModel, ByVal index As Long, B
     End If
 End Sub
 
+' Обновляет критический элемент только при большем использовании предельной деформации.
 Private Sub StoreIfLarger(ByVal value As Double, ByVal strain As Double, _
         ByVal element As String, ByVal state As String, ByVal description As String)
     If value <= mUtilization Then Exit Sub
@@ -109,22 +113,28 @@ Private Sub StoreIfLarger(ByVal value As Double, ByVal strain As Double, _
     mState = state: mDescription = description
 End Sub
 
+' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
+' этого класса.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
 
+' Деформация критического элемента, задающего максимальное использование предела.
 Public Property Get CriticalStrain() As Double
     CriticalStrain = mStrain
 End Property
 
+' Идентификатор критического бетонного элемента или стержня арматуры.
 Public Property Get CriticalElement() As String
     CriticalElement = mElement
 End Property
 
+' Признак достигнутого физического предела по проверяемому критерию.
 Public Property Get LimitState() As String
     LimitState = mState
 End Property
 
+' Сохранённое объяснение критического физического ограничения.
 Public Property Get Description() As String
     Description = mDescription
 End Property

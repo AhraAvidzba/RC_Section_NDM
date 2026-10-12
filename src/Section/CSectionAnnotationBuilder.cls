@@ -9,6 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+' ==========================================================================
+' Построение размеров и привязок подписей по аналитической геометрии
+' ==========================================================================
+
 Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Прежний зазор сводной подписи над бетонным габаритом.
 
 ' Общая интерпретация модельных измерений и привязок. Оформление и положение
@@ -133,6 +137,7 @@ Private Sub ArcDimension(ByVal definition As CSectionDefinition, ByRef value As 
     annotations.AddDimension value.AnnotationID, value.StartX, value.StartY, value.EndX, value.EndY, tx, ty, value.Name, value.Value, value.Comment
 End Sub
 
+' Строит точечную привязку подписи по аналитическому пути и заданному направлению.
 Private Sub PointLabel(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)
     definition.AnchorCoordinates value.StartAnchorID, value.StartX, value.StartY
     If value.Kind = "Text" Then
@@ -156,6 +161,7 @@ Private Function DisplayValue(ByVal value As Double, ByVal increment As Double) 
     If increment = 0# Then DisplayValue = value Else DisplayValue = Sgn(value) * Int(Abs(value) / increment + 0.5) * increment
 End Function
 
+' Определяет проекционные границы именованного пути или группы для размещения размеров.
 Private Sub TargetBounds(ByVal definition As CSectionDefinition, ByVal target As String, _
         ByRef minX As Double, ByRef maxX As Double, ByRef minY As Double, ByRef maxY As Double)
     Dim ids As Variant, id As Variant, path As CGeometryPath, low As Double, high As Double

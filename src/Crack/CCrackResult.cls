@@ -81,10 +81,12 @@ Friend Sub SetInputFailure(ByVal reason As String)
     Set mLongitudinal = New CLongitudinalCrackResult: mLongitudinal.Initialize meta, 0#, 0#, 0#
 End Sub
 
+' Результат поиска Ncrc/Mxy,crc.
 Public Property Get Formation() As CCrackFormationResult
     Set Formation = mFormation
 End Property
 
+' Полная ширина геометрической области по X, мм.
 Public Property Get Width() As CCrackWidthResult
     Set Width = mWidth
 End Property
@@ -95,6 +97,7 @@ Public Property Get CurrentStateMeta() As CResultMeta
     If Not mCurrentStateMeta Is Nothing Then Set CurrentStateMeta = mCurrentStateMeta.Clone
 End Property
 
+' Результат проверки продольных трещин.
 Public Property Get Longitudinal() As CLongitudinalCrackResult
     Set Longitudinal = mLongitudinal
 End Property

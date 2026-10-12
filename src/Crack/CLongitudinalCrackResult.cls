@@ -58,14 +58,18 @@ Public Property Get Status() As String
     Status = policy.ExternalStatus(mMeta)
 End Property
 
+' Максимальное сжатие бетона в текущем CrackedState.
 Public Property Get MaxCompressionStress() As Double
     MaxCompressionStress = mMaxCompressionStress
 End Property
 
+' Допустимое Rb,mc2.
 Public Property Get RbMc2() As Double
     RbMc2 = mRbMc2
 End Property
 
+' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
+' этого класса.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property

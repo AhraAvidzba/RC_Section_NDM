@@ -171,16 +171,19 @@ Public Property Get PhysicalTensionStrain() As Double
     PhysicalTensionStrain = mPhysicalTensionStrain
 End Property
 
+' False для диаграмм, где растянутый бетон принят с нулевым сопротивлением без eps-лимита.
 Public Property Get HasPhysicalTensionLimit() As Boolean
     EnsureInitialized
     HasPhysicalTensionLimit = mHasPhysicalTensionLimit
 End Property
 
+' True, если слева от физического сжатого предела добавлена техническая область.
 Public Property Get HasCompressionExtension() As Boolean
     EnsureInitialized
     HasCompressionExtension = mHasCompressionExtension
 End Property
 
+' True, если справа от физического растянутого предела добавлена техническая область.
 Public Property Get HasTensionExtension() As Boolean
     EnsureInitialized
     HasTensionExtension = mHasTensionExtension
@@ -468,6 +471,7 @@ Public Sub Initialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal eps2 
     End If
 End Sub
 
+' Количество активных точек диаграммы.
 Public Property Get PointCount() As Long
     PointCount = mPointCount
 End Property

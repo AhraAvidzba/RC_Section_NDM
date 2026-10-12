@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -31,6 +31,7 @@ Public Sub Initialize(ByVal elasticModulus As Double)
     mElasticModulus = elasticModulus
 End Sub
 
+' Постоянный модуль линейной тестовой модели, МПа.
 Public Property Get ElasticModulus() As Double
     ElasticModulus = mElasticModulus
 End Property

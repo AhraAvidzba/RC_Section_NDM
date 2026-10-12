@@ -111,48 +111,66 @@ End Sub
 Public Property Get Count() As Long
     Count = mCount
 End Property
+' Версия исходных границ для инвалидирования geometry-query.
 Public Property Get Revision() As Long
     Revision = mRevision
 End Property
+' Достоверные наружные границы и отверстия геометрии сечения Контейнер принадлежит CSectionModel
+' и хранит точные линии, дуги и окружности во внутренних мм. Роль и принадлежность замкнутому
+' контуру являются геометрическими данными, а не аннотацией результата. Контейнер не вычисляет
+' расчетную область трещин: она остается отдельным LC-зависимым результатом geometry-query.
 Public Property Get SegmentType(ByVal index As Long) As String
     CheckIndex index: SegmentType = mKind(index)
 End Property
+' Уникальный смысловой ID выбранного контурного сегмента.
 Public Property Get ContourID(ByVal index As Long) As String
     CheckIndex index: ContourID = mContourID(index)
 End Property
+' Координата X начала выбранной геометрической записи, мм.
 Public Property Get StartX(ByVal index As Long) As Double
     CheckIndex index: StartX = mEdge(index).X1
 End Property
+' Координата Y начала выбранной геометрической записи, мм.
 Public Property Get StartY(ByVal index As Long) As Double
     CheckIndex index: StartY = mEdge(index).Y1
 End Property
+' Координата X конца выбранной геометрической записи, мм.
 Public Property Get EndX(ByVal index As Long) As Double
     CheckIndex index: EndX = mEdge(index).X2
 End Property
+' Координата Y конца выбранной геометрической записи, мм.
 Public Property Get EndY(ByVal index As Long) As Double
     CheckIndex index: EndY = mEdge(index).Y2
 End Property
+' Координата X центра выбранной геометрической записи, мм.
 Public Property Get CenterX(ByVal index As Long) As Double
     CheckIndex index: CenterX = mEdge(index).CenterX
 End Property
+' Координата Y центра выбранной геометрической записи, мм.
 Public Property Get CenterY(ByVal index As Long) As Double
     CheckIndex index: CenterY = mEdge(index).CenterY
 End Property
+' Радиус выбранной аналитической дуги, мм.
 Public Property Get Radius(ByVal index As Long) As Double
     CheckIndex index: Radius = mRadius(index)
 End Property
+' Знаковый угол обхода аналитической дуги, радианы.
 Public Property Get SweepAngle(ByVal index As Long) As Double
     CheckIndex index: SweepAngle = mEdge(index).Sweep
 End Property
+' ID замкнутой бетонной границы выбранного сегмента.
 Public Property Get LoopID(ByVal index As Long) As String
     CheckIndex index: LoopID = mLoopID(index)
 End Property
+' Роль бетонной границы: Outer или Opening.
 Public Property Get LoopRole(ByVal index As Long) As String
     CheckIndex index: LoopRole = mRole(index)
 End Property
+' ID исходного геометрического объекта выбранного сегмента.
 Public Property Get SourceID(ByVal index As Long) As String
     CheckIndex index: SourceID = mSource(index)
 End Property
+' Сохранённое пояснение выбранной записи без нового расчёта.
 Public Property Get Comment(ByVal index As Long) As String
     CheckIndex index: Comment = mComment(index)
 End Property

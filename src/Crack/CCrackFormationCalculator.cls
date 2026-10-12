@@ -2006,10 +2006,12 @@ Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
+' Машинный статус этапа образования нормальной трещины.
 Public Property Get CrackFormationInternalStatus() As EResultInternalStatus
     CrackFormationInternalStatus = mFormationInternalStatus
 End Property
@@ -2019,14 +2021,17 @@ Public Property Get FormationSolutionMethod() As String
     FormationSolutionMethod = mFormationSolutionMethod
 End Property
 
+' Машинный код причины результата образования нормальной трещины.
 Public Property Get CrackFormationResultCode() As EResultCode
     CrackFormationResultCode = mFormationResultCode
 End Property
 
+' True, если по выбранной ветке расчета трещина считается образованной.
 Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     If mDiagnosticDirty Then
         mDiagnosticLog = Join(mDiagnosticLines, vbNullString)
@@ -2042,6 +2047,7 @@ Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
+' Фактически выбранная траектория поиска трещинообразования.
 Public Property Get CrackFormationPath() As String
     CrackFormationPath = CrackFormationPathDisplayName()
 End Property
@@ -2056,34 +2062,43 @@ Public Property Get CrackFormationMethod() As String
     End If
 End Property
 
+' Auto, UltimateStrain или LoadMultiplier для поиска стадии образования трещины.
 Public Property Get CrackFormationSolutionStrategy() As String
     CrackFormationSolutionStrategy = mCrackFormationSolutionStrategy
 End Property
 
+' Множитель нагрузки на пороге трещины: eps_bt,ult для общей ветки или Ncrc/N для центрального
+' растяжения.
 Public Property Get LambdaCrc() As Double
     LambdaCrc = mLambdaCrc
 End Property
 
+' Усилие образования трещины для ветки истинного центрального растяжения, Н.
 Public Property Get Ncrc() As Double
     Ncrc = mNcrc
 End Property
 
+' Продольная сила в общей N+M ветке на найденной стадии образования трещины, Н.
 Public Property Get FormationNcrc() As Double
     FormationNcrc = mFormationNcrc
 End Property
 
+' Модуль изгибающего момента на стадии образования трещины, Н*мм.
 Public Property Get Mcrc() As Double
     Mcrc = mMcrc
 End Property
 
+' Площадь приведенного сечения для Ncrc при центральном растяжении, мм2.
 Public Property Get Ared() As Double
     Ared = mAred
 End Property
 
+' Rbt,ser для центральной ветки Ncrc и модели образования трещины, МПа.
 Public Property Get RbtSer() As Double
     RbtSer = mConcreteRbtSer
 End Property
 
+' True, если сработала отдельная ветка центрального растяжения.
 Public Property Get CentralTensionBranch() As Boolean
     CentralTensionBranch = mCentralTensionBranch
 End Property
@@ -2105,50 +2120,62 @@ Public Property Set StateProvider(ByVal value As CStateProvider)
     Set mStateProvider = value
 End Property
 
+' Фактически выбранная траектория поиска трещинообразования.
 Public Property Let CrackFormationPath(ByVal value As String)
     mCrackFormationPath = value
 End Property
 
+' Auto, UltimateStrain или LoadMultiplier для поиска стадии образования трещины.
 Public Property Let CrackFormationSolutionStrategy(ByVal value As String)
     mCrackFormationSolutionStrategy = value
 End Property
 
+' Допуск интервала общего LoadMultiplier-поиска образования трещины.
 Public Property Get LambdaTolerance() As Double
     LambdaTolerance = mLambdaTolerance
 End Property
 
+' Допуск интервала общего LoadMultiplier-поиска образования трещины.
 Public Property Let LambdaTolerance(ByVal value As Double)
     mLambdaTolerance = value
 End Property
 
+' Newton или Secant для внутренних прямых расчетов состояния сечения.
 Public Property Let SolverMethod(ByVal value As String)
     mSolverMethod = value
 End Property
 
+' Число ступеней приложения нагрузки во внутреннем CSectionSolver.
 Public Property Let SolverLoadSteps(ByVal value As Long)
     mSolverLoadSteps = value
 End Property
 
+' Максимум итераций на ступень для внутренних solve.
 Public Property Let SolverMaxIterations(ByVal value As Long)
     mSolverMaxIterations = value
 End Property
 
+' Допуск равновесия по N, Н.
 Public Property Let SolverToleranceN(ByVal value As Double)
     mSolverToleranceN = value
 End Property
 
+' Допуск равновесия по Mx, Н*мм.
 Public Property Let SolverToleranceMx(ByVal value As Double)
     mSolverToleranceMx = value
 End Property
 
+' Допуск равновесия по My, Н*мм.
 Public Property Let SolverToleranceMy(ByVal value As Double)
     mSolverToleranceMy = value
 End Property
 
+' Число перезапусков секущей матрицы.
 Public Property Let SolverSecantMaxRestarts(ByVal value As Long)
     mSolverSecantMaxRestarts = value
 End Property
 
+' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property

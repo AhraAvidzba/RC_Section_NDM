@@ -1119,39 +1119,74 @@ Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal un
     OutputCurvatureToInternalByUnit = value / mUnits.InternalCurvatureToOutput(1#, unitText)
 End Function
 
+' Количество записей, сохранённых в контейнере этого класса.
 Public Property Get Count() As Long: Count = mCount: End Property
+' ID элемента для связи геометрии, результатов и подписей.
 Public Property Get ElementID(ByVal index As Long) As String: ElementID = mElementID(index): End Property
+' Concrete/Rebar; Plotter использует это для выбора маркера.
 Public Property Get MaterialType(ByVal index As Long) As String: MaterialType = mMaterialType(index): End Property
+' Координата X выбранного элемента модели, мм.
 Public Property Get X(ByVal index As Long) As Double: X = mX(index): End Property
+' Координата Y выбранного элемента модели, мм.
 Public Property Get Y(ByVal index As Long) As Double: Y = mY(index): End Property
+' Площадь выбранного элемента, мм².
 Public Property Get Area(ByVal index As Long) As Double: Area = mArea(index): End Property
+' Диаметр выбранного физического стержня, мм.
 Public Property Get Diameter(ByVal index As Long) As Double: Diameter = mDiameter(index): End Property
+' Статус интерпретации оболочки: Rectangle, Equivalent rectangle, Equivalent square.
 Public Property Get ShapeType(ByVal index As Long) As String: ShapeType = mShapeType(index): End Property
+' Полная ширина геометрической области по X, мм.
 Public Property Get Width(ByVal index As Long) As Double: Width = mWidth(index): End Property
+' Полная высота геометрической области по Y, мм.
 Public Property Get Height(ByVal index As Long) As Double: Height = mHeight(index): End Property
+' Поворот прямоугольного бетонного элемента, рад; для fallback-а может хранить средний угол
+' сетки.
 Public Property Get Rotation(ByVal index As Long) As Double: Rotation = mRotation(index): End Property
+' Значение Stress или Strain для выбранного LC.
 Public Property Get ResultValue(ByVal index As Long) As Double: ResultValue = mResultValue(index): End Property
+' Сохранённое текстовое описание физической пригодности выбранного состояния НДС.
 Public Property Get PhysicalState(ByVal index As Long) As String: PhysicalState = mPhysicalState(index): End Property
+' LC, выбранный для схемы после обработки Worst/конкретного ID.
 Public Property Get LoadCase() As String: LoadCase = mLoadCase: End Property
+' Комментарий LC для заголовка схемы.
 Public Property Get LoadCaseComment() As String: LoadCaseComment = mLoadCaseComment: End Property
+' ProfileId, сохраненный в snapshot для выбранного LC.
 Public Property Get ProfileId() As String: ProfileId = mProfileId: End Property
+' StateType, выбранный через Visualization.State текущего профиля.
 Public Property Get StateType() As String: StateType = mStateType: End Property
+' True для схемы без расчетных Stress/Strain.
 Public Property Get GeometryOnly() As Boolean: GeometryOnly = mGeometryOnly: End Property
+' Заголовок схемы без НДС, например для import-preview.
 Public Property Get GeometryOnlyTitle() As String: GeometryOnlyTitle = mGeometryOnlyTitle: End Property
+' Пояснение под схемой, если НДС намеренно отсутствует.
 Public Property Get GeometryOnlyNote() As String: GeometryOnlyNote = mGeometryOnlyNote: End Property
+' Можно ли показывать оси/точку нагрузки без НДС.
 Public Property Get GeometryReferenceItemsEnabled() As Boolean: GeometryReferenceItemsEnabled = mGeometryReferenceItemsEnabled: End Property
+' Что сейчас визуализируется по профилю: Stress или Strain.
 Public Property Get VisualizationQuantity() As String: VisualizationQuantity = mVisualizationQuantity: End Property
+' Единица выбранной величины из сохраненных Results.
 Public Property Get ResultUnit() As String: ResultUnit = mResultUnit: End Property
+' Название выбранной величины для легенды.
 Public Property Get ResultCaption() As String: ResultCaption = mResultCaption: End Property
+' Количество знаков после запятой для выбранной Stress/Strain.
 Public Property Get ResultPrecision() As Long: ResultPrecision = mResultPrecision: End Property
+' Единица модельной геометрии после чтения Results; для Plotter это всегда mm.
 Public Property Get LengthUnit() As String: LengthUnit = mLengthUnit: End Property
+' Единица площади после чтения Results; для Plotter это всегда mm2.
 Public Property Get AreaUnit() As String: AreaUnit = mAreaUnit: End Property
+' Минимальная координата X геометрической области, мм.
 Public Property Get MinX() As Double: MinX = mMinX: End Property
+' Максимальная координата X геометрической области, мм.
 Public Property Get MaxX() As Double: MaxX = mMaxX: End Property
+' Минимальная координата Y геометрической области, мм.
 Public Property Get MinY() As Double: MinY = mMinY: End Property
+' Максимальная координата Y геометрической области, мм.
 Public Property Get MaxY() As Double: MaxY = mMaxY: End Property
+' X центра тяжести приведенного сечения.
 Public Property Get CentroidX() As Double: CentroidX = mCentroidX: End Property
+' Y центра тяжести приведенного сечения.
 Public Property Get CentroidY() As Double: CentroidY = mCentroidY: End Property
+' Угол от +X к главной оси 1 приведенного сечения, рад.
 Public Property Get PrincipalAngle() As Double: PrincipalAngle = mPrincipalAngle: End Property
 
 ' Возвращает X центра для выбранного набора главных осей.
@@ -1181,12 +1216,19 @@ Public Function PrincipalAxesAngle(ByVal axesMode As String) As Double
         PrincipalAxesAngle = mPrincipalAngle
     End If
 End Function
+' Свободный член сохраненной плоскости деформаций LC.
 Public Property Get Epsilon0() As Double: Epsilon0 = mEpsilon0: End Property
+' Кривизна при y в сохраненной плоскости деформаций.
 Public Property Get KappaX() As Double: KappaX = mKappaX: End Property
+' Кривизна при x в сохраненной плоскости деформаций.
 Public Property Get KappaY() As Double: KappaY = mKappaY: End Property
+' X общей точки приложения нагрузки из Results snapshot.
 Public Property Get LoadReferenceX() As Double: LoadReferenceX = mLoadReferenceX: End Property
+' Y общей точки приложения нагрузки из Results snapshot.
 Public Property Get LoadReferenceY() As Double: LoadReferenceY = mLoadReferenceY: End Property
+' True, если выбранный LC был найден в numerical extension.
 Public Property Get ExtensionUsed() As Boolean: ExtensionUsed = mExtensionUsed: End Property
+' Сохраненный статус выбранного named-state.
 Public Property Get DirectStateStatus() As String: DirectStateStatus = mStateStatus: End Property
 ' Определяет необходимость предупреждения по сохраненному снимку Results:
 ' использовано extension либо записан физический FAIL. Решатель не запускается,
@@ -1196,14 +1238,23 @@ Public Property Get PhysicalDiagramWarningRequired() As Boolean
     Set policy = New CResultStatusPolicy
     PhysicalDiagramWarningRequired = (mExtensionUsed Or policy.ToUserStatus(mStateStatus) = policy.Fail)
 End Property
+' Количество привязок арматурных подписей в раскладке.
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
+' Dimension, RebarLabel, Outline и другие типы оформления.
 Public Property Get AnnotationType(ByVal index As Long) As String: AnnotationType = mAnnotationType(index): End Property
+' Координата X начала выбранной привязки арматурной подписи, мм.
 Public Property Get AnnotationStartX(ByVal index As Long) As Double: AnnotationStartX = mAnnotationStartX(index): End Property
+' Координата Y начала выбранной привязки арматурной подписи, мм.
 Public Property Get AnnotationStartY(ByVal index As Long) As Double: AnnotationStartY = mAnnotationStartY(index): End Property
+' Координата X конца выбранной привязки арматурной подписи, мм.
 Public Property Get AnnotationEndX(ByVal index As Long) As Double: AnnotationEndX = mAnnotationEndX(index): End Property
+' Координата Y конца выбранной привязки арматурной подписи, мм.
 Public Property Get AnnotationEndY(ByVal index As Long) As Double: AnnotationEndY = mAnnotationEndY(index): End Property
+' Компонента X направления вынесения выбранной арматурной подписи.
 Public Property Get AnnotationNormalX(ByVal index As Long) As Double: AnnotationNormalX = mAnnotationNormalX(index): End Property
+' Компонента Y направления вынесения выбранной арматурной подписи.
 Public Property Get AnnotationNormalY(ByVal index As Long) As Double: AnnotationNormalY = mAnnotationNormalY(index): End Property
+' Готовый текст подписи или размера.
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property
 ' Отдает готовый проверенный угол; plotter не разбирает текст Results повторно.
 Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: AnnotationSweepAngle = mAnnotationSweepAngle(index): End Property

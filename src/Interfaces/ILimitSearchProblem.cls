@@ -46,12 +46,15 @@ End Property
 Public Property Get SearchMethod() As String
 End Property
 
+' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
 Public Property Get Converged() As Boolean
 End Property
 
+' Признак достигнутого физического предела по проверяемому критерию.
 Public Property Get LimitState() As String
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
 End Property
 
@@ -249,6 +252,7 @@ End Property
 Public Property Get StoppedTerminally() As Boolean
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
 End Property
 

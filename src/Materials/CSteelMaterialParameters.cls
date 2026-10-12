@@ -91,42 +91,52 @@ Private Sub RequirePositive(ByVal settings As CSystemSettingsReader, ByVal key A
     Err.Raise vbObjectError + errorCode, "CSteelMaterialParameters", message
 End Sub
 
+' Расчетное сопротивление растяжению для I ГПС, МПа.
 Public Property Get RsULS() As Double
     RsULS = mRsULS
 End Property
 
+' Расчетное сопротивление сжатию для I ГПС, МПа.
 Public Property Get RscULS() As Double
     RscULS = mRscULS
 End Property
 
+' Сопротивление растяжению для II ГПС, МПа.
 Public Property Get RsSLS() As Double
     RsSLS = mRsSLS
 End Property
 
+' Программное сопротивление сжатию для II ГПС, default RsSLS, МПа.
 Public Property Get RscSLS() As Double
     RscSLS = mRscSLS
 End Property
 
+' Модуль арматуры при растяжении, МПа.
 Public Property Get Es() As Double
     Es = mEs
 End Property
 
+' Программный модуль при сжатии, default Es, МПа.
 Public Property Get Esc() As Double
     Esc = mEsc
 End Property
 
+' Предельная растянутая деформация eps_s2 для двухлинейной диаграммы.
 Public Property Get TwoLineEs2() As Double
     TwoLineEs2 = mTwoLineEs2
 End Property
 
+' Предельная сжатая деформация eps_sc2 для двухлинейной диаграммы.
 Public Property Get TwoLineEsc2() As Double
     TwoLineEsc2 = mTwoLineEsc2
 End Property
 
+' Предельная растянутая деформация eps_s2 для трехлинейной диаграммы.
 Public Property Get ThreeLineEs2() As Double
     ThreeLineEs2 = mThreeLineEs2
 End Property
 
+' Предельная сжатая деформация eps_sc2 для трехлинейной диаграммы.
 Public Property Get ThreeLineEsc2() As Double
     ThreeLineEsc2 = mThreeLineEsc2
 End Property

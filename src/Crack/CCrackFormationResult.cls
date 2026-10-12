@@ -123,6 +123,7 @@ Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property
 
+' True, если нормальная трещина образована при текущем LC.
 Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
 End Property
@@ -149,46 +150,57 @@ Public Property Get ConfirmedNotCracked() As Boolean
     End Select
 End Property
 
+' Фактически принятый путь lambda-поиска.
 Public Property Get FormationMethod() As String
     FormationMethod = mFormationMethod
 End Property
 
+' Найденный множитель образования трещины.
 Public Property Get LambdaCrc() As Double
     LambdaCrc = mLambdaCrc
 End Property
 
+' Ncrc для центрального растяжения, если применимо.
 Public Property Get Ncrc() As Double
     Ncrc = mNcrc
 End Property
 
+' Полная N в найденной общей точке образования трещины.
 Public Property Get FormationNcrc() As Double
     FormationNcrc = mFormationNcrc
 End Property
 
+' Модуль Mxy,crc в принятой точке отсчета.
 Public Property Get Mcrc() As Double
     Mcrc = mMcrc
 End Property
 
+' Приведенная площадь для ветки центрального растяжения.
 Public Property Get Ared() As Double
     Ared = mAred
 End Property
 
+' Rbt,ser, использованный для Ncrc.
 Public Property Get RbtSer() As Double
     RbtSer = mRbtSer
 End Property
 
+' Состояние до выключения растянутого бетона.
 Public Property Get PreCrackState() As CSectionStateResult
     Set PreCrackState = mPreCrackState
 End Property
 
+' Состояние после выключения растянутого бетона.
 Public Property Get PostCrackState() As CSectionStateResult
     Set PostCrackState = mPostCrackState
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
@@ -198,14 +210,17 @@ Public Property Get HasLimitPoint() As Boolean
     HasLimitPoint = mHasLimitPoint
 End Property
 
+' Фиксированный путь допускает ширину с psi=1 без PostState.
 Public Property Get FallbackPsi1() As Boolean
     FallbackPsi1 = mFallbackPsi1
 End Property
 
+' Для ширины применима ветка полного растяжения.
 Public Property Get CentralTensionBranch() As Boolean
     CentralTensionBranch = mCentralTensionBranch
 End Property
 
+' Число solve-вызовов formation-сценария.
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property

@@ -15,6 +15,8 @@ Private mName As String
 Private mValues As Variant, mAddresses As Variant
 Private mRows As Long, mColumns As Long
 
+' Копирует двумерные scalar values и согласованные addresses один раз; Excel-объекты не
+' сохраняет.
 Public Sub Initialize(ByVal tableName As String, ByVal values As Variant, Optional ByVal addresses As Variant)
     If mRows > 0 Then InputError 0, 0, "Снимок таблицы уже создан; повторная инициализация запрещена."
     On Error GoTo Invalid
@@ -51,24 +53,31 @@ Invalid:
     Err.Raise vbObjectError + 5525, "CSectionInputTable", "Таблица '" & tableName & "': требуется двумерный массив значений без объектов и согласованный массив адресов."
 End Sub
 
+' Имя корневого блока snapshot.
 Public Property Get Name() As String: Name = mName: End Property
+' Число строк неизменяемого input snapshot.
 Public Property Get RowCount() As Long: RowCount = mRows: End Property
+' Число столбцов input snapshot.
 Public Property Get ColumnCount() As Long: ColumnCount = mColumns: End Property
 
+' Возвращает исходный адрес ячейки или программный tableName[row,col].
 Public Function SourceReference(ByVal row As Long, ByVal column As Long) As String
     CheckCell row, column: SourceReference = mAddresses(row, column)
 End Function
 
+' Читает scalar snapshot; ошибка Excel в ячейке даёт адресное исключение.
 Public Function CellValue(ByVal row As Long, ByVal column As Long) As Variant
     CheckCell row, column
     If IsError(mValues(row, column)) Then InputError row, column, "Ячейка содержит ошибку Excel. Исправьте значение или формулу."
     CellValue = mValues(row, column)
 End Function
 
+' Проверяет пустое значение снимка; ошибка Excel не подменяется пустотой.
 Public Function IsBlank(ByVal row As Long, ByVal column As Long) As Boolean
     IsBlank = BlankValue(CellValue(row, column))
 End Function
 
+' Читает непустой текст либо явно переданный fallback, обрезая крайние пробелы.
 Public Function Text(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Variant) As String
     Dim value As Variant
     value = CellValue(row, column)
@@ -80,6 +89,7 @@ Public Function Text(ByVal row As Long, ByVal column As Long, Optional ByVal def
     Text = Trim$(CStr(value))
 End Function
 
+' Читает число, исключая Boolean/ошибки/объекты; обязательное пустое поле не заменяется нулём.
 Public Function Number(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Variant) As Double
     Dim value As Variant
     value = CellValue(row, column)
@@ -106,6 +116,7 @@ Public Function Count(ByVal row As Long, ByVal column As Long, Optional ByVal de
     Count = CLng(value)
 End Function
 
+' Проверяет вариант по allowed без учёта регистра и возвращает каноническое значение allowed.
 Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As Variant, _
         Optional ByVal defaultValue As String = vbNullString) As String
     Dim value As String, item As Variant
@@ -116,6 +127,7 @@ Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As
     InputError row, column, "Недопустимый вариант '" & value & "'. Выберите: " & Join(allowed, ", ") & "."
 End Function
 
+' Читает обязательное число и один раз переводит input length в мм через CUnitSystem.
 Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then InputError row, column, "Не передана система единиц."
     Length = units.InputLengthToInternal(Number(row, column))
@@ -133,6 +145,7 @@ Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal 
     OptionalDiameter = units.InputLengthToInternal(value)
 End Function
 
+' Находит уникальный столбец заголовка, без фиксированного адреса.
 Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String) As Long
     Dim column As Long, value As Variant
     CheckCell headerRow, 1
@@ -148,6 +161,7 @@ Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String
     If ColumnByCaption = 0 Then InputError headerRow, 1, "Не найден столбец '" & caption & "'. Восстановите заголовок столбца."
 End Function
 
+' Находит уникальную строку смыслового ключа в указанном подблоке.
 Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1, _
         Optional ByVal firstRow As Long = 1, Optional ByVal lastRow As Long = 0) As Long
     RowByKey = RowByAnyKey(Array(key), keyColumn, firstRow, lastRow)
@@ -181,6 +195,8 @@ Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As L
     If RowByAnyKey = 0 Then InputError firstRow, keyColumn, "Не найден параметр '" & caption & "'. Восстановите строку параметра."
 End Function
 
+' Определяет пустое значение табличного снимка; ошибочный или произвольный текст не превращается
+' в число.
 Private Function BlankValue(ByVal value As Variant) As Boolean
     If IsEmpty(value) Or IsNull(value) Then
         BlankValue = True
@@ -189,11 +205,13 @@ Private Function BlankValue(ByVal value As Variant) As Boolean
     End If
 End Function
 
+' Проверяет координаты внутри табличного снимка до чтения значения и адреса.
 Private Sub CheckCell(ByVal row As Long, ByVal column As Long)
     If row < 1 Or row > mRows Or column < 1 Or column > mColumns Then _
         InputError 0, 0, "Адрес поля вне границ снимка: строка " & CStr(row) & ", столбец " & CStr(column) & "."
 End Sub
 
+' Формирует ошибку входной таблицы с фактическим адресом ячейки и причиной.
 Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As String)
     Dim location As String
     location = mName

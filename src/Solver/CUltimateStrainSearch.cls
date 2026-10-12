@@ -623,6 +623,7 @@ Private Function ProjectedVectorNorm(ByVal x As Double, ByVal y As Double) As Do
     If magnitude > 0# Then ProjectedVectorNorm = magnitude * Sqr((x / magnitude) ^ 2 + (y / magnitude) ^ 2)
 End Function
 
+' Строит допустимый шаг поиска по dogleg с проекцией в ограничения задачи.
 Private Sub ProjectedDogleg(ByVal gradient1 As Double, ByVal gradient2 As Double, _
         ByVal c1 As Double, ByVal c2 As Double, ByVal cLength As Double, _
         ByVal hasNewton As Boolean, ByVal n1 As Double, ByVal n2 As Double, ByVal nLength As Double, _
@@ -1009,6 +1010,7 @@ Private Sub ConfigureStepResidualScales(ByVal scale1 As Double, ByVal scale2 As 
     mMeritScalingReady = (mMeritWeight1 > 0# And mMeritWeight2 > 0# And mMeritWeight3 > 0#)
 End Sub
 
+' Оценивает норму линейного прогнозного остатка после предложенного шага поиска.
 Private Function StepResidualNorm(ByVal context As ILimitSearchProblem, _
         ByVal r1 As Double, ByVal r2 As Double, ByVal r3 As Double) As Double
     If mMeritScalingReady Then

@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -8,6 +8,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+' ==========================================================================
+' Решение равновесия сечения N + Mx + My по нелинейным диаграммам материалов
+' ==========================================================================
 
 Private Const STRAIN_EXTREMA_ROUNDING_MARGIN As Double = 1.77635683940025E-15            ' 8 epsilon Double; неоднозначное округление отношения требует обычного обхода.
 
@@ -1200,6 +1204,8 @@ Friend Function ValidateProblem(ByVal section As CSectionModel, ByVal concreteMa
     ValidateProblem = ValidateSolverMethod()
 End Function
 
+' Проверяет модель и материалы до итераций равновесия; ошибки ввода не маскируются численным
+' статусом.
 Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object) As Boolean
     If section Is Nothing Then
@@ -1314,6 +1320,7 @@ Friend Function TryGetConcreteStrainBounds(ByVal section As CSectionModel, _
     TryGetConcreteStrainBounds = True
 End Function
 
+' Проверяет точное совпадение контекста для повторного использования экстремумов деформаций.
 Private Function StrainExtremaContextMatches(ByVal section As CSectionModel) As Boolean
     If Not mStrainExtremaValid Then Exit Function
     If Not section Is mSnapshotSection Then Exit Function
@@ -1393,10 +1400,12 @@ Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     IsFiniteNumber = (value = value And Abs(value) < 1E+100)
 End Function
 
+' Признак достигнутого численного равновесия; не заменяет проверку физических пределов.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
@@ -1407,18 +1416,22 @@ Public Property Get FailureCode() As ESolverFailureCode
     FailureCode = mFailureCode
 End Property
 
+' Равномерная составляющая деформации в формуле epsilon = epsilon0 + kappaX*y + kappaY*x.
 Public Property Get Epsilon0() As Double
     Epsilon0 = mEpsilon0
 End Property
 
+' Кривизна, которая умножается на координату y и дает вклад изгиба вокруг X.
 Public Property Get KappaX() As Double
     KappaX = mKappaX
 End Property
 
+' Кривизна, которая умножается на координату x и дает вклад изгиба вокруг Y.
 Public Property Get KappaY() As Double
     KappaY = mKappaY
 End Property
 
+' Внутренняя продольная сила от всех бетонных и арматурных элементов.
 Public Property Get Nint() As Double
     Nint = mNint
 End Property
@@ -1443,146 +1456,182 @@ Friend Function StrainAt(ByVal x As Double, ByVal y As Double) As Double
     StrainAt = mCenterEpsilon + mKappaX * (y - mFrame.OriginY) + mKappaY * (x - mFrame.OriginX)
 End Function
 
+' Внутренний момент Mx, собранный интегрированием напряжений по элементам.
 Public Property Get Mxint() As Double
     Mxint = mMxint
 End Property
 
+' Внутренний момент My, собранный интегрированием напряжений по элементам.
 Public Property Get Myint() As Double
     Myint = mMyint
 End Property
 
+' Невязка равновесия по силе: Nint - Ntarget.
 Public Property Get ResidualN() As Double
     ResidualN = mResidualN
 End Property
 
+' Невязка равновесия по моменту: Mxint - Mxtarget.
 Public Property Get ResidualMx() As Double
     ResidualMx = mResidualMx
 End Property
 
+' Невязка равновесия по моменту: Myint - Mytarget.
 Public Property Get ResidualMy() As Double
     ResidualMy = mResidualMy
 End Property
 
+' Относительная невязка N для диагностики качества найденного состояния.
 Public Property Get RelativeResidualN() As Double
     RelativeResidualN = mRelativeResidualN
 End Property
 
+' Относительная невязка Mx для диагностики качества найденного состояния.
 Public Property Get RelativeResidualMx() As Double
     RelativeResidualMx = mRelativeResidualMx
 End Property
 
+' Относительная невязка My для диагностики качества найденного состояния.
 Public Property Get RelativeResidualMy() As Double
     RelativeResidualMy = mRelativeResidualMy
 End Property
 
+' Минимальная деформация бетона в последнем посчитанном состоянии.
 Public Property Get MinConcreteStrain() As Double
     MinConcreteStrain = mMinConcreteStrain
 End Property
 
+' Максимальная деформация бетона в последнем посчитанном состоянии.
 Public Property Get MaxConcreteStrain() As Double
     MaxConcreteStrain = mMaxConcreteStrain
 End Property
 
+' Максимальное по модулю сжимающее напряжение бетона в последнем состоянии.
 Public Property Get MaxConcreteCompressionStress() As Double
     MaxConcreteCompressionStress = mMaxConcreteCompressionStress
 End Property
 
+' Наиболее сжимающее напряжение бетона со знаком, МПа.
 Public Property Get MinConcreteStress() As Double
     MinConcreteStress = mMinConcreteStress
 End Property
 
+' Наиболее растягивающее напряжение бетона со знаком, МПа.
 Public Property Get MaxConcreteStress() As Double
     MaxConcreteStress = mMaxConcreteStress
 End Property
 
+' True, если в последнем состоянии реально есть сжатый бетон.
 Public Property Get HasConcreteCompression() As Boolean
     HasConcreteCompression = mHasConcreteCompression
 End Property
 
+' True, если бетон реально работает на растяжение, а не выключен диаграммой.
 Public Property Get HasConcreteTension() As Boolean
     HasConcreteTension = mHasConcreteTension
 End Property
 
+' Наиболее сжатая деформация арматуры в последнем посчитанном состоянии.
 Public Property Get MinSteelStrain() As Double
     MinSteelStrain = mMinSteelStrain
 End Property
 
+' Наиболее растянутая деформация арматуры в последнем посчитанном состоянии.
 Public Property Get MaxSteelStrain() As Double
     MaxSteelStrain = mMaxSteelStrain
 End Property
 
+' Максимальная по модулю деформация арматуры в последнем состоянии.
 Public Property Get MaxAbsSteelStrain() As Double
     MaxAbsSteelStrain = mMaxAbsSteelStrain
 End Property
 
+' Наиболее сжимающее напряжение стали со знаком, МПа.
 Public Property Get MinSteelStress() As Double
     MinSteelStress = mMinSteelStress
 End Property
 
+' Наиболее растягивающее напряжение стали со знаком, МПа.
 Public Property Get MaxSteelStress() As Double
     MaxSteelStress = mMaxSteelStress
 End Property
 
+' True, если есть сжатая арматура.
 Public Property Get HasSteelCompression() As Boolean
     HasSteelCompression = mHasSteelCompression
 End Property
 
+' True, если есть растянутая арматура.
 Public Property Get HasSteelTension() As Boolean
     HasSteelTension = mHasSteelTension
 End Property
 
+' Суммарное число итераций на всех ступенях текущего вызова Solve.
 Public Property Get Iterations() As Long
     Iterations = mIterations
 End Property
 
+' Касательная матрица d(N,Mx,My)/d(epsilon0,kappaX,kappaY).
 Public Property Get Tangent(ByVal rowIndex As Long, ByVal columnIndex As Long) As Double
     Tangent = mK(rowIndex, columnIndex)
 End Property
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
+' Выбранная численная ветка: Newton или Secant.
 Public Property Get SolverMethod() As String
     SolverMethod = mSolverMethod
 End Property
 
+' Норма невязки после последней оценки состояния.
 Public Property Get LastResidualNorm() As Double
     LastResidualNorm = mLastResidualNorm
 End Property
 
+' Норма последней поправки [deltaEps, deltaKx, deltaKy].
 Public Property Get LastStepNorm() As Double
     LastStepNorm = mLastStepNorm
 End Property
 
+' Грубая оценка вырожденности касательной матрицы.
 Public Property Get LastMatrixConditionEstimate() As Double
     LastMatrixConditionEstimate = mLastMatrixConditionEstimate
 End Property
 
+' Максимум итераций на одну ступень нагрузки.
 Public Property Let MaxIterations(ByVal value As Long)
     mMaxIterations = value
 End Property
 
+' На сколько ступеней дробится заданный вектор N/Mx/My.
 Public Property Let LoadSteps(ByVal value As Long)
     mLoadSteps = value
 End Property
 
+' Абсолютный допуск равновесия по N во внутренних единицах.
 Public Property Let ToleranceN(ByVal value As Double)
     mToleranceN = value
 End Property
 
+' Абсолютный допуск равновесия по Mx во внутренних единицах.
 Public Property Let ToleranceMx(ByVal value As Double)
     mToleranceMx = value
 End Property
 
+' Абсолютный допуск равновесия по My во внутренних единицах.
 Public Property Let ToleranceMy(ByVal value As Double)
     mToleranceMy = value
 End Property
 
+' Выбранная численная ветка: Newton или Secant.
 Public Property Let SolverMethod(ByVal value As String)
     mSolverMethod = value
 End Property
 
+' Сколько раз Secant может пересобрать приближенную матрицу чувствительности.
 Public Property Let SecantMaxRestarts(ByVal value As Long)
     mSecantMaxRestarts = value
 End Property
@@ -1605,6 +1654,7 @@ Public Property Get LoadStepsCompleted() As Long
     LoadStepsCompleted = mLoadStepsCompleted
 End Property
 
+' Сколько раз пересчитывались внутренние усилия.
 Public Property Get InternalForceEvaluationCount() As Long
     InternalForceEvaluationCount = mInternalForceEvaluationCount
 End Property
@@ -1614,14 +1664,17 @@ Friend Property Get TangentBuildCount() As Long
     TangentBuildCount = mTangentBuildCount
 End Property
 
+' Технические счетчики фактической работы, не инженерные результаты.
 Friend Property Get EvaluationReuseCount() As Long
     EvaluationReuseCount = mEvaluationReuseCount
 End Property
 
+' Сколько раз запускалась ветка Newton на ступени нагрузки.
 Public Property Get InternalNewtonCallCount() As Long
     InternalNewtonCallCount = mInternalNewtonCallCount
 End Property
 
+' Сколько раз Secant перезапускал матрицу чувствительности.
 Public Property Get MatrixRestartCount() As Long
     MatrixRestartCount = mMatrixRestartCount
 End Property

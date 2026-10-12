@@ -1314,126 +1314,148 @@ End Property
 
 
 
+' Фактическая причина завершения расчёта или поиска.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
 
 
+' Машинный статус формульного расчета ширины нормальной трещины.
 Public Property Get CrackWidthInternalStatus() As EResultInternalStatus
     CrackWidthInternalStatus = mWidthInternalStatus
 End Property
 
 
 
+' Машинный код причины результата формульной ширины трещины.
 Public Property Get CrackWidthResultCode() As EResultCode
     CrackWidthResultCode = mWidthResultCode
 End Property
 
 
 
+' True, если по выбранной ветке расчета трещина считается образованной.
 Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
 End Property
 
 
 
+' Сколько стержней попало в расчетную растянутую арматуру As.
 Public Property Get TensionRebarCount() As Long
     TensionRebarCount = mTensionRebarCount
 End Property
 
 
 
+' Максимальная растягивающая деформация среди выбранных стержней As.
 Public Property Get MaxSteelStrain() As Double
     MaxSteelStrain = mMaxSteelStrain
 End Property
 
 
 
+' Напряжение в стержне с максимальной растягивающей деформацией, МПа.
 Public Property Get MaxSteelStress() As Double
     MaxSteelStress = mMaxSteelStress
 End Property
 
 
 
+' Расчетная ширина раскрытия a_crc, мм.
 Public Property Get CrackWidth() As Double
     CrackWidth = mCrackWidth
 End Property
 
 
 
+' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
 Public Property Get AllowableCrackWidth() As Double
     AllowableCrackWidth = mAllowableCrackWidth
 End Property
 
 
 
+' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
+' этого класса.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
 
 
 
+' Накопленный диагностический журнал текущего расчёта или поиска.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
 
 
+' User, Auto или AlwaysCalc: как принимать psi_s в формуле раскрытия.
 Public Property Get PsiMode() As String
     PsiMode = mPsiMode
 End Property
 
 
 
+' Как усреднять sigma_s,crc по ранее выбранной группе стержней.
 Public Property Get SigmaSCrcAveragingMode() As String
     SigmaSCrcAveragingMode = mSigmaSCrcAveragingMode
 End Property
 
 
 
+' Effective или FullTension: способ задания бетонной зоны Abt.
 Public Property Get TensionZoneMode() As String
     TensionZoneMode = mTensionZoneMode
 End Property
 
 
 
+' NearestContour или GlobalExtreme: способ измерения расстояния a_s.
 Public Property Get CoverMode() As String
     CoverMode = mCoverMode
 End Property
 
 
 
+' Коэффициент длительности действия нагрузки.
 Public Property Get Phi1() As Double
     Phi1 = mPhi1
 End Property
 
 
 
+' Пользовательский коэффициент, учитывающий поверхность арматуры.
 Public Property Get Phi2() As Double
     Phi2 = mPhi2
 End Property
 
 
 
+' Коэффициент характера нагружения.
 Public Property Get Phi3() As Double
     Phi3 = mPhi3
 End Property
 
 
 
+' Коэффициент неравномерности деформаций арматуры между трещинами.
 Public Property Get PsiS() As Double
     PsiS = mPsiS
 End Property
 
 
 
+' Средневзвешенное напряжение выбранной растянутой арматуры при текущей нагрузке, МПа.
 Public Property Get SigmaS() As Double
     SigmaS = mSigmaS
 End Property
 
 
 
+' Среднее той же группы в AfterMcrcState выбранного пути с учетом режима усреднения, МПа.
 Public Property Get SigmaSCrc() As Double
     SigmaSCrc = mSigmaSCrc
 End Property
@@ -1448,12 +1470,15 @@ End Property
 Public Property Get SP35Data() As CSP35CrackData
     Set SP35Data = mSP35Data
 End Property
+' Кандидат с максимальным раскрытием, не с максимальной площадью.
 Public Property Get SP35CriticalCandidate() As Long
     SP35CriticalCandidate = mSP35CriticalCandidate
 End Property
+' Rr в мм; размерный psi в см, не psi_s СП 63.
 Public Property Get SP35ReinforcementRadius() As Double
     SP35ReinforcementRadius = mSP35Radius
 End Property
+' Рассчитанный коэффициент psi_cm выбранной области СП35.
 Public Property Get SP35PsiCm() As Double
     SP35PsiCm = mSP35PsiCm
 End Property
@@ -1463,162 +1488,192 @@ End Property
 Public Property Get StandardCode() As String
     StandardCode = mStandardCode
 End Property
+' SP63 или SP35: только выбор формулы ширины, не модели НДС.
 Public Property Let StandardCode(ByVal value As String)
     mStandardCode = value
 End Property
+' Чистый зазор объединения реальных стержней, мм.
 Public Property Let SP35GroupGapTolerance(ByVal value As Double)
     mSP35GroupGapTolerance = value
 End Property
+' Максимальная ширина ряда по нормали к Н.О., мм.
 Public Property Let SP35RowTolerance(ByVal value As Double)
     mSP35RowTolerance = value
 End Property
+' Безразмерный порог t/L, не допуск группировки рядов.
 Public Property Let SP35NeighborRatioLimit(ByVal value As Double)
     mSP35NeighborRatioLimit = value
 End Property
+' Max/Min/Average только для геометрических радиусов.
 Public Property Let SP35RadiusDiameterMode(ByVal value As String)
     mSP35RadiusDiameterMode = value
 End Property
+' 3d/5d/6d: нормативный множитель диаметра.
 Public Property Let SP35InteractionRadiusMode(ByVal value As String)
     mSP35InteractionRadiusMode = value
 End Property
+' Periodic/Smooth выбирает формулу psi СП 35.
 Public Property Let SP35RebarProfile(ByVal value As String)
     mSP35RebarProfile = value
 End Property
 
 
 
+' Es для формулы раскрытия трещины, МПа.
 Public Property Get SteelEs() As Double
     SteelEs = mSteelEs
 End Property
 
 
 
+' Площадь выбранной растянутой арматуры, мм2.
 Public Property Get AsTension() As Double
     AsTension = mAs
 End Property
 
 
 
+' Площадь бетона, попавшая в расчетную растянутую зону, мм2.
 Public Property Get Abt() As Double
     Abt = mAbt
 End Property
 
 
 
+' Эквивалентный диаметр выбранных стержней для разных d, мм.
 Public Property Get DsEquivalent() As Double
     DsEquivalent = mDsEquivalent
 End Property
 
 
 
+' Нормативная длина ls до ограничений 10ds/100/40ds/400, мм.
 Public Property Get CrackSpacingRaw() As Double
     CrackSpacingRaw = mLsRaw
 End Property
 
 
 
+' Итоговое расстояние между трещинами после ограничений, мм.
 Public Property Get CrackSpacing() As Double
     CrackSpacing = mLs
 End Property
 
 
 
+' Имена стержней, вошедших в расчет sigma_s и As, через запятую.
 Public Property Get TensionRebarIds() As String
     TensionRebarIds = mTensionRebarIds
 End Property
 
 
 
+' Габарит сечения по нормали к нейтральной линии по общему бетонному контуру КЭ.
 Public Property Get SectionDepthH() As Double
     SectionDepthH = mSectionDepthH
 End Property
 
 
 
+' Расстояние a_s по выбранному режиму CoverDistanceMode, мм.
 Public Property Get CoverA() As Double
     CoverA = mCoverA
 End Property
 
 
 
+' Фактическая глубина растянутой бетонной зоны до нейтральной линии, мм.
 Public Property Get TensionDepth() As Double
     TensionDepth = mTensionDepth
 End Property
 
 
 
+' Глубина зоны Abt, реально использованная после ограничений, мм.
 Public Property Get EffectiveZoneDepth() As Double
     EffectiveZoneDepth = mEffectiveZoneDepth
 End Property
 
 
 
+' True, если сработала отдельная ветка центрального растяжения.
 Public Property Get CentralTensionBranch() As Boolean
     CentralTensionBranch = mCentralTensionBranch
 End Property
 
 
 
+' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
 Public Property Let AllowableCrackWidth(ByVal value As Double)
     mAllowableCrackWidth = value
 End Property
 
 
 
+' User, Auto или AlwaysCalc: как принимать psi_s в формуле раскрытия.
 Public Property Let PsiMode(ByVal value As String)
     mPsiMode = value
 End Property
 
 
 
+' Как усреднять sigma_s,crc по ранее выбранной группе стержней.
 Public Property Let SigmaSCrcAveragingMode(ByVal value As String)
     mSigmaSCrcAveragingMode = value
 End Property
 
 
 
+' Пользовательское значение phi1 для формулы раскрытия.
 Public Property Let Phi1(ByVal value As Double)
     mPhi1Input = value
 End Property
 
 
 
+' Пользовательское значение phi2 для формулы раскрытия.
 Public Property Let Phi2(ByVal value As Double)
     mPhi2Input = value
 End Property
 
 
 
+' User или Auto: брать phi3 из Config или выбирать по характеру продольной силы.
 Public Property Let Phi3Mode(ByVal value As String)
     mPhi3Mode = value
 End Property
 
 
 
+' Пользовательское значение phi3, если Phi3Mode = User.
 Public Property Let Phi3(ByVal value As Double)
     mPhi3Input = value
 End Property
 
 
 
+' Пользовательское значение psi_s, если PsiMode = User.
 Public Property Let PsiS(ByVal value As Double)
     mPsiSInput = value
 End Property
 
 
 
+' Effective или FullTension: способ задания бетонной зоны Abt.
 Public Property Let TensionZoneMode(ByVal value As String)
     mTensionZoneMode = value
 End Property
 
 
 
+' NearestContour или GlobalExtreme: способ измерения расстояния a_s.
 Public Property Let CoverMode(ByVal value As String)
     mCoverMode = value
 End Property
 
 
 
+' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
