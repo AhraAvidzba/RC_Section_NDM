@@ -25,7 +25,8 @@ D01-D24/E01-E14 выполняется после удаления замене�
 - Baseline HEAD: a138c2732382c826db9ac2f801facd3d533d406c.
 - Baseline-книга: workbook/output/RC_Section_NDM.xlsm.
 - Резервные данные: docs/regression/GeometryDeclarative_2026-10-11/Baseline/.
-- Последний зафиксированный milestone: cdc2f364, штатный recipe-вход. Текущий этап retirement описан ниже.
+- Последний зафиксированный milestone при возобновлении: 4b8f86af,
+  перенос геометрических примитивов и отверстий. Текущий этап описан ниже.
 
 ## Установлено В Исходном Baseline
 
@@ -611,3 +612,24 @@ IEEE754 равенство проверено. Failed comparison сохране�
 до создания Excel; ASCII-маркер исправлен. Расчетная математика не менялась.
 Остались богатые rebar/annotation/validation fixtures этого же модуля и
 workbook-interface consumers. Основная книга и общий dump еще прежние.
+
+## Возобновление 12.10.2026: Workbook Fixtures
+
+Изучены состояние Git, ТЗ v1.4, прежний чат и доказательства. Подробная карта
+выполненного/оставшегося и повторных проверок: RESUME_AUDIT_2026-10-12.md.
+Полный индекс 816 сохранённых текстовых evidence files создан с SHA-256;
+failed probes и TIMEOUT не превращаются в итоговый PASS.
+
+Незакоммиченные modTestWorkbookInterface/modTestGeometryFixtures предыдущего
+чата сохранены и проверены. WorkbookInterface больше не использует старые
+geometry/rebar builders; независимые селекторы читаются из собственного
+snapshot, расчётные fixtures описываются общими paths/rules и рецептами.
+ApplySettings получает фактический unit system, как production workflow.
+
+Повтор native: 1029 independent selectors + 52 input contracts + 43 unit/sign
+stage diagnostic assertions, failed=0. Read-only сверка с GeometryRetirement:
+PASS, 155 компонентов, unexpected/sourceMismatch=0, согласованы только два
+перенесённых test modules. Логи в GeometryDeclarative_2026-10-12/Resume.
+Sandbox COM probe не запускал Excel; native повтор вне sandbox прошёл.
+Основная книга по-прежнему прежняя; это самостоятельный этап test retirement,
+не окончательная приёмка. Следующий consumer: modTestGeometry.

@@ -2,10 +2,33 @@ Attribute VB_Name = "modTestGeometryFixtures"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: численные области во внутренних мм через актуальную общую геометрию.
-' Не читает Config и не участвует в добавлении производственных типов сечений.
+' Не участвует в добавлении производственных типов сечений; workbook snapshot
+' ниже читает только зарегистрированные таблицы через штатный reader.
 Public Function FixtureGeometry(ByVal region As CConcreteRegion) As CGeometryRegion
     Set FixtureGeometry = New CGeometryRegion
     FixtureGeometry.Initialize region
+End Function
+
+' ДЛЯ ТЕСТОВ: неизменяемый табличный ввод настоящего рецепта без Excel-ссылок.
+Public Function FixtureRecipeDefinition(ByVal recipe As ISectionRecipe, ByVal tableName As String, _
+        ByVal values As Variant, Optional ByVal units As CUnitSystem = Nothing) As CSectionDefinition
+    If units Is Nothing Then
+        Set units = New CUnitSystem: units.InitializeDefaults
+    End If
+    Dim context As CSectionRecipeContext, table As CSectionInputTable
+    Set table = New CSectionInputTable: table.Initialize tableName, values
+    Set context = New CSectionRecipeContext: context.Initialize units
+    context.AddTable table: context.Seal
+    Set FixtureRecipeDefinition = recipe.CreateDefinition(context)
+End Function
+
+' ДЛЯ ТЕСТОВ: выбранный тип проходит тот же registered snapshot, что и программа.
+Public Function FixtureWorkbookDefinition(ByVal typeID As String, ByVal workbook As Object, _
+        ByVal units As CUnitSystem) As CSectionDefinition
+    Dim registry As CSectionTypeRegistry, reader As CSectionInputSnapshotReader, context As CSectionRecipeContext
+    Set registry = New CSectionTypeRegistry: Set reader = New CSectionInputSnapshotReader
+    Set context = reader.Capture(workbook, registry.RecipeTableNames(typeID), units)
+    Set FixtureWorkbookDefinition = registry.CreateDefinition(typeID, context)
 End Function
 
 ' ДЛЯ ТЕСТОВ: исполняет только арматурные правила готового определения.

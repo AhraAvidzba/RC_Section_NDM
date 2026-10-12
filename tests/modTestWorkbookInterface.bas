@@ -3766,29 +3766,16 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
 
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter settings.GetDouble("Circle.Diameter", 300#), _
-        0#, _
-        0#
-
-    Dim mesh As CFiberMeshBuilder
-    Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
-
-    Dim builder As CCircleRebarLayoutBuilder
-    Set builder = New CCircleRebarLayoutBuilder
-    Dim rebars As CRebarLayout
-    Set rebars = builder.Build(settings.GetDouble("Circle.Diameter", 300#), _
-        0#, _
-        0#, _
-        settings.GetDouble("Rebar.AxisDistance", 40#), _
-        settings.GetLong("Rebar.Count", 0), _
-        settings.GetDouble("Rebar.Diameter", 20#), _
-        "Rebar")
+    Dim units As CUnitSystem, definition As CSectionDefinition, geom As CGeometryRegion
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set definition = FixtureWorkbookDefinition("Circle", ThisWorkbook, units)
+    Set geom = FixtureGeometry(definition.ConcreteDomain)
+    Dim mesh As CFiberMeshBuilder: Set mesh = New CFiberMeshBuilder
+    mesh.BuildMesh geom, 20#, 20#, 1
+    Dim rebars As CRebarLayout: Set rebars = FixtureLayout(definition)
     Dim materialProvider As CMaterialModelProvider
     Set materialProvider = New CMaterialModelProvider
-    materialProvider.Initialize settings
+    materialProvider.Initialize settings, units
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, rebars, "WorkbookInterface")
@@ -3796,7 +3783,7 @@ Private Function BuildUiBatch() As CBatchSectionCalculator
     Dim batch As CBatchSectionCalculator
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, materialProvider
-    batch.ApplySettings settings
+    batch.ApplySettings settings, units
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
     profiles.LoadFromWorkbook ThisWorkbook
@@ -4869,7 +4856,7 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
         ByRef description As String) As Long
     On Error GoTo ExpectedError
     Dim settings As CSystemSettingsReader, profiles As CCalculationProfileCatalog
-    Dim mesh As CFiberMeshBuilder, geometry As CGeometryRoundedRectangle
+    Dim mesh As CFiberMeshBuilder, geometry As CGeometryRegion
     Dim solver As CSectionSolver, registry As CSectionTypeRegistry
     Dim capacity As CCapacitySolver, formation As CCrackFormationCalculator
     Dim flag As Boolean, integerValue As Long
@@ -4899,14 +4886,13 @@ Private Function Audit03CaptureInputError(ByVal source As Object, ByVal operatio
             profiles.LoadFromRange source
         Case Else
             Set mesh = New CFiberMeshBuilder
-            Set geometry = New CGeometryRoundedRectangle
-            geometry.Initialize 100#, 100#, 0#, 0#, 0#, 0#
+            Set geometry = FixtureBox(100#, 100#)
             Select Case operation
                 Case "MeshNothing": mesh.BuildMesh Nothing, 25#, 25#
-                Case "MeshAxis": mesh.BuildMesh BuildConcreteGeometry(geometry), 1E-308, 25#
-                Case "MeshProduct": mesh.BuildMesh BuildConcreteGeometry(geometry), 0.001, 0.001
-                Case "MeshBoundary": mesh.BuildMesh BuildConcreteGeometry(geometry), 25#, 25#, 1, 0
-                Case "MeshSubcellProduct": mesh.BuildMesh BuildConcreteGeometry(geometry), 25#, 25#, 1, 2147483647
+                Case "MeshAxis": mesh.BuildMesh geometry, 1E-308, 25#
+                Case "MeshProduct": mesh.BuildMesh geometry, 0.001, 0.001
+                Case "MeshBoundary": mesh.BuildMesh geometry, 25#, 25#, 1, 0
+                Case "MeshSubcellProduct": mesh.BuildMesh geometry, 25#, 25#, 1, 2147483647
                 Case Else: Err.Raise vbObjectError + 4499, "Audit03CaptureInputError", "Неизвестный тестовый сценарий ввода."
             End Select
     End Select
@@ -5318,10 +5304,10 @@ Public Function RunRectSetIndependentSelectorTests() As String
     RunRectSetIndependentSelectorTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: разные значения противоположных граней сохраняются как отдельные
-' ключи. Никакой выбор первой строки не подменяет значение второй строки.
+' ДЛЯ ТЕСТОВ: разные значения противоположных граней сохраняются в своих
+' ячейках снимка. Чтение первой строки не подменяет значение второй строки.
 Private Sub TestRectSetIndependentSelectors(ByRef stats As TUiTestStats)
-    Dim sheet As Object, target As Object, source As Object, settings As CSystemSettingsReader
+    Dim sheet As Object, target As Object, source As Object, table As CSectionInputTable
     Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, side As Long
     Dim firstValue As String, secondValue As String, tail As String, key As String
     Dim savedAlerts As Boolean
@@ -5342,15 +5328,14 @@ Private Sub TestRectSetIndependentSelectors(ByRef stats As TUiTestStats)
             End If
             target.Cells(topRow, CLng(column)).Value2 = firstValue
             target.Cells(topRow + 1, CLng(column)).Value2 = secondValue
-            Set settings = New CSystemSettingsReader
-            settings.LoadFromRange target
+            Set table = New CSectionInputTable: table.Initialize "rngRectSetGeometry", target.Value2
             key = "RectSet." & CStr(face) & "." & tail
-            AssertTextEquals stats, key & ".first", settings.GetString(key & "_1"), firstValue
-            AssertTextEquals stats, key & ".second", settings.GetString(key & "_2"), secondValue
+            AssertTextEquals stats, key & ".first", table.Text(topRow, CLng(column), vbNullString), firstValue
+            AssertTextEquals stats, key & ".second", table.Text(topRow + 1, CLng(column), vbNullString), secondValue
             For side = 1 To 2
                 target.Cells(topRow + side - 1, CLng(column)).ClearContents
-                settings.LoadFromRange target
-                AssertTextEquals stats, key & ".empty" & CStr(side), settings.GetString(key & "_" & CStr(side)), vbNullString
+                Set table = New CSectionInputTable: table.Initialize "rngRectSetGeometry", target.Value2
+                AssertTextEquals stats, key & ".empty" & CStr(side), table.Text(topRow + side - 1, CLng(column), vbNullString), vbNullString
                 target.Cells(topRow, CLng(column)).Value2 = firstValue
                 target.Cells(topRow + 1, CLng(column)).Value2 = secondValue
             Next side
@@ -5372,13 +5357,12 @@ End Sub
 ' ДЛЯ ТЕСТОВ: все 32 селектора фактического Config не объединены, имеют
 ' вертикальный список выбора и читаются по адресу своей физической грани.
 Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
-    Dim target As Object, cell As Object, settings As CSystemSettingsReader
+    Dim target As Object, cell As Object, table As CSectionInputTable
     Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, side As Long
     Dim key As String, prefix As String
     On Error GoTo Failed
     Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-    Set settings = New CSystemSettingsReader
-    settings.LoadFromWorkbook ThisWorkbook
+    Set table = New CSectionInputTable: table.Initialize "rngRectSetGeometry", target.Value2
     For Each face In Array("H1", "B1", "H2", "B2")
         topRow = 21 + pairIndex * 2
         For Each column In Array(3, 4, 6, 7)
@@ -5390,7 +5374,7 @@ Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
                 AssertTrue stats, prefix & ".dropdown", cell.Validation.Type = 3 And cell.Validation.InCellDropdown
                 AssertTrue stats, prefix & ".rangeList", Left$(cell.Validation.Formula1, 1) = "="
                 AssertTrue stats, prefix & ".centered", cell.HorizontalAlignment = xlCenter And cell.VerticalAlignment = xlCenter
-                AssertTextEquals stats, prefix & ".reader", settings.GetString(key), CStr(cell.Value2)
+                AssertTextEquals stats, prefix & ".reader", table.Text(topRow + side - 1, CLng(column), vbNullString), CStr(cell.Value2)
             Next side
         Next column
         pairIndex = pairIndex + 1
@@ -5401,13 +5385,13 @@ Failed:
     AppendLine stats, "FAIL: rectset.independent.layout; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
-' ДЛЯ ТЕСТОВ: меняем каждый из 32 селекторов через Range -> reader -> builder.
+' ДЛЯ ТЕСТОВ: меняем каждый из 32 селекторов через registered snapshot -> recipe.
 ' Меняются только три дополнительных стержня выбранной стороны; шесть
 ' стержней противоположной стороны сохраняют координаты и диаметры.
 ' Ошибочный/пустой активный ввод дает адресную ошибку, отключенный не читается.
 Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
-    Dim source As Object, sheet As Object, target As Object, settings As CSystemSettingsReader
-    Dim units As CUnitSystem, builder As CRectSetRebarLayoutBuilder
+    Dim source As Object, sheet As Object, target As Object, savedReference As String
+    Dim units As CUnitSystem
     Dim baseline As CRebarLayout, changed As CRebarLayout, inactive As CRebarLayout
     Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, mainRow As Long
     Dim row As Long, i As Long, side As Long, selectedRow As Long, diameterColumn As Long
@@ -5416,11 +5400,12 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
     Dim invalid As Variant
     On Error GoTo Failed
     savedAlerts = Application.DisplayAlerts
+    savedReference = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersTo
     Set source = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
     Set sheet = ThisWorkbook.Worksheets.Add
     Set target = sheet.Range("A1").Resize(source.Rows.Count, source.Columns.Count)
     Set units = New CUnitSystem: units.InitializeDefaults
-    Set builder = New CRectSetRebarLayoutBuilder
+    ThisWorkbook.Names.Item("rngRectSetGeometry").RefersTo = "='" & sheet.Name & "'!" & target.Address
     For Each face In Array("H1", "B1", "H2", "B2")
         topRow = 21 + pairIndex * 2: mainRow = 11 + pairIndex * 2
         For Each column In Array(3, 4, 6, 7)
@@ -5452,12 +5437,12 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
                     original = "EachBar": alternative = "EverySecondBar"
                 End If
                 prefix = "rectset.independent.effect." & CStr(face) & "." & CStr(column) & "." & CStr(side)
-                Set settings = New CSystemSettingsReader: settings.LoadFromRange target
-                Set baseline = builder.BuildFromSettings(settings, units)
+
+                Set baseline = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".baseline", baseline.Count = 12
                 target.Cells(selectedRow, CLng(column)).Value2 = alternative
-                settings.LoadFromRange target
-                Set changed = builder.BuildFromSettings(settings, units)
+
+                Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                 If CLng(column) = 3 Or CLng(column) = 6 Then
                     changedBars = 0
                     For i = 1 To baseline.Count
@@ -5473,22 +5458,22 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
                 Next i
                 For Each invalid In Array(vbNullString, "InvalidChoice", CVErr(xlErrDiv0))
                     target.Cells(selectedRow, CLng(column)).Value2 = invalid
-                    settings.LoadFromRange target
+
                     On Error Resume Next
-                    Set changed = builder.BuildFromSettings(settings, units)
+                    Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                     number = Err.Number: reason = Err.Description: Err.Clear
                     On Error GoTo Failed
                     AssertTrue stats, prefix & ".invalidRejected." & TypeName(invalid), number <> 0
                     AssertTrue stats, prefix & ".invalidAddress." & TypeName(invalid), _
-                        InStr(1, reason, "ячейка " & target.Cells(selectedRow, CLng(column)).Address(False, False), vbBinaryCompare) > 0
+                        InStr(1, reason, sheet.Name & "!" & target.Cells(selectedRow, CLng(column)).Address(False, False), vbBinaryCompare) > 0
                 Next invalid
                 target.Cells(selectedRow, diameterColumn).Value2 = 0#
-                settings.LoadFromRange target
-                Set inactive = builder.BuildFromSettings(settings, units)
+
+                Set inactive = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".inactiveIgnored", inactive.Count = 9
                 target.Cells(selectedRow, CLng(column)).Value2 = original
-                settings.LoadFromRange target
-                Set changed = builder.BuildFromSettings(settings, units)
+
+                Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".inactiveSameCount", changed.Count = inactive.Count
                 For i = 1 To inactive.Count
                     AssertTrue stats, prefix & ".inactiveSame" & CStr(i), RectSetLayoutContainsBar(changed, inactive, i)
@@ -5504,6 +5489,7 @@ Failed:
 Restore:
     On Error Resume Next
     Application.DisplayAlerts = False
+    If Len(savedReference) > 0 Then ThisWorkbook.Names.Item("rngRectSetGeometry").RefersTo = savedReference
     If Not sheet Is Nothing Then sheet.Delete
     Application.DisplayAlerts = savedAlerts
     On Error GoTo 0
@@ -5513,19 +5499,31 @@ End Sub
 ' собственной стороны. Совпадение направлений справа не вызывает перескок
 ' слева, где направления различаются; последующее изменение слева изолировано.
 Private Sub TestRectSetIndependentThirdRows(ByRef stats As TUiTestStats)
-    Dim builder As CRectSetRebarLayoutBuilder, layout As CRebarLayout, changed As CRebarLayout
-    Dim face As Variant, emptyFace As Variant
+    Dim recipe As ISectionRecipe, layout As CRebarLayout, changed As CRebarLayout
+    Dim values As Variant, row As Long
     On Error GoTo Failed
-    Set builder = New CRectSetRebarLayoutBuilder
-    emptyFace = Array(50#, 50#, 20#, 20#, 0, 0, 100#, 100#, 100#, 100#)
-    face = Array(50#, 50#, 20#, 20#, 1, 1, 100#, 100#, 100#, 100#, 18#, 22#, 28#, 34#, _
-        "SideBySide", "Stacked", "EachBar", "EachBar", "Stacked", "Stacked", "EachBar", "EachBar")
-    Set layout = builder.Build(200#, 300#, 0#, 0#, 0#, 0#, face, emptyFace, emptyFace, emptyFace, "Rebar", 0#, "Rectangle")
+    Set recipe = New CSectionRecipeRectSet
+    values = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange.Value2
+    values(3, 2) = "Rectangle": values(4, 2) = 0#
+    values(8, 1) = 300#: values(8, 2) = 200#: values(8, 3) = 0#: values(8, 4) = 0#
+    For row = 11 To 18
+        values(row, 2) = 50#: values(row, 3) = 20#: values(row, 4) = 0
+        values(row, 5) = 100#: values(row, 6) = 100#
+    Next row
+    For row = 21 To 28
+        values(row, 2) = 0#: values(row, 5) = 0#
+        values(row, 3) = "Stacked": values(row, 6) = "Stacked"
+        values(row, 4) = "EachBar": values(row, 7) = "EachBar"
+    Next row
+    values(11, 4) = 1: values(12, 4) = 1
+    values(21, 2) = 18#: values(21, 5) = 28#: values(21, 3) = "SideBySide"
+    values(22, 2) = 22#: values(22, 5) = 34#
+    Set layout = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values))
     AssertTrue stats, "rectset.thirdRows.count", layout.Count = 6
     AssertTrue stats, "rectset.thirdRows.leftNoSkip", Abs(layout.X(3) - layout.X(1) - 24#) < 0.00000001
     AssertTrue stats, "rectset.thirdRows.rightSkip", Abs(layout.X(4) - layout.X(6) - 49#) < 0.00000001
-    face(15) = "SideBySide"
-    Set changed = builder.Build(200#, 300#, 0#, 0#, 0#, 0#, face, emptyFace, emptyFace, emptyFace, "Rebar", 0#, "Rectangle")
+    values(21, 6) = "SideBySide"
+    Set changed = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values))
     AssertTrue stats, "rectset.thirdRows.leftSkip", Abs(Abs(changed.Y(3) - changed.Y(1)) - 42#) < 0.00000001
     AssertTrue stats, "rectset.thirdRows.rightUnchanged", RectSetLayoutContainsBar(changed, layout, 6)
     Exit Sub
@@ -5803,8 +5801,8 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional
     Dim nValues As Variant, mxValues As Variant, myValues As Variant, signN As Double, signMx As Double, signMy As Double
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim profiles As CCalculationProfileCatalog, reader As CLoadCombinationReader, batch As CBatchSectionCalculator
-    Dim section As CSectionModel, mesh As CFiberMeshBuilder, geom As CGeometryCircle, rebars As CRebarLayout
-    Dim rebarBuilder As CCircleRebarLayoutBuilder, snapshot As CNDMResultsWriter, summary As CBatchResultWriter
+    Dim section As CSectionModel, mesh As CFiberMeshBuilder, geom As CGeometryRegion, rebars As CRebarLayout
+    Dim facade As CSectionDefinitionBuilder, snapshot As CNDMResultsWriter, summary As CBatchResultWriter
     Dim baselineElements As Variant, baselineGeometry As Variant, baselineProperties As Variant
     Dim actual As Variant, signs As Long, forceIndex As Long, momentIndex As Long, caseIndex As Long, i As Long
     Dim lengthFactor As Double, areaFactor As Double, stressFactor As Double, curvatureFactor As Double
@@ -5834,10 +5832,11 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional
     SetProfileSetting "PR2", "Calculation.Strength.Capacity", "No"
     SetProfileSetting "PR2", "Calculation.Crack.Width", "Yes"
     SetProfileSetting "PR2", "Calculation.Stability.Enabled", "No"
-    Set geom = New CGeometryCircle: geom.InitializeByDiameter 300#
-    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
-    Set rebarBuilder = New CCircleRebarLayoutBuilder
-    Set rebars = rebarBuilder.Build(300#, 0#, 0#, 40#, 8, 20#, "Rebar")
+    Set geom = FixtureDisk(300#)
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geom, 20#, 20#, 1
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "UnitSignPaths"
+    Set rebars = FixtureClosedCountRow(facade.CirclePath("Boundary", 0#, 0#, 150#), _
+        facade.CirclePath("Axis", 0#, 0#, 110#), 8, 20#, "Rebar", "Circle", "Круг: основной ряд арматуры")
     Set section = BuildGeneratedSectionModel(mesh, rebars, "Audit03UnitSign")
     Set snapshot = New CNDMResultsWriter: Set summary = New CBatchResultWriter
     forceNames = Array("N", "kN", "tf"): forceFactors = Array(1#, 1000#, 9806.65)
