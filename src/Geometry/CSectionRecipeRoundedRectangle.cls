@@ -90,7 +90,6 @@ Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef si
     Dim original As CGeometryPath, outer As CGeometryPath, first As String, edge As TRegionEdge, contourIDs() As String
     Set original = facade.RoundedPolygon("Shape", sizes.Vertices, sizes.Radii, sizes.VertexIDs)
     If sizes.SideTypes(1) = "Tapered" Then first = "Edge.LeftNose" Else first = "Edge.BL"
-    If Not original.HasSegmentID(first) Then first = "Corner.TL"
     Set outer = facade.Chain("Boundary", original.ID, first, 0#, first, 0#, True, True)
     ReDim contourIDs(0 To outer.SegmentCount - 1)
     For i = 1 To outer.SegmentCount
@@ -177,21 +176,15 @@ End Sub
 Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, _
         ByVal groupID As String, ByVal axisDistance As Double, ByVal sourceReference As String) As CGeometryPath
     On Error GoTo InvalidPath
-    Dim offset As CGeometryPath, startID As String, endID As String, startAt As Double, endAt As Double
+    Dim offset As CGeometryPath
     Set offset = facade.OffsetRoundedPolygon("Offset." & groupID, sizes.Vertices, sizes.Radii, sizes.VertexIDs, axisDistance)
     Select Case groupID
         Case "B.Top": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.TL", 1#)
         Case "B.Bottom": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.BR", 1#, "Edge.BR", 0#, False)
         Case "H.Left"
-            startID = "Edge.TL": startAt = 0#: endID = "Edge.BR": endAt = 1#
-            If Not offset.HasSegmentID(startID) Then startID = "Corner.TL": startAt = 1#
-            If Not offset.HasSegmentID(endID) Then endID = "Corner.BL": endAt = 0#
-            Set AxisPath = facade.Chain(groupID, offset.ID, startID, startAt, endID, endAt, False)
+            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.BR", 1#, False)
         Case "H.Right"
-            startID = "Edge.TL": startAt = 1#: endID = "Edge.BR": endAt = 0#
-            If Not offset.HasSegmentID(startID) Then startID = "Corner.TR": startAt = 0#
-            If Not offset.HasSegmentID(endID) Then endID = "Corner.BR": endAt = 1#
-            Set AxisPath = facade.Chain(groupID, offset.ID, startID, startAt, endID, endAt)
+            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 1#, "Edge.BR", 0#)
     End Select
     Exit Function
 InvalidPath:

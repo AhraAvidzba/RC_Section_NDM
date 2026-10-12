@@ -828,6 +828,31 @@ Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double
     ContainsPoint = ContainsRaw(edges, count, x, y, includeBoundary)
 End Function
 
+' Опорную точку подписи переносим до бетонной границы по заданной нормали.
+' Из бетона ищется выход вперёд, из внешней точки — ближайшая граница в обе стороны.
+' Метод использует точные отрезки/дуги; сетка и расчётное сечение не меняются.
+Friend Function LabelBoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double, _
+        ByVal normalX As Double, ByVal normalY As Double, ByRef signedDistance As Double) As Boolean
+    RequireRegion region
+    Dim norm As Double, edges() As TRegionEdge, count As Long, i As Long
+    Dim distance As Double, parameter As Double, nearest As Double, inside As Boolean
+    norm = Sqr(normalX ^ 2 + normalY ^ 2)
+    If norm <= QUERY_TOLERANCE Then GeometryError "Не задано направление отступа подписи."
+    normalX = normalX / norm: normalY = normalY / norm
+    region.CopyEdges edges, count: inside = ContainsRaw(edges, count, x, y, True)
+    nearest = 1E+100: signedDistance = 0#
+    For i = 1 To count
+        If EdgeRayHit(edges(i), x, y, normalX, normalY, distance, parameter) Then
+            If distance < nearest Then nearest = distance: signedDistance = distance: LabelBoundaryDistance = True
+        End If
+        If Not inside Then
+            If EdgeRayHit(edges(i), x, y, -normalX, -normalY, distance, parameter) Then
+                If distance < nearest Then nearest = distance: signedDistance = -distance: LabelBoundaryDistance = True
+            End If
+        End If
+    Next i
+End Function
+
 ' Минимальное расстояние до фактической границы из отрезков и дуг.
 ' Проверка полного диска стержня дополняет, но не заменяет ContainsPoint.
 Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double) As Double
@@ -916,10 +941,16 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
             edge.CenterX = centers(i).X: edge.CenterY = centers(i).Y: edge.Sweep = turns(i)
             ValidateArc edge
             result.Append "Corner." & names(i), edge
+        Else
+            result.AddCollapsedSegment "Corner." & names(i)
         End If
         edge.X1 = last(i).X: edge.Y1 = last(i).Y: edge.X2 = first(following).X: edge.Y2 = first(following).Y
         edge.CenterX = 0#: edge.CenterY = 0#: edge.Sweep = 0#
-        If EdgeLength(edge) > QUERY_TOLERANCE Then result.Append "Edge." & names(i), edge
+        If EdgeLength(edge) > QUERY_TOLERANCE Then
+            result.Append "Edge." & names(i), edge
+        Else
+            result.AddCollapsedSegment "Edge." & names(i)
+        End If
     Next i
     result.Seal True
     ' Проверка конечной формы ловит и нелокальные пересечения скруглений.

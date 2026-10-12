@@ -1,5 +1,5 @@
 ﻿# Адресное обновление Справки в отдельном кандидате; пользовательский output не открывает.
-param([Parameter(Mandatory=$true)][string]$WorkbookPath,[Parameter(Mandatory=$true)][string]$ReportDirectory)
+param([Parameter(Mandatory=$true)][string]$WorkbookPath,[Parameter(Mandatory=$true)][string]$ReportDirectory,[switch]$HalveDefaultRebarLabelOffset)
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'SectionRecipeGuide.ps1')
@@ -7,9 +7,12 @@ $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'StandaloneHelpText.ps1')
 $path=(Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/GeometryReview_2026-10-12'))+[IO.Path]::DirectorySeparatorChar
+$endpointAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/RoundedEndpoint_2026-10-12'))+[IO.Path]::DirectorySeparatorChar
 $directory=[IO.Path]::GetFullPath((Join-Path $root $ReportDirectory))
-$printAreas=@(Get-WorkbookPrintAreas (Join-Path $root 'docs/regression/GeometryReview_2026-10-12/Baseline/RC_Section_NDM.xlsm'))
-if (-not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -or -not ($directory+[IO.Path]::DirectorySeparatorChar).StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only review evidence paths are allowed.'}
+$printAreas=@(Get-WorkbookPrintAreas $path)
+foreach ($target in @($path,($directory+[IO.Path]::DirectorySeparatorChar))) {
+    if (-not $target.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and -not $target.StartsWith($endpointAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only review evidence paths are allowed.'}
+}
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class ReviewHelpWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr hWnd,out uint id);}'
 
@@ -34,6 +37,21 @@ try {
     $book=$excel.Workbooks.Open($path,0,$false)
     if ($book.ReadOnly) {throw 'Candidate is read-only.'}
     $initialSheet=[string]$book.ActiveSheet.Name
+    if ($HalveDefaultRebarLabelOffset) {
+        # Прямое указание пользователя: прежний стандартный Offset 60 -> 30 мм.
+        # Пользовательское значение, отличающееся от прежнего default, не меняем.
+        $annotationTable=$book.Names.Item('rngPlotAnnotationSettings').RefersToRange
+        $offsetCell=$null
+        for ($r=2;$r -le $annotationTable.Rows.Count;$r++) {
+            if ([string]$annotationTable.Cells.Item($r,1).Value2 -ceq 'Offset') {$offsetCell=$annotationTable.Cells.Item($r,2);break}
+        }
+        if ($null -eq $offsetCell) {throw 'Offset is missing in rngPlotAnnotationSettings.'}
+        $beforeOffset=$offsetCell.Value2
+        if ([double]$beforeOffset -eq 60) {$offsetCell.Value2=30}
+        [ordered]@{Key='Plot.RebarLabels.Offset';Address=('Config!'+$offsetCell.Address());Before=$beforeOffset;After=$offsetCell.Value2;
+            Reason='User explicitly requested half of the default: 60 -> 30 mm.'} |
+            ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'DefaultOffsetChange.json') -Encoding UTF8
+    }
     # Последнее решение пользователя: распространяется только книга.
     Update-StandaloneHelpText $book | Out-Null
     $code=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'WorkbookHelpEvents.vba'),[Text.Encoding]::UTF8)

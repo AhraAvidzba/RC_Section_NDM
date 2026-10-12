@@ -541,7 +541,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:153
     Set part = facade.Chain("Side", "Outer", "Edge.BR", 0#, "Edge.TR", 0#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:86.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:90.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -577,7 +577,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:165
     Set changed = facade.Transform("MovedSide", "Side", 1000000#, -1000000#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:87.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:91.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1447,7 +1447,7 @@ Public Property Get LastDiagnostic() As CGeometryDiagnostic
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:27
+Source: src/Geometry/CGeometryPath.cls:28
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -1476,7 +1476,7 @@ Public Sub Initialize(ByVal pathID As String)
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:32
+Source: src/Geometry/CGeometryPath.cls:33
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.AdvancedGuideDefinition с его подготовленными локальными объектами/входом.
 
@@ -1509,7 +1509,7 @@ Public Sub AddLine(ByVal segmentID As String, ByVal x1 As Double, ByVal y1 As Do
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:40
+Source: src/Geometry/CGeometryPath.cls:41
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.CompoundPath с его подготовленными локальными объектами/входом.
 
@@ -1517,7 +1517,7 @@ Source: src/Geometry/CGeometryPath.cls:40
     path.AddLine "Bottom", 0#, 0#, 100#, 0#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:589.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:593.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1545,7 +1545,7 @@ Public Sub AddArc(ByVal segmentID As String, ByVal centerX As Double, ByVal cent
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:49
+Source: src/Geometry/CGeometryPath.cls:50
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidPathRejected с его подготовленными локальными объектами/входом.
 
@@ -1553,7 +1553,7 @@ Source: src/Geometry/CGeometryPath.cls:49
         Case 3: path.AddArc "ZeroSweep", 0#, 0#, 1#, 0#, 0#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:605.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:609.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1576,7 +1576,7 @@ Public Sub Seal(Optional ByVal closed As Boolean = False)
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:64
+Source: src/Geometry/CGeometryPath.cls:65
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestJointTangents с его подготовленными локальными объектами/входом.
 
@@ -1584,7 +1584,7 @@ Source: src/Geometry/CGeometryPath.cls:64
     path.Seal
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:521.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:525.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1605,7 +1605,7 @@ Public Property Get ID() As String
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:80
+Source: src/Geometry/CGeometryPath.cls:81
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometry.TestHollowRectangleGeometry с его подготовленными локальными объектами/входом.
 
@@ -1632,7 +1632,7 @@ Public Property Get SegmentCount() As Long
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:82
+Source: src/Geometry/CGeometryPath.cls:83
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunRoundedPolygonTests с его подготовленными локальными объектами/входом.
 
@@ -1640,7 +1640,7 @@ Source: src/Geometry/CGeometryPath.cls:82
     For i = 1 To path.SegmentCount
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:162.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:166.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1661,7 +1661,7 @@ Public Property Get IsSealed() As Boolean
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:84
+Source: src/Geometry/CGeometryPath.cls:85
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
 
@@ -1669,7 +1669,7 @@ Source: src/Geometry/CGeometryPath.cls:84
     Check "line.sealed", changed.IsSealed And path.IsSealed
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:434.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:438.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1690,7 +1690,7 @@ Public Property Get IsClosed() As Boolean
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:86
+Source: src/Geometry/CGeometryPath.cls:87
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestArcs с его подготовленными локальными объектами/входом.
 
@@ -1698,7 +1698,7 @@ Source: src/Geometry/CGeometryPath.cls:86
     Check "circle.closed", path.IsClosed
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:476.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:480.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1719,7 +1719,7 @@ Public Property Get Length() As Double
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:88
+Source: src/Geometry/CGeometryPath.cls:89
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidPathRejected с его подготовленными локальными объектами/входом.
 
@@ -1727,7 +1727,7 @@ Source: src/Geometry/CGeometryPath.cls:88
         Case 6: value = path.Length
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:608.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:612.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1752,7 +1752,7 @@ Public Property Get SegmentID(ByVal index As Long) As String
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:90
+Source: src/Geometry/CGeometryPath.cls:91
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestCompoundPath с его подготовленными локальными объектами/входом.
 
@@ -1760,7 +1760,7 @@ Source: src/Geometry/CGeometryPath.cls:90
     Check "compound.slice.id", part.SegmentID(2) = "Corner"
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:503.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:507.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1785,7 +1785,7 @@ Public Property Get SourcePathID(ByVal index As Long) As String
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:95
+Source: src/Geometry/CGeometryPath.cls:96
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -1793,7 +1793,7 @@ Source: src/Geometry/CGeometryPath.cls:95
     Check "anchor.facade.source", changed.SourcePathID(1) = "Outer" And changed.SourceSegmentID(1) = "Edge.BR"
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:90.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:94.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1816,7 +1816,7 @@ Public Property Get SourceSegmentID(ByVal index As Long) As String
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:100
+Source: src/Geometry/CGeometryPath.cls:101
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunAdvancedGuideExamples с его подготовленными локальными объектами/входом.
 
@@ -1847,7 +1847,7 @@ Public Property Get SourceStartParameter(ByVal index As Long) As Double
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:105
+Source: src/Geometry/CGeometryPath.cls:106
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -1878,7 +1878,7 @@ Public Property Get SourceEndParameter(ByVal index As Long) As Double
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:110
+Source: src/Geometry/CGeometryPath.cls:111
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -1909,22 +1909,22 @@ Public Function SegmentIndex(ByVal segmentID As String) As Long
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:115
+Source: src/Geometry/CGeometryPath.cls:116
 
-Минимальный вызов; требуемый контекст: В теле modTestGeometry.TestTaperedRoundedRectangle с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidAnchorRejected с его подготовленными локальными объектами/входом.
 
 ```vb
-    path.CopySegment path.SegmentIndex("Edge.TL"), top
+            station = path.SegmentIndex("Corner.BL")
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1707.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:125.
 
-Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-cgeometrypath-anchorstation"></a>
 ### CGeometryPath.AnchorStation
 
-Находит расстояние от начала всей линии до точки заданного сегмента, мм. Точка задаётся именем сегмента и параметром [0;1].
+Находит расстояние от начала всей линии до точки заданного сегмента, мм. Точка задаётся именем сегмента и параметром [0;1]. Если при построении участок исчез, обе его границы сохраняют привязку к оставшемуся стыку. Неизвестное имя вызывает ошибку.
 
 ```vb
 Public Function AnchorStation(ByVal segmentID As String, Optional ByVal parameter As Double = 0#) As Double
@@ -1941,15 +1941,15 @@ Public Function AnchorStation(ByVal segmentID As String, Optional ByVal paramete
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:124
+Source: src/Geometry/CGeometryPath.cls:126
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidAnchorRejected с его подготовленными локальными объектами/входом.
 
 ```vb
-            station = path.AnchorStation("Corner.BL")
+        Case 0: station = path.AnchorStation("Missing")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:121.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:110.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1972,7 +1972,7 @@ Public Function WithID(ByVal pathID As String) As CGeometryPath
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:133
+Source: src/Geometry/CGeometryPath.cls:138
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidAnchorRejected с его подготовленными локальными объектами/входом.
 
@@ -1980,7 +1980,7 @@ Source: src/Geometry/CGeometryPath.cls:133
         Case 9: Set part = path.WithID("")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:122.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:126.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2009,7 +2009,7 @@ Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As S
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:145
+Source: src/Geometry/CGeometryPath.cls:151
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -2043,7 +2043,7 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:173
+Source: src/Geometry/CGeometryPath.cls:179
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -2075,7 +2075,7 @@ Public Sub ProjectionBounds(ByVal directionX As Double, ByVal directionY As Doub
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:196
+Source: src/Geometry/CGeometryPath.cls:202
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
 
@@ -2083,7 +2083,7 @@ Source: src/Geometry/CGeometryPath.cls:196
     path.ProjectionBounds 2#, 0#, minimum, maximum
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:422.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:426.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2109,7 +2109,7 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:211
+Source: src/Geometry/CGeometryPath.cls:217
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -2136,7 +2136,7 @@ Public Function Reversed() As CGeometryPath
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:260
+Source: src/Geometry/CGeometryPath.cls:317
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
 
@@ -2144,7 +2144,7 @@ Source: src/Geometry/CGeometryPath.cls:260
     Set changed = path.Reversed
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:424.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:428.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2172,7 +2172,7 @@ Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, Opti
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:274
+Source: src/Geometry/CGeometryPath.cls:332
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
 
@@ -2180,7 +2180,7 @@ Source: src/Geometry/CGeometryPath.cls:274
     Set changed = path.Transformed(10#, 20#, GEOM_PI / 2#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:428.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:432.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2210,7 +2210,7 @@ Public Function RayHit(ByVal originX As Double, ByVal originY As Double, ByVal d
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:296
+Source: src/Geometry/CGeometryPath.cls:355
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestRays с его подготовленными локальными объектами/входом.
 
@@ -2218,7 +2218,7 @@ Source: src/Geometry/CGeometryPath.cls:296
     Check "ray.circle.hit", path.RayHit(-20#, 0#, 2#, 0#, station, distance)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:558.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:562.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2421,7 +2421,7 @@ Source: src/Section/CSectionDefinition.cls:72
     Check "anchor.facade.registered", definition.PathCount = 3 And definition.IsSealed
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:89.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:93.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3604,7 +3604,7 @@ Source: src/Section/CSectionInputTable.cls:20
         Case 10: table.Initialize "Second", cells
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:376.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:380.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3687,7 +3687,7 @@ Source: src/Section/CSectionInputTable.cls:61
     Check "input.columns", table.ColumnCount = 3
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:314.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:318.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3721,7 +3721,7 @@ Source: src/Section/CSectionInputTable.cls:64
     Check "input.source", table.SourceReference(2, 2) = "Config!B12"
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:323.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:327.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3787,7 +3787,7 @@ Source: src/Section/CSectionInputTable.cls:76
     Check "input.blank", table.IsBlank(4, 3)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:324.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:328.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3855,7 +3855,7 @@ Source: src/Section/CSectionInputTable.cls:93
         Case 11: value = table.Number(3, 2)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:377.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:381.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3890,7 +3890,7 @@ Source: src/Section/CSectionInputTable.cls:111
     Check "input.count", table.Count(2, 2) = 4
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:320.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:324.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3926,7 +3926,7 @@ Source: src/Section/CSectionInputTable.cls:120
         Case 9: value = table.Choice(2, 2, Array("Stacked", "SideBySide"))
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:375.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:379.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3961,7 +3961,7 @@ Source: src/Section/CSectionInputTable.cls:131
     Near "input.length", table.Length(4, 2, units), 16#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:329.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:333.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3996,7 +3996,7 @@ Source: src/Section/CSectionInputTable.cls:138
     Near "input.optional.zero", table.OptionalDiameter(3, 2, units), 0#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:326.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:330.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -4030,7 +4030,7 @@ Source: src/Section/CSectionInputTable.cls:149
         Case 6: value = table.ColumnByCaption(1, "Value")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:373.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:377.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -4100,7 +4100,7 @@ Source: src/Section/CSectionInputTable.cls:172
         Case 20: value = table.RowByAnyKey("Count")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:384.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:388.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -7363,7 +7363,7 @@ Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Dou
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:833
+Source: src/Section/CSectionGeometryQuery.cls:858
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.RunRecipeRuleTests с его подготовленными локальными объектами/входом.
 
@@ -7397,7 +7397,7 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:865
+Source: src/Section/CSectionGeometryQuery.cls:890
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunRoundedOffsetTests с его подготовленными локальными объектами/входом.
 
@@ -7405,7 +7405,7 @@ Source: src/Section/CSectionGeometryQuery.cls:865
     Set original = query.RoundedPolygon("ConcaveBase", vertices, radii, names)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:250.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:254.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -7432,7 +7432,7 @@ Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As V
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:935
+Source: src/Section/CSectionGeometryQuery.cls:966
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunRoundedOffsetTests с его подготовленными локальными объектами/входом.
 
@@ -7440,7 +7440,7 @@ Source: src/Section/CSectionGeometryQuery.cls:935
     Set path = query.OffsetRoundedPolygon("ConcaveOffset", vertices, radii, names, 2#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:252.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:256.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -7463,7 +7463,7 @@ Public Function RegionFromPath(ByVal path As CGeometryPath) As CConcreteRegion
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:994
+Source: src/Section/CSectionGeometryQuery.cls:1025
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunRoundedPolygonTests с его подготовленными локальными объектами/входом.
 
@@ -7471,7 +7471,7 @@ Source: src/Section/CSectionGeometryQuery.cls:994
     Set region = query.RegionFromPath(path)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:160.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:164.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -7497,7 +7497,7 @@ Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As V
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1006
+Source: src/Section/CSectionGeometryQuery.cls:1037
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.InvalidAdjacentRejected с его подготовленными локальными объектами/входом.
 
@@ -7534,7 +7534,7 @@ Public Function LineIntervals(ByVal region As CConcreteRegion, ByVal pointX As D
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1177
+Source: src/Section/CSectionGeometryQuery.cls:1208
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryQuery.TestIntervals с его подготовленными локальными объектами/входом.
 
@@ -7571,7 +7571,7 @@ Public Function SampleMaterialIntervals(ByVal region As CConcreteRegion, ByVal n
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1238
+Source: src/Section/CSectionGeometryQuery.cls:1269
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -7605,7 +7605,7 @@ Public Function ConcreteCoverFromPointAlongDirection(ByVal pointX As Double, ByV
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1270
+Source: src/Section/CSectionGeometryQuery.cls:1301
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryQuery.TestMesh с его подготовленными локальными объектами/входом.
 
@@ -7636,7 +7636,7 @@ Public Function RegionFromContours(ByVal contours As CSectionContours) As CConcr
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1409
+Source: src/Section/CSectionGeometryQuery.cls:1440
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryQuery.TestPreparedGeometry с его подготовленными локальными объектами/входом.
 
@@ -7667,7 +7667,7 @@ Public Sub RegionCentroid(ByVal region As CConcreteRegion, ByRef x As Double, By
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1429
+Source: src/Section/CSectionGeometryQuery.cls:1460
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryQuery.TestPreparedGeometry с его подготовленными локальными объектами/входом.
 
@@ -8452,7 +8452,7 @@ Source: src/Common/modGeometryTypes.bas:26
     Dim edge As TRegionEdge, i As Long, radius As Double, scenario As Long
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:154.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:158.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 

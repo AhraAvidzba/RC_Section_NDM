@@ -11,9 +11,11 @@ param(
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'GeometryExampleSupport.ps1')
+. (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
 $path=(Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression'))+[IO.Path]::DirectorySeparatorChar
 if (-not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only isolated evidence workbooks may be updated.'}
+$printAreas=@(Get-WorkbookPrintAreas $path)
 $production=Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
 function Get-OpenWorkbookHash([string]$Path) {
     # Excel держит исходную книгу открытой. Разрешение совместного чтения
@@ -136,6 +138,7 @@ End Function
         throw 'Private VBA compilation failed.'
     }
     $book.Save();$book.Close($false);$book=$null
+    Restore-WorkbookPrintAreas $path $printAreas
     if ((Get-OpenWorkbookHash $production) -cne $productionHash) {throw 'Production changed during preparation.'}
     [ordered]@{Workbook=$path;WorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash;ProductionSHA256=$productionHash;Compiled=$true;Modules=$updated;RetiredModules=$removed;EntryPointNames=$EntryPointNames;TraceGeometry=[bool]$TraceGeometry;ProductionChanged=$false} |
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path (Split-Path -Parent $path) 'CodeUpdate.json') -Encoding UTF8

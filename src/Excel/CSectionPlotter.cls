@@ -344,7 +344,7 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
     End If
     If mAnnotationLayout.RebarLabelsEnabled Then
         marginModel = MaxDouble(marginModel, _
-            LengthMmToModel(settings.GetDouble("Plot.RebarLabels.Offset", 60#), lengthUnit) + _
+            LengthMmToModel(settings.GetDouble("Plot.RebarLabels.Offset", 30#), lengthUnit) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextGap", 9#), _
                 settings.GetString("Plot.RebarLabels.TextUnits", "pt"), lengthUnit, rangeX, rangeY) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextHeight", 13#), _
@@ -1247,7 +1247,7 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
             If StrComp(data.AnnotationType(i), "REBAR_ANNOTATION", vbTextCompare) = 0 Then
                 layout.AddRebarLabel data.AnnotationStartX(i), data.AnnotationStartY(i), _
                     data.AnnotationEndX(i), data.AnnotationEndY(i), data.AnnotationNormalX(i), _
-                    data.AnnotationNormalY(i), data.AnnotationText(i)
+                    data.AnnotationNormalY(i), data.AnnotationText(i), data.AnnotationBoundaryDistance(i)
             End If
         Next i
     End If

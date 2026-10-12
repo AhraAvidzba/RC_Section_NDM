@@ -75,6 +75,7 @@ Private mExtensionUsed As Boolean ' True, если выбранный LC был 
 Private mStateStatus As String ' Сохраненный статус выбранного named-state.
 Private mAnnotationCount As Long ' Количество semantic-аннотаций, прочитанных из Results.
 Private mAnnotationType() As String ' Dimension, RebarLabel, Outline и другие типы оформления.
+Private mLabelContours As CSectionContours, mLabelBoundary As CConcreteRegion
 Private mAnnotationStartX() As Double ' Начало линии/размера в координатах модели.
 Private mAnnotationStartY() As Double ' Начало линии/размера в координатах модели.
 Private mAnnotationEndX() As Double ' Конец линии/размера в координатах модели.
@@ -768,6 +769,7 @@ End Function
 Private Sub ReadMaterialContours(ByVal workbook As Object)
     Dim contours As CSectionContours, i As Long
     Set contours = ReadSavedSectionContours(workbook)
+    Set mLabelContours = contours
     For i = 1 To contours.Count
         mAnnotationCount = mAnnotationCount + 1
         ReDim Preserve mAnnotationType(1 To mAnnotationCount)
@@ -850,6 +852,7 @@ Private Sub ResetReaderState()
     mSnapshotCurvatureUnit = vbNullString
     mCount = 0
     mAnnotationCount = 0
+    Set mLabelContours = Nothing: Set mLabelBoundary = Nothing
     mMinX = 0#: mMaxX = 0#: mMinY = 0#: mMaxY = 0#
     mCentroidX = 0#: mCentroidY = 0#: mPrincipalAngle = 0#
     mConcreteCentroidX = 0#: mConcreteCentroidY = 0#: mConcretePrincipalAngle = 0#
@@ -1240,6 +1243,33 @@ Public Property Get PhysicalDiagramWarningRequired() As Boolean
 End Property
 ' Количество semantic-аннотаций, прочитанных из Results.
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
+
+' Отсчёт отступа подписи от сохранённого бетонного контура. На прямой грани
+' это добавляет as; на дуге определяется действительное расстояние по нормали.
+' Старые Results также читаются без нового расчёта или обращения к геометрии Config.
+Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double
+    If mLabelContours Is Nothing Then Exit Function
+    Dim query As CSectionGeometryQuery, i As Long, hasOuter As Boolean
+    Dim nx As Double, ny As Double, norm As Double, distance As Double
+    If mLabelBoundary Is Nothing Then
+        For i = 1 To mLabelContours.Count
+            If StrComp(mLabelContours.LoopRole(i), "Outer", vbTextCompare) = 0 Then hasOuter = True: Exit For
+        Next i
+        ' Импорт без достоверного Outer сохраняет приблизительную опорную линию.
+        If Not hasOuter Then Exit Function
+        Set query = New CSectionGeometryQuery: Set mLabelBoundary = query.RegionFromContours(mLabelContours)
+    End If
+    Set query = New CSectionGeometryQuery
+    nx = mAnnotationNormalX(index): ny = mAnnotationNormalY(index)
+    norm = Sqr(nx ^ 2 + ny ^ 2)
+    If norm <= GEOM_TOLERANCE Then
+        nx = -(mAnnotationEndY(index) - mAnnotationStartY(index))
+        ny = mAnnotationEndX(index) - mAnnotationStartX(index)
+        If Sqr(nx ^ 2 + ny ^ 2) <= GEOM_TOLERANCE Then nx = 0#: ny = 1#
+    End If
+    If query.LabelBoundaryDistance(mLabelBoundary, 0.5 * (mAnnotationStartX(index) + mAnnotationEndX(index)), _
+            0.5 * (mAnnotationStartY(index) + mAnnotationEndY(index)), nx, ny, distance) Then AnnotationBoundaryDistance = distance
+End Function
 ' Dimension, RebarLabel, Outline и другие типы оформления.
 Public Property Get AnnotationType(ByVal index As Long) As String: AnnotationType = mAnnotationType(index): End Property
 ' Начало линии/размера в координатах модели.

@@ -44,10 +44,33 @@ def rows_except_guide(book):
         if rows[row]: rows[row]-=1
     return +rows
 
-def verify(before, after, layout):
+def verify(before, after, layout, halve_default_rebar_offset=False):
     old, new = xmlreader.read(before), xmlreader.read(after)
     content = json.loads(layout.read_text(encoding='utf-8-sig'))
     errors, cells_checked, caches = [], 0, []
+    authorized = {}
+    if halve_default_rebar_offset:
+        # Единственное числовое исключение — явно согласованный default 60 -> 30.
+        # Адрес получаем из настоящего named range, а не из положения Config.
+        ref = old['names']['rngPlotAnnotationSettings']
+        sheet, bounds = ref.rsplit('!', 1)
+        if sheet.strip("'=") != 'Config': raise ValueError('Annotation settings are outside Config')
+        match = re.fullmatch(r'\$([A-Z]+)\$(\d+):\$([A-Z]+)\$(\d+)', bounds)
+        if not match: raise ValueError('Invalid annotation settings range')
+        column = 0
+        for char in match[1]: column = column * 26 + ord(char) - 64
+        def letters(number):
+            result = ''
+            while number:
+                number, remainder = divmod(number - 1, 26)
+                result = chr(65 + remainder) + result
+            return result
+        for row in range(int(match[2]), int(match[4]) + 1):
+            if old['sheets']['Config']['cells'].get(letters(column)+str(row), {}).get('value') == 'Offset':
+                address = letters(column + 1) + str(row)
+                if old['sheets']['Config']['cells'][address]['value'] == '60': authorized[('Config', address)] = '30'
+                break
+        else: raise ValueError('Offset row is missing')
     if set(old['sheets']) != set(new['sheets']): errors.append('Worksheet inventory changed')
     for sheet, data in old['sheets'].items():
         if sheet == 'Справка': continue
@@ -59,7 +82,7 @@ def verify(before, after, layout):
                 continue
             cells_checked += 1
             if cell['formula'] != actual['formula']: errors.append(sheet+'!'+address+': formula changed')
-            elif TEXT_CHANGES.get(cell['value'],cell['value']) != actual['value']:
+            elif authorized.get((sheet, address), TEXT_CHANGES.get(cell['value'],cell['value'])) != actual['value']:
                 if cell['formula']: caches.append(sheet+'!'+address)
                 else: errors.append(sheet+'!'+address+': value changed')
             if cell['style'] != actual['style']: errors.append(sheet+'!'+address+': style changed')
@@ -113,7 +136,10 @@ def verify(before, after, layout):
               'beforeSHA256': hashlib.sha256(before.read_bytes()).hexdigest(),
               'afterSHA256': hashlib.sha256(after.read_bytes()).hexdigest(),
               'formulaCacheRefreshes': caches, 'helpOriginalTextPreserved': rows_except_guide(old) == rows_except_guide(new),
-              'guideRows': last-first+1, 'guideFirst': first, 'guideLast': last, 'errors': errors}
+              'guideRows': last-first+1, 'guideFirst': first, 'guideLast': last,
+              'authorizedSettingChanges': [{'sheet': sheet, 'address': address, 'before': '60', 'after': value,
+                                           'reason': 'User requested half of the default rebar label Offset'}
+                                          for (sheet, address), value in authorized.items()], 'errors': errors}
     return result
 
 def main():
@@ -122,8 +148,9 @@ def main():
     parser.add_argument('--after',type=Path,required=True)
     parser.add_argument('--layout',type=Path,default=Path('docs/geometry_refactor/SECTION_RECIPE_GUIDE_LAYOUT.json'))
     parser.add_argument('--report',type=Path,required=True)
+    parser.add_argument('--halve-default-rebar-offset', action='store_true')
     args=parser.parse_args()
-    result=verify(args.before,args.after,args.layout)
+    result=verify(args.before,args.after,args.layout,args.halve_default_rebar_offset)
     args.report.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(result,ensure_ascii=False))
     if result['errors']: raise SystemExit(1)

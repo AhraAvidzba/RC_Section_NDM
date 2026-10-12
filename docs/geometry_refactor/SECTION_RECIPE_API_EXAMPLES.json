@@ -294,7 +294,7 @@
     },
     "CSectionDefinitionBuilder.Chain": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 86,
+      "line": 90,
       "routine": "RunPathAnchorTests",
       "code": "    Set part = facade.Chain(\"Side\", \"Outer\", \"Edge.BR\", 0#, \"Edge.TR\", 0#)",
       "context": "В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.",
@@ -321,7 +321,7 @@
     },
     "CSectionDefinitionBuilder.Transform": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 87,
+      "line": 91,
       "routine": "RunPathAnchorTests",
       "code": "    Set changed = facade.Transform(\"MovedSide\", \"Side\", 1000000#, -1000000#)",
       "context": "В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.",
@@ -937,7 +937,7 @@
     },
     "CGeometryPath.AddLine": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 589,
+      "line": 593,
       "routine": "CompoundPath",
       "code": "    path.AddLine \"Bottom\", 0#, 0#, 100#, 0#",
       "context": "В теле modTestDeclarativeGeometry.CompoundPath с его подготовленными локальными объектами/входом.",
@@ -970,7 +970,7 @@
     },
     "CGeometryPath.AddArc": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 605,
+      "line": 609,
       "routine": "InvalidPathRejected",
       "code": "        Case 3: path.AddArc \"ZeroSweep\", 0#, 0#, 1#, 0#, 0#",
       "context": "В теле modTestDeclarativeGeometry.InvalidPathRejected с его подготовленными локальными объектами/входом.",
@@ -1003,7 +1003,7 @@
     },
     "CGeometryPath.Seal": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 521,
+      "line": 525,
       "routine": "TestJointTangents",
       "code": "    path.Seal",
       "context": "В теле modTestDeclarativeGeometry.TestJointTangents с его подготовленными локальными объектами/входом.",
@@ -1054,7 +1054,7 @@
     },
     "CGeometryPath.SegmentCount": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 162,
+      "line": 166,
       "routine": "RunRoundedPolygonTests",
       "code": "    For i = 1 To path.SegmentCount",
       "context": "В теле modTestDeclarativeGeometry.RunRoundedPolygonTests с его подготовленными локальными объектами/входом.",
@@ -1087,7 +1087,7 @@
     },
     "CGeometryPath.IsSealed": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 434,
+      "line": 438,
       "routine": "TestLine",
       "code": "    Check \"line.sealed\", changed.IsSealed And path.IsSealed",
       "context": "В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.",
@@ -1120,7 +1120,7 @@
     },
     "CGeometryPath.IsClosed": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 476,
+      "line": 480,
       "routine": "TestArcs",
       "code": "    Check \"circle.closed\", path.IsClosed",
       "context": "В теле modTestDeclarativeGeometry.TestArcs с его подготовленными локальными объектами/входом.",
@@ -1153,7 +1153,7 @@
     },
     "CGeometryPath.Length": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 608,
+      "line": 612,
       "routine": "InvalidPathRejected",
       "code": "        Case 6: value = path.Length",
       "context": "В теле modTestDeclarativeGeometry.InvalidPathRejected с его подготовленными локальными объектами/входом.",
@@ -1186,7 +1186,7 @@
     },
     "CGeometryPath.SegmentID": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 503,
+      "line": 507,
       "routine": "TestCompoundPath",
       "code": "    Check \"compound.slice.id\", part.SegmentID(2) = \"Corner\"",
       "context": "В теле modTestDeclarativeGeometry.TestCompoundPath с его подготовленными локальными объектами/входом.",
@@ -1219,7 +1219,7 @@
     },
     "CGeometryPath.SourcePathID": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 90,
+      "line": 94,
       "routine": "RunPathAnchorTests",
       "code": "    Check \"anchor.facade.source\", changed.SourcePathID(1) = \"Outer\" And changed.SourceSegmentID(1) = \"Edge.BR\"",
       "context": "В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.",
@@ -1315,18 +1315,27 @@
       ]
     },
     "CGeometryPath.SegmentIndex": {
-      "source": "tests/modTestGeometry.bas",
-      "line": 1707,
-      "routine": "TestTaperedRoundedRectangle",
-      "code": "    path.CopySegment path.SegmentIndex(\"Edge.TL\"), top",
-      "context": "В теле modTestGeometry.TestTaperedRoundedRectangle с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestDeclarativeGeometry.bas",
+      "line": 125,
+      "routine": "InvalidAnchorRejected",
+      "code": "            station = path.SegmentIndex(\"Corner.BL\")",
+      "context": "В теле modTestDeclarativeGeometry.InvalidAnchorRejected с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestGeometry.RunGeometryTests",
+          "entryPoint": "modTestDeclarativeGeometry.RunCoreGeometryTests",
           "reports": [
-            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreFinal.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/CoreTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
           ]
         }
@@ -1334,9 +1343,9 @@
     },
     "CGeometryPath.AnchorStation": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 121,
+      "line": 110,
       "routine": "InvalidAnchorRejected",
-      "code": "            station = path.AnchorStation(\"Corner.BL\")",
+      "code": "        Case 0: station = path.AnchorStation(\"Missing\")",
       "context": "В теле modTestDeclarativeGeometry.InvalidAnchorRejected с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
@@ -1361,7 +1370,7 @@
     },
     "CGeometryPath.WithID": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 122,
+      "line": 126,
       "routine": "InvalidAnchorRejected",
       "code": "        Case 9: Set part = path.WithID(\"\")",
       "context": "В теле modTestDeclarativeGeometry.InvalidAnchorRejected с его подготовленными локальными объектами/входом.",
@@ -1442,7 +1451,7 @@
     },
     "CGeometryPath.ProjectionBounds": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 422,
+      "line": 426,
       "routine": "TestLine",
       "code": "    path.ProjectionBounds 2#, 0#, minimum, maximum",
       "context": "В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.",
@@ -1502,7 +1511,7 @@
     },
     "CGeometryPath.Reversed": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 424,
+      "line": 428,
       "routine": "TestLine",
       "code": "    Set changed = path.Reversed",
       "context": "В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.",
@@ -1535,7 +1544,7 @@
     },
     "CGeometryPath.Transformed": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 428,
+      "line": 432,
       "routine": "TestLine",
       "code": "    Set changed = path.Transformed(10#, 20#, GEOM_PI / 2#)",
       "context": "В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.",
@@ -1568,7 +1577,7 @@
     },
     "CGeometryPath.RayHit": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 558,
+      "line": 562,
       "routine": "TestRays",
       "code": "    Check \"ray.circle.hit\", path.RayHit(-20#, 0#, 2#, 0#, station, distance)",
       "context": "В теле modTestDeclarativeGeometry.TestRays с его подготовленными локальными объектами/входом.",
@@ -1707,7 +1716,7 @@
     },
     "CSectionDefinition.PathCount": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 89,
+      "line": 93,
       "routine": "RunPathAnchorTests",
       "code": "    Check \"anchor.facade.registered\", definition.PathCount = 3 And definition.IsSealed",
       "context": "В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.",
@@ -2609,7 +2618,7 @@
     },
     "CSectionInputTable.Initialize": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 376,
+      "line": 380,
       "routine": "InvalidInputRejected",
       "code": "        Case 10: table.Initialize \"Second\", cells",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -2673,7 +2682,7 @@
     },
     "CSectionInputTable.ColumnCount": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 314,
+      "line": 318,
       "routine": "RunInputTableTests",
       "code": "    Check \"input.columns\", table.ColumnCount = 3",
       "context": "В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.",
@@ -2706,7 +2715,7 @@
     },
     "CSectionInputTable.SourceReference": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 323,
+      "line": 327,
       "routine": "RunInputTableTests",
       "code": "    Check \"input.source\", table.SourceReference(2, 2) = \"Config!B12\"",
       "context": "В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.",
@@ -2755,7 +2764,7 @@
     },
     "CSectionInputTable.IsBlank": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 324,
+      "line": 328,
       "routine": "RunInputTableTests",
       "code": "    Check \"input.blank\", table.IsBlank(4, 3)",
       "context": "В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.",
@@ -2803,7 +2812,7 @@
     },
     "CSectionInputTable.Number": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 377,
+      "line": 381,
       "routine": "InvalidInputRejected",
       "code": "        Case 11: value = table.Number(3, 2)",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -2836,7 +2845,7 @@
     },
     "CSectionInputTable.Count": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 320,
+      "line": 324,
       "routine": "RunInputTableTests",
       "code": "    Check \"input.count\", table.Count(2, 2) = 4",
       "context": "В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.",
@@ -2869,7 +2878,7 @@
     },
     "CSectionInputTable.Choice": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 375,
+      "line": 379,
       "routine": "InvalidInputRejected",
       "code": "        Case 9: value = table.Choice(2, 2, Array(\"Stacked\", \"SideBySide\"))",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -2902,7 +2911,7 @@
     },
     "CSectionInputTable.Length": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 329,
+      "line": 333,
       "routine": "RunInputTableTests",
       "code": "    Near \"input.length\", table.Length(4, 2, units), 16#",
       "context": "В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.",
@@ -2935,7 +2944,7 @@
     },
     "CSectionInputTable.OptionalDiameter": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 326,
+      "line": 330,
       "routine": "RunInputTableTests",
       "code": "    Near \"input.optional.zero\", table.OptionalDiameter(3, 2, units), 0#",
       "context": "В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.",
@@ -2968,7 +2977,7 @@
     },
     "CSectionInputTable.ColumnByCaption": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 373,
+      "line": 377,
       "routine": "InvalidInputRejected",
       "code": "        Case 6: value = table.ColumnByCaption(1, \"Value\")",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -3018,7 +3027,7 @@
     },
     "CSectionInputTable.RowByAnyKey": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 384,
+      "line": 388,
       "routine": "InvalidInputRejected",
       "code": "        Case 20: value = table.RowByAnyKey(\"Count\")",
       "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
@@ -4870,7 +4879,7 @@
     },
     "CSectionGeometryQuery.RoundedPolygon": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 250,
+      "line": 254,
       "routine": "RunRoundedOffsetTests",
       "code": "    Set original = query.RoundedPolygon(\"ConcaveBase\", vertices, radii, names)",
       "context": "В теле modTestDeclarativeGeometry.RunRoundedOffsetTests с его подготовленными локальными объектами/входом.",
@@ -4897,7 +4906,7 @@
     },
     "CSectionGeometryQuery.OffsetRoundedPolygon": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 252,
+      "line": 256,
       "routine": "RunRoundedOffsetTests",
       "code": "    Set path = query.OffsetRoundedPolygon(\"ConcaveOffset\", vertices, radii, names, 2#)",
       "context": "В теле modTestDeclarativeGeometry.RunRoundedOffsetTests с его подготовленными локальными объектами/входом.",
@@ -4924,7 +4933,7 @@
     },
     "CSectionGeometryQuery.RegionFromPath": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 160,
+      "line": 164,
       "routine": "RunRoundedPolygonTests",
       "code": "    Set region = query.RegionFromPath(path)",
       "context": "В теле modTestDeclarativeGeometry.RunRoundedPolygonTests с его подготовленными локальными объектами/входом.",
@@ -5467,7 +5476,7 @@
     },
     "modGeometryTypes.TRegionEdge": {
       "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 154,
+      "line": 158,
       "routine": "RunRoundedPolygonTests",
       "code": "    Dim edge As TRegionEdge, i As Long, radius As Double, scenario As Long",
       "context": "В теле modTestDeclarativeGeometry.RunRoundedPolygonTests с его подготовленными локальными объектами/входом.",
@@ -5619,7 +5628,7 @@
     "tests/modTestAutoCADContours.bas": "430ed8e1569e2012430d8b82d73cd25fcc28a4e2d618279c7f0f5bd14088676b",
     "tests/modTestContourMesh.bas": "56adc60a81c08f162e4701bdc4dffa81874c8b3d3e7468b34c1d8dd90a880d17",
     "tests/modTestDeclarativeExamples.bas": "8f0c58eebdafe605b0244f11c6f680414f3def1360a7bce481783b70c4170b30",
-    "tests/modTestDeclarativeGeometry.bas": "e9d3412a59f189bea30775d5f3877b8c3dcf42bb9ffcc2de72e10967083e1600",
+    "tests/modTestDeclarativeGeometry.bas": "22422d9830e64cf0629f3fb0fb127fa37001cbfb5368ef8a60c43b4659e69604",
     "tests/modTestGeometry.bas": "306ebe9ce9d259f10fc25dc9894ce1c311f534ad2307d023978b8aa48aaf47f2",
     "tests/modTestGeometryConfig.bas": "8a48ec6d472c527aed217e5b0b4eeab3635d099be807e068a6c256df9a7bb189",
     "tests/modTestGeometryQuery.bas": "98df7fd22a84276405a3af0f7c8239f174f99bf5a186cd27d183f69be178de4f",

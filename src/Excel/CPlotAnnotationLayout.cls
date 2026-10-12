@@ -38,7 +38,7 @@ Private mVisualScale As Double ' Общий масштаб оформления 
 Private mDimensionFontSize As Double ' Итоговый размер текста размеров в points.
 Private mRebarFontSize As Double ' Итоговый размер текста групповых подписей арматуры в points.
 Private mDimensionBaseGap As Double ' Отступ размерной линии от своей anchor-линии в points.
-Private mRebarBaseGap As Double ' Отступ подписи арматуры от линии осей арматуры в points.
+Private mRebarBaseGap As Double ' Отступ подписи арматуры от бетонной границы в points.
 Private mDimensionLineWeight As Double ' Толщина основной размерной линии.
 Private mExtensionLineWeight As Double ' Толщина выносных линий размера.
 Private mRebarLineWeight As Double ' Толщина линии-выноски под групповой подписью арматуры.
@@ -86,7 +86,7 @@ Private Sub Class_Initialize()
     mDimensionsEnabled = True: mRebarLabelsEnabled = True
     mDimensionTextHeightBase = 13#: mRebarTextHeightBase = 13#
     mDimensionTextUnits = "mm": mRebarTextUnits = "mm"
-    mDimensionBaseGapBase = 100#: mRebarBaseGapBase = 60#
+    mDimensionBaseGapBase = 100#: mRebarBaseGapBase = 30#
     mDimensionLineWeightBase = 1.75: mExtensionLineWeightBase = 0.85: mRebarLineWeightBase = 1.35
     mDimensionTextGapBase = 9#: mRebarTextGapBase = 9#
     mDimensionPlacement = "Outside": mRebarPlacement = "Outside": mRebarLineEnabled = True
@@ -236,10 +236,10 @@ End Sub
 ' ------------------------------
 ' Групповая подпись арматуры
 ' ------------------------------
-' AnchorStart/AnchorEnd описывают реальную линию раскладки стержней. Поэтому
-' подпись центрируется относительно группы арматуры, а не относительно Bounds.
+' Подпись центрируется по группе стержней. Опорная точка сначала переносится
+' по нормали к бетону; Outside/Inside и Offset отсчитываются от этой границы.
 Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
-        ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String)
+        ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String, Optional ByVal boundaryDistance As Double = 0#)
     If Not mRebarLabelsEnabled Then Exit Sub
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
@@ -255,8 +255,8 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
     PixelUnitVector dirX, dirY, dirPxX, dirPxY
 
     Dim anchorX As Double, anchorY As Double
-    anchorX = 0.5 * (startX + endX)
-    anchorY = 0.5 * (startY + endY)
+    anchorX = 0.5 * (startX + endX) + normalX * boundaryDistance
+    anchorY = 0.5 * (startY + endY) + normalY * boundaryDistance
 
     Dim labelOffset As Double
     labelOffset = mRebarBaseGap

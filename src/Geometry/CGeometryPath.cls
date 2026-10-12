@@ -18,6 +18,7 @@ Private mSegmentIDs() As String
 Private mSourcePathIDs() As String, mSourceSegmentIDs() As String
 Private mSourceStart() As Double, mSourceEnd() As Double
 Private mStations() As Double
+Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long
 Private mCount As Long, mCapacity As Long
 Private mSealed As Boolean, mClosed As Boolean
 Private mQuery As CSectionGeometryQuery
@@ -120,11 +121,15 @@ Public Function SegmentIndex(ByVal segmentID As String) As Long
     PathError "Не найден сегмент '" & segmentID & "'.", "MISSING_SEGMENT", segmentID
 End Function
 
-' Привязка задается именем сегмента и долей его длины, а не номером в массиве.
+' Привязка задаётся именем сегмента и долей его длины. У исчезнувшего при построении
+' сегмента обе границы сохраняются в одном стыке; неизвестный ID остаётся ошибкой.
 Public Function AnchorStation(ByVal segmentID As String, Optional ByVal parameter As Double = 0#) As Double
     RequireSealed
     If parameter < 0# Or parameter > 1# Then PathError "Параметр привязки должен быть от 0 до 1."
     Dim index As Long
+    For index = 1 To mCollapsedCount
+        If mCollapsedIDs(index) = segmentID Then AnchorStation = mCollapsedStations(index): Exit Function
+    Next index
     index = SegmentIndex(segmentID)
     AnchorStation = mStations(index - 1) + parameter * (mStations(index) - mStations(index - 1))
 End Function
@@ -137,6 +142,7 @@ Public Function WithID(ByVal pathID As String) As CGeometryPath
     For i = 1 To mCount
         result.Append mSegmentIDs(i), mEdges(i), mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceStart(i), mSourceEnd(i)
     Next i
+    CopyCollapsedAnchors result, 0#, Length, 0#
     result.Seal mClosed: Set WithID = result
 End Function
 
@@ -223,6 +229,7 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
                 OriginParameter(i, (first - mStations(i - 1)) / segmentLength), OriginParameter(i, (last - mStations(i - 1)) / segmentLength)
         End If
     Next i
+    CopyCollapsedAnchors result, startDistance, endDistance, 0#
     result.Seal (mClosed And startDistance = 0# And endDistance = mStations(mCount))
     Set Slice = result
 End Function
@@ -230,7 +237,8 @@ End Function
 ' Добавляет аналитические части сегментов между станциями пути, сохраняя линии и дуги.
 Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double, ByVal last As Double)
     If last <= first + PATH_TOLERANCE Then Exit Sub
-    Dim part As CGeometryPath, i As Long, edge As TRegionEdge, name As String, suffix As Long
+    Dim part As CGeometryPath, i As Long, edge As TRegionEdge, name As String, suffix As Long, offset As Double
+    offset = result.AccumulatedLength
     Set part = Slice(first, last)
     For i = 1 To part.SegmentCount
         part.CopySegment i, edge: name = part.SegmentID(i): suffix = 1
@@ -239,7 +247,56 @@ Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double,
         Loop
         result.Append name, edge, part.SourcePathID(i), part.SourceSegmentID(i), part.SourceStartParameter(i), part.SourceEndParameter(i)
     Next i
+    part.CopyCollapsedAnchors result, 0#, part.Length, offset
 End Sub
+
+' Сохраняет имя исчезнувшего элемента как привязку, без добавления геометрии.
+' Вызывает построитель, который достоверно знает место схлопнувшегося участка.
+Friend Sub AddCollapsedSegment(ByVal segmentID As String, Optional ByVal station As Double = -1#)
+    RequireMutable
+    If Len(Trim$(segmentID)) = 0 Then PathError "Не задан ID исчезнувшего сегмента."
+    If HasSegmentID(segmentID) Then PathError "Повторный ID сегмента '" & segmentID & "'."
+    Dim i As Long, currentLength As Double
+    For i = 1 To mCollapsedCount
+        If mCollapsedIDs(i) = segmentID Then PathError "Повторный ID привязки '" & segmentID & "'."
+    Next i
+    If mCount > 0 Then currentLength = mStations(mCount)
+    If station = -1# Then station = currentLength
+    If station < -PATH_TOLERANCE Or station > currentLength + PATH_TOLERANCE Then PathError "Привязка исчезнувшего сегмента вне пути."
+    station = GeomMax(0#, GeomMin(currentLength, station))
+    mCollapsedCount = mCollapsedCount + 1
+    ReDim Preserve mCollapsedIDs(1 To mCollapsedCount): ReDim Preserve mCollapsedStations(1 To mCollapsedCount)
+    mCollapsedIDs(mCollapsedCount) = segmentID: mCollapsedStations(mCollapsedCount) = station
+End Sub
+
+' Переносит только привязки внутри выбранного интервала. При обратном обходе
+' отсчёт меняется вместе с геометрией; на замыкающем стыке достаточно одного имени.
+Friend Sub CopyCollapsedAnchors(ByVal result As CGeometryPath, ByVal first As Double, ByVal last As Double, _
+        ByVal offset As Double, Optional ByVal reverse As Boolean = False)
+    Dim i As Long, station As Double
+    For i = 1 To mCollapsedCount
+        station = mCollapsedStations(i)
+        If station >= first And station <= last Then
+            If Not result.HasCollapsedSegmentID(mCollapsedIDs(i)) Then
+                If reverse Then station = last - station Else station = station - first
+                result.AddCollapsedSegment mCollapsedIDs(i), offset + station
+            End If
+        End If
+    Next i
+End Sub
+
+' Длина уже добавленных элементов нужна при сборке составного участка до Seal.
+Friend Property Get AccumulatedLength() As Double
+    If mCount > 0 Then AccumulatedLength = mStations(mCount)
+End Property
+
+' Отличает сохранённую привязку от физического сегмента и неизвестного имени.
+Friend Function HasCollapsedSegmentID(ByVal segmentID As String) As Boolean
+    Dim i As Long
+    For i = 1 To mCollapsedCount
+        If mCollapsedIDs(i) = segmentID Then HasCollapsedSegmentID = True: Exit Function
+    Next i
+End Function
 
 ' Переводит локальный параметр обрезанного сегмента в параметр исходного сегмента.
 Private Function OriginParameter(ByVal index As Long, ByVal parameter As Double) As Double
@@ -265,6 +322,7 @@ Public Function Reversed() As CGeometryPath
         LSet edge = mEdges(i): mQuery.ReverseEdge edge
         result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceEnd(i), mSourceStart(i)
     Next i
+    CopyCollapsedAnchors result, 0#, Length, 0#, True
     result.Seal mClosed
     Set Reversed = result
 End Function
@@ -287,6 +345,7 @@ Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, _
         End If
         result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceStart(i), mSourceEnd(i)
     Next i
+    CopyCollapsedAnchors result, 0#, Length, 0#
     result.Seal mClosed
     Set Transformed = result
 End Function
@@ -325,6 +384,9 @@ Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge, Optional
     Dim i As Long, segmentLength As Double
     For i = 1 To mCount
         If mSegmentIDs(i) = segmentID Then PathError "Повторный ID сегмента '" & segmentID & "'."
+    Next i
+    For i = 1 To mCollapsedCount
+        If mCollapsedIDs(i) = segmentID Then PathError "Повторный ID привязки '" & segmentID & "'."
     Next i
     segmentLength = mQuery.EdgeLength(edge)
     If segmentLength <= PATH_TOLERANCE Then PathError "Сегмент '" & segmentID & "' имеет нулевую длину."

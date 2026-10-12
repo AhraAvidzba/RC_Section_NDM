@@ -80,6 +80,10 @@ Public Function RunPathAnchorTests() As String
     Set part = path.BetweenAnchors("NamedSide", "Edge.BR", 0#, "Edge.TR", 0#)
     Check "anchor.zero.radius.named.edge", part.SegmentCount = 1 And part.SegmentID(1) = "Edge.BR"
     Near "anchor.zero.radius.length", part.Length, 80#
+    ' Нулевая дуга не является сегментом, но её границы сохраняют стык.
+    Check "anchor.zero.radius.no.phantom", Not path.HasSegmentID("Corner.BL")
+    Near "anchor.zero.radius.junction.start", path.AnchorStation("Corner.BL", 0#), path.AnchorStation("Edge.BL", 0#)
+    Near "anchor.zero.radius.junction.end", path.AnchorStation("Corner.BL", 1#), path.AnchorStation("Edge.BL", 0#)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "AnchorFixture"
     Set path = facade.RoundedPolygon("Outer", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
     facade.Outer "Concrete", path.ID
@@ -118,7 +122,7 @@ Private Function InvalidAnchorRejected(ByVal scenario As Long) As Boolean
         Case 8
             Set query = New CSectionGeometryQuery
             Set path = query.RoundedPolygon("Sharp", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
-            station = path.AnchorStation("Corner.BL")
+            station = path.SegmentIndex("Corner.BL")
         Case 9: Set part = path.WithID("")
     End Select
     Exit Function
