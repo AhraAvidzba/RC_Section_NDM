@@ -1,5 +1,12 @@
 # Исходная Карта Зависимостей
 
+Актуализация 12.10.2026: заменяемые компоненты ниже удалены из source и
+отдельного native staging; фактический состав — в LEGACY_RETIREMENT_MAP.md.
+Generated: CSectionInputSnapshotReader → ISectionRecipe → CSectionDefinition
+→ CSectionBuilder → CSectionModel. Импорт AutoCAD сохраняет свою сетку;
+его аннотации готовит CSectionAnnotationBuilder. CSectionAnnotations хранит
+данные. Основной output ещё предстоит обновить.
+
 Состояние до переноса: HEAD a138c273, ТЗ 1.4. Карта будет уточняться по
 потребителям и фактическому VBProject, не только по экспорту от 09.10.2026.
 

@@ -373,9 +373,25 @@ Audit03RecordSolveAttempt Array(ObjPtr(section), ObjPtr(concreteMaterial), ObjPt
         $book.VBProject.VBComponents.Item('modTestGeometry').CodeModule.AddFromString(@'
 ' ДЛЯ ТЕСТОВ: та же Hollow-сетка в обеих версиях, без уменьшения дискретизации.
 Private Sub TestAudit03HollowMeshPerf(ByRef stats As TTestStats)
-    Dim geom As CGeometryHollowRectangle
-    Set geom = New CGeometryHollowRectangle
-    geom.Initialize 500#, 800#, 50#, 200#, 500#, 20#, 40#, -30#
+    Dim geom As CGeometryRegion, query As CSectionGeometryQuery, contours As CSectionContours
+    Set query = New CSectionGeometryQuery: Set contours = New CSectionContours
+    contours.AddContourLine "OT", -200#, 400#, 200#, 400#
+    contours.AddContourArc "OTR", 200#, 400#, 250#, 350#, 200#, 350#, 50#, -GEOM_PI / 2#
+    contours.AddContourLine "OR", 250#, 350#, 250#, -350#
+    contours.AddContourArc "OBR", 250#, -350#, 200#, -400#, 200#, -350#, 50#, -GEOM_PI / 2#
+    contours.AddContourLine "OB", 200#, -400#, -200#, -400#
+    contours.AddContourArc "OBL", -200#, -400#, -250#, -350#, -200#, -350#, 50#, -GEOM_PI / 2#
+    contours.AddContourLine "OL", -250#, -350#, -250#, 350#
+    contours.AddContourArc "OTL", -250#, 350#, -200#, 400#, -200#, 350#, 50#, -GEOM_PI / 2#
+    contours.AddContourLine "IT", -40#, 220#, 120#, 220#, loopID:="VOID", loopRole:="Opening"
+    contours.AddContourArc "ITR", 120#, 220#, 140#, 200#, 120#, 200#, 20#, -GEOM_PI / 2#, loopID:="VOID", loopRole:="Opening"
+    contours.AddContourLine "IR", 140#, 200#, 140#, -260#, loopID:="VOID", loopRole:="Opening"
+    contours.AddContourArc "IBR", 140#, -260#, 120#, -280#, 120#, -260#, 20#, -GEOM_PI / 2#, loopID:="VOID", loopRole:="Opening"
+    contours.AddContourLine "IB", 120#, -280#, -40#, -280#, loopID:="VOID", loopRole:="Opening"
+    contours.AddContourArc "IBL", -40#, -280#, -60#, -260#, -40#, -260#, 20#, -GEOM_PI / 2#, loopID:="VOID", loopRole:="Opening"
+    contours.AddContourLine "IL", -60#, -260#, -60#, 200#, loopID:="VOID", loopRole:="Opening"
+    contours.AddContourArc "ITL", -60#, 200#, -40#, 220#, -40#, 200#, 20#, -GEOM_PI / 2#, loopID:="VOID", loopRole:="Opening"
+    Set geom = New CGeometryRegion: geom.Initialize query.RegionFromContours(contours)
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 10#, 10#, 1, 2

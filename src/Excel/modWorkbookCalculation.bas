@@ -1271,13 +1271,14 @@ Public Sub Audit03ApplyLoadReferenceForTests(ByVal section As CSectionModel, _
 End Sub
 
 ' Готовит инженерные данные до передачи пассивному writer. Свойства считает
-' их владелец, а размеры/подписи импортированной модели готовит контейнер
-' аннотаций. Config, solve и saved Results в этом маршруте не читаются.
+' их владелец, а размеры/подписи импортированной модели готовит общий
+' построитель аннотаций. Config, solve и saved Results в этом маршруте не читаются.
 Public Function PrepareSectionSnapshot(ByVal section As CSectionModel, _
         Optional ByVal provider As CMaterialModelProvider = Nothing) As CSectionPropertiesCalculator
     Dim snapshot As CSectionPropertiesCalculator
     Set snapshot = New CSectionPropertiesCalculator
     snapshot.PrepareSnapshot section, provider
-    section.Annotations.PrepareImportedSection section, snapshot.SnapshotBounds
+    Dim annotations As CSectionAnnotationBuilder: Set annotations = New CSectionAnnotationBuilder
+    annotations.PrepareImportedSection section, snapshot.SnapshotBounds
     Set PrepareSectionSnapshot = snapshot
 End Function

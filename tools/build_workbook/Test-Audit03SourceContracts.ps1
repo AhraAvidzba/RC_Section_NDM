@@ -115,14 +115,14 @@ foreach ($path in @('src/Batch/CCombinationResult.cls', 'src/Batch/CStrengthResu
 Assert-Contract 'batchPublicationBoundary' ($batch -match 'mResults\(index\)\.Freeze' -and
     $batch -match '(?ms)Private Sub ClearResultRow.*?Set mResults\(index\) = New CCombinationResult') 'ResultAt freezes tree; repeated Execute replaces LC instead of resetting an old published object'
 
-foreach ($path in @('src/Geometry/CGeometryRoundedRectangle.cls', 'src/Geometry/CGeometryHollowRectangle.cls')) {
-    $code = Get-CodeOnly $path
-    $contains = [regex]::Match($code, '(?ms)^Public Function ContainsPoint\b.*?^End Function')
-    Assert-Contract "preparedGeometry.$path" ($contains.Success -and
-        $contains.Value -match 'If Not IsValid\(message\) Then Exit Function' -and
-        $contains.Value -notmatch 'ValidateCurrentGeometry|RebuildContour|OpeningFitsInsideOuter' -and
-        $code -match 'mValidationReady = False' -and $code -match 'mGeometryValid = IsValid\(message\)') 'Initialize validates new parameters; hot point queries use the prepared contour'
-}
+$region = Get-CodeOnly 'src/Geometry/CGeometryRegion.cls'
+$contains = [regex]::Match($region, '(?ms)^Public Function ContainsPoint\b.*?^End Function')
+Assert-Contract 'preparedGeometry.commonRegion' ($contains.Success -and
+    $contains.Value -match 'mQuery.ContainsMeshPoint' -and
+    $contains.Value -notmatch 'RegionFromContours|RoundedPolygon|BoundaryRegion|BuildMesh') 'Hot point queries use one prepared shared concrete region'
+$definition = Get-CodeOnly 'src/Section/CSectionDefinition.cls'
+Assert-Contract 'preparedGeometry.immutableDefinition' ($definition -match 'mSealed = True' -and
+    $definition -match 'Private Sub RequireMutable' -and $definition -match 'Len\(mTypeID\) = 0 Or mSealed') 'Published definitions cannot be edited; a changed input requires a new definition'
 $geometryTypes = Get-CodeOnly 'src/Common/modGeometryTypes.bas'
 Assert-Contract 'stableGeometryPiLiteral' ($geometryTypes -match 'GEOM_PI As Double = 3\.14159265358979 \+ 3\.10862446895044E-15') 'Same full-precision Double before and after VBE literal canonicalization'
 

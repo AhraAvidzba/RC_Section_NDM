@@ -20,7 +20,7 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.
 ## Разработка
 
 - `src/` - VBA; `tests/` - тесты; `tools/` - сборка и проверки.
-- Новый тип сечения: описание контуров через `ISectionShape` и раскладка арматуры; аннотации необязательны. Общая геометрия, сетка и проверки точек не зависят от типа сечения.
+- Новый параметрический тип: один `ISectionRecipe`, декларативное описание через `CSectionDefinitionBuilder` и одна регистрация в `CSectionTypeRegistry`. Общий сборщик готовит геометрию, арматуру, сетку и необязательные аннотации; общие алгоритмы не зависят от имени типа.
 - [AGENTS.md](AGENTS.md) - правила изменений.
 - [Расчетная модель](docs/MathematicalModel.md), [единицы и знаки](docs/CoordinateSystem.md), [проверки](docs/ValidationPlan.md).
 - [Нормативная трассировка](docs/NormativeTraceability.md), [открытые вопросы](docs/OpenNormativeQuestions.md), [отчеты](docs/reports/README.md).

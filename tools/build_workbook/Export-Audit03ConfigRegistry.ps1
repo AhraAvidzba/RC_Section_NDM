@@ -108,7 +108,7 @@ foreach ($name in @('rngSystemSettings','rngCircleGeometry')) {
         $consumer = 'CSystemSettingsReader -> settings consumers'
         $activity = 'PendingPerKeyActiveInactiveReview'
         if ($name -eq 'rngCircleGeometry') {
-            $consumer = 'CSystemSettingsReader -> CSectionTypeRegistry -> CGeometryCircle / CCircleRebarLayoutBuilder'
+            $consumer = 'CSectionInputSnapshotReader -> CSectionTypeRegistry -> CSectionRecipeCircle -> CSectionBuilder'
             $activity = 'Geometry.Source=Generated; Geometry.Type=Circle; extra rows require an active first row'
         }
         Add-Field $key $name $row ($rect.Left+1) (Get-Cell $row ($rect.Left+2)).Value $consumer $activity

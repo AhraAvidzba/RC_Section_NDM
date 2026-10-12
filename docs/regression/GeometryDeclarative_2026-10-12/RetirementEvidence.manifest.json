@@ -1,0 +1,924 @@
+{
+  "schema": 1,
+  "status": "ARCHIVE_INTEGRITY_PASS",
+  "parentCommit": "e333dc8c4a4ebfff8967288c3e64c4d3b462e942",
+  "archive": "docs/regression/GeometryDeclarative_2026-10-12/RetirementEvidence.zip",
+  "archiveSHA256": "b215349ad4188296df609e454ae3433d0f38bae7a364fc1f78d266aea23c1b1f",
+  "entries": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 12265,
+      "sha256": "c58de37e23a71eb654d261c5280f865538916b093b67c09f209dd8f34a3226b7"
+    },
+    {
+      "path": "docs/geometry_refactor/ANALYTIC_PATH_EVIDENCE.json",
+      "bytes": 7479,
+      "sha256": "a9759aa6ad93d054118f64702a740d3414d5205b600c7954a0796206a5204e50"
+    },
+    {
+      "path": "docs/geometry_refactor/BASELINE_EVIDENCE.json",
+      "bytes": 3221,
+      "sha256": "0a67c2a7265ebbb5b33f0bf4fe8d4cd5f3c9e18ef7dabea5f899f522c7ddc3c9"
+    },
+    {
+      "path": "docs/geometry_refactor/BASELINE_MANIFEST.md",
+      "bytes": 3357,
+      "sha256": "6e3c6ff95b7674bd087190cadb08821abd809db785d3fe5dafd22a3faae5c66a"
+    },
+    {
+      "path": "docs/geometry_refactor/BEHAVIOR_CHANGES.md",
+      "bytes": 20147,
+      "sha256": "6bae80368cb610f6f79d7f2678088d4dc54fb9e9a222b2169d9b56e2ef7ea737"
+    },
+    {
+      "path": "docs/geometry_refactor/CIRCLE_EVIDENCE.json",
+      "bytes": 6725,
+      "sha256": "2393b8a01ebe13cbc8eeea1fad7ec4e09c132dad2fb70b6920cbcd79bf7c8983"
+    },
+    {
+      "path": "docs/geometry_refactor/CORE_EVIDENCE.json",
+      "bytes": 3585,
+      "sha256": "430c176b164ef5ad2fb1364766f9b292a79b80eb9a08f6e6dbc78fb0a5355a26"
+    },
+    {
+      "path": "docs/geometry_refactor/DEPENDENCY_MAP.md",
+      "bytes": 13894,
+      "sha256": "ab085a7b53f51d31bd60f312b5d924628e0605c27fdc3e6f52333c636b819271"
+    },
+    {
+      "path": "docs/geometry_refactor/HOLLOW_BASELINE_EVIDENCE.json",
+      "bytes": 1593,
+      "sha256": "265e9d35010f51ae02d4fb7af10a83295058a86024bd5137b7e5d3b48a4c8a0b"
+    },
+    {
+      "path": "docs/geometry_refactor/HOLLOW_RECIPE_EVIDENCE.json",
+      "bytes": 23909,
+      "sha256": "d2a2e34fe45bd752b93e33c314f25c7857c86e6f7217ec8a737e70d437182ba8"
+    },
+    {
+      "path": "docs/geometry_refactor/LEGACY_RETIREMENT_MAP.md",
+      "bytes": 11833,
+      "sha256": "d3875d44621ac796dc5b2bb778c875551a9d3bb20f40e384d134f5ee42bddce2"
+    },
+    {
+      "path": "docs/geometry_refactor/NDM_Geometry_Declarative_Refactor_TZ_CodexGoal.md",
+      "bytes": 202970,
+      "sha256": "b69d706e458c50d4870efc18fac4b8c3ab9e56b4006ff9e2ddcd67b00817f596"
+    },
+    {
+      "path": "docs/geometry_refactor/NUMERIC_TOLERANCES.md",
+      "bytes": 2933,
+      "sha256": "b588f1565259e8923b9fb9eaceebe954cc896115596f073123488ce55592c974"
+    },
+    {
+      "path": "docs/geometry_refactor/PRODUCTION_RECIPE_EVIDENCE.json",
+      "bytes": 13542,
+      "sha256": "e712a2c8d530084886c6bc12fd7e716ae4e2c3ea56f554770b96a327e5322381"
+    },
+    {
+      "path": "docs/geometry_refactor/PROGRESS.md",
+      "bytes": 64718,
+      "sha256": "6be3108a5afee9f8b5bef2afcf6f8a800e130368f5eed96168a9bda0f5dfa4cb"
+    },
+    {
+      "path": "docs/geometry_refactor/RECTSET_EVIDENCE.json",
+      "bytes": 12482,
+      "sha256": "4ea69f0e76c8c644727e1ff6df110120efb157e981034f296971d223942fba1d"
+    },
+    {
+      "path": "docs/geometry_refactor/RESUME_AUDIT_2026-10-12.md",
+      "bytes": 6296,
+      "sha256": "5d0bd1044339748e15e4359431570f5e2a0d96080d86da3aaca1e59a6ea17018"
+    },
+    {
+      "path": "docs/geometry_refactor/RETIREMENT_FIXTURES_EVIDENCE.json",
+      "bytes": 9267,
+      "sha256": "0bca33616889cf63a6b6fbc9a1cc619328303e4f6fdf8869843fd1031b879ef6"
+    },
+    {
+      "path": "docs/geometry_refactor/RETIREMENT_FIXTURES_EVIDENCE.md",
+      "bytes": 3362,
+      "sha256": "3c119f007c0ae73dff8147a8549d20b5d16dd3497dddeceb2671b48008a7463a"
+    },
+    {
+      "path": "docs/geometry_refactor/ROUNDED_BASELINE_EVIDENCE.json",
+      "bytes": 1392,
+      "sha256": "2d8c48dbbdd7d2d233009a0b30caaf6673d1909736efb7b38c42b2be96e7f38f"
+    },
+    {
+      "path": "docs/geometry_refactor/ROUNDED_RECIPE_EVIDENCE.json",
+      "bytes": 14888,
+      "sha256": "a8bac103570eedee81a9d1d15fa5b7456849556f8c46e4a2ce14df7bd12b0b85"
+    },
+    {
+      "path": "docs/geometry_refactor/TEST_MANIFEST.json",
+      "bytes": 40832,
+      "sha256": "9c2ce2daa3aaf87f600502b90b122871bea1b315e1642a5558023273940a57af"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/CodeComparison.json",
+      "bytes": 35123,
+      "sha256": "9f5b25740b15defba9737e99728ce33ef8e6932261af9a9fe592a186d95554ed"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/EvidenceInventory.json",
+      "bytes": 364003,
+      "sha256": "802cc745139d8e23e4e8dbb51674feb21c3fd14ad9aef2e010f5e908b3bd40d1"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/GeometryBeforeRetirement.txt",
+      "bytes": 55551,
+      "sha256": "709fb2c9a3304acbda9779ac768b8abe5cb087181886997b45252d1c82f9661f"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/GitLog.txt",
+      "bytes": 3738,
+      "sha256": "11648ba3179b13abae8173c68812dce80f1ce435aea425a1515fa88848a119f1"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/GitStatus.txt",
+      "bytes": 4076,
+      "sha256": "53481f7ab384461d2c08299f0e0ae12c5b9e1a0ddc7a32c9f7c171400c947605"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/RunAudit03InputContractTests.txt",
+      "bytes": 10624,
+      "sha256": "27710c8563d596aae7a6d4e5ef19a8c6e0c41b04d244192f4a9c250c402e8304"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/RunAudit03UnitSignStageDiagnosticTests.txt",
+      "bytes": 15035,
+      "sha256": "de96f6d17bcee132e6947ac774aaa2ecf52ada0a06ed1e5de689c3d335fd8b89"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/RunRectSetIndependentSelectorTests.native.txt",
+      "bytes": 59534,
+      "sha256": "b1f39ac91999e244fd003c171204857a37d974866e56e79bd356d06e8a39e72b"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/Resume/RunRectSetIndependentSelectorTests.txt",
+      "bytes": 1443,
+      "sha256": "0840dd7d51c4f05b92491efb049a4e1fe0f859a046e17e914616c188e17a514e"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/CodeComparison.json",
+      "bytes": 111085,
+      "sha256": "2882c91d6cb8e02a1bfe0f909cad50f4aff3af349519c61d8666d8159092e10d"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/CodeComparison_CommentEncodingProbeFailed.json",
+      "bytes": 130491,
+      "sha256": "68b02699d2d735322a70328987ceef6361e8fe83f0f4b4f298349a2213456086"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/CodeUpdate.json",
+      "bytes": 677,
+      "sha256": "835f5682409a80a35666b9096e0ca78f4a3e40f96a55d83865dc21cc40854e26"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt",
+      "bytes": 102905,
+      "sha256": "7b887fe724d8e88f020cec956de823f1bf3073871acbfbe9c6b242b8b4a94841"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/ImportedSnapshotUnits.txt",
+      "bytes": 19814,
+      "sha256": "21f3599151eb798863f4bcba8e0891b6c96dcc3ea2a3c0aa325cc318d9c3c073"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt",
+      "bytes": 226941,
+      "sha256": "5a366129218f79ec78d4781882a2d92c51573d40bffbcfa4c714ba97470b0ae4"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt",
+      "bytes": 120331,
+      "sha256": "7f07790c8aa6f8ac5af4c4d5474b224de6186c8c72aa209361a170f0c73aceed"
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/RC_Section_NDM.xlsm",
+      "bytes": 7555039,
+      "sha256": "b31a0d5614f89965dc76fce377d811d01704f4b82fcb56bc547745772909debd"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2612,
+      "sha256": "8d49a01f040cb9e97d6a61b2bcd5ca0edf44e8622be670220570efe23b66207c"
+    },
+    {
+      "path": "src/Batch/CBatchSectionCalculator.cls",
+      "bytes": 135416,
+      "sha256": "dfe3f8b3680afe5291c93443b2da1b1ddeae8ed6ac21e9cf607e5d8bba6da71b"
+    },
+    {
+      "path": "src/Batch/CCalculationProfile.cls",
+      "bytes": 16228,
+      "sha256": "fa39d1e969a82075eef39b05d39bd45150bc7051ebf42d24590773f38d6d098e"
+    },
+    {
+      "path": "src/Batch/CCalculationProfileCatalog.cls",
+      "bytes": 18226,
+      "sha256": "372a2c29ce52f3a5b4ae77eb611e1e261390627658163c73006ae0b2e8e903fb"
+    },
+    {
+      "path": "src/Batch/CCombinationResult.cls",
+      "bytes": 20000,
+      "sha256": "3d1b00330f812b1d5ad7629fa6996fb5629fb619ed2d93d873414e3b377e41a4"
+    },
+    {
+      "path": "src/Batch/CDirectStateResult.cls",
+      "bytes": 9056,
+      "sha256": "e3312ea6c88cc4baf4d3b2b6e0bc6f91efe69837f2257d92c31978bafd98489b"
+    },
+    {
+      "path": "src/Batch/CSectionStateResult.cls",
+      "bytes": 27500,
+      "sha256": "49609c323b82282ce9b256421cf4ed34ae7a523c038eb400b576229af1db57a2"
+    },
+    {
+      "path": "src/Batch/CStateProvider.cls",
+      "bytes": 11914,
+      "sha256": "0648771cdd13288af1c1550d2bfa40b4c9d1934e2665e0d977b10d850dfe8b3c"
+    },
+    {
+      "path": "src/Batch/CStateRepository.cls",
+      "bytes": 10567,
+      "sha256": "33ec9d9703f57e20f826187a0358c97e911d02034e65881d88d9b99b617e1ce2"
+    },
+    {
+      "path": "src/Batch/CStateRequest.cls",
+      "bytes": 5310,
+      "sha256": "76bf9e4b977aa9c41ad8ecbeea387f406c0a6b44e829c307625e2e2e4af91229"
+    },
+    {
+      "path": "src/Batch/CStrengthResult.cls",
+      "bytes": 7572,
+      "sha256": "d1bd4151f569732dac2ce338e96085e2d4754fd90a0cef3d20ae589c6a2ff6ce"
+    },
+    {
+      "path": "src/Common/CLoadPathDescriptor.cls",
+      "bytes": 13430,
+      "sha256": "bb61f542c289fcb0f69310b2981c6c691ad05a7f9d57872edce588eb25fc89ce"
+    },
+    {
+      "path": "src/Common/CLoadPathMath.cls",
+      "bytes": 19325,
+      "sha256": "5304a6fc8957e715d26a97a16268867ced58338ed1656b2f69535e231ac20a1e"
+    },
+    {
+      "path": "src/Common/CLoadPathVector.cls",
+      "bytes": 4146,
+      "sha256": "33576248d6a0d1699c45f793dcda3187b4fc6fc84be800fb4abbede697aa0728"
+    },
+    {
+      "path": "src/Common/CMomentZeroFilter.cls",
+      "bytes": 3530,
+      "sha256": "e5e0a389bbdcef72d9beb386e41c012d807d9439e3aedaeca5ae9a5519ce328b"
+    },
+    {
+      "path": "src/Common/CResultMeta.cls",
+      "bytes": 10866,
+      "sha256": "0689fe1510a0db6e374841b9d8ccc02bc39f64544ce5212d67f53fe8285d2926"
+    },
+    {
+      "path": "src/Common/CResultStatusPolicy.cls",
+      "bytes": 8928,
+      "sha256": "7a4d0c18c8d0765b1319e2cc027ca043c3903e13b8625339e54a25f0fdc527f2"
+    },
+    {
+      "path": "src/Common/CSectionLoadState.cls",
+      "bytes": 9747,
+      "sha256": "0afb61553cf94ea3d002f85e853661c0862183aa9acfa69bc222d2aadaa149cc"
+    },
+    {
+      "path": "src/Common/modCalculationPurpose.bas",
+      "bytes": 16388,
+      "sha256": "927584fda512c7cab12b2df739e216fc7d99839a26135776bf3b939ee1834834"
+    },
+    {
+      "path": "src/Common/modGeometryTypes.bas",
+      "bytes": 8073,
+      "sha256": "d659ebf654a13b13ee57e0f49952c920c590b202ae20d49ebb8aa6f4f1872ce7"
+    },
+    {
+      "path": "src/Common/modResultStatus.bas",
+      "bytes": 11213,
+      "sha256": "3a77173cbc7b1284bdca9aa7c40774b9679800374cd6a7b070d907cf32dd8d60"
+    },
+    {
+      "path": "src/Common/modSectionRecipeTypes.bas",
+      "bytes": 4167,
+      "sha256": "7026236d44a056b659e7604b3c587bf5e5f01577ad0cf709938d06331c2b8e8d"
+    },
+    {
+      "path": "src/Common/modSolverWorkStats.bas",
+      "bytes": 3052,
+      "sha256": "bca5413e2d1bd630173881e804026cca8eab0508c267b4946c7c33fc1f9d15f0"
+    },
+    {
+      "path": "src/Crack/CCrackFormationCalculator.cls",
+      "bytes": 135976,
+      "sha256": "a3604298c8580579d195f1c1177fec528efe6eaf482194e84f9684849bfa7a53"
+    },
+    {
+      "path": "src/Crack/CCrackFormationResult.cls",
+      "bytes": 12844,
+      "sha256": "3c9eb3a4a5c1b2b6e9fbd63dd1efe9d8c0eea04eb18876b57e2723c6722e8449"
+    },
+    {
+      "path": "src/Crack/CCrackResult.cls",
+      "bytes": 11560,
+      "sha256": "eaf054f698b14f704358245681655371a5a08766c437d964d243bd60f8d3920d"
+    },
+    {
+      "path": "src/Crack/CCrackWidthCalculator.cls",
+      "bytes": 90414,
+      "sha256": "31e39de45a0c9f5ad43e74d64b2a9d6ea138495e3bbac971ec83ac8fc388e2cd"
+    },
+    {
+      "path": "src/Crack/CCrackWidthResult.cls",
+      "bytes": 13641,
+      "sha256": "a57aad96acb3b72b7b3b2ad72d6411c7ec96e82eb5a264df5f32a0022a01f6b3"
+    },
+    {
+      "path": "src/Crack/CLongitudinalCrackCalculator.cls",
+      "bytes": 5763,
+      "sha256": "59d20154d5dfd9ac25fe9bf6ce687674d22d7fa27532cbd73e27a47f6f8f5625"
+    },
+    {
+      "path": "src/Crack/CLongitudinalCrackResult.cls",
+      "bytes": 4929,
+      "sha256": "95b5b1143d048e525bf97ebcce84c5511b35acc4d50b99160528fbbb68fbcd67"
+    },
+    {
+      "path": "src/Crack/CSP35CrackData.cls",
+      "bytes": 39711,
+      "sha256": "9fb967ba305d36ce675a8352c5b661dfd1f0344c34bf36669e66b8b0c1fb50ea"
+    },
+    {
+      "path": "src/Excel/CAutoCADContourReader.cls",
+      "bytes": 13613,
+      "sha256": "9e129a258eaebcac45f4006eb22706757517242663eb855c221c903ac3a234c9"
+    },
+    {
+      "path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "bytes": 59352,
+      "sha256": "f9cba0b7c4334d748f60361bba6474aed8c7d6fc3bd326a9ad71bd034881a303"
+    },
+    {
+      "path": "src/Excel/CBatchResultWriter.cls",
+      "bytes": 54217,
+      "sha256": "76108f73246f62ee7f366b3a3d437e99913a49d99640e4fa798862e11eb513d5"
+    },
+    {
+      "path": "src/Excel/CCrackSummaryWriter.cls",
+      "bytes": 71646,
+      "sha256": "8f997d7ae5b2bd9f70980b49520af7ecb14a3695356f6f3dea5adc631209bbbe"
+    },
+    {
+      "path": "src/Excel/CExcelAppStateGuard.cls",
+      "bytes": 5168,
+      "sha256": "954beaa21e2ae1dcc25940d8d239ee9e168a11709b80f8c0576a165d3e63e994"
+    },
+    {
+      "path": "src/Excel/CExecutionReport.cls",
+      "bytes": 40356,
+      "sha256": "efb9b698f3ba2dc3eab2cbac1081048fdd86f3af82c3f5e60224f09a58f48c84"
+    },
+    {
+      "path": "src/Excel/CLoadCombinationReader.cls",
+      "bytes": 11562,
+      "sha256": "b5aa5a4cc1e190177002a28cae0637b80c2bff335b400d0b8cdb363cc1bea19e"
+    },
+    {
+      "path": "src/Excel/CNDMResultsWriter.cls",
+      "bytes": 111637,
+      "sha256": "d204e794e7842fc1caf1a3888bed26e108df982d23a5bca8ab8284efab451f43"
+    },
+    {
+      "path": "src/Excel/CPlotAnnotationLayout.cls",
+      "bytes": 31921,
+      "sha256": "2835926d1e2a4f72e17dccc1c8e85923b0efb6b8b796a3d2b8a41aa603f4c815"
+    },
+    {
+      "path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "bytes": 2649,
+      "sha256": "bcade9b82e24946016edd4c2e9ceda42a1ba342217db7816bcb57a2fda804b30"
+    },
+    {
+      "path": "src/Excel/CSectionPlotDataReader.cls",
+      "bytes": 79568,
+      "sha256": "c2ca5141345ddd9cc731e3d86bfd4be19890b57366100ac86312044e7b1494b6"
+    },
+    {
+      "path": "src/Excel/CSectionPlotter.cls",
+      "bytes": 115252,
+      "sha256": "f33a79995031db0eb4c18ac79e873c70ba5f62bcff84d04ea5a3c4a3c10ecc76"
+    },
+    {
+      "path": "src/Excel/CSectionTypeRegistry.cls",
+      "bytes": 4242,
+      "sha256": "89b56dab2378786399e79421b4737355189de83249fa202a60b5f5dd80670a73"
+    },
+    {
+      "path": "src/Excel/CStabilitySummaryWriter.cls",
+      "bytes": 57490,
+      "sha256": "60ecc0498da3c1ab39d99621e2eed6a97136b5c85cea11182f98f006087b3ec0"
+    },
+    {
+      "path": "src/Excel/CStrengthSummaryWriter.cls",
+      "bytes": 51847,
+      "sha256": "d513fe2d633dab503e878bfc0f0bc4520864cbc255c425552d54e0afc7e93540"
+    },
+    {
+      "path": "src/Excel/CSystemSettingsReader.cls",
+      "bytes": 58330,
+      "sha256": "42b2e47ba61670aa40aec459bedf7ffaea1723bd9f32670f463de5d8fcaaecb3"
+    },
+    {
+      "path": "src/Excel/CUnitSystem.cls",
+      "bytes": 24797,
+      "sha256": "da35f7b5f81cf05c53c97d6fe47be3c756ce4bb497c034bab9f799a38e2960be"
+    },
+    {
+      "path": "src/Excel/modAutoCADStressExport.bas",
+      "bytes": 153584,
+      "sha256": "7412d2eb91c96996fe5b9ef87438013312f76f57130f00b451e238dfa3b05506"
+    },
+    {
+      "path": "src/Excel/modMeshConfiguration.bas",
+      "bytes": 4036,
+      "sha256": "0779eff400c9f5f752154a53425673fc83c76982973239da8a82701743c0cea2"
+    },
+    {
+      "path": "src/Excel/modStatusFormatting.bas",
+      "bytes": 2461,
+      "sha256": "bd4f75cbdfc5c644973b28a7ad9d1fc000a9e7ac27e3f0be304b6c457ed855a8"
+    },
+    {
+      "path": "src/Excel/modWorkbookCalculation.bas",
+      "bytes": 77087,
+      "sha256": "f7abab944526233be2a2fdea7e2d121ceb0328de9d41091b7b8f644c48c9b51f"
+    },
+    {
+      "path": "src/Excel/modWorkbookMessages.bas",
+      "bytes": 3457,
+      "sha256": "d67370809b7b6573f82f61b54d2e96fb68d036c65a30ddc8f32ab45edd113d36"
+    },
+    {
+      "path": "src/Geometry/CFiberMeshBuilder.cls",
+      "bytes": 13939,
+      "sha256": "e31f5d51875240f301e8269bf881215cc20a40ad78126b875a0868c7974a7a68"
+    },
+    {
+      "path": "src/Geometry/CGeometryPath.cls",
+      "bytes": 19072,
+      "sha256": "e1811b3f7cd98bba49528d65eeeab241f4d90d6168824aa63b50bd48d956034d"
+    },
+    {
+      "path": "src/Geometry/CGeometryRegion.cls",
+      "bytes": 4936,
+      "sha256": "f518f5ca649d0ac7076468be6536a6f89df07508590c43f76f1399a55a991e68"
+    },
+    {
+      "path": "src/Geometry/CSectionRecipeCircle.cls",
+      "bytes": 5634,
+      "sha256": "9ee99dc5a624174bbc2c9278176df430d245f7ecc35900631a9273acf7290731"
+    },
+    {
+      "path": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "bytes": 15475,
+      "sha256": "0875a827a915c29c8e8c21e837b4e549a918bb34a00cfb9dc38cb7f6b0a1dfb4"
+    },
+    {
+      "path": "src/Geometry/CSectionRecipeRectSet.cls",
+      "bytes": 11414,
+      "sha256": "34524fa72f9132eca04dc1fd4a4777bd5aff52b3b6c218ef123ca12bab62415b"
+    },
+    {
+      "path": "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "bytes": 14026,
+      "sha256": "17faaae0866f3195ccc77025053dcf542b60c3eb571f0429f9b7818e48285bd9"
+    },
+    {
+      "path": "src/Interfaces/ILimitSearchProblem.cls",
+      "bytes": 15730,
+      "sha256": "054a7c5d1a9da74e6cd8378d7a6459c3a9a30ded6087d327a5dfdc3d4e992a56"
+    },
+    {
+      "path": "src/Materials/CConcreteMaterialParameters.cls",
+      "bytes": 9177,
+      "sha256": "3e62ad9bafacc2e42c0e7544e68f187ce9f2acc251a8b8faecdc16f9de58c404"
+    },
+    {
+      "path": "src/Materials/CLinearConcreteMaterial.cls",
+      "bytes": 2803,
+      "sha256": "37aedc8719de60002869e7f01ee0683960e8bb0525cf300e69bafc3c73548634"
+    },
+    {
+      "path": "src/Materials/CLinearSteelMaterial.cls",
+      "bytes": 2791,
+      "sha256": "04d154f65821e537a63fad4d901d985920603c5dbd13e1ed66e36bd424b89a4d"
+    },
+    {
+      "path": "src/Materials/CMaterialDiagram.cls",
+      "bytes": 29799,
+      "sha256": "303ef5a8844c6d0e6e0b198a2491bbf8a8b7019c8f508ac9b9b27971d92417d8"
+    },
+    {
+      "path": "src/Materials/CMaterialModelProvider.cls",
+      "bytes": 49039,
+      "sha256": "a2b5172456862cfb1b8175724deb11d68ee3627a55d6225ac14a7d985c4824ce"
+    },
+    {
+      "path": "src/Materials/CMaterialModelSpec.cls",
+      "bytes": 4573,
+      "sha256": "9c3f0519a3360fa918f376f6cce28ccfa5e9d6a4003c9c1b8c00390edaee849d"
+    },
+    {
+      "path": "src/Materials/CSteelMaterialParameters.cls",
+      "bytes": 8495,
+      "sha256": "99b8bd96918996ecad34113225dafa74bee2daebefdf70ac40b798a11b5611e1"
+    },
+    {
+      "path": "src/Section/CConcreteRegion.cls",
+      "bytes": 8419,
+      "sha256": "c4c7e48a50bb673c7b57191a8f93bd79e26f01a34c15b2a821640e451e7f254f"
+    },
+    {
+      "path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "bytes": 4297,
+      "sha256": "b875dfcc3ef8a1a20a32556ff531e132986e42f9e4f03a0ce17909831ab03d0a"
+    },
+    {
+      "path": "src/Section/CRebarLayout.cls",
+      "bytes": 14515,
+      "sha256": "3fafb0238199d7c7e8d7de120d85241d091ac7dcf48b8bdb76eed1f57c7bc8b4"
+    },
+    {
+      "path": "src/Section/CRebarRuleExecutor.cls",
+      "bytes": 31597,
+      "sha256": "a6f7ba17eda6255f504c73405711c29972d1ddfdd453f65918239fa265c7c92a"
+    },
+    {
+      "path": "src/Section/CRebarRuleOptions.cls",
+      "bytes": 2503,
+      "sha256": "4ca3ad67dbfd8112bac72441651348fbfd4c58a87ebcc19768ac4d875d04609a"
+    },
+    {
+      "path": "src/Section/CSectionAnnotationBuilder.cls",
+      "bytes": 17641,
+      "sha256": "4bcc7265ea470abbef7743ae7a6e500e2ca9fc63f7a0832f75820c4a81806819"
+    },
+    {
+      "path": "src/Section/CSectionAnnotations.cls",
+      "bytes": 7425,
+      "sha256": "0132468af3b20acf7b1fcc05d11b44618cdfc8beea70c40e13848d0eb8c77299"
+    },
+    {
+      "path": "src/Section/CSectionBuilder.cls",
+      "bytes": 3245,
+      "sha256": "65baa91410e84109eae807e527a833376f4fe131a9eeaf4562e8e4a25589aa56"
+    },
+    {
+      "path": "src/Section/CSectionContours.cls",
+      "bytes": 9837,
+      "sha256": "91f15f34851e56d535847624bc03daf4ae3dead3d4af6c5858b8053ef0cb4713"
+    },
+    {
+      "path": "src/Section/CSectionDefinition.cls",
+      "bytes": 14625,
+      "sha256": "6823e2061390798eeb251c9d86fc143c49ffd58f236a19774320b09009a50b06"
+    },
+    {
+      "path": "src/Section/CSectionDefinitionBuilder.cls",
+      "bytes": 14436,
+      "sha256": "f58fab5cc03548d0a54288c066e82826831003794c4c9d036c26016ee2f322a4"
+    },
+    {
+      "path": "src/Section/CSectionGeometryQuery.cls",
+      "bytes": 117270,
+      "sha256": "51d17a6036307e0a3be252214d99cbe3f338d3439fdff5ffd929d27fa6fdd057"
+    },
+    {
+      "path": "src/Section/CSectionInputTable.cls",
+      "bytes": 12049,
+      "sha256": "129cc182621b54bfe281d28b3b7503aa46230c09943fc32fcfa21070b7239b42"
+    },
+    {
+      "path": "src/Section/CSectionModel.cls",
+      "bytes": 53819,
+      "sha256": "1a1647807e70e441b3dca74e03d1f11356409fb620a58102ac7f7cf6580ce037"
+    },
+    {
+      "path": "src/Section/CSectionModelBuilder.cls",
+      "bytes": 4198,
+      "sha256": "e2c9f28284d5a56a1c6b6220ca1d7057244dfb218410db7987e45a186c0fad76"
+    },
+    {
+      "path": "src/Section/CSectionPropertiesCalculator.cls",
+      "bytes": 48379,
+      "sha256": "dbc315ced118d0861b233bc77390d20612cc35a513ac9780c4fce7e74a87cff8"
+    },
+    {
+      "path": "src/Section/CSectionRecipeContext.cls",
+      "bytes": 2403,
+      "sha256": "212f4d66c928c127c97e68f9c448600b121e5265efb50041ea28fd32ce95afcf"
+    },
+    {
+      "path": "src/Section/ISectionRecipe.cls",
+      "bytes": 595,
+      "sha256": "d24e5030241812fed466b7d03a7cb10a8724e5fb5c6b38c7f75a61a5368744c3"
+    },
+    {
+      "path": "src/Solver/CCapacityCalculator.cls",
+      "bytes": 22605,
+      "sha256": "9b1f0a2ebabe51be4ec5877dc452eb6c85c0b453f0ae81726c3ed16499e6b1f2"
+    },
+    {
+      "path": "src/Solver/CCapacityLimitSearchProblem.cls",
+      "bytes": 32636,
+      "sha256": "7b1506c787cf6f563e611582527db2c6319f96a3cd2dd657fdd325edbb13d1a9"
+    },
+    {
+      "path": "src/Solver/CCapacityResult.cls",
+      "bytes": 24550,
+      "sha256": "94bfc253f653c2e4b8ce231bae761703674e7db35d168ae3793b11bb8f491844"
+    },
+    {
+      "path": "src/Solver/CCapacitySolver.cls",
+      "bytes": 125975,
+      "sha256": "af2a4b768cd783d2014ae15d167362e4a3ae1c57199dd411529f7d1795af7585"
+    },
+    {
+      "path": "src/Solver/CCrackLimitSearchProblem.cls",
+      "bytes": 26538,
+      "sha256": "cdf234d1f30b2c3e93e87bf9d275e3657b28a32801161b0fa536412e8d08aef2"
+    },
+    {
+      "path": "src/Solver/CLimitSearchCoordinator.cls",
+      "bytes": 16829,
+      "sha256": "8ed628ea23756d31487061b58dc94dbe79aa5bedae247aa58c6ced8688a4863c"
+    },
+    {
+      "path": "src/Solver/CLimitSearchRequest.cls",
+      "bytes": 16081,
+      "sha256": "02d3c2bc1629ad2c98dda5e8f78af7fe16689988a33ff28af7d1ca3e62d8809b"
+    },
+    {
+      "path": "src/Solver/CLimitSearchResult.cls",
+      "bytes": 11318,
+      "sha256": "48fbacc20e7d32a6978aae1bf98f6d7dc0ef883f1a49932286ef4ce1806321ca"
+    },
+    {
+      "path": "src/Solver/CLinearSystem3x3.cls",
+      "bytes": 8166,
+      "sha256": "ad30ff660ee60945ed3cbcf398251afd87302ed535996049ed693f0b9909c684"
+    },
+    {
+      "path": "src/Solver/CLoadMultiplierSearch.cls",
+      "bytes": 46676,
+      "sha256": "85e502a2dbca61bab161f98b3f3865085cc3d23af03744823171034fdd3d6a90"
+    },
+    {
+      "path": "src/Solver/CSectionNumericalFrame.cls",
+      "bytes": 4381,
+      "sha256": "430fe5d4dd88bde5d25d1f871601cb945944b891daa437b62ed9323ddb8f78e5"
+    },
+    {
+      "path": "src/Solver/CSectionSolver.cls",
+      "bytes": 93251,
+      "sha256": "709e24b0b95cda4a1d45411e5cb0254f1055015fb528736171aaaec5584becc0"
+    },
+    {
+      "path": "src/Solver/CSectionStrainLimits.cls",
+      "bytes": 6433,
+      "sha256": "c5bfe8e45d14596d89da8a2fb00e2c9493ef3525d5b8020727a78c2684e44d41"
+    },
+    {
+      "path": "src/Solver/CStateGuessBuilder.cls",
+      "bytes": 41425,
+      "sha256": "c889ac9cebb9d57335ec32eba503718065ced39ab3f7258dd787b4a201fbe8da"
+    },
+    {
+      "path": "src/Solver/CStateSolutionRunner.cls",
+      "bytes": 44952,
+      "sha256": "0368e9ab7636ee13afb3240cac715145e38ec9bb21107187045d56a11b08ea72"
+    },
+    {
+      "path": "src/Solver/CUltimateStrainSearch.cls",
+      "bytes": 64121,
+      "sha256": "459d0a79277e7e4e0026a83f8dcbfe88639155aa28c071f905011e47450dea88"
+    },
+    {
+      "path": "src/Solver/modLimitSearchRequestFactory.bas",
+      "bytes": 3157,
+      "sha256": "357b1846a1a4502c4830d4c718037deaebbf29b9e4af165777d5e9f25747ee3e"
+    },
+    {
+      "path": "src/Solver/modNonlinearStepControl.bas",
+      "bytes": 2738,
+      "sha256": "c3320ae5b95f59012478362ef1f360fc59d0e7ee5d1c84c6d68cfb97d920156e"
+    },
+    {
+      "path": "src/Stability/CStabilityCalculator.cls",
+      "bytes": 91256,
+      "sha256": "a45cb9f44186b41430d27b0bd3463a8cd7764d70513c38bedfedf310261a6a07"
+    },
+    {
+      "path": "src/Stability/CStabilityResult.cls",
+      "bytes": 19249,
+      "sha256": "e5711043ea314f0631c3340fb48650cc5c91cd3759920e268b736857783d5c7c"
+    },
+    {
+      "path": "tests/CFakeAcadContour.cls",
+      "bytes": 7947,
+      "sha256": "07c2d2b9a2f021ec1a6f0912424d8eeaf525914fffb5af5f58f22b06ca367fdd"
+    },
+    {
+      "path": "tests/CFakeAcadContourExport.cls",
+      "bytes": 7469,
+      "sha256": "40290ba31df7f78e459c67f9e61274dfa36a7b26cbf57e60bc49b84893ca9a4c"
+    },
+    {
+      "path": "tests/CFakeAcadDocument.cls",
+      "bytes": 2644,
+      "sha256": "5f9f5138f006bbb9dc539ff62074c1959bbc54466ac59470f52b68ac0d9ab55e"
+    },
+    {
+      "path": "tests/CFakeAcadLine.cls",
+      "bytes": 2783,
+      "sha256": "b187cc7c867540ad8418bf4f8886252e1103c684e286d47292ecc46704877fda"
+    },
+    {
+      "path": "tests/CFakeAcadRegion.cls",
+      "bytes": 5833,
+      "sha256": "b6a884a72e95bbb88a5300dfbe0fdaceb624bc439f4b95f3dd0fb275ac3127a9"
+    },
+    {
+      "path": "tests/CTestLimitSearchProblem.cls",
+      "bytes": 42024,
+      "sha256": "96b554aeeef61098abfd09fbf8b5ac2a73cb59db377bac957545b9d0369cbaf5"
+    },
+    {
+      "path": "tests/modTestAutoCADConfig.bas",
+      "bytes": 88306,
+      "sha256": "ab7f2a1ba2c4f62055cdfba6935e9610c6ddda6a8a61f23cd4ea13925631ba37"
+    },
+    {
+      "path": "tests/modTestAutoCADContours.bas",
+      "bytes": 152290,
+      "sha256": "430ed8e1569e2012430d8b82d73cd25fcc28a4e2d618279c7f0f5bd14088676b"
+    },
+    {
+      "path": "tests/modTestBatchCalculation.bas",
+      "bytes": 651034,
+      "sha256": "7f1c57960b87ee7be2137034435c5d7e4844f92c2a72d4b8a65a60f6be649756"
+    },
+    {
+      "path": "tests/modTestCapacitySolver.bas",
+      "bytes": 255890,
+      "sha256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "path": "tests/modTestConfiguration.bas",
+      "bytes": 172991,
+      "sha256": "d9d2849e8811f0d3d01bf2fff40dde7cc591b0d8058365b314ad241c6d0fc4c2"
+    },
+    {
+      "path": "tests/modTestContourMesh.bas",
+      "bytes": 41606,
+      "sha256": "56adc60a81c08f162e4701bdc4dffa81874c8b3d3e7468b34c1d8dd90a880d17"
+    },
+    {
+      "path": "tests/modTestCrackWidth.bas",
+      "bytes": 127006,
+      "sha256": "272fa3a97acf6438b0988388bb45916207bd746a72c900d9bc9dda0326c3ec6a"
+    },
+    {
+      "path": "tests/modTestDeclarativeGeometry.bas",
+      "bytes": 36279,
+      "sha256": "5ae54d3e2b35ce4e241788e75629a371e7bf7e0dbb483f680c44867c2b081a4c"
+    },
+    {
+      "path": "tests/modTestGeneralGeometryConfig.bas",
+      "bytes": 39245,
+      "sha256": "ad30ec93e0d68dfacbc7d1d99f4d8069bac708d8a5d702eefcbd583aa35f8a82"
+    },
+    {
+      "path": "tests/modTestGeometry.bas",
+      "bytes": 175154,
+      "sha256": "306ebe9ce9d259f10fc25dc9894ce1c311f534ad2307d023978b8aa48aaf47f2"
+    },
+    {
+      "path": "tests/modTestGeometryConfig.bas",
+      "bytes": 99035,
+      "sha256": "bfc9ee357e5059bc6ab50991e03ea5c5c8e1d028120217c23913c4289efeab84"
+    },
+    {
+      "path": "tests/modTestGeometryFixtures.bas",
+      "bytes": 16609,
+      "sha256": "38994b01b4ffa8f47bc5179e761c7b6736d16dba4cfe60704e26f0447e2826c1"
+    },
+    {
+      "path": "tests/modTestGeometryQuery.bas",
+      "bytes": 58391,
+      "sha256": "98df7fd22a84276405a3af0f7c8239f174f99bf5a186cd27d183f69be178de4f"
+    },
+    {
+      "path": "tests/modTestLoadTableConfig.bas",
+      "bytes": 57694,
+      "sha256": "453307c09866f196daf7f97cc7eb0202dd0e88160c19cecb1032f03fcd0d439d"
+    },
+    {
+      "path": "tests/modTestMaterialDiagrams.bas",
+      "bytes": 89747,
+      "sha256": "1c54db4b11bfc47e32012d1e4eabeb6888d8ea72755d0b2ac4ff80cd77b14896"
+    },
+    {
+      "path": "tests/modTestPerformance.bas",
+      "bytes": 73374,
+      "sha256": "c921d5692650cc1070a9dd5258c7003c22e0ad941c29dd62100623e2691d4807"
+    },
+    {
+      "path": "tests/modTestPlotConfig.bas",
+      "bytes": 118957,
+      "sha256": "640bb69a9f0523f94909089e758f7b929f6173ea0afbf7cd3adf50bff91ddc83"
+    },
+    {
+      "path": "tests/modTestProfileConfig.bas",
+      "bytes": 117116,
+      "sha256": "22601f3f7046feb05aa7386f4432b2a1cfa555e3ee42edf46c3f2955ee5a8fde"
+    },
+    {
+      "path": "tests/modTestRegressionBaseline.bas",
+      "bytes": 20841,
+      "sha256": "4746f5d372721d618c373191cb722536b0d127ce692c54dd6db59bc36d673607"
+    },
+    {
+      "path": "tests/modTestSectionRecipes.bas",
+      "bytes": 84778,
+      "sha256": "fc26cc9a5c2074b4874e31cc7c74e96fa5273641c7b6e78cb9236a254da35ac2"
+    },
+    {
+      "path": "tests/modTestSectionSolver.bas",
+      "bytes": 126326,
+      "sha256": "76dba87d0fc4c1ceeefbc84d364dd9d6bc9a81965f553481524b653d4b1577d3"
+    },
+    {
+      "path": "tests/modTestShapeArchitecture.bas",
+      "bytes": 50801,
+      "sha256": "73fc86d75bf98ba77815651f529b481bc66578f12ee897cefdcbba982c3a77f5"
+    },
+    {
+      "path": "tests/modTestSP35CrackWidth.bas",
+      "bytes": 97816,
+      "sha256": "386be682610e9b1554a4a3addca29d7aaac810b73d5264849ba8cf20b3cb1969"
+    },
+    {
+      "path": "tests/modTestWorkbookInterface.bas",
+      "bytes": 480476,
+      "sha256": "f49722bf0f75815e37ae7b83b65f85aa2b0a5330dc2f5dc83d3b1f68769502fa"
+    },
+    {
+      "path": "tests/test_geometry_snapshot_comparator.py",
+      "bytes": 2616,
+      "sha256": "da333eb607174a08a6a114417d425913780c370b4805521027f56029e5778df0"
+    },
+    {
+      "path": "tools/build_workbook/Compare-GeometrySnapshots.py",
+      "bytes": 10269,
+      "sha256": "257047e2c3ec63cb47007d5191393286117bb29be14305445b7b7fdc3e2b977c"
+    },
+    {
+      "path": "tools/build_workbook/Inventory-GeometryEvidence.py",
+      "bytes": 2597,
+      "sha256": "10b2d7602103b325e97f8424e58e3153af9f97f8d592b8748349807face2f4ac"
+    },
+    {
+      "path": "tools/build_workbook/Pack-GeometryMilestone.py",
+      "bytes": 3357,
+      "sha256": "42f7a0a6d417cf1daf8fb7e6b0323bc917d07d53b93e59195e866c4bb842871a"
+    },
+    {
+      "path": "tools/build_workbook/Run-Audit02ModeTests.ps1",
+      "bytes": 20374,
+      "sha256": "6cc80c63359a0b0f2e8f5d37ec63cc1453b245b9d56a304f876e5fa8a6b1f71e"
+    },
+    {
+      "path": "tools/build_workbook/Run-Audit03Watchdog.ps1",
+      "bytes": 5662,
+      "sha256": "b2a9b389dc03f99ca0cd5a42b285229047de692afc78d6c37faf6b0b0900c1dc"
+    },
+    {
+      "path": "tools/build_workbook/Update-PrivateWorkbookCode.ps1",
+      "bytes": 8909,
+      "sha256": "076c30d31d0eda4f71143ede8cd9bc1256cced1e0eb01fca471f02fa64d51ae7"
+    },
+    {
+      "path": "tools/build_workbook/Verify-GeometryBaselineCode.ps1",
+      "bytes": 9279,
+      "sha256": "82ce401192b35c31b5c4376169c77eb330842db7e19c88898b4de7f5e78f7e73"
+    }
+  ]
+}

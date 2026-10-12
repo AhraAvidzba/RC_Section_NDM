@@ -43,7 +43,8 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         Set options = New CRebarRuleOptions
         options.EndMode = ClosedUniform: options.SourcePrefix = "B": options.AnnotationGroup = "Circle"
         options.Publication = PublishPerSourcePosition: options.Comment = "Круг: основной ряд арматуры"
-        options.SourceReference = table.SourceReference(table.RowByKey("Rebar.AxisDistance"), 2)
+        options.SourceReference = table.SourceReference(table.RowByKey("Rebar.Count"), 2) & "; " & _
+            table.SourceReference(table.RowByKey("Rebar.AxisDistance"), 2)
         facade.RebarByCount "Circle.Main", path.ID, count, d, options
         If d2 > 0# Then
             Set options = AdditionalOptions(table, "Rebar.Diameter2", "_R2", loc2, d / 2# + d2 / 2#)

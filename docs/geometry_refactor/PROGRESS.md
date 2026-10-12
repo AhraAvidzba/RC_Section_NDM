@@ -20,7 +20,8 @@ D01-D24/E01-E14 выполняется после удаления замене�
 - Этап 06: LOCAL_PASS. Все четыре семейства проверены отдельными рецептами.
 - Этап 07: IN_PROGRESS. Штатный Generated-вход переключен в source/native staging; основной output пока прежний.
 - Этап 08: NOT_RUN. Полный API-гайд и сохраненная справка еще впереди.
-- Этап 09: IN_PROGRESS. Перенос численных fixtures и retirement начаты; полное удаление еще не завершено.
+- Этап 09: SOURCE_AND_NATIVE_STAGING_PASS. Все test consumers перенесены,
+  15 компонентов удалены из source и отдельной книги; основной output впереди.
 - Этапы 10-11: NOT_RUN. Итоговая приемка и подготовленная основная книга еще впереди.
 - Baseline HEAD: a138c2732382c826db9ac2f801facd3d533d406c.
 - Baseline-книга: workbook/output/RC_Section_NDM.xlsm.
@@ -633,3 +634,45 @@ PASS, 155 компонентов, unexpected/sourceMismatch=0, согласов�
 Sandbox COM probe не запускал Excel; native повтор вне sandbox прошёл.
 Основная книга по-прежнему прежняя; это самостоятельный этап test retirement,
 не окончательная приёмка. Следующий consumer: modTestGeometry.
+
+## Завершение Source/Native Retirement 12.10.2026
+
+modTestGeometry перенесён полностью: контуры/рецепты и общий executor заменили
+прежние constructors. Физические размеры, нагрузки и численные ожидания
+сохранены. Rounded-путь проверяется аналитически вместо ломаной согласно
+ранее принятому BEHAVIOR_CHANGES.md. Старый Perimeter RectSet — сумма двух
+периметров 3300 мм; наружная граница отдельно 2800 мм. Отрицательный B
+проверяется рецептом: зеркальный готовый контур сам по себе допустим.
+
+Из source и отдельного VBProject удалены 12 специализированных классов,
+ISectionShape, modGeometryPreparation, modRebarLayoutGeometry. Полезная общая
+математика сохранена в query/paths/rules. Поиск src/tests/tools не дал активных
+ссылок. Обновлены runner snippets, import lists, README/AGENTS. CAD annotation
+engine перенесён из контейнера в общий annotation builder без смены вычислений.
+
+Две причины геометрического отказа дополнены советом исправления; Circle
+preflight сохраняет адрес счётчика вместе с as. Общий код recipe error 5530
+проверяется вместо удалённых builder-specific codes. Внешние статусы сохранены.
+
+Post-retirement native: 6577 PASS, failed=0. Состав 140 компонентов:
+99 class, 36 standard, 5 document; 15 ожидаемых удалений, additions=0.
+Read-only source/native comparison PASS: семь approved modules совпадают,
+unexpected/sourceMismatch=0. SectionSolver 2834, numerical baseline 39 PASS.
+Подробная разбивка: LEGACY_RETIREMENT_MAP.md; доказательства:
+GeometryDeclarative_2026-10-12/RetiredArchitecture/.
+
+Failed probes сохранены: строка размеров Hollow в test formatter,
+Perimeter/negative width в перенесённых test contracts, два непредставимых
+символа в VBA-комментариях. Допуски не расширялись, numerical baseline
+не перезаписывался. Native compilation и все перечисленные suites прошли
+после удаления. Две ранние compile ошибки перенесённых test calls исправлены
+до сохранения книги; пользовательские данные не затронуты.
+
+Пользователь 12.10.2026 выбрал направленные проверки. Самые долгие полные
+on/off и Excel UI прогоны не разрешены; дальнейшая приёмка — адресные
+сценарии по требованиям, без повторного запроса этого разрешения.
+
+Основной output и VBA_All_Code.txt ещё прежние; этап 09 не закрывает конечные
+D20/D24. Далее: довести обязательный API, доступность setbacks на Config,
+контрольный один-класс-рецепт и полный последний раздел листа Справка;
+провести адресную итоговую приёмку и подготовить книгу с сохранением данных.

@@ -72,10 +72,10 @@ End Function
 
 Private Sub ValidatePlacement(ByVal index As Long, ByVal x As Double, ByVal y As Double, ByVal diameter As Double, _
         ByVal positionID As String, ByVal geometry As CGeometryRegion, ByVal region As CConcreteRegion, ByVal query As CSectionGeometryQuery)
-    If Not geometry.ContainsPoint(x, y) Then RuleError index, "Ось стержня '" & positionID & "' вне бетона."
+    If Not geometry.ContainsPoint(x, y) Then RuleError index, "Ось стержня '" & positionID & "' вне бетона. Уменьшите смещение или измените положение ряда."
     If mRules(index).PlacementCheck = CheckFullDisk Then
         If query.BoundaryDistance(region, x, y) + GEOM_TOLERANCE < diameter / 2# Then _
-            RuleError index, "Стержень '" & positionID & "' не помещается целиком внутри бетона."
+            RuleError index, "Стержень '" & positionID & "' не помещается целиком внутри бетона. Уменьшите диаметр или измените положение ряда."
     End If
 End Sub
 

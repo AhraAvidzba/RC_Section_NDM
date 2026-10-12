@@ -1,0 +1,163 @@
+{
+  "status": "SOURCE_AND_NATIVE_STAGING_PASS",
+  "outputStatus": "PENDING",
+  "scope": "15 retired components and migrated test consumers; directed checks only",
+  "parentCommit": "e333dc8c4a4ebfff8967288c3e64c4d3b462e942",
+  "nativeWorkbookSHA256": "B31A0D5614F89965DC76FCE377D811D01704F4B82FCB56BC547745772909DEBD",
+  "excelVersion": "16.0",
+  "excelBuild": "10417",
+  "nativeComponentCounts": {
+    "StandardModules": 36,
+    "Classes": 99,
+    "DocumentModules": 5,
+    "Other": 0
+  },
+  "removedComponents": [
+    {
+      "Name": "CCircleAnnotationBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CCircleRebarLayoutBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CGeometryCircle",
+      "Type": 2
+    },
+    {
+      "Name": "CGeometryHollowRectangle",
+      "Type": 2
+    },
+    {
+      "Name": "CGeometryRectSet",
+      "Type": 2
+    },
+    {
+      "Name": "CGeometryRoundedRectangle",
+      "Type": 2
+    },
+    {
+      "Name": "CHollowRectAnnotationBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CHollowRectRebarLayoutBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CRectSetAnnotationBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CRectSetRebarLayoutBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CRoundedRectAnnotationBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "CRoundedRectRebarLayoutBuilder",
+      "Type": 2
+    },
+    {
+      "Name": "ISectionShape",
+      "Type": 2
+    },
+    {
+      "Name": "modGeometryPreparation",
+      "Type": 1
+    },
+    {
+      "Name": "modRebarLayoutGeometry",
+      "Type": 1
+    }
+  ],
+  "sourceChecks": [
+    {
+      "name": "modTestGeometry",
+      "matches": true
+    },
+    {
+      "name": "modTestGeometryFixtures",
+      "matches": true
+    },
+    {
+      "name": "modWorkbookCalculation",
+      "matches": true
+    },
+    {
+      "name": "CSectionRecipeCircle",
+      "matches": true
+    },
+    {
+      "name": "CRebarRuleExecutor",
+      "matches": true
+    },
+    {
+      "name": "CSectionAnnotations",
+      "matches": true
+    },
+    {
+      "name": "CSectionAnnotationBuilder",
+      "matches": true
+    }
+  ],
+  "reports": [
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt",
+      "sha256": "7b887fe724d8e88f020cec956de823f1bf3073871acbfbe9c6b242b8b4a94841",
+      "status": "PASS",
+      "totals": [
+        "TOTAL: passed=765; failed=0",
+        "TOTAL ANALYTIC PATHS: passed=276; failed=0",
+        "TOTAL PATH ANCHORS: passed=58; failed=0",
+        "TOTAL ROUNDED POLYGONS: passed=36; failed=0",
+        "TOTAL ROUNDED OFFSET: passed=27; failed=0",
+        "TOTAL INPUT TABLES: passed=42; failed=0",
+        "TOTAL RECIPE RULES: passed=187; failed=0",
+        "TOTAL RECIPE DEFINITION: passed=15; failed=0"
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt",
+      "sha256": "7f07790c8aa6f8ac5af4c4d5474b224de6186c8c72aa209361a170f0c73aceed",
+      "status": "PASS",
+      "totals": [
+        "TOTAL: passed=1319; failed=0",
+        "TOTAL_GENERATED_CONTOURS: passed=520; failed=0",
+        "TOTAL_POSTAUDIT03_CONTOURS: passed=231; failed=0"
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/ImportedSnapshotUnits.txt",
+      "sha256": "21f3599151eb798863f4bcba8e0891b6c96dcc3ea2a3c0aa325cc318d9c3c073",
+      "status": "PASS",
+      "totals": [
+        "TOTAL_AUDIT03_IMPORTED_UNIT_CHANGES: passed=228; failed=0"
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt",
+      "sha256": "5a366129218f79ec78d4781882a2d92c51573d40bffbcfa4c714ba97470b0ae4",
+      "status": "PASS",
+      "totals": [
+        "TOTAL_SECTION_SOLVER: passed=2834; failed=0; elapsedSec=1.7578125",
+        "TOTAL_REGRESSION_BASELINE: passed=39; failed=0; elapsedSec=2.31640625"
+      ]
+    }
+  ],
+  "passedAssertions": 6577,
+  "failedAssertions": 0,
+  "evidenceArchive": "docs/regression/GeometryDeclarative_2026-10-12/RetirementEvidence.zip",
+  "archiveSHA256": "b215349ad4188296df609e454ae3433d0f38bae7a364fc1f78d266aea23c1b1f",
+  "archiveEntries": 183,
+  "remaining": [
+    "Complete mandatory declarative API",
+    "Config setbacks",
+    "One-class example and workbook API guide",
+    "Directed final acceptance",
+    "Preserve and update production workbook and code dump"
+  ]
+}

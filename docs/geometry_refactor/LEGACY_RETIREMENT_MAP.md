@@ -1,5 +1,62 @@
 # Карта Удаления Замененной Архитектуры
 
+## Фактическое Состояние 12.10.2026
+
+**SOURCE_AND_NATIVE_STAGING_PASS / OUTPUT_PENDING.** Из source и отдельной
+post-retirement книги удалены все 12 специализированных geometry/rebar/
+annotation classes, ISectionShape, modGeometryPreparation и
+modRebarLayoutGeometry (15 компонентов). CFakeMultiOpeningGeometry удалён
+ранее. Актуальные владельцы ответственности указаны в исторической таблице
+ниже; все её ACTIVE/REVIEW/IN_PROGRESS заменены этим подтверждённым состоянием.
+
+Все test constructors перенесены. modTestGeometryFixtures форматирует
+in-memory ввод действующих рецептов, описывает явные общие fixtures и
+переносит готовые данные; собственной расстановки стержней/регистрации типа
+в нём нет. Прежний Circle/RectSet/Rounded/Hollow builder нигде не вызывается.
+Прежние registry factories и type-specific reader methods удалены ранее.
+Поиск src/tests/tools не дал активных ссылок на заменённые components/helpers.
+История, неизменяемый baseline и миграционные отчёты сохраняются.
+
+Скрытый constructor performance runner заменён фиксированными Outer/Opening
+с настоящими дугами через существующий query. Source-contract проверяет
+общий prepared region и неизменяемое definition. Import lists/README/AGENTS
+актуализированы. Custom не создавался, в baseline отсутствовал.
+
+PrepareImportedSection и private helpers перенесены из CSectionAnnotations
+в CSectionAnnotationBuilder. Контейнер хранит данные; общий builder добавляет
+точные/приблизительные размеры и ALL-подпись. PrepareSectionSnapshot вызывает
+его один раз. Формат, численные вычисления и единицы сохранены. Два символа
+диаметра в комментариях записаны словами; runtime Unicode через ChrW сохранён.
+
+Книга: `docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/RC_Section_NDM.xlsm`.
+Native compile PASS. Read-only сверка с WorkbookRetirement: PASS, 15 ожидаемых
+удалений, 0 additions, 140 компонентов (99 classes, 36 standard, 5 document),
+unexpected/sourceMismatch=0; семь approved source bodies совпадают.
+
+| Направленный набор после удаления | PASS | FAIL |
+|---|---:|---:|
+| Геометрия | 765 | 0 |
+| Аналитические paths/anchors/RoundedPolygon/offset/input | 439 | 0 |
+| Rules/Definition | 202 | 0 |
+| Общий query | 1319 | 0 |
+| Владение/round-trip контуров | 520 | 0 |
+| Сохранённые CAD-контуры | 231 | 0 |
+| Единицы импортированного снимка | 228 | 0 |
+| SectionSolver | 2834 | 0 |
+| Numerical baseline | 39 | 0 |
+| Итого | 6577 | 0 |
+
+Это post-retirement этап, не полная D/E/G/R/A/I приёмка. Основная книга и
+VBA_All_Code.txt ещё прежние. Обязательные остатки: полный публичный API,
+Config setbacks, новый пример, полный гайд в книге, адресная итоговая приёмка
+и окончательный output/dump. Старый VBProject основного output удаляется при
+его подготовке; его существование явно учитывается как OUTPUT_PENDING.
+
+## Исторический Журнал До Retirement
+
+Следующий текст сохранён как хронология промежуточных этапов; его состояния
+ACTIVE/IN_PROGRESS не описывают текущий source/native staging.
+
 Общий source/native staging-маршрут переключен на рецепты. Старые классы
 еще остаются в численных тестах и прежней основной книге; удаление пока
 не подтверждено. Готовность отдельных новых рецептов указана ниже.
