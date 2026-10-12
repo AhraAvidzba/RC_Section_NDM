@@ -1,0 +1,68 @@
+{
+  "Stage": "IN_PROGRESS",
+  "SourceHashes": [
+    {
+      "Path": "tests/modTestGeometry.bas",
+      "SHA256": "A6257186CFE7D52B2AA01FF423A52C176F7A97A4E6931E5F673046073F4EEE9A"
+    },
+    {
+      "Path": "tools/build_workbook/Update-PrivateWorkbookCode.ps1",
+      "SHA256": "076C30D31D0EDA4F71143EDE8CD9BC1256CCED1E0EB01FCA471F02FA64D51AE7"
+    }
+  ],
+  "ProductionSHA256": "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+  "Artifacts": [
+    {
+      "Path": "GeometryPrimitiveBaseline/ArcOpenings.txt",
+      "SHA256": "FC498ED3AD54224396939CEA7B54BCEC09261B2C6A68324C9F857089CCE64AFC"
+    },
+    {
+      "Path": "GeometryPrimitiveBaseline/CodeUpdate.json",
+      "SHA256": "FAB9B41712137E234A7753F261D016303F54CA4BB6B504CC7CC4E70B5B3AE6B3"
+    },
+    {
+      "Path": "GeometryPrimitiveBaseline/Primitives.txt",
+      "SHA256": "CB6A535FABEFF38C3ABB9A0C085C66F16615DFBC1412A5CB47394DD136E72E14"
+    },
+    {
+      "Path": "GeometryPrimitiveBaseline/RC_Section_NDM.xlsm",
+      "SHA256": "F72F0B61C8F1170165D2F3BD34AE5A1850750D1767192F2AD7CCAB38EB2FA894"
+    },
+    {
+      "Path": "GeometryRetirement/ArcOpenings.txt",
+      "SHA256": "DA38BF5F5DB83A6C95810BF4D921248EBDF5164A5F1C5AE3BA1CFC96D5F9D658"
+    },
+    {
+      "Path": "GeometryRetirement/CodeComparison.json",
+      "SHA256": "A429E584386BBE9D72B4C6E7A58C70B17EC8438C1FD69D68D04126F8F5942135"
+    },
+    {
+      "Path": "GeometryRetirement/CodeUpdate.json",
+      "SHA256": "603F01AC30AAB12A021038D863FA00BE955E926419D27C722324181F4172776A"
+    },
+    {
+      "Path": "GeometryRetirement/NumericSpellingProof.json",
+      "SHA256": "9509B5B28D13122EBE1EBFF35F5D077566E2F5271850D56211ECE75731155489"
+    },
+    {
+      "Path": "GeometryRetirement/PrimitiveCodeComparison_NumericSpellingProbeFailed.json",
+      "SHA256": "89BA2A3B29E6DCDCB388D3761E7EB610C8A7873862F5E5C1C5167ED652478DCB"
+    },
+    {
+      "Path": "GeometryRetirement/PrimitiveCodeComparison.json",
+      "SHA256": "89BA2A3B29E6DCDCB388D3761E7EB610C8A7873862F5E5C1C5167ED652478DCB"
+    },
+    {
+      "Path": "GeometryRetirement/Primitives.txt",
+      "SHA256": "951CD725FEF94180466EB149B621948533968C4C82B477166D410988163521C9"
+    },
+    {
+      "Path": "GeometryRetirement/RC_Section_NDM.xlsm",
+      "SHA256": "502A8BAA00A47AABFA6DC71B8BC22B7FB2818EDAB71A8D3096689A9AC425E626"
+    },
+    {
+      "Path": "GeometryRetirement/ReportComparisons.json",
+      "SHA256": "088144A43BA5CDA8C548BDB12FC5CE8C9CA3FC343757BA53F8193F27C2F7FB0D"
+    }
+  ]
+}

@@ -81,6 +81,45 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
+' ДЛЯ ТЕСТОВ: перенесенные геометрические fixtures без оставшихся старых builders.
+Public Function RunRetiredGeometryPrimitiveTests() As String
+    Dim stats As TTestStats
+    On Error GoTo Failed
+    TestSectionModelFromGeneratedGeometry stats
+    TestRectangle stats
+    TestSymmetricRoundedRectangle stats
+    TestTaperedRoundedRectangle stats
+    TestHollowRectangleGeometry stats
+    TestAudit03HollowContainedOpeningMesh stats
+    TestCircleGeometry stats
+    TestCircleCoreDistance stats
+    TestCirclePrincipalAxesStableOnCoarseMesh stats
+    TestBoundarySubcellMesh stats
+    TestRectangularMeshSteps stats
+    TestRectSetGeometry stats
+    TestMeshConvergence stats
+    TestPerformance stats
+    AppendLine stats, "TOTAL_RETIRED_GEOMETRY_PRIMITIVES: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunRetiredGeometryPrimitiveTests = stats.Report
+    Exit Function
+Failed:
+    RunRetiredGeometryPrimitiveTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: аналитические сопряжения и отверстия без старых shape contracts.
+Public Function RunRetiredGeometryArcOpeningTests() As String
+    Dim stats As TTestStats
+    On Error GoTo Failed
+    TestTaperedRoundedRectangle stats
+    TestHollowRectangleGeometry stats
+    TestAudit03HollowContainedOpeningMesh stats
+    AppendLine stats, "TOTAL_RETIRED_GEOMETRY_ARC_OPENING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunRetiredGeometryArcOpeningTests = stats.Report
+    Exit Function
+Failed:
+    RunRetiredGeometryArcOpeningTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
+End Function
+
 ' ДЛЯ ТЕСТОВ: общий центр, инвалидация кэша и одинаковая точка у геометрии,
 ' численной системы и пользовательских нагрузок, включая перенос на 1000 м.
 Public Function RunConcreteMeshCenterTests() As String
@@ -168,18 +207,17 @@ End Sub
 ' площади/число элементов сохраняются, расчетные ID создаются моделью,
 ' исходное имя стержня остается отдельным трассировочным полем.
 Private Sub TestSectionModelFromGeneratedGeometry(ByRef stats As TTestStats)
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter 300#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(300#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 50#, 50#, 1, 2
+    mesh.BuildMesh geom, 50#, 50#, 1, 2
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "CircleSourceName-1", 100#, 0#, 20#, 0#, "A400", "source name", BuildConcreteGeometry(geom)
-    rebars.AddBar "CircleSourceName-2", -100#, 0#, 20#, 0#, "A400", "source name", BuildConcreteGeometry(geom)
+    rebars.AddBar "CircleSourceName-1", 100#, 0#, 20#, 0#, "A400", "source name", geom
+    rebars.AddBar "CircleSourceName-2", -100#, 0#, 20#, 0#, "A400", "source name", geom
 
     Dim model As CSectionModel
     Set model = BuildGeneratedSectionModel(mesh, rebars, "Circle")
@@ -849,12 +887,11 @@ End Sub
 ' Скругления равны нулю, поэтому ошибка проверяет дискретизацию и перенос
 ' характеристик, а не приближение криволинейного контура.
 Private Sub TestRectangle(ByRef stats As TTestStats)
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 200#, 100#, 0#, 0#, 0#, 0#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBox(200#, 100#)
 
     Dim props As CSectionPropertiesCalculator
-    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
+    Set props = MeshProps(geom, 2.5, 2.5)
 
     AssertClose stats, "rect.area", props.Area, 200# * 100#, 0.000001
     AssertClose stats, "rect.cx", props.CentroidX, 0#, 0.000001
@@ -959,32 +996,31 @@ End Sub
 ' На грубой сетке сравнивает центральную и subcell-дискретизацию, проверяя
 ' малые краевые элементы и сохранение расчетной площади.
 Private Sub TestRectSetGeometry(ByRef stats As TTestStats)
-    Dim geom As CGeometryRectSet
-    Set geom = New CGeometryRectSet
-    geom.Initialize 250#, 550#, 600#, 250#, 10#, -20#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBoxes(Array(Array(10#, -20#, 600#, 250#), Array(10#, 230#, 250#, 550#)))
 
     Dim available As Boolean
     Dim analyticalArea As Double
     Dim centroidX As Double
     Dim centroidY As Double
-    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(available)
-    BuildConcreteGeometry(geom).AnalyticalCentroid available, centroidX, centroidY
+    analyticalArea = geom.AnalyticalArea(available)
+    geom.AnalyticalCentroid available, centroidX, centroidY
 
     AssertTrue stats, "rectset.area.available", available
     AssertClose stats, "rectset.area.analytical", analyticalArea, 600# * 250# + 250# * 550#, 0.000001
     AssertClose stats, "rectset.cx.analytical", centroidX, 226.304347826087, 0.000001
     AssertClose stats, "rectset.cy.analytical", centroidY, 296.304347826087, 0.000001
-    AssertTrue stats, "rectset.contains.lower", BuildConcreteGeometry(geom).ContainsPoint(580#, 20#)
-    AssertTrue stats, "rectset.contains.vertical", BuildConcreteGeometry(geom).ContainsPoint(100#, 700#)
-    AssertTrue stats, "rectset.excludes.cutout", Not BuildConcreteGeometry(geom).ContainsPoint(500#, 700#)
+    AssertTrue stats, "rectset.contains.lower", geom.ContainsPoint(580#, 20#)
+    AssertTrue stats, "rectset.contains.vertical", geom.ContainsPoint(100#, 700#)
+    AssertTrue stats, "rectset.excludes.cutout", Not geom.ContainsPoint(500#, 700#)
 
     Dim centerMesh As CFiberMeshBuilder
     Set centerMesh = New CFiberMeshBuilder
-    centerMesh.BuildMesh BuildConcreteGeometry(geom), 80#, 80#, 1
+    centerMesh.BuildMesh geom, 80#, 80#, 1
 
     Dim subcellMesh As CFiberMeshBuilder
     Set subcellMesh = New CFiberMeshBuilder
-    subcellMesh.BuildMesh BuildConcreteGeometry(geom), 80#, 80#, 1, 4
+    subcellMesh.BuildMesh geom, 80#, 80#, 1, 4
 
     Dim centerProps As CSectionPropertiesCalculator
     Set centerProps = New CSectionPropertiesCalculator
@@ -1342,17 +1378,16 @@ End Sub
 ' Subcells должны улучшить площадь, увеличить число граничных волокон
 ' и сохранить их настоящий уменьшенный размер в модели.
 Private Sub TestBoundarySubcellMesh(ByRef stats As TTestStats)
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByRadius 95#, 0#, 0#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(190#)
 
     Dim centerMesh As CFiberMeshBuilder
     Set centerMesh = New CFiberMeshBuilder
-    centerMesh.BuildMesh BuildConcreteGeometry(geom), 40#, 40#, 1
+    centerMesh.BuildMesh geom, 40#, 40#, 1
 
     Dim subcellMesh As CFiberMeshBuilder
     Set subcellMesh = New CFiberMeshBuilder
-    subcellMesh.BuildMesh BuildConcreteGeometry(geom), 40#, 40#, 1, 4
+    subcellMesh.BuildMesh geom, 40#, 40#, 1, 4
 
     Dim centerProps As CSectionPropertiesCalculator
     Set centerProps = New CSectionPropertiesCalculator
@@ -1374,13 +1409,12 @@ End Sub
 ' Проверяет, что генератор бетонной сетки действительно поддерживает разные
 ' шаги по X и Y и передает прямоугольную оболочку элемента дальше в модель.
 Private Sub TestRectangularMeshSteps(ByRef stats As TTestStats)
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 100#, 60#, 0#, 0#, 0#, 0#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBox(100#, 60#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 25#, 15#, 1, 1
+    mesh.BuildMesh geom, 25#, 15#, 1, 1
 
     AssertTrue stats, "mesh.rectangularSteps.hasFibers", mesh.FiberCount > 0
     AssertClose stats, "mesh.rectangularSteps.width", mesh.FiberWidth(1), 25#, 0.000001
@@ -1397,22 +1431,21 @@ End Sub
 ' включение точек в контур и сеточные A/I относительно независимых формул.
 ' Координаты центра не должны теряться при генерации модели.
 Private Sub TestCircleGeometry(ByRef stats As TTestStats)
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter 300#, 10#, -20#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(300#, 10#, -20#)
 
     Dim available As Boolean
     Dim analyticalArea As Double
     Dim centroidX As Double
     Dim centroidY As Double
-    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(available)
-    BuildConcreteGeometry(geom).AnalyticalCentroid available, centroidX, centroidY
+    analyticalArea = geom.AnalyticalArea(available)
+    geom.AnalyticalCentroid available, centroidX, centroidY
 
     Dim props As CSectionPropertiesCalculator
-    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
+    Set props = MeshProps(geom, 2.5, 2.5)
 
     Dim analyticalI As Double
-    analyticalI = GEOM_PI * geom.Radius ^ 4 / 4#
+    analyticalI = GEOM_PI * 150# ^ 4 / 4#
 
     AssertTrue stats, "circle.area.available", available
     AssertRelative stats, "circle.area", props.Area, analyticalArea, 0.003
@@ -1420,20 +1453,19 @@ Private Sub TestCircleGeometry(ByRef stats As TTestStats)
     AssertClose stats, "circle.cy", props.CentroidY, centroidY, 0.05
     AssertRelative stats, "circle.Ix", props.Ixc, analyticalI, 0.006
     AssertRelative stats, "circle.Iy", props.Iyc, analyticalI, 0.006
-    AssertClose stats, "circle.Ixy", props.Ixyc, 0#, 0.000001 * props.Area * geom.Radius
+    AssertClose stats, "circle.Ixy", props.Ixyc, 0#, 0.000001 * props.Area * 150#
     AssertClose stats, "circle.principal.angle", props.PrincipalAngleRad, 0#, 0.000001
 End Sub
 
 ' Проверяет ядровое расстояние на круге: для сплошного круга r = R/4.
 ' Метод CoreDistanceAlong затем используется устойчивостью СП 35 для ветви e/r.
 Private Sub TestCircleCoreDistance(ByRef stats As TTestStats)
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter 300#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(300#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 2.5, 2.5, 1
+    mesh.BuildMesh geom, 2.5, 2.5, 1
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, Nothing)
@@ -1656,12 +1688,11 @@ End Sub
 ' чистый пользовательский Mx не должен попадать во вторую плоскость только из-за
 ' дискретизационного шума.
 Private Sub TestCirclePrincipalAxesStableOnCoarseMesh(ByRef stats As TTestStats)
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter 500#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(500#)
 
     Dim props As CSectionPropertiesCalculator
-    Set props = MeshProps(BuildConcreteGeometry(geom), 20#, 20#)
+    Set props = MeshProps(geom, 20#, 20#)
 
     AssertClose stats, "circle.coarse.principal.angle", props.PrincipalAngleRad, 0#, 0.000000001
     AssertTrue stats, "circle.coarse.IxIy.nearlyEqual", _
@@ -1685,16 +1716,15 @@ End Sub
 ' Сверяет сетку симметричного скругленного прямоугольника с аналитической
 ' площадью, нулевым центром/Ixy и ожидаемым направлением главных осей.
 Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 300#, 160#, 25#, 25#, 25#, 25#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureFillets(Array(Array(-150#, 80#), Array(150#, 80#), Array(150#, -80#), Array(-150#, -80#)), Array(25#, 25#, 25#, 25#))
 
     Dim areaAvailable As Boolean
     Dim analyticalArea As Double
-    analyticalArea = BuildConcreteGeometry(geom).AnalyticalArea(areaAvailable)
+    analyticalArea = geom.AnalyticalArea(areaAvailable)
 
     Dim props As CSectionPropertiesCalculator
-    Set props = MeshProps(BuildConcreteGeometry(geom), 2.5, 2.5)
+    Set props = MeshProps(geom, 2.5, 2.5)
 
     AssertTrue stats, "sym.area.available", areaAvailable
     AssertRelative stats, "sym.area", props.Area, analyticalArea, 0.003
@@ -1708,54 +1738,40 @@ End Sub
 ' положение касательных и фактический габарит после скруглений.
 ' Допустимые большие радиусы различаются с действительно перекрывающимися.
 Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.InitializeSides 300#, 180#, "Simple", "Tapered", 0#, 80#, 20#, 30#, 0#, 45#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureFillets(Array(Array(-150#, 90#), Array(150#, 90#), Array(230#, 0#), _
+        Array(150#, -90#), Array(-150#, -90#)), Array(20#, 30#, 45#, 30#, 20#))
 
-    Dim props25 As CSectionPropertiesCalculator
-    Dim props125 As CSectionPropertiesCalculator
-    Set props25 = MeshProps(BuildConcreteGeometry(geom), 25#, 25#)
-    Set props125 = MeshProps(BuildConcreteGeometry(geom), 12.5, 12.5)
-
+    Dim props25 As CSectionPropertiesCalculator, props125 As CSectionPropertiesCalculator
+    Set props25 = MeshProps(geom, 25#, 25#): Set props125 = MeshProps(geom, 12.5, 12.5)
     AssertTrue stats, "rounded.tapered.area.positive", props125.Area > 0#
-    AssertTrue stats, "rounded.tapered.centroid.inside", BuildConcreteGeometry(geom).ContainsPoint(props125.CentroidX, props125.CentroidY)
-    AssertTrue stats, "rounded.tapered.rightExtension", _
-        BuildConcreteGeometry(geom).MaxX > geom.RightBaseX And BuildConcreteGeometry(geom).MaxX < geom.RightBaseX + geom.RightW
-    AssertClose stats, "rounded.tapered.height", BuildConcreteGeometry(geom).MaxY - BuildConcreteGeometry(geom).MinY, 180#, 0.000001
+    AssertTrue stats, "rounded.tapered.centroid.inside", geom.ContainsPoint(props125.CentroidX, props125.CentroidY)
+    AssertTrue stats, "rounded.tapered.rightExtension", geom.MaxX > 150# And geom.MaxX < 230#
+    AssertClose stats, "rounded.tapered.height", geom.MaxY - geom.MinY, 180#, 0.000001
     AssertRelative stats, "rounded.tapered.area.convergence", props125.Area, props25.Area, 0.08
     AssertRelative stats, "rounded.tapered.Ix.convergence", props125.Ixc, props25.Ixc, 0.15
 
-    Dim wideGeom As CGeometryRoundedRectangle
-    Set wideGeom = New CGeometryRoundedRectangle
-    wideGeom.InitializeSides 1000#, 500#, "Simple", "Tapered", 0#, 250#, 150#, 300#, 0#, 100#
+    Dim query As CSectionGeometryQuery, path As CGeometryPath, wide As CGeometryRegion, top As TRegionEdge
+    Set query = New CSectionGeometryQuery
+    Set path = query.RoundedPolygon("Wide", Array(Array(-500#, 250#), Array(500#, 250#), Array(750#, 0#), _
+        Array(500#, -250#), Array(-500#, -250#)), Array(150#, 300#, 100#, 300#, 150#), Array("TL", "TR", "Nose", "BR", "BL"))
+    path.CopySegment path.SegmentIndex("Edge.TL"), top
+    Set wide = FixtureGeometry(query.RegionFromPath(path))
+    AssertClose stats, "rounded.tapered.variableAngle.topTangent", top.X2, 500# - 300# * (Sqr(2#) - 1#), 0.000001
+    AssertClose stats, "rounded.tapered.variableAngle.maxX", wide.MaxX, 750# - 100# * (Sqr(2#) - 1#), 0.000001
+    AssertTrue stats, "rounded.tapered.variableAngle.maxLessThanRawApex", wide.MaxX < 750#
 
-    Dim x1 As Double
-    Dim y1 As Double
-    Dim x2 As Double
-    Dim y2 As Double
-    Dim normalX As Double
-    Dim normalY As Double
-    wideGeom.GetHorizontalRebarLine True, 0#, x1, y1, x2, y2, normalX, normalY
-
-    Dim expectedTopTangent As Double
-    Dim expectedNoseMaxX As Double
-    expectedTopTangent = wideGeom.RightBaseX - 300# * (Sqr(2#) - 1#)
-    expectedNoseMaxX = wideGeom.RightBaseX + wideGeom.RightW - 100# * (Sqr(2#) - 1#)
-    AssertClose stats, "rounded.tapered.variableAngle.topTangent", x2, expectedTopTangent, 0.000001
-    AssertClose stats, "rounded.tapered.variableAngle.maxX", BuildConcreteGeometry(wideGeom).MaxX, expectedNoseMaxX, 0.000001
-    AssertTrue stats, "rounded.tapered.variableAngle.maxLessThanRawApex", _
-        BuildConcreteGeometry(wideGeom).MaxX < wideGeom.RightBaseX + wideGeom.RightW
-
-    Dim largeR1 As CGeometryRoundedRectangle
-    Set largeR1 = New CGeometryRoundedRectangle
-    largeR1.InitializeSides 800#, 250#, "Simple", "Tapered", 0#, 400#, 40#, 160#, 0#, 30#
-    Dim validMessage As String
+    Dim largeR1 As CGeometryRegion, validMessage As String
+    Set largeR1 = FixtureFillets(Array(Array(-400#, 125#), Array(400#, 125#), Array(800#, 0#), _
+        Array(400#, -125#), Array(-400#, -125#)), Array(40#, 160#, 30#, 160#, 40#))
     AssertTrue stats, "rounded.tapered.r1GreaterThanHalfHeight.valid", largeR1.IsValid(validMessage)
-
-    Dim overlappingRadii As CGeometryRoundedRectangle
-    Set overlappingRadii = New CGeometryRoundedRectangle
-    overlappingRadii.InitializeSides 800#, 250#, "Simple", "Tapered", 0#, 80#, 40#, 300#, 0#, 120#
-    AssertTrue stats, "rounded.tapered.radiiOverlap.invalid", Not overlappingRadii.IsValid(validMessage)
+    Dim invalid As CGeometryRegion, number As Long, reason As String
+    On Error Resume Next
+    Set invalid = FixtureFillets(Array(Array(-400#, 125#), Array(400#, 125#), Array(480#, 0#), _
+        Array(400#, -125#), Array(-400#, -125#)), Array(40#, 300#, 120#, 300#, 40#))
+    number = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    AssertTrue stats, "rounded.tapered.radiiOverlap.invalid", number <> 0 And Len(reason) > 0 And invalid Is Nothing
 End Sub
 
 ' Проверяет semantic-аннотации RoundedRectangle: скругления должны идти дугами,
@@ -1946,34 +1962,42 @@ End Sub
 ' наружному RoundedRectangle минус Opening, а точки внутри отверстия не входят
 ' в бетонную часть сечения.
 Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
-    Dim geom As CGeometryHollowRectangle
-    Set geom = New CGeometryHollowRectangle
-    geom.Initialize 500#, 800#, 0#, 200#, 500#, 0#
+    Dim geom As CGeometryRegion, facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowGeometryFixture"
+    Set path = facade.RectanglePath("Boundary", -250#, -400#, 500#, 800#): facade.Outer "OUTER", path.ID
+    Set path = facade.RectanglePath("Void", -100#, -250#, 200#, 500#): facade.Opening "VOID", path.ID, "OUTER"
+    Set definition = facade.Finish: Set geom = FixtureGeometry(definition.ConcreteDomain)
 
     Dim message As String
     AssertTrue stats, "hollow.geometry.valid", geom.IsValid(message)
 
     Dim available As Boolean
     Dim areaValue As Double
-    areaValue = BuildConcreteGeometry(geom).AnalyticalArea(available)
+    areaValue = geom.AnalyticalArea(available)
     AssertTrue stats, "hollow.geometry.areaAvailable", available
     AssertClose stats, "hollow.geometry.area", areaValue, 500# * 800# - 200# * 500#, 0.000001
 
     Dim cx As Double
     Dim cy As Double
-    BuildConcreteGeometry(geom).AnalyticalCentroid available, cx, cy
+    geom.AnalyticalCentroid available, cx, cy
     AssertClose stats, "hollow.geometry.cx", cx, 0#, 0.000001
     AssertClose stats, "hollow.geometry.cy", cy, 0#, 0.000001
 
-    AssertTrue stats, "hollow.geometry.outerConcrete", BuildConcreteGeometry(geom).ContainsPoint(0#, 350#)
-    AssertTrue stats, "hollow.geometry.openingExcluded", Not BuildConcreteGeometry(geom).ContainsPoint(0#, 0#)
-    AssertTrue stats, "hollow.geometry.outsideExcluded", Not BuildConcreteGeometry(geom).ContainsPoint(260#, 0#)
+    AssertTrue stats, "hollow.geometry.outerConcrete", geom.ContainsPoint(0#, 350#)
+    AssertTrue stats, "hollow.geometry.openingExcluded", Not geom.ContainsPoint(0#, 0#)
+    AssertTrue stats, "hollow.geometry.outsideExcluded", Not geom.ContainsPoint(260#, 0#)
 
-    Dim offsetGeom As CGeometryHollowRectangle
-    Set offsetGeom = New CGeometryHollowRectangle
-    offsetGeom.Initialize 500#, 800#, 30#, 200#, 300#, 20#, 40#, -30#
-    areaValue = BuildConcreteGeometry(offsetGeom).AnalyticalArea(available)
-    BuildConcreteGeometry(offsetGeom).AnalyticalCentroid available, cx, cy
+    Dim offsetGeom As CGeometryRegion
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "OffsetVoidFixture"
+    Set path = facade.RoundedPolygon("Boundary", Array(Array(-250#, -400#), Array(250#, -400#), _
+        Array(250#, 400#), Array(-250#, 400#)), Array(30#, 30#, 30#, 30#), Array("BL", "BR", "TR", "TL"))
+    facade.Outer "OUTER", path.ID
+    Set path = facade.RoundedPolygon("Void", Array(Array(-60#, -180#), Array(140#, -180#), _
+        Array(140#, 120#), Array(-60#, 120#)), Array(20#, 20#, 20#, 20#), Array("BL", "BR", "TR", "TL"))
+    facade.Opening "VOID", path.ID, "OUTER"
+    Set definition = facade.Finish: Set offsetGeom = FixtureGeometry(definition.ConcreteDomain)
+    areaValue = offsetGeom.AnalyticalArea(available)
+    offsetGeom.AnalyticalCentroid available, cx, cy
     AssertTrue stats, "hollow.geometry.offset.valid", offsetGeom.IsValid(message)
     AssertTrue stats, "hollow.geometry.offset.cxOppositeOpening", cx < 0#
     AssertTrue stats, "hollow.geometry.offset.cyOppositeOpening", cy > 0#
@@ -2145,17 +2169,16 @@ End Sub
 ' Последнее уточнение проверяется прежними относительными допусками;
 ' численные результаты не заменяются текущей сеткой как новым эталоном.
 Private Sub TestMeshConvergence(ByRef stats As TTestStats)
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 400#, 220#, 35#, 35#, 35#, 35#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureFillets(Array(Array(-200#, 110#), Array(200#, 110#), Array(200#, -110#), Array(-200#, -110#)), Array(35#, 35#, 35#, 35#))
 
     Dim p50 As CSectionPropertiesCalculator
     Dim p25 As CSectionPropertiesCalculator
     Dim p125 As CSectionPropertiesCalculator
 
-    Set p50 = MeshProps(BuildConcreteGeometry(geom), 50#, 50#)
-    Set p25 = MeshProps(BuildConcreteGeometry(geom), 25#, 25#)
-    Set p125 = MeshProps(BuildConcreteGeometry(geom), 12.5, 12.5)
+    Set p50 = MeshProps(geom, 50#, 50#)
+    Set p25 = MeshProps(geom, 25#, 25#)
+    Set p125 = MeshProps(geom, 12.5, 12.5)
 
     AppendLine stats, "CONVERGENCE: step=50 area=" & FormatNumberInvariant(p50.Area) & _
         "; cx=" & FormatNumberInvariant(p50.CentroidX) & "; cy=" & FormatNumberInvariant(p50.CentroidY) & _
@@ -2182,13 +2205,12 @@ End Sub
 ' Проверяет непустую сетку; время записывается как диагностика, без
 ' необоснованного требования ускорения отдельного случайного запуска.
 Private Sub TestPerformance(ByRef stats As TTestStats)
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 800#, 500#, 40#, 40#, 40#, 40#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureFillets(Array(Array(-400#, 250#), Array(400#, 250#), Array(400#, -250#), Array(-400#, -250#)), Array(40#, 40#, 40#, 40#))
 
     Dim builder As CFiberMeshBuilder
     Set builder = New CFiberMeshBuilder
-    builder.BuildMesh BuildConcreteGeometry(geom), 10#, 10#, 1
+    builder.BuildMesh geom, 10#, 10#, 1
 
     Dim calc As CSectionPropertiesCalculator
     Set calc = New CSectionPropertiesCalculator
@@ -2846,7 +2868,7 @@ Private Sub TestAudit03GeometryLifecycle(ByRef stats As TTestStats, Optional ByV
     AssertTrue stats, "audit03.geometry.rounded.areaAvailable", available And freshAvailable
     AssertClose stats, "audit03.geometry.hollow.reinitArea", BuildConcreteGeometry(hollow).AnalyticalArea(available), BuildConcreteGeometry(freshHollow).AnalyticalArea(freshAvailable), 0#
     AssertTrue stats, "audit03.geometry.hollow.areaAvailable", available And freshAvailable
-    AppendLine stats, "CONST: GEOM_PI deltaFrom3x1e15=" & CStr((GEOM_PI - 3#) * 1000000000000000#)
+    AppendLine stats, "CONST: GEOM_PI deltaFrom3x1e15=" & CStr((GEOM_PI - 3#) * 1E+15)
     AssertClose stats, "audit03.geometry.piFullPrecision", GEOM_PI, 4# * Atn(1#), 0#
 End Sub
 
@@ -2855,13 +2877,13 @@ End Sub
 ' Границы прямоугольных проемов совпадают с границами подъячеек 10x10 мм,
 ' поэтому независимый oracle площади не требует погрешности аппроксимации.
 Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
-    Dim hollow As CGeometryHollowRectangle, mesh As CFiberMeshBuilder
+    Dim hollow As CGeometryRegion, mesh As CFiberMeshBuilder
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Dim scenario As Long, i As Long, area As Double, invalidCenters As Long
     Dim openingWidth As Double, openingHeight As Double, offsetX As Double, offsetY As Double
     Dim sx As Double, sy As Double, ix As Double, iy As Double, ixy As Double, fiberArea As Double
     Dim expectedArea As Double, openingArea As Double, cx As Double, cy As Double
     Dim prefix As String
-    Set hollow = New CGeometryHollowRectangle
     Set mesh = New CFiberMeshBuilder
     For scenario = 0 To 2
         openingWidth = 40#: openingHeight = 40#: offsetX = 50#: offsetY = 50#
@@ -2870,8 +2892,12 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
         ElseIf scenario = 2 Then
             offsetX = 0#: offsetY = 0#
         End If
-        hollow.Initialize 400#, 400#, 0#, openingWidth, openingHeight, 0#, offsetX, offsetY
-        mesh.BuildMesh BuildConcreteGeometry(hollow), 100#, 100#, 2, 10
+        Set facade = New CSectionDefinitionBuilder: facade.Initialize "ContainedVoidFixture"
+        Set path = facade.RectanglePath("Boundary", -200#, -200#, 400#, 400#): facade.Outer "OUTER", path.ID
+        Set path = facade.RectanglePath("Void", offsetX - openingWidth / 2#, offsetY - openingHeight / 2#, openingWidth, openingHeight)
+        facade.Opening "VOID", path.ID, "OUTER"
+        Set definition = facade.Finish: Set hollow = FixtureGeometry(definition.ConcreteDomain)
+        mesh.BuildMesh hollow, 100#, 100#, 2, 10
         area = 0#: invalidCenters = 0#: sx = 0#: sy = 0#: ix = 0#: iy = 0#: ixy = 0#
         For i = 1 To mesh.FiberCount
             fiberArea = mesh.FiberArea(i)
@@ -2882,7 +2908,7 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
             ix = ix + fiberArea * (12# * mesh.FiberY(i) ^ 2 + mesh.FiberHeight(i) ^ 2)
             iy = iy + fiberArea * (12# * mesh.FiberX(i) ^ 2 + mesh.FiberWidth(i) ^ 2)
             ixy = ixy + fiberArea * mesh.FiberX(i) * mesh.FiberY(i)
-            If Not BuildConcreteGeometry(hollow).ContainsPoint(mesh.FiberX(i), mesh.FiberY(i)) Then invalidCenters = invalidCenters + 1
+            If Not hollow.ContainsPoint(mesh.FiberX(i), mesh.FiberY(i)) Then invalidCenters = invalidCenters + 1
         Next i
         prefix = "audit03.hollow.containedOpening." & CStr(scenario)
         openingArea = openingWidth * openingHeight: expectedArea = 160000# - openingArea
@@ -2900,10 +2926,9 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
         AppendLine stats, "HOLLOW_CELL_MESH: " & prefix & "; fibers=" & CStr(mesh.FiberCount) & _
             "; area=" & CStr(area) & "; invalidCenters=" & CStr(invalidCenters)
     Next scenario
-    Dim rectangle As CGeometryRoundedRectangle
-    Set rectangle = New CGeometryRoundedRectangle
-    rectangle.Initialize 200#, 200#, 0#, 0#, 0#, 0#
-    mesh.BuildMesh BuildConcreteGeometry(rectangle), 100#, 100#, 2, 10
+    Dim rectangle As CGeometryRegion
+    Set rectangle = FixtureBox(200#, 200#)
+    mesh.BuildMesh rectangle, 100#, 100#, 2, 10
     Dim fullCellCount As Long
     For i = 1 To mesh.FiberCount
         If mesh.FiberWidth(i) = 100# And mesh.FiberHeight(i) = 100# Then fullCellCount = fullCellCount + 1

@@ -588,3 +588,26 @@ Unicode comments. VBE-написание восьми числовых вхож�
 Основная книга сохраняет исходный SHA-256 769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED;
 VBA_All_Code.txt пока не обновлялся. API-гайд, Config offsets/dropdown,
 полное retirement и конечная приемка остаются незавершенными.
+
+## Геометрический Suite: Примитивы И Отверстия
+
+14 численных методов modTestGeometry переведены на CGeometryRegion,
+общие RoundedPolygon/AdjacentRectangles и definition Outer/Opening.
+Два отдельных entrypoint-а проверяют прежние 54 primitive assertions
+и 44 Tapered/opening assertions. Обе книги проходят без отказов.
+В 58/47 сравниваемых строках (assertions и численная диагностика) нет
+различий; исключены только buildSec/propsSec. Это не поэлементная новая
+полная матрица и не завершение всего modTestGeometry.
+
+Baseline GeometryPrimitiveBaseline сохраняет старые методы: скрипт
+EntryPointNames добавляет только публичный тестовый вход, не удаляет
+существующий CodeModule. GeometryRetirement содержит актуальный source.
+Его read-only сверка: PASS, sourceMismatch/unexpected=0; 155 компонентов,
+никаких дополнительных классов или modules на этом шаге нет.
+
+Один диагностический литерал 1000000000000000# приведен к native 1E+15;
+IEEE754 равенство проверено. Failed comparison сохранен отдельно.
+Первый CLI probe с не-ASCII строкой в PS1 отвергнут Windows PowerShell 5.1
+до создания Excel; ASCII-маркер исправлен. Расчетная математика не менялась.
+Остались богатые rebar/annotation/validation fixtures этого же модуля и
+workbook-interface consumers. Основная книга и общий dump еще прежние.

@@ -3,6 +3,7 @@ param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
     [string[]]$ModuleNames = @(),
     [string[]]$RetiredModules = @(),
+    [string[]]$EntryPointNames = @(),
     [switch]$TraceGeometry
 )
 $ErrorActionPreference='Stop'
@@ -12,6 +13,8 @@ $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression'))+[IO.Path]::
 if (-not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only isolated evidence workbooks may be updated.'}
 $production=Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
 $productionHash=(Get-FileHash -LiteralPath $production).Hash
+if ($EntryPointNames.Count -and ($ModuleNames.Count -ne 1 -or $RetiredModules.Count -or $TraceGeometry)) {throw 'Entry-point instrumentation requires exactly one module and no retirement/trace.'}
+foreach ($name in $EntryPointNames) {if ($name -notmatch '^[A-Za-z][A-Za-z0-9_]*$') {throw ('Invalid entry-point name: '+$name)}}
 $sourceFiles=@(Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas','.cls')
 foreach ($name in $RetiredModules) {
     if ($name -notmatch '^[A-Za-z][A-Za-z0-9_]*$' -or $name -in $ModuleNames) {throw ('Invalid retirement: '+$name)}
@@ -86,7 +89,18 @@ End Function
             $componentNames+=,$file.BaseName
         }
         $module=$component.CodeModule
-        if ($module.CountOfLines) {$module.DeleteLines(1,$module.CountOfLines)}
+        if ($EntryPointNames.Count) {
+            $original=[string]$module.Lines(1,$module.CountOfLines)
+            $entries=@()
+            foreach ($name in $EntryPointNames) {
+                $declaration='(?m)^Public (?:Function|Sub) '+[regex]::Escape($name)+'\('
+                if ([regex]::IsMatch($original,$declaration)) {throw ('Entry point already exists in baseline: '+$name)}
+                $matches=[regex]::Matches($body,'(?ms)^Public (Function|Sub) '+[regex]::Escape($name)+'\(.*?^End \1\b')
+                if ($matches.Count -ne 1) {throw ('Source entry point is not unique: '+$name)}
+                $entries+=,"' FOR TESTS: baseline entry point only; existing methods retained.`r`n"+$matches[0].Value
+            }
+            $body=$entries -join "`r`n`r`n"
+        } elseif ($module.CountOfLines) {$module.DeleteLines(1,$module.CountOfLines)}
         $module.AddFromString(($body -split '\r?\n') -join "`r`n")
         $updated += $file.BaseName
     }
@@ -105,7 +119,7 @@ End Function
     }
     $book.Save();$book.Close($false);$book=$null
     if ((Get-FileHash -LiteralPath $production).Hash -cne $productionHash) {throw 'Production changed during preparation.'}
-    [ordered]@{Workbook=$path;WorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash;ProductionSHA256=$productionHash;Compiled=$true;Modules=$updated;RetiredModules=$removed;TraceGeometry=[bool]$TraceGeometry;ProductionChanged=$false} |
+    [ordered]@{Workbook=$path;WorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash;ProductionSHA256=$productionHash;Compiled=$true;Modules=$updated;RetiredModules=$removed;EntryPointNames=$EntryPointNames;TraceGeometry=[bool]$TraceGeometry;ProductionChanged=$false} |
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path (Split-Path -Parent $path) 'CodeUpdate.json') -Encoding UTF8
     Write-Output ('PRIVATE_CODE_READY: modules='+$updated.Count+'; production unchanged=True')
 } finally {
