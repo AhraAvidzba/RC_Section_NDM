@@ -28,7 +28,7 @@ def main() -> None:
     files: set[Path] = set()
     for folder in [args.evidence, *args.extra_evidence]:
         files.update(p for p in (root / folder).rglob("*") if p.is_file() and
-                     p.suffix.lower() in {".txt", ".json", ".xlsm", ".png"})
+        p.suffix.lower() in {".txt", ".json", ".xlsm", ".png", ".dwg"})
     for folder in ["src", "tests", "docs/geometry_refactor/examples"]:
         files.update(p for p in (root / folder).rglob("*") if p.is_file() and
                      p.suffix.lower() in {".bas", ".cls", ".frm", ".frx", ".py"})
@@ -46,7 +46,11 @@ def main() -> None:
                  "tools/build_workbook/Summarize-SectionRecipeGuide.py",
                  "tools/build_workbook/Verify-GeometryReleaseData.py", "tools/build_workbook/Export-Audit03VbaSnapshot.ps1",
                  "tools/build_workbook/Test-RecipeGuideBulkWrite.ps1", "tools/build_workbook/Compare-PerformanceVba.ps1",
-                 "tools/build_workbook/Build-Workbook.ps1"]:
+                 "tools/build_workbook/Build-Workbook.ps1",
+                 "tools/build_workbook/Run-PostAudit03NativeCAD.ps1",
+                 "tools/build_workbook/SettingsCatalog.ps1",
+                 "tools/build_workbook/Summarize-GeometryFinal.py",
+                 "tools/build_workbook/Publish-GeometryRelease.ps1"]:
         files.add(root / name)
     entries = []
     archive.parent.mkdir(parents=True, exist_ok=True)

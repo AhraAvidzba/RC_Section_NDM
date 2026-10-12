@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import json
 import re
+from functools import lru_cache
 from pathlib import Path
 from xml.etree import ElementTree as ET
 from zipfile import ZipFile
@@ -26,6 +27,7 @@ def read(path: Path):
             strings = ["".join(item.itertext()) for item in ET.fromstring(archive.read("xl/sharedStrings.xml"))]
         styles = ET.fromstring(archive.read("xl/styles.xml"))
         containers = {name: list(styles.find(S + name)) for name in ("fonts", "fills", "borders", "cellXfs", "cellStyleXfs")}
+        @lru_cache(maxsize=None)
         def style(index):
             xf = containers["cellXfs"][index]
             attributes = dict(xf.attrib)
@@ -71,7 +73,7 @@ def row_of(address):
     return int(re.search(r"[0-9]+$", address).group())
 
 
-def verify(before: Path, after: Path, layout: Path):
+def verify(before: Path, after: Path, layout: Path, existing_guide: bool = False):
     old, new = read(before), read(after)
     content = json.loads(layout.read_text(encoding="utf-8-sig"))
     name = new["names"].get("rngSectionRecipeGuide", "")
@@ -81,13 +83,17 @@ def verify(before: Path, after: Path, layout: Path):
     start, end = map(int, match.groups())
     errors, checks, cached = [], 0, []
     added = sorted(set(new["names"]) - set(old["names"]))
-    if added != ["rngSectionRecipeGuide"]:
+    expected_added = [] if existing_guide else ["rngSectionRecipeGuide"]
+    if existing_guide and "rngSectionRecipeGuide" not in old["names"]:
+        errors.append("Existing-guide reference does not contain rngSectionRecipeGuide")
+    if added != expected_added:
         errors.append("Unexpected names added: " + repr(added))
     for key, value in old["names"].items():
         if new["names"].get(key) != value:
             errors.append("Old named range changed: " + key)
     for sheet, data in old["sheets"].items():
         actual = new["sheets"][sheet]
+        populated_rows = {row_of(address) for address, cell in data["cells"].items() if cell["value"] or cell["formula"]}
         for address, expected in data["cells"].items():
             value = actual["cells"].get(address)
             checks += 1
@@ -99,7 +105,7 @@ def verify(before: Path, after: Path, layout: Path):
         for row, attrs in data["rows"].items():
             if sheet == "Справка" and row >= start:
                 # Форматированная пустота UsedRange не является содержанием.
-                if not any(row_of(address) == row for address, cell in data["cells"].items() if cell["value"] or cell["formula"]):
+                if row not in populated_rows:
                     continue
             if actual["rows"].get(row) != attrs:
                 errors.append("Old row metadata changed: " + sheet + "!" + str(row))
@@ -135,10 +141,11 @@ def verify(before: Path, after: Path, layout: Path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("before", type=Path); parser.add_argument("after", type=Path)
+    parser.add_argument("--existing-guide", action="store_true", help="Strictly compare an already installed guide: no new names expected")
     parser.add_argument("--layout", type=Path, default=Path("docs/geometry_refactor/SECTION_RECIPE_GUIDE_LAYOUT.json"))
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
-    result = verify(args.before, args.after, args.layout)
+    result = verify(args.before, args.after, args.layout, args.existing_guide)
     args.report.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: result[key] for key in ("status", "oldCellsChecked", "guideRows", "members", "apiStatus", "errors")}, ensure_ascii=False))
     if result["errors"]: raise SystemExit(1)

@@ -3,7 +3,10 @@
 param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
       [string]$ReportDirectory='docs/regression/PostAudit03/NativeCAD',
       [ValidateSet('RunRealAutoCADContourTests','RunRealAutoCADContourFormatTests','RunRealAutoCADContourMeshTests','RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTests')]
-      [string]$Macro='RunRealAutoCADContourTests')
+      [string]$Macro='RunRealAutoCADContourTests',
+      [switch]$LaunchInstalledAutoCAD,
+      [switch]$AcquireInsideExcel,
+      [switch]$ShowOwnedWindow)
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directory=Join-Path $root $ReportDirectory
@@ -15,7 +18,9 @@ $sourcePath=(Resolve-Path -LiteralPath $sourcePath).Path
 Copy-Item -LiteralPath $sourcePath -Destination $path -Force
 $class=(Get-ItemProperty -LiteralPath 'Registry::HKEY_CLASSES_ROOT\AutoCAD.Application.24.2\CLSID').'(default)'
 $server=(Get-ItemProperty -LiteralPath "Registry::HKEY_CLASSES_ROOT\CLSID\$class\LocalServer32").'(default)'
-if ($server -notlike 'C:\Program Files\Autodesk\AutoCAD 2023\acad.exe*') {throw "Unsafe CAD COM registration: $server"}
+$installedAcad='C:\Program Files\Autodesk\AutoCAD 2023\acad.exe'
+if (-not $LaunchInstalledAutoCAD -and $server -notlike "$installedAcad*") {throw "Unsafe CAD COM registration: $server"}
+if ($LaunchInstalledAutoCAD -and -not (Test-Path -LiteralPath $installedAcad)) {throw 'Installed Autodesk acad.exe was not found.'}
 Add-Type @'
 using System;
 using System.Runtime.InteropServices;
@@ -26,6 +31,7 @@ public static class PostAuditCADIdentity {
 '@
 $existing=@(Get-Process acad -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
 $excel=$null; $book=$null; $acad=$null; $owned=$false; $pidValue=0
+$launchedCad=$null; $launchedTicks=0
 function Invoke-CadReady([scriptblock]$Action) {
     $deadline=[DateTime]::UtcNow.AddSeconds(90)
     while ($true) {
@@ -40,8 +46,27 @@ function Invoke-CadReady([scriptblock]$Action) {
     }
 }
 try {
-    Write-Output ('CAD_ACTIVATE: ' + $server)
-    $acad=New-Object -ComObject AutoCAD.Application.24.2
+    if ($AcquireInsideExcel -and ($existing.Count -gt 0 -or $Macro -ne 'RunRealAutoCADContourTests')) {throw 'Native ROT acquisition requires no existing acad process and the contour entrypoint.'}
+    if ($LaunchInstalledAutoCAD) {
+        # ProgID может быть занят SOFiPLUS. Запускаем проверенный acad.exe и
+        # подключаемся только к его ROT-объекту, не меняя регистрацию вручную.
+        Write-Output ('CAD_EXPLICIT_LAUNCH: ' + $installedAcad + '; registered server=' + $server)
+        $launchedCad=Start-Process -FilePath $installedAcad -ArgumentList '/nologo' -WindowStyle Hidden -PassThru
+        $launchedTicks=$launchedCad.StartTime.ToUniversalTime().Ticks
+        Write-Output ('CAD_LAUNCHED: PID=' + $launchedCad.Id + '; startTicks=' + $launchedTicks)
+        $deadline=[DateTime]::UtcNow.AddSeconds(180)
+        while ($null -eq $acad) {
+            if ($launchedCad.HasExited) {throw 'Owned Autodesk AutoCAD exited before COM readiness.'}
+            try { $acad=[Runtime.InteropServices.Marshal]::GetActiveObject('AutoCAD.Application.24.2') }
+            catch {
+                if ([DateTime]::UtcNow -ge $deadline) {throw 'Owned Autodesk AutoCAD did not publish its ROT object within 180 seconds.'}
+                Start-Sleep -Milliseconds 1000
+            }
+        }
+    } else {
+        Write-Output ('CAD_ACTIVATE: ' + $server)
+        $acad=New-Object -ComObject AutoCAD.Application.24.2
+    }
     $fullName=[string]$acad.GetType().InvokeMember('FullName',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null)
     if ([string]::IsNullOrWhiteSpace($fullName)) {throw 'AutoCAD FullName is unavailable through IDispatch.'}
     if ($fullName -notlike 'C:\Program Files\Autodesk\AutoCAD 2023\acad.exe') {throw "Not Autodesk AutoCAD: $fullName"}
@@ -50,12 +75,16 @@ try {
     [void][PostAuditCADIdentity]::GetWindowThreadProcessId([IntPtr][long]$window,[ref]$processId)
     $pidValue=[int]$processId
     $owned=($pidValue -gt 0 -and $existing -notcontains $pidValue)
+    if ($LaunchInstalledAutoCAD) {
+        $owned=$owned -and $pidValue -eq $launchedCad.Id -and
+            (Get-Process -Id $pidValue).StartTime.ToUniversalTime().Ticks -eq $launchedTicks
+    }
     if (-not $owned) {throw "CAD instance is not owned by this test: PID=$pidValue"}
     Write-Output "CAD_OWNED: PID=$pidValue; executable=$fullName"
     $cadStartTicks=(Get-Process -Id $pidValue).StartTime.ToUniversalTime().Ticks
     [ordered]@{Executable=$fullName; OwnedPID=$pidValue; StartTicks=$cadStartTicks; ExistingPIDs=$existing; UserDocumentsUsed=$false} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADOwnership.json') -Encoding UTF8
-    Invoke-CadReady { $acad.Visible=$false }
+    Invoke-CadReady { $acad.Visible=[bool]$ShowOwnedWindow }
     # Готовим первый документ в управляющем COM-процессе до передачи
     # application в Excel: скрытый CAD без документа может зависнуть
     # на первом межпроцессном чтении Documents из VBA.
@@ -66,7 +95,7 @@ try {
         $bootstrap=Invoke-CadReady { $acad.Documents.Add() }
         $template=''
     } else {
-        $bootstrap=Invoke-CadReady { $documents.GetType().InvokeMember('Add',[Reflection.BindingFlags]::InvokeMethod,$null,$documents,@($template)) }
+        $bootstrap=Invoke-CadReady { $acad.Documents.Add($template) }
     }
     Write-Output ('CAD_BOOTSTRAP_DOCUMENT: ' + [string]$bootstrap.Name)
     $excel=New-Object -ComObject Excel.Application
@@ -78,7 +107,11 @@ try {
     $book=$excel.Workbooks.Open($path)
     # The saved candidate already contains the guarded optional CAD entrypoint.
     # Test it without replacing its VBA or saving fixture mutations.
-    $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.$Macro",$acad,$template)
+    if ($AcquireInsideExcel) {
+        $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.$Macro",$null,$template)
+    } else {
+        $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.$Macro",$acad,$template)
+    }
     $result | Set-Content -LiteralPath (Join-Path $directory 'NativeCAD.txt') -Encoding UTF8
     [ordered]@{Executable=$fullName; OwnedPID=$pidValue; COMServer=$server; UserDocumentsUsed=$false} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADIdentity.json') -Encoding UTF8
@@ -90,6 +123,13 @@ try {
     if ($acad) {
         if ($owned) {try {Invoke-CadReady { $acad.Quit() }} catch {Write-Warning $_.Exception.Message}}
         [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($acad)
+    }
+    if ($launchedCad) {
+        $remaining=Get-Process -Id $launchedCad.Id -ErrorAction SilentlyContinue
+        if ($remaining -and $remaining.ProcessName -eq 'acad' -and
+            $remaining.StartTime.ToUniversalTime().Ticks -eq $launchedTicks) {
+            Stop-Process -Id $remaining.Id -Force
+        }
     }
     [GC]::Collect(); [GC]::WaitForPendingFinalizers()
 }

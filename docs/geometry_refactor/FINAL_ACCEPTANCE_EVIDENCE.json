@@ -1,0 +1,1204 @@
+{
+  "schema": 1,
+  "status": "READY_TO_PUBLISH",
+  "dateUTC": "2026-10-12T15:08:34.084098+00:00",
+  "codeCommit": "0ac0520fb8eafd2974821956b84e230657a7d019",
+  "specVersion": "1.4",
+  "workbookSHA256": "8c93df48b2551ee95da7d4984a721f210ebecf066c8fd5b956dda9c28c412e89",
+  "vbaSHA256": "52820f95fb97e788fdfe13caa0fe61cbf6df91f08da5ce2c279fe83e70511c1e",
+  "reports": [
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt",
+      "sha256": "1b9ae679f5d2298a3032e31c1cfb30ab937493b2dad3fb4099bb45e4715ed0aa",
+      "status": "PASS",
+      "passed": 36429,
+      "totals": [
+        [
+          "622",
+          "0"
+        ],
+        [
+          "231",
+          "0"
+        ],
+        [
+          "1243",
+          "0"
+        ],
+        [
+          "34333",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/PhysicsIndependent.txt",
+      "sha256": "0103e5d7d531c1b47ea659889511a2ea455914a358300a849c3c4efacda2a862",
+      "status": "PASS",
+      "passed": 1424,
+      "totals": [
+        [
+          "270",
+          "0"
+        ],
+        [
+          "204",
+          "0"
+        ],
+        [
+          "702",
+          "0"
+        ],
+        [
+          "125",
+          "0"
+        ],
+        [
+          "123",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/AutoPlotFixed.txt",
+      "sha256": "8ca371a521819ee753ddaa8ffc6d721ef4375d506bf5d87ea972b45969f7b90b",
+      "status": "PASS",
+      "passed": 86,
+      "totals": [
+        [
+          "86",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/UnitAndIsolation.txt",
+      "sha256": "7a31ec939d555f5f03ff08c1bb5b94e11b6cb6e02512adec09bd7889a108500c",
+      "status": "PASS",
+      "passed": 8861,
+      "totals": [
+        [
+          "1585",
+          "0"
+        ],
+        [
+          "3929",
+          "0"
+        ],
+        [
+          "3347",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FamilyComplementSP35Final.txt",
+      "sha256": "86420d40444edcefe52f8b60439c433c1041c956c4660193467aa19d001b5909",
+      "status": "PASS",
+      "passed": 135,
+      "totals": [
+        [
+          "135",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FamilyComplementSP63Final.txt",
+      "sha256": "2be1b37ba4005ebad2fc34ee05281fdab2964a6fee7d8d7d4f7e3f3350c2039a",
+      "status": "PASS",
+      "passed": 135,
+      "totals": [
+        [
+          "135",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/DirectedPlotModes.txt",
+      "sha256": "57bb388024ae4f2c14f96f60b4317a1bfb752dead8fa26e64c0c637525122030",
+      "status": "PASS",
+      "passed": 28,
+      "totals": [
+        [
+          "28",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/SP35ProjectionCrackedFixture.txt",
+      "sha256": "6fc72c53eab28717c3764862ce3e938a401f35c43b053594a44afe3f9e68c7c7",
+      "status": "PASS",
+      "passed": 125,
+      "totals": [
+        [
+          "125",
+          "0"
+        ]
+      ]
+    },
+    {
+      "path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/NativeCADROT/NativeCAD.txt",
+      "sha256": "bfa9a758dd22cb52ec56d76e2f0119b20658ec676585c66375ddd7f2f67debc6",
+      "status": "PASS",
+      "passed": 398,
+      "totals": [
+        [
+          "398",
+          "0"
+        ]
+      ]
+    }
+  ],
+  "assertionTotalThisAcceptance": 47621,
+  "nativeExcel": {
+    "version": "16.0",
+    "build": "10417",
+    "components": 147
+  },
+  "familyPhysics": {
+    "SP35": {
+      "records": 48114,
+      "directStates": 108,
+      "converged": 108,
+      "batchResults": 18
+    },
+    "SP63": {
+      "records": 48114,
+      "directStates": 108,
+      "converged": 108,
+      "batchResults": 18
+    }
+  },
+  "postMigrationExactComparison": [
+    {
+      "status": "PASS",
+      "baseline": "docs\\regression\\GeometryDeclarative_2026-10-11\\ProductionRecipe\\WorkbookCalculationsSP35.txt",
+      "actual": "docs\\regression\\GeometryDeclarative_2026-10-12\\FinalAcceptance\\FamilySP35.txt",
+      "exact": true,
+      "skip_input": false,
+      "records": 48114,
+      "requested_fixtures": [],
+      "generated_rebar_name_mapping": [],
+      "fixtures": [
+        "Circle",
+        "HollowCentered",
+        "HollowOffset",
+        "LSection",
+        "Rectangle",
+        "RoundedMixed",
+        "RoundedSimple",
+        "RoundedTapered",
+        "TwoRectangles"
+      ],
+      "errors": [],
+      "mutation_tests": []
+    },
+    {
+      "status": "PASS",
+      "baseline": "docs\\regression\\GeometryDeclarative_2026-10-11\\ProductionRecipe\\WorkbookCalculationsSP63.txt",
+      "actual": "docs\\regression\\GeometryDeclarative_2026-10-12\\FinalAcceptance\\FamilySP63.txt",
+      "exact": true,
+      "skip_input": false,
+      "records": 48114,
+      "requested_fixtures": [],
+      "generated_rebar_name_mapping": [],
+      "fixtures": [
+        "Circle",
+        "HollowCentered",
+        "HollowOffset",
+        "LSection",
+        "Rectangle",
+        "RoundedMixed",
+        "RoundedSimple",
+        "RoundedTapered",
+        "TwoRectangles"
+      ],
+      "errors": [],
+      "mutation_tests": []
+    }
+  ],
+  "originalBaselineDifference": {
+    "SP35": 7118,
+    "SP63": 7115,
+    "families": [
+      "HollowCentered",
+      "HollowOffset"
+    ],
+    "classification": "DOCUMENTED_ANALYTIC_PROJECTION_CHANGE",
+    "oracle": "docs/geometry_refactor/HOLLOW_RECIPE_EVIDENCE.json",
+    "behavior": "docs/geometry_refactor/BEHAVIOR_CHANGES.md"
+  },
+  "preview": {
+    "records": 4804,
+    "reviewedChanges": 96,
+    "classification": "Only Hollow rebar/display coordinates follow independently checked analytic projection",
+    "images": 9,
+    "stressStrainImages": 18,
+    "specialModeImages": 8,
+    "reviewed": [
+      "StressContact.png",
+      "StrainContact.png",
+      "PlotModesPNG/PERF_01_Stress.png",
+      "PlotModesPNG/Resize_NoLabels.png",
+      "PlotModesPNG/MissingState.png"
+    ]
+  },
+  "performance": {
+    "scope": "Nine single-LC full workflows plus one full mixed profile; three staged HollowOffset samples",
+    "baselineFullSeconds": {
+      "Circle": 4.1085194000043,
+      "Rectangle": 1.06781650002813,
+      "LSection": 1.48903840000276,
+      "TwoRectangles": 1.14488590002293,
+      "RoundedSimple": 1.13843300001463,
+      "RoundedTapered": 1.23472290002974,
+      "RoundedMixed": 1.17518219997874,
+      "HollowCentered": 1.91476299997885,
+      "HollowOffset": 1.88878879998811
+    },
+    "actualFullSeconds": {
+      "Circle": 4.11162550002337,
+      "Rectangle": 1.15713359997608,
+      "LSection": 1.39438110002084,
+      "TwoRectangles": 1.59950919996481,
+      "RoundedSimple": 1.65518050000537,
+      "RoundedTapered": 1.87513850000687,
+      "RoundedMixed": 1.93403399997624,
+      "HollowCentered": 2.66212289995747,
+      "HollowOffset": 2.81458569999086
+    },
+    "mixedFullSeconds": 5.31149490003008,
+    "warmPhaseBaselineMedian": {
+      "seconds": 1.99629535002168,
+      "preparation": 0.22218144999351352,
+      "core": 0.0150767500163055,
+      "clear": 0.032896900025662,
+      "packing": 0.009068350016605,
+      "summary": 0.591074749972904,
+      "snapshot": 0.4047108000086155,
+      "plot": 0.7212761500268245,
+      "solves": 1.0
+    },
+    "warmPhaseActualMedian": {
+      "seconds": 2.395208250003635,
+      "preparation": 0.2415894500154535,
+      "core": 0.016911100014113,
+      "clear": 0.063540099974489,
+      "packing": 0.008936950005590999,
+      "summary": 0.720511699997587,
+      "snapshot": 0.5826005999988411,
+      "plot": 0.7611078499758155,
+      "solves": 1.0
+    },
+    "interpretation": "Additional time is mainly summary/snapshot output; common diagnostics/provenance add saved data. Solve count stays one; no repeated preparation. Samples are directed, not a broad benchmark."
+  },
+  "nativeCAD": {
+    "status": "PASS",
+    "report": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/NativeCADROT/NativeCAD.txt",
+    "assertions": 398,
+    "identity": {
+      "Executable": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe",
+      "OwnedPID": 14664,
+      "COMServer": "C:\\Program Files\\Autodesk\\AutoCAD 2023\\acad.exe /Automation",
+      "UserDocumentsUsed": false
+    },
+    "earlierBlockedStatusSuperseded": true,
+    "userDocumentsUsed": false
+  },
+  "preservation": {
+    "schema": 1,
+    "status": "USER_DATA_PRESERVED",
+    "checkedNonEmptyCells": 6277,
+    "beforeSHA256": "769c60cef6030a009825875b2488b6d1a7c5fc653025f7b6cbab6b4fce63eaed",
+    "afterSHA256": "8c93df48b2551ee95da7d4984a721f210ebecf066c8fd5b956dda9c28c412e89",
+    "guideStart": 1707,
+    "guideEnd": 9293,
+    "addedNames": [
+      "rngSectionRecipeGuide",
+      "rngSectionRecipeTypes"
+    ],
+    "removedNames": [],
+    "printAreaPreserved": true,
+    "allowedConfigCells": 63,
+    "actualChangesOutsideHelp": [
+      {
+        "sheet": "Config",
+        "row": 141,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура вдоль правой боковой траектории H."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 165,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура вдоль верхней наружной грани B между началами скруглений."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 139,
+        "column": 12,
+        "before": [
+          null,
+          "Ед."
+        ],
+        "after": [
+          null,
+          "StartSetback"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 169,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 166,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура вдоль нижней наружной грани B между началами скруглений."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 163,
+        "column": 12,
+        "before": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 143,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура по нижнему прямому участку B между скруглениями."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 170,
+        "column": 12,
+        "before": [
+          null,
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 3,
+        "column": 224,
+        "before": [
+          null,
+          "Circle"
+        ],
+        "after": [
+          null,
+          "RoundedRectangle"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 164,
+        "column": 12,
+        "before": [
+          null,
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 167,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура у левой грани Opening; количество берется проекцией с наружной H-грани."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 142,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура по верхнему прямому участку B между скруглениями."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 168,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура у правой грани Opening; количество берется проекцией с наружной H-грани."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 165,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 140,
+        "column": 12,
+        "before": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 162,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Комментарий"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 169,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура у верхней грани Opening; количество берется проекцией с наружной B-грани."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 166,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 89,
+        "column": 11,
+        "before": [
+          null,
+          "Количество стержней первого ряда, равномерно разложенных по окружности. Если указать 0, первый и дополнительные ряды не создаются."
+        ],
+        "after": [
+          null,
+          "Количество стержней первого ряда, равномерно разложенных по окружности. Если указать 0, первый и дополнительные ряды не создаются. ClosedUniform: StartSetback/EndSetback неприменимы к полному кольцу. Для отступов задайте открытый участок дуги в рецепте."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 141,
+        "column": 12,
+        "before": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 143,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 164,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура вдоль правой наружной грани H."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 167,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 139,
+        "column": 13,
+        "before": [
+          null,
+          "Комментарий"
+        ],
+        "after": [
+          null,
+          "EndSetback"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 142,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 163,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура вдоль левой наружной грани H."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 1,
+        "column": 224,
+        "before": [
+          null,
+          "RoundedRectangle"
+        ],
+        "after": [
+          null,
+          "Circle"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 140,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура вдоль левой боковой траектории H."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 170,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура у нижней грани Opening; количество берется проекцией с наружной B-грани."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 107,
+        "column": 12,
+        "before": [
+          null,
+          "t нач."
+        ],
+        "after": [
+          null,
+          "StartSetback"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 168,
+        "column": 12,
+        "before": [
+          null,
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 141,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура вдоль правой боковой траектории H."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 165,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура вдоль верхней наружной грани B между началами скруглений."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 162,
+        "column": 12,
+        "before": [
+          null,
+          "Ед."
+        ],
+        "after": [
+          null,
+          "StartSetback"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 139,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Ед."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 169,
+        "column": 12,
+        "before": [
+          null,
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 166,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура вдоль нижней наружной грани B между началами скруглений."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 163,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 143,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура по нижнему прямому участку B между скруглениями."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 140,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 170,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 164,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 167,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура у левой грани Opening; количество берется проекцией с наружной H-грани."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 142,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура по верхнему прямому участку B между скруглениями."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 4,
+        "column": 224,
+        "before": [
+          null,
+          "RectSet"
+        ],
+        "after": [
+          null,
+          "HollowRectangle"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 168,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура у правой грани Opening; количество берется проекцией с наружной H-грани."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 141,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 165,
+        "column": 12,
+        "before": [
+          null,
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 162,
+        "column": 13,
+        "before": [
+          null,
+          "Комментарий"
+        ],
+        "after": [
+          null,
+          "EndSetback"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 107,
+        "column": 13,
+        "before": [
+          null,
+          "t кон."
+        ],
+        "after": [
+          null,
+          "EndSetback"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 169,
+        "column": 13,
+        "before": [
+          null,
+          "Арматура у верхней грани Opening; количество берется проекцией с наружной B-грани."
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 142,
+        "column": 12,
+        "before": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 164,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура вдоль правой наружной грани H."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 139,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Комментарий"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 166,
+        "column": 12,
+        "before": [
+          null,
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 163,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура вдоль левой наружной грани H."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 168,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "mm"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 143,
+        "column": 12,
+        "before": [
+          "INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 162,
+        "column": 14,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Ед."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 140,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура вдоль левой боковой траектории H."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 170,
+        "column": 15,
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          null,
+          "Арматура у нижней грани Opening; количество берется проекцией с наружной B-грани."
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 167,
+        "column": 12,
+        "before": [
+          null,
+          "mm"
+        ],
+        "after": [
+          null,
+          "0"
+        ]
+      },
+      {
+        "sheet": "Config",
+        "row": 2,
+        "column": 224,
+        "before": [
+          null,
+          "HollowRectangle"
+        ],
+        "after": [
+          null,
+          "RectSet"
+        ]
+      }
+    ],
+    "loadCombinations": true,
+    "errors": []
+  },
+  "guidePreservation": {
+    "schema": 1,
+    "status": "XML_PRESERVATION_PASS",
+    "beforeSHA256": "49d5e213d43659e8126de03e4758f59ec38a2b18c385a6dfca8fdcb70c9a7163",
+    "afterSHA256": "8c93df48b2551ee95da7d4984a721f210ebecf066c8fd5b956dda9c28c412e89",
+    "oldCellsChecked": 107737,
+    "oldNamedRanges": 27,
+    "oldDrawings": 4,
+    "addedNames": [],
+    "formulaCacheUpdates": [],
+    "guideStart": 1707,
+    "guideEnd": 9293,
+    "guideRows": 7587,
+    "members": 276,
+    "apiStatus": "SOURCE_INVENTORY_ONLY",
+    "errors": []
+  },
+  "sourceEquality": {
+    "ActualComponents": 147,
+    "RepositoryComponents": 142,
+    "ProductionClasses": 94,
+    "AllPassed": true,
+    "BuildScriptSHA256": "9099E2B8A24FD43A0C5706065B204B30B376F828FDBA407D88DED9C2C05D46CF",
+    "ReferenceExport": "docs/regression/GeometryDeclarative_2026-10-12/FinalRelease/FreshVBA.txt",
+    "Normalization": "CRLF/LF, trailing blank lines, VBE identifier case; string literals and comments unchanged. Optional native reference is an independently compiled fresh build from the listed source hashes, not ad-hoc numeric/comment rounding."
+  },
+  "publication": null,
+  "notRun": [
+    {
+      "id": "FULL_ON_OFF",
+      "status": "NOT_RUN",
+      "reason": "User chose directed checks"
+    },
+    {
+      "id": "FULL_EXCEL_UI",
+      "status": "NOT_RUN",
+      "reason": "User chose directed checks"
+    }
+  ],
+  "failedProbes": [
+    "FamilySP35Comparison.json",
+    "FamilySP63Comparison.json",
+    "PreviewComparison.json",
+    "PassiveSnapshots.txt",
+    "DirectedPhysics.txt",
+    "AutoPlotIsolated.txt",
+    "FamilyComplementSP35Corrected.txt",
+    "FamilyComplementSP63Corrected.txt",
+    "HarnessPlotImport.txt",
+    "NativeCADDirectLaunch.txt",
+    "NativeCADExplicitLaunch.txt",
+    "NativeCADRegisteredLaunch.txt"
+  ],
+  "failuresResolved": "Old strict Hollow diff explained by existing independent oracle; AutoPlot fixture now explicitly Generated; projection test required a suitable current SP35 LC; wrong fixture keys/accessors and preparation count corrected; native ROT/visible owned AutoCAD passed. Full logs retained."
+}

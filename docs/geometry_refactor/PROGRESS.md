@@ -855,3 +855,43 @@ runner такой server не использует, пользовательск
 Следующий этап — требования/семейства/состояния, fake/passive CAD и performance,
 итоговые отчёты и безопасная публикация книги/dump. Тяжёлые полные on/off/UI
 не разрешены. Цель активна, окончательное выполнение ещё не доказано.
+
+## Заключительная направленная приёмка 12.10.2026
+
+FinalAcceptance: 47 496 PASS assertions в выбранных финальных отчётах.
+Девять fixtures SP35/SP63: 48 114 records на норму, все 108 прямых состояний
+сошлись; 18 batch results, точное совпадение с принятой analytic migration.
+Дополнительно 72 нагрузочных сценария и 18 сочетаний устойчивости на каждую
+норму; 135 PASS на норму. Старые Hollow-различия объяснены прежним независимым
+oracle, baseline/допуски не менялись. 96 preview-различий только Hollow rebar
+screen coordinates/size. Девять preview и 18 Stress/Strain PNG сохранены.
+Смешанные поля, LC/Worst, повтор, resize, NoLabels/NoState, чужой Shape и
+отсутствие дополнительных solve: 28 PASS. Reopen hash равен.
+
+AutoCAD 2023 найден (R24.2.161.0.0) и проверен: 398 PASS, собственный acad.exe,
+новые документы и DWG. Первое BLOCKED снято; попытки и ownership logs сохранены.
+Чужой ROT PID отклонён; зависшая COM-proxy проба остановлена только по своим
+PID/startTicks. Получение CAD прямо из Excel с собственным видимым окном
+прошло. Ручной перерегистрации не было. Чужие документы не использовались.
+
+AutoPlot FAIL был дефектом fixture: исходный AutoCAD не потребляет Geometry.Type.
+Явный Generated в тесте восстановил 86 PASS; production не менялся. Ошибочные
+keys/accessors и ожидание одного вместо двух preparation-кэшей исправлены в
+отдельном harness. Полные долгие on/off/UI не запускались по выбору пользователя.
+
+Full одно-LC время девяти fixtures 1,16–4,11 с. Полный смешанный HollowOffset
+(capacity/crack/stability/report/Results/plot) 5,31 с. Тёплые фазовые замеры
+2,40 против 2,00 с: основная разница summary/snapshot, solve=1. Это адресные
+результаты, не общий benchmark всех профилей/размеров.
+
+FinalRelease: native compile и strict fresh-reference MATCH 142+5 компонентов.
+Измерительного harness в production нет. 6277 пользовательских непустых ячеек,
+63 заданных изменения Config, реальные LC/Results и print area сохранены.
+107737 прежних ячеек/оформление Справки XML PASS; 276 API members актуальны.
+Ускорен только verifier (immutable styles + filled-row index); критерии сохранены.
+Auto-review отклонил остановку Python по командной строке, он оставлен работать;
+ускоренная проверка выполнена независимо с отдельным отчётом.
+
+FINAL_REPORT/TEST_MANIFEST/FINAL_ACCEPTANCE_EVIDENCE созданы. Кандидат
+8c93df48... готов; публикация книги/dump и заключительный local commit ещё
+предстоят. Основной output пока исходный, цель активна. Push не выполнять.

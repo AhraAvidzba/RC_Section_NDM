@@ -487,6 +487,9 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     Set config = fixture.Worksheets.Item("Config")
     Set table = fixture.Names.Item("rngSystemSettings").RefersToRange
     Audit03SetPlotSetting table, "General.ExecutionReportEnabled", "No"
+    ' ДЛЯ ТЕСТОВ: ошибка Generated-типа должна проверяться независимо от
+    ' выбранного пользователем источника. У AutoCAD Geometry.Type неактивен.
+    Audit03SetPlotSetting table, "Geometry.Source", "Generated"
     Audit03SetPlotSetting table, "Geometry.Type", "INVALID"
     baseline = table.Value2
     On Error Resume Next
