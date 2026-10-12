@@ -40,7 +40,7 @@ Public Function RunTangentClipRegressionTests() As String
     For Each shift In Array(0#, -3198.9061596318, 1000000#, -1000000#)
         cx = CDbl(shift): cy = CDbl(shift) / 4#
         Set region = query.CircleRegion(cx, cy, 500#)
-        For Each angle In Array(0#, -0.000122075814077587, 0.000122075814077587, GEOM_PI / 4#, GEOM_PI / 2#, GEOM_PI)
+        For Each angle In Array(0#, -1.22075814077587E-04, 1.22075814077587E-04, GEOM_PI / 4#, GEOM_PI / 2#, GEOM_PI)
             nx = Cos(CDbl(angle)): ny = Sin(CDbl(angle))
             For Each side In Array(-1#, 1#)
                 For Each inset In Array(-0.0001, -0.000004, -0.000001, 0#, 0.000001, 0.000004, 0.0001, 1#, 10#)
@@ -441,17 +441,19 @@ End Sub
 ' на уровне стыка прямой и скругления. Проверяем также отверстие, обе стороны
 ' стыка, перенос и поворот без подгонки допуска и без запуска НДС.
 Private Sub TestHollowArcJunctions(ByVal query As CSectionGeometryQuery)
-    Dim geometry As CGeometryHollowRectangle, section As CSectionModel
-    Dim annotations As CHollowRectAnnotationBuilder, rebars As CRebarLayout
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition, section As CSectionModel
     Dim domain As CConcreteRegion, rotated As CConcreteRegion, raw() As TRegionEdge, count As Long
     Dim angle As Variant, offset As Variant, side As Variant, i As Long, x As Double, y As Double
-    Set geometry = New CGeometryHollowRectangle
-    geometry.Initialize 500#, 800#, 180#, 200#, 500#, 30#, 0#, 0#
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowArcJunctionFixture"
+    Set path = facade.RoundedPolygon("Boundary", Array(Array(-250#, -400#), Array(250#, -400#), _
+        Array(250#, 400#), Array(-250#, 400#)), Array(180#, 180#, 180#, 180#), Array("BL", "BR", "TR", "TL"))
+    facade.Outer "OUTER", "Boundary"
+    Set path = facade.RoundedPolygon("VoidPath", Array(Array(-100#, -250#), Array(100#, -250#), _
+        Array(100#, 250#), Array(-100#, 250#)), Array(30#, 30#, 30#, 30#), Array("BL", "BR", "TR", "TL"))
+    facade.Opening "VOID", "VoidPath", "OUTER": Set definition = facade.Finish
     Set section = New CSectionModel
     section.AddConcreteElement 0#, -300#, 10000#, 1, , , "Rectangle", 100#, 100#
-    Set annotations = New CHollowRectAnnotationBuilder: Set rebars = New CRebarLayout
-    geometry.BuildContours section.Contours
-    annotations.Build section, geometry, rebars
+    definition.WriteContours section.Contours
     query.Initialize section: Set domain = query.ConcreteDomain
     For Each side In Array(-1#, 1#)
         For Each offset In Array(-0.00001, -0.00000001, 0#, 0.00000001, 0.00001)
@@ -741,71 +743,84 @@ End Function
 ' ДЛЯ ТЕСТОВ: точные контуры появляются до аннотаций, а их повторное
 ' построение/очистка не меняют ни одну запись контура или геометрическую версию.
 Private Sub TestGeneratedContoursWithoutAnnotations()
-    Dim kind As Variant, shape As ISectionShape, geometry As CGeometryRegion, circleGeometry As CGeometryCircle, rectSet As CGeometryRectSet
-    Dim rounded As CGeometryRoundedRectangle, hollow As CGeometryHollowRectangle
+    Dim kind As Variant, geometry As CGeometryRegion, facade As CSectionDefinitionBuilder
+    Dim path As CGeometryPath, definition As CSectionDefinition, labels As CSectionAnnotationBuilder
     Dim model As CSectionModel, bars As CRebarLayout, mesh As CFiberMeshBuilder, query As CSectionGeometryQuery
     Dim saved As CSectionContours, expectedArea As Double, revision As Long
     Dim bounds() As Double, openingCount As Long
-    Dim circleLabels As CCircleAnnotationBuilder, rectLabels As CRectSetAnnotationBuilder
-    Dim roundedLabels As CRoundedRectAnnotationBuilder, hollowLabels As CHollowRectAnnotationBuilder
     For Each kind In Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+        Set facade = New CSectionDefinitionBuilder: facade.Initialize CStr(kind)
         Select Case CStr(kind)
             Case "Circle"
-                Set circleGeometry = New CGeometryCircle: circleGeometry.InitializeByDiameter 100#
-                Set shape = circleGeometry: expectedArea = 2500# * GEOM_PI
+                Set path = facade.CirclePath("Boundary", 0#, 0#, 50#)
+                expectedArea = 2500# * GEOM_PI
             Case "RectSet"
-                Set rectSet = New CGeometryRectSet: rectSet.Initialize 100#, 100#, 0#, 0#, 0#, 0#, 0#, "Rectangle"
-                Set shape = rectSet: expectedArea = 10000#
-            Case "RoundedRectangle"
-                Set rounded = New CGeometryRoundedRectangle: rounded.Initialize 100#, 100#, 10#, 10#, 10#, 10#
-                Set shape = rounded: expectedArea = 10000# - (4# - GEOM_PI) * 100#
-            Case "HollowRectangle"
-                Set hollow = New CGeometryHollowRectangle: hollow.Initialize 100#, 100#, 10#, 40#, 60#, 5#
-                Set shape = hollow: expectedArea = 7600# - (4# - GEOM_PI) * 75#
+                Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#)
+                expectedArea = 10000#
+            Case "RoundedRectangle", "HollowRectangle"
+                Set path = facade.RoundedPolygon("Boundary", Array(Array(-50#, -50#), Array(50#, -50#), _
+                    Array(50#, 50#), Array(-50#, 50#)), Array(10#, 10#, 10#, 10#), Array("BL", "BR", "TR", "TL"))
+                If CStr(kind) = "HollowRectangle" Then
+                    expectedArea = 7600# - (4# - GEOM_PI) * 75#
+                Else
+                    expectedArea = 10000# - (4# - GEOM_PI) * 100#
+                End If
         End Select
-        Set geometry = BuildConcreteGeometry(shape)
+        facade.Outer "OUTER", "Boundary"
+        If CStr(kind) = "HollowRectangle" Then
+            Set path = facade.RoundedPolygon("VoidPath", Array(Array(-20#, -30#), Array(20#, -30#), _
+                Array(20#, 30#), Array(-20#, 30#)), Array(5#, 5#, 5#, 5#), Array("BL", "BR", "TR", "TL"))
+            facade.Opening "VOID", "VoidPath", "OUTER"
+        End If
+        facade.HorizontalExtent "DIM_B", "Boundary", "B", 0#
+        facade.VerticalExtent "DIM_H", "Boundary", "H", 0#
+        Set definition = facade.Finish: Set geometry = FixtureGeometry(definition.ConcreteDomain)
         Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 10#, 10#, 1, 2
         Set bars = New CRebarLayout
         bars.AddBar "SOURCE_BAR", 0.5 * (geometry.MinX + geometry.MaxX), geometry.MinY + 5#, 2#, GEOM_PI, "Rebar", , geometry
         Set model = BuildGeneratedSectionModel(mesh, bars)
-        shape.BuildContours model.Contours
+        definition.WriteContours model.Contours
         Check "generatedContours." & CStr(kind) & ".noAnnotations", model.AnnotationCount = 0 And model.Contours.Count > 0
         Set query = New CSectionGeometryQuery: query.Initialize model
         CheckNear "generatedContours." & CStr(kind) & ".areaBeforeAnnotations", query.ConcreteDomain.Area, expectedArea
         query.OpeningBounds model.Contours, bounds, openingCount
         Check "generatedContours." & CStr(kind) & ".openingCount", openingCount = IIf(CStr(kind) = "HollowRectangle", 1, 0)
         If CStr(kind) = "HollowRectangle" And openingCount = 1 Then
-            Check "generatedContours.hollow.meshBoundsUnchanged", bounds(1, 1) = hollow.OpeningMinX And bounds(1, 2) = hollow.OpeningMaxX And _
-                bounds(1, 3) = hollow.OpeningMinY And bounds(1, 4) = hollow.OpeningMaxY
+            Check "generatedContours.hollow.meshBoundsUnchanged", bounds(1, 1) = -20# And bounds(1, 2) = 20# And _
+                bounds(1, 3) = -30# And bounds(1, 4) = 30#
         End If
         Set saved = CopyGeneratedContoursForTests(model.Contours): revision = model.Contours.Revision
-        Select Case CStr(kind)
-            Case "Circle": Set circleLabels = New CCircleAnnotationBuilder: circleLabels.Build model, circleGeometry, bars
-            Case "RectSet": Set rectLabels = New CRectSetAnnotationBuilder: rectLabels.Build model, rectSet, bars
-            Case "RoundedRectangle": Set roundedLabels = New CRoundedRectAnnotationBuilder: roundedLabels.Build model, rounded, bars
-            Case "HollowRectangle": Set hollowLabels = New CHollowRectAnnotationBuilder: hollowLabels.Build model, hollow, bars
-        End Select
+        Set labels = New CSectionAnnotationBuilder: labels.Build definition, bars, model.Annotations
+        Check "generatedContours." & CStr(kind) & ".annotationsBuilt", model.AnnotationCount = 2
         Check "generatedContours." & CStr(kind) & ".annotationRevisionUnchanged", model.Contours.Revision = revision
         CheckGeneratedContoursEqual "generatedContours." & CStr(kind) & ".annotations", saved, model.Contours
         model.Annotations.Clear
         Check "generatedContours." & CStr(kind) & ".clearAnnotationsKeepsRevision", model.Contours.Revision = revision
         CheckNear "generatedContours." & CStr(kind) & ".areaWithoutAnnotations", query.ConcreteDomain.Area, expectedArea
-        shape.BuildContours model.Contours
+        definition.WriteContours model.Contours
         CheckGeneratedContoursEqual "generatedContours." & CStr(kind) & ".rebuild", saved, model.Contours
     Next kind
 End Sub
 
-' ДЛЯ ТЕСТОВ: независимый новый геометрический класс передает два и пять
-' отверстий через один API; Results и query не знают ни его типа, ни ID пустот.
+' ДЛЯ ТЕСТОВ: определение передает два и пять отверстий через общий API;
+' Results и query не знают ни типа fixture, ни ID пустот.
 Private Sub TestNewGeometryWithMultipleOpenings()
-    Dim fixture As CFakeMultiOpeningGeometry, shape As ISectionShape, geometry As CGeometryRegion, count As Variant, i As Long
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
+    Dim geometry As CGeometryRegion, count As Variant, i As Long, expectedArea As Double
     Dim mesh As CFiberMeshBuilder, model As CSectionModel, restored As CSectionModel, bars As CRebarLayout
     Dim query As CSectionGeometryQuery, writer As CNDMResultsWriter, expected As CSectionContours
     Dim region As CConcreteRegion, holes As Object
     Dim bounds() As Double, openingCount As Long, meshArea As Double
     For Each count In Array(2, 5)
-        Set fixture = New CFakeMultiOpeningGeometry: fixture.Initialize CLng(count): Set shape = fixture
-        Set geometry = BuildConcreteGeometry(shape)
+        Set facade = New CSectionDefinitionBuilder: facade.Initialize "MultipleOpeningFixture"
+        Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#)
+        facade.Outer "OUTER", "Boundary"
+        For i = 1 To CLng(count)
+            Set path = facade.CirclePath("VOID_SEGMENT_" & CStr(i), 100# * i / (CLng(count) + 1), 50#, 3#)
+            facade.Opening "VOID_" & CStr(i), path.ID, "OUTER"
+        Next i
+        Set definition = facade.Finish: Set geometry = FixtureGeometry(definition.ConcreteDomain)
+        expectedArea = 10000# - CLng(count) * GEOM_PI * 9#
         Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 10#, 10#, 1, 2
         meshArea = 0#
         For i = 1 To mesh.FiberCount
@@ -815,7 +830,7 @@ Private Sub TestNewGeometryWithMultipleOpenings()
         Check "generatedMultiple." & CStr(count) & ".meshRefinesOpenings", mesh.FiberCount > 100 And meshArea < 10000#
         Set bars = New CRebarLayout: bars.AddBar "SOURCE_BAR", 10#, 10#, 2#, GEOM_PI, "Rebar", , geometry
         Set model = BuildGeneratedSectionModel(mesh, bars)
-        shape.BuildContours model.Contours
+        definition.WriteContours model.Contours
         Check "generatedMultiple." & CStr(count) & ".sameModel", TypeName(model) = "CSectionModel" And model.SourceType = "Generated"
         Check "generatedMultiple." & CStr(count) & ".noAnnotations", model.AnnotationCount = 0
         Set holes = CreateObject("Scripting.Dictionary")
@@ -826,10 +841,10 @@ Private Sub TestNewGeometryWithMultipleOpenings()
         Set query = New CSectionGeometryQuery: query.Initialize model: Set region = query.ConcreteDomain
         query.OpeningBounds model.Contours, bounds, openingCount
         Check "generatedMultiple." & CStr(count) & ".allOpeningBounds", openingCount = CLng(count)
-        CheckNear "generatedMultiple." & CStr(count) & ".area", region.Area, fixture.ExpectedArea
+        CheckNear "generatedMultiple." & CStr(count) & ".area", region.Area, expectedArea
         Check "generatedMultiple." & CStr(count) & ".loops", region.LoopCount = CLng(count) + 1
         For i = 1 To CLng(count)
-            Check "generatedMultiple." & CStr(count) & ".empty." & CStr(i), Not query.ContainsPoint(region, fixture.OpeningX(i), 50#)
+            Check "generatedMultiple." & CStr(count) & ".empty." & CStr(i), Not query.ContainsPoint(region, 100# * i / (CLng(count) + 1), 50#)
         Next i
         Set expected = CopyGeneratedContoursForTests(model.Contours)
         Set writer = New CNDMResultsWriter
@@ -837,9 +852,9 @@ Private Sub TestNewGeometryWithMultipleOpenings()
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "Generated")
         CheckGeneratedContoursEqual "generatedMultiple." & CStr(count) & ".snapshot", expected, restored.Contours
         query.Initialize restored: Set region = query.ConcreteDomain
-        CheckNear "generatedMultiple." & CStr(count) & ".snapshotArea", region.Area, fixture.ExpectedArea
+        CheckNear "generatedMultiple." & CStr(count) & ".snapshotArea", region.Area, expectedArea
         Check "generatedMultiple." & CStr(count) & ".snapshotLoops", region.LoopCount = CLng(count) + 1
-        CheckNear "generatedMultiple." & CStr(count) & ".halfArea", query.ClipHalfPlane(region, 0#, 1#, 50#).Area, fixture.ExpectedArea / 2#
+        CheckNear "generatedMultiple." & CStr(count) & ".halfArea", query.ClipHalfPlane(region, 0#, 1#, 50#).Area, expectedArea / 2#
         CheckClosed "generatedMultiple." & CStr(count), region
     Next count
 End Sub

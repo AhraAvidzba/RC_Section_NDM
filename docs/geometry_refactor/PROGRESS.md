@@ -19,13 +19,15 @@ D01-D24/E01-E14 выполняется после удаления замене�
 - Этап 05: IN_PROGRESS. Аннотации четырех семейств проверены локально; полные режимы схемы еще впереди.
 - Этап 06: LOCAL_PASS. Все четыре семейства проверены отдельными рецептами.
 - Этап 07: IN_PROGRESS. Штатный Generated-вход переключен в source/native staging; основной output пока прежний.
-- Этапы 08-11: NOT_RUN. API-гайд, полное удаление классов и конечная приемка еще впереди.
+- Этап 08: NOT_RUN. Полный API-гайд и сохраненная справка еще впереди.
+- Этап 09: IN_PROGRESS. Перенос численных fixtures и retirement начаты; полное удаление еще не завершено.
+- Этапы 10-11: NOT_RUN. Итоговая приемка и подготовленная основная книга еще впереди.
 - Baseline HEAD: a138c2732382c826db9ac2f801facd3d533d406c.
 - Baseline-книга: workbook/output/RC_Section_NDM.xlsm.
 - Резервные данные: docs/regression/GeometryDeclarative_2026-10-11/Baseline/.
-- Последний зафиксированный milestone: a3a66c3, аналитический рецепт HollowRectangle. Текущий этап штатного входа описан ниже.
+- Последний зафиксированный milestone: cdc2f364, штатный recipe-вход. Текущий этап retirement описан ниже.
 
-## Установлено По Коду
+## Установлено В Исходном Baseline
 
 Registry содержит четыре независимых выбора shape/rebar/annotation. Общий
 settings reader разбирает специальные таблицы всех трех прямоугольных семей.
@@ -531,3 +533,58 @@ Inventory оставшихся ссылок:
 старые численные constructors еще присутствуют только ради дальнейшего
 переноса тестов и должны быть удалены до конечной приемки. Это не финальный
 production output и не подтверждение D01-D24/E01-E14.
+
+## Перенос Численных Fixtures
+
+12.10.2026 перенесены 11 test modules: SectionSolver, CapacitySolver, CrackWidth,
+Configuration, LoadTableConfig, ProfileConfig, RegressionBaseline,
+BatchCalculation, ContourMesh, GeometryQuery и общий modTestGeometryFixtures.
+В них больше нет ссылок на 12 специализированных классов, ISectionShape,
+BuildConcreteGeometry или прежний fake. Фиксированные размеры, нагрузки,
+диаметры и исходные assertions сохранены. Общий test-only модуль использует
+явные контуры/пути/правила, не регистрирует тип и не является adapter класса.
+
+CFakeMultiOpeningGeometry удален из source и отдельного native VBProject.
+Вместо него тест определяет Outer и два/пять Opening через фасад.
+Основная пользовательская книга пока прежняя; это не ее обновление.
+12 специализированных классов, ISectionShape и общий прежний adapter еще
+нужны двум оставшимся consumers: modTestGeometry (199 matches) и
+modTestWorkbookInterface (20 matches). Дополнительные общие helpers
+по-прежнему требуют отдельного удаления дубликатов.
+
+Проверки на RetirementFixtures-книге:
+- Native import/compile: PASS. Read-only сверка 11 source bodies: PASS;
+  unexpected/sourceMismatch=0. 112 классов, 38 стандартных модулей,
+  5 document modules. Относительно принятой ProductionRecipe-книги:
+  один test module добавлен, один fake class удален.
+- Query: 1319 PASS; contour ownership/round-trip: 520 PASS, повторено
+  после удаления fake; contour mesh: 34333 PASS.
+- SectionSolver: 2834 PASS; целевые Capacity: 74 PASS;
+  CrackWidth: 2134 PASS; batch work counters/writer: 14 PASS.
+- Прежний numerical baseline: 39 PASS. Все 11 BASELINE-записей старой
+  и новой сборки совпали точно в выводимой точности, включая итерации;
+  исключено только elapsedSec, не расчетные поля.
+- Поэлементный снимок 12 load-matrix fixtures: 19632 записи, 0 расхождений
+  с прежними допусками. Три подмены CONCRETE.x/BAR.diameter/FIBER.fill
+  обнаружены. В этих fixtures нет контурных записей; роли отдельно
+  проверены native ownership suite, искусственные строки не добавлялись.
+- Побитный diff остается FAIL: только RoundedTapered, 1644 поля последних
+  разрядов. Максимум по координатам бетона 5.6844e-14 мм, арматуры
+  1.4211e-14 мм, суммарным инерциям 3.5763e-7 мм4. Новые допуски не вводились.
+
+Failed probes сохранены: устаревшие требования плоских RectSet keys (68),
+два неверных обращения test helper к API, строгое сравнение native spelling/
+Unicode comments. VBE-написание восьми числовых вхождений приведено к source;
+четыре пары Double проверены по IEEE754 и одинаковы. Непредставимые в CP1251
+символы lambda/диаметра в комментариях записаны словами; Unicode runtime
+сообщения не менялись. Verifier не ослаблен.
+
+Полные CapacitySolver и ProfileConfig suites достигли локального watchdog
+180 с, остановлены только собственные Excel PID. Это TIMEOUT, не PASS;
+их не повторяли. Полные старые on/off не запускались. Остальные неисполненные
+широкие Config suites не объявляются пройденными. После конечного retirement
+приемка выполняется заново на чистом составе.
+
+Основная книга сохраняет исходный SHA-256 769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED;
+VBA_All_Code.txt пока не обновлялся. API-гайд, Config offsets/dropdown,
+полное retirement и конечная приемка остаются незавершенными.

@@ -1,0 +1,8 @@
+{
+  "Status": "PASS",
+  "CheckedEntries": 45,
+  "ArtifactEntries": 31,
+  "SourceEntries": 14,
+  "ArchiveSHA256": "AFBD10B630F5268140EA918F39915B46B41BB5555B5ED9521E66F7196D637601",
+  "RemovedSourcesAbsent": true
+}

@@ -131,6 +131,23 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
+' ДЛЯ ТЕСТОВ: затронутые численные fixtures без полного поискового suite.
+Public Function RunRetiredGeometryCapacityTests() As String
+    Dim stats As TCapacityTestStats
+    On Error GoTo Failed
+    TestMxPositiveAndNegative stats
+    TestMyPositiveAndNegative stats
+    TestMxySignedCombinations stats
+    TestCircleCapacitySymmetry stats
+    TestAsymmetricCoupledCurvatures stats
+    TestAsymmetricMxy stats
+    AppendLine stats, "TOTAL_RETIRED_GEOMETRY_CAPACITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunRetiredGeometryCapacityTests = stats.Report
+    Exit Function
+Failed:
+    RunRetiredGeometryCapacityTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
+End Function
+
 ' ДЛЯ ТЕСТОВ: выходные компоненты после уточнения физического предела.
 ' Проверяет реальные усилия отдельно от Nult и компонентов траектории.
 Public Function RunCapacityOutputContractTests() As String
@@ -1027,20 +1044,19 @@ End Sub
 ' Проверяет симметрию несущей круглого сечения по X/Y и сохранение направления
 ' косого изгиба. Допуск симметрии учитывает дискретизацию исходной тестовой сетки.
 Private Sub TestCircleCapacitySymmetry(ByRef stats As TCapacityTestStats)
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter 300#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(300#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 10#, 10#, 1
+    mesh.BuildMesh geom, 10#, 10#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", geom
 
     Dim capMx As CCapacitySolver
     Set capMx = New CCapacitySolver
@@ -1386,11 +1402,11 @@ End Sub
 ' Проверяет связность кривизн несимметричного сечения с ненулевым Ixy:
 ' даже при My=0 равновесная KappaY может быть ненулевой.
 Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
-    Dim geom As CGeometryRectSet
+    Dim geom As CGeometryRegion
     Set geom = CapacityAsymmetricGeometry()
 
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+    Set mesh = BuildMesh(geom, 10#)
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -1398,10 +1414,10 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", geom
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
@@ -1417,11 +1433,11 @@ End Sub
 ' Решает косой изгиб несимметричного RectSet и проверяет обе кривизны,
 ' отношение предельных моментов и равновесие относительно исходных осей.
 Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
-    Dim geom As CGeometryRectSet
+    Dim geom As CGeometryRegion
     Set geom = CapacityAsymmetricGeometry()
 
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+    Set mesh = BuildMesh(geom, 10#)
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -1429,10 +1445,10 @@ Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", 50#, 50#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 550#, 50#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", 50#, 700#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 200#, 700#, 20#, 0#, "A400", "", geom
 
     Dim cap As CCapacitySolver
     Set cap = New CCapacitySolver
@@ -1546,20 +1562,19 @@ End Sub
 ' Сопоставляет стратегии на симметричном круге с повернутыми X/Y задачами;
 ' проверяет конечные моменты и определение критического элемента.
 Private Sub CompareCircleCapacitySolutionStrategys(ByRef stats As TCapacityTestStats)
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter 300#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(300#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 12#, 12#, 1
+    mesh.BuildMesh geom, 12#, 12#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "A400", "", geom
 
     Dim loadMethod As CCapacitySolver
     Set loadMethod = New CCapacitySolver
@@ -2242,33 +2257,25 @@ End Sub
 ' Строит фиксированное двухпрямоугольное сечение с арматурой по четырем граням.
 ' Геометрия, шаг сетки и диаметры независимы от пользовательского Config.
 Private Function RectSetCapacitySection() As CSectionModel
-    Dim geom As CGeometryRectSet
-    Set geom = New CGeometryRectSet
-    geom.Initialize 250#, 550#, 600#, 250#, 0#, 0#
-
-    Dim mesh As CFiberMeshBuilder
-    Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 50#, 50#, 1
-
-    Dim builder As CRectSetRebarLayoutBuilder
-    Set builder = New CRectSetRebarLayoutBuilder
-
-    Dim rebars As CRebarLayout
-    Set rebars = builder.Build(250#, 550#, 600#, 250#, 0#, 0#, _
-        RectSetCapacityFaceSettings(5, 5), _
-        RectSetCapacityFaceSettings(2, 2), _
-        RectSetCapacityFaceSettings(2, 2), _
-        RectSetCapacityFaceSettings(5, 5), _
-        "A400")
-
-    Set RectSetCapacitySection = BuildGeneratedSectionModel(mesh, rebars, "RectSetCapacityTest")
-End Function
-
-' Возвращает полный контракт грани с заданным количеством стержней первого ряда.
-' Дополнительные ряды отключены нулевыми диаметрами, отступы и режимы фиксированы.
-Private Function RectSetCapacityFaceSettings(ByVal count1 As Long, ByVal count2 As Long) As Variant
-    RectSetCapacityFaceSettings = Array(40#, 40#, 32#, 32#, count1, count2, 80#, 80#, 80#, 80#, _
-        0#, 0#, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim row As Variant, rows As Variant, mesh As TSectionMeshOptions, builder As CSectionBuilder
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "RectSetCapacityTest"
+    Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)))
+    facade.Outer "OUTER", path.ID
+    rows = Array(Array("H1.Left", 40#, 250#, 40#, 800#, 5), Array("H1.Right", 210#, 800#, 210#, 250#, 5), _
+        Array("B1.Top", 0#, 760#, 250#, 760#, 2), Array("B1.Bottom", 250#, 290#, 0#, 290#, 2), _
+        Array("H2.Left", 40#, 0#, 40#, 250#, 2), Array("H2.Right", 560#, 250#, 560#, 0#, 2), _
+        Array("B2.Top", 0#, 210#, 600#, 210#, 5), Array("B2.Bottom", 600#, 40#, 0#, 40#, 5))
+    For Each row In rows
+        Set path = facade.LinePath(CStr(row(0)), CDbl(row(1)), CDbl(row(2)), CDbl(row(3)), CDbl(row(4)))
+        Set options = New CRebarRuleOptions
+        options.StartSetback = 80#: options.EndSetback = 80#
+        options.PositionOrder = FromPathMiddle: options.Publication = PublishPerSourcePosition
+        options.Coincidence = KeepPublishedOwner: options.AnnotationGroup = CStr(row(0))
+        facade.RebarByCount CStr(row(0)) & ".Main", path.ID, CLng(row(5)), 32#, options, "A400"
+    Next row
+    mesh.StepX = 50#: mesh.StepY = 50#: mesh.BoundarySubdivisions = 1: mesh.MaterialID = 1
+    Set builder = New CSectionBuilder: Set RectSetCapacitySection = builder.Build(facade.Finish, mesh)
 End Function
 
 ' Проверяет диагностическое имя фактической ветки capacity.
@@ -2533,38 +2540,36 @@ End Function
 ' Центр находится в начале координат, четыре одинаковых стержня зеркальны по осям.
 Private Sub PrepareSymmetricSection(ByVal width As Double, ByVal height As Double, ByVal stepSize As Double, _
         ByVal xAbs As Double, ByVal yAbs As Double, ByRef mesh As CFiberMeshBuilder, ByRef rebars As CRebarLayout)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(width, height)
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), stepSize)
+    Set mesh = BuildMesh(geom, stepSize)
     Set rebars = SymmetricRebars(geom, xAbs, yAbs)
 End Sub
 
 ' Расставляет четыре стержня диаметром 20 мм в зеркальных точках (+/-x, +/-y).
 ' Каждый стержень проходит обычную проверку принадлежности геометрии.
-Private Function SymmetricRebars(ByVal geom As CGeometryRoundedRectangle, ByVal xAbs As Double, ByVal yAbs As Double) As CRebarLayout
+Private Function SymmetricRebars(ByVal geom As CGeometryRegion, ByVal xAbs As Double, ByVal yAbs As Double) As CRebarLayout
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -xAbs, -yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", xAbs, -yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", -xAbs, yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", xAbs, yAbs, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", -xAbs, -yAbs, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", xAbs, -yAbs, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", -xAbs, yAbs, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", xAbs, yAbs, 20#, 0#, "A400", "", geom
     Set SymmetricRebars = rebars
 End Function
 
 ' Возвращает прямоугольник без скруглений, поворота и смещения для fixtures.
-Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRoundedRectangle
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize width, height, 0#, 0#, 0#, 0#
+Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBox(width, height)
     Set RectangleGeometry = geom
 End Function
 
 ' Возвращает тестовую несимметричную геометрию с заметным Ixy для проверки,
 ' что capacity-решатель учитывает связанную кривизну в общей постановке N+Mx+My.
-Private Function CapacityAsymmetricGeometry() As CGeometryRectSet
-    Dim geom As CGeometryRectSet
-    Set geom = New CGeometryRectSet
-    geom.Initialize 250#, 550#, 600#, 250#, 0#, 0#, 0#, "LSection"
+Private Function CapacityAsymmetricGeometry() As CGeometryRegion
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBoxes(Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)))
     Set CapacityAsymmetricGeometry = geom
 End Function
 

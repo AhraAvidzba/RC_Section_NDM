@@ -3,7 +3,8 @@ param(
     [string]$BaselinePath='docs/regression/GeometryDeclarative_2026-10-11/Baseline/RC_Section_NDM.xlsm',
     [string]$ActualPath='docs/regression/GeometryDeclarative_2026-10-11/BaselineInstrumented/RC_Section_NDM.xlsm',
     [string]$ReportPath='docs/regression/GeometryDeclarative_2026-10-11/BaselineInstrumented/CodeComparison.json',
-    [string[]]$ApprovedModules=@('modTestShapeArchitecture')
+    [string[]]$ApprovedModules=@('modTestShapeArchitecture'),
+    [string[]]$RetiredModules=@()
 )
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -39,6 +40,11 @@ function Normalize-IdentifierCase([string]$body) {
 $excel=$null;$book=$null;$ownedId=0;$ownedTicks=0
 $approved=@{}
 $sourceBodies=@{};$actualBodies=@{}
+foreach ($name in $RetiredModules) {
+    if ($name -notmatch '^[A-Za-z][A-Za-z0-9_]*$' -or $name -in $ApprovedModules) {throw ('Invalid retirement: '+$name)}
+    $files=@(Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object {$_.BaseName -eq $name -and $_.Extension -in '.bas','.cls'})
+    if ($files.Count) {throw ('Retired source still exists: '+$name)}
+}
 foreach ($name in $ApprovedModules) {
     $files=@(Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object {$_.BaseName -eq $name -and $_.Extension -in '.bas','.cls'})
     if ($files.Count -ne 1) {throw ('Approved source module is not unique: '+$name)}
@@ -69,12 +75,18 @@ try {
         $book.Close($false);$book=$null
     }
     $changes=@()
+    foreach ($name in $RetiredModules) {
+        if (-not $inventories[0].ContainsKey($name)) {throw ('Retired component missing from baseline: '+$name)}
+        if ($inventories[1].ContainsKey($name)) {throw ('Retired component still exists in VBProject: '+$name)}
+        if ($inventories[0][$name].Type -notin 1,2) {throw ('Cannot accept retirement of a document/designer component: '+$name)}
+    }
     foreach ($name in @($inventories[0].Keys+$inventories[1].Keys | Sort-Object -Unique)) {
         $left=$inventories[0][$name];$right=$inventories[1][$name]
         if (-not $left -or -not $right -or $left.Type -ne $right.Type -or $left.SHA256 -cne $right.SHA256) {
             $caseOnly=($left -and $right -and $left.Type -eq $right.Type -and $left.IdentifierCaseSHA256 -ceq $right.IdentifierCaseSHA256)
             $matchesSource=($approved.ContainsKey($name) -and $right -and $right.Type -eq $approved[$name].Type -and $right.IdentifierCaseSHA256 -ceq $approved[$name].IdentifierCaseSHA256)
-            $changes+=,[ordered]@{Name=$name;Baseline=$left;Actual=$right;IdentifierCaseOnly=[bool]$caseOnly;MatchesApprovedSource=[bool]$matchesSource;Allowed=($matchesSource -or $caseOnly)}
+            $retired=($name -in $RetiredModules -and $left -and -not $right)
+            $changes+=,[ordered]@{Name=$name;Baseline=$left;Actual=$right;IdentifierCaseOnly=[bool]$caseOnly;MatchesApprovedSource=[bool]$matchesSource;ApprovedRetirement=[bool]$retired;Allowed=($matchesSource -or $caseOnly -or $retired)}
         }
     }
     $sourceChecks=@()

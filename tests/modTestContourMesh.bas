@@ -189,25 +189,32 @@ Private Sub CheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSe
 End Sub
 
 Private Function ControlGeometry(ByVal shape As Long) As CGeometryRegion
-    Dim circleGeometry As CGeometryCircle, rect As CGeometryRoundedRectangle
-    Dim hollow As CGeometryHollowRectangle, rectset As CGeometryRectSet
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "ContourMeshFixture"
     Select Case shape
         Case 1
-            Set circleGeometry = New CGeometryCircle: circleGeometry.InitializeByDiameter 300#
-            Set ControlGeometry = BuildConcreteGeometry(circleGeometry)
-        Case 2, 3, 4
-            Set rectset = New CGeometryRectSet
-            If shape = 2 Then rectset.Initialize 300#, 400#, 0#, 0#, 0#, 0#, 0#, "Rectangle"
-            If shape = 3 Then rectset.Initialize 120#, 240#, 300#, 120#, 0#, 0#, 0#, "LSection"
-            If shape = 4 Then rectset.Initialize 200#, 240#, 300#, 120#, -83#, 41#, 60#, "TwoRectangles"
-            Set ControlGeometry = BuildConcreteGeometry(rectset)
+            Set path = facade.CirclePath("Boundary", 0#, 0#, 150#)
+        Case 2
+            Set path = facade.RectanglePath("Boundary", 0#, 0#, 300#, 400#)
+        Case 3
+            Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 300#, 120#), Array(0#, 120#, 120#, 240#)))
+        Case 4
+            Set path = facade.AdjacentRectangles("Boundary", Array(Array(-83#, 41#, 300#, 120#), Array(-23#, 161#, 200#, 240#)))
         Case 5
-            Set rect = New CGeometryRoundedRectangle: rect.Initialize 300#, 400#, 40#, 40#, 40#, 40#, 13#, -27#
-            Set ControlGeometry = BuildConcreteGeometry(rect)
+            Set path = facade.RoundedPolygon("Boundary", Array(Array(-137#, -227#), Array(163#, -227#), _
+                Array(163#, 173#), Array(-137#, 173#)), Array(40#, 40#, 40#, 40#), Array("BL", "BR", "TR", "TL"))
         Case 6
-            Set hollow = New CGeometryHollowRectangle: hollow.Initialize 400#, 500#, 35#, 200#, 280#, 25#, 17#, -23#
-            Set ControlGeometry = BuildConcreteGeometry(hollow)
+            Set path = facade.RoundedPolygon("Boundary", Array(Array(-200#, -250#), Array(200#, -250#), _
+                Array(200#, 250#), Array(-200#, 250#)), Array(35#, 35#, 35#, 35#), Array("BL", "BR", "TR", "TL"))
     End Select
+    facade.Outer "OUTER", "Boundary"
+    If shape = 6 Then
+        Set path = facade.RoundedPolygon("VoidPath", Array(Array(-83#, -163#), Array(117#, -163#), _
+            Array(117#, 117#), Array(-83#, 117#)), Array(25#, 25#, 25#, 25#), Array("BL", "BR", "TR", "TL"))
+        facade.Opening "VOID", "VoidPath", "OUTER"
+    End If
+    Set definition = facade.Finish
+    Set ControlGeometry = FixtureGeometry(definition.ConcreteDomain)
 End Function
 
 Private Function MeshSettings(Optional ByVal subdivision As Long = 2, Optional ByVal unit As String = "mm", _

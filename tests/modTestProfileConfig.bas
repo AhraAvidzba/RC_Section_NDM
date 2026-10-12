@@ -597,15 +597,15 @@ End Sub
 ' Создает небольшую физическую модель; параметры материалов заданы явно,
 ' чтобы результат не зависел от оставленных соседней suite значений Config.
 Private Sub BuildFixture(ByRef section As CSectionModel, ByRef provider As CMaterialModelProvider, ByVal extensionEnabled As Boolean)
-    Dim geometry As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout
     Dim concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters
-    Set geometry = New CGeometryRoundedRectangle: geometry.Initialize 300#, 200#, 0#, 0#, 0#, 0#
-    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geometry), 30#, 20#, 1
+    Set geometry = FixtureBox(300#, 200#)
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 30#, 20#, 1
     Set rebars = New CRebarLayout
-    rebars.AddBar "A", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
-    rebars.AddBar "B", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
-    rebars.AddBar "C", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
-    rebars.AddBar "D", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+    rebars.AddBar "A", -90#, -60#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "B", 90#, -60#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "C", -90#, 60#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "D", 90#, 60#, 20#, 0#, "A400", "", geometry
     Set section = BuildGeneratedSectionModel(mesh, rebars, "Audit03ProfileConfig")
     Set concrete = New CConcreteMaterialParameters: concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
     Set steel = New CSteelMaterialParameters: steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
@@ -728,15 +728,15 @@ End Function
 ' Поэтому знаки и компоненты длительных моментов проверяются без production
 ' преобразователя осей; поставщик материалов остается общим с другими тестами.
 Private Sub BuildDurationFixture(ByRef section As CSectionModel, ByRef provider As CMaterialModelProvider, ByVal extensionEnabled As Boolean)
-    Dim geometry As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, rebars As CRebarLayout
+    Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout
     BuildFixture section, provider, extensionEnabled
-    Set geometry = New CGeometryRoundedRectangle: geometry.Initialize 200#, 300#, 0#, 0#, 0#, 0#
-    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh BuildConcreteGeometry(geometry), 20#, 30#, 1
+    Set geometry = FixtureBox(200#, 300#)
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 20#, 30#, 1
     Set rebars = New CRebarLayout
-    rebars.AddBar "A", -60#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
-    rebars.AddBar "B", 60#, -90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
-    rebars.AddBar "C", -60#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
-    rebars.AddBar "D", 60#, 90#, 20#, 0#, "A400", "", BuildConcreteGeometry(geometry)
+    rebars.AddBar "A", -60#, -90#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "B", 60#, -90#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "C", -60#, 90#, 20#, 0#, "A400", "", geometry
+    rebars.AddBar "D", 60#, 90#, 20#, 0#, "A400", "", geometry
     Set section = BuildGeneratedSectionModel(mesh, rebars, "Audit03DurationConfig")
 End Sub
 

@@ -52,8 +52,8 @@ Registry/reader/layout потребители пока прежние; retiremen
 - modTestSectionRecipes -> реальная новая модель; Prepared*Snapshot читает
   mesh/layout этой же сборки, не реконструирует их через прежний registry.
 
-Старый test SourceSnapshot сохранен только для baseline/немигрированных
-семейств. Удаляется вместе с остальными замененными потребителями до приемки.
+Старый test SourceSnapshot удален из актуального harness; его прежний код
+сохраняется только в неизменяемых baseline-артефактах.
 
 Сквозной development-маршрут RectSet:
 - Одна регистрация CSectionRecipeRectSet; одна таблица rngRectSetGeometry.
@@ -128,3 +128,15 @@ ACTIVE в retirement-map до переноса остальных семейст
 
 12 старых классов, ISectionShape и численные test constructors еще требуют
 retirement. Они не вызываются новым production source-входом.
+
+Перенос численных fixtures:
+- modTestGeometryFixtures -> CSectionGeometryQuery/CSectionDefinitionBuilder/
+  CGeometryRegion/CRebarRuleExecutor. Только явные test dimensions/paths,
+  без Config и без регистрации производственных типов.
+- 11 затронутых modules не вызывают прежние специализированные classes.
+  Raw load-matrix snapshot берет model/mesh/layout одной prepared-сборки.
+- Multi-opening ownership -> definition.Outer/Opening -> WriteContours ->
+  Results/query; CFakeMultiOpeningGeometry больше не существует в source
+  и native staging.
+- Остались два test consumers старого слоя: modTestGeometry и
+  modTestWorkbookInterface. Полный native retirement еще впереди.

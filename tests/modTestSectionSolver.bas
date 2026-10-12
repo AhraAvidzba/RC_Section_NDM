@@ -345,22 +345,21 @@ End Sub
 ' Сравнивает независимый Secant с Newton для сжатия и одно-/двухосного изгиба
 ' прямоугольника и круга; обе ветви должны подтвердить компонентное равновесие.
 Private Sub TestSecantComparativeTasks(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(300#, 200#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+    Set mesh = BuildMesh(geom, 20#)
 
     AssertNewtonSecantCase stats, "secant.compare.compression", mesh, Nothing, -100000#, 0#, 0#
     AssertNewtonSecantCase stats, "secant.compare.n_mx", mesh, Nothing, -150000#, -8000000#, 0#
     AssertNewtonSecantCase stats, "secant.compare.n_my", mesh, Nothing, -150000#, 0#, -6000000#
     AssertNewtonSecantCase stats, "secant.compare.n_mx_my", mesh, Nothing, -150000#, -8000000#, -6000000#
 
-    Dim circleGeom As CGeometryCircle
-    Set circleGeom = New CGeometryCircle
-    circleGeom.InitializeByDiameter 300#
+    Dim circleGeom As CGeometryRegion
+    Set circleGeom = FixtureDisk(300#)
     Dim circleMesh As CFiberMeshBuilder
     Set circleMesh = New CFiberMeshBuilder
-    circleMesh.BuildMesh BuildConcreteGeometry(circleGeom), 20#, 20#, 1
+    circleMesh.BuildMesh circleGeom, 20#, 20#, 1
     AssertNewtonSecantCase stats, "secant.compare.circle", circleMesh, Nothing, -120000#, -5000000#, 0#
 End Sub
 
@@ -387,30 +386,10 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
 
     requiredKeys = Array( _
         "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "Calculation.ZeroMomentPerDepth", _
-        "Geometry.Source", "Geometry.Type", "RectSet.B1", "RectSet.H1", "RectSet.B2", "RectSet.H2", _
-        "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", _
-        "Load.ReferenceOffsetX", "Load.ReferenceOffsetY", _
-        "RectSet.H1.as_1", "RectSet.H1.as_2", "RectSet.H1.d_1", "RectSet.H1.d_2", _
-        "RectSet.H1.n_1", "RectSet.H1.n_2", _
-        "RectSet.H1.StartOffset1", "RectSet.H1.EndOffset1", _
-        "RectSet.H1.StartOffset2", "RectSet.H1.EndOffset2", _
-        "RectSet.H1.d_2row_1", "RectSet.H1.d_2row_2", "RectSet.H1.d_3row_1", "RectSet.H1.d_3row_2", "RectSet.H1.loc_2row_1", "RectSet.H1.loc_3row_1", _
-        "RectSet.H2.as_1", "RectSet.H2.as_2", "RectSet.H2.d_1", "RectSet.H2.d_2", _
-        "RectSet.H2.n_1", "RectSet.H2.n_2", _
-        "RectSet.H2.StartOffset1", "RectSet.H2.EndOffset1", _
-        "RectSet.H2.StartOffset2", "RectSet.H2.EndOffset2", _
-        "RectSet.H2.d_2row_1", "RectSet.H2.d_2row_2", "RectSet.H2.d_3row_1", "RectSet.H2.d_3row_2", "RectSet.H2.loc_2row_1", "RectSet.H2.loc_3row_1", _
-        "RectSet.B1.as_1", "RectSet.B1.as_2", "RectSet.B1.d_1", "RectSet.B1.d_2", _
-        "RectSet.B1.n_1", "RectSet.B1.n_2", _
-        "RectSet.B1.StartOffset1", "RectSet.B1.EndOffset1", _
-        "RectSet.B1.StartOffset2", "RectSet.B1.EndOffset2", _
-        "RectSet.B1.d_2row_1", "RectSet.B1.d_2row_2", "RectSet.B1.d_3row_1", "RectSet.B1.d_3row_2", "RectSet.B1.loc_2row_1", "RectSet.B1.loc_3row_1", _
-        "RectSet.B2.as_1", "RectSet.B2.as_2", "RectSet.B2.d_1", "RectSet.B2.d_2", _
-        "RectSet.B2.n_1", "RectSet.B2.n_2", _
-        "RectSet.B2.StartOffset1", "RectSet.B2.EndOffset1", _
-        "RectSet.B2.StartOffset2", "RectSet.B2.EndOffset2", _
-        "RectSet.B2.d_2row_1", "RectSet.B2.d_2row_2", "RectSet.B2.d_3row_1", "RectSet.B2.d_3row_2", "RectSet.B2.loc_2row_1", "RectSet.B2.loc_3row_1")
+        "Geometry.Source", "Geometry.Type", "Mesh.StepX", "Mesh.StepY", "Mesh.BoundarySubdivisions", _
+        "Load.ReferenceOffsetX", "Load.ReferenceOffsetY")
     AssertRequiredKeys stats, requiredKeys
+    TestRecipeInputCatalog stats
 
     requiredKeys = Array("Concrete.Rb.ULS", "Concrete.Rbt.ULS", "Concrete.Rb.SLS", _
         "Concrete.Rbt.SLS", "Concrete.Rb.mc2", "Concrete.Eb", _
@@ -507,6 +486,32 @@ End Sub
 
 ' Проверяет каждый переданный ключ в настоящем reader-е книги и сохраняет
 ' отдельный assertion, чтобы отсутствие настройки не скрывалось общим итогом.
+' ДЛЯ ТЕСТОВ: параметры формы принадлежат зарегистрированному табличному
+' снимку, а не синтетическим ключам общего settings reader.
+Private Sub TestRecipeInputCatalog(ByRef stats As TSectionSolverTestStats)
+    Dim registry As CSectionTypeRegistry, snapshot As CSectionInputSnapshotReader, units As CUnitSystem
+    Dim context As CSectionRecipeContext, table As CSectionInputTable, source As Object, values As Variant
+    Dim kind As Variant, name As Variant, row As Long, column As Long, prefix As String
+    Set registry = New CSectionTypeRegistry: Set snapshot = New CSectionInputSnapshotReader
+    Set units = New CUnitSystem: units.InitializeDefaults
+    For Each kind In registry.RegisteredRecipeTypes
+        Set context = snapshot.Capture(ThisWorkbook, registry.RecipeTableNames(CStr(kind)), units)
+        For Each name In registry.RecipeTableNames(CStr(kind))
+            Set source = ThisWorkbook.Names(CStr(name)).RefersToRange
+            Set table = context.Table(CStr(name)): values = source.Value2
+            prefix = "settings.recipe." & CStr(kind) & "." & CStr(name)
+            AssertTrue stats, prefix & ".dimensions", table.RowCount = source.Rows.Count And table.ColumnCount = source.Columns.Count
+            For row = 1 To table.RowCount
+                For column = 1 To table.ColumnCount
+                    AssertTrue stats, prefix & ".value." & CStr(row) & "." & CStr(column), _
+                        VarType(table.CellValue(row, column)) = VarType(values(row, column)) And _
+                        CStr(table.CellValue(row, column)) = CStr(values(row, column))
+                Next column
+            Next row
+        Next name
+    Next kind
+End Sub
+
 Private Sub AssertRequiredKeys(ByRef stats As TSectionSolverTestStats, ByVal requiredKeys As Variant)
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
@@ -521,10 +526,10 @@ End Sub
 ' Сверяет плоскость деформаций линейного бетонного прямоугольника с заранее
 ' рассчитанными epsilon0/kappaX/kappaY и независимо проверяет N/Mx/My.
 Private Sub TestLinearMaterialEquilibrium(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+    Set mesh = BuildMesh(geom, 10#)
 
     Dim concrete As CLinearConcreteMaterial
     Set concrete = New CLinearConcreteMaterial
@@ -555,16 +560,16 @@ End Sub
 ' Проверяет линейное армированное сечение с замещением бетона площадью стержней:
 ' эталонные параметры плоскости и равновесие должны учитывать именно эту модель.
 Private Sub TestLinearMaterialWithRebarReplacement(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+    Set mesh = BuildMesh(geom, 10#)
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -60#, -30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 60#, -30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", -60#, 30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", 60#, 30#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", -60#, -30#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 60#, -30#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", -60#, 30#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 60#, 30#, 20#, 0#, "A400", "", geom
 
     Dim concrete As CLinearConcreteMaterial
     Set concrete = New CLinearConcreteMaterial
@@ -595,10 +600,10 @@ End Sub
 ' Проверяет центральное сжатие по нелинейной диаграмме: отрицательную осевую
 ' деформацию, нулевые кривизны и равновесие без искусственного изгиба.
 Private Sub TestDiagramConcreteCentralCompression(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+    Set mesh = BuildMesh(geom, 10#)
 
     Dim concrete As CMaterialDiagram
     Set concrete = ProvisionalConcrete()
@@ -620,16 +625,16 @@ End Sub
 ' Решает внецентренное сжатие армированного прямоугольника по диаграммам;
 ' проверяет равновесие и прохождение всех пяти ступеней заданного нагружения.
 Private Sub TestDiagramConcreteWithRebar(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(300#, 200#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+    Set mesh = BuildMesh(geom, 20#)
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -644,10 +649,10 @@ End Sub
 ' Ограничивает приращение epsilon0 и проверяет сходимость с дополнительными
 ' итерациями, а также наличие реальных итерационных строк в диагностике.
 Private Sub TestAutomaticStepDiagnostics(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+    Set mesh = BuildMesh(geom, 10#)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -662,16 +667,16 @@ End Sub
 ' Доказывает, что Secant не вызывает Newton: сравнивает плоскости и равновесие,
 ' проверяет счетчики вычислений, рестарты и собственную диагностику метода.
 Private Sub TestSecantIndependentBranch(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(300#, 200#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+    Set mesh = BuildMesh(geom, 20#)
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "A400", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "A400", "", geom
 
     Dim newton As CSectionSolver
     Set newton = New CSectionSolver
@@ -702,10 +707,10 @@ End Sub
 ' Передает неизвестный и пустой Solver.Method; оба значения должны дать
 ' ошибку ввода, а не незаявленное переключение на метод по умолчанию.
 Private Sub TestSolverMethodInputErrors(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+    Set mesh = BuildMesh(geom, 20#)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -733,10 +738,10 @@ Private Sub TestSolverMethodFromSystem(ByRef stats As TSectionSolverTestStats)
     reader.LoadFromWorkbook ThisWorkbook
     AssertTrue stats, "settings.solverMethod.defaultNewton", StrComp(reader.GetRawString("Solver.Method", vbNullString), "Newton", vbTextCompare) = 0
 
-    Dim geom As CGeometryRoundedRectangle
+    Dim geom As CGeometryRegion
     Set geom = RectangleGeometry(200#, 100#)
     Dim mesh As CFiberMeshBuilder
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 20#)
+    Set mesh = BuildMesh(geom, 20#)
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -821,10 +826,9 @@ End Function
 
 ' Возвращает прямоугольник без скруглений и смещения для контрольного сечения.
 ' Сетка и арматура затем создаются отдельно, как в обычном расчетном маршруте.
-Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRoundedRectangle
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize width, height, 0#, 0#, 0#, 0#
+Private Function RectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBox(width, height)
     Set RectangleGeometry = geom
 End Function
 
@@ -983,7 +987,7 @@ Private Sub TestAudit03InputCurvatureBinding(ByRef stats As TSectionSolverTestSt
     If curvatureRow = 0 Then Err.Raise vbObjectError + 4601, "TestAudit03InputCurvatureBinding", "Не найдена INPUT-единица кривизны."
     Set sheet = ThisWorkbook.Worksheets.Add
     sheet.Name = "__Audit03Curvature"
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 10#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 10#), Nothing)
     Set concrete = New CLinearConcreteMaterial: concrete.Initialize 30000#
     Set steel = New CLinearSteelMaterial: steel.Initialize 200000#
     For Each method In Array("Newton", "Secant")
@@ -1047,7 +1051,7 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     Set materials = New CMaterialModelProvider
     materials.Initialize settings
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
     If scenario = 2 Then
         Set section = New CSectionModel
         section.AddConcreteElement 0#, 0#, 10000#
@@ -1148,7 +1152,7 @@ Private Sub TestAudit02EvaluatedPlaneRequiresEquilibrium(ByRef stats As TSection
     Set steel = New CLinearSteelMaterial
     steel.Initialize 200000#
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
     solver.ToleranceN = 1#
@@ -1246,7 +1250,7 @@ Private Sub TestAudit02StateSnapshotIsolation(ByRef stats As TSectionSolverTestS
     Set steel = New CLinearSteelMaterial
     steel.Initialize 200000#
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
     solver.EvaluateStrainPlane section, concrete, steel, -0.0001, 0#, 0#
@@ -1303,7 +1307,7 @@ Private Sub TestAudit02AbsentStressSign(ByRef stats As TSectionSolverTestStats)
     Set steel = New CLinearSteelMaterial
     steel.Initialize 200000#
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
     solver.EvaluateStrainPlane section, concrete, steel, 0.0001, 0#, 0#
@@ -1357,7 +1361,7 @@ Private Sub TestAudit02ExtendedInitialGuessPhysicalFinal(ByRef stats As TSection
     Dim steel As CMaterialDiagram
     Set steel = provider.SteelMaterialForEquilibriumFromSpec(spec)
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
     Dim initial As CSectionSolver
     Set initial = New CSectionSolver
     initial.EvaluateStrainPlane section, concrete, steel, -0.01, 0#, 0#
@@ -1463,7 +1467,7 @@ End Function
 ' одной поправки дает управляемую неудачу для проверки точного retry-кэша.
 Private Sub TestAudit03RetryAttemptSession(ByRef stats As TSectionSolverTestStats)
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
     Dim concrete As CMaterialDiagram, steel As CLinearSteelMaterial
     Dim strains(1 To 3) As Double, stresses(1 To 3) As Double
     strains(1) = -0.01: stresses(1) = -102.25
@@ -1509,7 +1513,7 @@ Private Sub TestAudit03RetryAttemptSession(ByRef stats As TSectionSolverTestStat
     AssertTrue stats, "audit03.retry.configurationNotCached", runner.SolverCallCount = 11
     runner.MaxIterations = 1
     Dim otherSection As CSectionModel
-    Set otherSection = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+    Set otherSection = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
     runner.TestRunRetryAttempt otherSection, concrete, steel, -100000#
     runner.TestRunRetryAttempt otherSection, concrete, steel, -100000#
     AssertTrue stats, "audit03.retry.otherContextClosesSession", runner.SolverCallCount = 13
@@ -1576,15 +1580,14 @@ Private Sub Audit03ExtremeStateCase(ByRef stats As TSectionSolverTestStats, _
     On Error GoTo Failed
     Dim prefix As String
     prefix = "audit03.extreme." & method & ".shift=" & CStr(shifted) & ".extension=" & CStr(extended)
-    Dim geometry As CGeometryRoundedRectangle
-    Set geometry = New CGeometryRoundedRectangle
+    Dim geometry As CGeometryRegion
     If shifted Then
-        geometry.Initialize 200#, 100#, 0#, 0#, 0#, 0#, 125#, 80#
+        Set geometry = FixtureBox(200#, 100#, 125#, 80#)
     Else
-        geometry.Initialize 200#, 100#, 0#, 0#, 0#, 0#
+        Set geometry = FixtureBox(200#, 100#)
     End If
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(geometry), 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(geometry, 20#), Nothing)
     Dim concreteParameters As CConcreteMaterialParameters, steelParameters As CSteelMaterialParameters
     Set concreteParameters = New CConcreteMaterialParameters
     concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
@@ -1658,7 +1661,7 @@ Private Sub TestAudit03SolverSettingEffects(ByRef stats As TSectionSolverTestSta
     Set sheet = ThisWorkbook.Worksheets.Add
     sheet.Name = "__Audit03SolverEffects"
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 10#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 10#), Nothing)
     Dim concrete As CLinearConcreteMaterial, steel As CLinearSteelMaterial
     Set concrete = New CLinearConcreteMaterial
     concrete.Initialize 30000#
@@ -1861,11 +1864,11 @@ Private Sub TestAudit03LinearFailureCodes(ByRef stats As TSectionSolverTestStats
     AssertTrue stats, "audit03.linear.typed.large", system.Solve(2#, 1#, 0#, 1#, 2#, 0#, 0#, 0#, 1#, 1E+308, 1E+308, 1E+308)
     AssertClose stats, "audit03.linear.typed.large.x1", system.X1 / 1E+308, 1# / 3#, 0.000000000000001
     AssertClose stats, "audit03.linear.typed.large.x2", system.X2 / 1E+308, 1# / 3#, 0.000000000000001
-    AssertTrue stats, "audit03.linear.typed.large.residual", system.RelativeResidual >= 0# And system.RelativeResidual <= 1E-8
+    AssertTrue stats, "audit03.linear.typed.large.residual", system.RelativeResidual >= 0# And system.RelativeResidual <= 0.00000001
     AssertTrue stats, "audit03.linear.typed.large.code", system.FailureCode = sfcNone
     AssertTrue stats, "audit03.linear.typed.singular", Not system.Solve(1#, 2#, 3#, 2#, 4#, 6#, 3#, 6#, 9#, 1#, 2#, 3#)
     AssertTrue stats, "audit03.linear.typed.singular.code", system.FailureCode = sfcSingularTangent
-    AssertTrue stats, "audit03.linear.typed.overflow", Not system.Solve(0.00000000000000001, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1E+308, 1#, 1#)
+    AssertTrue stats, "audit03.linear.typed.overflow", Not system.Solve(1E-17, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1E+308, 1#, 1#)
     AssertTrue stats, "audit03.linear.typed.overflow.code", system.FailureCode = sfcNumericalFailure
     AssertTrue stats, "audit03.linear.typed.overflow.vector", system.X1 = 0# And system.X2 = 0# And system.X3 = 0# And Not system.Solved
     AssertTrue stats, "audit03.linear.typed.recovery", system.Solve(1#, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1#, 2#, 3#)
@@ -1876,11 +1879,11 @@ End Sub
 ' Модуль синтетического линейного материала не является нормативным вводом;
 ' нагрузки обычного масштаба, проверяется исходное компонентное равновесие.
 Private Sub TestAudit03LargeTangentState(ByRef stats As TSectionSolverTestStats)
-    Dim geom As CGeometryRoundedRectangle, mesh As CFiberMeshBuilder, section As CSectionModel
+    Dim geom As CGeometryRegion, mesh As CFiberMeshBuilder, section As CSectionModel
     Dim concrete As CLinearConcreteMaterial, steel As CLinearSteelMaterial, solver As CSectionSolver
     Dim modulus As Variant, code As Long, reason As String, prefix As String
     Set geom = RectangleGeometry(200#, 100#)
-    Set mesh = BuildMesh(BuildConcreteGeometry(geom), 10#)
+    Set mesh = BuildMesh(geom, 10#)
     Set section = BuildGeneratedSectionModel(mesh, Nothing)
     Set concrete = New CLinearConcreteMaterial
     Set steel = New CLinearSteelMaterial: steel.Initialize 200000#
@@ -1957,7 +1960,7 @@ Private Sub TestAudit03ExtremeLinearSystem(ByRef stats As TSectionSolverTestStat
     Next direction
     On Error Resume Next
     Err.Clear
-    solved = system.Solve(0.00000000000000001, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1E+308, 1#, 1#)
+    solved = system.Solve(1E-17, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1E+308, 1#, 1#)
     code = Err.Number: reason = Err.Description
     On Error GoTo 0
     AssertTrue stats, "audit03.linear.unrepresentable.noRuntimeError", code = 0
@@ -2030,7 +2033,7 @@ Private Sub TestAudit03ExtremeRunnerStates(ByRef stats As TSectionSolverTestStat
     Dim extended As Variant, method As Variant, magnitude As Variant, direction As Long
     Dim mx As Double, my As Double, errorCode As Long, reason As String, prefix As String, magnitudeName As String
     On Error GoTo Failed
-    Set section = BuildGeneratedSectionModel(BuildMesh(BuildConcreteGeometry(RectangleGeometry(200#, 100#)), 20#), Nothing)
+    Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
     Set concreteParameters = New CConcreteMaterialParameters
     concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
     Set steelParameters = New CSteelMaterialParameters

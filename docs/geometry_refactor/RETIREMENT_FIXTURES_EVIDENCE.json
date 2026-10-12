@@ -1,0 +1,197 @@
+{
+  "Stage": "IN_PROGRESS",
+  "CreatedAt": "2026-10-12T03:51:33.9307713+03:00",
+  "Archive": {
+    "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixturesEvidence.zip",
+    "SHA256": "AFBD10B630F5268140EA918F39915B46B41BB5555B5ED9521E66F7196D637601",
+    "Bytes": 16196542
+  },
+  "ProductionSHA256": "769C60CEF6030A009825875B2488B6D1A7C5FC653025F7B6CBAB6B4FCE63EAED",
+  "RemovedSources": [
+    "tests/CFakeMultiOpeningGeometry.cls"
+  ],
+  "Sources": [
+    {
+      "Path": "tests/modTestGeometryFixtures.bas",
+      "SHA256": "A2F3FB86032FB98440761B181F6CA095D15E082A1F1693C71E25D7B2C57DAA6F"
+    },
+    {
+      "Path": "tests/modTestBatchCalculation.bas",
+      "SHA256": "7F1C57960B87EE7BE2137034435C5D7E4844F92C2A72D4B8A65A60F6BE649756"
+    },
+    {
+      "Path": "tests/modTestCapacitySolver.bas",
+      "SHA256": "6C17D33A2253ECEE23A5592673898FDFDD226441C8A9FED4BFCCCBF6E841E786"
+    },
+    {
+      "Path": "tests/modTestConfiguration.bas",
+      "SHA256": "D9D2849E8811F0D3D01BF2FFF40DDE7CC591B0D8058365B314AD241C6D0FC4C2"
+    },
+    {
+      "Path": "tests/modTestContourMesh.bas",
+      "SHA256": "56ADC60A81C08F162E4701BDC4DFFA81874C8B3D3E7468B34C1D8DD90A880D17"
+    },
+    {
+      "Path": "tests/modTestCrackWidth.bas",
+      "SHA256": "272FA3A97ACF6438B0988388BB45916207BD746A72C900D9BC9DDA0326C3EC6A"
+    },
+    {
+      "Path": "tests/modTestGeometryQuery.bas",
+      "SHA256": "98DF7FD22A84276405A3AF0F7C8239F174F99BF5A186CD27D183F69BE178DE4F"
+    },
+    {
+      "Path": "tests/modTestLoadTableConfig.bas",
+      "SHA256": "453307C09866F196DAF7F97CC7EB0202DD0E88160C19CECB1032F03FCD0D439D"
+    },
+    {
+      "Path": "tests/modTestProfileConfig.bas",
+      "SHA256": "22601F3F7046FEB05AA7386F4432B2A1CFA555E3EE42EDF46C3F2955EE5A8FDE"
+    },
+    {
+      "Path": "tests/modTestRegressionBaseline.bas",
+      "SHA256": "4746F5D372721D618C373191CB722536B0D127CE692C54DD6DB59BC36D673607"
+    },
+    {
+      "Path": "tests/modTestSectionSolver.bas",
+      "SHA256": "76DBA87D0FC4C1CEEEFBC84D364DD9D6BC9A81965F553481524B653D4B1577D3"
+    },
+    {
+      "Path": "tools/build_workbook/Analyze-RetirementFixtures.py",
+      "SHA256": "04898F3CEB0DFE13A68A53A8F7CB26849A07478754F644525A9139761BB0F41A"
+    },
+    {
+      "Path": "tools/build_workbook/Update-PrivateWorkbookCode.ps1",
+      "SHA256": "FD9133DB65FCEEBF7C6AE627F77EAE54A8438854C9ED40976C7D4724A75C04B0"
+    },
+    {
+      "Path": "tools/build_workbook/Verify-GeometryBaselineCode.ps1",
+      "SHA256": "82CE401192B35C31B5C4376169C77EB330842DB7E19C88898B4DE7F5E78F7E73"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementBaseline/CodeUpdate.json",
+      "SHA256": "D359E916F038B1A207A5FFF632D3513271613945DD6102395CEEA84DD3E18F7C"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementBaseline/LoadMatrixSnapshot.txt",
+      "SHA256": "E03F1E13F7833B9AC16A7E5BC81B0B4D4704AF6EA68661ACBA174F47180E74EC"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementBaseline/modTestBatchCalculation.bas",
+      "SHA256": "543365C7AE8C74C2BEF970F4E2CC870D164DAA409A32B27AFB9A69ABA4DD38E4"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementBaseline/RC_Section_NDM.xlsm",
+      "SHA256": "2D2D476DCF9257F83933A7A5C642C3FA80D78F510741893FFE7D971BDBEE13AE"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementBaseline/RegressionBaseline.txt",
+      "SHA256": "3845B7A20EF3505D3A671CBFCB9DAB3B8D41BE2F1DE534CB3CA605DBDC0F0295"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/CodeComparison_NativeSpellingUnicodeProbeFailed.json",
+      "SHA256": "BDAF8FC53AB49228214D5FD2D79C2B41B11172DF79E29E48D71C69F996F6B5F3"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/CodeComparison.json",
+      "SHA256": "5CDDB1F9909BB2F2CB5D3D2BBFB4AF4967D1875670A88C7CC66FC1CD75861BC6"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/CodeUpdate.json",
+      "SHA256": "9870CBF8C71D651E925C74A409A8508161ED8BAC7E34D2C64BA499C7C32D57A6"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/DumpLoadMatrixGeometrySnapshot.txt",
+      "SHA256": "67D08F84E861AA475A5E960A5D4064BF0621B0D55F59FB8C444DA799909CC164"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/LoadMatrixAnalysis.json",
+      "SHA256": "8CD4920C763B6766C70E5D2B0C5D9D117A833E631ABB57EFCD2046E228AC072E"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/LoadMatrixComparison.json",
+      "SHA256": "35EA2D708951BAB51E0A0805E10050D8ADEA046C79482C6A8E7CB5CF4261AB94"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/LoadMatrixToleranceComparison.json",
+      "SHA256": "73E97EFCE7AFFD596C895C516F70106D653B13A25E6458CCAC86E174E12BE728"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/NativeCompile_CirclePathOwnerProbeFailed.txt",
+      "SHA256": "6FCFB0DBAF7F9D9BF4D1D2E66C177FCE10A8048182B08076FA25D2993707AFA3"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/NativeCompile_OptionContractProbeFailed.txt",
+      "SHA256": "F23E6ED0D7C3CBA4C6ED8AF1C79E181178B77F5EA5BCABA2DED103D15992BD5F"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/NativeNumericSpellingProof.json",
+      "SHA256": "89F2D20695FEA494703046C3CA4056D8B52A7AB564B90CC9544D280F32CB3B70"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RC_Section_NDM.xlsm",
+      "SHA256": "0C4852124C4F91A69D67DDB749AE2CC96CB4B15EA185AC5200B7FECDD90EE888"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RegressionBaselineComparison.json",
+      "SHA256": "173783442CE00E1D4A73F89D37AD7C471B3D113A81283488FC4953481DACD9FB"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RemainingLegacyReferences.json",
+      "SHA256": "431A7B7D36F67A097FF0AA5BCBFAD0B86DB29DC56B77F16E7953AF0D5E8873D3"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RetirementSourceGuard.json",
+      "SHA256": "1C02AC04E96523E1CFFF6C8A9CE3D6C31A2CB8073FE6880E35B8E76D21D0A6C3"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunAudit03ProfileConfigTests.txt",
+      "SHA256": "D1CD80735A3C9415D3D39526A3F19526863899CE90C66F0DDC89CD1608F6EB01"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunBatchWorkStatsTests.txt",
+      "SHA256": "C010822B38BAA28A19FB46369283736D735F75053CDECB0969B6A3540AD07A2E"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunCapacitySolverTests.txt",
+      "SHA256": "2BB74B9B7C4BD238B9D9B02C1FC5119AD945B0C0A721A0B08935A84B18CB84C8"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunCapacitySolverTests.txt.progress.txt",
+      "SHA256": "1B24687F6AF951A66DCB8FBD8BAF6C15DBA7A36E0C5008C3D22C0293F5307DDF"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunContourMeshTests.txt",
+      "SHA256": "8192FF19333F45769C07CF75D2864DA3829E206510A705788970A5642A734022"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunCrackWidthTests.txt",
+      "SHA256": "F542752C8ACF869572FAE080552C89A0A7CEB7431BB2C1BFCECB64C4E5B2E857"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunGeneratedContourOwnershipTests.txt",
+      "SHA256": "7F79278F4B66CC0D501AEF4796F05F39DE155C220188F160950C32A1DD4B4F60"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunGeometryQueryTests.txt",
+      "SHA256": "96D505260632EB2980B053746C8EA45C2079AF9BC2C7ADC607029D5B8E486AD1"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunRegressionBaselineTests.txt",
+      "SHA256": "97A3A38B250891D2A38D03550079AA7A27CF57D2183FB0D27FE168C363F36C4F"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunRetiredGeometryCapacityTests.txt",
+      "SHA256": "1442C9C61770E103708DF06B0C6CB1FD4A6FDEAEC7ABC131430103A2FB61836B"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunSectionSolverTests_ObsoleteCatalogProbeFailed.txt",
+      "SHA256": "EAEF8236744CDADF0AF097D7802A24EAFA0101A652206D8BDCCB1F5691B2AB07"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RetirementFixtures/RunSectionSolverTests.txt",
+      "SHA256": "D77075D2339FB6016B2131E9CE230B79CF9BF98B6BB628B50FCE705C0FA31262"
+    }
+  ]
+}

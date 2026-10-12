@@ -53,18 +53,18 @@ Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As S
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal calculateLambda As Boolean)
 
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter diameter, centerX, centerY
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(diameter, centerX, centerY)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), meshStep, meshStep, 1, boundarySubdivisions
+    mesh.BuildMesh geom, meshStep, meshStep, 1, boundarySubdivisions
 
-    Dim rebarBuilder As CCircleRebarLayoutBuilder
-    Set rebarBuilder = New CCircleRebarLayoutBuilder
+    Dim facade As CSectionDefinitionBuilder: Set facade = New CSectionDefinitionBuilder
+    facade.Initialize "BaselineCirclePaths"
     Dim rebars As CRebarLayout
-    Set rebars = rebarBuilder.Build(diameter, centerX, centerY, axisDistance, barCount, barDiameter, "A400")
+    Set rebars = FixtureClosedCountRow(facade.CirclePath("Boundary", centerX, centerY, diameter / 2#), _
+        facade.CirclePath("Axis", centerX, centerY, diameter / 2# - axisDistance), barCount, barDiameter, "A400", "Circle", "Круг: основной ряд арматуры")
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -90,18 +90,18 @@ End Sub
 ' solver-ами. Проверяет равновесие и совпадение epsilon0/кривизн, защищая
 ' повторный запуск от случайного сохраненного состояния предыдущей задачи.
 Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter 300#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(300#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1, 1
+    mesh.BuildMesh geom, 20#, 20#, 1, 1
 
-    Dim rebarBuilder As CCircleRebarLayoutBuilder
-    Set rebarBuilder = New CCircleRebarLayoutBuilder
+    Dim facade As CSectionDefinitionBuilder: Set facade = New CSectionDefinitionBuilder
+    facade.Initialize "BaselineCirclePaths"
     Dim rebars As CRebarLayout
-    Set rebars = rebarBuilder.Build(300#, 0#, 0#, 40#, 8, 20#, "A400")
+    Set rebars = FixtureClosedCountRow(facade.CirclePath("Boundary", 0#, 0#, 150#), _
+        facade.CirclePath("Axis", 0#, 0#, 110#), 8, 20#, "A400", "Circle", "Круг: основной ряд арматуры")
 
     Dim firstSolver As CSectionSolver
     Set firstSolver = New CSectionSolver
@@ -191,18 +191,18 @@ Private Function SolveCircleDirect(ByVal diameter As Double, ByVal centerX As Do
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, ByVal meshStep As Double, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
 
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter diameter, centerX, centerY
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(diameter, centerX, centerY)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), meshStep, meshStep, 1, 1
+    mesh.BuildMesh geom, meshStep, meshStep, 1, 1
 
-    Dim rebarBuilder As CCircleRebarLayoutBuilder
-    Set rebarBuilder = New CCircleRebarLayoutBuilder
+    Dim facade As CSectionDefinitionBuilder: Set facade = New CSectionDefinitionBuilder
+    facade.Initialize "BaselineCirclePaths"
     Dim rebars As CRebarLayout
-    Set rebars = rebarBuilder.Build(diameter, centerX, centerY, axisDistance, barCount, barDiameter, "A400")
+    Set rebars = FixtureClosedCountRow(facade.CirclePath("Boundary", centerX, centerY, diameter / 2#), _
+        facade.CirclePath("Axis", centerX, centerY, diameter / 2# - axisDistance), barCount, barDiameter, "A400", "Circle", "Круг: основной ряд арматуры")
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver

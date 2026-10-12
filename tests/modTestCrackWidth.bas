@@ -367,8 +367,8 @@ Private Sub TestAutoMcrcFixedNIndependentOfMomentMagnitude(ByRef stats As TCrack
 End Sub
 
 ' Проверяет три пользовательских пути поиска образования нормальной трещины.
-' λ*Mxy сохраняет N постоянной, λ*N нужен для центрального
-' растяжения, а λ*NMxy масштабирует весь вектор N/Mx/My как единую траекторию.
+' lambda*Mxy сохраняет N постоянной, lambda*N нужен для центрального
+' растяжения, а lambda*NMxy масштабирует весь вектор N/Mx/My как единую траекторию.
 Private Sub TestCrackInitiationLoadPaths(ByRef stats As TCrackTestStats)
     Dim sectionMxy As CSectionModel
     Dim solverMxy As CSectionSolver
@@ -757,22 +757,21 @@ Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue 
     Dim stage As String
     On Error GoTo Failed
     stage = "shape"
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBox(300#, 200#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     stage = "mesh"
-    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
+    mesh.BuildMesh geom, 20#, 20#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
     stage = "rebars"
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", geom
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -793,20 +792,19 @@ End Function
 ' Создает круг с четырьмя стержнями и решает его текущее SLS-НДС.
 ' Возвращает согласованные section и solver; ошибка сходимости явна в setup.
 Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
-    Dim geom As CGeometryCircle
-    Set geom = New CGeometryCircle
-    geom.InitializeByDiameter 300#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureDisk(300#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 15#, 15#, 1
+    mesh.BuildMesh geom, 15#, 15#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", 0#, 90#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B2", 90#, 0#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B3", 0#, -90#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B4", -90#, 0#, 20#, 0#, "Rebar", "", geom
 
     Dim solver As CSectionSolver
     Set solver = New CSectionSolver
@@ -824,20 +822,19 @@ End Function
 ' плоскость подбирается централизованно в CStateGuessBuilder.
 Private Function SolveServiceStateWithRunner(ByRef section As CSectionModel, ByVal nValue As Double, _
         ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBox(300#, 200#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
+    mesh.BuildMesh geom, 20#, 20#, 1
 
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", geom
 
     Set section = BuildGeneratedSectionModel(mesh, rebars)
 
@@ -1562,18 +1559,17 @@ End Sub
 ' При большом сжатии в момент образования трещины они могут быть сжатыми,
 ' хотя в более позднем текущем НДС попадут в выбранную растянутую группу.
 Private Function Audit03SigmaBoundarySection() As CSectionModel
-    Dim geom As CGeometryRoundedRectangle
-    Set geom = New CGeometryRoundedRectangle
-    geom.Initialize 300#, 200#, 0#, 0#, 0#, 0#
+    Dim geom As CGeometryRegion
+    Set geom = FixtureBox(300#, 200#)
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh BuildConcreteGeometry(geom), 20#, 20#, 1
+    mesh.BuildMesh geom, 20#, 20#, 1
     Dim rebars As CRebarLayout
     Set rebars = New CRebarLayout
-    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
-    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", BuildConcreteGeometry(geom)
+    rebars.AddBar "B1", -90#, -60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B2", 90#, -60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B3", -90#, 60#, 20#, 0#, "Rebar", "", geom
+    rebars.AddBar "B4", 90#, 60#, 20#, 0#, "Rebar", "", geom
     Set Audit03SigmaBoundarySection = BuildGeneratedSectionModel(mesh, rebars)
 End Function
 

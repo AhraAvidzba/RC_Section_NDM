@@ -2,6 +2,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$WorkbookPath,
     [string[]]$ModuleNames = @(),
+    [string[]]$RetiredModules = @(),
     [switch]$TraceGeometry
 )
 $ErrorActionPreference='Stop'
@@ -11,6 +12,11 @@ $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression'))+[IO.Path]::
 if (-not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only isolated evidence workbooks may be updated.'}
 $production=Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
 $productionHash=(Get-FileHash -LiteralPath $production).Hash
+$sourceFiles=@(Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas','.cls')
+foreach ($name in $RetiredModules) {
+    if ($name -notmatch '^[A-Za-z][A-Za-z0-9_]*$' -or $name -in $ModuleNames) {throw ('Invalid retirement: '+$name)}
+    if (@($sourceFiles | Where-Object BaseName -eq $name).Count) {throw ('Retired source still exists: '+$name)}
+}
 Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class PrivateCodeWindow { [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId); }'
 $excel=$null;$book=$null;$ownedPid=0;$ownedTicks=0
 try {
@@ -22,8 +28,17 @@ try {
     $book=$excel.Workbooks.Open($path,0,$false)
     if ($book.ReadOnly) {throw 'Private workbook is read-only.'}
     $updated=@()
+    $removed=@()
     $componentNames=@($book.VBProject.VBComponents | ForEach-Object {$_.Name})
-    foreach ($file in Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $root 'tests') -Recurse -File | Where-Object Extension -in '.bas','.cls') {
+    foreach ($name in $RetiredModules) {
+        if ($name -notin $componentNames) {throw ('Retirement component not found: '+$name)}
+        $component=$book.VBProject.VBComponents.Item($name)
+        if ($component.Type -notin 1,2) {throw ('Cannot retire a document/designer component: '+$name)}
+        $book.VBProject.VBComponents.Remove($component)
+        $removed += $name
+    }
+    $componentNames=@($book.VBProject.VBComponents | ForEach-Object {$_.Name})
+    foreach ($file in $sourceFiles) {
         if ($ModuleNames.Count -and $file.BaseName -notin $ModuleNames) {continue}
         $body=[regex]::Match([IO.File]::ReadAllText($file.FullName,[Text.Encoding]::UTF8),'(?ms)^Option Explicit.*').Value
         if (-not $body) {throw ('Source body missing: '+$file.FullName)}
@@ -90,7 +105,7 @@ End Function
     }
     $book.Save();$book.Close($false);$book=$null
     if ((Get-FileHash -LiteralPath $production).Hash -cne $productionHash) {throw 'Production changed during preparation.'}
-    [ordered]@{Workbook=$path;WorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash;ProductionSHA256=$productionHash;Compiled=$true;Modules=$updated;TraceGeometry=[bool]$TraceGeometry;ProductionChanged=$false} |
+    [ordered]@{Workbook=$path;WorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash;ProductionSHA256=$productionHash;Compiled=$true;Modules=$updated;RetiredModules=$removed;TraceGeometry=[bool]$TraceGeometry;ProductionChanged=$false} |
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path (Split-Path -Parent $path) 'CodeUpdate.json') -Encoding UTF8
     Write-Output ('PRIVATE_CODE_READY: modules='+$updated.Count+'; production unchanged=True')
 } finally {
