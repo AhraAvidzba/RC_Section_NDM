@@ -65,6 +65,12 @@ def main():
     performance = read('FinalPerformanceEvidence.json')
     rows = performance['comparisons']
     low, high = min(r['currentSeconds'] for r in rows), max(r['currentSeconds'] for r in rows)
+    git_status = ('Артефактный коммит `' + publication['ArtifactCommit'] + '` отправлен обычным push;\n'
+                  'удалённый HEAD подтверждён. Подробности — GEOMETRY_FULL_PUSH.json.\n'
+                  'Архив сохраняет этап публикации до Git-финализации, текущие JSON дополняют его.'
+                  if publication.get('PushPerformed') else
+                  'Окончательный коммит книги и доказательств отражён в истории ветки.\n'
+                  'Push разрешён после этих успешных проверок.')
     report = f'''# Итоговая приёмка геометрии NDM, ТЗ 1.4 — 13.10.2026
 
 **VERIFIED_PUBLISHED.** Все 72 требования сохраняют PASS; полная приёмка
@@ -204,8 +210,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/build_workbook/Upd
 Книга SHA256: `{pair['WorkbookSHA256']}`.
 ALL CODE SHA256: `{pair['AllCodeSHA256']}`.
 Source/publisher commit: `{publication['SourceCodeCommit']}`.
-Ветка: `codex/material-diagram-architecture`; окончательный коммит книги и
-доказательств отражён в её истории. Push разрешён после этих успешных проверок.
+Ветка: `codex/material-diagram-architecture`. {git_status}
 
 Машинные доказательства: GEOMETRY_FULL_ACCEPTANCE, TESTS, PERFORMANCE, VISUAL,
 VALIDATION_PLAN, PUBLICATION и READBACK JSON. Все 232 артефакта приёмки связаны

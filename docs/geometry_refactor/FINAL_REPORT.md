@@ -137,8 +137,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/build_workbook/Upd
 Книга SHA256: `871b42914fcb2fcf0168f43896d66ba603b6b170f6e6a9f9db9206cdc3ca9fec`.
 ALL CODE SHA256: `92c7b69f499564fd354721146e9e14b7e943488d190386355a42c9b4016b06b4`.
 Source/publisher commit: `037abc7c80269b49774b32337d5b40edc54d730a`.
-Ветка: `codex/material-diagram-architecture`; окончательный коммит книги и
-доказательств отражён в её истории. Push разрешён после этих успешных проверок.
+Ветка: `codex/material-diagram-architecture`. Коммит книги и evidence
+`fc21fd852a49a9721617e62045bd9e952b6359c1` отправлен обычным push.
+Удалённый HEAD подтверждён через git ls-remote; он совпал с локальным.
+Факт отправки и время записаны в GEOMETRY_FULL_PUSH.json. Архив сохраняет
+снимок этапа публикации до Git-финализации, текущие JSON дополняют его.
 
 Машинные доказательства: GEOMETRY_FULL_ACCEPTANCE, TESTS, PERFORMANCE, VISUAL,
 VALIDATION_PLAN, PUBLICATION и READBACK JSON. Все 232 артефакта приёмки связаны
